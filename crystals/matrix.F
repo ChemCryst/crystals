@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.26  2013/10/15 13:21:19  rich
+C LDL BLAS routines for digital.
+C
 C Revision 1.25  2013/10/15 10:10:28  rich
 C Move level2 BLAS to end of matrix, but only include for Digital compiler builds.
 C Keep machine paramter determinate in lapack.f, but only include for Digital compiler builds.
@@ -32306,6 +32309,2897 @@ c
 *     End of SLASYF
 *
       END
+ 
+      SUBROUTINE SSYR(UPLO,N,ALPHA,X,INCX,A,LDA)
+*     .. Scalar Arguments ..
+      REAL ALPHA
+      INTEGER INCX,LDA,N
+      CHARACTER UPLO
+*     ..
+*     .. Array Arguments ..
+      REAL A(LDA,*),X(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SSYR   performs the symmetric rank 1 operation
+*
+*     A := alpha*x*x**T + A,
+*
+*  where alpha is a real scalar, x is an n element vector and A is an
+*  n by n symmetric matrix.
+*
+*  Arguments
+*  ==========
+*
+*  UPLO   - CHARACTER*1.
+*           On entry, UPLO specifies whether the upper or lower
+*           triangular part of the array A is to be referenced as
+*           follows:
+*
+*              UPLO = 'U' or 'u'   Only the upper triangular part of A
+*                                  is to be referenced.
+*
+*              UPLO = 'L' or 'l'   Only the lower triangular part of A
+*                                  is to be referenced.
+*
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry, N specifies the order of the matrix A.
+*           N must be at least zero.
+*           Unchanged on exit.
+*
+*  ALPHA  - REAL            .
+*           On entry, ALPHA specifies the scalar alpha.
+*           Unchanged on exit.
+*
+*  X      - REAL             array of dimension at least
+*           ( 1 + ( n - 1 )*abs( INCX ) ).
+*           Before entry, the incremented array X must contain the n
+*           element vector x.
+*           Unchanged on exit.
+*
+*  INCX   - INTEGER.
+*           On entry, INCX specifies the increment for the elements of
+*           X. INCX must not be zero.
+*           Unchanged on exit.
+*
+*  A      - REAL             array of DIMENSION ( LDA, n ).
+*           Before entry with  UPLO = 'U' or 'u', the leading n by n
+*           upper triangular part of the array A must contain the upper
+*           triangular part of the symmetric matrix and the strictly
+*           lower triangular part of A is not referenced. On exit, the
+*           upper triangular part of the array A is overwritten by the
+*           upper triangular part of the updated matrix.
+*           Before entry with UPLO = 'L' or 'l', the leading n by n
+*           lower triangular part of the array A must contain the lower
+*           triangular part of the symmetric matrix and the strictly
+*           upper triangular part of A is not referenced. On exit, the
+*           lower triangular part of the array A is overwritten by the
+*           lower triangular part of the updated matrix.
+*
+*  LDA    - INTEGER.
+*           On entry, LDA specifies the first dimension of A as declared
+*           in the calling (sub) program. LDA must be at least
+*           max( 1, n ).
+*           Unchanged on exit.
+*
+*  Further Details
+*  ===============
+*
+*  Level 2 Blas routine.
+*
+*  -- Written on 22-October-1986.
+*     Jack Dongarra, Argonne National Lab.
+*     Jeremy Du Croz, Nag Central Office.
+*     Sven Hammarling, Nag Central Office.
+*     Richard Hanson, Sandia National Labs.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL ZERO
+      PARAMETER (ZERO=0.0E+0)
+*     ..
+*     .. Local Scalars ..
+      REAL TEMP
+      INTEGER I,INFO,IX,J,JX,KX
+*     ..
+*     .. External Functions ..
+      LOGICAL LSAME
+      EXTERNAL LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC MAX
+*     ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      IF (.NOT.LSAME(UPLO,'U') .AND. .NOT.LSAME(UPLO,'L')) THEN
+          INFO = 1
+      ELSE IF (N.LT.0) THEN
+          INFO = 2
+      ELSE IF (INCX.EQ.0) THEN
+          INFO = 5
+      ELSE IF (LDA.LT.MAX(1,N)) THEN
+          INFO = 7
+      END IF
+      IF (INFO.NE.0) THEN
+          CALL XERBLA('SSYR  ',INFO)
+          RETURN
+      END IF
+*
+*     Quick return if possible.
+*
+      IF ((N.EQ.0) .OR. (ALPHA.EQ.ZERO)) RETURN
+*
+*     Set the start point in X if the increment is not unity.
+*
+      IF (INCX.LE.0) THEN
+          KX = 1 - (N-1)*INCX
+      ELSE IF (INCX.NE.1) THEN
+          KX = 1
+      END IF
+*
+*     Start the operations. In this version the elements of A are
+*     accessed sequentially with one pass through the triangular part
+*     of A.
+*
+      IF (LSAME(UPLO,'U')) THEN
+*
+*        Form  A  when A is stored in upper triangle.
+*
+          IF (INCX.EQ.1) THEN
+              DO 20 J = 1,N
+                  IF (X(J).NE.ZERO) THEN
+                      TEMP = ALPHA*X(J)
+                      DO 10 I = 1,J
+                          A(I,J) = A(I,J) + X(I)*TEMP
+   10                 CONTINUE
+                  END IF
+   20         CONTINUE
+          ELSE
+              JX = KX
+              DO 40 J = 1,N
+                  IF (X(JX).NE.ZERO) THEN
+                      TEMP = ALPHA*X(JX)
+                      IX = KX
+                      DO 30 I = 1,J
+                          A(I,J) = A(I,J) + X(IX)*TEMP
+                          IX = IX + INCX
+   30                 CONTINUE
+                  END IF
+                  JX = JX + INCX
+   40         CONTINUE
+          END IF
+      ELSE
+*
+*        Form  A  when A is stored in lower triangle.
+*
+          IF (INCX.EQ.1) THEN
+              DO 60 J = 1,N
+                  IF (X(J).NE.ZERO) THEN
+                      TEMP = ALPHA*X(J)
+                      DO 50 I = J,N
+                          A(I,J) = A(I,J) + X(I)*TEMP
+   50                 CONTINUE
+                  END IF
+   60         CONTINUE
+          ELSE
+              JX = KX
+              DO 80 J = 1,N
+                  IF (X(JX).NE.ZERO) THEN
+                      TEMP = ALPHA*X(JX)
+                      IX = JX
+                      DO 70 I = J,N
+                          A(I,J) = A(I,J) + X(IX)*TEMP
+                          IX = IX + INCX
+   70                 CONTINUE
+                  END IF
+                  JX = JX + INCX
+   80         CONTINUE
+          END IF
+      END IF
+*
+      RETURN
+*
+*     End of SSYR  .
+*
+      END
+
+*> \brief \b SSYCON
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SSYCON + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssycon.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssycon.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssycon.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SSYCON( UPLO, N, A, LDA, IPIV, ANORM, RCOND, WORK,
+*                          IWORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          UPLO
+*       INTEGER            INFO, LDA, N
+*       REAL               ANORM, RCOND
+*       ..
+*       .. Array Arguments ..
+*       INTEGER            IPIV( * ), IWORK( * )
+*       REAL               A( LDA, * ), WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SSYCON estimates the reciprocal of the condition number (in the
+*> 1-norm) of a real symmetric matrix A using the factorization
+*> A = U*D*U**T or A = L*D*L**T computed by SSYTRF.
+*>
+*> An estimate is obtained for norm(inv(A)), and the reciprocal of the
+*> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*>          Specifies whether the details of the factorization are stored
+*>          as an upper or lower triangular matrix.
+*>          = 'U':  Upper triangular, form is A = U*D*U**T;
+*>          = 'L':  Lower triangular, form is A = L*D*L**T.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The order of the matrix A.  N >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,N)
+*>          The block diagonal matrix D and the multipliers used to
+*>          obtain the factor U or L as computed by SSYTRF.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.  LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] IPIV
+*> \verbatim
+*>          IPIV is INTEGER array, dimension (N)
+*>          Details of the interchanges and the block structure of D
+*>          as determined by SSYTRF.
+*> \endverbatim
+*>
+*> \param[in] ANORM
+*> \verbatim
+*>          ANORM is REAL
+*>          The 1-norm of the original matrix A.
+*> \endverbatim
+*>
+*> \param[out] RCOND
+*> \verbatim
+*>          RCOND is REAL
+*>          The reciprocal of the condition number of the matrix A,
+*>          computed as RCOND = 1/(ANORM * AINVNM), where AINVNM is an
+*>          estimate of the 1-norm of inv(A) computed in this routine.
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension (2*N)
+*> \endverbatim
+*>
+*> \param[out] IWORK
+*> \verbatim
+*>          IWORK is INTEGER array, dimension (N)
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realSYcomputational
+*
+*  =====================================================================
+      SUBROUTINE SSYCON( UPLO, N, A, LDA, IPIV, ANORM, RCOND, WORK,
+     $                   IWORK, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            INFO, LDA, N
+      REAL               ANORM, RCOND
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IPIV( * ), IWORK( * )
+      REAL               A( LDA, * ), WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            UPPER
+      INTEGER            I, KASE
+      REAL               AINVNM
+*     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLACN2, SSYTRS, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( ANORM.LT.ZERO ) THEN
+         INFO = -6
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SSYCON', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      RCOND = ZERO
+      IF( N.EQ.0 ) THEN
+         RCOND = ONE
+         RETURN
+      ELSE IF( ANORM.LE.ZERO ) THEN
+         RETURN
+      END IF
+*
+*     Check that the diagonal matrix D is nonsingular.
+*
+      IF( UPPER ) THEN
+*
+*        Upper triangular storage: examine D from bottom to top
+*
+         DO 10 I = N, 1, -1
+            IF( IPIV( I ).GT.0 .AND. A( I, I ).EQ.ZERO )
+     $         RETURN
+   10    CONTINUE
+      ELSE
+*
+*        Lower triangular storage: examine D from top to bottom.
+*
+         DO 20 I = 1, N
+            IF( IPIV( I ).GT.0 .AND. A( I, I ).EQ.ZERO )
+     $         RETURN
+   20    CONTINUE
+      END IF
+*
+*     Estimate the 1-norm of the inverse.
+*
+      KASE = 0
+   30 CONTINUE
+      CALL SLACN2( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE, ISAVE )
+      IF( KASE.NE.0 ) THEN
+*
+*        Multiply by inv(L*D*L**T) or inv(U*D*U**T).
+*
+         CALL SSYTRS( UPLO, N, 1, A, LDA, IPIV, WORK, N, INFO )
+         GO TO 30
+      END IF
+*
+*     Compute the estimate of the reciprocal condition number.
+*
+      IF( AINVNM.NE.ZERO )
+     $   RCOND = ( ONE / AINVNM ) / ANORM
+*
+      RETURN
+*
+*     End of SSYCON
+*
+      END
+
+*> \brief \b SLACN2 estimates the 1-norm of a square matrix, using reverse communication for evaluating matrix-vector products.
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SLACN2 + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slacn2.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slacn2.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slacn2.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SLACN2( N, V, X, ISGN, EST, KASE, ISAVE )
+* 
+*       .. Scalar Arguments ..
+*       INTEGER            KASE, N
+*       REAL               EST
+*       ..
+*       .. Array Arguments ..
+*       INTEGER            ISGN( * ), ISAVE( 3 )
+*       REAL               V( * ), X( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SLACN2 estimates the 1-norm of a square, real matrix A.
+*> Reverse communication is used for evaluating matrix-vector products.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>         The order of the matrix.  N >= 1.
+*> \endverbatim
+*>
+*> \param[out] V
+*> \verbatim
+*>          V is REAL array, dimension (N)
+*>         On the final return, V = A*W,  where  EST = norm(V)/norm(W)
+*>         (W is not returned).
+*> \endverbatim
+*>
+*> \param[in,out] X
+*> \verbatim
+*>          X is REAL array, dimension (N)
+*>         On an intermediate return, X should be overwritten by
+*>               A * X,   if KASE=1,
+*>               A**T * X,  if KASE=2,
+*>         and SLACN2 must be re-called with all the other parameters
+*>         unchanged.
+*> \endverbatim
+*>
+*> \param[out] ISGN
+*> \verbatim
+*>          ISGN is INTEGER array, dimension (N)
+*> \endverbatim
+*>
+*> \param[in,out] EST
+*> \verbatim
+*>          EST is REAL
+*>         On entry with KASE = 1 or 2 and ISAVE(1) = 3, EST should be
+*>         unchanged from the previous call to SLACN2.
+*>         On exit, EST is an estimate (a lower bound) for norm(A). 
+*> \endverbatim
+*>
+*> \param[in,out] KASE
+*> \verbatim
+*>          KASE is INTEGER
+*>         On the initial call to SLACN2, KASE should be 0.
+*>         On an intermediate return, KASE will be 1 or 2, indicating
+*>         whether X should be overwritten by A * X  or A**T * X.
+*>         On the final return from SLACN2, KASE will again be 0.
+*> \endverbatim
+*>
+*> \param[in,out] ISAVE
+*> \verbatim
+*>          ISAVE is INTEGER array, dimension (3)
+*>         ISAVE is used to save variables between calls to SLACN2
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date September 2012
+*
+*> \ingroup realOTHERauxiliary
+*
+*> \par Further Details:
+*  =====================
+*>
+*> \verbatim
+*>
+*>  Originally named SONEST, dated March 16, 1988.
+*>
+*>  This is a thread safe version of SLACON, which uses the array ISAVE
+*>  in place of a SAVE statement, as follows:
+*>
+*>     SLACON     SLACN2
+*>      JUMP     ISAVE(1)
+*>      J        ISAVE(2)
+*>      ITER     ISAVE(3)
+*> \endverbatim
+*
+*> \par Contributors:
+*  ==================
+*>
+*>     Nick Higham, University of Manchester
+*
+*> \par References:
+*  ================
+*>
+*>  N.J. Higham, "FORTRAN codes for estimating the one-norm of
+*>  a real or complex matrix, with applications to condition estimation",
+*>  ACM Trans. Math. Soft., vol. 14, no. 4, pp. 381-396, December 1988.
+*>
+*  =====================================================================
+      SUBROUTINE SLACN2( N, V, X, ISGN, EST, KASE, ISAVE )
+*
+*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     September 2012
+*
+*     .. Scalar Arguments ..
+      INTEGER            KASE, N
+      REAL               EST
+*     ..
+*     .. Array Arguments ..
+      INTEGER            ISGN( * ), ISAVE( 3 )
+      REAL               V( * ), X( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      INTEGER            ITMAX
+      PARAMETER          ( ITMAX = 5 )
+      REAL               ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0, TWO = 2.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            I, JLAST
+      REAL               ALTSGN, ESTOLD, TEMP
+*     ..
+*     .. External Functions ..
+      INTEGER            ISAMAX
+      REAL               SASUM
+      EXTERNAL           ISAMAX, SASUM
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, NINT, REAL, SIGN
+*     ..
+*     .. Executable Statements ..
+*
+      IF( KASE.EQ.0 ) THEN
+         DO 10 I = 1, N
+            X( I ) = ONE / REAL( N )
+   10    CONTINUE
+         KASE = 1
+         ISAVE( 1 ) = 1
+         RETURN
+      END IF
+*
+      GO TO ( 20, 40, 70, 110, 140 )ISAVE( 1 )
+*
+*     ................ ENTRY   (ISAVE( 1 ) = 1)
+*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY A*X.
+*
+   20 CONTINUE
+      IF( N.EQ.1 ) THEN
+         V( 1 ) = X( 1 )
+         EST = ABS( V( 1 ) )
+*        ... QUIT
+         GO TO 150
+      END IF
+      EST = SASUM( N, X, 1 )
+*
+      DO 30 I = 1, N
+         X( I ) = SIGN( ONE, X( I ) )
+         ISGN( I ) = NINT( X( I ) )
+   30 CONTINUE
+      KASE = 2
+      ISAVE( 1 ) = 2
+      RETURN
+*
+*     ................ ENTRY   (ISAVE( 1 ) = 2)
+*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X.
+*
+   40 CONTINUE
+      ISAVE( 2 ) = ISAMAX( N, X, 1 )
+      ISAVE( 3 ) = 2
+*
+*     MAIN LOOP - ITERATIONS 2,3,...,ITMAX.
+*
+   50 CONTINUE
+      DO 60 I = 1, N
+         X( I ) = ZERO
+   60 CONTINUE
+      X( ISAVE( 2 ) ) = ONE
+      KASE = 1
+      ISAVE( 1 ) = 3
+      RETURN
+*
+*     ................ ENTRY   (ISAVE( 1 ) = 3)
+*     X HAS BEEN OVERWRITTEN BY A*X.
+*
+   70 CONTINUE
+      CALL SCOPY( N, X, 1, V, 1 )
+      ESTOLD = EST
+      EST = SASUM( N, V, 1 )
+      DO 80 I = 1, N
+         IF( NINT( SIGN( ONE, X( I ) ) ).NE.ISGN( I ) )
+     $      GO TO 90
+   80 CONTINUE
+*     REPEATED SIGN VECTOR DETECTED, HENCE ALGORITHM HAS CONVERGED.
+      GO TO 120
+*
+   90 CONTINUE
+*     TEST FOR CYCLING.
+      IF( EST.LE.ESTOLD )
+     $   GO TO 120
+*
+      DO 100 I = 1, N
+         X( I ) = SIGN( ONE, X( I ) )
+         ISGN( I ) = NINT( X( I ) )
+  100 CONTINUE
+      KASE = 2
+      ISAVE( 1 ) = 4
+      RETURN
+*
+*     ................ ENTRY   (ISAVE( 1 ) = 4)
+*     X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X.
+*
+  110 CONTINUE
+      JLAST = ISAVE( 2 )
+      ISAVE( 2 ) = ISAMAX( N, X, 1 )
+      IF( ( X( JLAST ).NE.ABS( X( ISAVE( 2 ) ) ) ) .AND.
+     $    ( ISAVE( 3 ).LT.ITMAX ) ) THEN
+         ISAVE( 3 ) = ISAVE( 3 ) + 1
+         GO TO 50
+      END IF
+*
+*     ITERATION COMPLETE.  FINAL STAGE.
+*
+  120 CONTINUE
+      ALTSGN = ONE
+      DO 130 I = 1, N
+         X( I ) = ALTSGN*( ONE+REAL( I-1 ) / REAL( N-1 ) )
+         ALTSGN = -ALTSGN
+  130 CONTINUE
+      KASE = 1
+      ISAVE( 1 ) = 5
+      RETURN
+*
+*     ................ ENTRY   (ISAVE( 1 ) = 5)
+*     X HAS BEEN OVERWRITTEN BY A*X.
+*
+  140 CONTINUE
+      TEMP = TWO*( SASUM( N, X, 1 ) / REAL( 3*N ) )
+      IF( TEMP.GT.EST ) THEN
+         CALL SCOPY( N, X, 1, V, 1 )
+         EST = TEMP
+      END IF
+*
+  150 CONTINUE
+      KASE = 0
+      RETURN
+*
+*     End of SLACN2
+*
+      END
+
+*> \brief \b SSYTRS
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SSYTRS + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytrs.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytrs.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytrs.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SSYTRS( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          UPLO
+*       INTEGER            INFO, LDA, LDB, N, NRHS
+*       ..
+*       .. Array Arguments ..
+*       INTEGER            IPIV( * )
+*       REAL               A( LDA, * ), B( LDB, * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SSYTRS solves a system of linear equations A*X = B with a real
+*> symmetric matrix A using the factorization A = U*D*U**T or
+*> A = L*D*L**T computed by SSYTRF.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*>          Specifies whether the details of the factorization are stored
+*>          as an upper or lower triangular matrix.
+*>          = 'U':  Upper triangular, form is A = U*D*U**T;
+*>          = 'L':  Lower triangular, form is A = L*D*L**T.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The order of the matrix A.  N >= 0.
+*> \endverbatim
+*>
+*> \param[in] NRHS
+*> \verbatim
+*>          NRHS is INTEGER
+*>          The number of right hand sides, i.e., the number of columns
+*>          of the matrix B.  NRHS >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,N)
+*>          The block diagonal matrix D and the multipliers used to
+*>          obtain the factor U or L as computed by SSYTRF.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.  LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] IPIV
+*> \verbatim
+*>          IPIV is INTEGER array, dimension (N)
+*>          Details of the interchanges and the block structure of D
+*>          as determined by SSYTRF.
+*> \endverbatim
+*>
+*> \param[in,out] B
+*> \verbatim
+*>          B is REAL array, dimension (LDB,NRHS)
+*>          On entry, the right hand side matrix B.
+*>          On exit, the solution matrix X.
+*> \endverbatim
+*>
+*> \param[in] LDB
+*> \verbatim
+*>          LDB is INTEGER
+*>          The leading dimension of the array B.  LDB >= max(1,N).
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realSYcomputational
+*
+*  =====================================================================
+      SUBROUTINE SSYTRS( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            INFO, LDA, LDB, N, NRHS
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IPIV( * )
+      REAL               A( LDA, * ), B( LDB, * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE
+      PARAMETER          ( ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            UPPER
+      INTEGER            J, K, KP
+      REAL               AK, AKM1, AKM1K, BK, BKM1, DENOM
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SGEMV, SGER, SSCAL, SSWAP, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     ..
+*     .. Executable Statements ..
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( NRHS.LT.0 ) THEN
+         INFO = -3
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -5
+      ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
+         INFO = -8
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SSYTRS', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 .OR. NRHS.EQ.0 )
+     $   RETURN
+*
+      IF( UPPER ) THEN
+*
+*        Solve A*X = B, where A = U*D*U**T.
+*
+*        First solve U*D*X = B, overwriting B with X.
+*
+*        K is the main loop index, decreasing from N to 1 in steps of
+*        1 or 2, depending on the size of the diagonal blocks.
+*
+         K = N
+   10    CONTINUE
+*
+*        If K < 1, exit from loop.
+*
+         IF( K.LT.1 )
+     $      GO TO 30
+*
+         IF( IPIV( K ).GT.0 ) THEN
+*
+*           1 x 1 diagonal block
+*
+*           Interchange rows K and IPIV(K).
+*
+            KP = IPIV( K )
+            IF( KP.NE.K )
+     $         CALL SSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+*
+*           Multiply by inv(U(K)), where U(K) is the transformation
+*           stored in column K of A.
+*
+            CALL SGER( K-1, NRHS, -ONE, A( 1, K ), 1, B( K, 1 ), LDB,
+     $                 B( 1, 1 ), LDB )
+*
+*           Multiply by the inverse of the diagonal block.
+*
+            CALL SSCAL( NRHS, ONE / A( K, K ), B( K, 1 ), LDB )
+            K = K - 1
+         ELSE
+*
+*           2 x 2 diagonal block
+*
+*           Interchange rows K-1 and -IPIV(K).
+*
+            KP = -IPIV( K )
+            IF( KP.NE.K-1 )
+     $         CALL SSWAP( NRHS, B( K-1, 1 ), LDB, B( KP, 1 ), LDB )
+*
+*           Multiply by inv(U(K)), where U(K) is the transformation
+*           stored in columns K-1 and K of A.
+*
+            CALL SGER( K-2, NRHS, -ONE, A( 1, K ), 1, B( K, 1 ), LDB,
+     $                 B( 1, 1 ), LDB )
+            CALL SGER( K-2, NRHS, -ONE, A( 1, K-1 ), 1, B( K-1, 1 ),
+     $                 LDB, B( 1, 1 ), LDB )
+*
+*           Multiply by the inverse of the diagonal block.
+*
+            AKM1K = A( K-1, K )
+            AKM1 = A( K-1, K-1 ) / AKM1K
+            AK = A( K, K ) / AKM1K
+            DENOM = AKM1*AK - ONE
+            DO 20 J = 1, NRHS
+               BKM1 = B( K-1, J ) / AKM1K
+               BK = B( K, J ) / AKM1K
+               B( K-1, J ) = ( AK*BKM1-BK ) / DENOM
+               B( K, J ) = ( AKM1*BK-BKM1 ) / DENOM
+   20       CONTINUE
+            K = K - 2
+         END IF
+*
+         GO TO 10
+   30    CONTINUE
+*
+*        Next solve U**T *X = B, overwriting B with X.
+*
+*        K is the main loop index, increasing from 1 to N in steps of
+*        1 or 2, depending on the size of the diagonal blocks.
+*
+         K = 1
+   40    CONTINUE
+*
+*        If K > N, exit from loop.
+*
+         IF( K.GT.N )
+     $      GO TO 50
+*
+         IF( IPIV( K ).GT.0 ) THEN
+*
+*           1 x 1 diagonal block
+*
+*           Multiply by inv(U**T(K)), where U(K) is the transformation
+*           stored in column K of A.
+*
+            CALL SGEMV( 'Transpose', K-1, NRHS, -ONE, B, LDB, A( 1, K ),
+     $                  1, ONE, B( K, 1 ), LDB )
+*
+*           Interchange rows K and IPIV(K).
+*
+            KP = IPIV( K )
+            IF( KP.NE.K )
+     $         CALL SSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            K = K + 1
+         ELSE
+*
+*           2 x 2 diagonal block
+*
+*           Multiply by inv(U**T(K+1)), where U(K+1) is the transformation
+*           stored in columns K and K+1 of A.
+*
+            CALL SGEMV( 'Transpose', K-1, NRHS, -ONE, B, LDB, A( 1, K ),
+     $                  1, ONE, B( K, 1 ), LDB )
+            CALL SGEMV( 'Transpose', K-1, NRHS, -ONE, B, LDB,
+     $                  A( 1, K+1 ), 1, ONE, B( K+1, 1 ), LDB )
+*
+*           Interchange rows K and -IPIV(K).
+*
+            KP = -IPIV( K )
+            IF( KP.NE.K )
+     $         CALL SSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            K = K + 2
+         END IF
+*
+         GO TO 40
+   50    CONTINUE
+*
+      ELSE
+*
+*        Solve A*X = B, where A = L*D*L**T.
+*
+*        First solve L*D*X = B, overwriting B with X.
+*
+*        K is the main loop index, increasing from 1 to N in steps of
+*        1 or 2, depending on the size of the diagonal blocks.
+*
+         K = 1
+   60    CONTINUE
+*
+*        If K > N, exit from loop.
+*
+         IF( K.GT.N )
+     $      GO TO 80
+*
+         IF( IPIV( K ).GT.0 ) THEN
+*
+*           1 x 1 diagonal block
+*
+*           Interchange rows K and IPIV(K).
+*
+            KP = IPIV( K )
+            IF( KP.NE.K )
+     $         CALL SSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+*
+*           Multiply by inv(L(K)), where L(K) is the transformation
+*           stored in column K of A.
+*
+            IF( K.LT.N )
+     $         CALL SGER( N-K, NRHS, -ONE, A( K+1, K ), 1, B( K, 1 ),
+     $                    LDB, B( K+1, 1 ), LDB )
+*
+*           Multiply by the inverse of the diagonal block.
+*
+            CALL SSCAL( NRHS, ONE / A( K, K ), B( K, 1 ), LDB )
+            K = K + 1
+         ELSE
+*
+*           2 x 2 diagonal block
+*
+*           Interchange rows K+1 and -IPIV(K).
+*
+            KP = -IPIV( K )
+            IF( KP.NE.K+1 )
+     $         CALL SSWAP( NRHS, B( K+1, 1 ), LDB, B( KP, 1 ), LDB )
+*
+*           Multiply by inv(L(K)), where L(K) is the transformation
+*           stored in columns K and K+1 of A.
+*
+            IF( K.LT.N-1 ) THEN
+               CALL SGER( N-K-1, NRHS, -ONE, A( K+2, K ), 1, B( K, 1 ),
+     $                    LDB, B( K+2, 1 ), LDB )
+               CALL SGER( N-K-1, NRHS, -ONE, A( K+2, K+1 ), 1,
+     $                    B( K+1, 1 ), LDB, B( K+2, 1 ), LDB )
+            END IF
+*
+*           Multiply by the inverse of the diagonal block.
+*
+            AKM1K = A( K+1, K )
+            AKM1 = A( K, K ) / AKM1K
+            AK = A( K+1, K+1 ) / AKM1K
+            DENOM = AKM1*AK - ONE
+            DO 70 J = 1, NRHS
+               BKM1 = B( K, J ) / AKM1K
+               BK = B( K+1, J ) / AKM1K
+               B( K, J ) = ( AK*BKM1-BK ) / DENOM
+               B( K+1, J ) = ( AKM1*BK-BKM1 ) / DENOM
+   70       CONTINUE
+            K = K + 2
+         END IF
+*
+         GO TO 60
+   80    CONTINUE
+*
+*        Next solve L**T *X = B, overwriting B with X.
+*
+*        K is the main loop index, decreasing from N to 1 in steps of
+*        1 or 2, depending on the size of the diagonal blocks.
+*
+         K = N
+   90    CONTINUE
+*
+*        If K < 1, exit from loop.
+*
+         IF( K.LT.1 )
+     $      GO TO 100
+*
+         IF( IPIV( K ).GT.0 ) THEN
+*
+*           1 x 1 diagonal block
+*
+*           Multiply by inv(L**T(K)), where L(K) is the transformation
+*           stored in column K of A.
+*
+            IF( K.LT.N )
+     $         CALL SGEMV( 'Transpose', N-K, NRHS, -ONE, B( K+1, 1 ),
+     $                     LDB, A( K+1, K ), 1, ONE, B( K, 1 ), LDB )
+*
+*           Interchange rows K and IPIV(K).
+*
+            KP = IPIV( K )
+            IF( KP.NE.K )
+     $         CALL SSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            K = K - 1
+         ELSE
+*
+*           2 x 2 diagonal block
+*
+*           Multiply by inv(L**T(K-1)), where L(K-1) is the transformation
+*           stored in columns K-1 and K of A.
+*
+            IF( K.LT.N ) THEN
+               CALL SGEMV( 'Transpose', N-K, NRHS, -ONE, B( K+1, 1 ),
+     $                     LDB, A( K+1, K ), 1, ONE, B( K, 1 ), LDB )
+               CALL SGEMV( 'Transpose', N-K, NRHS, -ONE, B( K+1, 1 ),
+     $                     LDB, A( K+1, K-1 ), 1, ONE, B( K-1, 1 ),
+     $                     LDB )
+            END IF
+*
+*           Interchange rows K and -IPIV(K).
+*
+            KP = -IPIV( K )
+            IF( KP.NE.K )
+     $         CALL SSWAP( NRHS, B( K, 1 ), LDB, B( KP, 1 ), LDB )
+            K = K - 2
+         END IF
+*
+         GO TO 90
+  100    CONTINUE
+      END IF
+*
+      RETURN
+*
+*     End of SSYTRS
+*
+      END
 	  
+*> \brief \b SSYTRI
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SSYTRI + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytri.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytri.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytri.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SSYTRI( UPLO, N, A, LDA, IPIV, WORK, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          UPLO
+*       INTEGER            INFO, LDA, N
+*       ..
+*       .. Array Arguments ..
+*       INTEGER            IPIV( * )
+*       REAL               A( LDA, * ), WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SSYTRI computes the inverse of a real symmetric indefinite matrix
+*> A using the factorization A = U*D*U**T or A = L*D*L**T computed by
+*> SSYTRF.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*>          Specifies whether the details of the factorization are stored
+*>          as an upper or lower triangular matrix.
+*>          = 'U':  Upper triangular, form is A = U*D*U**T;
+*>          = 'L':  Lower triangular, form is A = L*D*L**T.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The order of the matrix A.  N >= 0.
+*> \endverbatim
+*>
+*> \param[in,out] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,N)
+*>          On entry, the block diagonal matrix D and the multipliers
+*>          used to obtain the factor U or L as computed by SSYTRF.
+*>
+*>          On exit, if INFO = 0, the (symmetric) inverse of the original
+*>          matrix.  If UPLO = 'U', the upper triangular part of the
+*>          inverse is formed and the part of A below the diagonal is not
+*>          referenced; if UPLO = 'L' the lower triangular part of the
+*>          inverse is formed and the part of A above the diagonal is
+*>          not referenced.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.  LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] IPIV
+*> \verbatim
+*>          IPIV is INTEGER array, dimension (N)
+*>          Details of the interchanges and the block structure of D
+*>          as determined by SSYTRF.
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension (N)
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0: successful exit
+*>          < 0: if INFO = -i, the i-th argument had an illegal value
+*>          > 0: if INFO = i, D(i,i) = 0; the matrix is singular and its
+*>               inverse could not be computed.
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realSYcomputational
+*
+*  =====================================================================
+      SUBROUTINE SSYTRI( UPLO, N, A, LDA, IPIV, WORK, INFO )
+*
+*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            INFO, LDA, N
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IPIV( * )
+      REAL               A( LDA, * ), WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            UPPER
+      INTEGER            K, KP, KSTEP
+      REAL               AK, AKKP1, AKP1, D, T, TEMP
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      REAL               SDOT
+      EXTERNAL           LSAME, SDOT
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SCOPY, SSWAP, SSYMV, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, MAX
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SSYTRI', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+*     Check that the diagonal matrix D is nonsingular.
+*
+      IF( UPPER ) THEN
+*
+*        Upper triangular storage: examine D from bottom to top
+*
+         DO 10 INFO = N, 1, -1
+            IF( IPIV( INFO ).GT.0 .AND. A( INFO, INFO ).EQ.ZERO )
+     $         RETURN
+   10    CONTINUE
+      ELSE
+*
+*        Lower triangular storage: examine D from top to bottom.
+*
+         DO 20 INFO = 1, N
+            IF( IPIV( INFO ).GT.0 .AND. A( INFO, INFO ).EQ.ZERO )
+     $         RETURN
+   20    CONTINUE
+      END IF
+      INFO = 0
+*
+      IF( UPPER ) THEN
+*
+*        Compute inv(A) from the factorization A = U*D*U**T.
+*
+*        K is the main loop index, increasing from 1 to N in steps of
+*        1 or 2, depending on the size of the diagonal blocks.
+*
+         K = 1
+   30    CONTINUE
+*
+*        If K > N, exit from loop.
+*
+         IF( K.GT.N )
+     $      GO TO 40
+*
+         IF( IPIV( K ).GT.0 ) THEN
+*
+*           1 x 1 diagonal block
+*
+*           Invert the diagonal block.
+*
+            A( K, K ) = ONE / A( K, K )
+*
+*           Compute column K of the inverse.
+*
+            IF( K.GT.1 ) THEN
+               CALL SCOPY( K-1, A( 1, K ), 1, WORK, 1 )
+               CALL SSYMV( UPLO, K-1, -ONE, A, LDA, WORK, 1, ZERO,
+     $                     A( 1, K ), 1 )
+               A( K, K ) = A( K, K ) - SDOT( K-1, WORK, 1, A( 1, K ),
+     $                     1 )
+            END IF
+            KSTEP = 1
+         ELSE
+*
+*           2 x 2 diagonal block
+*
+*           Invert the diagonal block.
+*
+            T = ABS( A( K, K+1 ) )
+            AK = A( K, K ) / T
+            AKP1 = A( K+1, K+1 ) / T
+            AKKP1 = A( K, K+1 ) / T
+            D = T*( AK*AKP1-ONE )
+            A( K, K ) = AKP1 / D
+            A( K+1, K+1 ) = AK / D
+            A( K, K+1 ) = -AKKP1 / D
+*
+*           Compute columns K and K+1 of the inverse.
+*
+            IF( K.GT.1 ) THEN
+               CALL SCOPY( K-1, A( 1, K ), 1, WORK, 1 )
+               CALL SSYMV( UPLO, K-1, -ONE, A, LDA, WORK, 1, ZERO,
+     $                     A( 1, K ), 1 )
+               A( K, K ) = A( K, K ) - SDOT( K-1, WORK, 1, A( 1, K ),
+     $                     1 )
+               A( K, K+1 ) = A( K, K+1 ) -
+     $                       SDOT( K-1, A( 1, K ), 1, A( 1, K+1 ), 1 )
+               CALL SCOPY( K-1, A( 1, K+1 ), 1, WORK, 1 )
+               CALL SSYMV( UPLO, K-1, -ONE, A, LDA, WORK, 1, ZERO,
+     $                     A( 1, K+1 ), 1 )
+               A( K+1, K+1 ) = A( K+1, K+1 ) -
+     $                         SDOT( K-1, WORK, 1, A( 1, K+1 ), 1 )
+            END IF
+            KSTEP = 2
+         END IF
+*
+         KP = ABS( IPIV( K ) )
+         IF( KP.NE.K ) THEN
+*
+*           Interchange rows and columns K and KP in the leading
+*           submatrix A(1:k+1,1:k+1)
+*
+            CALL SSWAP( KP-1, A( 1, K ), 1, A( 1, KP ), 1 )
+            CALL SSWAP( K-KP-1, A( KP+1, K ), 1, A( KP, KP+1 ), LDA )
+            TEMP = A( K, K )
+            A( K, K ) = A( KP, KP )
+            A( KP, KP ) = TEMP
+            IF( KSTEP.EQ.2 ) THEN
+               TEMP = A( K, K+1 )
+               A( K, K+1 ) = A( KP, K+1 )
+               A( KP, K+1 ) = TEMP
+            END IF
+         END IF
+*
+         K = K + KSTEP
+         GO TO 30
+   40    CONTINUE
+*
+      ELSE
+*
+*        Compute inv(A) from the factorization A = L*D*L**T.
+*
+*        K is the main loop index, increasing from 1 to N in steps of
+*        1 or 2, depending on the size of the diagonal blocks.
+*
+         K = N
+   50    CONTINUE
+*
+*        If K < 1, exit from loop.
+*
+         IF( K.LT.1 )
+     $      GO TO 60
+*
+         IF( IPIV( K ).GT.0 ) THEN
+*
+*           1 x 1 diagonal block
+*
+*           Invert the diagonal block.
+*
+            A( K, K ) = ONE / A( K, K )
+*
+*           Compute column K of the inverse.
+*
+            IF( K.LT.N ) THEN
+               CALL SCOPY( N-K, A( K+1, K ), 1, WORK, 1 )
+               CALL SSYMV( UPLO, N-K, -ONE, A( K+1, K+1 ), LDA, WORK, 1,
+     $                     ZERO, A( K+1, K ), 1 )
+               A( K, K ) = A( K, K ) - SDOT( N-K, WORK, 1, A( K+1, K ),
+     $                     1 )
+            END IF
+            KSTEP = 1
+         ELSE
+*
+*           2 x 2 diagonal block
+*
+*           Invert the diagonal block.
+*
+            T = ABS( A( K, K-1 ) )
+            AK = A( K-1, K-1 ) / T
+            AKP1 = A( K, K ) / T
+            AKKP1 = A( K, K-1 ) / T
+            D = T*( AK*AKP1-ONE )
+            A( K-1, K-1 ) = AKP1 / D
+            A( K, K ) = AK / D
+            A( K, K-1 ) = -AKKP1 / D
+*
+*           Compute columns K-1 and K of the inverse.
+*
+            IF( K.LT.N ) THEN
+               CALL SCOPY( N-K, A( K+1, K ), 1, WORK, 1 )
+               CALL SSYMV( UPLO, N-K, -ONE, A( K+1, K+1 ), LDA, WORK, 1,
+     $                     ZERO, A( K+1, K ), 1 )
+               A( K, K ) = A( K, K ) - SDOT( N-K, WORK, 1, A( K+1, K ),
+     $                     1 )
+               A( K, K-1 ) = A( K, K-1 ) -
+     $                       SDOT( N-K, A( K+1, K ), 1, A( K+1, K-1 ),
+     $                       1 )
+               CALL SCOPY( N-K, A( K+1, K-1 ), 1, WORK, 1 )
+               CALL SSYMV( UPLO, N-K, -ONE, A( K+1, K+1 ), LDA, WORK, 1,
+     $                     ZERO, A( K+1, K-1 ), 1 )
+               A( K-1, K-1 ) = A( K-1, K-1 ) -
+     $                         SDOT( N-K, WORK, 1, A( K+1, K-1 ), 1 )
+            END IF
+            KSTEP = 2
+         END IF
+*
+         KP = ABS( IPIV( K ) )
+         IF( KP.NE.K ) THEN
+*
+*           Interchange rows and columns K and KP in the trailing
+*           submatrix A(k-1:n,k-1:n)
+*
+            IF( KP.LT.N )
+     $         CALL SSWAP( N-KP, A( KP+1, K ), 1, A( KP+1, KP ), 1 )
+            CALL SSWAP( KP-K-1, A( K+1, K ), 1, A( KP, K+1 ), LDA )
+            TEMP = A( K, K )
+            A( K, K ) = A( KP, KP )
+            A( KP, KP ) = TEMP
+            IF( KSTEP.EQ.2 ) THEN
+               TEMP = A( K, K-1 )
+               A( K, K-1 ) = A( KP, K-1 )
+               A( KP, K-1 ) = TEMP
+            END IF
+         END IF
+*
+         K = K - KSTEP
+         GO TO 50
+   60    CONTINUE
+      END IF
+*
+      RETURN
+*
+*     End of SSYTRI
+*
+      END
+*> \brief \b SPOCON
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SPOCON + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spocon.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spocon.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spocon.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SPOCON( UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK,
+*                          INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          UPLO
+*       INTEGER            INFO, LDA, N
+*       REAL               ANORM, RCOND
+*       ..
+*       .. Array Arguments ..
+*       INTEGER            IWORK( * )
+*       REAL               A( LDA, * ), WORK( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SPOCON estimates the reciprocal of the condition number (in the 
+*> 1-norm) of a real symmetric positive definite matrix using the
+*> Cholesky factorization A = U**T*U or A = L*L**T computed by SPOTRF.
+*>
+*> An estimate is obtained for norm(inv(A)), and the reciprocal of the
+*> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*>          = 'U':  Upper triangle of A is stored;
+*>          = 'L':  Lower triangle of A is stored.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The order of the matrix A.  N >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,N)
+*>          The triangular factor U or L from the Cholesky factorization
+*>          A = U**T*U or A = L*L**T, as computed by SPOTRF.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.  LDA >= max(1,N).
+*> \endverbatim
+*>
+*> \param[in] ANORM
+*> \verbatim
+*>          ANORM is REAL
+*>          The 1-norm (or infinity-norm) of the symmetric matrix A.
+*> \endverbatim
+*>
+*> \param[out] RCOND
+*> \verbatim
+*>          RCOND is REAL
+*>          The reciprocal of the condition number of the matrix A,
+*>          computed as RCOND = 1/(ANORM * AINVNM), where AINVNM is an
+*>          estimate of the 1-norm of inv(A) computed in this routine.
+*> \endverbatim
+*>
+*> \param[out] WORK
+*> \verbatim
+*>          WORK is REAL array, dimension (3*N)
+*> \endverbatim
+*>
+*> \param[out] IWORK
+*> \verbatim
+*>          IWORK is INTEGER array, dimension (N)
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup realPOcomputational
+*
+*  =====================================================================
+      SUBROUTINE SPOCON( UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK,
+     $                   INFO )
+*
+*  -- LAPACK computational routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      CHARACTER          UPLO
+      INTEGER            INFO, LDA, N
+      REAL               ANORM, RCOND
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IWORK( * )
+      REAL               A( LDA, * ), WORK( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            UPPER
+      CHARACTER          NORMIN
+      INTEGER            IX, KASE
+      REAL               AINVNM, SCALE, SCALEL, SCALEU, SMLNUM
+*     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      INTEGER            ISAMAX
+      REAL               SLAMCH
+      EXTERNAL           LSAME, ISAMAX, SLAMCH
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLACN2, SLATRS, SRSCL, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, MAX
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -4
+      ELSE IF( ANORM.LT.ZERO ) THEN
+         INFO = -5
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SPOCON', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      RCOND = ZERO
+      IF( N.EQ.0 ) THEN
+         RCOND = ONE
+         RETURN
+      ELSE IF( ANORM.EQ.ZERO ) THEN
+         RETURN
+      END IF
+*
+      SMLNUM = SLAMCH( 'Safe minimum' )
+*
+*     Estimate the 1-norm of inv(A).
+*
+      KASE = 0
+      NORMIN = 'N'
+   10 CONTINUE
+      CALL SLACN2( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE, ISAVE )
+      IF( KASE.NE.0 ) THEN
+         IF( UPPER ) THEN
+*
+*           Multiply by inv(U**T).
+*
+            CALL SLATRS( 'Upper', 'Transpose', 'Non-unit', NORMIN, N, A,
+     $                   LDA, WORK, SCALEL, WORK( 2*N+1 ), INFO )
+            NORMIN = 'Y'
+*
+*           Multiply by inv(U).
+*
+            CALL SLATRS( 'Upper', 'No transpose', 'Non-unit', NORMIN, N,
+     $                   A, LDA, WORK, SCALEU, WORK( 2*N+1 ), INFO )
+         ELSE
+*
+*           Multiply by inv(L).
+*
+            CALL SLATRS( 'Lower', 'No transpose', 'Non-unit', NORMIN, N,
+     $                   A, LDA, WORK, SCALEL, WORK( 2*N+1 ), INFO )
+            NORMIN = 'Y'
+*
+*           Multiply by inv(L**T).
+*
+            CALL SLATRS( 'Lower', 'Transpose', 'Non-unit', NORMIN, N, A,
+     $                   LDA, WORK, SCALEU, WORK( 2*N+1 ), INFO )
+         END IF
+*
+*        Multiply by 1/SCALE if doing so will not cause overflow.
+*
+         SCALE = SCALEL*SCALEU
+         IF( SCALE.NE.ONE ) THEN
+            IX = ISAMAX( N, WORK, 1 )
+            IF( SCALE.LT.ABS( WORK( IX ) )*SMLNUM .OR. SCALE.EQ.ZERO )
+     $         GO TO 20
+            CALL SRSCL( N, SCALE, WORK, 1 )
+         END IF
+         GO TO 10
+      END IF
+*
+*     Compute the estimate of the reciprocal condition number.
+*
+      IF( AINVNM.NE.ZERO )
+     $   RCOND = ( ONE / AINVNM ) / ANORM
+*
+   20 CONTINUE
+      RETURN
+*
+*     End of SPOCON
+*
+      END
+*> \brief \b SRSCL multiplies a vector by the reciprocal of a real scalar.
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SRSCL + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/srscl.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/srscl.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/srscl.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SRSCL( N, SA, SX, INCX )
+* 
+*       .. Scalar Arguments ..
+*       INTEGER            INCX, N
+*       REAL               SA
+*       ..
+*       .. Array Arguments ..
+*       REAL               SX( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SRSCL multiplies an n-element real vector x by the real scalar 1/a.
+*> This is done without overflow or underflow as long as
+*> the final result x/a does not overflow or underflow.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The number of components of the vector x.
+*> \endverbatim
+*>
+*> \param[in] SA
+*> \verbatim
+*>          SA is REAL
+*>          The scalar a which is used to divide each component of x.
+*>          SA must be >= 0, or the subroutine will divide by zero.
+*> \endverbatim
+*>
+*> \param[in,out] SX
+*> \verbatim
+*>          SX is REAL array, dimension
+*>                         (1+(N-1)*abs(INCX))
+*>          The n-element vector x.
+*> \endverbatim
+*>
+*> \param[in] INCX
+*> \verbatim
+*>          INCX is INTEGER
+*>          The increment between successive values of the vector SX.
+*>          > 0:  SX(1) = X(1) and SX(1+(i-1)*INCX) = x(i),     1< i<= n
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date September 2012
+*
+*> \ingroup realOTHERauxiliary
+*
+*  =====================================================================
+      SUBROUTINE SRSCL( N, SA, SX, INCX )
+*
+*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     September 2012
+*
+*     .. Scalar Arguments ..
+      INTEGER            INCX, N
+      REAL               SA
+*     ..
+*     .. Array Arguments ..
+      REAL               SX( * )
+*     ..
+*
+* =====================================================================
+*
+*     .. Parameters ..
+      REAL               ONE, ZERO
+      PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            DONE
+      REAL               BIGNUM, CDEN, CDEN1, CNUM, CNUM1, MUL, SMLNUM
+*     ..
+*     .. External Functions ..
+      REAL               SLAMCH
+      EXTERNAL           SLAMCH
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SLABAD, SSCAL
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS
+*     ..
+*     .. Executable Statements ..
+*
+*     Quick return if possible
+*
+      IF( N.LE.0 )
+     $   RETURN
+*
+*     Get machine parameters
+*
+      SMLNUM = SLAMCH( 'S' )
+      BIGNUM = ONE / SMLNUM
+      CALL SLABAD( SMLNUM, BIGNUM )
+*
+*     Initialize the denominator to SA and the numerator to 1.
+*
+      CDEN = SA
+      CNUM = ONE
+*
+   10 CONTINUE
+      CDEN1 = CDEN*SMLNUM
+      CNUM1 = CNUM / BIGNUM
+      IF( ABS( CDEN1 ).GT.ABS( CNUM ) .AND. CNUM.NE.ZERO ) THEN
+*
+*        Pre-multiply X by SMLNUM if CDEN is large compared to CNUM.
+*
+         MUL = SMLNUM
+         DONE = .FALSE.
+         CDEN = CDEN1
+      ELSE IF( ABS( CNUM1 ).GT.ABS( CDEN ) ) THEN
+*
+*        Pre-multiply X by BIGNUM if CDEN is small compared to CNUM.
+*
+         MUL = BIGNUM
+         DONE = .FALSE.
+         CNUM = CNUM1
+      ELSE
+*
+*        Multiply X by CNUM / CDEN and return.
+*
+         MUL = CNUM / CDEN
+         DONE = .TRUE.
+      END IF
+*
+*     Scale the vector X by MUL
+*
+      CALL SSCAL( N, MUL, SX, INCX )
+*
+      IF( .NOT.DONE )
+     $   GO TO 10
+*
+      RETURN
+*
+*     End of SRSCL
+*
+      END
+
+*> \brief \b SLATRS solves a triangular system of equations with the scale factor set to prevent overflow.
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SLATRS + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slatrs.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slatrs.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slatrs.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SLATRS( UPLO, TRANS, DIAG, NORMIN, N, A, LDA, X, SCALE,
+*                          CNORM, INFO )
+* 
+*       .. Scalar Arguments ..
+*       CHARACTER          DIAG, NORMIN, TRANS, UPLO
+*       INTEGER            INFO, LDA, N
+*       REAL               SCALE
+*       ..
+*       .. Array Arguments ..
+*       REAL               A( LDA, * ), CNORM( * ), X( * )
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SLATRS solves one of the triangular systems
+*>
+*>    A *x = s*b  or  A**T*x = s*b
+*>
+*> with scaling to prevent overflow.  Here A is an upper or lower
+*> triangular matrix, A**T denotes the transpose of A, x and b are
+*> n-element vectors, and s is a scaling factor, usually less than
+*> or equal to 1, chosen so that the components of x will be less than
+*> the overflow threshold.  If the unscaled problem will not cause
+*> overflow, the Level 2 BLAS routine STRSV is called.  If the matrix A
+*> is singular (A(j,j) = 0 for some j), then s is set to 0 and a
+*> non-trivial solution to A*x = 0 is returned.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in] UPLO
+*> \verbatim
+*>          UPLO is CHARACTER*1
+*>          Specifies whether the matrix A is upper or lower triangular.
+*>          = 'U':  Upper triangular
+*>          = 'L':  Lower triangular
+*> \endverbatim
+*>
+*> \param[in] TRANS
+*> \verbatim
+*>          TRANS is CHARACTER*1
+*>          Specifies the operation applied to A.
+*>          = 'N':  Solve A * x = s*b  (No transpose)
+*>          = 'T':  Solve A**T* x = s*b  (Transpose)
+*>          = 'C':  Solve A**T* x = s*b  (Conjugate transpose = Transpose)
+*> \endverbatim
+*>
+*> \param[in] DIAG
+*> \verbatim
+*>          DIAG is CHARACTER*1
+*>          Specifies whether or not the matrix A is unit triangular.
+*>          = 'N':  Non-unit triangular
+*>          = 'U':  Unit triangular
+*> \endverbatim
+*>
+*> \param[in] NORMIN
+*> \verbatim
+*>          NORMIN is CHARACTER*1
+*>          Specifies whether CNORM has been set or not.
+*>          = 'Y':  CNORM contains the column norms on entry
+*>          = 'N':  CNORM is not set on entry.  On exit, the norms will
+*>                  be computed and stored in CNORM.
+*> \endverbatim
+*>
+*> \param[in] N
+*> \verbatim
+*>          N is INTEGER
+*>          The order of the matrix A.  N >= 0.
+*> \endverbatim
+*>
+*> \param[in] A
+*> \verbatim
+*>          A is REAL array, dimension (LDA,N)
+*>          The triangular matrix A.  If UPLO = 'U', the leading n by n
+*>          upper triangular part of the array A contains the upper
+*>          triangular matrix, and the strictly lower triangular part of
+*>          A is not referenced.  If UPLO = 'L', the leading n by n lower
+*>          triangular part of the array A contains the lower triangular
+*>          matrix, and the strictly upper triangular part of A is not
+*>          referenced.  If DIAG = 'U', the diagonal elements of A are
+*>          also not referenced and are assumed to be 1.
+*> \endverbatim
+*>
+*> \param[in] LDA
+*> \verbatim
+*>          LDA is INTEGER
+*>          The leading dimension of the array A.  LDA >= max (1,N).
+*> \endverbatim
+*>
+*> \param[in,out] X
+*> \verbatim
+*>          X is REAL array, dimension (N)
+*>          On entry, the right hand side b of the triangular system.
+*>          On exit, X is overwritten by the solution vector x.
+*> \endverbatim
+*>
+*> \param[out] SCALE
+*> \verbatim
+*>          SCALE is REAL
+*>          The scaling factor s for the triangular system
+*>             A * x = s*b  or  A**T* x = s*b.
+*>          If SCALE = 0, the matrix A is singular or badly scaled, and
+*>          the vector x is an exact or approximate solution to A*x = 0.
+*> \endverbatim
+*>
+*> \param[in,out] CNORM
+*> \verbatim
+*>          CNORM is REAL array, dimension (N)
+*>
+*>          If NORMIN = 'Y', CNORM is an input argument and CNORM(j)
+*>          contains the norm of the off-diagonal part of the j-th column
+*>          of A.  If TRANS = 'N', CNORM(j) must be greater than or equal
+*>          to the infinity-norm, and if TRANS = 'T' or 'C', CNORM(j)
+*>          must be greater than or equal to the 1-norm.
+*>
+*>          If NORMIN = 'N', CNORM is an output argument and CNORM(j)
+*>          returns the 1-norm of the offdiagonal part of the j-th column
+*>          of A.
+*> \endverbatim
+*>
+*> \param[out] INFO
+*> \verbatim
+*>          INFO is INTEGER
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -k, the k-th argument had an illegal value
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date September 2012
+*
+*> \ingroup realOTHERauxiliary
+*
+*> \par Further Details:
+*  =====================
+*>
+*> \verbatim
+*>
+*>  A rough bound on x is computed; if that is less than overflow, STRSV
+*>  is called, otherwise, specific code is used which checks for possible
+*>  overflow or divide-by-zero at every operation.
+*>
+*>  A columnwise scheme is used for solving A*x = b.  The basic algorithm
+*>  if A is lower triangular is
+*>
+*>       x[1:n] := b[1:n]
+*>       for j = 1, ..., n
+*>            x(j) := x(j) / A(j,j)
+*>            x[j+1:n] := x[j+1:n] - x(j) * A[j+1:n,j]
+*>       end
+*>
+*>  Define bounds on the components of x after j iterations of the loop:
+*>     M(j) = bound on x[1:j]
+*>     G(j) = bound on x[j+1:n]
+*>  Initially, let M(0) = 0 and G(0) = max{x(i), i=1,...,n}.
+*>
+*>  Then for iteration j+1 we have
+*>     M(j+1) <= G(j) / | A(j+1,j+1) |
+*>     G(j+1) <= G(j) + M(j+1) * | A[j+2:n,j+1] |
+*>            <= G(j) ( 1 + CNORM(j+1) / | A(j+1,j+1) | )
+*>
+*>  where CNORM(j+1) is greater than or equal to the infinity-norm of
+*>  column j+1 of A, not counting the diagonal.  Hence
+*>
+*>     G(j) <= G(0) product ( 1 + CNORM(i) / | A(i,i) | )
+*>                  1<=i<=j
+*>  and
+*>
+*>     |x(j)| <= ( G(0) / |A(j,j)| ) product ( 1 + CNORM(i) / |A(i,i)| )
+*>                                   1<=i< j
+*>
+*>  Since |x(j)| <= M(j), we use the Level 2 BLAS routine STRSV if the
+*>  reciprocal of the largest M(j), j=1,..,n, is larger than
+*>  max(underflow, 1/overflow).
+*>
+*>  The bound on x(j) is also used to determine when a step in the
+*>  columnwise method can be performed without fear of overflow.  If
+*>  the computed bound is greater than a large constant, x is scaled to
+*>  prevent overflow, but if the bound overflows, x is set to 0, x(j) to
+*>  1, and scale to 0, and a non-trivial solution to A*x = 0 is found.
+*>
+*>  Similarly, a row-wise scheme is used to solve A**T*x = b.  The basic
+*>  algorithm for A upper triangular is
+*>
+*>       for j = 1, ..., n
+*>            x(j) := ( b(j) - A[1:j-1,j]**T * x[1:j-1] ) / A(j,j)
+*>       end
+*>
+*>  We simultaneously compute two bounds
+*>       G(j) = bound on ( b(i) - A[1:i-1,i]**T * x[1:i-1] ), 1<=i<=j
+*>       M(j) = bound on x(i), 1<=i<=j
+*>
+*>  The initial values are G(0) = 0, M(0) = max{b(i), i=1,..,n}, and we
+*>  add the constraint G(j) >= G(j-1) and M(j) >= M(j-1) for j >= 1.
+*>  Then the bound on x(j) is
+*>
+*>       M(j) <= M(j-1) * ( 1 + CNORM(j) ) / | A(j,j) |
+*>
+*>            <= M(0) * product ( ( 1 + CNORM(i) ) / |A(i,i)| )
+*>                      1<=i<=j
+*>
+*>  and we can safely call STRSV if 1/M(n) and 1/G(n) are both greater
+*>  than max(underflow, 1/overflow).
+*> \endverbatim
+*>
+*  =====================================================================
+      SUBROUTINE SLATRS( UPLO, TRANS, DIAG, NORMIN, N, A, LDA, X, SCALE,
+     $                   CNORM, INFO )
+*
+*  -- LAPACK auxiliary routine (version 3.4.2) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     September 2012
+*
+*     .. Scalar Arguments ..
+      CHARACTER          DIAG, NORMIN, TRANS, UPLO
+      INTEGER            INFO, LDA, N
+      REAL               SCALE
+*     ..
+*     .. Array Arguments ..
+      REAL               A( LDA, * ), CNORM( * ), X( * )
+*     ..
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      REAL               ZERO, HALF, ONE
+      PARAMETER          ( ZERO = 0.0E+0, HALF = 0.5E+0, ONE = 1.0E+0 )
+*     ..
+*     .. Local Scalars ..
+      LOGICAL            NOTRAN, NOUNIT, UPPER
+      INTEGER            I, IMAX, J, JFIRST, JINC, JLAST
+      REAL               BIGNUM, GROW, REC, SMLNUM, SUMJ, TJJ, TJJS,
+     $                   TMAX, TSCAL, USCAL, XBND, XJ, XMAX
+*     ..
+*     .. External Functions ..
+      LOGICAL            LSAME
+      INTEGER            ISAMAX
+      REAL               SASUM, SDOT, SLAMCH
+      EXTERNAL           LSAME, ISAMAX, SASUM, SDOT, SLAMCH
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           SAXPY, SSCAL, STRSV, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          ABS, MAX, MIN
+*     ..
+*     .. Executable Statements ..
+*
+      INFO = 0
+      UPPER = LSAME( UPLO, 'U' )
+      NOTRAN = LSAME( TRANS, 'N' )
+      NOUNIT = LSAME( DIAG, 'N' )
+*
+*     Test the input parameters.
+*
+      IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+         INFO = -1
+      ELSE IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) .AND. .NOT.
+     $         LSAME( TRANS, 'C' ) ) THEN
+         INFO = -2
+      ELSE IF( .NOT.NOUNIT .AND. .NOT.LSAME( DIAG, 'U' ) ) THEN
+         INFO = -3
+      ELSE IF( .NOT.LSAME( NORMIN, 'Y' ) .AND. .NOT.
+     $         LSAME( NORMIN, 'N' ) ) THEN
+         INFO = -4
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -5
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -7
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'SLATRS', -INFO )
+         RETURN
+      END IF
+*
+*     Quick return if possible
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+*     Determine machine dependent parameters to control overflow.
+*
+      SMLNUM = SLAMCH( 'Safe minimum' ) / SLAMCH( 'Precision' )
+      BIGNUM = ONE / SMLNUM
+      SCALE = ONE
+*
+      IF( LSAME( NORMIN, 'N' ) ) THEN
+*
+*        Compute the 1-norm of each column, not including the diagonal.
+*
+         IF( UPPER ) THEN
+*
+*           A is upper triangular.
+*
+            DO 10 J = 1, N
+               CNORM( J ) = SASUM( J-1, A( 1, J ), 1 )
+   10       CONTINUE
+         ELSE
+*
+*           A is lower triangular.
+*
+            DO 20 J = 1, N - 1
+               CNORM( J ) = SASUM( N-J, A( J+1, J ), 1 )
+   20       CONTINUE
+            CNORM( N ) = ZERO
+         END IF
+      END IF
+*
+*     Scale the column norms by TSCAL if the maximum element in CNORM is
+*     greater than BIGNUM.
+*
+      IMAX = ISAMAX( N, CNORM, 1 )
+      TMAX = CNORM( IMAX )
+      IF( TMAX.LE.BIGNUM ) THEN
+         TSCAL = ONE
+      ELSE
+         TSCAL = ONE / ( SMLNUM*TMAX )
+         CALL SSCAL( N, TSCAL, CNORM, 1 )
+      END IF
+*
+*     Compute a bound on the computed solution vector to see if the
+*     Level 2 BLAS routine STRSV can be used.
+*
+      J = ISAMAX( N, X, 1 )
+      XMAX = ABS( X( J ) )
+      XBND = XMAX
+      IF( NOTRAN ) THEN
+*
+*        Compute the growth in A * x = b.
+*
+         IF( UPPER ) THEN
+            JFIRST = N
+            JLAST = 1
+            JINC = -1
+         ELSE
+            JFIRST = 1
+            JLAST = N
+            JINC = 1
+         END IF
+*
+         IF( TSCAL.NE.ONE ) THEN
+            GROW = ZERO
+            GO TO 50
+         END IF
+*
+         IF( NOUNIT ) THEN
+*
+*           A is non-unit triangular.
+*
+*           Compute GROW = 1/G(j) and XBND = 1/M(j).
+*           Initially, G(0) = max{x(i), i=1,...,n}.
+*
+            GROW = ONE / MAX( XBND, SMLNUM )
+            XBND = GROW
+            DO 30 J = JFIRST, JLAST, JINC
+*
+*              Exit the loop if the growth factor is too small.
+*
+               IF( GROW.LE.SMLNUM )
+     $            GO TO 50
+*
+*              M(j) = G(j-1) / abs(A(j,j))
+*
+               TJJ = ABS( A( J, J ) )
+               XBND = MIN( XBND, MIN( ONE, TJJ )*GROW )
+               IF( TJJ+CNORM( J ).GE.SMLNUM ) THEN
+*
+*                 G(j) = G(j-1)*( 1 + CNORM(j) / abs(A(j,j)) )
+*
+                  GROW = GROW*( TJJ / ( TJJ+CNORM( J ) ) )
+               ELSE
+*
+*                 G(j) could overflow, set GROW to 0.
+*
+                  GROW = ZERO
+               END IF
+   30       CONTINUE
+            GROW = XBND
+         ELSE
+*
+*           A is unit triangular.
+*
+*           Compute GROW = 1/G(j), where G(0) = max{x(i), i=1,...,n}.
+*
+            GROW = MIN( ONE, ONE / MAX( XBND, SMLNUM ) )
+            DO 40 J = JFIRST, JLAST, JINC
+*
+*              Exit the loop if the growth factor is too small.
+*
+               IF( GROW.LE.SMLNUM )
+     $            GO TO 50
+*
+*              G(j) = G(j-1)*( 1 + CNORM(j) )
+*
+               GROW = GROW*( ONE / ( ONE+CNORM( J ) ) )
+   40       CONTINUE
+         END IF
+   50    CONTINUE
+*
+      ELSE
+*
+*        Compute the growth in A**T * x = b.
+*
+         IF( UPPER ) THEN
+            JFIRST = 1
+            JLAST = N
+            JINC = 1
+         ELSE
+            JFIRST = N
+            JLAST = 1
+            JINC = -1
+         END IF
+*
+         IF( TSCAL.NE.ONE ) THEN
+            GROW = ZERO
+            GO TO 80
+         END IF
+*
+         IF( NOUNIT ) THEN
+*
+*           A is non-unit triangular.
+*
+*           Compute GROW = 1/G(j) and XBND = 1/M(j).
+*           Initially, M(0) = max{x(i), i=1,...,n}.
+*
+            GROW = ONE / MAX( XBND, SMLNUM )
+            XBND = GROW
+            DO 60 J = JFIRST, JLAST, JINC
+*
+*              Exit the loop if the growth factor is too small.
+*
+               IF( GROW.LE.SMLNUM )
+     $            GO TO 80
+*
+*              G(j) = max( G(j-1), M(j-1)*( 1 + CNORM(j) ) )
+*
+               XJ = ONE + CNORM( J )
+               GROW = MIN( GROW, XBND / XJ )
+*
+*              M(j) = M(j-1)*( 1 + CNORM(j) ) / abs(A(j,j))
+*
+               TJJ = ABS( A( J, J ) )
+               IF( XJ.GT.TJJ )
+     $            XBND = XBND*( TJJ / XJ )
+   60       CONTINUE
+            GROW = MIN( GROW, XBND )
+         ELSE
+*
+*           A is unit triangular.
+*
+*           Compute GROW = 1/G(j), where G(0) = max{x(i), i=1,...,n}.
+*
+            GROW = MIN( ONE, ONE / MAX( XBND, SMLNUM ) )
+            DO 70 J = JFIRST, JLAST, JINC
+*
+*              Exit the loop if the growth factor is too small.
+*
+               IF( GROW.LE.SMLNUM )
+     $            GO TO 80
+*
+*              G(j) = ( 1 + CNORM(j) )*G(j-1)
+*
+               XJ = ONE + CNORM( J )
+               GROW = GROW / XJ
+   70       CONTINUE
+         END IF
+   80    CONTINUE
+      END IF
+*
+      IF( ( GROW*TSCAL ).GT.SMLNUM ) THEN
+*
+*        Use the Level 2 BLAS solve if the reciprocal of the bound on
+*        elements of X is not too small.
+*
+         CALL STRSV( UPLO, TRANS, DIAG, N, A, LDA, X, 1 )
+      ELSE
+*
+*        Use a Level 1 BLAS solve, scaling intermediate results.
+*
+         IF( XMAX.GT.BIGNUM ) THEN
+*
+*           Scale X so that its components are less than or equal to
+*           BIGNUM in absolute value.
+*
+            SCALE = BIGNUM / XMAX
+            CALL SSCAL( N, SCALE, X, 1 )
+            XMAX = BIGNUM
+         END IF
+*
+         IF( NOTRAN ) THEN
+*
+*           Solve A * x = b
+*
+            DO 100 J = JFIRST, JLAST, JINC
+*
+*              Compute x(j) = b(j) / A(j,j), scaling x if necessary.
+*
+               XJ = ABS( X( J ) )
+               IF( NOUNIT ) THEN
+                  TJJS = A( J, J )*TSCAL
+               ELSE
+                  TJJS = TSCAL
+                  IF( TSCAL.EQ.ONE )
+     $               GO TO 95
+               END IF
+                  TJJ = ABS( TJJS )
+                  IF( TJJ.GT.SMLNUM ) THEN
+*
+*                    abs(A(j,j)) > SMLNUM:
+*
+                     IF( TJJ.LT.ONE ) THEN
+                        IF( XJ.GT.TJJ*BIGNUM ) THEN
+*
+*                          Scale x by 1/b(j).
+*
+                           REC = ONE / XJ
+                           CALL SSCAL( N, REC, X, 1 )
+                           SCALE = SCALE*REC
+                           XMAX = XMAX*REC
+                        END IF
+                     END IF
+                     X( J ) = X( J ) / TJJS
+                     XJ = ABS( X( J ) )
+                  ELSE IF( TJJ.GT.ZERO ) THEN
+*
+*                    0 < abs(A(j,j)) <= SMLNUM:
+*
+                     IF( XJ.GT.TJJ*BIGNUM ) THEN
+*
+*                       Scale x by (1/abs(x(j)))*abs(A(j,j))*BIGNUM
+*                       to avoid overflow when dividing by A(j,j).
+*
+                        REC = ( TJJ*BIGNUM ) / XJ
+                        IF( CNORM( J ).GT.ONE ) THEN
+*
+*                          Scale by 1/CNORM(j) to avoid overflow when
+*                          multiplying x(j) times column j.
+*
+                           REC = REC / CNORM( J )
+                        END IF
+                        CALL SSCAL( N, REC, X, 1 )
+                        SCALE = SCALE*REC
+                        XMAX = XMAX*REC
+                     END IF
+                     X( J ) = X( J ) / TJJS
+                     XJ = ABS( X( J ) )
+                  ELSE
+*
+*                    A(j,j) = 0:  Set x(1:n) = 0, x(j) = 1, and
+*                    scale = 0, and compute a solution to A*x = 0.
+*
+                     DO 90 I = 1, N
+                        X( I ) = ZERO
+   90                CONTINUE
+                     X( J ) = ONE
+                     XJ = ONE
+                     SCALE = ZERO
+                     XMAX = ZERO
+                  END IF
+   95          CONTINUE
+*
+*              Scale x if necessary to avoid overflow when adding a
+*              multiple of column j of A.
+*
+               IF( XJ.GT.ONE ) THEN
+                  REC = ONE / XJ
+                  IF( CNORM( J ).GT.( BIGNUM-XMAX )*REC ) THEN
+*
+*                    Scale x by 1/(2*abs(x(j))).
+*
+                     REC = REC*HALF
+                     CALL SSCAL( N, REC, X, 1 )
+                     SCALE = SCALE*REC
+                  END IF
+               ELSE IF( XJ*CNORM( J ).GT.( BIGNUM-XMAX ) ) THEN
+*
+*                 Scale x by 1/2.
+*
+                  CALL SSCAL( N, HALF, X, 1 )
+                  SCALE = SCALE*HALF
+               END IF
+*
+               IF( UPPER ) THEN
+                  IF( J.GT.1 ) THEN
+*
+*                    Compute the update
+*                       x(1:j-1) := x(1:j-1) - x(j) * A(1:j-1,j)
+*
+                     CALL SAXPY( J-1, -X( J )*TSCAL, A( 1, J ), 1, X,
+     $                           1 )
+                     I = ISAMAX( J-1, X, 1 )
+                     XMAX = ABS( X( I ) )
+                  END IF
+               ELSE
+                  IF( J.LT.N ) THEN
+*
+*                    Compute the update
+*                       x(j+1:n) := x(j+1:n) - x(j) * A(j+1:n,j)
+*
+                     CALL SAXPY( N-J, -X( J )*TSCAL, A( J+1, J ), 1,
+     $                           X( J+1 ), 1 )
+                     I = J + ISAMAX( N-J, X( J+1 ), 1 )
+                     XMAX = ABS( X( I ) )
+                  END IF
+               END IF
+  100       CONTINUE
+*
+         ELSE
+*
+*           Solve A**T * x = b
+*
+            DO 140 J = JFIRST, JLAST, JINC
+*
+*              Compute x(j) = b(j) - sum A(k,j)*x(k).
+*                                    k<>j
+*
+               XJ = ABS( X( J ) )
+               USCAL = TSCAL
+               REC = ONE / MAX( XMAX, ONE )
+               IF( CNORM( J ).GT.( BIGNUM-XJ )*REC ) THEN
+*
+*                 If x(j) could overflow, scale x by 1/(2*XMAX).
+*
+                  REC = REC*HALF
+                  IF( NOUNIT ) THEN
+                     TJJS = A( J, J )*TSCAL
+                  ELSE
+                     TJJS = TSCAL
+                  END IF
+                     TJJ = ABS( TJJS )
+                     IF( TJJ.GT.ONE ) THEN
+*
+*                       Divide by A(j,j) when scaling x if A(j,j) > 1.
+*
+                        REC = MIN( ONE, REC*TJJ )
+                        USCAL = USCAL / TJJS
+                     END IF
+                  IF( REC.LT.ONE ) THEN
+                     CALL SSCAL( N, REC, X, 1 )
+                     SCALE = SCALE*REC
+                     XMAX = XMAX*REC
+                  END IF
+               END IF
+*
+               SUMJ = ZERO
+               IF( USCAL.EQ.ONE ) THEN
+*
+*                 If the scaling needed for A in the dot product is 1,
+*                 call SDOT to perform the dot product.
+*
+                  IF( UPPER ) THEN
+                     SUMJ = SDOT( J-1, A( 1, J ), 1, X, 1 )
+                  ELSE IF( J.LT.N ) THEN
+                     SUMJ = SDOT( N-J, A( J+1, J ), 1, X( J+1 ), 1 )
+                  END IF
+               ELSE
+*
+*                 Otherwise, use in-line code for the dot product.
+*
+                  IF( UPPER ) THEN
+                     DO 110 I = 1, J - 1
+                        SUMJ = SUMJ + ( A( I, J )*USCAL )*X( I )
+  110                CONTINUE
+                  ELSE IF( J.LT.N ) THEN
+                     DO 120 I = J + 1, N
+                        SUMJ = SUMJ + ( A( I, J )*USCAL )*X( I )
+  120                CONTINUE
+                  END IF
+               END IF
+*
+               IF( USCAL.EQ.TSCAL ) THEN
+*
+*                 Compute x(j) := ( x(j) - sumj ) / A(j,j) if 1/A(j,j)
+*                 was not used to scale the dotproduct.
+*
+                  X( J ) = X( J ) - SUMJ
+                  XJ = ABS( X( J ) )
+                  IF( NOUNIT ) THEN
+                     TJJS = A( J, J )*TSCAL
+                  ELSE
+                     TJJS = TSCAL
+                     IF( TSCAL.EQ.ONE )
+     $                  GO TO 135
+                  END IF
+*
+*                    Compute x(j) = x(j) / A(j,j), scaling if necessary.
+*
+                     TJJ = ABS( TJJS )
+                     IF( TJJ.GT.SMLNUM ) THEN
+*
+*                       abs(A(j,j)) > SMLNUM:
+*
+                        IF( TJJ.LT.ONE ) THEN
+                           IF( XJ.GT.TJJ*BIGNUM ) THEN
+*
+*                             Scale X by 1/abs(x(j)).
+*
+                              REC = ONE / XJ
+                              CALL SSCAL( N, REC, X, 1 )
+                              SCALE = SCALE*REC
+                              XMAX = XMAX*REC
+                           END IF
+                        END IF
+                        X( J ) = X( J ) / TJJS
+                     ELSE IF( TJJ.GT.ZERO ) THEN
+*
+*                       0 < abs(A(j,j)) <= SMLNUM:
+*
+                        IF( XJ.GT.TJJ*BIGNUM ) THEN
+*
+*                          Scale x by (1/abs(x(j)))*abs(A(j,j))*BIGNUM.
+*
+                           REC = ( TJJ*BIGNUM ) / XJ
+                           CALL SSCAL( N, REC, X, 1 )
+                           SCALE = SCALE*REC
+                           XMAX = XMAX*REC
+                        END IF
+                        X( J ) = X( J ) / TJJS
+                     ELSE
+*
+*                       A(j,j) = 0:  Set x(1:n) = 0, x(j) = 1, and
+*                       scale = 0, and compute a solution to A**T*x = 0.
+*
+                        DO 130 I = 1, N
+                           X( I ) = ZERO
+  130                   CONTINUE
+                        X( J ) = ONE
+                        SCALE = ZERO
+                        XMAX = ZERO
+                     END IF
+  135             CONTINUE
+               ELSE
+*
+*                 Compute x(j) := x(j) / A(j,j)  - sumj if the dot
+*                 product has already been divided by 1/A(j,j).
+*
+                  X( J ) = X( J ) / TJJS - SUMJ
+               END IF
+               XMAX = MAX( XMAX, ABS( X( J ) ) )
+  140       CONTINUE
+         END IF
+         SCALE = SCALE / TSCAL
+      END IF
+*
+*     Scale the column norms by 1/TSCAL for return.
+*
+      IF( TSCAL.NE.ONE ) THEN
+         CALL SSCAL( N, ONE / TSCAL, CNORM, 1 )
+      END IF
+*
+      RETURN
+*
+*     End of SLATRS
+*
+      END
+*> \brief \b SLABAD
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at 
+*            http://www.netlib.org/lapack/explore-html/ 
+*
+*> \htmlonly
+*> Download SLABAD + dependencies 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slabad.f"> 
+*> [TGZ]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slabad.f"> 
+*> [ZIP]</a> 
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slabad.f"> 
+*> [TXT]</a>
+*> \endhtmlonly 
+*
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE SLABAD( SMALL, LARGE )
+* 
+*       .. Scalar Arguments ..
+*       REAL               LARGE, SMALL
+*       ..
+*  
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> SLABAD takes as input the values computed by SLAMCH for underflow and
+*> overflow, and returns the square root of each of these values if the
+*> log of LARGE is sufficiently large.  This subroutine is intended to
+*> identify machines with a large exponent range, such as the Crays, and
+*> redefine the underflow and overflow limits to be the square roots of
+*> the values computed by SLAMCH.  This subroutine is needed because
+*> SLAMCH does not compensate for poor arithmetic in the upper half of
+*> the exponent range, as is found on a Cray.
+*> \endverbatim
+*
+*  Arguments:
+*  ==========
+*
+*> \param[in,out] SMALL
+*> \verbatim
+*>          SMALL is REAL
+*>          On entry, the underflow threshold as computed by SLAMCH.
+*>          On exit, if LOG10(LARGE) is sufficiently large, the square
+*>          root of SMALL, otherwise unchanged.
+*> \endverbatim
+*>
+*> \param[in,out] LARGE
+*> \verbatim
+*>          LARGE is REAL
+*>          On entry, the overflow threshold as computed by SLAMCH.
+*>          On exit, if LOG10(LARGE) is sufficiently large, the square
+*>          root of LARGE, otherwise unchanged.
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee 
+*> \author Univ. of California Berkeley 
+*> \author Univ. of Colorado Denver 
+*> \author NAG Ltd. 
+*
+*> \date November 2011
+*
+*> \ingroup auxOTHERauxiliary
+*
+*  =====================================================================
+      SUBROUTINE SLABAD( SMALL, LARGE )
+*
+*  -- LAPACK auxiliary routine (version 3.4.0) --
+*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2011
+*
+*     .. Scalar Arguments ..
+      REAL               LARGE, SMALL
+*     ..
+*
+*  =====================================================================
+*
+*     .. Intrinsic Functions ..
+      INTRINSIC          LOG10, SQRT
+*     ..
+*     .. Executable Statements ..
+*
+*     If it looks like we're on a Cray, take the square root of
+*     SMALL and LARGE to avoid overflow and underflow problems.
+*
+      IF( LOG10( LARGE ).GT.2000. ) THEN
+         SMALL = SQRT( SMALL )
+         LARGE = SQRT( LARGE )
+      END IF
+*
+      RETURN
+*
+*     End of SLABAD
+*
+      END
 	  
 #endif
