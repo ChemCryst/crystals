@@ -920,7 +920,7 @@ Inter cycle Min function          0.0           0.36E+05       0.10E+16
                       0.0000            0.0031   0.0025   0.0055   0.0193   0.0146   0.0443   0.0208   0.0237   0.0141
                                         0.0340   0.0234   0.0483
 
-     C         13.    1.0000   0.0000  -0.1588  -0.2947   0.0425   0.7145   0.5027   0.1140  -0.1203   0.1975  -0.5433
+     C         13.    1.0000   0.0000  -0.1588  -0.2947   0.0425   0.7145   0.5026   0.1140  -0.1203   0.1975  -0.5433
                       0.0000            0.0048  -0.0034   0.0002   0.0604   0.0399  -0.0003   0.0023   0.0061  -0.0435
                       0.0000            0.0076   0.0065   0.0054   0.1093   0.0799   0.0274   0.0377   0.0485   0.0854
                                         0.0842   0.0613   0.0473
@@ -1048,7 +1048,7 @@ Mean C-C su =   0.0280
  The following atoms should be carefully examined 
  C      11.    0.0507    0.0947    0.4469    0.1974    0.1289    0.8351    Might be split                                                                                                                                                                       
  C      12.    0.0286    0.1163    0.5105    0.2185    0.1192    2.0780    Might be split                                                                                                                                                                       
- C      13.    0.0431    0.0786    1.5073    0.5430    0.1722    2.7494    Might be split                                                                                                                                                                       
+ C      13.    0.0431    0.0786    1.5073    0.5430    0.1722    2.7493    Might be split                                                                                                                                                                       
  C      14.    0.0501    0.1174    0.8475    0.3384    0.1709    1.9849    Might be split                                                                                                                                                                       
  C      15.    0.0283    0.1034    0.7067    0.2794    0.1274    2.5838    Might be split                                                                                                                                                                       
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -1506,7 +1506,7 @@ LS-scale=  6.258   Wilson Scale=  0.000
  SRATIO   28          28            0.0010     -0.2E+03    0.110E-01          0.09        C      2 U[12]   
  SRATIO   48          48           -0.0001     -0.7E+01    0.250E-02         -0.02        C      5 Y       
  SRATIO   64          64            0.0009     -0.3E+02    0.282E-01          0.03        C     11 U[12]   
- SRATIO   67          67            0.0002      0.8E+03    0.549E-02          0.04        C     12 Z       
+ SRATIO   67          67            0.0002      0.7E+03    0.549E-02          0.04        C     12 Z       
  SRATIO   68          68            0.0005     -0.3E+01    0.197E-01          0.03        C     12 U[11]   
  SRATIO   72          72            0.0006     -0.7E+01    0.238E-01          0.02        C     12 U[13]   
  SRATIO   76          76           -0.0003     -0.5E+01    0.555E-02         -0.05        C     13 Z       
@@ -2801,7 +2801,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 
      C         14.    1.0000   0.0000  -0.3526   0.0089  -0.1277   0.1589   0.3036   0.5990  -0.2863   0.2568  -0.0726
                       0.0000           -0.0008  -0.0008   0.0003   0.0047  -0.0111   0.0216   0.0015   0.0100   0.0002
-                      0.0000            0.0041   0.0052   0.0088   0.0315   0.0600   0.0961   0.0660   0.0510   0.0345
+                      0.0000            0.0041   0.0052   0.0088   0.0315   0.0600   0.0961   0.0660   0.0511   0.0345
                                         0.0457   0.0497   0.0769
 
      C         15.    1.0000   0.0000  -0.2688   0.1222  -0.3956   0.1440   0.0975   0.2296   0.0870  -0.0764   0.0169
@@ -3022,7 +3022,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
  SRATIO  207         207            0.0002      0.9E+01    0.114E-01          0.02        C    117 U[13]   
  SRATIO  221         221            0.0011      0.2E+03    0.138E-01          0.08        C    119 U[11]   
  SRATIO  228         228            0.0001      0.4E+01    0.216E-02          0.05        C    120 Y       
- SRATIO  241         241           -0.0006     -0.4E+01    0.165E-01         -0.04        C    121 U[33]   
+ SRATIO  241         241           -0.0006     -0.5E+01    0.165E-01         -0.04        C    121 U[33]   
  SRATIO  293         293            0.0001     -0.4E+01    0.790E-02          0.01        N    102 U[11]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              1.
@@ -3400,7 +3400,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
  SRATIO  280         280            0.0001      0.4E+01    0.678E-02          0.02        O    109 U[12]   
  SRATIO  283         283            0.0000      0.1E+02    0.150E-02          0.00        O    111 Z       
  SRATIO  294         294            0.0000      0.3E+01    0.724E-02          0.00        N    102 U[22]   
- SRATIO  298         298            0.0000      0.5E+02    0.603E-02          0.00        N    102 U[12]   
+ SRATIO  298         298            0.0000      0.4E+02    0.603E-02          0.00        N    102 U[12]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for         298 parameters
@@ -3416,7 +3416,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 Inter cycle R-factor             -5.0           0.31E-02       0.10E+03
 Inter cycle Rw                   -5.0           0.12E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.20E-01       0.10E+05
-Inter cycle Min function          0.0            22.           0.10E+16
+Inter cycle Min function          0.0            21.           0.10E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3725,7 +3725,7 @@ Mean C-C su =   0.0273
  New scale factor (G) is      6.251,    2803 reflections used in refinement
 
  Structure factor least squares calculation   12  ends  2
-SumFo/SumFc=  6.245   SumFoFc/SumFc^2=  6.261   SumwFoFc/SumwFc^2=  6.229                                                                                                                                                                                       
+SumFo/SumFc=  6.245   SumFoFc/SumFc^2=  6.261   SumwFoFc/SumwFc^2=  6.228                                                                                                                                                                                       
 LS-scale=  6.251   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.10                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -3771,7 +3771,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
  SRATIO  244         244            0.0001      0.4E+01    0.908E-02          0.01        C    121 U[12]   
  SRATIO  249         249           -0.0001     -0.3E+01    0.933E-02         -0.01        C    122 U[22]   
  SRATIO  255         255            0.0000     -0.8E+01    0.215E-02         -0.01        C    123 Y       
- SRATIO  260         260            0.0000     -0.2E+02    0.117E-01          0.00        C    123 U[23]   
+ SRATIO  260         260            0.0000     -0.3E+02    0.117E-01          0.00        C    123 U[23]   
  SRATIO  273         273            0.0000      0.5E+01    0.129E-02          0.00        O    109 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.

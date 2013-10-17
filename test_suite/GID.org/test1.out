@@ -3067,7 +3067,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =            321.
                                                 for          55 parameters
                                  The rms (shift/su)  =           2.417
-                              The mean abs(shift/su) =           1.391
+                              The mean abs(shift/su) =           1.390
  The largest (shift/esd) =     10.90, for Parameter   22, C4U[11]
 
                                 Min          Actual           Max
@@ -5542,7 +5542,7 @@ Inter cycle Min function          0.0            1.5           0.10E+16
 
 
  Maximum        0.00   0.0000   0.0001   0.0001   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.0005   0.0003   0.0009
+                                         0.0005   0.0003   0.0008
 
  Reversals     0.00     0.00   100.00    27.27    45.45    90.91     0.00     0.00     0.00     0.00     0.00     0.00
 
@@ -6541,8 +6541,8 @@ Bonds: Update required - List5 length change
 
    1   C         1.      1   1    0    0    0
    2   C        11.      1   1    0    0    0      61.41
-   3   H       101.      1   1    0    0    0     119.77  119.77
-   4   H       102.      1   1    0    0    0     119.76  119.77  109.47
+   3   H       101.      1   1    0    0    0     119.76  119.76
+   4   H       102.      1   1    0    0    0     119.77  119.77  109.47
 
   KEY                                                1       2       3
 
