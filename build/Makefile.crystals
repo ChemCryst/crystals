@@ -17,7 +17,7 @@ WEBFILES = $(notdir $(wildcard $(WEBCTRLDIR)/*.cpp))
 FSLEEFFILES = $(notdir $(wildcard $(SLEEFDIR)/*.f90))
 CSLEEFFILES = $(notdir $(wildcard $(SLEEFDIR)/*.c))
 
-FOBJ     =  $(patsubst %.o, obj/%.o,  $(notdir $(CAMFILES:.F=.o) $(CRYFILES90:.f90=.o) $(CRYFILES:.F=.o)) )
+FOBJ     =  $(patsubst %.o, obj/%.o,  $(notdir $(CAMFILES:.F=.o) $(CRYFILES90:.F90=.o) $(CRYFILES:.F=.o)) )
 ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))

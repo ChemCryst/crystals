@@ -35,7 +35,7 @@ else
     F77 = gfortran
     F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
     F90FLAGS = -fno-sign-zero -ffast-math -ftree-vectorize -msse2 -I../crystals/ 
-    LDFLAGS = -lopenblas
+    LDFLAGS = -lGL -lstdc++ -ldl -lGLU -lopenblaso
     OPT = -g -O2
 
     INSTALL=/usr/bin/install
@@ -96,6 +96,9 @@ else
 endif
 
 obj/%.o : %.f90
+	$(F77) -c $(F90FLAGS) $(OPT) -o $@ $<
+
+obj/%.o : %.F90
 	$(F77) -c $(F90FLAGS) $(OPT) -o $@ $<
 
 obj/%.o : %.F
