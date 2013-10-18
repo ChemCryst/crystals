@@ -6541,7 +6541,7 @@ Bonds: Update required - List5 length change
 
    1   C         1.      1   1    0    0    0
    2   C        11.      1   1    0    0    0      61.41
-   3   H       101.      1   1    0    0    0     119.77  119.76
+   3   H       101.      1   1    0    0    0     119.77  119.77
    4   H       102.      1   1    0    0    0     119.76  119.77  109.47
 
   KEY                                                1       2       3
@@ -8897,7 +8897,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.56E-01       0.10E+05
 All cycle   Min function          0.0           0.77E+04       0.10E+16
 Inter cycle R-factor             -5.0           0.19           0.10E+03
-Inter cycle Rw                   -5.0           0.11           0.10E+03
+Inter cycle Rw                   -5.0           0.12           0.10E+03
 Inter cycle shift/esd            -10.           0.33           0.10E+05
 Inter cycle Min function          0.0            51.           0.10E+16
 
@@ -13226,7 +13226,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      7566.          7483.            777.                                   On scale of /FC/
+      7567.          7483.            777.                                   On scale of /FC/
 
      12019.         11888.           1234.               0.4613E+04          On scale of /FO/
 
