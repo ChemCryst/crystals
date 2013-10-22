@@ -9,7 +9,6 @@
 #SET MONITOR OFF                                                                                                                                                                                                                                                
 # DJW JUN09                                                                                                                                                                                                                                                     
 #LIST 13                                                                                                                                                                                                                                                        
-Bonds: Update required - There is no list 41
 #COMPOSITION                                                                                                                                                                                                                                                    
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 29                                                                                                                                                                                                                                                        
@@ -113,7 +112,6 @@ Space group symbol is   P    -1
 
            H         21.0    1.00000        1.    0.6023    0.6702    0.0677    0.0600
  List now contains    39 atoms
-Bonds: Update required - List5 length change
 #DISP HI                                                                                                                                                                                                                                                        
  Summary of contents of list  5 - Parameters
  There are no layer, element, or batch scales                                                                                                                                                                                                                   
@@ -164,12 +162,14 @@ Bonds: Update required - List5 length change
    H  12 1.00 0.936 0.024-0.107 1 0.082 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
    H  21 1.00 0.602 0.670 0.068 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
 #EDIT                                                                                                                                                                                                                                                           
+#BONDCALC                                                                                                                                                                                                                                                       
+Bonds: Update required - There is no list 41
+#EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be selected                                                                                                                                                                                                                         
     O   2      N   1      C   1      S   1      O   1      C   2      C   3
     C   4      C   5      C   6      C   7      C   8      C   9      C  10
     C  11      C  12      C  13      C  14
  List   5 now contains     18 atom(s)
-Bonds: Update required - List5 length change
 # NOTE THAT THE PHENYL GROUP IS REALLY BONDED TO C1                                                                                                                                                                                                             
 #PERHYDRO                                                                                                                                                                                                                                                       
            Per-hydrogenation of Carbon atoms
@@ -266,7 +266,6 @@ H33 C(14) C(11) C(10)
            H        142.0    1.00000        1.   -0.2837    1.0109    0.4658    0.1092
            H        143.0    1.00000        1.   -0.3187    0.8585    0.5931    0.1092
  List now contains    32 atoms
-Bonds: Update required - List5 length change
 #FINI                                                                                                                                                                                                                                                           
 
 

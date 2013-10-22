@@ -38,7 +38,6 @@
 # PUNCHED ON  5-OCT84 AT 16:49:57                                                                                                                                                                                                                               
 #                                                                                                                                                                                                                                                               
 #LIST 5                                                                                                                                                                                                                                                         
-Bonds: Update required - There is no list 41
 #LIST 3                                                                                                                                                                                                                                                         
 #LIST 23                                                                                                                                                                                                                                                        
 #LIST 12                                                                                                                                                                                                                                                        
@@ -47,6 +46,9 @@ Bonds: Update required - There is no list 41
 #LIST  16                                                                                                                                                                                                                                                       
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
+#LIST 26                                                                                                                                                                                                                                                        
+#BONDCALC                                                                                                                                                                                                                                                       
+Bonds: Update required - There is no list 41
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
@@ -114,7 +116,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3906E-03          On scale of /FO/
+       237.           237.              0.               0.3908E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -144,14 +146,14 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-                                 The rms (shift/su)  =           0.245
-                              The mean abs(shift/su) =           0.245
- The largest (shift/esd) =      0.24, for Parameter    1,                      
+                                 The rms (shift/su)  =           0.246
+                              The mean abs(shift/su) =           0.246
+ The largest (shift/esd) =      0.25, for Parameter    1,                      
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
 All cycle   Rw                    0.0           0.49E-01       0.10E+03
-All cycle   shift/esd            0.30E-01       0.24           0.10E+05
+All cycle   shift/esd            0.30E-01       0.25           0.10E+05
 All cycle   Min function          0.0           0.39E-03       0.10E+16
 
 
@@ -183,7 +185,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  R.M.S.         0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- RMS sh/esd     0.24     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+ RMS sh/esd     0.25     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
 
 
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
@@ -264,7 +266,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3887E-03          On scale of /FO/
+       237.           237.              0.               0.3888E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -297,7 +299,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
 All cycle   Rw                    0.0           0.49E-01       0.10E+03
-All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.38E-05       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -590,7 +592,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3886E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -635,7 +637,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
- Minimisation function              0.388E-03         0.000E+00         0.388E-03
+ Minimisation function              0.389E-03         0.000E+00         0.389E-03
  Hamilton weighted R-value           0.049             0.000             0.049
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -755,7 +757,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3906E-03          On scale of /FO/
+       237.           237.              0.               0.3908E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -785,14 +787,14 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-                                 The rms (shift/su)  =           0.245
-                              The mean abs(shift/su) =           0.245
- The largest (shift/esd) =      0.24, for Parameter    1, POLARITY
+                                 The rms (shift/su)  =           0.246
+                              The mean abs(shift/su) =           0.246
+ The largest (shift/esd) =      0.25, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
 All cycle   Rw                    0.0           0.49E-01       0.10E+03
-All cycle   shift/esd            0.30E-01       0.24           0.10E+05
+All cycle   shift/esd            0.30E-01       0.25           0.10E+05
 All cycle   Min function          0.0           0.39E-03       0.10E+16
 
 
@@ -824,7 +826,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  R.M.S.         0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- RMS sh/esd     0.24     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+ RMS sh/esd     0.25     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
 
 
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
@@ -905,7 +907,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3887E-03          On scale of /FO/
+       237.           237.              0.               0.3888E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -938,7 +940,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
 All cycle   Rw                    0.0           0.49E-01       0.10E+03
-All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.38E-05       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -1231,7 +1233,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3886E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1276,7 +1278,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
- Minimisation function              0.388E-03         0.000E+00         0.388E-03
+ Minimisation function              0.389E-03         0.000E+00         0.389E-03
  Hamilton weighted R-value           0.049             0.000             0.049
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1397,7 +1399,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3906E-03          On scale of /FO/
+       237.           237.              0.               0.3908E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1428,18 +1430,18 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1            -0.001      0.0E+00    0.404E-02         -0.24                          POLARITY
+ LARGE     1           1            -0.001      0.0E+00    0.404E-02         -0.25                          POLARITY
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-                                 The rms (shift/su)  =           0.245
-                              The mean abs(shift/su) =           0.245
- The largest (shift/esd) =      0.24, for Parameter    1, POLARITY
+                                 The rms (shift/su)  =           0.246
+                              The mean abs(shift/su) =           0.246
+ The largest (shift/esd) =      0.25, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
 All cycle   Rw                    0.0           0.49E-01       0.10E+03
-All cycle   shift/esd            0.30E-01       0.24           0.10E+05
+All cycle   shift/esd            0.30E-01       0.25           0.10E+05
 All cycle   Min function          0.0           0.39E-03       0.10E+16
 
 
@@ -1471,7 +1473,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  R.M.S.         0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- RMS sh/esd     0.24     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+ RMS sh/esd     0.25     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
 
 
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
@@ -1552,7 +1554,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3887E-03          On scale of /FO/
+       237.           237.              0.               0.3888E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1585,7 +1587,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
 All cycle   Rw                    0.0           0.49E-01       0.10E+03
-All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.38E-05       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -1878,7 +1880,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3886E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1928,7 +1930,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
- Minimisation function              0.388E-03         0.000E+00         0.388E-03
+ Minimisation function              0.389E-03         0.000E+00         0.389E-03
  Hamilton weighted R-value           0.049             0.000             0.049
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2049,7 +2051,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3906E-03          On scale of /FO/
+       237.           237.              0.               0.3908E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2205,7 +2207,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3884E-03          On scale of /FO/
+       237.           237.              0.               0.3885E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2238,7 +2240,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
 All cycle   Rw                    0.0           0.49E-01       0.10E+03
-All cycle   shift/esd            0.30E-01       0.93E-05       0.10E+05
+All cycle   shift/esd            0.30E-01       0.15E-03       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -2531,7 +2533,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.4967E-03          On scale of /FO/
+       237.           237.              0.               0.4968E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2562,8 +2564,8 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             10.
                                                 for           1 parameters
-                                 The rms (shift/su)  =           3.134
-                              The mean abs(shift/su) =           3.134
+                                 The rms (shift/su)  =           3.133
+                              The mean abs(shift/su) =           3.133
  The largest (shift/esd) =      3.13, for Parameter    1, ENANTIO
 
                                 Min          Actual           Max
@@ -3171,7 +3173,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7118E-03          On scale of /FO/
+       237.           237.              0.               0.7120E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3823,7 +3825,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7097E-03          On scale of /FO/
+       237.           237.              0.               0.7099E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 

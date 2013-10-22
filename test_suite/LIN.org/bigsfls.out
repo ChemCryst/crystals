@@ -42,7 +42,6 @@ Space group symbol is   P    -1
 # PUNCHED ON 28/01/11 AT 14:14:55                                                                                                                                                                                                                               
 #                                                                                                                                                                                                                                                               
 #LIST      5                                                                                                                                                                                                                                                    
-Bonds: Update required - There is no list 41
 #DISK                                                                                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
 # PUNCHED ON 16-JAN87 AT 15:59:13                                                                                                                                                                                                                               
@@ -70,7 +69,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
- Print list type    22     serial number        1     Address   439956     Length    7131     Created on      
+ Print list type    22     serial number        1     Address   437135     Length    7131     Created on      
 
             206 parameter(s) in    1 block(s) - as follows:
 
@@ -1396,6 +1395,9 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Disc index completely restored
 
  Listing of file index of    Data    file 
+#LIST 26                                                                                                                                                                                                                                                        
+#BONDCALC                                                                                                                                                                                                                                                       
+Bonds: Update required - There is no list 41
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
@@ -2898,7 +2900,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
      F          2.    1.0000   0.0000   0.5156  -0.1467   0.2046   0.1369   0.2200   0.1491  -0.0725  -0.0769   0.0132
                       0.0000            0.0000   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0001   0.0001   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                        0.0015   0.0013   0.0026
+                                        0.0014   0.0013   0.0026
 
      F          3.    1.0000   0.0000   0.6773  -0.1916   0.1590   0.1627   0.1581   0.1029  -0.0540  -0.0024  -0.0092
                       0.0000            0.0000   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
@@ -3490,7 +3492,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
 
  Maximum        0.00   0.0000   0.0000   0.0120   0.0099   0.0107   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.1749   0.1554   0.2007
+                                         0.1749   0.1553   0.2007
 
  Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
 
@@ -4024,7 +4026,7 @@ Mean C-C su =   0.0129
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-    767592.        763200.          32072.                                   On scale of /FC/
+    767592.        763199.          32072.                                   On scale of /FC/
 
     697942.        693948.          29162.               0.1595E+06          On scale of /FO/
 
@@ -4694,11 +4696,11 @@ SumFo/SumFc=  0.914   SumFoFc/SumFc^2=  0.913   SumwFoFc/SumwFc^2=  0.913
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =     0.55                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      11964 Physical writes      10101 Cache hits     208023
- Cache hit distribution   188941   13268    2054     484     465     375
- Cache hit distribution      196     219     223     225     160     161
- Cache hit distribution      192     102     197      93     194     139
- Cache hit distribution       53      51      47      39      91      54
+ Physical reads      10990 Physical writes      10071 Cache hits     196983
+ Cache hit distribution   179140   12747    1982     490     474     175
+ Cache hit distribution      160     201     217     280     154     161
+ Cache hit distribution      175     127     118      49      48      75
+ Cache hit distribution       49      47      41      19      21      33
 
 
           : Job ends ok       with     0 warnings and     0 errors

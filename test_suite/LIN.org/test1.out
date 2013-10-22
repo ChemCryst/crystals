@@ -44,7 +44,6 @@ Space group symbol is   P    21   21   21
 #                                                                                                                                                                                                                                                               
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
-Bonds: Update required - There is no list 41
 #LIST 4                                                                                                                                                                                                                                                         
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
@@ -305,6 +304,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS                                                                                                                                                                                                                                                           
 #CLEAR 17                                                                                                                                                                                                                                                       
 #LIST  17                                                                                                                                                                                                                                                       
+#LIST 26                                                                                                                                                                                                                                                        
+#BONDCALC                                                                                                                                                                                                                                                       
+Bonds: Update required - There is no list 41
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
@@ -1395,7 +1397,7 @@ LS-scale=  1.483   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    2           2            0.0003      0.4E+03    0.207E-02          0.15        C      1 X       
+ SRATIO    2           2            0.0003      0.5E+03    0.207E-02          0.15        C      1 X       
  SRATIO   12          12           -0.0002     -0.3E+01    0.440E-03         -0.53        O      3 Z       
  SRATIO   19          19            0.0002      0.8E+01    0.676E-03          0.29        O      5 Y       
  SRATIO   20          20           -0.0002     -0.9E+01    0.469E-03         -0.49        O      5 Z       
@@ -2587,7 +2589,6 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2602   -0.0662    0.1833    0.0614
            H        112.0    1.00000        1.    1.1428   -0.0413    0.0911    0.0614
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #CALCULAT   1                                                                                                                                                                                                                                                   
@@ -2745,7 +2746,6 @@ LS-scale=  1.733   Wilson Scale=  0.000
                       with an R.M.S. deviation of      0.10
 #PEAKS                                                                                                                                                                                                                                                          
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be changed                                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
@@ -2762,7 +2762,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
 #DISTANCE                                                                                                                                                                                                                                                       
 #LIST 31                                                                                                                                                                                                                                                        
@@ -3713,7 +3712,6 @@ Space group symbol is   P    21   21   21
 #                                                                                                                                                                                                                                                               
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
-Bonds: Update required - List5 length change
 #LIST 4                                                                                                                                                                                                                                                         
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
@@ -5542,7 +5540,7 @@ Inter cycle Min function          0.0            1.5           0.10E+16
 
 
  Maximum        0.00   0.0000   0.0001   0.0001   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.0005   0.0003   0.0008
+                                         0.0005   0.0003   0.0009
 
  Reversals     0.00     0.00   100.00    27.27    45.45    90.91     0.00     0.00     0.00     0.00     0.00     0.00
 
@@ -5738,7 +5736,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.177      0.0E+00    0.165E-01         10.69                          SCALE   
- LARGE     2           2           655.337      0.0E+00    0.360E+02         18.18                          EXTPARAM
+ LARGE     2           2           655.336      0.0E+00    0.360E+02         18.18                          EXTPARAM
  S/ESD     4           4            0.0094      0.0E+00    0.438E-02          2.15        C      1 U[22]   
  S/ESD     5           5            0.0072      0.0E+00    0.444E-02          1.63        C      1 U[33]   
  S/ESD     9           9            0.0074      0.0E+00    0.484E-02          1.52        C      2 U[11]   
@@ -6208,7 +6206,6 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2602   -0.0662    0.1833    0.0612
            H        112.0    1.00000        1.    1.1428   -0.0413    0.0911    0.0612
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #CALCULAT   1                                                                                                                                                                                                                                                   
@@ -6366,7 +6363,6 @@ LS-scale=  1.733   Wilson Scale=  0.000
                       with an R.M.S. deviation of      0.10
 #PEAKS                                                                                                                                                                                                                                                          
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be changed                                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
@@ -6383,7 +6379,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
 #DISTANCE                                                                                                                                                                                                                                                       
 
@@ -6430,7 +6425,7 @@ Bonds: Update required - List5 length change
 
    1   C         1.      1   1    0    0    0
    2   O         3.      1   1    0    0    0     112.89
-   3   O         5.      1   1    0    0    0     123.30  123.79
+   3   O         5.      1   1    0    0    0     123.30  123.78
 
   KEY                                                1       2
 
@@ -6541,8 +6536,8 @@ Bonds: Update required - List5 length change
 
    1   C         1.      1   1    0    0    0
    2   C        11.      1   1    0    0    0      61.41
-   3   H       101.      1   1    0    0    0     119.77  119.76
-   4   H       102.      1   1    0    0    0     119.76  119.77  109.47
+   3   H       101.      1   1    0    0    0     119.76  119.76
+   4   H       102.      1   1    0    0    0     119.77  119.77  109.47
 
   KEY                                                1       2       3
 
@@ -7332,7 +7327,6 @@ Space group symbol is   P    21   21   21
 #                                                                                                                                                                                                                                                               
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
-Bonds: Update required - List5 length change
 #LIST 4                                                                                                                                                                                                                                                         
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
@@ -9352,7 +9346,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.562      0.0E+00    0.455E-01         12.34                          SCALE   
- LARGE     2           2           563.376      0.0E+00    0.285E+02         19.74                          EXTPARAM
+ LARGE     2           2           563.375      0.0E+00    0.285E+02         19.74                          EXTPARAM
  S/ESD     4           4            0.0114      0.0E+00    0.445E-02          2.57        C      1 U[22]   
  S/ESD     5           5            0.0060      0.0E+00    0.448E-02          1.33        C      1 U[33]   
  S/ESD     9           9            0.0073      0.0E+00    0.472E-02          1.55        C      2 U[11]   
@@ -9432,7 +9426,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
  RMS sh/esd    16.46     0.00     0.00     0.00     0.00     0.00     3.35     1.88     2.24     1.48     1.09     0.96
 
 
- Maximum      563.38   0.0000   0.0000   0.0000   0.0000   0.0000   0.0334   0.0143   0.0173   0.0158   0.0107   0.0113
+ Maximum      563.37   0.0000   0.0000   0.0000   0.0000   0.0000   0.0334   0.0143   0.0173   0.0158   0.0107   0.0113
                                          0.0000   0.0000   0.0000
 
  Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
@@ -9826,7 +9820,6 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2600   -0.0671    0.1838    0.0601
            H        112.0    1.00000        1.    1.1433   -0.0425    0.0914    0.0601
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #CALCULAT   1                                                                                                                                                                                                                                                   
@@ -9995,7 +9988,6 @@ LS-scale=  1.685   Wilson Scale=  0.000
 
      C        11.         Q         2.      1   1    1   -1    0    0.349      Deleted    0.086   0.985   0.149      3.9
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be changed                                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
@@ -10012,7 +10004,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
 #DISTANCE                                                                                                                                                                                                                                                       
 
@@ -10969,7 +10960,6 @@ Space group symbol is   P    21   21   21
 #                                                                                                                                                                                                                                                               
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
 #                                                                                                                                                                                                                                                               
-Bonds: Update required - List5 length change
 #LIST 4                                                                                                                                                                                                                                                         
 #                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
@@ -11573,7 +11563,7 @@ LS-scale=  1.255   Wilson Scale=  0.000
  LARGE     1           1             0.389      0.4E+00    0.263E-01         14.78                          SCALE   
  S/ESD     4           4           -0.0010     -0.6E+00    0.913E-03         -1.08        C      1 Z       
  S/ESD     9           9           -0.0012     -0.7E+00    0.883E-03         -1.31        O      3 Y       
- S/ESD    17          17           -0.0059     -0.9E+00    0.309E-02         -1.91        N      6 X       
+ S/ESD    17          17           -0.0059     -0.9E+00    0.308E-02         -1.91        N      6 X       
  SRATIO   18          18            0.0000     -0.2E+02    0.131E-02          0.04        N      6 Y       
  S/ESD    20          20           -0.0041     -0.6E+00    0.275E-02         -1.49        C      7 X       
  S/ESD    30          30            0.0019     -0.7E+00    0.130E-02          1.44        C     10 Y       
@@ -12989,7 +12979,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.562      0.0E+00    0.455E-01         12.34                          SCALE   
- LARGE     2           2           563.381      0.0E+00    0.285E+02         19.74                          EXTPARAM
+ LARGE     2           2           563.382      0.0E+00    0.285E+02         19.74                          EXTPARAM
  S/ESD     4           4            0.0114      0.0E+00    0.445E-02          2.57        C      1 U[22]   
  S/ESD     5           5            0.0060      0.0E+00    0.448E-02          1.34        C      1 U[33]   
  S/ESD     9           9            0.0073      0.0E+00    0.472E-02          1.55        C      2 U[11]   
@@ -13047,7 +13037,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
  Statistics for    68 least squares parameters, with  1065 degrees of freedom
  Number of observations              1133                 0              1133
  Minimisation function              0.772E+04         0.000E+00         0.772E+04
- Hamilton weighted R-value          34.810             0.000            34.810
+ Hamilton weighted R-value          34.809             0.000            34.809
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -13463,7 +13453,6 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2600   -0.0671    0.1838    0.0601
            H        112.0    1.00000        1.    1.1433   -0.0425    0.0914    0.0601
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #CALCULAT   1                                                                                                                                                                                                                                                   
@@ -13632,7 +13621,6 @@ LS-scale=  1.685   Wilson Scale=  0.000
 
      C        11.         Q         2.      1   1    1   -1    0    0.349      Deleted    0.086   0.985   0.149      3.9
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT                                                                                                                                                                                                                                                           
  The following atom(s) will be changed                                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
@@ -13649,7 +13637,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12                                                                                                                                                                                                                                                        
 #DISTANCE                                                                                                                                                                                                                                                       
 

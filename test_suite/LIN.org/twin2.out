@@ -10,7 +10,9 @@
 #LIST 4                                                                                                                                                                                                                                                         
 #LIST 5                                                                                                                                                                                                                                                         
 #EDIT                                                                                                                                                                                                                                                           
+#BONDCALC                                                                                                                                                                                                                                                       
 Bonds: Update required - There is no list 41
+#EDIT                                                                                                                                                                                                                                                           
 #LIST 13                                                                                                                                                                                                                                                        
  The following atom(s) will be changed                                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
@@ -781,7 +783,7 @@ Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.088
 
  Weighting scheme type   11
 
- With parameter(s) :    0.686213E+02   0.640296E+02
+ With parameter(s) :    0.686218E+02   0.640304E+02
  Agreement analysis on /FC/
 
 
@@ -806,7 +808,7 @@ Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.088
         154.66                                                                                                . 
                        30       168.76       171.6       0.384E+02       0.118E+01     3.09    3.69           *      
         190.94                                                                                                . 
-                       18       206.62       208.9       0.169E+02       0.449E+00     1.57    2.03          *.      
+                       18       206.63       208.9       0.169E+02       0.449E+00     1.57    2.03          *.      
         231.04                                                                                                . 
                        21       252.41       252.6       0.315E+02       0.681E+00     1.81    2.24           *      
         274.95                                                                                                . 
@@ -968,7 +970,7 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
 
  Weighting scheme type   11
 
- With parameter(s) :    0.713886E+02   0.681720E+02   0.418038E+01
+ With parameter(s) :    0.713893E+02   0.681730E+02   0.418056E+01
  Agreement analysis on /FC/
 
 
@@ -993,7 +995,7 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
         154.66                                                                                                . 
                        30       168.76       171.6       0.384E+02       0.122E+01     3.09    3.69           *      
         190.94                                                                                                . 
-                       18       206.62       208.9       0.169E+02       0.467E+00     1.57    2.03          *.      
+                       18       206.63       208.9       0.169E+02       0.467E+00     1.57    2.03          *.      
         231.04                                                                                                . 
                        21       252.41       252.6       0.315E+02       0.709E+00     1.81    2.24           *      
         274.95                                                                                                . 
