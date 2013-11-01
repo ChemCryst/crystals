@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.61  2012/01/04 15:52:41  rich
+C Don't issue a warning if no changes to L5.
+C
 C Revision 1.60  2011/07/05 10:48:02  djw
 C Increase the field width for PART in XMDMON fro I4 to I7
 C
@@ -2076,7 +2079,7 @@ cdjwfeb04 to enable maths on the integer fields
          GO TO 6150
 6100     CONTINUE
 C----- PERTURB
-         Z=XRAND(ZZ,1)
+         Z=XRAND(ZZ,0) ! Use same sequence or tests break.
          PERTSQ=PERTSQ+ABS(Z)
 C----- CONVER TO ESD
          Z=SIGN(1.,Z)*SQRT(ABS(Z))
