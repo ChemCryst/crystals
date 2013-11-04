@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.62  2013/11/01 16:37:04  rich
+C Use fixed random seed for XRAND or tests break.
+C
 C Revision 1.61  2012/01/04 15:52:41  rich
 C Don't issue a warning if no changes to L5.
 C
@@ -4234,7 +4237,7 @@ C-- Scan through this part
 
                 IF ( M5G .GT. 0 ) THEN
 C The shift is given as a fraction of the scale factors.
-                   Z = XRAND( (SHF(1)*STORE(M5G-1+JS))**2, 1 )
+                   Z = XRAND( (SHF(1)*STORE(M5G-1+JS))**2, 0 )
                    Z = SIGN(1.0,Z) * SQRT( ABS(Z) ) ! Convert to ESD
                    STORE(IDX12+JT-1) = Z
 
@@ -4249,39 +4252,39 @@ C The shift is given as a fraction of the scale factors.
 C Assume it's an atom
                WEIGHT = 1.0
                IF ( JS .EQ. 3 ) THEN                  !Occupancy
-                  Z = XRAND( SHF(2)**2, 1 )
+                  Z = XRAND( SHF(2)**2, 0 )
                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
                ELSE IF ( ( JS .GE. 5 ) .AND. ( JS .LE. 7 ) ) THEN !Coords
-                  Z = XRAND( SHF(JS-2)**2, 1 )
+                  Z = XRAND( SHF(JS-2)**2, 0 )
                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) ) 
                   Z=Z/STORE(L1P1+JS-5)
                ELSE IF ( (NINT(STORE(M5+3)) .EQ. 0) .AND.
      1                   (JS.GE.8) .AND. (JS.LE.13)) THEN   ! Anisotropic atom
 C The shift is given as a fraction of the temperature factors.
-                  Z = XRAND( (SHF(JS-2)*STORE(M5-1+JS))**2, 1 )
+                  Z = XRAND( (SHF(JS-2)*STORE(M5-1+JS))**2, 0 )
                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
                ELSE IF ( (NINT(STORE(M5+3)) .EQ. 1) .AND.
      1                                   (JS.EQ.8)) THEN    ! Isotropic atom
 C The shift is given as a fraction of the temperature factors.
-                  Z = XRAND( (SHF(12)*STORE(M5+7))**2, 1 )
+                  Z = XRAND( (SHF(12)*STORE(M5+7))**2, 0 )
                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
                ELSE IF ( (NINT(STORE(M5+3)) .EQ. 2) .AND.
      1                   (JS.GE.8) .AND. (JS.LE.9)) THEN    ! Shell
                   IF ( JS.EQ.8 ) WEIGHT = STORE(M5+7)
 C The shift is given as a fraction of the temperature factors.
-                  Z = XRAND( (SHF(JS+5)*WEIGHT)**2, 1 )
+                  Z = XRAND( (SHF(JS+5)*WEIGHT)**2, 0 )
                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
                ELSE IF ( (NINT(STORE(M5+3)) .EQ. 3) .AND.
      1                   (JS.GE.8) .AND. (JS.LE.11)) THEN   ! Line
                   IF ( JS.EQ.8 ) WEIGHT = STORE(M5+7)
 C The shift is given as a fraction of the temperature factors.
-                  Z = XRAND( (SHF(JS+7)*WEIGHT)**2, 1 )
+                  Z = XRAND( (SHF(JS+7)*WEIGHT)**2, 0 )
                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
                ELSE IF ( (NINT(STORE(M5+3)) .EQ. 4) .AND.
      1                   (JS.GE.8) .AND. (JS.LE.11)) THEN   ! Annulus
                   IF ( JS.EQ.8 ) WEIGHT = STORE(M5+7)
 C The shift is given as a fraction of the temperature factors.
-                  Z = XRAND( (SHF(JS+11)*WEIGHT)**2, 1 )
+                  Z = XRAND( (SHF(JS+11)*WEIGHT)**2, 0 )
                   Z = SIGN(1.0,Z) * SQRT( ABS(Z) )
                ELSE
                   Z = 0
