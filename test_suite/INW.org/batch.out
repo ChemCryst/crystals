@@ -3311,7 +3311,7 @@ Mean C-C su =   0.0078
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      3874.          6919.           3292.                                   On scale of /FC/
+      3874.          6918.           3292.                                   On scale of /FC/
 
       6482.         11575.           5508.               0.8896E+05          On scale of /FO/
 
@@ -4904,7 +4904,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
 
       4556.          3569.           1219.                                   On scale of /FC/
 
-      6482.          5078.           1734.               0.6453E+04          On scale of /FO/
+      6482.          5078.           1734.               0.6454E+04          On scale of /FO/
 
  New scale factor (G) is      1.423,    1119 reflections used in refinement
 
@@ -6078,7 +6078,7 @@ All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.88E+03       0.10E+16
 Inter cycle R-factor             -5.0           0.25E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.11E-02       0.10E+03
-Inter cycle shift/esd            -10.          -0.38E-03       0.10E+05
+Inter cycle shift/esd            -10.          -0.37E-03       0.10E+05
 Inter cycle Min function          0.0           0.24           0.10E+16
 
 
@@ -8673,7 +8673,7 @@ All cycle   Min function          0.0           0.89E+03       0.10E+16
  R.M.S.         0.00   0.0000   0.0000   0.0001   0.0001   0.0001   0.0007   0.0006   0.0007   0.0009   0.0004   0.0008
                                          0.0007   0.0012   0.0014
 
- RMS sh/esd     0.04     0.00     0.00     0.12     0.25     0.27     0.32     0.27     0.28     0.40     0.16     0.35
+ RMS sh/esd     0.05     0.00     0.00     0.12     0.25     0.27     0.32     0.27     0.28     0.40     0.15     0.35
 
 
  Maximum        0.00   0.0000   0.0000   0.0003   0.0002   0.0002   0.0020   0.0012   0.0015   0.0020   0.0008   0.0016

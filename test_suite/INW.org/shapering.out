@@ -1605,7 +1605,7 @@ Mean C-C su =   0.1097
 
      35067.         32438.           3598.                                   On scale of /FC/
 
-    211786.        195908.          21729.               0.3664E+06          On scale of /FO/
+    211786.        195909.          21729.               0.3664E+06          On scale of /FO/
 
  New scale factor (G) is      6.039,    2803 reflections used in refinement
 
@@ -2990,27 +2990,27 @@ Inter cycle Min function          0.0           0.20E+03       0.10E+16
                       0.0357            0.0040   0.0038   0.0051   0.0044
                                         0.0447   0.0358   0.0441
 
-     C         11.    0.3811   1.0000  -0.0902  -0.0686  -0.4504   0.0978
+     C         11.    0.3812   1.0000  -0.0902  -0.0686  -0.4504   0.0978
                       0.0020           -0.0006   0.0001  -0.0004  -0.0002
                       0.0243            0.0071   0.0067   0.0089   0.0011
                                         0.0789   0.0631   0.0778
 
-     C         12.    0.3811   1.0000   0.0077  -0.3125  -0.1476   0.0978
+     C         12.    0.3812   1.0000   0.0077  -0.3125  -0.1476   0.0978
                       0.0020           -0.0002  -0.0030  -0.0002  -0.0002
                       0.0243            0.0070   0.0066   0.0087   0.0011
                                         0.0775   0.0623   0.0762
 
-     C         13.    0.3811   1.0000  -0.1660  -0.2547   0.0544   0.0978
+     C         13.    0.3812   1.0000  -0.1660  -0.2547   0.0544   0.0978
                       0.0020            0.0005  -0.0004   0.0001  -0.0002
                       0.0243            0.0072   0.0067   0.0089   0.0011
                                         0.0798   0.0631   0.0777
 
-     C         14.    0.3811   1.0000  -0.3230   0.0110  -0.0739   0.0978
+     C         14.    0.3812   1.0000  -0.3230   0.0110  -0.0739   0.0978
                       0.0020           -0.0001   0.0000   0.0008  -0.0002
                       0.0243            0.0071   0.0066   0.0090   0.0011
                                         0.0790   0.0623   0.0784
 
-     C         15.    0.3811   1.0000  -0.2570   0.1454  -0.3741   0.0978
+     C         15.    0.3812   1.0000  -0.2570   0.1454  -0.3741   0.0978
                       0.0020           -0.0018   0.0002  -0.0018  -0.0002
                       0.0243            0.0071   0.0066   0.0090   0.0011
                                         0.0790   0.0624   0.0784
@@ -3086,7 +3086,7 @@ Mean C-C su =   0.0496
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-     33304.         32432.           2452.                                   On scale of /FC/
+     33304.         32432.           2451.                                   On scale of /FC/
 
     211786.        206243.          15590.               0.2535E+06          On scale of /FO/
 
@@ -4476,7 +4476,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 Inter cycle R-factor             -5.0           0.10E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.11E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.11           0.10E+05
-Inter cycle Min function          0.0            54.           0.10E+16
+Inter cycle Min function          0.0            53.           0.10E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6439,7 +6439,7 @@ Mean C-C su =   0.0482
   -11.   0.   1.     2.90     3.55
     4.   0.   1.    23.48    17.05
    10.   0.   1.     1.62     2.95
-   -2.   1.   1.    62.03    77.29
+   -2.   1.   1.    62.03    77.28
    -5.  -5.   2.     4.47     6.05
     9.  -4.   2.     2.93     4.27
     5.  -3.   2.     5.40     2.84
@@ -6495,7 +6495,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.30E-01       0.10E+05
 All cycle   Min function          0.0           0.25E+06       0.10E+16
 Inter cycle R-factor             -5.0          -0.16E-02       0.10E+03
-Inter cycle Rw                   -5.0           0.42E-03       0.10E+03
+Inter cycle Rw                   -5.0           0.43E-03       0.10E+03
 Inter cycle shift/esd            -10.           0.36E-01       0.10E+05
 Inter cycle Min function          0.0            21.           0.10E+16
 
@@ -7856,7 +7856,7 @@ LS-scale=  6.338   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  SRATIO    7           7           -0.0002      0.4E+01    0.404E-02         -0.04        C      2 X       
- SRATIO    9           9           -0.0002     -0.1E+02    0.494E-02         -0.03        C      2 Z       
+ SRATIO    9           9           -0.0002     -0.2E+02    0.494E-02         -0.03        C      2 Z       
  SRATIO   15          15           -0.0003      0.9E+02    0.491E-02         -0.06        C      4 Z       
  SRATIO   33          33            0.0001      0.6E+01    0.638E-02          0.02        C     15 X       
 
@@ -14351,7 +14351,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 Inter cycle R-factor             -5.0          -0.18E-02       0.10E+03
 Inter cycle Rw                   -5.0           0.32E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.75E-01       0.10E+05
-Inter cycle Min function          0.0            72.           0.10E+16
+Inter cycle Min function          0.0            73.           0.10E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
