@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.33  2011/09/19 09:51:59  rich
+C Punch list 39.
+C
 C Revision 1.32  2011/09/19 09:27:46  rich
 C Punch of List 31.
 C
@@ -288,7 +291,7 @@ C----- COMPOSITION
 
 4600  CONTINUE
 C----- FINDFRAG
-      CALL XFINDR
+c      CALL XFINDR
       RETURN
 
 4700  CONTINUE
