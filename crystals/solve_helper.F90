@@ -456,7 +456,7 @@ integer, intent(out) :: info
 
 real, dimension(:), allocatable :: preconditioner
 integer i, j, k
-real, dimension(:,:), allocatable :: unpacked
+real, dimension(:,:), allocatable :: unpacked, original
 
 real, dimension(:), allocatable :: work
 integer, dimension(:), allocatable :: iwork
@@ -492,12 +492,14 @@ end do
 
 ! unpacking lower triangle for memory efficiency
 allocate(unpacked(nmsize, nmsize))
+!allocate(original(nmsize, nmsize))
 do i=1, nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
     k = j + nmsize - i
     unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
-    !unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
+    unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
 end do
+!original=unpacked
 
 !open(666, file='matrix', form="unformatted",access="stream")
 !write(666) unpacked
@@ -525,6 +527,22 @@ call  SPOTRI( 'L', nmsize, unpacked, nmsize, info )
 !call date_and_time(VALUES=measuredtime)
 !print *, 'PP* ***** LDL ', info  , &
 !&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
+
+do i=1, nmsize
+    unpacked(i, i+1:nmsize)=unpacked(i+1:nmsize, i)
+end do
+
+!original=matmul(original, unpacked)
+!do  i=1, 5
+!  print *, original(i,1:5)
+!end do
+!j=0
+!do i=1, nmsize
+!  j=j+nint(original(i,i))
+!  original(i,i)=0.0
+!end do
+!print *, j
+!print *, maxval(abs(original)), maxloc(abs(original))
 
 ! Pack normal matrix back into original crystals storage
 do i=1,nmsize

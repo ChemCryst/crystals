@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.68  2013/10/14 08:56:41  pascal
+C fixed eigen filtering value
+C
 C Revision 1.67  2013/10/11 16:21:13  pascal
 C new LDLT inversion
 C
@@ -642,9 +645,12 @@ c               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
 c     1              JY, 100.0)
 c               !deallocate(ref)
 
-c L D L^T inversion + preconditioning
+c L D L^t inversion + preconditioning
                call LDLT_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+c Cholesky inversion + preconditioning
+c               call choleskyl_inversion(
+c     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 c                print *, STR11(L11C:L11C+5)
 
 c - original cholesky               
