@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.93  2013/10/15 11:49:17  pascal
+C better determination of the number of threads, slightly optimisation of a loop
+C
 C Revision 1.91  2013/10/11 16:21:58  pascal
 C openmp threads for the accumulation using serial blas functions
 C
@@ -1643,11 +1646,14 @@ C
       integer, dimension(8) :: measuredtime
 #endif
 
-      real, dimension(:,:), allocatable :: designmatrix
-      real, dimension(:,:,:), allocatable :: normalmatrix!, ref
+      ! Accumulation is done is double precision to avoid precision loss
+      ! single precision seems to introduce errors of about 1e-3 in Fc and 
+      ! other parameters
+      double precision, dimension(:,:), allocatable :: designmatrix
+      double precision, dimension(:,:,:), allocatable :: normalmatrix!, ref
       ! tid is the number of threads
       integer :: designindex, tid
-      integer, parameter :: designchunk=2000
+      integer, parameter :: designchunk=512
       character(len=4) :: buffer
 
 c     Working out the number of threadings available
@@ -1665,10 +1671,10 @@ c     getenv is a deprecated extension
               tid=i
           end if
       end if
-      tid=min(tid, 6)
+      tid=min(tid, 8)
 
 #if defined(_GIL_) || defined(_LIN_)
-      print *, 'Number of threads used around SSYRK: ', tid
+      print *, 'Number of threads used around DSYRK: ', tid
 #endif
 
       CALL CPU_TIME ( time_begin )
@@ -2303,13 +2309,14 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 !$OMP DO schedule(static)
                       do i=1, tid
                           ! passing first element as array to avoid temporary copy
-                          call SSYRK('L','N',JP-JO+1,designchunk,
-     1                      1.0, 
+                          call DSYRK('L','N',JP-JO+1,designchunk,
+     1                      1.0d0, 
      2                      designmatrix(1,designchunk*(i-1)+1),
-     3                      JP-JO+1,1.0,normalmatrix(1,1,i),JP-JO+1)
+     3                      JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
                       end do
 !$OMP END DO
 !$OMP END PARALLEL
+
 
                       ! reset index for the chunk array
                       designindex=1
@@ -2395,10 +2402,10 @@ C----    H,K,L,SNTHL,LEV,
 
 !$OMP DO schedule(static)
                 do i=1, tid
-                     call SSYRK('L','N',JP-JO+1,designchunk,
-     1                   1.0, 
+                     call DSYRK('L','N',JP-JO+1,designchunk,
+     1                   1.0d0, 
      2                   designmatrix(1,designchunk*(i-1)+1),
-     3                   JP-JO+1,1.0,normalmatrix(1,1,i),JP-JO+1)
+     3                   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
                  end do
 !$OMP END DO
 !$OMP END PARALLEL
@@ -2411,7 +2418,6 @@ c Only vectorized with gfortran 4.8 not 4.4
      1                          +normalmatrix(:,i,j)
                       end do
                  end do
-
  
                  ! Pack normal matrix back into original crystals storage     
                  IBL = 1                  ! Parameter # at start of current block
