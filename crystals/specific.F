@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.73  2012/05/31 15:20:12  rich
+C Don't use address lookup to determine vectorised loop or not in XMOVE. LOC result is in bytes -
+C but N is in words. Needs a portable solution if this optimisation is to be used.
+C
 C Revision 1.72  2012/05/11 12:52:14  rich
 C Fix date order on Intel platform. Expand year to four digits in CIF output on all platforms.
 C
@@ -1957,7 +1961,7 @@ C
       END
 C
 CODE FOR XMOVE
-      SUBROUTINE XMOVE ( ISRCE , IRESLT , N )
+      SUBROUTINE XMOVEold ( ISRCE , IRESLT , N )
 C
 C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
 C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
@@ -1967,6 +1971,7 @@ C    FAIL IF TWO OVERLAPPING ARRAYS ARE INVOLVED UNLESS THE
 C    SENSE OF THE MOVE CAN BE DETERMINED.
 C
       DIMENSION ISRCE(N) , IRESLT(N)
+      integer, dimension(N) :: temp
 C
 #if defined(_PPC_) 
 C -- USE MOTO FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
@@ -2034,8 +2039,9 @@ c      ELSE
       IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
 CDIR$ novector
         DO II = N , 1 , -1
-          IRESLT(II) = ISRCE(II)
+          temp(II) = ISRCE(II)
         END DO
+        IRESLT=temp
       
       ELSE  ! overlap, forwards, no vectorizing
 CDIR$ novector
@@ -2052,8 +2058,49 @@ C
 #endif
       RETURN
       END
-CODE FOR XMOVEI
+
+C
+CODE FOR XMOVE (modern replacement)
+      SUBROUTINE XMOVE ( ISRCE , IRESLT , N )
+      implicit none
+C
+C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
+C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
+C
+C    ISRCE and IRESLT are actually part of the same memory space 
+C    through equivalence so the use of a temporary variable is compulsory
+      integer, intent(in) :: N
+      integer, dimension(N), intent(in) :: ISRCE 
+      integer, dimension(N), intent(out) :: IRESLT
+      integer, dimension(N) :: temp
+      integer i
+C
+      temp=ISRCE
+      IRESLT=temp
+      END
+
+C
+CODE FOR XMOVEI (modern replacement)
       SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
+      implicit none
+C
+C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
+C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
+C    Code identical to XMOVE, different subroutine for historical reasons
+C
+C    ISRCE and IRESLT are actually part of the same memory space 
+C    through equivalence so the use of a temporary variable is compulsory
+      integer, intent(in) :: N
+      integer, dimension(N), intent(in) :: ISRCE 
+      integer, dimension(N), intent(out) :: IRESLT
+      integer, dimension(N) :: temp
+      integer i
+C
+      call XMOVE ( ISRCE , IRESLT , N )
+      END
+
+CODE FOR XMOVEI
+      SUBROUTINE XMOVEIold ( ISRCE , IRESLT , N )
 C
 C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
 C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
