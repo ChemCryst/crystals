@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.69  2013/11/05 12:39:11  pascal
+C small changes
+C
 C Revision 1.68  2013/10/14 08:56:41  pascal
 C fixed eigen filtering value
 C
@@ -648,6 +651,21 @@ c               !deallocate(ref)
 c L D L^t inversion + preconditioning
                call LDLT_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+               if(info>0) then
+                  WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
+     1                ' is singular. Inversion failed.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                else if(info<0) then
+                  WRITE ( CMON, '(I8,A,A)') '{E ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                end if
+                    
 c Cholesky inversion + preconditioning
 c               call choleskyl_inversion(
 c     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
@@ -715,7 +733,7 @@ c
 c
 c
                call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
-     1              JY, 1e-2, nrej, cond, fcond)
+     1              JY, 1e-2, nrej, cond, fcond, info)
 
                if ( nrej .gt. 0 ) THEN
                   WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 

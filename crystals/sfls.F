@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.94  2013/11/05 15:37:35  pascal
+C replace single precision AA^t accumulation with double precision
+C
 C Revision 1.93  2013/10/15 11:49:17  pascal
 C better determination of the number of threads, slightly optimisation of a loop
 C
@@ -1671,7 +1674,7 @@ c     getenv is a deprecated extension
               tid=i
           end if
       end if
-      tid=min(tid, 8)
+      tid=min(tid, 6)
 
 #if defined(_GIL_) || defined(_LIN_)
       print *, 'Number of threads used around DSYRK: ', tid

@@ -4,7 +4,7 @@ contains
 
 !> code for the inversion of the normal matrix using eigen decomposition
 !! Small eigen values are filtered out based on a condition number threshold
-subroutine eigen_inversion(nmatrix, nmsize, eigcutoff, nrejected, condition, filtered_condition)
+subroutine eigen_inversion(nmatrix, nmsize, eigcutoff, nrejected, condition, filtered_condition, info)
 use m_mrgrnk
 implicit none
 !> Leading dimension of the matrix nmatrix
@@ -47,27 +47,25 @@ do i=1,nmsize
     end if
 end do      
 preconditioner = 1.0/sqrt(preconditioner) 
-
-! Applying C N C
-! N: normal matrix
-! C: diagonal matrix with elements from the N diagonal
-do i=1,nmsize
-    j = ((i-1)*(2*(nmsize)-i+2))/2
-    k = j + nmsize - i
-    nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
-    nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
-end do              
        
 ! unpacking normal matrix
-! not necessary but unpacked data operations are better
-! optimised in lapack
+! not necessary but unpacked data operations are better optimised in lapack
 ! unpacking + invert + packing is faster
+! Applying C N C preconditioning at the same time
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+! only the lower triangle is referenced
 allocate(eigvectors(nmsize, nmsize))
 do i=1, nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
     k = j + nmsize - i
+    !unpacking
     eigvectors(i:nmsize, i)=nmatrix(1+j:1+k)
+    ! Not loading upper trinagle
     !eigvectors(i, i:nmsize)=nmatrix(1+j:1+k)
+    ! preconditioning
+    eigvectors(i:nmsize, i)=preconditioner(i)*eigvectors(i:nmsize, i)
+    eigvectors(i:nmsize, i)=preconditioner(i:nmsize)*eigvectors(i:nmsize, i)
 end do
 
 !open(666, file='matrix', form="unformatted",access="stream")
@@ -99,6 +97,10 @@ print *, 'eigen decomp done in (ms): ', &
     ((measuredtime(5)*3600+measuredtime(6)*60)+ &
     measuredtime(7))*1000.0+measuredtime(8)-starttime
 #endif
+
+if(info>0) then
+	return
+end if
 
 ! eigen values cutoff
               
@@ -354,22 +356,20 @@ do i=1,nmsize
 end do      
 preconditioner = 1.0/sqrt(preconditioner) 
 
-! Applying C N C
+! unpacking lower triangle for memory efficiency and preconditioning:
+! N' = C N C
 ! N: normal matrix
 ! C: diagonal matrix with elements from the N diagonal
-do i=1,nmsize
-    j = ((i-1)*(2*(nmsize)-i+2))/2
-    k = j + nmsize - i
-    nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
-    nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
-end do              
-
-! unpacking lower triangle for memory efficiency
 allocate(unpacked(nmsize, nmsize))
 do i=1, nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
     k = j + nmsize - i
+    ! unpacking
+    ! only lower triangle is referenced
     unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
+    ! applying preconditioning
+    unpacked(i:nmsize, i)=preconditioner(i:nmsize)*unpacked(i:nmsize, i)
+    unpacked(i:nmsize, i)=preconditioner(i)*unpacked(i:nmsize, i)
     !unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
 end do
 
@@ -390,6 +390,10 @@ call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, nmsize*lwork, INFO )
 print *, 'SSYTRF info: ', info
 #endif
 deallocate(work)
+
+if(info>0) then 
+	return
+end if
 
 allocate(work(2*nmsize))
 allocate(iwork(nmsize))
@@ -419,23 +423,24 @@ print *, 'invert via LDL^t decomposition', &
 &       measuredtime(8)-starttime, 'ms'
 #endif
 
-! Pack normal matrix back into original crystals storage
-do i=1,nmsize
-    j = ((i-1)*(2*nmsize-i+2))/2
-    k = j + nmsize - i
-    nmatrix(1+j:1+k)=unpacked(i:nmsize,i)
-end do    
+if(info>0) then 
+	return
+end if
 
+! Pack normal matrix back into original crystals storage
 ! revert pre conditioning                   
 ! Applying C (C N C)^-1 C to get N^-1
 ! N: normal matrix
 ! C: diagonal matrix with elements from the N diagonal
 do i=1,nmsize
-    j = ((i-1)*(2*(nmsize)-i+2))/2
+    j = ((i-1)*(2*nmsize-i+2))/2
     k = j + nmsize - i
+    ! packing back matrix
+    nmatrix(1+j:1+k)=unpacked(i:nmsize,i)
+    ! revert preconditioning
     nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
     nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
-end do  
+end do    
             
 deallocate(preconditioner)
 
