@@ -4696,8 +4696,8 @@ SumFo/SumFc=  0.914   SumFoFc/SumFc^2=  0.913   SumwFoFc/SumwFc^2=  0.913
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =     0.55                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      10990 Physical writes      10071 Cache hits     196983
- Cache hit distribution   179140   12747    1982     490     474     175
+ Physical reads      10990 Physical writes      10071 Cache hits     196984
+ Cache hit distribution   179141   12747    1982     490     474     175
  Cache hit distribution      160     201     217     280     154     161
  Cache hit distribution      175     127     118      49      48      75
  Cache hit distribution       49      47      41      19      21      33

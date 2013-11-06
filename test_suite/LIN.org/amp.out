@@ -2383,7 +2383,7 @@ LS-scale=  1.664   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.94                          SCALE   
-Resetting shift for Extinction  Shift=     856.40  Esd=     102.48  New shift=     131.01                                                                                                                                                                       
+Resetting shift for Extinction  Shift=     856.39  Esd=     102.48  New shift=     131.01                                                                                                                                                                       
  LARGE     2           2           131.009      0.1E+01    0.102E+03          8.36                          EXTPARAM
  S/ESD    15          15            0.0052      0.2E+00    0.390E-02          1.35        O      3 U[11]   
  S/ESD    16          16            0.0028     -0.4E+00    0.242E-02          1.15        O      3 U[22]   

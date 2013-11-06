@@ -1446,7 +1446,7 @@ All cycle   Min function          0.0           0.40E+04       0.10E+16
                       0.0000            0.0004   0.0002   0.0003   0.0005
                                         0.0028   0.0027   0.0028
 
-     C          9.    1.0000   1.0000   0.1184   0.2009   0.4601   0.0192
+     C          9.    1.0000   1.0000   0.1184   0.2009   0.4601   0.0191
                       0.0000           -0.0001   0.0001  -0.0001   0.0003
                       0.0000            0.0004   0.0002   0.0003   0.0005
                                         0.0029   0.0027   0.0029
@@ -3418,7 +3418,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.1   
  H        70.     0.6186    0.1145    0.1983       -4.4   
  Q         1.     0.4596    0.1054    0.1436       24.5  Poor Shape  
- Q         2.     0.7421    0.6273    0.2446       19.5  Poor Shape  
+ Q         2.     0.7579    0.1273    0.2554       19.5  Poor Shape  
  Q         3.     0.6958    0.0623    0.1764       15.5  Poor Shape  
  Q         4.     0.7967    0.6444    0.2082       14.8  Poor Shape  
  Q         5.     0.7038    0.0663    0.1214       12.0  Poor Shape  
@@ -3428,9 +3428,9 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q         9.     0.0371    0.2713    0.1782        9.9  Poor Shape  
  Q        10.     0.8442    0.1660    0.0346        9.7  Poor Shape  
  Q        11.     0.9233    0.9519    0.1414        9.4  Poor Shape  
- Q        12.     0.0038    0.8975    0.2386        9.3  Poor Shape  
+ Q        12.     0.4963    0.3975    0.2614        9.3  Poor Shape  
  Q        13.     0.3204    0.6679    0.1496        9.3  Poor Shape  
- Q        14.     0.4592    0.2742    0.2657        9.3  Poor Shape  
+ Q        14.     0.0408    0.7742    0.2343        9.3  Poor Shape  
  Q        15.     0.1654    0.4331    0.1207        9.2  Poor Shape  
  Q        16.     0.5325    0.2029    0.0386        9.0  Poor Shape  
  QN       17.     0.0000    0.6250    0.2500      -15.6  Hole        
@@ -6903,7 +6903,7 @@ LS-scale=  0.292   Wilson Scale=  0.000
  SRATIO   38          38            0.0000     -0.2E+02    0.365E-03         -0.05        C      8 X       
  SRATIO   43          43            0.0000      0.2E+03    0.190E-03          0.06        C      9 Y       
  SRATIO   45          45            0.0000     -0.6E+01    0.502E-03          0.08        C      9 U[ISO]  
- SRATIO   46          46            0.0001      0.4E+03    0.109E-02          0.06        H     51 U[ISO]  
+ SRATIO   46          46            0.0001      0.5E+03    0.109E-02          0.06        H     51 U[ISO]  
  SRATIO   47          47            0.0001     -0.1E+02    0.144E-02          0.08        H     81 U[ISO]  
  SRATIO   49          49           -0.0002      0.2E+02    0.144E-02         -0.11        H     83 U[ISO]  
  SRATIO   52          52            0.0000     -0.2E+02    0.138E-02          0.02        H     93 U[ISO]  
@@ -8480,7 +8480,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.1   
  H        70.     0.6186    0.1145    0.1983       -4.4   
  Q         1.     0.4592    0.1054    0.1436       25.3  Poor Shape  
- Q         2.     0.7417    0.6267    0.2454       19.5  Poor Shape  
+ Q         2.     0.7583    0.1267    0.2546       19.5  Poor Shape  
  Q         3.     0.6954    0.0610    0.1768       15.4  Poor Shape  
  Q         4.     0.7946    0.6446    0.2082       15.0  Poor Shape  
  Q         5.     0.7042    0.0673    0.1207       12.0  Poor Shape  
@@ -8492,7 +8492,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q        11.     0.0417    0.9827    0.0439        9.4  Poor Shape  
  Q        12.     0.1650    0.4317    0.1214        9.4  Poor Shape  
  Q        13.     0.8450    0.1667    0.0329        9.3  Poor Shape  
- Q        14.     0.0054    0.8975    0.2389        9.3  Poor Shape  
+ Q        14.     0.4946    0.3975    0.2611        9.3  Poor Shape  
  Q        15.     0.4979    0.2292    0.1125        9.2  Poor Shape  
  Q        16.     0.0329    0.1031    0.2221        9.2  Poor Shape  
  Q        17.     0.5396    0.1975    0.0346        9.0  Poor Shape  
@@ -12973,7 +12973,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
+ Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
  Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
@@ -15845,7 +15845,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            22.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.32E-01       0.10E+05
 All cycle   Min function          0.0           0.29E+04       0.10E+16
-Inter cycle R-factor             -5.0          -0.52E-03       0.10E+03
+Inter cycle R-factor             -5.0          -0.53E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.14E-01       0.10E+03
 Inter cycle shift/esd            -10.           0.23           0.10E+05
 Inter cycle Min function          0.0            3.8           0.10E+16
@@ -17399,8 +17399,8 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
- Q         7.     0.9942    0.1673    0.2204        9.5  Poor Shape  
+ Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
+ Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
  Q        10.     0.5292    0.2004    0.0396        9.2  Poor Shape  
@@ -17430,7 +17430,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Tolerance in determining contacts = .20000    
         Minimum resolved distance  = .15000E-03
 
- Distances about atom  BR     1.          X =  0.25172     Y =  0.10637     Z =  0.79764
+ Distances about atom  BR     1.          X =  0.25172     Y =  0.10637     Z =  0.79765
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -17742,7 +17742,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
 
   KEY                                                1
 
- Distances about atom  Q      7.          X =  0.99417     Y =  0.16729     Z =  0.22036
+ Distances about atom  Q      7.          X = -0.00583     Y =  0.16729     Z =  0.22036
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -17776,7 +17776,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
 
   KEY                                                1
 
- Distances about atom  Q      9.          X =  0.95625     Y =  0.12229     Z =  0.09964
+ Distances about atom  Q      9.          X = -0.04375     Y =  0.12229     Z =  0.09964
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -17820,7 +17820,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
 
   KEY                                                1
 
- Distances about atom  Q     13.          X =  0.84542     Y =  0.16938     Z =  0.03464
+ Distances about atom  Q     13.          X = -0.15458     Y =  0.16938     Z =  0.03464
 
 
  Angles about atom  Q     13.
