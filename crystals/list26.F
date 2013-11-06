@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.24  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.23  2012/11/09 15:05:00  rich
 C *** empty log message ***
 C
@@ -2761,6 +2766,7 @@ C
       INCLUDE 'XLST12.INC'
       INCLUDE 'XLST22.INC'
       INCLUDE 'XIOBUF.INC'
+	  INCLUDE 'XCONST.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
