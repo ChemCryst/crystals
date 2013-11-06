@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.28  2013/10/15 13:46:07  rich
+C More BLAS updates for DVF
+C
 C Revision 1.27  2013/10/15 13:35:18  rich
 C More LDL dependent routines for digital comp.
 C
@@ -19774,26 +19777,26 @@ c
 *
       END
 
-      SUBROUTINE SSYRK(UPLO,TRANS,N,K,ALPHA,A,LDA,BETA,C,LDC)
+      SUBROUTINE DSYRK(UPLO,TRANS,N,K,ALPHA,A,LDA,BETA,C,LDC)
 *     .. Scalar Arguments ..
-      REAL ALPHA,BETA
+      DOUBLE PRECISION ALPHA,BETA
       INTEGER K,LDA,LDC,N
       CHARACTER TRANS,UPLO
 *     ..
 *     .. Array Arguments ..
-      REAL A(LDA,*),C(LDC,*)
+      DOUBLE PRECISION A(LDA,*),C(LDC,*)
 *     ..
 *
 *  Purpose
 *  =======
 *
-*  SSYRK  performs one of the symmetric rank k operations
+*  DSYRK  performs one of the symmetric rank k operations
 *
-*     C := alpha*A*A' + beta*C,
+*     C := alpha*A*A**T + beta*C,
 *
 *  or
 *
-*     C := alpha*A'*A + beta*C,
+*     C := alpha*A**T*A + beta*C,
 *
 *  where  alpha and beta  are scalars, C is an  n by n  symmetric matrix
 *  and  A  is an  n by k  matrix in the first case and a  k by n  matrix
@@ -19819,11 +19822,11 @@ c
 *           On entry,  TRANS  specifies the operation to be performed as
 *           follows:
 *
-*              TRANS = 'N' or 'n'   C := alpha*A*A' + beta*C.
+*              TRANS = 'N' or 'n'   C := alpha*A*A**T + beta*C.
 *
-*              TRANS = 'T' or 't'   C := alpha*A'*A + beta*C.
+*              TRANS = 'T' or 't'   C := alpha*A**T*A + beta*C.
 *
-*              TRANS = 'C' or 'c'   C := alpha*A'*A + beta*C.
+*              TRANS = 'C' or 'c'   C := alpha*A**T*A + beta*C.
 *
 *           Unchanged on exit.
 *
@@ -19839,11 +19842,11 @@ c
 *           of rows of the matrix  A.  K must be at least zero.
 *           Unchanged on exit.
 *
-*  ALPHA  - REAL            .
+*  ALPHA  - DOUBLE PRECISION.
 *           On entry, ALPHA specifies the scalar alpha.
 *           Unchanged on exit.
 *
-*  A      - REAL             array of DIMENSION ( LDA, ka ), where ka is
+*  A      - DOUBLE PRECISION array of DIMENSION ( LDA, ka ), where ka is
 *           k  when  TRANS = 'N' or 'n',  and is  n  otherwise.
 *           Before entry with  TRANS = 'N' or 'n',  the  leading  n by k
 *           part of the array  A  must contain the matrix  A,  otherwise
@@ -19858,11 +19861,11 @@ c
 *           be at least  max( 1, k ).
 *           Unchanged on exit.
 *
-*  BETA   - REAL            .
+*  BETA   - DOUBLE PRECISION.
 *           On entry, BETA specifies the scalar beta.
 *           Unchanged on exit.
 *
-*  C      - REAL             array of DIMENSION ( LDC, n ).
+*  C      - DOUBLE PRECISION array of DIMENSION ( LDC, n ).
 *           Before entry  with  UPLO = 'U' or 'u',  the leading  n by n
 *           upper triangular part of the array C must contain the upper
 *           triangular part  of the  symmetric matrix  and the strictly
@@ -19882,6 +19885,8 @@ c
 *           max( 1, n ).
 *           Unchanged on exit.
 *
+*  Further Details
+*  ===============
 *
 *  Level 3 Blas routine.
 *
@@ -19891,6 +19896,7 @@ c
 *     Jeremy Du Croz, Numerical Algorithms Group Ltd.
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
+*  =====================================================================
 *
 *     .. External Functions ..
       LOGICAL LSAME
@@ -19903,13 +19909,13 @@ c
       INTRINSIC MAX
 *     ..
 *     .. Local Scalars ..
-      REAL TEMP
+      DOUBLE PRECISION TEMP
       INTEGER I,INFO,J,L,NROWA
       LOGICAL UPPER
 *     ..
 *     .. Parameters ..
-      REAL ONE,ZERO
-      PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
+      DOUBLE PRECISION ONE,ZERO
+      PARAMETER (ONE=1.0D+0,ZERO=0.0D+0)
 *     ..
 *
 *     Test the input parameters.
@@ -19938,7 +19944,7 @@ c
           INFO = 10
       END IF
       IF (INFO.NE.0) THEN
-          CALL XERBLA('SSYRK ',INFO)
+          CALL XERBLA('DSYRK ',INFO)
           RETURN
       END IF
 *
@@ -19986,7 +19992,7 @@ c
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  C := alpha*A*A' + beta*C.
+*        Form  C := alpha*A*A**T + beta*C.
 *
           IF (UPPER) THEN
               DO 130 J = 1,N
@@ -20031,7 +20037,7 @@ c
           END IF
       ELSE
 *
-*        Form  C := alpha*A'*A + beta*C.
+*        Form  C := alpha*A**T*A + beta*C.
 *
           IF (UPPER) THEN
               DO 210 J = 1,N
@@ -20066,7 +20072,7 @@ c
 *
       RETURN
 *
-*     End of SSYRK .
+*     End of DSYRK .
 *
       END
 
