@@ -36,7 +36,8 @@ copy ..\datafiles\crysdef.srt dscbuild\crystals.srt
 SETLOCAL
 cd dscbuild
 set CRYSDIR=./
-..\crystals.exe
+@if "%CRDEBUG%" == "TRUE"     ..\crystalsd.exe
+@if not "%CRDEBUG%" == "TRUE" ..\crystals.exe
 cd ..
 ENDLOCAL
 copy dscbuild\commands.dsc .
