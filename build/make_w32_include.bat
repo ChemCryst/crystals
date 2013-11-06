@@ -60,7 +60,7 @@ goto ALLDVF
 @set OPT=/OPT:REF
 @set LDFLAGS=/SUBSYSTEM:WINDOWS
 @set LDCFLAGS=/SUBSYSTEM:console
-@set LIBS=%LIBS% opengl32.lib glu32.lib
+@set LIBS=%LIBS% opengl32.lib glu32.lib ..\blas\libopenblas.a
 @set LDEBUG=/DEBUG /debugtype:cv /pdb:none /incremental:no
 
 @set CC=CL
