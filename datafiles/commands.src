@@ -4230,13 +4230,13 @@ PERTURB            2    3
     .U[12]             11    0    1    0    0 0.1
     .U[ISO]            12    0    1    0    0 0.1
     .SPISO             13    0    1    0    0 0.1
-    .SPSIZE            14    0    1    0    0 1.0
+    .SPSIZE            14    0    1    0    0 0.25
     .LINISO            15    0    1    0    0 0.1
-    .LINSIZE           16    0    1    0    0 1.0
+    .LINSIZE           16    0    1    0    0 0.25
     .LINDEC            17    0    1    0    0 0.05
     .LINAZI            18    0    1    0    0 0.05
     .RINGISO           19    0    1    0    0 0.1
-    .RINGSIZ           20    0    1    0    0 1.0
+    .RINGSIZ           20    0    1    0    0 0.25
     .RINGDEC           21    0    1    0    0 0.05
     .RINGAZI           22    0    1    0    0 0.05
     .MULTIPLIER        23    0    1    0    0 1.0
