@@ -13,7 +13,7 @@ goto ALLDVF
 @
 @rem 
 :INW
-@if "%CRDEBUG%" == "TRUE"     set LIBS=/LIBPATH:%WXWIN%\lib\vc90_dll wxbase29ud.lib wxmsw29ud_core.lib wxmsw29ud_aui.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw29ud_gl.lib  shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXWIN%\lib\vc90_dll wxbase29ud.lib wxmsw29ud_core.lib wxmsw29ud_aui.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw29ud_gl.lib  shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXWIN%\lib\vc90_dll wxbase29u.lib wxmsw29u_core.lib wxmsw29u_aui.lib wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw29u_gl.lib  user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @set LIBS=%LIBS% rc.res
 @if "%CRDEBUG%" == "TRUE"     @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXWIN%\lib\vc90_dll\mswud /D"WXUSINGDLL"
