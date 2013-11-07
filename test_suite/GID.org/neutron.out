@@ -1880,7 +1880,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
-Inter cycle R-factor             -5.0           0.61E-03       0.10E+03
+Inter cycle R-factor             -5.0           0.60E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.21E-02       0.10E+03
 Inter cycle shift/esd            -10.          -0.44E-01       0.10E+05
 Inter cycle Min function          0.0            1.4           0.10E+16
@@ -3611,7 +3611,7 @@ Mean C-C su =   0.0019
   -9   3   2   13.2    3.8   2.9  3.49    -3   4   9    0.0    9.4   2.9  0.00                                                                                                                                                                                  
    3   7   8   10.0    0.6   2.9 15.73    -4  16   2   11.5    2.2   2.9  5.30                                                                                                                                                                                  
    6   9   4    0.0    9.3   2.9  0.00     3   5   0   12.0    2.7   2.9  4.44                                                                                                                                                                                  
-  -8   4   8    9.4    0.3   2.8 37.39     2  18   2    0.0    9.0   2.8  0.00                                                                                                                                                                                  
+  -8   4   8    9.4    0.3   2.8 37.38     2  18   2    0.0    9.0   2.8  0.00                                                                                                                                                                                  
 
                               ***
                              ***
@@ -4886,7 +4886,7 @@ Resetting shift for Extinction  Shift=       5.54  Esd=       0.37  New shift=  
 
  LARGE     2           2             0.597      0.1E+02    0.372E+00         14.90                          EXTPARAM
  SRATIO   75          75            0.0000      0.4E+01    0.298E-03          0.00        C      7 X       
- SRATIO  136         136            0.0000     -0.9E+01    0.231E-02          0.00        H     92 U[13]   
+ SRATIO  136         136            0.0000     -0.1E+02    0.231E-02          0.00        H     92 U[13]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            222.
                                                 for         144 parameters
@@ -5567,7 +5567,7 @@ All cycle   Min function          0.0           0.61E+05       0.10E+16
 
       0.290    0.500    0.500    1.000    0.000     0.1000E+01
      -0.024    0.000    0.000    0.000    0.000     0.0000E+00
-      0.007    0.000    0.000    0.000    0.000     0.0000E+00
+      0.006    0.000    0.000    0.000    0.000     0.0000E+00
 
 
 
@@ -6041,7 +6041,7 @@ Mean C-C su =   0.0072
 
      68155.         64014.          10686.                                   On scale of /FC/
 
-     19829.         18624.           3109.               0.6011E+04          On scale of /FO/
+     19829.         18624.           3109.               0.6012E+04          On scale of /FO/
 
  New scale factor (G) is      0.291,    2547 reflections used in refinement
 
@@ -9708,7 +9708,7 @@ Resetting shift for Extinction  Shift=       5.58  Esd=       0.35  New shift=  
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     2           2             0.498      0.1E+02    0.351E+00         15.89                          EXTPARAM
- SRATIO   48          48            0.0000      0.6E+01    0.233E-03          0.00        C      4 X       
+ SRATIO   48          48            0.0000      0.7E+01    0.233E-03          0.00        C      4 X       
  SRATIO   75          75            0.0000     -0.1E+02    0.302E-03          0.00        C      7 X       
  SRATIO   84          84            0.0000     -0.5E+01    0.271E-03          0.00        C      8 X       
  SRATIO  112         112            0.0000      0.3E+01    0.217E-02          0.00        H     81 U[13]   
@@ -11481,7 +11481,7 @@ LS-scale=  0.293   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =              3.
                                                 for          53 parameters
                                  The rms (shift/su)  =           0.233
-                              The mean abs(shift/su) =           0.189
+                              The mean abs(shift/su) =           0.190
  The largest (shift/esd) =      0.62, for Parameter   48, H82U[11]
 
                                 Min          Actual           Max
@@ -12962,7 +12962,7 @@ Resetting shift for Extinction  Shift=       5.09  Esd=       0.25  New shift=  
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     2           2             0.346      0.2E+02    0.251E+00         20.28                          EXTPARAM
- SRATIO    5           5            0.0000     -0.5E+01    0.193E-03         -0.04        BR     1 Z       
+ SRATIO    5           5            0.0000     -0.4E+01    0.193E-03         -0.04        BR     1 Z       
  SRATIO   26          26            0.0000      0.9E+01    0.594E-03          0.05        C      1 U[33]   
  SRATIO   35          35            0.0000      0.6E+01    0.604E-03          0.04        C      2 U[33]   
  SRATIO   50          50            0.0000     -0.2E+02    0.178E-03         -0.01        C      4 Z       
@@ -13308,7 +13308,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
  Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
- Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
+ Q         7.     0.9942    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
  Q        10.     0.5292    0.2004    0.0396        9.2  Poor Shape  
@@ -13651,7 +13651,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      7.          X = -0.00583     Y =  0.16729     Z =  0.22036
+ Distances about atom  Q      7.          X =  0.99417     Y =  0.16729     Z =  0.22036
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13685,7 +13685,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      9.          X = -0.04375     Y =  0.12229     Z =  0.09964
+ Distances about atom  Q      9.          X =  0.95625     Y =  0.12229     Z =  0.09964
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13729,7 +13729,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q     13.          X = -0.15458     Y =  0.16938     Z =  0.03464
+ Distances about atom  Q     13.          X =  0.84542     Y =  0.16938     Z =  0.03464
 
 
  Angles about atom  Q     13.
@@ -15299,7 +15299,7 @@ LS-scale=  0.288   Wilson Scale=  0.000
  S/ESD    25          25           -0.0079     -0.1E+01    0.133E-02         -5.95        C      4 U[ISO]  
  S/ESD    26          26           -0.0027      0.1E+01    0.896E-03         -2.97        C      5 X       
  S/ESD    27          27           -0.0036      0.7E+00    0.471E-03         -7.58        C      5 Y       
- S/ESD    28          28           -0.0050      0.8E+00    0.794E-03         -6.24        C      5 Z       
+ S/ESD    28          28           -0.0050      0.8E+00    0.794E-03         -6.23        C      5 Z       
  S/ESD    29          29           -0.0068     -0.1E+02    0.127E-02         -5.31        C      5 U[ISO]  
  S/ESD    30          30            0.0060      0.8E+00    0.924E-03          6.53        C      6 X       
  S/ESD    31          31           -0.0032      0.9E+00    0.486E-03         -6.66        C      6 Y       
@@ -17739,7 +17739,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
+ Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  

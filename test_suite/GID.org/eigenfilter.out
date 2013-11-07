@@ -1400,7 +1400,7 @@ LS-scale=  1.483   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    2           2            0.0003      0.5E+03    0.207E-02          0.15        C      1 X       
+ SRATIO    2           2            0.0003      0.4E+03    0.207E-02          0.15        C      1 X       
  SRATIO   12          12           -0.0002     -0.3E+01    0.440E-03         -0.53        O      3 Z       
  SRATIO   19          19            0.0002      0.8E+01    0.676E-03          0.29        O      5 Y       
  SRATIO   20          20           -0.0002     -0.9E+01    0.469E-03         -0.49        O      5 Z       
@@ -2233,9 +2233,9 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.498    0.050    0.050    1.000    0.000    -0.2754E-05
-      0.011    0.000    0.000    0.000    0.000    -0.2754E-05
-      0.014    0.000    0.000    0.000    0.000     0.3673E-05
+      1.498    0.050    0.050    1.000    0.000    -0.2756E-05
+      0.011    0.000    0.000    0.000    0.000    -0.2756E-05
+      0.014    0.000    0.000    0.000    0.000     0.3684E-05
 
 
 
@@ -2468,9 +2468,9 @@ Inter cycle Min function          0.0           0.14E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.507    0.050    0.050    1.000    0.000    -0.5330E-05
-      0.008    0.000    0.000    0.000    0.000    -0.2576E-05
-      0.013    0.000    0.000    0.000    0.000     0.3436E-05
+      1.507    0.050    0.050    1.000    0.000    -0.5333E-05
+      0.008    0.000    0.000    0.000    0.000    -0.2578E-05
+      0.013    0.000    0.000    0.000    0.000     0.3437E-05
 
 
 
@@ -3144,7 +3144,7 @@ All cycle   Min function          0.0           0.66E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.499    0.050    0.050    1.000    0.000    -0.5330E-05
+      1.499    0.050    0.050    1.000    0.000    -0.5333E-05
      -0.008    0.000    0.000    0.000    0.000     0.0000E+00
       0.011    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3380,7 +3380,7 @@ All cycle   Min function          0.0           0.50E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.501    0.050    0.050    1.000    0.000    -0.5330E-05
+      1.501    0.050    0.050    1.000    0.000    -0.5333E-05
       0.003    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3615,7 +3615,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5330E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5333E-05
       0.001    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3745,7 +3745,7 @@ Mean C-C su =   0.0079
  Structure factor least squares calculation   15  ends  2
 SumFo/SumFc=  1.497   SumFoFc/SumFc^2=  1.502   SumwFoFc/SumwFc^2=  1.502                                                                                                                                                                                       
 LS-scale=  1.502   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.35                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.35                                                                                                                                                                                                         
 #INVERT  EIGE                                                                                                                                                                                                                                                   
 
 
@@ -3845,7 +3845,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5330E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5333E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3996,7 +3996,7 @@ LS-scale=  1.502   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    1           1             0.000     -0.5E+01    0.965E-02          0.00                          SCALE   
+ SRATIO    1           1             0.000     -0.4E+01    0.965E-02          0.00                          SCALE   
  SRATIO    8           8            0.0000     -0.6E+01    0.457E-03          0.01        C      2 Z       
  SRATIO   34          34            0.0000     -0.3E+01    0.361E-03          0.00        N      6 Z       
  SRATIO   48          48            0.0000      0.4E+01    0.168E-02          0.00        C     10 X       
@@ -4077,7 +4077,7 @@ All cycle   shift/esd            0.30E-01       0.42E-02       0.10E+05
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5330E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5333E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -4797,7 +4797,7 @@ All cycle   R-factor              0.0            15.           0.10E+03
 All cycle   Rw                    0.0            19.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.14           0.10E+05
 All cycle   Min function          0.0           0.97E+04       0.10E+16
-Inter cycle R-factor             -5.0           0.72E-01       0.10E+03
+Inter cycle R-factor             -5.0           0.71E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.12           0.10E+03
 Inter cycle shift/esd            -10.           0.45           0.10E+05
 Inter cycle Min function          0.0           0.12E+03       0.10E+16
@@ -6291,7 +6291,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
  R.M.S.         0.01   0.0000   0.0000   0.0000   0.0000   0.0000   0.0130   0.0081   0.0072   0.0056   0.0047   0.0058
                                          0.0000   0.0000   0.0000
 
- RMS sh/esd     0.78     0.00     0.00     0.00     0.00     0.00     2.74     1.85     1.61     1.30     1.13     1.03
+ RMS sh/esd     0.77     0.00     0.00     0.00     0.00     0.00     2.74     1.85     1.61     1.30     1.13     1.03
 
 
  Maximum        0.01   0.0000   0.0000   0.0000   0.0000   0.0000   0.0260   0.0157   0.0113   0.0121   0.0115   0.0142
@@ -6326,8 +6326,8 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.498    0.050    0.050    1.000    0.000    -0.2833E-05
-      0.011    0.000    0.000    0.000    0.000    -0.2833E-05
+      1.498    0.050    0.050    1.000    0.000    -0.2823E-05
+      0.011    0.000    0.000    0.000    0.000    -0.2823E-05
       0.014    0.000    0.000    0.000    0.000     0.3697E-05
 
 
@@ -6561,9 +6561,9 @@ Inter cycle Min function          0.0           0.14E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.507    0.050    0.050    1.000    0.000    -0.5364E-05
-      0.008    0.000    0.000    0.000    0.000    -0.2531E-05
-      0.013    0.000    0.000    0.000    0.000     0.3439E-05
+      1.507    0.050    0.050    1.000    0.000    -0.5356E-05
+      0.008    0.000    0.000    0.000    0.000    -0.2532E-05
+      0.013    0.000    0.000    0.000    0.000     0.3440E-05
 
 
 
@@ -7026,8 +7026,8 @@ Bonds: Update required - List5 length change
 
    1   C         1.      1   1    0    0    0
    2   C        11.      1   1    0    0    0      61.41
-   3   H       101.      1   1    0    0    0     119.76  119.76
-   4   H       102.      1   1    0    0    0     119.77  119.77  109.47
+   3   H       101.      1   1    0    0    0     119.77  119.77
+   4   H       102.      1   1    0    0    0     119.76  119.77  109.47
 
   KEY                                                1       2       3
 
@@ -7232,7 +7232,7 @@ All cycle   Min function          0.0           0.65E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.499    0.050    0.050    1.000    0.000    -0.5364E-05
+      1.499    0.050    0.050    1.000    0.000    -0.5356E-05
      -0.008    0.000    0.000    0.000    0.000     0.0000E+00
       0.011    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -7469,7 +7469,7 @@ All cycle   Min function          0.0           0.50E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.501    0.050    0.050    1.000    0.000    -0.5364E-05
+      1.501    0.050    0.050    1.000    0.000    -0.5356E-05
       0.003    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -7705,7 +7705,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5364E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5356E-05
       0.001    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -7935,7 +7935,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5364E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5356E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -8088,7 +8088,7 @@ LS-scale=  1.502   Wilson Scale=  0.000
 
  SRATIO    9           9            0.0000     -0.3E+01    0.152E-02         -0.01        C      2 U[ISO]  
  SRATIO   18          18            0.0000     -0.3E+01    0.284E-02          0.00        O      3 U[12]   
- SRATIO   53          53            0.0000     -0.8E+01    0.784E-03          0.00        C     11 Y       
+ SRATIO   53          53            0.0000     -0.7E+01    0.784E-03          0.00        C     11 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          55 parameters
@@ -8166,7 +8166,7 @@ All cycle   shift/esd            0.30E-01       0.47E-02       0.10E+05
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5364E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5356E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -9844,7 +9844,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.56E-01       0.10E+05
 All cycle   Min function          0.0           0.77E+04       0.10E+16
 Inter cycle R-factor             -5.0           0.19           0.10E+03
-Inter cycle Rw                   -5.0           0.11           0.10E+03
+Inter cycle Rw                   -5.0           0.12           0.10E+03
 Inter cycle shift/esd            -10.           0.33           0.10E+05
 Inter cycle Min function          0.0            51.           0.10E+16
 
@@ -10410,9 +10410,9 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.426    0.050    0.050    1.000    0.000    -0.2093E-04
-      0.008    0.000    0.000    0.000    0.000    -0.2093E-04
-      0.018    0.000    0.000    0.000    0.000     0.3496E-04
+      1.426    0.050    0.050    1.000    0.000    -0.2099E-04
+      0.008    0.000    0.000    0.000    0.000    -0.2099E-04
+      0.018    0.000    0.000    0.000    0.000     0.3507E-04
 
 
 
@@ -10646,9 +10646,9 @@ Inter cycle Min function          0.0           0.10E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.438    0.050    0.050    1.000    0.000    -0.5259E-04
-      0.011    0.000    0.000    0.000    0.000    -0.3167E-04
-      0.017    0.000    0.000    0.000    0.000     0.3244E-04
+      1.438    0.050    0.050    1.000    0.000    -0.5269E-04
+      0.011    0.000    0.000    0.000    0.000    -0.3170E-04
+      0.017    0.000    0.000    0.000    0.000     0.3248E-04
 
 
 
@@ -11260,7 +11260,7 @@ LS-scale=  1.438   Wilson Scale=  0.000
  S/ESD    43          43            0.0124      0.0E+00    0.103E-02         12.13        O      8 U[ISO]  
  S/ESD    46          46           -0.0008      0.0E+00    0.504E-03         -1.60        C      9 Z       
  S/ESD    49          49            0.0011      0.0E+00    0.703E-03          1.55        C     10 Y       
- S/ESD    53          53            0.0021      0.0E+00    0.849E-03          2.44        C     11 Y       
+ S/ESD    53          53            0.0021      0.0E+00    0.849E-03          2.45        C     11 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            315.
                                                 for          55 parameters
@@ -14505,9 +14505,9 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.426    0.050    0.050    1.000    0.000    -0.2093E-04
-      0.008    0.000    0.000    0.000    0.000    -0.2093E-04
-      0.018    0.000    0.000    0.000    0.000     0.3500E-04
+      1.426    0.050    0.050    1.000    0.000    -0.2096E-04
+      0.008    0.000    0.000    0.000    0.000    -0.2096E-04
+      0.018    0.000    0.000    0.000    0.000     0.3504E-04
 
 
 
@@ -14741,9 +14741,9 @@ Inter cycle Min function          0.0           0.10E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.438    0.050    0.050    1.000    0.000    -0.5246E-04
-      0.011    0.000    0.000    0.000    0.000    -0.3154E-04
-      0.017    0.000    0.000    0.000    0.000     0.3230E-04
+      1.438    0.050    0.050    1.000    0.000    -0.5264E-04
+      0.011    0.000    0.000    0.000    0.000    -0.3168E-04
+      0.017    0.000    0.000    0.000    0.000     0.3244E-04
 
 
 
@@ -14858,7 +14858,7 @@ Bonds: Update required - List5 length change
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
 #CALCULAT   1                                                                                                                                                                                                                                                   
 #CYCLENDS                                                                                                                                                                                                                                                       
- Extinction parameter negative. (   -0.000052 )                                                                                                                                                                                                                 
+ Extinction parameter negative. (   -0.000053 )                                                                                                                                                                                                                 
  Initialising Special positions
 
 
@@ -15258,7 +15258,7 @@ Refining    55 parameters in    1 block :     1666 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #REFINE     1                                                                                                                                                                                                                                                   
 #DORESTRAIN                                                                                                                                                                                                                                                     
- Extinction parameter negative. (   -0.000052 )                                                                                                                                                                                                                 
+ Extinction parameter negative. (   -0.000053 )                                                                                                                                                                                                                 
  Initialising Special positions
 
 
@@ -16289,7 +16289,7 @@ LS-scale=  1.471   Wilson Scale=  0.000
                                 Min          Actual           Max
 All cycle   R-factor              0.0            10.           0.10E+03
 All cycle   Rw                    0.0            25.           0.10E+03
-All cycle   shift/esd            0.30E-01       0.81E-03       0.10E+05
+All cycle   shift/esd            0.30E-01       0.80E-03       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 

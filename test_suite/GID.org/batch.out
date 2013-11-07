@@ -5064,7 +5064,7 @@ Mean C-C su =   0.0000
     4.   2.   0.    56.15     7.52
     5.   2.   0.    23.60     3.36
     6.   2.   0.   -10.58     1.18
-    1.   3.   0.   218.91    29.64
+    1.   3.   0.   218.92    29.64
     2.   3.   0.    23.19     1.66
     4.   3.   0.    83.01    10.97
     4.   4.   0.    56.97     9.53
@@ -5073,10 +5073,10 @@ Mean C-C su =   0.0000
     5.   6.   0.    -0.78     0.39
     2.   7.   0.    83.01    12.66
     5.   7.   0.    12.61     1.34
-    0.   8.   0.   115.15    15.35
+    0.   8.   0.   115.16    15.35
     1.   8.   0.    65.51    10.22
     2.   8.   0.   101.32    13.15
-    4.   8.   0.    83.41    12.63
+    4.   8.   0.    83.42    12.63
     1.   9.   0.   107.83    14.60
     2.   9.   0.    96.03    13.01
     3.   9.   0.    31.74     4.00
@@ -5842,7 +5842,7 @@ All cycle   Min function          0.0           0.88E+03       0.10E+16
 Inter cycle R-factor             -5.0          -0.58E-02       0.10E+03
 Inter cycle Rw                   -5.0           0.46E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.10           0.10E+05
-Inter cycle Min function          0.0           0.99           0.10E+16
+Inter cycle Min function          0.0           0.98           0.10E+16
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -6078,7 +6078,7 @@ All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.88E+03       0.10E+16
 Inter cycle R-factor             -5.0           0.25E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.12E-02       0.10E+03
-Inter cycle shift/esd            -10.          -0.38E-03       0.10E+05
+Inter cycle shift/esd            -10.          -0.37E-03       0.10E+05
 Inter cycle Min function          0.0           0.25           0.10E+16
 
 
@@ -8627,6 +8627,7 @@ LS-scale=  1.841   Wilson Scale=  0.000
  SRATIO   50          50           -0.0007      0.4E+01    0.173E-02         -0.38        N      6 U[11]   
  SRATIO   55          55            0.0007     -0.4E+01    0.186E-02          0.36        N      6 U[12]   
  SRATIO   57          57            0.0001     -0.4E+01    0.410E-03          0.13        C      7 Y       
+ SRATIO   62          62            0.0008     -0.3E+01    0.180E-02          0.46        C      7 U[23]   
  SRATIO   67          67            0.0000     -0.7E+01    0.227E-03         -0.18        O      8 Z       
  SRATIO   76          76            0.0001     -0.2E+02    0.289E-03          0.29        C      9 Z       
  SRATIO  101         101             0.000      0.7E+01    0.235E-02          0.01                          BATCH     1
@@ -13839,7 +13840,7 @@ Mean C-C su =   0.0000
     4.   2.   0.    56.15     7.52
     5.   2.   0.    23.60     3.35
     6.   2.   0.   -10.58     1.18
-    1.   3.   0.   218.92    29.65
+    1.   3.   0.   218.91    29.65
     2.   3.   0.    23.19     1.65
     4.   3.   0.    83.01    10.97
     4.   4.   0.    56.97     9.53
@@ -13848,10 +13849,10 @@ Mean C-C su =   0.0000
     5.   6.   0.    -0.78     0.39
     2.   7.   0.    83.01    12.66
     5.   7.   0.    12.61     1.34
-    0.   8.   0.   115.16    15.35
+    0.   8.   0.   115.15    15.35
     1.   8.   0.    65.51    10.22
     2.   8.   0.   101.32    13.15
-    4.   8.   0.    83.42    12.63
+    4.   8.   0.    83.41    12.63
     1.   9.   0.   107.83    14.60
     2.   9.   0.    96.03    13.01
     3.   9.   0.    31.74     4.00
@@ -14100,7 +14101,7 @@ LS-scale=  1.776   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            160.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           8.942
+                                 The rms (shift/su)  =           8.941
                               The mean abs(shift/su) =           8.873
  The largest (shift/esd) =      9.98, for Parameter    1, SCALE
 
@@ -14859,7 +14860,7 @@ All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.88E+03       0.10E+16
 Inter cycle R-factor             -5.0           0.23E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.12E-02       0.10E+03
-Inter cycle shift/esd            -10.          -0.99E-04       0.10E+05
+Inter cycle shift/esd            -10.          -0.10E-03       0.10E+05
 Inter cycle Min function          0.0           0.26           0.10E+16
 
 
@@ -20329,7 +20330,7 @@ LS-scale=  1.655   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =              2.
                                                 for         100 parameters
                                  The rms (shift/su)  =           0.125
-                              The mean abs(shift/su) =           0.098
+                              The mean abs(shift/su) =           0.099
  The largest (shift/esd) =      0.40, for Parameter   32, C4U[11]
 
                                 Min          Actual           Max
@@ -22385,7 +22386,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
     3.   1.   0.    -0.57     0.36
     4.   1.   0.     0.73     1.14
     6.   1.   0.     2.53     0.07
-    4.   2.   0.    12.49     7.36
+    4.   2.   0.    12.48     7.36
     5.   2.   0.     5.25     3.54
     6.   2.   0.    -2.35     0.88
     1.   3.   0.    48.67    29.87
@@ -22399,7 +22400,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
     0.   8.   0.    25.60    14.27
     2.   8.   0.    22.53    13.14
     4.   8.   0.    18.55    12.44
-    1.   9.   0.    23.98    14.69
+    1.   9.   0.    23.97    14.69
     2.   9.   0.    21.35    12.99
     3.   9.   0.     7.06     3.79
     4.   9.   0.     8.23     5.10
@@ -22459,7 +22460,7 @@ LS-scale=  1.772   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            139.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           8.327
+                                 The rms (shift/su)  =           8.326
                               The mean abs(shift/su) =           8.301
  The largest (shift/esd) =      8.95, for Parameter    2, BATCH2
 
@@ -22651,7 +22652,7 @@ LS-scale=  1.838   Wilson Scale=  0.000
                                 Min          Actual           Max
 All cycle   R-factor              0.0            8.4           0.10E+03
 All cycle   Rw                    0.0            16.           0.10E+03
-All cycle   shift/esd            0.30E-01        2.8           0.10E+05
+All cycle   shift/esd            0.30E-01        2.7           0.10E+05
 All cycle   Min function          0.0           0.86E+03       0.10E+16
 Inter cycle R-factor             -5.0            1.9           0.10E+03
 Inter cycle Rw                   -5.0           0.53           0.10E+03
@@ -23642,7 +23643,7 @@ LS-scale=  1.825   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   24          24            0.0000      0.6E+01    0.313E-03          0.00        O      8 Y       
+ SRATIO   24          24            0.0000      0.7E+01    0.313E-03          0.00        O      8 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          35 parameters
@@ -23691,10 +23692,10 @@ All cycle   shift/esd            0.30E-01       0.20E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    72.73    45.45    36.36     0.00     0.00     0.00     0.00     0.00     0.00
+ Reversals    50.00     0.00     0.00    72.73    45.45    45.45     0.00     0.00     0.00     0.00     0.00     0.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  51.43 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  54.29 for all parameters.
 
 
  Shift
@@ -24738,7 +24739,7 @@ LS-scale=  1.769   Wilson Scale=  0.000
  SRATIO   10          10            0.0000     -0.4E+01    0.115E-02         -0.03        O      3 X       
  SRATIO   11          11            0.0001      0.2E+02    0.434E-03          0.21        O      3 Y       
  SRATIO   14          14           -0.0003      0.5E+01    0.159E-02         -0.16        C      4 X       
- SRATIO   45          45            0.0000      0.9E+03    0.185E-02          0.01        C     11 U[ISO]  
+ SRATIO   45          45            0.0000      0.6E+03    0.185E-02          0.01        C     11 U[ISO]  
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          46 parameters
@@ -29827,8 +29828,8 @@ LS-scale=  0.257   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              3.
                                                 for           1 parameters
-                                 The rms (shift/su)  =           1.756
-                              The mean abs(shift/su) =           1.756
+                                 The rms (shift/su)  =           1.757
+                              The mean abs(shift/su) =           1.757
  The largest (shift/esd) =      1.76, for Parameter    1, BATCH2
 
                                 Min          Actual           Max
@@ -30029,7 +30030,7 @@ Mean C-C su =   0.0000
     0.   6.  16.    -3.11     0.01
     1.   0.  17.    -8.86     0.54
     3.   3.  17.    -3.66     0.78
-    1.   0.  18.    -4.02     0.36
+    1.   0.  18.    -4.03     0.36
     0.   2.  18.   -10.24     0.19
     2.   4.  18.    -2.56     0.53
     1.   0.  19.    -2.74     1.03
@@ -30208,7 +30209,7 @@ Mean C-C su =   0.0000
     0.   6.  16.   -13.42     0.01
     1.   0.  17.    -7.33     0.54
     3.   3.  17.    -3.03     0.78
-    1.   0.  18.   -17.36     0.36
+    1.   0.  18.   -17.37     0.36
     0.   2.  18.    -8.48     0.19
     2.   4.  18.   -11.05     0.53
     1.   0.  19.   -11.84     1.03
@@ -30470,7 +30471,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      3710.          3521.            400.                                   On scale of /FC/
+      3710.          3521.            401.                                   On scale of /FC/
 
       6482.          6152.            700.               0.9459E+03          On scale of /FO/
 
@@ -30945,7 +30946,7 @@ LS-scale=  1.772   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            138.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           8.306
+                                 The rms (shift/su)  =           8.307
                               The mean abs(shift/su) =           8.281
  The largest (shift/esd) =      8.93, for Parameter    2, BATCH2
 
@@ -31130,7 +31131,7 @@ LS-scale=  1.838   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             15.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           2.729
+                                 The rms (shift/su)  =           2.730
                               The mean abs(shift/su) =           2.623
  The largest (shift/esd) =      3.38, for Parameter    2, BATCH2
 
@@ -32172,10 +32173,10 @@ All cycle   shift/esd            0.30E-01       0.21E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    63.64    63.64    18.18     0.00     0.00     0.00     0.00     0.00     0.00
+ Reversals    50.00     0.00     0.00    63.64    54.55    18.18     0.00     0.00     0.00     0.00     0.00     0.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  48.57 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  45.71 for all parameters.
 
 
  Shift
