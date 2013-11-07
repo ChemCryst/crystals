@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.70  2013/11/06 12:06:34  pascal
+C catch singularity during inversion and returning an error
+C
 C Revision 1.69  2013/11/05 12:39:11  pascal
 C small changes
 C
@@ -649,8 +652,14 @@ c     1              JY, 100.0)
 c               !deallocate(ref)
 
 c L D L^t inversion + preconditioning
+#ifdef _DIGITALF77_
+c stupid compiler has a stack overflow by making a temporary array 
+               call LDLT_inversion(
+     1             STR11(L11C), JY, info)
+#else
                call LDLT_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+#endif
                if(info>0) then
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
      1                ' is singular. Inversion failed.' 
