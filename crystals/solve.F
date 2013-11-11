@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.71  2013/11/07 10:47:26  pascal
+C fix stack overflow for digital compiler
+C
 C Revision 1.70  2013/11/06 12:06:34  pascal
 C catch singularity during inversion and returning an error
 C
@@ -2283,8 +2286,8 @@ C--CHECK IF THIS IS AN OVERALL PARAMETER
 C--PRINT FOR OVERALL PARAMETERS
 2700  CONTINUE
       IF (IHIT .EQ. 1) ISTORE(JO+1) = JC
-      IF ((IPRINT .EQ. 1 ) .AND. (ISSPRT .EQ. 0) ) THEN
       WRITE(CTEXT,'(2A4,I1)') (KVP(JRR,JS),JRR=1,2)
+      IF ((IPRINT .EQ. 1 ) .AND. (ISSPRT .EQ. 0) ) THEN
        WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,(KVP(JRR,JS),JRR=1,2)
       ENDIF
 CRIC13:2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,26X,2A4,I3)
