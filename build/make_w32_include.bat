@@ -40,11 +40,11 @@ goto ALLDVF
 @
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /nolink %COPENMP%
-@set FNOOPT=/fpp /I..\crystals /MD /O0 /nolink
+@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /fp:source /nolink %COPENMP%
+@set FNOOPT=/fpp /I..\crystals /MD /O0 /fp:source /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
-@set FDEBUG=/fpp /I..\crystals /MDd /debug /check:bounds /check:format /check:overflow /check:pointers /check:uninit  /warn:argument_checking /warn:nofileopt /nolink /traceback /Qtrapuv
+@set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:bounds /check:format /check:overflow /check:pointers /check:uninit  /warn:argument_checking /warn:nofileopt /nolink /traceback /Qtrapuv
 @if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
 @if "%CRDEBUG%" == "TRUE" set COUT=/Fodobj\
 @goto exit
