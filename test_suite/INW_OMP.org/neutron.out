@@ -1880,7 +1880,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
-Inter cycle R-factor             -5.0           0.59E-03       0.10E+03
+Inter cycle R-factor             -5.0           0.61E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.21E-02       0.10E+03
 Inter cycle shift/esd            -10.          -0.44E-01       0.10E+05
 Inter cycle Min function          0.0            1.4           0.10E+16
@@ -3695,7 +3695,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.0   
  H        70.     0.6186    0.1145    0.1983       -4.3   
  Q         1.     0.4588    0.1048    0.1439       25.3  Poor Shape  
- Q         2.     0.7579    0.1269    0.2554       18.8  Poor Shape  
+ Q         2.     0.7421    0.6269    0.2446       18.8  Poor Shape  
  Q         3.     0.6958    0.0610    0.1775       15.1  Poor Shape  
  Q         4.     0.7938    0.6446    0.2075       15.0  Poor Shape  
  Q         5.     0.7054    0.0671    0.1204       11.4  Poor Shape  
@@ -4027,7 +4027,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1       2
 
- Distances about atom  Q      2.          X =  0.24208     Y = -0.12687     Z =  0.74464
+ Distances about atom  Q      2.          X =  0.24208     Y = -0.12688     Z =  0.74464
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -4886,7 +4886,7 @@ Resetting shift for Extinction  Shift=       5.54  Esd=       0.37  New shift=  
 
  LARGE     2           2             0.597      0.1E+02    0.372E+00         14.90                          EXTPARAM
  SRATIO   75          75            0.0000      0.4E+01    0.298E-03          0.00        C      7 X       
- SRATIO  136         136            0.0000     -0.4E+01    0.231E-02          0.00        H     92 U[13]   
+ SRATIO  136         136            0.0000     -0.5E+01    0.231E-02          0.00        H     92 U[13]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            222.
                                                 for         144 parameters
@@ -6041,7 +6041,7 @@ Mean C-C su =   0.0072
 
      68155.         64014.          10686.                                   On scale of /FC/
 
-     19829.         18624.           3109.               0.6011E+04          On scale of /FO/
+     19829.         18624.           3109.               0.6012E+04          On scale of /FO/
 
  New scale factor (G) is      0.291,    2547 reflections used in refinement
 
@@ -6950,7 +6950,7 @@ All cycle   Min function          0.0           0.40E+04       0.10E+16
 Inter cycle R-factor             -5.0           0.22E-02       0.10E+03
 Inter cycle Rw                   -5.0           0.53E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.11           0.10E+05
-Inter cycle Min function          0.0            3.4           0.10E+16
+Inter cycle Min function          0.0            3.5           0.10E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -7429,7 +7429,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
     8.   4.   0.    18.52    26.63
     3.   5.   0.    12.77     2.53
     1.   7.   0.     8.56     2.78
-    4.   7.   0.     0.00     3.04
+    4.   7.   0.     0.00     3.05
     7.   7.   0.     0.00     1.18
     8.   7.   0.     0.00     2.28
     4.   8.   0.     0.00     2.27
@@ -7464,7 +7464,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
  Structure factor least squares calculation    9  ends  2
 SumFo/SumFc=  0.300   SumFoFc/SumFc^2=  0.292   SumwFoFc/SumwFc^2=  0.292                                                                                                                                                                                       
 LS-scale=  0.292   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    0.687    100*(<Fo>-<Fc>)/<Fo> =     2.58                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.688    100*(<Fo>-<Fc>)/<Fo> =     2.58                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -7595,7 +7595,7 @@ All cycle   Min function          0.0           0.40E+04       0.10E+16
  Statistics for   144 least squares parameters, with  2403 degrees of freedom
  Number of observations              2547                 0              2547
  Minimisation function              0.401E+04         0.000E+00         0.401E+04
- Hamilton weighted R-value          12.362             0.000            12.362
+ Hamilton weighted R-value          12.361             0.000            12.361
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -9708,8 +9708,8 @@ Resetting shift for Extinction  Shift=       5.58  Esd=       0.35  New shift=  
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     2           2             0.498      0.1E+02    0.351E+00         15.89                          EXTPARAM
- SRATIO   48          48            0.0000      0.5E+01    0.233E-03          0.00        C      4 X       
- SRATIO   68          68            0.0000     -0.5E+01    0.205E-03          0.00        C      6 Z       
+ SRATIO   48          48            0.0000      0.6E+01    0.233E-03          0.00        C      4 X       
+ SRATIO   68          68            0.0000     -0.4E+01    0.205E-03          0.00        C      6 Z       
  SRATIO   84          84            0.0000     -0.5E+01    0.271E-03          0.00        C      8 X       
  SRATIO  112         112            0.0000      0.3E+01    0.217E-02          0.00        H     81 U[13]   
  SRATIO  114         114            0.0000      0.1E+02    0.224E-02          0.01        H     82 U[11]   
@@ -9956,7 +9956,7 @@ Mean C-C su =   0.0019
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-     63358.         63333.           5220.                                   On scale of /FC/
+     63358.         63333.           5221.                                   On scale of /FC/
 
      19829.         19821.           1634.               0.2099E+04          On scale of /FO/
 
@@ -10619,7 +10619,7 @@ All cycle   Min function          0.0           0.62E+05       0.10E+16
 
 
  Mean           0.01   0.0000  -0.0006   0.0038  -0.0016  -0.0012   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.0297  -0.0228  -0.0106
+                                         0.0297  -0.0229  -0.0106
 
  R.M.S.         0.01   0.0000   0.0074   0.0073   0.0033   0.0052   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0564   0.0478   0.0467
@@ -11201,7 +11201,7 @@ LS-scale=  0.294   Wilson Scale=  0.000
  S/ESD    46          46           -0.0022      0.3E+00    0.119E-02         -1.82        H     51 U[ISO]  
  S/ESD    47          47            0.0029     -0.5E+00    0.131E-02          2.24        H     81 U[ISO]  
  S/ESD    48          48            0.0022      0.1E+01    0.125E-02          1.76        H     82 U[ISO]  
- S/ESD    50          50           -0.0018      0.1E+00    0.165E-02         -1.10        H     91 U[ISO]  
+ S/ESD    50          50           -0.0018      0.1E+00    0.165E-02         -1.09        H     91 U[ISO]  
  S/ESD    51          51            0.0021     -0.5E+00    0.135E-02          1.58        H     92 U[ISO]  
  S/ESD    52          52            0.0035     -0.6E+02    0.131E-02          2.66        H     93 U[ISO]  
 
@@ -13184,7 +13184,7 @@ Mean C-C su =   0.0017
     9.   3.   0.     5.72     9.08
     6.   4.   0.     0.00     2.06
     3.   5.   0.    11.99     2.82
-    1.   7.   0.     8.04     4.95
+    1.   7.   0.     8.04     4.94
     4.   7.   0.     0.00     2.86
     7.   7.   0.     0.00     0.48
     8.   7.   0.     0.00     0.81
@@ -13219,7 +13219,7 @@ Mean C-C su =   0.0017
   -3  11   3  112.3  118.9   2.0  0.94     0   5  11   13.3    2.4   2.0  5.62                                                                                                                                                                                  
    3   9   6    9.6   17.7   1.9  0.54    -3   2   7  101.3  107.6   1.9  0.94                                                                                                                                                                                  
   -9   3   2   13.2    3.3   1.9  4.03     4   2   0  107.2  113.4   1.9  0.94                                                                                                                                                                                  
-   4  16   3   12.3    0.3   1.9 36.38    -7   7   8   14.3    5.8   1.9  2.44                                                                                                                                                                                  
+   4  16   3   12.3    0.3   1.9 36.39    -7   7   8   14.3    5.8   1.9  2.44                                                                                                                                                                                  
 
                               ***
                              ***
@@ -13303,11 +13303,11 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
+ Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
+ Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
  Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
@@ -13810,7 +13810,7 @@ Refining   144 parameters in    1 block :    10744 elements in the LS matrix.
     9.   3.   0.     5.72     9.08
     6.   4.   0.     0.00     2.06
     3.   5.   0.    11.99     2.82
-    1.   7.   0.     8.04     4.95
+    1.   7.   0.     8.04     4.94
     4.   7.   0.     0.00     2.86
     7.   7.   0.     0.00     0.48
     8.   7.   0.     0.00     0.81
@@ -14942,7 +14942,7 @@ Refining    53 parameters in    1 block :     1553 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 SumFo/SumFc=  0.334   SumFoFc/SumFc^2=  0.292   SumwFoFc/SumwFc^2=  0.219                                                                                                                                                                                       
 LS-scale=  0.288   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    3.686    100*(<Fo>-<Fc>)/<Fo> =    13.64                                                                                                                                                                                                         
+<Fo>-<Fc> =    3.687    100*(<Fo>-<Fc>)/<Fo> =    13.64                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -15314,7 +15314,7 @@ LS-scale=  0.288   Wilson Scale=  0.000
  S/ESD    40          40           -0.0038      0.8E+00    0.873E-03         -4.34        C      8 Z       
  S/ESD    41          41           -0.0044     -0.8E+00    0.136E-02         -3.21        C      8 U[ISO]  
  S/ESD    42          42            0.0031      0.5E+00    0.108E-02          2.85        C      9 X       
- S/ESD    43          43            0.0022      0.7E+00    0.540E-03          4.05        C      9 Y       
+ S/ESD    43          43            0.0022      0.7E+00    0.540E-03          4.06        C      9 Y       
  S/ESD    44          44           -0.0040      0.1E+01    0.919E-03         -4.37        C      9 Z       
  S/ESD    45          45           -0.0068      0.8E+01    0.144E-02         -4.71        C      9 U[ISO]  
  S/ESD    46          46           -0.0129      0.4E+01    0.386E-02         -3.35        H     51 U[ISO]  
@@ -15347,7 +15347,7 @@ All cycle   Min function          0.0           0.17E+05       0.10E+16
  Statistics for    53 least squares parameters, with  2494 degrees of freedom
  Number of observations              2547                 0              2547
  Minimisation function              0.171E+05         0.000E+00         0.171E+05
- Hamilton weighted R-value          51.865             0.000            51.865
+ Hamilton weighted R-value          51.864             0.000            51.864
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -15622,7 +15622,7 @@ LS-scale=  0.293   Wilson Scale=  0.000
  S/ESD    31          31           -0.0004      0.1E+00    0.216E-03         -1.83        C      6 Y       
  S/ESD    32          32           -0.0010      0.2E+00    0.366E-03         -2.69        C      6 Z       
  S/ESD    33          33           -0.0044      0.5E+00    0.575E-03         -7.67        C      6 U[ISO]  
- S/ESD    35          35           -0.0005      0.1E+00    0.270E-03         -1.78        C      7 Y       
+ S/ESD    35          35           -0.0005      0.1E+00    0.270E-03         -1.77        C      7 Y       
  S/ESD    36          36           -0.0018      0.3E+00    0.465E-03         -3.81        C      7 Z       
  S/ESD    37          37           -0.0051      0.6E+00    0.725E-03         -6.97        C      7 U[ISO]  
  S/ESD    38          38           -0.0015      0.2E+00    0.476E-03         -3.10        C      8 X       
@@ -16164,7 +16164,7 @@ Mean C-C su =   0.0024
  Structure factor least squares calculation    6  ends  2
 SumFo/SumFc=  0.305   SumFoFc/SumFc^2=  0.296   SumwFoFc/SumwFc^2=  0.296                                                                                                                                                                                       
 LS-scale=  0.293   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    1.024    100*(<Fo>-<Fc>)/<Fo> =     3.86                                                                                                                                                                                                         
+<Fo>-<Fc> =    1.024    100*(<Fo>-<Fc>)/<Fo> =     3.85                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -17655,7 +17655,7 @@ Mean C-C su =   0.0017
   -3  11   3  112.3  118.9   2.0  0.94     0   5  11   13.3    2.4   2.0  5.62                                                                                                                                                                                  
    3   9   6    9.6   17.7   1.9  0.54    -3   2   7  101.3  107.6   1.9  0.94                                                                                                                                                                                  
   -9   3   2   13.2    3.3   1.9  4.03     4   2   0  107.2  113.4   1.9  0.94                                                                                                                                                                                  
-   4  16   3   12.3    0.3   1.9 36.38    -7   7   8   14.3    5.8   1.9  2.44                                                                                                                                                                                  
+   4  16   3   12.3    0.3   1.9 36.39    -7   7   8   14.3    5.8   1.9  2.44                                                                                                                                                                                  
 
                               ***
                              ***
@@ -17739,11 +17739,11 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
+ Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
+ Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
  Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  

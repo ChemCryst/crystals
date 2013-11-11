@@ -2787,10 +2787,10 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for     6 least squares parameters, with 12784 degrees of freedom
- Number of observations             12575               215             12790
+ Statistics for     6 least squares parameters, with 12783 degrees of freedom
+ Number of observations             12575               214             12789
  Minimisation function              0.136E+06         0.129E+06         0.265E+06
- Hamilton weighted R-value           4.959            16.079             6.629
+ Hamilton weighted R-value           4.959            16.163             6.631
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2898,7 +2898,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
      F          2.    1.0000   0.0000   0.5156  -0.1467   0.2046   0.1369   0.2200   0.1491  -0.0725  -0.0769   0.0132
                       0.0000            0.0000   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0001   0.0001   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                        0.0015   0.0013   0.0026
+                                        0.0014   0.0013   0.0026
 
      F          3.    1.0000   0.0000   0.6773  -0.1916   0.1590   0.1627   0.1581   0.1029  -0.0540  -0.0024  -0.0092
                       0.0000            0.0000   0.0000   0.0001   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
@@ -4024,7 +4024,7 @@ Mean C-C su =   0.0129
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-    767592.        763199.          32072.                                   On scale of /FC/
+    767592.        763200.          32072.                                   On scale of /FC/
 
     697942.        693948.          29162.               0.1595E+06          On scale of /FO/
 
@@ -4694,8 +4694,8 @@ SumFo/SumFc=  0.914   SumFoFc/SumFc^2=  0.913   SumwFoFc/SumwFc^2=  0.913
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =     0.55                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      11964 Physical writes      10101 Cache hits     208022
- Cache hit distribution   188940   13268    2054     484     465     375
+ Physical reads      11964 Physical writes      10101 Cache hits     208023
+ Cache hit distribution   188941   13268    2054     484     465     375
  Cache hit distribution      196     219     223     225     160     161
  Cache hit distribution      192     102     197      93     194     139
  Cache hit distribution       53      51      47      39      91      54

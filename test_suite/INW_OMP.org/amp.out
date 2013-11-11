@@ -1395,7 +1395,7 @@ LS-scale=  1.483   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    2           2            0.0003      0.4E+03    0.207E-02          0.15        C      1 X       
+ SRATIO    2           2            0.0003      0.5E+03    0.207E-02          0.15        C      1 X       
  SRATIO   12          12           -0.0002     -0.3E+01    0.440E-03         -0.53        O      3 Z       
  SRATIO   19          19            0.0002      0.8E+01    0.676E-03          0.29        O      5 Y       
  SRATIO   20          20           -0.0002     -0.9E+01    0.469E-03         -0.49        O      5 Z       
