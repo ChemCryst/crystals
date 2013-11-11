@@ -146,7 +146,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.245
                               The mean abs(shift/su) =           0.245
- The largest (shift/esd) =      0.24, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.24, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -292,7 +292,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.00, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -618,7 +618,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.454
                               The mean abs(shift/su) =           0.454
- The largest (shift/esd) =      0.45, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.45, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -787,7 +787,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.245
                               The mean abs(shift/su) =           0.245
- The largest (shift/esd) =      0.24, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.24, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -933,7 +933,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.00, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -1259,7 +1259,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.454
                               The mean abs(shift/su) =           0.454
- The largest (shift/esd) =      0.45, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.45, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -1580,7 +1580,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.00, for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -2233,7 +2233,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter    1,             ýÂ
+ The largest (shift/esd) =      0.00, for Parameter    1, ENANTIO
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
