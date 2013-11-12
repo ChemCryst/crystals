@@ -27,7 +27,8 @@ if ( $windows ) {
 
 
 @cleanup = ("absences.dat", "mergingr.dat", "PERH.DAT",    # List of files
-            "publish.cif", "RIDEH.DAT", "Script.log");     # to remove.
+            "publish.cif", "RIDEH.DAT", "Script.log", "delh.tmp", "delh.dat", "perh.tmp", "histogram.dat",
+			"cameron.ini", "regular.l5i", "regular.oby", "regular.dat", "fourier.map");     # to remove.
 
 $CRYSHOME = $CRYSDIR;
 $CRYSHOME =~ s/.*,//g;                 # Remove owt before comma, repeatedly.
@@ -108,7 +109,7 @@ sub obscureMachinePrecision() {
  	}
         close ($fhi);
         close ($fho); 
-        unlink ($fhi);
+        unlink ($new_file);
 }
 
 
