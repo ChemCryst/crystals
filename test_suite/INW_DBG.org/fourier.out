@@ -31692,7 +31692,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP     12   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -33446,7 +33446,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -35230,7 +35230,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -37014,7 +37014,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -38819,7 +38819,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -40047,7 +40047,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP      1   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -41170,7 +41170,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP      1   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -41740,7 +41740,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.17686   0.53621   0.07871
+ Malformed peak at    0.17690   0.53618   0.07876
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42074,7 +42074,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.00000   0.03953   0.40560
+ Malformed peak at    0.00000   0.03954   0.40560
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42316,7 +42316,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05652
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
