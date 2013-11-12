@@ -20579,7 +20579,7 @@ LS-scale=  1.658   Wilson Scale=  0.000
                                                 for         100 parameters
                                  The rms (shift/su)  =           0.029
                               The mean abs(shift/su) =           0.023
- The largest (shift/esd) =      0.10, for Parameter    1, C11U[12]
+ The largest (shift/esd) =      0.10, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            7.9           0.10E+03
@@ -25899,7 +25899,7 @@ LS-scale=  1.824   Wilson Scale=  0.000
                                                 for         101 parameters
                                  The rms (shift/su)  =           0.043
                               The mean abs(shift/su) =           0.033
- The largest (shift/esd) =      0.13, for Parameter    1, BATCH2
+ The largest (shift/esd) =      0.13, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            8.1           0.10E+03
@@ -29066,7 +29066,7 @@ LS-scale=  1.659   Wilson Scale=  0.000
                                                 for         100 parameters
                                  The rms (shift/su)  =           0.029
                               The mean abs(shift/su) =           0.023
- The largest (shift/esd) =      0.10, for Parameter    1, C11U[12]
+ The largest (shift/esd) =      0.10, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            7.9           0.10E+03
@@ -34381,7 +34381,7 @@ LS-scale=  1.824   Wilson Scale=  0.000
                                                 for         101 parameters
                                  The rms (shift/su)  =           0.043
                               The mean abs(shift/su) =           0.033
- The largest (shift/esd) =      0.13, for Parameter    1, BATCH2
+ The largest (shift/esd) =      0.13, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            8.1           0.10E+03
