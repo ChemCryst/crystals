@@ -9115,7 +9115,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
                                                 for          45 parameters
                                  The rms (shift/su)  =           0.014
                               The mean abs(shift/su) =           0.009
- The largest (shift/esd) =      0.03, for Parameter    1, C11U[11]
+ The largest (shift/esd) =      0.03, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            14.           0.10E+03
@@ -12752,7 +12752,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
                                                 for          45 parameters
                                  The rms (shift/su)  =           0.014
                               The mean abs(shift/su) =           0.009
- The largest (shift/esd) =      0.03, for Parameter    1, C11U[11]
+ The largest (shift/esd) =      0.03, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            14.           0.10E+03
