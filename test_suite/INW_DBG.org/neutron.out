@@ -8112,7 +8112,7 @@ Mean C-C su =   0.0020
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-     63748.         63740.           5354.                                   On scale of /FC/
+     63749.         63740.           5354.                                   On scale of /FC/
 
      19829.         19826.           1665.               0.2313E+04          On scale of /FO/
 
@@ -8793,7 +8793,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q        14.     0.0350    0.2723    0.1789        9.2  Poor Shape  
  Q        15.     0.0325    0.1027    0.2236        9.1  Poor Shape  
  Q        16.     0.1663    0.4315    0.1196        9.1  Poor Shape  
- Q        17.     0.4604    0.2738    0.2596        9.0  Poor Shape  
+ Q        17.     0.0396    0.7738    0.2404        9.0  Poor Shape  
  QN       18.     0.5417    0.0417    0.1429      -15.7  Hole        
  The new list  10 contains    34 atoms
  The minimum and maximum map densities are  -1.57      2.50        barns /A^3                                                                                                                                                                                   
@@ -13303,12 +13303,12 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
+ Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
- Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
+ Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
+ Q         7.     0.9942    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
  Q        10.     0.5292    0.2004    0.0396        9.2  Poor Shape  
@@ -13651,7 +13651,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      7.          X = -0.00583     Y =  0.16729     Z =  0.22036
+ Distances about atom  Q      7.          X =  0.99417     Y =  0.16729     Z =  0.22036
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13685,7 +13685,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      9.          X = -0.04375     Y =  0.12229     Z =  0.09964
+ Distances about atom  Q      9.          X =  0.95625     Y =  0.12229     Z =  0.09964
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13729,7 +13729,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q     13.          X = -0.15458     Y =  0.16938     Z =  0.03464
+ Distances about atom  Q     13.          X =  0.84542     Y =  0.16938     Z =  0.03464
 
 
  Angles about atom  Q     13.
@@ -17655,7 +17655,7 @@ Mean C-C su =   0.0017
   -3  11   3  112.3  118.9   2.0  0.94     0   5  11   13.3    2.4   2.0  5.62                                                                                                                                                                                  
    3   9   6    9.6   17.7   1.9  0.54    -3   2   7  101.3  107.6   1.9  0.94                                                                                                                                                                                  
   -9   3   2   13.2    3.3   1.9  4.03     4   2   0  107.2  113.4   1.9  0.94                                                                                                                                                                                  
-   4  16   3   12.3    0.3   1.9 36.38    -7   7   8   14.3    5.9   1.9  2.44                                                                                                                                                                                  
+   4  16   3   12.3    0.3   1.9 36.39    -7   7   8   14.3    5.9   1.9  2.44                                                                                                                                                                                  
 
                               ***
                              ***
@@ -17739,12 +17739,12 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
+ Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
  Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
- Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
+ Q         7.     0.9942    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
  Q        10.     0.5292    0.2004    0.0396        9.2  Poor Shape  
@@ -18087,7 +18087,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      7.          X = -0.00583     Y =  0.16729     Z =  0.22036
+ Distances about atom  Q      7.          X =  0.99417     Y =  0.16729     Z =  0.22036
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -18121,7 +18121,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      9.          X = -0.04375     Y =  0.12229     Z =  0.09964
+ Distances about atom  Q      9.          X =  0.95625     Y =  0.12229     Z =  0.09964
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -18165,7 +18165,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q     13.          X = -0.15458     Y =  0.16938     Z =  0.03464
+ Distances about atom  Q     13.          X =  0.84542     Y =  0.16938     Z =  0.03464
 
 
  Angles about atom  Q     13.
