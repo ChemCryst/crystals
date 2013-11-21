@@ -14,7 +14,8 @@ ADD_CUSTOM_COMMAND(
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
       COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14
       COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/dscbuild.cmake
-      DEPENDS commands.src
+      COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
+      DEPENDS commands.src crystals
       COMMENT "Processing commands.src into commands.dsc"
 )
 

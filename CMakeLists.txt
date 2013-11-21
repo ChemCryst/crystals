@@ -7,12 +7,24 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 ENABLE_LANGUAGE(Fortran)
 
+INCLUDE (CPack)
+
+set (CPACK_GENERATOR "DragNDrop")
+set (CPACK_BUNDLE_NAME "Crystals")
+SET(CPACK_INSTALL_CMAKE_PROJECTS  "${CMAKE_BINARY_DIR};Crystals;ALL;/")
+SET(CPACK_PACKAGE_VENDOR "Chem Cryst")
+SET(CPACK_PACKAGE_VERSION "15.0.0")
+SET(CPACK_PACKAGE_VERSION_MAJOR "15")
+SET(CPACK_PACKAGE_VERSION_MINOR "0")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
+
+
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmakemodules/")
-SET(wxWidgets_CONFIG_EXECUTABLE /Users/richard.cooper/wxWidgets-2.9.5/bld/wx-config)
+SET(wxWidgets_CONFIG_EXECUTABLE /Users/richard.cooper/wxWidgets-2.9.5/b2/wx-config)
 FIND_PACKAGE(wxWidgets REQUIRED html adv core gl base stc)
 INCLUDE(${wxWidgets_USE_FILE})
 
-SET(APPS /Users/richard.cooper/crystals/go7/crystals.app)
+SET(APPS ${CMAKE_BINARY_DIR}/crystals.app)
 SET(DIRS )
 
 IF (NOT CMAKE_BUILD_TYPE)   # make sure that the default is a RELEASE
@@ -58,7 +70,7 @@ IF (APPLE)
   SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8") 
   SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
 #  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 #  SET(CMAKE_LINKER_EXE_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=c++")
 
 ENDIF ()
@@ -126,13 +138,27 @@ SET_SOURCE_FILES_PROPERTIES( ${scpfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Reso
 SET_SOURCE_FILES_PROPERTIES( ${datfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/script GENERATED 1  )
 SET_SOURCE_FILES_PROPERTIES( ${srtfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources GENERATED 1  )
 
-ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS crystals commands.dsc )
-ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND cp datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
+ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
+ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
+
 SET_SOURCE_FILES_PROPERTIES( commands.dsc PROPERTIES MACOSX_PACKAGE_LOCATION Resources GENERATED 1  )
 
+set( MACOSX_BUNDLE_ICON_FILE crystals.icns )
+
+ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND cp datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
+
+
+ADD_CUSTOM_TARGET ( osx_bundle_dirs
+    COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/ProjectName.app/Contents/Resources
+    COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/ProjectName.app/Contents/MacOS
+    COMMAND cp ${CMAKE_SOURCE_DIR}/precomp/MAC/${MACOSX_BUNDLE_ICON_FILE}
+    ${CMAKE_CURRENT_BINARY_DIR}/crystals.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} )
 
 
 ADD_EXECUTABLE (crystals MACOSX_BUNDLE ${scpfiles} ${datfiles} ${srtfiles} gui/gcrystals.cc)
+
+add_dependencies(crystals osx_bundle_dirs )
+
 
 TARGET_LINK_LIBRARIES(crystals CameronFortran CrystalsFortran CrystalsUserInterface ${wxWidgets_LIBRARIES})
 
@@ -140,4 +166,25 @@ INSTALL(CODE "
       include(BundleUtilities)
       fixup_bundle(\"${APPS}\"  \"\"  \"${DIRS}\")
       " COMPONENT Runtime)
+
+INSTALL(FILES ${CMAKE_BINARY_DIR}/commands.dsc DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/cif2cry/cif2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/shelxs/shelxs DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/shelxs/sxtocry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/convplat/convplat DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/delred/delred DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/foxman/pcf2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/sir92/sir92 DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/csd2cry/csd2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/hklf5/hklf52cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/Diffractometers/diffin DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
+
+FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/script" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
+FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/demo" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
+FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/form.dat" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
+
+INSTALL (PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/precomp/MAC/superflip" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
+INSTALL (PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/precomp/MAC/EDMA" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
+
 
