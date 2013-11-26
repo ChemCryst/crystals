@@ -1,4 +1,8 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.10  2005/01/23 08:29:12  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:06  rich
 C New CRYSTALS repository
 C
@@ -1050,8 +1054,8 @@ C
       END
 C
 CODE FOR SRTDWN
-      SUBROUTINE SRTDWN (LSORT, MSORT, MDSORT, NSORT,
-     1 IPOS, ITEM, VALUE, ITYPE, DEF)
+      SUBROUTINE SRTDWN (LSORT, MDSORT, NSORT,
+     1 IPOS, ITEM, VALUE, ITYPE)
 C
 C----- STORE THE OCCURENCES OF A RECORD CONTAINING THE LARGET OCCURENCES
 C      OF AN ITEM

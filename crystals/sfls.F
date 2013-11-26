@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.95  2013/11/06 12:06:34  pascal
+C catch singularity during inversion and returning an error
+C
 C Revision 1.94  2013/11/05 15:37:35  pascal
 C replace single precision AA^t accumulation with double precision
 C
@@ -1693,8 +1696,7 @@ C----- INITIALISE THE SORT BUFFER
       JSORT = -5
       MDSORT = NTEMPR
       NSORT = 30
-      CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,
-     1   0, DEF)
+      CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
       JSORT = 5
 
 
@@ -1707,8 +1709,7 @@ C----- INITIALISE THE SORT BUFFER
         JLEVER = -5             ! Sort on the fifth item (NB: abs)
         MDLEVE = NTEMPL         ! Five items to be stored
         NLEVER = 30             ! Worst 30 reflections to be kept
-        CALL SRTDWN(LLEVER,MLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,
-     1    -1, DEF3)             ! Init
+        CALL SRTDWN(LLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,-1)             ! Init
         JLEVER = 4              ! Sort on the fifth item (NB: offset)
         REDMAX = 0.0
 
@@ -2169,8 +2170,8 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
             STORE(LTEMPR+4) = FCEXT
             STORE(LTEMPR+5) = RDJW
             STORE(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
-            CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, 
-     1              XVALUR, 0, DEF)
+            CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, 
+     1              XVALUR, 0)
           ENDIF
 
 
@@ -2363,8 +2364,8 @@ C----    H,K,L,SNTHL,LEV,
                 STORE(LTEMPL+4) = Pii
                 STORE(LTEMPL+5) = FO*SCALEK
                 STORE(LTEMPL+6) = FCEXT
-                CALL SRTDWN(LLEVER,MLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, 
-     1          XVALUL,-1, DEF3)
+                CALL SRTDWN(LLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, 
+     1          XVALUL,-1)
                 ILEVPR = ILEVPR + 1
               END IF
             END IF

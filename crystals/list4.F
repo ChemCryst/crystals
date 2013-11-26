@@ -1,4 +1,9 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.74  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.73  2013/05/24 13:24:59  djw
 C Increase number of decimal places in Fo afreement analysis so that weak bins can be identified in weak data
 C
@@ -424,8 +429,7 @@ C--FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
         JSORT = -5
         MDSORT = NTEMPR
         NSORT = 30
-        CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,
-     1   -1, DEF)             ! INITIALISE THE BUFFER
+        CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,-1)             ! INITIALISE THE BUFFER
         JSORT = 5
 
         LTEMPE = NFL
@@ -434,8 +438,7 @@ C--FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
         JENAN = -6
         MDENAN = NTEMPE
         NENAN = 30
-        CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN, JENAN, LTEMPE, XVALUE,
-     1   -1, DEF2)            ! INITIALISE THE BUFFER
+        CALL SRTDWN(LENAN,MDENAN,NENAN, JENAN, LTEMPE, XVALUE,-1)            ! INITIALISE THE BUFFER
         JENAN = 6
 
         IF ( ITYPE4 .LT. MINSCM ) GO TO 9930         ! CHECK SCHEME EXISTS
@@ -1093,8 +1096,7 @@ cdjw99              H=H+F*F*EW/(1.+FO**CS)
               STORE(LTEMPE+4) = FC
               STORE(LTEMPE+5) = SQRT(FSQ/(AWI+ZEROSQ))
               STORE(LTEMPE+6) = WWT
-              CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN,
-     1           JENAN, LTEMPE, XVALUE, -1, DEF2)
+              CALL SRTDWN(LENAN,MDENAN,NENAN,JENAN, LTEMPE, XVALUE, -1)
             ENDIF
           ENDIF
 
@@ -1169,8 +1171,7 @@ c
               STORE(LTEMPE+4) = FC
               STORE(LTEMPE+5) = SQRT(FSQ/(AWI+ZEROSQ))
               STORE(LTEMPE+6) = WWT
-              CALL SRTDWN(LENAN,MENAN,MDENAN,NENAN,
-     1           JENAN, LTEMPE, XVALUE, -1, DEF2)
+              CALL SRTDWN(LENAN,MDENAN,NENAN,JENAN, LTEMPE, XVALUE, -1)
            ENDIF
         ENDIF
 
@@ -1207,8 +1208,7 @@ C--APPLY DUNITZ-SEILER TO ANY WEIGHTING SCHEME (except 13!)
            STORE(LTEMPR+3) = FO
            STORE(LTEMPR+4) = FC
            STORE(LTEMPR+5) = AW
-           CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSORT,
-     1       LTEMPR, XVALUR, -1, DEF)
+           CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT,LTEMPR, XVALUR, -1)
         ENDIF
 
         AW = AW * WWT   ! Modify for robust-resistantness.

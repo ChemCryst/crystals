@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.6  2008/12/15 14:57:44  djw
+C Move List 11 error messages into XFAL11 itself
+C
 C Revision 1.5  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -151,7 +154,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
-      SAVE LSORT, MSORT, NSORT, MDSORT, JPOS, ITEM, XVALUE, DEF
+      SAVE LSORT, MSORT, NSORT, MDSORT, JPOS, ITEM, XVALUE
 C
       DATA COVER  / '   SCALE' , ' DU[ISO]' , ' OU[ISO]' ,
      2              'POLARITY' , ' ENANTIO' , 'EXTPARAM' /
@@ -183,8 +186,7 @@ C----- INITIALISE THE BUFFER before everything else loaded
 C----- INITIALISE NSORT TO AN EVEN NUMBER
       NSORT = 10
       ITEM = 0
-      CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JPOS, ITEM, XVALUE,
-     1   0, DEF)
+      CALL SRTDWN(LSORT,MDSORT,NSORT, JPOS, ITEM, XVALUE,0)
       JPOS = 2
       NFLSRT = NFL
 C^ NOV 98
@@ -233,8 +235,7 @@ C--STORE THE PARAMETER NUMBERS AND THE VALUE
       ISTORE(M+1)=NC
       STORE(M+2)=STR11(M11)
       IF (ABS(STORE(M+2)) .GE. ABS(XVALUE))
-     1 CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JPOS, M, XVALUE,
-     1 0, DEF)
+     1 CALL SRTDWN(LSORT,MDSORT,NSORT, JPOS, M, XVALUE,0)
 C--INCREMENT THE NUMBER STORED
       N=N+1
 C--CHECK IF WE SHOULD PRINT SOME
@@ -347,7 +348,7 @@ C----- LOOP OVER BUFFER PREPARING TEXTUAL TABLE
         MSORT = LSORT
         DO 4000 II = 1,NSORT
           IHIT = 0
-          IF(ABS(STORE(MSORT+JPOS)) .GT. DEF) THEN
+          IF(ABS(STORE(MSORT+JPOS)) .GT. 0.0) THEN
 C            COMPUTE OFFSET IN BUFFER
             IF  (ISTORE(MSORT) .EQ. ISTORE(I)) THEN
                   IHIT = 1

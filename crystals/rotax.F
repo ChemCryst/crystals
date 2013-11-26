@@ -120,16 +120,13 @@ C-- INITIALISE THE SORT BUFFER
       JSRTBY = -3
       NSORT = 30
 C LSORT is set by function call.
-C MSORT is workspace.
 C MDSORT is 7 (the length of record we are storing (h,k,l,q,fo2,fc2,sigma2).
 C NSORT is 30, the number of records to keep.
 C JSRTBY is 3, the offset of q (which we sort by) in the record.
 C LTEMPR is the addr where we put new records before they are added.
 C XVALUR is the smallest value in array. (To check if call is necessary).
 C 1 is the sort type largest->smallest
-C DEF is workspace. (Not used after initialisation.)
-      CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT, JSRTBY, LTEMPR, XVALUR,
-     1   1, DEF)
+      CALL SRTDWN(LSORT,MDSORT,NSORT, JSRTBY, LTEMPR, XVALUR,1)
       JSRTBY = 3
 
 C
@@ -174,7 +171,7 @@ C - FSQ REFINENENT
         STORE(LTEMPR+5) = FC*FC
         STORE(LTEMPR+6) = SIGMA
 
-        CALL SRTDWN(LSORT,MSORT,MDSORT,NSORT,JSRTBY,LTEMPR,XVALUR,1,DEF)
+        CALL SRTDWN(LSORT,MDSORT,NSORT,JSRTBY,LTEMPR,XVALUR,1)
         ISTAT = KFNR(0)
       END DO
 
