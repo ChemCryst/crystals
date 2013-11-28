@@ -1,4 +1,7 @@
 C $Log: not supported by cvs2svn $
+C Revision 1.96  2013/11/26 11:49:02  pascal
+C removed not used arguments from srtdwn
+C
 C Revision 1.95  2013/11/06 12:06:34  pascal
 C catch singularity during inversion and returning an error
 C
@@ -2181,9 +2184,14 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
           P=P*D             ! PRINT ALL REFLECTIONS
           VJ=WDF*S
           WJ=DF*S
-          A=SQRT(AC*AC+BC*BC)
-          S=SQRT(ACI*ACI+BCI*BCI)
-          T=4.*(BC*BCI+AC*ACI)
+          !A=SQRT(AC*AC+BC*BC)
+          A=SQRT( STORE(JREF_STACK_PTR+13)**2 + 
+     1        STORE(JREF_STACK_PTR+15)**2 )
+          !S=SQRT(ACI*ACI+BCI*BCI)
+          S=SQRT( STORE(JREF_STACK_PTR+14)**2 + 
+     1        STORE(JREF_STACK_PTR+16)**2 )
+          T=4.*( STORE(JREF_STACK_PTR+15)*STORE(JREF_STACK_PTR+16) + 
+     1        STORE(JREF_STACK_PTR+13)*STORE(JREF_STACK_PTR+14) )          
           C=T*200.0/(2.*FC*FC-T)
           IF (ISSPRT .EQ. 0) THEN 
             WRITE(NCWU,4600)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,
