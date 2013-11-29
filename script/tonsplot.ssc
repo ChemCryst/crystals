@@ -1,0 +1,49 @@
+%SCRIPT TONSPLOT
+%% RUN #TON IS A SUITABLE LIST 7 EXISTS
+%  VARIABLE REAL CRITER FILTER1 FILTER2 FILTER3 FILTER4
+%  if criter .le. 0. then
+%  EVALUATE CRITER = 99999.
+%  end if
+%  if filter1 .le. 0. then
+%  EVALUATE FILTER1 = 20.                                                      
+%  end if
+%  if filter2 .le. 0. then
+%  EVALUATE FILTER2 = 20.                                                      
+%  end if
+%  if filter3 .le. 0. then
+%  EVALUATE FILTER3 = 2. 
+%  end if
+%  if filter4 .le. 0. then
+%  EVALUATE FILTER4 = 0.1                                                     
+%  end if
+%  VARIABLE INTEGER IPLOT IPUNCH L5SER L5NEW 
+%  VARIABLE CHARACTER CPLOT CPUNCH                                                
+%  if iplot .le. 0 then
+%  EVALUATE CPLOT = 'NO'                                                           
+%  end if
+%  if ipunch .le. 0 then
+%  EVALUATE CPUNCH = 'NO'
+%  end if                                                           
+%%
+%% open the restraint file if required
+% IF IPUNCH = 2 THEN                                                                   
+%   COPY '#RELEASE PUNCH flack-restraint.pch'                                          
+% END IF
+%%
+%
+% IF IPLOT .EQ. 0 THEN                                                          
+%   TRANSFER '#TON CRITER= ' // CHARACTER ( CRITER ) //   -
+' PUNCH= ' //   CPUNCH   TO CRYSTALS
+%   TRANSFER 'CONT '  //   -
+' FILTER1= '  // CHARACTER ( FILTER1 ) // -
+' FILTER2= '  // CHARACTER ( FILTER2 ) // -
+' FILTER3= '  // CHARACTER ( FILTER3 ) // -
+' FILTER4= '  // CHARACTER ( FILTER4 )  - 
+TO CRYSTALS       
+%   TRANSFER "END" TO CRYSTALS                                                  
+%       IF IPUNCH = 2 THEN                                                                   
+%         COPY '#RELEASE PUNCH bfile.pch'                                          
+%       END IF
+%    FINISH
+%%          
+% END IF
