@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: modify5.F,v $
+C Revision 1.63  2013/11/04 15:22:00  rich
+C Use non-date seed for perturb.
+C
 C Revision 1.62  2013/11/01 16:37:04  rich
 C Use fixed random seed for XRAND or tests break.
 C
@@ -418,6 +421,8 @@ C
       INCLUDE 'QLST12.INC'
       INCLUDE 'QLST40.INC'
 C
+      INCLUDE 'IDIM12.INC'
+C
       INTEGER PEAK,QCENT
       INTEGER QSPHERE,QLINE,QRING
 C
@@ -507,7 +512,6 @@ C -- SET LIST CREATION FLAGS
 C -- INITIALISE INPUT PROCESSING
       CALL XLXINI (INEXTD,1)
 C
-      INCLUDE 'IDIM12.INC'
 C
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 50 I=1,IDIM12

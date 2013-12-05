@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: lexical.F,v $
+C Revision 1.36  2012/03/23 13:52:07  rich
+C Inter compiler support.
+C
 C Revision 1.35  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C

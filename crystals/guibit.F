@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: guibit.F,v $
+C Revision 1.80  2012/03/23 13:49:53  rich
+C INW support. Special shape bond handling. Fix call to KLSCHK with undefined parameter.
+C
 C Revision 1.79  2012/01/04 14:31:25  rich
 C Fix some uninitialized variables, and output format mistakes.
 C

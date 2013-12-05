@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: accumula.F,v $
+C Revision 1.9  2013/04/24 10:49:08  rich
+C Pascal: speed up matrix accumulation.
+C
 C Revision 1.8  2005/05/12 13:38:26  stefan
 C 1. Improved the code for the accumalation of the LHS and should run correctly
 C

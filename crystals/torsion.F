@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: torsion.F,v $
+C Revision 1.12  2012/09/17 12:24:53  rich
+C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
+C
 C Revision 1.11  2011/09/30 07:07:31  djw
 C Remove diagnostic print
 C
@@ -72,6 +75,8 @@ C
 C 
       INCLUDE 'QSTR11.INC'
 C 
+      INCLUDE 'IDIM12.INC'
+C
 
       DATA IVERSN  /204/
       DATA CBLANK /' '/
@@ -137,7 +142,6 @@ C----- GET THE LIST TYPE FROM THE LEXICAL COMMON BLOCK
       IULN5=KTYP05(MX)
       CALL XLDR05(IULN5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
-      INCLUDE 'IDIM12.INC'
 C-----------------------------------------------------------
       IESD = -1
       TAU1 = 0.

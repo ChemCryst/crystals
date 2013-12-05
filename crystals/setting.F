@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: setting.F,v $
+C Revision 1.6  2012/09/17 12:24:53  rich
+C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
+C
 C Revision 1.5  2011/07/01 13:42:46  djw
 C Change the dot product module name from VPROD to DPROD
 C

@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: list6.F,v $
+C Revision 1.22  2011/08/31 15:43:24  rich
+C Remove uninitialised variable from KALLOW
+C
 C Revision 1.21  2011/05/13 16:03:34  djw
 C Fix the calls to kallow and their effect on the fcf listing
 C
@@ -759,11 +762,11 @@ C--SET THE BUFFER TO ZERO INITIALLY
       END
 C
 CODE FOR KFNR
-      FUNCTION KFNR(IN)
+      integer function KFNR(state)
 C--FETCH THE NEXT REFLECTION, CHECKING WITH LIST 28 THAT IT IS ALLOWED.
 C
-C----- IN   0 FOR READ-ONLY
-C           1 FOR READ-WRITE
+C----- state   0 FOR READ-ONLY
+C              1 FOR READ-WRITE
 C
 C--RETURN VALUES OF 'KFNR' ARE :
 C
@@ -771,19 +774,23 @@ C  -1  END OF THE REFLCTIONS.
 C   0  REFLCTION READ TO BE USED, STORED AT 'M6'.
 C
 C--
-      INCLUDE 'XLST06.INC'
+      implicit none
+      integer, intent(in) :: state
+      integer :: iallow
+      integer, external :: KLDRNR, kallow
+      
 C
 C--FETCH THE NEXT REFLECTION
 1000  CONTINUE
-      IF(KLDRNR(IN))1100,1050,1050
+      IF(KLDRNR(state))1100,1050,1050
 C--CHECK IF THE REFLECTION IS ALLOWED
 1050  CONTINUE
       KFNR=0
       IF(KALLOW(IALLOW)) 1060,1150,1150
 1060  CONTINUE
-      IF(IN) 1000,1000,1070
+      IF(state) 1000,1000,1070
 1070   CONTINUE
-      CALL XSLR(IN)
+      CALL XSLR(state)
       GO TO 1000
 C--END OF THE REFLECTIONS FOUND
 1100  CONTINUE
@@ -822,11 +829,11 @@ C--CHECK IF THE PHASE AND BATCH NUMBER NEED PACKING UP
       IF(IPHSEW)1150,1100,1100
 C--PACK THE PHASE AND BATCH NUMBER
 1100  CONTINUE
-      STORE(M6+15)=STORE(M6+13)*20.+AMOD(STORE(M6+6),TWOPI)+10.
+      STORE(M6+15)=STORE(M6+13)*20.+MOD(STORE(M6+6),TWOPI)+10.
 C -- CHECK IF WE MUST PACK UP THE RATIO AND JCODE
 1150  CONTINUE
       IF ( JCDRAW .GE. 0 ) THEN
-        STORE(M6+31) = STORE(M6+18) + 10.* ANINT ( 10. * STORE(M6+20) )
+        STORE(M6+31) = STORE(M6+18) + 10.* NINT ( 10. * STORE(M6+20) )
       ENDIF
 C--MOVE THE DATA TO THE OUTPUT BUFFER
       J=M6W
@@ -1186,7 +1193,8 @@ C--SET THE SLOTS FOR THE MEAN AND R.M.S.
       END
 C
 CODE FOR XACRT
-      SUBROUTINE XACRT(IPOSN)
+      SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, 
+     1    sizearray)
 C--ADD IN THE TOTAL FOR A REFLECTION TO A GIVEN SLOT IN THE DETAILS
 C  RECORD.
 C
@@ -1194,19 +1202,53 @@ C  IPOSN   THE POSITION IN THE DETAILS RECORD TO BE UPDATED, IN THE RANG
 C          1 TO MD6.
 C
 C--
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XLST06.INC'
-C
+      !INCLUDE 'STORE.INC'
+      use store_mod, only: store
+      !INCLUDE 'XLST06.INC'
+      use xlst06_mod, only: l6dtl, m6, md6dtl
+      
+      implicit none
+      integer i, j
+      integer, intent(in) :: iposn, sizearray
+      real, dimension(sizearray), intent(inout):: minimum, maximum
+      real, dimension(sizearray), intent(inout):: summation, summationsq
+      
+      ! check if allocated space is enough and crashing the program if not enough space
+      if(iposn>ubound(minimum,1) .or. iposn<1 ) then
+          print *, 'not enough space allocated (xacrt)!! '
+          print *, iposn, ubound(minimum,1)
+      !    stop
+      end if
+      if(iposn>ubound(maximum,1) .or. iposn<1) then
+          print *, 'not enough space allocated (xacrt)!! '
+          print *, iposn, ubound(minimum,1)
+      !    stop
+      end if
+      if(iposn>ubound(summation,1) .or. iposn<1) then
+          print *, 'not enough space allocated (xacrt)!! '
+          print *, iposn, ubound(minimum,1)
+      !    stop
+      end if
+      if(iposn>ubound(summationsq,1) .or. iposn<1) then
+          print *, 'not enough space allocated (xacrt)!! '
+          print *, iposn, ubound(minimum,1)
+      !    stop
+      end if
+            
 C--FIND THE POSITION IN THE DETAILS AND CORE BUFFER
       I=IPOSN-1
       J=L6DTL+I*MD6DTL
       I=M6+I
 C--FIND THE NEW MAXIMUM AND MINIMUM
-      STORE(J)=AMIN1(STORE(J),STORE(I))
-      STORE(J+1)=AMAX1(STORE(J+1),STORE(I))
+      STORE(J)=MIN(STORE(J),STORE(I))
+      minimum(IPOSN)=min(minimum(IPOSN), STORE(I))
+      STORE(J+1)=MAX(STORE(J+1),STORE(I))
+      maximum(IPOSN)=max(maximum(IPOSN), STORE(I))
 C--ADD IN FOR THE MEAN AND R.M.S.
       STORE(J+2)=STORE(J+2)+STORE(I)
+      summation(IPOSN)=summation(IPOSN)+store(i)
       STORE(J+3)=STORE(J+3)+STORE(I)*STORE(I)
+      summationsq(IPOSN)=summationsq(IPOSN)+store(i)**2
       RETURN
       END
 C
@@ -1265,10 +1307,10 @@ c      CALL XUPF(IBUFF(4),STORE(L6P),IBUFF(3)-MD0)
 c      RETURN
 c      END
 CODE FOR KLDRNR
-      FUNCTION KLDRNR(IN)
+      integer function KLDRNR(state)
 C--LOAD THE NEXT REFLECTION FROM THE DISC
 C
-C  IN  A DUMMY ARGUMENT.
+C  state  A DUMMY ARGUMENT.
 C
 C--RETURN VALUES ARE :
 C
@@ -1279,8 +1321,13 @@ C      IDISPL      FLAG CONTROLLING LIST 6 DISPLAY
 C                    -1      NO DISPLAY
 C                    +1      DISPLAY
 C
-      LOGICAL DISPL6
-      PARAMETER (NINTER = 20)
+      implicit none
+
+      logical, save :: DISPL6
+      integer, PARAMETER :: NINTER = 20
+      integer, intent(in) :: state
+      real a
+      integer i, j, k, ipercn, newlvl, nprev
 C--
       INCLUDE 'ISTORE.INC'
 C
@@ -1296,119 +1343,124 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCONST.INC'
 C
-      SAVE DISPL6 , IDISPL , NXTLVL , NSTAR
+      integer, save :: idispl=1
+      integer, save :: NXTLVL=0 , NSTAR
+      integer, external :: KINCRF
 C
       INCLUDE 'QSTORE.INC'
+      
 C
-      DATA IDISPL / 1 /
 C
 C
 C--CHECK FOR END OF FILE
       KLDRNR=-1
-      IF(N6R)1550,1550,1000
+      IF(N6R>0) then !1550,1550,1000
 C--READ DOWN THE NEXT REFLECTION
-1000  CONTINUE
-      KLDRNR=0
-      CALL XZEROF(STORE(M6),MD6)
+          !1000  CONTINUE
+          KLDRNR=0
+          !CALL XZEROF(STORE(M6),MD6)
+          STORE(M6:M6+MD6-1)=0.0
 C--CHECK FOR INPUT FROM M/T
-      IF(L6R)1050,1050,1100
+          IF(L6R<=0) then !1050,1050,1100
 C--INPUT FROM TAPE  -  FETCH THE NEXT REFLECTION
-1050  CONTINUE
-      CALL XIMTRA(MTA)
-      M6R=MMTR
-      GOTO 1150
+              !1050  CONTINUE
+              CALL XIMTRA(MTA)
+              M6R=MMTR
+              !GOTO 1150
+          else !1100  CONTINUE
 C--INPUT FROM DISC
-1100  CONTINUE
-      CALL XDOWNF(L6R,STORE(M6R),MD6R)
+              CALL XDOWNF(L6R,STORE(M6R),MD6R)
 C--UPDATE THE POINTERS FOR THE DISC
-      L6R=L6R+KINCRF(MD6R)
+              L6R=L6R+KINCRF(MD6R)
 C--UPDATE THE NUMBER OF REFLECTIONS LEFT TO READ
-1150  CONTINUE
-      N6R=N6R-1
+          end if ! 1150      CONTINUE
+          N6R=N6R-1
 C--TRANSFER THE DATA TO THE CORE BUFFER
-      J=M6R
-      DO 1200 I=L6DMP,M6DMP
-      K=ISTORE(I)
-      STORE(K)=STORE(J)
-      J=J+1
-1200  CONTINUE
+          J=M6R
+          DO I=L6DMP,M6DMP ! 1200 
+              K=ISTORE(I)
+              STORE(K)=STORE(J)
+              J=J+1
+          end do !1200  CONTINUE
 C--CHECK IF THE INDICES SHOULD BE UNPACKED
-      IF(IPACKR)1300,1250,1250
+          IF(IPACKR>=0) then !1300,1250,1250
 C--UNPACK THE REFLECTIONS
-1250  CONTINUE
-      A=FLOAT(NINT(STORE(M6+14)/256.))
-      STORE(M6)=STORE(M6+14)-A*256.
-      STORE(M6+2)=FLOAT(NINT(A/256.))
-      STORE(M6+1)=A-STORE(M6+2)*256.
+              !1250  CONTINUE
+              A=FLOAT(NINT(STORE(M6+14)/256.))
+              STORE(M6)=STORE(M6+14)-A*256.
+              STORE(M6+2)=FLOAT(NINT(A/256.))
+              STORE(M6+1)=A-STORE(M6+2)*256.
 C--CHECK IF THE PHASE AND BATCH NUMBER SHOULD BE UNPACKED
-1300  CONTINUE
-      IF(IPHSER)1400,1350,1350
+          end if !1300  CONTINUE
+          IF(IPHSER>=0) then !1400,1350,1350
 C--UNPACK THE PHASE AND BATCH NUMBER
-1350  CONTINUE
-      STORE(M6+13)=AINT(STORE(M6+15)*0.05)
-      STORE(M6+6)=STORE(M6+15)-STORE(M6+13)*20.-10.
+              !1350  CONTINUE
+              STORE(M6+13)=AINT(STORE(M6+15)*0.05)
+              STORE(M6+6)=STORE(M6+15)-STORE(M6+13)*20.-10.
 C -- CHECK IF THE RATIO AND JCODE SHOULD BE UNPACKED
-1400  CONTINUE
-      IF ( JCDRAR .GE. 0 ) THEN
-        STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
-        STORE(M6+18) = STORE(M6+31) - ( 100. * STORE(M6+20) )
+          end if !1400  CONTINUE
+          IF ( JCDRAR .GE. 0 ) THEN
+              STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
+              STORE(M6+18) = STORE(M6+31) - ( 100. * STORE(M6+20) )
 cdjwjul09 Try to fix up unpacking if Fo was -ve
 c     this fixes the JCODE, but fouls up packing and unpacking 
 c     of sigma. 
 c        if(store(m6+18) .lt. 0.0) 
 c     1  store(m6+18) = 10. + store(m6+18)
-      ENDIF
-      STORE(M6+13) = AMAX1 ( STORE(M6+13) , 1.0 )
+          ENDIF
+          STORE(M6+13) = MAX ( STORE(M6+13) , 1.0 )
 C
 C -- MAKE SURE 'SIGMA' AND 'CORRECTIONS' HAVE REASONABLE VALUES
-      IF ( STORE(M6+12) .LT. ZERO ) STORE(M6+12) = ZERO
-      IF ( STORE(M6+27) .LT. ZERO ) STORE(M6+27) = 1.0
+          IF ( STORE(M6+12) .LT. ZERO ) STORE(M6+12) = ZERO
+          IF ( STORE(M6+27) .LT. ZERO ) STORE(M6+27) = 1.0
 C
 C -- PRODUCE DISPLAY IF REQUIRED
-      DISPL6 = ( IDISPL .GT. 0 ) .AND. ( IQUN .EQ. JQUN ) .AND.
-     2     ( ISSSPD .GT. 1 ) .AND. ( N6D .GT. 0 )
+          DISPL6 = ( IDISPL .GT. 0 ) .AND. ( IQUN .EQ. JQUN ) .AND.
+     2        ( ISSSPD .GT. 1 ) .AND. ( N6D .GT. 0 )
 C
-      IF ( DISPL6 ) THEN
-        IF ( N6R .GE. (N6D-1) ) THEN
+          IF ( DISPL6 ) THEN
+              IF ( N6R .GE. (N6D-1) ) THEN
 #if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
-          WRITE ( CMON,1505)
-          CALL XPRVDU(NCVDU, 1, 0)
-          WRITE(NCVDU,1505)
+                  WRITE ( CMON,1505)
+                  CALL XPRVDU(NCVDU, 1, 0)
+                  WRITE(NCVDU,1505)
 #endif
-1505      FORMAT ( 15X ,  12X, 'Processing reflections ')
-C          CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
-           CALL OUTCOL(6)
+1505              FORMAT ( 15X ,  12X, 'Processing reflections ')
+C                 CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
+                  CALL OUTCOL(6)
 #if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
-          WRITE(NCVDU,'(15X,''^'',$)')
+                  WRITE(NCVDU,'(15X,''^'',$)')
 #endif
-          NSTAR = 1
-          NXTLVL = ( NSTAR * N6D ) / NINTER
-        ELSE IF ( (N6D-N6R) .GE. NXTLVL ) THEN
-          IPERCN = MIN0 ( 100 , ( 100 * NSTAR ) / NINTER )
-          CALL SLIDER (NSTAR, NINTER)
+                  NSTAR = 1
+                  NXTLVL = ( NSTAR * N6D ) / NINTER
+              ELSE IF ( (N6D-N6R) .GE. NXTLVL ) THEN
+                  IPERCN = MIN ( 100 , ( 100 * NSTAR ) / NINTER )
+                  CALL SLIDER (NSTAR, NINTER)
 C
 C -- CALCULATE WHERE NEXT PRINT IS DUE
 C
-          NPREV = NXTLVL + 1
-1520      CONTINUE
-          NSTAR = NSTAR + 1
-          NXTLVL = ( NSTAR * N6D ) / NINTER
-          IF ( ( NXTLVL .LE. NPREV ) .AND.
-     2         ( NSTAR .LE. NINTER ) ) GO TO 1520
+                  NPREV = NXTLVL + 1
+            
+                  do while( (NXTLVL<=NPREV) .and. (NSTAR<=NINTER+1) ) !1520      CONTINUE
+                      NSTAR = NSTAR + 1
+                      NXTLVL = ( NSTAR * N6D ) / NINTER
+                      !GO TO 1520
+                  end do
 C
-1530      CONTINUE
-          NSTAR = NSTAR + 1
-          NEWLVL = ( NSTAR * N6D ) / NINTER
-          IF ( ( NEWLVL .LE. NXTLVL ) .AND.
-     2         ( NSTAR .LE. NINTER ) ) GO TO 1530
+                  NEWLVL=NXTLVL-1
+                  do while( (NEWLVL<=NXTLVL) .AND. (NSTAR<=NINTER+1) ) ! 1530      CONTINUE
+                      NSTAR = NSTAR + 1
+                      NEWLVL = ( NSTAR * N6D ) / NINTER
+                  end do !GO TO 1530
 C
-          NSTAR = MIN0 ( NSTAR - 1 , NINTER )
+                  NSTAR = MIN ( NSTAR - 1 , NINTER )
+                  
 C
-        ENDIF
-      ENDIF
-      RETURN
+              ENDIF
+          ENDIF
+          RETURN
 C
-1550  CONTINUE
+      end if !1550  CONTINUE
 C      CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
       CALL OUTCOL(1)
 C------ SWITCH ON LINE FEEDS FOR DOS

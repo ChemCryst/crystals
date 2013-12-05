@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: read.F,v $
+C Revision 1.67  2013/06/11 12:30:39  pascal
+C Linux changes
+C
 C Revision 1.66  2012/10/19 12:45:13  djw
 C Make Script not found message less frightening
 C

@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: publsh.F,v $
+C Revision 1.17  2013/03/14 15:54:55  djw
+C Much extended absolute configuration analysis, including the Parsons Quotient test.  More reflection filters added to #TON
+C
 C Revision 1.16  2012/07/11 13:43:25  djw
 C Add command QCKCIF to create a minimal cif for Mercury
 C

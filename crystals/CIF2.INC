@@ -1,7 +1,7 @@
-C
-C >>>>>> Function declararations 'ciftbx.cmf'
-C        These external declarations are needed complete
-C        the user definitions in ciftbx.cmn
+!
+! >>>>>> Function declararations 'ciftbx.cmf'
+!        These external declarations are needed complete
+!        the user definitions in ciftbx.cmn
          logical   init_
          logical   dict_
          logical   ocif_

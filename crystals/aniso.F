@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: aniso.F,v $
+C Revision 1.6  2008/09/08 10:18:32  djw
+C Enable/inhibit punching of ADP info from XPRAXI
+C
 C Revision 1.5  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.

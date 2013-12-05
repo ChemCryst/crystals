@@ -1,5 +1,8 @@
 
-c $Log: not supported by cvs2svn $
+c $Log: regular.F,v $
+c Revision 1.72  2013/03/28 13:30:12  djw
+c Restore old format expressions
+c
 c Revision 1.71  2013/03/28 12:27:23  djw
 c Increase field width for torsion angle differences
 c
@@ -430,6 +433,8 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
+C
+      INCLUDE 'IDIM12.INC'
 C --
 C --
 C -- THE ARRAY 'GRPATM' OF CO-ORDINATES IS USED TO DEFINE GROUPS.
@@ -484,7 +489,6 @@ C -- LOAD LIST 5
       IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1).LT. 0) CALL XFAL41
 C -- INITIALISE VALUES FOR REGULARISE
 C -- INDICATE THAT LIST 12 IS NOT TO BE USED
-      INCLUDE 'IDIM12.INC'
       DO 1100 I = 1,IDIM12
       ICOM12(I) = NOWT
 1100  CONTINUE
@@ -5548,6 +5552,7 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
+      INCLUDE 'IDIM12.INC'
 
       DATA IVERS /100/
       CALL XTIME1(2)
@@ -5556,7 +5561,6 @@ C
       IPCHSA = IPCHRE ! Hide IPCHRE counter
       IPCHRE = -1
 
-      INCLUDE 'IDIM12.INC'
       DO I = 1,IDIM12     
         ICOM12(I) = NOWT   ! Don't use L12.
       END DO

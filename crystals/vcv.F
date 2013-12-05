@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: vcv.F,v $
+C Revision 1.10  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.9  2012/09/17 12:24:53  rich
 C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
 C
@@ -108,6 +113,8 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
 C 
+      INCLUDE 'IDIM12.INC'
+C
       CHARACTER*4 CTYPE
 C 
       DATA IVERSN/001/
@@ -131,7 +138,6 @@ C----- COMMON BLOCK OFFSET(-1) FOR INPUT LIST
 C----- INITIALSE LEXICAL PROCESSING
       ICHNG = 1
       CALL XLXINI (INEXTD,ICHNG)
-      INCLUDE 'IDIM12.INC'
 C 
 C--MAIN INSTRUCTION CYCLING LOOP
 50    CONTINUE
@@ -642,7 +648,7 @@ C
 C 
 C 
 C--CHECK THAT THE SYMMETRY OPERATORS ARE VALID
-      M = IABS(ISTORE(LOCD))-1
+      M = ABS(ISTORE(LOCD))-1
       IF (M) 450,50,50
 50    CONTINUE
       IF (M-N2) 100,450,450
@@ -651,7 +657,7 @@ C--CHECK THAT THE SYMMETRY OPERATORS ARE VALID
 150   CONTINUE
       IF (ISTORE(LOCD+1)-N2P) 200,200,450
 200   CONTINUE
-      A = FLOAT(ISTORE(LOCD))
+      A = real(ISTORE(LOCD))
       A = SIGN(1.,A)
 C--APPLY THE SYMMETRY MATRIX
       M = M*MD2+L2
@@ -732,6 +738,8 @@ C
 C 
       INCLUDE 'QSTR11.INC'
 C 
+      INCLUDE 'IDIM12.INC'
+C
 
       DATA IVERSN  /1/
       DATA CBLANK /' '/
@@ -790,7 +798,6 @@ C----- GET THE LIST TYPE FROM THE LEXICAL COMMON BLOCK
       IULN5=KTYP05(MX)
       CALL XLDR05(IULN5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
-      INCLUDE 'IDIM12.INC'
 C-----------------------------------------------------------
       IESD = -1
       ESD = 0.

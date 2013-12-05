@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: disc.F,v $
+C Revision 1.10  2011/09/07 09:44:41  djw
+C Change format of #SET OPENMESSAGE text so that columns line up across actions
+C Add #SET CACHEMESSAGE (off/on) to inhibit caching information at termination
+C Remove disc extension messages
+C
 C Revision 1.9  2011/01/17 15:40:14  rich
 C Fix o/w of disk lexical data in dsc file when disk index block is extended.
 C

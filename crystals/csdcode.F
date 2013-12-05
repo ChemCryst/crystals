@@ -1,5 +1,8 @@
 C234567890C234567890C234567890C234567890C234567890C234567890C234567890123
-C $Log: not supported by cvs2svn $
+C $Log: csdcode.F,v $
+C Revision 1.25  2012/07/12 08:12:02  rich
+C Fix uninit variable when disconnected carbon atom.
+C
 C Revision 1.24  2011/08/31 15:44:04  rich
 C Added initialisation of KOXY variable
 C

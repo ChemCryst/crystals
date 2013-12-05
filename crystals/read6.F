@@ -1,4 +1,8 @@
-C $Log: not supported by cvs2svn $
+C $Log: read6.F,v $
+C Revision 1.38  2013/03/21 19:47:05  rich
+C Stop reading hkl (or any reflection file) upon a record of of all zeroes. This code explicitly
+C checks for and skips blank lines, so that reading doesn't stop there.
+C
 C Revision 1.37  2012/09/19 09:28:14  djw
 C Add a comment explaining why L30DR+0/2/4 are not updated because we do not know if the
 C instrument software has merged the data of not, with or without Friedles Law
@@ -396,6 +400,8 @@ C
       INCLUDE 'QLST13.INC'
       INCLUDE 'QLST30.INC'
 C
+      ! ridiculous amount, should be md6 when the value is read
+      real, dimension(256) :: minimum, maximum, summation, summationsq
 C
       DATA NCARD/82/
 C
@@ -446,6 +452,7 @@ C--BLANK OUT THE FORMAT ARRAY
       INCLUDE 'IDIM06.INC'
       INCLUDE 'IDIM6A.INC'
 C--SET THE INITIAL FORMAT CONTROL FLAG
+
       LFORM=1
 C--SET UP AN AREA TO HOLD DETAILS OF THE DIRECTIVES FOUND ON INPUT
       LN=IULN
@@ -863,7 +870,7 @@ C--STORE THE REFLECTION
       CALL XSLR (1)
 C--ACCUMULATE THE TOTALS
       DO 2300 I=1,MD6
-         CALL XACRT (I)
+         CALL XACRT (I, minimum, maximum, summation, summationsq, md6)
 2300  CONTINUE
       GO TO 2100
 C--END OF THE REFLECTIONS  -  RESTORE THE COMMON BLOCK COMPLETELY
@@ -1249,7 +1256,7 @@ C -- AND NOW STORE THE REFLECTION
          CALL XSLR (1)
 C--ACCUMULATE THE REFLECTION TOTALS
          DO 4800 I=1,MD6
-            CALL XACRT (I)
+            CALL XACRT (I,minimum,maximum,summation,summationsq,md6)
 4800     CONTINUE
 4850  CONTINUE
 C--BRANCH ON THE TYPE OF INPUT

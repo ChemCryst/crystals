@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: geomet.F,v $
+C Revision 1.8  2011/11/03 09:21:18  rich
+C Support #SUS command.
+C
 C Revision 1.7  2009/12/23 08:24:17  djw
 C Add link to vcv matrix - not yet finished
 C

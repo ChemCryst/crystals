@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: input6.F,v $
+C Revision 1.16  2012/01/03 14:37:18  rich
+C PUNCH 6 I (partial implementation) to punch all set keys from L6.
+C
 C Revision 1.15  2010/07/21 15:57:32  djw
 C Include list type in PUNCH 6 C
 C

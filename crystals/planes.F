@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: planes.F,v $
+C Revision 1.7  2012/07/11 13:50:06  djw
+C Add reference (Mingos et al) for discoidal/etc index
+C
 C Revision 1.6  2008/12/15 11:38:11  djw
 C Do work on dihedral angles in double precision, normalise vectors on the fly
 C
@@ -106,6 +109,7 @@ C
       INCLUDE 'QLST12.INC'
       INCLUDE 'QSTORE.INC'
 C
+      INCLUDE 'IDIM12.INC'
 C
       DATA IVERSN /210/
 C
@@ -149,7 +153,6 @@ C----- INDICATE NO MODIFICATIONS YET
       IMOD5 = 0
 C----- INDICATE LIST 20 NOT UPDATED
       IUPDT = 0
-      INCLUDE 'IDIM12.INC'
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 1050 I=1,IDIM12
       ICOM12(I)=NOWT

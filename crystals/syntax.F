@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: syntax.F,v $
+C Revision 1.8  2011/09/30 11:17:16  djw
+C Fix PRINT for asymmetric vib and Uij restraints
+C
 C Revision 1.7  2010/12/14 13:08:20  djw
 C Output more info in execute/compile mode
 C

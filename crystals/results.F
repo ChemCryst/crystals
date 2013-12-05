@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: results.F,v $
+C Revision 1.203  2013/05/25 09:28:06  rich
+C Internal buffer read was one character too long.
+C
 C Revision 1.202  2013/04/25 14:49:19  rich
 C Update cell esd calc (in CIF) to use equation from Giacovazzo p123.
 C
@@ -4144,7 +4147,7 @@ cdjwmay09 - replace with a call to SYMCODE (one day)
               M = 1+
      1         (ABS(ISTORE(JPUB+2))-1) * N2P * JA +
      2         (ISTORE(JPUB+3)-1) * JA +
-     3         (-SIGN(1,ISTORE(JPUB+2))+1)/2
+     3         (-SIGN(int(1, kind(ISTORE)),ISTORE(JPUB+2))+1)/2
               WRITE(CBUF, '(I4)') M
               CALL XCRAS (CBUF, N)
               CLINE(J+2:) = CBUF(1:N)//'_'
@@ -4416,7 +4419,7 @@ C----- IDENTITY
             M = 1+
      1         (ABS(ISTORE(JPUB+2))-1) * N2P * JA +
      2         (ISTORE(JPUB+3)-1) * JA +
-     3         (-SIGN(1,ISTORE(JPUB+2))+1)/2
+     3         (-SIGN(int(1, kind(istore)),ISTORE(JPUB+2))+1)/2
             WRITE(CBUF, '(I4)') M
             CALL XCRAS (CBUF, N)
             CLINE(J:J+N) = CBUF(1:N)//'_'

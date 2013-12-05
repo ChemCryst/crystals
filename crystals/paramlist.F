@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: paramlist.F,v $
+C Revision 1.5  2005/05/13 12:24:45  stefan
+C 1. Rewrote a lot of the code so that it uses my iterator module and it better contructed.
+C 2. Memory allocation is not withing the param_list_make function.
+C 3. All the iterator functions have been added to this module.
+C
 C   This provides functions for reading and creating a list of paired parameters
 C   The list is a list of lists.
 C   The first element of the list is the size of the contained list at that point

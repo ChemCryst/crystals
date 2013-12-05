@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: solve.F,v $
+C Revision 1.72  2013/11/11 21:01:45  rich
+C Set CTEXT for overall parameters outside conditional print block
+C
 C Revision 1.71  2013/11/07 10:47:26  pascal
 C fix stack overflow for digital compiler
 C
@@ -215,6 +218,7 @@ C
 CODE FOR XSFLSE
       SUBROUTINE XSFLSE
       use solve_helper
+      implicit none
 C--GENERAL MATRIX INVERSION AND CALCULATION OF SHIFT ROUTINES.
 C
 C  THESE ROUTINES INVERT THE NORMAL MATRIX AND OUTPUT
@@ -258,18 +262,21 @@ C
 C--THIS FORMAT IS REPEATED FOR ALL THE REFINED PARAMETERS
 C
 C--
-      CHARACTER *21 CTEXT, CSAVE
-      CHARACTER *14 CLST23(4)
+      CHARACTER(len=21) :: CTEXT, CSAVE
+      CHARACTER(len=14), parameter :: CLST23(4)=(/ 'R-factor    ', 
+     1 'Rw          ', 'shift/esd   ', 'Min function' /)
+
 C-------STEFANS VARIABLES
       INTEGER ZEROED_COUNT
-      INTEGER XCOUNT, YCOUNT
+      INTEGER YCOUNT
       REAL  THRESH_HOLD, RHS
       REAL  SQRT_Mii, SQRT_Mjj, Mij
 C----------------------------
       INCLUDE 'TYPE11.INC'
 C
 C
-      DIMENSION A1(6),B1(3),C1(3)
+      REAL, DIMENSION(6) :: A1
+      REAL, DIMENSION(3) :: B1,C1
       INCLUDE 'ICOM11.INC'
       INCLUDE 'ICOM12.INC'
       INCLUDE 'ICOM24.INC'
@@ -286,6 +293,7 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
+      real djwscl
       common /xpatch/djwscl
       INCLUDE 'XPDS.INC'
       INCLUDE 'XLST01.INC'
@@ -308,29 +316,44 @@ C
       INCLUDE 'QSTR11.INC'
 C
 C
-      EQUIVALENCE (A1(1),A)
+      !EQUIVALENCE (A1(1),A)
       INCLUDE 'QLST11.INC'
       INCLUDE 'QLST12.INC'
       INCLUDE 'QLST30.INC'
       INCLUDE 'QLST24.INC'
       INCLUDE 'QLST33.INC'
 C
+      INCLUDE 'IDIM11.INC'
+      INCLUDE 'IDIM12.INC'
+      INCLUDE 'IDIM24.INC'
+      INCLUDE 'IDIM33.INC'
+C
 C---- no of words in summary stack
-      DATA MW/7/
+      INTEGER :: MW=7
 C
 C----- SET THE PRINT THRESHOLDS
-      DATA RMAX/3./, SOESD/1.0/, CCOEF/.8/
-C      DATA RMSSM/ 0.3/
-      DATA RMSSM/ 0.0/
+      REAL :: RMAX=3., SOESD=1.0, CCOEF=.8, RMSSM=0.0
       
-      DATA CLST23 /'R-factor', 'Rw', 'shift/esd', 
-     1 'Min function'/
-
 C
-      DATA IVERSN /410/
+      INTEGER :: IVERSN=410
+      
+      REAL absf, absfm, adprev, adpshift, adpsoe, adptms, augfac
+      REAL cond, fcond, discrm, filter
+      INTEGER iaddd, iaddl, iaddr, icapt, iconvg, ihit, ilevel
+      INTEGER inm, iscl, ispar, istat, istat2, iuln, ival, ivec
+      INTEGER iwrk, jsave, ke, ko, l11c, l11rc, lennam, lflds
+      INTEGER m11db, m11rdb, m11rs, method, m11s, nelem, nflds, nmw
+      REAL oldshift, ovrrev, ovrshift, ovrsoe, ovrtms, revshift, rfshift
+      REAL rlast, rmss, scalsv, smax, sssr, terms, usershift, xyzrev
+      REAL xyzshift, xyzsoe, xyztms
       
       real, dimension(:), allocatable :: ref
       real, dimension(:,:), allocatable :: check, unpacked
+      integer info, nrej
+      
+      integer, external :: KRDDPV, KHUNTR, KCHLFL, KSET52, KADD11
+      integer, external :: KEXIST, KPARAM, KBLCK, KFLSP, KLSCHK
+      real, external :: tri_matrix_apply_threshhold
 
       
 C
@@ -338,7 +361,10 @@ C
 C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(2)
 C--READ ANY OTHER PARAMETERS
-      IF ( KRDDPV ( ISTORE(NFL),1 )   .LT.   0 ) GO TO 9900
+      if (KRDDPV ( ISTORE(NFL),1 ) .LT. 0 ) then
+          call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+          return
+      end if
 C----- METHOD = 0 FOR CHOLESKI, ELSE 1
       METHOD = ISTORE(NFL)
 C--CLEAR THE CORE
@@ -346,9 +372,11 @@ C--CLEAR THE CORE
       CALL XRSL
 C--LOAD THE CONTROL LISTS
       CALL XFAL23
-      INCLUDE 'IDIM33.INC'
       CALL XFAL33
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      if ( IERFLG .LT. 0 ) then
+          call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+          return
+      end if
 cdjwdec06 - save the sparsity flag. 0=sparse
       ispar = istore(m33cd+13)
 C--LOAD A FEW MORE LISTS
@@ -407,7 +435,7 @@ C--FIND THE POINTERS TO THE SHIFT INFORMATION
       JA=M33ST+1
       JB=M33SV+1
 C--SET UP THE PARAMETER GROUP SHIFT LOCATIONS
-      DO 1150 I=JC,JD,MW
+      do I=JC,JD,MW
          STORE(I)=1.
          STORE(I+1)=0.
          STORE(I+2)=0.
@@ -416,20 +444,20 @@ C--SET UP THE PARAMETER GROUP SHIFT LOCATIONS
          STORE(I+5) = 0.
          store(i+6) = 0.
 C--CHECK IF A SHIFT FACTOR HAS BEEN GIVEN IN LIST 33
-         IF(ISTORE(JA))1050,1100,1100
+         if(ISTORE(JA)<0) then
 C--MOVE THE SHIFT FACTOR FROM LIST 33
-1050     CONTINUE
 cdec06
-         if (ispar .eq.0) then
+            if (ispar .eq.0) then
 c-----    set maximal shift to 0.8 for sparse build
-          store(jb)=min(store(jb), 0.8)
+                store(jb)=min(store(jb), 0.8)
+            endif
+            STORE(I)=STORE(JB)         
          endif
-         STORE(I)=STORE(JB)
 C--INCREMENT THE POINTERS
-1100     CONTINUE
          JA=JA+1
          JB=JB+1
-1150  CONTINUE
+      end do
+
 C
       IF (METHOD .EQ. 1) THEN
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1151)  AUGFAC, FILTER, DISCRM
@@ -439,47 +467,59 @@ C--FORM THE ABSOLUTE LIST 12
       JQ=2
       JS=1
       CALL XFAL12(JS,JQ,JR,JN)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      if ( IERFLG .LT. 0 ) then
+          call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+          return
+      end if
 C--SET UP THE POINTER TO THE RESULTS AREA
       JO=JN
-      INCLUDE 'IDIM12.INC'
 C--LINK LISTS 5 AND 12
       I=KSET52(0,-1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      if ( IERFLG .LT. 0 ) then
+          call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+          return
+      end if
 C--LOAD THE MATRIX
 C----- CLEAR THE MATRIX AREA
       IULN = 11
       CALL XIN11
-      INCLUDE 'IDIM11.INC'
 C----- LOAD THE LIST 11 HEADERS
       CALL XLDLST(IULN, ICOM11, IDIM11, 0)
-      IF (IERFLG .LT. 0) GOTO 9900
+      if ( IERFLG .LT. 0 ) then
+          call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+          return
+      end if
 C----- SAVE THE DISK BUFFER ADDRESSES
       M11S  = L11
       M11RS  = L11R
 C--SET UP THE ANSWERS AREA
       LN=11
       KO=KADD11(1001,MD11,N12+1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      if ( IERFLG .LT. 0 ) then
+          call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+          return
+      end if
 C--CHECK FOR AN OLD LIST 24, AND LOAD IT IF POSSIBLE
       L24=NOWT
       MD24=0
       KE=24
-      IF(KEXIST(KE))1250,1250,1200
+      if(KEXIST(KE)>0) then
 C--AN OLD LIST 24 IS ACCESSIBLE  -  BRING IT DOWN
-1200  CONTINUE
-      CALL XFAL24
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+          CALL XFAL24
+          if ( IERFLG .LT. 0 ) then
+              call error9900(IOPINV , IOPABN , 0, 
+     1            IOPINV, IOPEND, IVERSN)
+              return
+          end if
+      end if
 C--SET THE NUMBER OF SINGULARITIES TO ZERO INITIALLY
-1250  CONTINUE
       JA=0
       JB=JO
-      IF(ISTAT2)1300,1350,1300
+      IF(ISTAT2/=0) then 
 C--PRINT THE ALLOCATED STORE
-1300  CONTINUE
-      CALL XPCM(1)
+          CALL XPCM(1)
+      end if
 C
-1350  CONTINUE
       D=STORE(L11P+17)
 C--CHECK THAT THE NUMBER OF DEGREES OF FREEDOM IS POSITIVE
       IF (  STORE(L11P+16) .LE. ZERO) THEN
@@ -498,42 +538,52 @@ C--CHECK THAT THE NUMBER OF DEGREES OF FREEDOM IS POSITIVE
      2 '          No of observations = ',I10,/
      3 '    No of degrees of freedom = ',I10,/)
             E = 0.
-            GOTO 9900
+            call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+            return
       ELSE
             E=D/STORE(L11P+16)
       ENDIF
 C--CHECK THE TYPE OF LIST 11
-1500  CONTINUE
+
 cdjwapr09 F is counter for sum of squares, ABSF for sum abs(shift/esd)
       F = 0.0
       ABSF = 0
       JP=ISTORE(L11P+15)
 C--CHECK IF THE MATRIX IS OF AN ACCEPTABLE TYPE
-      IF ( IABS(JP) .NE. 1 ) GO TO 9910
+      IF ( IABS(JP) .NE. 1 ) then !       GO TO 9910
+C -- LIST 11 WRONG TYPE
+          IF (ISSPRT .EQ. 0) WRITE ( NCWU , 
+     1        '( 1X , "List 11 is the wrong type" )' )
+          WRITE ( CMON, '( 1X , "List 11 is the wrong type" )')
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERERR )
+          call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+          return
+      end if
+      
 C--CHECK IF THE DUMMY OVERALL TEMPERATURE FACTOR HAS BEEN REFINED
-      IF (KPARAM(1,L12O,M12,M12O,0,L5O)) 1700, 1700, 1750
+      IF (KPARAM(1,L12O,M12,M12O,0,L5O)<=0) then ! 1700, 1700, 1750
 C--NO REFINEMENT
-1700  CONTINUE
-      STORE(L11P+22)=0.
-      GOTO 1900
+          STORE(L11P+22)=0.
+      else
+     
 C--REFINEMENT  -  CHECK THE MATRIX TYPE
-1750  CONTINUE
-      IF(JP)1900,1900,1800
+          IF(JP>0) then !1900,1900,1800
 C--CALCULATE THE CORRECTION FOR THE DUMMY OVERALL TEMPERATURE FACTOR
 C  IGNORING THE SCALE FACTOR INTERACTION
-1800  CONTINUE
 C----- RESERVE SPACE FOR AND GET DIAGONAL ELEMENT AND VECTOR TERM
-      L11C = KADD11 (-101, MD11, 2)
-      JY=KBLCK(ISTORE(M12O))
-      CALL XDOWNF ( JY, XSTR11(MD11*L11C+1-MD11), MD11)
-      JX=L11R+ISTORE(M12O)-1
-      CALL XDOWNF ( JX, XSTR11(MD11*L11C+1), MD11)
-      STORE(L11P+22) = XSTR11(L11C+1) / XSTR11(L11C)
+              L11C = KADD11 (-101, MD11, 2)
+              JY=KBLCK(ISTORE(M12O))
+              CALL XDOWNF ( JY, XSTR11(MD11*L11C+1-MD11), MD11)
+              JX=L11R+ISTORE(M12O)-1
+              CALL XDOWNF ( JX, XSTR11(MD11*L11C+1), MD11)
+              STORE(L11P+22) = XSTR11(L11C+1) / XSTR11(L11C)
 C--CHECK IF A 'WEIGHT' IS TO BE APPLIED
-      IF(ISTORE(M12+1)-1)1850,1900,1850
-1850  CONTINUE
-      STORE(L11P+22)=STORE(L11P+22)*STORE(M12O+1)
-1900  CONTINUE
+              IF(ISTORE(M12+1)/=1) then 
+                  STORE(L11P+22)=STORE(L11P+22)*STORE(M12O+1)
+              end if
+          end if ! 1900  CONTINUE
+      end if
 C----- SAVE THE FREE ADDRESSES IN THE MATRIX WORK AREA
       LFLDS = LFLD
       NFLDS = NFLD
@@ -561,7 +611,7 @@ C
             write(73, '(''NormVect={};'')')
             write(73, '(''NBackNorm={};'')')
       end if
-      DO 3500 JZ=1,N12B
+      DO JZ=1,N12B ! label 3500
 C---- RESET MATRIX AREA
          LFLD = LFLDS
          NFLD = NFLDS
@@ -590,7 +640,11 @@ C----- ALLOCATE SPACE FOR EGENVECTORS
             IVEC = KADD11( 1014, MD11, JY*JY)
 C----- ALLOCATE WORK SPACE
             IWRK = KADD11( 1015, MD11, 5*JY)
-            IF ( IERFLG .LT. 0 ) GO TO 9900
+            if ( IERFLG .LT. 0 ) then
+                call error9900(IOPINV , IOPABN , 0, 
+     1              IOPINV, IOPEND, IVERSN)
+                return
+            end if
          ENDIF
          M11 = L11C
          INM = L11C
@@ -640,7 +694,7 @@ c         DO 2051 I = 1, JY
 c            str11(jdjw) = STR11(IDJW)
 c            IDJW = IDJW + JY - I + 1
 c            jdjw=jdjw+1
-2051     CONTINUE 
+
 c        call outv(str11(iscl),jy)
 CDJW-OCT-05
 
@@ -792,22 +846,24 @@ C-- If we are doing matlab punching then do it here.
          end if
 
                  
-2050     CONTINUE
          L11RC = KADD11(-102,MD11R, JY)
          M11R=L11RC
-         IF ( IERFLG .LT. 0 ) GO TO 9900
+         if ( IERFLG .LT. 0 ) then
+             call error9900(IOPINV , IOPABN , 0, IOPINV, IOPEND, IVERSN)
+             return
+         end if
 C--BRING DOWN THE VECTOR
          CALL XDOWNF (M11RDB, XSTR11 (MD11R*L11RC-MD11R+1), MD11R*JY)
          CALL XSOLVE(JY, L11C, M11R, KO)
 C--SPREAD OUT THE NEW SHIFTS TO ALLOW THE STORAGE OF OTHER DATA
          JV=JO+JY+JY-2
          JW=KO+JY-1
-         DO 2100 JU=1,JY
+         do JU=1,JY
             STORE(JV)=STR11(JW)
             ISTORE(JV+1)=NOWT
             JV=JV-2
             JW=JW-1
-2100     CONTINUE
+         end do
          JQ=M11
 C--SEARCH THROUGH THE ATOMIC PARAMETERS FOR EACH OF THE
 C  LEAST SQUARES PARAMETERS IN TURN
@@ -819,7 +875,7 @@ C----- SET UP THE START ADDRESSES
          JS = 0
 C
 C
-         DO 3450 JX=1,JY
+         do JX=1,JY
             S=0.0
             C=0.
 C----- LOOK FOR PATAMETER 'JT'
@@ -841,28 +897,29 @@ C      MW            NO OF ITEMS PER ENTRY IN SHIFT DETAILS
 c
             IHIT = KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
      1                   E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
-            IF (IHIT .EQ. 0) GOTO  3450
+     
+            IF (IHIT /= 0) then
 C--PARAMETER HAS BEEN FOUND  -  CALCULATE THE RESULTS
 C----- SUM OF SQUARES SHIFT / ESD
-            F = F + S*S
-            ABSF = ABSF + ABS(S)
+                F = F + S*S
+                ABSF = ABSF + ABS(S)
 C ----- FIND THE MAXIMUM SHIFT /ESD
 C>DJWOCT96
-            IF (ABS(S) .GT. SMAX) THEN
-               SMAX = ABS(S)
-               JSAVE = JT
-               CSAVE = CTEXT
-            ENDIF
+                IF (ABS(S) .GT. SMAX) THEN
+                   SMAX = ABS(S)
+                   JSAVE = JT
+                   CSAVE = CTEXT
+                ENDIF
 C<DJWOCT96
 C----- IF SINGULAR, INCREMENT COUNTER
-            IF (A .LT. ZEROSQ) JA = JA + 1
+                IF (A .LT. ZEROSQ) JA = JA + 1
 C
 C--STORE THE SHIFT INFORMATION FOR THIS COORDINATE
 C      JD=ISTORE(JO+1)
 C-C-C-CHECK SHIFT-TYPE
 C-C-C-SHIFT OF OV, OCC, X, Y, Z, U[13], U[12] (NOT AMBIGUOUS)
-            IF ((JS .LE. 7) .OR. (JS .GE. 12)) THEN
-               JD=ISTORE(JO+1)
+                IF ((JS .LE. 7) .OR. (JS .GE. 12)) THEN
+                   JD=ISTORE(JO+1)
 C-C-C
 C-C-C-GENERAL REMARK CONCERNING THIS PART:
 C-C-C-NORMALLY JD IS OBTAINED FROM ISTORE(JO+1). THIS ISN'T POSSIBLE
@@ -878,80 +935,80 @@ C-C-C-HAVE TO FIND THE PLACE WHERE ISTORE(JO+1) IS SET AND MAKE SURE
 C-C-C-THAT IT IS ALSO DONE FOR THE SPECIAL PARAMETERS
 C-C-C
 C-C-C-SHIFT OF U[11]/U[ISO]/"U[ISO]" (AMBIGUOUS)
-            ELSE IF (JS .EQ. 8) THEN
+                ELSE IF (JS .EQ. 8) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[11])
-               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-                  JD=ISTORE(JO+1)
+                    IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                        JD=ISTORE(JO+1)
 C-C-C-ISOTROPIC ATOM (---> SHIFT OF U[ISO])
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 1) THEN
-                  JD=JC+4*MW
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 1) THEN
+                        JD=JC+4*MW
 C-C-C-SURFACE OF SPHERE (---> SHIFT OF "U[ISO]", I.E. THICKN. OF SURF.)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
-                  JD=JC+14*MW
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
+                        JD=JC+14*MW
 C-C-C-LINE (---> SHIFT OF "U[ISO]", I.E. THICKNESS OF LINE)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-                  JD=JC+16*MW
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                        JD=JC+16*MW
 C-C-C-RING (---> SHIFT OF "U[ISO]", I.E. THICKN. OF RING)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-                  JD=JC+20*MW
-               ENDIF
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                        JD=JC+20*MW
+                    ENDIF
 C-C-C-SHIFT OF U[22]/SIZE (AMBIGUOUS)
-            ELSE IF (JS .EQ. 9) THEN
+                ELSE IF (JS .EQ. 9) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[22])
-               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-                  JD=ISTORE(JO+1)
+                    IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                        JD=ISTORE(JO+1)
 C-C-C-SURFACE OF SPHERE (---> SHIFT OF SIZE, I.E. RADIUS OF SPHERE)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
-                  JD=JC+15*MW
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
+                        JD=JC+15*MW
 C-C-C-LINE (---> SHIFT OF SIZE, I.E. LENGTH OF LINE)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-                  JD=JC+17*MW
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                        JD=JC+17*MW
 C-C-C-RING (---> SHIFT OF SIZE, I.E. RADIUS OF RING)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-                  JD=JC+21*MW
-               ENDIF
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                       JD=JC+21*MW
+                    ENDIF
 C-C-C-SHIFT OF U[33]/DECLINAT (AMBIGUOUS)
-            ELSE IF (JS .EQ. 10) THEN
+                ELSE IF (JS .EQ. 10) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[33])
-               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-                  JD=ISTORE(JO+1)
+                    IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                        JD=ISTORE(JO+1)
 C-C-C-LINE (---> SHIFT OF DECLINAT OF LINE)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-                  JD=JC+18*MW
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                        JD=JC+18*MW
 C-C-C-RING (---> SHIFT OF DECLINAT OF RINGNORMAL)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-                  JD=JC+22*MW
-               ENDIF
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                        JD=JC+22*MW
+                    ENDIF
 C-C-C-SHIFT OF U[23]/AZIMUTH (AMBIGUOUS)
-            ELSE IF (JS .EQ. 11) THEN
+                ELSE IF (JS .EQ. 11) THEN
 C-C-C-ANISOTROPIC ATOM (---> SHIFT OF U[23])
-               IF (NINT(STORE(M5+3)) .EQ. 0) THEN
-                  JD=ISTORE(JO+1)
+                    IF (NINT(STORE(M5+3)) .EQ. 0) THEN
+                        JD=ISTORE(JO+1)
 C-C-C-LINE (---> SHIFT OF AZIMUTH OF LINE)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
-                  JD=JC+19*MW
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 3) THEN
+                        JD=JC+19*MW
 C-C-C-RING (---> SHIFT OF AZIMUTH OF RINGNORMAL)
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
-                  JD=JC+23*MW
-               ENDIF
-            ENDIF
-            STORE(JD+1)=STORE(JD+1)+1.
-            STORE(JD+2)=STORE(JD+2)+STORE(JO)
-            STORE(JD+3)=STORE(JD+3)+STORE(JO)*STORE(JO)
-            STORE(JD+5) = AMAX1(STORE(JD+5), ABS(STORE(JO)) )
-            store(jd+6)=store(jd+6)+s*s
+                    ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
+                        JD=JC+23*MW
+                    END IF
+                ENDIF
+                STORE(JD+1)=STORE(JD+1)+1.
+                STORE(JD+2)=STORE(JD+2)+STORE(JO)
+                STORE(JD+3)=STORE(JD+3)+STORE(JO)*STORE(JO)
+                STORE(JD+5) = MAX(STORE(JD+5), ABS(STORE(JO)) )
+                store(jd+6)=store(jd+6)+s*s
 C--CHECK IF THE SIGN HAS CHANGED COMPARED WITH THE LAST CYCLE
-            IF(C)3350,3400,3400
+                if(C<0) then 
 C--THE SIGN HAS CHANGED
-3350        CONTINUE
-            STORE(JD+4)=STORE(JD+4)+1.
+                    STORE(JD+4)=STORE(JD+4)+1.
+                end if
 C--UPDATE THE ADDRESS AND CONTROL FLAGS
-3400        CONTINUE
-            JO=JO+2
-            JQ=JQ+JY-JX+1
-            JT=JT+1
-            M24=M24+MD24
-3450     CONTINUE
+                JO=JO+2
+                JQ=JQ+JY-JX+1
+                JT=JT+1
+                M24=M24+MD24
+             end if
+         end do
 C----- PUT THE GOODIES BACK ON THE DISK
          CALL XUPF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
          CALL XUPF (M11RDB, XSTR11 (MD11R*L11RC-MD11R+1), MD11R*JY)
@@ -959,7 +1016,8 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
          M11DB = M11DB +((ISTORE(M12B+1)+1)*ISTORE(M12B+1))/2
          M11RDB = M11RDB+ISTORE(M12B+1)
          M12B=M12B+MD12B
-3500  CONTINUE
+      end do ! 3500  CONTINUE
+      
       if (ISTORE(M33CD+5) .eq. 1) then
             write(73, '(''N=collectBlocks(N)'')')
             if (ISTORE(M33CD+15) .eq. 1 ) then
@@ -1048,20 +1106,21 @@ C----- SINGULARITY SITUATION IS OKAY
      2 ' Terminating after this cycle')
       ENDIF
 C--UPDATE THE VALUES OF THE VARIOUS DETERMINED FUNCTIONS
-3700  CONTINUE
+
       JU=1
 C--CHECK IF THIS IS THE FIRST CYCLE TO SEE IF DIFFERENCES CAN BE CALCULA
-      IF(ISTORE(L33CB+1))3800,3800,3750
+      if(ISTORE(L33CB+1)>0) then ! 3800,3800,3750
 C--CHECK IF THE LAST CYCLE INVOLVED REFINEMENT
-3750  CONTINUE
-      IF(ISTORE(M33CD-1)-1)3800,3850,3800
+          if(ISTORE(M33CD-1)/=1) then ! 3800,3850,3800
 C--NO REFINEMENT LAST TIME
-3800  CONTINUE
-      JU=-1
+              JU=-1
+          end if
+      else
+          JU=-1
+      end if
 C--CHECK IF SINGULARITIES ALREADY INDICATE TERMINATION
-3850  CONTINUE
+
 C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
-3900  CONTINUE
       IF ( ISSPRT.EQ. 0)  write(ncwu,3901)
 3901  format(32x,'Min',10x,'Actual',11x,'Max')
       M23AC=L23AC
@@ -1070,75 +1129,72 @@ C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
       JF=MD23AC/JG
       I = 0
       J = 0
-      DO 4050 I=1,JF
+      do I=1,JF
 C--CHECK THE MINIMUM VALUE
-      IF ( ISSPRT.EQ. 0)
-     1  write(ncwu,'(a,a,3g15.2e2)') 'All cycle   ',clst23(i),
-     1  store(m23ac),store(je+1),store(m23ac+1)
-      if (store(je+1) .lt. store(m23ac)) goto 4300
+          IF ( ISSPRT.EQ. 0)
+     1        write(ncwu,'(a,a,3g15.2e2)') 'All cycle   ',clst23(i),
+     1        store(m23ac),store(je+1),store(m23ac+1)
+          if (store(je+1) .lt. store(m23ac)) then
+              call stopcycles(istore, l33cb, n33ib, 
+     1            clst23, i, j, ncvdu, ncwu, issprt, cmon)
+              JU=-1
+              exit
+          end if
+          
 C--CHECK THE MAXIMUM VALUE
-3950  CONTINUE
-      if (store(je+1) .gt. store(m23ac+1)) goto 4300
+
+          if (store(je+1) .gt. store(m23ac+1)) then
+              call stopcycles(istore, l33cb, n33ib, 
+     1            clst23, i, j, ncvdu, ncwu, issprt, cmon)
+              JU=-1
+              exit
+          end if
 C--UPDATE FOR THE NEXT CONDITION
-4000  CONTINUE
-      JE=JE+1
-      M23AC=M23AC+JG
-4050  CONTINUE
+
+          JE=JE+1
+          M23AC=M23AC+JG
+      end do
+
       I = 0
 C--CHECK IF WE SHOULD CHECK INTER-CYCLE CONDITIONS
-      IF(JU)4400,4400,4100
+      IF(JU>0) then ! 4400,4400,4100
 C--LOOP OVER THE INTER-CYCLE CONDITIONS
-4100  CONTINUE
-      M23IC=L23IC
-      JH=M33V-MD33V
-      JE=M33V
+          M23IC=L23IC
+          JH=M33V-MD33V
+          JE=M33V
 C--LOOP OVER EACH
-      DO 4250 J = 1, JF
-      A=STORE(JH+1)-STORE(JE+1)
-      IF ( ISSPRT .EQ. 0 ) 
-     1  write(ncwu,'(a,a,3g15.2e2)') 'Inter cycle ',clst23(j),
-     1  store(m23ic),a,store(m23ic+1)
+          do J = 1, JF ! 4250
+              A=STORE(JH+1)-STORE(JE+1)
+              IF ( ISSPRT .EQ. 0 ) 
+     1            write(ncwu,'(a,a,3g15.2e2)') 'Inter cycle ',clst23(j),
+     1            store(m23ic),a,store(m23ic+1)
 C--CHECK THE MIMIMUM
-      if (a .lt. store(m23ic)) goto 4300
+              if (a .lt. store(m23ic)) then
+                  call stopcycles(istore, l33cb, n33ib, 
+     1                clst23, i, j, ncvdu, ncwu, issprt, cmon)
+                  exit
+              end if
 C--CHECK THE MAXIMUM
-4150  CONTINUE
-      if (a .gt. store(m23ic+1)) goto 4300
+              if (a .gt. store(m23ic+1)) then
+                  call stopcycles(istore, l33cb, n33ib, 
+     1                clst23, i, j, ncvdu, ncwu, issprt, cmon)
+                  exit
+              end if
 C--UPDATE
-4200  CONTINUE
-      JE=JE+1
-      JH=JH+1
-      M23IC=M23IC+JG
-4250  CONTINUE
-      J = 0
-C--ALL OKAY  -  BRANCH OUT
-      GOTO 4400
-C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
-4300  CONTINUE
-      ISTORE(L33CB)=N33IB
-      IF (I .GT. 0) THEN
-       WRITE(CMON,4350) CLST23(I)(:)
-4350  FORMAT(' Forced termination after this cycle: ',
-     3 ' Actual value condition on: ',   A)
-       CALL XPRVDU(NCVDU, 1,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-      ENDIF
-      IF (J .GT. 0) THEN
-       WRITE(CMON,4351) CLST23(J)(:)
-4351  FORMAT(' Forced termination after this cycle: ',
-     3 ' Relative change condition on ',   A)
-       CALL XPRVDU(NCVDU, 1,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-      ENDIF
-C
-C--REWRITE LIST 33 TO THE DISC
-4400  CONTINUE
+              JE=JE+1
+              JH=JH+1
+              M23IC=M23IC+JG 
+          end do ! 4250  CONTINUE
+          J = 0
+      end if ! 4400  CONTINUE
+
       IF ((ICONVG .EQ. 1) .OR. ( JA .NE. 0)) ISTORE(L33CB) = N33IB
       CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
       CALL XDUMP
 C
 C--START OF SHIFT STATISTICS PART
-      D=1./AMAX1(ZEROSQ,STORE(L11P+26))
-      E=1./AMAX1(ZEROSQ,STORE(L11P+29))
+      D=1./MAX(ZEROSQ,STORE(L11P+26))
+      E=1./MAX(ZEROSQ,STORE(L11P+29))
 C--CALCULATE THE HAMILTON WEIGHTED R-VALUES
       A=100.*SQRT(STORE(L11P+25)*D)
       B=100.*SQRT(STORE(L11P+28)*E)
@@ -1166,7 +1222,6 @@ C--PRINT THE HEADING AND THE VARIOUS DETAILS AMASSED
       ENDIF
 4447  FORMAT(1X ,' You have used neither restraints nor reflections')
 4448  FORMAT(/60(2H *)/)
-4449  FORMAT(/40(2H *)/)
 C
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,4448)
@@ -1251,43 +1306,43 @@ C--COMPUTE THE mean TOTALS TO BE PRINTED
       Y=0.
       Z=0.
       j = 0
-      DO 4550 I=JC,JD,MW
-      j = j + 1
-      terms = store(i+1)
-         select case(j)
-            case(1)
+      do I=JC,JD,MW
+          j = j + 1
+          terms = store(i+1)
+             select case(j)
+                case(1)
 c  overall
-              ovrtms = ovrtms+terms
-              ovrsoe = ovrsoe +store(i+6)
-            case(5,9,10,11)
+                  ovrtms = ovrtms+terms
+                  ovrsoe = ovrsoe +store(i+6)
+                case(5,9,10,11)
 c  adp
-              adptms=adptms+terms
-              adpsoe=adpsoe+store(i+6)            
-            case(6,7,8)
+                  adptms=adptms+terms
+                  adpsoe=adpsoe+store(i+6)            
+                case(6,7,8)
 c   xyz
-              xyztms=xyztms+terms
-              xyzsoe=xyzsoe+store(i+6)            
-         end select
+                  xyztms=xyztms+terms
+                  xyzsoe=xyzsoe+store(i+6)            
+             end select
 c
 c      check no of reversals is valid
-       if (store(i+4) .gt. zero) then
-         select case(j)
-            case(5,9,10,11)
+           if (store(i+4) .gt. zero) then
+             select case(j)
+                case(5,9,10,11)
 c  adp
-              adprev=adprev+store(i+4)            
-            case(6,7,8)
+                  adprev=adprev+store(i+4)            
+                case(6,7,8)
 c   xyz
-              xyzrev=xyzrev+store(i+4)            
-         end select
-       endif
-      Y=Y+STORE(I+1)
-      Z=Z+STORE(I+4)
-      STORE(I+1)=1./AMAX1(STORE(I+1),1.)
-      STORE(I+2)=STORE(I+2)*STORE(I+1)
-      STORE(I+3)=SQRT(STORE(I+3)*STORE(I+1))
-      STORE(I+4)=STORE(I+4)*STORE(I+1)*100.
-      store(i+6)=SQRT(STORE(I+6)*STORE(I+1))
-4550  CONTINUE
+                  xyzrev=xyzrev+store(i+4)            
+             end select
+          endif
+          Y=Y+STORE(I+1)
+          Z=Z+STORE(I+4)
+          STORE(I+1)=1./AMAX1(STORE(I+1),1.)
+          STORE(I+2)=STORE(I+2)*STORE(I+1)
+          STORE(I+3)=SQRT(STORE(I+3)*STORE(I+1))
+          STORE(I+4)=STORE(I+4)*STORE(I+1)*100.
+          store(i+6)=SQRT(STORE(I+6)*STORE(I+1))
+      end do
 c
 c      write(ncwu,'(3(a,g16.4))')'adptms',adptms,' xyztms',xyztms,
 c     1 ' ovrtms',ovrtms 
@@ -1307,13 +1362,14 @@ c
 C--CONVERT THE MEAN, RMS AND MAX POSN. COORDS. TO ANGSTROM
       JF=JC+5*MW
       JG=L1P1
-      DO 4600 I=1,3
-      A1(I)=STORE(JF+2)*STORE(JG)
-      A1(I+3)=STORE(JF+3)*STORE(JG)
-      B1(I)=STORE(JF+5)*STORE(JG)
-      JF=JF+MW
-      JG=JG+1
-4600  CONTINUE
+      DO I=1,3
+          A1(I)=STORE(JF+2)*STORE(JG)
+          A1(I+3)=STORE(JF+3)*STORE(JG)
+          B1(I)=STORE(JF+5)*STORE(JG)
+          JF=JF+MW
+          JG=JG+1
+      end do
+      A=A1(1)
       JE=JC+3*MW
 C--PRINT THE RESULTS
       IF (ISSPRT .EQ. 0) THEN
@@ -1345,27 +1401,28 @@ cRIC13:4660  FORMAT(/' Maximum   ',12F9.5,
 4660  FORMAT(/' Maximum   ',F9.2,11F9.4,
      1 /           38X,3F9.4)
       ENDIF
+      
 C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
-      IF(M24)4800,4800,4700
-4700  CONTINUE
-      Z=Z/Y*100.
-      IF (ISSPRT .EQ. 0) THEN
-c      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JD,MW),Z
-      WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW),z
-      ENDIF
-c      WRITE(CMON,'(''Shift Reversals'')')
-c      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(CMON,4701)
-4701  FORMAT(' Shift     Scale  Occ U[iso]   X    Y    Z  U[11]',
-     1 ' U[22] U[33] U[23] U[13] U[12]')
-      CALL XPRVDU(NCVDU, 1,0)
-      WRITE(CMON,4702)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
-4702  FORMAT(' Reversals',3(1X,F5.1),3(F5.1),6(1X,F5.1))
-      CALL XPRVDU(NCVDU, 1,0)
-4750  FORMAT(/10H Reversals,12F9.2///
-     2 44H Reversals is the percentage of shifts whose,
-     3 41H signs have changed since the last cycle,,8H and is ,F6.2,
-     4 20H for all parameters.)
+      IF(M24>0) then 
+          Z=Z/Y*100.
+          IF (ISSPRT .EQ. 0) THEN
+c             WRITE(NCWU,4750)STORE(JC+4),(STORE(I+4),I=JE,JD,MW),Z
+              WRITE(NCWU,4750) STORE(JC+4),
+     1            (STORE(I+4),I=JE,JC+13*MW,MW),z
+          ENDIF
+c         WRITE(CMON,'(''Shift Reversals'')')
+c         CALL XPRVDU(NCVDU, 1,0)
+          WRITE(CMON,4701)
+4701      FORMAT(' Shift     Scale  Occ U[iso]   X    Y    Z  U[11]',
+     1        ' U[22] U[33] U[23] U[13] U[12]')
+          CALL XPRVDU(NCVDU, 1,0)
+          WRITE(CMON,4702)STORE(JC+4),(STORE(I+4),I=JE,JC+13*MW,MW)
+4702      FORMAT(' Reversals',3(1X,F5.1),3(F5.1),6(1X,F5.1))
+          CALL XPRVDU(NCVDU, 1,0)
+4750      FORMAT(/10H Reversals,12F9.2///
+     2     44H Reversals is the percentage of shifts whose,
+     3     41H signs have changed since the last cycle,,8H and is ,F6.2,
+     4     20H for all parameters.)
 c4750  FORMAT(/' Reversals ',12F9.2/)
 c
 C-C-C-PRINT THE RESULTS (FOR SPECIAL SHIFTS)
@@ -1382,18 +1439,16 @@ c     3 'UisoRin',2X,'RadRin',3X,'DecRin',3X,'AziRin'
 c     4 //' Mean      ',10F9.5//' R.M.S.    ',10F9.5)
 c      WRITE(NCWU,4653) (STORE(I+6),I=JC+14*MW,JC+23*MW,MW)
 c      WRITE(NCWU,4775) (STORE(I+5),I=JC+14*MW,JC+23*MW,MW)
-4775  FORMAT(/' Maximum   ',10F9.5)
+c4775  FORMAT(/' Maximum   ',10F9.5)
 c      ENDIF
 c
 c
 C--CHECK IF WE MUST PRINT THE SIGN CHANGE INFORMATION
-      IF(M24)4800,4800,4780
-4780  CONTINUE
 c      Z=Z/Y*100.
 CDJW0105
-      DO I =1,3
-       C1(I) = STORE(JE+4+(I+1)*MW)
-      ENDDO
+          DO I =1,3
+              C1(I) = STORE(JE+4+(I+1)*MW)
+          ENDDO
 C- USED WHEN TRYING TO OPTIMISE THE LS WEIGHTING
 C- OUTPUTS THE SHIFT INFO FOR CURRENT CYCLE TO PUNCH FILE
 C      CALL XLSDEL (A1,B1,C1)
@@ -1405,7 +1460,7 @@ c4785  FORMAT(/' Reversals',10F9.2///
 c     2 ' Reversals is the percentage of shifts whose',
 c     3 ' signs have changed since the last cycle,'/,' and is ',F6.2,
 c     4 ' for all parameters.')
-4800  CONTINUE
+      end if
 c
 c
 C--COMPUTE THE SHIFT FACTORS TO APPLY IF ANY
@@ -1413,47 +1468,51 @@ C--COMPUTE THE SHIFT FACTORS TO APPLY IF ANY
       K=M33SV+1
 C--STORE THE SHIFTS INFORMATION IN ANGSTROM FOR X, Y AND Z
       JF=JC+5*MW
-      DO 4850 I=4,6
+      Do I=4,6
 cdkw0202      STORE(JF+3)=A1(I)
 C----- USE MAXIMUM NOT RMS
-      STORE(JF+3)=B1(I-3)
-      JF=JF+MW
-4850  CONTINUE
+          STORE(JF+3)=B1(I-3)
+          JF=JF+MW
+      end do
 C--SEE IF THE SHIFTS HAVE TO BE CALCULATED
-      DO 5100 I=JC,JD,MW
-      IF(ISTORE(J))5050,4900,4950
-4900  CONTINUE
+      do I=JC,JD,MW
+          IF(ISTORE(J)==0) then
 c----- TYPE eq 0 -MAX- check actual values
 C--CHECK IF THE R.M.S. VALUE IS TOO LARGE
 CDJW0102 CHANGED TO WORK ON MAXIMUM VALUE. 
 c      Store(k) is a list33 value, store(i+3) is rms shift
-      IF(STORE(K)-STORE(I+3))4950,5050,5050
+              IF(STORE(K)-STORE(I+3)<0) then 
 C--CALCULATE THE NEW SHIFT FACTOR
 c----- TYPE eq 1 - FORCE- force shifts to max, even if lower
-4950  CONTINUE
 CDJW0102--- CHANGE TO ZERO (FROM SQ) TO AVOID
 C      MASSIVE SHIFTS IF MAXIMUM SHIFT IS SMALL
-      IF(STORE(I+3)-ZERO)5050,5050,5000
-5000  CONTINUE
+                  IF(STORE(I+3)-ZERO>0.0) then
 c     new shift = list33 shift/ rms shift
-      STORE(I)=STORE(K)/STORE(I+3)
-      goto 5060
-5050  CONTINUE
+                      STORE(I)=STORE(K)/STORE(I+3)
+                  end if
+              end if
+          else if(ISTORE(J)>0) then
+CDJW0102--- CHANGE TO ZERO (FROM SQ) TO AVOID
+C      MASSIVE SHIFTS IF MAXIMUM SHIFT IS SMALL
+              IF(STORE(I+3)-ZERO>0.0) then
+c     new shift = list33 shift/ rms shift
+                  STORE(I)=STORE(K)/STORE(I+3)
+              end if
+          end if
 cdjwdec06
 c      store(i) = min(store(I), store(k))
-5060  continue
 c----- TYPE eq -1 - normal scale factors
 C--COMPUTE THE NEW TOTALS AFTER THE NEW SHIFT FACTOR HAS BEEN APPLIED
 cdjwdec06
 c---- reset values in list 33
-      istore(j) = -1
-      store(k) = store(i)
+          istore(j) = -1
+          store(k) = store(i)
 cdjwdec06
-      STORE(I+2)=STORE(I+2)*STORE(I)
-      STORE(I+3)=STORE(I+3)*STORE(I)
-      J=J+1
-      K=K+1
-5100  CONTINUE
+          STORE(I+2)=STORE(I+2)*STORE(I)
+          STORE(I+3)=STORE(I+3)*STORE(I)
+          J=J+1
+          K=K+1
+      end do
 c
 cdjwdec06
 c      Code to catch run-away refinements, especially
@@ -1558,8 +1617,8 @@ c     1 'oldshift',oldshift,'rfshift',rfshift,'adpshift',adpshift,
 c     2 'revshift',revshift,'adp',adpshift,' xyz',xyzshift,' Over',
 c     3 ovrshift
 c
-5102  format(a,f8.1,a,f6.2,a,f6.2,2(a,2f6.2),a,f6.2,
-     1 a,f6.3,a,f6.3,a,f6.3)
+c5102  format(a,f8.1,a,f6.2,a,f6.2,2(a,2f6.2),a,f6.2,
+c     1 a,f6.3,a,f6.3,a,f6.3)
 c      write(ncwu,5102)
 c     1 'Sssr=',sssr, ' Smax=',smax,' Rmss=',rmss,
 c     2 ' Av Rev ', adprev,xyzrev,
@@ -1618,13 +1677,14 @@ c
 c--shuffle the results for x, y and z
       jf=jc+5*mw
       jg=l1p1
-      do 5150 i=1,3
-      a1(i)=store(jf+2)*store(jg)
-      a1(i+3)=store(jf+3)
-      store(jf+3)=store(jf+3)/store(jg)
-      jf=jf+mw
-      jg=jg+1
-5150  continue
+      do i=1,3
+          a1(i)=store(jf+2)*store(jg)
+          a1(i+3)=store(jf+3)
+          store(jf+3)=store(jf+3)/store(jg)
+          jf=jf+mw
+          jg=jg+1
+      end do
+      a=a1(1)
 cdjwaug06
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts
@@ -1649,47 +1709,35 @@ C
 C--PREPARE THE LIST 24 FOR OUTPUT
       CALL XCSAE
       N24=N12
-      INCLUDE 'IDIM24.INC'
       CALL XCELST(24,ICOM24,IDIM24)
 C--SET UP THE SHIFTS IN THE OUTPUT AREA
       J=L24
       K=L24+(N24-1)*MD24
-      DO 5250 I=J,K,MD24
+      do I=J,K,MD24
 C--SET THE CALCULATED SHIFT
-      STORE(I)=STORE(JB)
+          STORE(I)=STORE(JB)
 C--COMPUTE THE APPLIED SHIFT
-      L=ISTORE(JB+1)
-      STORE(I+1)=STORE(JB)*STORE(L)
-      JB=JB+2
-5250  CONTINUE
+          L=ISTORE(JB+1)
+          STORE(I+1)=STORE(JB)*STORE(L)
+          JB=JB+2
+      end do
       CALL XWLSTD(24,ICOM24,IDIM24,-1,0)
 C----- PRINT LARGE CORRELATION COEFFICIENTS
 cdjw0102      CALL XPR11L(CCOEF)
-5275  CONTINUE
+c5275  CONTINUE
 C
       CALL XOPMSG( IOPINV, IOPEND, IVERSN)
-C
       CALL XTIME2(2)
-      RETURN
-C
-9900  CONTINUE
-C -- ERRORS
-      CALL XOPMSG ( IOPINV , IOPABN , 0 )
-      GO TO 5275
-9910  CONTINUE
-C -- LIST 11 WRONG TYPE
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-      WRITE ( CMON, 9915)
-      CALL XPRVDU(NCVDU, 1,0)
-9915  FORMAT ( 1X , 'List 11 is the wrong type' )
-      CALL XERHND ( IERERR )
-      GO TO 9900
+      RETURN      
 C
       END
 C
 CODE FOR OUTV
       SUBROUTINE OUTV(A,N)
-      DIMENSION A(N)
+      implicit none
+      
+      integer, intent(in) :: N
+      real, dimension(N), intent(in) :: A
       INCLUDE 'XUNITS.INC'
       WRITE(NCWU, 123) A
 123   FORMAT(10F13.0)
@@ -1700,6 +1748,7 @@ C
 C
 CODE FOR XFILTR
       SUBROUTINE XFILTR (A, B, C, U, W, M, AUGFAC, FILTER, DISC, ILEVEL)
+      implicit none
 C----- INVERT NORMAL MATRIX BY EIGENVALUE FILTERING
 C
 C      N.x = y
@@ -1732,6 +1781,13 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
+      
+      real, intent(in) :: w, augfac, filter, disc
+      real, intent(inout) :: a, b, c, u
+      integer, intent(in) :: ilevel, m
+      
+      real x, y, z, uj, sum
+      integer i, j, k, ii, ij, ik, info
 C
 C
 C
@@ -1748,19 +1804,19 @@ c101     FORMAT (/, ' Column ', I5)
 c102     FORMAT((1X,20G15.8/))
 c      ENDDO
 
-      DO 10 I=1,M
+      DO I=1,M
         U(I)=1.0
         IF (ABS(A(I,I)) .GT. ZERO) U(I)=1.0 / SQRT(A(I,I))
-10    CONTINUE
+      end do
 C
 C SCALE MATRIX BY U
 C
-      DO 20 J=1, M
+      DO J=1, M
         UJ=U(J)
-        DO 30 K=1,J
+        DO K=1,J
           A(J,K) = A(J,K) * U(K) * UJ
-30      CONTINUE
-20    CONTINUE
+        end do
+      end do
 C
 C-----  EA06C RETURNS EIGENVECTORS AND EIGENVALUES
 C
@@ -1784,12 +1840,12 @@ C
         IF (ISSPRT .EQ. 0) THEN
           WRITE (NCWU,1020)
 1020      FORMAT(/ , ' Eigen vectors of Normal Matrix' )
-          DO 1040 J = 1, M
+          DO J = 1, M
           WRITE (NCWU,1030) J
           WRITE (NCWU, 1015) (A(I,J),I=1,M)
 1030      FORMAT (/, ' Column ', I5)
 1015      FORMAT((1X,20F6.2/))
-1040      CONTINUE
+          end do
         ENDIF
       ENDIF
 C
@@ -1804,7 +1860,7 @@ C----- FIND LARGEST AND SMALLEST
       Z = B(1)
       II = 1
       IK = 1
-      DO 100 I = 2, M
+      DO I = 2, M
        IF ( B(I) .GT. Y ) THEN
          II = I
          Y = B(I)
@@ -1812,22 +1868,22 @@ C----- FIND LARGEST AND SMALLEST
          IK = I
          Z = B(I)
        ENDIF
-100   CONTINUE
+      end do
 
 c      WRITE(NCWU,'(A,I4)')'Info: ',INFO
 c      WRITE(NCWU,'(A,2(I4,G15.8))')'Largest, smallest: ',II,Y,IK,Z
 
 C
 C----- FIND NEXT LARGEST
-      DO 120 J = 1, M
+      l120:DO J = 1, M ! 120
          X = Z
          IJ = IK
-         DO 110 I = 1, M
+         DO I = 1, M ! 110
            IF( (B(I).GT.X) .AND. (B(I).LT.Y) )  THEN
              X = B(I)
              IJ = I
            ENDIF
-110      CONTINUE
+         end do ! 110      CONTINUE
 
 c      WRITE(NCWU,'(A,I4,G15.8)')'Next largest: ',IJ,X
 
@@ -1841,7 +1897,7 @@ C-----   RESET ALL SMALLER TO ZERO AND EXIT LOOP
 113      FORMAT(' Discontinuity in eigenvector list ')
 111      FORMAT(' Discontinuity in eigenvector list ',/,
      1    12X, 2(I5, G11.4,4X))
-           DO 115 K = 1, M
+           DO K = 1, M ! 115
              IF(B(K) .LE. X ) THEN
                   IF (ISSPRT .EQ. 0) WRITE(NCWU,112)  K, B(K)
                   WRITE ( CMON,112 ) K
@@ -1851,26 +1907,26 @@ C-----   RESET ALL SMALLER TO ZERO AND EXIT LOOP
                   B(K) = 0.0
                   IF (ISSPRT .EQ. 0) WRITE (NCWU, 1015) (A(I,K),I=1,M)
              END IF
-115        CONTINUE
-           GOTO 130
+           end do ! 115        CONTINUE
+           exit l120
          ELSE
 C-----     EXCHANGE SMALLER
            Y = X
            II = IJ
          ENDIF
-120    CONTINUE
-130    CONTINUE
+       end do l120
 C
 C------ INVERT DIAGONAL MATRIX, REJECTING LOW EIGENVALUES AND
 C------ AUGMENTING OTHERS.
 C
-      DO 40 I=1,M
+      DO I=1,M
         IF(B(I) .GT. FILTER) THEN
               B(I) = 1.0 / (B(I) + AUGFAC)
         ELSE
               B(I) = 0.0
         ENDIF
-40    CONTINUE
+      end do
+
 C
 C----- TRANSPOSE 'A' into 'C' TO INCREASE EFFICIENCY OF INNER LOOP LATER
        DO J = 1,M
@@ -1896,6 +1952,7 @@ C
       END
 CODE FOR XMTCVT
       SUBROUTINE XMTCVT(IADD, N, ITYPE, ILEN)
+      implicit none
 C
 C----- ILEN LENGTH OF REPRESENTATION OF VALUE (MD11)
 C      IF ITYPE = 1
@@ -1907,6 +1964,11 @@ C
       INCLUDE 'TYPE11.INC'
       INCLUDE 'XSTR11.INC'
       INCLUDE 'QSTR11.INC'
+      
+      integer nim, n, m, l, iadd, jadd, itl, itd, isl, isd, isf
+      integer ilen, itype, ia
+      
+      integer, external :: IMLIND
 C
 C
 C
@@ -1914,7 +1976,7 @@ C
 c      WRITE(442,*) 'Ilen: ', ILEN
 
       IF ( ITYPE .EQ. 1 ) THEN
-	DO L = (N*N)-1, N, -1
+        DO L = (N*N)-1, N, -1
           IA = IMLIND(N,L)
 c          WRITE(442,*)'Moving: ', IA, ' to ', L
           XSTR11(IADD+L) = XSTR11(IADD+IA)
@@ -1923,7 +1985,7 @@ c          WRITE(442,*)'Moving: ', IA, ' to ', L
       END IF  
 
       JADD = IADD - 1
-      DO 10 L = 2, N
+      DO L = 2, N ! 10
       IF (ITYPE .EQ. 1) THEN
             STOP 'Reimplemented above'
             M = N - L + 2
@@ -1948,14 +2010,17 @@ C----- MOVE THE COLUMN ALONG
       ELSE
             CALL XMOVE (XSTR11(ISD), XSTR11(ITD), NIM*ILEN)
       ENDIF
-10    CONTINUE
+      end do ! 10    CONTINUE
 C
       END
 C
 C Given zero-based index into NxN square array, give corresponding index into lower triangle array, 
 C assuming symmetry.
 CODE FOR IMLIND
-      FUNCTION IMLIND(N,I)
+      integer FUNCTION IMLIND(N,I)
+      implicit none
+      integer, intent(in) :: n, i
+      integer irow, icol, itemp
 C N - dimension of matrix
 C I - 0-based index into 3x3 matrix, e.g. 8 = 3,3 for a 3x3 matrix
 C IMLIND - 0-based index of position (column order), e.g. 5 = 3,3 for a 3x3 lower triangle matrix
@@ -1989,8 +2054,9 @@ c      WRITE(442,*) 'IROW, ICOL, IMLIND: ', IROW, ICOL, IMLIND
          
 
 CODE FOR KFLSP
-      FUNCTION KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
+      integer FUNCTION KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
      1 E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
+      implicit none
 C
 C----- FIND A LEAST SQUARES PARAMETER IN LIST 5 AND LIST 12
 C      AND OUTPUT DETAILS
@@ -2014,14 +2080,22 @@ C      MW            NO OF ITEMS PER ENTRY IN SHIFT DETAILS
 C
 C------ ALL EXCEPT JT ARE UPDATED BY THIS ROUTINE
 C
-      CHARACTER *6 FLAG, JQUEST, IBLANK, SRATIO, IOESD,  TOOBIG
-      CHARACTER *(*) CTEXT
+      CHARACTER(len=6) :: FLAG
+      CHARACTER(len=6), parameter :: JQUEST='??????'
+      CHARACTER(len=6), parameter :: IBLANK='      '
+      CHARACTER(len=6), parameter :: SRATIO='SRATIO' 
+      CHARACTER(len=6), parameter :: IOESD ='S/ESD '
+      CHARACTER(len=6), parameter :: TOOBIG='LARGE '
+      CHARACTER(len=4), parameter :: IQUEST='????'
+      CHARACTER(len=*), intent(inout) :: CTEXT
       INCLUDE 'TYPE11.INC'
       INCLUDE 'ICOM12.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
-      DIMENSION IP(4)
-      DIMENSION PARVAL(13)
+      integer, dimension(4) :: IP
+C----- MAXIMUM SHIFT VALUES
+      real, dimension(13), parameter :: PARVAL=
+     1    (/ 0.,0.,1.,.05,.25,.25,.25,.05,.05,.05,.05,.05,.05 /)
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
@@ -2038,16 +2112,17 @@ C
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST12.INC'
       INCLUDE 'XIOBUF.INC'
-#if defined (_HOL_)
-      DATA IQUEST /4H????/
-#else
-      DATA IQUEST /'????'/
-#endif
-      DATA JQUEST /'??????'/, IBLANK /'      '/
-      DATA SRATIO /'SRATIO'/, IOESD  /'S/ESD '/
-      DATA TOOBIG /'LARGE '/
-C----- MAXIMUM SHIFT VALUES
-      DATA PARVAL /0.,0.,1.,.05,.25,.25,.25,.05,.05,.05,.05,.05,.05/
+      
+      integer, intent(inout) :: jr, js, ICAPT
+      integer, intent(in) :: JT, JO, JX, JC, JQ, JZ
+      integer, intent(in) :: ILEVEL, MW
+      real, intent(inout) :: a, c, s
+      real, intent(in) :: E, RMAX, SOESD
+
+      integer nc, nb, na, m5g, jw, jv, ju, js2, jrr, jd, itype
+      integer iprint, ihit, idjw
+      real adjw, bdjw, cdjw, edjw, djwsin
+      
 C
       KFLSP = 0
       IHIT = 0
@@ -2066,313 +2141,332 @@ C----- SAVE THE INITIAL VALUES
       IP(2) = M12
       IP(3) = L12A
       IP(4) = JS
-2150  CONTINUE
+      do while(M12>0) !2150  CONTINUE
 C--CHECK IF THIS GROUP CONTAINS ANY REFINED PARAMETERS
-      IF(ISTORE(M12+1))3250,3250,2200
+          IF(ISTORE(M12+1)<=0) then !3250,3250,2200
+              M5=M5+MD5
+              M12=ISTORE(M12)
+              cycle
+          end if
 C--COMPUTE THE ADDRESS OF THE FIRST PART FOR THIS GROUP
-2200  CONTINUE
-      L12A=ISTORE(M12+1)
+c2200  CONTINUE
+          L12A=ISTORE(M12+1)
 C--CHECK IF THIS PART CONTAINS ANY REFINABLE PARAMETERS
-2250  CONTINUE
-      IF(ISTORE(L12A+3))3200,2300,2300
+          do while(L12A>0)  !2250  CONTINUE
+              IF(ISTORE(L12A+3)<0) then !3200,2300,2300
+                  L12A=ISTORE(L12A)
+                  cycle
+              end if
 C--SET UP THE CONSTANTS TO PASS THROUGH THIS PART
-2300  CONTINUE
-      MD12A=ISTORE(L12A+1)
-      JU=ISTORE(L12A+2)
-      JV=ISTORE(L12A+3)
-      JS=ISTORE(L12A+4)+1
+c2300  CONTINUE
+              MD12A=ISTORE(L12A+1)
+              JU=ISTORE(L12A+2)
+              JV=ISTORE(L12A+3)
+              JS=ISTORE(L12A+4)+1
 C--SEARCH THIS PART OF THIS ATOM
-      DO 3150 JW=JU,JV,MD12A
+              DO JW=JU,JV,MD12A ! 3150
 C--CHECK IF THIS IS THE PARAMETER THAT WE ARE SEARCHING FOR
-      IF(JT-ISTORE(JW))3100,2350,3100
-C
-2350  CONTINUE
+                  IF(JT-ISTORE(JW)/=0) then !3100,2350,3100
+                      JS=JS+1
+                      cycle
+                  end if
+c2350  CONTINUE
 C------ A HIT
-      IHIT = IHIT + 1
-      IF ( IHIT .EQ. 1 ) THEN
+                  IHIT = IHIT + 1
+                  IF ( IHIT .EQ. 1 ) THEN
 C---------  SAVE THE HIT VALUES
-            IP(1) = M5
-            IP(2) = M12
-            IP(3) = L12
-            IP(4) = JS
-            KFLSP = JW
-            js2 = 0
+                       IP(1) = M5
+                       IP(2) = M12
+                       IP(3) = L12
+                       IP(4) = JS
+                       KFLSP = JW
+                       js2 = 0
 C---------  COMPUTE ESD
-            A=STR11(JQ)
-            A=SQRT(A*E)
+                       A=STR11(JQ)
+                       A=SQRT(A*E)
 C--CHECK IF WE ARE USING AN OLD LIST 24
 cdjw0202
-            c = 0.
-            idjw = iquest
-            IF(M24 .GT. 0) THEN
+                       c = 0.                       
+                       !idjw = iquest
+                       idjw = TRANSFER(iquest, idjw)
+                       IF(M24 .GT. 0) THEN
 C---------- USING AN OLD LIST 24 - CHECK THAT SHIFT IS NOT SINGULAR
 C---------- COMPUTE THE RATIO OF THE TWO SHIFTS
 cdjwdec06
-             IF (ABS(STORE(M24)) .GT. ZEROSQ) then
-                  C = STORE(JO) / STORE(M24)
-             endif
-            ENDIF
-            edjw = c
+                           IF (ABS(STORE(M24)) .GT. ZEROSQ) then
+                               C = STORE(JO) / STORE(M24)
+                           endif
+                       ENDIF
+                       edjw = c
 C--IF THIS PARAMETER IS NOT SINGULAR,  COMPUTE THE SHIFT/E.S.D. RATIO
-            IF ( A .GT. ZEROSQ) THEN
-                  S = STORE(JO) / A
-            ELSE
+                       IF ( A .GT. ZEROSQ) THEN
+                           S = STORE(JO) / A
+                       ELSE
 C----------  IT IS SINGULAR
 cdjwdec06
-                  s = 0.
-                  JR = IQUEST
-                  FLAG = JQUEST
-                  ITYPE = 1
-            ENDIF
+                           s = 0.
+                           !JR = IQUEST
+                           JR = TRANSFER(iquest, JR)
+                           FLAG = JQUEST
+                           ITYPE = 1
+                       ENDIF
 C--------- THE SHIFT RATIO
-            IF (ABS (C) .GT. RMAX) THEN
-                  ITYPE = 1
-                  FLAG = SRATIO
-            ENDIF
+                       IF (ABS (C) .GT. RMAX) THEN
+                             ITYPE = 1
+                             FLAG = SRATIO
+                       ENDIF
 C--------- THE SHIFT / ESD
-            IF (ABS (S) .GT. SOESD) THEN
-                  ITYPE = 1
-                  FLAG = IOESD
-            ENDIF
+                       IF (ABS (S) .GT. SOESD) THEN
+                           ITYPE = 1
+                           FLAG = IOESD
+                       ENDIF
 cdec06            IF (ITYPE .NE. 1) THEN
 C------------- CHECK IF SHIFT TOO BIG
-                  IF((M12 .NE. L12O) .AND. (M12 .NE. L12LS) .AND.
-     1            (M12 .NE. L12ES) .AND. (M12 .NE. L12BS)) THEN
+                       IF((M12 .NE. L12O) .AND. (M12 .NE. L12LS) .AND.
+     1                     (M12 .NE. L12ES) .AND. (M12 .NE. L12BS)) THEN
 C------------- ATOMIC PARAMETER
-                  js2 = js
-                  idjw = istore(m5)
-                  IF (JS .GE. 5 .AND. JS .LE. 7) THEN
-                        IF (ABS( STORE(JO) ) * STORE(L1P1+JS-5)
-     1                      .GT. PARVAL(JS) ) THEN
-                                    ITYPE=1
-                                    FLAG = TOOBIG
-                        ENDIF
+                           js2 = js
+                           idjw = istore(m5)
+                           IF (JS .GE. 5 .AND. JS .LE. 7) THEN
+                              IF (ABS( STORE(JO) ) * STORE(L1P1+JS-5)
+     1                            .GT. PARVAL(JS) ) THEN
+                                   ITYPE=1
+                                   FLAG = TOOBIG
+                              ENDIF
 cdjwdec06
-                        adjw = a*STORE(L1P1+JS-5)
-                        bdjw = abs(store(jo))*STORE(L1P1+JS-5)
-                        cdjw = store(m5+js-1)*STORE(L1P1+JS-5)
-                  ELSE
-                        IF (ABS(STORE(JO)) .GT. PARVAL(JS)) THEN
-                                    ITYPE = 1
-                                    FLAG = TOOBIG
-                        ENDIF
+                              adjw = a*STORE(L1P1+JS-5)
+                              bdjw = abs(store(jo))*STORE(L1P1+JS-5)
+                              cdjw = store(m5+js-1)*STORE(L1P1+JS-5)
+                           ELSE
+                              IF (ABS(STORE(JO)) .GT. PARVAL(JS)) THEN
+                                   ITYPE = 1
+                                   FLAG = TOOBIG
+                              ENDIF
 cdjwdec06
-                        adjw = a
-                        bdjw = abs(store(jo))
-                        cdjw = store(m5+js-1)
-                  ENDIF
-                  ELSE
-                        IF (M12 .EQ. L12O) THEN
+                              adjw = a
+                              bdjw = abs(store(jo))
+                              cdjw = store(m5+js-1)
+                           ENDIF
+                        ELSE
+                           IF (M12 .EQ. L12O) THEN
 C------------- AN OVERALL PARAMETER
                               js2 = 20+js
                               M5G = L5O
-                        ELSE IF (M12 .EQ. L12LS) THEN
+                           ELSE IF (M12 .EQ. L12LS) THEN
 C------------- LAYER SCALE
                               M5G = L5LS
-                        ELSE IF (M12 .EQ. L12ES) THEN
+                           ELSE IF (M12 .EQ. L12ES) THEN
 C------------  ELEMENT SCALES
                               M5G = L5ES
-                        ELSE IF (M12 .EQ. L12BS) THEN
+                          ELSE IF (M12 .EQ. L12BS) THEN
 C------------  BATCH SCALE
                               M5G = L5BS
-                        ELSE IF (M12 .EQ. L12CL) THEN
+                          ELSE IF (M12 .EQ. L12CL) THEN
 C------------  CELL PARAM
                               M5G = L5CL
-                        ELSE IF (M12 .EQ. L12PR) THEN
+                          ELSE IF (M12 .EQ. L12PR) THEN
 C------------  PROFILE PARAM
                               M5G = L5PR
-                        ELSE
+                          ELSE
 C------------  ANISO-EXTINCTION PARAM
                               M5G = L5EX
-                        ENDIF
-c                       check we are not just starting from zero
-                        if (abs(store(jo)) .ge. zero) then
-                         IF(ABS(STORE(JO)) .GT. .1*STORE(M5G-1+JS))
-     1                   THEN
-                            ITYPE = 1
-                            FLAG = TOOBIG
-                         ENDIF
-                        endif
-                        adjw = a
-                        bdjw = abs(store(jo))
-                        cdjw = store(m5g+js-1)
-                  ENDIF
+                          ENDIF
+c                         check we are not just starting from zero
+                          if (abs(store(jo)) .ge. zero) then
+                              IF(ABS(STORE(JO)) .GT. .1*STORE(M5G-1+JS))
+     1                            THEN
+                                  ITYPE = 1
+                                  FLAG = TOOBIG
+                              ENDIF
+                          endif
+                          adjw = a
+                          bdjw = abs(store(jo))
+                          cdjw = store(m5g+js-1)
+                      ENDIF
 cdec06            ENDIF
 cdec06 Set maximal shifts for positions and occupation.
 c      cannot do same for adps and scale because they
 c      are seriously correlated so must be dealt with
 c      by setting shift factors.
 c-----       get the sign of the shift
-            djwsin = sign(1.,store(jo))
-            select case(js2)
-            case(3)
+                      djwsin = sign(real(1., kind(store)),store(jo))
+                      select case(js2)
+                      case(3)
 c  occ - delta max = .7
-             if (bdjw .ge. .7) then
+C                      if (bdjw .ge. .7) then
 cjan07              store(jo)=djwsin*0.33
 cjan07              call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
-             endif
-            case(5,6,7)
+C                      endif
+                       case(5,6,7)
 c  xyz - delta max = .2A
-             if (bdjw .ge. .2) then
+C                       if (bdjw .ge. .2) then
 cjan07              store(jo)=djwsin*.2/(store(l1p1+js2-5))
 cjan07              call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
-             endif
-            case(8,9,10,23)
+C                       endif
+                       case(8,9,10,23)
 c  uii or iso
 c             if (bdjw .ge. .02) then
 c                  store(jo)=djwsin*.02
 c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
 c             endif
-            case(11,12,13)
+                       case(11,12,13)
 c  uij
 c             if (bdjw .ge. 15.*adjw) then
 c                  store(jo)=15.*djwsin*adjw
 c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
 c             endif
-            case(21)
+                       case(21)
 c  scale
 c             if (bdjw .ge. cdjw) then 
 c                  if (store(jo) .gt. 0.) store(jo)=cdjw
 c                  if (store(jo) .lt. 0.) store(jo)=-.5*cdjw
 c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
 c             endif
-            case(22)
+                       case(22)
 c  DU[iso]
 c             if (bdjw .ge. .01) then
 c                  store(jo)=djwsin*.01
 c                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
 c             endif
-            case(24,25)
+                       case(24,25)
 c  polarity and Flack
-             if (bdjw .ge. 15.*adjw) then
-                  store(jo)=djwsin*15.*adjw
-                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
-             endif
-            case(26)
+                       if (bdjw .ge. 15.*adjw) then
+                           store(jo)=djwsin*15.*adjw
+                           call rstmsg(idjw,store(m5+1),js2,
+     1                         bdjw, store(jo),a)
+                       endif
+                       case(26)
 c  Extinction
 c aug07
 cric      write(ncwu,'(4f10.5)')bdjw,cdjw,djwsin,a
-             if (cdjw .ge. zero) then
-              if (bdjw .ge. 0.2*cdjw) then
-                  store(jo)=djwsin*0.2*cdjw
-                  call rstmsg(idjw,store(m5+1),js2,bdjw, store(jo),a)
-              endif
-             endif
-            end select
+                       if (cdjw .ge. zero) then
+                           if (bdjw .ge. 0.2*cdjw) then
+                               store(jo)=djwsin*0.2*cdjw
+                               call rstmsg(idjw,store(m5+1),
+     1                             js2,bdjw, store(jo),a)
+                           endif
+                        endif
+                       end select
 
 
 C--------- NOW ADJUST THE PRINT LEVEL IF NECESSARY
-            IF ( ITYPE .EQ. 1 ) IPRINT = 1
-      ENDIF
+                      IF ( ITYPE .EQ. 1 ) IPRINT = 1
+                  ENDIF
 
 C
-      IF (ICAPT .EQ. 0) THEN
-        IF (IPRINT .EQ. 1) THEN
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,1950)JZ
-      ENDIF
+                  IF (ICAPT .EQ. 0) THEN
+                      IF (IPRINT .EQ. 1) THEN
+                          IF (ISSPRT .EQ. 0) THEN
+                              WRITE(NCWU,1950)JZ
+                          ENDIF
 1950    FORMAT(/' Block',I4/8X,'Param.',4X,'Rel. param.',4X,
      2  'Calc. shift',4X,'Shift ratio',4X,'E.S.D.',5X,'Shift/E.S.D.',
      3  4X,'Type',3X,'Serial',4X,'Coordinate'/)
-        ICAPT = 1
-        ENDIF
-        IF (ITYPE .EQ. 1) THEN
-          ICAPT = 1
-        ENDIF
-      ENDIF
+                          ICAPT = 1
+                      ENDIF
+                      IF (ITYPE .EQ. 1) THEN
+                          ICAPT = 1
+                      ENDIF
+                 ENDIF
 C
 C--CHECK IF THIS IS AN OVERALL PARAMETER
-      IF(M12-L12O)2800,2700,2800
+                 IF(M12-L12O==0) THEN !2800,2700,2800
 C--PRINT FOR OVERALL PARAMETERS
-2700  CONTINUE
-      IF (IHIT .EQ. 1) ISTORE(JO+1) = JC
-      WRITE(CTEXT,'(2A4,I1)') (KVP(JRR,JS),JRR=1,2)
-      IF ((IPRINT .EQ. 1 ) .AND. (ISSPRT .EQ. 0) ) THEN
-       WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,(KVP(JRR,JS),JRR=1,2)
-      ENDIF
+c2700  CONTINUE
+                     IF (IHIT .EQ. 1) ISTORE(JO+1) = JC
+                     WRITE(CTEXT,'(2A4,I1)')
+     1                   (KVP(JRR,JS),JRR=1,2)
+                     IF ((IPRINT .EQ. 1 ) .AND. 
+     1                   (ISSPRT .EQ. 0) ) THEN
+                            WRITE(NCWU,2750) FLAG,JT,JX,STORE(JO),C,A,
+     1                          S,(KVP(JRR,JS),JRR=1,2)
+                     ENDIF
 CRIC13:2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,26X,2A4,I3)
 2750  FORMAT(1X,A6,I5,I12,F18.3,E13.1,E13.3,F14.2,26X,2A4,I3)
-      GOTO 3300
-C
+                         JS=JS+1
+                         cycle  !GOTO 3300
+                    end if ! 2800  CONTINUE
 C--CHECK IF THIS A SCALE OR GENERAL PARAMETER
-2800  CONTINUE
-      NB=17
-      DO 2950 NA=1,NSC
-      IF(ICOM12(NB)-M12)2900,2850,2900
-C
+                    NB=17
+                    DO NA=1,NSC ! 2950
+                        IF(ICOM12(NB)/=M12) then ! 2900,2850,2900
+                            NB=NB+4
+                            cycle
+                        end if
+
 C--LAYER OR ELEMENT BATCH OR PARAMETER PRINT
-2850  CONTINUE
-      IF (IHIT .EQ. 1) ISTORE(JO+1) = JC
-      WRITE(CTEXT,'(2A4,I1)')  (KSCAL(NC,NA+2),NC=1,2),JS
-      IF ((IPRINT .EQ. 1 ) .AND. (ISSPRT .EQ. 0) ) THEN
-       WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,
-     2 (KSCAL(NC,NA+2),NC=1,2),JS
-      ENDIF
-      GOTO 3300
+c2850  CONTINUE
+                        IF (IHIT .EQ. 1) ISTORE(JO+1) = JC
+                            WRITE(CTEXT,'(2A4,I1)')  
+     1                          (KSCAL(NC,NA+2),NC=1,2),JS
+                            IF ((IPRINT .EQ. 1 ) .AND. 
+     1                          (ISSPRT .EQ. 0) ) THEN
+                            WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,
+     2                          A,S,(KSCAL(NC,NA+2),NC=1,2),JS
+                        ENDIF
+                        JS=JS+1
+                        exit !GOTO 3300
 C--UPDATE FOR THE NEXT SCALE
-2900  CONTINUE
-      NB=NB+4
-2950  CONTINUE
+                    end do !2950  CONTINUE
+                    if(NA<NSC) then
+                        cycle
+                    end if
 C
 C--PRINT FOR ATOMS
-      JD=JC+MW*JS
-      IF (IHIT .EQ. 1) THEN
-            WRITE(CTEXT,'(A4,I4,1X,3A4)') STORE(M5), NINT(STORE(M5+1)),
-     1      (ICOORD(JRR,JS),JRR=1,NWKA)
-            ISTORE(JO+1) = JD
-            IF ( (IPRINT .EQ. 1) .AND. (ISSPRT .EQ. 0)) THEN
+                    JD=JC+MW*JS
+                    IF (IHIT .EQ. 1) THEN
+                        WRITE(CTEXT,'(A4,I4,1X,3A4)') STORE(M5), 
+     1                      NINT(STORE(M5+1)),
+     2                      (ICOORD(JRR,JS),JRR=1,NWKA)
+                        ISTORE(JO+1) = JD
+                        IF ( (IPRINT .EQ. 1) .AND. (ISSPRT .EQ. 0)) THEN
 C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
-               IF((STORE(M5+3) .GE. 1.0) .AND. (JS .GE. 8)) THEN
-               WRITE(NCWU,3050)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
-     2         NINT(STORE(M5+1)),(ICOORD(JRR,JS+NKAO),JRR=1,NWKA)
-               ELSE
-               WRITE(NCWU,3050)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
-     2         NINT(STORE(M5+1)),(ICOORD(JRR,JS),JRR=1,NWKA)
-               ENDIF
+                            IF((STORE(M5+3) .GE. 1.0) .AND. 
+     1                          (JS .GE. 8)) THEN
+                                WRITE(NCWU,3050) FLAG,JT,JX,
+     1                              STORE(JO),C,A,S,STORE(M5),
+     2                              NINT(STORE(M5+1)),
+     3                              (ICOORD(JRR,JS+NKAO),JRR=1,NWKA)
+                            ELSE
+                                WRITE(NCWU,3050) FLAG,JT,JX,STORE(JO),
+     1                              C,A,S,STORE(M5),
+     2                              NINT(STORE(M5+1)),
+     3                              (ICOORD(JRR,JS),JRR=1,NWKA)
+                            ENDIF
 C             WRITE(NCWU,3050)FLAG,JT,JX,STORE(JO),C,A,S,STORE(M5),
 C     2       STORE(M5+1),(ICOORD(JRR,JS),JRR=1,NWKA)
-            ENDIF
+                        ENDIF
 cRIC13:3050  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.4,8X,A4,I4,1X,3A4)
 3050  FORMAT(1X,A6,I5,I12,F18.4,E13.1,E13.3,F14.2,8X,A4,I4,1X,3A4)
-      ELSE IF (IHIT .GE. 2) THEN
-            IF ((ISSPRT .EQ. 0) .AND. (IPRINT .EQ. 1)) WRITE(NCWU,3051)
-            IF (ITYPE .EQ. 1) WRITE(NCWU,3091)
+                    ELSE IF (IHIT .GE. 2) THEN
+                        IF ((ISSPRT .EQ. 0) .AND. (IPRINT .EQ. 1)) 
+     1                      WRITE(NCWU,3051)
+                        IF (ITYPE .EQ. 1) WRITE(NCWU,3091)
 3051        FORMAT(1X,107X,'Composite',/)
 3091        FORMAT(1X,69X,'Composite',/)
-      ENDIF
-      GOTO 3300
-C
-C
-3300  CONTINUE
-C
-C
-C
+                    ENDIF
 C--INCREMENT TO THE NEXT PARAMETER OF THIS PART
-3100  CONTINUE
-      JS=JS+1
-3150  CONTINUE
+                    JS=JS+1
+              end do  !3150  CONTINUE
 C--CHANGE PARTS FOR THIS ATOM OR GROUP
-3200  CONTINUE
-      L12A=ISTORE(L12A)
+              L12A=ISTORE(L12A)
 C--CHECK IF THERE ARE ANY MORE PARTS FOR THIS ATOM OR GROUP
-      IF(L12A)3250,3250,2250
+          end do  !IF(L12A)3250,3250,2250
 C--MOVE TO THE NEXT GROUP OR ATOM
-3250  CONTINUE
-      M5=M5+MD5
-      M12=ISTORE(M12)
-      IF (M12 .LE. 0)   THEN
+
+          M5=M5+MD5
+          M12=ISTORE(M12)
+      end do
 C----- RESTORE VALUES FROM INITIAL HIT
-            M5  = IP(1)
-            M12 = IP(2)
-            L12 = IP(3)
-            JS  = IP(4)
-            RETURN
-      ELSE
-            GOTO 2150
-      ENDIF
-      END
+      M5  = IP(1)
+      M12 = IP(2)
+      L12 = IP(3)
+      JS  = IP(4)
+      END function
 CODE FOR XSFLSG
       SUBROUTINE XSFLSG
+      use solve_helper, only: error9900
+      implicit none
 C--SOLUTION ROUTINES
 C
 C--THESE ROUTINES READ DOWN LIST 24 FROM THE DISC AND APPLY
@@ -2393,8 +2487,12 @@ C
       INCLUDE 'XPDS.INC'
 C
 C
-      COMMON /XWORK/F,BC(11),IBC(14)
+      real f
+      real, dimension(11) :: bc
+      integer, dimension(14) :: ibc
+      COMMON /XWORK/F,BC,IBC
       INCLUDE 'XWORKA.INC'
+      real djwscl
       common /xpatch/djwscl
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST01.INC'
@@ -2417,14 +2515,17 @@ C
       INCLUDE 'QLST30.INC'
 C
 C
-      DATA IVERSN / 301/
+      integer, parameter :: IVERSN=301
 C
 C---- CARBON
-#if defined (_HOL_)
-      data JCARB/4HC   /
-#else
-      data JCARB/'C   '/
-#endif
+      character(len=4), parameter :: JCARB='C   '
+      
+      integer i, j, k, nupdat, nesdc, mgm, l, iupdat, ilevel, iprint
+      integer istat2, ikey, igstat, ifsq, iaddu, iaddr, iaddd, iaddl
+      real oscale, stoler, umin, u, b, aesdc
+      
+      integer, external :: kspini, kchlfl, krddpv, kset52, kparam
+      integer, external :: kspget, kchnfl, khuntr
 C
 C      INITIALISE C ESD
       AESDC = 0.0
@@ -2433,11 +2534,20 @@ C
 C--INITIALISE THE TIMING ROUTINES
       CALL XTIME1(2)
 C--READ THE CONTROL DATA FOR THIS ROUTINE
-      IF ( KRDDPV ( ISTORE(NFL),1 )   .LT.   0 ) GO TO 9910
+      IF ( KRDDPV ( ISTORE(NFL),1 ) .LT. 0 ) then !GO TO 9910
+          CALL XOPMSG ( IOPGNP , IOPCMI , 0 )
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
+      
       IPRINT=ISTORE(NFL)
 C--LOAD LIST 33 TO FIND THE PRINT VARIABLE
       CALL XFAL33
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      IF ( IERFLG .LT. 0 ) then !GO TO 9900
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
+      
       ISTAT2=ISTORE(M33CD+3)
 C----- FIND THE LISTING LEVEL
       ILEVEL=ISTORE(M33CD+7)
@@ -2460,21 +2570,24 @@ C--LOAD A FEW LISTS
       CALL XFAL05
 capr07
       CALL XFAL30
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      IF ( IERFLG .LT. 0 ) then !GO TO 9900
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
 C----- SET THE OCCUPANCIES
       IF (IUPDAT .GE. 0) THEN
-        I = KSPINI( -1, STOLER)
+          I = KSPINI( -1, STOLER)
 C----- SAVE SOME WORK SPACE
-        J =NFL
-        I = KCHNFL(40)
-        M5 = L5
-        DO 1160 I = 1, N5
-          IF (IUPDAT .GE. 0)
-     1      IGSTAT =KSPGET ( STORE(J), STORE(J+10), ISTORE(J+20),
-     2      STORE(J+30), MGM, M5, IUPDAT, NUPDAT)
-          M5 = M5 + MD5
-1160  CONTINUE
-        NFL= J
+          J =NFL
+          I = KCHNFL(40)
+          M5 = L5
+          DO I = 1, N5 ! 1160
+              IF (IUPDAT .GE. 0)
+     1        IGSTAT =KSPGET ( STORE(J), STORE(J+10), ISTORE(J+20),
+     2        STORE(J+30), MGM, M5, IUPDAT, NUPDAT)
+              M5 = M5 + MD5
+          end do !1160  CONTINUE
+          NFL= J
       ENDIF
 C
 C----- CHECK AND RESET SOME OVERALL PARAMETERS
@@ -2484,124 +2597,135 @@ C----- EXTINCTION
       STORE(L5O+5) = MAX (STORE(L5O+5), -ZERO)
 C----- ELEMENT SCALES
       K=L5ES
-      DO 1165 I=1,MD5ES
-      STORE(K) = MAX (STORE(K), 0.0)
-      K=K+1
-1165  CONTINUE
+      DO I=1,MD5ES ! 1165
+          STORE(K) = MAX (STORE(K), 0.0)
+          K=K+1
+      end do !1165  CONTINUE
 C
 C--LOOP OVER EACH ATOM CHECKING TEMPERATURE FACTORS
 C-C-C-LOOP OVER EACH ATOM CHECKING T.F. AND SPECIAL PARAMETERS
 C--CHECK THAT THERE IS AT LEAST ONE ATOM IN LIST 5
-      IF (N5 .LE. 0) GOTO 6050
+      !IF (N5 .LE. 0) GOTO 6050 useless, next loop no executed if I<1 anyway
+      !M5=L5 can cause problems though
       M5=L5
-      DO 6300 I=1,N5
-      IF (ABS(STORE(M5+3)) .LE. UISO) THEN
+      DO I=1,N5 ! 6300
+          IF (ABS(STORE(M5+3)) .LE. UISO) THEN
 C-C-C-CHECK ANISOTROPIC ATOMS
 C--CHECK THE SMALLEST U AXIS
-            CALL XEQUIV ( 1, M5, MD5, IADDU )
-            IF (STORE(IADDU+1) .LT. UMIN) THEN
+              CALL XEQUIV ( 1, M5, MD5, IADDU )
+              IF (STORE(IADDU+1) .LT. UMIN) THEN
 C--THIS ANISOTROPIC TEMPERATURE FACTOR IS NOT ALLOWED
 C- RESET TO MINIMUM
-          U = UMIN+ZERO
-          STORE(M5+7) = AMAX1(U,STORE(M5+7))
-          STORE(M5+8) = AMAX1(U,STORE(M5+8))
-          STORE(M5+9) = AMAX1(U,STORE(M5+9))
-          STORE(M5+10) = AMAX1(0.01*U,STORE(M5+10))*STORE(L1C)
-          STORE(M5+11) = AMAX1(0.01*U,STORE(M5+11))*STORE(L1C+1)
-          STORE(M5+12) = AMAX1(0.01*U,STORE(M5+12))*STORE(L1C+2)
-            ENDIF
-      ELSE
+                  U = UMIN+ZERO
+                  STORE(M5+7) = MAX(U,STORE(M5+7))
+                  STORE(M5+8) = MAX(U,STORE(M5+8))
+                  STORE(M5+9) = MAX(U,STORE(M5+9))
+                  STORE(M5+10) = MAX(0.01*U,STORE(M5+10))*STORE(L1C)
+                  STORE(M5+11) = MAX(0.01*U,STORE(M5+11))*STORE(L1C+1)
+                  STORE(M5+12) = MAX(0.01*U,STORE(M5+12))*STORE(L1C+2)
+              ENDIF
+          ELSE
 C--CHECK THE ISOTROPIC ATOM OR SPECIAL FIGURE
 C--CHECK THE ISOTROPIC TEMPERATURE FACTOR
 C            IF(STORE(M5+3) .LE. UMIN) THEN
-            IF(STORE(M5+7) .LE. UMIN) THEN
+              IF(STORE(M5+7) .LE. UMIN) THEN
 C--THIS U[ISO] VALUE IS OUT OF RANGE
 C                  STORE(M5+3) = UMIN + ZERO
                   STORE(M5+7) = UMIN + ZERO
-            ENDIF
+              ENDIF
 C-C-C-CHECK OF SPECIAL FIGURE SPECIFIC PARAMETERS
-       IF (NINT(STORE(M5+3)) .GE. 2) THEN
+              IF (NINT(STORE(M5+3)) .GE. 2) THEN
 C-C-C-CHECK OF SIZE FOR ALL SPECIAL FIGURES
-        IF (STORE(M5+8) .LT. 0.0005) THEN
-         STORE(M5+8)=0.001
-        ENDIF
+                  IF (STORE(M5+8) .LT. 0.0005) THEN
+                      STORE(M5+8)=0.001
+                  ENDIF
 C-C-C-CHECK OF DECLINAT AND AZIMUTH FOR LINE AND RING
-        IF (NINT(STORE(M5+3)) .GE. 3) THEN
+                  IF (NINT(STORE(M5+3)) .GE. 3) THEN
 C-C-C-CHECK WHETHER DECLINAT MIGHT BE GIVEN IN DEGREES
 C-C-C-(SUPPOSED IF ANGLE BIGGER THAN 5.0)
 C-C-C-(THIS BLOCK CAN BE REMOVED WHEN IT IS MADE SURE THAT THE VALUE
 C-C-C-OF ANGLE IS ALWAYS IN UNITS OF 100 DEGREES.)
-         IF ((STORE(M5+9) .GE. 5.0).OR.(STORE(M5+9) .LE. -5.0)) THEN
-          STORE(M5+9)=STORE(M5+9)/100
-         ENDIF
+                      IF ((STORE(M5+9) .GE. 5.0).OR.
+     1                    (STORE(M5+9) .LE. -5.0)) THEN
+                          STORE(M5+9)=STORE(M5+9)/100
+                      ENDIF
 C-C-C-BRING DECLINAT INTO PRACTICAL RANGE IF TOO FAR AWAY FROM IT
-         IF ((STORE(M5+9) .GT. 3.6).OR.(STORE(M5+9) .LT. -3.6)) THEN
-          STORE(M5+9)=MOD(STORE(M5+9),3.6)
-         ENDIF
-         IF (STORE(M5+9) .GT. 1.8) THEN
-          STORE(M5+9)=STORE(M5+9)-3.6
-         ELSE IF (STORE(M5+9) .LT. -1.8) THEN
-          STORE(M5+9)=STORE(M5+9)+3.6
-         ENDIF
+                      IF ((STORE(M5+9) .GT. 3.6).OR.
+     1                    (STORE(M5+9) .LT. -3.6)) THEN
+                          STORE(M5+9)=MOD(STORE(M5+9),3.6)
+                      ENDIF
+                      IF (STORE(M5+9) .GT. 1.8) THEN
+                          STORE(M5+9)=STORE(M5+9)-3.6
+                      ELSE IF (STORE(M5+9) .LT. -1.8) THEN
+                          STORE(M5+9)=STORE(M5+9)+3.6
+                      ENDIF
 C-C-C-CHECK WHETHER DECLINAT IS CLOSE TO 0.0 OR +/-1.8
-         IF ((ABS(STORE(M5+9)+1.8) .LT. 0.001) .OR.
-     2       (ABS(STORE(M5+9)-1.8) .LT. 0.001) .OR.
-     3       (ABS(STORE(M5+9)) .LT. 0.001)) THEN
+                      IF ((ABS(STORE(M5+9)+1.8) .LT. 0.001) .OR.
+     2                    (ABS(STORE(M5+9)-1.8) .LT. 0.001) .OR.
+     3                    (ABS(STORE(M5+9)) .LT. 0.001)) THEN
 C-C-C-GIVE AZIMUTH ARBITRARY VALUE (0.0)
 C-C-C-PERHAPS IT'S REASONABLE TO REMOVE THE AUTOMATICAL CHANGE
-          STORE(M5+10) = 0.0
-         ELSE
+                          STORE(M5+10) = 0.0
+                      ELSE
 C-C-C-CHECK WHETHER AZIMUTH MIGHT BE GIVEN IN DEGREES
 C-C-C-(SUPPOSED IF ANGLE BIGGER THAN 5.0)
 C-C-C-(THIS BLOCK CAN BE REMOVED WHEN IT IS MADE SURE THAT THE VALUE
 C-C-C-OF ANGLE IS ALWAYS IN UNITS OF 100 DEGREES.)
-          IF ((STORE(M5+10) .GE. 5.0).OR.(STORE(M5+10) .LE. -5.0)) THEN
-           STORE(M5+10)=STORE(M5+10)/100
-          ENDIF
+                          IF ((STORE(M5+10) .GE. 5.0).OR.
+     1                        (STORE(M5+10) .LE. -5.0)) THEN
+                              STORE(M5+10)=STORE(M5+10)/100
+                          ENDIF
 C-C-C-BRING AZIMUTH INTO PRACTICAL RANGE IF TOO FAR AWAY FROM IT
-          IF ((STORE(M5+10) .GT. 3.6).OR.(STORE(M5+10) .LT. -3.6)) THEN
-           STORE(M5+10)=MOD(STORE(M5+10),3.6)
+                          IF ((STORE(M5+10) .GT. 3.6).OR.
+     1                        (STORE(M5+10) .LT. -3.6)) THEN
+                              STORE(M5+10)=MOD(STORE(M5+10),3.6)
+                          ENDIF
+                          IF (STORE(M5+10) .GT. 1.8) THEN
+                              STORE(M5+10)=STORE(M5+10)-3.6
+                          ELSE IF (STORE(M5+10) .LT. -1.8) THEN
+                              STORE(M5+10)=STORE(M5+10)+3.6
+                          ENDIF
+                      ENDIF
+                  ENDIF
+              ENDIF
           ENDIF
-          IF (STORE(M5+10) .GT. 1.8) THEN
-           STORE(M5+10)=STORE(M5+10)-3.6
-          ELSE IF (STORE(M5+10) .LT. -1.8) THEN
-           STORE(M5+10)=STORE(M5+10)+3.6
-          ENDIF
-         ENDIF
-        ENDIF
-       ENDIF
-      ENDIF
-      M5 = M5 + MD5
-6300  CONTINUE
-6050  CONTINUE
+          M5 = M5 + MD5
+      end do ! 6300  CONTINUE
 C--FORM THE ABSOLUTE LIST 12
       JQ=0
       JS=1
       CALL XFAL12(JS,JQ,JR,JN)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      IF ( IERFLG .LT. 0 ) then !GO TO 9900
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
 C--LINK LIST 5 AND 12
       I=KSET52(0,-1)
 C--SET A PRINT CONTROL VARIABLE
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      IF ( IERFLG .LT. 0 ) then !GO TO 9900
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
       JA=2
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
-      IF(IPRINT)1100,1150,1100
+      IF(IPRINT/=0) then !1100,1150,1100
 C--ONLY PRINT THE PARAMETERS
-1100  CONTINUE
-      JA=1
+          JA=1
+      end if
 C--BRING DOWN THE MATRIX
-1150  CONTINUE
       CALL XFAL11(1,1)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      IF ( IERFLG .LT. 0 ) then !GO TO 9900
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
 C--FETCH A FEW CONSTANTS FROM THE MATRIX
       F=STORE(L11P+17)/STORE(L11P+16)
       B=STORE(L11P+22)
-      IF(ISTAT2)1200,1250,1200
+      IF(ISTAT2/=0) then !1200,1250,1200
 C--PRINT THE ALLOCATED STORE
-1200  CONTINUE
-      CALL XPCM(1)
+          CALL XPCM(1)
 C--PRINT OUT A FEW CAPTIONS
-1250  CONTINUE
+      end if
       CALL XPRTCN
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1300)(IB,I=1,JA)
@@ -2613,16 +2737,17 @@ C>DJWSEP96
 C--BRING DOWN THE SHIFT LIST
       IF (KHUNTR (24,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL24
 cdjw0202      CALL XFAL24
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      IF ( IERFLG .LT. 0 ) then !GO TO 9900
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
 C--SET THE POINTER FOR THE ACCUMULATION OF THE E.S.D. DATA
       JS=NFL
 C
 C
 C---- THE OVERALL PARAMETERS
 C--SET UP THE FORMAT AND BEGIN THE APPLICATION OF THE SHIFTS
-      DO 1350 I=1,MD5O
-      BC(I)=0.0
-1350  CONTINUE
+      BC(1:MD5O)=0.0
 C--OUTPUT THE RESULTS FOR THE OVERALL PARMAETERS
       M12=L12O
 C----- IF F**2 REFINEMENT, SQUARE THE SCALE FACTOR, AND SQRT IT LATER
@@ -2641,7 +2766,10 @@ C------     AND FUDGE THE SHIFT AND ESD
             APD(1) = STORE(L5O) - OSCALE
             BPD(1) = 0.5 * BPD(1)
       ENDIF
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+      IF ( IERFLG .LT. 0 ) then !GO TO 9900
+          call error9900(IOPGNP , IOPABN , 0, IOPGNP, IOPEND, IVERSN)
+          return
+      end if
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1400)MD5O
       ENDIF
@@ -2679,279 +2807,320 @@ C<DJWSEP96
 cRIC13:1500  FORMAT(2X,5F9.5,E15.5,3X,6F9.5)
 1500  FORMAT(2X,5F9.3,E15.4,3X,6F9.4)
 C--CHECK IF ALL THE INFORMATION IS TO BE PRINTED
-      IF(IPRINT)1700,1550,1700
+      IF(IPRINT==0) then !1700,1550,1700
 C--PRINT THE E.S.D.'S AND SHIFTS
-1550  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)(APD(I),I=1,MD5O)
-      ENDIF
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1500)(BPD(I),I=1,MD5O)
-      ENDIF
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,1500)(APD(I),I=1,MD5O)
+          ENDIF
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,1500)(BPD(I),I=1,MD5O)
+          ENDIF
 C--CHECK ON THE DUMMY OVERALL TEMPERATURE FACTOR
-      IF(KPARAM(1,L12O,L12A,M12A,0,L5O)) 1700, 1700, 1600
+          IF(KPARAM(1,L12O,L12A,M12A,0,L5O)>0) then ! 1700, 1700, 1600
 C--CALCULATE THE NECESSARY CORRECTION TERM
-1600  CONTINUE
-      JX=(ISTORE(M12A)-1)*MD24+L24
+              JX=(ISTORE(M12A)-1)*MD24+L24
 cdjwjul07
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts by factor from SFLSE
 C   B holds the shift to the DU[iso]. 
-      B= STORE(JX+1) - (B * DJWSCL)
+              B= STORE(JX+1) - (B * DJWSCL)
 cric11 - added brackets around difference above. Wrongly. Now fixed.
 c
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1650)B
-      ENDIF
+              IF (ISSPRT .EQ. 0) THEN
+                  WRITE(NCWU,1650)B
+              ENDIF
 cRIC13:1650  FORMAT(/,' Correction to isotropic temperature factor = ',F9.5)
 1650  FORMAT(/,' Correction to isotropic temperature factor = ',F9.4)
-      GOTO 1900
-1700  CONTINUE
+              !GOTO 1900
+              call error9900(IOPGNP , IOPABN , 0, 
+     1            IOPGNP, IOPEND, IVERSN)
+              return
+          end if 
+      end if! 1700  CONTINUE
 C--CHECK ON THE OVERALL TEMPERATURE FACTOR
-      IF(KPARAM(2,L12O,L12A,M12A,0,L5O)) 1900, 1900, 1750
+      IF(KPARAM(2,L12O,L12A,M12A,0,L5O)>0) then ! 1900, 1900, 1750
 C--CHECK IF THERE ARE ANY ATOMS IN LIST 5
-1750  CONTINUE
-      IF(N5)1900,1900,1800
+          IF(N5>0) then !1900,1900,1800
 C--APPLY THE NEW VALUE TO ALL THE ATOMS
-1800  CONTINUE
-      M5=L5
-      DO 1850 JX=1,N5
+              M5=L5
+              DO JX=1,N5 ! 1850
 C      STORE(M5+3)=STORE(L5O+2)
-      STORE(M5+7)=STORE(L5O+2)
+                  STORE(M5+7)=STORE(L5O+2)
 C-C-C-SET FLAG OF ATOM TO ISOTROPIC
-      STORE(M5+3)=1.0
-      M5=M5+MD5
-1850  CONTINUE
+                  STORE(M5+3)=1.0
+                  M5=M5+MD5
+               end do ! 1850  CONTINUE
 C--CHECK ON THE LAYER, ELEMENT AND BATCH SCALE FACTORS
-1900  CONTINUE
+          end if
+      end if ! 1900  CONTINUE
       J=17
       K=17
 C--LOOP OVER EACH TYPE OF SCALE FACTOR
-      DO 2100 I=1,NSC
-      IF(ICOM05(J+2))2050,2050,1950
+      DO I=1,NSC ! 2100
+          IF(ICOM05(J+2)>0) then !2050,2050,1950
 C--PRINT A CAPTION
-1950  CONTINUE
-      IF (I .LE. 3) THEN
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,2000)ICOM05(J+2),(KSCAL(L,I+2),L=1,2)
-      ENDIF
-      ELSE
-      IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,2001)ICOM05(J+2),(KSCAL(L,I+2),L=1,2)
-      ENDIF
-      ENDIF
-2000  FORMAT(///1X,I2,2X,2A4, ' Scale Factors')
-2001  FORMAT(///1X,I2,2X,2A4, ' Parameters')
+              IF (I .LE. 3) THEN
+                  IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,2000)ICOM05(J+2),(KSCAL(L,I+2),L=1,2)
+                  ENDIF
+              ELSE
+                  IF (ISSPRT .EQ. 0) THEN
+                      WRITE(NCWU,2001)ICOM05(J+2),(KSCAL(L,I+2),L=1,2)
+                  ENDIF
+              ENDIF
+2000          FORMAT(///1X,I2,2X,2A4, ' Scale Factors')
+2001          FORMAT(///1X,I2,2X,2A4, ' Parameters')
 C--SET THE POINTERS TO THE SCALES OF INTEREST
-      M5A=ICOM05(J)
-      MD5A=ICOM05(J+2)
-      M12=ICOM12(K)
+              M5A=ICOM05(J)
+              MD5A=ICOM05(J+2)
+              M12=ICOM12(K)
 C--APPLY THE SHIFT DATA
-      CALL XAPSCL(1,IPRINT)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
+              CALL XAPSCL(1,IPRINT)
+              IF ( IERFLG .LT. 0 ) then !GO TO 9900
+                  call error9900(IOPGNP , IOPABN , 0, 
+     1                IOPGNP, IOPEND, IVERSN)
+                  return
+              end if
 C--UPDATE FOR THE NEXT TYPE OF SCALE
-2050  CONTINUE
-      J=J+4
-      K=K+4
-2100  CONTINUE
+          end if ! 2050  CONTINUE
+          J=J+4
+          K=K+4
+      end do !2100  CONTINUE
 C
 C--WRITE THE CAPTION FOR THE ATOMS
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2150)N5
 2150  FORMAT(///1X,I5,'  atom(s)'/)
 C--CHECK IF THERE ARE ANY ATOMS IN LIST 5
-      IF(N5)2950,2950,2200
+      IF(N5>0) then !2950,2950,2200
 C--THERE ARE SOME ATOMS  -  PRINT THE PARAMETER TYPES
-2200  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
+          IF (ISSPRT .EQ. 0) THEN
 C-C-C-PARAMETERS FOR ANISOTROPIC ATOM
 C      WRITE(NCWU,2250)((ICOORD(I,J),I=1,2),J=1,NKA)
-      WRITE(NCWU,2250)((ICOORD(I,J),I=1,2),J=1,13)
+              WRITE(NCWU,2250)((ICOORD(I,J),I=1,2),J=1,13)
 C-C-C-EXTRA LINE FOR ISOTROPIC ATOM, SPHERE, LINE, RING
-      WRITE(NCWU,2260)((ICOORD(I,J),I=1,2),J=NKA-3,NKA-2),
-     2 (ICOORD(1,J),J=NKA-1,NKA)
-      ENDIF
-2250  FORMAT(3X   , 14(1X,2A4))
-2260  FORMAT(3X   , 63X,2(1X,2A4),2(1X,A4,'/100'))
+              WRITE(NCWU,2260)((ICOORD(I,J),I=1,2),J=NKA-3,NKA-2),
+     2            (ICOORD(1,J),J=NKA-1,NKA)
+          ENDIF
+2250      FORMAT(3X   , 14(1X,2A4))
+2260      FORMAT(3X   , 63X,2(1X,2A4),2(1X,A4,'/100'))
 C--SET UP THE CONSTANTS INVOLVING THE DUMMY TEMPERATURE CORRECTION
-      JY=L1C
-      DO 2300 JX=1,3
-        BC(JX)=0.0
-        BC(JX+2)=0.0
-        BC(JX+5)=B
-        BC(JX+8)=B*STORE(JY)
-        JY=JY+1
-2300  CONTINUE
-      BC(2)=B
-      M5=L5
-      M12=L12
-      M5A=L5+2
+          JY=L1C
+          BC(1:5)=0.0
+          BC(6:8)=B
+          BC(9:11)=B*STORE(L1C:L1C+2)
+          BC(2)=B
+          M5=L5
+          M12=L12
+          M5A=L5+2
 C--MAIN LOOP FOR PROCESSING THE ATOMS
-      DO 2900 I=1,N5
-        MD5A=M5+NKA-1
+          DO I=1,N5 ! 2900
+              MD5A=M5+NKA-1
 C       N5A=NKA-2
 CDJW0102      N5A=NKA-8
-        N5A = NKAV
-        U=STORE(M5+3)
-        CALL XAPPLY(M5A,N5A,-1)
+              N5A = NKAV
+              U=STORE(M5+3)
+              CALL XAPPLY(M5A,N5A,-1)
 C--CHECK WHETHER ISO- OR ANISO- PRINT IS REQUIRED
 C----- ISO OR ANISO ATOM - TO FIND NUMBER OF KEYS
 C-C-C-CHECK WHETHER ISO-, ANISO- SPECIAL PRINT IS REQUIRED
 C-C-C-ISO, ANISO OR SPECIAL ATOM - TO FIND NUMBER OF KEYS
 C---- SET NUMBER TO ISO
 C       IKEY=5
-        IKEY=6
+              IKEY=6
 C-C-C-CHECK WHETHER ATOM IS ANISOTROPIC
-        IF(ABS(U)-UISO)2302,2303,2303
-2302    CONTINUE
+              IF(ABS(U)-UISO<0.0) then !2302,2303,2303
 C----- ANISO
-        IKEY=11
-2303    CONTINUE
+                  IKEY=11
+              end if ! 2303    CONTINUE
 C-C-C-CHECK WHETHER ATOM IS REALLY ISOTROPIC OR SPHERE, LINE, RING
-        IF (NINT(ABS(U)) .EQ. 2) THEN
-         IKEY=7
-        ELSE IF (NINT(ABS(U)) .GE. 3) THEN
-          IKEY=9
-        ENDIF
+              IF (NINT(ABS(U)) .EQ. 2) THEN
+                  IKEY=7
+              ELSE IF (NINT(ABS(U)) .GE. 3) THEN
+                  IKEY=9
+              ENDIF
 C----- CHECK LISTING LEVEL
-        IF(ILEVEL) 2305,2305,2330
-2305    CONTINUE
+              IF(ILEVEL<=0) then !2305,2305,2330
 C----- CHECK IF ANY PARAMETER HAS AN ESD
-        DO 2320 J=1,IKEY
-          IF(BPD(J)-.000001)2320,2320,2330
-2320    CONTINUE
+                  if(all(abs(BPD(1:IKEY))<1e-6)) then
 C----- ALL ESD TOO SMALL- NO NEED TO PRINT
-        GOTO 2850
-2330    CONTINUE
+                      M12=ISTORE(M12)
+                      M5=M5+MD5
+                      M5A=M5A+MD5
+                      cycle ! GOTO 2850
+                  end if
+              end if ! 2330    CONTINUE
 C----- WE NEED A PRINT
 C-C-C-CHECK WHETHER ATOM IS ANISO
-        IF(ABS(U)-UISO)2550,2350,2350
+              IF(ABS(U)-UISO>0.0) then !2550,2350,2350
 C--ISO- PRINT
-2350    CONTINUE
 C-C-C-CHECK WHETHER ATOM IS REALLY ISOTROPIC OR SPHERE, LINE, RING
-        IF (NINT(ABS(U)) .EQ. 2) THEN
-          GOTO 2510
-        ELSE IF (NINT(ABS(U)) .GE. 3) THEN
-          GOTO 2530
-        ENDIF
+                  IF (NINT(ABS(U)) .EQ. 2) THEN ! 2510
+C-C-C-SPHERE- PRINT
+                      MD5A=M5+8
+                      N5A=7
+                      IF (ISSPRT .EQ. 0) then 
+                          WRITE(NCWU,'(/5X,A4,F9.0,1X,11F9.4)')
+     1                        (STORE(J),J=M5,MD5A)
+                      end if
+C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
+                      IF(IPRINT/=0) then !2850,2520,2850
+                          M12=ISTORE(M12)
+                          M5=M5+MD5
+                          M5A=M5A+MD5
+                          cycle ! GOTO 2850
+                      end if
+C--PRINT THE SHIFTS AND E.S.D.'S
+                      IF (ISSPRT .EQ. 0) THEN
+                          WRITE(NCWU,'(19X,F9.4,9X,9F9.4)')(APD(1)), 
+     1                        (APD(J),J=3,N5A)
+                          WRITE(NCWU,'(19X,F9.4,9X,9F9.4)')(BPD(1)), 
+     1                        (BPD(J),J=3,N5A)
+                      END IF
+                      GOTO 2750                      
+                  ELSE IF (NINT(ABS(U)) .GE. 3) THEN
+                      !GOTO 2530
+                      ! does nothing
+                  else              
 C-C-C-ISO- PRINT
-C       MD5A=M5+6
-        MD5A=M5+7
-C       N5A=5
-        N5A=6
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2400)(STORE(J),J=M5,MD5A)
+C                     MD5A=M5+6
+                      MD5A=M5+7
+C                     N5A=5
+                      N5A=6
+                      IF (ISSPRT .EQ. 0) then
+                          WRITE(NCWU,2400)(STORE(J),J=M5,MD5A)
+                      end if
 2400    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
-        IF(IPRINT)2850,2450,2850
+                      IF(IPRINT/=0) then !2850,2450,2850
+                          M12=ISTORE(M12)
+                          M5=M5+MD5
+                          M5A=M5A+MD5
+                          cycle  ! GOTO 2850
+                      end if
 C--PRINT THE SHIFTS AND E.S.D.'S
-2450    CONTINUE
-        IF (ISSPRT .EQ. 0) THEN
-C         WRITE(NCWU,2500)(APD(J),J=1,N5A)
-          WRITE(NCWU,2500)(APD(1)),(APD(J),J=3,N5A)
-C        ENDIF
+                      IF (ISSPRT .EQ. 0) THEN
+C                         WRITE(NCWU,2500)(APD(J),J=1,N5A)
+                          WRITE(NCWU,2500)(APD(1)),(APD(J),J=3,N5A)
 C2500   FORMAT(19X,11F9.5)
 2500    FORMAT(19X,F9.4,9X,9F9.4)
-C        IF (ISSPRT .EQ. 0) THEN
-C         WRITE(NCWU,2500)(BPD(J),J=1,N5A)
-          WRITE(NCWU,2500)(BPD(1)),(BPD(J),J=3,N5A)
-        ENDIF
-        GOTO 2750
+C                         IF (ISSPRT .EQ. 0) THEN
+C                         WRITE(NCWU,2500)(BPD(J),J=1,N5A)
+                          WRITE(NCWU,2500)(BPD(1)),(BPD(J),J=3,N5A)
+                      ENDIF
+                      GOTO 2750     
 C-C-C-SPHERE- PRINT
-2510    CONTINUE
-        MD5A=M5+8
-        N5A=7
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2515)(STORE(J),J=M5,MD5A)
+                      MD5A=M5+8
+                      N5A=7
+                      IF (ISSPRT .EQ. 0) then 
+                          WRITE(NCWU,2515)(STORE(J),J=M5,MD5A)
+                      end if
 2515    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
-        IF(IPRINT)2850,2520,2850
+                      IF(IPRINT/=0) then !2850,2520,2850
+                          M12=ISTORE(M12)
+                          M5=M5+MD5
+                          M5A=M5A+MD5
+                          cycle  ! GOTO 2850
+                      end if
 C--PRINT THE SHIFTS AND E.S.D.'S
-2520    CONTINUE
-        IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,2525)(APD(1)),(APD(J),J=3,N5A)
-            WRITE(NCWU,2525)(BPD(1)),(BPD(J),J=3,N5A)
+                      IF (ISSPRT .EQ. 0) THEN
+                          WRITE(NCWU,2525)(APD(1)), (APD(J),J=3,N5A)
+                          WRITE(NCWU,2525)(BPD(1)), (BPD(J),J=3,N5A)
 2525    FORMAT(19X,F9.4,9X,9F9.4)
-        END IF
-        GOTO 2750
+                      END IF
+                      GOTO 2750                                   
+                  ENDIF
 C-C-C-LINE/RING- PRINT
-2530    CONTINUE
-        MD5A=M5+10
-        N5A=9
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2535)(STORE(J),J=M5,MD5A) 
+                  MD5A=M5+10
+                  N5A=9
+                  IF (ISSPRT .EQ. 0) then 
+                      WRITE(NCWU,2535) (STORE(J),J=M5,MD5A) 
+                  end if
 2535    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
-        IF(IPRINT)2850,2540,2850
+                  IF(IPRINT/=0) then !2850,2540,2850
+                      M12=ISTORE(M12)
+                      M5=M5+MD5
+                      M5A=M5A+MD5
+                      cycle  ! GOTO 2850
+                  end if
 C--PRINT THE SHIFTS AND E.S.D.'S
-2540    CONTINUE
-        IF (ISSPRT .EQ. 0) THEN 
-            WRITE(NCWU,2545)(APD(1)),(APD(J),J=3,N5A)
-            WRITE(NCWU,2545)(BPD(1)),(BPD(J),J=3,N5A)
+                  IF (ISSPRT .EQ. 0) THEN 
+                      WRITE(NCWU,2545)(APD(1)),(APD(J),J=3,N5A)
+                      WRITE(NCWU,2545)(BPD(1)),(BPD(J),J=3,N5A)
 2545    FORMAT(19X,F9.4,9X,9F9.4)
-        END IF
-        GOTO 2750
+                  END IF
+                  GOTO 2750
 C--ANISO- PRINT
-2550    CONTINUE
+               end if ! 2550    CONTINUE
 C-C-C      MD5A=M5+2
 C-C-C      N5A=M5+NKA-3
 CDJW0102      MD5A=M5+13
-        MD5A=M5+NKAV+1
-        IF (ISSPRT .EQ. 0) THEN
+              MD5A=M5+NKAV+1
+              IF (ISSPRT .EQ. 0) THEN
 C         WRITE(NCWU,2600)(STORE(J),J=M5,MD5A),(STORE(J+2),J=MD5A,N5A)
-          WRITE(NCWU,2600)(STORE(J),J=M5,MD5A)
-        ENDIF
+                  WRITE(NCWU,2600)(STORE(J),J=M5,MD5A)
+              ENDIF
 C2600   FORMAT(/5X,A4,F9.0,1X,F9.4,9X,10F9.4)
 2600    FORMAT(/5X,A4,F9.0,1X,11F9.4)
 C--CHECK IF THE E.S.D.'S ARE TO BE PRINTED
-        IF(IPRINT)2850,2650,2850
-2650    CONTINUE
+              IF(IPRINT/=0) then !2850,2650,2850
+                  M12=ISTORE(M12)
+                  M5=M5+MD5
+                  M5A=M5A+MD5
+                  cycle  ! GOTO 2850
+              end if
 C-C-C-IS THE NEXT STATEMENT REASONABLE ? (N5A NOT USED AGAIN)
-        N5A=NKA-2
-        IF (ISSPRT .EQ. 0) THEN
+              N5A=NKA-2
+              IF (ISSPRT .EQ. 0) THEN
 C        WRITE(NCWU,2700)APD(1),(APD(J-2),J=5,NKA)
 CCCCCCNKA IS 20 NOW INSTEAD OF 18
 C        WRITE(NCWU,2700)APD(1),(APD(J-2),J=5,NKA-4)
 C-C-C-NKA IS 22 NOW INSTEAD OF 20
 CDJW0102      WRITE(NCWU,2700)APD(1),(APD(J-2),J=5,NKA-6)
-         WRITE(NCWU,2700)APD(1),(APD(J),J=3,NKAV)
-        ENDIF
+                  WRITE(NCWU,2700)APD(1),(APD(J),J=3,NKAV)
+              ENDIF
 2700    FORMAT(19X,F9.4,9X,10F9.4)
-        IF (ISSPRT .EQ. 0) THEN
+              IF (ISSPRT .EQ. 0) THEN
 C         WRITE(NCWU,2700)BPD(1),(BPD(J-2),J=5,NKA)
 C         WRITE(NCWU,2700)BPD(1),(BPD(J-2),J=5,NKA-4)
 CDJW0102      WRITE(NCWU,2700)BPD(1),(BPD(J-2),J=5,NKA-6)
-          WRITE(NCWU,2700)BPD(1),(BPD(J),J=3,NKAV)
-        ENDIF
+                  WRITE(NCWU,2700)BPD(1),(BPD(J),J=3,NKAV)
+              ENDIF
 C--PRINT THE POSITIONAL E.S.D.'S IN ANGSTROM
 2750    CONTINUE
-        BPD(3)=BPD(3)*STORE(L1P1)
-        BPD(4)=BPD(4)*STORE(L1P1+1)
-        BPD(5)=BPD(5)*STORE(L1P1+2)
+              BPD(3)=BPD(3)*STORE(L1P1)
+              BPD(4)=BPD(4)*STORE(L1P1+1)
+              BPD(5)=BPD(5)*STORE(L1P1+2)
 CAPR07
-        IF (ISTORE(M5) .EQ. JCARB) THEN
-         AESDC = AESDC + BPD(3)+BPD(4)+BPD(5)
-         NESDC=NESDC+3
-        ENDIF
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,2800)(BPD(J),J=3,5)
+              IF (ISTORE(M5) .EQ. transfer(JCARB, ISTORE(M5)) ) THEN
+                  AESDC = AESDC + BPD(3)+BPD(4)+BPD(5)
+                  NESDC=NESDC+3
+              ENDIF
+              IF (ISSPRT .EQ. 0) then
+                  WRITE(NCWU,2800)(BPD(J),J=3,5)
+              end if
 2800    FORMAT(37X,3F9.4)
 C--UPDATE FOR THE NEXT ATOM
-2850    CONTINUE
-        M12=ISTORE(M12)
-        M5=M5+MD5
-        M5A=M5A+MD5
-2900  CONTINUE
+              M12=ISTORE(M12)
+              M5=M5+MD5
+              M5A=M5A+MD5
+          end do  ! 2900  CONTINUE
 C--END OF THE UPDATING  -  PREPARE TO OUTPUT A NEW LIST 5
-2950  CONTINUE
+      end if !2950  CONTINUE
 C NOW A PARAMETER      INCLUDE 'IDIM05.INC'
 C--OUTPUT THE NEW LIST 5
       CALL XWLSTD(5,ICOM05,IDIM05,0,-1)
 C----- SAVE THE MEAN C-C ESD
       WRITE ( CMON,'(a,f8.4)' ) 
-     1  'Mean C-C su = ',AESDC/MAX(1.0, FLOAT(NESDC))
+     1  'Mean C-C su = ',AESDC/MAX(1.0, real(NESDC))
       call outcol(7)
       CALL XPRVDU(NCVDU, 1,0)
       call outcol(1)
       IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')cmon(1)
 c
 c
-      STORE(L30CF+14) = AESDC/MAX(1.0, FLOAT(NESDC))
+      STORE(L30CF+14) = AESDC/MAX(1.0, real(NESDC))
        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 C
 C----- CHECK THE ANISO TFS
@@ -2961,24 +3130,16 @@ C----- SET THE AUXILLIARY LIST 5 ADDRESSES
       MD5A=MD5
       M5A=M5
       CALL XPRAXI( -1, 1, 0, L5A, MD5A, N5A, 0, 0, 0)
-2975  CONTINUE
       CALL XOPMSG ( IOPGNP , IOPEND , IVERSN )
       CALL XTIME2(2)
       RETURN
-C
-9900  CONTINUE
-C -- ERRORS
-      CALL XOPMSG ( IOPGNP , IOPABN , 0 )
-      GO TO 2975
-9910  CONTINUE
-      CALL XOPMSG ( IOPGNP , IOPCMI , 0 )
-      GO TO 9900
 C
       END
 c
 c
 CODE FOR RSTMSG
       SUBROUTINE RSTMSG(idjw,serial,js2,OLD,update,esd)
+      implicit none
 C      IDJW      ATOM NAME IN A4 CHARATER FORM
 C      SERIAL    ATOM SERIAL NUMBER
 C      JS2       PARAMETER ID (X=5,SCALE=21)
@@ -2986,18 +3147,24 @@ C      OLD       LSQ SHIFT
 C      UPDATE    MODIFIED SHIFT
 C      ESD       ESD
 C
-      character *6 ctype(11)
-      character *10 Covera(6)
+      character(len=6), dimension(11), parameter  :: ctype(11)=
+     1    (/'Occ   ', 'U[iso]', 'x     ','y     ','z     ',
+     2      'U[11] ', 'U[22] ', 'U[33] ', 
+     3      'U[23] ', 'U[13] ', 'U[12] '/)
+      character(len=10), dimension(6), parameter :: Covera(6)=
+     1    (/'Scale     ', 'D[u]      ', 'O[u]      ', 
+     2      'Polarity  ', 'Enantio   ', 'Extinction'/)
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'QSTORE.INC'
-      data ctype/'Occ', 'U[iso]', 'x','y','z','U[11]','U[22]','U[33]', 
-     1 'U[23]', 'U[13]', 'U[12]'/ 
-      data covera/'Scale', 'D[u]', 'O[u]', 'Polarity', 'Enantio',
-     1 'Extinction'/
+      
+      integer, intent(in) :: idjw, js2
+      real, intent(in) :: serial, old, update, esd
+      real a
+      
       A=SIGN(1.,UPDATE)
       if (js2 .le. 13 ) then
         WRITE ( CMON,'(A, A4,I4,1x,A6,3(2x,a,F10.4))') 
@@ -3021,6 +3188,7 @@ C
 C
 CODE FOR XAPSCL
       SUBROUTINE XAPSCL(IFIRST,IPRINT)
+      implicit none
 C--CALCULATE AND APPLY THE SHIFTS FOR LAYER OF ELEMENT SCALES
 C
 C  IFIRST  THE NUMBER OF THE FIRST SCALE THAT CAN BE USED
@@ -3036,12 +3204,15 @@ C--
       INCLUDE 'ISTORE.INC'
 C
 C
-      DIMENSION BBC(14)
+      real, dimension(14) :: BBC
 C
       INCLUDE 'STORE.INC'
 C
 C
-      COMMON /XWORK/F,BC(11),IBC(14)
+      integer, dimension(14) :: ibc
+      real f
+      real, dimension(11) :: bc
+      COMMON /XWORK/F,BC,IBC
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XPDS.INC'
       INCLUDE 'XUNITS.INC'
@@ -3055,110 +3226,116 @@ C
 C
 C
       EQUIVALENCE (BBC(1),IBC(1))
+      
+      integer i, iprint, ifirst
 C
 C--SET THE REFINEMENT POINTER TO INDICATE THAT REFINEMENT IS BEING DONE
       ND=0
 C--CHECK IF THIS GROUP CONTAINS ANY PARTS
-      IF(ISTORE(M12+1))1000,1000,1050
+      IF(ISTORE(M12+1)<=0) then !1000,1000,1050
 C--NO REFINEMENT FOR THIS PARAMETER GROUP
-1000  CONTINUE
-      ND=-1
-1050  CONTINUE
+          ND=-1
+      end if
       NA=IFIRST
       NB=0
 C--CHECK IF THERE ARE ANY MORE SCALES TO LOOK AT
-1100  CONTINUE
-      IF(MD5A)1150,1150,1200
-1150  CONTINUE
-      RETURN
+      do while(MD5A>0)
 C--ALTER THE ADDRESSES FOR EACH OF THE PARTS
-1200  CONTINUE
-      L12A=ISTORE(M12+1)
+          L12A=ISTORE(M12+1)
 C--CHECK IF THERE ARE ANY PARTS TO PROCESS
-      IF(ND)1350,1250,1250
-1250  CONTINUE
-      ISTORE(L12A+2)=ISTORE(L12A+2)+NB*ISTORE(L12A+1)
-      ISTORE(L12A+4)=ISTORE(L12A+4)+NB
+          IF(ND>=0) then !1350,1250,1250
+              do 
+                  ISTORE(L12A+2)=ISTORE(L12A+2)+NB*ISTORE(L12A+1)
+                  ISTORE(L12A+4)=ISTORE(L12A+4)+NB
 C--CHECK IF THERE ANY MORE PARTS
-      IF(ISTORE(L12A))1350,1350,1300
-1300  CONTINUE
-      L12A=ISTORE(L12A)
-      GOTO 1250
+                  IF(ISTORE(L12A)>0) then !1350,1350,1300
+                      L12A=ISTORE(L12A)
+                      !GOTO 1250
+                  else
+                      exit
+                  end if
+              end do
 C--CALCULATE THE NUMBER OF SCALES HERE AND OUTPUT A CAPTION
-1350  CONTINUE
-      NC=MIN0(MD5A,11)
-      DO 1400 I=1,NC
-      IBC(I)=NA+I-1
-      APD(I)=0.
-      BPD(I)=0.
-1400  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1450)(IBC(I),I=1,NC)
-      ENDIF
+          end if
+
+          NC=MIN(MD5A,11)
+          DO I=1,NC !1400
+              IBC(I)=NA+I-1
+          end do
+          APD(1:NC)=0.0
+          BPD(1:NC)=0.0
+
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,1450)(IBC(I),I=1,NC)
+          ENDIF
 1450  FORMAT(//1X,I6,10I9)
 C--CHECK IF ANY MORE SCALES HAVE BEEN REFINED
-      IF(ND)1700,1500,1500
-1500  CONTINUE
-      L12A=ISTORE(M12+1)
-      IF(ISTORE(L12A+2)-ISTORE(L12A+3))1550,1550,1700
-1550  CONTINUE
-      DO 1600 I=1,NC
-      BBC(I)=BC(I)
-      BC(I)=0.
-1600  CONTINUE
-      NE=1-NB
-      CALL XAPPLY(M5A,NC,NE)
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      DO 1650 I=1,NC
-      BC(I)=BBC(I)
-1650  CONTINUE
+          IF(ND>=0) then !1700,1500,1500
+              L12A=ISTORE(M12+1)
+              IF(ISTORE(L12A+2)<=ISTORE(L12A+3)) then !1550,1550,1700
+                  !DO I=1,NC ! 1600
+                  !    BBC(I)=BC(I)
+                  !    BC(I)=0.
+                  !end do
+                  bbc(1:NC)=bc(1:NC)
+                  bc(1:NC)=0.0
+
+                  NE=1-NB
+                  CALL XAPPLY(M5A,NC,NE)
+                  IF ( IERFLG .LT. 0 ) exit
+                  !DO I=1,NC ! 1650
+                  !    BC(I)=BBC(I)
+                  !end do
+                  bc(1:NC)=bbc(1:NC)
+              end if
+          end if
 C--PRINT THE RESULTS
-1700  CONTINUE
-      NE=M5A+NC-1
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1750)(STORE(I),I=M5A,NE)
-      ENDIF
+          NE=M5A+NC-1
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,1750)(STORE(I),I=M5A,NE)
+          ENDIF
 cRIC13:1750  FORMAT(/2X,11F9.5)
 1750  FORMAT(/2X,11F9.3)
 C--CHECK IF THE E.S.D.'S ETC. ARE TO BE PRINTED
-      IF(IPRINT)1900,1800,1900
+          IF(IPRINT==0) then !1900,1800,1900
 C--PRINT THE SHIFTS AND E.S.D.'S
-1800  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1850)(APD(I),I=1,NC)
-      ENDIF
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1850)(BPD(I),I=1,NC)
-      ENDIF
+              IF (ISSPRT .EQ. 0) THEN
+                  WRITE(NCWU,1850)(APD(I),I=1,NC)
+              ENDIF
+              IF (ISSPRT .EQ. 0) THEN
+                  WRITE(NCWU,1850)(BPD(I),I=1,NC)
+              ENDIF
 cRIC13:1850  FORMAT(2X,11F9.5)
 1850  FORMAT(2X,11F9.3)
 C--UPDATE FOR THE NEXT ROW
-1900  CONTINUE
-      MD5A=MD5A-NC
-      M5A=M5A+NC
-      NA=NA+NC
-      L12A=ISTORE(M12+1)
+          end if
+
+          MD5A=MD5A-NC
+          M5A=M5A+NC
+          NA=NA+NC
+          L12A=ISTORE(M12+1)
 C--CHECK IF THE LIST 12 NEEDS RESTORING
-      IF(ND)2050,1950,1950
-1950  CONTINUE
-      ISTORE(L12A+2)=ISTORE(L12A+2)-NB*ISTORE(L12A+1)
-      ISTORE(L12A+4)=ISTORE(L12A+4)-NB
+          IF(ND>=0) then !2050,1950,1950
+              do 
+                  ISTORE(L12A+2)=ISTORE(L12A+2)-NB*ISTORE(L12A+1)
+                  ISTORE(L12A+4)=ISTORE(L12A+4)-NB
 C--CHECK IF THERE ARE ANY MORE PARTS
-      IF(ISTORE(L12A))2050,2050,2000
-2000  CONTINUE
-      L12A=ISTORE(L12A)
-      GOTO 1950
-2050  CONTINUE
-      NB=NB+NC
-      GOTO 1100
-9900  CONTINUE
-C -- ERRORS
-      RETURN
+                  IF(ISTORE(L12A)>0) then !2050,2050,2000
+                      L12A=ISTORE(L12A)
+                  else
+                      exit
+                  end if
+              end do
+          end if
+
+          NB=NB+NC
+      end do
 C
-      END
+      END subroutine
 C
 CODE FOR XAPPLY
       SUBROUTINE XAPPLY(LP,NPAR,IBIAS)
+      implicit none
 C--APPLY THE CALCULATED SHIFTS
 C
 C  APD    LOCATION OF THE APPLIED SHIFTS
@@ -3190,7 +3367,10 @@ C
       INCLUDE 'STORE.INC'
 C
 C
-      COMMON /XWORK/F,BC(11),IBC(14)
+      real f
+      real, dimension(11) :: bc
+      integer, dimension(14) :: ibc
+      COMMON /XWORK/F,BC,IBC
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XPDS.INC'
       INCLUDE 'XCONST.INC'
@@ -3202,102 +3382,108 @@ C
       INCLUDE 'XERVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      integer, intent(in) :: lp, npar, ibias
+            
+      real, external :: xvar
+      integer, external :: KBLCK
 C
 C--CLEAR THE TEMPORARY STORAGE
 C
-      DO 1000 JX=1,NPAR
-        APD(JX)=0.0
-        BPD(JX)=0.0
-1000  CONTINUE
+      APD(1:NPAR)=0.0
+      BPD(1:NPAR)=0.0
 
 C--CHECK IF ANY COORDINATES HAVE BEEN REFINED
-      IF(ISTORE(M12+1))1100,1100,1050
-1050  CONTINUE
-      L12A=ISTORE(M12+1)
-      IF(ISTORE(L12A+3))1100,1150,1150
-1100  CONTINUE
-      RETURN
-1150  CONTINUE
+      IF(ISTORE(M12+1)>0) then !1100,1100,1050
+          L12A=ISTORE(M12+1)
+          IF(ISTORE(L12A+3)<0) then !1100,1150,1150
+              return
+          end if
+      else 
+          return
+      end if
       MD12A=ISTORE(L12A+1)
       JU=ISTORE(L12A+2)
       JV=ISTORE(L12A+3)
       JT=ISTORE(L12A+4)
       JP=JT+IBIAS
 C--SEARCH FOR THE CONTRIBUTIONS TO EACH PARAMETER IN TURN
-      DO 1850 JW=JU,JV,MD12A
-      IF(ISTORE(JW))1800,1800,1200
-1200  CONTINUE
-      APD(JP)=BC(JP)
-      JX=JW
-      JY=L12A
-      JR=JS
-      JZ=0
+      DO JW=JU,JV,MD12A ! 1850
+          IF(ISTORE(JW)>0) then !1800,1800,1200
+              APD(JP)=BC(JP)
+              JX=JW
+              JY=L12A 
+              JR=JS
+              JZ=0
 C--CHECK IF THIS PART FOR THIS PARAMETER HAS BEEN REFINED
-1250  CONTINUE
-      IF(ISTORE(JX))1550,1550,1300
+              do while(JY>0)
+                  IF(ISTORE(JX)>0) then !1550,1550,1300
 C--CHECK IF THERE IS ENOUGH CORE FOR THIS CONTRIBUTOR
-1300  CONTINUE
-      IF ( JR + 4 - LFL )  1400 , 1400 , 9910
+                      IF ( JR + 4 - LFL >0 ) then ! 1400 , 1400 , 9910
+C -- CORE OVEFLOW
+                          CALL XICA
+                          CALL XERHND ( IERERR )
+                          return
+                      end if
 C--ADD THE CONTRIBUTIONS INTO THE STACK
-1400  CONTINUE
-      ISTORE(JR)=ISTORE(JX)
-      ISTORE(JR+2)=KBLCK(ISTORE(JR))
-      ISTORE(JR+1)=M12B
-      STORE(JR+3)=1.
-      IF(ISTORE(JY+1)-1)1450,1500,1450
-1450  CONTINUE
-      STORE(JR+3)=STORE(JX+1)
-1500  CONTINUE
-      JR=JR+4
-      JZ=JZ+1
+                      ISTORE(JR)=ISTORE(JX)
+                      ISTORE(JR+2)=KBLCK(ISTORE(JR))
+                      ISTORE(JR+1)=M12B
+                      STORE(JR+3)=1.
+                      IF(ISTORE(JY+1)/=1) then ! 1450,1500,1450
+                          STORE(JR+3)=STORE(JX+1)
+                      end if
+                      JR=JR+4
+                      JZ=JZ+1
 C--CALCULATE THE CONTRIBUTION OF THIS PART TO THE SHIFT
-      JX=(ISTORE(JX)-1)*MD24+L24
-      APD(JP)=APD(JP)+STORE(JX+1)*STORE(JR-1)
+                      JX=(ISTORE(JX)-1)*MD24+L24
+                      APD(JP)=APD(JP)+STORE(JX+1)*STORE(JR-1)
+                  end if
 C--CARRY ONTO THE NEXT PART
-1550  CONTINUE
-      JY=ISTORE(JY)
-      IF(JY)1700,1700,1600
+
+                  JY=ISTORE(JY)
+                  do while(JY>0)
 C--MOVE ONTO THE NEXT PART  -  CHECK FOR REFINEMENT OF THIS PARAMETER
-1600  CONTINUE
-      JX=ISTORE(JY+2)+ISTORE(JY+1)*(JT-ISTORE(JY+4))
-      IF(JX-ISTORE(JY+2))1550,1250,1650
-1650  CONTINUE
-      IF(ISTORE(JY+3)-JX)1550,1250,1250
+                      JX=ISTORE(JY+2)+ISTORE(JY+1)*(JT-ISTORE(JY+4))
+                      IF(JX-ISTORE(JY+2)==0) then
+                          exit
+                      else if(JX-ISTORE(JY+2)>0) then
+                          IF(ISTORE(JY+3)-JX>=0) then
+                              exit
+                          end if
+                      end if
+                      JY=ISTORE(JY)
+                  end do 
+              end do 
 C--NO MORE PARTS  -  CHECK IF THIS PARAMETER HAS BEEN REFINED
-1700  CONTINUE
-      IF(JZ)1800,1800,1750
+              IF(JZ>0) then !1800,1800,1750
 C--CALCULATE THE E.S.D.
-1750  CONTINUE
-      BPD(JP)=XVAR(JS,JZ,4,JR)
-      BPD(JP)=SQRT(BPD(JP)*F)
-1800  CONTINUE
-      JT=JT+1
-      JP=JP+1
-1850  CONTINUE
+                  BPD(JP)=XVAR(JS,JZ,4,JR)
+                  BPD(JP)=SQRT(BPD(JP)*F)
+              end if
+          end if
+          JT=JT+1
+          JP=JP+1
+      end do ! 1850  CONTINUE
 C--APPLY THE SHIFTS
       JX=LP
-      DO 1900 JY=1,NPAR
-      STORE(JX)=STORE(JX)+APD(JY)
-      JX=JX+1
-1900  CONTINUE
-      GOTO 1100
+      DO JY=1,NPAR ! 1900
+          STORE(JX)=STORE(JX)+APD(JY)
+          JX=JX+1
+      end do ! 1900  CONTINUE
 C
-9900  CONTINUE
-C -- ERRORS
-      RETURN
-9910  CONTINUE
-C -- CORE OVEFLOW
-      CALL XICA
-      CALL XERHND ( IERERR )
-      GO TO 9900
-C
-      END
+      end subroutine
 CODE FOR XLSDEL
       SUBROUTINE XLSDEL(A,B,C)
+      implicit none
 c----- output shift summary info to punch
       DIMENSION A(6), B(3), C(3)
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XUNITS.INC'
+      
+      real, intent(in) :: a,b,c
+      integer i
+      
       WRITE(NCPU,100)
      1 (A(I),I=1,3),
      1 (A(3+I),I=1,3),

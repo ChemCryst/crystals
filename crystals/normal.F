@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: normal.F,v $
+C Revision 1.26  2012/08/30 09:38:52  djw
+C Use SAFESET for _MW_E2MIN* for passing values to gui
+C
 C Revision 1.25  2012/05/11 12:42:52  rich
 C Fix N(Z) graph when L28 sin(t)/l filter in place. Fix E2-1 value in tabbed analyses.
 C
@@ -989,6 +992,9 @@ C TABLES OF THEORETICAL DISTRIBUTIONS
       DIMENSION AVA(10),AVC(10),AVH(10),CPH(25)
       CHARACTER*8 CBIT1(2),CBIT3(2)
       CHARACTER*3 CBIT2(2)
+      
+      real, dimension(5) :: minimum, maximum, summation, summationsq
+      
       DATA CBIT1/'0KL     ','H,K,2K-H'/
       DATA CBIT2/'H0L','HHL'/
       DATA CBIT3/'HK0     ','H,K,-H-K'/
@@ -1154,7 +1160,7 @@ C        CALCULATE WEIGHT MODIFIER
          STORE(M6+4) = W * STORE(M6+4)
          I = 1
          CALL XSLR(I)
-         CALL XACRT(5)
+         CALL XACRT(5, minimum, maximum, summation, summationsq, 5)
         ENDIF
        END IF
       END DO

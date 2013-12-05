@@ -99,7 +99,7 @@ print *, 'eigen decomp done in (ms): ', &
 #endif
 
 if(info>0) then
-	return
+    return
 end if
 
 ! eigen values cutoff
@@ -111,7 +111,7 @@ allocate(iwork(nmsize))
 ! filtering base on relative precision we want to obtain
 do while(eigvalues(nmsize)/max(tiny(1.0),eigvalues(i))*epsilon(1.0)>eigcutoff)
     !call mrgrnk(abs(eigvectors(:,i)), iwork)
-	!print *, i, eigvalues(nmsize), eigvalues(i)
+    !print *, i, eigvalues(nmsize), eigvalues(i)
 #if defined(_GIL_) || defined(_LIN_)
     print *, i, eigvalues(i), ' eig value rejected, max eig value: ', eigvalues(nmsize)
 #endif
@@ -392,7 +392,7 @@ print *, 'SSYTRF info: ', info
 deallocate(work)
 
 if(info>0) then 
-	return
+    return
 end if
 
 allocate(work(2*nmsize))
@@ -424,7 +424,7 @@ print *, 'invert via LDL^t decomposition', &
 #endif
 
 if(info>0) then 
-	return
+    return
 end if
 
 ! Pack normal matrix back into original crystals storage
@@ -569,6 +569,52 @@ end do
             
 deallocate(preconditioner)
 
+end subroutine
+
+subroutine error9900(a, b, c, d, e, f)
+! this subroutine replaces in solve.F:
+!5275  CONTINUE
+!C
+!      CALL XOPMSG( IOPINV, IOPEND, IVERSN)
+!C
+!      CALL XTIME2(2)
+!      RETURN
+!C
+!9900  CONTINUE
+!C -- ERRORS
+!      CALL XOPMSG ( IOPINV , IOPABN , 0 )
+!      GO TO 5275
+! similar calls used in several places, all factored here
+implicit none
+integer a, b, c, d, e, f
+
+      CALL XOPMSG ( a , b , c )
+      CALL XOPMSG( d, e, f)
+      CALL XTIME2(2)
+
+end subroutine
+
+subroutine stopcycles(istore, l33cb, n33ib, clst23, i, j, ncvdu, ncwu, issprt, cmon)
+implicit  none
+integer l33cb, n33ib, i, j, ncvdu, ncwu, issprt
+integer, dimension(:) :: istore
+character(len=*), dimension(:) :: cmon
+character(len=*), dimension(:) :: clst23
+
+istore(l33cb)=n33ib
+if (i .gt. 0) then
+    write(cmon(1), '(" Forced termination after this cycle: ", &
+    &    " Actual value condition on: ",A)' ) clst23(i)(:)
+       call xprvdu(ncvdu, 1,0)
+       if (issprt .eq. 0) write(ncwu,'(A)') cmon(1)
+      endif
+      if (j .gt. 0) then
+       write(cmon(1),'(" Forced termination after this cycle: ", &
+       &    " Relative change condition on ",   A)') clst23(j)(:)
+       call xprvdu(ncvdu, 1,0)
+       if (issprt .eq. 0) write(ncwu,'(A)') cmon(1)
+      endif
+      
 end subroutine
 
 end module

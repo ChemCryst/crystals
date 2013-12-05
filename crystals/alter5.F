@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: alter5.F,v $
+C Revision 1.8  2011/04/08 12:58:47  djw
+C Add ORIGIN module
+C
 C Revision 1.7  2007/10/09 06:48:32  djw
 C Add hyrdogen renumbering
 C

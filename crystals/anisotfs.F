@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: anisotfs.F,v $
+C Revision 1.29  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.28  2011/01/18 12:21:52  djw
 C Complete referenc efor U-prime
 C
@@ -283,8 +286,9 @@ cdjwfeb06 compute geometric mean
             UGEOM=sign(1.,ugeom)*abs(UGEOM)**0.33333
             UARITH = (STORE(NE)+STORE(NE+1)+STORE(NE+2))/3.
 cdjwsep08
-            UPRIME =SIGN(1.,STORE(NE))* ABS(STORE(NE+2)*STORE(NE+1))/
-     1      ABS(STORE(NE))
+            UPRIME =SIGN(real(1., kind(STORE)),STORE(NE))*
+     1          ABS(STORE(NE+2)*STORE(NE+1))/
+     1          ABS(STORE(NE))
             UEQUIV = UGEOM
             avol = avol + uequiv
             dvol = dvol + uequiv*uequiv
@@ -527,6 +531,7 @@ C
       INCLUDE 'QLST12.INC'
       INCLUDE 'QSTORE.INC'
 C
+      INCLUDE 'IDIM12.INC'
 C
       DATA CCALC/' TLS','AXIS'/
 #if defined(_HOL_) 
@@ -560,7 +565,6 @@ C----- COMMON BLOCK OFFSET(-1) FOR INPUT LIST
 C----- INITIALSE LEXICAL PROCESSING
       ICHNG=1
       CALL XLXINI (INEXTD,ICHNG)
-      INCLUDE 'IDIM12.INC'
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 50 I=1,IDIM12
          ICOM12(I)=NOWT

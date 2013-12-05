@@ -1,5 +1,5 @@
-      PARAMETER (LTERMW = 132)
-      CHARACTER *(LTERMW) CSPACE
-      CHARACTER*(LCHK) CSCPNM, CPRVNM, CLSTNM
-      COMMON /XMENUC/ CSPACE, CPRVNM, CLSTNM
+      integer, parameter :: ltermw = 132
+      character *(ltermw) cspace
+      character*(lchk) cscpnm, cprvnm, clstnm
+      common /xmenuc/ cspace, cprvnm, clstnm
 

@@ -1,4 +1,4 @@
-C TLST18 - temporary storage for bond list. To be replaced with LIST18.
+! TLST18 - temporary storage for bond list. To be replaced with LIST18.
       REAL BBLK(1500,9)                                                 
       INTEGER NB18                                                       
       COMMON /BOND18/ BBLK, NB18                                          

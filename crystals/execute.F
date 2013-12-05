@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: execute.F,v $
+C Revision 1.7  2011/09/30 11:14:47  djw
+C Add COMMENT
+C
 C Revision 1.6  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -744,7 +747,7 @@ C--SET THE INITIAL ADDRESSES
       K=M5A+3
       M5=M5+1
 C--CHECK THAT THE SYMMETRY OPERATORS ARE VALID
-      M=IABS(ISTORE(LOCD+7))-1
+      M=ABS(ISTORE(LOCD+7))-1
       IF(M)1550,1000,1000
 1000  CONTINUE
       IF(M-N2)1050,1550,1550
@@ -753,7 +756,7 @@ C--CHECK THAT THE SYMMETRY OPERATORS ARE VALID
 1100  CONTINUE
       IF(ISTORE(LOCD+8)-N2P)1150,1150,1550
 1150  CONTINUE
-      A=FLOAT(ISTORE(LOCD+7))
+      A=real(ISTORE(LOCD+7))
       A=SIGN(1.,A)
       STORE(LOCD+14)=A
 C--TRANSFER THE SERIAL, OCC AND U[ISO]  -  APPLY CENTRE OF SYMM. IF NEC.

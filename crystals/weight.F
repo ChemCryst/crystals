@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: weight.F,v $
+C Revision 1.12  2008/12/18 16:40:05  djw
+C Add LEVEL parameter to control level of output
+C
 C Revision 1.11  2007/12/12 16:05:12  djw
 C Normlise GOF
 C

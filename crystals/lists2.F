@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: lists2.F,v $
+C Revision 1.11  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.10  2011/01/11 16:32:21  djw
 C Correct message output
 C

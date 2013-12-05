@@ -42,7 +42,10 @@ c All the best,
 c 
 c Alison
 c
-C $Log: not supported by cvs2svn $
+C $Log: spacegrp.F,v $
+C Revision 1.9  2010/11/04 09:31:27  djw
+C Add a few debugging lines fopr Simons P65 2 2 . Turns out to be a supeflip problem
+C
 C Revision 1.8  2008/05/19 15:09:49  djw
 C Fix stupid error with filename passing
 C

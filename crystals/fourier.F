@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: fourier.F,v $
+C Revision 1.39  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.38  2012/09/17 12:24:53  rich
 C DPROD subroutine name clashes with intrinsic function. Renamed DVPROD.
 C
@@ -3878,6 +3883,8 @@ C--
 
       EQUIVALENCE (IMSKOP, PROCS(1))
       INCLUDE 'QLST42.INC'
+      
+      real, dimension(7) :: minimum, maximum, summation, summationsq
 
 #if !defined(_HOL_) 
       DATA IPEAK/'Q   '/
@@ -4314,8 +4321,8 @@ C Set Fc and phase in L6 based on current mask.
            STORE(M6+5)= SQRT( FA**2 + FB**2 )
            STORE(M6+6)= ATAN2( FB, FA )
            CALL XSLR(1)   ! Store last reflection
-           CALL XACRT(6)  ! Keep running totals for FC
-           CALL XACRT(7)  ! Keep running totals for phase
+           CALL XACRT(6, minimum, maximum, summation, summationsq, 7)  ! Keep running totals for FC
+           CALL XACRT(7, minimum, maximum, summation, summationsq, 7)  ! Keep running totals for phase
          END DO
          CALL XERT(IULN)  ! Write updated L6 to disk.
          WRITE(CMON,'(4X,A)') 'Fc values in L6 updated to FT of mask.'

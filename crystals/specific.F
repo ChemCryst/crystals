@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: specific.F,v $
+C Revision 1.74  2013/11/05 12:37:15  pascal
+C f90 code update of xmove/xmovei
+C
 C Revision 1.73  2012/05/31 15:20:12  rich
 C Don't use address lookup to determine vectorised loop or not in XMOVE. LOC result is in bytes -
 C but N is in words. Needs a portable solution if this optimisation is to be used.
@@ -3993,6 +3996,7 @@ C
 C
 CODE FOR XPRVDU
       SUBROUTINE XPRVDU(NCDEV, NLINES, MODE)
+      implicit none
 C----- PROCESS THE VDU BUFFER
 C      A CALL IS MADE AFTER THE FORTRAN WRITE TO SEE IF THERE IS
 C      ENOUGH SPACE.
@@ -4030,11 +4034,14 @@ C      COMMON /XIIOBF/ LVDU, MVDU, LEROR, MEROR
 C
       CHARACTER*1 CTEMP
       CHARACTER*10 CFRMAT
+      
+      integer ncdev, nlines, mode, i, lmon, olddev
 C
 C------ IF THE CURRENT DEVICE ISNT THE SAME AS THE PREVIOUS, PERHAPS WE
 C       SHOULD FORCE A PRINT?
       DATA OLDDEV /0/, LMON /1/
 C
+!$OMP SINGLE
       IF (NCDEV .EQ. NCVDU) THEN
         IF((LMON + NLINES) .GT. LINBUF) THEN
             CALL XPRTDV(NCDEV,CCVDU, LINBUF, LMON-1)
@@ -4064,6 +4071,7 @@ C
       ELSE
             WRITE(*,*) 'Unrecognisd I/O device in XPRVDU'
       ENDIF
+!$OMP END SINGLE      
       RETURN
       END
 
@@ -4111,6 +4119,7 @@ C}
       CHARACTER*10 CFRMAT
       DATA CFRMAT /'(1X,A)'/
 
+!$OMP SINGLE
       CEXTRA = ' '
       LENBUF = LEN(CBUF(1))
 #if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined (_INW_)
@@ -4240,6 +4249,7 @@ C
 100         CONTINUE
 400         FORMAT(A)
       ENDIF
+!$OMP END SINGLE      
       RETURN
       END
 

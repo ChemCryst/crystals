@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: lists4.F,v $
+C Revision 1.32  2011/09/21 09:48:03  rich
+C When checking for scattering factors, uppercase before comparison.
+C
 C Revision 1.31  2011/05/18 11:49:01  rich
 C DJW: extension to L29 to include version info.
 C RIC: found bug in Weighting SCHEME 17 - read L30 value for Nparams without loading L30 first.

@@ -1,4 +1,8 @@
-C $Log: not supported by cvs2svn $
+C $Log: invert.F,v $
+C Revision 1.5  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:09  rich
 C New CRYSTALS repository
 C
@@ -20,6 +24,8 @@ C
 C
 CODE FOR INVERT
       SUBROUTINE INVERT
+      implicit none
+      
       CALL XSYSDC(-1,1)
       CALL XSFLSD
       RETURN
@@ -27,6 +33,7 @@ CODE FOR INVERT
 C
 CODE FOR XSFLSD
       SUBROUTINE XSFLSD
+      implicit none
 C--MAIN CONTROL ROUTINE FOR INVERTING THE NORMAL MATRIX
 C  AND SOLVING THE LEAST SQUARES EQUATIONS.
 
@@ -39,6 +46,12 @@ C  AND SOLVING THE LEAST SQUARES EQUATIONS.
       INCLUDE 'XLST50.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST24.INC'
+
+      INCLUDE 'IDIM24.INC'
+      
+      INTEGER num, i, j, iclass, lstno, lstop
+      
+      INTEGER, EXTERNAL :: KRDDPV, KNXTOP
 
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
@@ -63,7 +76,6 @@ C--'#SOLVE'  -  SOLVE THE NORMAL EQUATIONS
 C--'#NEWSHIFTS'  -  PREPARE LIST 24 WHEN IT IS OUT OF STEP
 7000  CONTINUE
       I=KRDDPV(ISTORE(NFL),1)
-      INCLUDE 'IDIM24.INC'
 C--LOAD LIST 12 TO FIND THE NUMBER OF LEAST SQUARES PARAMETERS
       CALL XFAL12(0,0,I,J)
       IF ( IERFLG .LT. 0 ) RETURN

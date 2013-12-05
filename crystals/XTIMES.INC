@@ -1,2 +1,3 @@
-      COMMON/XTIMES/Q(4),QQ(4) 
+      REAL Q(4),QQ(4) 
+      COMMON/XTIMES/Q,QQ
 

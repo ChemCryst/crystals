@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: list26.F,v $
+C Revision 1.25  2013/11/06 13:52:52  rich
+C Fix use of uninit variable
+C
 C Revision 1.24  2013/09/19 21:35:39  rich
 C Change precision of listing output where not important to reduce differences across platforms.
 C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev

@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: reductio.F,v $
+C Revision 1.54  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.53  2012/10/25 11:19:45  djw
 C Only write histogram summary statistics for LIST 6 (not 7)
 C
@@ -192,6 +197,8 @@ C
 C
       EQUIVALENCE (PROCS(1),ITYP06),(PROCS(2),MEDIUM),(PROCS(3),ISQ)
 C
+      ! ridiculous amount, should be md6 when the value is read
+      real, dimension(256) :: minimum, maximum, summation, summationsq
 C
       DATA CCAPT / 'Sin(theta) > 1.0' , 'Impossible LP term' ,
      2 'Sin(theta) < (or =) 0.0' /
@@ -339,7 +346,7 @@ C--STORE THE REFLECTION
       CALL XSLR(1)
 C--SET THE REFLECTION DETAILS DATA
       DO 2250 I=1,MD6
-      CALL XACRT(I)
+      CALL XACRT(I, minimum, maximum, summation, summationsq, md6)
 2250  CONTINUE
       GOTO 1550
 C
@@ -474,6 +481,9 @@ C
 C
       EQUIVALENCE (PROCS(1),ITYP06), (PROCS(2),MEDIUM),(PROCS(3),INDEX)
       EQUIVALENCE (PROCS(4), IFRIED),(PROCS(5),IL28)
+      
+      ! ridiculous amount, should be md6 when the value is read
+      real, dimension(256) :: minimum, maximum, summation, summationsq
 C
 C
 C     FIX MAXIMA FROM /FO/MAX
@@ -654,7 +664,7 @@ C--STORE THE REFLECTION
       CALL XSLR(1)
 C--ACCUMULATE THE DETAILS
       DO 1650 I=1,MD6
-      CALL XACRT(I)
+      CALL XACRT(I, minimum, maximum, summation, summationsq, md6)
 1650  CONTINUE
       GOTO 1450
 C
@@ -1104,6 +1114,10 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
       EQUIVALENCE (PROCS(1),ITYP06)
+      
+      ! ridiculous amount, should be md6 when the value is read
+      real, dimension(256) :: minimum, maximum, summation, summationsq
+      
       SAVE
 C
       DATA IVERSN / 500 /
@@ -1455,7 +1469,7 @@ C----- COMPUTE NEW 'RATIO'
       CALL XSLR(1)
 C--ACCUMULATE THE REFLECTION DETAILS INFORMATION
       DO 3650 I=1,MD6
-      CALL XACRT(I)
+      CALL XACRT(I, minimum, maximum, summation, summationsq, md6)
 3650  CONTINUE
 
 C--CHECK FOR ANOTHER TWIN ELEMENT
@@ -1640,7 +1654,7 @@ C1000  STOP 225
 C--GAUSSIAN WEIGHTING SCHEME
 1100  CONTINUE
       IF ( NCT .NE. 6 ) GO TO 9910
-      STORE(ICT)=(ALOG(STORE(ICT)))/(STORE(ICT+1)*STORE(ICT+1))
+      STORE(ICT)=(LOG(STORE(ICT)))/(STORE(ICT+1)*STORE(ICT+1))
 1300  CONTINUE
       RETURN
 9910  CONTINUE

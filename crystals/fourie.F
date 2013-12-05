@@ -1,4 +1,8 @@
-C $Log: not supported by cvs2svn $
+C $Log: fourie.F,v $
+C Revision 1.6  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:10  rich
 C New CRYSTALS repository
 C

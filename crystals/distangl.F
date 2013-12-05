@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: distangl.F,v $
+C Revision 1.111  2013/07/03 09:28:22  rich
+C Write H atoms on O and N to script output file.
+C
 C Revision 1.110  2013/05/09 11:24:37  rich
 C Fix bounds overrun in distangl when called from Fourier routines (shorter stack).
 C
@@ -5328,7 +5331,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
       NW1=3
-      I=(IABS(ISTORE(IADD1+2))-1)*MD2+L2
+      I=(ABS(ISTORE(IADD1+2))-1)*MD2+L2
       A=1.
       IF(ISTORE(IADD1+2))1000,1050,1050
 1000  CONTINUE

@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: characte.F,v $
+C Revision 1.11  2012/08/08 14:58:35  djw
+C Include integer fundtion NCTRIM from \bits\diffractometer\charact.for
+C
 C Revision 1.10  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.
 C

@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: absorb.F,v $
+C Revision 1.8  2005/10/12 17:18:26  djw
+C Fix error in calculation of theta in THETABS
+C
 C Revision 1.7  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -492,10 +495,10 @@ C---  FULL LISTING
 6200  CONTINUE
 C
 6300  CONTINUE
-      BFACT(10)=AMAX1(BFACT(10),AFACT)
-      CFACT(10)=AMIN1(CFACT(10),AFACT)
+      BFACT(10)=MAX(BFACT(10),AFACT)
+      CFACT(10)=MIN(CFACT(10),AFACT)
 C----- COMPUTE PATH LENGTH RELATIVE TO BASE OF TBAR=1
-      TBAR=1.+ALOG(AFACT)
+      TBAR=1.+LOG(AFACT)
       STORE(M6+9)=TBAR
       AFACT=SQRT(AFACT)
       STORE(M6+27)=STORE(M6+27)*AFACT
@@ -680,7 +683,7 @@ C      IF(NORM3(STORE(ISPC)) .LE. 0.0)STOP 'ZERO LENGTH VECTOR'
       IF(NORM3(STORE(ISPC)) .LE. 0.0) CALL GUEXIT(2001)
 C
 C----- FIND MINIMUM INCLINATION ANGLE
-      B = STORE(ISPC +5) / (STORE(ISPC +5) + ALOG(STORE(ISPC +6)) )
+      B = STORE(ISPC +5) / (STORE(ISPC +5) + LOG(STORE(ISPC +6)) )
       IF(ITUBE .GT. 0) THEN
       A=ASIN(B)
       ELSE
@@ -737,6 +740,9 @@ C
 C
       PARAMETER (IDIMTH=12)
       DIMENSION IPROCS(IDIMTH)
+      
+      ! ridiculous amount, should be md6 when the value is read
+      real, dimension(256) :: minimum, maximum, summation, summationsq
 C
       DATA IVERSN /100/
 C
@@ -910,7 +916,7 @@ C--STORE THE REFLECTION
         CALL XSLR(1)
 C--SET THE REFLECTION DETAILS DATA
         DO 2250 I=1,MD6
-        CALL XACRT(I)
+        CALL XACRT(I, minimum, maximum, summation, summationsq)
 2250    CONTINUE
         GOTO 1550
       ENDIF

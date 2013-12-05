@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: hydrogen.F,v $
+C Revision 1.41  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.40  2011/04/18 11:26:57  rich
 C Reinstate ctemp
 C
@@ -170,6 +175,7 @@ C
 C
       EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
 C
+      INCLUDE 'IDIM12.INC'
 C
 #if defined (_HOL_)
       DATA INEXT(1) / 4HNEXT /
@@ -199,7 +205,6 @@ C--SORT OUT THE INPUT LIST
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--WORK THE TYPE OF THE OUTPUT LIST
       LB=KTYP05(MY)
-      INCLUDE 'IDIM12.INC'
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 1050 I=1,IDIM12
       ICOM12(I)=NOWT

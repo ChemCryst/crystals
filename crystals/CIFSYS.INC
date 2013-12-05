@@ -1,4 +1,4 @@
-C        For inclusion in 'ciftbx.f'. You should also include CIF1 block.
+!        For inclusion in 'ciftbx.f'. You should also include CIF1 block.
          integer NUMDICT,NUMHASH,NUMBLOCK,NUMLOOP,NUMITEM,NUMIP1,MAXTAB,
      *     MAXBOOK,NUMPAGE,NUMCPP
          PARAMETER (NUMPAGE=10)   !Number of memory resident pages

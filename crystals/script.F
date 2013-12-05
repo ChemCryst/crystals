@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: script.F,v $
+C Revision 1.76  2013/09/22 21:44:48  rich
+C Remove debug prints.
+C
 C Revision 1.75  2013/09/19 21:35:39  rich
 C Change precision of listing output where not important to reduce differences across platforms.
 C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev

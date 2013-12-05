@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: summary.F,v $
+C Revision 1.109  2013/07/04 09:58:31  djw
+C Correct text for quasi unit weight scheme
+C
 C Revision 1.108  2013/07/03 09:27:15  rich
 C Comment nmax (unused).
 C

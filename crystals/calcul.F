@@ -1,4 +1,8 @@
-C $Log: not supported by cvs2svn $
+C $Log: calcul.F,v $
+C Revision 1.4  2005/01/23 08:29:11  rich
+C Reinstated CVS change history for all FPP files.
+C History for very recent (January) changes may be lost.
+C
 C Revision 1.1.1.1  2004/12/13 11:16:11  rich
 C New CRYSTALS repository
 C

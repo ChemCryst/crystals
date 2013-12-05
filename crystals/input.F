@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: input.F,v $
+C Revision 1.34  2013/11/05 12:37:40  pascal
+C removed dead code
+C
 C Revision 1.33  2011/09/19 09:51:59  rich
 C Punch list 39.
 C

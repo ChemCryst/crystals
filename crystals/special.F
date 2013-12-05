@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: special.F,v $
+C Revision 1.14  2011/04/08 12:57:11  djw
+C Save origin shifts in COMMON BLOCK
+C
 C Revision 1.13  2011/03/21 13:57:22  rich
 C Update files to work with gfortran compiler.
 C

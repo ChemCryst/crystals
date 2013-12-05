@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: genedit.F,v $
+C Revision 1.13  2011/04/28 10:44:27  djw
+C Delay zeroing Record type for un-located records until after the error message has been output
+C
 C Revision 1.12  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.

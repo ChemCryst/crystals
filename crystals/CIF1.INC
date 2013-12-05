@@ -1,5 +1,5 @@
-C        These declarations must be included in ciftbx user
-C        applications along with CIF2
+!        These declarations must be included in ciftbx user
+!        applications along with CIF2
          integer NUMCHAR
          PARAMETER (NUMCHAR=48)
          integer MAXBUF

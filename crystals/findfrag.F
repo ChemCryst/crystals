@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: findfrag.F,v $
+C Revision 1.14  2011/03/21 13:57:21  rich
+C Update files to work with gfortran compiler.
+C
 C Revision 1.13  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.

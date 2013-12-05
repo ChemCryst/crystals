@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: list16.F,v $
+C Revision 1.20  2011/10/14 13:48:09  djw
+C Fix interaction between A-DIST and MEAN and DiIFF restraints
+C
 C Revision 1.19  2011/10/13 14:41:31  djw
 C Add asymmetric distacne restraint
 C
@@ -392,6 +395,8 @@ C
 
       INCLUDE 'QSTORE.INC'
 C
+      INCLUDE 'IDIM12.INC'
+C
       EQUIVALENCE (Z,MZ)
       INCLUDE 'QLST05.INC'
       INCLUDE 'QLST12.INC'
@@ -447,7 +452,6 @@ C Grab some space for three atom list vectors (for SAME restraint).
        LATVC = KSTALL (N5*MDATVC)
 C Load list 41 into core (for SAME restraint).
        CALL XFAL41
-      INCLUDE 'IDIM12.INC'
 C--INDICATE THAT LIST 12 IS NOT IN CORE
       DO 1100 I=1,IDIM12
       ICOM12(I)=NOWT

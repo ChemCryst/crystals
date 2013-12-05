@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: slant.F,v $
+C Revision 1.26  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.25  2012/07/12 08:42:23  rich
 C Allow FoSq-FcSq-Patterson maps.
 C

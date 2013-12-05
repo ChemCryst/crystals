@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: list4.F,v $
+C Revision 1.75  2013/11/26 11:49:02  pascal
+C removed not used arguments from srtdwn
+C
 C Revision 1.74  2013/09/19 21:35:39  rich
 C Change precision of listing output where not important to reduce differences across platforms.
 C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
@@ -341,6 +344,8 @@ c
       INCLUDE 'QLST04.INC'
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST30.INC'
+      
+      real, dimension(5) :: minimum, maximum, summation, summationsq
 
       DATA CSQUAR / '**2 ' /, IBL / '    ' /
       DATA SMALL / .01 /
@@ -1226,7 +1231,7 @@ c      scale the weight
 
         STORE(M6+4)=AM*AW   !STORE THE LAST REFLECTION
         CALL XSLR(1)
-        CALL XACRT(5)
+        CALL XACRT(5, minimum, maximum, summation, summationsq, 5)
 
 5100    CONTINUE
         IF(KLDRNR(1).GE.0) GOTO 2450  !FETCH THE NEXT REFLECTION
@@ -3408,6 +3413,8 @@ C
       INCLUDE 'XLST06.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      real, dimension(4) :: minimum, maximum, summation, summationsq
 C
       NX=NW+NW
 C----- READ/WRITE FLAG FOR KFNR
@@ -3616,7 +3623,7 @@ C--CHECK IF WE MUST STORE THE INFORMATION FOR THIS REFLECTION
 C--STORE THE MODIFIED REFLECTION
 2050  CONTINUE
       CALL XSLR(1)
-      CALL XACRT(4)
+      CALL XACRT(4, minimum, maximum, summation, summationsq, 5)
 C--FETCH THE NEXT REFLECTION
 2100  CONTINUE
       IF(KFNR(IRWF))2150,1300,1300

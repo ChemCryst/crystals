@@ -1,2 +1,3 @@
-      COMMON/XPDS/APD(14),BPD(14) 
+      real, DIMENSION(14) :: APD, BPD
+      COMMON/XPDS/APD,BPD
 

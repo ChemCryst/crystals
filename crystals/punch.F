@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: punch.F,v $
+C Revision 1.80  2012/03/15 12:30:34  djw
+C Fix punch LIST 3  FORMAT statement
+C
 C Revision 1.79  2012/01/13 15:19:10  rich
 C Bit of extra space on punching of item 17 of L5 (fields could run together in
 C exceptional circumstances).
@@ -387,7 +390,7 @@ C--LOAD LIST 5
       N=999
       DO 1400 I=1,N5
       ISTORE(M5+1)=NINT(STORE(M5+1))
-      ISTORE(M5+1)=IABS(ISTORE(M5+1))
+      ISTORE(M5+1)=ABS(ISTORE(M5+1))
       IF(ISTORE(M5+1)-1000)1150,1050,1050
 1050  CONTINUE
       ISTORE(M5+1)=N

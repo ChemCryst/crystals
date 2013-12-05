@@ -1,4 +1,4 @@
-      PARAMETER ( NCHK = 80 , LCHK = 12 )
-      CHARACTER*(LCHK) CCHECK(NCHK),CDUM
-      COMMON /XSCCHK/ CCHECK
+      integer, parameter :: nchk = 80, lchk = 12 
+      character*(lchk) ccheck(nchk),cdum
+      common /xscchk/ ccheck
 

@@ -1,4 +1,9 @@
-C $Log: not supported by cvs2svn $
+C $Log: difabs.F,v $
+C Revision 1.13  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.12  2011/05/13 11:16:51  djw
 C Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
 C

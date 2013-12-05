@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: matrix.F,v $
+C Revision 1.30  2013/11/06 12:48:23  pascal
+C put back SSYRK subroutine needed as a dependency
+C
 C Revision 1.29  2013/11/06 12:19:09  pascal
 C replaced SSYRK with DSYRK subroutine for build not using optimized blas
 C

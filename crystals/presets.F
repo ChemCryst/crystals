@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: presets.F,v $
+C Revision 1.66  2012/03/23 13:54:08  rich
+C Changed some common block variables into constants.
+C
 C Revision 1.65  2011/11/03 09:20:35  rich
 C Initialise buffer for linearized error function.
 C
