@@ -1661,10 +1661,10 @@ use store_mod, only:store, istore, nfl
 !include 'XSFWK.INC90'
 use xsfwk_mod, only: r, p, s, w, rw, scale, scalew, scalek, ienprt, smin, smax
 use xsfwk_mod, only: st, sst, theta1, theta2, tc, wdf, wave, rall, wdft, fo, fc
-use xsfwk_mod, only: enant, df, d, cenant, c, bct, bcn, bci, bc, anom, aminf
-use xsfwk_mod, only: act, acn, aci, acf, ace, ac, a
+use xsfwk_mod, only: enant, df, d, cenant, c, bct, bcn, anom, aminf
+use xsfwk_mod, only: act, acn, acf, ace, a
 !include 'XWORKB.INC'
-use xworkb_mod, only: nv, nu, nt, nn, nm, nl, ni, nf, nd, jr, jq, jp, jo, cycle_number=>ji
+use xworkb_mod, only: nv, nu, nr, nt, nl, nf, nd, jr, jq, jp, jo, cycle_number=>ji
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc
 use xsflsw_mod, only: sfls_type, sfls_scale, sfls_refine, sfls_calc, cos_only, centro, batched
@@ -1682,11 +1682,11 @@ use xlst02_mod, only: n2p, m2p, l2p, ic, g2
 !include 'XLST05.INC90'
 use xlst05_mod, only: m5ls, m5es, m5bs, m5ls, l5o, l5ls, l5es, l5bs
 !include 'XLST06.INC90'
-use xlst06_mod, only: m6, l6p, md6
+use xlst06_mod!, only: m6, l6p, md6
 !include 'XLST11.INC90'
 use xlst11_mod, only: n11, l11r, l11
 !include 'XLST12.INC90'
-use xlst12_mod, only: n12b, n12, md12b, m12, l12o, l12ls, l12es, l12bs, l12b
+use xlst12_mod, only: n12b, n12, md12b, m12, l12o, l12ls, l12es, l12bs, l12b, md12a
 !include 'XLST25.INC'
 use xlst25_mod, only: n25, md25, m25, l25
 !include 'XLST28.INC90'
@@ -1700,6 +1700,36 @@ use xiobuf_mod, only: cmon
 use xconst_mod, only: pi, zero, zerosq
 
 implicit none
+
+interface
+    subroutine xab2fc(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)
+        real, intent(out) :: fc, p
+        real, intent(inout) :: act, bct, acn, bcn, ace, acf
+        real, dimension(:), intent(inout) :: store
+        integer, dimension(:), intent(inout) :: istore
+    end subroutine
+end interface
+
+interface
+    subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)
+        real, intent(out) :: ACD, BCD, tc, sst
+        real, intent(inout) :: smin, smax, bc, ac
+        real, dimension(:), intent(inout) :: store
+        integer, dimension(:), intent(inout) :: istore
+        integer, intent(inout) :: nn, nm
+        integer, intent(in) :: nl, nr
+    end subroutine
+end interface
+
+interface
+    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore) 
+        real, intent(in) :: a
+        integer, intent(in) :: jx, jo, jq, jr
+        integer, intent(inout) :: md12a, m12
+        integer, dimension(:), intent(in) :: istore
+        real, dimension(:), intent(inout) :: store
+    end subroutine
+end interface
 
 !include 'QSTORE.INC'
 !include 'QSTR11.INC' equivalence not needed
@@ -1720,7 +1750,8 @@ integer i, ibadr, iallow,  ibl, ibs, ifnr, ihkllen, ilevpr
 integer ixap, ibatch, i28mn, jlever, jxap, jsort, ljs, ljt
 integer lju, ljv, ljx, llever, lsort, ltempl, ltempr, msort
 integer mnr, mlever, mdsort, mdleve, mb, layer, k, j, nsort
-integer ntempl, nq, np, no, nlever, ntempr, nk, nj, n, mstr
+integer ntempl, nq, np, no, nlever, ntempr, nk, nj, n, mstr, ni
+integer dummy
 real pk, pii, ph, path, fot, scaleb, savsig, rlevnm, redmax, red
 real rdjw, pol2, pol1, pl, sh
 real g2sav, fcext, fcexs, ext4, ext3, ext2, ext1, ext
@@ -1731,6 +1762,10 @@ real scales, scaleq, scalel, scaleg, scaleo, rlevdn
 integer, external :: klayer, kbatch, kallow, kfnr, kchnfl
 real, external :: pdolev
 real, dimension(5) :: tempr
+
+! variable moved from common block to local
+real acd, bcd, ac, bc
+integer nm, nn
 !
 !
 #if defined(_GIL_) || defined(_LIN_)
@@ -1750,6 +1785,8 @@ character(len=4) :: buffer
 
 real, dimension(:,:), allocatable :: tempstore
 integer tempstoremax, tempstorei
+real, dimension(16) ::  minimum, maximum, summation, summationsq
+integer iposn
 
 !     Working out the number of threadings available
 !     Using at most 6 of them
@@ -1941,8 +1978,36 @@ do tempstorei=1, storechunk
 end do
 tempstoremax=tempstorei-1
     
+    
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!Begin big loop
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+minimum=huge(minimum)
+maximum=-huge(maximum)
+summation=0.0
+summationsq=0.0
+if(ND<0)THEN
+    minimum(8:9)=0.0
+    maximum(8:9)=0.0
+end if
+      
 do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
+!!$OMP PARALLEL default(none) 
+!!$OMP& shared(nP, nO, tid, M6, MD6, l6dtl, md6dtl, L5LS, layered, batched,twinned, JREF_STACK_START,scaleg) 
+!!$OMP& firstprivate(store)
+!!$OMP& private(designmatrix, M5LS, layer, scalel, ibatch, scaleb, ierflg)
+!!$OMP& private(scalek,scales,act,bct,acn,bcn,fo,fc,scalew,jp,jo,nl)
+!!$OMP& private(JREF_STACK_PTR)
+!!$OMP& reduction(+: normalmatrix, summation, summationsq)
+!!$OMP& reduction(min: minimum), reduction(max:maximum)
+
+
+! ierflg need to be private, in common block at the moment
+
+!!$OMP DO schedule(static)
     do tempstorei=1, tempstoremax
     STORE(M6:M6+MD6-1)=tempstore(tempstorei,:)
     !print *, STORE(M6:M6+MD6-1)
@@ -1950,7 +2015,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     LAYER=-1   ! SET THE LAYER SCALING CONSTANTS INITIALLY
     SCALEL=1.0
     if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-        LAYER=KLAYER(I)-1  ! FIND THE LAYER NUMBER AND SET ITS VALUE
+        LAYER=KLAYER(dummy)-1  ! FIND THE LAYER NUMBER AND SET ITS VALUE
         if ( IERFLG .LT. 0 ) return ! GO TO 19900
         M5LS=L5LS+LAYER
         SCALEL=STORE(M5LS)
@@ -1959,7 +2024,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     IBATCH=-1  ! SET THE INITIAL VALUES FOR THE BATCH SCALE FACTOR
     SCALEB=1.
     if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-        IBATCH=KBATCH(I)-1  ! FIND THE BATCH NUMBER AND SET THE SCALE
+        IBATCH=KBATCH(dummy)-1  ! FIND THE BATCH NUMBER AND SET THE SCALE
         if ( IERFLG .LT. 0 ) return !GO TO 19900
         M5BS=L5BS+IBATCH
         SCALEB=STORE(M5BS)
@@ -1998,10 +2063,10 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !       CHECK if THIS IS TWINNED CALCULATION
     if(.NOT.TWINNED)THEN   ! NOT TWINNED
         NL=0
-        call XSFLSX
+        call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)
         JREF_STACK_PTR=ISTORE(JREF_STACK_START)
-        call XAB2FC  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
-        call XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
+        call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
+        call XACRT(4, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE THE /FO/ TOTALS
     else ! THIS IS A TWINNED CALCULATION  
         PH=STORE(M6)  ! PRESERVE THE NOMINAL INDICES
         PK=STORE(M6+1)
@@ -2096,7 +2161,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !     1 store(m6+1),store(m6+2), g2, store(m6+3),a,k
 !9753  format(a,3f8.2,2x,a,3f8.2, '  G2,Fo,A,K ', 3f12.2,i5)
 !
-            call XSFLSX  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
+            call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
             g2 = g2sav
         END do  ! END OF THIS TWINNED REFLECTION  
 !
@@ -2118,7 +2183,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
             JO=ISTORE(JREF_STACK_PTR+1)  ! SET THE POINTER FOR THE DERIVATIVES WITH RESPECT TO /FC/
             JP=ISTORE(JREF_STACK_PTR+2)
   
-            call XAB2FC   ! CONVERT A AND B PARTS TO FC
+            call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)   ! CONVERT A AND B PARTS TO FC
 
             NI=ISTORE(JREF_STACK_PTR+8) ! ACCUMULATE /FCT/
             ISTORE(JREF_STACK_PTR+8)=ISTORE(JREF_STACK_PTR+8)-1
@@ -2164,7 +2229,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         STORE(M6+5)=STORE(M6+5)*SCALES
 !          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
         p=store(m6+6)
-        call XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
+        call XACRT(4, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE THE /FO/ TOTALS
         if (SFLS_TYPE .EQ. SFLS_REFINE) then ! CHECK IF WE ARE DOING REFINEMENT
             STORE(JO:JP)=0. ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
             JREF_STACK_PTR=JREF_STACK_START  
@@ -2184,7 +2249,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
                 JREF_STACK_PTR=ISTORE(JREF_STACK_PTR)
                 LJX=ISTORE(JREF_STACK_PTR+8)
                 A=0.5*SCALEW*STORE(JREF_STACK_PTR+6)*STORE(JREF_STACK_PTR+6)/FC
-                call XADDPD ( A, LJX, JO, JQ, JR) 
+                call XADDPD ( A, LJX, JO, JQ, JR, md12a, m12, store, istore) 
             end do
         end if
     end if  ! end of twinned calculations
@@ -2192,7 +2257,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !
 !--CHECK if WE SHOULD include EXTINCTION
     if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
-        A=MIN(1.,WAVE*ST)
+        A=MIN(1.,WAVE*sqrt(sST))
         !A=ASIN(A)*2.
         PATH=STORE(M6+9)  ! CHECK MEAN PATH LENGTH
         if(PATH.LE.ZERO) PATH = 1.
@@ -2231,8 +2296,8 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
         STORE(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
         STORE(M6+8)=BCT
-        call XACRT(8)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-        call XACRT(9)
+        call XACRT(8, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
+        call XACRT(9, minimum, maximum, summation, summationsq, 16)
     end if
 
 !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
@@ -2284,12 +2349,15 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         P=P*D             ! PRINT ALL REFLECTIONS
         VJ=WDF*S
         WJ=DF*S
-        A=SQRT(AC*AC+BC*BC)
-        S=SQRT(ACI*ACI+BCI*BCI)
-        T=4.*(BC*BCI+AC*ACI)
+        !A=SQRT(AC*AC+BC*BC)
+        A=SQRT(STORE(JREF_STACK_PTR+13)**2+STORE(JREF_STACK_PTR+15)**2)
+        !S=SQRT(ACI*ACI+BCI*BCI)
+        S=SQRT(STORE(JREF_STACK_PTR+14)**2+STORE(JREF_STACK_PTR+16)**2)
+        T=4.*( STORE(JREF_STACK_PTR+15)*STORE(JREF_STACK_PTR+16) + &
+        &   STORE(JREF_STACK_PTR+13)*STORE(JREF_STACK_PTR+14) )
         C=T*200.0/(2.*FC*FC-T)
         if (ISSPRT .EQ. 0) then 
-            write(NCWU,4600)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,FCEXT,P,WJ,VJ,A,S,T,C,ST
+            write(NCWU,4600)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,FCEXT,P,WJ,VJ,A,S,T,C,sqrt(sST)
         end if
 4600    FORMAT(3X,3F6.0,3F9.1,E13.4,E13.4,F8.1,F8.1,F9.1,F10.1,F10.5)
 !
@@ -2343,29 +2411,29 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
             if(NV .GE. 0) A = A * FCEXT * SCALES / ( 2. * FCEXS )
             LJX=0
             M12=L12O
-            call XADDPD ( A, 0, JO, JQ, JR) 
+            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, store, istore) 
 
             A=W*FCEXS*TC/EXT3       ! OVERALL TEMPERATURE FACTORS NEXT
-            call XADDPD ( A, 1, JO, JQ, JR) 
-            call XADDPD ( A, 2, JO, JQ, JR) 
+            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, store, istore) 
+            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, store, istore) 
  
-            call XADDPD ( ACF, 3, JO, JQ, JR)   ! THE POLARITY PARAMETER
+            call XADDPD ( ACF, 3, JO, JQ, JR, md12a, m12, store, istore)   ! THE POLARITY PARAMETER
 
-            call XADDPD ( ACE, 4, JO, JQ, JR)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
+            call XADDPD ( ACE, 4, JO, JQ, JR, md12a, m12, store, istore)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
 
             A=-0.5*SCALEW*FC*FC*FC*DELTA/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
-            call XADDPD ( A, 5, JO, JQ, JR) 
+            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, store, istore) 
  
             if(LAYER.GE.0) then                 ! CHECK IF LAYER SCALES ARE BEING USED
                 A=W*SCALEO*SCALEB*FCEXT/EXT3
                 M12=L12LS
-                call XADDPD ( A, LAYER, JO, JQ, JR)  ! THE LAYER SCALES
+                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, store, istore)  ! THE LAYER SCALES
             end if
 
             if(IBATCH.GE.0) then           ! CHECK IF BATCH SCALES ARE BEING USED
                 A=W*SCALEO*SCALEL*FCEXT/EXT3
                 M12=L12BS
-                call XADDPD ( A, IBATCH, JO, JQ, JR)  ! THE BATCH SCALES  
+                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, store, istore)  ! THE BATCH SCALES  
             end if
 
             if ( ( NV.GE.0 ) .OR. EXTINCT ) then  ! Either FO^2, or extinction correction required.
@@ -2456,9 +2524,9 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     end if
 
     call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
-    call XACRT(6)  ! ACCUMULATE TOTALS FOR /FC/ 
-    call XACRT(7)  ! AND THE PHASE
-    call XACRT(16)
+    call XACRT(6, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
+    call XACRT(7, minimum, maximum, summation, summationsq, 16)  ! AND THE PHASE
+    call XACRT(16,minimum, maximum, summation, summationsq, 16)
  
     if(SFLS_TYPE .eq. SFLS_CALC) then ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
         tempr=(/1.0, ABS(ABS(FO)-FCEXS), ABS(FO), WDF**2, A**2 /)
@@ -2468,6 +2536,9 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         RALL(7:11) = RALL(7:11) + tempr
     end if
     end do
+!!$OMP END DO
+
+!!$OMP END PARALLEL
 
     do tempstorei=1, storechunk
         if( SFLS_TYPE .EQ. SFLS_CALC ) then
@@ -2499,6 +2570,28 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     tempstoremax=tempstorei-1
 
 END do  ! END OF REFLECTION LOOP
+
+!!!!!!!!!!!!!!!!!!!!!!!!!
+! putting back values in original storage
+iposn=4
+I=IPOSN-1
+J=L6DTL+I*MD6DTL
+STORE(J:J+3) = (/ minimum(iposn), maximum(iposn),summation(iposn), summationsq(iposn) /)
+do iposn=6, 9
+    I=IPOSN-1
+    J=L6DTL+I*MD6DTL
+    STORE(J:J+3) = (/ minimum(iposn), maximum(iposn),summation(iposn), summationsq(iposn) /)
+end do
+iposn=16
+I=IPOSN-1
+J=L6DTL+I*MD6DTL
+STORE(J:J+3) = (/ minimum(iposn), maximum(iposn),summation(iposn), summationsq(iposn) /)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! end big loop
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
 &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
@@ -2631,13 +2724,19 @@ else
 end if
 
 if(SFLS_TYPE .EQ. SFLS_SCALE) then  ! WE ARE TO CALCULATE A NEW SCALE FACTOR HERE
-    BC=0.               
-    if (SFC.GT.ZEROSQ) BC=SFO/SFC
 !6100    CONTINUE. Scale factor shift is wrt F**2, change is necessary.
     if (NV .GE. 0) then   ! REMEMBER THE SHIFT IS IN F**2
-        STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O) + BC)
+        if (SFC.GT.ZEROSQ) then
+            STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O) + SFO/SFC)
+        else
+            STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O))
+        end if
     else
-        STORE(L5O)=STORE(L5O)+BC
+        if (SFC.GT.ZEROSQ) then
+            STORE(L5O)=STORE(L5O) + SFO/SFC
+        else
+            STORE(L5O)=STORE(L5O)
+        end if
     end if
 end if
 
@@ -3374,7 +3473,7 @@ real pii, titmp
 END
 
 !CODE FOR XSFLSX
-subroutine XSFLSX
+subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)
 !
 !--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 !
@@ -3393,26 +3492,26 @@ use sleef
 #endif
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only: store, istore
+!use store_mod, only:
 !include 'XSFWK.INC90'
-use xsfwk_mod, only: tc, st, sst, s, smin, smax, c, bci, bcd, bc, aci, acd, ac, anom, a
+use xsfwk_mod, only: anom
 !include 'XWORKB.INC'
-use xworkb_mod, only: ni, nl, nm, nn, nr, jr, jq, jo, jp, jn
+use xworkb_mod, only: jr, jq, jn ! always constant in xsflsc and read only
 !include 'XSFLSW.INC90'
-use xsflsw_mod, only: sfls_type, sfls_refine, jref_stack_start, jref_stack_ptr
+use xsflsw_mod, only: sfls_type, sfls_refine, jref_stack_start
 use xsflsw_mod, only: cos_only, centro, iso_only, anomal
 !include 'XLST01.INC90'
-use xlst01_mod, only: l1s, l1a
+use xlst01_mod, only: l1s, l1a ! always constant in xsflsc and read only
 !include 'XLST02.INC90'
-use xlst02_mod, only: n2, n2t, md2t, md2i, md2, m2t, m2i, m2, l2t, l2i, l2, g2
+use xlst02_mod, only: n2, n2t, md2t, md2i, md2, l2t, l2i, l2 ! always constant in xsflsc and read only
 !include 'XLST03.INC90'
-use xlst03_mod, only: n3, md3tr, md3ti, m3tr, m3tr, m3ti, l3tr, l3ti
+use xlst03_mod, only: n3, md3tr, md3ti, l3tr, l3ti  ! always constant in xsflsc and read only
 !include 'XLST05.INC90'
-use xlst05_mod, only: n5, md5a, m5a, l5
+use xlst05_mod, only: n5, md5a, l5 ! always constant in xsflsc and read only
 !include 'XLST06.INC90'
-use xlst06_mod, only: m6
+use xlst06_mod, only: m6 ! always constant in xsflsc and read only
 !include 'XLST12.INC90'
-use xlst12_mod, only: n12, m12, md12a, m12a, l12a, l12
+use xlst12_mod, only: n12, l12 ! always constant in xsflsc and read only
 !include 'XUNITS.INC90'
 !
 !include 'QSTORE.INC'
@@ -3421,8 +3520,13 @@ implicit none
 
 real aimag, ap, at, bd, bf, bp, bt, focc, fried, tfocc, t, pshift
 real dd
+real aci, bci
 integer ljs, ljt, lju, ljv, ljw, ljx, ljy, ljz
 integer n, j
+
+! moved from common blocks to local
+integer JREF_STACK_PTR, ni, m2, m2t, m2i, m3ti, m3tr, m5a, m12a, l12a
+real st, s, c, a
 
 real FLAG
 LOGICAL ATOM_REFINE
@@ -3434,9 +3538,15 @@ DOUBLE PRECISION DSIZE, DDECLINA, DAZIMUTH
 
 real ALPD(14),BLPD(14)   ! Use local arrays for better optimisation?
 
-! Some constants for chebychev approx.
-
 integer ISTACK
+
+real, intent(out) :: ACD, BCD, tc, sst
+real, intent(inout) :: smin, smax, bc, ac
+real, dimension(:), intent(inout) :: store
+integer, dimension(:), intent(inout) :: istore
+integer, intent(inout) :: nn, nm, m12, md12a
+integer, intent(in) :: nl, nr, jo, jp
+real, intent(in) :: g2
 
 #if defined(_GIL_) || defined(_LIN_) 
 real, dimension(2) :: scb
@@ -3750,51 +3860,20 @@ do LJY=1,N5
 #if defined(_GIL_) || defined(_LIN_) 
         c = mod(a,2.0*3.14159265359)
         call sleef_sincosf(c, scb)          
+! s = Sin(h'x+ht)
         s=scb(1)
+!c c = Cos(h'x+ht)
         c=scb(2)
 #else
+!c c = Cos(h'x+ht)
         c = cos(a)
+! s = Sin(h'x+ht)
         s = sin(a)
 #endif
-!          A=A*DD
-!          A=4.*(A-FLOAT(INT(A)))
-!          if(A .EQ. 0) then
-!            S=0.
-!            C=1.
-!            GOTO 8850
-!          else if ( A .LT. 0 ) then
-!            A=A+4.
-!          end if
-!          S=1.
-!
-!          if(A.EQ.2.)THEN
-!            S=0.
-!            C=-1.
-!            GOTO 8850
-!          else if ( A .GT. 2 ) then 
-!            S=-1.
-!            A=A-2.
-!          end if
-!          C=S
-!
-!          if(A.EQ.1.)THEN 
-!            C=0.
-!            GOTO 8850
-!          else if ( A .GT. 1 ) then
-!            C=-C
-!            A=2.-A
-!          end if
-!          B=A*A
-!c
-!c c = Cos(h'x+ht)
-!          C=C*(C0+B*(C1+B*(C2+B*C3)))
 !c
 !c Test if  centro with no refinement  -  only cos terms needed
         if(.not. COS_ONLY) then 
 !c
-! s = Sin(h'x+ht)
-!          S=S*A*(S0+B*(S1+B*(S2+B*S3)))
-!
 !--CALCULATE THE B CONTRIBUTION
             BP=S*TFOCC
             BT=BT+BP
@@ -3853,7 +3932,7 @@ do LJY=1,N5
 !-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
                     if (NINT(FLAG) .LE. 1) then
 !--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR THE ANISO-TERMS
-                        BLPD(6:11)=BLPD(6:11)+STORE(M2T+4:9)*BP
+                        BLPD(6:11)=BLPD(6:11)+STORE(M2T+4:M2T+9)*BP
                     else
 !-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                         BLPD(6)=BLPD(6)+TC*BP
@@ -4020,7 +4099,7 @@ end if
 END
 
 !CODE FOR XAB2FC
-subroutine XAB2FC
+subroutine XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)
 !--CONVERSION OF THE A AND B PARTS INTO /FC/ TERMS
 !
 !  ICONT  SET TO THE return ADDRESS
@@ -4028,16 +4107,17 @@ subroutine XAB2FC
 !  JP     LAST WORD OF THE ABOVE AREA
 !  JREF_STACK_PTR     ADDRESS OF THIS REFLECTION IN THE STACK
 
+! all module variables used here are read only
+
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only:store, istore
+!use store_mod, only:store, istore
 !include 'XSFWK.INC90'
-use xsfwk_mod, only: sinp, cosp, scalew, p, fc, enant, cenant, bcd, bci, bcn, bct, bc
-use xsfwk_mod, only: act, acn, aci, acf, ace, acd, ac
+use xsfwk_mod, only: enant, cenant ! constant in xsflc
 !include 'XWORKB.INC'
-use xworkb_mod, only: jp, jo, jn, jq
+use xworkb_mod, only: jn, jq ! constant in xsflc
 !include 'XSFLSW.INC90'
-use xsflsw_mod, only: sfls_type, sfls_refine, jref_stack_ptr, enantio, centro, anomal
+use xsflsw_mod, only: sfls_type, sfls_refine, enantio, centro, anomal ! constant in xsflc
 !include 'XLST06.INC90'
 use xconst_mod, only: zero, twopi
 
@@ -4046,7 +4126,14 @@ implicit none
 !include 'QSTORE.INC'
 
 real cosa, cospn, fcsq, fesq, fn, fnsq, fp, fried, pshift
-real sina, sinpn, temp
+real sina, sinpn, temp, sinp, cosp, aci, bci, bc, ac
+real, intent(out) :: fc, p
+real, intent(inout) :: act, bct, acn, bcn, ace, acf
+real, dimension(:), intent(inout) :: store
+integer, dimension(:), intent(inout) :: istore
+real, intent(in) :: scalew
+integer, intent(in) :: jp, jo, jref_stack_ptr
+real, intent(in) :: acd, bcd
 integer j, ljs, n
 
 !--FETCH A AND B ETC. FROM THE STACK
@@ -4056,6 +4143,7 @@ BC=STORE(JREF_STACK_PTR+15)
 BCI=STORE(JREF_STACK_PTR+16)
 PSHifT=STORE(JREF_STACK_PTR+11)
 FRIED=STORE(JREF_STACK_PTR+12)
+
 ACT=AC+ACI*FRIED+ACT
 BCT=BC*FRIED+BCI+BCT
 
@@ -4092,6 +4180,8 @@ else
     FNSQ = FCSQ
 end if
 
+! these are used in test2.tst
+! program crashes if they are not set
 STORE(JREF_STACK_PTR+6) = FC
 STORE(JREF_STACK_PTR+7) = P
 
@@ -4147,19 +4237,25 @@ end if
 END
 
 
-subroutine XADDPD ( A, JX, JO, JQ, JR) 
+subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore) 
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only: store, istore
+!use store_mod, only: store, istore
 !include 'XLST12.INC90'
-use xlst12_mod, only: md12a, m12, l12a
+!use xlst12_mod, only: md12a, m12
 implicit none
 !include 'QSTORE.INC'
 
 real, intent(in) :: a
 integer, intent(in) :: jx, jo, jq, jr
+integer, intent(inout) :: md12a, m12
+integer, dimension(:), intent(in) :: istore
+real, dimension(:), intent(inout) :: store
 
 integer ljt, lju
+
+! moved from common block to local variable
+integer l12a
 
 !--ROUTINE TO ADD P.D.'S WITH RESPECT TO /FC/ FOR THE OVERALL PARAMETER
 !  A     THE DERIVATIVE TO BE ADDED
