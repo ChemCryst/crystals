@@ -11,13 +11,14 @@ VPATH = $(CAMDIR) $(CRYSDIR) $(GUIDIR) $(WEBCTRLDIR) $(SLEEFDIR)
 CAMFILES = $(notdir $(wildcard $(CAMDIR)/*.F))
 CRYFILES = $(notdir $(wildcard $(CRYSDIR)/*.F))
 #CRYFILES90 = $(notdir $(wildcard $(CRYSDIR)/*.f90))
-CRYFILES90 = mrgrnk.o solve_helper.o 
+CRYFILES90 =  $(notdir $(wildcard $(CRYSDIR)/*.INC.F90)) mrgrnk.f90 solve_helper.F90 service.F90 sfls.F90 
 GUIFILES = $(notdir $(wildcard $(GUIDIR)/*.cc))
 WEBFILES = $(notdir $(wildcard $(WEBCTRLDIR)/*.cpp))
 FSLEEFFILES = $(notdir $(wildcard $(SLEEFDIR)/*.f90))
 CSLEEFFILES = $(notdir $(wildcard $(SLEEFDIR)/*.c))
 
-FOBJ     =  $(patsubst %.o, obj/%.o,  $(notdir $(CAMFILES:.F=.o) $(CRYFILES90:.F90=.o) $(CRYFILES:.F=.o)) )
+FOBJ     =  $(patsubst %.o, obj/%.o, $(patsubst %.f90, %.o, $(patsubst %.F90, %.o, $(notdir $(CRYFILES90)))) $(notdir  $(CAMFILES:.F=.o) $(CRYFILES:.F=.o)) ) 
+
 ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
@@ -50,7 +51,6 @@ all : obj crystals$(SUFFIX)
 
 crystals$(SUFFIX) : $(FOBJ) $(COBJ)
 	$(LD) $(GUIFLAGS) $(FOBJ) $(COBJ) $(GUILIBRARIES) $(OPT) $(LDFLAGS) -o $@
-#	strip $@
 
 obj/resource.o : ../gui/wx.rc
 	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config-2.9 --prefix`/include

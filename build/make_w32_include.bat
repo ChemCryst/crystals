@@ -26,7 +26,7 @@ goto ALLDVF
 @set OUT=-out:
 @set OPT=/O2
 @rem @set OPT=/Zi
-@set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
+@set LIBS=%LIBS% opengl32.lib glu32.lib 
 @set LDEBUG=/Zi
 @rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
@@ -40,8 +40,13 @@ goto ALLDVF
 @
 @set F77=ifort
 @set FDEF=%FDEF%
+<<<<<<< make_w32_include.bat
+@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxS /nolink %COPENMP%
+@set FNOOPT=/fpp /I..\crystals /MD /O0 /nolink
+=======
 @set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /fp:source /nolink %COPENMP%
 @set FNOOPT=/fpp /I..\crystals /MD /O0 /fp:source /nolink
+>>>>>>> 1.16
 @set FWIN=/winapp
 @set FOUT=/object:obj\
 @set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:bounds /check:format /check:overflow /check:pointers /check:uninit  /warn:argument_checking /warn:nofileopt /nolink /traceback /Qtrapuv
