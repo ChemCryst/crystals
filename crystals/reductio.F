@@ -1,4 +1,15 @@
-C $Log: not supported by cvs2svn $
+C $Log: reductio.F,v $
+C Revision 1.55  2013/12/06 12:44:52  djw
+C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
+C by LIST 28 was not compatible with JANA (or any code using more precision).  Also noted that no special
+C care was taken if sigmas not input (see SLANT.OUT) In the absence of sigma, RATIO is set to 3.01, ie
+C all reflections accepted at 3 sigma level
+C
+C Revision 1.54  2013/09/19 21:35:39  rich
+C Change precision of listing output where not important to reduce differences across platforms.
+C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
+C approximations.
+C
 C Revision 1.53  2012/10/25 11:19:45  djw
 C Only write histogram summary statistics for LIST 6 (not 7)
 C
@@ -1277,7 +1288,6 @@ c      STORE(JFO)=STORE(JFO)*TEMP
 CRICmay11 - let's use the proper routine now!
       TEMPFOS = STORE(KREF+12)
       CALL XSQRF(STORE(JFO), TEMPFO, FABS, STORE(KREF+12), TEMPFOS)
-
 C--FIX THE SERIAL AND JCODE
 2050  CONTINUE
       ISTORE(JREF-4)=NINT(STORE(IBUF+18))
@@ -1441,17 +1451,17 @@ C--CHECK IF WE MUST TAKE THE SQUARE ROOT
 3500  CONTINUE
       IF(ISQ)3600,3550,3550
 3550  CONTINUE
-CDJWMAP99[
       CALL XSQRT(STORE(JFO), FSIGN, FABS, STORE(M6+12), SIG)
       STORE(JFO) = FSIGN
       STORE(M6+12) = SIG
 cdjwmay99 - store the goodie in /FO/ as well for twinned
       if (itwin .EQ. 11) store(m6+3) = store(jfo)
-CDJWMAP99]
 C--STORE THE REFLECTION
 3600  CONTINUE
 C----- COMPUTE NEW 'RATIO'
-      STORE(M6+20) = MIN (111.0, STORE(JFO) / (2.*STORE(M6+12)))
+c Oct 2013  Compute RATIO on F^2
+       call xsqrf(fdjw,store(jfo),adjw,sdjw,store(m6+12))
+       store(m6+20) = min(128., (fdjw/sdjw))
       CALL XSLR(1)
 C--ACCUMULATE THE REFLECTION DETAILS INFORMATION
       DO 3650 I=1,MD6

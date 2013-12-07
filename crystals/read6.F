@@ -1,4 +1,17 @@
-C $Log: not supported by cvs2svn $
+C $Log: read6.F,v $
+C Revision 1.40  2013/12/06 12:51:31  djw
+C Oops.
+C
+C Revision 1.39  2013/12/06 12:44:52  djw
+C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
+C by LIST 28 was not compatible with JANA (or any code using more precision).  Also noted that no special
+C care was taken if sigmas not input (see SLANT.OUT) In the absence of sigma, RATIO is set to 3.01, ie
+C all reflections accepted at 3 sigma level
+C
+C Revision 1.38  2013/03/21 19:47:05  rich
+C Stop reading hkl (or any reflection file) upon a record of of all zeroes. This code explicitly
+C checks for and skips blank lines, so that reading doesn't stop there.
+C
 C Revision 1.37  2012/09/19 09:28:14  djw
 C Add a comment explaining why L30DR+0/2/4 are not updated because we do not know if the
 C instrument software has merged the data of not, with or without Friedles Law
@@ -1238,8 +1251,10 @@ C -- CALCULATE RATIO OF (FO)**2 AND SIGMA((FO)**2),IF IT HAS NOT BEEN IN
                STORE(M6+20)=0.0
             ELSE
 cdjwjul09
-               STORE(M6+20)=
-     1     MIN(STORE(JFO)/(2.*STORE(M6+12)),999.)
+c               store(m6+20)= MIN(STORE(JFO)/(2.*STORE(M6+12)),999.)
+c Oct 2013  Compute RATIO on F^2
+                call xsqrf(fdjw,store(jfo),adjw,sdjw,store(m6+12))
+                store(m6+20) = min(128., (fdjw/sdjw))
             END IF
          END IF
 C

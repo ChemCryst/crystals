@@ -362,7 +362,7 @@ _reflns_limit_l_max               19
 _oxford_diffrn_Wilson_B_factor    0.00 
 _oxford_diffrn_Wilson_scale       0.00 
  
-_atom_sites_solution_primary      Other  #heavy,direct,difmap,geom
+_atom_sites_solution_primary      Other  #heavy,direct,difmap,geom,iterative
 # _atom_sites_solution_secondary  difmap
 _atom_sites_solution_hydrogens    difmap
  
@@ -394,9 +394,9 @@ _refine_ls_wR_factor_all          0.2182
  
 # The values computed with a 2 sigma cutoff - a la SHELX 
 _reflns_threshold_expression      I>2.0\s(I)
-_reflns_number_gt                 1018 
-_refine_ls_R_factor_gt            0.0794 
-_refine_ls_wR_factor_gt           0.1986 
+_reflns_number_gt                 1015 
+_refine_ls_R_factor_gt            0.0792 
+_refine_ls_wR_factor_gt           0.1985 
  
 # choose from: rm (reference molecule of known chirality), 
 # ad (anomolous dispersion - Flack), rmad (rm and ad), 
@@ -409,7 +409,7 @@ _refine_ls_matrix_type            full
 _refine_ls_hydrogen_treatment     noref          #undef, noref, refall,
                                                  # refxyz, refU, constr or mixed
  
-# WARNING. The IUCr will not accept Unit Weights 
+# WARNING. The IUCr will not accept pure Unit Weights for F-squared refinements 
 _refine_ls_weighting_scheme       calc 
 _refine_ls_weighting_details 
 ;
