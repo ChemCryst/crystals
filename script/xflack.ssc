@@ -1,0 +1,285 @@
+%SCRIPT XFLACK
+% VARIABLE INTEGER IDJW
+% VARIABLE LOGICAL SOMEERROR SERR
+% VARIABLE CHARACTER CPUNCH
+% EVALUATE CPUNCH = 'NO'
+% VARIABLE INTEGER   IPUNCH
+% EVALUATE SOMEERROR = TRUE
+% EVALUATE SERR = FALSE
+% VARIABLE REAL FILTER1 FILTER2 FILTER3 FILTER4
+% EVALUATE FILTER1 = 0.5                                                      
+% EVALUATE FILTER2 = 1.0                                                      
+% EVALUATE FILTER3 = 2.0 
+% EVALUATE FILTER4 = 0.001
+% IF ( EXISTS 6 ) .NE. 1 THEN
+{E  No reflections have been stored.
+{E  Absolute configuration analysis is not possible.
+%   FINISH
+% ELSE
+%   COPY '#SCRIPT TONSWORK'
+%   IF ( EXISTS 7 ) .NE. 1 THEN
+{E   Reflections could not be re-formatted
+%    FINISH
+%   END IF
+% END IF
+^^WI WINDOW A1 'Absolute Configuration' SIZE LARGE KEEP MODAL
+^^WI CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=8 NCOLS=3
+^^WI {
+^^WI  @ 2,2 GRID TOP NROWS=1 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 TABCTRL _MAINTABS
+^^WI   {
+^^WI    TAB _TAB1 'Do vs Dm' GRID _MAINTG2 NROWS=3 NCOLS=3
+^^WI    {
+^^WI          @ 2,2 RESIZE _XARSZ2 VERTICAL
+^^WI          {
+^^WI            ITEM GRID GRAPH NROWS=3 NCOLS=1
+^^WI            {
+^^WI              @ 1,1 GRID EXP2 NROWS=3 NCOLS=1 OUTLINE=' '
+^^WI              {                                                                       
+^^WI               @ 1,1 STATIC XFW1                                                      
+^^WI               "Anomalous Difference Plot"                
+^^WI               @ 2,1 STATIC XFW2                                                      
+^^WI                'The pints should lie in a line of unit gradient'    
+^^WI               @ 3,1 STATIC XFW3                                                      
+^^WI               'A gradient of -1 indicates the model needs inverting'
+^^WI              }                                                                       
+^^WI              @ 2,1 PLOTWINDOW _VDO NROWS=20 NCOLS=48
+^^WI              @ 3,1 GRID RB NROWS=1 NCOLS=2
+^^WI              {
+^^WI                 @ 1,1 STRETCH VB HORIZONTAL
+^^WI                 @ 1,2 BUTTON SAVEVDO 'Save Image'
+^^WI              }
+^^WI            }
+^^WI            ITEM GRID GRAPH NROWS=3 NCOLS=1
+^^WI            {
+^^WI              @ 1,1 GRID EXP2 NROWS=3 NCOLS=1 OUTLINE=' '
+^^WI              {                                                                       
+^^WI               @ 1,1 STATIC XFW1                                                      
+^^WI               "Flacks 2Ao/Am plot"                
+^^WI               @ 2,1 STATIC XFW2                                                      
+^^WI                'The green Do points should lie on the '    
+^^WI               @ 3,1 STATIC XFW3                                                      
+^^WI               'same line as the red 2Ao points'  
+^^WI              }                                                                       
+^^WI              @ 2,1 PLOTWINDOW _VAO NROWS=20 NCOLS=64
+^^WI              @ 3,1 GRID RB NROWS=1 NCOLS=2
+^^WI              {
+^^WI                 @ 1,1 STRETCH VB HORIZONTAL
+^^WI                 @ 1,2 BUTTON SAVEVAO 'Save Image'
+^^WI              }
+^^WI            }
+^^WI          }
+^^WI    }
+^^WI    TAB _TAB2 'NPP and Histogram' GRID _MAINTG2 NROWS=3 NCOLS=3
+^^WI    {
+^^WI          @ 2,2 RESIZE _XARSZ2 VERTICAL
+^^WI          {
+^^WI            ITEM GRID GRAPH NROWS=3 NCOLS=1
+^^WI            {
+^^WI              @ 1,1 GRID EXP2 NROWS=3 NCOLS=1 OUTLINE=' '
+^^WI              {                                                                       
+^^WI               @ 1,1 STATIC XFW1                                                      
+^^WI               "Normal Probability Plot"                
+^^WI               @ 2,1 STATIC XFW2                                                      
+^^WI               'Plot should be a straight line with unit gradient'    
+^^WI               @ 3,1 STATIC XFW3                                                      
+^^WI               'Extreme ends may contain a few outliers'  
+^^WI              }                                                                       
+^^WI              @ 2,1 PLOTWINDOW _VNPP NROWS=20 NCOLS=48
+^^WI              DEFINEPOPUPMENU POPUP 'Selection'
+^^WI              ITEM _SDELA '&Omit _L' 'OMIT_N_L'
+^^WI              @ 3,1 GRID RB NROWS=1 NCOLS=2
+^^WI              {
+^^WI                 @ 1,1 STRETCH VB HORIZONTAL
+^^WI                 @ 1,2 BUTTON SAVEVNPP 'Save Image'
+^^WI              }
+^^WI            }
+^^WI            ITEM GRID GRAPH NROWS=2 NCOLS=1
+^^WI            {
+^^WI             @ 1,1 GRID PRIME NROWS=3 NCOLS=1                                          
+^^WI             {                                                                         
+^^WI               @ 1,1 GRID EXP2 NROWS=3 NCOLS=1 OUTLINE=' '
+^^WI               {                                                                       
+^^WI                @ 1,1 STATIC XFW1                                                      
+^^WI                "Distribution of Flack(x)"                
+^^WI                @ 2,1 STATIC XFW2                                                      
+^^WI 'Both frequency and normalised weight should peak between'    
+^^WI                @ 3,1 STATIC XFW3                                                      
+^^WI ' zero and unity. The extreme bins also contain any outliers'  
+^^WI               }                                                                       
+^^WI              @ 2,1 PLOTWINDOW _VHIST NROWS=20 NCOLS=64                              
+^^WI              @ 3,1 GRID EXBT NROWS=1 NCOLS=2
+^^WI              {     
+^^WI               @ 1,1 STRETCH VB HORIZONTAL
+^^WI               @ 1,2 BUTTON SAVEVHIST 'Save Image'
+^^WI              }
+^^WI             }                                                                         
+^^WI            }
+^^WI          }
+^^WI    }
+^^WI   }
+^^WI  }
+^^WI  @ 4,2 GRID BTNS NROWS=1 NCOLS=11   OUTLINE='Output'
+^^WI  {
+^^WI     @ 1,1 RADIOBUTTON IPUNCHA 'None'
+^^WI            STATE=ON
+^^WI     @ 1,2 RADIOBUTTON IPUNCHB 'Table'
+^^WI            STATE=OFF
+^^WI     @ 1,3 RADIOBUTTON IPUNCHC 'Restrain'
+^^WI            STATE=OFF
+^^WI     @ 1,4 RADIOBUTTON IPUNCHD 'Graph'
+^^WI            STATE=OFF
+^^WI     @ 1,6 STRETCH VB HORIZONTAL
+^^WI     @ 1,7 BUTTON HELP   '&Help'
+^^WI     @ 1,9 BUTTON RF_BXX '&Cancel'
+^^WI     @ 1,11 BUTTON CALC  '&Calculate'
+^^WI  }
+^^WI  @ 6,2 GRID RESLT NROWS=2 NCOLS=2
+^^WI  {
+^^WI               @ 1,1 STATIC HPC 
+^^WI               ' Percentage of data with Flack(x) >-0.5 and <1.5 is '
+^^WI               @ 1,2 STATIC _HIS_PC '0000.0'
+^^WI               @ 2,1 STATIC HPN 
+^^WI               ' Number of reflections with significant weight is '
+^^WI               @ 2,2 STATIC _NREF '0000.0'
+^^WI  }
+^^WI  @ 8,2 GRID REFCON NROWS=2 NCOLS=4 OUTLINE='Reflections Accepted if:'
+^^WI  {                                                                        
+^^WI    @ 1,1 GRID NCYC NROWS=2 NCOLS=3                                          
+^^WI    {                                                                        
+^^WI     @ 2,1 STATIC T2 '/Dm/ > Filter(1)*sigma(Do)'                                             
+^^WI     @ 2,3 EDITBOX NF1                                                        
+%         TRANSFER "^^WI '  " // CHARACTER ( FILTER1 )  // "'" TO DISPLAY         
+^^WI      CHARS=12 REAL                                                          
+^^WI    }                                                                        
+^^WI    @ 1,2 GRID NCYC NROWS=2 NCOLS=3                                          
+^^WI    {                                                                        
+^^WI     @ 2,1 STATIC T3 'Am > Filter(2)*sigma(Ao)'
+^^WI     @ 2,3 EDITBOX NF2                                                        
+%         TRANSFER "^^WI '  " // CHARACTER ( FILTER2 )  // "'" TO DISPLAY         
+^^WI      CHARS=12 REAL                                                          
+^^WI    }                                                                        
+^^WI    @ 1,3 GRID NCYC NROWS=2 NCOLS=3                                          
+^^WI    {                                                                        
+^^WI     @ 2,1 STATIC T4 '/Do/ < Filter(3)*Dm(max)'
+^^WI     @ 2,3 EDITBOX NF3                                                        
+%         TRANSFER "^^WI '  " // CHARACTER ( FILTER3 )  // "'" TO DISPLAY         
+^^WI      CHARS=12 REAL                                                          
+^^WI    } 
+
+
+^^WI    @ 1,4 GRID NCYC NROWS=2 NCOLS=3                                          
+^^WI    {                                                                        
+^^WI     @ 2,1 STATIC T4 'Probability < Filter(4)'
+^^WI     @ 2,3 EDITBOX NF4                                                        
+%         TRANSFER "^^WI '  " // CHARACTER ( FILTER4 )  // "'" TO DISPLAY         
+^^WI      CHARS=12 REAL                                                          
+^^WI    } 
+
+
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+% copy '#ton punch =no plot=yes'
+% copy 'end'
+
+% LOOP
+
+^^?? NF1 TEXT                                                                    
+%    GET NOSTORE SILENT FINAL REAL 'Filter1' '0.5'                          
+%    EVALUATE FILTER1 = VALUE                                                    
+^^?? NF2 TEXT                                                                    
+%    GET NOSTORE SILENT FINAL REAL 'Filter2' '1.0'                          
+%    EVALUATE FILTER2 = VALUE                                                    
+^^?? NF3 TEXT                                                                    
+%    GET NOSTORE SILENT FINAL REAL 'Filter3' '2.0'                          
+%    EVALUATE FILTER3 = VALUE                                                    
+^^?? NF4 TEXT                                                                    
+%    GET NOSTORE SILENT FINAL REAL 'Filter4' '0.001'                          
+%    EVALUATE FILTER4 = VALUE                                                    
+%show filter1 filter2 filter3 filter4
+%%
+%   VERIFY CALC RF_BXX SAVEVDO SAVEVAO SAVEVNPP SAVEVHIST HELP
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   EVALUATE IDJW = VALUE
+%show idjw
+%   CASE VALUE
+%     BLOCK  %CALCULATE%
+%%
+^^??  IPUNCHA STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%       EVALUATE IPUNCH = 0
+%       EVALUATE CPUNCH = 'NO'
+%     END IF
+^^??  IPUNCHB STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%       EVALUATE IPUNCH = 1
+%       EVALUATE CPUNCH = 'TABLE'
+%     END IF
+^^??  IPUNCHC STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%       EVALUATE IPUNCH = 2
+%       EVALUATE CPUNCH = 'REST'
+%     END IF
+^^??  IPUNCHD STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%       EVALUATE IPUNCH = 3
+%       EVALUATE CPUNCH = 'GRAPH'
+%     END IF
+%show filter1 filter2 filter3
+%      TRANSFER '#TON  PLOT=YES ' //  -
+       ' TYPE=DO PUNCH = ' // CPUNCH TO CRYSTALS
+%      TRANSFER 'CONT FILTER1= '  // CHARACTER ( FILTER1 ) // -
+       ' FILTER2= '  // CHARACTER ( FILTER2 ) // -
+       ' FILTER3= '  // CHARACTER ( FILTER3 ) // -
+       ' FILTER4= '  // CHARACTER ( FILTER4 )  - 
+       TO CRYSTALS
+%      COPY 'END'
+%     END BLOCK
+%     BLOCK %CANCEL%
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%        EVALUATE SERR = TRUE
+^^CO DISPOSE A1
+         Script Finished
+%        FINISH
+%     END BLOCK
+%     BLOCK  %SAVEVDO%
+^^CO SET _VDO SAVE 800 600 Do-Dm
+%     END BLOCK
+%     BLOCK  %SAVEVAO%
+^^CO SET _VAO SAVE 800 600 Do-Ao
+%     END BLOCK
+%     BLOCK  %SAVEVNPP%
+^^CO SET _VNPP SAVE 800 600 npp
+%     END BLOCK
+%     BLOCK  %SAVEVHIST%
+^^CO SET _VHIST SAVE 800 600 histogram
+%     END BLOCK
+%     BLOCK  %HELP%
+%        COPY '#SCRIPT XHELP1'
+
+Help text
+
+%        COPY '#SCRIPT XHELP2'
+%     END BLOCK
+%   END CASE
+% END LOOP
+
+% IF SERR .EQ. TRUE THEN
+^^CO DISPOSE A1
+{E An error of some type has occured
+{E This script will end
+%   FINISH
+% END IF
+% END SCRIPT
