@@ -1,0 +1,4 @@
+This is a straight-forward medium-sized organic structure. Crystal
+was supplied by Dr. Jo Peach of the DP lab in Oxford.
+
+Input files: peach.hkl and peach.ins

@@ -1,0 +1,6 @@
+These crystals grew as coaxially aligned aggregates of needles
+(Smith, A., PhD thesis, Edinburgh 2000). The structure will
+solve in Sir92 and ROTAX will find the twin-law which should
+effect all reflections where h=3n.
+Data kindly supplied by Dr. Simon Parsons in Edinburgh.
+

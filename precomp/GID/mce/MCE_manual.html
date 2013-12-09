@@ -1,0 +1,566 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1250">
+<meta name=Generator content="Microsoft Word 11 (filtered)">
+<title>1</title>
+
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h1
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:18.0pt;
+	text-align:justify;
+	text-indent:-18.0pt;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	font-family:Arial;}
+h2
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:39.6pt;
+	text-align:justify;
+	text-indent:-21.6pt;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p.iucrbodytextnoindent, li.iucrbodytextnoindent, div.iucrbodytextnoindent
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:1.0pt;
+	margin-left:0cm;
+	text-align:justify;
+	line-height:150%;
+	punctuation-wrap:simple;
+	text-autospace:none;
+	font-size:11.0pt;
+	font-family:"Times New Roman";
+	color:black;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple>
+
+<div class=Section1>
+
+<h1>1.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp; </span>Introduction</h1>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Program MCE is destined for voxel map, atom, molecule or
+crystallographic data visualization. MCE supports placing atoms into the voxel
+map. Placed atoms can be exported as asci file with atoms coordinates. </p>
+
+<p class=MsoNormal>The code is written in Microsoft Visual C++. MFC library and
+OpenGL library was used. MCE works on any WIN32 based OS. </p>
+
+<p class=MsoNormal><span lang=CS>MCE runs on PC with at least a Pentium-class
+or equivalent processor. This code does not need special device or special PC
+configuration. For </span>most of the work suffice CPU on 1000MHz, 256MB RAM
+and 3D graphic card with OpenGL HW accelerator.</p>
+
+<p class=MsoNormal>For more details see references in Menu-&gt;Help-&gt;”About
+MCE”</p>
+
+<h1>2.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp; </span>File
+format support</h1>
+
+<h2><a name="_Ref195263604">2.1.</a><span style='font-size:7.0pt;font-family:
+"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Input file
+formats</h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>MCE can read files from different crystallographic or other
+software:</p>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal>Oxford CRYSTALS</li>
+ <li class=MsoNormal>SHELX/<span lang=CS>WinGX</span></li>
+ <li class=MsoNormal><span lang=CS>GSAS </span></li>
+ <li class=MsoNormal><span lang=CS>XD</span></li>
+ <li class=MsoNormal><span lang=CS>JANA2006.</span></li>
+</ul>
+
+<h2>2.2.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>output file formats</h2>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal>pov-ray: *.pov</li>
+ <li class=MsoNormal>bitmap: *.bmp</li>
+ <li class=MsoNormal>VRML: *.wrl</li>
+ <li class=MsoNormal>Peak list: asci file with atoms coords</li>
+</ul>
+
+<h1>3.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp; </span>Menu</h1>
+
+<h2>3.1.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>File</h2>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal><b>Open Primary Model:</b> See 2.1 for supported file
+     formats.</li>
+ <li class=MsoNormal><b>Open Secondary Model:</b> MCE can read second map. The
+     second map must meet some requirements: First and second map must have the
+     same number of lines, columns and sections! Note: if you load first and
+     second map, atoms from first map are used. You can load for example
+     difference map with void map, etc.</li>
+ <li class=MsoNormal><b>Save BMP:</b> It is possible to save screen as bitmap
+     picture. </li>
+ <li class=MsoNormal><b>Save POV-ray input: </b>Pov-ray is a special file
+     format, which enables scene rendering. For more details visit <a
+     href="http://www.povray.org/">http://www.povray.org/</a></li>
+ <li class=MsoNormal><b>Save VRML input:</b> VRML is file format, which enables
+     to visualize scene in other programs.</li>
+ <li class=MsoNormal><b>Save Peaks:</b> It saves placed (gold) atoms
+     coordinates into the asci file.</li>
+</ul>
+
+<h2>3.2.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Edit</h2>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal><b>Add new peak:</b> If MCE is in “add-atom mode” you can
+     place a gold atom by clicking right-mouse button. It is possible to change
+     its position, use right-mouse button again. If you place it to the correct
+     position, you can add this atom using this (“Add new peak”) menu item.
+     After this you can place another atom.</li>
+ <li class=MsoNormal><b>Clear peak list:</b> It deletes all added gold atoms. </li>
+ <li class=MsoNormal><b>Save map settings: </b>This item saves map iso-levels.
+     If you load another map, it will start this map with saved iso-levels.
+     (See 3.3 “Display style” how to enable this functionality).</li>
+</ul>
+
+<h2><a name="_Ref195272807">3.3.</a><span style='font-size:7.0pt;font-family:
+"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Preference</h2>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal><b>Amination: </b>Drag and move - scene will then rotate</li>
+ <li class=MsoNormal><b>General setup: </b>It changes projection mode
+     (perspective or orthographic) and picking mode (2D or 3D). Note: If you
+     draw 2D map (how to draw 2D map see 3.5) and if you want to place the gold
+     atom, you should change picking mode to 2D!</li>
+ <li class=MsoNormal><b>Display style: </b>In this window it is possible to
+     change how to show atoms, bonds, maps, unit cell, etc. Be careful if you
+     want to change ball or <span lang=CS>cylindre</span> size or resolution. </li>
+ <ul style='margin-top:0cm' type=circle>
+  <li class=MsoNormal>In ELD map display style it is possible to check “<b>use
+      previous map settings</b>”. If you want to load several similar maps one
+      after another, you can check this setting. It means that if you load some
+      map and you press “Save map settings”, it saves maps iso-levels. After
+      this, if you load another map, it starts this map with saved iso-levels.</li>
+  <li class=MsoNormal><b>Data type: </b>If you check organic it will not
+      calculate inter molecules bonds. </li>
+ </ul>
+ <li class=MsoNormal><b>Color settings:</b> In this window it is possible to
+     change background color and primary and secondary map color.</li>
+ <li class=MsoNormal><b>Periodic table:</b> It shows periodic table. </li>
+ <ul style='margin-top:0cm' type=circle>
+  <li class=MsoNormal><b>Left mouse click:</b> change color</li>
+  <li class=MsoNormal><b>Right mouse click: </b>change atoms properties</li>
+ </ul>
+ <li class=MsoNormal><b>Add-atom mode:</b> In this mode it is possible to use
+     right mouse click for placing an atom to the map</li>
+ <li class=MsoNormal><b>Info mode:</b> In this mode it is possible to use right
+     click to select some molecule. Note: if you select some molecule, you can
+     delete it. Press “d” for deleting.</li>
+</ul>
+
+<h2>3.4.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Tools</h2>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal><b>SG setup: </b>If you load file with crystallographic
+     information, you can select the correct space group. It is possible to
+     draw several unit cells together - use “from” and “to” edit boxes. </li>
+</ul>
+
+<h2><a name="_Ref195271416">3.5.</a><span style='font-size:7.0pt;font-family:
+"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>View</h2>
+
+<ul style='margin-top:0cm' type=disc>
+ <li class=MsoNormal><b>Level control primary map:</b> If you load some map,
+     you can change its properties and isolevel in this window. It is possible
+     to visualize map as contour lines, surface or its combination. Use scroll
+     bars to set the isolevel which you want to display or set the correct
+     number to the “layer value” edit box (mostly faster). If you want to show
+     2D map, tick the 2D map check box and select “height”. If you want to
+     place atom to the 2D map see 3.3 “General Setup” and 3.2 how to do it.
+     Note: You can place atom to the red map only! If you want to change maps
+     colors see 3.3 “Color Settings”.</li>
+ <li class=MsoNormal><b>Level control secondary map:</b> If you load secondary
+     map, you can change map properties see “level control primary map”.</li>
+</ul>
+
+<h1>4.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp; </span>Examples</h1>
+
+<h2>4.1.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Loading primary map and map setting – CsE </h2>
+
+<p class=MsoNormal>(Default in “Program
+files\ICT\MCE\Examples\Crystals\CsE.fou”)</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>1. Load CsE.fou file</p>
+
+<p class=MsoNormal><img border=0 width=468 height=282
+src="MCE_manual_soubory/image001.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>2.</p>
+
+<p class=MsoNormal><img border=0 width=468 height=381
+src="MCE_manual_soubory/image002.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>3. MCE shows CsE file.</p>
+
+<p class=MsoNormal><img border=0 width=480 height=334
+src="MCE_manual_soubory/image003.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>4. If you want to change map settings use
+menu-&gt;View-&gt;”Level control primary map” </p>
+
+<p class=MsoNormal>or use <img border=0 width=23 height=22
+src="MCE_manual_soubory/image004.jpg">&nbsp;icon on toolbar </p>
+
+<p class=MsoNormal><span lang=CS><img border=0 width=170 height=384
+src="MCE_manual_soubory/image005.jpg"></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>5. Change map isolevel. </p>
+
+<p class=MsoNormal><img border=0 width=702 height=544
+src="MCE_manual_soubory/image006.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2>4.2.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Loading Primary and secondary map, change map properties and color
+settings</h2>
+
+<p class=MsoNormal style='margin-left:18.0pt'>(Default in “Program
+files\ICT\MCE\Examples\Crystals\Primary_model.fou”)</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>1. Load Primary model:</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=468
+height=282 src="MCE_manual_soubory/image001.jpg"></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>2.</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS><img border=0
+width=464 height=344 src="MCE_manual_soubory/image007.jpg"></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>3. Primary map loaded</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><img border=0 width=463
+height=344 src="MCE_manual_soubory/image008.jpg">&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>4. Load Secondary map</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS><img border=0
+width=462 height=343 src="MCE_manual_soubory/image009.jpg"></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>5.</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS><img border=0
+width=461 height=341 src="MCE_manual_soubory/image010.jpg"></span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>6. Primary and secondary maps
+loaded</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>Primary map is electron density
+and secondary map is void map</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><img border=0 width=465
+height=345 src="MCE_manual_soubory/image011.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>7. Use menu-&gt;View-&gt;”Level control primary map” or use <img
+border=0 width=23 height=22 src="MCE_manual_soubory/image004.jpg">&nbsp;icon on
+toolbar and menu-&gt;View-&gt;”Level control secondary map” or use <span
+lang=CS><img border=0 width=24 height=21 src="MCE_manual_soubory/image012.jpg"></span>&nbsp;icon
+on toolbar.</p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Uncheck Layer1 in primary map – green map is dumb…</p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Check Contour&amp;Surface in Secondary map – it shows the first layer (Layer 1)
+as surface and Layer1, Layer2 and Layer3 as contour maps. </p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Check Reverse normals – it paints surface inside.</p>
+
+<p class=MsoNormal style='text-indent:35.4pt'>UnCheck Layer2 and Layer3 – it is
+now more synoptical.</p>
+
+<p class=MsoNormal>This picture now shows solvent butan-2-ol in void space in
+the crystal structure of CsE.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS><img border=0
+width=595 height=338 src="MCE_manual_soubory/image013.jpg"></span></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h2>4.3.<span style='font-size:7.0pt;font-family:"Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Placing atoms into the map</h2>
+
+<ol style='margin-top:0cm' start=1 type=1>
+ <li class=MsoNormal>load primary and secondary map (use prim_4_3.fou-primary
+     and sec_4_3.fou-secondary files)</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'>red, green, blue – eld map</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>yellow, cyan and violet – void
+map</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=469
+height=333 src="MCE_manual_soubory/image014.jpg"></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<ol style='margin-top:0cm' start=2 type=1>
+ <li class=MsoNormal>Open primary map control and set properties</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=529
+height=374 src="MCE_manual_soubory/image015.jpg"></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<ol style='margin-top:0cm' start=3 type=1>
+ <li class=MsoNormal>Open secondary map control and set properties</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS><img border=0
+width=526 height=371 src="MCE_manual_soubory/image016.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<ol style='margin-top:0cm' start=4 type=1>
+ <li class=MsoNormal>Find green peaks in the void space as show the picture</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=522
+height=369 src="MCE_manual_soubory/image017.jpg"></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<ol style='margin-top:0cm' start=5 type=1>
+ <li class=MsoNormal>Set the red map (primary map, Layer3).</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:35.4pt'>If you want to place atoms to the
+map, primary-Layer3 must be present!</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS><img border=0
+width=531 height=374 src="MCE_manual_soubory/image018.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<ol style='margin-top:0cm' start=6 type=1>
+ <li class=MsoNormal>Click on some peak in the map (use right mouse button) and
+     place gold atom. Repeat right click until the gold atom is in the correct
+     position.</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'>Right click places atoms to the
+maximum!!! Not to the minimum… For placing atoms to the other places use 2D map
+picking.</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=534
+height=377 src="MCE_manual_soubory/image019.jpg"></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<ol style='margin-top:0cm' start=7 type=1>
+ <li class=MsoNormal>If you find the position correct select
+     menu-&gt;Edit-&gt;”Add new peak”</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS><img border=0
+width=537 height=379 src="MCE_manual_soubory/image020.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<ol style='margin-top:0cm' start=8 type=1>
+ <li class=MsoNormal><span lang=CS>Repeat step 6. and 7. to place all gold
+     atoms to the map</span></li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=540
+height=382 src="MCE_manual_soubory/image021.jpg"></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<ol style='margin-top:0cm' start=9 type=1>
+ <li class=MsoNormal>If you think that these positions are incorrect, select
+     menu-&gt;Edit-&gt;”Clear peak list”. It erases all gold atoms.</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS><img border=0
+width=544 height=384 src="MCE_manual_soubory/image022.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<ol style='margin-top:0cm' start=10 type=1>
+ <li class=MsoNormal>If you have problem with placing atoms to the map, you can
+     use 2D picking. Set in menu-&gt;preferences-&gt;”General setup” 2D picking</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS><img border=0
+width=545 height=386 src="MCE_manual_soubory/image023.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>11. Open “Level control primary
+map”. Set 2D map and set the correct height of 2D map. </p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><span lang=CS><img border=0
+width=549 height=387 src="MCE_manual_soubory/image024.jpg"></span></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>13. Now, you can place atoms to
+the 2D map. This setting allows you to place atoms anywhere in the 2D map.</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=553
+height=391 src="MCE_manual_soubory/image025.jpg"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>14. If you think, you placed
+atoms correctly, you can export theirs coordinates. File-&gt;”Save peak list”</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS><img border=0
+width=554 height=390 src="MCE_manual_soubory/image026.jpg"></span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS>15. file output:</span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>#EDIT</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>ATOM Q&nbsp; 1&nbsp;&nbsp;
+X=&nbsp; 0.921841&nbsp; Y=&nbsp; 0.254516&nbsp; Z=&nbsp; 0.873093 </p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>ATOM Q&nbsp; 1&nbsp;&nbsp;
+X=&nbsp; 0.941712&nbsp; Y=&nbsp; 0.185850&nbsp; Z=&nbsp; 0.830249 </p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>ATOM Q&nbsp; 1&nbsp;&nbsp;
+X=&nbsp; 1.044382&nbsp; Y=&nbsp; 0.186113&nbsp; Z=&nbsp; 0.790634 </p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>END</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>&nbsp;</p>
+
+<h2 style='margin-left:39.75pt;text-indent:-21.75pt'>4.4<span style='font-size:
+7.0pt;font-family:"Times New Roman"'> </span>&nbsp;Use previous maps iso-levels
+and maps settings</h2>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>1. &nbsp;Use example 4.2 to set
+maps iso-levels and settings as shows the picture:</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS><img border=0
+width=595 height=338 src="MCE_manual_soubory/image013.jpg"></span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS>&nbsp;</span></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><span lang=CS>2. Menu-</span>&gt;Preferences-&gt;Display
+style. Check “Use previous map settings”</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'><img border=0 width=596
+height=453 src="MCE_manual_soubory/image001_a.jpg"></p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>&nbsp;</p>
+
+<ol style='margin-top:0cm' start=3 type=1>
+ <li class=MsoNormal>Menu-&gt;Edit-&gt;Save map settings</li>
+</ol>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<ol style='margin-top:0cm' start=4 type=1>
+ <li class=MsoNormal>Load another map or close MCE and load another map. Map(s)
+     will be loaded with saved settings.</li>
+</ol>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:18.0pt'><img border=0 width=595
+height=453 src="MCE_manual_soubory/image002_a.jpg"></p>
+
+<p class=MsoNormal style='margin-left:18.0pt'>&nbsp;</p>
+
+<p class=MsoNormal style='text-indent:18.0pt'>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

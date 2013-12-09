@@ -1,0 +1,9 @@
+Crystals of B10F12. Suffers from merohedral twinning, but
+solves easily in Sir92. Spacegroup is I 41/a
+Data kindly supplied by Dr Simon Parsons, Edinburgh.
+
+(If you can't be bothered to work out the twin law, it's
+
+       0  1  0
+       1  0  0
+       0  0 -1

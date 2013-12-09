@@ -1,0 +1,24 @@
+#VRML V1.0 ascii
+Separator {
+DEF SceneInfo Info { 
+string "MCE" 
+} 
+DEF Title Info {  
+string "MCE document" 
+} 
+DEF MCE Info { 
+string "examiner" 
+} 
+# Default Settings 
+NormalBinding { value PER_VERTEX_INDEXED } 
+MaterialBinding { value OVERALL } 
+ShapeHints { 
+vertexOrdering UNKNOWN_ORDERING 
+shapeType UNKNOWN_SHAPE_TYPE 
+faceType CONVEX 
+} 
+
+//Declaration of parameters
+
+//END
+

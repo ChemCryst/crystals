@@ -1,0 +1,87 @@
+#title arc110 KCCD data
+#close printer
+#open printer ccdin.lis
+#list 1
+real a = 8.8729 b = 8.8729 c = 8.8729
+continue alpha = 90 beta = 90 gamma = 90
+end
+#list 31
+amult  0.00000001
+matrix      9 0 0 0 0 0
+cont          9 0 0 0 0
+cont            9 0 0 0
+cont              0 0 0
+cont                0 0
+cont                  0
+end
+#spacegroup
+symbol p -4 3 n
+end
+#composition
+content c 10 h 20 ga 6 o 24 p 6 
+scattering crysdir:script\scatt.dat
+properties crysdir:script\properti.dat
+end
+# ===================================
+# true cell contents are:
+# c 8 h 20 ga 4 n 2 o 24 p 6 zn 2
+# ===================================
+#list 13
+crystal friedel = yes
+conditions wavelength = 0.71073
+end
+#open hkli zngapo.hkl
+#list 6
+read ncoef = 5 type = fixed unit = hkli f's = fsq
+format (3F4.0, 2F8.2)
+input h k l /fo/ sigma(/fo/)
+end
+#close hkli
+#systematic
+#sort
+#merge
+#list 28
+minima ratio = 3
+end
+#list 30
+datred nrefmes = 3169 reduction=denzo
+continue nrefmerg = 358 rmerge = 0.039
+cont nreffried = 0 rmergfried = 0
+conditions minsize = 0.10 medsize = 0.15 maxsize = 0.15
+cont norient = 3169 thorientmin = 5.0 thorientmax = 27.5
+cont temperature = 120 standards = 0 interval = 0 count = 0 decay = 0
+cont scanmode = omega instrument = Kappaccd
+indexrange thetamin = 5.0 thetamax = 27.5
+general z = 2
+colour colourless
+shape block
+absorption abstype = multi-scan
+end
+#list      5                                                                    
+read natom =      4, nlayer =    0, nelement =    0, nbatch =    0
+overall    0.480297  0.050000  0.050000  1.000000  0.000000         0.0000000
+atom ga      1.000000   1.000000   0.000000   0.750000   0.500000   0.000000
+con u[11]=   0.006482   0.008195   0.008195   0.000000   0.000000   0.000000
+con spare=       0.25          0          0          0          0
+atom p       1.000000   1.000000   0.000000   0.500000   0.250000   0.000000
+con u[11]=   0.010206   0.003605   0.010206   0.000000   0.000000   0.000000
+con spare=       0.25          0          0          0          0
+atom o       1.000000   1.000000   0.000000   0.627457   0.346527  -0.067000
+con u[11]=   0.017231   0.011409   0.017128  -0.002305   0.003822  -0.009134
+con spare=       1.00          0          0          0          0
+atom c       1.000000   5.000000   2.000000   0.500000   0.500000   0.500000
+con u[11]=   0.048403   1.264395   0.000000   0.000000   0.000000   0.000000
+con spare=       0.08          0          0          0          0
+end                                                                             
+#list     12
+full ga(1,u's) until p(1) 
+cont o(1,x's,u's) 
+cont c(1,u[iso],size) 
+end                                                                             
+#sfls
+r
+end
+#close printer
+#open printer betacrys.lis
+#use last
+
