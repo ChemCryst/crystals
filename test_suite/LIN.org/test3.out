@@ -436,32 +436,32 @@ Space group symbol is   P    1
  Record -104    LGRP   33  NGRP      9   DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK                       
 
 
-     0.19712E+06    0.40000E+01    0.00000E+00    0.00000E+00    0.30000E+02    0.00000E+00    0.50000E+01    0.10000E+01
+     0.19712E+06    0.40000E+01    0.00000E+00    0.00000E+00    0.30000E+02    0.40000E+02    0.50000E+01    0.10000E+01
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.52609E+06    0.90000E+01    0.00000E+00    0.00000E+00    0.30000E+02    0.00000E+00    0.10000E+02    0.10000E+01
+     0.52609E+06    0.90000E+01    0.00000E+00    0.00000E+00    0.30000E+02    0.50000E+02    0.10000E+02    0.10000E+01
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.85505E+06    0.14000E+02    0.00000E+00    0.00000E+00    0.30000E+02    0.00000E+00    0.15000E+02    0.10000E+01
+     0.85505E+06    0.14000E+02    0.00000E+00    0.00000E+00    0.30000E+02    0.50000E+02    0.15000E+02    0.10000E+01
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.15130E+07    0.24000E+02    0.00000E+00    0.25000E+02    0.30867E+02    0.00000E+00    0.50000E-04    0.10000E+01
+     0.15130E+07    0.24000E+02    0.00000E+00    0.25000E+02    0.30867E+02    0.30000E+03    0.50000E-04    0.10000E+01
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.21709E+07    0.34000E+02    0.00000E+00    0.35000E+02    0.34584E+02    0.00000E+00    0.50000E-04    0.10000E+01
+     0.21709E+07    0.34000E+02    0.00000E+00    0.35000E+02    0.34584E+02    0.30000E+03    0.50000E-04    0.10000E+01
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.28288E+07    0.44000E+02    0.00000E+00    0.45000E+02    0.32018E+02    0.00000E+00    0.50000E-04    0.10000E+01
+     0.28288E+07    0.44000E+02    0.00000E+00    0.45000E+02    0.32018E+02    0.30000E+03    0.50000E-04    0.10000E+01
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
@@ -582,7 +582,7 @@ Space group symbol is   P    1
   FACTOR1         No details available
   FACTOR2         No details available
   FACTOR3         No details available
-  RATIO/JCODE     -0.180000E+03   0.121000E+04   0.443125E+03   0.538011E+03
+  RATIO/JCODE     -0.180000E+03   0.121000E+04   0.443021E+03   0.537850E+03
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -3387,7 +3387,7 @@ Upating List 13 for twinned data
   FO/FC           No details available
   JCODE           No details available
   SERIAL          No details available
-  RATIO           No details available
+  RATIO            0.300100E+01   0.300100E+01   0.300100E+01   0.300100E+01
   THETA           No details available
   OMEGA           No details available
   CHI             No details available
@@ -3398,7 +3398,7 @@ Upating List 13 for twinned data
   FACTOR1         No details available
   FACTOR2         No details available
   FACTOR3         No details available
-  RATIO/JCODE     No details available
+  RATIO/JCODE      0.300000E+03   0.300000E+03   0.300000E+03   0.300000E+03
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -3467,7 +3467,7 @@ Upating List 13 for twinned data
   FO/FC           No details available
   JCODE           No details available
   SERIAL          No details available
-  RATIO           No details available
+  RATIO            0.300100E+01   0.300100E+01   0.300100E+01   0.300100E+01
   THETA           No details available
   OMEGA           No details available
   CHI             No details available
@@ -3478,7 +3478,7 @@ Upating List 13 for twinned data
   FACTOR1         No details available
   FACTOR2         No details available
   FACTOR3         No details available
-  RATIO/JCODE     No details available
+  RATIO/JCODE      0.300000E+03   0.300000E+03   0.300000E+03   0.300000E+03
 
  After     0  Structure factor/refinement calculation(s)
 
