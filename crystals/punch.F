@@ -1,4 +1,10 @@
 C $Log: punch.F,v $
+C Revision 1.81  2013/12/06 12:44:52  djw
+C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
+C by LIST 28 was not compatible with JANA (or any code using more precision).  Also noted that no special
+C care was taken if sigmas not input (see SLANT.OUT) In the absence of sigma, RATIO is set to 3.01, ie
+C all reflections accepted at 3 sigma level
+C
 C Revision 1.80  2012/03/15 12:30:34  djw
 C Fix punch LIST 3  FORMAT statement
 C
@@ -390,7 +396,7 @@ C--LOAD LIST 5
       N=999
       DO 1400 I=1,N5
       ISTORE(M5+1)=NINT(STORE(M5+1))
-      ISTORE(M5+1)=ABS(ISTORE(M5+1))
+      ISTORE(M5+1)=IABS(ISTORE(M5+1))
       IF(ISTORE(M5+1)-1000)1150,1050,1050
 1050  CONTINUE
       ISTORE(M5+1)=N
@@ -1391,10 +1397,11 @@ CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       ELSE
         L31 = -1
       END IF
-C FIND TYPE OF REFINEMENT. 
+C TYPE OF OUTPUT REQUEST. 
 C      KF     0 - F's
 C             1 - F^2's
 C             2 - F^2'S ON SCALE OF FC
+C FIND TYPE OF REFINEMENT. 
 C      KFR =  0 = F
 C             1 = F^2
 C             3 = NO REFINEMENT
@@ -1404,12 +1411,6 @@ C
             KFR = 1 + ISTORE(L23MN+1)
       ELSE
             KFR = 3
-      ENDIF
-      SCALE6 = STORE(L5O)
-C     NOW LOOK FOR THE CASE OF F^2 REFINEMENT, AND OUTPUT ON SCALE OF FC
-      IF((KF .EQ. 2) .AND. (KFR.EQ.1)) THEN
-            KFR = 2
-            SCALWT = SCALE6*SCALE6*SCALE6*SCALE6
       ENDIF
 C
       WRITE(NCFPU1, '(''data_1 '')')
@@ -1463,6 +1464,13 @@ C      WRITE SYMMETRY_INFO
 C
       CALL XCIF2(NCFPU1)
 C
+      SCALE6 = STORE(L5O)
+C     NOW LOOK FOR THE CASE OF F^2 REFINEMENT, AND OUTPUT ON SCALE OF FC
+      IF((KF .EQ. 2) .AND. (KFR.EQ.1)) THEN
+            KFR = 2
+            SCALWT = SCALE6*SCALE6*SCALE6*SCALE6
+      ENDIF
+c
       IF(KF .NE. KFR) WRITE(NCFPU1,'(/A,A/A)')
      1 '# Requested output type does not correspond to refinement',
      2 ' type','# Weights cannot be converted'
@@ -1521,22 +1529,26 @@ C---- GET SIGMA THRESHOLD FROM L28
 c     (sqrt(w) is stored in LIST 6)
       WT = STORE(M6+4)*STORE(M6+4)
 
-      IF (KF .EQ. 2) THEN            !scale of Fcalc
-       FO = STORE(M6+3)/ SCALE6
-       FC = STORE(M6+5)
-       S =  MAX(0.0,STORE(M6+12))/ SCALE6
-       IF(KFR .EQ. 2) WT = WT * SCALWT
-      ELSE                           !scale of Fobs
-       FO = STORE(M6+3)
-       FC = STORE(M6+5) * SCALE6
-       S =  MAX(0.0,STORE(M6+12))
-      ENDIF
 C
-C
+      fo = store(m6+3)
+      S =  MAX(0.0,STORE(M6+12))
+      FC = STORE(M6+5)
+      FCS = FC*FC
       IF ( KF.NE. 0 ) THEN
          CALL XSQRF(FOS, FO, FABS, SIGMA, S)
-         FCS = FC*FC
       END IF      
+c
+      IF (KF .EQ. 2) THEN            !scale of Fcalc
+       FO = STORE(M6+3)/ SCALE6
+       fos = fos/(scale6*scale6)
+       S =  s / SCALE6
+       sigma = sigma/(scale6*scale6)
+       IF(KFR .EQ. 2) WT = WT * SCALWT
+      ELSE                           !scale of Fobs
+       FC = FC * SCALE6
+       fcs = fcs*scale6*scale6
+      ENDIF
+C
 C
       IDJW = KALLOW(IALLOW)
 C
@@ -1561,8 +1573,10 @@ c       Fails sin-theta/lambda test
       IF ( KF.NE. 0 ) THEN
         IF (KFR.EQ. KF) THEN
          WRITE(NCFPU1,1003)I,J,K,FOS,FCS,SIGMA,CALW(IALW), WT
+c     1   ,store(m6+20),fos/sigma,(store(m6+20)*sigma)/fos
         ELSE
          WRITE(NCFPU1,1003)I,J,K,FOS,FCS,SIGMA,CALW(IALW)
+c     1   ,wt,store(m6+20),fos/sigma,(store(m6+20)*sigma)/fos
         ENDIF
       ELSE
         IF (KFR.EQ.KF) THEN
@@ -1571,7 +1585,7 @@ c       Fails sin-theta/lambda test
          WRITE(NCFPU1,1003)I, J, K, FO, FC, S,CALW(IALW)
         ENDIF
       END IF
-1003  FORMAT (3I4,3F12.2,1X,A1,E13.4E2)
+1003  FORMAT (3I4,3F12.2,1X,A1,E13.4E2,3F12.4)
       GOTO 1840
 1850  CONTINUE
       GOTO 9999
