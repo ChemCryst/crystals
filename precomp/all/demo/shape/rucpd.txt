@@ -1,0 +1,30 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This folder contains four CRYSTALS .dsc files, and may be
+used for one of two workshop sections.
+
+{I When running the TLS workshop:
+  the file orig.dsc is copied to crfilev2.dsc and becomes
+  the default structure. This is the data in its original
+  form. No further action is needed.
+
+{I For the special electron density shapes demo:
+  The structures in NEWISO.dsc, NEWANISO.dsc, and NEWRING.dsc
+  are examples of refinement using different models for the
+  electron density in the ring. To access these .dsc files,
+  choose "Open CRYSTALS DSC file" from the "File" menu.
+
+

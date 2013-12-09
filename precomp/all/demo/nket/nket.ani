@@ -1,0 +1,16 @@
+#disk
+extend siz=0
+end
+#EDIT
+RENAME C(1) O(1), C(2) O(2), C(4) O(4), C(6) O(6)
+REN C(3) N(3)
+EX
+END
+#LIST 12
+FULL X'S U'S
+END
+#SFLS
+SCALE
+REFINE
+REFINE
+END

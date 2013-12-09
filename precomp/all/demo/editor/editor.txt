@@ -1,0 +1,7 @@
+This folder contains several example structures in files:
+work1.dat, work2.dat, work3.dat and work4.dat.
+
+Type #use work1.dat to read the first in.
+
+There is an accompanying document explaining how each structure
+can be used to demonstrate certain editing features.

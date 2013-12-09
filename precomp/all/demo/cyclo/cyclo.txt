@@ -1,0 +1,9 @@
+This natty material was supplied as very poor colourless crystals
+found congealed in the bottom of a half-abandoned flask.
+
+A fragment of crystal (0.3 x 0.4 x 0.4 mm) was mounted in oil
+on a KCCD diffractometer at 190K and  a data set collected in two hours.
+
+Structure contains one cycloproyl ring, from which its nickname is derived.
+     
+Data has been put into SHELX format (cyclo.ins and cyclo.hkl).

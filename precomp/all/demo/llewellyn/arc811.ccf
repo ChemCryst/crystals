@@ -1,0 +1,71 @@
+#title arc811
+#rele printer ccdin.lis
+# ==================================================================
+# data measured using KCCD2
+# date of data collection 05/05/04
+# date of processing 05/05/04
+# crystal submitted by Simon Llewellyn
+# research group MLHG
+# data archived as
+# ==================================================================
+#list 1
+real a = 7.2208   8.5301  11.0362  88.5229  72.5901  71.8234
+end
+#list 31
+amult  0.00000001
+matrix      9 0 0 0 0 0
+cont         16 0 0 0 0
+cont           36 0 0 0
+cont         0.1218 0 0
+cont           0.1218 0
+cont             0.1218
+end
+#spacegroup
+symbol p -1
+end
+#composition
+content c 22 h 22 co 2 o 6 p 2
+scattering crysdir:script\scatt.dat
+properties crysdir:script\propwin.dat
+end
+#list 23
+end
+#list 13
+crystal friedel = yes
+conditions wavelength = 0.71073
+end
+#open hkli arc811.hkl
+#list 6
+read ncoef = 5 type = fixed unit = hkli f's = fsq
+format (3F4.0, 2F8.2)
+input h k l /fo/ sigma(/fo/)
+end
+#close hkli
+#systematic
+#sort
+#merge
+#list 28
+minima ratio = 3
+end
+#list 30
+datred nrefmes = 8528 reduction=denzo
+continue nrefmerg = 2781 rmerge = 0.061
+cont nreffried = 0 rmergfried = 0
+conditions minsize = .14 medsize = 0.22 maxsize = .22
+cont norient = 8528 thorientmin = 5.0 thorientmax = 27.5
+cont temperature = 150 standards = 0 interval = 0 count = 0 decay = 0
+cont scanmode = omega instrument = Kappaccd
+indexrange thetamin = 5.0 thetamax = 27.5
+general z = 1
+colour dark red
+shape fragment
+absorption abstype = multi-scan
+end
+# completeness = 0.994
+#list 5
+read natom = 0
+end
+#rele printer betacrys.lis
+#use last
+
+
