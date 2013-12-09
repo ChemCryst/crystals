@@ -1,4 +1,6 @@
-! $Log: sfls.F,v $
+!$Rev::                                      $:  Revision of last commit
+!$Author::                                   $:  Author of last commit
+!$Date::                                     $:  Date of last commit
 ! Revision 1.96  2013/11/26 11:49:02  pascal
 ! removed not used arguments from srtdwn
 !

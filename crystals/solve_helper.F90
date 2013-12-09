@@ -1,3 +1,7 @@
+!$Rev::                                      $:  Revision of last commit
+!$Author::                                   $:  Author of last commit
+!$Date::                                     $:  Date of last commit
+
 ! The module solve_helper contains methods to invert the normal matrix
 module solve_helper
 contains 

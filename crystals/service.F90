@@ -1,4 +1,6 @@
-!C $Log: service.F,v $
+!$Rev::                                      $:  Revision of last commit
+!$Author::                                   $:  Author of last commit
+!$Date::                                     $:  Date of last commit
 !C Revision 1.51  2012/11/02 10:21:24  djw
 !C Add COMMENT listing GUI colour schemes
 !C

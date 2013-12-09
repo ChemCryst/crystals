@@ -1,4 +1,16 @@
+C$Rev::                                      $:  Revision of last commit
+C$Author::                                   $:  Author of last commit
+C$Date::                                     $:  Date of last commit
 C $Log: list6.F,v $
+C Revision 1.24  2013/12/06 12:51:31  djw
+C Oops.
+C
+C Revision 1.23  2013/12/06 12:44:52  djw
+C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
+C by LIST 28 was not compatible with JANA (or any code using more precision).  Also noted that no special
+C care was taken if sigmas not input (see SLANT.OUT) In the absence of sigma, RATIO is set to 3.01, ie
+C all reflections accepted at 3 sigma level
+C
 C Revision 1.22  2011/08/31 15:43:24  rich
 C Remove uninitialised variable from KALLOW
 C
@@ -806,6 +818,7 @@ C--STORE THE LAST REFLECTION
 C
 C  IN  A DUMMY ARGUMENT, IN PLACE FOR COMPATIBILITY.
 C
+      PARAMETER (SDJW=10.)
 C--
       INCLUDE 'ISTORE.INC'
 C
@@ -829,11 +842,20 @@ C--CHECK IF THE PHASE AND BATCH NUMBER NEED PACKING UP
       IF(IPHSEW)1150,1100,1100
 C--PACK THE PHASE AND BATCH NUMBER
 1100  CONTINUE
-      STORE(M6+15)=STORE(M6+13)*20.+MOD(STORE(M6+6),TWOPI)+10.
+      STORE(M6+15)=STORE(M6+13)*20.+AMOD(STORE(M6+6),TWOPI)+10.
 C -- CHECK IF WE MUST PACK UP THE RATIO AND JCODE
 1150  CONTINUE
       IF ( JCDRAW .GE. 0 ) THEN
-        STORE(M6+31) = STORE(M6+18) + 10.* NINT ( 10. * STORE(M6+20) )
+c this algorithm is better for -ve values, and is  
+c backwards compatible with old dsc files
+c changing the scale, sdjw, to 100 would be better still, but is
+c not backwards compatible
+        adjw=sign(1.,store(m6+20))
+        bdjw=min(1000000.,abs(store(m6+20)))  ! limit maximum I/sigma
+        cdjw = adjw*((anint(STORE(M6+18)) + 10.*nint(sdjw*bdjw)))
+        STORE(M6+31) = cdjw
+c
+c        STORE(M6+31) = STORE(M6+18) + 10.* ANINT ( 10. * STORE(M6+20) )
       ENDIF
 C--MOVE THE DATA TO THE OUTPUT BUFFER
       J=M6W
@@ -1328,6 +1350,7 @@ C
       integer, intent(in) :: state
       real a
       integer i, j, k, ipercn, newlvl, nprev
+      real bdjw, cdjw, ddjw
 C--
       INCLUDE 'ISTORE.INC'
 C
@@ -1400,13 +1423,31 @@ C--UNPACK THE PHASE AND BATCH NUMBER
 C -- CHECK IF THE RATIO AND JCODE SHOULD BE UNPACKED
           end if !1400  CONTINUE
           IF ( JCDRAR .GE. 0 ) THEN
-              STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
-              STORE(M6+18) = STORE(M6+31) - ( 100. * STORE(M6+20) )
-cdjwjul09 Try to fix up unpacking if Fo was -ve
-c     this fixes the JCODE, but fouls up packing and unpacking 
-c     of sigma. 
-c        if(store(m6+18) .lt. 0.0) 
-c     1  store(m6+18) = 10. + store(m6+18)
+c this algorithm is better for -ve values, and is  
+c backwards compatible with old dsc files
+c changing the scale, sdjw, to 0.01 would be better still, but is
+c not backwards compatible
+ 
+c              adjw = sign(1.,store(m6+31))
+              bdjw = abs(store(m6+31))
+              cdjw = int(0.1*bdjw)
+              ddjw = bdjw-10.*cdjw
+c             edjw = adjw*sdjw*cdjw
+
+              store(m6+18) = ddjw
+c             store(m6+20) = edjw
+c
+c        STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
+c        STORE(M6+18) = ANINT(STORE(M6+31) - (100.*STORE(M6+20)))
+c
+c        recompute RATIO because value is only stored to 2sig fig
+c        esd was set to ZERO elsewhere if none was input. 
+c        Assume users wants all reflections, so set default RATIO to > 3
+              if (store(m6+12).le. zero) then
+                  store(m6+20) = 3.001
+              else
+                  store(m6+20)=min(128., store(m6+3)/(store(m6+12)*2.) )
+              endif
           ENDIF
           STORE(M6+13) = MAX ( STORE(M6+13) , 1.0 )
 C

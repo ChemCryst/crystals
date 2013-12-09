@@ -1,4 +1,13 @@
 C $Log: read6.F,v $
+C Revision 1.40  2013/12/06 12:51:31  djw
+C Oops.
+C
+C Revision 1.39  2013/12/06 12:44:52  djw
+C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
+C by LIST 28 was not compatible with JANA (or any code using more precision).  Also noted that no special
+C care was taken if sigmas not input (see SLANT.OUT) In the absence of sigma, RATIO is set to 3.01, ie
+C all reflections accepted at 3 sigma level
+C
 C Revision 1.38  2013/03/21 19:47:05  rich
 C Stop reading hkl (or any reflection file) upon a record of of all zeroes. This code explicitly
 C checks for and skips blank lines, so that reading doesn't stop there.
@@ -400,7 +409,7 @@ C
       INCLUDE 'QLST13.INC'
       INCLUDE 'QLST30.INC'
 C
-      ! ridiculous amount, should be md6 when the value is read
+      ! ridiculous amount for the array size, should be md6 when the value is read
       real, dimension(256) :: minimum, maximum, summation, summationsq
 C
       DATA NCARD/82/
