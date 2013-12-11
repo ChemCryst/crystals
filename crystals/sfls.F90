@@ -600,6 +600,7 @@ WAVE=STORE(L13DC)
 THETA1=STORE(L13DC+1)
 THETA2=STORE(L13DC+2)
 !--LOAD LIST 23  -  DEFINES CONDITIONS FOR S.F.L.S. CALCULATIONS
+!call XFAL23new(ierflg)
 call XFAL23
 if ( IERFLG .LT. 0 ) return
 !--SET THE ANOMALOUS DISPERSION FLAG
@@ -1125,7 +1126,7 @@ else
          NL=ISTORE(NI+9) ! INSERT DUMMY INITIAL INDICES
          NM=ISTORE(NI+10)
          do NN=NL,NM,NR
-             STORE(NN)=-1000000.
+             STORE(NN)=-1000000. ! -huge(store)
              STORE(NN+1)=-1000000.
              STORE(NN+2)=-1000000.
              STORE(NN+3) = 0.0
@@ -1171,7 +1172,7 @@ else
         end if
     end if
 !            call cpu_time(time_begin)
-    call XSFLSC(STORE(JO),JP-JO+1,istore(iresults), nresults) ! CALL THE CALCULATION LINK
+    call XSFLSC(STORE(JO),JP-JO+1,istore(iresults), nresults, ierflg) ! CALL THE CALCULATION LINK
 !            call cpu_time(time_end)
 !            print *, (time_end - time_begin)
 end if
@@ -1384,7 +1385,7 @@ call XTIME2(1)
 END
 
 !CODE FOR XSFLSC
-subroutine XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS)
+subroutine XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS, ierflg)
 !$    use OMP_LIB
 !--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
 !
@@ -1673,7 +1674,7 @@ use xsflsw_mod, only: sfls_type, sfls_scale, sfls_refine, sfls_calc, cos_only, c
 use xsflsw_mod, only: twinned, scaled_fot, refprint, partials, newlhs, layered, extinct
 use xsflsw_mod, only: jref_stack_start, jref_stack_ptr
 !include 'XUNITS.INC90'
-use xunits_mod, only: ncwu, ncvdu, ncfpu2, ncfpu1, ierflg
+use xunits_mod, only: ncwu, ncvdu, ncfpu2, ncfpu1
 !include 'XSSVAL.INC90'
 use xssval_mod, only: issprt
 !include 'XLST01.INC90'
@@ -1705,8 +1706,11 @@ implicit none
 
 interface
     subroutine xab2fc(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)
+        implicit none
         real, intent(out) :: fc, p
         real, intent(inout) :: act, bct, acn, bcn, ace, acf
+        real, intent(in) :: scalew, acd, bcd
+        integer, intent(in) :: jp, jo, JREF_STACK_PTR
         real, dimension(:), intent(inout) :: store
         integer, dimension(:), intent(inout) :: istore
     end subroutine
@@ -1714,23 +1718,34 @@ end interface
 
 interface
     subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)
+        implicit none
         real, intent(out) :: ACD, BCD, tc, sst
-        real, intent(inout) :: smin, smax, bc, ac
+        real, intent(inout) :: smin, smax, bc, ac, g2
         real, dimension(:), intent(inout) :: store
         integer, dimension(:), intent(inout) :: istore
         integer, intent(inout) :: nn, nm
-        integer, intent(in) :: nl, nr
+        integer, intent(in) :: nl, nr, jo, jp
+        integer, intent(out) :: m12, md12a
     end subroutine
 end interface
 
 interface
     subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore) 
+        implicit none 
         real, intent(in) :: a
         integer, intent(in) :: jx, jo, jq, jr
         integer, intent(inout) :: md12a, m12
         integer, dimension(:), intent(in) :: istore
         real, dimension(:), intent(inout) :: store
     end subroutine
+end interface
+
+interface
+    integer function klayernew(dummy, ierflg)
+        implicit none 
+        integer, intent(in) :: dummy
+        integer, intent(out) :: ierflg
+    end function
 end interface
 
 !include 'QSTORE.INC'
@@ -1744,6 +1759,7 @@ end interface
 integer, intent(in) :: nderiv, nresults
 real, dimension(nderiv), intent(in) :: DERIVS
 integer, dimension(NRESULTS), intent(in) :: IRESULTS  !Parameter list if there is one
+integer, intent(out) :: ierflg
 
 !
 character(len=15) :: hkllab
@@ -1786,9 +1802,12 @@ integer, parameter :: designchunk=512, storechunk=512
 character(len=4) :: buffer
 
 real, dimension(:,:), allocatable :: tempstore
+integer, dimension(:), allocatable :: batches, layers
 integer tempstoremax, tempstorei
 real, dimension(16) ::  minimum, maximum, summation, summationsq
 integer iposn
+
+ierflg = 0
 
 !     Working out the number of threadings available
 !     Using at most 6 of them
@@ -1951,6 +1970,11 @@ starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measu
 #endif
 
 allocate(tempstore(storechunk, MD6))
+allocate(layers(storechunk))
+allocate(batches(storechunk))
+
+layers=-1 ! SET THE LAYER SCALING CONSTANTS INITIALLY
+batches=-1
 do tempstorei=1, storechunk
     if( SFLS_TYPE .EQ. SFLS_CALC ) then
     ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
@@ -1974,11 +1998,28 @@ do tempstorei=1, storechunk
     end if
     if(ifnr>=0) then
         tempstore(tempstorei,:)=STORE(M6:M6+MD6-1)
+
+        if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
+            layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
+            if ( IERFLG .LT. 0 ) return ! GO TO 19900
+        end if    
+    
+        if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
+            batches(tempstorei)=KBATCH(dummy)  ! FIND THE BATCH NUMBER AND SET THE SCALE
+            if ( IERFLG .LT. 0 ) return !GO TO 19900
+        end if    
+    
     else
         exit
     end if
 end do
 tempstoremax=tempstorei-1
+if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
+    layers=layers+L5LS-1
+end if
+if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
+    batches=batches+m5bs-1
+end if
     
     
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2007,29 +2048,23 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !!$OMP& reduction(min: minimum), reduction(max:maximum)
 
 
-! ierflg need to be private, in common block at the moment
-
 !!$OMP DO schedule(static)
     do tempstorei=1, tempstoremax
     STORE(M6:M6+MD6-1)=tempstore(tempstorei,:)
     !print *, STORE(M6:M6+MD6-1)
 
-    LAYER=-1   ! SET THE LAYER SCALING CONSTANTS INITIALLY
-    SCALEL=1.0
     if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-        LAYER=KLAYER(dummy)-1  ! FIND THE LAYER NUMBER AND SET ITS VALUE
-        if ( IERFLG .LT. 0 ) return ! GO TO 19900
-        M5LS=L5LS+LAYER
+        M5LS=layers(tempstorei)
         SCALEL=STORE(M5LS)
+    else
+        SCALEL=1.0
     end if
 
-    IBATCH=-1  ! SET THE INITIAL VALUES FOR THE BATCH SCALE FACTOR
-    SCALEB=1.
     if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-        IBATCH=KBATCH(dummy)-1  ! FIND THE BATCH NUMBER AND SET THE SCALE
-        if ( IERFLG .LT. 0 ) return !GO TO 19900
-        M5BS=L5BS+IBATCH
+        M5BS=batches(tempstorei)
         SCALEB=STORE(M5BS)
+    else
+        scaleb=1.0
     end if
 
     SCALEK=1.   ! SET UP THE SCALE FACTORS CORRECTLY
@@ -2542,19 +2577,20 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
 !!$OMP END PARALLEL
 
+
     do tempstorei=1, storechunk
         if( SFLS_TYPE .EQ. SFLS_CALC ) then
-    ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
-    ! in place.
+        ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
+        ! in place.
             do I28MN = L28MN,L28MN+((N28MN-1)*MD28MN),MD28MN
                 if(ISTORE(I28MN)-M6.EQ.20) then
                     SAVSIG = STORE(I28MN+1)
                     STORE(I28MN+1) = -99999.0
                 end if
             end do
-    ! Fetch reflection using all other filters:
+        ! Fetch reflection using all other filters:
             ifNR = KFNR(1)
-    ! Put sigma filter back:
+        ! Put sigma filter back:
             do I28MN = L28MN,M28MN,MD28MN
                 if(ISTORE(I28MN)-M6.EQ.20) then
                     STORE(I28MN+1) = SAVSIG
@@ -2565,11 +2601,28 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         end if
         if(ifnr>=0) then
             tempstore(tempstorei,:)=STORE(M6:M6+MD6-1)
+
+            if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
+                layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
+                if ( IERFLG .LT. 0 ) return ! GO TO 19900
+            end if    
+        
+            if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
+                batches(tempstorei)=KBATCH(dummy)  ! FIND THE BATCH NUMBER AND SET THE SCALE
+                if ( IERFLG .LT. 0 ) return !GO TO 19900
+            end if    
+        
         else
             exit
         end if
     end do
     tempstoremax=tempstorei-1
+    if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
+        layers=layers+L5LS-1
+    end if
+    if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
+        batches=batches+m5bs-1
+    end if
 
 END do  ! END OF REFLECTION LOOP
 
@@ -2855,7 +2908,7 @@ integer function KLAYER(input)
 !include 'STORE.INC'
 use store_mod, only:store
 !include 'XUNITS.INC90'
-use xunits_mod, only: ncwu, ncvdu
+use xunits_mod, only: ncwu, ncvdu, IERFLG
 !include 'XSSVAL.INC90'
 use xssval_mod, only: issprt
 !include 'XLST05.INC90'
@@ -2896,6 +2949,7 @@ if(MD5LS.GT.0)THEN  ! ARE THERE ANY LAYER SCALES STORED?
         write(CMON,1200)NINT(STORE(M6)),NINT(STORE(M6+1)), NINT(STORE(M6+2)),I
         call XPRVDU(NCVDU, 1,0)
 1200          FORMAT(' Reflection : ',3I5,'  generates an illegal layer scale index of ',I4)
+        !call XERHNDnew ( IERERR, ierflg )
         call XERHND ( IERERR )
         return
     end if
@@ -2903,6 +2957,73 @@ if(MD5LS.GT.0)THEN  ! ARE THERE ANY LAYER SCALES STORED?
     KLAYER=I
 end if
 END
+
+!CODE FOR KLAYER
+integer function KLAYERnew(input, ierflg) result(klayer)
+!--COMPUTE THE LAYER SCALE INDEX FOR THE CURRENT REFLECTION.
+!
+!  IN  A DUMMY ARGUMENT.
+!
+!--return VALUES OF 'KLAYER' ARE :
+!
+!  -1  NO LAYER SCALES IN LIST 5.
+!  >0  THE LAYER SCALE INDEX.
+!
+!--
+!include 'ISTORE.INC'
+!include 'STORE.INC'
+use store_mod, only:store
+!include 'XUNITS.INC90'
+use xunits_mod, only: ncwu, ncvdu
+!include 'XSSVAL.INC90'
+use xssval_mod, only: issprt
+!include 'XLST05.INC90'
+use xlst05_mod, only: md5ls, l5lsc
+!include 'XLST06.INC90'
+use xlst06_mod, only: m6
+!include 'XERVAL.INC90'
+use xerval_mod, only: iererr
+!include 'XIOBUF.INC'
+use xiobuf_mod, only: cmon
+!
+!include 'QSTORE.INC'
+!
+implicit none
+
+integer, intent(in) :: input
+integer, intent(out) :: ierflg
+real a
+integer idwzap, i
+
+IDWZAP = input
+!--
+KLAYER=-1
+
+if(MD5LS.GT.0)THEN  ! ARE THERE ANY LAYER SCALES STORED?
+
+    A=STORE(L5LSC)*STORE(M6)+STORE(L5LSC+1)*STORE(M6+1) &
+    &   +STORE(L5LSC+2)*STORE(M6+2)  ! !  COMPUTE THE INDEX VALUE
+
+    if(STORE(L5LSC+4).LT.0) A=ABS(A) ! Take absolute value
+
+    I=NINT(A+STORE(L5LSC+3))  ! COMPUTE THE OUTPUT INDEX
+
+    if((I.LE.0).OR.(I.GT.MD5LS))THEN  ! ILLEGAL LAYER SCALE VALUE
+        call XERHDR(0)
+        if (ISSPRT .EQ. 0) then
+            write(NCWU,1200)NINT(STORE(M6)),NINT(STORE(M6+1)), NINT(STORE(M6+2)),I
+        end if
+        write(CMON,1200)NINT(STORE(M6)),NINT(STORE(M6+1)), NINT(STORE(M6+2)),I
+        call XPRVDU(NCVDU, 1,0)
+1200          FORMAT(' Reflection : ',3I5,'  generates an illegal layer scale index of ',I4)
+        call XERHNDnew ( IERERR, ierflg )
+        return
+    end if
+
+    KLAYER=I
+end if
+END
+
 
 !CODE FOR KBATCH
 integer function KBATCH(input)
