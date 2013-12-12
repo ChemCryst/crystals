@@ -2038,17 +2038,33 @@ end if
       
 do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
-!!$OMP PARALLEL default(none) 
-!!$OMP& shared(nP, nO, tid, M6, MD6, l6dtl, md6dtl, L5LS, layered, batched,twinned, JREF_STACK_START,scaleg) 
-!!$OMP& firstprivate(store)
-!!$OMP& private(designmatrix, M5LS, layer, scalel, ibatch, scaleb, ierflg)
-!!$OMP& private(scalek,scales,act,bct,acn,bcn,fo,fc,scalew,jp,jo,nl)
-!!$OMP& private(JREF_STACK_PTR)
-!!$OMP& reduction(+: normalmatrix, summation, summationsq)
-!!$OMP& reduction(min: minimum), reduction(max:maximum)
+! $OMP PARALLEL default(none) &
+! $OMP& shared(nP, nO, tid, M6, MD6, l6dtl, md6dtl, L5LS, layered) &
+! $OMP& shared(batched,twinned, JREF_STACK_START,scaleg, tempstoremax) &
+! $OMP& shared(tempstore, layers, batches, scaleo, partials, nr, n25) &
+! $OMP& shared(issprt, ncwu, cmon, ncvdu, md25, l25, n2p, l2p, m5es, nf) &
+! $OMP& shared(scaled_fot, sfls_type, extinct, wave, l12es, jr, jq, del, nu) &
+! $OMP& shared(pol1, pol2, ext, nd, nv, iallow, xvalur,LTEMPR, nsort, mdsort) &
+! $OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
+! $OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
+! $OMP& shared(ltempl, jlever, nlever, mdleve, llever) &
+! $OMP& shared(ILEVPR) & ! atomic
+! $OMP& firstprivate(store, istore, rall, m12, smin, smax, g2, l5es, d) &
+! $OMP& firstprivate(jsort, r, designindex, red, tix, hkllab, ihkllen) &
+! $OMP& private(designmatrix, M5LS, layer, ibatch, ierflg, w, nm, nn, md12a) &
+! $OMP& private(scalek,scales,scalel, scaleb,act,bct,acn,bcn,fo,fc,scalew,jp,jo,nl) &
+! $OMP& private(sst, tc, bc, ac, bcd, acd, acf, ace, p, ph, pk, pl, nj, nk) &
+! $OMP& private(ljx, formatstr, iererr, sh, sk, sl, m25, ljv, ljs) &
+! $OMP& private(JREF_STACK_PTR, tempr, m5bs, g2sav, m2p, a, k, fcext, nq) &
+! $OMP& private(c, n, path, delta, ext1, ext2, ext3, ext4, fcexs, df, wdf) &
+! $OMP& private(s, aminf, uj, rdjw, lsort, vj, wj, t, pii, xvalul) &
+! $OMP& reduction(min: minimum), reduction(max:maximum, REDMAX) &
+! $OMP& reduction(+: normalmatrix, summation, summationsq, nt, fot, foabs) &
+! $OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc, ibadr) &
+! $OMP& reduction(+: sfo, sfc, str11) 
 
 
-!!$OMP DO schedule(static)
+! $OMP DO schedule(static)
     do tempstorei=1, tempstoremax
     STORE(M6:M6+MD6-1)=tempstore(tempstorei,:)
     !print *, STORE(M6:M6+MD6-1)
@@ -2356,6 +2372,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
     if ((SFLS_TYPE.NE.SFLS_CALC) .OR.(KALLOW(IALLOW).GE.0)) then
 ! If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
+!$OMP ATOMIC        
         NT=NT+1     ! UPDATE THE REFLECTION COUNTER FLAG
         FOT=FOT+FO   ! COMPUTE THE TERMS FOR THE NORMAL R-VALUE
         FOABS = FOABS + ABS(FO)
@@ -2554,6 +2571,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
                     STORE(LTEMPL+5) = FO*SCALEK
                     STORE(LTEMPL+6) = FCEXT
                     call SRTDWN(LLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, XVALUL,-1)
+!$OMP ATOMIC                    
                     ILEVPR = ILEVPR + 1
                 end if
             end if
@@ -2573,9 +2591,9 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         RALL(7:11) = RALL(7:11) + tempr
     end if
     end do
-!!$OMP END DO
+! $OMP END DO
 
-!!$OMP END PARALLEL
+! $OMP END PARALLEL
 
 
     do tempstorei=1, storechunk

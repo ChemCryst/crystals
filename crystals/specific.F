@@ -4324,7 +4324,7 @@ CODE FOR XCDATE
 #if defined(_DIGITALF77_) 
       USE DFPORT
 #endif
-#if defined(_INTELF77_) 
+#if defined(_INTELF77_) || defined(__INTEL_COMPILER)
       USE IFPORT
 #endif
 C--CONVERT SECS SINCE 1970 INTO 24CHAR STRING
