@@ -1660,6 +1660,9 @@ C
       ! other parameters
       double precision, dimension(:,:), allocatable :: designmatrix
       double precision, dimension(:,:,:), allocatable :: normalmatrix!, ref
+      ! right hand side temporary storage in double precision to fix error accumulation
+      ! this storage in put back in str11 in the end
+      double precision, dimension(:), allocatable :: righthandside
       ! tid is the number of threads
       integer :: designindex, tid
       integer, parameter :: designchunk=512
@@ -1819,6 +1822,8 @@ C--CHECK IF A PRINT IS REQUIRED
       ! size of the design matrix chunk to be tuned (PP)
       allocate(designmatrix(JP-JO+1,designchunk*tid))
       designmatrix=0.0
+      allocate(righthandside(n11r))
+      righthandside=0.0
 
 #if defined(_GIL_) || defined(_LIN_)
       call date_and_time(VALUES=measuredtime)
@@ -2299,7 +2304,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
             WRITE(NCFPU2,'(F16.8)') WDF
           END IF
 
-          CALL XADRHS(WDF,STORE(JO),STR11(L11R),JP-JO+1)  ! ACCUMULATE THE RIGHT HAND SIDES
+          CALL XADRHS(WDF,STORE(JO),righthandside,JP-JO+1)  ! ACCUMULATE THE RIGHT HAND SIDES
 
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
@@ -2401,6 +2406,10 @@ C----    H,K,L,SNTHL,LEV,
         ENDIF
 
       END DO  ! END OF REFLECTION LOOP
+      
+      ! put back right hand side into original storage
+      str11(l11r:l11R+n11r-1)=righthandside
+      print *, str11(l11r:l11R+n11r-1)
 
       IF(SFLS_TYPE .EQ. SFLS_REFINE)THEN    ! NO REFINEMENT
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
