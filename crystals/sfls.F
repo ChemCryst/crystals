@@ -2409,7 +2409,6 @@ C----    H,K,L,SNTHL,LEV,
       
       ! put back right hand side into original storage
       str11(l11r:l11R+n11r-1)=righthandside
-      print *, str11(l11r:l11R+n11r-1)
 
       IF(SFLS_TYPE .EQ. SFLS_REFINE)THEN    ! NO REFINEMENT
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
