@@ -1,4 +1,13 @@
-C $Log: not supported by cvs2svn $
+C $Log: list26.F,v $
+C Revision 1.27  2013/12/11 16:54:14  rich
+C Some mismatched subroutine argument lengths following previous update.f
+C
+C Revision 1.26  2013/12/08 20:32:26  rich
+C Ensure IASYM is passed throughout required routines. Thanks Pascal.
+C
+C Revision 1.25  2013/11/06 13:52:52  rich
+C Fix use of uninit variable
+C
 C Revision 1.24  2013/09/19 21:35:39  rich
 C Change precision of listing output where not important to reduce differences across platforms.
 C Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
@@ -452,7 +461,7 @@ C
 C
 C--'ENERGY ' RESTRAINTS
 1710  CONTINUE
-      CALL XCEC
+      CALL XCEC(iasym)
       N=2
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1720)A,(CONT(M),M=1,3),B,(STROM(M),M=1,2),C
@@ -465,7 +474,7 @@ C--'ENERGY ' RESTRAINTS
 C
 C--'DISTANCE DIFFERENCE' RESTRAINTS
 1750  CONTINUE
-      CALL XCDDC
+      CALL XCDDC(iasym)
       N=1
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1800)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
@@ -479,7 +488,7 @@ C--'DISTANCE DIFFERENCE' RESTRAINTS
 C
 C--'MEAN DISTANCE' RESTRAINT
 1850  CONTINUE
-      CALL XCMDC
+      CALL XCMDC(iasym)
       N=2
       B=STORE(LCG+4)
       IF (ISSPRT .EQ. 0) THEN
@@ -1092,12 +1101,12 @@ C--'SINGLE DISTANCE' RESTRAINTS
 C
 C--'DISTANCE DIFFERENCE' RESTRAINTS
 1300  CONTINUE
-      CALL XCDDC
+      CALL XCDDC(iasym)
       GOTO 1000
 C
 C--'MEAN DISTANCE' RESTRAINT
 1350  CONTINUE
-      CALL XCMDC
+      CALL XCMDC(iasym)
       GOTO 1000
 C
 C--'SINGLE ANGLE' RESTRAINTS
@@ -1194,7 +1203,7 @@ C----- 'LIMIT' RESTRAINT
 C
 C----- ENERGY RESTRAINT
 2250  CONTINUE
-      CALL XCEC
+      CALL XCEC(iasym)
       GOTO 1000
 C
 9900  CONTINUE
@@ -1606,7 +1615,7 @@ cdjwapr99}
       END
 C
 CODE FOR XCMDC
-      SUBROUTINE XCMDC
+      SUBROUTINE XCMDC(IASYM)
 C--CALCULATE MEAN DISTANCE RESTRAINTS
 C
 C--
@@ -1657,7 +1666,7 @@ C--END OF THE FIRST PASS  -  PASS THROUGH NOW AND ACCUMULATE
       END
 C
 CODE FOR XCDDC
-      SUBROUTINE XCDDC
+      SUBROUTINE XCDDC(iasym)
 C--CALCULATE DISTANCE DIFFERENCE RESTRAINTS
 C
 C--
