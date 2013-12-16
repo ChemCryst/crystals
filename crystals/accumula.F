@@ -213,8 +213,8 @@ CODE FOR XADRHS
 C--   ADD INTO THE R.H.S. OF THE NORMAL EQUATIONS
 C      WDF  SQRT(W)*(/FO/ - /FC/)
        
-       dimension DERIVS(NDERIV)
-       dimension RMAT11(NDERIV)
+       real, dimension(nderiv) :: DERIVS
+       double precision, dimension(nderiv) :: RMAT11
 
        do I = 1, NDERIV
          RMAT11(I) = RMAT11(I) + DERIVS(I) * WDF

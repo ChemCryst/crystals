@@ -1216,7 +1216,7 @@ C--SET THE SLOTS FOR THE MEAN AND R.M.S.
 C
 CODE FOR XACRT
       SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, 
-     1    sizearray)
+     1    store, sizearray)
 C--ADD IN THE TOTAL FOR A REFLECTION TO A GIVEN SLOT IN THE DETAILS
 C  RECORD.
 C
@@ -1225,7 +1225,7 @@ C          1 TO MD6.
 C
 C--
       !INCLUDE 'STORE.INC'
-      use store_mod, only: store
+      use store_mod, only: storelength
       !INCLUDE 'XLST06.INC'
       use xlst06_mod, only: l6dtl, m6, md6dtl
       
@@ -1234,6 +1234,7 @@ C--
       integer, intent(in) :: iposn, sizearray
       real, dimension(sizearray), intent(inout):: minimum, maximum
       real, dimension(sizearray), intent(inout):: summation, summationsq
+      real, dimension(storelength), intent(in) :: store
       
       ! check if allocated space is enough and crashing the program if not enough space
       if(iposn>ubound(minimum,1) .or. iposn<1 ) then
@@ -1262,14 +1263,14 @@ C--FIND THE POSITION IN THE DETAILS AND CORE BUFFER
       J=L6DTL+I*MD6DTL
       I=M6+I
 C--FIND THE NEW MAXIMUM AND MINIMUM
-      STORE(J)=MIN(STORE(J),STORE(I))
+      !STORE(J)=MIN(STORE(J),STORE(I))
       minimum(IPOSN)=min(minimum(IPOSN), STORE(I))
-      STORE(J+1)=MAX(STORE(J+1),STORE(I))
+      !STORE(J+1)=MAX(STORE(J+1),STORE(I))
       maximum(IPOSN)=max(maximum(IPOSN), STORE(I))
 C--ADD IN FOR THE MEAN AND R.M.S.
-      STORE(J+2)=STORE(J+2)+STORE(I)
+      !STORE(J+2)=STORE(J+2)+STORE(I)
       summation(IPOSN)=summation(IPOSN)+store(i)
-      STORE(J+3)=STORE(J+3)+STORE(I)*STORE(I)
+      !STORE(J+3)=STORE(J+3)+STORE(I)*STORE(I)
       summationsq(IPOSN)=summationsq(IPOSN)+store(i)**2
       RETURN
       END

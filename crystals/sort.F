@@ -1113,6 +1113,7 @@ C----- INSERTION
         ELSE IF (ITYPE .GT. 0) THEN
           IF (STORE(ITEM+IPOS) .GE. STORE(MSORT+IPOS)) IHIT = 1
         ELSE
+          print *, item, ipos, msort, ipos
           IF (ABS(STORE(ITEM+IPOS)) .GE. ABS(STORE(MSORT+IPOS))) IHIT=1
         ENDIF
         IF (IHIT .NE. 0) THEN
@@ -1135,3 +1136,84 @@ C-----    SHUFFLE REMAINDER DOWN
       RETURN
       END
 
+CODE FOR SRTDWN
+      SUBROUTINE SRTDWNnew (LSORT, MDSORT, NSORT,
+     1 IPOS, ITEM, VALUE, ITYPE, store)
+C
+C----- STORE THE OCCURENCES OF A RECORD CONTAINING THE LARGET OCCURENCES
+C      OF AN ITEM
+C
+C      NSORT -  NUMBER OF RECORDS TO BE RETAINED
+C      MDSORT - NUMBER OF ITEMS PER RECORD
+C      LSORT -  STARTING ADDRESS IN STORE OF SAVED OCCURENCES (SET ON
+C               INITIALISATION)
+C      ITEM  -  ADDRESS IN STORE OF RECORD TO BE SORTED
+C                  IF -VE, INITIALISATION
+C      IPOS  -  OFFSET IN RECORD OF ITEM TO BE SORTED
+C      VALUE -  SMALEST VALUE FOUND TO DATE - CAN BE USED BY CALLING
+C                  ROUTINE TO CHECK IF CALL IS NECESSARY
+C      ITYPE - -1 SMALLEST TO LARGEST
+C               0 ABSOLUTE LARGEST TO SMALLEST
+C               1 LARGEST TO SMALLEST
+C
+c      INCLUDE 'ISTORE.INC'
+c      INCLUDE 'STORE.INC'
+c      INCLUDE 'QSTORE.INC'
+      use store_mod, only: storelength
+      real, dimension(storelength), intent(inout) :: store
+
+C
+      IF (IPOS .LT. 0) THEN
+C----- INITIALISATION
+cdjw take abs value
+            IPOS = IABS(IPOS)
+            LSORT = NFL
+            NFL = KCHNFL(NSORT*MDSORT)
+            call xzerof (store(lsort), nsort*mdsort)
+              IF (ITYPE .LT. 0) THEN
+                  DEF = 100000000.0
+              ELSE IF (ITYPE .GT. 0) THEN
+                  DEF = -100000000.0
+              ELSE
+                  DEF = 0.0
+              ENDIF
+cdjw            ITEMP = LSORT + IABS(IPOS) -1
+            ITEMP = LSORT + IPOS -1
+            DO 100 I = 1, NSORT
+              STORE(ITEMP) = DEF
+              ITEMP = ITEMP + MDSORT
+100         CONTINUE
+            VALUE = DEF
+            RETURN
+      ENDIF
+C
+C----- INSERTION
+      IHIT = 0
+      MSORT = LSORT
+      DO 200 I = 1, NSORT
+        IF (ITYPE .LT. 0) THEN
+          IF (STORE(ITEM+IPOS) .LE. STORE(MSORT+IPOS)) IHIT = 1
+        ELSE IF (ITYPE .GT. 0) THEN
+          IF (STORE(ITEM+IPOS) .GE. STORE(MSORT+IPOS)) IHIT = 1
+        ELSE
+          IF (ABS(STORE(ITEM+IPOS)) .GE. ABS(STORE(MSORT+IPOS))) IHIT=1
+        ENDIF
+        IF (IHIT .NE. 0) THEN
+          IHIT = 0
+C-----    SHUFFLE REMAINDER DOWN
+            ITEMP = LSORT + (NSORT-2) * MDSORT
+            DO 300 J = NSORT, I+1, -1
+                  CALL XMOVE (STORE(ITEMP), STORE(ITEMP+MDSORT), MDSORT)
+                  ITEMP = ITEMP - MDSORT
+300         CONTINUE
+            CALL XMOVE (STORE(ITEM), STORE(MSORT), MDSORT)
+            VALUE = STORE(LSORT + IPOS + (NSORT-1)*MDSORT)
+            MSORT = I
+            RETURN
+        ENDIF
+        MSORT = MSORT + MDSORT
+200   CONTINUE
+      VALUE = STORE(MSORT-MDSORT+IPOS)
+      MSORT = NSORT
+      RETURN
+      END

@@ -1660,7 +1660,7 @@ subroutine XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS, ierflg)
 use xstr11_mod, only: str11 => xstr11
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only:store, istore, nfl
+use store_mod, only:store, istore, nfl, storelength
 !include 'XSFWK.INC90'
 use xsfwk_mod, only: r, p, s, w, rw, scale, scalew, scalek, ienprt, smin, smax
 use xsfwk_mod, only: st, sst, theta1, theta2, tc, wdf, wave, rall, wdft, fo, fc
@@ -1687,7 +1687,7 @@ use xlst05_mod, only: m5ls, m5es, m5bs, m5ls, l5o, l5ls, l5es, l5bs
 !include 'XLST06.INC90'
 use xlst06_mod!, only: m6, l6p, md6
 !include 'XLST11.INC90'
-use xlst11_mod, only: n11, l11r, l11
+use xlst11_mod, only: n11, l11r, l11, n11r
 !include 'XLST12.INC90'
 use xlst12_mod, only: n12b, n12, md12b, m12, l12o, l12ls, l12es, l12bs, l12b, md12a
 !include 'XLST25.INC'
@@ -1795,7 +1795,7 @@ integer, dimension(8) :: measuredtime
 ! single precision seems to introduce errors of about 1e-3 in Fc and 
 ! other parameters
 double precision, dimension(:,:), allocatable :: designmatrix
-double precision, dimension(:,:,:), allocatable :: normalmatrix!, ref
+double precision, dimension(:,:), allocatable :: normalmatrix!, ref
 ! tid is the number of threads
 integer :: designindex, tid
 integer, parameter :: designchunk=512, storechunk=512
@@ -1804,31 +1804,15 @@ character(len=4) :: buffer
 real, dimension(:,:), allocatable :: tempstore
 integer, dimension(:), allocatable :: batches, layers
 integer tempstoremax, tempstorei
-real, dimension(16) ::  minimum, maximum, summation, summationsq
+real, dimension(16) ::  minimum_shared, maximum_shared, summation, summationsq
+real, dimension(:,:), allocatable ::  minimum, maximum
 integer iposn
 
+real, dimension(:), allocatable :: storetemp
+integer, dimension(:), allocatable :: istoretemp
+double precision, dimension(:), allocatable :: righthandside
+
 ierflg = 0
-
-!     Working out the number of threadings available
-!     Using at most 6 of them
-!     each thread has a chunk of reflections and a normal matrix
-tid=1
-!$    tid =  omp_get_max_threads() 
-
-!     To be replaced by GET_ENVIRONMENT_VARIABLE f2003 feature
-!     getenv is a deprecated extension      
-call GETENV('OMP_NUM_THREADS', buffer) 
-if(buffer/='    ') then
-    read(buffer, '(I4)') i
-    if(i>0) then
-        tid=i
-    end if
-end if
-tid=min(tid, 6)
-
-#if defined(_GIL_) || defined(_LIN_)
-print *, 'Number of threads used around DSYRK: ', tid
-#endif
 
 call CPU_TIME ( time_begin )
 
@@ -1955,14 +1939,18 @@ end if
 
 NO=JO
 NP=JP
-allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
+allocate(normalmatrix(JP-JO+1,JP-JO+1))
 !allocate(ref(JP-JO+1,JP-JO+1))
 normalmatrix=0.0
-!ref=0.0
-designindex=0
-! size of the design matrix chunk to be tuned (PP)
-allocate(designmatrix(JP-JO+1,designchunk*tid))
-designmatrix=0.0
+minimum_shared=huge(minimum_shared)
+maximum_shared=-huge(maximum_shared)
+if(ND<0)THEN
+    minimum_shared(8:9)=0.0
+    maximum_shared(8:9)=0.0
+end if   
+summation=0.0
+summationsq=0.0
+
 
 #if defined(_GIL_) || defined(_LIN_)
 call date_and_time(VALUES=measuredtime)
@@ -2027,58 +2015,80 @@ end if
 !Begin big loop
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-minimum=huge(minimum)
-maximum=-huge(maximum)
-summation=0.0
-summationsq=0.0
-if(ND<0)THEN
-    minimum(8:9)=0.0
-    maximum(8:9)=0.0
-end if
       
+allocate(storetemp(storelength))
+allocate(istoretemp(storelength))
+allocate(righthandside(n11r))
+
+storetemp=store
+istoretemp=istore
+
 do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
-! $OMP PARALLEL default(none) &
-! $OMP& shared(nP, nO, tid, M6, MD6, l6dtl, md6dtl, L5LS, layered) &
-! $OMP& shared(batched,twinned, JREF_STACK_START,scaleg, tempstoremax) &
-! $OMP& shared(tempstore, layers, batches, scaleo, partials, nr, n25) &
-! $OMP& shared(issprt, ncwu, cmon, ncvdu, md25, l25, n2p, l2p, m5es, nf) &
-! $OMP& shared(scaled_fot, sfls_type, extinct, wave, l12es, jr, jq, del, nu) &
-! $OMP& shared(pol1, pol2, ext, nd, nv, iallow, xvalur,LTEMPR, nsort, mdsort) &
-! $OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
-! $OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
-! $OMP& shared(ltempl, jlever, nlever, mdleve, llever) &
-! $OMP& shared(ILEVPR) & ! atomic
-! $OMP& firstprivate(store, istore, rall, m12, smin, smax, g2, l5es, d) &
-! $OMP& firstprivate(jsort, r, designindex, red, tix, hkllab, ihkllen) &
-! $OMP& private(designmatrix, M5LS, layer, ibatch, ierflg, w, nm, nn, md12a) &
-! $OMP& private(scalek,scales,scalel, scaleb,act,bct,acn,bcn,fo,fc,scalew,jp,jo,nl) &
-! $OMP& private(sst, tc, bc, ac, bcd, acd, acf, ace, p, ph, pk, pl, nj, nk) &
-! $OMP& private(ljx, formatstr, iererr, sh, sk, sl, m25, ljv, ljs) &
-! $OMP& private(JREF_STACK_PTR, tempr, m5bs, g2sav, m2p, a, k, fcext, nq) &
-! $OMP& private(c, n, path, delta, ext1, ext2, ext3, ext4, fcexs, df, wdf) &
-! $OMP& private(s, aminf, uj, rdjw, lsort, vj, wj, t, pii, xvalul) &
-! $OMP& reduction(min: minimum), reduction(max:maximum, REDMAX) &
-! $OMP& reduction(+: normalmatrix, summation, summationsq, nt, fot, foabs) &
-! $OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc, ibadr) &
-! $OMP& reduction(+: sfo, sfc, str11) 
+!$OMP PARALLEL default(none)&
+!$OMP& shared(nP, nO, M6, MD6, l6dtl, md6dtl, L5LS, layered, str11, n11r) &
+!$OMP& shared(batched,twinned, JREF_STACK_START, tempstoremax) &
+!$OMP& shared(tempstore, layers, batches, scaleo, partials, nr, n25) &
+!$OMP& shared(issprt, ncwu, cmon, ncvdu, md25, l25, n2p, l2p, m5es, nf) &
+!$OMP& shared(scaled_fot, sfls_type, extinct, wave, l12es, jr, jq, del, nu) &
+!$OMP& shared(pol1, pol2, ext, nd, nv, iallow, xvalur,LTEMPR, nsort, mdsort) &
+!$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
+!$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
+!$OMP& shared(ltempl, jlever, nlever, mdleve, llever, designmatrix) &
+!$OMP& shared(ILEVPR, ibadr) &  ! atomic
+!$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d, storetemp, istoretemp) &
+!$OMP& firstprivate(jsort, lsort, r, designindex, red, tix, hkllab, ihkllen, ext3) &
+!$OMP& firstprivate(jp,jo) &
+!$OMP& private(M5LS, layer, ibatch, ierflg, w, nm, nn, md12a) &
+!$OMP& private(scalek,scales,scalel, scaleb,scaleg,act,bct,acn,bcn,fo,fc,scalew,nl) &
+!$OMP& private(sst, tc, bc, ac, bcd, acd, acf, ace, p, ph, pk, pl, nj, nk) &
+!$OMP& private(ljx, formatstr, iererr, sh, sk, sl, m25, ljv, ljs) &
+!$OMP& private(JREF_STACK_PTR, tempr, m5bs, g2sav, m2p, a, k, fcext, nq) &
+!$OMP& private(c, n, path, delta, ext1, ext2, ext4, fcexs, df, wdf) &
+!$OMP& private(s, aminf, uj, rdjw, vj, wj, t, pii, xvalul, tid) &
+!$OMP& shared(minimum, maximum, minimum_shared, maximum_shared) &
+!$OMP& reduction(max:REDMAX) &
+!$OMP& reduction(+: normalmatrix, summation, summationsq, nt, fot, foabs) &
+!$OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc) &
+!$OMP& reduction(+: sfo, sfc, righthandside) 
 
+!$OMP MASTER
+    tid=omp_get_num_threads()
+    if(allocated(designmatrix)) deallocate(designmatrix)
+    allocate(designmatrix(JP-JO+1,storechunk*tid))
+    designmatrix=0.0
+    
+    if(allocated(minimum)) deallocate(minimum)
+    allocate(minimum(16, tid))
+    if(allocated(maximum)) deallocate(maximum)
+    allocate(maximum(16, tid))
+    
+    minimum=huge(minimum)
+    maximum=-huge(maximum)
+    if(ND<0)THEN
+        minimum(8:9,:)=0.0
+        maximum(8:9,:)=0.0
+    end if    
+!$OMP END MASTER
 
-! $OMP DO schedule(static)
+tid=omp_get_thread_num()+1
+print *, 'tid', tid
+
+!$OMP DO schedule(static)
     do tempstorei=1, tempstoremax
-    STORE(M6:M6+MD6-1)=tempstore(tempstorei,:)
-    !print *, STORE(M6:M6+MD6-1)
+    storetemp(M6:M6+MD6-1)=tempstore(tempstorei,:)
+    !print *, storetemp(M6:M6+MD6-1)
 
     if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
         M5LS=layers(tempstorei)
-        SCALEL=STORE(M5LS)
+        SCALEL=storetemp(M5LS)
     else
         SCALEL=1.0
     end if
 
     if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
         M5BS=batches(tempstorei)
-        SCALEB=STORE(M5BS)
+        SCALEB=storetemp(M5BS)
     else
         scaleb=1.0
     end if
@@ -2098,14 +2108,14 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     BCN = 0.
 !--CHECK if THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
     if(PARTIALS) then 
-        ACT=STORE(M6+7)
-        BCT=STORE(M6+8)
+        ACT=storetemp(M6+7)
+        BCT=storetemp(M6+8)
         ACN = ACT
         BCN = BCT
     end if
 
-    FO=STORE(M6+3)  ! SET UP /FO/ ETC. FOR THIS REFLECTION
-    W=STORE(M6+4)
+    FO=storetemp(M6+3)  ! SET UP /FO/ ETC. FOR THIS REFLECTION
+    W=storetemp(M6+4)
     SCALEW=SCALEG*W
  
     NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
@@ -2116,15 +2126,15 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !       CHECK if THIS IS TWINNED CALCULATION
     if(.NOT.TWINNED)THEN   ! NOT TWINNED
         NL=0
-        call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)
-        JREF_STACK_PTR=ISTORE(JREF_STACK_START)
-        call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
-        call XACRT(4, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE THE /FO/ TOTALS
+        call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, storetemp, istoretemp)
+        JREF_STACK_PTR=istoretemp(JREF_STACK_START)
+        call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, storetemp, istoretemp, scalew, jp, jo, jref_stack_ptr, acd, bcd)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
+        call XACRT(4, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
     else ! THIS IS A TWINNED CALCULATION  
-        PH=STORE(M6)  ! PRESERVE THE NOMINAL INDICES
-        PK=STORE(M6+1)
-        PL=STORE(M6+2)
-        NJ=NINT(STORE(M6+11))
+        PH=storetemp(M6)  ! PRESERVE THE NOMINAL INDICES
+        PK=storetemp(M6+1)
+        PL=storetemp(M6+2)
+        NJ=NINT(storetemp(M6+11))
         if (NJ .EQ. 0) NJ = 12 ! IF THERE IS NO ELEMENT KEY, SET IT TO MOROHEDRAL TWINNING
         NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN  (LEFT-MOST VALUE)
         do WHILE ( NK .GT. 0 ) 
@@ -2139,15 +2149,15 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
                 write(CMON, formatstr) LJX , PH , PK , PL
                 call XPRVDU(NCVDU, 1,0)
                 call XERHND ( IERERR )
-                return
+                !return
             end if                  
         end do
 ! CHECK if 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
 !  Generate the principal indices (Why?)
 !          M25I=L25I+(NL-1)*MD25I  ! COMPUTE THE INDICES IN THE STANDARD REFERENCE SYSTEM
-!          SH=STORE(M25I)*PH+STORE(M25I+1)*PK+STORE(M25I+2)*PL
-!          SK=STORE(M25I+3)*PH+STORE(M25I+4)*PK+STORE(M25I+5)*PL
-!          SL=STORE(M25I+6)*PH+STORE(M25I+7)*PK+STORE(M25I+8)*PL
+!          SH=storetemp(M25I)*PH+storetemp(M25I+1)*PK+storetemp(M25I+2)*PL
+!          SK=storetemp(M25I+3)*PH+storetemp(M25I+4)*PK+storetemp(M25I+5)*PL
+!          SL=storetemp(M25I+6)*PH+storetemp(M25I+7)*PK+storetemp(M25I+8)*PL
         sh=ph
         sk=pk
         sl=pl
@@ -2171,24 +2181,24 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
                 NK=NK/10                                           ! e.g. 123
                 NL=LJX-NK*10                                        ! e.g. 1234-1230 = 4
                 M25=L25+(NL-1)*MD25   ! COMPUTE THE INDICES FOR THIS COMPONENT
-                STORE(M6)=ANINT(STORE(M25)*SH+STORE(M25+1)*SK+STORE(M25+2)*SL)
-                STORE(M6+1)=ANINT(STORE(M25+3)*SH+STORE(M25+4)*SK+STORE(M25+5)*SL)
-                STORE(M6+2)=ANINT(STORE(M25+6)*SH+STORE(M25+7)*SK+STORE(M25+8)*SL)
+                storetemp(M6)=ANINT(storetemp(M25)*SH+storetemp(M25+1)*SK+storetemp(M25+2)*SL)
+                storetemp(M6+1)=ANINT(storetemp(M25+3)*SH+storetemp(M25+4)*SK+storetemp(M25+5)*SL)
+                storetemp(M6+2)=ANINT(storetemp(M25+6)*SH+storetemp(M25+7)*SK+storetemp(M25+8)*SL)
                 if ( NM .GE. N25 ) then ! GO TO 19920  ! WE HAVE USED TOO MANY ELEMENTS
                     formatstr="(1X,'Too many elements given for reflection ', 3F5.0 )"
                     if (ISSPRT .EQ. 0) write(NCWU, formatstr) PH, PK , PL
                     write ( CMON , formatstr ) PH , PK , PL
                     call XPRVDU(NCVDU, 1,0)
                     call XERHND ( IERERR )
-                    return ! GO TO 19900
+                    !return ! GO TO 19900
                 end if
                 
             else
                nl=nj
                nk = 0
-               store(m6) = sh
-               store(m6+1) = sk
-               store(m6+2) = sl
+               storetemp(m6) = sh
+               storetemp(m6+1) = sk
+               storetemp(m6+2) = sl
             endif
 !
 !  save the multiplier 
@@ -2198,9 +2208,9 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !           CHECK NON-PRIMITIVE CONDITIONS
                 M2P=L2P
                 do I=1,N2P
-                    A=ABS(STORE(M2P)*store(m6)+ &
-                    &   STORE(M2P+1)*store(m6+1)+ &
-                    &   STORE(M2P+2)*store(m6+2))
+                    A=ABS(storetemp(M2P)*storetemp(m6)+ &
+                    &   storetemp(M2P+1)*storetemp(m6+1)+ &
+                    &   storetemp(M2P+2)*storetemp(m6+2))
                     K=INT(A+0.01)
                     if(A-FLOAT(K).gt.0.01) then
                         g2 = 0.0
@@ -2210,39 +2220,39 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
                 enddo
             endif
 
-!      write(ncpu,9753)'Given', ph,pk,pl, 'Transformed', store(m6),
-!     1 store(m6+1),store(m6+2), g2, store(m6+3),a,k
+!      write(ncpu,9753)'Given', ph,pk,pl, 'Transformed', storetemp(m6),
+!     1 storetemp(m6+1),storetemp(m6+2), g2, storetemp(m6+3),a,k
 !9753  format(a,3f8.2,2x,a,3f8.2, '  G2,Fo,A,K ', 3f12.2,i5)
 !
-            call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
+            call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, storetemp, istoretemp)  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
             g2 = g2sav
         END do  ! END OF THIS TWINNED REFLECTION  
 !
 !
 !
-        store(m6)=ph  ! restore the nominal indices
-        store(m6+1)=pk
-        store(m6+2)=pl
+        storetemp(m6)=ph  ! restore the nominal indices
+        storetemp(m6+1)=pk
+        storetemp(m6+2)=pl
 !
         FCEXT=0.  !  WIND UP AND CALCULATE THE TOTAL VA
         JREF_STACK_PTR=JREF_STACK_START  ! CALCULATE /FC/ AND ITS DERIVATIVES FOR EACH ELEMENT
         NQ=NM
     
         do WHILE ( NQ .GT. 0 )  ! ACCESS THE NEXT ELEMENT IN THE STACK
-            JREF_STACK_PTR=ISTORE(JREF_STACK_PTR)
+            JREF_STACK_PTR=istoretemp(JREF_STACK_PTR)
 !--COMPUTE THE TOTALS AGAINST /FC/ FOR THIS ELEMENT
             ACT=0.  ! CLEAR THE PARTIAL CONTRIBUTIONS
             BCT=0.
-            JO=ISTORE(JREF_STACK_PTR+1)  ! SET THE POINTER FOR THE DERIVATIVES WITH RESPECT TO /FC/
-            JP=ISTORE(JREF_STACK_PTR+2)
+            JO=istoretemp(JREF_STACK_PTR+1)  ! SET THE POINTER FOR THE DERIVATIVES WITH RESPECT TO /FC/
+            JP=istoretemp(JREF_STACK_PTR+2)
   
-            call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)   ! CONVERT A AND B PARTS TO FC
+            call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, storetemp, istoretemp, scalew, jp, jo, jref_stack_ptr, acd, bcd)   ! CONVERT A AND B PARTS TO FC
 
-            NI=ISTORE(JREF_STACK_PTR+8) ! ACCUMULATE /FCT/
-            ISTORE(JREF_STACK_PTR+8)=ISTORE(JREF_STACK_PTR+8)-1
-            LJU=L5ES+ISTORE(JREF_STACK_PTR+8)
-            LJV=M5ES+ISTORE(JREF_STACK_PTR+8)
-            FCEXT=FCEXT+STORE(LJU)*STORE(JREF_STACK_PTR+6)*STORE(JREF_STACK_PTR+6)
+            NI=istoretemp(JREF_STACK_PTR+8) ! ACCUMULATE /FCT/
+            istoretemp(JREF_STACK_PTR+8)=istoretemp(JREF_STACK_PTR+8)-1
+            LJU=L5ES+istoretemp(JREF_STACK_PTR+8)
+            LJV=M5ES+istoretemp(JREF_STACK_PTR+8)
+            FCEXT=FCEXT+storetemp(LJU)*storetemp(JREF_STACK_PTR+6)*storetemp(JREF_STACK_PTR+6)
 
             if(NF.GE.0 .and. NM.GT.1) then  ! CHECK IF WE MUST PRINT THIS CONTRIBUTOR
                                             ! CHECK if THERE IS MORE THAN ONE CONTRIBUTOR
@@ -2251,10 +2261,10 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
                 end if
 !--PRINT THIS CONTRIBUTOR
                 LJS=JREF_STACK_PTR+3
-                A=STORE(JREF_STACK_PTR+7)*D
-                C=STORE(JREF_STACK_PTR+6)*STORE(LJV)
+                A=storetemp(JREF_STACK_PTR+7)*D
+                C=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)
                 if (ISSPRT .EQ. 0) then
-                    write(NCWU,3350) (STORE(LJT+3),LJT=JREF_STACK_PTR,LJS),A,C,NI
+                    write(NCWU,3350) (storetemp(LJT+3),LJT=JREF_STACK_PTR,LJS),A,C,NI
                 end if
 3350                  FORMAT(3X,3F6.0,9X,2F9.1,22X,F12.1,I4)
             end if
@@ -2267,42 +2277,42 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
         if(.NOT.SCALED_FOT) then  ! WHICH TYPE OF /FO/ AND /FC/ WE ARE TO OUTPUT
 !           SAVE THE TOTAL OVER ALL ELEMENTS
-            STORE(M6+3)=STORE(M6+10)
-            STORE(M6+5)=FC
-            STORE(M6+6)=0.
+            storetemp(M6+3)=storetemp(M6+10)
+            storetemp(M6+5)=FC
+            storetemp(M6+6)=0.
         else
 !           SAVE THE VALUE FOR THE MAIN ELEMENT
-            JREF_STACK_PTR=ISTORE(JREF_STACK_START) 
-            LJV=ISTORE(JREF_STACK_PTR+8)+M5ES
-            STORE(M6+3)=STORE(M6+10)*STORE(JREF_STACK_PTR+6)*STORE(LJV)/FC
-            STORE(M6+5)=STORE(JREF_STACK_PTR+6)*STORE(LJV)
-            STORE(M6+6)=STORE(JREF_STACK_PTR+7)
+            JREF_STACK_PTR=istoretemp(JREF_STACK_START) 
+            LJV=istoretemp(JREF_STACK_PTR+8)+M5ES
+            storetemp(M6+3)=storetemp(M6+10)*storetemp(JREF_STACK_PTR+6)*storetemp(LJV)/FC
+            storetemp(M6+5)=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)
+            storetemp(M6+6)=storetemp(JREF_STACK_PTR+7)
         end if
-        FO=STORE(M6+10)      
-        STORE(M6+5)=STORE(M6+5)*SCALES
+        FO=storetemp(M6+10)      
+        storetemp(M6+5)=storetemp(M6+5)*SCALES
 !          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
-        p=store(m6+6)
-        call XACRT(4, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE THE /FO/ TOTALS
+        p=storetemp(m6+6)
+        call XACRT(4, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
         if (SFLS_TYPE .EQ. SFLS_REFINE) then ! CHECK IF WE ARE DOING REFINEMENT
-            STORE(JO:JP)=0. ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
+            storetemp(JO:JP)=0. ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
             JREF_STACK_PTR=JREF_STACK_START  
             do LJU=1,NM ! PASS AMONGST THE VARIOUS CONTRIBUTORS
-                JREF_STACK_PTR=ISTORE(JREF_STACK_PTR) ! FIND THE ADDRESS OF THIS CONTRIBUTOR
-                LJV=ISTORE(JREF_STACK_PTR+8)+L5ES
-                A=STORE(JREF_STACK_PTR+6)*STORE(LJV)/FC
-                LJS=ISTORE(JREF_STACK_PTR+1)
+                JREF_STACK_PTR=istoretemp(JREF_STACK_PTR) ! FIND THE ADDRESS OF THIS CONTRIBUTOR
+                LJV=istoretemp(JREF_STACK_PTR+8)+L5ES
+                A=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)/FC
+                LJS=istoretemp(JREF_STACK_PTR+1)
                 N = JP - JO 
-                STORE(JO:JP)=STORE(JO:JP) + STORE(LJS:LJS+N)*A  ! ADD IN THE DERIVATIVES
+                storetemp(JO:JP)=storetemp(JO:JP) + storetemp(LJS:LJS+N)*A  ! ADD IN THE DERIVATIVES
             end do
 
             M12=L12ES ! ADD IN THE CONTRIBUTIONS FOR THE ELEMENT SCALE FACTORS
             JREF_STACK_PTR=JREF_STACK_START
             do NI=1, NM ! WHILE ( NI.GT.0 ) ! CHECK if THERE ANY MORE SCALES TO PROCESS
 !               FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
-                JREF_STACK_PTR=ISTORE(JREF_STACK_PTR)
-                LJX=ISTORE(JREF_STACK_PTR+8)
-                A=0.5*SCALEW*STORE(JREF_STACK_PTR+6)*STORE(JREF_STACK_PTR+6)/FC
-                call XADDPD ( A, LJX, JO, JQ, JR, md12a, m12, store, istore) 
+                JREF_STACK_PTR=istoretemp(JREF_STACK_PTR)
+                LJX=istoretemp(JREF_STACK_PTR+8)
+                A=0.5*SCALEW*storetemp(JREF_STACK_PTR+6)*storetemp(JREF_STACK_PTR+6)/FC
+                call XADDPD ( A, LJX, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
             end do
         end if
     end if  ! end of twinned calculations
@@ -2312,7 +2322,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
         A=MIN(1.,WAVE*sqrt(sST))
         !A=ASIN(A)*2.
-        PATH=STORE(M6+9)  ! CHECK MEAN PATH LENGTH
+        PATH=storetemp(M6+9)  ! CHECK MEAN PATH LENGTH
         if(PATH.LE.ZERO) PATH = 1.
         !DELTA=DEL*PATH/SIN(A)  ! COMPUTE DELTA FOR NEUTRONS
         ! sin(a) = sin(sin-1(a)*2.0) (see above)
@@ -2340,17 +2350,17 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !
 
     if(TWINNED)THEN 
-        STORE(M6+5)=STORE(M6+5)*EXT4*SCALES
+        storetemp(M6+5)=storetemp(M6+5)*EXT4*SCALES
     else
-        STORE(M6+5)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+        storetemp(M6+5)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
     end if
-    STORE(M6+6)=P
+    storetemp(M6+6)=P
 !
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
-        STORE(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
-        STORE(M6+8)=BCT
-        call XACRT(8, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-        call XACRT(9, minimum, maximum, summation, summationsq, 16)
+        storetemp(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
+        storetemp(M6+8)=BCT
+        call XACRT(8, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
+        call XACRT(9, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)
     end if
 
 !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
@@ -2391,12 +2401,12 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     RDJW = ABS(WDF)
     if (RDJW .GT. ABS(XVALUR)) then
 !----  H,K,L,FO,FC,/WDELTA/,FO/FC
-        call XMOVE(STORE(M6), STORE(LTEMPR), 3)
-        STORE(LTEMPR+3) = UJ
-        STORE(LTEMPR+4) = FCEXT
-        STORE(LTEMPR+5) = RDJW
-        STORE(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
-        call SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0)
+        call XMOVE(storetemp(M6), storetemp(LTEMPR), 3)
+        storetemp(LTEMPR+3) = UJ
+        storetemp(LTEMPR+4) = FCEXT
+        storetemp(LTEMPR+5) = RDJW
+        storetemp(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
+        call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, storetemp)
     end if
   
     if(REFPRINT)THEN !   CHECK IF A PRINT OF THE RELFECTIONS IS NEEDED
@@ -2404,14 +2414,14 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         VJ=WDF*S
         WJ=DF*S
         !A=SQRT(AC*AC+BC*BC)
-        A=SQRT(STORE(JREF_STACK_PTR+13)**2+STORE(JREF_STACK_PTR+15)**2)
+        A=SQRT(storetemp(JREF_STACK_PTR+13)**2+storetemp(JREF_STACK_PTR+15)**2)
         !S=SQRT(ACI*ACI+BCI*BCI)
-        S=SQRT(STORE(JREF_STACK_PTR+14)**2+STORE(JREF_STACK_PTR+16)**2)
-        T=4.*( STORE(JREF_STACK_PTR+15)*STORE(JREF_STACK_PTR+16) + &
-        &   STORE(JREF_STACK_PTR+13)*STORE(JREF_STACK_PTR+14) )
+        S=SQRT(storetemp(JREF_STACK_PTR+14)**2+storetemp(JREF_STACK_PTR+16)**2)
+        T=4.*( storetemp(JREF_STACK_PTR+15)*storetemp(JREF_STACK_PTR+16) + &
+        &   storetemp(JREF_STACK_PTR+13)*storetemp(JREF_STACK_PTR+14) )
         C=T*200.0/(2.*FC*FC-T)
         if (ISSPRT .EQ. 0) then 
-            write(NCWU,4600)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,FCEXT,P,WJ,VJ,A,S,T,C,sqrt(sST)
+            write(NCWU,4600)storetemp(M6),storetemp(M6+1),storetemp(M6+2),UJ,FCEXT,P,WJ,VJ,A,S,T,C,sqrt(sST)
         end if
 4600    FORMAT(3X,3F6.0,3F9.1,E13.4,E13.4,F8.1,F8.1,F9.1,F10.1,F10.5)
 !
@@ -2419,18 +2429,21 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         if ( ABS(UJ-FCEXT) .GE. R*UJ .AND. IBADR .LE. 50 ) then
             if (IBADR .LT. 0) then
                 if (ISSPRT .EQ. 0) write(NCWU,4651)
+!$OMP CRITICAL
                     IBADR = 0
+!$OMP END CRITICAL
 4651                FORMAT(10X,' Bad agreements ',/ &
                     &   /1X,'   h    k    l      Fo        Fc '/)
                 else if (IBADR .LT. 25) then
                     if (ISSPRT .EQ. 0) then
-                        write(NCWU,4652)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,FCEXT
+                        write(NCWU,4652)storetemp(M6),storetemp(M6+1),storetemp(M6+2),UJ,FCEXT
                     end if
 4652                FORMAT(1X,3F5.0,2F9.2)
                     else if (IBADR .EQ. 25) then
                         if (ISSPRT .EQ. 0) write(NCWU,4653)
 4653                    FORMAT(/' And so on ------------'/)
                     end if
+!$OMP ATOMIC                
                     IBADR = IBADR + 1
                 end if
             end if
@@ -2465,93 +2478,75 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
             if(NV .GE. 0) A = A * FCEXT * SCALES / ( 2. * FCEXS )
             LJX=0
             M12=L12O
-            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, store, istore) 
+            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, storetemp, istoretemp)
 
             A=W*FCEXS*TC/EXT3       ! OVERALL TEMPERATURE FACTORS NEXT
-            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, store, istore) 
-            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, store, istore) 
+            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
+            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
  
-            call XADDPD ( ACF, 3, JO, JQ, JR, md12a, m12, store, istore)   ! THE POLARITY PARAMETER
+            call XADDPD ( ACF, 3, JO, JQ, JR, md12a, m12, storetemp, istoretemp)   ! THE POLARITY PARAMETER
 
-            call XADDPD ( ACE, 4, JO, JQ, JR, md12a, m12, store, istore)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
+            call XADDPD ( ACE, 4, JO, JQ, JR, md12a, m12, storetemp, istoretemp)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
 
             A=-0.5*SCALEW*FC*FC*FC*DELTA/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
-            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, store, istore) 
+            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
  
             if(LAYER.GE.0) then                 ! CHECK IF LAYER SCALES ARE BEING USED
                 A=W*SCALEO*SCALEB*FCEXT/EXT3
                 M12=L12LS
-                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, store, istore)  ! THE LAYER SCALES
+                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, storetemp, istoretemp)  ! THE LAYER SCALES
             end if
 
             if(IBATCH.GE.0) then           ! CHECK IF BATCH SCALES ARE BEING USED
                 A=W*SCALEO*SCALEL*FCEXT/EXT3
                 M12=L12BS
-                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, store, istore)  ! THE BATCH SCALES  
+                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, storetemp, istoretemp)  ! THE BATCH SCALES  
             end if
 
             if ( ( NV.GE.0 ) .OR. EXTINCT ) then  ! Either FO^2, or extinction correction required.
-                if ( NV .GE. 0 ) STORE(JO:JP)=STORE(JO:JP)*2.0*FCEXS   ! Correct derivatives for refinement against Fo^2
-                if ( EXTINCT ) STORE(JO:JP)=STORE(JO:JP)*EXT3      ! Modify for extinction
+                if ( NV .GE. 0 ) storetemp(JO:JP)=storetemp(JO:JP)*2.0*FCEXS   ! Correct derivatives for refinement against Fo^2
+                if ( EXTINCT ) storetemp(JO:JP)=storetemp(JO:JP)*EXT3      ! Modify for extinction
             end if
 
-            if (ISTORE(M33CD+5).EQ.1) then   ! Check if we should output matrix in MATLAB format.
-                write(NCFPU1,'(A,3(1X,F5.0))')'%',STORE(M6),STORE(M6+1),STORE(M6+2)
+            if (istoretemp(M33CD+5).EQ.1) then   ! Check if we should output matrix in MATLAB format.
+                write(NCFPU1,'(A,3(1X,F5.0))')'%',storetemp(M6),storetemp(M6+1),storetemp(M6+2)
                 do I = JO,JP-MOD(JP-JO,5)-1,5
-                    write(NCFPU1,'(5G16.8,'' ...'')') (STORE(I+J),J=0,4)
+                    write(NCFPU1,'(5G16.8,'' ...'')') (storetemp(I+J),J=0,4)
                 end do
-                write(NCFPU1,'(5G16.8)') (STORE(JP+J),J=0-MOD(JP-JO,5),0)
+                write(NCFPU1,'(5G16.8)') (storetemp(JP+J),J=0-MOD(JP-JO,5),0)
                 write(NCFPU2,'(F16.8)') WDF
             end if
 
-            call XADRHS(WDF,STORE(JO),STR11(L11R),JP-JO+1)  ! ACCUMULATE THE RIGHT HAND SIDES
+            ! ACCUMULATE THE RIGHT HAND SIDES
+            ! accumulation done in double precision
+            call XADRHS(WDF,storetemp(JO),righthandside(1),JP-JO+1)  
 
             if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
-            if (ISTORE(M33CD+12).EQ.0) then    ! Just a normal accumulation.
-                if (ISTORE(M33CD+13).EQ.0) then
-                    call PARM_PAIRS_XLHS(STORE(JO), JP-JO+1, &
+            if (istoretemp(M33CD+12).EQ.0) then    ! Just a normal accumulation.
+                if (istoretemp(M33CD+13).EQ.0) then
+                    call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
                     &   STR11(L11), N11, iresults, nresults, & 
-                    &   STORE(L12B), N12B*MD12B, MD12B)
+                    &   storetemp(L12B), N12B*MD12B, MD12B)
                 else
                     ! Store a chunk of the design matrix
-                    ! When the chunk is full, accumulate the normal matrix
-                    designindex=designindex+1
-                    if(designindex>ubound(designmatrix,2)) then
-                      ! accumulate normal matrix
-
-!$OMP PARALLEL default(none) &
-!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
-!$OMP do schedule(static)
-                        do i=1, tid
-                            ! passing first element as array to avoid temporary copy
-                            call DSYRK('L','N',JP-JO+1,designchunk,1.0d0, &
-                            &   designmatrix(1,designchunk*(i-1)+1), &
-                            &   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
-                        end do
-!$OMP end do
-!$OMP END PARALLEL
-                        ! reset index for the chunk array
-                        designindex=1
-                        designmatrix=0.0
-                    end if
-                    designmatrix(:,designindex) = STORE(JO:JP)
+                    designmatrix(:,tempstorei) = storetemp(JO:JP)
             
-!                  call XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
-!     1                 STORE(L12B), N12B*MD12B, MD12B )
+!                  call XADLHS( storetemp(JO), JP-JO+1, STR11(L11), N11,
+!     1                 storetemp(L12B), N12B*MD12B, MD12B )
                 end if
             else                    ! No accumulation, compute leverages, Pii.
-                if (ISTORE(M33CD+13).EQ.0) then
+                if (istoretemp(M33CD+13).EQ.0) then
                     write(CMON,'(''SPARSE IS NOT USED FOR LEVERAGE'')')
                     call xprvdu(ncvdu,1,0)
                 end if
-                Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B, &
-                &   STR11(L11),N11,  STORE(JO),JP-JO+1, &
-                &   ISTORE(M33CD+12), TIX, RED)
+                Pii = PDOLEV( istoretemp(L12B),MD12B*N12B,MD12B, &
+                &   STR11(L11),N11,  storetemp(JO),JP-JO+1, &
+                &   istoretemp(M33CD+12), TIX, RED)
                 REDMAX = MAX ( REDMAX, RED )
 
-                write(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)), ',', &
-                &   NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+                write(HKLLAB, '(2(I4,A),I4)') NINT(storetemp(M6)), ',', &
+                &   NINT(storetemp(M6+1)), ',', NINT(storetemp(M6+2))
                 call XCRAS(HKLLAB, IHKLLEN)
                 write(CMON,'(3A,4F11.4)') '^^PL LABEL ''',HKLLAB(1:IHKLLEN), &
                 &   ''' DATA ',FO,Pii,FO,RED*1000000000.0
@@ -2565,12 +2560,12 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
                 if(( ILEVPR .LT. 30 ).OR.( PII .LT. XVALUL ) ) then
 !----    H,K,L,SNTHL,LEV,
-                    call XMOVE(STORE(M6), STORE(LTEMPL), 3)
-                    STORE(LTEMPL+3) = SST
-                    STORE(LTEMPL+4) = Pii
-                    STORE(LTEMPL+5) = FO*SCALEK
-                    STORE(LTEMPL+6) = FCEXT
-                    call SRTDWN(LLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, XVALUL,-1)
+                    call XMOVE(storetemp(M6), storetemp(LTEMPL), 3)
+                    storetemp(LTEMPL+3) = SST
+                    storetemp(LTEMPL+4) = Pii
+                    storetemp(LTEMPL+5) = FO*SCALEK
+                    storetemp(LTEMPL+6) = FCEXT
+                    call SRTDWNnew(LLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, XVALUL,-1, storetemp)
 !$OMP ATOMIC                    
                     ILEVPR = ILEVPR + 1
                 end if
@@ -2579,22 +2574,46 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
     end if
 
     call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
-    call XACRT(6, minimum, maximum, summation, summationsq, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
-    call XACRT(7, minimum, maximum, summation, summationsq, 16)  ! AND THE PHASE
-    call XACRT(16,minimum, maximum, summation, summationsq, 16)
+    call XACRT(6, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
+    call XACRT(7, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! AND THE PHASE
+    call XACRT(16,minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)
  
     if(SFLS_TYPE .eq. SFLS_CALC) then ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
         tempr=(/1.0, ABS(ABS(FO)-FCEXS), ABS(FO), WDF**2, A**2 /)
-        if (STORE(M6+20) .GE. RALL(1)) then
+        if (storetemp(M6+20) .GE. RALL(1)) then
             RALL(2:6) = RALL(2:6) + tempr
         end if
         RALL(7:11) = RALL(7:11) + tempr
     end if
+    
     end do
-! $OMP END DO
+!$OMP END DO
 
-! $OMP END PARALLEL
+    ! Accumulating the normal matrix, each thread accumulate a part of the design matrix
+    if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
+    &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
+    &   ISTOREtemp(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
+    &   ISTOREtemp(M33CD+13).NE.0)THEN    
+        ! process the remaining chunk of design matrix
+        ! Accumulate the normal matrix
+        tid=omp_get_thread_num()
+        call DSYRK('L','N',JP-JO+1,storechunk, &
+        &   1.0d0, designmatrix(1,storechunk*tid+1), &
+        &   JP-JO+1,1.0d0,normalmatrix(1,1),JP-JO+1)    
+    end if
+    
+    ! merge minimum and maximum
+!$OMP MASTER    
+    do i=1, 16
+        minimum_shared(i)=min(minimum_shared(i), minval(minimum(i,:)))
+        maximum_shared(i)=max(maximum_shared(i), maxval(maximum(i,:)))
+    end do
+!$OMP END MASTER    
 
+!$OMP END PARALLEL
+    
+    ! put back right hand side to orignal space
+    str11(l11r:l11R+n11r-1)=str11(l11r:l11R+n11r-1)+righthandside
 
     do tempstorei=1, storechunk
         if( SFLS_TYPE .EQ. SFLS_CALC ) then
@@ -2644,55 +2663,36 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
 END do  ! END OF REFLECTION LOOP
 
+      print *, REDMAX
+      print *, nt, fot, foabs
+      print *, fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc, ibadr
+      print *, sfo, sfc
+
 !!!!!!!!!!!!!!!!!!!!!!!!!
 ! putting back values in original storage
 iposn=4
 I=IPOSN-1
 J=L6DTL+I*MD6DTL
-STORE(J:J+3) = (/ minimum(iposn), maximum(iposn),summation(iposn), summationsq(iposn) /)
+STORE(J:J+3) = (/ minimum_shared(iposn), maximum_shared(iposn),summation(iposn), summationsq(iposn) /)
+print *, STORE(J:J+3)
 do iposn=6, 9
     I=IPOSN-1
     J=L6DTL+I*MD6DTL
-    STORE(J:J+3) = (/ minimum(iposn), maximum(iposn),summation(iposn), summationsq(iposn) /)
+    STORE(J:J+3) = (/ minimum_shared(iposn), maximum_shared(iposn),summation(iposn), summationsq(iposn) /)
+    print *, STORE(J:J+3)
 end do
 iposn=16
 I=IPOSN-1
 J=L6DTL+I*MD6DTL
-STORE(J:J+3) = (/ minimum(iposn), maximum(iposn),summation(iposn), summationsq(iposn) /)
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! end big loop
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+STORE(J:J+3) = (/ minimum_shared(iposn), maximum_shared(iposn),summation(iposn), summationsq(iposn) /)
+print *, STORE(J:J+3)
 
 if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
 &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
-&   ISTORE(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
-&   ISTORE(M33CD+13).NE.0)THEN    
+&   ISTOREtemp(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
+&   ISTOREtemp(M33CD+13).NE.0)THEN    
     ! process the remaining chunk of design matrix
-    if(designindex>0) then
-        ! Accumulate the normal matrix
-!$OMP PARALLEL default(none) &
-!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
-!$OMP do schedule(static)
-        do i=1, tid
-            call DSYRK('L','N',JP-JO+1,designchunk, &
-            &   1.0d0, designmatrix(1,designchunk*(i-1)+1), &
-            &   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
-        end do
-!$OMP end do
-!$OMP END PARALLEL
-    end if
 
-! Only vectorized with gfortran 4.8 not 4.4
-! accumulating all normal matrices of each thread in one
-    do i=1, ubound(normalmatrix,2)
-        do j=2, ubound(normalmatrix,3)
-            normalmatrix(:,i,1)=normalmatrix(:,i,1)+normalmatrix(:,i,j)
-        end do
-    end do
- 
     ! Pack normal matrix back into original crystals storage     
     IBL = 1                  ! Parameter # at start of current block
     IBS = L11                ! Packed storage address.
@@ -2703,8 +2703,7 @@ if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
         do i=1,MNR
             j = ((i-1)*(2*(MNR)-i+2))/2
             k = j + MNR - i
-            STR11(IBS+j:IBS+k)=normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
-
+            STR11(IBS+j:IBS+k)=normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1)
 ! E.g. two blocks of 2 - normalmatrix is 4x4, output is 2 upper triangles of side 2.
 ! Initially IBL is 1, IBS is L11.
 !       MNR is 2
@@ -2730,12 +2729,22 @@ if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
         IBS = IBS + MSTR       ! Increment the storage pointer
         IBL = IBL + MNR        ! Increment the derivative pointer
     end do
-end if
 !      do i=1,JP-JO+1
 !            j = ((i-1)*(2*(JP-JO+1)-i+2))/2
 !            k = j + JP-JO+1 - i
 !            STR11(L11+j:L11+k)=normalmatrix(i:JP-JO+1,i)
-!      end do
+!      end do    
+end if
+
+      print *, STR11(L11:L11+1000)
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! end big loop
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 
 #if defined(_GIL_) || defined(_LIN_)
@@ -3851,7 +3860,9 @@ end if
 !  st  the value of sin(theta)/lambda for the calculation
 !  l3tr and l3ti the real and imaginary components of the scattering factor
 !
-call XSCATT(ST)  ! CALCULATE THE FORM FACTORS
+if(N3>0) then
+    call XSCATTnew(ST, store)  ! CALCULATE THE FORM FACTORS
+end if
 !      write(NCWU,'(A,F16.9,1x,Z0)')'ST:',ST,ST
 !      write(NCWU,'(A,4(Z0,1X,F20.16,1X))')'COS consts:',C0,C0,C1,C1,
 !     1            C2,C2,C3,C3
@@ -4014,11 +4025,12 @@ do LJY=1,N5
 !c
 !c Test if  centro with no refinement  -  only cos terms needed
         if(.not. COS_ONLY) then 
+!8850      CONTINUE        
 !c
 !--CALCULATE THE B CONTRIBUTION
             BP=S*TFOCC
             BT=BT+BP
-        end if
+        end if !8900      CONTINUE
 !
 !--CALCULATE THE A CONTRIBUTION
         AP=C*TFOCC
