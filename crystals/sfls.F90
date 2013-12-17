@@ -1108,6 +1108,7 @@ else
 
      JREF_STACK_PTR = KCHNFL(N25*(N12*(JQ+1)+NY+NR*N2I)+1)
 !--PREPARE TO INITIALISE THE STACK
+     print *, 'Initializing the stack'
      JREF_STACK_PTR = JREF_STACK_START+1
      NI = JREF_STACK_START
      NJ = (N2T-1)*NR
@@ -1730,13 +1731,14 @@ interface
 end interface
 
 interface
-    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore) 
+    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices) 
         implicit none 
         real, intent(in) :: a
         integer, intent(in) :: jx, jo, jq, jr
         integer, intent(inout) :: md12a, m12
         integer, dimension(:), intent(in) :: istore
         real, dimension(:), intent(inout) :: store
+        integer, dimension(:), intent(inout) :: shiftsaccumulation_indices
     end subroutine
 end interface
 
@@ -1777,13 +1779,13 @@ real dft, delta, del, foabs, fct, xvalur, xvalul, wj
 real vj, uj, tix, time_begin, time_end, t, sl, sk, sfo, sfc
 real scales, scaleq, scalel, scaleg, scaleo, rlevdn
 
-integer, external :: klayer, kbatch, kallow, kfnr, kchnfl
+integer, external :: klayer, kbatch, kallow, kfnr, KFNRnew, kchnfl
 real, external :: pdolev
 real, dimension(5) :: tempr
 
 ! variable moved from common block to local
 real acd, bcd, ac, bc
-integer nm, nn
+integer nm, nn, l12a
 !
 !
 #if defined(_GIL_) || defined(_LIN_)
@@ -1802,15 +1804,18 @@ integer, parameter :: designchunk=512, storechunk=512
 character(len=4) :: buffer
 
 real, dimension(:,:), allocatable :: tempstore
-integer, dimension(:), allocatable :: batches, layers
+integer, dimension(:), allocatable :: batches, layers, l6wpointers, n6wpointers
 integer tempstoremax, tempstorei
 real, dimension(16) ::  minimum_shared, maximum_shared, summation, summationsq
 real, dimension(:,:), allocatable ::  minimum, maximum
+real, dimension(:), allocatable :: shiftsaccumulation_shared
+integer, dimension(:), allocatable :: shiftsaccumulation_indices
 integer iposn
 
 real, dimension(:), allocatable :: storetemp
 integer, dimension(:), allocatable :: istoretemp
 double precision, dimension(:), allocatable :: righthandside
+integer cpt
 
 ierflg = 0
 
@@ -1939,18 +1944,6 @@ end if
 
 NO=JO
 NP=JP
-allocate(normalmatrix(JP-JO+1,JP-JO+1))
-!allocate(ref(JP-JO+1,JP-JO+1))
-normalmatrix=0.0
-minimum_shared=huge(minimum_shared)
-maximum_shared=-huge(maximum_shared)
-if(ND<0)THEN
-    minimum_shared(8:9)=0.0
-    maximum_shared(8:9)=0.0
-end if   
-summation=0.0
-summationsq=0.0
-
 
 #if defined(_GIL_) || defined(_LIN_)
 call date_and_time(VALUES=measuredtime)
@@ -1960,6 +1953,8 @@ starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measu
 allocate(tempstore(storechunk, MD6))
 allocate(layers(storechunk))
 allocate(batches(storechunk))
+allocate(l6wpointers(storechunk))
+allocate(n6wpointers(storechunk))
 
 layers=-1 ! SET THE LAYER SCALING CONSTANTS INITIALLY
 batches=-1
@@ -1974,7 +1969,7 @@ do tempstorei=1, storechunk
             end if
         end do
     ! Fetch reflection using all other filters:
-        ifNR = KFNR(1)
+        ifNR = KFNRnew(1, l6w, n6w)
     ! Put sigma filter back:
         do I28MN = L28MN,M28MN,MD28MN
             if(ISTORE(I28MN)-M6.EQ.20) then
@@ -1982,10 +1977,13 @@ do tempstorei=1, storechunk
             end if
         end do
     else
-        ifNR = KFNR(1)
+        ifNR = KFNRnew(1, l6w, n6w)
     end if
     if(ifnr>=0) then
+        print *, 'ref', STORE(M6:M6+2)
         tempstore(tempstorei,:)=STORE(M6:M6+MD6-1)
+        l6wpointers(tempstorei)=l6w
+        n6wpointers(tempstorei)=n6w
 
         if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
             layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
@@ -2015,14 +2013,32 @@ end if
 !Begin big loop
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+allocate(normalmatrix(JP-JO+1,JP-JO+1))
+!allocate(ref(JP-JO+1,JP-JO+1))
+normalmatrix=0.0
+minimum_shared=huge(minimum_shared)
+maximum_shared=-huge(maximum_shared)
+if(ND<0)THEN
+    minimum_shared(8:9)=0.0
+    maximum_shared(8:9)=0.0
+end if   
+summation=0.0
+summationsq=0.0
+allocate(shiftsaccumulation_shared(storelength))
+shiftsaccumulation_shared=0.0
+allocate(shiftsaccumulation_indices(storelength))
+shiftsaccumulation_indices=0
+!print *, ubound(shiftsaccumulation_indices, 1)
       
 allocate(storetemp(storelength))
 allocate(istoretemp(storelength))
 allocate(righthandside(n11r))
+righthandside=0.0d0
 
 storetemp=store
 istoretemp=istore
 
+cpt=0
 do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 
 !$OMP PARALLEL default(none)&
@@ -2035,7 +2051,8 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
 !$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
 !$OMP& shared(ltempl, jlever, nlever, mdleve, llever, designmatrix) &
-!$OMP& shared(ILEVPR, ibadr) &  ! atomic
+!$OMP& shared(l6wpointers, n6wpointers) &
+!$OMP& shared(ILEVPR, ibadr, cpt) &  ! atomic
 !$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d, storetemp, istoretemp) &
 !$OMP& firstprivate(jsort, lsort, r, designindex, red, tix, hkllab, ihkllen, ext3) &
 !$OMP& firstprivate(jp,jo) &
@@ -2045,15 +2062,18 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !$OMP& private(ljx, formatstr, iererr, sh, sk, sl, m25, ljv, ljs) &
 !$OMP& private(JREF_STACK_PTR, tempr, m5bs, g2sav, m2p, a, k, fcext, nq) &
 !$OMP& private(c, n, path, delta, ext1, ext2, ext4, fcexs, df, wdf) &
-!$OMP& private(s, aminf, uj, rdjw, vj, wj, t, pii, xvalul, tid) &
+!$OMP& private(s, uj, rdjw, vj, wj, t, pii, xvalul, tid, i) &
 !$OMP& shared(minimum, maximum, minimum_shared, maximum_shared) &
+!$OMP& shared(shiftsaccumulation_shared) &
+!$OMP& firstprivate(shiftsaccumulation_indices) &
 !$OMP& reduction(max:REDMAX) &
 !$OMP& reduction(+: normalmatrix, summation, summationsq, nt, fot, foabs) &
 !$OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc) &
-!$OMP& reduction(+: sfo, sfc, righthandside) 
+!$OMP& reduction(+: sfo, sfc, righthandside, aminf) 
 
 !$OMP MASTER
-    tid=omp_get_num_threads()
+    tid=1
+!$  tid=omp_get_num_threads()
     if(allocated(designmatrix)) deallocate(designmatrix)
     allocate(designmatrix(JP-JO+1,storechunk*tid))
     designmatrix=0.0
@@ -2069,13 +2089,16 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
         minimum(8:9,:)=0.0
         maximum(8:9,:)=0.0
     end if    
+    
 !$OMP END MASTER
 
-tid=omp_get_thread_num()+1
-print *, 'tid', tid
+tid=1
+!$ tid=omp_get_thread_num()+1
 
 !$OMP DO schedule(static)
     do tempstorei=1, tempstoremax
+    cpt = cpt +1
+    print *, 'cpt', cpt
     storetemp(M6:M6+MD6-1)=tempstore(tempstorei,:)
     !print *, storetemp(M6:M6+MD6-1)
 
@@ -2122,7 +2145,7 @@ print *, 'tid', tid
     NN=0
     JO=NO  ! Point JO back to beginning of PD list.
     JP=NP
-
+    
 !       CHECK if THIS IS TWINNED CALCULATION
     if(.NOT.TWINNED)THEN   ! NOT TWINNED
         NL=0
@@ -2312,7 +2335,7 @@ print *, 'tid', tid
                 JREF_STACK_PTR=istoretemp(JREF_STACK_PTR)
                 LJX=istoretemp(JREF_STACK_PTR+8)
                 A=0.5*SCALEW*storetemp(JREF_STACK_PTR+6)*storetemp(JREF_STACK_PTR+6)/FC
-                call XADDPD ( A, LJX, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
+                call XADDPD ( A, LJX, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
             end do
         end if
     end if  ! end of twinned calculations
@@ -2478,29 +2501,30 @@ print *, 'tid', tid
             if(NV .GE. 0) A = A * FCEXT * SCALES / ( 2. * FCEXS )
             LJX=0
             M12=L12O
-            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, storetemp, istoretemp)
+
+            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)
 
             A=W*FCEXS*TC/EXT3       ! OVERALL TEMPERATURE FACTORS NEXT
-            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
-            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
+            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
+            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
  
-            call XADDPD ( ACF, 3, JO, JQ, JR, md12a, m12, storetemp, istoretemp)   ! THE POLARITY PARAMETER
+            call XADDPD ( ACF, 3, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)   ! THE POLARITY PARAMETER
 
-            call XADDPD ( ACE, 4, JO, JQ, JR, md12a, m12, storetemp, istoretemp)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
+            call XADDPD ( ACE, 4, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
 
             A=-0.5*SCALEW*FC*FC*FC*DELTA/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
-            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, storetemp, istoretemp) 
+            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
  
             if(LAYER.GE.0) then                 ! CHECK IF LAYER SCALES ARE BEING USED
                 A=W*SCALEO*SCALEB*FCEXT/EXT3
                 M12=L12LS
-                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, storetemp, istoretemp)  ! THE LAYER SCALES
+                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)  ! THE LAYER SCALES
             end if
 
             if(IBATCH.GE.0) then           ! CHECK IF BATCH SCALES ARE BEING USED
                 A=W*SCALEO*SCALEL*FCEXT/EXT3
                 M12=L12BS
-                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, storetemp, istoretemp)  ! THE BATCH SCALES  
+                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)  ! THE BATCH SCALES  
             end if
 
             if ( ( NV.GE.0 ) .OR. EXTINCT ) then  ! Either FO^2, or extinction correction required.
@@ -2573,7 +2597,9 @@ print *, 'tid', tid
         end if
     end if
 
-    call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
+    !call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
+    !l6w=l6pointers(tempstorei)
+    call XSLRnew(1, storetemp, l6wpointers(tempstorei), n6wpointers(tempstorei))
     call XACRT(6, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
     call XACRT(7, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! AND THE PHASE
     call XACRT(16,minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)
@@ -2596,25 +2622,34 @@ print *, 'tid', tid
     &   ISTOREtemp(M33CD+13).NE.0)THEN    
         ! process the remaining chunk of design matrix
         ! Accumulate the normal matrix
-        tid=omp_get_thread_num()
+        tid=0
+!$      tid=omp_get_thread_num()
         call DSYRK('L','N',JP-JO+1,storechunk, &
         &   1.0d0, designmatrix(1,storechunk*tid+1), &
         &   JP-JO+1,1.0d0,normalmatrix(1,1),JP-JO+1)    
     end if
     
-    ! merge minimum and maximum
 !$OMP MASTER    
+    ! merge minimum and maximum
     do i=1, 16
         minimum_shared(i)=min(minimum_shared(i), minval(minimum(i,:)))
         maximum_shared(i)=max(maximum_shared(i), maxval(maximum(i,:)))
     end do
+    
 !$OMP END MASTER    
 
-!$OMP END PARALLEL
-    
-    ! put back right hand side to orignal space
-    str11(l11r:l11R+n11r-1)=str11(l11r:l11R+n11r-1)+righthandside
+!$OMP CRITICAL
+    ! merge shifts accumulation
+    do i=1, storelength
+        if(shiftsaccumulation_indices(i)>0) then
+            shiftsaccumulation_shared(i)= &
+            &   shiftsaccumulation_shared(i)+storetemp(i)
+        end if
+    end do
+!$OMP END CRITICAL
 
+!$OMP END PARALLEL
+        
     do tempstorei=1, storechunk
         if( SFLS_TYPE .EQ. SFLS_CALC ) then
         ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
@@ -2626,7 +2661,7 @@ print *, 'tid', tid
                 end if
             end do
         ! Fetch reflection using all other filters:
-            ifNR = KFNR(1)
+            ifNR = KFNRnew(1, l6w, n6w)
         ! Put sigma filter back:
             do I28MN = L28MN,M28MN,MD28MN
                 if(ISTORE(I28MN)-M6.EQ.20) then
@@ -2634,11 +2669,13 @@ print *, 'tid', tid
                 end if
             end do
         else
-            ifNR = KFNR(1)
+            ifNR = KFNRnew(1, l6w, n6w)
         end if
         if(ifnr>=0) then
             tempstore(tempstorei,:)=STORE(M6:M6+MD6-1)
-
+            l6wpointers(tempstorei)=l6w
+            n6wpointers(tempstorei)=n6w
+            
             if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
                 layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
                 if ( IERFLG .LT. 0 ) return ! GO TO 19900
@@ -2663,10 +2700,6 @@ print *, 'tid', tid
 
 END do  ! END OF REFLECTION LOOP
 
-      print *, REDMAX
-      print *, nt, fot, foabs
-      print *, fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc, ibadr
-      print *, sfo, sfc
 
 !!!!!!!!!!!!!!!!!!!!!!!!!
 ! putting back values in original storage
@@ -2674,23 +2707,31 @@ iposn=4
 I=IPOSN-1
 J=L6DTL+I*MD6DTL
 STORE(J:J+3) = (/ minimum_shared(iposn), maximum_shared(iposn),summation(iposn), summationsq(iposn) /)
-print *, STORE(J:J+3)
 do iposn=6, 9
     I=IPOSN-1
     J=L6DTL+I*MD6DTL
     STORE(J:J+3) = (/ minimum_shared(iposn), maximum_shared(iposn),summation(iposn), summationsq(iposn) /)
-    print *, STORE(J:J+3)
 end do
 iposn=16
 I=IPOSN-1
 J=L6DTL+I*MD6DTL
 STORE(J:J+3) = (/ minimum_shared(iposn), maximum_shared(iposn),summation(iposn), summationsq(iposn) /)
-print *, STORE(J:J+3)
+
+! put back right hand side to orignal space
+str11(l11r:l11R+n11r-1)=righthandside
+
+! put back shifts
+do i=1, storelength
+    if(shiftsaccumulation_shared(i)>0) then
+        store(i)=shiftsaccumulation_shared(i)
+    end if
+end do
+
 
 if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
 &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
-&   ISTOREtemp(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
-&   ISTOREtemp(M33CD+13).NE.0)THEN    
+&   ISTORE(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
+&   ISTORE(M33CD+13).NE.0)THEN    
     ! process the remaining chunk of design matrix
 
     ! Pack normal matrix back into original crystals storage     
@@ -2736,8 +2777,6 @@ if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
 !      end do    
 end if
 
-      print *, STR11(L11:L11+1000)
-
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2754,8 +2793,8 @@ print *, 'Formation of the normal matrix time (ms): ', &
 &   measuredtime(7))*1000+measuredtime(8)-starttime
 #endif
 
-deallocate(designmatrix)
-deallocate(normalmatrix)      
+if(allocated(designmatrix)) deallocate(designmatrix)
+if(allocated(normalmatrix)) deallocate(normalmatrix)      
 
 !--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 
@@ -4223,7 +4262,6 @@ STORE(NI+16)=BCI
 !      write(NCWU,'(A,Z0,1X,F15.6)')'BC: ',BC,BC
 !      write(NCWU,'(A,Z0,1X,F15.6)')'BCI:',BCI,BC
 
-
 M2I=L2I
 LJU=ISTORE(NI+9)  ! STORE THE EQUIVALENT INDICES AND THE PHASE SHifT
 LJV=ISTORE(NI+10)
@@ -4296,7 +4334,6 @@ BC=STORE(JREF_STACK_PTR+15)
 BCI=STORE(JREF_STACK_PTR+16)
 PSHifT=STORE(JREF_STACK_PTR+11)
 FRIED=STORE(JREF_STACK_PTR+12)
-
 ACT=AC+ACI*FRIED+ACT
 BCT=BC*FRIED+BCI+BCT
 
@@ -4390,7 +4427,7 @@ end if
 END
 
 
-subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore) 
+subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices) 
 !include 'ISTORE.INC'
 !include 'STORE.INC'
 !use store_mod, only: store, istore
@@ -4404,6 +4441,7 @@ integer, intent(in) :: jx, jo, jq, jr
 integer, intent(inout) :: md12a, m12
 integer, dimension(:), intent(in) :: istore
 real, dimension(:), intent(inout) :: store
+integer, dimension(:), intent(inout) :: shiftsaccumulation_indices
 
 integer ljt, lju
 
@@ -4430,6 +4468,7 @@ do WHILE ( L12A .GT. 0 )
             LJT=(ISTORE(LJU)-JR)/JQ  ! FIND PARAMETER IN DERIVATIVE STACK
             if(LJT.GE.0)THEN        ! PARAMETER HAS BEEN REFINED?
                 LJT=LJT+JO
+                shiftsaccumulation_indices(LJT)=LJT
                 if(MD12A.LT.2)THEN  ! IS WEIGHT GIVEN OR ASSUMED UNITY?
                     STORE(LJT)=STORE(LJT)+A              ! THE WEIGHT IS UNITY
                 else

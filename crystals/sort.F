@@ -1113,7 +1113,6 @@ C----- INSERTION
         ELSE IF (ITYPE .GT. 0) THEN
           IF (STORE(ITEM+IPOS) .GE. STORE(MSORT+IPOS)) IHIT = 1
         ELSE
-          print *, item, ipos, msort, ipos
           IF (ABS(STORE(ITEM+IPOS)) .GE. ABS(STORE(MSORT+IPOS))) IHIT=1
         ENDIF
         IF (IHIT .NE. 0) THEN

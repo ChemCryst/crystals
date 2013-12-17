@@ -812,6 +812,49 @@ C--AND NOW RETURN
       RETURN
       END
 C
+CODE FOR KFNR
+      integer function KFNRnew(state, L6W, N6W) result(kfnr)
+C--FETCH THE NEXT REFLECTION, CHECKING WITH LIST 28 THAT IT IS ALLOWED.
+C
+C----- state   0 FOR READ-ONLY
+C              1 FOR READ-WRITE
+C
+C--RETURN VALUES OF 'KFNR' ARE :
+C
+C  -1  END OF THE REFLCTIONS.
+C   0  REFLCTION READ TO BE USED, STORED AT 'M6'.
+C
+C--
+      use xlst06_mod, only: md6w
+      implicit none
+      integer, intent(in) :: state
+      integer, intent(inout) :: l6w, n6w
+      integer :: iallow
+      integer, external :: KLDRNR, kallow
+      
+C
+C--FETCH THE NEXT REFLECTION
+1000  CONTINUE
+      IF(KLDRNR(state))1100,1050,1050
+C--CHECK IF THE REFLECTION IS ALLOWED
+1050  CONTINUE
+      KFNR=0
+      IF(KALLOW(IALLOW)) 1060,1150,1150
+1060  CONTINUE
+      IF(state) 1000,1000,1070
+1070   CONTINUE
+      L6W=L6W+MD6W
+      N6W=N6W+1
+      !CALL XSLR(state)
+      GO TO 1000
+C--END OF THE REFLECTIONS FOUND
+1100  CONTINUE
+      KFNR=-1
+C--AND NOW RETURN
+1150  CONTINUE
+      RETURN
+      END
+C
 CODE FOR XSLR
       SUBROUTINE XSLR(IN)
 C--STORE THE LAST REFLECTION
@@ -881,10 +924,100 @@ C--OUTPUT THE DATA TO THE DISC
 1500  CONTINUE
       CALL XUPF(L6W, ISTORE(M6W), MD6W)
 C--UPDATE THE POINTERS
+      print *, 'pointer', L6w, md6w, n6w
       L6W=L6W+KINCRF(MD6W)
 C--UPDATE THE NUMBER OF REFLECTIONS OUTPUT
 1550  CONTINUE
       N6W=N6W+1
+      RETURN
+      END
+C
+CODE FOR XSLR
+      SUBROUTINE XSLRnew(dummy, store, l6w, n6w)
+      use store_mod, only: storelength
+      use xlst06_mod, only: md6w, L6DMP, m6, m6dmp, m6w
+      implicit none
+C--STORE THE LAST REFLECTION
+C
+C  IN  A DUMMY ARGUMENT, IN PLACE FOR COMPATIBILITY.
+C
+      real, PARAMETER :: SDJW=10.
+C--
+C      INCLUDE 'ISTORE.INC'
+C
+C      INCLUDE 'STORE.INC'
+      !INCLUDE 'XLST06.INC'
+      INCLUDE 'XPCK06.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XTAPED.INC'
+      INCLUDE 'XCONST.INC'
+C
+C      INCLUDE 'QSTORE.INC'
+      
+      integer, intent(in) :: dummy
+      real, dimension(storelength), intent(inout) :: store
+      integer, intent(in) :: l6w, n6w
+      real adjw, bdjw, cdjw
+      integer i, idwzap, j, k   
+      
+      integer, external :: kincrf
+C
+      IDWZAP = dummy
+      print *, 'xslr', m6, STORE(M6), STORE(M6+1), STORE(M6+2)
+C--CHECK IF THE INDICES SHOULD BE PACKED UP
+      IF(IPACKW)1050,1000,1000
+C--PACK THE INDICES
+1000  CONTINUE
+      STORE(M6+14)=STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*65536.
+C--CHECK IF THE PHASE AND BATCH NUMBER NEED PACKING UP
+1050  CONTINUE
+      IF(IPHSEW)1150,1100,1100
+C--PACK THE PHASE AND BATCH NUMBER
+1100  CONTINUE
+      STORE(M6+15)=STORE(M6+13)*20.+AMOD(STORE(M6+6),TWOPI)+10.
+C -- CHECK IF WE MUST PACK UP THE RATIO AND JCODE
+1150  CONTINUE
+      IF ( JCDRAW .GE. 0 ) THEN
+c this algorithm is better for -ve values, and is  
+c backwards compatible with old dsc files
+c changing the scale, sdjw, to 100 would be better still, but is
+c not backwards compatible
+        adjw=sign(1.,store(m6+20))
+        bdjw=min(1000000.,abs(store(m6+20)))  ! limit maximum I/sigma
+        cdjw = adjw*((anint(STORE(M6+18)) + 10.*nint(sdjw*bdjw)))
+        STORE(M6+31) = cdjw
+c
+c        STORE(M6+31) = STORE(M6+18) + 10.* ANINT ( 10. * STORE(M6+20) )
+      ENDIF
+C--MOVE THE DATA TO THE OUTPUT BUFFER
+      J=M6W
+C--CHECK FOR OUTPUT TO M/T
+      IF(L6W)1300,1300,1350
+C--OUTPUT TO M/T
+1300  CONTINUE
+      J=MMTW
+C--TRANSFER THE DATA TO THE OUTPUT BUFFER
+1350  CONTINUE
+      DO 1400 I=L6DMP,M6DMP
+      K=transfer(STORE(I), K)
+      STORE(J)=STORE(K)
+      J=J+1
+1400  CONTINUE
+C--CHECK FOR M/T OUTPUT
+      IF(L6W)1450,1450,1500
+C--M/T OUTPUT  -  UPDATE THE POINTERS
+1450  CONTINUE
+      CALL XIMTWA(MTB)
+      GOTO 1550
+C--OUTPUT THE DATA TO THE DISC
+1500  CONTINUE
+      CALL XUPF(L6W, transfer(STORE(M6W), 1), MD6W)
+C--UPDATE THE POINTERS
+      print *, 'pointer', L6w, md6w, n6w
+      !L6W=L6W+KINCRF(MD6W)
+C--UPDATE THE NUMBER OF REFLECTIONS OUTPUT
+1550  CONTINUE
+      !N6W=N6W+1
       RETURN
       END
 C
@@ -1412,6 +1545,7 @@ C--UNPACK THE REFLECTIONS
               !1250  CONTINUE
               A=FLOAT(NINT(STORE(M6+14)/256.))
               STORE(M6)=STORE(M6+14)-A*256.
+              !print *, 'KLDRNR', m6, STORE(M6)
               STORE(M6+2)=FLOAT(NINT(A/256.))
               STORE(M6+1)=A-STORE(M6+2)*256.
 C--CHECK IF THE PHASE AND BATCH NUMBER SHOULD BE UNPACKED
