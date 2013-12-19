@@ -1806,7 +1806,7 @@ real, dimension(:,:), allocatable :: tempstore
 integer, dimension(:), allocatable :: batches, layers, l6wpointers, n6wpointers
 integer tempstoremax, tempstorei
 real, dimension(16) ::  minimum_shared, maximum_shared, summation, summationsq
-real, dimension(:,:), allocatable ::  minimum, maximum
+real, dimension(16) ::  minimum, maximum
 real, dimension(:), allocatable :: shiftsaccumulation_shared
 integer, dimension(:), allocatable :: shiftsaccumulation_indices
 integer iposn
@@ -1968,7 +1968,8 @@ l6w=l6w-md6w
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 allocate(normalmatrix(JP-JO+1,JP-JO+1))
-!allocate(ref(JP-JO+1,JP-JO+1))
+allocate(designmatrix(JP-JO+1,storechunk))
+
 normalmatrix=0.0
 minimum_shared=huge(minimum_shared)
 maximum_shared=-huge(maximum_shared)
@@ -2055,7 +2056,7 @@ end if
 !$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
 !$OMP& shared(ltempl, jlever, nlever, mdleve, llever, designmatrix) &
 !$OMP& shared(l6wpointers, n6wpointers, l6w, n6w) &
-!$OMP& shared(ILEVPR, ibadr, cpt) &  ! atomic
+!$OMP& shared(ILEVPR, ibadr) &  ! atomic
 !$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d, storetemp, istoretemp) &
 !$OMP& firstprivate(jsort, lsort, r, designindex, red, tix, hkllab, ihkllen, ext3) &
 !$OMP& firstprivate(jp,jo) &
@@ -2065,42 +2066,30 @@ end if
 !$OMP& private(ljx, formatstr, iererr, sh, sk, sl, m25, ljv, ljs) &
 !$OMP& private(JREF_STACK_PTR, tempr, m5bs, g2sav, m2p, a, k, fcext, nq) &
 !$OMP& private(c, n, path, delta, ext1, ext2, ext4, fcexs, df, wdf) &
-!$OMP& private(s, uj, rdjw, vj, wj, t, pii, xvalul, tid, i) &
-!$OMP& shared(minimum, maximum, minimum_shared, maximum_shared) &
+!$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, pii, xvalul, tid, i) &
+!$OMP& shared(minimum_shared, maximum_shared) &
 !$OMP& shared(shiftsaccumulation_shared) &
 !$OMP& firstprivate(shiftsaccumulation_indices) &
 !$OMP& reduction(max:REDMAX) &
-!$OMP& reduction(+: normalmatrix, summation, summationsq, nt, fot, foabs) &
+!$OMP& reduction(+: summation, summationsq, nt, fot, foabs) &
 !$OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc) &
 !$OMP& reduction(+: sfo, sfc, righthandside, aminf) 
-
-!$OMP MASTER
-    tid=1
-!$  tid=omp_get_num_threads()
-    if(allocated(designmatrix)) deallocate(designmatrix)
-    allocate(designmatrix(JP-JO+1,storechunk*tid))
-    designmatrix=0.0
-    
-    if(allocated(minimum)) deallocate(minimum)
-    allocate(minimum(16, tid))
-    if(allocated(maximum)) deallocate(maximum)
-    allocate(maximum(16, tid))
     
     minimum=huge(minimum)
     maximum=-huge(maximum)
     if(ND<0)THEN
-        minimum(8:9,:)=0.0
-        maximum(8:9,:)=0.0
+        minimum(8:9)=0.0
+        maximum(8:9)=0.0
     end if    
-    
+
+!$OMP MASTER
+tid=1
+!$ tid=omp_get_num_threads()
+print *, 'threads used: ', tid
 !$OMP END MASTER
 
-tid=1
-!$ tid=omp_get_thread_num()+1
-
-!$OMP DO schedule(static)
+!$OMP DO
     do tempstorei=1, tempstoremax
-    cpt = cpt +1
     storetemp(M6:M6+MD6-1)=tempstore(:,tempstorei)
     !print *, storetemp(M6:M6+MD6-1)
 
@@ -2154,7 +2143,7 @@ tid=1
         call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, storetemp, istoretemp)
         JREF_STACK_PTR=istoretemp(JREF_STACK_START)
         call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, storetemp, istoretemp, scalew, jp, jo, jref_stack_ptr, acd, bcd)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
-        call XACRT(4, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
+        call XACRT(4, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
     else ! THIS IS A TWINNED CALCULATION  
         PH=storetemp(M6)  ! PRESERVE THE NOMINAL INDICES
         PK=storetemp(M6+1)
@@ -2317,7 +2306,7 @@ tid=1
         storetemp(M6+5)=storetemp(M6+5)*SCALES
 !          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
         p=storetemp(m6+6)
-        call XACRT(4, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
+        call XACRT(4, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
         if (SFLS_TYPE .EQ. SFLS_REFINE) then ! CHECK IF WE ARE DOING REFINEMENT
             storetemp(JO:JP)=0. ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
             JREF_STACK_PTR=JREF_STACK_START  
@@ -2384,8 +2373,8 @@ tid=1
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
         storetemp(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
         storetemp(M6+8)=BCT
-        call XACRT(8, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-        call XACRT(9, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)
+        call XACRT(8, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
+        call XACRT(9, minimum, maximum, summation, summationsq, storetemp, 16)
     end if
 
 !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
@@ -2604,9 +2593,9 @@ tid=1
     tempstore(:,tempstorei)=storetemp(M6:M6+MD6-1)
     !call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
     !call XSLRnew(1, storetemp, l6wpointers(tempstorei), n6wpointers(tempstorei))
-    call XACRT(6, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
-    call XACRT(7, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! AND THE PHASE
-    call XACRT(16,minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)
+    call XACRT(6, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
+    call XACRT(7, minimum, maximum, summation, summationsq, storetemp, 16)  ! AND THE PHASE
+    call XACRT(16,minimum, maximum, summation, summationsq, storetemp, 16)
  
     if(SFLS_TYPE .eq. SFLS_CALC) then ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
         tempr=(/1.0, ABS(ABS(FO)-FCEXS), ABS(FO), WDF**2, A**2 /)
@@ -2618,41 +2607,37 @@ tid=1
     
     end do
 !$OMP END DO
+    
+    ! merge minimum and maximum
+    do i=1, 16
+!$OMP ATOMIC      
+        minimum_shared(i)=min(minimum_shared(i), minimum(i))
+!$OMP ATOMIC          
+        maximum_shared(i)=max(maximum_shared(i), maximum(i))
+    end do    
 
-    ! Accumulating the normal matrix, each thread accumulate a part of the design matrix
+    ! merge shifts accumulation
+    do i=1, storelength
+        if(shiftsaccumulation_indices(i)>0) then
+!$OMP ATOMIC        
+            shiftsaccumulation_shared(i)= &
+            &   shiftsaccumulation_shared(i)+storetemp(i)
+        end if
+    end do
+
+!$OMP END PARALLEL
+
+    ! Accumulating the normal matrix
     if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
     &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
     &   ISTOREtemp(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
     &   ISTOREtemp(M33CD+13).NE.0)THEN    
         ! process the remaining chunk of design matrix
         ! Accumulate the normal matrix
-        tid=0
-!$      tid=omp_get_thread_num()
         call DSYRK('L','N',JP-JO+1,storechunk, &
-        &   1.0d0, designmatrix(1,storechunk*tid+1), &
+        &   1.0d0, designmatrix(1,1), &
         &   JP-JO+1,1.0d0,normalmatrix(1,1),JP-JO+1)    
     end if
-    
-!$OMP MASTER    
-    ! merge minimum and maximum
-    do i=1, 16
-        minimum_shared(i)=min(minimum_shared(i), minval(minimum(i,:)))
-        maximum_shared(i)=max(maximum_shared(i), maxval(maximum(i,:)))
-    end do
-    
-!$OMP END MASTER    
-
-!$OMP CRITICAL
-    ! merge shifts accumulation
-    do i=1, storelength
-        if(shiftsaccumulation_indices(i)>0) then
-            shiftsaccumulation_shared(i)= &
-            &   shiftsaccumulation_shared(i)+storetemp(i)
-        end if
-    end do
-!$OMP END CRITICAL
-
-!$OMP END PARALLEL
 
     ! writing new values back to the disk
     do tempstorei=1, tempstoremax
