@@ -1108,7 +1108,6 @@ else
 
      JREF_STACK_PTR = KCHNFL(N25*(N12*(JQ+1)+NY+NR*N2I)+1)
 !--PREPARE TO INITIALISE THE STACK
-     print *, 'Initializing the stack'
      JREF_STACK_PTR = JREF_STACK_START+1
      NI = JREF_STACK_START
      NJ = (N2T-1)*NR
@@ -1800,7 +1799,7 @@ double precision, dimension(:,:), allocatable :: designmatrix
 double precision, dimension(:,:), allocatable :: normalmatrix!, ref
 ! tid is the number of threads
 integer :: designindex, tid
-integer, parameter :: designchunk=512, storechunk=512
+integer, parameter :: designchunk=4096, storechunk=4096
 character(len=4) :: buffer
 
 real, dimension(:,:), allocatable :: tempstore
@@ -1950,7 +1949,7 @@ call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
 #endif
 
-allocate(tempstore(storechunk, MD6))
+allocate(tempstore(MD6,storechunk))
 allocate(layers(storechunk))
 allocate(batches(storechunk))
 allocate(l6wpointers(storechunk))
@@ -1958,55 +1957,10 @@ allocate(n6wpointers(storechunk))
 
 layers=-1 ! SET THE LAYER SCALING CONSTANTS INITIALLY
 batches=-1
-do tempstorei=1, storechunk
-    if( SFLS_TYPE .EQ. SFLS_CALC ) then
-    ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
-    ! in place.
-        do I28MN = L28MN,L28MN+((N28MN-1)*MD28MN),MD28MN
-            if(ISTORE(I28MN)-M6.EQ.20) then
-                SAVSIG = STORE(I28MN+1)
-                STORE(I28MN+1) = -99999.0
-            end if
-        end do
-    ! Fetch reflection using all other filters:
-        ifNR = KFNRnew(1, l6w, n6w)
-    ! Put sigma filter back:
-        do I28MN = L28MN,M28MN,MD28MN
-            if(ISTORE(I28MN)-M6.EQ.20) then
-                STORE(I28MN+1) = SAVSIG
-            end if
-        end do
-    else
-        ifNR = KFNRnew(1, l6w, n6w)
-    end if
-    if(ifnr>=0) then
-        print *, 'ref', STORE(M6:M6+2)
-        tempstore(tempstorei,:)=STORE(M6:M6+MD6-1)
-        l6wpointers(tempstorei)=l6w
-        n6wpointers(tempstorei)=n6w
+n6w=-1
+l6w=l6w-md6w
 
-        if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-            layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
-            if ( IERFLG .LT. 0 ) return ! GO TO 19900
-        end if    
-    
-        if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-            batches(tempstorei)=KBATCH(dummy)  ! FIND THE BATCH NUMBER AND SET THE SCALE
-            if ( IERFLG .LT. 0 ) return !GO TO 19900
-        end if    
-    
-    else
-        exit
-    end if
-end do
-tempstoremax=tempstorei-1
-if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-    layers=layers+L5LS-1
-end if
-if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-    batches=batches+m5bs-1
-end if
-    
+ 
     
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2039,7 +1993,56 @@ storetemp=store
 istoretemp=istore
 
 cpt=0
+tempstoremax=1
 do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
+
+do tempstorei=1, storechunk
+    if( SFLS_TYPE .EQ. SFLS_CALC ) then
+    ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
+    ! in place.
+        do I28MN = L28MN,L28MN+((N28MN-1)*MD28MN),MD28MN
+            if(ISTORE(I28MN)-M6.EQ.20) then
+                SAVSIG = STORE(I28MN+1)
+                STORE(I28MN+1) = -99999.0
+            end if
+        end do
+    ! Fetch reflection using all other filters:
+        ifNR = KFNRnew(1, l6w, n6w)
+    ! Put sigma filter back:
+        do I28MN = L28MN,M28MN,MD28MN
+            if(ISTORE(I28MN)-M6.EQ.20) then
+                STORE(I28MN+1) = SAVSIG
+            end if
+        end do
+    else
+        ifNR = KFNRnew(1, l6w, n6w)
+    end if
+    if(ifnr>=0) then
+        tempstore(:,tempstorei)=STORE(M6:M6+MD6-1)
+        l6wpointers(tempstorei)=l6w
+        n6wpointers(tempstorei)=n6w
+
+        if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
+            layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
+            if ( IERFLG .LT. 0 ) return ! GO TO 19900
+        end if    
+    
+        if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
+            batches(tempstorei)=KBATCH(dummy)  ! FIND THE BATCH NUMBER AND SET THE SCALE
+            if ( IERFLG .LT. 0 ) return !GO TO 19900
+        end if    
+    
+    else
+        exit
+    end if
+end do
+tempstoremax=tempstorei-1
+if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
+    layers=layers+L5LS-1
+end if
+if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
+    batches=batches+m5bs-1
+end if
 
 !$OMP PARALLEL default(none)&
 !$OMP& shared(nP, nO, M6, MD6, l6dtl, md6dtl, L5LS, layered, str11, n11r) &
@@ -2051,7 +2054,7 @@ do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
 !$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
 !$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
 !$OMP& shared(ltempl, jlever, nlever, mdleve, llever, designmatrix) &
-!$OMP& shared(l6wpointers, n6wpointers) &
+!$OMP& shared(l6wpointers, n6wpointers, l6w, n6w) &
 !$OMP& shared(ILEVPR, ibadr, cpt) &  ! atomic
 !$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d, storetemp, istoretemp) &
 !$OMP& firstprivate(jsort, lsort, r, designindex, red, tix, hkllab, ihkllen, ext3) &
@@ -2098,8 +2101,7 @@ tid=1
 !$OMP DO schedule(static)
     do tempstorei=1, tempstoremax
     cpt = cpt +1
-    print *, 'cpt', cpt
-    storetemp(M6:M6+MD6-1)=tempstore(tempstorei,:)
+    storetemp(M6:M6+MD6-1)=tempstore(:,tempstorei)
     !print *, storetemp(M6:M6+MD6-1)
 
     if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
@@ -2597,9 +2599,11 @@ tid=1
         end if
     end if
 
+    ! save the new values in the buffer
+    ! writing is delayed outside the loop
+    tempstore(:,tempstorei)=storetemp(M6:M6+MD6-1)
     !call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
-    !l6w=l6pointers(tempstorei)
-    call XSLRnew(1, storetemp, l6wpointers(tempstorei), n6wpointers(tempstorei))
+    !call XSLRnew(1, storetemp, l6wpointers(tempstorei), n6wpointers(tempstorei))
     call XACRT(6, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
     call XACRT(7, minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)  ! AND THE PHASE
     call XACRT(16,minimum(:,tid), maximum(:,tid), summation, summationsq, storetemp, 16)
@@ -2649,54 +2653,12 @@ tid=1
 !$OMP END CRITICAL
 
 !$OMP END PARALLEL
-        
-    do tempstorei=1, storechunk
-        if( SFLS_TYPE .EQ. SFLS_CALC ) then
-        ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
-        ! in place.
-            do I28MN = L28MN,L28MN+((N28MN-1)*MD28MN),MD28MN
-                if(ISTORE(I28MN)-M6.EQ.20) then
-                    SAVSIG = STORE(I28MN+1)
-                    STORE(I28MN+1) = -99999.0
-                end if
-            end do
-        ! Fetch reflection using all other filters:
-            ifNR = KFNRnew(1, l6w, n6w)
-        ! Put sigma filter back:
-            do I28MN = L28MN,M28MN,MD28MN
-                if(ISTORE(I28MN)-M6.EQ.20) then
-                    STORE(I28MN+1) = SAVSIG
-                end if
-            end do
-        else
-            ifNR = KFNRnew(1, l6w, n6w)
-        end if
-        if(ifnr>=0) then
-            tempstore(tempstorei,:)=STORE(M6:M6+MD6-1)
-            l6wpointers(tempstorei)=l6w
-            n6wpointers(tempstorei)=n6w
-            
-            if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-                layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
-                if ( IERFLG .LT. 0 ) return ! GO TO 19900
-            end if    
-        
-            if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-                batches(tempstorei)=KBATCH(dummy)  ! FIND THE BATCH NUMBER AND SET THE SCALE
-                if ( IERFLG .LT. 0 ) return !GO TO 19900
-            end if    
-        
-        else
-            exit
-        end if
+
+    ! writing new values back to the disk
+    do tempstorei=1, tempstoremax
+            storetemp(M6:M6+MD6-1)=tempstore(:,tempstorei)
+            call XSLRnew(1, storetemp, l6wpointers(tempstorei), n6wpointers(tempstorei))
     end do
-    tempstoremax=tempstorei-1
-    if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-        layers=layers+L5LS-1
-    end if
-    if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-        batches=batches+m5bs-1
-    end if
 
 END do  ! END OF REFLECTION LOOP
 
@@ -2893,7 +2855,7 @@ if (ILEVPR .GT. 0) then
     if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
 
     do  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, 2*MDLEVE
-        write (CMON,'(2(3I4,F6.3,X,F7.5,F10.3,5X))') &
+        write (CMON,'(2(3I4,F6.3,1X,F7.5,F10.3,5X))') &
         &   ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2), &
         &   (STORE(IXAP), IXAP= JXAP+3,JXAP+4), &
         &   STORE(JXAP+5)-STORE(JXAP+6), &

@@ -825,7 +825,8 @@ C  -1  END OF THE REFLCTIONS.
 C   0  REFLCTION READ TO BE USED, STORED AT 'M6'.
 C
 C--
-      use xlst06_mod, only: md6w
+      use xlst06_mod, only: md6w, m6
+      use store_mod, only: store
       implicit none
       integer, intent(in) :: state
       integer, intent(inout) :: l6w, n6w
@@ -835,6 +836,8 @@ C--
 C
 C--FETCH THE NEXT REFLECTION
 1000  CONTINUE
+      L6W=L6W+MD6W
+      N6W=N6W+1
       IF(KLDRNR(state))1100,1050,1050
 C--CHECK IF THE REFLECTION IS ALLOWED
 1050  CONTINUE
@@ -843,8 +846,6 @@ C--CHECK IF THE REFLECTION IS ALLOWED
 1060  CONTINUE
       IF(state) 1000,1000,1070
 1070   CONTINUE
-      L6W=L6W+MD6W
-      N6W=N6W+1
       !CALL XSLR(state)
       GO TO 1000
 C--END OF THE REFLECTIONS FOUND
@@ -924,7 +925,6 @@ C--OUTPUT THE DATA TO THE DISC
 1500  CONTINUE
       CALL XUPF(L6W, ISTORE(M6W), MD6W)
 C--UPDATE THE POINTERS
-      print *, 'pointer', L6w, md6w, n6w
       L6W=L6W+KINCRF(MD6W)
 C--UPDATE THE NUMBER OF REFLECTIONS OUTPUT
 1550  CONTINUE
@@ -963,7 +963,6 @@ C      INCLUDE 'QSTORE.INC'
       integer, external :: kincrf
 C
       IDWZAP = dummy
-      print *, 'xslr', m6, STORE(M6), STORE(M6+1), STORE(M6+2)
 C--CHECK IF THE INDICES SHOULD BE PACKED UP
       IF(IPACKW)1050,1000,1000
 C--PACK THE INDICES
@@ -1011,9 +1010,8 @@ C--M/T OUTPUT  -  UPDATE THE POINTERS
       GOTO 1550
 C--OUTPUT THE DATA TO THE DISC
 1500  CONTINUE
-      CALL XUPF(L6W, transfer(STORE(M6W), 1), MD6W)
+      CALL XUPF(L6W, transfer(STORE(M6W:M6W+MD6W-1), 1, MD6W), MD6W)
 C--UPDATE THE POINTERS
-      print *, 'pointer', L6w, md6w, n6w
       !L6W=L6W+KINCRF(MD6W)
 C--UPDATE THE NUMBER OF REFLECTIONS OUTPUT
 1550  CONTINUE
