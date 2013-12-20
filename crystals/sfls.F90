@@ -1,374 +1,6 @@
 !$Rev::                                      $:  Revision of last commit
 !$Author::                                   $:  Author of last commit
 !$Date::                                     $:  Date of last commit
-! Revision 1.96  2013/11/26 11:49:02  pascal
-! removed not used arguments from srtdwn
-!
-! Revision 1.95  2013/11/06 12:06:34  pascal
-! catch singularity during inversion and returning an error
-!
-! Revision 1.94  2013/11/05 15:37:35  pascal
-! replace single precision AA^t accumulation with double precision
-!
-! Revision 1.93  2013/10/15 11:49:17  pascal
-! better determination of the number of threads, slightly optimisation of a loop
-!
-! Revision 1.91  2013/10/11 16:21:58  pascal
-! openmp threads for the accumulation using serial blas functions
-!
-! Revision 1.90  2013/10/10 13:07:58  pascal
-! exp, sin and cos replaced by fast purec functions
-!
-! Revision 1.87  2013/10/07 13:53:27  pascal
-! Fixed copyin/copyout resulting in a too big stack allocatation
-!
-! Revision 1.86  2013/09/24 08:52:29  rich
-! Change test for unaccumulated matrix elements
-! Change syntax of #if - possible intel parse error.
-!
-! Revision 1.85  2013/09/24 08:38:58  rich
-! The digital compiler can't handle big F90 allocation of memory (gives a stack overflow). Reduced size of SFLS accumulation buffer for this platform.
-!
-! Revision 1.84  2013/09/22 21:43:39  rich
-! Improved accumulation.
-!
-! Revision 1.83  2013/09/19 21:35:39  rich
-! Change precision of listing output where not important to reduce differences across platforms.
-! Important changes - SFLS now uses builtin cos() and sin() functions rather than Chebyshev
-! approximations.
-!
-! Revision 1.82  2013/05/10 14:07:52  djw
-! Remove code sorting and saving enentiomer sensitive reflections.  This is now all handled in the Analyse Absolute
-! structure script.  Although computation is not changed, there are tiny effects in the nth decimal place
-!
-! Revision 1.81  2012/08/24 16:19:32  djw
-! Lowest value of Umin was incorrectly initialised. No effect on test decks
-!
-! Revision 1.80  2012/03/20 10:28:25  rich
-! Update L30 with L28 ratio value during SFLS.
-!
-! Revision 1.79  2012/01/05 13:59:18  djw
-! Provide more sig fig for different scalefactors
-!
-! Revision 1.78  2012/01/04 14:31:25  rich
-! Fix some uninitialized variables, and output format mistakes.
-!
-! Revision 1.77  2011/11/03 09:20:16  rich
-! Output of leverage stats.
-!
-! Revision 1.76  2011/09/05 08:40:28  djw
-! *** empty log message ***
-!
-! Revision 1.74  2011/09/01 12:16:26  djw
-! Compute the weighted and unweighted overall scale factor by the method of Luc.  The 5 different methods now available have different responses to errors in the model or data
-!
-! Revision 1.73  2011/05/13 11:16:51  djw
-! Calls to Kallow now return a key to the test which failed and a value to indicate if it was Max or Min. The argument of KALLOW must be a variable
-!
-! Revision 1.72  2011/05/04 13:25:54  rich
-! Correct reflection count for FO/FC statistics during SFLS.
-! Add
-!
-! Revision 1.71  2011/02/18 17:11:42  djw
-! output means of averages.  Delta should be zero.
-!
-! Revision 1.70  2011/01/20 15:49:03  djw
-! Another attempt to remove all the dual wavelength stuff
-!
-! Revision 1.69  2011/01/17 15:40:14  rich
-! Fix o/w of disk lexical data in dsc file when disk index block is extended.
-!
-! Committed on the Free edition of March Hare Software CVSNT Client.
-! Upgrade to CVS Suite for more features and support:
-! http://march-hare.com/cvsnt/
-!
-! Revision 1.68  2010/12/14 13:06:54  djw
-! remove dual wavelength stuff
-!
-! Revision 1.67  2010/09/20 15:07:55  djw
-! Edit cvs comments
-!
-! Revision 1.66  2010/09/20 15:05:41  djw
-! Enable use of dual wavelength data
-!
-! Dual Wavelength Refinement.       Sept 1010
-!
-! Dual wavelength machine are becoming increasingly common.  This provides
-! the possibility of simultaneously carrying out a high resolution refinement
-! (with the Mo data) with good leverage on the hydrogen atoms and the absolute
-! configuration (Cu data).
-!
-! Data Storage:
-!
-! Reflections for both Mo and Cu data.
-! Extinction correction for each radiation
-! Batch scale factor for each radiation
-! Weighting scheme for each radiation
-! f' and f" for each radiation
-!
-! Programming issues:
-!
-! Merge:  Ability to merge reflections keeping the different wavelengths separate.
-! Agreement Analysis on each wavelength separately
-! Fourier.  All data for one or other wavelength.
-! Fourier.  Possibly 'correct' Fo for extinction and then merge scaled data
-!   for both radiations.
-! Ton Speks Bivjoet code.  Handle wavelengths separately or sequentially.
-!
-!
-!
-! Problems with CRYSTALS implementation:
-!
-! 1. No proper place to store f' f" for secondary radiation.
-! 2. No mechanism for storing value of secondary wavelength
-! 3. No mechanism for indicating wavelength used for each reflection
-! 4. Only one extinction correction stored
-!
-! 1. f' f" currently tagged on to the end of a LIST 3 record.
-! 2. Assume Mo is principal and Cu secondary wavelngth
-! 3. Use the 'BATCH'' identifier as the wavelength selector (1=Mo, 2=Cu)
-! and the batch scalefactors as the wavelength scalefaactors
-! 4. There are unused OVERALL parameters for anisotropic extinction (for
-! neutron work).  This was never completed because there was (at that time)
-! no general agreement about the best expression for extinction.
-!
-!
-! Redesign Features
-!
-! For each reflection h,k,l store lambda and  the intensity and sigma
-! for the reflection itself and its Friedel pair for each wavelength.
-! This would lead to significant economy at execution time because most
-! of the expression is wavelength independent.
-!
-! Revision 1.65  2010/08/06 07:10:10  djw
-! Further attempts to fix twinniNg for Centred cells and those with reflections from component 2
-!
-! Revision 1.64  2010/07/21 16:11:10  djw
-! Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the 
-! unique operators. This works for the 'presences', but gives non-zero results for the absences.  
-! These must be kept incase a twin element contribution overlaps it.   
-! Treat the left-most element as the parent. However, his leads to problems if the key is, 
-! for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but 
-! the twin matix (incorreclty).
-!
-! TO BE SORTED OUT.
-!
-! Revision 1.63  2010/06/10 08:11:28  djw
-! c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which adds together
-! c  the contributions to A from atoms at x and x+1/2 (ie multiplies A by 2)
-! c  For a systematic absence it should subtract the contrinution fro x+1/2, ie A=0 etc.
-! c  As originally written, the program gets FC > 0 for absences.
-! c  This should not matter for untwinned crystals, since the absences should have been removed.
-! c  For twins, the second component may overlap with a systematic absence from the first
-! c  component so we must check for this an ensure the contribution from the first is zero.
-!
-! Revision 1.62  2010/05/06 09:33:04  djw
-! Ensure original reflection indices are maintained in LIST 6 (ancient bug which only shows if elements are of the for 2 or 21 etc)
-!
-! Revision 1.61  2009/10/21 10:39:13  djw
-! Also update list 30 if SCALE done.  This enable the SCRIPTS to make a better guess at the quality of the input model
-!
-! Revision 1.60  2009/07/20 10:35:18  djw
-! Copy low leverage reflctions to the screen
-!
-! Revision 1.59  2009/06/18 07:11:20  djw
-! Message when extparam goes -ve
-!
-! Revision 1.58  2009/06/08 14:24:39  djw
-! Fix checking of polarity and enantiopole in LIST 12, and move initialisation of FLack refinement from SFLS to LIST12
-!
-! Revision 1.57  2009/06/04 14:32:11  djw
-! compute GOF for X-ray data only
-!
-! Revision 1.56  2009/06/03 15:26:01  djw
-! Add missing ABS() in enantiopole checking
-!
-! Revision 1.55  2009/04/08 08:45:14  rich
-! Use .EQV. not .EQ. for logical operands at line 588
-!
-! Revision 1.54  2009/04/08 07:33:02  djw
-! Start Flack parameter from 0.5 if it has not previously been refined
-!
-! Revision 1.53  2009/03/17 07:34:22  djw
-! Watch out for -ve values in the denominator of R and Rw
-!
-! Revision 1.52  2009/03/02 09:52:36  djw
-! If a twin scale factor goes negative, reset it to zero and scale remaining factors so that sum is unity otherwise SUMFIX uses incorrect target
-!
-! Revision 1.51  2008/02/14 11:04:16  djw
-! Add more comments
-!
-! Revision 1.50  2007/10/09 07:03:15  djw
-! Output more R-factors to cif
-!
-! Revision 1.49  2006/08/02 06:21:04  djw
-! Change captions to most disagreeable reflection list
-!
-! Revision 1.48  2005/05/31 11:34:58  djw
-! Try to sort out use of L33CD and M33CD in SFLS.FPP
-!
-! Revision 1.47  2005/05/26 10:10:47  djw
-! Enable REF and CALC to be given in the same SFLS instruction.  CALC must be last command
-!
-! Revision 1.46  2005/05/19 15:30:21  djw
-! Highlight NPD atoms in CMON output
-!
-! Revision 1.45  2005/05/13 12:06:32  stefan
-! 1. The memory allocation for param list is now done in the param_list_make routine and so has been removed from here.
-!
-! Revision 1.44  2005/05/12 13:35:35  stefan
-! 1. The memory allocation for the parameter list is done a little better but still isn't perfect.
-!
-! Revision 1.43  2005/03/08 13:03:45  stefan
-! 1. Replaced code for param-list accumalation with new call which can handle a blocked normal matrix.
-!
-! Revision 1.42  2005/02/10 15:07:04  djw
-! Warn user if scalefactor goes out of range
-!
-! Revision 1.5  2005/01/17 14:08:03  rich
-! Bring new repository into line up-to-date with old. (Remove debugging output,
-! correct a variable name, output warning message.).
-!
-! Revision 1.4  2005/01/07 11:56:35  rich
-! Change some zeroes into o's. Typos, I think.
-!
-! Revision 1.3  2004/12/15 16:02:40  rich
-! Bring up to date with parallel version.
-!
-! Revision 1.2  2004/12/13 16:16:09  rich
-! Changed GIL to _GIL_ etc.
-!
-! Revision 1.1.1.1  2004/12/13 11:16:07  rich
-! New CRYSTALS repository
-!
-! Revision 1.38  2004/11/18 16:48:51  stefan
-! 1. Added code to create a paramlist from the bonded atoms.
-! 2. Added code to using the param list to accumerlat the paramlist
-! 3. Added some code to time sflsc
-!
-! Revision 1.37  2004/10/11 10:37:10  djw
-! Output enantiomer & high GOF info to listinf file
-!
-! Revision 1.36  2004/10/01 08:25:39  rich
-! Fixed syntax errors (AlOl).
-!
-! Revision 1.35  2004/09/30 15:52:57  rich
-! Uh-oh. SFLS reorganised quite a lot.
-!
-! Revision 1.34  2004/06/17 10:31:25  rich
-! Add computation and plotting of Prince t^2/(1+Pii) values to the SFLS
-! routine. (Only called if REFINE LEV=n where n>0 is specified).
-!
-! Revision 1.33  2004/05/13 15:26:21  rich
-! Make SFLS do a leverage plot if correct incantation is specified.
-!
-! Revision 1.32  2004/04/16 09:42:28  rich
-! Added code to compute leverages of individual reflections, instead of accummulating
-! a new normal matrix. (Requires matching inverted normal matrix from a previous cycle).
-!
-! Revision 1.31  2004/03/24 15:03:39  rich
-! Fixed: U[iso] too small message was never output due to linefeed in FORMAT statement.
-! (Symptom: lots of blank lines output, followed by 'n temperature factors too small' message).
-!
-! Revision 1.30  2003/02/14 17:09:02  djw
-! Extend codes to work wih list 6 and list 7.  Note that sfls, calc and
-! recine have the parameter ityp06, which corresponds to the types
-! pickedip for lists 6 and 7  from the command file
-!
-! Revision 1.29  2003/01/15 15:26:39  rich
-! Removal of NCAWU calls throught the standard SFLS refinement instruction. If
-! anywhere will benefit from less IO, it's here.
-!
-! Revision 1.28  2003/01/15 13:50:35  rich
-! Remove all output to NCAWU as part of an ongoing project.
-!
-! Revision 1.27  2002/12/04 14:31:11  rich
-! Reformat output during refinement.
-!
-! Allow punching to MATLAB files, including restraints.
-!
-! Tidy some routines.
-!
-! Revision 1.26  2002/10/31 13:27:53  rich
-!
-! Two changes: Default I/u(I) cutoff is now 2.0 when called from RESULTS.
-! The calculation of R_gt and R_all now respect all L28 cutoffs EXCEPT
-! the I/u(I) minimum value. This is more like the IUCr definition (which
-! states that these values should respect the theta limits.) The IUCr don't
-! mention OMITted reflections, but it's unlikely anyone wants these in
-! the R_gt and R_all values.
-!
-! Revision 1.25  2002/09/27 14:43:46  rich
-! Overwrite L5 when updating SCALE factor only.
-! Some placeholder comments for Flack's unplaced e- density stuff.
-!
-! Revision 1.24  2002/07/15 11:58:14  richard
-! Update L30 R and Rw for refinement when doing a CALC. (A calc is done during
-! Cif production which ensures that these values are truly uptodate.)
-!
-! Revision 1.23  2002/06/07 16:06:06  richard
-! New MODE parameter for SFLSB, set to -1, when called from the Cif code, it
-! recalculates R-factors at either the L28 cutoff sigma value, or if there is no
-! cutoff in L28, the at I>4u(I). These R-factors are store in L30 (CALC-R, etc).
-!
-! Also indented and simplified some of the code a bit.
-!
-! Revision 1.22  2002/03/18 10:01:22  richard
-! Minor bug in CALC THRESHOLD fixed.
-!
-! Revision 1.21  2002/03/12 18:03:55  ckp2
-! Only print "unwise" warning when twinned data, if user actually attempts extinction
-! calculation.
-!
-! Revision 1.20  2002/03/11 12:06:11  Administrator
-! enable axtinction and twinning, hightlight warning about inadvisability
-!
-! Revision 1.19  2002/03/06 15:35:53  Administrator
-! Fix a format statement, enable Extinction and TWINS to be refined together
-!
-! Revision 1.18  2002/02/12 12:54:49  Administrator
-! Allow filtering of reflections in SFLS/CALC
-!
-! Revision 1.17  2002/02/01 14:41:30  Administrator
-! Enable CALC to get additional R factors and display them in SUMMARY
-!
-! Revision 1.16  2001/10/08 12:25:59  ckp2
-!
-! All program sub-units now return to the main CRYSTL() function inbetween commands.
-! The changes made are: in every sub-program the GOTO's that used to loop back for
-! the next KNXTOP command have been changed to return's. In the main program KNXTOP is now
-! called at the top of the loop, but first the current ProgramName (KPRGNM) array is cleared
-! to ensure the KNXTOP knows that it is not in the correct sub-program already. (This
-! is the way KNXTOP worked on the very first call within CRYSTALS).
-!
-! We now have one location (CRYSTL()) where the program flow returns between every command. I will
-! put this to good use soon.
-!
-! Revision 1.15  2001/08/14 10:47:06  ckp2
-! FLOAT(NINT()) all indices transformed by L25 twinning matrices just in case
-! the twin law doesn't quite bring them onto an integer. (The user had better
-! know what they are doing).
-!
-! Revision 1.14  2001/07/11 10:18:51  ckpgroup
-! Enable -ve Flack Parameter
-!
-! Revision 1.13  2001/06/08 15:03:37  richard
-! Fix: Store F/F2 state from L23 into the correct slot in L30.
-!
-! Revision 1.12  2001/03/18 10:34:47  richard
-! Sfls was updating wrong parameter in L30, overwriting structure soln with Rw.
-!
-! Revision 1.11  2001/03/16 16:54:55  CKP2
-! Update list 30
-!
-! Revision 1.10  2001/03/02 17:03:46  CKP2
-! djw put common block \xsfwk inti macrifile, and extend for (more!) cif
-! items
-!
-! Revision 1.9  2001/02/26 10:29:08  richard
-! Added changelog to top of file
-!
-!
 
 !CODE FOR XSFLSB
 subroutine XSFLSB (MODE, ITYP06)
@@ -1041,30 +673,25 @@ else                             ! REFINEMENT
     JO=JR       ! SET UP THE STACK FOR THE COMPLETE PARTIAL DERIVATIVES
     JP=JO+N12-1
 
-    if ( ILEV .NE. 0 ) then  ! CHECK IF WE NEED THE L.H.S.
-        call XSET11(0,1,1)  ! Need old matrices for working out leverage.
+    if(NEWLHS) then           ! SET UP A NEW MATRIX   MATRIX=NEW (default)
+        call XSET11(-1,1,1)
         if ( IERFLG .LT. 0 ) return
-    else
-        if(NEWLHS) then           ! SET UP A NEW MATRIX   MATRIX=NEW (default)
-            call XSET11(-1,1,1)
-            if ( IERFLG .LT. 0 ) return
-            if (ISTORE(M33CD+13) .EQ. 0) then ! See if sparse is set to bond
+        if (ISTORE(M33CD+13) .EQ. 0) then ! See if sparse is set to bond
 !                     iresults = KSTALL(N11)
 !                     print *, N11, NRESULTS
 !                     NRESULTS = param_list_make(istore(IRESULTS), N11, JR,
 !     1                JQ)
-                NRESULTS = param_list_make(IRESULTS, JR, JQ)
+            NRESULTS = param_list_make(IRESULTS, JR, JQ)
 !            print *, N11, NRESULTS
 ! Allocate the rest of the memory we have already used. this is horrible but there
 ! isn't any other way to do it unless I create a chain(linked list)
 !               inewresult = KSTALL(NRESULT) 
-            end if
-        else                       ! WE ONLY NEED THE R.H.S. MATRIX=OLD (Old LHS will be loaded later)
-            call XSET11(0,0,1)
-            if ( IERFLG .LT. 0 ) return
-            M11R=L11R+N11R-1  
-            STR11(L11R:M11R)=0. ! CLEAR THE R.H.S. OF THE OLD NUMBERS
         end if
+    else                       ! WE ONLY NEED THE R.H.S. MATRIX=OLD (Old LHS will be loaded later)
+        call XSET11(0,0,1)
+        if ( IERFLG .LT. 0 ) return
+        M11R=L11R+N11R-1  
+        STR11(L11R:M11R)=0. ! CLEAR THE R.H.S. OF THE OLD NUMBERS
     end if
 
 !--CHECK THAT THERE IS ROOM TO OUTPUT THE MATRIX
@@ -1717,11 +1344,11 @@ interface
 end interface
 
 interface
-    subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)
+    subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, reflectiondata, store, istore)
         implicit none
         real, intent(out) :: ACD, BCD, tc, sst
         real, intent(inout) :: smin, smax, bc, ac, g2
-        real, dimension(:), intent(inout) :: store
+        real, dimension(:), intent(inout) :: store, reflectiondata
         integer, dimension(:), intent(inout) :: istore
         integer, intent(inout) :: nn, nm
         integer, intent(in) :: nl, nr, jo, jp
@@ -1766,10 +1393,10 @@ integer, intent(out) :: ierflg
 character(len=15) :: hkllab
 character(len=256) :: formatstr
 integer i, ibadr, iallow,  ibl, ibs, ifnr, ihkllen, ilevpr
-integer ixap, ibatch, i28mn, jlever, jxap, jsort, ljs, ljt
-integer lju, ljv, ljx, llever, lsort, ltempl, ltempr, msort
-integer mnr, mlever, mdsort, mdleve, mb, layer, k, j, nsort
-integer ntempl, nq, np, no, nlever, ntempr, nk, nj, n, mstr, ni
+integer ixap, ibatch, i28mn, jxap, jsort, ljs, ljt
+integer lju, ljv, ljx, lsort, ltempl, ltempr, msort
+integer mnr, mdsort, mdleve, mb, layer, k, j, nsort
+integer ntempl, nq, np, no, ntempr, nk, nj, n, mstr, ni
 integer dummy
 real pk, pii, ph, path, fot, scaleb, savsig, rlevnm, redmax, red
 real rdjw, pol2, pol1, pl, sh
@@ -1802,9 +1429,14 @@ integer :: designindex, tid
 integer, parameter :: designchunk=4096, storechunk=4096
 character(len=4) :: buffer
 
-real, dimension(:,:), allocatable :: tempstore
+!> Buffer holding reflections data of several reflections
+!! reflectionsdata_size reflections stored by columns (md6 values from m6 in original store)
+real, dimension(:,:), allocatable :: reflectionsdata
 integer, dimension(:), allocatable :: batches, layers, l6wpointers, n6wpointers
-integer tempstoremax, tempstorei
+!> Number of reflections stores in the reflectionsdata buffer
+integer reflectionsdata_size
+!> Current index in the reflectionsdata buffer
+integer reflectionsdata_index
 real, dimension(16) ::  minimum_shared, maximum_shared, summation, summationsq
 real, dimension(16) ::  minimum, maximum
 real, dimension(:), allocatable :: shiftsaccumulation_shared
@@ -1815,6 +1447,26 @@ real, dimension(:), allocatable :: storetemp
 integer, dimension(:), allocatable :: istoretemp
 double precision, dimension(:), allocatable :: righthandside
 integer cpt
+
+interface
+    SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, reflectiondata)
+    implicit none
+    integer, intent(in) :: iposn
+    real, dimension(:), intent(inout):: minimum, maximum
+    real, dimension(:), intent(inout):: summation, summationsq
+    real, dimension(:), intent(in) :: reflectiondata
+    end subroutine
+end interface
+
+interface
+    subroutine XSLRnew(reflectiondata, store, l6w, n6w)
+    implicit none
+    real, dimension(:), intent(inout) :: store, reflectiondata
+    integer, intent(in) :: l6w, n6w
+    end subroutine
+end interface
+
+
 
 ierflg = 0
 
@@ -1834,31 +1486,6 @@ NSORT = 30
 call SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
 JSORT = 5 ! useless, if jsort<0, on return jsort is abs(jsort)
 
-
-if (ISTORE(M33CD+12).NE.0) then    ! Leverage calc.
-!----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
-    LTEMPL = NFL
-    NTEMPL = 7              ! Seven items to be stored: H,K,L,STL2,LEV,FO,FC
-    NFL = KCHNFL(LTEMPL)    ! Make the space
-!----- INITIALISE THE SORT BUFFER
-    JLEVER = -5             ! Sort on the fifth item (NB: abs)
-    MDLEVE = NTEMPL         ! Five items to be stored
-    NLEVER = 30             ! Worst 30 reflections to be kept
-    call SRTDWN(LLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,-1) ! Init
-    JLEVER = 4              ! Sort on the fifth item (NB: offset)
-    REDMAX = 0.0
-
-    write(CMON,'(A,6(/,A))') &
-    &   '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP', &
-    &   '^^PL XAXIS TITLE ''k x Fo'' NSERIES=2 LENGTH=2000', &
-    &   '^^PL YAXIS TITLE ''Leverage, Pii'' ZOOM 0.0 1.0', &
-    &   '^^PL YAXISRIGHT TITLE ''tij**2/(1+Pii)''', &
-    &   '^^PL SERIES 1 TYPE SCATTER SERIESNAME ''Leverage''', &
-    &   '^^PL SERIES 2 TYPE SCATTER', &
-    &   '^^PL SERIESNAME ''Influence of remeasuring'' USERIGHTAXIS'
-    call XPRVDU(NCVDU, 7,0)
-
-end if
 
 !----- SET PRINT COUNTER
 IENPRT = -1
@@ -1949,7 +1576,7 @@ call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
 #endif
 
-allocate(tempstore(MD6,storechunk))
+allocate(reflectionsdata(MD6,storechunk))
 allocate(layers(storechunk))
 allocate(batches(storechunk))
 allocate(l6wpointers(storechunk))
@@ -1994,10 +1621,10 @@ storetemp=store
 istoretemp=istore
 
 cpt=0
-tempstoremax=1
-do WHILE (tempstoremax>0)  ! START OF THE LOOP OVER REFLECTIONS
+reflectionsdata_size=1
+do WHILE (reflectionsdata_size>0)  ! START OF THE LOOP OVER REFLECTIONS
 
-do tempstorei=1, storechunk
+do reflectionsdata_index=1, storechunk
     if( SFLS_TYPE .EQ. SFLS_CALC ) then
     ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
     ! in place.
@@ -2008,7 +1635,7 @@ do tempstorei=1, storechunk
             end if
         end do
     ! Fetch reflection using all other filters:
-        ifNR = KFNRnew(1, l6w, n6w)
+        ifNR = KFNRnew(1, l6w, n6w, reflectionsdata(:,reflectionsdata_index))
     ! Put sigma filter back:
         do I28MN = L28MN,M28MN,MD28MN
             if(ISTORE(I28MN)-M6.EQ.20) then
@@ -2016,20 +1643,21 @@ do tempstorei=1, storechunk
             end if
         end do
     else
-        ifNR = KFNRnew(1, l6w, n6w)
+        ifNR = KFNRnew(1, l6w, n6w, reflectionsdata(:,reflectionsdata_index))
     end if
     if(ifnr>=0) then
-        tempstore(:,tempstorei)=STORE(M6:M6+MD6-1)
-        l6wpointers(tempstorei)=l6w
-        n6wpointers(tempstorei)=n6w
+        !print *, 's', reflectionsdata(:,reflectionsdata_index)
+        !store(m6:m6+md6-1)=reflectionsdata(:,reflectionsdata_index)
+        l6wpointers(reflectionsdata_index)=l6w
+        n6wpointers(reflectionsdata_index)=n6w
 
         if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-            layers(tempstorei)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
+            layers(reflectionsdata_index)=KLAYERnew(dummy, ierflg)  ! FIND THE LAYER NUMBER AND SET ITS VALUE
             if ( IERFLG .LT. 0 ) return ! GO TO 19900
         end if    
     
         if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-            batches(tempstorei)=KBATCH(dummy)  ! FIND THE BATCH NUMBER AND SET THE SCALE
+            batches(reflectionsdata_index)=KBATCH(dummy)  ! FIND THE BATCH NUMBER AND SET THE SCALE
             if ( IERFLG .LT. 0 ) return !GO TO 19900
         end if    
     
@@ -2037,7 +1665,7 @@ do tempstorei=1, storechunk
         exit
     end if
 end do
-tempstoremax=tempstorei-1
+reflectionsdata_size=reflectionsdata_index-1
 if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
     layers=layers+L5LS-1
 end if
@@ -2046,15 +1674,15 @@ if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
 end if
 
 !$OMP PARALLEL default(none)&
-!$OMP& shared(nP, nO, M6, MD6, l6dtl, md6dtl, L5LS, layered, str11, n11r) &
-!$OMP& shared(batched,twinned, JREF_STACK_START, tempstoremax) &
-!$OMP& shared(tempstore, layers, batches, scaleo, partials, nr, n25) &
+!$OMP& shared(nP, nO, L5LS, layered, str11, n11r) &
+!$OMP& shared(batched,twinned, JREF_STACK_START, reflectionsdata_size) &
+!$OMP& shared(reflectionsdata, layers, batches, scaleo, partials, nr, n25) &
 !$OMP& shared(issprt, ncwu, cmon, ncvdu, md25, l25, n2p, l2p, m5es, nf) &
 !$OMP& shared(scaled_fot, sfls_type, extinct, wave, l12es, jr, jq, del, nu) &
 !$OMP& shared(pol1, pol2, ext, nd, nv, iallow, xvalur,LTEMPR, nsort, mdsort) &
 !$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
 !$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
-!$OMP& shared(ltempl, jlever, nlever, mdleve, llever, designmatrix) &
+!$OMP& shared(ltempl, designmatrix) &
 !$OMP& shared(l6wpointers, n6wpointers, l6w, n6w) &
 !$OMP& shared(ILEVPR, ibadr) &  ! atomic
 !$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d, storetemp, istoretemp) &
@@ -2069,7 +1697,7 @@ end if
 !$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, pii, xvalul, tid, i) &
 !$OMP& shared(minimum_shared, maximum_shared) &
 !$OMP& shared(shiftsaccumulation_shared) &
-!$OMP& firstprivate(shiftsaccumulation_indices) &
+!$OMP& private(shiftsaccumulation_indices) &
 !$OMP& reduction(max:REDMAX) &
 !$OMP& reduction(+: summation, summationsq, nt, fot, foabs) &
 !$OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc) &
@@ -2089,19 +1717,19 @@ print *, 'threads used: ', tid
 !$OMP END MASTER
 
 !$OMP DO
-    do tempstorei=1, tempstoremax
-    storetemp(M6:M6+MD6-1)=tempstore(:,tempstorei)
+    do reflectionsdata_index=1, reflectionsdata_size
+    !storetemp(M6:M6+MD6-1)=reflectionsdata(:,reflectionsdata_index)
     !print *, storetemp(M6:M6+MD6-1)
 
     if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-        M5LS=layers(tempstorei)
+        M5LS=layers(reflectionsdata_index)
         SCALEL=storetemp(M5LS)
     else
         SCALEL=1.0
     end if
 
     if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-        M5BS=batches(tempstorei)
+        M5BS=batches(reflectionsdata_index)
         SCALEB=storetemp(M5BS)
     else
         scaleb=1.0
@@ -2122,14 +1750,14 @@ print *, 'threads used: ', tid
     BCN = 0.
 !--CHECK if THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
     if(PARTIALS) then 
-        ACT=storetemp(M6+7)
-        BCT=storetemp(M6+8)
+        ACT=reflectionsdata(1+7,reflectionsdata_index) 
+        BCT=reflectionsdata(1+8,reflectionsdata_index) 
         ACN = ACT
         BCN = BCT
     end if
 
-    FO=storetemp(M6+3)  ! SET UP /FO/ ETC. FOR THIS REFLECTION
-    W=storetemp(M6+4)
+    FO=reflectionsdata(1+3,reflectionsdata_index) ! SET UP /FO/ ETC. FOR THIS REFLECTION
+    W=reflectionsdata(1+4,reflectionsdata_index) 
     SCALEW=SCALEG*W
  
     NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
@@ -2140,15 +1768,16 @@ print *, 'threads used: ', tid
 !       CHECK if THIS IS TWINNED CALCULATION
     if(.NOT.TWINNED)THEN   ! NOT TWINNED
         NL=0
-        call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, storetemp, istoretemp)
+        call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
+        &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), storetemp, istoretemp)
         JREF_STACK_PTR=istoretemp(JREF_STACK_START)
         call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, storetemp, istoretemp, scalew, jp, jo, jref_stack_ptr, acd, bcd)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
-        call XACRT(4, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
+        call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
     else ! THIS IS A TWINNED CALCULATION  
-        PH=storetemp(M6)  ! PRESERVE THE NOMINAL INDICES
-        PK=storetemp(M6+1)
-        PL=storetemp(M6+2)
-        NJ=NINT(storetemp(M6+11))
+        PH=reflectionsdata(1,reflectionsdata_index)   ! PRESERVE THE NOMINAL INDICES
+        PK=reflectionsdata(1+1,reflectionsdata_index) 
+        PL=reflectionsdata(1+2,reflectionsdata_index) 
+        NJ=NINT(reflectionsdata(1+11,reflectionsdata_index) )
         if (NJ .EQ. 0) NJ = 12 ! IF THERE IS NO ELEMENT KEY, SET IT TO MOROHEDRAL TWINNING
         NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN  (LEFT-MOST VALUE)
         do WHILE ( NK .GT. 0 ) 
@@ -2195,9 +1824,9 @@ print *, 'threads used: ', tid
                 NK=NK/10                                           ! e.g. 123
                 NL=LJX-NK*10                                        ! e.g. 1234-1230 = 4
                 M25=L25+(NL-1)*MD25   ! COMPUTE THE INDICES FOR THIS COMPONENT
-                storetemp(M6)=ANINT(storetemp(M25)*SH+storetemp(M25+1)*SK+storetemp(M25+2)*SL)
-                storetemp(M6+1)=ANINT(storetemp(M25+3)*SH+storetemp(M25+4)*SK+storetemp(M25+5)*SL)
-                storetemp(M6+2)=ANINT(storetemp(M25+6)*SH+storetemp(M25+7)*SK+storetemp(M25+8)*SL)
+                reflectionsdata(1,reflectionsdata_index)=ANINT(storetemp(M25)*SH+storetemp(M25+1)*SK+storetemp(M25+2)*SL)
+                reflectionsdata(1+1,reflectionsdata_index)=ANINT(storetemp(M25+3)*SH+storetemp(M25+4)*SK+storetemp(M25+5)*SL)
+                reflectionsdata(1+2,reflectionsdata_index)=ANINT(storetemp(M25+6)*SH+storetemp(M25+7)*SK+storetemp(M25+8)*SL)
                 if ( NM .GE. N25 ) then ! GO TO 19920  ! WE HAVE USED TOO MANY ELEMENTS
                     formatstr="(1X,'Too many elements given for reflection ', 3F5.0 )"
                     if (ISSPRT .EQ. 0) write(NCWU, formatstr) PH, PK , PL
@@ -2210,9 +1839,9 @@ print *, 'threads used: ', tid
             else
                nl=nj
                nk = 0
-               storetemp(m6) = sh
-               storetemp(m6+1) = sk
-               storetemp(m6+2) = sl
+               reflectionsdata(1,reflectionsdata_index) = sh
+               reflectionsdata(1+1,reflectionsdata_index) = sk
+               reflectionsdata(1+2,reflectionsdata_index) = sl
             endif
 !
 !  save the multiplier 
@@ -2222,9 +1851,9 @@ print *, 'threads used: ', tid
 !           CHECK NON-PRIMITIVE CONDITIONS
                 M2P=L2P
                 do I=1,N2P
-                    A=ABS(storetemp(M2P)*storetemp(m6)+ &
-                    &   storetemp(M2P+1)*storetemp(m6+1)+ &
-                    &   storetemp(M2P+2)*storetemp(m6+2))
+                    A=ABS(storetemp(M2P)*reflectionsdata(1,reflectionsdata_index)+ &
+                    &   storetemp(M2P+1)*reflectionsdata(1+1,reflectionsdata_index)+ &
+                    &   storetemp(M2P+2)*reflectionsdata(1+2,reflectionsdata_index))
                     K=INT(A+0.01)
                     if(A-FLOAT(K).gt.0.01) then
                         g2 = 0.0
@@ -2238,15 +1867,16 @@ print *, 'threads used: ', tid
 !     1 storetemp(m6+1),storetemp(m6+2), g2, storetemp(m6+3),a,k
 !9753  format(a,3f8.2,2x,a,3f8.2, '  G2,Fo,A,K ', 3f12.2,i5)
 !
-            call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, storetemp, istoretemp)  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
+            call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
+            &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), storetemp, istoretemp)  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
             g2 = g2sav
         END do  ! END OF THIS TWINNED REFLECTION  
 !
 !
 !
-        storetemp(m6)=ph  ! restore the nominal indices
-        storetemp(m6+1)=pk
-        storetemp(m6+2)=pl
+        reflectionsdata(1,reflectionsdata_index)=ph  ! restore the nominal indices
+        reflectionsdata(1+1,reflectionsdata_index)=pk
+        reflectionsdata(1+2,reflectionsdata_index)=pl
 !
         FCEXT=0.  !  WIND UP AND CALCULATE THE TOTAL VA
         JREF_STACK_PTR=JREF_STACK_START  ! CALCULATE /FC/ AND ITS DERIVATIVES FOR EACH ELEMENT
@@ -2291,22 +1921,23 @@ print *, 'threads used: ', tid
 
         if(.NOT.SCALED_FOT) then  ! WHICH TYPE OF /FO/ AND /FC/ WE ARE TO OUTPUT
 !           SAVE THE TOTAL OVER ALL ELEMENTS
-            storetemp(M6+3)=storetemp(M6+10)
-            storetemp(M6+5)=FC
-            storetemp(M6+6)=0.
+            reflectionsdata(1+3,reflectionsdata_index)=reflectionsdata(1+10,reflectionsdata_index)
+            reflectionsdata(1+5,reflectionsdata_index)=FC
+            reflectionsdata(1+6,reflectionsdata_index)=0.
         else
 !           SAVE THE VALUE FOR THE MAIN ELEMENT
             JREF_STACK_PTR=istoretemp(JREF_STACK_START) 
             LJV=istoretemp(JREF_STACK_PTR+8)+M5ES
-            storetemp(M6+3)=storetemp(M6+10)*storetemp(JREF_STACK_PTR+6)*storetemp(LJV)/FC
-            storetemp(M6+5)=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)
-            storetemp(M6+6)=storetemp(JREF_STACK_PTR+7)
+            reflectionsdata(1+3,reflectionsdata_index)= reflectionsdata(1+10,reflectionsdata_index)* &
+            &   storetemp(JREF_STACK_PTR+6)*storetemp(LJV)/FC
+            reflectionsdata(1+5,reflectionsdata_index)=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)
+            reflectionsdata(1+6,reflectionsdata_index)=storetemp(JREF_STACK_PTR+7)
         end if
-        FO=storetemp(M6+10)      
-        storetemp(M6+5)=storetemp(M6+5)*SCALES
+        FO=reflectionsdata(1+10,reflectionsdata_index)
+        reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*SCALES
 !          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
-        p=storetemp(m6+6)
-        call XACRT(4, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE THE /FO/ TOTALS
+        p=reflectionsdata(1+6,reflectionsdata_index)
+        call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
         if (SFLS_TYPE .EQ. SFLS_REFINE) then ! CHECK IF WE ARE DOING REFINEMENT
             storetemp(JO:JP)=0. ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
             JREF_STACK_PTR=JREF_STACK_START  
@@ -2336,7 +1967,7 @@ print *, 'threads used: ', tid
     if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
         A=MIN(1.,WAVE*sqrt(sST))
         !A=ASIN(A)*2.
-        PATH=storetemp(M6+9)  ! CHECK MEAN PATH LENGTH
+        PATH=reflectionsdata(1+9,reflectionsdata_index)  ! CHECK MEAN PATH LENGTH
         if(PATH.LE.ZERO) PATH = 1.
         !DELTA=DEL*PATH/SIN(A)  ! COMPUTE DELTA FOR NEUTRONS
         ! sin(a) = sin(sin-1(a)*2.0) (see above)
@@ -2364,17 +1995,17 @@ print *, 'threads used: ', tid
 !
 
     if(TWINNED)THEN 
-        storetemp(M6+5)=storetemp(M6+5)*EXT4*SCALES
+        reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4*SCALES
     else
-        storetemp(M6+5)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+        reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
     end if
-    storetemp(M6+6)=P
+    reflectionsdata(1+6,reflectionsdata_index)=P
 !
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
-        storetemp(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
-        storetemp(M6+8)=BCT
-        call XACRT(8, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-        call XACRT(9, minimum, maximum, summation, summationsq, storetemp, 16)
+        reflectionsdata(1+7,reflectionsdata_index)=ACT ! STORE THE NEW CONTRIBUTIONS
+        reflectionsdata(1+8,reflectionsdata_index)=BCT
+        call XACRT(8, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
+        call XACRT(9, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
     end if
 
 !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
@@ -2415,7 +2046,7 @@ print *, 'threads used: ', tid
     RDJW = ABS(WDF)
     if (RDJW .GT. ABS(XVALUR)) then
 !----  H,K,L,FO,FC,/WDELTA/,FO/FC
-        call XMOVE(storetemp(M6), storetemp(LTEMPR), 3)
+        call XMOVE(reflectionsdata(1:3,reflectionsdata_index), storetemp(LTEMPR), 3)
         storetemp(LTEMPR+3) = UJ
         storetemp(LTEMPR+4) = FCEXT
         storetemp(LTEMPR+5) = RDJW
@@ -2435,7 +2066,9 @@ print *, 'threads used: ', tid
         &   storetemp(JREF_STACK_PTR+13)*storetemp(JREF_STACK_PTR+14) )
         C=T*200.0/(2.*FC*FC-T)
         if (ISSPRT .EQ. 0) then 
-            write(NCWU,4600)storetemp(M6),storetemp(M6+1),storetemp(M6+2),UJ,FCEXT,P,WJ,VJ,A,S,T,C,sqrt(sST)
+            write(NCWU,4600) reflectionsdata(1,reflectionsdata_index), &
+            &   reflectionsdata(1+1,reflectionsdata_index), &
+            &   reflectionsdata(1+2,reflectionsdata_index),UJ,FCEXT,P,WJ,VJ,A,S,T,C,sqrt(sST)
         end if
 4600    FORMAT(3X,3F6.0,3F9.1,E13.4,E13.4,F8.1,F8.1,F9.1,F10.1,F10.5)
 !
@@ -2450,7 +2083,9 @@ print *, 'threads used: ', tid
                     &   /1X,'   h    k    l      Fo        Fc '/)
                 else if (IBADR .LT. 25) then
                     if (ISSPRT .EQ. 0) then
-                        write(NCWU,4652)storetemp(M6),storetemp(M6+1),storetemp(M6+2),UJ,FCEXT
+                        write(NCWU,4652) reflectionsdata(1,reflectionsdata_index), &
+                        &   reflectionsdata(1+1,reflectionsdata_index), &
+                        &   reflectionsdata(1+2,reflectionsdata_index),UJ,FCEXT
                     end if
 4652                FORMAT(1X,3F5.0,2F9.2)
                     else if (IBADR .EQ. 25) then
@@ -2524,7 +2159,9 @@ print *, 'threads used: ', tid
             end if
 
             if (istoretemp(M33CD+5).EQ.1) then   ! Check if we should output matrix in MATLAB format.
-                write(NCFPU1,'(A,3(1X,F5.0))')'%',storetemp(M6),storetemp(M6+1),storetemp(M6+2)
+                write(NCFPU1,'(A,3(1X,F5.0))')'%', reflectionsdata(1,reflectionsdata_index), &
+                &   reflectionsdata(1+1,reflectionsdata_index), &
+                &   reflectionsdata(1+2,reflectionsdata_index)
                 do I = JO,JP-MOD(JP-JO,5)-1,5
                     write(NCFPU1,'(5G16.8,'' ...'')') (storetemp(I+J),J=0,4)
                 end do
@@ -2538,68 +2175,33 @@ print *, 'threads used: ', tid
 
             if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
-            if (istoretemp(M33CD+12).EQ.0) then    ! Just a normal accumulation.
-                if (istoretemp(M33CD+13).EQ.0) then
-                    call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
-                    &   STR11(L11), N11, iresults, nresults, & 
-                    &   storetemp(L12B), N12B*MD12B, MD12B)
-                else
-                    ! Store a chunk of the design matrix
-                    designmatrix(:,tempstorei) = storetemp(JO:JP)
-            
+            if (istoretemp(M33CD+13).EQ.0) then
+                call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
+                &   STR11(L11), N11, iresults, nresults, & 
+                &   storetemp(L12B), N12B*MD12B, MD12B)
+            else
+                ! Store a chunk of the design matrix
+                designmatrix(:,reflectionsdata_index) = storetemp(JO:JP)
+                !print *, 'd', designmatrix(:,reflectionsdata_index)
+        
 !                  call XADLHS( storetemp(JO), JP-JO+1, STR11(L11), N11,
 !     1                 storetemp(L12B), N12B*MD12B, MD12B )
-                end if
-            else                    ! No accumulation, compute leverages, Pii.
-                if (istoretemp(M33CD+13).EQ.0) then
-                    write(CMON,'(''SPARSE IS NOT USED FOR LEVERAGE'')')
-                    call xprvdu(ncvdu,1,0)
-                end if
-                Pii = PDOLEV( istoretemp(L12B),MD12B*N12B,MD12B, &
-                &   STR11(L11),N11,  storetemp(JO),JP-JO+1, &
-                &   istoretemp(M33CD+12), TIX, RED)
-                REDMAX = MAX ( REDMAX, RED )
-
-                write(HKLLAB, '(2(I4,A),I4)') NINT(storetemp(M6)), ',', &
-                &   NINT(storetemp(M6+1)), ',', NINT(storetemp(M6+2))
-                call XCRAS(HKLLAB, IHKLLEN)
-                write(CMON,'(3A,4F11.4)') '^^PL LABEL ''',HKLLAB(1:IHKLLEN), &
-                &   ''' DATA ',FO,Pii,FO,RED*1000000000.0
-                call XPRVDU(NCVDU, 1,0)
-
-                call XCRAS(HKLLAB, IHKLLEN)
-                write(124,'(2A,2F11.4,1X,2(1x,G15.9))') HKLLAB(1:IHKLLEN), &
-                &   ' FO,PII,tix,Red ',FO,Pii,tix,RED
-
-
-
-                if(( ILEVPR .LT. 30 ).OR.( PII .LT. XVALUL ) ) then
-!----    H,K,L,SNTHL,LEV,
-                    call XMOVE(storetemp(M6), storetemp(LTEMPL), 3)
-                    storetemp(LTEMPL+3) = SST
-                    storetemp(LTEMPL+4) = Pii
-                    storetemp(LTEMPL+5) = FO*SCALEK
-                    storetemp(LTEMPL+6) = FCEXT
-                    call SRTDWNnew(LLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, XVALUL,-1, storetemp)
-!$OMP ATOMIC                    
-                    ILEVPR = ILEVPR + 1
-                end if
             end if
         end if
     end if
 
     ! save the new values in the buffer
     ! writing is delayed outside the loop
-    tempstore(:,tempstorei)=storetemp(M6:M6+MD6-1)
+    !reflectionsdata(:,reflectionsdata_index)=storetemp(M6:M6+MD6-1)
     !call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
-    !call XSLRnew(1, storetemp, l6wpointers(tempstorei), n6wpointers(tempstorei))
-    call XACRT(6, minimum, maximum, summation, summationsq, storetemp, 16)  ! ACCUMULATE TOTALS FOR /FC/ 
-    call XACRT(7, minimum, maximum, summation, summationsq, storetemp, 16)  ! AND THE PHASE
-    call XACRT(16,minimum, maximum, summation, summationsq, storetemp, 16)
+    !call XSLRnew(1, storetemp, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
+    call XACRT(6, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE TOTALS FOR /FC/ 
+    call XACRT(7, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! AND THE PHASE
+    call XACRT(16,minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
  
     if(SFLS_TYPE .eq. SFLS_CALC) then ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
         tempr=(/1.0, ABS(ABS(FO)-FCEXS), ABS(FO), WDF**2, A**2 /)
-        if (storetemp(M6+20) .GE. RALL(1)) then
+        if (reflectionsdata(1+20,reflectionsdata_index) .GE. RALL(1)) then
             RALL(2:6) = RALL(2:6) + tempr
         end if
         RALL(7:11) = RALL(7:11) + tempr
@@ -2632,18 +2234,17 @@ print *, 'threads used: ', tid
     &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
     &   ISTOREtemp(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
     &   ISTOREtemp(M33CD+13).NE.0)THEN    
-        ! process the remaining chunk of design matrix
-        ! Accumulate the normal matrix
-        call DSYRK('L','N',JP-JO+1,storechunk, &
+        call DSYRK('L','N',JP-JO+1,reflectionsdata_size, &
         &   1.0d0, designmatrix(1,1), &
         &   JP-JO+1,1.0d0,normalmatrix(1,1),JP-JO+1)    
     end if
 
     ! writing new values back to the disk
-    do tempstorei=1, tempstoremax
-            storetemp(M6:M6+MD6-1)=tempstore(:,tempstorei)
-            call XSLRnew(1, storetemp, l6wpointers(tempstorei), n6wpointers(tempstorei))
+    do reflectionsdata_index=1, reflectionsdata_size
+        call XSLRnew(reflectionsdata(:,reflectionsdata_index), &
+        &   storetemp, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
     end do
+
 
 END do  ! END OF REFLECTION LOOP
 
@@ -2684,7 +2285,7 @@ if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
     ! Pack normal matrix back into original crystals storage     
     IBL = 1                  ! Parameter # at start of current block
     IBS = L11                ! Packed storage address.
-
+    
     do MB = 1, N12B*MD12B, MD12B      
         MNR  = ISTORE(L12B+MB)  ! Dimension of this block
         MSTR = (MNR*(MNR+1))/2  ! Storage space for this block    
@@ -2744,13 +2345,7 @@ if(allocated(designmatrix)) deallocate(designmatrix)
 if(allocated(normalmatrix)) deallocate(normalmatrix)      
 
 !--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
-
-if (ISTORE(M33CD+12).NE.0) then    ! Leverage plot
-    write(CMON,'(A,F18.14,A/A)')'^^PL YAXISRIGHT ZOOM 0.0 ', &
-    &   REDMAX,' SHOW','^^CR'
-    call XPRVDU(NCVDU, 2,0)
-end if
-
+    
 if (NT .LE. 0) then
     if (ISSPRT .EQ. 0) write(NCWU,5851)
     write ( CMON, 5851)
@@ -2818,37 +2413,6 @@ end if
 if ( SFLS_TYPE .NE. SFLS_REFINE ) LJX = LJX + 1
 if ( SFLS_TYPE .NE. SFLS_SCALE ) LJX = LJX + 2
 
-if (ILEVPR .GT. 0) then
-6112      FORMAT(I6,' low leverage reflections.')
-    write ( CMON, 6112) MIN(30,ILEVPR)
-    call XPRVDU(NCVDU, 1,0)
-    if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
-    RLEVNM = 0.0
-    RLEVDN = 0.0
-    do  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, MDLEVE
-        RLEVNM = RLEVNM + ABS(STORE(MLEVER+5)-STORE(MLEVER+6))
-        RLEVDN = RLEVDN + STORE(MLEVER+5)
-    end do
-
-    write(CMON,'(''R(lowleverage) = <Fo-Fc>/<Fo> ='',F9.2,''%'')') 100.*RLEVNM/MAX(.001,RLEVDN)
-    call XPRVDU(NCVDU,1,0)
-    if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
-
-    write(CMON,6113)
-6113      FORMAT (2('   h   k   l sintl2 Leverage    FO-FC    '))
-    call XPRVDU(NCVDU, 1,0)
-    if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
-
-    do  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, 2*MDLEVE
-        write (CMON,'(2(3I4,F6.3,1X,F7.5,F10.3,5X))') &
-        &   ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2), &
-        &   (STORE(IXAP), IXAP= JXAP+3,JXAP+4), &
-        &   STORE(JXAP+5)-STORE(JXAP+6), &
-        &   JXAP= MLEVER, MLEVER+MDLEVE, MDLEVE)
-        call XPRVDU(NCVDU, 1,0)
-        if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
-    end do
-end if
 !
 ! Only print disagreeable reflections during calc.
 if( SFLS_TYPE .EQ. SFLS_CALC ) then
@@ -2869,6 +2433,7 @@ if( SFLS_TYPE .EQ. SFLS_CALC ) then
         if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
     end do
 end if
+
 !
 if (ISSPRT .EQ. 0) then
     write(NCWU,5900)R,RW,A,S,T
@@ -3093,11 +2658,11 @@ END
 
 
 !CODE FOR XLINE
-subroutine XLINE (M2LI, M5ALI, M6LI, LifAC, DLFLILE, DLFTHE, DLFPHI)
+subroutine XLINE (M2LI, M5ALI, reflectiondata, LifAC, DLFLILE, DLFTHE, DLFPHI, store)
  
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only: store
+!use store_mod, only: store
 !include 'XLST01.INC90'
 use xlst01_mod, only: l1p1, l1o2
 !include 'QSTORE.INC'
@@ -3106,7 +2671,8 @@ use xconst_mod, only: zerosq, twopi, pi
 implicit none
 
 !-C-C-SOME TRANSFERRED STARTING-ADDRESSES OF ACTUAL (!) PARAMETERS
-integer, intent(in) :: M2LI, M5ALI, M6LI
+integer, intent(in) :: M2LI, M5ALI
+real, dimension(:), intent(inout) :: reflectiondata, store
 double precision, intent(inout) :: LifAC, DLFLILE, DLFTHE, DLFPHI
 !-C-C-AGREEMENT OF CONSTANTS AND VARIABLES
 !-C-C-CELL-CONSTANTS, REFLECTION-INDICES
@@ -3138,10 +2704,10 @@ CONC=STORE(L1P1+2)
 CONAL=STORE(L1P1+3)
 CONBET=STORE(L1P1+4)
 CONGA=STORE(L1P1+5)
-REFLH=STORE(M6LI)
-REFLK=STORE(M6LI+1)
-REFLL=STORE(M6LI+2)
-LILE=STORE(M5ALI+8)
+REFLH=reflectiondata(1)
+REFLK=reflectiondata(1+1)
+REFLL=reflectiondata(1+2)
+LILE=reflectiondata(1+8)
 !-C-C-(POLAR ANGLES IN UNITS OF 100 DEGREES)
 ANGLZD=STORE(M5ALI+9)
 AZIMXD=STORE(M5ALI+10)
@@ -3264,18 +2830,18 @@ end if
 END
 
 !CODE FOR XRING
-subroutine XRING (M2RI, STRI, M5ARI, M6RI,RifAC, DRFRA, DRFTHE, DRFPHI)
+subroutine XRING (M2RI, STRI, M5ARI, reflectiondata,RifAC, DRFRA, DRFTHE, DRFPHI, store)
 
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only: store
+!use store_mod, only: store
 !include 'XLST01.INC90'
 use xlst01_mod, only: l1p1, l1o2
 use xconst_mod, only: twopi, zerosq
 
 implicit none
 !include 'QSTORE.INC'
-
+real, dimension(:), intent(inout) :: reflectiondata, store
 !-c-c-agreement of constants and variables
 !-c-c-cell-constants, reflection-indices
 real cona, conb, conc, conal, conbet, conga
@@ -3286,7 +2852,7 @@ real rira, anglzd, azimxd
 double precision anglz, azimx
 double precision lincx, lincy, lincz, linx, liny, linz
 !-c-c-some transferred starting-addresses of actual (!) parameters
-integer m2ri, m5ari, m6ri
+integer m2ri, m5ari
 !-c-c-transferred value of st
 real stri
 !-c-c-transf. between coord. syst. (cartesian to trigonal)
@@ -3333,9 +2899,9 @@ conga=store(l1p1+5)
 cosconal=cos(conal)
 cosconga=cos(conga)
 cosconbet=cos(conbet)      
-reflh=store(m6ri)
-reflk=store(m6ri+1)
-refll=store(m6ri+2)
+reflh=reflectiondata(1)
+reflk=reflectiondata(1+1)
+refll=reflectiondata(1+2)
 rira=store(m5ari+8)
 !-c-c-(polar angles in units of 100 degrees)
 anglzd=store(m5ari+9)
@@ -3511,105 +3077,8 @@ dsfrad=((cos(4*pi*stsp*store(m5asp+8)) &
 &   /(4*pi*stsp*(store(m5asp+8))**2)
 end
 
-!CODE FOR PDOLEV
-real function PDOLEV(L12, N12, MD12B, V, N11, DF, NDF, JPNX, TIX, RED)
-implicit none 
-
-real, dimension(8192) :: VCVVEC
-integer IVCVVSZ
-COMMON /VCVTMP/ IVCVVSZ, VCVVEC
-
-integer, intent(in) :: N12, md12b, n11, ndf, jpnx
-
-integer, dimension(N12), intent(in) :: L12
-real, dimension(N11), intent(in) :: V
-real, dimension(NDF), intent(in) :: DF
-real, intent(inout) :: tix, red
-
-real doub
-integer i, j, k, ibs, jpn, m11
-real pii, titmp
-! Work out leverage and some other things. See Prince, Mathematical
-! Techniques in Crystallography and Materials Science, 2nd Edition,
-! Springer-Verlag. pp120-123
-
-!  L12 is an array of size N12 containing information about the
-!  blocking of the array V.
-
-!  V is of size N11, but may be in blocks (see L12)
-
-!  DF is the current row of the design matrix. (Called A below).
-
-!  P = A.V.At
-!  where P is the projection (say hat) matrix.
-!        A is the LHS
-!        V is the inverse normal matrix (must be already known).
-!  The leverages are the diagonal elements of the hat matrix, Pii.
-
-! Ti = Ai.Vn, then t^2ij/(1+Pii) is the amount by which a repeated
-! measurement of the ith reflection will reduce the variance of the
-! estimate of the LJTh parameter.
-
-! JPNX is the (one-based) index of the parameter of interest. E.g
-! 1 is usually the scale factor. See \PRINT 22 for indices.
-
-! For calculation of TIx, remember that the matrix V is packed into a
-! lower triangle so that each column starts from the diagonal. Thus we
-! accumulate TIx when either the row or column matches JPNX.
-
-! Return values:
-!      PDOLEV - (function return) the leverage value of this reflection
-!      TIX    - the value of ziVn for the selected parameter (JPNX)
-!      RED    - the amount by which repeated measurement of this
-!               reflection will reduce the JPNXth parameter's variance.
-
-! if JPNX is zero then we use the VCVVEC to pre and post multiply each
-! (Zit)(Zi) matrix, and get the stuff.
-
-
- write(125,'(1000G15.9)')(DF(I),I=1,NDF)
- write(126,'(4I12)')N12,N11,NDF,IVCVVSZ
-
-
- M11 = 1
- PII = 0.0
- TIx = 0.0
- TITMP=0.0
- JPN = JPNX - 1
-
- 
- do I = 1,N12,MD12B        ! Loop over each block
-     IBS = L12(I+1)             ! IBS:= Number of rows in block
-         do J = 0, IBS-1            ! Loop over each row
-             do K = 0, IBS-J-1          ! Loop over each column.
-                 DOUB = 2.0                 ! Add in off-diagonals twice.
-                 if ( K.EQ.0 ) DOUB = 1.0   ! Add on-diagonals once.
-                 PII = PII + DOUB * DF(1+J) * DF(1+J+K) * V(M11)
-                 if ( J .EQ. JPN ) then   ! This is the row of interest for Tij
-                     TIx = TIx + DF(1+J+K) * V(M11)
-                 else if ( J+K .EQ. JPN ) then   ! This is also the row of interest for Tij
-                     TIx = TIx + DF(1+J) * V(M11)
-                 else if ( JPNX .LT. 0 ) then !Accumulate whole of ti
-                     TITMP= TITMP + VCVVEC(1+J) *DF(1+J+K) *V(M11)
-                 if (K.NE.0) then
-                     TITMP=TITMP+VCVVEC(1+J+K)*DF(1+J)*V(M11)
-                 end if
-             end if
-             M11 = M11 + 1
-         end do
-     end do
- end do
-
- if ( JPNX .LT. 0 ) then
-     TIx = TITMP
- end if
-
- RED = (TIX**2)/(1.0+PII)
- PDOLEV = PII
-END
-
 !CODE FOR XSFLSX
-subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, store, istore)
+subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, reflectiondata, store, istore)
 !
 !--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 !
@@ -3645,7 +3114,7 @@ use xlst03_mod, only: n3, md3tr, md3ti, l3tr, l3ti  ! always constant in xsflsc 
 !include 'XLST05.INC90'
 use xlst05_mod, only: n5, md5a, l5 ! always constant in xsflsc and read only
 !include 'XLST06.INC90'
-use xlst06_mod, only: m6 ! always constant in xsflsc and read only
+!use xlst06_mod, only: m6 ! always constant in xsflsc and read only
 !include 'XLST12.INC90'
 use xlst12_mod, only: n12, l12 ! always constant in xsflsc and read only
 !include 'XUNITS.INC90'
@@ -3678,7 +3147,7 @@ integer ISTACK
 
 real, intent(out) :: ACD, BCD, tc, sst
 real, intent(inout) :: smin, smax, bc, ac
-real, dimension(:), intent(inout) :: store
+real, dimension(:), intent(inout) :: reflectiondata, store
 integer, dimension(:), intent(inout) :: istore
 integer, intent(inout) :: nn, nm, m12, md12a
 integer, intent(in) :: nl, nr, jo, jp
@@ -3687,6 +3156,27 @@ real, intent(in) :: g2
 #if defined(_GIL_) || defined(_LIN_) 
 real, dimension(2) :: scb
 #endif
+
+interface
+    subroutine XLINE (M2LI, M5ALI, reflectiondata, LifAC, DLFLILE, DLFTHE, DLFPHI, store)
+    implicit none
+    integer, intent(in) :: M2LI, M5ALI
+    real, dimension(:), intent(inout) :: reflectiondata, store
+    double precision, intent(inout) :: LifAC, DLFLILE, DLFTHE, DLFPHI
+    end subroutine
+end interface
+interface
+    subroutine XRING (M2RI, STRI, M5ARI, reflectiondata,RifAC, DRFRA, DRFTHE, DRFPHI, store)
+    implicit none
+    real, dimension(:), intent(inout) :: reflectiondata, store
+    integer :: m2ri, m5ari
+    real :: STRI
+    double precision :: RifAC, drfra, DRFTHE, DRFPHI
+    end subroutine
+end interface
+
+
+
 DD=1.0/TWOPI
 
 ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
@@ -3709,12 +3199,12 @@ STACKSEARCH: do WHILE(.TRUE.)
         PSHifT=STORE(LJW+3)
         FRIED=1.0
 !--CHECK THE GIVEN INDICES
-        BD = ABS(STORE(M6)  -STORE(LJW)  ) &! 0 if same indices
-        &   +ABS(STORE(M6+1)-STORE(LJW+1)) &
-        &   +ABS(STORE(M6+2)-STORE(LJW+2))   
-        BF = ABS(STORE(M6)+STORE(LJW)    ) & ! 0 if Friedel opposite
-        &   +ABS(STORE(M6+1)+STORE(LJW+1)) &
-        &   +ABS(STORE(M6+2)+STORE(LJW+2))
+        BD = ABS(reflectiondata(1)  -STORE(LJW)  ) &! 0 if same indices
+        &   +ABS(reflectiondata(1+1)-STORE(LJW+1)) &
+        &   +ABS(reflectiondata(1+2)-STORE(LJW+2))   
+        BF = ABS(reflectiondata(1)+STORE(LJW)    ) & ! 0 if Friedel opposite
+        &   +ABS(reflectiondata(1+1)+STORE(LJW+1)) &
+        &   +ABS(reflectiondata(1+2)+STORE(LJW+2))
 !sjwsep2010 Check the BATCH numbers for refinement of dual Wave data
 !          bdf = abs(store(m6+13)-store(ni+20))
 !
@@ -3780,9 +3270,9 @@ ISTORE(JREF_STACK_PTR)=ISTORE(NI)   ! SWITCH THE CURRENT BLOCK TO
 ISTORE(NI)=ISTORE(JREF_STACK_START)   ! THE TOP OF THE STACK
 ISTORE(JREF_STACK_START)=NI
 
-STORE(NI+3)=STORE(M6)   ! SET UP THE CURRENT SET OF INDICES
-STORE(NI+4)=STORE(M6+1)
-STORE(NI+5)=STORE(M6+2)
+STORE(NI+3)=reflectiondata(1)   ! SET UP THE CURRENT SET OF INDICES
+STORE(NI+4)=reflectiondata(1+1)
+STORE(NI+5)=reflectiondata(1+2)
 !djwsep2010 Put the BATCH number into the stack
 !      store(ni+20)=store(m6+13)
 ISTORE(NI+8)=NL
@@ -3797,11 +3287,15 @@ M2=L2
 M2T=L2T
 do LJZ=1,N2
 ! compute h' = S.h
-    STORE(M2T)=STORE(M6)*STORE(M2)+STORE(M6+1)*STORE(M2+3)+STORE(M6+2)*STORE(M2+6)
-    STORE(M2T+1)=STORE(M6)*STORE(M2+1)+STORE(M6+1)*STORE(M2+4)+STORE(M6+2)*STORE(M2+7)
-    STORE(M2T+2)=STORE(M6)*STORE(M2+2)+STORE(M6+1)*STORE(M2+5)+STORE(M6+2)*STORE(M2+8)
+    STORE(M2T)=reflectiondata(1)*STORE(M2)+reflectiondata(1+1)*STORE(M2+3)+ &
+    &   reflectiondata(1+2)*STORE(M2+6)
+    STORE(M2T+1)=reflectiondata(1)*STORE(M2+1)+reflectiondata(1+1)*STORE(M2+4)+ &
+    &   reflectiondata(1+2)*STORE(M2+7)
+    STORE(M2T+2)=reflectiondata(1)*STORE(M2+2)+reflectiondata(1+1)*STORE(M2+5)+ &
+    &   reflectiondata(1+2)*STORE(M2+8)
 ! calculate the h.t terms
-    STORE(M2T+3)=(STORE(M6)*STORE(M2+9)+STORE(M6+1)*STORE(M2+10)+STORE(M6+2)*STORE(M2+11))
+    STORE(M2T+3)=(reflectiondata(1)*STORE(M2+9)+reflectiondata(1+1)*STORE(M2+10)+ &
+    &   reflectiondata(1+2)*STORE(M2+11))
     if ( ( LJZ .EQ. 1 ) .OR. ( .NOT. ISO_ONLY ) ) then 
 !
 ! aniso contributions are required
@@ -3977,9 +3471,10 @@ do LJY=1,N5
             if (NINT(FLAG) .EQ. 2) then  ! CALC SPHERE TF
                 call XSPHERE (ST, M5A, SLRFAC, DSIZE)
             else if (NINT(FLAG) .EQ. 3) then   ! CALC LINE TF
-                call XLINE (M2, M5A, M6, SLRFAC, DSIZE, DDECLINA,DAZIMUTH)
+                call XLINE (M2, M5A, reflectiondata, &
+                &   SLRFAC, DSIZE, DDECLINA,DAZIMUTH, store)
             else if (NINT(FLAG) .EQ. 4) then   ! CALC RING TF
-                call XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
+                call XRING (M2, ST, M5A,reflectiondata,SLRFAC,DSIZE,DDECLINA,DAZIMUTH, store)
             end if
 #if defined(_GIL_) || defined(_LIN_) 
             T=sleef_expf(real(STORE(M5A+7)*TC))
@@ -4213,12 +3708,12 @@ M2I=L2I
 LJU=ISTORE(NI+9)  ! STORE THE EQUIVALENT INDICES AND THE PHASE SHifT
 LJV=ISTORE(NI+10)
 do LJW=LJU,LJV,NR
-    STORE(LJW)=STORE(M6)*STORE(M2I)+STORE(M6+1)*STORE(M2I+3) &
-    &   +STORE(M6+2)*STORE(M2I+6)
-    STORE(LJW+1)=STORE(M6)*STORE(M2I+1)+STORE(M6+1)*STORE(M2I+4) &
-    &   +STORE(M6+2)*STORE(M2I+7)
-    STORE(LJW+2)=STORE(M6)*STORE(M2I+2)+STORE(M6+1)*STORE(M2I+5) &
-    &   +STORE(M6+2)*STORE(M2I+8)
+    STORE(LJW)=reflectiondata(1)*STORE(M2I)+reflectiondata(1+1)*STORE(M2I+3) &
+    &   +reflectiondata(1+2)*STORE(M2I+6)
+    STORE(LJW+1)=reflectiondata(1)*STORE(M2I+1)+reflectiondata(1+1)*STORE(M2I+4) &
+    &   +reflectiondata(1+2)*STORE(M2I+7)
+    STORE(LJW+2)=reflectiondata(1)*STORE(M2I+2)+reflectiondata(1+1)*STORE(M2I+5) &
+    &   +reflectiondata(1+2)*STORE(M2I+8)
     STORE(LJW+3)=-(STORE(LJW)*STORE(M2I+9) &
     &   +STORE(LJW+1)*STORE(M2I+10) &
     &   +STORE(LJW+2)*STORE(M2I+11))*TWOPI

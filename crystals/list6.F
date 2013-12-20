@@ -813,7 +813,8 @@ C--AND NOW RETURN
       END
 C
 CODE FOR KFNR
-      integer function KFNRnew(state, L6W, N6W) result(kfnr)
+      integer function KFNRnew(state, L6W, N6W, reflectiondata) 
+     1     result(kfnr)
 C--FETCH THE NEXT REFLECTION, CHECKING WITH LIST 28 THAT IT IS ALLOWED.
 C
 C----- state   0 FOR READ-ONLY
@@ -825,24 +826,25 @@ C  -1  END OF THE REFLCTIONS.
 C   0  REFLCTION READ TO BE USED, STORED AT 'M6'.
 C
 C--
-      use xlst06_mod, only: md6w, m6
+      use xlst06_mod, only: md6w, m6, md6
       use store_mod, only: store
       implicit none
       integer, intent(in) :: state
       integer, intent(inout) :: l6w, n6w
       integer :: iallow
-      integer, external :: KLDRNR, kallow
+      integer, external :: KLDRNRnew, kallownew
+      real, dimension(md6), intent(out) :: reflectiondata
       
 C
 C--FETCH THE NEXT REFLECTION
 1000  CONTINUE
       L6W=L6W+MD6W
       N6W=N6W+1
-      IF(KLDRNR(state))1100,1050,1050
+      IF(KLDRNRnew(state, reflectiondata))1100,1050,1050
 C--CHECK IF THE REFLECTION IS ALLOWED
 1050  CONTINUE
       KFNR=0
-      IF(KALLOW(IALLOW)) 1060,1150,1150
+      IF(KALLOWnew(IALLOW, reflectiondata)) 1060,1150,1150
 1060  CONTINUE
       IF(state) 1000,1000,1070
 1070   CONTINUE
@@ -933,9 +935,8 @@ C--UPDATE THE NUMBER OF REFLECTIONS OUTPUT
       END
 C
 CODE FOR XSLR
-      SUBROUTINE XSLRnew(dummy, store, l6w, n6w)
-      use store_mod, only: storelength
-      use xlst06_mod, only: md6w, L6DMP, m6, m6dmp, m6w
+      SUBROUTINE XSLRnew(reflectiondata, store, l6w, n6w)
+      use xlst06_mod, only: md6w, L6DMP, m6dmp, m6w, m6
       implicit none
 C--STORE THE LAST REFLECTION
 C
@@ -954,26 +955,26 @@ C      INCLUDE 'STORE.INC'
 C
 C      INCLUDE 'QSTORE.INC'
       
-      integer, intent(in) :: dummy
-      real, dimension(storelength), intent(inout) :: store
+      real, dimension(:), intent(inout) :: store, reflectiondata
       integer, intent(in) :: l6w, n6w
       real adjw, bdjw, cdjw
       integer i, idwzap, j, k   
       
       integer, external :: kincrf
 C
-      IDWZAP = dummy
 C--CHECK IF THE INDICES SHOULD BE PACKED UP
       IF(IPACKW)1050,1000,1000
 C--PACK THE INDICES
 1000  CONTINUE
-      STORE(M6+14)=STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*65536.
+      reflectiondata(1+14)=reflectiondata(1)+ 
+     1    reflectiondata(1+1)*256.+reflectiondata(1+2)*65536.
 C--CHECK IF THE PHASE AND BATCH NUMBER NEED PACKING UP
 1050  CONTINUE
       IF(IPHSEW)1150,1100,1100
 C--PACK THE PHASE AND BATCH NUMBER
 1100  CONTINUE
-      STORE(M6+15)=STORE(M6+13)*20.+AMOD(STORE(M6+6),TWOPI)+10.
+      reflectiondata(1+15)=reflectiondata(1+13)*20.+ 
+     1    AMOD(reflectiondata(1+6),TWOPI)+10.
 C -- CHECK IF WE MUST PACK UP THE RATIO AND JCODE
 1150  CONTINUE
       IF ( JCDRAW .GE. 0 ) THEN
@@ -981,10 +982,10 @@ c this algorithm is better for -ve values, and is
 c backwards compatible with old dsc files
 c changing the scale, sdjw, to 100 would be better still, but is
 c not backwards compatible
-        adjw=sign(1.,store(m6+20))
-        bdjw=min(1000000.,abs(store(m6+20)))  ! limit maximum I/sigma
-        cdjw = adjw*((anint(STORE(M6+18)) + 10.*nint(sdjw*bdjw)))
-        STORE(M6+31) = cdjw
+        adjw=sign(1.,reflectiondata(1+20))
+        bdjw=min(1000000.,abs(reflectiondata(1+20)))  ! limit maximum I/sigma
+        cdjw= adjw*((anint(reflectiondata(1+18)) + 10.*nint(sdjw*bdjw)))
+        reflectiondata(1+31) = cdjw
 c
 c        STORE(M6+31) = STORE(M6+18) + 10.* ANINT ( 10. * STORE(M6+20) )
       ENDIF
@@ -998,8 +999,8 @@ C--OUTPUT TO M/T
 C--TRANSFER THE DATA TO THE OUTPUT BUFFER
 1350  CONTINUE
       DO 1400 I=L6DMP,M6DMP
-      K=transfer(STORE(I), K)
-      STORE(J)=STORE(K)
+      K=transfer(STORE(I), K)-m6+1 ! relative addres!!!
+      STORE(J)=reflectiondata(K)
       J=J+1
 1400  CONTINUE
 C--CHECK FOR M/T OUTPUT
@@ -1249,6 +1250,146 @@ C--AND NOW RETURN
       RETURN
       END
 C
+
+CODE FOR KALLOW
+      FUNCTION KALLOWnew(IALLOW, reflectiondata) result(kallow)
+C--THIS FUNCTION DETERMINES WHETHER A REFLECTION IS ACCEPTABLE TO LIST 2
+c
+cdjwapr2011. Return info about which test failed
+C
+C--THE RETURN VALUES OF 'KALLOW' ARE :
+C   0  THE REFLECTION IS OKAY.
+C  -N  NOT ACCEPTABLE TO TEST 'N'
+C -100 GENERAL REJECTION
+C
+C  IALLOW  -1 MIN FLAG
+C           0 UNDEFINED
+C           1 MAX FLAG
+C
+C--THE REFLECTION IS TAKEN FROM THE CORE BUFFER AT 'M6', AND
+C  SIN(THETA)/LAMBDA SQUARED AND FO/FC ARE COMPUTED BY THIS ROUTINE.
+C
+C--
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
+      INCLUDE 'XUNITS.INC'
+C
+      INCLUDE 'QSTORE.INC'
+      
+      real, dimension(md6), intent(inout) :: reflectiondata
+C
+C----- DISALLOW THIS REFLECTION INITIALLY
+      IK = -100
+      IALLOW = 0
+C----- SHOULD WE SKIP IT (STEP STORED IN MD28SK IN XFAL28)
+      IF (MOD (N6R, MAX(1, MD28SK) ) .NE. 0) GOTO 1650
+C--COMPUTE THE SIN(THETA)/LAMBDA SQUARED
+      reflectiondata(1+16)=SNTHL2new(IN, reflectiondata)
+C--CHECK IF /FC/ IS ZERO
+      IF(ABS(reflectiondata(1+5))-ZERO)1000,1050,1050
+C--/FC/ IS ZERO  -  FO/FC DEFAULTS TO ZERO AS WELL
+1000  CONTINUE
+      reflectiondata(1+17)=ZERO
+      GOTO 1100
+C--COMPUTE FO/FC
+1050  CONTINUE
+      reflectiondata(1+17)=reflectiondata(1+3)/reflectiondata(1+5)
+1100  CONTINUE
+C--CHECK IF THERE ARE ANY MINIMA CONDITIONS
+      IF(N28MN)1250,1250,1150
+C--RUN THROUGH THE MINIMA CONDITIONS
+1150  CONTINUE
+      DO 1200 I=L28MN,M28MN,MD28MN
+      J=ISTORE(I) ! using relative address in reflectiondata instead
+      IF(reflectiondata(J-m6+1) .LT. STORE(I+1)) THEN
+            IALLOW = -1
+            IK = m6-j-1
+            GOTO 1650
+      ENDIF
+c      K = K - 1  ! RC 310811 - removed this line - variable K does not exist
+1200  CONTINUE
+C--CHECK IF THERE ARE ANY MAXIMA CONDITIONS
+1250  CONTINUE
+      IF(N28MX)1400,1400,1300
+C--RUN THROUGH THE MAXIMA CONDITIONS
+1300  CONTINUE
+      DO 1350 I=L28MX,M28MX,MD28MX
+      J=ISTORE(I)
+      IF(reflectiondata(J-m6+1).GT.STORE(I+1)) THEN
+            IALLOW = 1
+            IK = m6-j-1
+            GOTO 1650
+      ENDIF
+c      K = K - 1 ! RC 310811 - removed this line - variable K does not exist
+1350  CONTINUE
+C--CHECK IF THERE ARE ANY SLICE CONDITIONS
+1400  CONTINUE
+      IF(N28RC)1600,1600,1450
+C--PASS THROUGH THE SLICE CONDITIONS
+1450  CONTINUE
+      DO 1550 I=L28RC,M28RC,MD28RC
+        A=reflectiondata(1)  *STORE(I  )
+     1   +reflectiondata(1+1)*STORE(I+1)
+     2   +reflectiondata(1+2)*STORE(I+2)
+C--CHECK THE MINIMUM AND MAXIMUM
+        IF( (A .GE. STORE(I+3)).AND.(A .LE. STORE(I+4)) ) THEN
+C We have a match. If reject, then disallow this reflection.
+C If accept, stop processing slice directives.
+C----- REJECT OR ACCEPT?
+          IF (ISTORE(I+5) .EQ. 0) THEN
+            GOTO 1650 !Reject this reflection outright
+          ELSE
+            GOTO 1600 !Accept as far as SLICE is concerned.
+          ENDIF
+        ENDIF
+1550  CONTINUE
+1600  CONTINUE
+      IF(N28CD)1800, 1800, 1700
+C--PASS THROUGH THE REFLECTION CONDITIONS
+1700  CONTINUE
+      DO 1750 I = L28CD, M28CD, MD28CD
+        A = reflectiondata(1  )*STORE(I  )
+     1    + reflectiondata(1+1)*STORE(I+1)
+     2    + reflectiondata(1+2)*STORE(I+2) + STORE(I+3)
+        IF (MOD (ABS(A), STORE(I+4) ) .LE. ZERO) THEN
+C We have a match. If reject, then disallow this reflection.
+C If accept, stop processing condition directives.
+C-- REJECT OR ACCEPT?
+          IF (ISTORE(I+5) .EQ. 0) THEN
+            GOTO 1650    !Reject this reflection outright.
+          ELSE
+            GOTO 1800    !Accept as far as CONDITIONS are concerned.
+          ENDIF
+        ENDIF
+1750  CONTINUE
+1800  CONTINUE
+C
+C -- CHECK FOR SPECIFIC OMISSIONS
+      IF ( N28OM .LE. 0 ) GO TO 1640
+      DO 1620 I = L28OM , M28OM , MD28OM
+      A = 0.
+      DO 1610 J = 1 , 3
+      IND6 = M6 + J - 1 - m6 + 1 ! using relative address in reflectiondata instead
+      IND28 = I + J - 1
+      A = A + ABS ( reflectiondata(IND6) - STORE(IND28) )
+1610  CONTINUE
+      IF ( A .LE.  ( 3 * ZERO )  ) GO TO 1650
+1620  CONTINUE
+C
+1640  CONTINUE
+C -- REFLECTION HAS PASSED ALL TESTS
+      IK = 0
+C--AND NOW RETURN
+1650  CONTINUE
+      KALLOW = IK
+      RETURN
+      END
+C
+
 CODE FOR SNTHL2
       FUNCTION SNTHL2(IN)
 C--CALCULATE (SIN(THETA)/LAMBDA)**2
@@ -1271,6 +1412,38 @@ C--CALCULATE (SIN(THETA)/LAMBDA)**2
      2 *STORE(L1S+1)+STORE(M6+2)*STORE(M6+2)*STORE(L1S+2)+STORE(M6+1)
      3 *STORE(M6+2)*STORE(L1S+3)+STORE(M6)*STORE(M6+2)*STORE(L1S+4)
      4 +STORE(M6)*STORE(M6+1)*STORE(L1S+5)
+C--AND NOW RETURN
+1050  CONTINUE
+      RETURN
+      END
+C
+CODE FOR SNTHL2
+      FUNCTION SNTHL2new(dummy, reflectiondata) result(SNTHL2)
+C--CALCULATE (SIN(THETA)/LAMBDA)**2
+C
+C  M6   LOCATION OF THE REFLECTION.
+C  L1S  LOCATION OF THE R(IJ) TERMS.
+C
+C--
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST06.INC'
+      
+      real, dimension(md6), intent(in) :: reflectiondata
+      integer dummy
+C
+      IDWZAP = dummy
+C--CHECK IF LIST 1 IS AVAILABLE
+      SNTHL2=0.
+      IF(L1S)1050,1050,1000
+C--CALCULATE (SIN(THETA)/LAMBDA)**2
+1000  CONTINUE
+      SNTHL2=reflectiondata(1)**2*STORE(L1S)
+     1 +reflectiondata(1+1)**2*STORE(L1S+1)+reflectiondata(1+2)**2
+     2 *STORE(L1S+2)+reflectiondata(1+1)
+     3 *reflectiondata(1+2)*STORE(L1S+3)+reflectiondata(1)
+     4 *reflectiondata(1+2)*STORE(L1S+4)
+     5 +reflectiondata(1)*reflectiondata(1+1)*STORE(L1S+5)
 C--AND NOW RETURN
 1050  CONTINUE
       RETURN
@@ -1347,7 +1520,7 @@ C--SET THE SLOTS FOR THE MEAN AND R.M.S.
 C
 CODE FOR XACRT
       SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, 
-     1    store, sizearray)
+     1    reflectiondata)
 C--ADD IN THE TOTAL FOR A REFLECTION TO A GIVEN SLOT IN THE DETAILS
 C  RECORD.
 C
@@ -1358,14 +1531,14 @@ C--
       !INCLUDE 'STORE.INC'
       use store_mod, only: storelength
       !INCLUDE 'XLST06.INC'
-      use xlst06_mod, only: l6dtl, m6, md6dtl
+      use xlst06_mod, only: l6dtl, md6dtl
       
       implicit none
       integer i, j
-      integer, intent(in) :: iposn, sizearray
-      real, dimension(sizearray), intent(inout):: minimum, maximum
-      real, dimension(sizearray), intent(inout):: summation, summationsq
-      real, dimension(storelength), intent(in) :: store
+      integer, intent(in) :: iposn
+      real, dimension(:), intent(inout):: minimum, maximum
+      real, dimension(:), intent(inout):: summation, summationsq
+      real, dimension(:), intent(in) :: reflectiondata
       
       ! check if allocated space is enough and crashing the program if not enough space
       if(iposn>ubound(minimum,1) .or. iposn<1 ) then
@@ -1392,17 +1565,17 @@ C--
 C--FIND THE POSITION IN THE DETAILS AND CORE BUFFER
       I=IPOSN-1
       J=L6DTL+I*MD6DTL
-      I=M6+I
+      I=1+I
 C--FIND THE NEW MAXIMUM AND MINIMUM
       !STORE(J)=MIN(STORE(J),STORE(I))
-      minimum(IPOSN)=min(minimum(IPOSN), STORE(I))
+      minimum(IPOSN)=min(minimum(IPOSN), reflectiondata(I))
       !STORE(J+1)=MAX(STORE(J+1),STORE(I))
-      maximum(IPOSN)=max(maximum(IPOSN), STORE(I))
+      maximum(IPOSN)=max(maximum(IPOSN), reflectiondata(I))
 C--ADD IN FOR THE MEAN AND R.M.S.
       !STORE(J+2)=STORE(J+2)+STORE(I)
-      summation(IPOSN)=summation(IPOSN)+store(i)
+      summation(IPOSN)=summation(IPOSN)+reflectiondata(i)
       !STORE(J+3)=STORE(J+3)+STORE(I)*STORE(I)
-      summationsq(IPOSN)=summationsq(IPOSN)+store(i)**2
+      summationsq(IPOSN)=summationsq(IPOSN)+reflectiondata(i)**2
       RETURN
       END
 C
@@ -1645,4 +1818,194 @@ C      CALL XPRVDU(NCVDU, 2,0)
       RETURN
       END
 C
+      integer function KLDRNRnew(state, reflectiondata) result(KLDRNR)
+C--LOAD THE NEXT REFLECTION FROM THE DISC
+C
+C  state  A DUMMY ARGUMENT.
+C
+C--RETURN VALUES ARE :
+C
+C  -1  END OF DATA  -  ALL SUBSEQUENT ACCESSES WILL RETURN THIS VALUE
+C   0  REFLECTION TRANSFERRED TO THE CORE BUFFER.
+C
+C      IDISPL      FLAG CONTROLLING LIST 6 DISPLAY
+C                    -1      NO DISPLAY
+C                    +1      DISPLAY
+C
+      implicit none
 
+      logical, save :: DISPL6
+      integer, PARAMETER :: NINTER = 20
+      integer, intent(in) :: state
+      real a
+      integer i, j, k, ipercn, newlvl, nprev
+      real bdjw, cdjw, ddjw
+C--
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'XDRIVE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XPCK06.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XTAPED.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+C
+      integer, save :: idispl=1
+      integer, save :: NXTLVL=0 , NSTAR
+      integer, external :: KINCRF
+C
+      INCLUDE 'QSTORE.INC'
+      real, dimension(md6r) :: packedbuffer
+      !> dedicated storage for list 6. size is md6
+      !! Uded to be in store at address m6 
+      real, dimension(md6) :: reflectiondata
+      
+C
+C
+C
+C--CHECK FOR END OF FILE
+      KLDRNR=-1
+      IF(N6R>0) then !1550,1550,1000
+C--READ DOWN THE NEXT REFLECTION
+          !1000  CONTINUE
+          KLDRNR=0
+          !CALL XZEROF(STORE(M6),MD6)
+          reflectiondata=0.0
+C--CHECK FOR INPUT FROM M/T
+          IF(L6R<=0) then !1050,1050,1100
+C--INPUT FROM TAPE  -  FETCH THE NEXT REFLECTION
+              !1050  CONTINUE
+              CALL XIMTRA(MTA)
+              M6R=MMTR
+              !GOTO 1150
+          else !1100  CONTINUE
+C--INPUT FROM DISC
+              !CALL XDOWNF(L6R,STORE(M6R),MD6R)
+              call XDOWNnew2(L6R,packedbuffer,MD6R, ierflg)
+C--UPDATE THE POINTERS FOR THE DISC
+              L6R=L6R+KINCRF(MD6R)
+C--UPDATE THE NUMBER OF REFLECTIONS LEFT TO READ
+          end if ! 1150      CONTINUE
+          N6R=N6R-1
+C--TRANSFER THE DATA TO THE CORE BUFFER
+          J=1
+          DO I=L6DMP,M6DMP ! 1200 
+              K=ISTORE(I)-M6+1 ! istore is an absolute, using a relative address to m6 now
+              reflectiondata(K)=packedbuffer(J)
+              J=J+1
+          end do !1200  CONTINUE
+C--CHECK IF THE INDICES SHOULD BE UNPACKED
+          IF(IPACKR>=0) then !1300,1250,1250
+C--UNPACK THE REFLECTIONS
+              !1250  CONTINUE
+              A=FLOAT(NINT(reflectiondata(1+14)/256.))
+              reflectiondata(1)=reflectiondata(1+14)-A*256.
+              !print *, 'KLDRNR', m6, STORE(M6)
+              reflectiondata(1+2)=FLOAT(NINT(A/256.))
+              reflectiondata(1+1)=A-reflectiondata(1+2)*256.
+C--CHECK IF THE PHASE AND BATCH NUMBER SHOULD BE UNPACKED
+          end if !1300  CONTINUE
+          IF(IPHSER>=0) then !1400,1350,1350
+C--UNPACK THE PHASE AND BATCH NUMBER
+              !1350  CONTINUE
+              reflectiondata(1+13)=AINT(reflectiondata(1+15)*0.05)
+              reflectiondata(1+6)=reflectiondata(1+15)-
+     1            reflectiondata(1+13)*20.-10.
+C -- CHECK IF THE RATIO AND JCODE SHOULD BE UNPACKED
+          end if !1400  CONTINUE
+          IF ( JCDRAR .GE. 0 ) THEN
+c this algorithm is better for -ve values, and is  
+c backwards compatible with old dsc files
+c changing the scale, sdjw, to 0.01 would be better still, but is
+c not backwards compatible
+ 
+c              adjw = sign(1.,store(m6+31))
+              bdjw = abs(reflectiondata(1+31))
+              cdjw = int(0.1*bdjw)
+              ddjw = bdjw-10.*cdjw
+c             edjw = adjw*sdjw*cdjw
+
+              reflectiondata(1+18) = ddjw
+c             store(m6+20) = edjw
+c
+c        STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
+c        STORE(M6+18) = ANINT(STORE(M6+31) - (100.*STORE(M6+20)))
+c
+c        recompute RATIO because value is only stored to 2sig fig
+c        esd was set to ZERO elsewhere if none was input. 
+c        Assume users wants all reflections, so set default RATIO to > 3
+              if (reflectiondata(1+12).le. zero) then
+                  reflectiondata(1+20) = 3.001
+              else
+                  reflectiondata(1+20)=min(128., 
+     1                reflectiondata(1+3)/(reflectiondata(1+12)*2.) )
+              endif
+          ENDIF
+          reflectiondata(1+13) = MAX ( reflectiondata(1+13) , 1.0 )
+C
+C -- MAKE SURE 'SIGMA' AND 'CORRECTIONS' HAVE REASONABLE VALUES
+          IF (reflectiondata(1+12).LT.ZERO) reflectiondata(1+12)= ZERO
+          IF (reflectiondata(1+27).LT.ZERO) reflectiondata(1+27)= 1.0
+C
+C -- PRODUCE DISPLAY IF REQUIRED
+          DISPL6 = ( IDISPL .GT. 0 ) .AND. ( IQUN .EQ. JQUN ) .AND.
+     2        ( ISSSPD .GT. 1 ) .AND. ( N6D .GT. 0 )
+C
+          IF ( DISPL6 ) THEN
+              IF ( N6R .GE. (N6D-1) ) THEN
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
+                  WRITE ( CMON,1505)
+                  CALL XPRVDU(NCVDU, 1, 0)
+                  WRITE(NCVDU,1505)
+#endif
+1505              FORMAT ( 15X ,  12X, 'Processing reflections ')
+C                 CALL VGACOL ( 'BOL', 'YEL', 'BLA' )
+                  CALL OUTCOL(6)
+#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined(_INW_)
+                  WRITE(NCVDU,'(15X,''^'',$)')
+#endif
+                  NSTAR = 1
+                  NXTLVL = ( NSTAR * N6D ) / NINTER
+              ELSE IF ( (N6D-N6R) .GE. NXTLVL ) THEN
+                  IPERCN = MIN ( 100 , ( 100 * NSTAR ) / NINTER )
+                  CALL SLIDER (NSTAR, NINTER)
+C
+C -- CALCULATE WHERE NEXT PRINT IS DUE
+C
+                  NPREV = NXTLVL + 1
+            
+                  do while( (NXTLVL<=NPREV) .and. (NSTAR<=NINTER+1) ) !1520      CONTINUE
+                      NSTAR = NSTAR + 1
+                      NXTLVL = ( NSTAR * N6D ) / NINTER
+                      !GO TO 1520
+                  end do
+C
+                  NEWLVL=NXTLVL-1
+                  do while( (NEWLVL<=NXTLVL) .AND. (NSTAR<=NINTER+1) ) ! 1530      CONTINUE
+                      NSTAR = NSTAR + 1
+                      NEWLVL = ( NSTAR * N6D ) / NINTER
+                  end do !GO TO 1530
+C
+                  NSTAR = MIN ( NSTAR - 1 , NINTER )
+                  
+C
+              ENDIF
+          ENDIF
+          RETURN
+C
+      end if !1550  CONTINUE
+C      CALL VGACOL ( 'BOL', 'WHI', 'BLU' )
+      CALL OUTCOL(1)
+C------ SWITCH ON LINE FEEDS FOR DOS
+          JNL77 = 1
+C      WRITE(CMON,1560)
+C      CALL XPRVDU(NCVDU, 2,0)
+1560  FORMAT(' ')
+      RETURN
+      END
+C
