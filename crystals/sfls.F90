@@ -1423,10 +1423,10 @@ integer, dimension(8) :: measuredtime
 ! single precision seems to introduce errors of about 1e-3 in Fc and 
 ! other parameters
 double precision, dimension(:,:), allocatable :: designmatrix
-double precision, dimension(:,:), allocatable :: normalmatrix!, ref
+double precision, dimension(:,:,:), allocatable :: normalmatrix!, ref
 ! tid is the number of threads
 integer :: designindex, tid
-integer, parameter :: designchunk=4096, storechunk=4096
+integer, parameter :: storechunk=2048
 character(len=4) :: buffer
 
 !> Buffer holding reflections data of several reflections
@@ -1575,18 +1575,6 @@ NP=JP
 call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
 #endif
-
-allocate(reflectionsdata(MD6,storechunk))
-allocate(layers(storechunk))
-allocate(batches(storechunk))
-allocate(l6wpointers(storechunk))
-allocate(n6wpointers(storechunk))
-
-layers=-1 ! SET THE LAYER SCALING CONSTANTS INITIALLY
-batches=-1
-n6w=-1
-l6w=l6w-md6w
-
  
     
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1594,8 +1582,33 @@ l6w=l6w-md6w
 !Begin big loop
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-allocate(normalmatrix(JP-JO+1,JP-JO+1))
-allocate(designmatrix(JP-JO+1,storechunk))
+
+!     Working out the number of threads available
+tid=1
+!$    tid =  omp_get_max_threads() 
+
+!     To be replaced by GET_ENVIRONMENT_VARIABLE f2003 feature
+!     getenv is a deprecated extension      
+CALL GETENV('OMP_NUM_THREADS', buffer) 
+if(buffer/='    ') then
+    read(buffer, '(I4)') i
+    if(i>0) then
+        tid=i
+    end if
+end if
+
+allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
+allocate(designmatrix(JP-JO+1,storechunk*tid))
+allocate(reflectionsdata(MD6,storechunk*tid))
+allocate(layers(storechunk*tid))
+allocate(batches(storechunk*tid))
+allocate(l6wpointers(storechunk*tid))
+allocate(n6wpointers(storechunk*tid))
+
+layers=-1 ! SET THE LAYER SCALING CONSTANTS INITIALLY
+batches=-1
+n6w=-1
+l6w=l6w-md6w
 
 normalmatrix=0.0
 minimum_shared=huge(minimum_shared)
@@ -1624,7 +1637,7 @@ cpt=0
 reflectionsdata_size=1
 do WHILE (reflectionsdata_size>0)  ! START OF THE LOOP OVER REFLECTIONS
 
-do reflectionsdata_index=1, storechunk
+do reflectionsdata_index=1, storechunk*tid
     if( SFLS_TYPE .EQ. SFLS_CALC ) then
     ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
     ! in place.
@@ -1672,6 +1685,7 @@ end if
 if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
     batches=batches+m5bs-1
 end if
+designmatrix=0.0
 
 !$OMP PARALLEL default(none)&
 !$OMP& shared(nP, nO, L5LS, layered, str11, n11r) &
@@ -1682,7 +1696,7 @@ end if
 !$OMP& shared(pol1, pol2, ext, nd, nv, iallow, xvalur,LTEMPR, nsort, mdsort) &
 !$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
 !$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
-!$OMP& shared(ltempl, designmatrix) &
+!$OMP& shared(ltempl, designmatrix, normalmatrix) &
 !$OMP& shared(l6wpointers, n6wpointers, l6w, n6w) &
 !$OMP& shared(ILEVPR, ibadr) &  ! atomic
 !$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d, storetemp, istoretemp) &
@@ -1709,12 +1723,6 @@ end if
         minimum(8:9)=0.0
         maximum(8:9)=0.0
     end if    
-
-!$OMP MASTER
-tid=1
-!$ tid=omp_get_num_threads()
-print *, 'threads used: ', tid
-!$OMP END MASTER
 
 !$OMP DO
     do reflectionsdata_index=1, reflectionsdata_size
@@ -2227,17 +2235,20 @@ print *, 'threads used: ', tid
         end if
     end do
 
-!$OMP END PARALLEL
+    tid=0
+!$  tid=omp_get_thread_num()
 
     ! Accumulating the normal matrix
     if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
     &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
     &   ISTOREtemp(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
     &   ISTOREtemp(M33CD+13).NE.0)THEN    
-        call DSYRK('L','N',JP-JO+1,reflectionsdata_size, &
-        &   1.0d0, designmatrix(1,1), &
-        &   JP-JO+1,1.0d0,normalmatrix(1,1),JP-JO+1)    
+        call DSYRK('L','N',JP-JO+1,storechunk, &
+        &   1.0d0, designmatrix(1,storechunk*tid+1), &
+        &   JP-JO+1,1.0d0,normalmatrix(1,1,tid+1),JP-JO+1)    
     end if
+    
+!$OMP END PARALLEL
 
     ! writing new values back to the disk
     do reflectionsdata_index=1, reflectionsdata_size
@@ -2247,6 +2258,14 @@ print *, 'threads used: ', tid
 
 
 END do  ! END OF REFLECTION LOOP
+
+! Merge accumulation matrices
+! Only vectorized with gfortran 4.8 not 4.4
+do i=1, ubound(normalmatrix,2)
+    do j=2, ubound(normalmatrix,3)
+        normalmatrix(:,i,1)=normalmatrix(:,i,1)+normalmatrix(:,i,j)
+    end do
+end do
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2292,7 +2311,7 @@ if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
         do i=1,MNR
             j = ((i-1)*(2*(MNR)-i+2))/2
             k = j + MNR - i
-            STR11(IBS+j:IBS+k)=normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1)
+            STR11(IBS+j:IBS+k)=normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
 ! E.g. two blocks of 2 - normalmatrix is 4x4, output is 2 upper triangles of side 2.
 ! Initially IBL is 1, IBS is L11.
 !       MNR is 2

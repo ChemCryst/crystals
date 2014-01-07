@@ -447,6 +447,7 @@ do i=1,nmsize
 end do    
             
 deallocate(preconditioner)
+deallocate(unpacked)
 
 end subroutine
 
