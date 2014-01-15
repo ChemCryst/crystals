@@ -3067,7 +3067,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =            321.
                                                 for          55 parameters
                                  The rms (shift/su)  =           2.417
-                              The mean abs(shift/su) =           1.390
+                              The mean abs(shift/su) =           1.391
  The largest (shift/esd) =     10.90, for Parameter   22, C4U[11]
 
                                 Min          Actual           Max
@@ -5738,7 +5738,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.177      0.0E+00    0.165E-01         10.69                          SCALE   
- LARGE     2           2           655.336      0.0E+00    0.360E+02         18.18                          EXTPARAM
+ LARGE     2           2           655.335      0.0E+00    0.360E+02         18.18                          EXTPARAM
  S/ESD     4           4            0.0094      0.0E+00    0.438E-02          2.15        C      1 U[22]   
  S/ESD     5           5            0.0072      0.0E+00    0.444E-02          1.63        C      1 U[33]   
  S/ESD     9           9            0.0074      0.0E+00    0.484E-02          1.52        C      2 U[11]   
@@ -6541,8 +6541,8 @@ Bonds: Update required - List5 length change
 
    1   C         1.      1   1    0    0    0
    2   C        11.      1   1    0    0    0      61.41
-   3   H       101.      1   1    0    0    0     119.77  119.77
-   4   H       102.      1   1    0    0    0     119.76  119.77  109.47
+   3   H       101.      1   1    0    0    0     119.76  119.76
+   4   H       102.      1   1    0    0    0     119.77  119.77  109.47
 
   KEY                                                1       2       3
 
@@ -9352,7 +9352,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.562      0.0E+00    0.455E-01         12.34                          SCALE   
- LARGE     2           2           563.374      0.0E+00    0.285E+02         19.74                          EXTPARAM
+ LARGE     2           2           563.375      0.0E+00    0.285E+02         19.74                          EXTPARAM
  S/ESD     4           4            0.0114      0.0E+00    0.445E-02          2.57        C      1 U[22]   
  S/ESD     5           5            0.0060      0.0E+00    0.448E-02          1.33        C      1 U[33]   
  S/ESD     9           9            0.0073      0.0E+00    0.472E-02          1.55        C      2 U[11]   
@@ -13226,7 +13226,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      7566.          7483.            777.                                   On scale of /FC/
+      7567.          7483.            777.                                   On scale of /FC/
 
      12019.         11888.           1234.               0.4613E+04          On scale of /FO/
 
