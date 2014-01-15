@@ -1332,19 +1332,18 @@ use xconst_mod, only: pi, zero, zerosq
 implicit none
 
 interface
-    subroutine xab2fc(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)
+    subroutine xab2fc(reflectiondata, scalew, partialderivatives,temporaryderivatives)
         implicit none
-        real, intent(out) :: fc, p
-        real, intent(inout) :: act, bct, acn, bcn, ace, acf
-        real, intent(in) :: scalew, acd, bcd
-        integer, intent(in) :: jp, jo, JREF_STACK_PTR
-        real, dimension(:), intent(inout) :: store
-        integer, dimension(:), intent(inout) :: istore
+        real, intent(in) :: scalew
+        real, dimension(:), intent(inout) :: reflectiondata
+        double precision, dimension(:), intent(out) :: partialderivatives
+        double precision, dimension(:), intent(in) :: temporaryderivatives
     end subroutine
 end interface
 
 interface
-    subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, reflectiondata, store, istore)
+    subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
+    &   g2, m12, md12a, reflectiondata, store, istore, temporaryderivatives)
         implicit none
         real, intent(out) :: ACD, BCD, tc, sst
         real, intent(inout) :: smin, smax, bc, ac, g2
@@ -1353,11 +1352,12 @@ interface
         integer, intent(inout) :: nn, nm
         integer, intent(in) :: nl, nr, jo, jp
         integer, intent(out) :: m12, md12a
+        double precision, dimension(:), intent(out) :: temporaryderivatives
     end subroutine
 end interface
 
 interface
-    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices) 
+    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices, partialderivatives) 
         implicit none 
         real, intent(in) :: a
         integer, intent(in) :: jx, jo, jq, jr
@@ -1365,6 +1365,7 @@ interface
         integer, dimension(:), intent(in) :: istore
         real, dimension(:), intent(inout) :: store
         integer, dimension(:), intent(inout) :: shiftsaccumulation_indices
+        double precision, dimension(:), intent(out) :: partialderivatives
     end subroutine
 end interface
 
@@ -1374,6 +1375,33 @@ interface
         integer, intent(in) :: dummy
         integer, intent(out) :: ierflg
     end function
+end interface
+
+interface
+    SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, reflectiondata)
+    implicit none
+    integer, intent(in) :: iposn
+    real, dimension(:), intent(inout):: minimum, maximum
+    real, dimension(:), intent(inout):: summation, summationsq
+    real, dimension(:), intent(in) :: reflectiondata
+    end subroutine
+end interface
+
+interface
+    subroutine XSLRnew(reflectiondata, store, l6w, n6w)
+    implicit none
+    real, dimension(:), intent(inout) :: store, reflectiondata
+    integer, intent(in) :: l6w, n6w
+    end subroutine
+end interface
+
+interface
+    subroutine xadrhs(wdf, derivs, rmat11)
+    implicit none
+    double precision, dimension(:), intent(in) :: DERIVS
+    double precision, dimension(:), intent(inout) :: RMAT11
+    real wdf
+    end subroutine
 end interface
 
 !include 'QSTORE.INC'
@@ -1448,25 +1476,7 @@ integer, dimension(:), allocatable :: istoretemp
 double precision, dimension(:), allocatable :: righthandside
 integer cpt
 
-interface
-    SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, reflectiondata)
-    implicit none
-    integer, intent(in) :: iposn
-    real, dimension(:), intent(inout):: minimum, maximum
-    real, dimension(:), intent(inout):: summation, summationsq
-    real, dimension(:), intent(in) :: reflectiondata
-    end subroutine
-end interface
-
-interface
-    subroutine XSLRnew(reflectiondata, store, l6w, n6w)
-    implicit none
-    real, dimension(:), intent(inout) :: store, reflectiondata
-    integer, intent(in) :: l6w, n6w
-    end subroutine
-end interface
-
-
+double precision, dimension(:), allocatable :: temporaryderivatives
 
 ierflg = 0
 
@@ -1599,7 +1609,15 @@ end if
 
 allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
 allocate(designmatrix(JP-JO+1,storechunk*tid))
-allocate(reflectionsdata(MD6,storechunk*tid))
+allocate(reflectionsdata(MD6+6,storechunk*tid))
+!md6+1 ac
+!md6+2 aci
+!md6+3 bc
+!md6+4 bci
+!md6+5 pshift
+!md6+6 fried
+
+reflectionsdata=0.0
 allocate(layers(storechunk*tid))
 allocate(batches(storechunk*tid))
 allocate(l6wpointers(storechunk*tid))
@@ -1688,13 +1706,13 @@ end if
 designmatrix=0.0
 
 !$OMP PARALLEL default(none)&
-!$OMP& shared(nP, nO, L5LS, layered, str11, n11r) &
+!$OMP& shared(nP, nO, layered, str11) &
 !$OMP& shared(batched,twinned, JREF_STACK_START, reflectionsdata_size) &
-!$OMP& shared(reflectionsdata, layers, batches, scaleo, partials, nr, n25) &
-!$OMP& shared(issprt, ncwu, cmon, ncvdu, md25, l25, n2p, l2p, m5es, nf) &
-!$OMP& shared(scaled_fot, sfls_type, extinct, wave, l12es, jr, jq, del, nu) &
+!$OMP& shared(reflectionsdata, layers, batches, scaleo, partials, nr) &
+!$OMP& shared(issprt, ncwu, md6, n12) &
+!$OMP& shared(sfls_type, extinct, wave, l12es, jr, jq, del, nu) &
 !$OMP& shared(pol1, pol2, ext, nd, nv, iallow, xvalur,LTEMPR, nsort, mdsort) &
-!$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2, l11r) &
+!$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2) &
 !$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
 !$OMP& shared(ltempl, designmatrix, normalmatrix) &
 !$OMP& shared(l6wpointers, n6wpointers, l6w, n6w) &
@@ -1704,11 +1722,11 @@ designmatrix=0.0
 !$OMP& firstprivate(jp,jo) &
 !$OMP& private(M5LS, layer, ibatch, ierflg, w, nm, nn, md12a) &
 !$OMP& private(scalek,scales,scalel, scaleb,scaleg,act,bct,acn,bcn,fo,fc,scalew,nl) &
-!$OMP& private(sst, tc, bc, ac, bcd, acd, acf, ace, p, ph, pk, pl, nj, nk) &
-!$OMP& private(ljx, formatstr, iererr, sh, sk, sl, m25, ljv, ljs) &
-!$OMP& private(JREF_STACK_PTR, tempr, m5bs, g2sav, m2p, a, k, fcext, nq) &
-!$OMP& private(c, n, path, delta, ext1, ext2, ext4, fcexs, df, wdf) &
-!$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, pii, xvalul, tid, i) &
+!$OMP& private(tc, bc, ac, bcd, acd, acf, ace, p, sst) &
+!$OMP& private(ljx, temporaryderivatives) &
+!$OMP& private(JREF_STACK_PTR, tempr, m5bs, a, fcext) &
+!$OMP& private(path, delta, c, ext1, ext2, ext4, fcexs, df, wdf) &
+!$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, tid) &
 !$OMP& shared(minimum_shared, maximum_shared) &
 !$OMP& shared(shiftsaccumulation_shared) &
 !$OMP& private(shiftsaccumulation_indices) &
@@ -1723,6 +1741,9 @@ designmatrix=0.0
         minimum(8:9)=0.0
         maximum(8:9)=0.0
     end if    
+
+    allocate(temporaryderivatives(n12*jq))
+    temporaryderivatives=0.0d0
 
 !$OMP DO
     do reflectionsdata_index=1, reflectionsdata_size
@@ -1751,18 +1772,8 @@ designmatrix=0.0
         SCALEK=1./SCALEG   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
     end if
 
-!--CLEAR THE PARTIAL CONTRIBUTION FLAGS FOR THIS REFLECTION
-    ACT=0.0
-    BCT=0.0
-    ACN = 0.
-    BCN = 0.
-!--CHECK if THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
-    if(PARTIALS) then 
-        ACT=reflectionsdata(1+7,reflectionsdata_index) 
-        BCT=reflectionsdata(1+8,reflectionsdata_index) 
-        ACN = ACT
-        BCN = BCT
-    end if
+    ACT = reflectionsdata(1+7,reflectionsdata_index) 
+    BCT = reflectionsdata(1+8,reflectionsdata_index) 
 
     FO=reflectionsdata(1+3,reflectionsdata_index) ! SET UP /FO/ ETC. FOR THIS REFLECTION
     W=reflectionsdata(1+4,reflectionsdata_index) 
@@ -1777,199 +1788,15 @@ designmatrix=0.0
     if(.NOT.TWINNED)THEN   ! NOT TWINNED
         NL=0
         call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
-        &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), storetemp, istoretemp)
+        &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), storetemp, istoretemp, temporaryderivatives     )
+        
         JREF_STACK_PTR=istoretemp(JREF_STACK_START)
-        call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, storetemp, istoretemp, scalew, jp, jo, jref_stack_ptr, acd, bcd)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
+        call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
         call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
     else ! THIS IS A TWINNED CALCULATION  
-        PH=reflectionsdata(1,reflectionsdata_index)   ! PRESERVE THE NOMINAL INDICES
-        PK=reflectionsdata(1+1,reflectionsdata_index) 
-        PL=reflectionsdata(1+2,reflectionsdata_index) 
-        NJ=NINT(reflectionsdata(1+11,reflectionsdata_index) )
-        if (NJ .EQ. 0) NJ = 12 ! IF THERE IS NO ELEMENT KEY, SET IT TO MOROHEDRAL TWINNING
-        NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN  (LEFT-MOST VALUE)
-        do WHILE ( NK .GT. 0 ) 
-            NL=NK
-            NK=NK/10
-            LJX=NL-NK*10
-            if(LJX<=0 .or. (LJX>0 .and. LJX>N25)) then ! GO TO 19910    
-            ! CHECK THAT THIS IS A 
-! -- INCORRECT ELEMENT NUMBER
-                formatstr="(1X,I5,' is an incorrect element number for reflection ',3F5.0)"
-                if (ISSPRT .EQ. 0) write(NCWU, formatstr ) LJX , PH , PK , PL
-                write(CMON, formatstr) LJX , PH , PK , PL
-                call XPRVDU(NCVDU, 1,0)
-                call XERHND ( IERERR )
-                !return
-            end if                  
-        end do
-! CHECK if 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
-!  Generate the principal indices (Why?)
-!          M25I=L25I+(NL-1)*MD25I  ! COMPUTE THE INDICES IN THE STANDARD REFERENCE SYSTEM
-!          SH=storetemp(M25I)*PH+storetemp(M25I+1)*PK+storetemp(M25I+2)*PL
-!          SK=storetemp(M25I+3)*PH+storetemp(M25I+4)*PK+storetemp(M25I+5)*PL
-!          SL=storetemp(M25I+6)*PH+storetemp(M25I+7)*PK+storetemp(M25I+8)*PL
-        sh=ph
-        sk=pk
-        sl=pl
-!      write(ncawu,'(i4,6x,3f4.0, 6x, 3f4.0)') nl, ph, pk, pl, sh,sk,sl
-!  For centred cells, CRYSTALS used the optimisation page 45 Rollett which
-!  adds together the contributions to A from atoms at x and x+1/2 
-!  (ie multiplies A by 2)
-!  For a systematic absence it should subtract the contribution from x+1/2, 
-!  ie A=0 etc.
-!  As originally written, the program gets FC > 0 for absences.
-!  This should not matter for untwinned crystals, since the absences should 
-!  have been removed.
-!  For twins, the second component may overlap with a systematic absence 
-!  from the first component so we must check for this an ensure the 
-!  contribution from the first is zero.
-!
-        NK=NJ  ! RESET THE FLAGS FOR THIS GROUP OF TWIN ELEMENTS, e.g. 1234
-        do WHILE ( NK .GT. 0 ) ! CHECK if THERE ARE ANY MORE ELEMENTS TO PROCESS
-            if (nj .gt.9) then
-                LJX=NK      ! FETCH THE NEXT ELEMENT, STARTING AT RIGHT HAND SIDE
-                NK=NK/10                                           ! e.g. 123
-                NL=LJX-NK*10                                        ! e.g. 1234-1230 = 4
-                M25=L25+(NL-1)*MD25   ! COMPUTE THE INDICES FOR THIS COMPONENT
-                reflectionsdata(1,reflectionsdata_index)=ANINT(storetemp(M25)*SH+storetemp(M25+1)*SK+storetemp(M25+2)*SL)
-                reflectionsdata(1+1,reflectionsdata_index)=ANINT(storetemp(M25+3)*SH+storetemp(M25+4)*SK+storetemp(M25+5)*SL)
-                reflectionsdata(1+2,reflectionsdata_index)=ANINT(storetemp(M25+6)*SH+storetemp(M25+7)*SK+storetemp(M25+8)*SL)
-                if ( NM .GE. N25 ) then ! GO TO 19920  ! WE HAVE USED TOO MANY ELEMENTS
-                    formatstr="(1X,'Too many elements given for reflection ', 3F5.0 )"
-                    if (ISSPRT .EQ. 0) write(NCWU, formatstr) PH, PK , PL
-                    write ( CMON , formatstr ) PH , PK , PL
-                    call XPRVDU(NCVDU, 1,0)
-                    call XERHND ( IERERR )
-                    !return ! GO TO 19900
-                end if
-                
-            else
-               nl=nj
-               nk = 0
-               reflectionsdata(1,reflectionsdata_index) = sh
-               reflectionsdata(1+1,reflectionsdata_index) = sk
-               reflectionsdata(1+2,reflectionsdata_index) = sl
-            endif
-!
-!  save the multiplier 
-            g2sav = g2
-!  check if the current reflection is a centring absence
-            if(N2P .gt. 1)then
-!           CHECK NON-PRIMITIVE CONDITIONS
-                M2P=L2P
-                do I=1,N2P
-                    A=ABS(storetemp(M2P)*reflectionsdata(1,reflectionsdata_index)+ &
-                    &   storetemp(M2P+1)*reflectionsdata(1+1,reflectionsdata_index)+ &
-                    &   storetemp(M2P+2)*reflectionsdata(1+2,reflectionsdata_index))
-                    K=INT(A+0.01)
-                    if(A-FLOAT(K).gt.0.01) then
-                        g2 = 0.0
-                        exit
-                    endif
-                    M2P=M2P+3
-                enddo
-            endif
-
-!      write(ncpu,9753)'Given', ph,pk,pl, 'Transformed', storetemp(m6),
-!     1 storetemp(m6+1),storetemp(m6+2), g2, storetemp(m6+3),a,k
-!9753  format(a,3f8.2,2x,a,3f8.2, '  G2,Fo,A,K ', 3f12.2,i5)
-!
-            call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
-            &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), storetemp, istoretemp)  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
-            g2 = g2sav
-        END do  ! END OF THIS TWINNED REFLECTION  
-!
-!
-!
-        reflectionsdata(1,reflectionsdata_index)=ph  ! restore the nominal indices
-        reflectionsdata(1+1,reflectionsdata_index)=pk
-        reflectionsdata(1+2,reflectionsdata_index)=pl
-!
-        FCEXT=0.  !  WIND UP AND CALCULATE THE TOTAL VA
-        JREF_STACK_PTR=JREF_STACK_START  ! CALCULATE /FC/ AND ITS DERIVATIVES FOR EACH ELEMENT
-        NQ=NM
-    
-        do WHILE ( NQ .GT. 0 )  ! ACCESS THE NEXT ELEMENT IN THE STACK
-            JREF_STACK_PTR=istoretemp(JREF_STACK_PTR)
-!--COMPUTE THE TOTALS AGAINST /FC/ FOR THIS ELEMENT
-            ACT=0.  ! CLEAR THE PARTIAL CONTRIBUTIONS
-            BCT=0.
-            JO=istoretemp(JREF_STACK_PTR+1)  ! SET THE POINTER FOR THE DERIVATIVES WITH RESPECT TO /FC/
-            JP=istoretemp(JREF_STACK_PTR+2)
-  
-            call XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, storetemp, istoretemp, scalew, jp, jo, jref_stack_ptr, acd, bcd)   ! CONVERT A AND B PARTS TO FC
-
-            NI=istoretemp(JREF_STACK_PTR+8) ! ACCUMULATE /FCT/
-            istoretemp(JREF_STACK_PTR+8)=istoretemp(JREF_STACK_PTR+8)-1
-            LJU=L5ES+istoretemp(JREF_STACK_PTR+8)
-            LJV=M5ES+istoretemp(JREF_STACK_PTR+8)
-            FCEXT=FCEXT+storetemp(LJU)*storetemp(JREF_STACK_PTR+6)*storetemp(JREF_STACK_PTR+6)
-
-            if(NF.GE.0 .and. NM.GT.1) then  ! CHECK IF WE MUST PRINT THIS CONTRIBUTOR
-                                            ! CHECK if THERE IS MORE THAN ONE CONTRIBUTOR
-                if(NQ.EQ.NM)THEN  ! CHECK IF THIS IS THE FIRST CONTRIBUTOR
-                    if (ISSPRT .EQ. 0) write(NCWU,3350)
-                end if
-!--PRINT THIS CONTRIBUTOR
-                LJS=JREF_STACK_PTR+3
-                A=storetemp(JREF_STACK_PTR+7)*D
-                C=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)
-                if (ISSPRT .EQ. 0) then
-                    write(NCWU,3350) (storetemp(LJT+3),LJT=JREF_STACK_PTR,LJS),A,C,NI
-                end if
-3350                  FORMAT(3X,3F6.0,9X,2F9.1,22X,F12.1,I4)
-            end if
-            NQ=NQ-1  ! UPDATE THE NUMBER OF ELEMENTS LEFT TO PROCESS
-        end do
-
-        FC=SQRT(FCEXT)  ! COMPUTE THE OVERALL /FCT/ VALUE
-        JO=NO
-        JP=NP
-
-        if(.NOT.SCALED_FOT) then  ! WHICH TYPE OF /FO/ AND /FC/ WE ARE TO OUTPUT
-!           SAVE THE TOTAL OVER ALL ELEMENTS
-            reflectionsdata(1+3,reflectionsdata_index)=reflectionsdata(1+10,reflectionsdata_index)
-            reflectionsdata(1+5,reflectionsdata_index)=FC
-            reflectionsdata(1+6,reflectionsdata_index)=0.
-        else
-!           SAVE THE VALUE FOR THE MAIN ELEMENT
-            JREF_STACK_PTR=istoretemp(JREF_STACK_START) 
-            LJV=istoretemp(JREF_STACK_PTR+8)+M5ES
-            reflectionsdata(1+3,reflectionsdata_index)= reflectionsdata(1+10,reflectionsdata_index)* &
-            &   storetemp(JREF_STACK_PTR+6)*storetemp(LJV)/FC
-            reflectionsdata(1+5,reflectionsdata_index)=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)
-            reflectionsdata(1+6,reflectionsdata_index)=storetemp(JREF_STACK_PTR+7)
-        end if
-        FO=reflectionsdata(1+10,reflectionsdata_index)
-        reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*SCALES
-!          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
-        p=reflectionsdata(1+6,reflectionsdata_index)
-        call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
-        if (SFLS_TYPE .EQ. SFLS_REFINE) then ! CHECK IF WE ARE DOING REFINEMENT
-            storetemp(JO:JP)=0. ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
-            JREF_STACK_PTR=JREF_STACK_START  
-            do LJU=1,NM ! PASS AMONGST THE VARIOUS CONTRIBUTORS
-                JREF_STACK_PTR=istoretemp(JREF_STACK_PTR) ! FIND THE ADDRESS OF THIS CONTRIBUTOR
-                LJV=istoretemp(JREF_STACK_PTR+8)+L5ES
-                A=storetemp(JREF_STACK_PTR+6)*storetemp(LJV)/FC
-                LJS=istoretemp(JREF_STACK_PTR+1)
-                N = JP - JO 
-                storetemp(JO:JP)=storetemp(JO:JP) + storetemp(LJS:LJS+N)*A  ! ADD IN THE DERIVATIVES
-            end do
-
-            M12=L12ES ! ADD IN THE CONTRIBUTIONS FOR THE ELEMENT SCALE FACTORS
-            JREF_STACK_PTR=JREF_STACK_START
-            do NI=1, NM ! WHILE ( NI.GT.0 ) ! CHECK if THERE ANY MORE SCALES TO PROCESS
-!               FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
-                JREF_STACK_PTR=istoretemp(JREF_STACK_PTR)
-                LJX=istoretemp(JREF_STACK_PTR+8)
-                A=0.5*SCALEW*storetemp(JREF_STACK_PTR+6)*storetemp(JREF_STACK_PTR+6)/FC
-                call XADDPD ( A, LJX, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
-            end do
-        end if
-    end if  ! end of twinned calculations
-!--FINISH OFF THIS REFLECTION  
+        print *, 'Not implemented'
+        stop
+    end if
 !
 !--CHECK if WE SHOULD include EXTINCTION
     if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
@@ -1988,30 +1815,36 @@ designmatrix=0.0
             A=1.0-2.0*a**2
             DELTA=DELTA*(POL1+POL2*A*A)/(POL1+POL2*A)
         end if
-        EXT1=1.+2.*EXT*FC*FC*DELTA
-        EXT2=1.0+EXT*FC*FC*DELTA
+        EXT1=1.+2.*EXT*reflectionsdata(1+5,reflectionsdata_index)**2*DELTA
+        EXT2=1.0+EXT*reflectionsdata(1+5,reflectionsdata_index)**2*DELTA
         EXT3=EXT2/(EXT1**(1.25))
         EXT4=(EXT1**(-.25))
-        FCEXT=FC*EXT4   ! COMPUTE THE MODifIED /FC/
+        FCEXT=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/
     else
         EXT4=1.
-        FCEXT=FC
+        FCEXT=reflectionsdata(1+5,reflectionsdata_index)
     end if
 !
     FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
-
 !
 
     if(TWINNED)THEN 
-        reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4*SCALES
+        ! broken
+        !reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4*SCALES
+        stop
     else
         reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
     end if
-    reflectionsdata(1+6,reflectionsdata_index)=P
+    !reflectionsdata(1+6,reflectionsdata_index)=P
 !
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
-        reflectionsdata(1+7,reflectionsdata_index)=ACT ! STORE THE NEW CONTRIBUTIONS
-        reflectionsdata(1+8,reflectionsdata_index)=BCT
+        reflectionsdata(1+7,reflectionsdata_index)=reflectionsdata(1+7,reflectionsdata_index) + &
+        &   reflectionsdata(MD6+1,reflectionsdata_index) + &
+        &   reflectionsdata(MD6+2,reflectionsdata_index)*reflectionsdata(MD6+6,reflectionsdata_index) ! STORE THE NEW CONTRIBUTIONS
+        reflectionsdata(1+8,reflectionsdata_index)=reflectionsdata(1+8,reflectionsdata_index) + &
+        &   reflectionsdata(MD6+3,reflectionsdata_index)*reflectionsdata(MD6+6,reflectionsdata_index) + &
+        &   reflectionsdata(MD6+4,reflectionsdata_index)
+
         call XACRT(8, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
         call XACRT(9, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
     end if
@@ -2136,34 +1969,36 @@ designmatrix=0.0
             LJX=0
             M12=L12O
 
-            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)
+            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
+            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index))
 
             A=W*FCEXS*TC/EXT3       ! OVERALL TEMPERATURE FACTORS NEXT
-            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
-            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
+            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
+            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index)) 
+            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
+            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index)) 
  
-            call XADDPD ( ACF, 3, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)   ! THE POLARITY PARAMETER
-
-            call XADDPD ( ACE, 4, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
-
             A=-0.5*SCALEW*FC*FC*FC*DELTA/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
-            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices) 
+            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
+            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index)) 
  
             if(LAYER.GE.0) then                 ! CHECK IF LAYER SCALES ARE BEING USED
                 A=W*SCALEO*SCALEB*FCEXT/EXT3
                 M12=L12LS
-                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)  ! THE LAYER SCALES
+                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
+                &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index))  ! THE LAYER SCALES
             end if
 
             if(IBATCH.GE.0) then           ! CHECK IF BATCH SCALES ARE BEING USED
                 A=W*SCALEO*SCALEL*FCEXT/EXT3
                 M12=L12BS
-                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, storetemp, istoretemp, shiftsaccumulation_indices)  ! THE BATCH SCALES  
+                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
+                &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index))  ! THE BATCH SCALES  
             end if
 
             if ( ( NV.GE.0 ) .OR. EXTINCT ) then  ! Either FO^2, or extinction correction required.
-                if ( NV .GE. 0 ) storetemp(JO:JP)=storetemp(JO:JP)*2.0*FCEXS   ! Correct derivatives for refinement against Fo^2
-                if ( EXTINCT ) storetemp(JO:JP)=storetemp(JO:JP)*EXT3      ! Modify for extinction
+                if ( NV .GE. 0 ) designmatrix(:,reflectionsdata_index)=designmatrix(:,reflectionsdata_index)*2.0*FCEXS   ! Correct derivatives for refinement against Fo^2
+                if ( EXTINCT ) designmatrix(:,reflectionsdata_index)=designmatrix(:,reflectionsdata_index)*EXT3      ! Modify for extinction
             end if
 
             if (istoretemp(M33CD+5).EQ.1) then   ! Check if we should output matrix in MATLAB format.
@@ -2179,7 +2014,7 @@ designmatrix=0.0
 
             ! ACCUMULATE THE RIGHT HAND SIDES
             ! accumulation done in double precision
-            call XADRHS(WDF,storetemp(JO),righthandside(1),JP-JO+1)  
+            call XADRHS(WDF,designmatrix(:,reflectionsdata_index),righthandside)  
 
             if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
@@ -2189,8 +2024,8 @@ designmatrix=0.0
                 &   storetemp(L12B), N12B*MD12B, MD12B)
             else
                 ! Store a chunk of the design matrix
-                designmatrix(:,reflectionsdata_index) = storetemp(JO:JP)
-                !print *, 'd', designmatrix(:,reflectionsdata_index)
+                !designmatrix(:,reflectionsdata_index) = storetemp(JO:JP)
+                !print *, storetemp(JO:JP)
         
 !                  call XADLHS( storetemp(JO), JP-JO+1, STR11(L11), N11,
 !     1                 storetemp(L12B), N12B*MD12B, MD12B )
@@ -3097,7 +2932,8 @@ dsfrad=((cos(4*pi*stsp*store(m5asp+8)) &
 end
 
 !CODE FOR XSFLSX
-subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, g2, m12, md12a, reflectiondata, store, istore)
+subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
+&   g2, m12, md12a, reflectiondata, store, istore, temporaryderivatives)
 !
 !--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 !
@@ -3133,7 +2969,7 @@ use xlst03_mod, only: n3, md3tr, md3ti, l3tr, l3ti  ! always constant in xsflsc 
 !include 'XLST05.INC90'
 use xlst05_mod, only: n5, md5a, l5 ! always constant in xsflsc and read only
 !include 'XLST06.INC90'
-!use xlst06_mod, only: m6 ! always constant in xsflsc and read only
+use xlst06_mod, only: md6
 !include 'XLST12.INC90'
 use xlst12_mod, only: n12, l12 ! always constant in xsflsc and read only
 !include 'XUNITS.INC90'
@@ -3149,7 +2985,7 @@ integer ljs, ljt, lju, ljv, ljw, ljx, ljy, ljz
 integer n, j
 
 ! moved from common blocks to local
-integer JREF_STACK_PTR, ni, m2, m2t, m2i, m3ti, m3tr, m5a, m12a, l12a
+integer m2, m2t, m2i, m3ti, m3tr, m5a, m12a, l12a
 real st, s, c, a
 
 real FLAG
@@ -3171,6 +3007,7 @@ integer, dimension(:), intent(inout) :: istore
 integer, intent(inout) :: nn, nm, m12, md12a
 integer, intent(in) :: nl, nr, jo, jp
 real, intent(in) :: g2
+double precision, dimension(:), intent(out) :: temporaryderivatives
 
 #if defined(_GIL_) || defined(_LIN_) 
 real, dimension(2) :: scb
@@ -3205,101 +3042,8 @@ ACI=0.
 BCI=0.
 ACD=0.
 BCD=0.
-!--SEARCH FOR THIS REFLECTION IN THE REFLECTION HOLDING STACK
-JREF_STACK_PTR=JREF_STACK_START
-LJX=NM
-!--FETCH THE INFORMATION FOR THE NEXT REFLECTION IN THE STACK
-STACKSEARCH: do WHILE(.TRUE.)
-    NI=ISTORE(JREF_STACK_PTR)
-    LJU=ISTORE(NI+9)
-    LJV=ISTORE(NI+10)
-!--LOOP OVER THE EQUIVALENT POSITIONS STORED
-    do LJW=LJU,LJV,NR
-        PSHifT=STORE(LJW+3)
-        FRIED=1.0
-!--CHECK THE GIVEN INDICES
-        BD = ABS(reflectiondata(1)  -STORE(LJW)  ) &! 0 if same indices
-        &   +ABS(reflectiondata(1+1)-STORE(LJW+1)) &
-        &   +ABS(reflectiondata(1+2)-STORE(LJW+2))   
-        BF = ABS(reflectiondata(1)+STORE(LJW)    ) & ! 0 if Friedel opposite
-        &   +ABS(reflectiondata(1+1)+STORE(LJW+1)) &
-        &   +ABS(reflectiondata(1+2)+STORE(LJW+2))
-!sjwsep2010 Check the BATCH numbers for refinement of dual Wave data
-!          bdf = abs(store(m6+13)-store(ni+20))
-!
-        if ( BF .LT. 0.5 ) then 
-            PSHifT=-PSHIFT   ! USE FRIEDEL'S LAW
-            FRIED=-1.0
-        end if
+temporaryderivatives=0.0d0
 
-!        LOOK FOR REFLECTION IN THE STACK
-!djwsep2010 if ((BD.LT.0.5) .OR. (BF.LT.0.5)) then ! REFLECTION FOUND IN THE STACK
-        if ((BD.LT.0.5) .OR. (BF.LT.0.5)) then ! REFLECTION FOUND IN THE STACK
-!djwjan2011          if (((BD.LT.0.5) .OR. (BF.LT.0.5)).and.(bdf .lt. 0.5))THEN 
-            LJY=NI
-            if(LJX.GT.0) then  ! CHECK IF WE HAVE USED IT BEFORE
-!--WE NEED THIS REFLECTION TWICE
-                do WHILE ( ISTORE(NI).GT.0 )  ! FIND THE END BLOCK
-                    JREF_STACK_PTR=NI
-                    NI=ISTORE(NI)
-                end do
-
-                LJU=NI
-                LJV=LJY
-                ! DUPLICATE THE ENTRY  -  TRANSFER A, B ETC.
-                STORE(NI+3:Ni+7)=STORE(LJY+3:LJY+7)
-                STORE(NI+13:NI+17)=STORE(LJY+13:LJY+17)
-                if( SFLS_TYPE .EQ. SFLS_REFINE ) then  ! WE ARE DOING REFINEMENT
-                    LJX=ISTORE(NI+18)  ! TRANSFER THE P.D.'S
-                    LJU=ISTORE(LJY+18)
-                    LJV=ISTORE(LJY+19)
-                    N = LJV - LJU
-                    STORE(LJX:LJX+N) = STORE(LJU:LJU+N)
-                end if
-
-                LJX=ISTORE(NI+9)   ! TRANSFER THE EQUIVALENT INDICES
-                LJU=ISTORE(LJY+9)
-                LJV=ISTORE(LJY+10)
-                do J=LJU,LJV,NR
-                    STORE(LJX:LJX+3)=STORE(J:J+3)
-                    LJX=LJX+NR
-                end do
-            end if
-            EXIT STACKSEARCH
-        end if
-    END do 
-
-!--NOT THIS EQUIVALENT
-
-    if(ISTORE(NI).LE.0) then ! CHECK IF THERE ARE MORE IN THE STACK
-!--THIS IS THE END OF THE STACK  -  WE MUST do A CALCULATION HERE
-        ISTACK=0
-        NN=NN+1
-        PSHifT=0.
-        FRIED=1.0
-        EXIT STACKSEARCH
-    end if
-
-    LJX=LJX-1  ! SET UP THE FLAGS FOR THE NEXT REFLECTION IN THE STACK
-    JREF_STACK_PTR=NI
-END do STACKSEARCH
-
-
-ISTORE(JREF_STACK_PTR)=ISTORE(NI)   ! SWITCH THE CURRENT BLOCK TO 
-ISTORE(NI)=ISTORE(JREF_STACK_START)   ! THE TOP OF THE STACK
-ISTORE(JREF_STACK_START)=NI
-
-STORE(NI+3)=reflectiondata(1)   ! SET UP THE CURRENT SET OF INDICES
-STORE(NI+4)=reflectiondata(1+1)
-STORE(NI+5)=reflectiondata(1+2)
-!djwsep2010 Put the BATCH number into the stack
-!      store(ni+20)=store(m6+13)
-ISTORE(NI+8)=NL
-STORE(NI+11)=PSHifT
-STORE(NI+12)=FRIED
-NM=NM+1
-
-if(ISTACK.LT.0)return  ! CHECK IF WE MUST CALCULATE THIS REFLECTION
 ! Rollett 5.12.5-7
 !--calculate the information for the symmetry positions
 M2=L2
@@ -3398,12 +3142,6 @@ do LJZ=1,N3
     M3TI=M3TI+MD3TI
 end do
 if(SFLS_TYPE .EQ. SFLS_REFINE) then    ! CHECK IF WE ARE DOING REFINEMENT
-    STORE(JO:JP)=0.           ! CLEAR THE FINAL PARTIAL DERIVATIVE AREA TO ZERO
-    LJS=JR
-    N = N12*JQ
-    STORE(LJS:LJS+N-1) = 0.0! CLEAR THE TEMPORARY PARTIAL DERIVATIVE AREAS TO ZERO
-    LJS=JN
-    STORE(LJS:LJS+JQ-1)=0.  ! CLEAR THE DUMMY LOCATIONS
     M12=L12                  ! SET THE ATOM POINTER IN LIST 12
 end if
 !
@@ -3642,6 +3380,7 @@ do LJY=1,N5
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
                             STORE(LJT)=STORE(LJT)+ALPD(M12A-1)
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+ALPD(M12A-1)
                             M12A=M12A+1
                         end do
                     end if
@@ -3713,51 +3452,20 @@ if(CENTRO) then ! CHECK IF THIS STRUCTURE IS CENTRO
     ACI=0.
 end if
 
-STORE(NI+13)=AC   ! STORE THE RESULTS OF THIS 
-STORE(NI+14)=ACI  ! CALCULATION IN THE STACK
-STORE(NI+15)=BC
-STORE(NI+16)=BCI
-
-!      write(NCWU,'(A,Z0,1X,F15.6)')'AC: ',AC,AC
-!      write(NCWU,'(A,Z0,1X,F15.6)')'ACI:',ACI,ACI
-!      write(NCWU,'(A,Z0,1X,F15.6)')'BC: ',BC,BC
-!      write(NCWU,'(A,Z0,1X,F15.6)')'BCI:',BCI,BC
+reflectiondata(MD6+1)=AC
+reflectiondata(MD6+2)=aCi
+reflectiondata(MD6+3)=bc
+reflectiondata(MD6+4)=bCI
+reflectiondata(MD6+5)=pshift
+reflectiondata(MD6+6)=fried
 
 M2I=L2I
-LJU=ISTORE(NI+9)  ! STORE THE EQUIVALENT INDICES AND THE PHASE SHifT
-LJV=ISTORE(NI+10)
-do LJW=LJU,LJV,NR
-    STORE(LJW)=reflectiondata(1)*STORE(M2I)+reflectiondata(1+1)*STORE(M2I+3) &
-    &   +reflectiondata(1+2)*STORE(M2I+6)
-    STORE(LJW+1)=reflectiondata(1)*STORE(M2I+1)+reflectiondata(1+1)*STORE(M2I+4) &
-    &   +reflectiondata(1+2)*STORE(M2I+7)
-    STORE(LJW+2)=reflectiondata(1)*STORE(M2I+2)+reflectiondata(1+1)*STORE(M2I+5) &
-    &   +reflectiondata(1+2)*STORE(M2I+8)
-    STORE(LJW+3)=-(STORE(LJW)*STORE(M2I+9) &
-    &   +STORE(LJW+1)*STORE(M2I+10) &
-    &   +STORE(LJW+2)*STORE(M2I+11))*TWOPI
-    M2I=M2I+MD2I
-end do
-
-if(SFLS_TYPE .EQ. SFLS_REFINE) then    ! CHECK IF WE ARE DOING REFINEMENT
-    LJU=ISTORE(NI+18)    ! TRANSFER THE P.D.'S TO THE STACK
-    LJV=ISTORE(NI+19)
-    LJS=JR
-    do LJW=LJU,LJV
-        STORE(LJW)=STORE(LJS)
-        LJS=LJS+1
-    end do
-end if
 END
 
 !CODE FOR XAB2FC
-subroutine XAB2FC(FC, P, act, bct, acn, bcn, ace, acf, store, istore, scalew, jp, jo, jref_stack_ptr, acd, bcd)
+subroutine XAB2FC(reflectiondata, scalew, partialderivatives,temporaryderivatives)
 !--CONVERSION OF THE A AND B PARTS INTO /FC/ TERMS
 !
-!  ICONT  SET TO THE return ADDRESS
-!  JO     ADDRESS OF THE AREA FOR THE OUTPUT DERIVATIVES W.R.T. /FC/
-!  JP     LAST WORD OF THE ABOVE AREA
-!  JREF_STACK_PTR     ADDRESS OF THIS REFLECTION IN THE STACK
 
 ! all module variables used here are read only
 
@@ -3772,31 +3480,38 @@ use xworkb_mod, only: jn, jq ! constant in xsflc
 use xsflsw_mod, only: sfls_type, sfls_refine, enantio, centro, anomal ! constant in xsflc
 !include 'XLST06.INC90'
 use xconst_mod, only: zero, twopi
+use xlst06_mod, only: md6
 
 implicit none
 
 !include 'QSTORE.INC'
 
-real cosa, cospn, fcsq, fesq, fn, fnsq, fp, fried, pshift
-real sina, sinpn, temp, sinp, cosp, aci, bci, bc, ac
-real, intent(out) :: fc, p
-real, intent(inout) :: act, bct, acn, bcn, ace, acf
-real, dimension(:), intent(inout) :: store
-integer, dimension(:), intent(inout) :: istore
+real cosa, cospn, fcsq, fesq, fn, fnsq, fp
+real sina, sinpn, temp, sinp, cosp, act, bct
+real, dimension(:), intent(inout) :: reflectiondata
 real, intent(in) :: scalew
-integer, intent(in) :: jp, jo, jref_stack_ptr
-real, intent(in) :: acd, bcd
 integer j, ljs, n
+real ac, aci, bc, bci, pshift, fried
+double precision, dimension(:), intent(out) :: partialderivatives
+double precision, dimension(:), intent(in) :: temporaryderivatives
 
 !--FETCH A AND B ETC. FROM THE STACK
-AC=STORE(JREF_STACK_PTR+13)
-ACI=STORE(JREF_STACK_PTR+14)
-BC=STORE(JREF_STACK_PTR+15)
-BCI=STORE(JREF_STACK_PTR+16)
-PSHifT=STORE(JREF_STACK_PTR+11)
-FRIED=STORE(JREF_STACK_PTR+12)
-ACT=AC+ACI*FRIED+ACT
-BCT=BC*FRIED+BCI+BCT
+!AC=STORE(JREF_STACK_PTR+13)
+!ACI=STORE(JREF_STACK_PTR+14)
+!BC=STORE(JREF_STACK_PTR+15)
+!BCI=STORE(JREF_STACK_PTR+16)
+!PSHifT=STORE(JREF_STACK_PTR+11)
+!FRIED=STORE(JREF_STACK_PTR+12)
+
+ac=reflectiondata(MD6+1)
+aci=reflectiondata(MD6+2)
+bc=reflectiondata(MD6+3)
+bci=reflectiondata(MD6+4)
+pshift=reflectiondata(MD6+5)
+fried=reflectiondata(MD6+6)
+
+ACT=AC+ACI*FRIED
+BCT=BC*FRIED+BCI
 
 if ( ABS(ACT) .LT. 0.001 .and. ABS(BCT) .LT. 0.001) then  ! A and B-PART are 0
     ACT = 0.000001
@@ -3807,88 +3522,47 @@ end if
 !--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
 FCSQ = ACT*ACT + BCT*BCT
 FP = SQRT(FCSQ)
-FC = FP                     ! SAVE THE TOTAL MAGNITUDE
-P=AMOD(ATAN2(BCT,ACT)+PSHifT,TWOPI)  ! THE PHASE
+reflectiondata(1+5) = FP                     ! SAVE THE TOTAL MAGNITUDE
+reflectiondata(1+6)=AMOD(ATAN2(BCT,ACT)+PSHifT,TWOPI)  ! THE PHASE
 
-if (ENANTIO) then
-    ACN = ACN+AC-ACI*FRIED   ! COMPUTE FRIEDEL PAIR
-    BCN = BCN+BCI-BC*FRIED
-    FNSQ = ACN*ACN + BCN*BCN
-    FN = SQRT (FNSQ)
-
-    FESQ = FCSQ*CENANT + FNSQ*ENANT   ! THE TOTAL EQUIVALENT INTENSITY
-    if (FESQ .LE. 0.0) then
-        FC = SIGN(1.,FESQ)*SQRT(max(zero,ABS (FESQ)))
-        !print *, 'I should not be here! (xab2fc)'
-        !stop
-    else
-        FC = SQRT(FESQ)
-    end if
-
-    COSA = CENANT * FP / FC   ! THE RELATIVE CONTRIBUTIONS 
-    SINA =  ENANT * FN / FC   ! OF THE COMPONENTS
-else
-    FNSQ = FCSQ
-end if
+FNSQ = FCSQ
 
 ! these are used in test2.tst
 ! program crashes if they are not set
-STORE(JREF_STACK_PTR+6) = FC
-STORE(JREF_STACK_PTR+7) = P
+!STORE(JREF_STACK_PTR+6) = reflectiondata(1+5)
+!STORE(JREF_STACK_PTR+7) = reflectiondata(1+6)
 
 if(SFLS_TYPE .EQ. SFLS_REFINE) then   ! CHECK IF WE ARE DOING REFINEMENT
-    LJS=ISTORE(JREF_STACK_PTR+18)     ! TRANSFER PARTIAL DERIVATIVES FROM TEMPORARY
-    TEMP = SCALEW / FC   ! TO PERMANENT STORE
+    TEMP = SCALEW / reflectiondata(1+5)   ! TO PERMANENT STORE
     COSP = ACT * TEMP
     SINP = BCT * TEMP
-    COSPN = ACN * TEMP
-    SINPN = BCN * TEMP
-    ACE  = 0.5 * (FNSQ-FCSQ) * TEMP
+    N = ubound(partialderivatives, 1)
 
     if ( CENTRO .EQV. ANOMAL ) then ! NON-CENTRO WITHOUT ANOMALOUS DISPERSION
                                     ! OR CENTRO WITH ANOMALOUS
         if ( .NOT. CENTRO ) SINP=SINP*FRIED ! NON-CENTRO WITHOUT AD
-        N = JP-JO
-        STORE(JO:JP) = STORE(LJS:LJS+N*JQ:JQ)*COSP+STORE(LJS+1:LJS+N*JQ+1:JQ)*SINP
-        ACF = BCD*SINP
-        if (ENANTIO) then   ! MODIFY THE EXISTING DERIVATIVES
-            LJS = ISTORE(JREF_STACK_PTR+18)
-            N = JP-JO
-            STORE(JO:JP) = STORE(JO:JP)*COSA + &
-            &   SINA*(STORE(LJS:LJS+N*JQ:JQ)*COSPN + &
-            &   STORE(LJS+1:LJS+N*JQ+1:JQ)*SINPN)
-            ACF = ACF * COSA + SINA * BCD * SINPN
-        end if
-        STORE(JN+1)=0.0
-        STORE(JN)=0.0
+        partialderivatives=temporaryderivatives(1:N*JQ:JQ)*COSP+temporaryderivatives(1+1:N*JQ+1:JQ)*SINP
+        ! look like dead code
+        !STORE(JN+1)=0.0
+        !STORE(JN)=0.0
     else if ( CENTRO .AND. (.NOT. ANOMAL) ) then ! CENTRO WITHOUT ANOMALOUS DISPERSION
-        N = JP-JO
-        STORE(JO:JP) = STORE(LJS:LJS+N*JQ:JQ)*COSP
-        STORE(JN)=0.0
+        
+        partialderivatives=temporaryderivatives(1:N*JQ:JQ)*COSP
+        ! look like dead code
+        !STORE(JN)=0.0
     else                              ! NON-CENTRO WITH ANOMALOUS DISPERSION
-        N = JP-JO
-        STORE(JO:JP) = (STORE(LJS:LJS+N*JQ:JQ) + &
-        &   STORE(LJS+2:LJS+N*JQ+2:JQ)*FRIED)*COSP + &
-        &   (STORE(LJS+1:LJS+N*JQ+1:JQ)*FRIED + &
-        &   STORE(LJS+3:LJS+N*JQ+3:JQ))*SINP
-        ACF = (ACD * COSP * FRIED) + (BCD * SINP)
-        if (ENANTIO) then  ! MODIFY THE EXISTING DERIVATIVES
-            LJS = ISTORE(JREF_STACK_PTR+18)
-            N = JP-JO
-            STORE(JO:JP) = STORE(JO+JP)*COSA + SINA * ( &
-            &   (STORE(LJS:LJS+N*JQ:JQ)-STORE(LJS+2:LJS+N*JQ+2:JQ)* &
-            &   FRIED)*COSPN + (STORE(LJS+3:LJS+N*JQ+3:JQ)- &
-            &   STORE(LJS+1:LJS+N*JQ+1:JQ)* &
-            &   FRIED)*SINPN )
-            ACF = ACF*COSA + SINA * (BCD*SINPN - ACD*COSPN*FRIED)
-        end if
-        STORE(JN:JN+3)=0.0
+        partialderivatives=(temporaryderivatives(1:N*JQ:JQ) + &
+        &   temporaryderivatives(1+2:N*JQ+2:JQ)*FRIED)*COSP + &
+        &   (temporaryderivatives(1+1:N*JQ+1:JQ)*FRIED + &
+        &   temporaryderivatives(1+3:N*JQ+3:JQ))*SINP
+        ! look like dead code
+        !STORE(JN:JN+3)=0.0
     end if
 end if            
 END
 
 
-subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices) 
+subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices, partialderivatives) 
 !include 'ISTORE.INC'
 !include 'STORE.INC'
 !use store_mod, only: store, istore
@@ -3903,6 +3577,7 @@ integer, intent(inout) :: md12a, m12
 integer, dimension(:), intent(in) :: istore
 real, dimension(:), intent(inout) :: store
 integer, dimension(:), intent(inout) :: shiftsaccumulation_indices
+double precision, dimension(:), intent(inout) :: partialderivatives
 
 integer ljt, lju
 
@@ -3931,9 +3606,9 @@ do WHILE ( L12A .GT. 0 )
                 LJT=LJT+JO
                 shiftsaccumulation_indices(LJT)=LJT
                 if(MD12A.LT.2)THEN  ! IS WEIGHT GIVEN OR ASSUMED UNITY?
-                    STORE(LJT)=STORE(LJT)+A              ! THE WEIGHT IS UNITY
+                    partialderivatives(LJT-JO+1)=partialderivatives(LJT-JO+1)+A ! THE WEIGHT IS UNITY
                 else
-                    STORE(LJT)=STORE(LJT)+A*STORE(LJU+1)  ! THIS WEIGHT IS GIVEN
+                    partialderivatives(LJT-JO+1)=partialderivatives(LJT-JO+1)+A*STORE(LJU+1)! THIS WEIGHT IS GIVEN
                 end if
             end if
         end if

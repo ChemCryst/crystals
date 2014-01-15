@@ -209,12 +209,12 @@ CODE FOR PARAM_LIST_ADD_IN_ROW
       end
       
 CODE FOR XADRHS
-       subroutine XADRHS(WDF, DERIVS, RMAT11, NDERIV)
+       subroutine XADRHS(WDF, DERIVS, RMAT11)
 C--   ADD INTO THE R.H.S. OF THE NORMAL EQUATIONS
 C      WDF  SQRT(W)*(/FO/ - /FC/)
        
-       real, dimension(nderiv) :: DERIVS
-       double precision, dimension(nderiv) :: RMAT11
+       double precision, dimension(:), intent(in) :: DERIVS
+       double precision, dimension(:), intent(inout) :: RMAT11
 
        do I = 1, NDERIV
          RMAT11(I) = RMAT11(I) + DERIVS(I) * WDF
