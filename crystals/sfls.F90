@@ -716,49 +716,6 @@ if (IREFLS .LE. -1) then
     AMINF = 0.
     CYCNO = STORE(M33V) + 1
 else
-!--SET UP THE REFLECTION HOLDING STACK
-    NR=4
-    NY=20  ! restore jan2010
-!         NY=21  ! leave one more slot for the BATCH number for use sep2010
-!         when there is auxilliary radiation
-    JREF_STACK_START=NFL
-!--SET THE LIST AND RECORD TYPE
-    LN=25
-    IREC=1001
-
-! N25 is the number of twin elements
-! N12 is the number of parameters being refined
-! JQ is the number of words needed to hold each derivative
-! NY is 20 (21 if batch saved)
-! NR is 4 = H,K,L,PSHifT for each reflections
-! N2I is the number of symmetry operators
-
-     JREF_STACK_PTR = KCHNFL(N25*(N12*(JQ+1)+NY+NR*N2I)+1)
-!--PREPARE TO INITIALISE THE STACK
-     JREF_STACK_PTR = JREF_STACK_START+1
-     NI = JREF_STACK_START
-     NJ = (N2T-1)*NR
- 
-     do I=1,N25      ! SET UP THE STACK
-         ISTORE(NI)    = JREF_STACK_PTR   ! Ptr to next block
-         NI            = JREF_STACK_PTR   ! Update ptr
-         ISTORE(NI)    = NOWT             ! Indicate last block
-         ISTORE(NI+1)  = JREF_STACK_PTR+NY   ! Ptr to start of derivs
-         ISTORE(NI+2)  = ISTORE(NI+1)+N12-1  ! Ptr to end of derivs
-         ISTORE(NI+18) = ISTORE(NI+2)+1      ! Ptr to start of ?
-         ISTORE(NI+19) = ISTORE(NI+18)+N12*JQ-1  ! Ptr to end of ?
-         ISTORE(NI+9)  = ISTORE(NI+19)+1
-         ISTORE(NI+10) = ISTORE(NI+9)+NJ
-         JREF_STACK_PTR= ISTORE(NI+10)+NR
-         NL=ISTORE(NI+9) ! INSERT DUMMY INITIAL INDICES
-         NM=ISTORE(NI+10)
-         do NN=NL,NM,NR
-             STORE(NN)=-1000000. ! -huge(store)
-             STORE(NN+1)=-1000000.
-             STORE(NN+2)=-1000000.
-             STORE(NN+3) = 0.0
-         end do
-     end do
 
      call XPRTCN               ! OUTPUT AN INITIAL CAPTION
      STORE(L6P)=STORE(L6P)+1.  ! FIND THE NUMBER OF CYCLES CALCULATED
@@ -1790,7 +1747,6 @@ designmatrix=0.0
         call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
         &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), storetemp, istoretemp, temporaryderivatives     )
         
-        JREF_STACK_PTR=istoretemp(JREF_STACK_START)
         call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
         call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
     else ! THIS IS A TWINNED CALCULATION  
@@ -1900,12 +1856,12 @@ designmatrix=0.0
         VJ=WDF*S
         WJ=DF*S
         !A=SQRT(AC*AC+BC*BC)
-        A=SQRT(storetemp(JREF_STACK_PTR+13)**2+storetemp(JREF_STACK_PTR+15)**2)
+        A=sqrt(reflectionsdata(MD6+1, reflectionsdata_index)**2 + reflectionsdata(MD6+3,reflectionsdata_index)**2)
         !S=SQRT(ACI*ACI+BCI*BCI)
-        S=SQRT(storetemp(JREF_STACK_PTR+14)**2+storetemp(JREF_STACK_PTR+16)**2)
-        T=4.*( storetemp(JREF_STACK_PTR+15)*storetemp(JREF_STACK_PTR+16) + &
-        &   storetemp(JREF_STACK_PTR+13)*storetemp(JREF_STACK_PTR+14) )
-        C=T*200.0/(2.*FC*FC-T)
+        S=sqrt(reflectionsdata(MD6+2, reflectionsdata_index)**2 + reflectionsdata(MD6+4,reflectionsdata_index)**2)
+        T=4.*(reflectionsdata(MD6+3,reflectionsdata_index)*reflectionsdata(MD6+4,reflectionsdata_index) + &
+        &   reflectionsdata(MD6+1, reflectionsdata_index)*reflectionsdata(MD6+2, reflectionsdata_index))
+        C=T*200.0/(2.*reflectionsdata(1+5,reflectionsdata_index)**2-T)
         if (ISSPRT .EQ. 0) then 
             write(NCWU,4600) reflectionsdata(1,reflectionsdata_index), &
             &   reflectionsdata(1+1,reflectionsdata_index), &
