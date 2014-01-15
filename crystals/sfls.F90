@@ -68,7 +68,7 @@ use xworkb_mod!, only: nd, nf, ni, nl, nm, nr, nu, nt, nv, nn, jo, jq, ji, jq, j
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc, twinned, sfls_type, sfls_calc, batched
 use xsflsw_mod, only: sfls_refine, sfls_scale, scaled_fot, refprint, partials, newlhs, enantio
-use xsflsw_mod, only: jref_stack_start, layered, jref_stack_ptr, iso_only, extinct, anomal
+use xsflsw_mod, only: layered, iso_only, extinct, anomal
 !include 'XIOBUF.INC'
 use xiobuf_mod, only: cmon
 use xconst_mod, only: nowt, rtd, uiso, zero
@@ -1256,7 +1256,6 @@ use xworkb_mod, only: nv, nu, nr, nt, nl, nf, nd, jr, jq, jp, jo, cycle_number=>
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc
 use xsflsw_mod, only: sfls_type, sfls_scale, sfls_refine, sfls_calc, cos_only, centro, batched
 use xsflsw_mod, only: twinned, scaled_fot, refprint, partials, newlhs, layered, extinct
-use xsflsw_mod, only: jref_stack_start, jref_stack_ptr
 !include 'XUNITS.INC90'
 use xunits_mod, only: ncwu, ncvdu, ncfpu2, ncfpu1
 !include 'XSSVAL.INC90'
@@ -1264,7 +1263,7 @@ use xssval_mod, only: issprt
 !include 'XLST01.INC90'
 use xlst01_mod, only: l1p1
 !include 'XLST02.INC90'
-use xlst02_mod, only: n2p, m2p, l2p, ic, g2
+use xlst02_mod, only: n2p, m2p, l2p, ic, g2, l2, md2, n2, symm_operators
 !include 'XLST03.INC90' Not used!
 !include 'XLST05.INC90'
 use xlst05_mod, only: m5ls, m5es, m5bs, m5ls, l5o, l5ls, l5es, l5bs
@@ -1300,12 +1299,11 @@ end interface
 
 interface
     subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
-    &   g2, m12, md12a, reflectiondata, store, istore, temporaryderivatives)
+    &   g2, m12, md12a, reflectiondata, temporaryderivatives)
         implicit none
         real, intent(out) :: ACD, BCD, tc, sst
         real, intent(inout) :: smin, smax, bc, ac, g2
-        real, dimension(:), intent(inout) :: store, reflectiondata
-        integer, dimension(:), intent(inout) :: istore
+        real, dimension(:), intent(inout) :: reflectiondata
         integer, intent(inout) :: nn, nm
         integer, intent(in) :: nl, nr, jo, jp
         integer, intent(out) :: m12, md12a
@@ -1314,14 +1312,11 @@ interface
 end interface
 
 interface
-    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices, partialderivatives) 
+    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, partialderivatives) 
         implicit none 
         real, intent(in) :: a
         integer, intent(in) :: jx, jo, jq, jr
         integer, intent(inout) :: md12a, m12
-        integer, dimension(:), intent(in) :: istore
-        real, dimension(:), intent(inout) :: store
-        integer, dimension(:), intent(inout) :: shiftsaccumulation_indices
         double precision, dimension(:), intent(out) :: partialderivatives
     end subroutine
 end interface
@@ -1424,8 +1419,7 @@ integer reflectionsdata_size
 integer reflectionsdata_index
 real, dimension(16) ::  minimum_shared, maximum_shared, summation, summationsq
 real, dimension(16) ::  minimum, maximum
-real, dimension(:), allocatable :: shiftsaccumulation_shared
-integer, dimension(:), allocatable :: shiftsaccumulation_indices
+real, dimension(:), allocatable :: shiftsaccumulation
 integer iposn
 
 real, dimension(:), allocatable :: storetemp
@@ -1594,10 +1588,8 @@ if(ND<0)THEN
 end if   
 summation=0.0
 summationsq=0.0
-allocate(shiftsaccumulation_shared(storelength))
-shiftsaccumulation_shared=0.0
-allocate(shiftsaccumulation_indices(storelength))
-shiftsaccumulation_indices=0
+allocate(shiftsaccumulation(JP-JO+1))
+shiftsaccumulation=0.0
 !print *, ubound(shiftsaccumulation_indices, 1)
       
 allocate(storetemp(storelength))
@@ -1607,6 +1599,13 @@ righthandside=0.0d0
 
 storetemp=store
 istoretemp=istore
+
+! Caching symmetry operators
+if(allocated(symm_operators)) deallocate(symm_operators)
+allocate(symm_operators(md2,n2))
+do i=1, N2
+    symm_operators(:,i)=store(l2+(i-1)*md2:l2+i*md2-1)
+end do
 
 cpt=0
 reflectionsdata_size=1
@@ -1664,31 +1663,29 @@ designmatrix=0.0
 
 !$OMP PARALLEL default(none)&
 !$OMP& shared(nP, nO, layered, str11) &
-!$OMP& shared(batched,twinned, JREF_STACK_START, reflectionsdata_size) &
+!$OMP& shared(batched,twinned, reflectionsdata_size) &
 !$OMP& shared(reflectionsdata, layers, batches, scaleo, partials, nr) &
 !$OMP& shared(issprt, ncwu, md6, n12) &
 !$OMP& shared(sfls_type, extinct, wave, l12es, jr, jq, del, nu) &
 !$OMP& shared(pol1, pol2, ext, nd, nv, iallow, xvalur,LTEMPR, nsort, mdsort) &
 !$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2) &
 !$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
-!$OMP& shared(ltempl, designmatrix, normalmatrix) &
+!$OMP& shared(ltempl, designmatrix, normalmatrix, store, istore) &
 !$OMP& shared(l6wpointers, n6wpointers, l6w, n6w) &
 !$OMP& shared(ILEVPR, ibadr) &  ! atomic
-!$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d, storetemp, istoretemp) &
+!$OMP& firstprivate(rall, m12, smin, smax, g2, l5es, d) &
 !$OMP& firstprivate(jsort, lsort, r, designindex, red, tix, hkllab, ihkllen, ext3) &
 !$OMP& firstprivate(jp,jo) &
 !$OMP& private(M5LS, layer, ibatch, ierflg, w, nm, nn, md12a) &
 !$OMP& private(scalek,scales,scalel, scaleb,scaleg,act,bct,acn,bcn,fo,fc,scalew,nl) &
 !$OMP& private(tc, bc, ac, bcd, acd, acf, ace, p, sst) &
 !$OMP& private(ljx, temporaryderivatives) &
-!$OMP& private(JREF_STACK_PTR, tempr, m5bs, a, fcext) &
+!$OMP& private(tempr, m5bs, a, fcext) &
 !$OMP& private(path, delta, c, ext1, ext2, ext4, fcexs, df, wdf) &
 !$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, tid) &
 !$OMP& shared(minimum_shared, maximum_shared) &
-!$OMP& shared(shiftsaccumulation_shared) &
-!$OMP& private(shiftsaccumulation_indices) &
 !$OMP& reduction(max:REDMAX) &
-!$OMP& reduction(+: summation, summationsq, nt, fot, foabs) &
+!$OMP& reduction(+: summation, summationsq, nt, fot, foabs, shiftsaccumulation) &
 !$OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc) &
 !$OMP& reduction(+: sfo, sfc, righthandside, aminf) 
     
@@ -1709,14 +1706,14 @@ designmatrix=0.0
 
     if(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
         M5LS=layers(reflectionsdata_index)
-        SCALEL=storetemp(M5LS)
+        SCALEL=store(M5LS)
     else
         SCALEL=1.0
     end if
 
     if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
         M5BS=batches(reflectionsdata_index)
-        SCALEB=storetemp(M5BS)
+        SCALEB=store(M5BS)
     else
         scaleb=1.0
     end if
@@ -1745,7 +1742,7 @@ designmatrix=0.0
     if(.NOT.TWINNED)THEN   ! NOT TWINNED
         NL=0
         call XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
-        &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), storetemp, istoretemp, temporaryderivatives     )
+        &   g2, m12, md12a, reflectionsdata(:,reflectionsdata_index), temporaryderivatives )
         
         call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
         call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
@@ -1843,12 +1840,14 @@ designmatrix=0.0
     RDJW = ABS(WDF)
     if (RDJW .GT. ABS(XVALUR)) then
 !----  H,K,L,FO,FC,/WDELTA/,FO/FC
-        call XMOVE(reflectionsdata(1:3,reflectionsdata_index), storetemp(LTEMPR), 3)
-        storetemp(LTEMPR+3) = UJ
-        storetemp(LTEMPR+4) = FCEXT
-        storetemp(LTEMPR+5) = RDJW
-        storetemp(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
-        call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, storetemp)
+!$OMP CRITICAL        
+        call XMOVE(reflectionsdata(1:3,reflectionsdata_index), store(LTEMPR), 3)
+        store(LTEMPR+3) = UJ
+        store(LTEMPR+4) = FCEXT
+        store(LTEMPR+5) = RDJW
+        store(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
+        call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, store)
+!$OMP END CRITICAL
     end if
   
     if(REFPRINT)THEN !   CHECK IF A PRINT OF THE RELFECTIONS IS NEEDED
@@ -1925,47 +1924,30 @@ designmatrix=0.0
             LJX=0
             M12=L12O
 
-            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
-            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index))
+            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index))
 
             A=W*FCEXS*TC/EXT3       ! OVERALL TEMPERATURE FACTORS NEXT
-            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
-            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index)) 
-            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
-            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index)) 
+            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index)) 
+            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index)) 
  
             A=-0.5*SCALEW*FC*FC*FC*DELTA/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
-            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
-            &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index)) 
+            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index)) 
  
             if(LAYER.GE.0) then                 ! CHECK IF LAYER SCALES ARE BEING USED
                 A=W*SCALEO*SCALEB*FCEXT/EXT3
                 M12=L12LS
-                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
-                &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index))  ! THE LAYER SCALES
+                call XADDPD ( A, LAYER, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index))  ! THE LAYER SCALES
             end if
 
             if(IBATCH.GE.0) then           ! CHECK IF BATCH SCALES ARE BEING USED
                 A=W*SCALEO*SCALEL*FCEXT/EXT3
                 M12=L12BS
-                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, storetemp, istoretemp, &
-                &   shiftsaccumulation_indices, designmatrix(:,reflectionsdata_index))  ! THE BATCH SCALES  
+                call XADDPD ( A, IBATCH, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index))  ! THE BATCH SCALES  
             end if
 
             if ( ( NV.GE.0 ) .OR. EXTINCT ) then  ! Either FO^2, or extinction correction required.
                 if ( NV .GE. 0 ) designmatrix(:,reflectionsdata_index)=designmatrix(:,reflectionsdata_index)*2.0*FCEXS   ! Correct derivatives for refinement against Fo^2
                 if ( EXTINCT ) designmatrix(:,reflectionsdata_index)=designmatrix(:,reflectionsdata_index)*EXT3      ! Modify for extinction
-            end if
-
-            if (istoretemp(M33CD+5).EQ.1) then   ! Check if we should output matrix in MATLAB format.
-                write(NCFPU1,'(A,3(1X,F5.0))')'%', reflectionsdata(1,reflectionsdata_index), &
-                &   reflectionsdata(1+1,reflectionsdata_index), &
-                &   reflectionsdata(1+2,reflectionsdata_index)
-                do I = JO,JP-MOD(JP-JO,5)-1,5
-                    write(NCFPU1,'(5G16.8,'' ...'')') (storetemp(I+J),J=0,4)
-                end do
-                write(NCFPU1,'(5G16.8)') (storetemp(JP+J),J=0-MOD(JP-JO,5),0)
-                write(NCFPU2,'(F16.8)') WDF
             end if
 
             ! ACCUMULATE THE RIGHT HAND SIDES
@@ -1974,10 +1956,12 @@ designmatrix=0.0
 
             if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
-            if (istoretemp(M33CD+13).EQ.0) then
-                call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
-                &   STR11(L11), N11, iresults, nresults, & 
-                &   storetemp(L12B), N12B*MD12B, MD12B)
+            if (istore(M33CD+13).EQ.0) then
+                !call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
+                !&   STR11(L11), N11, iresults, nresults, & 
+                !&   storetemp(L12B), N12B*MD12B, MD12B)
+                print *, 'not implemented (parm_pairs_xlhs)'
+                stop
             else
                 ! Store a chunk of the design matrix
                 !designmatrix(:,reflectionsdata_index) = storetemp(JO:JP)
@@ -2006,6 +1990,7 @@ designmatrix=0.0
         RALL(7:11) = RALL(7:11) + tempr
     end if
     
+    shiftsaccumulation=shiftsaccumulation+designmatrix(:,reflectionsdata_index)
     end do
 !$OMP END DO
     
@@ -2017,23 +2002,14 @@ designmatrix=0.0
         maximum_shared(i)=max(maximum_shared(i), maximum(i))
     end do    
 
-    ! merge shifts accumulation
-    do i=1, storelength
-        if(shiftsaccumulation_indices(i)>0) then
-!$OMP ATOMIC        
-            shiftsaccumulation_shared(i)= &
-            &   shiftsaccumulation_shared(i)+storetemp(i)
-        end if
-    end do
-
     tid=0
 !$  tid=omp_get_thread_num()
 
     ! Accumulating the normal matrix
     if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
     &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
-    &   ISTOREtemp(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
-    &   ISTOREtemp(M33CD+13).NE.0)THEN    
+    &   ISTORE(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
+    &   ISTORE(M33CD+13).NE.0)THEN    
         call DSYRK('L','N',JP-JO+1,storechunk, &
         &   1.0d0, designmatrix(1,storechunk*tid+1), &
         &   JP-JO+1,1.0d0,normalmatrix(1,1,tid+1),JP-JO+1)    
@@ -2044,7 +2020,7 @@ designmatrix=0.0
     ! writing new values back to the disk
     do reflectionsdata_index=1, reflectionsdata_size
         call XSLRnew(reflectionsdata(:,reflectionsdata_index), &
-        &   storetemp, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
+        &   store, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
     end do
 
 
@@ -2079,11 +2055,11 @@ STORE(J:J+3) = (/ minimum_shared(iposn), maximum_shared(iposn),summation(iposn),
 str11(l11r:l11R+n11r-1)=righthandside
 
 ! put back shifts
-do i=1, storelength
-    if(shiftsaccumulation_shared(i)>0) then
-        store(i)=shiftsaccumulation_shared(i)
-    end if
-end do
+!do i=1, storelength
+!    if(shiftsaccumulation_shared(i)>0) then
+!        store(i)=shiftsaccumulation_shared(i)
+!    end if
+!end do
 
 
 if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
@@ -2889,7 +2865,7 @@ end
 
 !CODE FOR XSFLSX
 subroutine XSFLSX(acd, bcd, ac, bc, nn, nm, tc, sst, smin, smax, nl, nr, jo, jp, &
-&   g2, m12, md12a, reflectiondata, store, istore, temporaryderivatives)
+&   g2, m12, md12a, reflectiondata, temporaryderivatives)
 !
 !--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 !
@@ -2908,18 +2884,18 @@ use sleef
 #endif
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-!use store_mod, only:
+use store_mod, only: istore, store
 !include 'XSFWK.INC90'
 use xsfwk_mod, only: anom
 !include 'XWORKB.INC'
 use xworkb_mod, only: jr, jq, jn ! always constant in xsflsc and read only
 !include 'XSFLSW.INC90'
-use xsflsw_mod, only: sfls_type, sfls_refine, jref_stack_start
+use xsflsw_mod, only: sfls_type, sfls_refine
 use xsflsw_mod, only: cos_only, centro, iso_only, anomal
 !include 'XLST01.INC90'
 use xlst01_mod, only: l1s, l1a ! always constant in xsflsc and read only
 !include 'XLST02.INC90'
-use xlst02_mod, only: n2, n2t, md2t, md2i, md2, l2t, l2i, l2 ! always constant in xsflsc and read only
+use xlst02_mod, only: n2, n2t, md2t, md2i, md2, l2t, l2i, l2, symm_operators ! always constant in xsflsc and read only
 !include 'XLST03.INC90'
 use xlst03_mod, only: n3, md3tr, md3ti, l3tr, l3ti  ! always constant in xsflsc and read only
 !include 'XLST05.INC90'
@@ -2958,12 +2934,13 @@ integer ISTACK
 
 real, intent(out) :: ACD, BCD, tc, sst
 real, intent(inout) :: smin, smax, bc, ac
-real, dimension(:), intent(inout) :: reflectiondata, store
-integer, dimension(:), intent(inout) :: istore
+real, dimension(:), intent(inout) :: reflectiondata
 integer, intent(inout) :: nn, nm, m12, md12a
 integer, intent(in) :: nl, nr, jo, jp
 real, intent(in) :: g2
 double precision, dimension(:), intent(out) :: temporaryderivatives
+real, dimension(:,:), allocatable :: formfactors
+real, dimension(:), allocatable :: storem2t
 
 #if defined(_GIL_) || defined(_LIN_) 
 real, dimension(2) :: scb
@@ -2986,8 +2963,13 @@ interface
     double precision :: RifAC, drfra, DRFTHE, DRFPHI
     end subroutine
 end interface
-
-
+interface
+    subroutine XSCATTnew(ST, formfactors)
+    implicit none
+    real, intent(in) :: st
+    real, dimension(:,:), allocatable, intent(out) :: formfactors    
+    end subroutine
+end interface
 
 DD=1.0/TWOPI
 
@@ -2999,6 +2981,7 @@ BCI=0.
 ACD=0.
 BCD=0.
 temporaryderivatives=0.0d0
+allocate(storem2t(N2*MD2T))
 
 ! Rollett 5.12.5-7
 !--calculate the information for the symmetry positions
@@ -3006,37 +2989,36 @@ M2=L2
 M2T=L2T
 do LJZ=1,N2
 ! compute h' = S.h
-    STORE(M2T)=reflectiondata(1)*STORE(M2)+reflectiondata(1+1)*STORE(M2+3)+ &
-    &   reflectiondata(1+2)*STORE(M2+6)
-    STORE(M2T+1)=reflectiondata(1)*STORE(M2+1)+reflectiondata(1+1)*STORE(M2+4)+ &
-    &   reflectiondata(1+2)*STORE(M2+7)
-    STORE(M2T+2)=reflectiondata(1)*STORE(M2+2)+reflectiondata(1+1)*STORE(M2+5)+ &
-    &   reflectiondata(1+2)*STORE(M2+8)
+    storem2t(1+(LJZ-1)*MD2T)=reflectiondata(1)*symm_operators(1+0, ljz)+reflectiondata(1+1)*symm_operators(1+3, ljz)+ &
+    &   reflectiondata(1+2)*symm_operators(1+6, ljz)
+    storem2t(1+(LJZ-1)*MD2T+1)=reflectiondata(1)*symm_operators(1+1, ljz)+reflectiondata(1+1)*symm_operators(1+4, ljz)+ &
+    &   reflectiondata(1+2)*symm_operators(1+7, ljz)
+    storem2t(1+(LJZ-1)*MD2T+2)=reflectiondata(1)*symm_operators(1+2, ljz)+reflectiondata(1+1)*symm_operators(1+5, ljz)+ &
+    &   reflectiondata(1+2)*symm_operators(1+8, ljz)
 ! calculate the h.t terms
-    STORE(M2T+3)=(reflectiondata(1)*STORE(M2+9)+reflectiondata(1+1)*STORE(M2+10)+ &
-    &   reflectiondata(1+2)*STORE(M2+11))
+    storem2t(1+(LJZ-1)*MD2T+3)=(reflectiondata(1)*symm_operators(1+9, ljz)+reflectiondata(1+1)*symm_operators(1+10, ljz)+ &
+    &   reflectiondata(1+2)*symm_operators(1+11, ljz))
+    
     if ( ( LJZ .EQ. 1 ) .OR. ( .NOT. ISO_ONLY ) ) then 
 !
 ! aniso contributions are required
 ! compute h'.h', h'.k' etc 
 !
-        STORE(M2T+4:M2T+6)=STORE(M2T:M2T+2)**2
-        STORE(M2T+7)=STORE(M2T+1)*STORE(M2T+2)
-        STORE(M2T+8)=STORE(M2T)*STORE(M2T+2)
-        STORE(M2T+9)=STORE(M2T)*STORE(M2T+1)
+        storem2t(1+(LJZ-1)*MD2T+4:1+(LJZ-1)*MD2T+6)=storem2t(1+(LJZ-1)*MD2T:1+(LJZ-1)*MD2T+2)**2
+        storem2t(1+(LJZ-1)*MD2T+7)=storem2t(1+(LJZ-1)*MD2T+1)*storem2t(1+(LJZ-1)*MD2T+2)
+        storem2t(1+(LJZ-1)*MD2T+8)=storem2t(1+(LJZ-1)*MD2T)*storem2t(1+(LJZ-1)*MD2T+2)
+        storem2t(1+(LJZ-1)*MD2T+9)=storem2t(1+(LJZ-1)*MD2T)*storem2t(1+(LJZ-1)*MD2T+1)
     end if
-    STORE(M2T:M2T+3)=STORE(M2T:M2T+3)*TWOPI
-    M2=M2+MD2
-    M2T=M2T+MD2T
+    storem2t(1+(LJZ-1)*MD2T:1+(LJZ-1)*MD2T+3)=storem2t(1+(LJZ-1)*MD2T:1+(LJZ-1)*MD2T+3)*TWOPI
 end do
 !
 !--calculate sin(theta)/lambda squared
 ! Rollett 5.12.8  h"= Uh, U is reciprocal orhogonalisation matrix
 ! Rollett 5.12.8  sst = h"^t.h" = [sin(theta)/lambda]^2
 !
-SST=STORE(L1S)*STORE(L2T+4)+STORE(L1S+1)*STORE(L2T+5) &
-&   +STORE(L1S+2)*STORE(L2T+6)+STORE(L1S+3)*STORE(L2T+7) &
-&   +STORE(L1S+4)*STORE(L2T+8)+STORE(L1S+5)*STORE(L2T+9)
+SST=STORE(L1S)*storem2t(1+4)+STORE(L1S+1)*storem2t(1+5) &
+&   +STORE(L1S+2)*storem2t(1+6)+STORE(L1S+3)*storem2t(1+7) &
+&   +STORE(L1S+4)*storem2t(1+8)+STORE(L1S+5)*storem2t(1+9)
 ST=SQRT(SST)
 SMIN=MIN(SMIN,ST)
 SMAX=MAX(SMAX,ST)
@@ -3051,8 +3033,7 @@ if(.NOT. ISO_ONLY) then
 !
 ! compute h* = h'.k'.a*.b* etc.
 !
-        STORE(M2T+4:M2T+9)=STORE(M2T+4:M2T+9)*STORE(L1A:L1A+5)
-        M2T=M2T+MD2T
+        storem2t(1+(LJZ-1)*MD2T+4:1+(LJZ-1)*MD2T+9)=storem2t(1+(LJZ-1)*MD2T+4:1+(LJZ-1)*MD2T+9)*STORE(L1A:L1A+5)
     end do
 end if
 !
@@ -3060,7 +3041,7 @@ end if
 !  l3tr and l3ti the real and imaginary components of the scattering factor
 !
 if(N3>0) then
-    call XSCATTnew(ST, store)  ! CALCULATE THE FORM FACTORS
+    call XSCATTnew(SST, formfactors)  ! CALCULATE THE FORM FACTORS
 end if
 !      write(NCWU,'(A,F16.9,1x,Z0)')'ST:',ST,ST
 !      write(NCWU,'(A,4(Z0,1X,F20.16,1X))')'COS consts:',C0,C0,C1,C1,
@@ -3080,22 +3061,18 @@ end if
 ! non-unique operators, G2 before summation over the unique operators
 !  Rollett, page 45
 !
-M3TR=L3TR  
-M3TI=L3TI
 do LJZ=1,N3
 !         STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2
 !         STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
 !         write(NCWU,'(A,F16.9,1x,Z0)')'M3TR1:',STORE(M3TR),STORE(M3TR)
-    STORE(M3TR)=STORE(M3TR)*G2
-    STORE(M3TI)=STORE(M3TI)*G2
-    if(STORE(M3TR).LE.ZERO)THEN  ! real PART IS ZERO  
-        STORE(M3TI)=0. ! SO IS THE IMAGINARY NOW
+    formfactors(1,(LJZ-1)*md3tr+1)=formfactors(1,(LJZ-1)*md3tr+1)*G2
+    formfactors(2,(LJZ-1)*md3ti+1)=formfactors(2,(LJZ-1)*md3ti+1)*G2
+    if(formfactors(1,(LJZ-1)*md3tr+1).LE.ZERO)THEN  ! real PART IS ZERO  
+        formfactors(2,(LJZ-1)*md3ti+1)=0. ! SO IS THE IMAGINARY NOW
     else   ! real PART IS OKAY
-        STORE(M3TI)=STORE(M3TI)/STORE(M3TR)
+        formfactors(2,(LJZ-1)*md3ti+1)=formfactors(2,(LJZ-1)*md3ti+1)/formfactors(1,(LJZ-1)*md3tr+1)
     end if
 !        write(NCWU,'(A,F16.9,1x,Z0)')'M3TR2:',STORE(M3TR),STORE(M3TR)
-    M3TR=M3TR+MD3TR  ! UPDATE THE POINTERS
-    M3TI=M3TI+MD3TI
 end do
 if(SFLS_TYPE .EQ. SFLS_REFINE) then    ! CHECK IF WE ARE DOING REFINEMENT
     M12=L12                  ! SET THE ATOM POINTER IN LIST 12
@@ -3120,13 +3097,13 @@ do LJY=1,N5
         M12=ISTORE(M12)
     end if
 !djwsep2010 extend to use dual wavelength anomalous scattering as appropriate 
-    M3TR=L3TR+ISTORE(M5A)*MD3TR  ! PICK UP THE FORM FACTORS FOR THIS ATOM
-    M3TI=L3TI+ISTORE(M5A)*MD3TI
+    M3TR=1+ISTORE(M5A)*MD3TR  ! PICK UP THE FORM FACTORS FOR THIS ATOM
+    M3TI=1+ISTORE(M5A)*MD3TI
 !
 ! focc   formfactor * site occ * chemical occ * difabs corection
 ! modify focc for other fc corrections 
 !
-    FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) 
+    FOCC = formfactors(1, M3TR) * STORE(M5A+2) * STORE(M5A+13) 
 
     FLAG=STORE(M5A+3)   ! PICK UP THE TYPE OF THIS ATOM
     if(NINT(FLAG) .EQ. 1) then  ! CHECK THE TEMPERAURE TYPE FOR THIS ATOM
@@ -3152,8 +3129,8 @@ do LJY=1,N5
 !
 !  calculate a = h'.x + h.t
     do LJX=1,N2T
-        A=STORE(M5A+4)*STORE(M2T)+STORE(M5A+5)*STORE(M2T+1)+ &
-        &   STORE(M5A+6)*STORE(M2T+2)+STORE(M2T+3)              
+        A=STORE(M5A+4)*storem2t(1+(LJX-1)*MD2T)+STORE(M5A+5)*storem2t(1+(LJX-1)*MD2T+1)+ &
+        &   STORE(M5A+6)*storem2t(1+(LJX-1)*MD2T+2)+storem2t(1+(LJX-1)*MD2T+3)              
 !  slrfac starting-values for special shape factors and derivatives
         SLRFAC=1.0 
         DSIZE=1.0
@@ -3168,15 +3145,15 @@ do LJY=1,N5
 
 !
 #if defined(_GIL_) || defined(_LIN_) 
-            T=sleef_expf(real(STORE(M5A+7)*STORE(M2T+4) &
-            &   +STORE(M5A+8)*STORE(M2T+5) &
-            &   +STORE(M5A+9)*STORE(M2T+6)+STORE(M5A+10)*STORE(M2T+7) &
-            &   +STORE(M5A+11)*STORE(M2T+8)+STORE(M5A+12)*STORE(M2T+9)))
+            T=sleef_expf(real(STORE(M5A+7)*storem2t(1+(LJX-1)*MD2T+4) &
+            &   +STORE(M5A+8)*storem2t(1+(LJX-1)*MD2T+5) &
+            &   +STORE(M5A+9)*storem2t(1+(LJX-1)*MD2T+6)+STORE(M5A+10)*storem2t(1+(LJX-1)*MD2T+7) &
+            &   +STORE(M5A+11)*storem2t(1+(LJX-1)*MD2T+8)+STORE(M5A+12)*storem2t(1+(LJX-1)*MD2T+9)))
             TFOCC=T*FOCC
 #else
-            T=EXP(STORE(M5A+7)*STORE(M2T+4)+STORE(M5A+8)*STORE(M2T+5) &
-            &   +STORE(M5A+9)*STORE(M2T+6)+STORE(M5A+10)*STORE(M2T+7) &
-            &   +STORE(M5A+11)*STORE(M2T+8)+STORE(M5A+12)*STORE(M2T+9))
+            T=EXP(STORE(M5A+7)*storem2t(1+(LJX-1)*MD2T+4)+STORE(M5A+8)*storem2t(1+(LJX-1)*MD2T+5) &
+            &   +STORE(M5A+9)*storem2t(1+(LJX-1)*MD2T+6)+STORE(M5A+10)*storem2t(1+(LJX-1)*MD2T+7) &
+            &   +STORE(M5A+11)*storem2t(1+(LJX-1)*MD2T+8)+STORE(M5A+12)*storem2t(1+(LJX-1)*MD2T+9))
             TFOCC=T*FOCC
 #endif
 !
@@ -3245,15 +3222,15 @@ do LJY=1,N5
 !-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR X,Y AND Z
 !-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR OCC,X,Y AND Z
             ALPD(1)=ALPD(1)+T*C*SLRFAC
-            ALPD(3)=ALPD(3)-STORE(M2T)*BP
-            ALPD(4)=ALPD(4)-STORE(M2T+1)*BP
-            ALPD(5)=ALPD(5)-STORE(M2T+2)*BP
+            ALPD(3)=ALPD(3)-storem2t(1+(LJX-1)*MD2T)*BP
+            ALPD(4)=ALPD(4)-storem2t(1+(LJX-1)*MD2T+1)*BP
+            ALPD(5)=ALPD(5)-storem2t(1+(LJX-1)*MD2T+2)*BP
 !--CHECK THE TEMPERATURE FACTOR TYPE
             if(NINT(FLAG) .NE. 1) then
 !-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
                 if (NINT(FLAG) .LE. 1) then
 !--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR THE ANISO-TERMS
-                    ALPD(6:11)=ALPD(6:11)+STORE(M2T+4:M2T+9)*AP
+                    ALPD(6:11)=ALPD(6:11)+storem2t(1+(LJX-1)*MD2T+4:1+(LJX-1)*MD2T+9)*AP
                 else
 !-C-C-CALC. THE PART. DERIV. W.R.T. A FOR ISO-TERM + SPECIAL FIGURES
                     ALPD(6)=ALPD(6)+TC*AP
@@ -3271,15 +3248,15 @@ do LJY=1,N5
 !--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR X,Y AND Z
 !-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR OCC,X,Y AND Z
                 BLPD(1)=BLPD(1)+T*S*SLRFAC
-                BLPD(3)=BLPD(3)+STORE(M2T)*AP
-                BLPD(4)=BLPD(4)+STORE(M2T+1)*AP
-                BLPD(5)=BLPD(5)+STORE(M2T+2)*AP
+                BLPD(3)=BLPD(3)+storem2t(1+(LJX-1)*MD2T)*AP
+                BLPD(4)=BLPD(4)+storem2t(1+(LJX-1)*MD2T+1)*AP
+                BLPD(5)=BLPD(5)+storem2t(1+(LJX-1)*MD2T+2)*AP
 !--CHECK THE TEMPERATURE FACTOR TYPE
                 if(NINT(FLAG) .NE. 1) then
 !-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
                     if (NINT(FLAG) .LE. 1) then
 !--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR THE ANISO-TERMS
-                        BLPD(6:11)=BLPD(6:11)+STORE(M2T+4:M2T+9)*BP
+                        BLPD(6:11)=BLPD(6:11)+storem2t(1+(LJX-1)*MD2T+4:1+(LJX-1)*MD2T+9)*BP
                     else
 !-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                         BLPD(6)=BLPD(6)+TC*BP
@@ -3302,19 +3279,19 @@ do LJY=1,N5
     BC=BC+BT
 
     if (ANOMAL) then  ! CHECK IF ANOMALOUS DISPERSION IS BEING CONSIDERED
-        AIMAG=ANOM*STORE(M3TI)  ! CALCULATE THE IMAGINARY PARTS
+        AIMAG=ANOM*formfactors(2, M3TI)  ! CALCULATE THE IMAGINARY PARTS
         ACI=ACI-BT*AIMAG
         BCI=BCI+AT*AIMAG
         if (SFLS_TYPE .EQ. SFLS_REFINE) then   ! ANY REFINEMENT AT ALL?
-            ACD=ACD-BT*STORE(M3TI)   ! DERIVATIVES FOR POLARITY PARAMETER
-            BCD=BCD+AT*STORE(M3TI)
+            ACD=ACD-BT*formfactors(2, M3TI)   ! DERIVATIVES FOR POLARITY PARAMETER
+            BCD=BCD+AT*formfactors(2, M3TI)
         end if
     end if
 
 
     if(ATOM_REFINE)THEN  ! CHECK IF ANY REFINEMENT IS BEING DONE
-        ALPD(1) = STORE(M3TR) * STORE(M5A+13) * ALPD(1)  ! CALCULATE THE PARTIAL DERIVATIVES 
-        BLPD(1) = STORE(M3TR) * STORE(M5A+13) * BLPD(1)  ! W.R.T. A AND B FOR OCC
+        ALPD(1) = formfactors(1, M3TR) * STORE(M5A+13) * ALPD(1)  ! CALCULATE THE PARTIAL DERIVATIVES 
+        BLPD(1) = formfactors(1, M3TR) * STORE(M5A+13) * BLPD(1)  ! W.R.T. A AND B FOR OCC
 
         do WHILE (L12A.GT.0)  ! LOOP ADDING THE PARTIAL DERIVATIVES INTO THE TEMPORARY STACKS
 
@@ -3328,14 +3305,13 @@ do LJY=1,N5
                     if ( ANOMAL ) then    ! UNITY, CENTRO AND ANOMALOUS DISPERSION
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+ALPD(M12A-1)
-                            STORE(LJT+1)=STORE(LJT+1)+ALPD(M12A-1)*AIMAG
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+ALPD(M12A-1)
+                            temporaryderivatives(LJT-JR+1+1)=temporaryderivatives(LJT-JR+1+1)+ALPD(M12A-1)*aimag
                             M12A=M12A+1
                         end do
                     else                 ! UNITY, CENTRO AND NO ANOMALOUS DISPERSION
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+ALPD(M12A-1)
                             temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+ALPD(M12A-1)
                             M12A=M12A+1
                         end do
@@ -3344,17 +3320,17 @@ do LJY=1,N5
                     if ( ANOMAL ) then    ! UNITY, NON-CENTRO AND ANOMALOUS DISPERSION
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+ALPD(M12A-1)
-                            STORE(LJT+3)=STORE(LJT+3)+ALPD(M12A-1)*AIMAG
-                            STORE(LJT+2)=STORE(LJT+2)-BLPD(M12A-1)*AIMAG
-                            STORE(LJT+1)=STORE(LJT+1)+BLPD(M12A-1)
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+ALPD(M12A-1)
+                            temporaryderivatives(LJT-JR+1+3)=temporaryderivatives(LJT-JR+1+3)+ALPD(M12A-1)*aimag
+                            temporaryderivatives(LJT-JR+1+2)=temporaryderivatives(LJT-JR+1+2)-BLPD(M12A-1)*aimag
+                            temporaryderivatives(LJT-JR+1+1)=temporaryderivatives(LJT-JR+1+1)+BLPD(M12A-1)
                             M12A=M12A+1
                         end do
                     else                  ! UNITY, NON-CENTRO AND NO ANOMALOUS DISPERSION
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+ALPD(M12A-1)
-                            STORE(LJT+1)=STORE(LJT+1)+BLPD(M12A-1)
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+ALPD(M12A-1)
+                            temporaryderivatives(LJT-JR+1+1)=temporaryderivatives(LJT-JR+1+1)+BLPD(M12A-1)
                             M12A=M12A+1
                         end do
                     end if
@@ -3365,14 +3341,14 @@ do LJY=1,N5
                         do LJW=LJU,LJV,MD12A
                             A=ALPD(M12A-1)*STORE(LJW+1)
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+A
-                            STORE(LJT+1)=STORE(LJT+1)+A*AIMAG
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+A
+                            temporaryderivatives(LJT-JR+1+1)=temporaryderivatives(LJT-JR+1+1)+A*aimag
                             M12A=M12A+1
                         end do
                     else                 ! NON-UNITY, CENTRO AND NO ANOMALOUS DISPERSION
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+ALPD(M12A-1)*STORE(LJW+1)
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+ALPD(M12A-1)*STORE(LJW+1)
                             M12A=M12A+1
                         end do
                     end if
@@ -3380,18 +3356,18 @@ do LJY=1,N5
                     if ( ANOMAL ) then  ! NON-UNITY, NON-CENTRO AND ANOMALOUS DISPERSION
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+ALPD(M12A-1)*STORE(LJW+1)
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)+ALPD(M12A-1)*STORE(LJW+1)
                             A=STORE(LJW+1)*AIMAG
-                            STORE(LJT+3)=STORE(LJT+3)+ALPD(M12A-1)*A
-                            STORE(LJT+2)=STORE(LJT+2)-BLPD(M12A-1)*A
-                            STORE(LJT+1)=STORE(LJT+1)+BLPD(M12A-1)*STORE(LJW+1)
+                            temporaryderivatives(LJT-JR+1+3)=temporaryderivatives(LJT-JR+1+3)+ALPD(M12A-1)*A
+                            temporaryderivatives(LJT-JR+1+2)=temporaryderivatives(LJT-JR+1+2)-BLPD(M12A-1)*A
+                            temporaryderivatives(LJT-JR+1+1)=temporaryderivatives(LJT-JR+1+1)+BLPD(M12A-1)*STORE(LJW+1)
                             M12A=M12A+1
                         end do
                     else               ! NON-UNITY, NON-CENTRO AND NO ANOMALOUS DISPERSION
                         do LJW=LJU,LJV,MD12A
                             LJT=ISTORE(LJW)
-                            STORE(LJT)=STORE(LJT)+ALPD(M12A-1)*STORE(LJW+1)
-                            STORE(LJT+1)=STORE(LJT+1)+BLPD(M12A-1)*STORE(LJW+1)
+                            temporaryderivatives(LJT-JR+1)=temporaryderivatives(LJT-JR+1)*STORE(LJW+1)
+                            temporaryderivatives(LJT-JR+1+1)=temporaryderivatives(LJT-JR+1+1)+BLPD(M12A-1)*STORE(LJW+1)
                             M12A=M12A+1
                         end do
                   end if
@@ -3518,10 +3494,10 @@ end if
 END
 
 
-subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, store, istore, shiftsaccumulation_indices, partialderivatives) 
+subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, partialderivatives) 
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-!use store_mod, only: store, istore
+use store_mod, only: store, istore
 !include 'XLST12.INC90'
 !use xlst12_mod, only: md12a, m12
 implicit none
@@ -3530,9 +3506,6 @@ implicit none
 real, intent(in) :: a
 integer, intent(in) :: jx, jo, jq, jr
 integer, intent(inout) :: md12a, m12
-integer, dimension(:), intent(in) :: istore
-real, dimension(:), intent(inout) :: store
-integer, dimension(:), intent(inout) :: shiftsaccumulation_indices
 double precision, dimension(:), intent(inout) :: partialderivatives
 
 integer ljt, lju
@@ -3560,7 +3533,6 @@ do WHILE ( L12A .GT. 0 )
             LJT=(ISTORE(LJU)-JR)/JQ  ! FIND PARAMETER IN DERIVATIVE STACK
             if(LJT.GE.0)THEN        ! PARAMETER HAS BEEN REFINED?
                 LJT=LJT+JO
-                shiftsaccumulation_indices(LJT)=LJT
                 if(MD12A.LT.2)THEN  ! IS WEIGHT GIVEN OR ASSUMED UNITY?
                     partialderivatives(LJT-JO+1)=partialderivatives(LJT-JO+1)+A ! THE WEIGHT IS UNITY
                 else

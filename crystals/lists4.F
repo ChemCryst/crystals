@@ -1097,8 +1097,8 @@ C--AND NOW RETURN
       END
 C
 CODE FOR XSCATT
-      SUBROUTINE XSCATTnew(ST, store)
-      use store_mod, only: storelength
+      SUBROUTINE XSCATTnew(SST, formfactors)
+      use store_mod, only: store
       implicit none
 C--CALCULATE AND STORE THE SCATTERING FACTORS FOR THE ATOMS IN LIST 3
 C
@@ -1115,10 +1115,10 @@ c      INCLUDE 'STORE.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XUNITS.INC'
     
-      real, dimension(storelength), intent(inout) :: store
-      real, intent(in) :: st
+      real, intent(in) :: sst
+      real, dimension(:,:), allocatable, intent(out) :: formfactors
       integer ju, jz
-      real rpart, sst
+      real rpart
 C
 c      INCLUDE 'QSTORE.INC'
 C
@@ -1126,11 +1126,11 @@ C--CHECK IF THERE ARE ANY FORM FACTORS STORED
 C      IF(N3)1100,1100,1000
 C--CALCULATE SIN(THETA)/LAMBDA SQUARED
 C1000  CONTINUE
-      SST=ST*ST
 C--ASSIGN VARIOUS POINTERS
       M3=L3
       M3TR=L3TR
       M3TI=L3TI
+      allocate(formfactors(2, n3*max(MD3TR, md3ti)))
 C--LOOP OVER ACH FORM FACTOR TYPE IN TURN
       DO JZ=1,N3 ! 1050
           JU=M3+3
@@ -1139,20 +1139,18 @@ C--COMPUTE THE INVARIANT PART
      2        *EXP(-STORE(JU+3)*SST)+STORE(JU+4)*EXP(-STORE(JU+5)*SST)
      3        +STORE(JU+6)*EXP(-STORE(JU+7)*SST)+STORE(JU+8)
 C--COMPUTE THE REAL PART
-          STORE(M3TR) = RPART+STORE(M3+1)
+          formfactors(1, (jz-1)*MD3TR+1) = RPART+STORE(M3+1)
 C--COMPUTE THE IMAGINARY PART
-          STORE(M3TI)=STORE(M3+2)
+          formfactors(2, (jz-1)*MD3TI+1)=STORE(M3+2)
 C----- CHECK FOR AN AUXILLIARY RADIATION
 Cdjwsep2010 Store FF with appropriate anomalous scattering
           IF((MD3 .EQ. 14) .AND. (MD3TR .EQ. 2)) THEN
-            STORE(M3TR+1) = RPART+STORE(M3+12)
-            STORE(M3TI+1) = STORE(M3+13)
+            formfactors(1, (jz-1)*MD3TR+1+1) = RPART+STORE(M3+12)
+            formfactors(2, (jz-1)*MD3TI+1+1) = STORE(M3+13)
           ENDIF
 csjwsep2010
 C--UPDATE FOR THE NEXT FORM FACTOR
           M3=M3+MD3
-          M3TR=M3TR+MD3TR
-          M3TI=M3TI+MD3TI
       end do !1050  CONTINUE
 C--AND NOW RETURN
 C1100  CONTINUE
