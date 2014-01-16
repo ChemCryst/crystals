@@ -832,8 +832,24 @@ C--
       integer, intent(in) :: state
       integer, intent(inout) :: l6w, n6w
       integer :: iallow
-      integer, external :: KLDRNRnew, kallownew
-      real, dimension(md6), intent(out) :: reflectiondata
+      real, dimension(:), intent(out) :: reflectiondata
+      
+      interface
+        integer function KLDRNRnew(state, reflectiondata) result(KLDRNR)
+          implicit none
+          integer, intent(in) :: state
+          real, dimension(:) :: reflectiondata
+          end function
+      end interface
+
+      interface
+       integer function kallownew(iallow, reflectiondata) result(kallow)
+          implicit none
+          real, dimension(:), intent(inout) :: reflectiondata
+          integer iallow
+          end function
+      end interface
+          
       
 C
 C--FETCH THE NEXT REFLECTION
@@ -1280,7 +1296,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
       
-      real, dimension(md6), intent(inout) :: reflectiondata
+      real, dimension(:), intent(inout) :: reflectiondata
 C
 C----- DISALLOW THIS REFLECTION INITIALLY
       IK = -100
@@ -1862,8 +1878,8 @@ C
       INCLUDE 'QSTORE.INC'
       real, dimension(md6r) :: packedbuffer
       !> dedicated storage for list 6. size is md6
-      !! Uded to be in store at address m6 
-      real, dimension(md6) :: reflectiondata
+      !! Used to be in store at address m6 
+      real, dimension(:) :: reflectiondata
       
 C
 C
