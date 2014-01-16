@@ -1175,7 +1175,7 @@ END
 \PRINT 5                                                                        
 \MOLAX                                                                          
 ATOMS P(1) UNTIL O(7) C(8,,,,-1) UNTIL C(13)                                    
-ATOMS H(6) UNTIL H(13)                                                          
+CONT H(6) UNTIL H(13)                                                          
 PLANE THE FIRST PLANE  -  SOME OF THE ATOMS SHIFTED                             
 ATOMS C(1) UNTIL C(6) H(6) UNTIL H(9)                                           
 PLANE THE SECOND PLANE                                                          
