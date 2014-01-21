@@ -1231,7 +1231,7 @@ c      scale the weight
 
         STORE(M6+4)=AM*AW   !STORE THE LAST REFLECTION
         CALL XSLR(1)
-        CALL XACRT(5, minimum, maximum, summation, summationsq, 5)
+        CALL XACRT(5)
 
 5100    CONTINUE
         IF(KLDRNR(1).GE.0) GOTO 2450  !FETCH THE NEXT REFLECTION

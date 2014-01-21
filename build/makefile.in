@@ -33,10 +33,10 @@ else
     LD = gfortran48
     LD77 = gfortran48
     F77 = gfortran48
-    F77FLAGS = -g -fcheck=all -fexceptions -std=f2003 -fopenmp -mfpmath=sse -mavx -std=legacy -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
-    F90FLAGS = -g -fcheck=all -fexceptions  -pedantic -fopenmp -mfpmath=sse -mavx -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_ 
-    LDFLAGS = -g -fopenmp -lopenblaso 
-    OPT = -g -O3
+    F77FLAGS = -fno-realloc-lhs -fexceptions -std=legacy -fopenmp -mfpmath=sse -mavx -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
+    F90FLAGS = -fno-realloc-lhs -fcheck=all -fexceptions -pedantic -fopenmp -mfpmath=sse -mavx -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_ 
+    LDFLAGS = -ggdb -fopenmp -lopenblaso 
+    OPT = -ggdb -O3
 
     INSTALL=/usr/bin/install
 
@@ -74,15 +74,15 @@ else
     CPPFLAGS = -s -fexceptions
     CFLAGS = -s
 
-    CXX = g++48
-    CC = gcc48
-    LD = gfortran48
-    LD77 = gfortran48
-    F77 = gfortran48
-    F77FLAGS = -fcheck=all -fexceptions -std=f2003 -fopenmp -mfpmath=sse -mavx -std=legacy -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
-    F90FLAGS = -fcheck=all -fexceptions  -pedantic -fopenmp -mfpmath=sse -mavx -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_
-    LDFLAGS = -fopenmp -lopenblaso
-    OPT = -g -O3
+    CXX = g++
+    CC = gcc
+    LD = gfortran
+    LD77 = gfortran
+    F77 = gfortran
+    F77FLAGS = -fbounds-check -fexceptions -mfpmath=sse -mavx -std=legacy -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
+    F90FLAGS = -fbounds-check -fexceptions -pedantic -mfpmath=sse -mavx -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_
+    LDFLAGS = -lopenblaso
+    OPT = -g -O0
 
     INSTALL=/bin/install
 

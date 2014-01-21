@@ -756,6 +756,11 @@ else
         end if
     end if
 
+    if(TWINNED)THEN   ! NOT TWINNED
+        print *, 'twin refinement not implemented'
+        stop
+    end if
+
     if(SFLS_TYPE .EQ. SFLS_REFINE) then
         call XSFLSC_refine(STORE(JO),JP-JO+1,istore(iresults), nresults, ierflg) ! CALL THE CALCULATION LINK
     elseif(SFLS_TYPE .EQ. SFLS_CALC) then
@@ -1260,8 +1265,8 @@ use xsfwk_mod, only: act, acn, acf, ace, a
 use xworkb_mod, only: nv, nu, nr, nt, nf, nd, jr, jq, jp, jo, cycle_number=>ji
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc
-use xsflsw_mod, only: sfls_type, sfls_scale, sfls_refine, sfls_calc, cos_only, centro, batched
-use xsflsw_mod, only: twinned, scaled_fot, refprint, partials, newlhs, layered, extinct
+use xsflsw_mod, only: cos_only, centro, batched
+use xsflsw_mod, only: scaled_fot, refprint, partials, newlhs, layered, extinct
 !include 'XUNITS.INC90'
 use xunits_mod, only: ncwu, ncvdu, ncfpu2, ncfpu1
 !include 'XSSVAL.INC90'
@@ -1333,7 +1338,7 @@ interface
 end interface
 
 interface
-    SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, reflectiondata)
+    SUBROUTINE XACRTnew(IPOSN, minimum, maximum, summation, summationsq, reflectiondata)
     implicit none
     integer, intent(in) :: iposn
     real, dimension(:), intent(inout):: minimum, maximum
@@ -1379,6 +1384,13 @@ interface
     integer function KBATCH(input)
     implicit none
     integer input
+    end function
+end interface
+
+interface
+    integer function KBATCHnew(reflectiondata) result(kbatch)
+    implicit none
+    real, dimension(:), intent(in) :: reflectiondata
     end function
 end interface
 
@@ -1611,7 +1623,7 @@ batches=-1
 n6w=-1
 l6w=l6w-md6w
 
-normalmatrix=0.0
+normalmatrix=0.0d0
 minimum_shared=huge(minimum_shared)
 maximum_shared=-huge(maximum_shared)
 if(ND<0)THEN
@@ -1671,7 +1683,7 @@ do reflectionsdata_index=1, storechunk*tid
         end if    
     
         if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-            batches(reflectionsdata_index) = KBATCH(dummy)-1
+            batches(reflectionsdata_index) = KBATCHnew(reflectionsdata(1:md6,reflectionsdata_index))-1
             reflectionsdata(md6+10,reflectionsdata_index)=store(L5BS+batches(reflectionsdata_index))  ! FIND THE BATCH NUMBER AND SET THE SCALE
             if ( IERFLG .LT. 0 ) return !GO TO 19900
         else
@@ -1683,11 +1695,11 @@ do reflectionsdata_index=1, storechunk*tid
     end if
 end do
 reflectionsdata_size=reflectionsdata_index-1
-designmatrix=0.0
+designmatrix=0.0d0
 
 !$OMP PARALLEL default(none)&
 !$OMP& shared(nP, nO, layered, str11) &
-!$OMP& shared(batched,twinned, reflectionsdata_size) &
+!$OMP& shared(batched, reflectionsdata_size) &
 !$OMP& shared(reflectionsdata, layers, batches, scaleo, nr) &
 !$OMP& shared(issprt, ncwu, md6, n12) &
 !$OMP& shared(designmatrix, extinct, wave, l12es, jr, jq, del, nu) &
@@ -1756,16 +1768,10 @@ designmatrix=0.0
     JO=NO  ! Point JO back to beginning of PD list.
     JP=NP
     
-!       CHECK if THIS IS TWINNED CALCULATION
-    if(.NOT.TWINNED)THEN   ! NOT TWINNED
-        call XSFLSX(tc, sst, g2, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
-        
-        call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
-        call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
-    else ! THIS IS A TWINNED CALCULATION  
-        print *, 'Not implemented'
-        stop
-    end if
+    call XSFLSX(tc, sst, g2, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
+    
+    call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
+    call XACRTnew(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
 !
 !--CHECK if WE SHOULD include EXTINCTION
     if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
@@ -1793,19 +1799,12 @@ designmatrix=0.0
         EXT4=1.
         FCEXT=reflectionsdata(1+5,reflectionsdata_index)
     end if
-!
-    FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
-!
 
-    if(TWINNED)THEN 
-        ! broken
-        !reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4*SCALES
-        stop
-    else
-        reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
-    end if
-    !reflectionsdata(1+6,reflectionsdata_index)=P
-!
+    FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
+
+
+    reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
         reflectionsdata(1+7,reflectionsdata_index)=reflectionsdata(1+7,reflectionsdata_index) + &
         &   reflectionsdata(MD6+1,reflectionsdata_index) + &
@@ -1814,8 +1813,8 @@ designmatrix=0.0
         &   reflectionsdata(MD6+3,reflectionsdata_index)*reflectionsdata(MD6+6,reflectionsdata_index) + &
         &   reflectionsdata(MD6+4,reflectionsdata_index)
 
-        call XACRT(8, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-        call XACRT(9, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
+        call XACRTnew(8, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
+        call XACRTnew(9, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
     end if
 
 !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
@@ -1917,9 +1916,9 @@ designmatrix=0.0
     !reflectionsdata(:,reflectionsdata_index)=storetemp(M6:M6+MD6-1)
     !call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
     !call XSLRnew(1, storetemp, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
-    call XACRT(6, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE TOTALS FOR /FC/ 
-    call XACRT(7, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! AND THE PHASE
-    call XACRT(16,minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
+    call XACRTnew(6, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE TOTALS FOR /FC/ 
+    call XACRTnew(7, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! AND THE PHASE
+    call XACRTnew(16,minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
  
     ! Fo = reflectionsdata(1+3,reflectionsdata_index)
     tempr=(/1.0, ABS(ABS(reflectionsdata(1+3,reflectionsdata_index))-FCEXS), &
@@ -1990,57 +1989,6 @@ str11(l11r:l11R+n11r-1)=righthandside
 !    end if
 !end do
 
-
-if(SFLS_TYPE .EQ. SFLS_REFINE .and. &! NO REFINEMENT
-&   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
-&   ISTORE(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
-&   ISTORE(M33CD+13).NE.0)THEN    
-    ! process the remaining chunk of design matrix
-
-    ! Pack normal matrix back into original crystals storage     
-    IBL = 1                  ! Parameter # at start of current block
-    IBS = L11                ! Packed storage address.
-    
-    do MB = 1, N12B*MD12B, MD12B      
-        MNR  = ISTORE(L12B+MB)  ! Dimension of this block
-        MSTR = (MNR*(MNR+1))/2  ! Storage space for this block    
-        do i=1,MNR
-            j = ((i-1)*(2*(MNR)-i+2))/2
-            k = j + MNR - i
-            STR11(IBS+j:IBS+k)=normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
-! E.g. two blocks of 2 - normalmatrix is 4x4, output is 2 upper triangles of side 2.
-! Initially IBL is 1, IBS is L11.
-!       MNR is 2
-!       MSTR is 3
-!       i: 1->2
-!          j = 0;  k = 2-1 = 1
-!          str11(L11:L11+1) = norm(1:2, 1)
-!          j = 2;  k = 2 + 2 - 2 = 2
-!          str11(L11+2:L11+2) = norm(2:2, 2)
-!       IBL = 3
-!       IBS = L11+3
-!       MNR is 2
-!       MSTR is 3
-!       i = 1->2
-!          j = 0;  k = 1
-!          str11(L11+3:L11+4) = norm(3:4, 3)
-!          j = 2; k = 2
-!          str11(L11+5:L11+5) = norm(4:4, 4)
-! Looks OK.
-              
-        end do
-
-        IBS = IBS + MSTR       ! Increment the storage pointer
-        IBL = IBL + MNR        ! Increment the derivative pointer
-    end do
-!      do i=1,JP-JO+1
-!            j = ((i-1)*(2*(JP-JO+1)-i+2))/2
-!            k = j + JP-JO+1 - i
-!            STR11(L11+j:L11+k)=normalmatrix(i:JP-JO+1,i)
-!      end do    
-end if
-
-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! end big loop
@@ -2102,53 +2050,44 @@ else
     T=DFT/SCALEO
 end if
 
-if(SFLS_TYPE .EQ. SFLS_SCALE) then  ! WE ARE TO CALCULATE A NEW SCALE FACTOR HERE
 !6100    CONTINUE. Scale factor shift is wrt F**2, change is necessary.
-    if (NV .GE. 0) then   ! REMEMBER THE SHIFT IS IN F**2
-        if (SFC.GT.ZEROSQ) then
-            STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O) + SFO/SFC)
-        else
-            STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O))
-        end if
+if (NV .GE. 0) then   ! REMEMBER THE SHIFT IS IN F**2
+    if (SFC.GT.ZEROSQ) then
+        STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O) + SFO/SFC)
     else
-        if (SFC.GT.ZEROSQ) then
-            STORE(L5O)=STORE(L5O) + SFO/SFC
-        else
-            STORE(L5O)=STORE(L5O)
-        end if
+        STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O))
+    end if
+else
+    if (SFC.GT.ZEROSQ) then
+        STORE(L5O)=STORE(L5O) + SFO/SFC
+    else
+        STORE(L5O)=STORE(L5O)
     end if
 end if
 
 !--STORE THE SCALE AND PRINT IT
 SCALE=STORE(L5O)
 LJX = 0
-if ( TWINNED )THEN
-    LJX = 4
-    if ( SCALED_FOT ) LJX=8
-end if
-if ( SFLS_TYPE .NE. SFLS_REFINE ) LJX = LJX + 1
-if ( SFLS_TYPE .NE. SFLS_SCALE ) LJX = LJX + 2
+LJX = LJX + 1
 
 !
 ! Only print disagreeable reflections during calc.
-if( SFLS_TYPE .EQ. SFLS_CALC ) then
-    write (CMON ,'(/'' Target Weighted Residual ='',F6.2)') SQRT(AMINF/real(NT))
-    call XPRVDU(NCVDU, 2,0)
-    if(ISSPRT.EQ.0) write(NCWU, '(//)')
-    if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(2)(:)
-    write ( CMON ,11)
+write (CMON ,'(/'' Target Weighted Residual ='',F6.2)') SQRT(AMINF/real(NT))
+call XPRVDU(NCVDU, 2,0)
+if(ISSPRT.EQ.0) write(NCWU, '(//)')
+if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(2)(:)
+write ( CMON ,11)
+11 FORMAT(2('   h   k  l     Fo      Fc  wDel Fo/Fc','  '))
+call XPRVDU(NCVDU, 1,0)
+if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
+do MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
+    write ( CMON , '(3I4, 2F7.1, F6.1, F6.2,2X,3I4, 2F7.1, F6.1, F6.2)') &
+    &   ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2), &
+    &   (STORE(IXAP), IXAP= JXAP+3,JXAP+6), &
+    &   JXAP= MSORT, MSORT+MDSORT, MDSORT)
     call XPRVDU(NCVDU, 1,0)
     if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
-11        FORMAT(2('   h   k  l     Fo      Fc  wDel Fo/Fc','  '))
-    do MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
-        write ( CMON , '(3I4, 2F7.1, F6.1, F6.2,2X,3I4, 2F7.1, F6.1, F6.2)') &
-        &   ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2), &
-        &   (STORE(IXAP), IXAP= JXAP+3,JXAP+6), &
-        &   JXAP= MSORT, MSORT+MDSORT, MDSORT)
-        call XPRVDU(NCVDU, 1,0)
-        if(ISSPRT.EQ.0) write(NCWU, '(A)') CMON(1)(:)
-    end do
-end if
+end do
 
 !
 if (ISSPRT .EQ. 0) then
@@ -2474,7 +2413,7 @@ use xworkb_mod, only: nv, nu, nr, nt, nf, nd, jr, jq, jp, jo, cycle_number=>ji
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc
 use xsflsw_mod, only: cos_only, centro, batched
-use xsflsw_mod, only: twinned, scaled_fot, refprint, partials, newlhs, layered, extinct
+use xsflsw_mod, only: scaled_fot, refprint, partials, newlhs, layered, extinct
 !include 'XUNITS.INC90'
 use xunits_mod, only: ncwu, ncvdu, ncfpu2, ncfpu1
 !include 'XSSVAL.INC90'
@@ -2546,7 +2485,7 @@ interface
 end interface
 
 interface
-    SUBROUTINE XACRT(IPOSN, minimum, maximum, summation, summationsq, reflectiondata)
+    SUBROUTINE XACRTnew(IPOSN, minimum, maximum, summation, summationsq, reflectiondata)
     implicit none
     integer, intent(in) :: iposn
     real, dimension(:), intent(inout):: minimum, maximum
@@ -2592,6 +2531,13 @@ interface
     integer function KBATCH(input)
     implicit none
     integer input
+    end function
+end interface
+
+interface
+    integer function KBATCHnew(reflectiondata) result(kbatch)
+    implicit none
+    real, dimension(:), intent(in) :: reflectiondata
     end function
 end interface
 
@@ -2820,7 +2766,7 @@ batches=-1
 n6w=-1
 l6w=l6w-md6w
 
-normalmatrix=0.0
+normalmatrix=0.0d0
 minimum_shared=huge(minimum_shared)
 maximum_shared=-huge(maximum_shared)
 if(ND<0)THEN
@@ -2864,7 +2810,7 @@ do reflectionsdata_index=1, storechunk*tid
         end if    
     
         if(BATCHED) then ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-            batches(reflectionsdata_index) = KBATCH(dummy)-1
+            batches(reflectionsdata_index) = KBATCHnew(reflectionsdata(1:md6,reflectionsdata_index))-1
             reflectionsdata(md6+10,reflectionsdata_index)=store(L5BS+batches(reflectionsdata_index))  ! FIND THE BATCH NUMBER AND SET THE SCALE
             if ( IERFLG .LT. 0 ) return !GO TO 19900
         else
@@ -2876,11 +2822,11 @@ do reflectionsdata_index=1, storechunk*tid
     end if
 end do
 reflectionsdata_size=reflectionsdata_index-1
-designmatrix=0.0
+designmatrix=0.0d0
 
 !$OMP PARALLEL default(none)&
 !$OMP& shared(nP, nO, layered, str11) &
-!$OMP& shared(batched,twinned, reflectionsdata_size) &
+!$OMP& shared(batched, reflectionsdata_size) &
 !$OMP& shared(reflectionsdata, layers, batches, scaleo, nr) &
 !$OMP& shared(issprt, ncwu, md6, n12) &
 !$OMP& shared(extinct, wave, l12es, jr, jq, del, nu) &
@@ -2913,6 +2859,7 @@ designmatrix=0.0
         maximum(8:9)=0.0
     end if    
 
+    if(allocated(temporaryderivatives)) deallocate(temporaryderivatives)
     allocate(temporaryderivatives(n12*jq))
     temporaryderivatives=0.0d0
 
@@ -2949,17 +2896,11 @@ designmatrix=0.0
     JO=NO  ! Point JO back to beginning of PD list.
     JP=NP
     
-!       CHECK if THIS IS TWINNED CALCULATION
-    if(.NOT.TWINNED)THEN   ! NOT TWINNED
-        call XSFLSX(tc, sst, g2, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
-        
-        call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
-        call XACRT(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
-    else ! THIS IS A TWINNED CALCULATION  
-        print *, 'Not implemented'
-        stop
-    end if
-!
+    call XSFLSX(tc, sst, g2, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
+    
+    call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
+    call XACRTnew(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
+
 !--CHECK if WE SHOULD include EXTINCTION
     if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
         A=MIN(1.,WAVE*sqrt(sST))
@@ -2990,15 +2931,9 @@ designmatrix=0.0
     FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
 !
 
-    if(TWINNED)THEN 
-        ! broken
-        !reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4*SCALES
-        stop
-    else
-        reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
-    end if
-    !reflectionsdata(1+6,reflectionsdata_index)=P
-!
+    reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+
+
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
         reflectionsdata(1+7,reflectionsdata_index)=reflectionsdata(1+7,reflectionsdata_index) + &
         &   reflectionsdata(MD6+1,reflectionsdata_index) + &
@@ -3007,8 +2942,8 @@ designmatrix=0.0
         &   reflectionsdata(MD6+3,reflectionsdata_index)*reflectionsdata(MD6+6,reflectionsdata_index) + &
         &   reflectionsdata(MD6+4,reflectionsdata_index)
 
-        call XACRT(8, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-        call XACRT(9, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
+        call XACRTnew(8, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
+        call XACRTnew(9, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
     end if
 
 !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
@@ -3170,9 +3105,9 @@ designmatrix=0.0
     !reflectionsdata(:,reflectionsdata_index)=storetemp(M6:M6+MD6-1)
     !call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
     !call XSLRnew(1, storetemp, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
-    call XACRT(6, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE TOTALS FOR /FC/ 
-    call XACRT(7, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! AND THE PHASE
-    call XACRT(16,minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
+    call XACRTnew(6, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE TOTALS FOR /FC/ 
+    call XACRTnew(7, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! AND THE PHASE
+    call XACRTnew(16,minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
 
     shiftsaccumulation=shiftsaccumulation+designmatrix(:,reflectionsdata_index)
     end do
@@ -3358,10 +3293,6 @@ end if
 !--STORE THE SCALE AND PRINT IT
 SCALE=STORE(L5O)
 LJX = 0
-if ( TWINNED )THEN
-    LJX = 4
-    if ( SCALED_FOT ) LJX=8
-end if
 LJX = LJX + 2
 
 !
@@ -3578,6 +3509,58 @@ if (MD5BS.GT.0) then   ! ARE ANY BATCH SCALES STORED
             write(NCWU,1100)NINT(STORE(M6)),NINT(STORE(M6+1)),NINT(STORE(M6+2)),I
         end if
         write(CMON,1100)NINT(STORE(M6)),NINT(STORE(M6+1)), NINT(STORE(M6+2)),I
+        call XPRVDU(NCVDU, 1,0)
+1100          FORMAT(' Reflection : ',3I5,'  generates an illegal batch scale index of ',I4)
+        call XERHND ( IERERR )
+        return
+    end if
+    KBATCH=I
+end if
+END
+
+!CODE FOR KBATCH
+integer function KBATCHnew(reflectiondata) result(kbatch)
+!--COMPUTE THE BATCH SCALE INDEX FOR THE CURRENT REFLECTION.
+!
+!  IN  A DUMMY ARGUMENT.
+!
+!--return VALUES OF 'KBATCH' ARE :
+!
+!  -1  NO BATCH SCALES IN LIST 5.
+!  >0  THE BATCH SCALE INDEX.
+!
+!--
+!include 'ISTORE.INC'
+!include 'STORE.INC'
+!use store_mod, only:store
+!include 'XUNITS.INC90'
+use xunits_mod, only: ncwu, ncvdu
+!include 'XSSVAL.INC90'
+use xssval_mod, only: issprt
+!include 'XLST05.INC90'
+use xlst05_mod, only: md5bs
+!include 'XLST06.INC90'
+!use xlst06_mod, only: m6
+!include 'XERVAL.INC90'
+use xerval_mod, only: iererr
+!include 'XIOBUF.INC'
+use xiobuf_mod, only: cmon
+!include 'QSTORE.INC'
+implicit none
+
+real, dimension(:), intent(in) :: reflectiondata
+integer idwzap, i
+
+KBATCH=-1
+if (MD5BS.GT.0) then   ! ARE ANY BATCH SCALES STORED
+    I=NINT(reflectiondata(1+13))  ! COMPUTE THE INDEX VALUE
+!--CHECK if THE VALUE IS LARGE ENOUGH
+    if((I.LE.0).OR.(I.GT.MD5BS))THEN 
+        call XERHDR(0)  ! ILLEGAL BATCH SCALE VALUE
+        if (ISSPRT .EQ. 0) then
+            write(NCWU,1100)NINT(reflectiondata(1)),NINT(reflectiondata(1+1)),NINT(reflectiondata(1+2)),I
+        end if
+        write(CMON,1100)NINT(reflectiondata(1)),NINT(reflectiondata(1+1)), NINT(reflectiondata(1+2)),I
         call XPRVDU(NCVDU, 1,0)
 1100          FORMAT(' Reflection : ',3I5,'  generates an illegal batch scale index of ',I4)
         call XERHND ( IERERR )
@@ -4034,7 +4017,6 @@ use xsfwk_mod, only: anom
 !include 'XWORKB.INC'
 use xworkb_mod, only: jr, jq, jn ! always constant in xsflsc and read only
 !include 'XSFLSW.INC90'
-use xsflsw_mod, only: sfls_type, sfls_refine
 use xsflsw_mod, only: cos_only, centro, iso_only, anomal
 !include 'XLST01.INC90'
 use xlst01_mod, only: l1s, l1a ! always constant in xsflsc and read only
@@ -4230,15 +4212,13 @@ do LJY=1,N5
 
     ATOM_REFINE = .FALSE. 
 
-    if(SFLS_TYPE .EQ. SFLS_REFINE) then   ! CHECK IF REFINEMENT IS BEING DONE
-        !call XZEROF ( ALPD(1),11 )  ! CLEAR PARTIAL DERIVATIVE STACKS
-        ALPD(1:11)=0.0
-        !call XZEROF ( BLPD(1),11 )
-        BLPD(1:11)=0.0
-        L12A=ISTORE(M12+1)
-        if ( L12A .GE.0 ) ATOM_REFINE = .TRUE.  ! Set if any params of this atom are being refined
-        M12=ISTORE(M12)
-    end if
+    !call XZEROF ( ALPD(1),11 )  ! CLEAR PARTIAL DERIVATIVE STACKS
+    ALPD(1:11)=0.0
+    !call XZEROF ( BLPD(1),11 )
+    BLPD(1:11)=0.0
+    L12A=ISTORE(M12+1)
+    if ( L12A .GE.0 ) ATOM_REFINE = .TRUE.  ! Set if any params of this atom are being refined
+    M12=ISTORE(M12)
 !djwsep2010 extend to use dual wavelength anomalous scattering as appropriate 
     M3TR=1+ISTORE(M5A)*MD3TR  ! PICK UP THE FORM FACTORS FOR THIS ATOM
     M3TI=1+ISTORE(M5A)*MD3TI
@@ -4418,10 +4398,8 @@ do LJY=1,N5
         AIMAG=ANOM*formfactors(2, M3TI)  ! CALCULATE THE IMAGINARY PARTS
         reflectiondata(md6+2)=reflectiondata(md6+2)-BT*AIMAG
         reflectiondata(md6+4)=reflectiondata(md6+4)+AT*AIMAG
-        if (SFLS_TYPE .EQ. SFLS_REFINE) then   ! ANY REFINEMENT AT ALL?
-            reflectiondata(md6+5)=reflectiondata(md6+5)-BT*formfactors(2, M3TI)   ! DERIVATIVES FOR POLARITY PARAMETER
-            reflectiondata(md6+6)=reflectiondata(md6+6)+AT*formfactors(2, M3TI)
-        end if
+        reflectiondata(md6+5)=reflectiondata(md6+5)-BT*formfactors(2, M3TI)   ! DERIVATIVES FOR POLARITY PARAMETER
+        reflectiondata(md6+6)=reflectiondata(md6+6)+AT*formfactors(2, M3TI)
     end if
 
 

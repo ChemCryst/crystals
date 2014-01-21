@@ -216,7 +216,14 @@ C      WDF  SQRT(W)*(/FO/ - /FC/)
        double precision, dimension(:), intent(in) :: DERIVS
        double precision, dimension(:), intent(inout) :: RMAT11
 
-       do I = 1, NDERIV
+       if(ubound(RMAT11,1)/=ubound(DERIVS,1)) then
+         print *, 'Programmer error'
+         print *, 'rmat11 and derivs should have the same size'
+         print *, 'in subroutine xadrhs'
+         stop
+       end if
+
+       do I = 1, ubound(RMAT11,1)
          RMAT11(I) = RMAT11(I) + DERIVS(I) * WDF
        end do
 
