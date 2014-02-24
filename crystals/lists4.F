@@ -1131,6 +1131,7 @@ C--ASSIGN VARIOUS POINTERS
       M3TR=L3TR
       M3TI=L3TI
       allocate(formfactors(2, n3*max(MD3TR, md3ti)))
+      formfactors=0.0
 C--LOOP OVER ACH FORM FACTOR TYPE IN TURN
       DO JZ=1,N3 ! 1050
           JU=M3+3
@@ -1138,16 +1139,18 @@ C--COMPUTE THE INVARIANT PART
           RPART = STORE(JU)*EXP(-STORE(JU+1)*SST)+STORE(JU+2)
      2        *EXP(-STORE(JU+3)*SST)+STORE(JU+4)*EXP(-STORE(JU+5)*SST)
      3        +STORE(JU+6)*EXP(-STORE(JU+7)*SST)+STORE(JU+8)
+     
 C--COMPUTE THE REAL PART
           formfactors(1, (jz-1)*MD3TR+1) = RPART+STORE(M3+1)
 C--COMPUTE THE IMAGINARY PART
           formfactors(2, (jz-1)*MD3TI+1)=STORE(M3+2)
 C----- CHECK FOR AN AUXILLIARY RADIATION
 Cdjwsep2010 Store FF with appropriate anomalous scattering
-          IF((MD3 .EQ. 14) .AND. (MD3TR .EQ. 2)) THEN
-            formfactors(1, (jz-1)*MD3TR+1+1) = RPART+STORE(M3+12)
-            formfactors(2, (jz-1)*MD3TI+1+1) = STORE(M3+13)
-          ENDIF
+! Not used at all ???? 22/01/2014
+!          IF((MD3 .EQ. 14) .AND. (MD3TR .EQ. 2)) THEN
+!            formfactors(1, (jz-1)*MD3TR+1+1) = RPART+STORE(M3+12)
+!            formfactors(2, (jz-1)*MD3TI+1+1) = STORE(M3+13)
+!          ENDIF
 csjwsep2010
 C--UPDATE FOR THE NEXT FORM FACTOR
           M3=M3+MD3
