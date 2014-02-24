@@ -1,3 +1,7 @@
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
+
 C $Log: accumula.F,v $
 C Revision 1.9  2013/04/24 10:49:08  rich
 C Pascal: speed up matrix accumulation.

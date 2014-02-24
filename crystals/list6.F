@@ -1,6 +1,7 @@
-C$Rev::                                      $:  Revision of last commit
-C$Author::                                   $:  Author of last commit
-C$Date::                                     $:  Date of last commit
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
+
 C $Log: list6.F,v $
 C Revision 1.24  2013/12/06 12:51:31  djw
 C Oops.

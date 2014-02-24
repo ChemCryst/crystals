@@ -1,3 +1,7 @@
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
+
 C $Log: lists2.F,v $
 C Revision 1.11  2011/03/21 13:57:21  rich
 C Update files to work with gfortran compiler.

@@ -1,6 +1,6 @@
-!$Rev::                                      $:  Revision of last commit
-!$Author::                                   $:  Author of last commit
-!$Date::                                     $:  Date of last commit
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
 
 !CODE FOR XSFLSB
 subroutine XSFLSB (MODE, ITYP06)

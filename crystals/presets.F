@@ -1,3 +1,7 @@
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
+
 C $Log: presets.F,v $
 C Revision 1.66  2012/03/23 13:54:08  rich
 C Changed some common block variables into constants.

@@ -1,3 +1,7 @@
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
+
 C $Log: sort.F,v $
 C Revision 1.11  2013/11/26 11:49:02  pascal
 C removed not used arguments from srtdwn

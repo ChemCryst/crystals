@@ -1,3 +1,7 @@
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
+
 C $Log: solve.F,v $
 C Revision 1.72  2013/11/11 21:01:45  rich
 C Set CTEXT for overall parameters outside conditional print block

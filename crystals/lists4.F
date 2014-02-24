@@ -1,3 +1,7 @@
+!$Rev::                                                                 $:  Revision of last commit
+!$Author::                                                              $:  Author of last commit
+!$Date::                                                                $:  Date of last commit
+
 C $Log: lists4.F,v $
 C Revision 1.32  2011/09/21 09:48:03  rich
 C When checking for scattering factors, uppercase before comparison.
