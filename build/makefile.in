@@ -33,10 +33,10 @@ else
     LD = gfortran48
     LD77 = gfortran48
     F77 = gfortran48
-    F77FLAGS = -fno-realloc-lhs -fexceptions -std=legacy -fopenmp -mfpmath=sse -mavx -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
-    F90FLAGS = -fno-realloc-lhs -fcheck=all -fexceptions -pedantic -fopenmp -mfpmath=sse -mavx -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_ 
-    LDFLAGS = -ggdb -fopenmp -lopenblaso 
-    OPT = -ggdb -O3
+    F77FLAGS = -fno-realloc-lhs -fexceptions -std=legacy  -msse2 -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
+    F90FLAGS = -fno-realloc-lhs -fcheck=all -fexceptions -pedantic -msse2 -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_ 
+    LDFLAGS = -ggdb -lopenblaso 
+    OPT = -ggdb -O3 -fopenmp
 
     INSTALL=/usr/bin/install
 
