@@ -1678,6 +1678,20 @@ end do
 reflectionsdata_size=reflectionsdata_index-1
 designmatrix=0.0d0
 
+!  SCALEO  THE OVERALL SCALE FACTOR FROM LIST 5.
+!          'SCALEO' IS ASSUMED NOT TO BE ZERO.
+!  SCALEL  THE LAYER SCALE FACTOR FOR THE CURRENT LAYER  -  THIS
+!          SCALE MAY BE ZERO if REQUIRED. - removed
+!  SCALEB  THE BATCH SCALE FACTOR FOR THE CURRENT REFLECTION  -  THIS
+!          SCALE MAY BE ZERO if REQUIRED. -removed
+!  SCALES  THE SCALE FACTOR TO BE USED WHEN STORING /FC/. 
+!          THIS EQUALS SCALEL*SCALEB, SINCE 'SCALEO' IS NOT APPLIED TO / - removed
+!  SCALEG  THE COMBINED /FC/ SCALE FACTOR (=SCALEO*SCALEL*SCALEB). - removed (=scaleo)
+!          'SCALEG' WILL BE ZERO if 'SCALEL' OR 'SCALEB' IS ZERO.
+!  SCALEK  THE OVERALL /FO/ SCALE FACTOR (=1.0/SCALEG, UNLESS
+!          'SCALEG' IS ZERO, WHEN 'SCALEK' IS SET TO 1.0). - =1.0/scaleo
+!  SCALEW  SCALEG*W - =scaleo*w
+
 !$OMP PARALLEL default(none)&
 !$OMP& shared(nP, nO, str11) &
 !$OMP& shared(reflectionsdata_size) &
@@ -1694,10 +1708,10 @@ designmatrix=0.0d0
 !$OMP& firstprivate(jsort, lsort, r, red, tix, ext3) &
 !$OMP& firstprivate(jp,jo) &
 !$OMP& private(M5LS, ierflg, md12a) &
-!$OMP& private(scalek,scales,scalel, scaleb,scaleg,scalew) &
+!$OMP& private(scaleg,scalew, scalek) &
 !$OMP& private(tc, p, sst, m12) &
 !$OMP& private(ljx, temporaryderivatives) &
-!$OMP& private(tempr, m5bs, a, fcext) &
+!$OMP& private(tempr, m5bs, a) &
 !$OMP& private(path, delta, c, ext1, ext2, ext4, fcexs, df, wdf) &
 !$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, tid) &
 !$OMP& shared(minimum_shared, maximum_shared) &
@@ -1721,19 +1735,16 @@ designmatrix=0.0d0
     !storetemp(M6:M6+MD6-1)=reflectionsdata(:,reflectionsdata_index)
     !print *, storetemp(M6:M6+MD6-1)
 
-    scalel=1.0
-    scaleb=1.0
-    scalek=1.0
-    scales=1.0
-    scaleg=SCALEO
-    if(SCALEG .GT. 1e-6) then   ! CHECK IF THE SCALE IS ZERO
-        SCALEK=1./SCALEG   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
+    if(SCALEO .GT. 1e-6) then   ! CHECK IF THE SCALE IS ZERO
+        SCALEK=1./SCALEO   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
+    else
+        SCALEK=1.0
     end if
 
     !FO=reflectionsdata(1+3,reflectionsdata_index) ! SET UP /FO/ ETC. FOR THIS REFLECTION
     !W=reflectionsdata(1+4,reflectionsdata_index) 
     ! scalew = scaleg * w
-    SCALEW=SCALEG*reflectionsdata(1+4,reflectionsdata_index) 
+    SCALEW=SCALEO*reflectionsdata(1+4,reflectionsdata_index) 
  
 !    NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
 !    NN=0
@@ -1766,16 +1777,14 @@ designmatrix=0.0d0
         EXT2=1.0+EXT*reflectionsdata(1+5,reflectionsdata_index)**2*DELTA
         EXT3=EXT2/(EXT1**(1.25))
         EXT4=(EXT1**(-.25))
-        FCEXT=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/
+        reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/
     else
         EXT4=1.
-        FCEXT=reflectionsdata(1+5,reflectionsdata_index)
+        !FCEXT=reflectionsdata(1+5,reflectionsdata_index)
     end if
 
-    FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
+    FCEXS=reflectionsdata(1+5,reflectionsdata_index)*SCALEO ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
 
-
-    reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
 
     if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
         reflectionsdata(1+7,reflectionsdata_index)=reflectionsdata(1+7,reflectionsdata_index) + &
@@ -1819,10 +1828,11 @@ designmatrix=0.0d0
         DFT=DFT+ABS(ABS(reflectionsdata(1+3,reflectionsdata_index)) - FCEXS)
         WDFT=WDFT+WDF*WDF  ! COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
         RW=RW+A*A
-        sfofc = sfofc + reflectionsdata(1+3,reflectionsdata_index) * fcext
-        sfcfc = sfcfc + fcext * fcext
-        wsfofc = wsfofc + reflectionsdata(1+4,reflectionsdata_index)  * reflectionsdata(1+3,reflectionsdata_index) * fcext
-        wsfcfc = wsfcfc + reflectionsdata(1+4,reflectionsdata_index)  * fcext * fcext
+        sfofc = sfofc + reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
+        sfcfc = sfcfc + reflectionsdata(1+5,reflectionsdata_index)**2
+        wsfofc = wsfofc + reflectionsdata(1+4,reflectionsdata_index)  * &
+        &   reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
+        wsfcfc = wsfcfc + reflectionsdata(1+4,reflectionsdata_index)  * reflectionsdata(1+5,reflectionsdata_index)**2
     end if
 !
 !
@@ -1833,9 +1843,9 @@ designmatrix=0.0d0
 !$OMP CRITICAL        
         call XMOVE(reflectionsdata(1:3,reflectionsdata_index), store(LTEMPR), 3)
         store(LTEMPR+3) = UJ
-        store(LTEMPR+4) = FCEXT
+        store(LTEMPR+4) = reflectionsdata(1+5,reflectionsdata_index)
         store(LTEMPR+5) = RDJW
-        store(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
+        store(LTEMPR+6) = MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO))
         call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, store)
 !$OMP END CRITICAL
     end if
@@ -1854,12 +1864,13 @@ designmatrix=0.0d0
         if (ISSPRT .EQ. 0) then 
             write(NCWU,4600) reflectionsdata(1,reflectionsdata_index), &
             &   reflectionsdata(1+1,reflectionsdata_index), &
-            &   reflectionsdata(1+2,reflectionsdata_index),UJ,FCEXT,P,WJ,VJ,A,S,T,C,sqrt(sST)
+            &   reflectionsdata(1+2,reflectionsdata_index),UJ, &
+            &   reflectionsdata(1+5,reflectionsdata_index),P,WJ,VJ,A,S,T,C,sqrt(sST)
         end if
 4600    FORMAT(3X,3F6.0,3F9.1,E13.4,E13.4,F8.1,F8.1,F9.1,F10.1,F10.5)
 !
     else   ! Only print worst 25 agreements.
-        if ( ABS(UJ-FCEXT) .GE. R*UJ .AND. IBADR .LE. 50 ) then
+        if ( ABS(UJ-reflectionsdata(1+5,reflectionsdata_index)) .GE. R*UJ .AND. IBADR .LE. 50 ) then
             if (IBADR .LT. 0) then
                 if (ISSPRT .EQ. 0) write(NCWU,4651)
 !$OMP CRITICAL
@@ -1871,7 +1882,8 @@ designmatrix=0.0d0
                 if (ISSPRT .EQ. 0) then
                     write(NCWU,4652) reflectionsdata(1,reflectionsdata_index), &
                     &   reflectionsdata(1+1,reflectionsdata_index), &
-                    &   reflectionsdata(1+2,reflectionsdata_index),UJ,FCEXT
+                    &   reflectionsdata(1+2,reflectionsdata_index),UJ,&
+                    &   reflectionsdata(1+5,reflectionsdata_index)
                 end if
 4652            FORMAT(1X,3F5.0,2F9.2)
             else if (IBADR .EQ. 25) then
@@ -2782,6 +2794,20 @@ end do
 reflectionsdata_size=reflectionsdata_index-1
 designmatrix=0.0d0
 
+!  SCALEO  THE OVERALL SCALE FACTOR FROM LIST 5.
+!          'SCALEO' IS ASSUMED NOT TO BE ZERO.
+!  SCALEL  THE LAYER SCALE FACTOR FOR THE CURRENT LAYER  -  THIS
+!          SCALE MAY BE ZERO if REQUIRED. - removed
+!  SCALEB  THE BATCH SCALE FACTOR FOR THE CURRENT REFLECTION  -  THIS
+!          SCALE MAY BE ZERO if REQUIRED. -removed
+!  SCALES  THE SCALE FACTOR TO BE USED WHEN STORING /FC/. 
+!          THIS EQUALS SCALEL*SCALEB, SINCE 'SCALEO' IS NOT APPLIED TO / - removed
+!  SCALEG  THE COMBINED /FC/ SCALE FACTOR (=SCALEO*SCALEL*SCALEB). - removed (=scaleo)
+!          'SCALEG' WILL BE ZERO if 'SCALEL' OR 'SCALEB' IS ZERO.
+!  SCALEK  THE OVERALL /FO/ SCALE FACTOR (=1.0/SCALEG, UNLESS
+!          'SCALEG' IS ZERO, WHEN 'SCALEK' IS SET TO 1.0). - =1.0/scaleo
+!  SCALEW  SCALEG*W - =scaleo*w
+
 !$OMP PARALLEL default(none)&
 !$OMP& shared(nP, nO, str11) &
 !$OMP& shared(reflectionsdata_size) &
@@ -2798,10 +2824,10 @@ designmatrix=0.0d0
 !$OMP& firstprivate(jsort, lsort, r, red, tix, ext3) &
 !$OMP& firstprivate(jp,jo) &
 !$OMP& private(M5LS, ierflg, md12a) &
-!$OMP& private(scalek,scales,scalel, scaleb,scaleg,scalew) &
+!$OMP& private(scalek,scalew) &
 !$OMP& private(tc, p, sst, m12) &
 !$OMP& private(ljx, temporaryderivatives) &
-!$OMP& private(tempr, m5bs, a, fcext) &
+!$OMP& private(tempr, m5bs, a) &
 !$OMP& private(path, delta, c, ext1, ext2, ext4, fcexs, df, wdf) &
 !$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, tid) &
 !$OMP& shared(minimum_shared, maximum_shared) &
@@ -2826,19 +2852,16 @@ designmatrix=0.0d0
         !storetemp(M6:M6+MD6-1)=reflectionsdata(:,reflectionsdata_index)
         !print *, storetemp(M6:M6+MD6-1)
 
-        scalel=1.0
-        scaleb=1.0
-        scalek=1.0
-        scales=1.0
-        scaleg=SCALEO
-        if(SCALEG .GT. 1e-6) then   ! CHECK IF THE SCALE IS ZERO
-            SCALEK=1./SCALEG   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
+        if(SCALEO .GT. 1e-6) then   ! CHECK IF THE SCALE IS ZERO
+            SCALEK=1./SCALEO   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
+        else
+            SCALEK=1.
         end if
 
         !FO=reflectionsdata(1+3,reflectionsdata_index) ! SET UP /FO/ ETC. FOR THIS REFLECTION
         !W=reflectionsdata(1+4,reflectionsdata_index) 
         ! scalew = scaleg * w
-        SCALEW=SCALEG*reflectionsdata(1+4,reflectionsdata_index) 
+        SCALEW=SCALEO*reflectionsdata(1+4,reflectionsdata_index) 
      
     !    NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
     !    NN=0
@@ -2871,16 +2894,16 @@ designmatrix=0.0d0
             EXT2=1.0+EXT*reflectionsdata(1+5,reflectionsdata_index)**2*DELTA
             EXT3=EXT2/(EXT1**(1.25))
             EXT4=(EXT1**(-.25))
-            FCEXT=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/
+            reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/
         else
             EXT4=1.
-            FCEXT=reflectionsdata(1+5,reflectionsdata_index)
+            !FCEXT=reflectionsdata(1+5,reflectionsdata_index)
         end if
     !
-        FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
+        FCEXS=reflectionsdata(1+5,reflectionsdata_index)*SCALEO ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
     !
 
-        reflectionsdata(1+5,reflectionsdata_index)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+        !reflectionsdata(1+5,reflectionsdata_index)=FCEXT ! STORE FC AND PHASE IN THE LIST 6 SLOTS
 
 
         if(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
@@ -2924,10 +2947,11 @@ designmatrix=0.0d0
         DFT=DFT+ABS(ABS(reflectionsdata(1+3,reflectionsdata_index)) - FCEXS)
         WDFT=WDFT+WDF*WDF  ! COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
         RW=RW+A*A
-        sfofc = sfofc + reflectionsdata(1+3,reflectionsdata_index) * fcext
-        sfcfc = sfcfc + fcext * fcext
-        wsfofc = wsfofc + reflectionsdata(1+4,reflectionsdata_index)  * reflectionsdata(1+3,reflectionsdata_index) * fcext
-        wsfcfc = wsfcfc + reflectionsdata(1+4,reflectionsdata_index)  * fcext * fcext
+        sfofc = sfofc + reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
+        sfcfc = sfcfc + reflectionsdata(1+5,reflectionsdata_index)**2
+        wsfofc = wsfofc + reflectionsdata(1+4,reflectionsdata_index)  * &
+        &   reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
+        wsfcfc = wsfcfc + reflectionsdata(1+4,reflectionsdata_index)  * reflectionsdata(1+5,reflectionsdata_index)**2
     !
     !
         UJ=reflectionsdata(1+3,reflectionsdata_index)*SCALEK
@@ -2937,9 +2961,9 @@ designmatrix=0.0d0
     !$OMP CRITICAL        
             call XMOVE(reflectionsdata(1:3,reflectionsdata_index), store(LTEMPR), 3)
             store(LTEMPR+3) = UJ
-            store(LTEMPR+4) = FCEXT
+            store(LTEMPR+4) = reflectionsdata(1+5,reflectionsdata_index)
             store(LTEMPR+5) = RDJW
-            store(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
+            store(LTEMPR+6) = MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO))
             call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, store)
     !$OMP END CRITICAL
         end if
@@ -2958,12 +2982,13 @@ designmatrix=0.0d0
             if (ISSPRT .EQ. 0) then 
                 write(NCWU,4600) reflectionsdata(1,reflectionsdata_index), &
                 &   reflectionsdata(1+1,reflectionsdata_index), &
-                &   reflectionsdata(1+2,reflectionsdata_index),UJ,FCEXT,P,WJ,VJ,A,S,T,C,sqrt(sST)
+                &   reflectionsdata(1+2,reflectionsdata_index),UJ,&
+                &   reflectionsdata(1+5,reflectionsdata_index),P,WJ,VJ,A,S,T,C,sqrt(sST)
             end if
     4600    FORMAT(3X,3F6.0,3F9.1,E13.4,E13.4,F8.1,F8.1,F9.1,F10.1,F10.5)
     !
         else   ! Only print worst 25 agreements.
-            if ( ABS(UJ-FCEXT) .GE. R*UJ .AND. IBADR .LE. 50 ) then
+            if ( ABS(UJ-reflectionsdata(1+5,reflectionsdata_index)) .GE. R*UJ .AND. IBADR .LE. 50 ) then
     !$OMP CRITICAL
                 if (IBADR .LT. 0) then
                     if (ISSPRT .EQ. 0) write(NCWU,4651)
@@ -2974,7 +2999,7 @@ designmatrix=0.0d0
                     if (ISSPRT .EQ. 0) then
                         write(NCWU,4652) reflectionsdata(1,reflectionsdata_index), &
                         &   reflectionsdata(1+1,reflectionsdata_index), &
-                        &   reflectionsdata(1+2,reflectionsdata_index),UJ,FCEXT
+                        &   reflectionsdata(1+2,reflectionsdata_index),UJ,reflectionsdata(1+5,reflectionsdata_index)
                     end if
     4652            FORMAT(1X,3F5.0,2F9.2)
                 else if (IBADR .EQ. 25) then
@@ -2992,12 +3017,12 @@ designmatrix=0.0d0
     !  TERM WHICH IS REMOVED LATER WHEN THE DERIVATIVES ARE MODifIED FOR
     !  EXTINCTION. THE FIRST PARAMETER IS THE OVERALL SCALE FACTOR.
 
-        A=reflectionsdata(1+4,reflectionsdata_index)*FCEXT*SCALES/EXT3
+        A=reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)*1.0/EXT3
 
     !---- TO REFINE SCALE OF F**2 (RATHER THAN F), SQUARE AND
     !      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
-        if(NV .GE. 0) A = A * FCEXT * SCALES / ( 2. * FCEXS )
+        if(NV .GE. 0) A = A * reflectionsdata(1+5,reflectionsdata_index) * 1.0 / ( 2. * FCEXS )
         LJX=0
         M12=L12O
 
