@@ -755,7 +755,7 @@ else
         stop
     end if
 
-    call XSFLSC(STORE(JO),JP-JO+1,istore(iresults), nresults, ierflg) ! CALL THE CALCULATION LINK
+    call XSFLSC ! CALL THE CALCULATION LINK
 end if
 
 if ( IERFLG .LT. 0 ) return
@@ -967,7 +967,7 @@ END
 
 
 !CODE FOR XSFLSC
-subroutine XSFLSC( DERIVS, NDERIV, IRESULTS, NRESULTS, ierflg)
+subroutine XSFLSC
 !$    use OMP_LIB
 !--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
 !
@@ -1307,11 +1307,11 @@ interface
 end interface
 
 interface
-    subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, partialderivatives) 
+    subroutine XADDPD ( A, JX, JO, JQ, JR, m12, partialderivatives) 
         implicit none 
         real, intent(in) :: a
         integer, intent(in) :: jx, jo, jq, jr
-        integer, intent(inout) :: md12a, m12
+        integer, intent(in) :: m12
         double precision, dimension(:), intent(out) :: partialderivatives
     end subroutine
 end interface
@@ -1391,16 +1391,6 @@ end interface
 !include 'QSTORE.INC'
 !include 'QSTR11.INC' equivalence not needed
 
-!-C-C-AGREEMENT OF CONSTANTS AND VARIABLES
-!-C-C-...FOR FLAG TO DECIDE BETWEEN KIND OF ATOM
-!      real FLAG
-!
-
-integer, intent(in) :: nderiv, nresults
-real, dimension(nderiv), intent(in) :: DERIVS
-integer, dimension(NRESULTS), intent(in) :: IRESULTS  !Parameter list if there is one
-integer, intent(out) :: ierflg
-
 !
 character(len=256) :: formatstr
 integer i, ibadr, iallow,  ibl, ibs, ifnr, ilevpr
@@ -1457,8 +1447,6 @@ double precision, dimension(:), allocatable :: righthandside
 integer cpt
 
 double precision, dimension(:), allocatable :: temporaryderivatives
-
-ierflg = 0
 
 call CPU_TIME ( time_begin )
 
@@ -1558,9 +1546,6 @@ if(REFPRINT) then
     &   2X,'D/F/ **2', 1X,'T.B.R.(%)',2X,'SINTH/L/')
 end if
 
-NO=JO
-NP=JP
-
 #if defined(_GIL_) || defined(_LIN_)
 call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
@@ -1640,7 +1625,6 @@ cpt=0
 reflectionsdata_size=1
 do WHILE (reflectionsdata_size>0)  ! START OF THE LOOP OVER REFLECTIONS
 cpt=cpt+1
-print *, reflectionsdata_size, cpt, storechunk, tid
 
 do reflectionsdata_index=1, storechunk*tid
     IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
@@ -1670,8 +1654,7 @@ do reflectionsdata_index=1, storechunk*tid
         reflectionsdata(md6+11,reflectionsdata_index)=0.0
     end if
     if(ifnr>=0) then
-        !print *, 's', reflectionsdata(:,reflectionsdata_index)
-        !store(m6:m6+md6-1)=reflectionsdata(:,reflectionsdata_index)
+        ! pointer to location of the reflection data on disc
         l6wpointers(reflectionsdata_index)=l6w
         n6wpointers(reflectionsdata_index)=n6w
     
@@ -1697,29 +1680,25 @@ designmatrix=0.0d0
 !  SCALEW  SCALEG*W - =scaleo*w
 
 !$OMP PARALLEL default(none)&
-!$OMP& shared(nP, nO, str11, sfls_type) &
+!$OMP& shared(sfls_type) &
 !$OMP& shared(reflectionsdata_size) &
-!$OMP& shared(reflectionsdata, scaleo, nr) &
-!$OMP& shared(issprt, ncwu, md6, n12) &
-!$OMP& shared(extinct, wave, l12es, jr, jq, del, nu) &
+!$OMP& shared(reflectionsdata, scaleo) &
+!$OMP& shared(issprt, ncwu, md6, n12, jp,jo) &
+!$OMP& shared(extinct, wave, jq, jr, del, nu) &
 !$OMP& shared(pol1, pol2, ext, nd, nv, xvalur,LTEMPR, nsort, mdsort) &
-!$OMP& shared(refprint, l12o, l12ls, l12bs, m33cd, ncfpu1, ncfpu2) &
-!$OMP& shared(newlhs, l11, l12b, n12b, md12b, nresults, iresults, n11) &
-!$OMP& shared(ltempl, designmatrix, normalmatrix, store, istore) &
-!$OMP& shared(l6wpointers, n6wpointers, l6w, n6w) &
-!$OMP& shared(ILEVPR, ibadr) &  ! atomic
-!$OMP& firstprivate(smin, smax, g2, l5es, d) &
-!$OMP& firstprivate(jsort, lsort, r, red, tix, ext3) &
-!$OMP& firstprivate(jp,jo, rall) &
-!$OMP& private(M5LS, ierflg, md12a) &
+!$OMP& shared(refprint, l12o, m33cd) &
+!$OMP& shared(newlhs, lsort, r) &
+!$OMP& shared(designmatrix, normalmatrix, store) &
+!$OMP& shared(ibadr, g2, d, jsort) &  
+!$OMP& firstprivate(delta, ext1, ext2, ext3, ext4) &
+!$OMP& firstprivate(rall) &
 !$OMP& private(scalek,scalew) &
-!$OMP& private(tc, p, sst, m12) &
-!$OMP& private(ljx, temporaryderivatives) &
-!$OMP& private(tempr, m5bs, a) &
-!$OMP& private(path, delta, c, ext1, ext2, ext4, fcexs, df, wdf) &
+!$OMP& private(tc, p, sst) &
+!$OMP& private(temporaryderivatives) &
+!$OMP& private(tempr, a) &
+!$OMP& private(path, c, fcexs, df, wdf) &
 !$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, tid) &
 !$OMP& shared(minimum_shared, maximum_shared) &
-!$OMP& reduction(max:REDMAX) &
 !$OMP& reduction(+: summation, summationsq, nt, fot, foabs, shiftsaccumulation) &
 !$OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc) &
 !$OMP& reduction(+: sfo, sfc, righthandside, aminf) 
@@ -1754,8 +1733,8 @@ designmatrix=0.0d0
      
     !    NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
     !    NN=0
-        JO=NO  ! Point JO back to beginning of PD list.
-        JP=NP
+    !    JO=NO  ! Point JO back to beginning of PD list.
+    !    JP=NP
         
         call XSFLSX(tc, sst, g2, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
         
@@ -1783,7 +1762,7 @@ designmatrix=0.0d0
             EXT2=1.0+EXT*reflectionsdata(1+5,reflectionsdata_index)**2*DELTA
             EXT3=EXT2/(EXT1**(1.25))
             EXT4=(EXT1**(-.25))
-            reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/
+            reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/ and store it in list 6 slots
         else
             EXT4=1.0
             !FCEXT=reflectionsdata(1+5,reflectionsdata_index)
@@ -1853,18 +1832,20 @@ designmatrix=0.0d0
         if (RDJW .GT. ABS(XVALUR)) then
     !----  H,K,L,FO,FC,/WDELTA/,FO/FC
     !$OMP CRITICAL        
-            call XMOVE(reflectionsdata(1:3,reflectionsdata_index), store(LTEMPR), 3)
-            store(LTEMPR+3) = UJ
-            store(LTEMPR+4) = reflectionsdata(1+5,reflectionsdata_index)
-            store(LTEMPR+5) = RDJW
-            store(LTEMPR+6) = MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO))
-            call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, store)
+            if (RDJW .GT. ABS(XVALUR)) then
+                call XMOVE(reflectionsdata(1:3,reflectionsdata_index), store(LTEMPR), 3)
+                store(LTEMPR+3) = UJ
+                store(LTEMPR+4) = reflectionsdata(1+5,reflectionsdata_index)
+                store(LTEMPR+5) = RDJW
+                store(LTEMPR+6) = MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO))
+                call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, store)
+            end if
     !$OMP END CRITICAL
         end if
 
       
         if(REFPRINT) THEN !   CHECK IF A PRINT OF THE RELFECTIONS IS NEEDED
-            P=P*D             ! PRINT ALL REFLECTIONS
+            P=reflectionsdata(1+6,reflectionsdata_index)*D             ! PRINT ALL REFLECTIONS
             VJ=WDF*S
             WJ=DF*S
             !A=SQRT(AC*AC+BC*BC)
@@ -1935,17 +1916,15 @@ designmatrix=0.0d0
     !      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
             if(NV .GE. 0) A = A * reflectionsdata(1+5,reflectionsdata_index) * 1.0 / ( 2. * FCEXS )
-            LJX=0
-            M12=L12O
 
-            call XADDPD ( A, 0, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index))
+            call XADDPD ( A, 0, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index))
 
             A=reflectionsdata(1+4,reflectionsdata_index) *FCEXS*TC/EXT3        ! OVERALL TEMPERATURE FACTORS NEXT
-            call XADDPD ( A, 1, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index)) 
-            call XADDPD ( A, 2, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index)) 
+            call XADDPD ( A, 1, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
+            call XADDPD ( A, 2, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
             A=-0.5*SCALEW*reflectionsdata(1+5,reflectionsdata_index)**3*Delta/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
-            call XADDPD ( A, 5, JO, JQ, JR, md12a, m12, designmatrix(:,reflectionsdata_index)) 
+            call XADDPD ( A, 5, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
             IF ( ( NV.GE.0 ) .OR. EXTINCT ) THEN  ! Either FO^2, or extinction correction required.
 
@@ -1962,7 +1941,7 @@ designmatrix=0.0d0
 
             if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
 
-                if (istore(M33CD+13).EQ.0) then
+                if (TRANSFER(store(M33CD+13), 1).EQ.0) then
                     !call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
                     !&   STR11(L11), N11, iresults, nresults, & 
                     !&   storetemp(L12B), N12B*MD12B, MD12B)
@@ -2016,8 +1995,8 @@ designmatrix=0.0d0
     ! Accumulating the normal matrix
     if(SFLS_TYPE .EQ. SFLS_REFINE .and. &
     &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
-    &   ISTORE(M33CD+12).EQ.0 .and. &! Just a normal accumulation.
-    &   ISTORE(M33CD+13).NE.0)THEN    
+    &   transfer(STORE(M33CD+12),1).EQ.0 .and. &! Just a normal accumulation.
+    &   transfer(STORE(M33CD+13),1).NE.0)THEN    
         call DSYRK('L','N',JP-JO+1,storechunk, &
         &   1.0d0, designmatrix(1,storechunk*(tid-1)+1), &
         &   JP-JO+1,1.0d0,normalmatrix(1,1,tid),JP-JO+1)    
@@ -2144,7 +2123,6 @@ if(allocated(normalmatrix)) deallocate(normalmatrix)
 
 !--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
     
-print *, 'nt', nt
 if (NT .LE. 0) then
     if (ISSPRT .EQ. 0) write(NCWU,5851)
     write ( CMON, 5851)
@@ -2943,7 +2921,7 @@ use sleef
 #endif
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only: istore, store
+use store_mod, only: istore, store ! istore and store are read only
 !include 'XSFWK.INC90'
 use xsfwk_mod, only: anom
 !include 'XWORKB.INC'
@@ -2961,7 +2939,7 @@ use xlst05_mod, only: n5, md5a, l5 ! always constant in xsflsc and read only
 !include 'XLST06.INC90'
 use xlst06_mod, only: md6
 !include 'XLST12.INC90'
-use xlst12_mod, only: n12, l12, m12 ! always constant in xsflsc and read only
+use xlst12_mod, only: n12, l12 ! always constant in xsflsc and read only
 !include 'XUNITS.INC90'
 !
 !include 'QSTORE.INC'
@@ -2974,7 +2952,7 @@ integer ljs, ljt, lju, ljv, ljw, ljx, ljy, ljz
 integer n, j
 
 ! moved from common blocks to local
-integer m2, m2t, m2i, m3ti, m3tr, m5a, m12a, l12a
+integer m2, m2t, m2i, m3ti, m3tr, m5a, m12a, l12a, m12
 real st, s, c, a
 
 real FLAG
@@ -3536,7 +3514,7 @@ end if
 END
 
 
-subroutine XADDPD ( A, JX, JO, JQ, JR, md12a, m12, partialderivatives) 
+subroutine XADDPD ( A, JX, JO, JQ, JR, m12, partialderivatives) 
 !include 'ISTORE.INC'
 !include 'STORE.INC'
 use store_mod, only: store, istore
@@ -3547,10 +3525,10 @@ implicit none
 
 real, intent(in) :: a
 integer, intent(in) :: jx, jo, jq, jr
-integer, intent(inout) :: md12a, m12
+integer, intent(in) :: m12
 double precision, dimension(:), intent(inout) :: partialderivatives
 
-integer ljt, lju
+integer ljt, lju, md12a
 
 ! moved from common block to local variable
 integer l12a

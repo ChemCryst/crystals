@@ -1164,28 +1164,29 @@ c      INCLUDE 'STORE.INC'
 c      INCLUDE 'QSTORE.INC'
       use store_mod, only: storelength
       real, dimension(storelength), intent(inout) :: store
+      integer, intent(in) :: mdsort, nsort
 
 C
       IF (IPOS .LT. 0) THEN
 C----- INITIALISATION
 cdjw take abs value
-            IPOS = IABS(IPOS)
+            IPOS = ABS(IPOS)
             LSORT = NFL
             NFL = KCHNFL(NSORT*MDSORT)
             call xzerof (store(lsort), nsort*mdsort)
               IF (ITYPE .LT. 0) THEN
-                  DEF = 100000000.0
+                  DEF = huge(1.0)
               ELSE IF (ITYPE .GT. 0) THEN
-                  DEF = -100000000.0
+                  DEF = -huge(1.0)
               ELSE
                   DEF = 0.0
               ENDIF
 cdjw            ITEMP = LSORT + IABS(IPOS) -1
             ITEMP = LSORT + IPOS -1
-            DO 100 I = 1, NSORT
+            DO I = 1, NSORT
               STORE(ITEMP) = DEF
               ITEMP = ITEMP + MDSORT
-100         CONTINUE
+            end do
             VALUE = DEF
             RETURN
       ENDIF
@@ -1193,7 +1194,7 @@ C
 C----- INSERTION
       IHIT = 0
       MSORT = LSORT
-      DO 200 I = 1, NSORT
+      DO I = 1, NSORT
         IF (ITYPE .LT. 0) THEN
           IF (STORE(ITEM+IPOS) .LE. STORE(MSORT+IPOS)) IHIT = 1
         ELSE IF (ITYPE .GT. 0) THEN
@@ -1205,17 +1206,17 @@ C----- INSERTION
           IHIT = 0
 C-----    SHUFFLE REMAINDER DOWN
             ITEMP = LSORT + (NSORT-2) * MDSORT
-            DO 300 J = NSORT, I+1, -1
+            DO J = NSORT, I+1, -1
                   CALL XMOVE (STORE(ITEMP), STORE(ITEMP+MDSORT), MDSORT)
                   ITEMP = ITEMP - MDSORT
-300         CONTINUE
+            end do
             CALL XMOVE (STORE(ITEM), STORE(MSORT), MDSORT)
             VALUE = STORE(LSORT + IPOS + (NSORT-1)*MDSORT)
             MSORT = I
             RETURN
         ENDIF
         MSORT = MSORT + MDSORT
-200   CONTINUE
+      end do
       VALUE = STORE(MSORT-MDSORT+IPOS)
       MSORT = NSORT
       RETURN
