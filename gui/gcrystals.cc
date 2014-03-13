@@ -315,6 +315,8 @@ using namespace std;
 
   bool CCrystalsApp::OnInit()
   {
+    m_locale.Init(wxLANGUAGE_ENGLISH_US, wxLOCALE_CONV_ENCODING);
+   
     string directory;
     string dscfile;
 
