@@ -1427,7 +1427,7 @@ double precision, dimension(:,:), allocatable :: designmatrix
 double precision, dimension(:,:,:), allocatable :: normalmatrix!, ref
 ! tid is the number of threads
 integer :: tid
-integer, parameter :: storechunk=256
+integer, parameter :: storechunk=128
 character(len=4) :: buffer
 
 !> Buffer holding reflections data of several reflections
@@ -1442,6 +1442,7 @@ real, dimension(16) ::  minimum_shared, maximum_shared, summation, summationsq
 real, dimension(16) ::  minimum, maximum
 real, dimension(:), allocatable :: shiftsaccumulation
 integer iposn
+real rall1
 
 double precision, dimension(:), allocatable :: righthandside
 integer cpt
@@ -1621,6 +1622,7 @@ do i=1, N2
     symm_operators(:,i)=store(l2+(i-1)*md2:l2+i*md2-1)
 end do
 
+rall1=rall(1)
 cpt=0
 reflectionsdata_size=1
 do WHILE (reflectionsdata_size>0)  ! START OF THE LOOP OVER REFLECTIONS
@@ -1687,11 +1689,10 @@ designmatrix=0.0d0
 !$OMP& shared(extinct, wave, jq, jr, del, nu) &
 !$OMP& shared(pol1, pol2, ext, nd, nv, xvalur,LTEMPR, nsort, mdsort) &
 !$OMP& shared(refprint, l12o, m33cd) &
-!$OMP& shared(newlhs, lsort, r) &
+!$OMP& shared(newlhs, lsort, r, rall1) &
 !$OMP& shared(designmatrix, normalmatrix, store) &
 !$OMP& shared(ibadr, g2, d, jsort) &  
 !$OMP& firstprivate(delta, ext1, ext2, ext3, ext4) &
-!$OMP& firstprivate(rall) &
 !$OMP& private(scalek,scalew) &
 !$OMP& private(tc, p, sst) &
 !$OMP& private(temporaryderivatives) &
@@ -1701,7 +1702,7 @@ designmatrix=0.0d0
 !$OMP& shared(minimum_shared, maximum_shared) &
 !$OMP& reduction(+: summation, summationsq, nt, fot, foabs, shiftsaccumulation) &
 !$OMP& reduction(+: fct, dft, wdft, rw, sfofc, sfcfc, wsfofc, wsfcfc) &
-!$OMP& reduction(+: sfo, sfc, righthandside, aminf) 
+!$OMP& reduction(+: sfo, sfc, righthandside, aminf, rall) 
     
     minimum=huge(minimum)
     maximum=-huge(maximum)
@@ -1714,7 +1715,7 @@ designmatrix=0.0d0
     allocate(temporaryderivatives(n12*jq))
     temporaryderivatives=0.0d0
 
-!$OMP DO schedule(guided, 16)
+!$OMP DO schedule(dynamic, 32)
     do reflectionsdata_index=1, reflectionsdata_size
         !storetemp(M6:M6+MD6-1)=reflectionsdata(:,reflectionsdata_index)
         !print *, storetemp(M6:M6+MD6-1)
@@ -1971,7 +1972,7 @@ designmatrix=0.0d0
         ! Fo = reflectionsdata(1+3,reflectionsdata_index)
             tempr=(/1.0, ABS(ABS(reflectionsdata(1+3,reflectionsdata_index))-FCEXS), &
             &   ABS(reflectionsdata(1+3,reflectionsdata_index)), WDF**2, A**2 /)
-            if (reflectionsdata(1+20,reflectionsdata_index) .GE. RALL(1)) then
+            if (reflectionsdata(1+20,reflectionsdata_index) .GE. RALL1) then
                 RALL(2:6) = RALL(2:6) + tempr
             end if
             RALL(7:11) = RALL(7:11) + tempr
@@ -2931,7 +2932,7 @@ use xsflsw_mod, only: cos_only, centro, iso_only, anomal, sfls_type, sfls_refine
 !include 'XLST01.INC90'
 use xlst01_mod, only: l1s, l1a ! always constant in xsflsc and read only
 !include 'XLST02.INC90'
-use xlst02_mod, only: n2, n2t, md2t, md2i, md2, l2t, l2i, l2, symm_operators ! always constant in xsflsc and read only
+use xlst02_mod, only: n2, n2t, md2t, md2i, md2, l2t, l2, symm_operators ! always constant in xsflsc and read only
 !include 'XLST03.INC90'
 use xlst03_mod, only: n3, md3tr, md3ti, l3tr, l3ti  ! always constant in xsflsc and read only
 !include 'XLST05.INC90'
@@ -2952,7 +2953,7 @@ integer ljs, ljt, lju, ljv, ljw, ljx, ljy, ljz
 integer n, j
 
 ! moved from common blocks to local
-integer m2, m2t, m2i, m3ti, m3tr, m5a, m12a, l12a, m12
+integer m3ti, m3tr, m5a, m12a, l12a, m12
 real st, s, c, a
 
 real FLAG
@@ -3022,8 +3023,6 @@ allocate(storem2t(N2*MD2T))
 
 ! Rollett 5.12.5-7
 !--calculate the information for the symmetry positions
-M2=L2
-M2T=L2T
 do LJZ=1,N2
 ! compute h' = S.h
     storem2t(1+(LJZ-1)*MD2T)=reflectiondata(1)*symm_operators(1+0, ljz)+reflectiondata(1+1)*symm_operators(1+3, ljz)+ &
@@ -3064,8 +3063,7 @@ ST=SQRT(SST)
 TC=-SST*TWOPIS*4.
 !--CHECK if THE ANISO TERMS ARE REQUIRED
 if(.NOT. ISO_ONLY) then 
-    M2T=L2T
-    do LJZ=1,N2
+        do LJZ=1,N2
 !
 ! compute h* = h'.k'.a*.b* etc.
 !
@@ -3195,10 +3193,10 @@ do LJY=1,N5
             if (NINT(FLAG) .EQ. 2) then  ! CALC SPHERE TF
                 call XSPHERE (ST, M5A, SLRFAC, DSIZE)
             else if (NINT(FLAG) .EQ. 3) then   ! CALC LINE TF
-                call XLINE (M2, M5A, reflectiondata, &
+                call XLINE (L2, M5A, reflectiondata, &
                 &   SLRFAC, DSIZE, DDECLINA,DAZIMUTH, store)
             else if (NINT(FLAG) .EQ. 4) then   ! CALC RING TF
-                call XRING (M2, ST, M5A,reflectiondata,SLRFAC,DSIZE,DDECLINA,DAZIMUTH, store)
+                call XRING (L2, ST, M5A,reflectiondata,SLRFAC,DSIZE,DDECLINA,DAZIMUTH, store)
             end if
 #if defined(_GIL_) || defined(_LIN_) 
             T=sleef_expf(real(STORE(M5A+7)*TC))
@@ -3415,7 +3413,6 @@ if(CENTRO) then ! CHECK IF THIS STRUCTURE IS CENTRO
     reflectiondata(md6+2)=0.
 end if
 
-M2I=L2I
 END
 
 !CODE FOR XAB2FC
