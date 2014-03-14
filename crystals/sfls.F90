@@ -68,10 +68,12 @@ use xworkb_mod!, only: nd, nf, ni, nl, nm, nr, nu, nt, nv, nn, jo, jq, ji, jq, j
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc, twinned, sfls_type, sfls_calc
 use xsflsw_mod, only: sfls_refine, sfls_scale, scaled_fot, refprint, partials, newlhs, enantio
-use xsflsw_mod, only: iso_only, extinct, anomal
+use xsflsw_mod, only: iso_only, anomal
 !include 'XIOBUF.INC'
 use xiobuf_mod, only: cmon
 use xconst_mod, only: nowt, rtd, uiso, zero
+
+use extinction_mod, only: extinct
 
 implicit none
 
@@ -1253,7 +1255,7 @@ use xworkb_mod, only: nv, nu, nr, nt, nf, nd, jr, jq, jp, jo, cycle_number=>ji
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc
 use xsflsw_mod, only: cos_only, centro, sfls_type, sfls_calc, sfls_refine, sfls_scale
-use xsflsw_mod, only: scaled_fot, refprint, partials, newlhs, extinct
+use xsflsw_mod, only: scaled_fot, refprint, partials, newlhs
 !include 'XUNITS.INC90'
 use xunits_mod, only: ncwu, ncvdu, ncfpu2, ncfpu1
 !include 'XSSVAL.INC90'
@@ -1282,6 +1284,8 @@ use xerval_mod, only: iererr
 !include 'XIOBUF.INC'
 use xiobuf_mod, only: cmon
 use xconst_mod, only: pi, zero, zerosq
+
+use extinction_mod, only: extinct, sphericalextinct_init
 
 implicit none
 
@@ -1519,26 +1523,9 @@ EXT3=1.0
 DELTA=0.
 
 if(EXTINCT)THEN   ! THE EXTINCTION PARAMETER IN LIST 5 SHOULD BE USED
-    EXT=STORE(L5O+5)
-    POL1=1.
-    POL2=0.
-    DEL=WAVE*WAVE/(STORE(L1P1+6)*STORE(L1P1+6))
-    if(NU.LT.0) then   ! CHECK IF WE ARE USING NEUTRONS OR XRAYS
-!--WE ARE USING XRAYS
-        DEL=DEL*WAVE*0.0794
-!  SET UP THE POLARISATION CONSTANTS
-        THETA2=THETA2/D !  D converts from degrees to radians
-        A=COS(THETA2)
-        C=SIN(THETA2)
-        S=COS(THETA1/D)
-        A=A*A
-        C=C*C
-        S=S*S
-        POL1=A+C*S
-!djwoct2010 POL2 had found itself outside of the if clause
-        POL2=C+A*S
-    end if
+    call sphericalextinct_init(WAVE, NU, pol1, pol2, del)
 end if
+
 !--CHECK if A PRINT IS REQUIRED
 if(REFPRINT) then 
     if (ISSPRT .EQ. 0)  write(NCWU,1750)
