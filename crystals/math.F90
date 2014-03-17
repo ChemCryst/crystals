@@ -1,3 +1,4 @@
+!> Basic mathematical operations
 module math_mod
 
 real, parameter:: pi=3.14159265359

@@ -2,7 +2,8 @@
 !$Author::                                                              $:  Author of last commit
 !$Date::                                                                $:  Date of last commit
 
-! The module solve_helper contains methods to invert the normal matrix
+!> The module solve_helper contains methods to invert the normal matrix
+!! and subroutines related to solve.F
 module solve_helper
 contains 
 

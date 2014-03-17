@@ -1,3 +1,4 @@
+!> Calculate extinction parameters
 module extinction_mod
 
 logical, public :: extinct
@@ -11,6 +12,7 @@ type(extinction_type), public :: extinct_parameters
 
 contains
 
+!> Initialise common variables for extinction accross reflections
 subroutine sphericalextinct_init(wavelength, radiationtype)
 use xlst01_mod, only: l1p1
 use store_mod, only:store
@@ -23,7 +25,9 @@ use sleef
 #endif
 implicit none
 
+!> Wavelength in angstrom
 real, intent(in) :: wavelength
+!> type of radiation. if <0, neutron radiation. Originally was variable NU
 integer, intent(in) :: radiationtype
 
 real theta1, theta2, s, a, c
@@ -59,12 +63,16 @@ real, dimension(2) :: theta2sincos
     end if
 end subroutine
 
+!> Calculate extinction coeficients
+!! It needs a call to sphericalextinct_init before using this subroutine
 subroutine sphericalextinct_coefs(wavelength, radiationtype, sst, reflectiondata, extinct_coeficients)
 use xconst_mod, only: zero
 implicit none
-real, dimension(4), intent(out) :: extinct_coeficients
+real, dimension(:), intent(out) :: extinct_coeficients
 real a, delta, path
-real, intent(in) :: wavelength ! ang
+!> Wavelength in angstrom
+real, intent(in) :: wavelength
+!> type of radiation. if <0, neutron radiation. Originally was variable NU
 integer, intent(in) :: radiationtype
 real, intent(in) :: sst
 real, dimension(:), intent(in) :: reflectiondata
@@ -88,6 +96,7 @@ real, dimension(:), intent(in) :: reflectiondata
     extinct_coeficients(2)=1.0+extinct_parameters%EXT*reflectiondata(1+5)**2*DELTA
     extinct_coeficients(3)=extinct_coeficients(2)/(extinct_coeficients(1)**(1.25))
     extinct_coeficients(4)=(extinct_coeficients(1)**(-.25))
+    extinct_coeficients(5)=delta
 end subroutine
 
 end module

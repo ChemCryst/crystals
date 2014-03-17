@@ -968,313 +968,211 @@ call XTIME2(1)
 END
 
 
-!CODE FOR XSFLSC
+!> main structure factor calculation routine<br>
+!! @details 
+!! @page SFLSC SFLSC details
+!!
+!! @section reflectionsdata Reflections data
+!! reflectionsdata is a buffer holding reflections data of several reflections<br>
+!! reflectionsdata_size reflections stored by columns (md6 values from m6 in original store)
+!! - <b>0</b>:  h
+!! - <b>1</b>:  k
+!! - <b>2</b>:  l (all in floating point).
+!! - <b>3</b>:  /fo/
+!! - <b>4</b>:  weight  -  really the square root of the weight
+!! - <b>5</b>:  /fc/
+!! - <b>6</b>:  phase
+!! - <b>7</b>:  partial contribution for a.
+!! - <b>8</b>:  partial contribution for b.
+!! - <b>9</b>:  t-bar, extinction term for this reflection.
+!! -<b>10</b>:  /fot/, total /fo/ for a twinned structure
+!! -<b>11</b>:  the elements of a twinned structure.
+!! - <b>md6+1</b>: ac
+!! - <b>md6+2</b>: aci
+!! - <b>md6+3</b>: bc
+!! - <b>md6+4</b>: bci
+!! - <b>md6+5</b>: acd
+!! - <b>md6+6</b>: bcd
+!! - <b>md6+7</b>: pshift
+!! - <b>md6+8</b>: fried
+!! - <b>md6+9</b>: layers
+!! - <b>md6+10</b>: batches
+!! - <b>md6+11</b>: kallow flag: -1.0, rejected -- 0.0, accepted
+!! @section original Original documentation
+!! @subsection control useage of control variables
+!!
+!!  - <b>ISO_ONLY</b>: isotropic atoms only
+!!  - <b>SFLS_TYPE</b>: sfls_refine, sfls_scale or sfls_calc
+!!  - <b>COS_ONLY</b>: only calculate cosines
+!!  - <b>CENTRO</b>: True if centro symmetric
+!!  - <b>ANOMAL</b>: True is annomalous signal is used
+!!  - <b>ATOM_REFINE</b>
+!!  - <b>REFPRINT</b>: Number of line before starting a new page; If negative, printing disabled
+!!  - <b>NEWLHS</b>: update both left hand side and right hand side
+!!  - <b>cycle_number</b>
+!!
+!!  - <b>JO</b>      ADDRESS COMPLETE PARTIAL DERIVATIVES                           
+!!  - <b>JP</b>      LAST ADDRESS COMPLETE PARTIAL DERIVATIVES                      
+!!  - <b>JQ</b>      NUMBER OF PARTIAL DERIVATIVES PER REFLECTION (0,1,2 OR 4)      replaced by num_part_deriv_per_refl
+!!  - <b>JR</b>      ADDRESS PARTIAL DERIVATIVES BEFORE THEY ARE ADDED TOGETHER     replaced by address_part_deriv
+!!
+!!  - <b>EXTINCT</b>: True if extinction corrections are used
+!!
+!!
+!! @subsection derivatives the derivatives follow this information
+!!
+!!  WHEN THE A AND B PARTS HAVE BEEN  FOUND FOR ALL THE ELEMENTS, /FC/
+!!  AND ITS DERIVATIVES ARE CALCULATED FOR EACH ELEMENT.
+!!  FOLLOWING THIS, /FCT/ AND ITS DERIVATIVES ARE CALCULATED, AND then AD
+!!  TO THE NORMAL EQUATIONS.
+!!
+!!      PARTIAL DERIVATIVE STACK
+!!                  FLACK SYMBOL
+!!      0   F.COS(HX)      A      AC
+!!      1   F.SIN(HX)      B      BC
+!!      2  -F".SIN(HX)    -D      ACI
+!!      3   F".COS(HX)     C      BCI
+!!
+!!      FC = (A-D) + I.(B+C)
+!!
+!!
+!! @subsection list6 the format of the list 6 buffer at 'm6' 
+!! See @ref reflectionsdata
+!!
+!!  - 0  h
+!!  - 1  k
+!!  - 2  l (all in floating point).
+!!  - 3  /fo/
+!!  - 4  weight  -  really the square root of the weight
+!!  - 5  /fc/
+!!  - 6  phase
+!!  - 7  partial contribution for a.
+!!  - 8  partial contribution for b.
+!!  - 9  t-bar  -  extinction term for this reflection.
+!!  -10  /fot/  -  total /fo/ for a twinned structure
+!!  -11  the elements of a twinned structure.
+!!
+!! @subsection generalvars useage of general variables
+!!
+!!  - <b>TC</b>     COEFFICIENT FOR THE ISO-TEMPERATURE FACTORS
+!!  - <b>SST</b>    SIN(THETA)/LAMBDA SQUARED
+!!  - <b>ST</b>     SIN(THETA)/LAMBDA
+!!  - <b>SMAX, SMIN</b>      MAX AND MIN VALUES OF SINTETA/LAMBDA
+!!  - <b>ALPD</b>    PARTIAL DERIVATIVES FOR  EACH ATOM WITH RESPECT TO A
+!!  - <b>BLPD</b>    PARTIAL DERIVATIVES FOR  EACH ATOM WITH RESPECT TO B
+!!  - <b>FO</b>     SCALED FO
+!!  - <b>FC</b>     FC ON ABSOLUTE SCALE
+!!  - <b>P</b>      PHASE ANGLE IN RADIANS
+!!  - <b>W</b>      SQUARE ROOT OF THE WEIGHT FOR THIS RELFECTION
+!!  - <b>DF</b>     DifFERENCE BETWEEN FO AND FC
+!!  - <b>WDF</b>    WEIGHTED DifFERENCE BETWEEN FO AND FC
+!!  - <b>FOT</b>    SUM OF FO
+!!  - <b>FCT</b>    SUM OF FC
+!!  - <b>DFT</b>    SUM OF MOD(DF)
+!!  - <b>AMINF</b>  MINIMIZATION function - SUM WEIGHTED DifFERENCE SQUARED
+!!  - <b>WDFT</b>   MINIMISATION function BASED ONLY ON /FO/.
+!!  - <b>RW</b>     HAMILTON WEIGHTED R VALUE
+!!  - <b>R</b>      NORMAL WEIGHTED R VALUE
+!!  - <b>COSP</b>   COSINE OF THE PHASE ANGLE
+!!  - <b>SINP</b>   SINE OF THE PHASE ANGLE
+!!  - <b>EXT</b>    EXTINCTION PARAMETER (R*)  -  SEE LARSON IN C.C. 1970.
+!!  - <b>FCEXT</b>  FC CORRECTED FOR EXTINCTION EFFECTS.
+!!  - <b>FCEXS</b>  FCEXT CORRECTED FOR THE SCALE FACTOR
+!!  - <b>EXT1</b>   (1 + 2*(R*)* /FC/ **2*DELTA)
+!!  - <b>EXT2</b>   (1 + (R*)* /FC/ **2*DELTA)
+!!  - <b>EXT3</b>   EXT1/EXT2
+!!  - <b>WAVE</b>   THE WAVELENGTH OF THE RADIATION USED TO COLLECT THE DATA
+!!  - <b>THETA1</b> THE MONOCHROMATOR BRAGG ANGLE
+!!  - <b>THETA2</b> THE ANGLE BETWEEN THE MONOCHROMATOR AND THE DifFRACTING PLANES
+!!  - <b>POL1</b>   FIRST PART OF THE POLARISATION CORRECTION
+!!  - <b>POL2</b>   THE SECOND PART OF THE POLARISATION CORRECTION
+!!  - <b>DEL</b>    THE FIXED PART OF DELTA
+!!  - <b>DELTA</b>  THE EXTINCTION MULTILPLIER  -  SEE LARSON.
+!!
+!!
+!!--THE VARIOUS SCALE FACTORS USED ARE :
+!!
+!!  SCALEO  THE OVERALL SCALE FACTOR FROM LIST 5.
+!!          'SCALEO' IS ASSUMED NOT TO BE ZERO.
+!!  SCALEK  THE OVERALL /FO/ SCALE FACTOR (=1.0/SCALEG, UNLESS
+!!          'SCALEG' IS ZERO, WHEN 'SCALEK' IS SET TO 1.0).
+!!  SCALEW  SCALEG*W
+!!
+!!--ALL DERIVATIVES ARE INTIALLY COMPUTED ON THE SCALE OF /FC/, AND then
+!!  ON THE CORRECT SCALE (THAT OF /FO/) WHEN THE A AND B PARTS ARE ADDED
+!!  TOGETHER AND THE WEIGHTS APPLIED.
+!!
+!!--THE DERIVATIVES FOR THE OVERALL SCALE FACTORS ARE COMPUTED SEPARATELY
+!!  OTHER OVERALL PARAMETERS.
+!!
+!!----- PARTIAL DERIVATIVE RELATIONSHIPS
+!!
+!!      FTSQ  = (1-X)*FP**2 + X*FN**2
+!!      where FPSQ is for the given index, and FNSQ for its Friedel inver
+!!
+!!      dFTSQ = 2*FP*(1-X)*dFP + 2*FN*X*dFN
+!!
+!!      dFT   = (FP/FT)*(1-X)*dFP   +    (FN/FT)*dFN
+!!
+!!            COSA := (1-X)*FP/FT,       SINA := X*FN/FT
+!!
+!!      FPSQ  = Q**2 + S**2,             FNSQ = QN**2 + SN**2
+!!
+!!      dFP   = (Q/FP)*dQ + (S/FP)*dS,   dFN   = (QN/FN)*dQN + (SN/FN)*dS
+!!
+!!           COSP := Q/FP, SINP := S/FP, COSPN := QN/FN, SINPN := SN/FN
+!!
+!!            Q = A-D, S = B+C,          QN = A+D, SN = -B+C
+!!
+!!            AC := A, ACI := -D, BC := B, BCI = C
+!!
+!!            ACT := Q, BCT := S,        ACN := QN, BCN := SN
+!!
+!!      dQ/dp = dA/dp - dD/dp,           dQN/dp =  dA/dp + dD/dp
+!!      dS/dp = dB/dp + dC/dp,           dSN/dp = -dB/dp + dC/dp
+
+
 subroutine XSFLSC
 !$    use OMP_LIB
 !--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
 !
-!--USEAGE OF CONTROL VARIABLES :
-!
-!  JA      SET TO 1 FOR ISO ATOMS ONLY, else N2                           Changed to ISO_ONLY
-!  JB      SET TO -1 FOR NO REFINEMENT, else 0 .                          Replaced by SFLS_TYPE
-!  JC      SET TO -1 FOR ONLY CALCULATE COS, else 0                       REplaced by COS_ONLY
-!  JD      SET TO -1 FOR CENTRO, else 0                                   Replaced by CENTRO
-!  JE      SET TO -1 FOR NO ANOMALOUS DISPERSION, else 0                  Replaced by ANOMAL
-!  JF      CURRENT VALUE OF JB, SET FOR EACH ATOM if JB=0                 Replaced by ATOM_REFINE
-!  JG      SET TO -1 FOR NO PRINT, else THE NUMBER OF LINES BEFORE PAGE   Replaced by REFPRINT
-!  JH      SET TO -1 if THE SCALE FACTOR IS NOT TO BE REFINED, else 0     Replaced by SFLS_TYPE
-
-!  JJ      SET TO -1 if ONLY ISO-TERMS REQUIRED, else 0 (SIMILAR TO JA)   Removed (use ISO_ONLY)
-!  JK      SET TO -1 if BOTH LEFT AND RIGHT HAND SIDES ARE NEEDED         Replaced by NEWLHS
-!  JL      SET TO -1 if ENANTIOPOLE PARAMETER NOT USED, else 0            Replaced by ENANTIO
-
-!  JI      CYCLE NUMBER                                                   Replaced by cycle_number
-
-!  JN      DUMMY LOCATION FOR NON-REFINED PARAMETERS                      replaced by non_refined_param
-!  JO      ADDRESS COMPLETE PARTIAL DERIVATIVES                           replaced by address_part_deriv_complete 
-!  JP      LAST ADDRESS COMPLETE PARTIAL DERIVATIVES                      replaced by last_address_part_deriv_complete
-!  JQ      NUMBER OF PARTIAL DERIVATIVES PER REFLECTION (0,1,2 OR 4)      replaced by num_part_deriv_per_refl
-!  JR      ADDRESS PARTIAL DERIVATIVES BEFORE THEY ARE ADDED TOGETHER     replaced by address_part_deriv
-!  LJS      WORK VARIABLE
-!  JT      WORK VARIABLES USED DURING ACCUMULATION OF PARTIAL DERIVATIVE  Replaced by LJT
-!  JU                                                                     Replaced by LJU
-!  JV                                                                     Replaced by LJV
-!  JW                                                                     Replaced by LJW
-!  JX      LOOP VARIABLE FOR EQUIVALENT POSITIONS                         Replaced by LJX
-!  JY      LOOP VARIABLE FOR ATOMS                                        Replaced by LJY
-!  JZ                                                                     Replaced by LJZ
-!
-!  NA      SET TO -1 FOR NO EXTINCTION CORRECTION TO /FC/, else 0         Replaced by EXTINCT
-!  NB      SET TO -1 FOR NO TWINNED DATA, else TO 0 OR 1.                 Replaced by TWINNED and SCALED_FOT
-!          (0 MEANS PUT /FOT/ ETC. IN /FO/, WHILE 1 OR GREATER
-!           MEANS PUT THE /FO/ AND /FC/ ETC. COMPUTED FOR THE
-!           ELEMENT FOR WHICH THE INDICES ARE GIVEN).
-!  NC      if GREATER THAN -1, then THE GIVEN PARTIAL CONTRIBUTIONS
-!          ARE TO BE USED, else NOT.                                      Replaced by PARTIALS
-!  ND      if SET TO -1, then NO NEW PARTIAL CONTRIBUTIONS ARE
-!          OUTPUT. if GREATER THAN -1, THE NEW /FC/ ETC. ARE STORED
-!          AS THE PARTIAL CONTRIBUTIONS.
-!  NE      if GREATER THAN -1, then THE LAYER SCALES ARE APPLIED TO /FO/
-!          else NOT.   Replaced by LAYERED
-!  NF      if GREATER THAN -1, THE CONTRIBUTORS TO EACH TWINNED REFLECTI
-!          ARE PRINTED.
-!  JREF_STACK_START      ADDRESS OF THE WORD THAT HOLDS THE ADDRESS OF THE FIRST
-!          BLOCK OF THE REFLECTION HOLDING STACK
-!  JREF_STACK_PTR  USED TO PASS THROUGH THE REFLECTION HOLDING STACK (NH?)
-!  NI      SIMILAR TO NH.
-!  NJ      THE VALUE OF THE VARIABLE 'ELEMENTS' FOR EACH REFLECTION.
-!  NK      CURRENT VALUE OF 'NJ' FOR EACH REFLECTION .
-!  NL      THE ELEMENT OF THE CURRENT REFLECTION
-!  NM      THE NUMBER OF REFLECTIONS IN THE STACK USED SO FAR
-!  NN      SET TO 0 if NO NEW REFLECTIONS HAVE BEEN INTRODUCED,
-!          else THE NUMBER OF NEW REFLECTIONS FOUND
-!  NO      DUMP OF 'JO'
-!  NP      DUMP OF 'JP'
-!  NQ      COUNTER WHEN THE TWIN COMPONENTS ARE BEING COMBINED
-!  NR      NUMBER OF WORDS PER SYMMETRY RELATED REFLECTION IN THE
-!          REFLECTION HOLDING STACK.
-!          THE FORMAT OF THE SYMMETRY RELATED REFLECTION ENTRIES IS :
-!
-!          0  H TRANSFORMED
-!          1  K TRANSFORMED
-!          2  L TRANSFORMED
-!          3  THE PHASE SHifT FOR THIS GROUP OF INDICES
-!
-!  NT      THE NUMBER OF REFLECTIONS THAT HAVE BEEN USED
-!  NU      -1 FOR XRAYS, AND 0 FOR NEUTRONS  -  ONLY USED FOR EXTINCTION
-!  NV      -1 FOR REFINEMENT ON /FO/, else REFINEMENT ON /FO/ **2
-!  NW      -1 FOR NO BATCH SCALE APPLICATION, else 0.       Replaced by BATCHED
-!
-!--THE FORMAT OF THE REFLECTION HOLDING STACK WHICH STARTS AT
-!      'ISTORE(NG)' IS :
-!
-!   0  LINK TO NEXT REFLECTION OR -1000000
-!   1  ADDRESS OF THE FIRST WORD OF THE DERIVATIVES W.R.T. /FC/
-!   2  ADDRESS OF THE LAST WORD OF THE DERIVATIVES W.R.T. /FC/
-!   3  H FOR THE CURRENT REFLECTION                                     
-!   4  K FOR THE CURRENT REFLECTION
-!   5  L FOR THE CURRENT REFLECTION (ALL IN FLOATING POINT).
-!   6  /FC/ FOR THE CURRENT REFLECTION
-!   7  PHASE FOR THE CURRENT REFLECTION
-!   8  ELEMENT NUMBER WHICH THIS REFLECTION CURRENTLY REPRESENTS.
-!   9  ADDRESS OF THE FIRST WORD OF THE FIRST GROUP OF
-!      EQUIVALENT INDICES FOR  THIS BLOCK. (THE REFLECTIONS ARE
-!      ARE EQUIVALENT TO THOSE INDICES GIVEN IN WORDS 3 TO 5).
-!  10  ADDRESS OF THE LAST GROUP OF EQUIVALENT INDICES FOR THIS
-!      REFLECTION BLOCK.
-!      (EACH EQUIVALENT SET OF INDICES IS 'NR' WORDS LONG).
-!  11  PHASE SHIFT NECESSARY FOR THE REFLECTION CURRENTLY USING THIS BLO
-!  12  1.0 if FRIEDEL'S LAW HAS NOT BEEN USED FOR THE CURRENT REFLECTION
-!  13  real PART OF A FOR THE ORIGINAL REFLECTION
-!  14  IMAGINARY PART OF A FOR THE ORIGINAL REFLECTION
-!  15  real PART OF B FOR THE ORIGINAL REFLECTION
-!  16  IMAGINARY PART OF B FOR THE ORIGINAL REFLECTION
-!  17  NOT USED
-!  18  ADDRESS OF THE FIRST WORD OF THE DERIVATIVES W.R.T. A, B ETC.
-!  19  ADDRESS OF THE LAST WORD OF THE DERIVATIVES W.R.T. TO A, B ETC.
-!
-!--THE DERIVATIVES FOLLOW THIS INFORMATION.
-!
-!--NORMALLY, WHEN EACH REFLECTION IS READ FROM THE DISC,
-!  IT IS CHECKED AGAINST THOSE ALREADY IN THE STACK TO SEE if ITS
-!  A AND B PARTS TOGETHER WITH THEIR DERIVATIVES ARE PRESENT.
-!  if THEY ARE NOT PRESENT, then THESE VALUES ARE CALCULATED
-!  AND THE INFORMATION SET UP IN THE BLOCK AT THE TOP OF THE STACK.
-!  THIS CORRESPONDS TO THE ORIGINAL VALUES IN WORDS 13-16 AND IN THE
-!  DERIVATIVES STORED FOR THE A AND B PARTS.
-!  ONCE THE VALUES REQUIRED FOR THE CURRENT REFLECTION ARE PRESENT,
-!  /FC/ AND ITS DERIVATIVES ARE CALCULATED.
-!  (AT THIS STAGE, THE CURRENT REFLECTION MAY CORRESPOND TO THE ORIGINAL
-!   REFLECTION OR MAY BE ONE OF ITS EQUIVALENTS FROM THE STACK).
-!  THE DERIVATIVES ARE then ADDED TO THE NORMAL EQUATIONS, AFTER
-!  MODifICATION FOR EXTINCTION AND REFINEMENT AGAINST /FO/ **2 IF
-!  NECESSARY.
-!
-!--DURING THE PROCESSING OF ONE NOMINAL REFLECTION FOR A TWIN, THE STACK
-!  IS SEARCHED FOR EACH ELEMENT IN TURN. if THE ELEMENT HAS
-!  ALREADY BEEN CALCULATED, THE BLOCK IS MOVED TO THE TOP OF THE STACK
-!  AND CONTROL PASSES TO THE NEXT COMPONENT. if THE ELEMENT OR
-!  COMPONENT IS NOT IN THE STACK, THE LAST BLOCK IS SWITCHED TO
-!  THE TOP OF THE STACK, AND then ITS A AND B PARTS WITH THEIR DERIVATIV
-!  COMPUTED. AT THE END, THE ELEMENT FOR WHICH THE INDICES ARE GIVEN
-!  IS LEFT AT THE TOP OF THE STACK AS THIS IS ALWAYS THE LAST
-!  ELEMENT PROCESSED.
-!  WHEN THE A AND B PARTS HAVE BEEN  FOUND FOR ALL THE ELEMENTS, /FC/
-!  AND ITS DERIVATIVES ARE CALCULATED FOR EACH ELEMENT.
-!  FOLLOWING THIS, /FCT/ AND ITS DERIVATIVES ARE CALCULATED, AND then AD
-!  TO THE NORMAL EQUATIONS.
-!
-!      PARTIAL DERIVATIVE STACK
-!                  FLACK SYMBOL
-!      0   F.COS(HX)      A      AC
-!      1   F.SIN(HX)      B      BC
-!      2  -F".SIN(HX)    -D      ACI
-!      3   F".COS(HX)     C      BCI
-!
-!      FC = (A-D) + I.(B+C)
-!
-!
-!--THE FORMAT OF THE LIST 6 BUFFER AT 'M6' IS :
-!
-!   0  H
-!   1  K
-!   2  L (ALL IN FLOATING POINT).
-!   3  /FO/
-!   4  WEIGHT  -  realLY THE SQUARE ROOT OF THE WEIGHT
-!   5  /FC/
-!   6  PHASE
-!   7  PARTIAL CONTRIBUTION FOR A.
-!   8  PARTIAL CONTRIBUTION FOR B.
-!   9  T-BAR  -  EXTINCTION TERM FOR THIS REFLECTION.
-!  10  /FOT/  -  TOTAL /FO/ FOR A TWINNED STRUCTURE
-!  11  THE ELEMENTS OF A TWINNED STRUCTURE.
-!
-!--USEAGE OF GENERAL VARIABLES
-!
-!  TC     COEFFICIENT FOR THE ISO-TEMPERATURE FACTORS
-!  SST    SIN(THETA)/LAMBDA SQUARED
-!  ST     SIN(THETA)/LAMBDA
-!  SMAX, SMIN      MAX AND MIN VALUES OF SINTETA/LAMBDA
-!  AC     TOTAL real A PART FOR THE REFLECTION
-!  BC     TOTAL real B PART FOR THE REFLECTION
-!  ACI    TOTAL IMAGINARY A PART FOR THE REFLECTION
-!  BCI    TOTAL IMAGINARY B PART FOR THE REFLECTION
-!  ACT    TOTAL A PART FOR THE RELFECTION
-!  BCT    TOTAL B PART FOR THE REFLECTION
-!  ACD    PARTIAL DERIVATIVE WITH RESPECT TO POLARITY PARAMETER
-!  BCD    PARTIAL DERIVATIVE WRTO POLARITY PARAMETER
-!  ACF    TOTAL PARTIAL DERIV WRTO POLARITY
-!  ACN    TOTAL A PART FOR INVERSE STRUCTURE - USED IN ENANTIOPOLE REFIN
-!  BCN    TOTAL B PART FOR INVERSE STRUCTURE - USED IN ENANTIOPOLE REFIN
-!  ACE    PARTIAL DERIVATIVE FOR ENANTIOPOLE
-!  ENANT  ENANTIOPOLE PARAMETER
-!  ALPD    PARTIAL DERIVATIVES FOR  EACH ATOM WITH RESPECT TO A
-!  BLPD    PARTIAL DERIVATIVES FOR  EACH ATOM WITH RESPECT TO B
-!  FO     SCALED FO
-!  FC     FC ON ABSOLUTE SCALE
-!  P      PHASE ANGLE IN RADIANS
-!  W      SQUARE ROOT OF THE WEIGHT FOR THIS RELFECTION
-!  DF     DifFERENCE BETWEEN FO AND FC
-!  WDF    WEIGHTED DifFERENCE BETWEEN FO AND FC
-!  FOT    SUM OF FO
-!  FCT    SUM OF FC
-!  DFT    SUM OF MOD(DF)
-!  AMINF  MINIMIZATION function - SUM WEIGHTED DifFERENCE SQUARED
-!  WDFT   MINIMISATION function BASED ONLY ON /FO/.
-!  RW     HAMILTON WEIGHTED R VALUE
-!  R      NORMAL WEIGHTED R VALUE
-!  COSP   COSINE OF THE PHASE ANGLE
-!  SINP   SINE OF THE PHASE ANGLE
-!  EXT    EXTINCTION PARAMETER (R*)  -  SEE LARSON IN C.C. 1970.
-!  LAYER  THE INDEX OF THE CURRENT LAYER AS REQUIRED BY THE LAYER SCALES
-!  IBATCH  THE BATCH OF THE CURRENT REFLECTION MINUS ONE.
-!  FCEXT  FC CORRECTED FOR EXTINCTION EFFECTS.
-!  FCEXS  FCEXT CORRECTED FOR THE SCALE FACTOR
-!  EXT1   (1 + 2*(R*)* /FC/ **2*DELTA)
-!  EXT2   (1 + (R*)* /FC/ **2*DELTA)
-!  EXT3   EXT1/EXT2
-!  WAVE   THE WAVELENGTH OF THE RADIATION USED TO COLLECT THE DATA
-!  THETA1 THE MONOCHROMATOR BRAGG ANGLE
-!  THETA2 THE ANGLE BETWEEN THE MONOCHROMATOR AND THE DifFRACTING PLANES
-!  POL1   FIRST PART OF THE POLARISATION CORRECTION
-!  POL2   THE SECOND PART OF THE POLARISATION CORRECTION
-!  DEL    THE FIXED PART OF DELTA
-!  DELTA  THE EXTINCTION MULTILPLIER  -  SEE LARSON.
-!
-!  PH, PK AND PL ARE A DUMP OF THE NOMINAL INDICES FOR A TWIN.
-!
-!  SH, SK AND SL ARE THE INDICES OF A TWINNED REFLECTION IN THE
-!        STANDARD SETTING.
-!
-!--THE VARIOUS SCALE FACTORS USED ARE :
-!
-!  SCALEO  THE OVERALL SCALE FACTOR FROM LIST 5.
-!          'SCALEO' IS ASSUMED NOT TO BE ZERO.
-!  SCALEL  THE LAYER SCALE FACTOR FOR THE CURRENT LAYER  -  THIS
-!          SCALE MAY BE ZERO if REQUIRED.
-!  SCALEB  THE BATCH SCALE FACTOR FOR THE CURRENT REFLECTION  -  THIS
-!          SCALE MAY BE ZERO if REQUIRED.
-!  SCALES  THE SCALE FACTOR TO BE USED WHEN STORING /FC/.
-!          THIS EQUALS SCALEL*SCALEB, SINCE 'SCALEO' IS NOT APPLIED TO /
-!  SCALEG  THE COMBINED /FC/ SCALE FACTOR (=SCALEO*SCALEL*SCALEB).
-!          'SCALEG' WILL BE ZERO if 'SCALEL' OR 'SCALEB' IS ZERO.
-!  SCALEK  THE OVERALL /FO/ SCALE FACTOR (=1.0/SCALEG, UNLESS
-!          'SCALEG' IS ZERO, WHEN 'SCALEK' IS SET TO 1.0).
-!  SCALEW  SCALEG*W
-!
-!--if 'SCALEL' IS ZERO, ITS DERIVATIVE IS CALCULATED CORRECTLY,
-!  BUT ALL OTHER DERIVATIVES FOR THAT REFLECTION WILL BE ZERO.
-!
-!
-!--ALL DERIVATIVES ARE INTIALLY COMPUTED ON THE SCALE OF /FC/, AND then
-!  ON THE CORRECT SCALE (THAT OF /FO/) WHEN THE A AND B PARTS ARE ADDED
-!  TOGETHER AND THE WEIGHTS APPLIED.
-!
-!--THE DERIVATIVES FOR THE OVERALL SCALE FACTORS ARE COMPUTED SEPARATELY
-!  OTHER OVERALL PARAMETERS.
-!
-!----- PARTIAL DERIVATIVE RELATIONSHIPS
-!
-!      FTSQ  = (1-X)*FP**2 + X*FN**2
-!      where FPSQ is for the given index, and FNSQ for its Friedel inver
-!
-!      dFTSQ = 2*FP*(1-X)*dFP + 2*FN*X*dFN
-!
-!      dFT   = (FP/FT)*(1-X)*dFP   +    (FN/FT)*dFN
-!
-!            COSA := (1-X)*FP/FT,       SINA := X*FN/FT
-!
-!      FPSQ  = Q**2 + S**2,             FNSQ = QN**2 + SN**2
-!
-!      dFP   = (Q/FP)*dQ + (S/FP)*dS,   dFN   = (QN/FN)*dQN + (SN/FN)*dS
-!
-!           COSP := Q/FP, SINP := S/FP, COSPN := QN/FN, SINPN := SN/FN
-!
-!            Q = A-D, S = B+C,          QN = A+D, SN = -B+C
-!
-!            AC := A, ACI := -D, BC := B, BCI = C
-!
-!            ACT := Q, BCT := S,        ACN := QN, BCN := SN
-!
-!      dQ/dp = dA/dp - dD/dp,           dQN/dp =  dA/dp + dD/dp
-!      dS/dp = dB/dp + dC/dp,           dSN/dp = -dB/dp + dC/dp
 
 !include 'TYPE11.INC'
 !include 'XSTR11.INC'
 use xstr11_mod, only: str11 => xstr11
 !include 'ISTORE.INC'
 !include 'STORE.INC'
-use store_mod, only:store, istore, nfl, storelength
+use store_mod, only:store, istore, nfl
 !include 'XSFWK.INC90'
-use xsfwk_mod, only: r, p, s, w, rw, scale, scalew, scalek, ienprt, smin, smax
-use xsfwk_mod, only: st, sst, theta1, theta2, tc, wdf, wave, wdft, fo, fc
-use xsfwk_mod, only: enant, df, d, cenant, c, bct, bcn, anom, aminf, rall
-use xsfwk_mod, only: act, acn, acf, ace, a
+use xsfwk_mod, only: r, p, s, rw, scale, scalew, scalek, ienprt, smin, smax
+use xsfwk_mod, only: st, sst, theta1, theta2, tc, wdf, wave, wdft
+use xsfwk_mod, only: df, d, c, bct, bcn, aminf, rall
+use xsfwk_mod, only: act, a
 !include 'XWORKB.INC'
-use xworkb_mod, only: nv, nu, nr, nt, nf, nd, jr, jq, jp, jo, cycle_number=>ji
+use xworkb_mod, only:  nu, nv, nt, nd, jq, jp, jo, jr, cycle_number=>ji
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc
 use xsflsw_mod, only: cos_only, centro, sfls_type, sfls_calc, sfls_refine, sfls_scale
-use xsflsw_mod, only: scaled_fot, refprint, partials, newlhs
+use xsflsw_mod, only: refprint, newlhs
 !include 'XUNITS.INC90'
-use xunits_mod, only: ncwu, ncvdu, ncfpu2, ncfpu1
+use xunits_mod, only: ncwu, ncvdu
 !include 'XSSVAL.INC90'
 use xssval_mod, only: issprt
 !include 'XLST01.INC90'
-use xlst01_mod, only: l1p1
+!use xlst01_mod, only: l1p1
 !include 'XLST02.INC90'
-use xlst02_mod, only: n2p, m2p, l2p, ic, g2, l2, md2, n2, symm_operators
+use xlst02_mod, only: symm_operators, n2, ic, md2, l2
 !include 'XLST03.INC90' Not used!
 !include 'XLST05.INC90'
-use xlst05_mod, only: m5ls, m5es, m5bs, m5ls, l5o, l5ls, l5es, l5bs
+use xlst05_mod, only: l5o
 !include 'XLST06.INC90'
-use xlst06_mod!, only: m6, l6p, md6
+use xlst06_mod, only: m6, l6p, md6, l6dtl, l6w, md6dtl, n6w, md6w
 !include 'XLST11.INC90'
-use xlst11_mod, only: n11, l11r, l11, n11r
+use xlst11_mod, only: l11r, l11, n11r
 !include 'XLST12.INC90'
-use xlst12_mod, only: n12b, n12, md12b, m12, l12o, l12ls, l12es, l12bs, l12b, md12a
+use xlst12_mod, only: l12b, l12o, n12, n12b, md12b
 !include 'XLST25.INC'
-use xlst25_mod, only: n25, md25, m25, l25
+!use xlst25_mod, only: n25, md25, m25, l25
 !include 'XLST28.INC90'
 use xlst28_mod, only: n28mn, md28mn, m28mn, l28mn
 !include 'XLST33.INC90'
@@ -1301,10 +1199,9 @@ end interface
 
 interface
     subroutine XSFLSX(tc, sst, &
-        &   g2, reflectiondata, temporaryderivatives)
+        &   reflectiondata, temporaryderivatives)
         implicit none
         real, intent(out) :: tc, sst
-        real, intent(inout) :: g2
         real, dimension(:), intent(inout) :: reflectiondata
         double precision, dimension(:), intent(out) :: temporaryderivatives
     end subroutine
@@ -1398,27 +1295,22 @@ end interface
 !
 character(len=256) :: formatstr
 integer i, ibadr, iallow,  ibl, ibs, ifnr, ilevpr
-integer ixap, ibatch, i28mn, jxap, jsort, ljs, ljt
-integer lju, ljv, ljx, lsort, ltempl, ltempr, msort
-integer mnr, mdsort, mdleve, mb, k, j, nsort
-integer ntempl, nq, np, no, ntempr, nk, nj, n, mstr, ni
+integer ixap, i28mn, jxap, jsort
+integer ljx, lsort, ltempl, ltempr, msort
+integer mnr, mdsort, mb, k, j, nsort
+integer ntempr, mstr
 integer dummy
-real pk, pii, ph, path, fot, scaleb, savsig, rlevnm, redmax, red
-real rdjw, pol2, pol1, pl, sh
-real g2sav, fcext, fcexs
-real dft, delta, del, foabs, fct, xvalur, xvalul, wj
-real vj, uj, tix, time_begin, time_end, t, sl, sk, sfo, sfc
-real scales, scaleq, scalel, scaleg, scaleo, rlevdn
+real fot, savsig
+real rdjw
+real fcext, fcexs
+real dft, foabs, fct, xvalur, xvalul, wj
+real vj, uj, time_begin, time_end, t, sfo, sfc
+real scaleo
 
 !integer, external :: klayer, kbatch, kallow, kfnr, kchnfl
 real, external :: pdolev
 real, dimension(5) :: tempr
 
-! variable moved from common block to local
-real acd, bcd, ac, bc
-integer nm, nn, l12a
-!
-!
 #if defined(_GIL_) || defined(_LIN_)
 integer :: starttime
 integer, dimension(8) :: measuredtime
@@ -1434,13 +1326,11 @@ integer :: tid
 integer, parameter :: storechunk=128
 character(len=4) :: buffer
 
-!> Buffer holding reflections data of several reflections
-!! reflectionsdata_size reflections stored by columns (md6 values from m6 in original store)
-real, dimension(:,:), allocatable :: reflectionsdata
+real, dimension(:,:), allocatable :: reflectionsdata 
 integer, dimension(:), allocatable :: l6wpointers, n6wpointers
-!> Number of reflections stores in the reflectionsdata buffer
+! Number of reflections stores in the reflectionsdata buffer
 integer reflectionsdata_size
-!> Current index in the reflectionsdata buffer
+! Current index in the reflectionsdata buffer
 integer reflectionsdata_index
 real, dimension(16) ::  minimum_shared, maximum_shared, summation, summationsq
 real, dimension(16) ::  minimum, maximum
@@ -1453,7 +1343,7 @@ integer cpt
 
 double precision, dimension(:), allocatable :: temporaryderivatives
 
-real, dimension(4) :: extinct_coeficients ! was ext1, ext2, ext3, ext4
+real, dimension(5) :: extinct_coeficients ! was ext1, ext2, ext3, ext4, delta
 
 call CPU_TIME ( time_begin )
 
@@ -1508,16 +1398,8 @@ sfcfc=0.0
 wsfofc=0.0
 wsfcfc=0.0
 NT=0
-ACE=0.
-ACF = 0.
 !----- OVERALL SCALE
 SCALEO=STORE(L5O)
-!----- ENANTIOPOLE PARAMETER
-ENANT = STORE(L5O+4)
-CENANT  =  (1.- ENANT)
-!----- POLARITY PARAMETER
-ANOM = STORE(L5O+3)
-!--SET UP THE EXTINCTION VARIABLE
 
 if(EXTINCT)THEN   ! THE EXTINCTION PARAMETER IN LIST 5 SHOULD BE USED
     call sphericalextinct_init(WAVE, NU)
@@ -1653,14 +1535,6 @@ designmatrix=0.0d0
 
 !  SCALEO  THE OVERALL SCALE FACTOR FROM LIST 5.
 !          'SCALEO' IS ASSUMED NOT TO BE ZERO.
-!  SCALEL  THE LAYER SCALE FACTOR FOR THE CURRENT LAYER  -  THIS
-!          SCALE MAY BE ZERO if REQUIRED. - removed
-!  SCALEB  THE BATCH SCALE FACTOR FOR THE CURRENT REFLECTION  -  THIS
-!          SCALE MAY BE ZERO if REQUIRED. -removed
-!  SCALES  THE SCALE FACTOR TO BE USED WHEN STORING /FC/. 
-!          THIS EQUALS SCALEL*SCALEB, SINCE 'SCALEO' IS NOT APPLIED TO / - removed
-!  SCALEG  THE COMBINED /FC/ SCALE FACTOR (=SCALEO*SCALEL*SCALEB). - removed (=scaleo)
-!          'SCALEG' WILL BE ZERO if 'SCALEL' OR 'SCALEB' IS ZERO.
 !  SCALEK  THE OVERALL /FO/ SCALE FACTOR (=1.0/SCALEG, UNLESS
 !          'SCALEG' IS ZERO, WHEN 'SCALEK' IS SET TO 1.0). - =1.0/scaleo
 !  SCALEW  SCALEG*W - =scaleo*w
@@ -1675,8 +1549,7 @@ designmatrix=0.0d0
 !$OMP& shared(refprint, l12o, m33cd) &
 !$OMP& shared(newlhs, lsort, r, rall1) &
 !$OMP& shared(designmatrix, normalmatrix, store) &
-!$OMP& shared(ibadr, g2, d, jsort) &  
-!$OMP& firstprivate(delta) &
+!$OMP& shared(ibadr, d, jsort) &  
 !$OMP& private(scalek,scalew) &
 !$OMP& private(tc, p, sst, extinct_coeficients) &
 !$OMP& private(temporaryderivatives) &
@@ -1716,7 +1589,7 @@ designmatrix=0.0d0
         ! scalew = scaleg * w
         SCALEW=SCALEO*reflectionsdata(1+4,reflectionsdata_index) 
      
-        call XSFLSX(tc, sst, g2, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
+        call XSFLSX(tc, sst, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
         
         call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
         call XACRTnew(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
@@ -1879,7 +1752,7 @@ designmatrix=0.0d0
             call XADDPD ( A, 1, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
             call XADDPD ( A, 2, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
-            A=-0.5*SCALEW*reflectionsdata(1+5,reflectionsdata_index)**3*Delta/extinct_coeficients(2)   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
+            A=-0.5*SCALEW*reflectionsdata(1+5,reflectionsdata_index)**3*extinct_coeficients(5)/extinct_coeficients(2)   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
             call XADDPD ( A, 5, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
             IF ( ( NV.GE.0 ) .OR. EXTINCT ) THEN  ! Either FO^2, or extinction correction required.
@@ -2858,7 +2731,8 @@ dsfrad=((cos(4*pi*stsp*store(m5asp+8)) &
 end
 
 !CODE FOR XSFLSX
-subroutine XSFLSX(tc, sst, g2, reflectiondata, temporaryderivatives)
+!> Calculate the derivatives against each parameter
+subroutine XSFLSX(tc, sst, reflectiondata, temporaryderivatives)
 !
 !--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 !
@@ -2887,7 +2761,7 @@ use xsflsw_mod, only: cos_only, centro, iso_only, anomal, sfls_type, sfls_refine
 !include 'XLST01.INC90'
 use xlst01_mod, only: l1s, l1a ! always constant in xsflsc and read only
 !include 'XLST02.INC90'
-use xlst02_mod, only: n2, n2t, md2t, md2i, md2, l2t, l2, symm_operators ! always constant in xsflsc and read only
+use xlst02_mod, only: g2, n2, n2t, md2t, md2i, md2, l2t, l2, symm_operators ! always constant in xsflsc and read only
 !include 'XLST03.INC90'
 use xlst03_mod, only: n3, md3tr, md3ti, l3tr, l3ti  ! always constant in xsflsc and read only
 !include 'XLST05.INC90'
@@ -2923,9 +2797,12 @@ real ALPD(14),BLPD(14)   ! Use local arrays for better optimisation?
 
 integer ISTACK
 
-real, intent(out) :: tc, sst
+!> sin(theta)/lambda squared
+real, intent(out) :: sst
+!> coefficient for the iso-temperature factors
+real, intent(out) :: tc
 real, dimension(:), intent(inout) :: reflectiondata
-real, intent(in) :: g2
+!> array holding the derivatives against each parameter
 double precision, dimension(:), intent(out) :: temporaryderivatives
 real, dimension(:,:), allocatable :: formfactors
 !> Temporary storage for calculation
@@ -3373,6 +3250,13 @@ end if
 END
 
 !CODE FOR XAB2FC
+!!  - <b>AC</b>     TOTAL real A PART FOR THE REFLECTION
+!!  - <b>BC</b>     TOTAL real B PART FOR THE REFLECTION
+!!  - <b>ACI</b>    TOTAL IMAGINARY A PART FOR THE REFLECTION
+!!  - <b>BCI</b>    TOTAL IMAGINARY B PART FOR THE REFLECTION
+!!  - <b>ACT</b>    TOTAL A PART FOR THE RELFECTION
+!!  - <b>BCT</b>    TOTAL B PART FOR THE REFLECTION
+
 subroutine XAB2FC(reflectiondata, scalew, partialderivatives,temporaryderivatives)
 !--CONVERSION OF THE A AND B PARTS INTO /FC/ TERMS
 !
