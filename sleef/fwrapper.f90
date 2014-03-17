@@ -18,4 +18,13 @@ interface
   end function
 end interface
 
+interface
+  function sleef_cosf(input) bind(c, name='xcosf')
+    use, intrinsic :: ISO_C_BINDING
+    implicit none
+    real(kind=c_float), value :: input
+    real(kind=c_float) :: sleef_cosf
+  end function
+end interface
+
 end module

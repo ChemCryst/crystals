@@ -1285,7 +1285,7 @@ use xerval_mod, only: iererr
 use xiobuf_mod, only: cmon
 use xconst_mod, only: pi, zero, zerosq
 
-use extinction_mod, only: extinct, sphericalextinct_init
+use extinction_mod, only: extinct, sphericalextinct_init, sphericalextinct_coefs
 
 implicit none
 
@@ -1405,7 +1405,7 @@ integer ntempl, nq, np, no, ntempr, nk, nj, n, mstr, ni
 integer dummy
 real pk, pii, ph, path, fot, scaleb, savsig, rlevnm, redmax, red
 real rdjw, pol2, pol1, pl, sh
-real g2sav, fcext, fcexs, ext4, ext3, ext2, ext1, ext
+real g2sav, fcext, fcexs
 real dft, delta, del, foabs, fct, xvalur, xvalul, wj
 real vj, uj, tix, time_begin, time_end, t, sl, sk, sfo, sfc
 real scales, scaleq, scalel, scaleg, scaleo, rlevdn
@@ -1452,6 +1452,8 @@ double precision, dimension(:), allocatable :: righthandside
 integer cpt
 
 double precision, dimension(:), allocatable :: temporaryderivatives
+
+real, dimension(4) :: extinct_coeficients ! was ext1, ext2, ext3, ext4
 
 call CPU_TIME ( time_begin )
 
@@ -1516,14 +1518,9 @@ CENANT  =  (1.- ENANT)
 !----- POLARITY PARAMETER
 ANOM = STORE(L5O+3)
 !--SET UP THE EXTINCTION VARIABLE
-EXT=0.
-EXT1=1.0
-EXT2=1.0
-EXT3=1.0
-DELTA=0.
 
 if(EXTINCT)THEN   ! THE EXTINCTION PARAMETER IN LIST 5 SHOULD BE USED
-    call sphericalextinct_init(WAVE, NU, pol1, pol2, del)
+    call sphericalextinct_init(WAVE, NU)
 end if
 
 !--CHECK if A PRINT IS REQUIRED
@@ -1674,14 +1671,14 @@ designmatrix=0.0d0
 !$OMP& shared(reflectionsdata, scaleo) &
 !$OMP& shared(issprt, ncwu, md6, n12, jp,jo) &
 !$OMP& shared(extinct, wave, jq, jr, del, nu) &
-!$OMP& shared(pol1, pol2, ext, nd, nv, xvalur,LTEMPR, nsort, mdsort) &
+!$OMP& shared(pol1, pol2, nd, nv, xvalur,LTEMPR, nsort, mdsort) &
 !$OMP& shared(refprint, l12o, m33cd) &
 !$OMP& shared(newlhs, lsort, r, rall1) &
 !$OMP& shared(designmatrix, normalmatrix, store) &
 !$OMP& shared(ibadr, g2, d, jsort) &  
-!$OMP& firstprivate(delta, ext1, ext2, ext3, ext4) &
+!$OMP& firstprivate(delta) &
 !$OMP& private(scalek,scalew) &
-!$OMP& private(tc, p, sst) &
+!$OMP& private(tc, p, sst, extinct_coeficients) &
 !$OMP& private(temporaryderivatives) &
 !$OMP& private(tempr, a) &
 !$OMP& private(path, c, fcexs, df, wdf) &
@@ -1719,11 +1716,6 @@ designmatrix=0.0d0
         ! scalew = scaleg * w
         SCALEW=SCALEO*reflectionsdata(1+4,reflectionsdata_index) 
      
-    !    NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
-    !    NN=0
-    !    JO=NO  ! Point JO back to beginning of PD list.
-    !    JP=NP
-        
         call XSFLSX(tc, sst, g2, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
         
         call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
@@ -1731,30 +1723,11 @@ designmatrix=0.0d0
     !
     !--CHECK if WE SHOULD include EXTINCTION
         if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
-            A=MIN(1.,WAVE*sqrt(sST))
-            !A=ASIN(A)*2.
-            PATH=reflectionsdata(1+9,reflectionsdata_index)  ! CHECK MEAN PATH LENGTH
-            if(PATH.LE.ZERO) PATH = 1.
-            !DELTA=DEL*PATH/SIN(A)  ! COMPUTE DELTA FOR NEUTRONS
-            ! sin(a) = sin(sin-1(a)*2.0) (see above)
-            ! equivalent to 2*a*sqrt(1-a**)
-            DELTA=DEL*PATH/(2.0*a*sqrt(1.0-a**2))
-            if(NU.LT.0)THEN ! WE ARE USING XRAYS
-                ! cos(a) = cos(sin-1(a)*2.0) (see above)
-                ! equivalent to 1-2a**2
-                !A=COS(A)**2
-                A=1.0-2.0*a**2
-                DELTA=DELTA*(POL1+POL2*A*A)/(POL1+POL2*A)
-            end if
-            EXT1=1.+2.*EXT*reflectionsdata(1+5,reflectionsdata_index)**2*DELTA
-            EXT2=1.0+EXT*reflectionsdata(1+5,reflectionsdata_index)**2*DELTA
-            EXT3=EXT2/(EXT1**(1.25))
-            EXT4=(EXT1**(-.25))
-            reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*EXT4   ! COMPUTE THE MODifIED /FC/ and store it in list 6 slots
+            call sphericalextinct_coefs(wave, NU, sst, reflectionsdata(:,reflectionsdata_index), extinct_coeficients)
         else
-            EXT4=1.0
-            !FCEXT=reflectionsdata(1+5,reflectionsdata_index)
+            extinct_coeficients=1.0
         end if
+        reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*extinct_coeficients(4)   ! COMPUTE THE MODifIED /FC/ and store it in list 6 slots
         FCEXS=reflectionsdata(1+5,reflectionsdata_index)*SCALEO ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
 
         !reflectionsdata(1+5,reflectionsdata_index)=FCEXT ! STORE FC AND PHASE IN THE LIST 6 SLOTS
@@ -1792,34 +1765,29 @@ designmatrix=0.0d0
         end if
         AMINF=AMINF+WDF*WDF  ! COMPUTE THE MINIMISATION function
 
-    !-----------------------
-    !-------  Kallow not usable here, need to find a fix
-    !------------------------
-    if (sfls_type .ne. sfls_calc .or. &
-    &   reflectionsdata(md6+11,reflectionsdata_index)==0.0) THEN
-    ! If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
-        NT=NT+1     ! UPDATE THE REFLECTION COUNTER FLAG
-        FOT=FOT+reflectionsdata(1+3,reflectionsdata_index)   ! COMPUTE THE TERMS FOR THE NORMAL R-VALUE
-        FOABS = FOABS + ABS(reflectionsdata(1+3,reflectionsdata_index))
-        FCT=FCT+FCEXS
-        DFT=DFT+ABS(ABS(reflectionsdata(1+3,reflectionsdata_index)) - FCEXS)
-        WDFT=WDFT+WDF*WDF  ! COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
-        RW=RW+A*A
-        sfofc = sfofc + reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
-        sfcfc = sfcfc + reflectionsdata(1+5,reflectionsdata_index)**2
-        wsfofc = wsfofc + reflectionsdata(1+4,reflectionsdata_index)  * &
-        &   reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
-        wsfcfc = wsfcfc + reflectionsdata(1+4,reflectionsdata_index)  * reflectionsdata(1+5,reflectionsdata_index)**2
-    end if
-    !-----------------------
-    !-----------------------
-    !
-    !
+        if (sfls_type .ne. sfls_calc .or. &
+        &   reflectionsdata(md6+11,reflectionsdata_index)==0.0) THEN
+        ! If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
+        ! call to kallow has been save earlier in reflectionsdata(md6+11
+            NT=NT+1     ! UPDATE THE REFLECTION COUNTER FLAG
+            FOT=FOT+reflectionsdata(1+3,reflectionsdata_index)   ! COMPUTE THE TERMS FOR THE NORMAL R-VALUE
+            FOABS = FOABS + ABS(reflectionsdata(1+3,reflectionsdata_index))
+            FCT=FCT+FCEXS
+            DFT=DFT+ABS(ABS(reflectionsdata(1+3,reflectionsdata_index)) - FCEXS)
+            WDFT=WDFT+WDF*WDF  ! COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
+            RW=RW+A*A
+            sfofc = sfofc + reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
+            sfcfc = sfcfc + reflectionsdata(1+5,reflectionsdata_index)**2
+            wsfofc = wsfofc + reflectionsdata(1+4,reflectionsdata_index)  * &
+            &   reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
+            wsfcfc = wsfcfc + reflectionsdata(1+4,reflectionsdata_index)  * reflectionsdata(1+5,reflectionsdata_index)**2
+        end if
+
         UJ=reflectionsdata(1+3,reflectionsdata_index)*SCALEK
         RDJW = ABS(WDF)
         if (RDJW .GT. ABS(XVALUR)) then
-    !----  H,K,L,FO,FC,/WDELTA/,FO/FC
-    !$OMP CRITICAL        
+            !----  H,K,L,FO,FC,/WDELTA/,FO/FC
+!$OMP CRITICAL        
             if (RDJW .GT. ABS(XVALUR)) then
                 call XMOVE(reflectionsdata(1:3,reflectionsdata_index), store(LTEMPR), 3)
                 store(LTEMPR+3) = UJ
@@ -1828,7 +1796,7 @@ designmatrix=0.0d0
                 store(LTEMPR+6) = MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO))
                 call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, store)
             end if
-    !$OMP END CRITICAL
+!$OMP END CRITICAL
         end if
 
       
@@ -1854,7 +1822,7 @@ designmatrix=0.0d0
     !
         else   ! Only print worst 25 agreements.
             if ( ABS(UJ-reflectionsdata(1+5,reflectionsdata_index)) .GE. R*UJ .AND. IBADR .LE. 50 ) then
-    !$OMP CRITICAL
+!$OMP CRITICAL
                 if (IBADR .LT. 0) then
                     if (ISSPRT .EQ. 0) write(NCWU,4651)
                     IBADR = 0
@@ -1872,7 +1840,7 @@ designmatrix=0.0d0
     4653                FORMAT(/' And so on ------------'/)
                 end if
                 IBADR = IBADR + 1
-    !$OMP END CRITICAL
+!$OMP END CRITICAL
             end if
         end if
 
@@ -1898,7 +1866,7 @@ designmatrix=0.0d0
     !  TERM WHICH IS REMOVED LATER WHEN THE DERIVATIVES ARE MODifIED FOR
     !  EXTINCTION. THE FIRST PARAMETER IS THE OVERALL SCALE FACTOR.
 
-            A=reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)*1.0/EXT3
+            A=reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)*1.0/extinct_coeficients(3)
 
     !---- TO REFINE SCALE OF F**2 (RATHER THAN F), SQUARE AND
     !      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
@@ -1907,18 +1875,18 @@ designmatrix=0.0d0
 
             call XADDPD ( A, 0, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index))
 
-            A=reflectionsdata(1+4,reflectionsdata_index) *FCEXS*TC/EXT3        ! OVERALL TEMPERATURE FACTORS NEXT
+            A=reflectionsdata(1+4,reflectionsdata_index) *FCEXS*TC/extinct_coeficients(3)        ! OVERALL TEMPERATURE FACTORS NEXT
             call XADDPD ( A, 1, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
             call XADDPD ( A, 2, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
-            A=-0.5*SCALEW*reflectionsdata(1+5,reflectionsdata_index)**3*Delta/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
+            A=-0.5*SCALEW*reflectionsdata(1+5,reflectionsdata_index)**3*Delta/extinct_coeficients(2)   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
             call XADDPD ( A, 5, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
             IF ( ( NV.GE.0 ) .OR. EXTINCT ) THEN  ! Either FO^2, or extinction correction required.
 
                 A=1.0
                 if ( NV .GE. 0 ) A=A*2.0*FCEXS   ! Correct derivatives for refinement against Fo^2
-                IF ( EXTINCT ) A=A*EXT3  
+                IF ( EXTINCT ) A=A*extinct_coeficients(3)  
                 
                 designmatrix(:,reflectionsdata_index)=designmatrix(:,reflectionsdata_index)*A
             end if
@@ -2931,7 +2899,7 @@ use xlst12_mod, only: n12, l12 ! always constant in xsflsc and read only
 !include 'XUNITS.INC90'
 !
 !include 'QSTORE.INC'
-use xconst_mod, only: zero, twopis, twopi
+use xconst_mod, only: zero, twopis, twopi, pi
 implicit none
 
 real aimag, ap, at, bd, bf, bp, bt, focc, tfocc, t
@@ -3200,7 +3168,9 @@ do LJY=1,N5
 !  a = h'.x + h.t
 !
 #if defined(_GIL_) || defined(_LIN_) 
-        c = mod(a,2.0*3.14159265359)
+        c=a
+        c=c-(real(floor(c/twopi))*twopi)
+        !c = mod(a,2.0*3.14159265359)
         call sleef_sincosf(c, scb)          
 ! s = Sin(h'x+ht)
         s=scb(1)

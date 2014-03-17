@@ -20,12 +20,12 @@ ifeq ($(COMPCODE),MAC)
 else
  ifeq ($(COMPCODE),GIL)
     GUIFLAGS = -fno-inline -fexceptions
-    GUILIBRARIES = `wx-config-2.9 --libs --gl-libs` 
+    GUILIBRARIES = `wx-config --libs --gl-libs` 
     CLFLAGS = 
     CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
 
-    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config-2.9 --cppflags` -D_GNUF77_
+    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D_GNUF77_
     CFLAGS = -s
 
     CXX = g++48
@@ -79,10 +79,10 @@ else
     LD = gfortran
     LD77 = gfortran
     F77 = gfortran
-    F77FLAGS = -fbounds-check -fexceptions -mfpmath=sse -mavx -std=legacy -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
-    F90FLAGS = -fbounds-check -fexceptions -pedantic -mfpmath=sse -mavx -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_
-    LDFLAGS = -lopenblaso
-    OPT = -g -O0
+    F77FLAGS = -fbounds-check -fexceptions  -std=legacy -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
+    F90FLAGS = -fbounds-check -fexceptions -pedantic -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_
+    LDFLAGS = -lopenblas
+    OPT = -g -O3
 
     INSTALL=/bin/install
 
