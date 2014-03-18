@@ -1736,7 +1736,9 @@ designmatrix=0.0d0
             if(NV .GE. 0) then 
                 !---- TO REFINE SCALE OF F**2 (RATHER THAN F), SQUARE AND
                 !      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
-                A = reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)**2/(extinct_coeficients(3) * 2. * FCEXS )
+                A = reflectionsdata(1+4,reflectionsdata_index)* &
+                &   reflectionsdata(1+5,reflectionsdata_index)**2 / &
+                &   (extinct_coeficients(3) * 2. * FCEXS )
             else
                 A=reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)/extinct_coeficients(3)
             end if
@@ -3261,35 +3263,27 @@ subroutine XAB2FC(reflectiondata, scalew, partialderivatives,temporaryderivative
 !include 'STORE.INC'
 !use store_mod, only:store, istore
 !include 'XSFWK.INC90'
-use xsfwk_mod, only: enant, cenant ! constant in xsflc
+!use xsfwk_mod, only: enant, cenant ! constant in xsflc
 !include 'XWORKB.INC'
-use xworkb_mod, only: jn, jq ! constant in xsflc
+use xworkb_mod, only: jq ! constant in xsflc
 !include 'XSFLSW.INC90'
-use xsflsw_mod, only: sfls_type, sfls_refine, enantio, centro, anomal ! constant in xsflc
+use xsflsw_mod, only: sfls_type, sfls_refine, centro, anomal ! constant in xsflc
 !include 'XLST06.INC90'
-use xconst_mod, only: zero, twopi
+use xconst_mod, only: twopi
 use xlst06_mod, only: md6
 
 implicit none
 
 !include 'QSTORE.INC'
 
-real cosa, cospn, fcsq, fesq, fn, fnsq, fp
-real sina, sinpn, temp, sinp, cosp, act, bct
+real fcsq, fp
+real temp, sinp, cosp, act, bct
 real, dimension(:), intent(inout) :: reflectiondata
 real, intent(in) :: scalew
-integer j, ljs, n
+integer n
 real ac, aci, bc, bci
 double precision, dimension(:), intent(out) :: partialderivatives
 double precision, dimension(:), intent(in) :: temporaryderivatives
-
-!--FETCH A AND B ETC. FROM THE STACK
-!AC=STORE(JREF_STACK_PTR+13)
-!ACI=STORE(JREF_STACK_PTR+14)
-!BC=STORE(JREF_STACK_PTR+15)
-!BCI=STORE(JREF_STACK_PTR+16)
-!PSHifT=STORE(JREF_STACK_PTR+11)
-!FRIED=STORE(JREF_STACK_PTR+12)
 
 ac=reflectiondata(MD6+1)
 aci=reflectiondata(MD6+2)
@@ -3299,50 +3293,48 @@ bci=reflectiondata(MD6+4)
 ACT=AC+ACI
 BCT=BC+BCI
 
-if ( ABS(ACT) .LT. 0.001 .and. ABS(BCT) .LT. 0.001) then  ! A and B-PART are 0
-    ACT = 0.000001
-    BCT = 0.
-end if
-
-
 !--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
-FCSQ = ACT*ACT + BCT*BCT
-FP = SQRT(FCSQ)
-reflectiondata(1+5) = FP                     ! SAVE THE TOTAL MAGNITUDE
-reflectiondata(1+6)=AMOD(ATAN2(BCT,ACT),TWOPI)  ! THE PHASE
+if(act==0.0 .and. bct==0.0) then 
+    reflectiondata(1+5)=0.0
+    reflectiondata(1+6)=0.0
+    
+    if(SFLS_TYPE .EQ. SFLS_REFINE) then   ! CHECK IF WE ARE DOING REFINEMENT
+        partialderivatives=0.0
+    end if            
 
-FNSQ = FCSQ
+else
+    FCSQ = ACT*ACT + BCT*BCT
+    FP = SQRT(FCSQ)
+    reflectiondata(1+5) = FP                     ! SAVE THE TOTAL MAGNITUDE
+    reflectiondata(1+6)=MOD(ATAN2(BCT,ACT),TWOPI)  ! THE PHASE
 
-! these are used in test2.tst
-! program crashes if they are not set
-!STORE(JREF_STACK_PTR+6) = reflectiondata(1+5)
-!STORE(JREF_STACK_PTR+7) = reflectiondata(1+6)
+    if(SFLS_TYPE .EQ. SFLS_REFINE) then   ! CHECK IF WE ARE DOING REFINEMENT
+        TEMP = SCALEW / reflectiondata(1+5)   ! TO PERMANENT STORE
+        COSP = ACT * TEMP
+        SINP = BCT * TEMP
+        N = ubound(partialderivatives, 1)
 
-if(SFLS_TYPE .EQ. SFLS_REFINE) then   ! CHECK IF WE ARE DOING REFINEMENT
-    TEMP = SCALEW / reflectiondata(1+5)   ! TO PERMANENT STORE
-    COSP = ACT * TEMP
-    SINP = BCT * TEMP
-    N = ubound(partialderivatives, 1)
-
-    if ( CENTRO .EQV. ANOMAL ) then ! NON-CENTRO WITHOUT ANOMALOUS DISPERSION
-                                    ! OR CENTRO WITH ANOMALOUS
-        partialderivatives=temporaryderivatives(1:N*JQ:JQ)*COSP+temporaryderivatives(1+1:N*JQ+1:JQ)*SINP
-        ! look like dead code
-        !STORE(JN+1)=0.0
-        !STORE(JN)=0.0
-    else if ( CENTRO .AND. (.NOT. ANOMAL) ) then ! CENTRO WITHOUT ANOMALOUS DISPERSION
-        
-        partialderivatives=temporaryderivatives(1:N*JQ:JQ)*COSP
-        ! look like dead code
-        !STORE(JN)=0.0
-    else                              ! NON-CENTRO WITH ANOMALOUS DISPERSION
-        partialderivatives= &
-        &   ( temporaryderivatives(1:N*JQ:JQ) + Temporaryderivatives(1+2:N*JQ+2:JQ) )*COSP + &
-        &   ( temporaryderivatives(1+1:N*JQ+1:JQ) + temporaryderivatives(1+3:N*JQ+3:JQ) )*SINP
-        ! look like dead code
-        !STORE(JN:JN+3)=0.0
-    end if
-end if            
+        if ( CENTRO .EQV. ANOMAL ) then ! NON-CENTRO WITHOUT ANOMALOUS DISPERSION
+                                        ! OR CENTRO WITH ANOMALOUS
+            partialderivatives=temporaryderivatives(1:N*JQ:JQ)*COSP+temporaryderivatives(1+1:N*JQ+1:JQ)*SINP
+            ! look like dead code
+            !STORE(JN+1)=0.0
+            !STORE(JN)=0.0
+        else if ( CENTRO .AND. (.NOT. ANOMAL) ) then ! CENTRO WITHOUT ANOMALOUS DISPERSION
+            
+            partialderivatives=temporaryderivatives(1:N*JQ:JQ)*COSP
+            ! look like dead code
+            !STORE(JN)=0.0
+        else                              ! NON-CENTRO WITH ANOMALOUS DISPERSION
+            partialderivatives= &
+            &   ( temporaryderivatives(1:N*JQ:JQ) + Temporaryderivatives(1+2:N*JQ+2:JQ) )*COSP + &
+            &   ( temporaryderivatives(1+1:N*JQ+1:JQ) + temporaryderivatives(1+3:N*JQ+3:JQ) )*SINP
+            ! look like dead code
+            !STORE(JN:JN+3)=0.0
+        end if
+    end if   
+end if
+         
 END
 
 
