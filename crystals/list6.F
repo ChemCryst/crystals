@@ -1573,9 +1573,9 @@ C          1 TO MD6.
 C
 C--
       !INCLUDE 'STORE.INC'
-      use store_mod, only: storelength
+      !use store_mod, only: storelength
       !INCLUDE 'XLST06.INC'
-      use xlst06_mod, only: l6dtl, md6dtl
+      !use xlst06_mod, only: l6dtl, md6dtl
       
       implicit none
       integer i, j
@@ -1585,31 +1585,30 @@ C--
       real, dimension(:), intent(in) :: reflectiondata
       
       ! check if allocated space is enough and crashing the program if not enough space
-      if(iposn>ubound(minimum,1) .or. iposn<1 ) then
-          print *, 'not enough space allocated (xacrt)!! '
-          print *, iposn, ubound(minimum,1)
+      !if(iposn>ubound(minimum,1) .or. iposn<1 ) then
+      !    print *, 'not enough space allocated (xacrt)!! '
+      !    print *, iposn, ubound(minimum,1)
       !    stop
-      end if
-      if(iposn>ubound(maximum,1) .or. iposn<1) then
-          print *, 'not enough space allocated (xacrt)!! '
-          print *, iposn, ubound(minimum,1)
+      !end if
+      !if(iposn>ubound(maximum,1) .or. iposn<1) then
+      !    print *, 'not enough space allocated (xacrt)!! '
+      !    print *, iposn, ubound(minimum,1)
       !    stop
-      end if
-      if(iposn>ubound(summation,1) .or. iposn<1) then
-          print *, 'not enough space allocated (xacrt)!! '
-          print *, iposn, ubound(minimum,1)
+      !end if
+      !if(iposn>ubound(summation,1) .or. iposn<1) then
+      !    print *, 'not enough space allocated (xacrt)!! '
+      !    print *, iposn, ubound(minimum,1)
       !    stop
-      end if
-      if(iposn>ubound(summationsq,1) .or. iposn<1) then
-          print *, 'not enough space allocated (xacrt)!! '
-          print *, iposn, ubound(minimum,1)
+      !end if
+      !if(iposn>ubound(summationsq,1) .or. iposn<1) then
+      !    print *, 'not enough space allocated (xacrt)!! '
+      !    print *, iposn, ubound(minimum,1)
       !    stop
-      end if
+      !end if
             
 C--FIND THE POSITION IN THE DETAILS AND CORE BUFFER
-      I=IPOSN-1
-      J=L6DTL+I*MD6DTL
-      I=1+I
+      I=IPOSN
+      !J=L6DTL+(IPOSN-1)*MD6DTL
 C--FIND THE NEW MAXIMUM AND MINIMUM
       !STORE(J)=MIN(STORE(J),STORE(I))
       minimum(IPOSN)=min(minimum(IPOSN), reflectiondata(I))

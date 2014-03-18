@@ -1494,6 +1494,8 @@ reflectionsdata_size=1
 do WHILE (reflectionsdata_size>0)  ! START OF THE LOOP OVER REFLECTIONS
 cpt=cpt+1
 
+! Prefectching a bunch of reflections. Number depends on the number of threads
+! It is a multiple of storechunk
 do reflectionsdata_index=1, storechunk*tid
     IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
         ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
@@ -1512,6 +1514,7 @@ do reflectionsdata_index=1, storechunk*tid
                 STORE(I28MN+1) = SAVSIG
             end if
         end do
+        ! Store the status of a reflection as kallow is no longer available later
         if(KALLOW(IALLOW)<0) then
             reflectionsdata(md6+11,reflectionsdata_index)=-1.0
         else
@@ -1531,6 +1534,8 @@ do reflectionsdata_index=1, storechunk*tid
     end if
 end do
 reflectionsdata_size=reflectionsdata_index-1
+! reseting design matrix
+! It is important as the last chunk will not be complete
 designmatrix=0.0d0
 
 !  SCALEO  THE OVERALL SCALE FACTOR FROM LIST 5.
@@ -1544,8 +1549,8 @@ designmatrix=0.0d0
 !$OMP& shared(reflectionsdata_size) &
 !$OMP& shared(reflectionsdata, scaleo) &
 !$OMP& shared(issprt, ncwu, md6, n12, jp,jo) &
-!$OMP& shared(extinct, wave, jq, jr, del, nu) &
-!$OMP& shared(pol1, pol2, nd, nv, xvalur,LTEMPR, nsort, mdsort) &
+!$OMP& shared(extinct, wave, jq, jr, nu) &
+!$OMP& shared(nd, nv, xvalur,LTEMPR, nsort, mdsort) &
 !$OMP& shared(refprint, l12o, m33cd) &
 !$OMP& shared(newlhs, lsort, r, rall1) &
 !$OMP& shared(designmatrix, normalmatrix, store) &
@@ -1554,7 +1559,7 @@ designmatrix=0.0d0
 !$OMP& private(tc, p, sst, extinct_coeficients) &
 !$OMP& private(temporaryderivatives) &
 !$OMP& private(tempr, a) &
-!$OMP& private(path, c, fcexs, df, wdf) &
+!$OMP& private(c, fcexs, df, wdf) &
 !$OMP& private(minimum, maximum, s, uj, rdjw, vj, wj, t, tid) &
 !$OMP& shared(minimum_shared, maximum_shared) &
 !$OMP& reduction(+: summation, summationsq, nt, fot, foabs, shiftsaccumulation) &
@@ -1563,91 +1568,78 @@ designmatrix=0.0d0
     
     minimum=huge(minimum)
     maximum=-huge(maximum)
-    if(ND<0)THEN
-        minimum(8:9)=0.0
-        maximum(8:9)=0.0
-    end if    
+    !if(ND<0)THEN
+    !    minimum(8:9)=0.0
+    !    maximum(8:9)=0.0
+    !end if    
 
     if(allocated(temporaryderivatives)) deallocate(temporaryderivatives)
     allocate(temporaryderivatives(n12*jq))
     temporaryderivatives=0.0d0
+    
+    extinct_coeficients=1.0
+    if(SCALEO .GT. 1e-6) then   ! CHECK IF THE SCALE IS ZERO
+        if(NV.GE.0) then
+            SCALEK=1./SCALEO**2   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
+        else
+            SCALEK=1./SCALEO   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
+        end if
+    else
+        SCALEK=1.0
+    end if
 
 !$OMP DO schedule(dynamic, 32)
     do reflectionsdata_index=1, reflectionsdata_size
-        !storetemp(M6:M6+MD6-1)=reflectionsdata(:,reflectionsdata_index)
-        !print *, storetemp(M6:M6+MD6-1)
 
-        if(SCALEO .GT. 1e-6) then   ! CHECK IF THE SCALE IS ZERO
-            SCALEK=1./SCALEO   ! THE /FC/ SCALE FACTOR IS NOT ZERO  -  COMPUTE THE /FO/ SCALE FACTOR
-        else
-            SCALEK=1.0
-        end if
-
-
+     
+        call XSFLSX(tc, sst, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
+        
         !FO=reflectionsdata(1+3,reflectionsdata_index) ! SET UP /FO/ ETC. FOR THIS REFLECTION
         !W=reflectionsdata(1+4,reflectionsdata_index) 
         ! scalew = scaleg * w
         SCALEW=SCALEO*reflectionsdata(1+4,reflectionsdata_index) 
-     
-        call XSFLSX(tc, sst, reflectionsdata(:,reflectionsdata_index), temporaryderivatives)
-        
         call XAB2FC(reflectionsdata(:,reflectionsdata_index), scalew, designmatrix(:,reflectionsdata_index), temporaryderivatives)  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
-        call XACRTnew(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
-    !
-    !--CHECK if WE SHOULD include EXTINCTION
+
+        !--CHECK if WE SHOULD include EXTINCTION
         if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
             call sphericalextinct_coefs(wave, NU, sst, reflectionsdata(:,reflectionsdata_index), extinct_coeficients)
-        else
-            extinct_coeficients=1.0
         end if
         reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*extinct_coeficients(4)   ! COMPUTE THE MODifIED /FC/ and store it in list 6 slots
         FCEXS=reflectionsdata(1+5,reflectionsdata_index)*SCALEO ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
-
-        !reflectionsdata(1+5,reflectionsdata_index)=FCEXT ! STORE FC AND PHASE IN THE LIST 6 SLOTS
-
-        if(ND.GE.0) THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
-            reflectionsdata(1+7,reflectionsdata_index)=reflectionsdata(1+7,reflectionsdata_index) + &
-            &   reflectionsdata(MD6+1,reflectionsdata_index) + &
-            &   reflectionsdata(MD6+2,reflectionsdata_index)*reflectionsdata(MD6+6,reflectionsdata_index) ! STORE THE NEW CONTRIBUTIONS
-            reflectionsdata(1+8,reflectionsdata_index)=reflectionsdata(1+8,reflectionsdata_index) + &
-            &   reflectionsdata(MD6+3,reflectionsdata_index)*reflectionsdata(MD6+6,reflectionsdata_index) + &
-            &   reflectionsdata(MD6+4,reflectionsdata_index)
-
-            call XACRTnew(8, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-            call XACRTnew(9, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
-        end if
-
-    !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
-    ! Add abs to deniminator
-        ! A = abs(FO)*w
-        A=abs(reflectionsdata(1+3,reflectionsdata_index))*reflectionsdata(1+4,reflectionsdata_index)     ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
-        ! df = Fo - Fcexs
-        DF=reflectionsdata(1+3,reflectionsdata_index)-FCEXS
-        WDF=reflectionsdata(1+4,reflectionsdata_index)*DF
-        S=SCALEK
-    !
+    
         if(NV.GE.0) THEN ! 4500,4450,4450 ! CHECK IF WE REFINING AGAINST /FO/ **2
-    !          A=ABS(FO)*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
-    ! remove abs Mar2009
-            ! A = Fo**2*w
-            A=reflectionsdata(1+3,reflectionsdata_index)**2*reflectionsdata(1+4,reflectionsdata_index)   ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
             ! df = abs(fo)*Fo - Fcexs**2
             DF=ABS(reflectionsdata(1+3,reflectionsdata_index))*reflectionsdata(1+3,reflectionsdata_index)-FCEXS*FCEXS
-            WDF=reflectionsdata(1+4,reflectionsdata_index) *DF
-            S=SCALEK*SCALEK
+        else
+            ! df = Fo - Fcexs
+            DF=reflectionsdata(1+3,reflectionsdata_index)-FCEXS       
         end if
-        AMINF=AMINF+WDF*WDF  ! COMPUTE THE MINIMISATION function
+        
+        WDF=reflectionsdata(1+4,reflectionsdata_index)*DF
+        AMINF=AMINF+WDF**2  ! COMPUTE THE MINIMISATION function
+        RDJW = ABS(WDF)
 
         if (sfls_type .ne. sfls_calc .or. &
         &   reflectionsdata(md6+11,reflectionsdata_index)==0.0) THEN
-        ! If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
-        ! call to kallow has been save earlier in reflectionsdata(md6+11
+            ! If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
+            ! call to kallow has been save earlier in reflectionsdata(md6+11
             NT=NT+1     ! UPDATE THE REFLECTION COUNTER FLAG
             FOT=FOT+reflectionsdata(1+3,reflectionsdata_index)   ! COMPUTE THE TERMS FOR THE NORMAL R-VALUE
             FOABS = FOABS + ABS(reflectionsdata(1+3,reflectionsdata_index))
             FCT=FCT+FCEXS
             DFT=DFT+ABS(ABS(reflectionsdata(1+3,reflectionsdata_index)) - FCEXS)
             WDFT=WDFT+WDF*WDF  ! COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
+            if(NV.GE.0) THEN ! 4500,4450,4450 ! CHECK IF WE REFINING AGAINST /FO/ **2
+                ! A=ABS(FO)*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
+                ! remove abs Mar2009
+                ! A = Fo**2*w
+                A=reflectionsdata(1+3,reflectionsdata_index)**2*reflectionsdata(1+4,reflectionsdata_index)   ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
+            else
+                !        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
+                ! Add abs to deniminator
+                ! A = abs(FO)*w
+                A=abs(reflectionsdata(1+3,reflectionsdata_index))*reflectionsdata(1+4,reflectionsdata_index)     ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
+            end if            
             RW=RW+A*A
             sfofc = sfofc + reflectionsdata(1+3,reflectionsdata_index) * reflectionsdata(1+5,reflectionsdata_index)
             sfcfc = sfcfc + reflectionsdata(1+5,reflectionsdata_index)**2
@@ -1656,8 +1648,9 @@ designmatrix=0.0d0
             wsfcfc = wsfcfc + reflectionsdata(1+4,reflectionsdata_index)  * reflectionsdata(1+5,reflectionsdata_index)**2
         end if
 
-        UJ=reflectionsdata(1+3,reflectionsdata_index)*SCALEK
-        RDJW = ABS(WDF)
+        UJ=reflectionsdata(1+3,reflectionsdata_index)*SCALEK 
+        ! Condition is repeated to avoid the critical section outside the condition
+        ! and still keep a consistent evaluation of the if       
         if (RDJW .GT. ABS(XVALUR)) then
             !----  H,K,L,FO,FC,/WDELTA/,FO/FC
 !$OMP CRITICAL        
@@ -1671,12 +1664,11 @@ designmatrix=0.0d0
             end if
 !$OMP END CRITICAL
         end if
-
       
         if(REFPRINT) THEN !   CHECK IF A PRINT OF THE RELFECTIONS IS NEEDED
             P=reflectionsdata(1+6,reflectionsdata_index)*D             ! PRINT ALL REFLECTIONS
-            VJ=WDF*S
-            WJ=DF*S
+            VJ=WDF*SCALEK
+            WJ=DF*SCALEK
             !A=SQRT(AC*AC+BC*BC)
             A=sqrt(reflectionsdata(MD6+1, reflectionsdata_index)**2 + reflectionsdata(MD6+3,reflectionsdata_index)**2)
             !S=SQRT(ACI*ACI+BCI*BCI)
@@ -1720,35 +1712,38 @@ designmatrix=0.0d0
         IF(SFLS_TYPE .NE. SFLS_REFINE)THEN    ! NO REFINEMENT
             IF(SFLS_TYPE .EQ. SFLS_SCALE)THEN ! CHECK IF WE ARE REFINING ONLY THE SCALE FACTOR
  
-!--COMPUTE THE TOTALS FOR REFINEMENT OF THE SCALE FACTOR ONLY
+                !--COMPUTE THE TOTALS FOR REFINEMENT OF THE SCALE FACTOR ONLY
                 A=reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)
                 IF(NV.GE.0) A=A*reflectionsdata(1+5,reflectionsdata_index)  ! IF WE ARE REFINING AGAINST /FO/ **2
 
-! Originally, CRYSTALS computed the scale wrt F, but this is non-linear,
-! so convergence was poor. Now the shifts are wrt F**2. This is taken car
-! of when the shift is applied. See near label 6100.
+                ! Originally, CRYSTALS computed the scale wrt F, but this is non-linear,
+                ! so convergence was poor. Now the shifts are wrt F**2. This is taken car
+                ! of when the shift is applied. See near label 6100.
 
                 SFO=SFO+WDF*A   ! ACCUMULATE THE TERMS FOR THE SCALE FACTOR
                 SFC=SFC+A*A
             END IF
         ELSE
         
-    !--ADD THE CONTRIBUTIONS OF THE OVERALL PARAMETERS AND SCALE FACTORS.
-    !  THESE ARE COMPUTED WITH RESPECT TO 'FC' MODifIED FOR EXTINCTION, RATH
-    !  THAN WITH RESPECT TO 'FC'. THIS IS WHY THEY ALL CONTAIN '1./EXT3'
-    !  TERM WHICH IS REMOVED LATER WHEN THE DERIVATIVES ARE MODifIED FOR
-    !  EXTINCTION. THE FIRST PARAMETER IS THE OVERALL SCALE FACTOR.
+            !--ADD THE CONTRIBUTIONS OF THE OVERALL PARAMETERS AND SCALE FACTORS.
+            !  THESE ARE COMPUTED WITH RESPECT TO 'FC' MODifIED FOR EXTINCTION, RATH
+            !  THAN WITH RESPECT TO 'FC'. THIS IS WHY THEY ALL CONTAIN '1./EXT3'
+            !  TERM WHICH IS REMOVED LATER WHEN THE DERIVATIVES ARE MODifIED FOR
+            !  EXTINCTION. THE FIRST PARAMETER IS THE OVERALL SCALE FACTOR.
 
-            A=reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)*1.0/extinct_coeficients(3)
 
-    !---- TO REFINE SCALE OF F**2 (RATHER THAN F), SQUARE AND
-    !      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
-            if(NV .GE. 0) A = A * reflectionsdata(1+5,reflectionsdata_index) * 1.0 / ( 2. * FCEXS )
+            if(NV .GE. 0) then 
+                !---- TO REFINE SCALE OF F**2 (RATHER THAN F), SQUARE AND
+                !      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
+                A = reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)**2/(extinct_coeficients(3) * 2. * FCEXS )
+            else
+                A=reflectionsdata(1+4,reflectionsdata_index)*reflectionsdata(1+5,reflectionsdata_index)/extinct_coeficients(3)
+            end if
 
             call XADDPD ( A, 0, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index))
 
-            A=reflectionsdata(1+4,reflectionsdata_index) *FCEXS*TC/extinct_coeficients(3)        ! OVERALL TEMPERATURE FACTORS NEXT
+            A=reflectionsdata(1+4,reflectionsdata_index)*FCEXS*TC/extinct_coeficients(3)        ! OVERALL TEMPERATURE FACTORS NEXT
             call XADDPD ( A, 1, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
             call XADDPD ( A, 2, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
@@ -1756,7 +1751,6 @@ designmatrix=0.0d0
             call XADDPD ( A, 5, JO, JQ, JR, L12O, designmatrix(:,reflectionsdata_index)) 
 
             IF ( ( NV.GE.0 ) .OR. EXTINCT ) THEN  ! Either FO^2, or extinction correction required.
-
                 A=1.0
                 if ( NV .GE. 0 ) A=A*2.0*FCEXS   ! Correct derivatives for refinement against Fo^2
                 IF ( EXTINCT ) A=A*extinct_coeficients(3)  
@@ -1766,38 +1760,39 @@ designmatrix=0.0d0
 
             ! ACCUMULATE THE RIGHT HAND SIDES
             ! accumulation done in double precision
-            call XADRHS(WDF,designmatrix(:,reflectionsdata_index),righthandside)  
+            call XADRHS(WDF,designmatrix(:,reflectionsdata_index),righthandside) 
+            shiftsaccumulation=shiftsaccumulation+designmatrix(:,reflectionsdata_index) 
 
-            if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
-
-                if (TRANSFER(store(M33CD+13), 1).EQ.0) then
-                    !call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
-                    !&   STR11(L11), N11, iresults, nresults, & 
-                    !&   storetemp(L12B), N12B*MD12B, MD12B)
-                    print *, 'not implemented (parm_pairs_xlhs)'
-                    stop
-                else
-                    ! Store a chunk of the design matrix
-                    !designmatrix(:,reflectionsdata_index) = storetemp(JO:JP)
-                    !print *, storetemp(JO:JP)
-            
-        !           call XADLHS( storetemp(JO), JP-JO+1, STR11(L11), N11,
-        !     1         storetemp(L12B), N12B*MD12B, MD12B )
-                end if
-            end if
+            !if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
+            !
+            !    if (TRANSFER(store(M33CD+13), 1).EQ.0) then
+            !        !call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
+            !        !&   STR11(L11), N11, iresults, nresults, & 
+            !        !&   storetemp(L12B), N12B*MD12B, MD12B)
+            !        print *, 'not implemented (parm_pairs_xlhs)'
+            !        stop
+            !    else
+            !        ! Store a chunk of the design matrix
+            !        !designmatrix(:,reflectionsdata_index) = storetemp(JO:JP)
+            !        !print *, storetemp(JO:JP)
+            !
+            !        !           call XADLHS( storetemp(JO), JP-JO+1, STR11(L11), N11,
+            !        !     1         storetemp(L12B), N12B*MD12B, MD12B )
+            !    end if
+            !end if
         end if
         
-        ! save the new values in the buffer
-        ! writing is delayed outside the loop
-        !reflectionsdata(:,reflectionsdata_index)=storetemp(M6:M6+MD6-1)
-        !call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
-        !call XSLRnew(1, storetemp, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
+        ! All writing back is delayed outside the loop
+        ! call XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
+        ! call XSLRnew(1, storetemp, l6wpointers(reflectionsdata_index), n6wpointers(reflectionsdata_index))
+        
+        call XACRTnew(4, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE THE /FO/ TOTALS
         call XACRTnew(6, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! ACCUMULATE TOTALS FOR /FC/ 
         call XACRTnew(7, minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))  ! AND THE PHASE
         call XACRTnew(16,minimum, maximum, summation, summationsq, reflectionsdata(:,reflectionsdata_index))
 
         IF(SFLS_TYPE .eq. SFLS_CALC) THEN ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
-        ! Fo = reflectionsdata(1+3,reflectionsdata_index)
+            ! Fo = reflectionsdata(1+3,reflectionsdata_index)
             tempr=(/1.0, ABS(ABS(reflectionsdata(1+3,reflectionsdata_index))-FCEXS), &
             &   ABS(reflectionsdata(1+3,reflectionsdata_index)), WDF**2, A**2 /)
             if (reflectionsdata(1+20,reflectionsdata_index) .GE. RALL1) then
@@ -1806,7 +1801,6 @@ designmatrix=0.0d0
             RALL(7:11) = RALL(7:11) + tempr
         end if
 
-        shiftsaccumulation=shiftsaccumulation+designmatrix(:,reflectionsdata_index)
     end do
 !$OMP END DO
     
