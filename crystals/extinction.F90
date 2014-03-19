@@ -61,6 +61,7 @@ real, dimension(2) :: theta2sincos
 !djwoct2010 POL2 had found itself outside of the if clause
         extinct_parameters%POL2=theta2sincos(1)+theta2sincos(2)*S
     end if
+    
 end subroutine
 
 !> Calculate extinction coeficients
