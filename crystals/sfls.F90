@@ -225,8 +225,11 @@ call XRSL
 call XFAL13
 if ( IERFLG .LT. 0 ) return
 !--SET THE TWINNED/NON-TWINNED FLAG
-TWINNED = .FALSE.
-if(ISTORE(L13CD+1).GE.0) TWINNED = .TRUE.
+if(istore(l13cd+1).ge.0) then 
+    twinned = .true.
+else
+    twinned = .false.
+end if
 !--FIND THE TYPE OF RADIATION
 NU=ISTORE(L13DT+1)
 !--FETCH THE POLARISATION CONSTANTS
@@ -240,19 +243,17 @@ call XFAL23
 if ( IERFLG .LT. 0 ) return
 !--SET THE ANOMALOUS DISPERSION FLAG
 ! SET TO -1 FOR NO ANOMALOUS DISPERSION, else 0 Replaced by ANOMAL      
-ANOMAL = .FALSE.
-if ( ISTORE(L23M) .EQ. 0 ) ANOMAL = .TRUE.
+if ( ISTORE(L23M) .EQ. 0 ) then
+    ANOMAL = .TRUE.
+else
+    anomal = .false.
+end if
 !--SET THE EXTINCTION FLAG
-EXTINCT = .FALSE.
-if(ISTORE(L23M+1).GE.0) EXTINCT = .TRUE.
-!--SET THE PARTIAL CONTRIBUTIONS FLAG
-PARTIALS = .FALSE.
-if(ISTORE(L23M+4).GE.0) PARTIALS = .TRUE.
-!--SET THE UPDATE PARTIAL CONTRIBUTIONS FLAG
-ND=ISTORE(L23M+5)
-!----- SET THE ENANTIOPOLE REFINEMENT FLAG
-ENANTIO = .FALSE.
-if ( ISTORE(L23M+6) .EQ. 0 ) ENANTIO = .TRUE.
+if(istore(l23m+1).ge.0) then 
+    extinct = .true.
+else
+    extinct = .false.
+end if
 !--SET THE FLAG FOR REFINEMENT AGAINST /FO/ OR /FO/ **2
 NV=ISTORE(L23MN+1)
 !----- CHECK if WE  NEED REFLECTIONS (-1 IF NOT)
@@ -268,11 +269,7 @@ call XCSAE
 !----- SAVE SOME SPACE FOR THE U AXES
 IADDU = KCHLFL (4)
 !--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
-! Horrible hack to avoid list13 theta1 and theta2 to be erased...
-RALL(1:2)=STORE(L13DC+1:L13DC+2)
 call XFAL33
-STORE(L13DC+1:L13DC+2)=RALL(1:2)
-RALL(1:2)=0.0
 if ( IERFLG .LT. 0 ) return
 if ( SFLS_TYPE .EQ. SFLS_CALC ) then
     RALL(1)=STORE(M33CD+5)
@@ -980,7 +977,7 @@ END
 !! @page SFLSC SFLSC details
 !!
 !! @section reflectionsdata Reflections data
-!! reflectionsdata is a buffer holding reflections data of several reflections<br>
+!! reflectionsdata(i,j) is a buffer holding reflections data of several reflections<br>
 !! reflectionsdata_size reflections stored by columns (md6 values from m6 in original store)
 !! - <b>0</b>:  h
 !! - <b>1</b>:  k
@@ -992,8 +989,8 @@ END
 !! - <b>7</b>:  partial contribution for a.
 !! - <b>8</b>:  partial contribution for b.
 !! - <b>9</b>:  t-bar, extinction term for this reflection.
-!! -<b>10</b>:  /fot/, total /fo/ for a twinned structure
-!! -<b>11</b>:  the elements of a twinned structure.
+!! - <b>10</b>:  /fot/, total /fo/ for a twinned structure
+!! - <b>11</b>:  the elements of a twinned structure.
 !! - <b>md6+1</b>: ac
 !! - <b>md6+2</b>: aci
 !! - <b>md6+3</b>: bc
@@ -1067,8 +1064,8 @@ END
 !!  - 7  partial contribution for a.
 !!  - 8  partial contribution for b.
 !!  - 9  t-bar  -  extinction term for this reflection.
-!!  -10  /fot/  -  total /fo/ for a twinned structure
-!!  -11  the elements of a twinned structure.
+!!  - 10  /fot/  -  total /fo/ for a twinned structure
+!!  - 11  the elements of a twinned structure.
 !!
 !! @subsection generalvars useage of general variables
 !!
@@ -1163,7 +1160,7 @@ use xsfwk_mod, only: st, sst, theta1, theta2, tc, wdf, wave, wdft
 use xsfwk_mod, only: df, c, bct, bcn, aminf, rall
 use xsfwk_mod, only: act, a
 !include 'XWORKB.INC'
-use xworkb_mod, only:  nu, nv, nt, nd, jq, jp, jo, jr, cycle_number=>ji
+use xworkb_mod, only:  nu, nv, nt, nd, jq, jr, cycle_number=>ji
 !include 'XSFLSW.INC90'
 use xsflsw_mod, only: wsfofc, wsfcfc, sfofc, sfcfc
 use xsflsw_mod, only: cos_only, centro, sfls_type, sfls_calc, sfls_refine, sfls_scale
@@ -1173,7 +1170,7 @@ use xunits_mod, only: ncwu, ncvdu
 !include 'XSSVAL.INC90'
 use xssval_mod, only: issprt
 !include 'XLST01.INC90'
-!use xlst01_mod, only: l1p1
+use xlst01_mod, only: l1p1
 !include 'XLST02.INC90'
 use xlst02_mod, only: symm_operators, n2, ic, md2, l2
 !include 'XLST03.INC90' Not used!
@@ -1201,6 +1198,7 @@ use xlst13_mod, only: L13DC
 
 use extinction_mod, only: extinct, sphericalextinct_init, sphericalextinct_coefs
 use math_mod, only: degrees
+use sort_mod
 
 implicit none
 
@@ -1331,10 +1329,10 @@ real rall1
 
 double precision, dimension(:), allocatable :: righthandside
 integer cpt
-
 double precision, dimension(:), allocatable :: temporaryderivatives
-
 real, dimension(5) :: extinct_coeficients ! was ext1, ext2, ext3, ext4, delta
+
+type(sort_type) :: worstreflections
 
 call CPU_TIME ( time_begin )
 
@@ -1343,11 +1341,9 @@ LTEMPR = NFL
 NTEMPR = 7
 NFL = KCHNFL(NTEMPR)
 !----- INITIALISE THE SORT BUFFER
-JSORT = -5
-MDSORT = NTEMPR
-NSORT = 30
-call SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
-!JSORT = 5 ! useless, if jsort<0, on return jsort is abs(jsort)
+!call SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
+! 7 parameter to store, 30 reflections
+call worstreflections%init(ipos=5, itype=0, initsize=(/7,30/) )
 
 !----- SET BAD R FACTOR COUNTER
 IBADR = -1
@@ -1388,7 +1384,7 @@ NT=0
 SCALEO=STORE(L5O)
 
 if(EXTINCT)THEN   ! THE EXTINCTION PARAMETER IN LIST 5 SHOULD BE USED
-    call sphericalextinct_init(WAVE, NU)
+    call sphericalextinct_init(WAVE, NU, THETA1, THETA2, ext=STORE(L5O+5), volume=STORE(L1P1+6))
 end if
 
 !--CHECK if A PRINT IS REQUIRED
@@ -1429,8 +1425,8 @@ end if
 
 print *, 'Number of threads used: ', tid
 
-allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
-allocate(designmatrix(JP-JO+1,storechunk*tid))
+allocate(normalmatrix(n12,n12, tid))
+allocate(designmatrix(n12,storechunk*tid))
 allocate(reflectionsdata(MD6+9+2,storechunk*tid))
 !md6+1 ac
 !md6+2 aci
@@ -1523,11 +1519,11 @@ designmatrix=0.0d0
 !          'SCALEG' IS ZERO, WHEN 'SCALEK' IS SET TO 1.0). - =1.0/scaleo
 !  SCALEW  SCALEG*W - =scaleo*w
 
-!$OMP PARALLEL default(none)&
-!$OMP& shared(sfls_type) &
+!$OMP PARALLEL & !default(none)&
+!$OMP& shared(worstreflections, sfls_type) &
 !$OMP& shared(reflectionsdata_size) &
 !$OMP& shared(reflectionsdata, scaleo) &
-!$OMP& shared(issprt, ncwu, md6, n12, jp,jo) &
+!$OMP& shared(issprt, ncwu, md6, n12) &
 !$OMP& shared(extinct, wave, jq, jr, nu) &
 !$OMP& shared(nd, nv, xvalur,LTEMPR, nsort, mdsort) &
 !$OMP& shared(refprint, m33cd) &
@@ -1581,7 +1577,7 @@ do reflectionsdata_index=1, reflectionsdata_size
 
     !--CHECK if WE SHOULD include EXTINCTION
     if(EXTINCT)THEN ! WE SHOULD include EXTINCTION
-        call sphericalextinct_coefs(wave, NU, sst, reflectionsdata(:,reflectionsdata_index), extinct_coeficients)
+        call sphericalextinct_coefs(sst, reflectionsdata(:,reflectionsdata_index), extinct_coeficients)
     end if
     reflectionsdata(1+5,reflectionsdata_index)=reflectionsdata(1+5,reflectionsdata_index)*extinct_coeficients(4)   ! COMPUTE THE MODifIED /FC/ and store it in list 6 slots
     FCEXS=reflectionsdata(1+5,reflectionsdata_index)*SCALEO ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
@@ -1630,16 +1626,14 @@ do reflectionsdata_index=1, reflectionsdata_size
     UJ=reflectionsdata(1+3,reflectionsdata_index)*SCALEK 
     ! Condition is repeated to avoid the critical section outside the condition
     ! and still keep a consistent evaluation of the if       
-    if (RDJW .GT. ABS(XVALUR)) then
+    if (RDJW .GT. ABS( worstreflections%array(worstreflections%ipos,1)) ) then
         !----  H,K,L,FO,FC,/WDELTA/,FO/FC
 !$OMP CRITICAL        
-        if (RDJW .GT. ABS(XVALUR)) then
-            call XMOVE(reflectionsdata(1:3,reflectionsdata_index), store(LTEMPR), 3)
-            store(LTEMPR+3) = UJ
-            store(LTEMPR+4) = reflectionsdata(1+5,reflectionsdata_index)
-            store(LTEMPR+5) = RDJW
-            store(LTEMPR+6) = MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO))
-            call SRTDWNnew(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR, 0, store)
+        if (RDJW .GT. ABS(worstreflections%array(worstreflections%ipos,1))) then
+            worstreflections%insert=(/ reflectionsdata(1:3,reflectionsdata_index), UJ, &
+            &   reflectionsdata(1+5,reflectionsdata_index), RDJW, &
+            &   MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO)) /)
+            call worstreflections%insert_sort
         end if
 !$OMP END CRITICAL
     end if
@@ -1743,23 +1737,6 @@ do reflectionsdata_index=1, reflectionsdata_size
         ! accumulation done in double precision
         call XADRHS(WDF,designmatrix(:,reflectionsdata_index),righthandside) 
 
-        !if(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
-        !
-        !    if (TRANSFER(store(M33CD+13), 1).EQ.0) then
-        !        !call PARM_PAIRS_XLHS(storetemp(JO), JP-JO+1, &
-        !        !&   STR11(L11), N11, iresults, nresults, & 
-        !        !&   storetemp(L12B), N12B*MD12B, MD12B)
-        !        print *, 'not implemented (parm_pairs_xlhs)'
-        !        stop
-        !    else
-        !        ! Store a chunk of the design matrix
-        !        !designmatrix(:,reflectionsdata_index) = storetemp(JO:JP)
-        !        !print *, storetemp(JO:JP)
-        !
-        !        !           call XADLHS( storetemp(JO), JP-JO+1, STR11(L11), N11,
-        !        !     1         storetemp(L12B), N12B*MD12B, MD12B )
-        !    end if
-        !end if
     end if
     
     ! All writing back is delayed outside the loop
@@ -1800,9 +1777,9 @@ if(SFLS_TYPE .EQ. SFLS_REFINE .and. &
 &   NEWLHS .and. &! ACCUMULATE THE LEFT HAND SIDES
 &   transfer(STORE(M33CD+12),1).EQ.0 .and. &! Just a normal accumulation.
 &   transfer(STORE(M33CD+13),1).NE.0)THEN    
-    call DSYRK('L','N',JP-JO+1,storechunk, &
+    call DSYRK('L','N',N12,storechunk, &
     &   1.0d0, designmatrix(1,storechunk*(tid-1)+1), &
-    &   JP-JO+1,1.0d0,normalmatrix(1,1,tid),JP-JO+1)    
+    &   N12,1.0d0,normalmatrix(1,1,tid),N12)    
 end if
     
 !$OMP END PARALLEL
@@ -2775,6 +2752,7 @@ integer ISTACK
 real, intent(out) :: sst
 !> coefficient for the iso-temperature factors
 real, intent(out) :: tc
+!> list 6 contents plus extra bits, see @ref reflectionsdata
 real, dimension(:), intent(inout) :: reflectiondata
 !> array holding the derivatives against each parameter
 double precision, dimension(:), intent(out) :: temporaryderivatives
