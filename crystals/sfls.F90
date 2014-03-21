@@ -1343,7 +1343,7 @@ NFL = KCHNFL(NTEMPR)
 !----- INITIALISE THE SORT BUFFER
 !call SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
 ! 7 parameter to store, 30 reflections
-call worstreflections%init(ipos=5, itype=0, initsize=(/7,30/) )
+call sort_type2init(worstreflections, ipos=5, itype=0, initsize=(/7,30/) )
 
 !----- SET BAD R FACTOR COUNTER
 IBADR = -1
@@ -1519,7 +1519,7 @@ designmatrix=0.0d0
 !          'SCALEG' IS ZERO, WHEN 'SCALEK' IS SET TO 1.0). - =1.0/scaleo
 !  SCALEW  SCALEG*W - =scaleo*w
 
-!$OMP PARALLEL & !default(none)&
+!$OMP PARALLEL default(none)&
 !$OMP& shared(worstreflections, sfls_type) &
 !$OMP& shared(reflectionsdata_size) &
 !$OMP& shared(reflectionsdata, scaleo) &
@@ -1550,7 +1550,6 @@ maximum=-huge(maximum)
 
 if(allocated(temporaryderivatives)) deallocate(temporaryderivatives)
 allocate(temporaryderivatives(n12*jq))
-temporaryderivatives=0.0d0
 
 extinct_coeficients=1.0
 if(SCALEO .GT. 1e-6) then   ! CHECK IF THE SCALE IS ZERO
@@ -1633,7 +1632,7 @@ do reflectionsdata_index=1, reflectionsdata_size
             worstreflections%insert=(/ reflectionsdata(1:3,reflectionsdata_index), UJ, &
             &   reflectionsdata(1+5,reflectionsdata_index), RDJW, &
             &   MIN(99., UJ / MAX(reflectionsdata(1+5,reflectionsdata_index) , ZERO)) /)
-            call worstreflections%insert_sort
+            call sort_type2insert_sort(worstreflections)
         end if
 !$OMP END CRITICAL
     end if

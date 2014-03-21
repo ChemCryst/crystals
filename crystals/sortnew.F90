@@ -14,26 +14,23 @@ type sort_type
     !! -  0 absolute largest to smallest
     !! -  1 largest to smallest
     integer itype
-contains
-    procedure :: insert_sort
-    procedure :: init
 end type
 
 contains
 
 !> Initialization for sorting
-subroutine init(this, ipos, itype, initsize)
+subroutine sort_type2init(this, ipos, itype, initsize)
 implicit none
-class(sort_type), intent(out) :: this
+type(sort_type), intent(out) :: this
 !> offset in record of item to be sorted (i.e. column number in array)
-integer, optional, intent(in) :: ipos
+integer, intent(in) :: ipos
 !> Type of sorting: 
 !! - -1 smallest to largest
 !! -  0 absolute largest to smallest
 !! -  1 largest to smallest
-integer, optional, intent(in) :: itype
+integer, intent(in) :: itype
 !> Initialization size of the array
-integer, dimension(2), optional, intent(in) :: initsize
+integer, dimension(2), intent(in) :: initsize
 
 allocate(this%array(initsize(1), initsize(2)))
 allocate(this%insert(initsize(1)))
@@ -50,9 +47,9 @@ end subroutine
 
 !> Store the occurences of a record containing the smallest or largest occurences of an item
 !! Initialization must be done before use.
-subroutine insert_sort(this)
+subroutine sort_type2insert_sort(this)
 implicit none
-class(sort_type), intent(inout) :: this
+type(sort_type), intent(inout) :: this
 integer i, nsort
 logical ihit
 
