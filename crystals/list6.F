@@ -814,12 +814,8 @@ C--AND NOW RETURN
       END
 C
 CODE FOR KFNR
-      integer function KFNRnew(state, L6W, N6W, reflectiondata) 
+      integer function KFNRnew(L6W, N6W, reflectiondata) 
      1     result(kfnr)
-C--FETCH THE NEXT REFLECTION, CHECKING WITH LIST 28 THAT IT IS ALLOWED.
-C
-C----- state   0 FOR READ-ONLY
-C              1 FOR READ-WRITE
 C
 C--RETURN VALUES OF 'KFNR' ARE :
 C
@@ -830,49 +826,25 @@ C--
       use xlst06_mod, only: md6w, m6, md6
       use store_mod, only: store
       implicit none
-      integer, intent(in) :: state
       integer, intent(inout) :: l6w, n6w
       integer :: iallow
       real, dimension(:), intent(out) :: reflectiondata
       
       interface
-        integer function KLDRNRnew(state, reflectiondata) result(KLDRNR)
+        integer function KLDRNRnew(reflectiondata) result(KLDRNR)
           implicit none
-          integer, intent(in) :: state
           real, dimension(:) :: reflectiondata
           end function
-      end interface
-
-      interface
-       integer function kallownew(iallow, reflectiondata) result(kallow)
-          implicit none
-          real, dimension(:), intent(inout) :: reflectiondata
-          integer iallow
-          end function
-      end interface
-          
-      
+      end interface      
 C
 C--FETCH THE NEXT REFLECTION
-1000  CONTINUE
       L6W=L6W+MD6W
       N6W=N6W+1
-      IF(KLDRNRnew(state, reflectiondata))1100,1050,1050
-C--CHECK IF THE REFLECTION IS ALLOWED
-1050  CONTINUE
-      KFNR=0
-      IF(KALLOWnew(IALLOW, reflectiondata)) 1060,1150,1150
-1060  CONTINUE
-      IF(state) 1000,1000,1070
-1070   CONTINUE
-      !CALL XSLR(state)
-      GO TO 1000
-C--END OF THE REFLECTIONS FOUND
-1100  CONTINUE
-      KFNR=-1
-C--AND NOW RETURN
-1150  CONTINUE
-      RETURN
+      IF(KLDRNRnew(reflectiondata)<0) then ! 1100,1050,1050
+        kfnr = -1
+      else 
+        kfnr = 0
+      end if
       END
 C
 CODE FOR XSLR
@@ -1269,7 +1241,8 @@ C--AND NOW RETURN
 C
 
 code for kallow
-      function kallownew(iallow, reflectiondata) result(kallow)
+      function kallownew(reflectiondata, ignoresigma) 
+     1    result(kallow)
       use store_mod, only: store, istore
       use xconst_mod, only: zero
       use xlst06_mod, only: m6, n6r
@@ -1287,17 +1260,12 @@ c   0  the reflection is okay.
 c  -n  not acceptable to test 'n'
 c -100 general rejection
 c
-c  iallow  -1 min flag
-c           0 undefined
-c           1 max flag
-c
 c--the reflection is taken from the core buffer at 'm6', and
 c  sin(theta)/lambda squared and fo/fc are computed by this routine.
 c
       interface
-          real function snthl2new(dummy, reflectiondata)
-              integer, intent(in) :: dummy
-              real, dimension(:) :: reflectiondata
+          real function snthl2new(hkl)
+              real, dimension(3) :: hkl
           end function
       end interface
 
@@ -1314,23 +1282,20 @@ c
       !include 'qstore.inc'
       
       real, dimension(:), intent(inout) :: reflectiondata
-      integer, intent(out) :: iallow
+      logical, optional, intent(in) :: ignoresigma
       integer :: kallow
-      integer i, j, ind6, ind28, ik
+      integer i, j, ind6, ind28
       real a
 c
 c----- disallow this reflection initially
-      ik = -100
-      iallow = 0
+      kallow = -100
 c----- should we skip it (step stored in md28sk in xfal28)
       if (mod (n6r, max(1, md28sk) ) .ne. 0) then !goto 1650
-          kallow = ik
           return
       end if
       
 c--compute the sin(theta)/lambda squared
-      reflectiondata(1+16)=snthl2new(dummy=0, 
-     1    reflectiondata=reflectiondata)
+      reflectiondata(1+16)=snthl2new(hkl=reflectiondata(1:3))
 c--check if /fc/ is zero
       if(abs(reflectiondata(1+5))<zero) then !1000,1050,1050
 c--/fc/ is zero  -  fo/fc defaults to zero as well
@@ -1343,15 +1308,13 @@ c--compute fo/fc
           reflectiondata(1+17)=reflectiondata(1+3)/reflectiondata(1+5)
       end if !1100  continue
 c--check if there are any minima conditions
-      if(n28mn>0) then !1250,1250,1150
+      if(n28mn>0 .and. .not. present(ignoresigma)) then !1250,1250,1150
 c--run through the minima conditions
           !1150  continue
           do i=l28mn,m28mn,md28mn ! 1200
               j=istore(i) ! using relative address in reflectiondata instead
               if(reflectiondata(j-m6+1) .lt. store(i+1)) then
-                  iallow = -1
-                  ik = m6-j-1
-                  kallow = ik
+                  kallow = m6-j-1
                   return
                   !goto 1650
               endif
@@ -1366,9 +1329,7 @@ c--run through the maxima conditions
           do i=l28mx,m28mx,md28mx ! 1350 
               j=istore(i)
               if(reflectiondata(j-m6+1).gt.store(i+1)) then
-                  iallow = 1
-                  ik = m6-j-1
-                  kallow = ik
+                  kallow = m6-j-1
                   return
                   !goto 1650
               endif
@@ -1390,7 +1351,6 @@ c we have a match. if reject, then disallow this reflection.
 c if accept, stop processing slice directives.
 c----- reject or accept?
                   if (istore(i+5) .eq. 0) then
-                      kallow = ik
                       return
                       !goto 1650 !reject this reflection outright
                   else
@@ -1412,7 +1372,6 @@ c we have a match. if reject, then disallow this reflection.
 c if accept, stop processing condition directives.
 c-- reject or accept?
                   if (istore(i+5) .eq. 0) then
-                      kallow = ik
                       return
                       !goto 1650    !reject this reflection outright.
                   else
@@ -1425,7 +1384,6 @@ c
 c -- check for specific omissions
       if ( n28om .le. 0 ) then 
           !go to 1640
-          ik = 0
           kallow = 0
           return
       end if
@@ -1439,17 +1397,15 @@ c -- check for specific omissions
           end do ! 1610  continue
           if ( a .le.  ( 3 * zero )  ) then 
               !go to 1650
-              kallow = ik
               return
           end if
       end do ! 1620  continue
 c
 !1640  continue
 c -- reflection has passed all tests
-      ik = 0
 c--and now return
 !1650  continue
-      kallow = ik
+      kallow = 0
       return
       end
 C
@@ -1482,32 +1438,30 @@ C--AND NOW RETURN
       END
 C
 CODE FOR SNTHL2
-      FUNCTION SNTHL2new(dummy, reflectiondata) result(SNTHL2)
+      FUNCTION SNTHL2new(hkl) result(SNTHL2)
+      use store_mod, only: store
+      use xlst01_mod, only: l1s
+      implicit none
 C--CALCULATE (SIN(THETA)/LAMBDA)**2
 C
-C  M6   LOCATION OF THE REFLECTION.
 C  L1S  LOCATION OF THE R(IJ) TERMS.
 C
 C--
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
-      INCLUDE 'XLST06.INC'
       
-      real, dimension(md6), intent(in) :: reflectiondata
-      integer dummy
+      real, dimension(3), intent(in) :: hkl
+      real :: SNTHL2
 C
-      IDWZAP = dummy
 C--CHECK IF LIST 1 IS AVAILABLE
       SNTHL2=0.
       IF(L1S)1050,1050,1000
 C--CALCULATE (SIN(THETA)/LAMBDA)**2
 1000  CONTINUE
-      SNTHL2=reflectiondata(1)**2*STORE(L1S)
-     1 +reflectiondata(1+1)**2*STORE(L1S+1)+reflectiondata(1+2)**2
-     2 *STORE(L1S+2)+reflectiondata(1+1)
-     3 *reflectiondata(1+2)*STORE(L1S+3)+reflectiondata(1)
-     4 *reflectiondata(1+2)*STORE(L1S+4)
-     5 +reflectiondata(1)*reflectiondata(1+1)*STORE(L1S+5)
+      SNTHL2=hkl(1)**2*STORE(L1S)
+     1 +hkl(2)**2*STORE(L1S+1)+hkl(3)**2
+     2 *STORE(L1S+2)+hkl(2)
+     3 *hkl(3)*STORE(L1S+3)+hkl(1)
+     4 *hkl(3)*STORE(L1S+4)
+     5 +hkl(1)*hkl(2)*STORE(L1S+5)
 C--AND NOW RETURN
 1050  CONTINUE
       RETURN
@@ -1908,10 +1862,8 @@ C      CALL XPRVDU(NCVDU, 2,0)
       RETURN
       END
 C
-      integer function KLDRNRnew(state, reflectiondata) result(KLDRNR)
+      integer function KLDRNRnew(reflectiondata) result(KLDRNR)
 C--LOAD THE NEXT REFLECTION FROM THE DISC
-C
-C  state  A DUMMY ARGUMENT.
 C
 C--RETURN VALUES ARE :
 C
@@ -1926,7 +1878,6 @@ C
 
       logical, save :: DISPL6
       integer, PARAMETER :: NINTER = 20
-      integer, intent(in) :: state
       real a
       integer i, j, k, ipercn, newlvl, nprev
       real bdjw, cdjw, ddjw

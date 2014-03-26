@@ -1259,9 +1259,8 @@ interface
 end interface
 
 interface
-    integer function KFNRnew(state, L6W, N6W, reflectiondata) 
+    integer function KFNRnew(L6W, N6W, reflectiondata) 
     implicit none
-    integer, intent(in) :: state
     integer, intent(inout) :: l6w, n6w
     real, dimension(:), intent(out) :: reflectiondata
     end function
@@ -1275,9 +1274,10 @@ interface
 end interface
 
 interface
-    integer function kallow(iallow)
+    integer function KALLOWnew(reflectiondata, ignoresigma) 
     implicit none
-    integer iallow
+    real, dimension(:), intent(inout) :: reflectiondata
+    logical, optional, intent(in) :: ignoresigma
     end function
 end interface
 
@@ -1286,7 +1286,7 @@ end interface
 
 !
 character(len=256) :: formatstr
-integer i, ibadr, iallow,  ibl, ibs, ifnr
+integer i, ibadr,  ibl, ibs, ifnr
 integer ixap, i28mn, jxap, jsort
 integer ljx, lsort, ltempl, ltempr, msort
 integer mnr, mdsort, mb, k, j, nsort
@@ -1465,50 +1465,47 @@ end do
 
 rall1=rall(1)
 cpt=0
-reflectionsdata_size=1
-do WHILE (reflectionsdata_size>0)  ! START OF THE LOOP OVER REFLECTIONS
+reflectionsdata_size=storechunk*tid
+do WHILE (reflectionsdata_size==storechunk*tid)  ! START OF THE LOOP OVER REFLECTIONS
 cpt=cpt+1
 
 ! Prefectching a bunch of reflections. Number depends on the number of threads
 ! It is a multiple of storechunk
-do reflectionsdata_index=1, storechunk*tid
-    IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-        ! Remove I/sigma(I) cutoff, temporarily, leaving all other filters
-        ! in place.
-        do I28MN = L28MN,L28MN+((N28MN-1)*MD28MN),MD28MN
-            if(ISTORE(I28MN)-M6.EQ.20) then
-                SAVSIG = STORE(I28MN+1)
-                STORE(I28MN+1) = -99999.0
-            end if
-        end do
-        ! Fetch reflection using all other filters:
-        ifNR = KFNRnew(1, l6w, n6w, reflectionsdata(1:md6,reflectionsdata_index))
-        ! Put sigma filter back:
-        do I28MN = L28MN,M28MN,MD28MN
-            if(ISTORE(I28MN)-M6.EQ.20) then
-                STORE(I28MN+1) = SAVSIG
-            end if
-        end do
-        ! Store the status of a reflection as kallow is no longer available later
-        if(KALLOW(IALLOW)<0) then
-            reflectionsdata(md6+11,reflectionsdata_index)=-1.0
-        else
-            reflectionsdata(md6+11,reflectionsdata_index)=0.0
-        end if
-    else
-        ifNR = KFNRnew(1, l6w, n6w, reflectionsdata(1:md6,reflectionsdata_index))
-        reflectionsdata(md6+11,reflectionsdata_index)=0.0
-    end if
+reflectionsdata_size=0
+do while(reflectionsdata_size<storechunk*tid)
+    reflectionsdata_size=reflectionsdata_size+1
+    ifNR = KFNRnew(l6w, n6w, reflectionsdata(1:md6,reflectionsdata_size))
     if(ifnr>=0) then
         ! pointer to location of the reflection data on disc
-        l6wpointers(reflectionsdata_index)=l6w
-        n6wpointers(reflectionsdata_index)=n6w
-    
+        l6wpointers(reflectionsdata_size)=l6w
+        n6wpointers(reflectionsdata_size)=n6w    
     else
+        reflectionsdata_size=reflectionsdata_size-1
         exit
     end if
+    IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
+        if(KALLOWnew(reflectionsdata(1:md6,reflectionsdata_size), ignoresigma=.true.)<0) then
+            reflectionsdata_size=reflectionsdata_size-1
+            cycle
+        end if
+        ! Store the status of a reflection as kallow is no longer available later
+        if(KALLOWnew(reflectionsdata(1:md6,reflectionsdata_size))<0) then
+            reflectionsdata(md6+11,reflectionsdata_size)=-1.0
+        else
+            reflectionsdata(md6+11,reflectionsdata_size)=0.0
+        end if
+    else
+        if(KALLOWnew(reflectionsdata(1:md6,reflectionsdata_size))<0) then
+            reflectionsdata_size=reflectionsdata_size-1
+            cycle
+        end if
+        reflectionsdata(md6+11,reflectionsdata_size)=0.0
+    end if
 end do
-reflectionsdata_size=reflectionsdata_index-1
+
+! Case when number of reflections is exactly a multiple of the buffer
+if(reflectionsdata_size==0) cycle
+
 ! reseting design matrix
 ! It is important as the last chunk will not be complete
 designmatrix=0.0d0
