@@ -1268,143 +1268,190 @@ C--AND NOW RETURN
       END
 C
 
-CODE FOR KALLOW
-      FUNCTION KALLOWnew(IALLOW, reflectiondata) result(kallow)
-C--THIS FUNCTION DETERMINES WHETHER A REFLECTION IS ACCEPTABLE TO LIST 2
+code for kallow
+      function kallownew(iallow, reflectiondata) result(kallow)
+      use store_mod, only: store, istore
+      use xconst_mod, only: zero
+      use xlst06_mod, only: m6, n6r
+      use xlst28_mod, only: n28rc, n28om, n28mx, n28mn, n28cd
+      use xlst28_mod, only: md28sk, md28rc, md28om, md28mx, md28mn
+      use xlst28_mod, only: md28cd, m28rc, m28om, m28mx, m28mn, m28cd
+      use xlst28_mod, only: l28rc, l28om, l28mx, l28mn, l28cd
+      implicit none
+c--this function determines whether a reflection is acceptable to list 2
 c
-cdjwapr2011. Return info about which test failed
-C
-C--THE RETURN VALUES OF 'KALLOW' ARE :
-C   0  THE REFLECTION IS OKAY.
-C  -N  NOT ACCEPTABLE TO TEST 'N'
-C -100 GENERAL REJECTION
-C
-C  IALLOW  -1 MIN FLAG
-C           0 UNDEFINED
-C           1 MAX FLAG
-C
-C--THE REFLECTION IS TAKEN FROM THE CORE BUFFER AT 'M6', AND
-C  SIN(THETA)/LAMBDA SQUARED AND FO/FC ARE COMPUTED BY THIS ROUTINE.
-C
-C--
-      INCLUDE 'ISTORE.INC'
-C
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST06.INC'
-      INCLUDE 'XLST28.INC'
-      INCLUDE 'XUNITS.INC'
-C
-      INCLUDE 'QSTORE.INC'
+cdjwapr2011. return info about which test failed
+c
+c--the return values of 'kallow' are :
+c   0  the reflection is okay.
+c  -n  not acceptable to test 'n'
+c -100 general rejection
+c
+c  iallow  -1 min flag
+c           0 undefined
+c           1 max flag
+c
+c--the reflection is taken from the core buffer at 'm6', and
+c  sin(theta)/lambda squared and fo/fc are computed by this routine.
+c
+      interface
+          real function snthl2new(dummy, reflectiondata)
+              integer, intent(in) :: dummy
+              real, dimension(:) :: reflectiondata
+          end function
+      end interface
+
+
+c--
+      !include 'istore.inc'
+c
+      !include 'store.inc'
+      !include 'xconst.inc'
+      !include 'xlst06.inc'
+      !include 'xlst28.inc'
+      !include 'xunits.inc'
+c
+      !include 'qstore.inc'
       
       real, dimension(:), intent(inout) :: reflectiondata
-C
-C----- DISALLOW THIS REFLECTION INITIALLY
-      IK = -100
-      IALLOW = 0
-C----- SHOULD WE SKIP IT (STEP STORED IN MD28SK IN XFAL28)
-      IF (MOD (N6R, MAX(1, MD28SK) ) .NE. 0) GOTO 1650
-C--COMPUTE THE SIN(THETA)/LAMBDA SQUARED
-      reflectiondata(1+16)=SNTHL2new(IN, reflectiondata)
-C--CHECK IF /FC/ IS ZERO
-      IF(ABS(reflectiondata(1+5))-ZERO)1000,1050,1050
-C--/FC/ IS ZERO  -  FO/FC DEFAULTS TO ZERO AS WELL
-1000  CONTINUE
-      reflectiondata(1+17)=ZERO
-      GOTO 1100
-C--COMPUTE FO/FC
-1050  CONTINUE
-      reflectiondata(1+17)=reflectiondata(1+3)/reflectiondata(1+5)
-1100  CONTINUE
-C--CHECK IF THERE ARE ANY MINIMA CONDITIONS
-      IF(N28MN)1250,1250,1150
-C--RUN THROUGH THE MINIMA CONDITIONS
-1150  CONTINUE
-      DO 1200 I=L28MN,M28MN,MD28MN
-      J=ISTORE(I) ! using relative address in reflectiondata instead
-      IF(reflectiondata(J-m6+1) .LT. STORE(I+1)) THEN
-            IALLOW = -1
-            IK = m6-j-1
-            GOTO 1650
-      ENDIF
-c      K = K - 1  ! RC 310811 - removed this line - variable K does not exist
-1200  CONTINUE
-C--CHECK IF THERE ARE ANY MAXIMA CONDITIONS
-1250  CONTINUE
-      IF(N28MX)1400,1400,1300
-C--RUN THROUGH THE MAXIMA CONDITIONS
-1300  CONTINUE
-      DO 1350 I=L28MX,M28MX,MD28MX
-      J=ISTORE(I)
-      IF(reflectiondata(J-m6+1).GT.STORE(I+1)) THEN
-            IALLOW = 1
-            IK = m6-j-1
-            GOTO 1650
-      ENDIF
-c      K = K - 1 ! RC 310811 - removed this line - variable K does not exist
-1350  CONTINUE
-C--CHECK IF THERE ARE ANY SLICE CONDITIONS
-1400  CONTINUE
-      IF(N28RC)1600,1600,1450
-C--PASS THROUGH THE SLICE CONDITIONS
-1450  CONTINUE
-      DO 1550 I=L28RC,M28RC,MD28RC
-        A=reflectiondata(1)  *STORE(I  )
-     1   +reflectiondata(1+1)*STORE(I+1)
-     2   +reflectiondata(1+2)*STORE(I+2)
-C--CHECK THE MINIMUM AND MAXIMUM
-        IF( (A .GE. STORE(I+3)).AND.(A .LE. STORE(I+4)) ) THEN
-C We have a match. If reject, then disallow this reflection.
-C If accept, stop processing slice directives.
-C----- REJECT OR ACCEPT?
-          IF (ISTORE(I+5) .EQ. 0) THEN
-            GOTO 1650 !Reject this reflection outright
-          ELSE
-            GOTO 1600 !Accept as far as SLICE is concerned.
-          ENDIF
-        ENDIF
-1550  CONTINUE
-1600  CONTINUE
-      IF(N28CD)1800, 1800, 1700
-C--PASS THROUGH THE REFLECTION CONDITIONS
-1700  CONTINUE
-      DO 1750 I = L28CD, M28CD, MD28CD
-        A = reflectiondata(1  )*STORE(I  )
-     1    + reflectiondata(1+1)*STORE(I+1)
-     2    + reflectiondata(1+2)*STORE(I+2) + STORE(I+3)
-        IF (MOD (ABS(A), STORE(I+4) ) .LE. ZERO) THEN
-C We have a match. If reject, then disallow this reflection.
-C If accept, stop processing condition directives.
-C-- REJECT OR ACCEPT?
-          IF (ISTORE(I+5) .EQ. 0) THEN
-            GOTO 1650    !Reject this reflection outright.
-          ELSE
-            GOTO 1800    !Accept as far as CONDITIONS are concerned.
-          ENDIF
-        ENDIF
-1750  CONTINUE
-1800  CONTINUE
-C
-C -- CHECK FOR SPECIFIC OMISSIONS
-      IF ( N28OM .LE. 0 ) GO TO 1640
-      DO 1620 I = L28OM , M28OM , MD28OM
-      A = 0.
-      DO 1610 J = 1 , 3
-      IND6 = M6 + J - 1 - m6 + 1 ! using relative address in reflectiondata instead
-      IND28 = I + J - 1
-      A = A + ABS ( reflectiondata(IND6) - STORE(IND28) )
-1610  CONTINUE
-      IF ( A .LE.  ( 3 * ZERO )  ) GO TO 1650
-1620  CONTINUE
-C
-1640  CONTINUE
-C -- REFLECTION HAS PASSED ALL TESTS
-      IK = 0
-C--AND NOW RETURN
-1650  CONTINUE
-      KALLOW = IK
-      RETURN
-      END
+      integer, intent(out) :: iallow
+      integer :: kallow
+      integer i, j, ind6, ind28, ik
+      real a
+c
+c----- disallow this reflection initially
+      ik = -100
+      iallow = 0
+c----- should we skip it (step stored in md28sk in xfal28)
+      if (mod (n6r, max(1, md28sk) ) .ne. 0) then !goto 1650
+          kallow = ik
+          return
+      end if
+      
+c--compute the sin(theta)/lambda squared
+      reflectiondata(1+16)=snthl2new(dummy=0, 
+     1    reflectiondata=reflectiondata)
+c--check if /fc/ is zero
+      if(abs(reflectiondata(1+5))<zero) then !1000,1050,1050
+c--/fc/ is zero  -  fo/fc defaults to zero as well
+          !1000  continue
+          reflectiondata(1+17)=zero
+          !goto 1100
+      else
+c--compute fo/fc
+          !1050  continue
+          reflectiondata(1+17)=reflectiondata(1+3)/reflectiondata(1+5)
+      end if !1100  continue
+c--check if there are any minima conditions
+      if(n28mn>0) then !1250,1250,1150
+c--run through the minima conditions
+          !1150  continue
+          do i=l28mn,m28mn,md28mn ! 1200
+              j=istore(i) ! using relative address in reflectiondata instead
+              if(reflectiondata(j-m6+1) .lt. store(i+1)) then
+                  iallow = -1
+                  ik = m6-j-1
+                  kallow = ik
+                  return
+                  !goto 1650
+              endif
+c      k = k - 1  ! rc 310811 - removed this line - variable k does not exist
+          end do !1200  continue
+      end if !1250  continue
+c--check if there are any maxima conditions
+      
+      if(n28mx>0) then !1400,1400,1300
+c--run through the maxima conditions
+          !1300  continue
+          do i=l28mx,m28mx,md28mx ! 1350 
+              j=istore(i)
+              if(reflectiondata(j-m6+1).gt.store(i+1)) then
+                  iallow = 1
+                  ik = m6-j-1
+                  kallow = ik
+                  return
+                  !goto 1650
+              endif
+c      k = k - 1 ! rc 310811 - removed this line - variable k does not exist
+          end do !1350  continue
+      end if ! 1400  continue
+c--check if there are any slice conditions
+
+      if(n28rc>0) then !1600,1600,1450
+c--pass through the slice conditions
+          !1450  continue
+          do i=l28rc,m28rc,md28rc ! 1550 
+              a=reflectiondata(1)  *store(i  )
+     1         +reflectiondata(1+1)*store(i+1)
+     2         +reflectiondata(1+2)*store(i+2)
+c--check the minimum and maximum
+              if( (a .ge. store(i+3)).and.(a .le. store(i+4)) ) then
+c we have a match. if reject, then disallow this reflection.
+c if accept, stop processing slice directives.
+c----- reject or accept?
+                  if (istore(i+5) .eq. 0) then
+                      kallow = ik
+                      return
+                      !goto 1650 !reject this reflection outright
+                  else
+                      exit ! goto 1600 !accept as far as slice is concerned.
+                  endif
+              endif
+           end do !1550  continue
+      end if !1600  continue
+      
+      if(n28cd>0) then !1800, 1800, 1700
+c--pass through the reflection conditions
+          !1700  continue
+          do i = l28cd, m28cd, md28cd ! 1750 
+              a = reflectiondata(1  )*store(i  )
+     1          + reflectiondata(1+1)*store(i+1)
+     2          + reflectiondata(1+2)*store(i+2) + store(i+3)
+              if (mod (abs(a), store(i+4) ) .le. zero) then
+c we have a match. if reject, then disallow this reflection.
+c if accept, stop processing condition directives.
+c-- reject or accept?
+                  if (istore(i+5) .eq. 0) then
+                      kallow = ik
+                      return
+                      !goto 1650    !reject this reflection outright.
+                  else
+                      exit ! goto 1800    !accept as far as conditions are concerned.
+                  endif
+              endif
+           end do ! 1750  continue
+      end if !  1800  continue
+c
+c -- check for specific omissions
+      if ( n28om .le. 0 ) then 
+          !go to 1640
+          ik = 0
+          kallow = 0
+          return
+      end if
+      
+      do i = l28om , m28om , md28om ! 1620
+          a = 0.
+          do j = 1 , 3 ! 1610
+              !ind6 = m6 + j - 1 - m6 + 1 ! using relative address in reflectiondata instead
+              ind28 = i + j - 1
+              a = a + abs ( reflectiondata(j) - store(ind28) )
+          end do ! 1610  continue
+          if ( a .le.  ( 3 * zero )  ) then 
+              !go to 1650
+              kallow = ik
+              return
+          end if
+      end do ! 1620  continue
+c
+!1640  continue
+c -- reflection has passed all tests
+      ik = 0
+c--and now return
+!1650  continue
+      kallow = ik
+      return
+      end
 C
 
 CODE FOR SNTHL2
