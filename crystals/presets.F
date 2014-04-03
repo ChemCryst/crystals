@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: presets.F,v $
+C Revision 1.66  2012/03/23 13:54:08  rich
+C Changed some common block variables into constants.
+C
 C Revision 1.65  2011/11/03 09:20:35  rich
 C Initialise buffer for linearized error function.
 C
@@ -1624,7 +1627,8 @@ C      ISSEXP      EXPORT
 C      ISSUEQ      UEQUIV
 C      ISSUPD      UPDATE OF MODEL WINDOW
 C      ISSBND      BOND TYPING FOR MODEL WINDOW
-C      ISSCSH      cASHING MESSAGES (OFF/ON)
+C      ISSCSH      CASHING MESSAGES (OFF/ON)
+C      ISSRAT      RATIO = (IO OR IC)/SIGMA (0/1) 
 C
 C (THE FOLLOWING 4 DEFINITIONS ARE REDUNDANT, AND ARE REPLACED BY
 C  THE CHARACTER DEFINITIONS 'CSS***)
@@ -1755,7 +1759,7 @@ C
 #endif
       DATA ISSSFI / 1 /, ISSTML /0/, ISSFLC /2/, ISSMSG /1/
       DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /0/, ISSBND/1/
-      DATA ISSCSH /0/
+      DATA ISSCSH /0/, ISSRAT /0/
 C
 C
 C -- THE FOLLOWING VARIABLES ARE USED TO STORE IN CHARACTER FORM CERTAIN

@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: read.F,v $
+C Revision 1.67  2013/06/11 12:30:39  pascal
+C Linux changes
+C
 C Revision 1.66  2012/10/19 12:45:13  djw
 C Make Script not found message less frightening
 C
@@ -1650,7 +1653,8 @@ C     17           EXPO(RT)          'ISSEXP'
 C     18           UEQU(IV)          'ISSUEQ'
 C     19           AUTO(UPDATE)      'ISSUPD'
 C     20           BOND(TYPE)        'ISSBND'
-C     20           CACHEMESSAGE      'ISSCSH'
+C     21           CACHEMESSAGE      'ISSCSH'
+C     22           RATIO             'ISSRAT'
 C
 C    THE NAMES OF THE ALLOWED FUNCTIONS ARE STORED IN THE ARRAY
 C    'KEYFNC'. EACH STORED NAME IS 8 'A1' WORDS LONG. ONLY THE FIRST 4
@@ -1671,14 +1675,19 @@ C      NUMVAL      NUMBER OF ALLOWED VALUES IN 'KEYVAL' TO USE
 C      IFIRVL      NUMERIC VALUE ASSOCIATED WITH FIRST ALLOWED STRING
 C                  VALUE. SUBSEQUENT STRING VALUES ARE GIVEN INCREASING
 C                  NUMERIC VALUES
+      PARAMETER (LFNC=8)
+      PARAMETER (NFNC=22)
+      PARAMETER (LUFNC=4)
 C
-      DIMENSION KEYFNC(8,21)
-      DIMENSION KEYVAL(4,21)
+      DIMENSION KEYFNC(LFNC,NFNC)
+      DIMENSION ITPVAL(NFNC)
+      DIMENSION ISTVAL(NFNC)
+      DIMENSION NUMVAL(NFNC)
+      DIMENSION IFIRVL(NFNC)
 C
-      DIMENSION ITPVAL(21)
-      DIMENSION ISTVAL(21)
-      DIMENSION NUMVAL(21)
-      DIMENSION IFIRVL(21)
+      PARAMETER (LVAL=4)
+      PARAMETER (NVAL=23)
+      DIMENSION KEYVAL(LVAL,NVAL)
 C
       DIMENSION VALUE(1)
 C
@@ -1694,21 +1703,19 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XGUIOV.INC'
 C
-      DATA LFNC /8/, NFNC /21/, LUFNC /4/
 C
 C      MAPS        MONI(TOR)   LOG         PAGE        LIST(S)
 C      SPEE(D)     TIME        SRQ         TERM(INAL)   FILE(CASE)
 C      MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
 C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
-C      CACH(EMESSAGE)
+C      CACHEMESSAGE RATIO
 C
-      DATA LVAL / 4 / , NVAL / 21 /
 C
 C      LIST        NONE        CORE        OFF         ON
 C      SLOW        FAST        NONE        READ        WRIT
 C      BOTH        UNKN(OWN)   VT52        VT10(0)     VGA
 C      WIN(OW)     LOWE(R)     UPPE(R)     MIXE(D)     ARIT(H)
-C      GEOM
+C      GEOM        IO          IC
 C
 #if defined (_HOL_)
       DATA KEYFNC(1,1) / 1HM / , KEYFNC(2,1) / 1HA /
@@ -1807,6 +1814,11 @@ C
       DATA KEYFNC(5,21) / 1HE / , KEYFNC(6,21) / 1HM /
       DATA KEYFNC(7,21) / 1HE / , KEYFNC(8,21) / 1HS /
 C
+      DATA KEYFNC(1,22) / 1HR / , KEYFNC(2,22) / 1HA /
+      DATA KEYFNC(3,22) / 1HT / , KEYFNC(4,22) / 1HI /
+      DATA KEYFNC(5,22) / 1HO / , KEYFNC(6,22) / 1H  /
+      DATA KEYFNC(7,22) / 1H  / , KEYFNC(8,22) / 1H  /
+C
       DATA KEYVAL(1,1) / 1HL / , KEYVAL(2,1) / 1HI /
       DATA KEYVAL(3,1) / 1HS / , KEYVAL(4,1) / 1HT /
       DATA KEYVAL(1,2) / 1HN / , KEYVAL(2,2) / 1HO /
@@ -1849,6 +1861,10 @@ C
       DATA KEYVAL(3,20)/ 1HI / , KEYVAL(4,20)/ 1HT /
       DATA KEYVAL(1,21)/ 1HG / , KEYVAL(2,21)/ 1HE /
       DATA KEYVAL(3,21)/ 1HO / , KEYVAL(4,21)/ 1HM /
+      DATA KEYVAL(1,22)/ 1HI / , KEYVAL(2,22)/ 1HO /
+      DATA KEYVAL(3,22)/ 1H  / , KEYVAL(4,22)/ 1H  /
+      DATA KEYVAL(1,23)/ 1HI / , KEYVAL(2,23)/ 1HC /
+      DATA KEYVAL(3,23)/ 1H  / , KEYVAL(4,23)/ 1H  /
 #else
       DATA KEYFNC(1,1) / 'M' / , KEYFNC(2,1) / 'A' /
       DATA KEYFNC(3,1) / 'P' / , KEYFNC(4,1) / 'S' /
@@ -1946,6 +1962,11 @@ C
       DATA KEYFNC(5,21) / 'E' / , KEYFNC(6,21) / 'M' /
       DATA KEYFNC(7,21) / 'E' / , KEYFNC(8,21) / 'S' /
 C
+      DATA KEYFNC(1,22) / 'R' / , KEYFNC(2,22) / 'A' /
+      DATA KEYFNC(3,22) / 'T' / , KEYFNC(4,22) / 'I' /
+      DATA KEYFNC(5,22) / 'O' / , KEYFNC(6,22) / ' ' /
+      DATA KEYFNC(7,22) / ' ' / , KEYFNC(8,22) / ' ' /
+C
       DATA KEYVAL(1,1) / 'L' / , KEYVAL(2,1) / 'I' /
       DATA KEYVAL(3,1) / 'S' / , KEYVAL(4,1) / 'T' /
       DATA KEYVAL(1,2) / 'N' / , KEYVAL(2,2) / 'O' /
@@ -1988,6 +2009,11 @@ C
       DATA KEYVAL(3,20)/ 'I' / , KEYVAL(4,20)/ 'T' /
       DATA KEYVAL(1,21)/ 'G' / , KEYVAL(2,21)/ 'E' /
       DATA KEYVAL(3,21)/ 'O' / , KEYVAL(4,21)/ 'M' /
+      DATA KEYVAL(1,22)/ 'I' / , KEYVAL(2,22)/ 'O' /
+      DATA KEYVAL(3,22)/ ' ' / , KEYVAL(4,22)/ ' ' /
+      DATA KEYVAL(1,23)/ 'I' / , KEYVAL(2,23)/ 'C' /
+      DATA KEYVAL(3,23)/ ' ' / , KEYVAL(4,23)/ ' ' /
+
 #endif
 C
 C----- TYPE OF ARGUMENT: 1=KEYWORD, 2=INTEGER
@@ -1999,7 +2025,7 @@ C
       DATA ITPVAL(12) / 1 / , ITPVAL(13) / 1 / , ITPVAL(14) / 1 /
       DATA ITPVAL(15) / 1 / , ITPVAL(16) / 2 / , ITPVAL(17) / 1 /
       DATA ITPVAL(18) / 1 / , ITPVAL(19) / 1 / , ITPVAL(20) / 1 /
-      DATA ITPVAL(21) / 1 /
+      DATA ITPVAL(21) / 1 / , ITPVAL(22) / 1 /
 C
 C----- STARTING POSITION IN LIST OF KEYWORDS
 C
@@ -2010,7 +2036,7 @@ C
       DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) /  4 /
       DATA ISTVAL(15) /   4 /, ISTVAL(16) /  0 / , ISTVAL(17) / 4 /
       DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 / , ISTVAL(20) /  4 /
-      DATA ISTVAL(21) /   4 /
+      DATA ISTVAL(21) /   4 /, ISTVAL(22) / 22 /
 C
 C----- NUMBER OF KEYWORDS PERMITTED
 C
@@ -2021,7 +2047,7 @@ C
       DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14)  /  2 /
       DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17)  /  2 /
       DATA NUMVAL(18) /  2/, NUMVAL(19) /  2/, NUMVAL(20) /  2/
-      DATA NUMVAL(21) /  2/
+      DATA NUMVAL(21) /  2/, NUMVAL(22) / 2/
 C
 C----- NUMERIC VALUE CORRESPONDING TO FIRST KEYWORD
 C
@@ -2032,7 +2058,7 @@ C
       DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14)  /  0 /
       DATA IFIRVL(15)  /  0 /, IFIRVL(16) /0/ , IFIRVL(17) / 0 /
       DATA IFIRVL(18)  /  1 /, IFIRVL(19)  /  0 /, IFIRVL(20)  /  0 /
-      DATA IFIRVL(21)  /  0 /
+      DATA IFIRVL(21)  /  0 /, IFIRVL(22) / 0 /
 C
 C
 C
@@ -2156,6 +2182,8 @@ c              ENDIF
         ISSBND = IRQVAL
       ELSE IF ( IRQFNC .EQ. 21 ) THEN
         ISSCSH = IRQVAL
+      ELSE IF ( IRQFNC .EQ. 22 ) THEN
+        ISSRAT = IRQVAL
       ELSE
         GO TO 9920
       ENDIF
