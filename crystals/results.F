@@ -8285,7 +8285,7 @@ C
      1  COOD,NFOFC,tensor)
 C
         IF (IDJW.GE.0) THEN
-          getroot(tensor,xcoord,ycoord,root,grad)
+          call getroot(tensor,xcoord,ycoord,root,grad)
           WRITE (CMON,800) SLOPE,SIGSLOP
 800       FORMAT (27x,'   Slope, sigma =',F7.3,f7.3)
           CALL XPRVDU (NCVDU, 1, 0)
