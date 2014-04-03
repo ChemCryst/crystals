@@ -18,10 +18,10 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 14.52 ({#crysVDATE})
-AppVersion=14.52
+AppVerName=CRYSTALS 15.01 ({#crysVDATE})
+AppVersion=15.01
 ;OutputBaseFilename=crystals-a1452-Sep12-setup
-OutputBaseFilename=crystals-{#crysOS}-a1452-{#crysDATE}-setup
+OutputBaseFilename=crystals-{#crysOS}-a15.01-{#crysDATE}-setup
 
 
 AppName=CRYSTALS

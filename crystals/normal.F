@@ -708,9 +708,9 @@ C TOP FRAME
      1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE ', 
      1  '^^PL "Rho=(Sin(theta)/lambda)**2"',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
-     1  '^^PL SERIES 2 SERIESNAME ''Wilson''',
-     1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'' TYPE LINE'
-        CALL XPRVDU(NCVDU, 6,0)
+     1  '^^PL SERIES 2 SERIESNAME ''Wilson (Fobs)''',
+     1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'''
+        CALL XPRVDU(NCVDU, 7,0)
       END IF
 
       XMIN = +1000.
@@ -992,9 +992,6 @@ C TABLES OF THEORETICAL DISTRIBUTIONS
       DIMENSION AVA(10),AVC(10),AVH(10),CPH(25)
       CHARACTER*8 CBIT1(2),CBIT3(2)
       CHARACTER*3 CBIT2(2)
-      
-      real, dimension(5) :: minimum, maximum, summation, summationsq
-      
       DATA CBIT1/'0KL     ','H,K,2K-H'/
       DATA CBIT2/'H0L','HHL'/
       DATA CBIT3/'HK0     ','H,K,-H-K'/
@@ -1160,7 +1157,7 @@ C        CALCULATE WEIGHT MODIFIER
          STORE(M6+4) = W * STORE(M6+4)
          I = 1
          CALL XSLR(I)
-         CALL XACRT(5, minimum, maximum, summation, summationsq, 5)
+         CALL XACRT(5)
         ENDIF
        END IF
       END DO
@@ -1244,7 +1241,7 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
      1  '^^PL PLOTDATA _NZDIST SCATTER ATTACH _VNZDIST KEY',
      1  '^^PL XAXIS TITLE Z',
      1  '^^PL NSERIES=7 LENGTH=25 YAXIS TITLE N(Z)',
-     1  '^^PL SERIES 1 SERIESNAME ''All Data''',
+     1  '^^PL SERIES 1 SERIESNAME ''All Data'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''',
      1  CBIT1(MAX(1,KSYS-5)),'''',
      1  '^^PL SERIES 3 SERIESNAME ''',

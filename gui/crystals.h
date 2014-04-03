@@ -95,6 +95,8 @@ class CCrystalsApp : public CWinApp
 #ifdef __BOTHWX__
 class CCrystalsApp : public wxApp
 {
+
+    wxLocale m_locale;
 #endif
 
 public:

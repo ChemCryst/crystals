@@ -17,7 +17,7 @@
 ^^WI   ITEM AGREE '&Tabbed initial analyses' '#SCRIPT XCHECK6'                  
 ^^WI               ENABLEIF='L6' DISABLEIF='IN'                                 
 ^^WI   SPLIT                                                                    
-^^WI   ITEM HOOFT '&Absolute config' '#SCRIPT TON'                          
+^^WI   ITEM HOOFT '&Absolute config' '#SCRIPT XFLACK'                          
 ^^WI               ENABLEIF='L5 L6 L30' DISABLEIF='IN'                              
 ^^WI   ITEM DIFAB '&Difabs analysis' '#SCRIPT XDIFABS'                          
 ^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              

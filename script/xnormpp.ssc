@@ -24,9 +24,11 @@
 ^^WI     DEFINEPOPUPMENU POPUP 'Selection'
 ^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
 ^^WI     ENDDEFINEMENU
-^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=4
 ^^WI   {
-^^WI    @ 1,1 BUTTON NPP_BOK 'Close' DEFAULT COMMIT CANCEL
+^^WI    @ 1,1 STRETCH VB HORIZONTAL
+^^WI    @ 1,4 BUTTON NPP_BOK 'Close' DEFAULT COMMIT CANCEL
+^^WI    @ 1,2 BUTTON SAVENPP 'Save Image'
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
@@ -34,15 +36,17 @@
 ^^WI SHOW
 ^^CR
 ^^CO SENDPROGRESSTO _FOFCPR
+%  COPY '#sum list 6 level=normpp'
+%  COPY 'END'
 %  LOOP
-%    COPY '#sum list 6 level=normpp'
-%    COPY 'END'
-%    VERIFY NPP_BOK OMIT
+%    VERIFY NPP_BOK SAVENPP OMIT
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'
 %    IF VALUE .EQ. 1 THEN
 ^^CO    DISPOSE xnormpp
 %       FINISH
 %    ELSE IF VALUE .EQ. 2 THEN
+^^CO    SET _VNORMPP SAVE 800 600 npp_
+%    ELSE IF VALUE .EQ. 3 THEN
 %      ON EDITERROR TERMINATE
 %      COPY '#GENERALEDIT 28'
 %      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
@@ -65,6 +69,9 @@
 %      OUTPUT
 %      CLEAR
 %      COPY 'WRITE'
+%      COPY 'END'
+%%     update plot
+%      COPY '#sum list 6 level=normpp'
 %      COPY 'END'
 %    END IF
 %  END LOOP

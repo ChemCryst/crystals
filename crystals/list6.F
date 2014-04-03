@@ -1692,7 +1692,7 @@ C      IDISPL      FLAG CONTROLLING LIST 6 DISPLAY
 C                    -1      NO DISPLAY
 C                    +1      DISPLAY
 C
-      implicit none
+      !implicit none
 
       logical, save :: DISPL6
       integer, PARAMETER :: NINTER = 20
@@ -1705,6 +1705,7 @@ C--
 C
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'STORE.INC'
+c      INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XPCK06.INC'
       INCLUDE 'XTAPES.INC'
@@ -1773,6 +1774,7 @@ C--UNPACK THE PHASE AND BATCH NUMBER
 C -- CHECK IF THE RATIO AND JCODE SHOULD BE UNPACKED
           end if !1400  CONTINUE
           IF ( JCDRAR .GE. 0 ) THEN
+C 2013
 c this algorithm is better for -ve values, and is  
 c backwards compatible with old dsc files
 c changing the scale, sdjw, to 0.01 would be better still, but is
@@ -1796,6 +1798,8 @@ c        Assume users wants all reflections, so set default RATIO to > 3
               if (store(m6+12).le. zero) then
                   store(m6+20) = 3.001
               else
+C NOTE - THIS IS WHERE ONE COULD FILTER ON FC/SIG, BUT ONLY IF SCALE IS SET
+C         WRITE(123,'(2F12.2)') STORE(M6+3), STORE(L5O)*STORE(M6+5)
                   store(m6+20)=min(128., store(m6+3)/(store(m6+12)*2.) )
               endif
           ENDIF
@@ -1874,7 +1878,7 @@ C      IDISPL      FLAG CONTROLLING LIST 6 DISPLAY
 C                    -1      NO DISPLAY
 C                    +1      DISPLAY
 C
-      implicit none
+      !implicit none
 
       logical, save :: DISPL6
       integer, PARAMETER :: NINTER = 20

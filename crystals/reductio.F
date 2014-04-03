@@ -1202,8 +1202,9 @@ c
 c----- CHECK IF BATCH KEYS ARE SET
       IBCH=KCOMP(1,M6+13,ISTORE(L6DMP),MD6DMP,1)
       IF ((IMTWIN .EQ. 0) .AND. (IBCH .NE. 0))THEN
-        WRITE(CMON,'(A)') 'Multi-batch twinned data cannot be handled'
-        CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON,'(/A/)') 
+     1 '{E Multi-batch twinned data cannot be handled'
+        CALL XPRVDU(NCVDU, 3,0)
         GOTO 9900
       ENDIF
       IF(IBCH .NE. 0) THEN
