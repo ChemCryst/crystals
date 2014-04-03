@@ -2797,6 +2797,12 @@ ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
 !reflectiondata(md6+4)=0.0 ! BCI
 !reflectiondata(md6+5)=0.0 ! ACD
 !reflectiondata(md6+6)=0.0 ! BCD
+if(ubound(reflectiondata, 1)/=md6+11) then
+    print *, 'Programmer error, wrong size for reflectiondata: md6+11'
+    print *, 'md6=', md6
+    print *, 'reflectionsdata shape: ', shape(reflectiondata)
+    stop
+end if
 reflectiondata(md6+1:md6+6)=0.0
 temporaryderivatives=0.0d0
 allocate(storem2t(N2*MD2T))

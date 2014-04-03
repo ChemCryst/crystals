@@ -56,6 +56,7 @@ C      winapp 500000,1000000
 #else 
       PROGRAM CRYSTL
 #endif
+      use leverage_mod
 C
 C
 C     ******************************************************
@@ -258,10 +259,24 @@ C
       CALL FIDDLE
       GOTO 1210
 3030  CONTINUE
+      !print *, 'calcul'
       CALL CALCUL
       GOTO 1210
 3040  CONTINUE
-      CALL INVERT
+      ! doing invert plus plenty of other stuff
+      !print *, 'invert'
+      CALL INVERT      
+      
+
+!         call leverage(1, ierrcode)
+!         open(666, file='leverage')
+!         write(666,*) 'h k l T_value'
+!         do jj=1, ubound(leverage_results%tvalues, 2)
+!            write(666,*) leverage_results%tvalues(:, jj)
+!         end do
+!         close(666)
+      
+      
       GOTO 1210
 3050  CONTINUE
       CALL RESTR

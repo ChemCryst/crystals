@@ -35,8 +35,8 @@ else
     F77 = gfortran48
     F77FLAGS = -fno-realloc-lhs -fexceptions -std=legacy  -msse2 -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
     F90FLAGS = -fno-realloc-lhs -fcheck=all -fexceptions -pedantic -msse2 -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_ 
-    LDFLAGS = -ggdb -lopenblaso 
-    OPT = -ggdb -O3 -fopenmp
+    LDFLAGS =  /u/ric/pparois/Documents/OpenBLAS/libopenblas_core2p-r0.2.8.a -fopenmp
+    OPT =  -gdwarf-3 -O3 -fopenmp -ffpe-trap=invalid,zero,overflow
 
     INSTALL=/usr/bin/install
 
@@ -74,15 +74,15 @@ else
     CPPFLAGS = -s -fexceptions
     CFLAGS = -s
 
-    CXX = g++
-    CC = gcc
-    LD = gfortran
-    LD77 = gfortran
-    F77 = gfortran
+    CXX = g++48
+    CC =  gcc48
+    LD =  gfortran48
+    LD77 = gfortran48
+    F77 =  gfortran48
     F77FLAGS = -fbounds-check -fexceptions  -std=legacy -ftree-vectorize -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
     F90FLAGS = -fbounds-check -fexceptions -pedantic -fno-sign-zero -ftree-vectorize  -I../crystals/ -D _$(COMPCODE)_
-    LDFLAGS = -lopenblas
-    OPT = -g -O3
+    LDFLAGS = /u/ric/pparois/Documents/OpenBLAS/libopenblas_core2p-r0.2.8.a -fopenmp
+    OPT =  -gdwarf-3 -O3 -fopenmp -ffpe-trap=invalid,zero,overflow
 
     INSTALL=/bin/install
 
