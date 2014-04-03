@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: normal.F,v $
+C Revision 1.26  2012/08/30 09:38:52  djw
+C Use SAFESET for _MW_E2MIN* for passing values to gui
+C
 C Revision 1.25  2012/05/11 12:42:52  rich
 C Fix N(Z) graph when L28 sin(t)/l filter in place. Fix E2-1 value in tabbed analyses.
 C
@@ -705,9 +708,9 @@ C TOP FRAME
      1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE ', 
      1  '^^PL "Rho=(Sin(theta)/lambda)**2"',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
-     1  '^^PL SERIES 2 SERIESNAME ''Wilson''',
-     1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'' TYPE LINE'
-        CALL XPRVDU(NCVDU, 6,0)
+     1  '^^PL SERIES 2 SERIESNAME ''Wilson (Fobs)''',
+     1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'''
+        CALL XPRVDU(NCVDU, 7,0)
       END IF
 
       XMIN = +1000.
@@ -1238,7 +1241,7 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
      1  '^^PL PLOTDATA _NZDIST SCATTER ATTACH _VNZDIST KEY',
      1  '^^PL XAXIS TITLE Z',
      1  '^^PL NSERIES=7 LENGTH=25 YAXIS TITLE N(Z)',
-     1  '^^PL SERIES 1 SERIESNAME ''All Data''',
+     1  '^^PL SERIES 1 SERIESNAME ''All Data'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''',
      1  CBIT1(MAX(1,KSYS-5)),'''',
      1  '^^PL SERIES 3 SERIESNAME ''',
