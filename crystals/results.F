@@ -8285,7 +8285,7 @@ C
      1  COOD,NFOFC,tensor)
 C
         IF (IDJW.GE.0) THEN
-          idjw = getroot(tensor,xcoord,ycoord,root,grad)
+          getroot(tensor,xcoord,ycoord,root,grad)
           WRITE (CMON,800) SLOPE,SIGSLOP
 800       FORMAT (27x,'   Slope, sigma =',F7.3,f7.3)
           CALL XPRVDU (NCVDU, 1, 0)
@@ -9928,7 +9928,7 @@ c
 
       
 CODE FOR GETROOT
-      integer function getroot(tensor,xcoord,ycoord,root,grad)
+      subroutine getroot(tensor,xcoord,ycoord,root,grad)
 c
       dimension xcoord(2),ycoord(2),root(2),grad(2)
       dimension tensor(3)
@@ -9979,7 +9979,6 @@ c
      c   WRITE (ncwu,'(/a,9x,2f12.3)') 
      2   ' Gradient for zero intercept =',SXY/SXX
 c
-      GETROOT = 1
       return
       end
 c
