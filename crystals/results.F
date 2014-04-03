@@ -9927,8 +9927,8 @@ c
 
 
       
-
-      subroutine getroot(tensor,xcoord,ycoord,root,grad)
+CODE FOR GETROOT
+      integer function getroot(tensor,xcoord,ycoord,root,grad)
 c
       dimension xcoord(2),ycoord(2),root(2),grad(2)
       dimension tensor(3)
@@ -9979,6 +9979,7 @@ c
      c   WRITE (ncwu,'(/a,9x,2f12.3)') 
      2   ' Gradient for zero intercept =',SXY/SXX
 c
+      GETROOT = 1
       return
       end
 c
