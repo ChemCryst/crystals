@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: summary.F,v $
+C Revision 1.109  2013/07/04 09:58:31  djw
+C Correct text for quasi unit weight scheme
+C
 C Revision 1.108  2013/07/03 09:27:15  rich
 C Comment nmax (unused).
 C
@@ -1991,20 +1994,23 @@ C--SETUP A GRAPH HERE
       IF ( LEVEL .EQ. 4 ) THEN                 ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
-     1  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
-     1  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
+     2  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
+     3  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
       IF ( LEVEL .EQ. 5 ) THEN                 ! Normal probability plot
-        WRITE(CMON,'(A,/,A,/,A)')
+        WRITE(CMON,'(A,/,A)')
      1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
-     1  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000',
-     1  '^^PL YAXIS TITLE ''w(Fo-Fc)'' SERIES 1 TYPE SCATTER'
+     3  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000'
+        CALL XPRVDU(NCVDU, 2,0)
         IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
-          WRITE(CMON(3),'(A)')
-     1      '^^PL YAXIS TITLE ''w^.5(Fo^2-Fc^2)'' SERIES 1 TYPE SCATTER'
+          WRITE(CMON,'(A)')
+     1 '^^PL YAXIS TITLE ''w^.5 x (Fo^2-Fc^2)'' SERIES 1 TYPE SCATTER'
+        ELSE
+          WRITE(CMON,'(A)')
+     1  '^^PL YAXIS TITLE ''w(Fo-Fc)'' SERIES 1 TYPE SCATTER'
         END IF
-        CALL XPRVDU(NCVDU, 3,0)
+        CALL XPRVDU(NCVDU, 1,0)
       END IF
       IF ( LEVEL .EQ. 6 ) THEN                 ! Weight vs Sigma
         WRITE(CMON,'(A,/,A,/,A)')
@@ -2256,7 +2262,7 @@ c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
      1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
      2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
         CALL XPRVDU(NCVDU,2,0)
-      ELSE
+      ELSE IF (LEVEL.EQ.5) THEN
         WRITE(CMON,'(A/2(A,2F10.2))')
      1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
      2  '^^PL DATA ', -PLOTMAX, -PLOTMAX,' DATA ', PLOTMAX, PLOTMAX
@@ -2287,18 +2293,29 @@ c      determinant
      1  f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
-
-            if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
-     1        (cutter .lt. -.05) .or. (cutter .gt. .05)) then
-              write(cmon,'(a,a)')' The slope shoud be unity and the'
-     1        ,' intercept zero'
+            idjwerr = 0
+            if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) ) then
+              idjwerr = 1
+              write(cmon,'(a)')'{E The slope shoud be unity'
               call xprvdu(ncvdu, 1,0)
-              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+            endif
+            if ((cutter .lt. -.05) .or. (cutter .gt. .05) ) then
+              idjwerr = 1
+              write(cmon,'(a)')'{E The intercept should be zero'
+              call xprvdu(ncvdu, 1,0)
+              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+            endif
+            if(idjwerr .ne .0) then
                 write(cmon,'(a)') 
      1 '{E CRYSTALS suggests that you check your weighting scheme'
                 call xprvdu(ncvdu, 1,0)
-                if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+                if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
             endif
+
+
+
+
           else
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
@@ -3693,16 +3710,17 @@ c        WRITE(CMON,'(A,10(/A))')
      1  '^^PL PLOTDATA _SIGLEVL BARGRAPH ATTACH _VSIGLEVL KEY',
      1  '^^PL XAXIS TITLE ''I/sigma(I)'' NSERIES=2 LENGTH=100',
      1  '^^PL YAXIS TITLE ''Number of observations''',
-     1  '^^PL YAXISRIGHT TITLE ''Number > given I/s(I)''',
+     1  '^^PL YAXISRIGHT TITLE ''Percent > given I/s(I)''',
      1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I) frequency''',
-     1  '^^PL SERIES 2 SERIESNAME ''Observations > I/sigma(I)''',
+     1  '^^PL SERIES 2 SERIESNAME ''% Observations > I/sigma(I)''',
      1  '^^PL TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
 
+        NNTOT = NTOT
         IF (ISSPRT .EQ. 0) write(ncwu,'(a)')'I/sig(i) distribution'
         DO I = 1, 110
           WRITE(CMON,'(A,1X,F5.1,1X,A,1X,I6,1X,I8)')
-     1    '^^PL LABEL',(I-11)*.5,'DATA',KSIGS(I),NTOT
+     1    '^^PL LABEL',(I-11)*.5,'DATA',KSIGS(I),(100*NTOT)/NNTOT
           CALL XPRVDU(NCVDU,1,0)
           IF (ISSPRT .EQ. 0) write(ncwu,'(f5.1, i8, i8)')
      1    (I-11)*.5, KSIGS(I), NTOT
