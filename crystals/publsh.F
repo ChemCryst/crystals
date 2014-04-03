@@ -1,4 +1,7 @@
-C $Log: not supported by cvs2svn $
+C $Log: publsh.F,v $
+C Revision 1.17  2013/03/14 15:54:55  djw
+C Much extended absolute configuration analysis, including the Parsons Quotient test.  More reflection filters added to #TON
+C
 C Revision 1.16  2012/07/11 13:43:25  djw
 C Add command QCKCIF to create a minimal cif for Mercury
 C
@@ -147,18 +150,18 @@ CODE FOR XTHX
 c
 CODE FOR xton
       SUBROUTINE xton
-      DIMENSION FILTER(4)
-      PARAMETER (NPROCS=8)
+      DIMENSION FILTER(5)
+      PARAMETER (NPROCS=9)
       DIMENSION IPROCS(NPROCS), PROCS(NPROCS)
       EQUIVALENCE (PROCS(1),IPROCS(1))
       CALL XCSAE
       I = KRDDPV ( IPROCS , NPROCS )
-      CRITER = PROCS(1)
-      KTYP06 = IPROCS(2)
-      IPLOT = IPROCS(3)
+      KTYP06 = IPROCS(1)
+      ITYPE = IPROCS(2)
+      IPLOT = IPROCS(3)      
       IPUNCH = IPROCS(4)
-      CALL XMOVE(PROCS(5), FILTER(1),4)
-      IF (I.GE.0) CALL TONSPK(IPLOT,CRITER,KTYP06,IPUNCH, FILTER)
+      CALL XMOVE(PROCS(5), FILTER(1),5)
+      IF (I.GE.0) CALL TONSPK(KTYP06,ITYPE,IPLOT,IPUNCH,FILTER)
       RETURN
       END
 c
