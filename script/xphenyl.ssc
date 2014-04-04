@@ -1,0 +1,143 @@
+%SCRIPT XPHENYL                                      
+% VARIABLE INTEGER NARGS RCHI
+% VARIABLE CHARACTER CATOM 
+^^WI WINDOW REGP 'Regularise phenyl rings' 
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'                                         
+^^WI GRID M NROWS=7 NCOLS=3 {                                                   
+^^WI   @ 2,2 GRID E NROWS=2 NCOLS=1 {                                           
+^^WI     @ 1,1 STATIC S1 'Click 6 atoms around a ring to make'                    
+^^WI     @ 2,1 STATIC S2 'a regular phenyl group.'                    
+^^WI   }                                                                        
+^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 {                                           
+^^WI     @ 1,3 GRID F NROWS=11 NCOLS=5 {                                        
+^^WI       @ 1,1 STATIC A1 '1'                                                  
+^^WI       @ 1,3 EDITBOX E1 '' CHARS=6                                        
+^^WI       @ 3,1 STATIC A2 '2'                                                 
+^^WI       @ 3,3 EDITBOX E2 '' CHARS=6                                        
+^^WI       @ 5,1 STATIC A3 '3'                                               
+^^WI       @ 5,3 EDITBOX E3 '' CHARS=6                                        
+^^WI       @ 7,1 STATIC A4 '4'                                               
+^^WI       @ 7,3 EDITBOX E4 '' CHARS=6                                        
+^^WI       @ 9,1 STATIC A5 '5'                                               
+^^WI       @ 9,3 EDITBOX E5 '' CHARS=6                                        
+^^WI       @ 11,1 STATIC A6 '6'                                              
+^^WI       @ 11,3 EDITBOX E6 '' CHARS=6                                       
+^^WI       @ 1,5 STATIC T1 '< Click atom to go here'                            
+^^WI       @ 3,5 STATIC T2 ''                                                   
+^^WI       @ 5,5 STATIC T3 ''                                                   
+^^WI       @ 7,5 STATIC T4 ''                                                   
+^^WI       @ 9,5 STATIC T5 ''                                                   
+^^WI       @ 11,5 STATIC T6 ''                                                  
+^^WI     }                                                                      
+^^WI   }                                                                        
+^^WI   @ 6,2 GRID B NROWS=1 NCOLS=7 {                                           
+^^WI     @ 1,3 BUTTON BOK '&Done' DISABLED=YES COMMIT DEFAULT                   
+^^WI     @ 1,5 BUTTON BXX '&Cancel' CANCEL                                      
+^^WI     @ 1,7 BUTTON BACK '&Undo' 
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% VARIABLE INTEGER POSN OPOSN                                                
+% EVALUATE POSN = 1                                                         
+% EVALUATE OPOSN = 1                                                         
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM                                         
+% LOOP                                                                       
+%     VERIFY BOK BXX ATOM BACK                                          
+%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                              
+%     EVALUATE RCHI = VALUE  
+%% 6-selected and either click another, or click done.
+%     IF ( RCHI .EQ. 1 .OR. RCHI .EQ. 3 ) .AND. POSN .EQ. 7 THEN
+%         COPY '#REGULARISE REPLACE'
+%         COPY 'GROUP 6'
+%         CLEAR
+%         INSERT 'TARGET '
+^^??      E1 TEXT
+%         GET TEXT ' ' ' '                                       
+^^??      E2 TEXT                                                               
+%         GET SILENT TEXT ' ' ' '                                       
+^^??      E3 TEXT                                                             
+%         GET SILENT TEXT ' ' ' '                                     
+^^??      E4 TEXT                                                             
+%         GET SILENT TEXT ' ' ' '                                     
+^^??      E5 TEXT                                                             
+%         GET SILENT TEXT ' ' ' '                                     
+^^??      E6 TEXT                                                             
+%         GET SILENT TEXT ' ' ' '                                     
+%         OUTPUT
+%         SEND
+%         COPY 'PHENYL'
+%         COPY 'END'
+^^CO      SET E1 TEXT ''
+^^CO      SET E2 TEXT ''
+^^CO      SET E3 TEXT ''
+^^CO      SET E4 TEXT ''
+^^CO      SET E5 TEXT ''
+^^CO      SET E6 TEXT ''
+^^CO      SET BACK DISABLED=YES                                                  
+^^CO      SET T1 TEXT '< Click atom to go here'                            
+^^CO      SET T6 TEXT ''                            
+%         EVALUATE POSN = 1
+%         EVALUATE OPOSN = 1
+%         IF ( RCHI .EQ. 1 ) THEN
+^^CO        DISPOSE REGP 
+%           FINISH
+%         END IF
+%     ELSE IF ( RCHI .EQ. 2 ) THEN     %CANCEL
+^^CO      DISPOSE REGP                                                          
+%         FINISH
+%     ELSE IF ( RCHI .EQ. 4 ) THEN     %UNDO - back one                                            
+%         EVALUATE OPOSN = POSN                                                 
+%         EVALUATE POSN = POSN - 1                                              
+%         IF POSN .LT. 1 THEN                                                   
+%           EVALUATE POSN = 1                                                   
+%         END IF                                                                
+%%                                                                              
+%%         Put together this command: ^^CO SET En TEXT ' '                      
+%%                                                                              
+%         CLEAR                                                                 
+%         INSERT "^^CO SET E"                                                   
+%         STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN                             
+%         INSERT " TEXT ' '"                                                    
+%         OUTPUT                                                                
+%     END IF
+%     IF ( RCHI .EQ. 3 ) THEN      %ATOM - fill in atom name                                   
+%         GET SILENT TEXT ' ' ' '                                               
+%         CLEAR                                                                 
+%         INSERT '^^CO SET E'                                                   
+%         STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN                             
+%         TRANSFER " TEXT '" // CVALUE // "'" TO BUFFER                         
+%         OUTPUT                                                                
+%         EVALUATE OPOSN = POSN                                                 
+%         EVALUATE POSN = POSN + 1                                              
+%     END IF 
+%%                                                                              
+%% Check for completion                                                         
+%%
+%    IF POSN .EQ. 1 THEN                                                      
+^^CO    SET BACK DISABLED=YES                                                  
+%    ELSE                                                                     
+^^CO    SET BACK DISABLED=NO                                                   
+%    END IF                                                                   
+%%                                                                              
+%% Update "Click Next Atom" prompt                                              
+%%                                                                              
+%    IF OPOSN .LE. 6 THEN                                                 
+%       CLEAR                                                                   
+%       INSERT "^^CO SET T"                                                     
+%       STORE FORMAT /(I1)/ LENGTH 1 INTEGER OPOSN                              
+%       INSERT " TEXT ''"                                                       
+%       OUTPUT                                                                  
+%    END IF                                                                   
+%    IF POSN .LE. 6 THEN                                                  
+%       CLEAR                                                                   
+%       INSERT "^^CO SET T"                                                     
+%       STORE FORMAT /(I1)/ LENGTH 1 INTEGER POSN                               
+%       INSERT " TEXT '< Click atom to go here'"                                
+%       OUTPUT                                                                  
+^^CO    SET BOK DISABLED=YES                                                    
+%    ELSE
+^^CO    SET BOK DISABLED=NO  
+%    END IF                                                                   
+% END LOOP                                                                      
+%END SCRIPT                                                                     
