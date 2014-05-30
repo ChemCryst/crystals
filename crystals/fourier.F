@@ -4648,7 +4648,8 @@ CODE FOR MDBESL
 C Polynomial approximation to modified Bessel functions I0(x), I1(x)
 C BSLI0 - first order modified bessel function I0(x)
 C BSLI1 - second order modified bessel function I1(x)
-      DOUBLE PRECISION BSLI0,BSLI1,T,T2,X
+c make y double April 2014
+      DOUBLE PRECISION BSLI0,BSLI1,T,T2,X,Y
       IF (X.EQ.0.0D0) THEN
            BSLI0=1.0D0
            BSLI1=0.0D0
