@@ -1,23 +1,22 @@
-%SCRIPT SIXCYCLE
- DO 6 unconditional cycles of refinement
-%        COPY '#SCRIPT XCHKSCL'
-%        COPY '#SCRIPT XDELQ'
-%        COPY '#SFLS'
-%        COPY 'REFINE'
-%        COPY 'END'
-%        COPY '#SFLS'
-%        COPY 'REFINE'
-%        COPY 'END'
-%        COPY '#SFLS'
-%        COPY 'REFINE'
-%        COPY 'END'
-%        COPY '#SFLS'
-%        COPY 'REFINE'
-%        COPY 'END'
-%        COPY '#SFLS'
-%        COPY 'REFINE'
-%        COPY 'END'
-%        COPY '#SFLS'
-%        COPY 'REFINE'
-%        COPY 'END'
-%END SCRIPT
+%SCRIPT maximal 
+% variable real maxshift                                                               
+ DO 6 unconditional cycles of refinement 
+%  if maxshift .le. 0.0 then
+%    evaluate maxshift = 1.0      %same as in COMMAND file%
+%  end if                                       
+%  COPY '#SCRIPT XCHKSCL'                                                 
+%  COPY '#SCRIPT XDELQ'                                                   
+%  loop 6 times
+%    COPY '#SFLS'                                                           
+%    COPY 'REFINE'
+%    clear
+%    insert 'max x='
+%    store real  maxshift 
+%    insert ' y=' 
+%    store real  maxshift 
+%    insert ' z=' 
+%    store real  maxshift 
+%    send
+%    COPY 'END'                                                             
+%  end loop
+%END SCRIPT                                                                     
