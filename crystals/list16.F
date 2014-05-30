@@ -716,16 +716,16 @@ c      call xprvdu(ncvdu,1,0)
         GOTO 5850
       ELSE IF (((MG .EQ.22) .or.(mg.eq.23))
      1  .AND. ( NGROUP .LE. 0 )) THEN
-        WRITE (CMON,'(A)') 'Not enough atoms for DELU/SIMU'
-        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+        WRITE (CMON,'(A)') '{I Not enough atoms for DELU/SIMU'
+        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       END IF
         IF ((ngroup .gt. 1) .and. ( NATOMS .NE. JATOMS )) THEN
-          WRITE (CMON,'(A)') 'Last group different size from first.'
-          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
-          CALL XPRVDU(NCVDU,1,0)
-          GOTO 5850
+         WRITE (CMON,'(A)')'{E Last group different size from first.'
+         if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+         CALL XPRVDU(NCVDU,1,0)
+         GOTO 5850
         END IF
 c
 C Get the distances and angles. One at a time.
@@ -755,21 +755,21 @@ C Get the distances and angles. One at a time.
         NFL = NFLORIG       ! RESET NFL 
 
         IF ( K .LT. 0 ) THEN
-           WRITE (CMON,'(A)')'"KDIST4" returned an error.'
+           WRITE (CMON,'(A)')'{E "KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
-           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
            GOTO 5850
         ELSE IF ( K .EQ. 0 ) THEN
            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
      2     CATOM1,LATOM1)
            IF ( MG .EQ. 21) THEN
-           WRITE (CMON,'(3A)')'SAME restraint warning: Atom ',
+           WRITE (CMON,'(3A)')'{E SAME restraint warning: Atom ',
      2      CATOM1(1:LATOM1), ' has no bonded contacts.'
            ELSE
-           WRITE (CMON,'(3A)')'DELU/SIMU restraint warning: Atom ',
+           WRITE (CMON,'(3A)')'{E DELU/SIMU restraint warning: Atom ',
      2      CATOM1(1:LATOM1), ' has no bonded contacts.'
            END IF
-           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
           CALL XPRVDU(NCVDU,1,0)
           CYCLE MAINLOOP
         END IF
