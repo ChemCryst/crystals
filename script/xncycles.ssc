@@ -1,9 +1,11 @@
 %SCRIPT XNCYCLES                                                                
 %%                                                                              
+%  VARIABLE REAL SHIFT                                                                             
+%  EVALUATE SHIFT = 1.0
 %%                                                                              
 %  VARIABLE INTEGER NCYCLE                                                      
-%%                               
-%  VARIABLE REAL RMIN R OSCALE                                               
+%%                                                                              
+%  VARIABLE REAL RMIN R OSCALE                                                  
 %%                                                                              
 %%                                                                              
 ^^WI WINDOW XREFINE 'Least Squares Refinement' MODAL                            
@@ -12,10 +14,16 @@
 ^^WI {                                                                          
 ^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1                                              
 ^^WI  {                                                                         
-^^WI   @ 1,1 GRID NCYC NROWS=1 NCOLS=3                                          
+^^WI   @ 1,1 GRID NCYC NROWS=3 NCOLS=3                                          
 ^^WI   {                                                                        
 ^^WI    @ 1,1 STATIC T1 'Maximum number of cycles of refinement'                
-^^WI    @ 1,3 EDITBOX NC ' 5' CHARS=5 INTEGER                                   
+^^WI    @ 1,3 EDITBOX NC ' 5' CHARS=5 INTEGER 
+
+^^WI    @ 3,1 STATIC T1 'Partial Shift Factor'                
+^^WI    @ 3,3 EDITBOX NS                                                        
+%        TRANSFER "^^WI '  " // CHARACTER ( SHIFT )  // "'" TO DISPLAY         
+^^WI     CHARS=5 REAL
+                                  
 ^^WI   }                                                                        
 ^^WI   @ 3,1 CHECKBOX ND                                                        
 ^^WI         'Minimise disk useage' STATE=ON                                    
@@ -57,8 +65,8 @@
 %         COPY 'END'                                                            
 %       END IF                                                                  
 %% Purge everything until bug is fixed.                                         
-%       COPY '#PURGE LIST=11 MON=LOW'                                          
-%%      COPY '#PURGE '                                                           
+%       COPY '#PURGE LIST=11 MON=LOW'                                           
+%%      COPY '#PURGE '                                                          
 %       COPY 'END'                                                              
 %       COPY '#LIST 22'                                                         
 %       COPY 'END'                                                              
@@ -66,13 +74,20 @@
 %%                                                                              
 %     COPY '#SCRIPT RFACTOR'                                                    
 %     EVALUATE RMIN = R                                                         
-% if ( oscale - 1.000 .ge. - .0001 ) .and. ( oscale - 1.000 .le. .0001 ) then
-%      copy '#sfls'
-%      copy 'scale'
-%      copy 'end'
-%      end if
-
+% if ( oscale - 1.000 .ge. - .0001 ) .and. ( oscale - 1.000 .le. .0001 ) then   
+%      copy '#sfls'                                                             
+%      copy 'scale'                                                             
+%      copy 'end'                                                               
+%      end if                                                                   
+                                                                                
 %     COPY '#SCRIPT XDELQ'                                                      
+
+
+^^?? NS TEXT                                                                    
+%    GET NOSTORE SILENT FINAL REAL 'Partial Shift Factor' '1.0'                     
+%    EVALUATE SHIFT = VALUE                                                    
+
+
 ^^??  NC TEXT                                                                   
 %     GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'                    
 %     EVALUATE NCYCLE = VALUE                                                   
@@ -94,6 +109,12 @@
 %             COPY '#SFLS'                                                      
 %             LOOP 5 TIMES                                                      
 %               COPY 'REFINE'                                                   
+%              IF SHIFT .LT. 1.0 THEN
+%                clear                                                                      
+%                insert 'SHIFT GENERAL ='                                                            
+%                store real  shift                                                       
+%                send                                                                       
+%              END IF
 %               EVALUATE NCYCLE = NCYCLE - 1                                    
 %               IF ( NCYCLE .LE. 0 ) THEN                                       
 %                 EVALUATE LOOPEND = LOOPCOUNTER                                
@@ -111,6 +132,12 @@
 %           COPY '#SFLS'                                                        
 %           LOOP NCYCLE TIMES                                                   
 %             COPY 'REFINE'                                                     
+%              IF SHIFT .LT. 1.0 THEN
+%                clear                                                                      
+%                insert 'SHIFT GENERAL ='                                                            
+%                store real  shift                                                       
+%                send                                                                       
+%              END IF
 %           END LOOP                                                            
 %           COPY 'END'                                                          
 %         END IF                                                                
@@ -122,6 +149,12 @@
 %         LOOP NCYCLE TIMES                                                     
 %           COPY '#SFLS'                                                        
 %           COPY 'REFINE'                                                       
+%              IF SHIFT .LT. 1.0 THEN
+%                clear                                                                      
+%                insert 'SHIFT GENERAL ='                                                            
+%                store real  shift                                                       
+%                send                                                                       
+%              END IF
 %           COPY 'END'                                                          
 %         END LOOP                                                              
 %       END BLOCK                                                               
