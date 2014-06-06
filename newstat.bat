@@ -1,7 +1,10 @@
 if exist newstat.int del newstat.int
 if exist newstat.lis del newstat.lis
-cvs status >newstat.int
+if exist newstat.lis srt newstat.srt
 
-ecce newstat.int newstat.lis newstat.dat
+svn status >newstat.int
 
-if exist newstat.lis type newstat.lis
+rem ecce newstat.int newstat.lis newstat.dat
+sort newstat.int >newstat.srt
+
+if exist newstat.srt type newstat.srt
