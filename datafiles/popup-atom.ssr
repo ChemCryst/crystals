@@ -19,6 +19,9 @@
 ^^WI             ENDMENU
 ^^WI             ITEM _RP 'Set &part number of _A' '#SCRIPT XPARTG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
+^^WI             ITEM _RP '&Set occupancy of _A' '#SCRIPT XOCCG_N_A' 
+^^wi                    DISABLEIF= 'IN'
+^^WI             SPLIT
 ^^WI             ITEM _EDA 'Ed&it _A' '#SCRIPT XPARAM_N_A' DISABLEIF='IN'
 ^^WI             ITEM _ADDH 'Add &hydrogens to _A' '#SCRIPT XADDH_N_A'
 ^^WI                    DISABLEIF='IN'
