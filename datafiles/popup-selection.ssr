@@ -18,6 +18,7 @@
 ^^WI                 ITEM _X 'Oth&er' '#SCRIPT XOTHER_N_A'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
+^^WI             SPLIT
 ^^WI             ITEM _SRP 'Set &part number of _A' '#SCRIPT XPARTG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _SEDA 'Ed&it _A' '#SCRIPT XPARAM_N_A' DISABLEIF='IN'
@@ -39,10 +40,10 @@
 ^^WI                 ITEM _R '&Ride' '#SCRIPT XSTICK_N_A_NRIDE'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
-^^WI             SPLIT
 ^^WI             ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
+^^WI             SPLIT
 ^^WI             MENU _SRETY '&Change types of selection'
 ^^WI                 ITEM _C '&Carbon' '#SCRIPT YRETYPES_NC_N_GEND'
 ^^WI                                 DISABLEIF='IN'
@@ -60,9 +61,12 @@
 ^^WI                 ITEM _X 'Oth&er' '#SCRIPT XOTHERS'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
-^^WI             SPLIT
 ^^WI             ITEM _GDELA 'Dele&te selection' '#SCRIPT DELGRP_N_GEND'
 ^^WI                                             DISABLEIF='IN'
+^^WI             ITEM _RP 'Set &part number of selection' '#SCRIPT XPARTGS' 
+^^WI                    DISABLEIF= 'IN'
+^^WI             ITEM _RP '&Set occupancy of selection' '#SCRIPT XOCCGS' 
+^^wi                    DISABLEIF= 'IN'
 ^^WI             SPLIT
 ^^WI             ITEM _GDELA 'Centroid of &selection'
 ^^WI                         '#SCRIPT XCENTRO_N_GEND' DISABLEIF='IN SEL1'
@@ -122,9 +126,5 @@
 ^^WI                                   '#SCRIPT XSTICKS_NRIDE_N_GEND'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
-^^WI             ITEM _RP 'Set &part number of selection' '#SCRIPT XPARTGS' 
-^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _RP '&Set occupancy of selection' '#SCRIPT XOCCGS' 
-^^wi                    DISABLEIF= 'IN'
 ^^WI         ENDDEFINEMENU
 %%END SSR
