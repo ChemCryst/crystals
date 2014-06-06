@@ -11,6 +11,10 @@
 % EVALUATE APART = AVALUE
 % EVALUATE CALLED = TRUE
 %%
+%% edit was still activated even if part number selection cancelled
+%  if avalue .lt. 0. then
+%    finish
+%  end if                                                                             
 %%
 % QUEUE REWIND
 %%
