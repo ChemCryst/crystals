@@ -84,9 +84,10 @@ Filename: wincrys.ini; Section: Setup; Key: Crysdir; String: "{app}\user\,{app}\
 Filename: wincrys.ini; Section: Latest; Key: Strdir; String: "{app}\demo\demo"; Flags: uninsdeleteentry
 
 [Run]
-#if "INW" == GetEnv('COMPCODE')
-Filename: "msiexec.exe"; Parameters: "/i ""{app}\w_fcompxe_redist_ia32_2011.3.175.msi"" /qn"; StatusMsg: "Installing Intel DLL Libraries";
-#endif
+; Skip this - we will copy DLLs for now (less error prone).
+;#if "INW" == GetEnv('COMPCODE')
+;Filename: "msiexec.exe"; Parameters: "/i ""{app}\w_fcompxe_redist_ia32_2011.3.175.msi"" /qn"; StatusMsg: "Installing Intel DLL Libraries";
+;#endif
 
 
 [Registry]
