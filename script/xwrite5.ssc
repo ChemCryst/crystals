@@ -1,972 +1,988 @@
-%SCRIPT XWRITE5
-%%
-%%
-%% SECTION 1
-%%
-%%  Setup variables, display window, wait for response,
-%%  read values, close window.
-%%
-%%   Sets the REF flag of every atom in list 5.
-%%   Global (already set) variables:
-%  VARIABLE INTEGER SETADP
-%%
-%%   Local variables:
-%  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI
-%  VARIABLE INTEGER HMODE ISER CURMODE
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY
-%  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST
-%  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK
-%  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5
-%  EVALUATE TWINNED = FALSE
-%  EVALUATE DOREFINE = TRUE
-%  EVALUATE DOFOUR = FALSE
-%  VARIABLE CHARACTER CCHK CELE
-%  VARIABLE REAL RCHK
-%%
-%%   Variables set by ASSESS 5
-%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT DOTWIN
-%  VARIABLE INTEGER ADP
-%%
-%%   Variables set by or needed for XGETINFO/XPUTINFO
-%  VARIABLE INTEGER HRTYP L12SER HRESTF
-%  VARIABLE LOGICAL HRMASK L12SMASK HRESTM
-%%
-%% The variables needed by XQUESTIO
-%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
-%  VARIABLE LOGICAL   ANSWER
-%%
-%% Variables needed by XREFINE
-%  VARIABLE LOGICAL XREFINE
-%  VARIABLE INTEGER NCYCLE NFORCE
-%  EVALUATE NCYCLE = 5
-%  EVALUATE NFORCE = 1
-%%
-%% Edit Markus 1
-%% Variables set by a_getResiduesAndParts.scp and used to delete scratch files
-%  VARIABLE INTEGER ICOUNTP
-%  VARIABLE LOGICAL T
-%% End edit
-%%
-%% Edit Markus 2
-%% Variables to keep track of whether sof's of assemblies should be refined.
-%  VARIABLE LOGICAL ASSEFOUND REFSOFASS
-%  EVALUATE ASSEFOUND = FALSE
-%  EVALUATE REFSOFASS = TRUE
-%% End edit
-%%
-%% XEXTIN12 sets DOEXTNC to indicate that extinction should be refined.
-%% Assess5 resets DOEXTNC so that it indicates if ext is being refined.
-%% Therefore store it and if TRUE, restore it after the assess5 call.
-%%
-%  IF ( DOEXTNC ) THEN
-%    EVALUATE DKEXT = TRUE
-%  END IF
-%%
-%  COPY '#SCRIPT ASSESS5'
-%%
-%  IF ( DKEXT ) THEN
-%    EVALUATE DOEXTNC = TRUE
-%  END IF
-%%
-%
+%SCRIPT XWRITE5                                                                 
+%%                                                                              
 %  BLOCK
-%    VARIABLE INTEGER ITMP
-%    IF ( EXISTS 13 .GT. 0 ) THEN
-%      COPY '#GENERALEDIT 13'
-%      COPY 'LOCATE RECORDTYPE=101'
-%      COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
-%      IF ( ITMP .GE. 0 ) THEN
-%        EVALUATE TWINNED = TRUE
-%      ELSE
-%        EVALUATE TWINNED = FALSE
-%      END IF
-%      COPY 'END'
-%    END IF
+%% clear out the old ride and restraint files
+%   VARIABLE LOGICAL FD
+%   IF ( FILEEXISTS ( 'ridedat.12' ) ) THEN                                    
+%     EVALUATE FD = FILEDELETE ( 'ridedat.12' )                                 
+%   END IF                                                                       
+%   IF ( FILEEXISTS ( 'restdat.12' ) ) THEN                                    
+%     EVALUATE FD = FILEDELETE ( 'restdat.12' )                                 
+%   END IF                                                                       
+%   IF ( FILEEXISTS ( 'someh.12' ) ) THEN                                    
+%    EVALUATE FD = FILEDELETE ( 'someh.12' )                                 
+%    END IF                                                                       
+%   IF ( FILEEXISTS ( 'l12.scp' ) ) THEN                                    
+%     EVALUATE FD = FILEDELETE ( 'l12.scp' )                                 
+%   END IF                                                                       
 %  END BLOCK
-%%
-%  COPY '#SCRIPT XGETINFO'
-%%
-%  COPY '#GENERALEDIT 2'
-%  COPY 'LOCATE RECORDTYPE=101'
-%  COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
-%  COPY 'END'
-%%
-%  IF ( EXISTS 12 .GT. 0 ) THEN
-%    COPY '#GENERALEDIT 12'
-%    COPY 'GETSERIAL ISER'
-%    COPY 'END'
-%%
-%    IF ( ISER .NE. L12SER .AND. L12SER .NE. 0 ) THEN
-%     EVALUATE QTITLE = 'List 12 has changed'
-%     EVALUATE QLINE1 = 'This script will overwrite any refinement'
-%     EVALUATE QLINE2 = 'instructions that you may have written (List 12)'
-%     EVALUATE BUTTOK = '&Continue'
-%     EVALUATE BUTTXX = '&Cancel'
-%     COPY '#SCRIPT XQUESTIO'
-%     IF ANSWER .EQ. FALSE THEN
-
-{I You have chosen to keep your existing list 12,
-{I run '#SCRIPT XREFINE' to carry out the refinement.
-
-%       FINISH
-%     END IF
-%    END IF
-%%%  ELSE
-%%%    COPY '#SCRIPT VALID12'
-%  END IF
-%%
-%%
-%  COPY '#SCRIPT CHECK3'
-%%
-%%
-%  COPY '#SCRIPT A_GETRESIDUESANDPARTS'
-%% TRANSFER "Number of parts: " // CHARACTER ( ICOUNTP ) TO DISPLAY
-%  IF ICOUNTP .GT. 1 THEN
-%    EVALUATE ASSEFOUND = TRUE
-%  END IF
-%% If this valie is 1 it usually means that all part numbers are zero. 
-%% We have to see if this is enough.
-%%
-%%
-^^WI WINDOW XRSETUP 'Least Squares Directives' MODAL
-^^WI COMMIT='W5_BOK' CANCEL='W5_BXX'
-^^WI GRID MAIN NROWS=3 NCOLS=5
-^^WI {
-^^WI  @ 2,2 GRID L NROWS=7 NCOLS=1
-^^WI  {
-%     IF SETADP .EQ. 0 THEN
-^^WI   @ 1,1 CHECKBOX XR_GO '&Setup refinement only, do not refine.'
-^^WI         STATE=ON
-%      EVALUATE DOREFINE = FALSE
-%     END IF
-^^WI   @ 2,1 GRID OR NROWS=5 NCOLS=1 OUTLINE='General'
-^^WI   {
-^^WI   @ 1,1 RADIOBUTTON REFSCO 'Refine scale factor' STATE=OFF
-^^WI   @ 2,1 RADIOBUTTON REFPXO 'Refine scale and positions' STATE=OFF
-^^WI   @ 3,1 RADIOBUTTON REFPUI 'Refine scale, positions and U&iso' STATE=OFF
-^^WI   @ 4,1 RADIOBUTTON REFPUA 'Refine scale, positions and &Uijs' STATE=OFF
-^^WI   @ 5,1 CHECKBOX OVRD '&Override sticky settings for atoms' STATE=OFF
-^^WI   }
-% IF ( HFIRST .GE. 0.0 ) THEN
-^^WI   @ 3,1 GRID HR NROWS=3 NCOLS=1 OUTLINE='Hydrogen restraints'
-^^WI   {
-^^WI    @ 1,1 RADIOBUTTON DREST '&Restrain H positions for O-H and N-H bonds'
-% IF HRESTF .EQ. 0 THEN
-^^WI           STATE=ON
-% END IF
-^^WI    @ 2,1 RADIOBUTTON HREST '&Restrain H positions for all-H bonds' 
-% IF HRESTF .EQ. 1 THEN
-^^WI           STATE=ON
-% END IF
-^^WI    @ 3,1 RADIOBUTTON NHREST '&No restraints' 
-% IF HRESTF .EQ. 2 THEN
-^^WI           STATE=ON
-% END IF
-^^WI   }
-^^WI   @ 4,1 GRID HR NROWS=4 NCOLS=1 OUTLINE='Remaining hydrogens'
-^^WI   {
-^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix (do not refine)'
-% IF HRTYP .LE. 0 THEN
-^^WI           STATE=ON
-% END IF
-^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ri&de'
-% IF HRTYP .EQ. 3 .OR. HRTYP .EQ. 10 THEN
-^^WI           STATE=ON
-% END IF
-^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine positions'
-% IF HRTYP .EQ. 1 THEN
-^^WI           STATE=ON
-% END IF
-^^WI     @ 4,1 RADIOBUTTON HREFUI 'Refine positions and &Uiso'
-% IF HRTYP .EQ. 2 THEN
-^^WI           STATE=ON
-% END IF
-^^WI   }
-% END IF
-^^WI   @ 5,1 GRID XP NROWS=3 NCOLS=1 OUTLINE='Other parameters'
-^^WI   {
-^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF
-% IF ( CENTRO .GT. 0.9 ) THEN
-^^WI           DISABLED=YES
-% END IF
-^^WI    @ 2,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF
-^^WI    @ 3,1 CHECKBOX TWINS 'Twin element scales'
-% IF ( DOTWIN ) THEN
-^^WI     STATE = ON
-% ELSE
-^^WI     STATE = OFF
-% END IF
-^^WI   }
-%% Edit Markus 3
-% IF ASSEFOUND THEN
-^^WI   @ 6,1 GRID AR NROWS=1 NCOLS=1 OUTLINE='Disorder assemblies'
-^^WI   {
-^^WI    @ 1,1 CHECKBOX ARSOF 
-^^WI    '&Refine site occupancy factors of assemblies keeping the sum at 1'
-% IF REFSOFASS THEN
-^^WI           STATE=ON
-% END IF
-^^WI   }
-% END IF
-%% End edit
-^^WI   @ 7,1 GRID RN NROWS=2 NCOLS=1
-^^WI   {
-^^WI    @ 1,1 CHECKBOX ALTER
-^^WI      'Advanced: Edit directives or restraints before proceeding'
-^^WI      STATE=OFF
-^^WI    @ 2,1 CHECKBOX SXFOUR
-^^WI      'Follow refinement with difference Fourier'
-^^WI      STATE=OFF
-^^WI   }
-^^WI  }
-^^WI  @ 2,4 GRID R NROWS=3 NCOLS=1
-^^WI  {
-^^WI   @ 1,1 BUTTON W5_BOK '&OK' DEFAULT
-^^WI   @ 3,1 BUTTON W5_BXX '&Cancel'
-^^WI  }
-^^WI }
-^^WI SHOW
-^^CR
-%%
-%  IF ( SETADP .LE. 0 ) THEN
-{S * Direct call of XWRITE5 - setting default refinement
-{S   mode to current assessment by ASSESS5.
-%    EVALUATE SETADP = ADP
-%  END IF
-%  CASE ( SETADP + 1 )
-%    BLOCK   % Zero
-{E No atomic parameters to refine.
-%    END BLOCK
-%    BLOCK   % setadp is 1 - pos only
-^^CO SET REFPXO STATE=ON
-%    END BLOCK
-%    BLOCK   % setadp is 2 - pos and uiso
-^^CO SET REFPUI STATE=ON
-%    END BLOCK
-%    BLOCK   % setadp is 3 - pos and uij
-^^CO SET REFPUA STATE=ON
-%    END BLOCK
-%  END CASE
-%  IF ( DOFLACK .EQ. TRUE ) THEN
-^^CO SET FLACK STATE=ON
-%  END IF
-%  IF ( DOEXTNC .EQ. TRUE ) THEN
-^^CO SET EXTNC STATE=ON
-%  END IF
-%  IF ( TWINNED .EQ. FALSE ) THEN
-^^CO SET TWINS DISABLED=YES
-%  END IF
-%%
-%% Get OK and Cancel button press:
-%%
-% LOOP
-%  VERIFY W5_BXX W5_BOK 
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'W5_BOK'
-%%
-%  CASE VALUE
-%  BLOCK
-^^CO DISPOSE XRSETUP
-%    FINISH
-%  END BLOCK
-%  BLOCK
-%%
-%% Retrieve info from the dialog:
-%%
-%  EVALUATE SETADP = 0
-^^?? REFPXO STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE SETADP = 1
-%  END IF
-^^?? REFPUI STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE SETADP = 2
-^^CO SET _MODBAR ITEM _MADP STATE ON ITEM _MBALL STATE OFF
-^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250
-%  END IF
-^^?? REFPUA STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE SETADP = 3
-^^CO SET _MODBAR ITEM _MADP STATE ON ITEM _MBALL STATE OFF
-^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250
-%  END IF
-%%
-%  EVALUATE HMODE = 0
-% IF ( HFIRST .GE. 0.0 ) THEN
-%%
-^^?? HFIX STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HMODE = 0
-%  END IF
-^^??  HRIDE STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HMODE = 10
-%  END IF
-^^?? HREFN STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HMODE = 1
-%  END IF
-^^?? HREFUI STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HMODE = 2
-%  END IF
-%  EVALUATE HREST = FALSE
-%  EVALUATE HRESTF = 2
-^^?? HREST STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HREST = TRUE
-%    EVALUATE HRESTF = 1
-%  END IF
-^^?? DREST STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE HREST = TRUE
-%    EVALUATE DREST = TRUE
-%    EVALUATE HRESTF = 0
-%  END IF
-%%
-% END IF
-%%
-%  EVALUATE OVERRIDE = FALSE
-^^?? OVRD STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE OVERRIDE = TRUE
-%  END IF
-%%
-^^?? FLACK STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE DOFLACK = TRUE
-%  ELSE IF ( DOFLACK ) THEN
-%%
-%% Flack was refined but is being removed by user.
-%%
-%    EVALUATE DOFLACK = FALSE
-%    EVALUATE WORK1 = 0.0
-%    COPY '#GENERALEDIT 30'
-%    COPY 'LOCATE RECORDTYPE = 106'
-%    COPY 'TRANSFER TO OFFSET = 6 FROM WORK1'
-%    COPY 'TRANSFER TO OFFSET = 7 FROM WORK1'
-%    COPY 'WRITE OVERWRITE=OVERWRITE'
-%    COPY 'END'
-%    COPY "#GENERALEDIT 5"
-%    COPY 'LOCATE RECORDTYPE=102'
-%    COPY 'TRANSFER TO OFFSET=4 FROM WORK1'
-%    COPY 'WRITE OVERWRITE=OVERWRITE'
-%    COPY 'END'
-%  ELSE
-%    EVALUATE DOFLACK = FALSE
-%  END IF
-%%
-^^?? EXTNC STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE DOEXTNC = TRUE
-%  ELSE IF ( DOEXTNC ) THEN
-%%
-%% Extinction was refined but is being removed by user.
-%%
-%    EVALUATE DOEXTNC = FALSE
-%    EVALUATE WORK1 = 0.0
-%    COPY "#GENERALEDIT 5"
-%    COPY 'LOCATE RECORDTYPE=102'
-%    COPY 'TRANSFER TO OFFSET=5 FROM WORK1'
-%    COPY 'WRITE OVERWRITE=OVERWRITE'
-%    COPY 'END'
-{R Extinction turned off - setting parameter to zero in List 5.
-%  ELSE
-%    EVALUATE DOEXTNC = FALSE
-%  END IF
-%  IF ( .NOT. DOEXTNC ) THEN
-%    COPY '#GENERALEDIT 23'
-%    COPY 'LOCATE RECORDTYPE = 101'
-%    COPY 'TRANSFER FROM OFFSET = 1 TO IEXTIN'
-%    IF ( IEXTIN .EQ. 0 ) THEN
-{R Extinction correction turned off - turning off calculation using List 23.
-%      EVALUATE IEXTIN = - 1
-%      COPY 'TRANSFER TO OFFSET = 1 FROM IEXTIN'
-%      COPY 'WRITE OVERWRITE=OVERWRITE'
-%    END IF
-%    COPY 'END'
-%  END IF
-%%
-^^?? TWINS STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    IF ( DOTWIN .EQ. FALSE ) THEN
-%      COPY '#SCRIPT ADDTWIN'
-%      EVALUATE DOTWIN = TRUE
-%    END IF
-%  END IF
-%%
-%% Edit Markus 4
-% IF ( ASSEFOUND ) THEN
-^^?? ARSOF STATE
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE REFSOFASS = TRUE
-%  ELSE
-%    EVALUATE REFSOFASS = FALSE
-%  END IF
-% ELSE
-%  EVALUATE REFSOFASS = FALSE
-% END IF
-%% End edit
-%%
-^^?? ALTER STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE XREFINE = FALSE
-%  ELSE
-%    EVALUATE XREFINE = TRUE
-%  END IF
-%%
-^^?? ALTER STATE
-%  VERIFY ON OFF
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%  IF ( VALUE .EQ. 1 ) THEN
-%    EVALUATE XREFINE = FALSE
-%  ELSE
-%    EVALUATE XREFINE = TRUE
-%  END IF
-%%
-%  IF ( .NOT. DOREFINE ) THEN
-^^?? XR_GO STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%    IF ( VALUE .EQ. 2 ) THEN
-%      EVALUATE DOREFINE = TRUE
-%    END IF
-%  END IF
-%%
-% IF ( DOREFINE ) THEN
-^^?? SXFOUR STATE
-%    VERIFY ON OFF
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%    IF ( VALUE .EQ. 1 ) THEN
-%      EVALUATE DOFOUR = TRUE
-%    ELSE
-%      EVALUATE DOFOUR = FALSE
-%    END IF
-%  END IF
-%%
-%  EVALUATE LOOPEND = LOOPCOUNTER
-%  END BLOCK
-%  END CASE
-% END LOOP
-%%
-^^CO DISPOSE XRSETUP
-%%
-%% Edit Markus 5
-%% IF REFSOFASS THEN
-%%   TRANSFER "{I SOF's of assemblies will be refined" TO DISPLAY
-%% ELSE
-%%   TRANSFER "{I SOF's of assemblies will not be refined" TO DISPLAY
-%% END IF
-%% End edit
-%%
-%% SECTION 2
-%%
-%% Set the refinement flags in L5 for all the non-sticky atoms.
-%%
-%%
-%%
-%  EVALUATE STUCK = FALSE
-%  EVALUATE HRIDE = FALSE
-%  IF ( HMODE .EQ. 10 ) THEN
-%    EVALUATE HRIDE = TRUE
-%  END IF
-%  IF ( HMODE .EQ. 1 .OR. HMODE .EQ. 2 ) THEN
-%    EVALUATE STUCK = TRUE
-%  END IF
-%  IF EXISTS 5 .GE. 1 THEN
-%    IF OVERRIDE .EQ. TRUE THEN
-{S * CRYSTALS is setting refinement modes for all atoms.
-%    ELSE
-%%{S * CRYSTALS is setting refinement modes for non-sticky atoms.
-%    END IF
-%    IF SETADP .EQ. 1 THEN
-{R   Atomic positions will be refined
-%    ELSE IF SETADP .EQ. 2 THEN
-{R   Positions and isotropic temperature factors will be refined
-%    ELSE IF SETADP .EQ. 0 THEN
-{R   Scale factor will be refined
-%    ELSE IF SETADP .EQ. 3 THEN
-{R   Positions and anisotropic temperature factors will be refined
-%    END IF
-%    EVALUATE DOWRITE = FALSE
-%    COPY '#GENERALEDIT 5'
-%    COPY 'LOCATE RECORDTYPE=101'
-%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%    LOOP
-%      ON EDITERROR TERMINATE
-%      COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%      COPY 'TRANSFER FROM OFFSET=14 TO PART'
-%      COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
-%      COPY 'TRANSFER FROM OFFSET=16 TO RESI'
-%      EVALUATE STICKY = FALSE
-%      IF ( REFLAG .LT. 0 ) THEN
-%        EVALUATE STICKY = TRUE
-%        EVALUATE REFLAG = - REFLAG
-%      END IF
-%% Only keep low 8 bits of REFLAG
-%      EVALUATE REFLAG = ( REFLAG IAND 255 )
-%      IF ( PART .GT. 999999 ) THEN
-%        EVALUATE PART = 0
-{I Detected old L5 entry with invalid PART numbers. Correcting.
-%        COPY 'TRANSFER TO OFFSET=14 FROM PART'
-%      END IF
-%      IF ( RESI .GT. 999999 ) THEN
-%        EVALUATE RESI = 0
-{I Detected old L5 entry with invalid RESIDUE numbers. Correcting.
-%        COPY 'TRANSFER TO OFFSET=16 FROM RESI'
-%      END IF
-%      IF ( ( CTYPE .EQ. 'H' ) .or. ( CTYPE .EQ. 'D' ) ) THEN
-%        IF ( REFLAG .NE. HMODE ) THEN
-%          IF ( .NOT. STICKY )  THEN
-%% Non-sticky atom, just change the value.
-%            EVALUATE DOWRITE = TRUE
-%            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'
-%          ELSE IF ( OVERRIDE .EQ. TRUE ) THEN
-%% Sticky atom, but override allowed, just change the value.
-%            EVALUATE DOWRITE = TRUE
-%            COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
-%            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'
-%            CLEAR
-%            INSERT '{R   Overriding sticky settings for atom: '
-%            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE
-%            INSERT '('
-%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
-%            INSERT ')'
-%            OUTPUT
-%          ELSE IF ( REFLAG .NE.  HMODE ) THEN
-%% Remember that there are some sticky atoms of different
-%% refinement mode to the default.
-%            EVALUATE STUCK = TRUE
-%            IF ( REFLAG .EQ.  10 ) THEN
-%               EVALUATE HRIDE = TRUE
-%            END IF
-%          END IF
-%        END IF
-%      ELSE
-%        IF ( REFLAG .NE. SETADP ) THEN
-%          IF ( .NOT. STICKY )  THEN
-%% Non-sticky atom, just change the value.
-%            EVALUATE DOWRITE = TRUE
-%            COPY 'TRANSFER TO OFFSET=15 FROM SETADP'
-%          ELSE IF ( OVERRIDE .EQ. TRUE ) THEN
-%% Sticky atom, but override allowed, just change the value.
-%            EVALUATE DOWRITE = TRUE
-%            COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
-%            COPY 'TRANSFER TO OFFSET=15 FROM SETADP'
-%            CLEAR
-%            INSERT '{R   Overriding sticky settings for atom: '
-%            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE
-%            INSERT '('
-%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL
-%            INSERT ')'
-%            OUTPUT
-%          ELSE IF ( REFLAG .NE.  SETADP ) THEN
-%% Remember that there are some sticky atoms of different
-%% refinement mode to the default.
-%            EVALUATE STUCK = TRUE
-%          END IF
-%        END IF
-%      END IF
-%      COPY 'NEXT'
-%    END LOOP
-%    IF ( DOWRITE .EQ. TRUE ) THEN
-%      COPY 'WRITE OVERWRITE=OVERWRITE'
-%    END IF
-%    COPY 'END'
-%  END IF
-%%
-%%
-%%
-%% SECTION 3
-%%
-%%
-%%
-%% Write a list 12 from the flags in list 5.
-%%
-%%
-%%
-%% First write the bits for the disorder assemblies if present
-%%
-%% Edit Markus 6
-%  IF REFSOFASS THEN
-%    COPY '#SCRIPT A_L12PARTSSOF'
-%  END IF
-%  IF ( FILEEXISTS ( 'Residues.dat' ) ) THEN
-%    EVALUATE T = FILEDELETE ( 'Residues.dat' )
-%  END IF
-%  IF ( FILEEXISTS ( 'Parts.dat' ) ) THEN
-%    EVALUATE T = FILEDELETE ( 'Parts.dat' )
-%  END IF
-%% End edit
-%%
-%  IF ( HREST ) THEN
- Working out H restraints
-%% Put a CONTINUATION list of all sticky H atoms into someh.12
-%     COPY '#RELEASE SCPQ someh.12'
-%     QUEUE REWIND
-%     COPY '#GENERALEDIT 5'
-%     COPY 'LOCATE RECORDTYPE=101'
-%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%     LOOP
-%       ON EDITERROR TERMINATE
-%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
-%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
-%       EVALUATE STICKY = FALSE
-%       IF ( REFLAG .LT. 0 ) THEN
-%         EVALUATE STICKY = TRUE
-%         EVALUATE REFLAG = - REFLAG
-%       END IF
-%       EVALUATE REFLAG = ( REFLAG IAND 255 )
-%       IF ( CTYPE .EQ. 'H' ) .AND. ( STICKY ) THEN
-%         CLEAR
-%         INSERT 'CONT H('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         INSERT ')'
-%%         OUTPUT
-%         QUEUE SEND
-%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( STICKY ) THEN
-%         CLEAR
-%         INSERT 'CONT D('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         INSERT ')'
-%%         OUTPUT
-%         QUEUE SEND
-%       END IF
-%       COPY 'NEXT'
-%     END LOOP
-%     COPY 'END'
-%     EVALUATE HREST = FALSE
-%     COPY '#RELEASE PUNCH new16bit.pch'
-%     COPY '#CLOSE SCPQ'
-%     COPY '#CLOSE SCPDATA'
-%     COPY '#OPEN SCPQ restdat.12'
-%     COPY '#DISTANCES'
-%     COPY 'OUTPUT MON=OFF PUNCH=H-REST'
-%     COPY 'SELECT SYMMETRY=NONE RANGE=L41'
-%% Maybe here limit pivots to ALL, or just O and N.
-%     IF ( DREST ) THEN
-%       COPY 'PIVOT O N'
-%     END IF
-%     COPY 'notbonded'
-%     COPY '#use someh.12'
-%     COPY 'END'
-%     COPY '#RELEASE PUNCH bfile.pch'
-%     COPY '#RELEASE SCPQ bfile.spq'
-%%
-%% Now take all the atoms in restdat.12 and set their refine flag to 1,
-%% (or 2 if HMODE=2). Set STUCK true so that a custom L12 is written.
-%%
-%     COPY '#CLOSE SCPDATA'
-%     COPY '#OPEN SCPDATA restdat.12'
-%     EXTRACT REWIND
-%     EVALUATE ICHK = 1
-%     IF ( HMODE .EQ. 2 ) THEN
-%       EVALUATE ICHK = 2
-%     END IF
-%     COPY '#GENERALEDIT 5'
-%     COPY 'TRANSHEAD FROM OFFSET=3 TO N5'
-%     EVALUATE I5 = 1
-%     COPY 'LOCATE RECORDTYPE=101'
-%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%     LOOP
-%       ON ERROR TERMINATE
-%       ON END TERMINATE
-%%
-%% Extract the atom line:
-%%
-%       EXTRACT NEXT
-%       EXTRACT TRANSFER INPUT
-%       CLEAR
-%% Read the atom
-%       GET NOSTORE SILENT KEYWORD ' '
-%       EVALUATE ISER = FIRSTINT ( CVALUE )
-%       EVALUATE CELE = FIRSTSTR ( CVALUE )
-%       LOOP N5 TIMES
-%         ON EDITERROR TERMINATE
-%         COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
-%         COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
-%         IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
-%           COPY 'TRANSFER TO OFFSET=15 FROM ICHK'
-%           EVALUATE STUCK = TRUE
-%           EVALUATE HREST = TRUE
-%           EVALUATE LOOPEND = LOOPCOUNTER
-%         END IF
-%         EVALUATE I5 = I5 + 1
-%         IF ( I5 .GT. N5 ) THEN
-%           COPY 'TOP'
-%           EVALUATE I5 = 1
-%         ELSE
-%           COPY 'NEXT'
-%         END IF
-%       END LOOP
-%     END LOOP
-%     COPY 'WRITE OVERWRITE=OVERWRITE'
-%     COPY 'END'
-%     COPY '#CLOSE SCPDATA'
-%  END IF
-%  IF ( .NOT. HREST ) THEN
-%    COPY '#RELEASE punch new16bit.pch'
-%    TRANSFER ' ' TO PUNCH
-%  END IF
-%  EVALUATE KEYBREAK = 'HREST'
-%  COPY '#SCRIPT ZADDLI16'
-%%
-%  IF ( HRIDE ) THEN
- Working out RIDES
-%     EVALUATE HRIDE = FALSE
-%     QUEUE REWIND
-%     COPY '#GENERALEDIT 5'
-%     COPY 'LOCATE RECORDTYPE=101'
-%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%     LOOP
-%       ON EDITERROR TERMINATE
-%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
-%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
-%       IF REFLAG .LT. 0 THEN
-%         EVALUATE REFLAG = - REFLAG
-%       END IF
-%       EVALUATE REFLAG = ( REFLAG IAND 255 )
-%       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .EQ. 10 ) THEN
-%         EVALUATE HRIDE = TRUE
-%         CLEAR
-%         INSERT 'CONT H('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         INSERT ')'
-%%         OUTPUT
-%         QUEUE SEND
-%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( REFLAG .EQ. 10 ) THEN
-%         EVALUATE HRIDE = TRUE
-%         CLEAR
-%         INSERT 'CONT D('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         INSERT ')'
-%%         OUTPUT
-%         QUEUE SEND
-%       END IF
-%       COPY 'NEXT'
-%     END LOOP
-%     COPY 'END'
-%  END IF
-%% If HRIDE is still set, we found some atoms to ride.
-%  IF ( HRIDE ) THEN
- Calculating RIDES.
-%     COPY '#RELEASE PUNCH ridedat.12'
-%     COPY '#DISTANCES'
-%     COPY 'OUTPUT MON=OFF PUNCH=SCRIPT'
-%     COPY 'SELECT SYMMETRY=NONE  RANGE=L41'
-%     COPY 'NOTPIVOT H D'
-%     COPY 'BONDED'
-%     QUEUE PROCESS
-%     COPY 'END'
-%     COPY '#RELEASE PUNCH bfile.pch'
-%  END IF
-%%
-%  IF ( STUCK ) THEN
-%%
-%% Write a custom L12, using each atoms REFINE flag to specify
-%% its treatment. Neighbouring atoms with same flags are grouped
-%% using UNTIL.
-%%
-%    CLEAR
-%    COPY '#RELEASE SCPQUEUE l12.spq'
-%    QUEUE REWIND
-%    EVALUATE CURMODE = 0
-%    EVALUATE INBLOCK = 0
-%    QUEUE COPY #LIST 12
-%    QUEUE COPY BLOCK
-%    QUEUE COPY CONT SCALE
-%    COPY '#GENERALEDIT 5'
-%    COPY 'LOCATE RECORDTYPE=101'
-%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%    LOOP
-%       ON EDITERROR TERMINATE
-%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
-%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'
-%       IF ( REFLAG .LT. 0 ) THEN
-%         EVALUATE REFLAG = - REFLAG
-%       END IF
-%       EVALUATE REFLAG = ( REFLAG IAND 255 )
-%       IF CURMODE .NE. REFLAG THEN
-%% Finish off current block.
-%         IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN
-%           IF ( INBLOCK .GT. 1 ) THEN
-%             INSERT ' UNTIL '
-%             STORE CHARACTER CTYPE2
-%             INSERT '('
-%             STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2
-%             INSERT ')'
-%           END IF
-%           OUTPUT
-%           QUEUE SEND
-%         END IF
-%         EVALUATE INBLOCK = 0
-%         EVALUATE CURMODE = REFLAG
-%         IF ( REFLAG .NE. 5 ) THEN
-%         CLEAR
-%         INSERT 'CONT '
-%         STORE CHARACTER CTYPE
-%         INSERT '('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN
-%          CASE REFLAG
-%           INSERT ",X's)"
-%           INSERT ",X's,U[iso])"
-%           INSERT ",X's,U's)"
-%          END CASE
-%         ELSE
-%          CLEAR
-%          EVALUATE CURMODE = 0
-%         END IF
-%         ELSE
-%% Fix atom
-%           EVALUATE CURMODE = 0
-%         END IF
-%       END IF
-%       EVALUATE CTYPE2 = CTYPE
-%       EVALUATE SERIAL2 = SERIAL
-%       EVALUATE INBLOCK = INBLOCK + 1
-%       COPY 'NEXT'
-%    END LOOP
-%    COPY 'END'
-%% Finish off last block.
-%    IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN
-%       IF ( INBLOCK .GT. 1 ) THEN
-%         INSERT ' UNTIL '
-%         STORE CHARACTER CTYPE2
-%         INSERT '('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2
-%         INSERT ')'
-%       END IF
-%       OUTPUT
-%       QUEUE SEND
-%    END IF
-%    IF ( DOEXTNC ) THEN
-%      QUEUE COPY CONT EXTPARAM
-%    END IF
-%    IF ( DOFLACK ) THEN
-%      QUEUE COPY CONT ENANTIO
-%    END IF
-%    IF ( DOTWIN ) THEN
-%      QUEUE COPY SUMFIX ELEMENT SCALES
-%    END IF
-%%
-%% Edit Markus 7
-%    IF ( REFSOFASS ) THEN
-%%     TRANSFER "Insert the bits and pieces 1..." TO DISPLAY
-%      QUEUE COPY #USE refsofass.12
-%    END IF
-%% End edit
-%%
-%    IF ( HRIDE ) THEN
-%      QUEUE COPY #USE RIDEDAT.12
-%    END IF
-%    QUEUE COPY END
-%    COPY '#RELEASE SCPQUEUE bfile.spq'
-%    COPY '#USE l12.spq'
-%%
-%% Very simple L12's:
-%%
-%  ELSE
-%    COPY '#LIST 12'
-%    CASE SETADP + 1
-%      COPY "BLOCK SCALE "
-%      COPY "BLOCK SCALE X'S"
-%      COPY "BLOCK SCALE X'S  U[ISO]"
-%      COPY "BLOCK SCALE X'S  U'S"
-%    END CASE
-%    IF ( DOEXTNC ) THEN
-%      COPY 'CONT EXTPARAM'
-%    END IF
-%    IF ( DOFLACK ) THEN
-%      COPY 'CONT ENANTIO'
-%    END IF
-%    IF ( DOTWIN ) THEN
-%      COPY 'SUMFIX ELEMENT SCALES'
-%    END IF
-%%
-%% Edit Markus 8
-%    IF ( REFSOFASS ) THEN
-%%     TRANSFER "Insert the bits and pieces 2..." TO DISPLAY
-%      COPY '#USE refsofass.12'
-%    END IF
-%% End edit
-%%
-%    IF ( HMODE .EQ. 10 ) THEN
-%      COPY '#USE ridedat.12'
-%    ELSE IF ( HMODE .GE. 1 ) THEN
-%      CLEAR
-%      INSERT "CONT H("
-%      STORE FORMAT /(F5.0)/ LENGTH 5 REAL HFIRST
-%      IF ( HMODE .EQ. 1 ) THEN
-%        INSERT ",X'S) UNTIL LAST"
-%      ELSE
-%        INSERT ",X'S,U[ISO]) UNTIL LAST"
-%      END IF
-%      SEND
-%    END IF
-%    COPY 'END'
-%  END IF
-%  COPY '#SCRIPT VALID12'
-%%
-%  COPY '#GENERALEDIT 12'
-%  COPY 'GETSERIAL L12SER'
-%  COPY 'END'
-%  EVALUATE L12SMASK = TRUE
-%  EVALUATE HRTYP    = HMODE
-%  EVALUATE HRMASK   = TRUE
-%  EVALUATE HRESTM   = TRUE
-%  COPY '#SCRIPT XPUTINFO'
-%%
-%  IF ( DOREFINE ) THEN
-%    COPY '#SCRIPT XREFINE'
-%  END IF
-%  IF ( DOFOUR ) THEN
-%    COPY '#GENERALEDIT 5'
-%    COPY 'TRANSHEAD FROM OFFSET=3 TO N5'
-%    COPY 'END'
-%    COPY '#SCRIPT PREFOUR'
-%    COPY 'MAP TYPE=DIFF'
-%    CLEAR
-%    INSERT 'PEAK HEIGHT=0.1 NPEAK= '
-%    STORE CHARACTER CHARACTER INTEGER ( REAL ( N5 ) * 1.4 )
-%    SEND
-%    COPY 'END'
-%    COPY '#SCRIPT POSTFOUR'
-%    COPY '#PEAKS'
-%    COPY '#COLLECT'
-%    COPY 'SELECT TYPE = PEAKS'
-%    COPY 'END'
-%    COPY '#SCRIPT XPRUNE'
-%  END IF
-%END SCRIPT
+%%                                                                              
+%% SECTION 1                                                                    
+%%                                                                              
+%%  Setup variables, display window, wait for response,                         
+%%  read values, close window.                                                  
+%%                                                                              
+%%   Sets the REF flag of every atom in list 5.                                 
+%%   Global (already set) variables:                                            
+%  VARIABLE INTEGER SETADP                                                      
+%%                                                                              
+%%   Local variables:                                                           
+%  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI                  
+%  VARIABLE INTEGER HMODE ISER CURMODE                                          
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY                       
+%  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST                           
+%  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK                                     
+%  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5                         
+%  EVALUATE TWINNED = FALSE                                                     
+%  EVALUATE DOREFINE = TRUE                                                     
+%  EVALUATE DOFOUR = FALSE                                                      
+%  VARIABLE CHARACTER CCHK CELE                                                 
+%  VARIABLE REAL RCHK                                                           
+%%                                                                              
+%%   Variables set by ASSESS 5                                                  
+%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT DOTWIN                         
+%  VARIABLE INTEGER ADP                                                         
+%%                                                                              
+%%   Variables set by or needed for XGETINFO/XPUTINFO                           
+%  VARIABLE INTEGER HRTYP L12SER HRESTF                                         
+%  VARIABLE LOGICAL HRMASK L12SMASK HRESTM                                      
+%%                                                                              
+%% The variables needed by XQUESTIO                                             
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
+%  VARIABLE LOGICAL   ANSWER                                                    
+%%                                                                              
+%% Variables needed by XREFINE                                                  
+%  VARIABLE LOGICAL XREFINE                                                     
+%  VARIABLE INTEGER NCYCLE NFORCE                                               
+%  EVALUATE NCYCLE = 5                                                          
+%  EVALUATE NFORCE = 1                                                          
+%%                                                                              
+%% Edit Markus 1                                                                
+%% Variables set by a_getResiduesAndParts.scp and used to delete scratch files  
+%  VARIABLE INTEGER ICOUNTP                                                     
+%  VARIABLE LOGICAL T                                                           
+%% End edit                                                                     
+%%                                                                              
+%% Edit Markus 2                                                                
+%% Variables to keep track of whether sof's of assemblies should be refined.    
+%  VARIABLE LOGICAL ASSEFOUND REFSOFASS                                         
+%  EVALUATE ASSEFOUND = FALSE                                                   
+%  EVALUATE REFSOFASS = TRUE                                                    
+%% End edit                                                                     
+%%                                                                              
+%% XEXTIN12 sets DOEXTNC to indicate that extinction should be refined.         
+%% Assess5 resets DOEXTNC so that it indicates if ext is being refined.         
+%% Therefore store it and if TRUE, restore it after the assess5 call.           
+%%                                                                              
+%  IF ( DOEXTNC ) THEN                                                          
+%    EVALUATE DKEXT = TRUE                                                      
+%  END IF                                                                       
+%%                                                                              
+%  COPY '#SCRIPT ASSESS5'                                                       
+%%                                                                              
+%  IF ( DKEXT ) THEN                                                            
+%    EVALUATE DOEXTNC = TRUE                                                    
+%  END IF                                                                       
+%%                                                                              
+%                                                                               
+%  BLOCK                                                                        
+%    VARIABLE INTEGER ITMP                                                      
+%    IF ( EXISTS 13 .GT. 0 ) THEN                                               
+%      COPY '#GENERALEDIT 13'                                                   
+%      COPY 'LOCATE RECORDTYPE=101'                                             
+%      COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                    
+%      IF ( ITMP .GE. 0 ) THEN                                                  
+%        EVALUATE TWINNED = TRUE                                                
+%      ELSE                                                                     
+%        EVALUATE TWINNED = FALSE                                               
+%      END IF                                                                   
+%      COPY 'END'                                                               
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%%                                                                              
+%  COPY '#SCRIPT XGETINFO'                                                      
+%%                                                                              
+%  COPY '#GENERALEDIT 2'                                                        
+%  COPY 'LOCATE RECORDTYPE=101'                                                 
+%  COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'                                      
+%  COPY 'END'                                                                   
+%%                                                                              
+%  IF ( EXISTS 12 .GT. 0 ) THEN                                                 
+%    COPY '#GENERALEDIT 12'                                                     
+%    COPY 'GETSERIAL ISER'                                                      
+%    COPY 'END'                                                                 
+%%                                                                              
+%    IF ( ISER .NE. L12SER .AND. L12SER .NE. 0 ) THEN                           
+%     EVALUATE QTITLE = 'List 12 has changed'                                   
+%     EVALUATE QLINE1 = 'This script will overwrite any refinement'             
+%     EVALUATE QLINE2 = 'instructions that you may have written (List 12)'      
+%     EVALUATE BUTTOK = '&Continue'                                             
+%     EVALUATE BUTTXX = '&Cancel'                                               
+%     COPY '#SCRIPT XQUESTIO'                                                   
+%     IF ANSWER .EQ. FALSE THEN                                                 
+                                                                                
+{I You have chosen to keep your existing list 12,                               
+{I run '#SCRIPT XREFINE' to carry out the refinement.                           
+                                                                                
+%       FINISH                                                                  
+%     END IF                                                                    
+%    END IF                                                                     
+%%%  ELSE                                                                       
+%%%    COPY '#SCRIPT VALID12'                                                   
+%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%  COPY '#SCRIPT CHECK3'                                                        
+%%                                                                              
+%%                                                                              
+%  COPY '#SCRIPT A_GETRESIDUESANDPARTS'                                         
+%% TRANSFER "Number of parts: " // CHARACTER ( ICOUNTP ) TO DISPLAY             
+%  IF ICOUNTP .GT. 1 THEN                                                       
+%    EVALUATE ASSEFOUND = TRUE                                                  
+%  END IF                                                                       
+%% If this valie is 1 it usually means that all part numbers are zero.          
+%% We have to see if this is enough.                                            
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XRSETUP 'Least Squares Directives' MODAL                            
+^^WI COMMIT='W5_BOK' CANCEL='W5_BXX'                                            
+^^WI GRID MAIN NROWS=3 NCOLS=5                                                  
+^^WI {                                                                          
+^^WI  @ 2,2 GRID L NROWS=7 NCOLS=1                                              
+^^WI  {                                                                         
+%     IF SETADP .EQ. 0 THEN                                                     
+^^WI   @ 1,1 CHECKBOX XR_GO '&Setup refinement only, do not refine.'            
+^^WI         STATE=ON                                                           
+%      EVALUATE DOREFINE = FALSE                                                
+%     END IF                                                                    
+^^WI   @ 2,1 GRID OR NROWS=5 NCOLS=1 OUTLINE='General'                          
+^^WI   {                                                                        
+^^WI   @ 1,1 RADIOBUTTON REFSCO 'Refine scale factor' STATE=OFF                 
+^^WI   @ 2,1 RADIOBUTTON REFPXO 'Refine scale and positions' STATE=OFF          
+^^WI   @ 3,1 RADIOBUTTON REFPUI 'Refine scale, positions and U&iso' STATE=OFF   
+^^WI   @ 4,1 RADIOBUTTON REFPUA 'Refine scale, positions and &Uijs' STATE=OFF   
+^^WI   @ 5,1 CHECKBOX OVRD '&Override sticky settings for atoms' STATE=OFF      
+^^WI   }                                                                        
+% IF ( HFIRST .GE. 0.0 ) THEN                                                   
+^^WI   @ 3,1 GRID HR NROWS=3 NCOLS=1 OUTLINE='Hydrogen restraints'              
+^^WI   {                                                                        
+^^WI    @ 1,1 RADIOBUTTON DREST '&Restrain H positions for O-H and N-H bonds'   
+% IF HRESTF .EQ. 0 THEN                                                         
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI    @ 2,1 RADIOBUTTON HREST '&Restrain H positions for all-H bonds'         
+% IF HRESTF .EQ. 1 THEN                                                         
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI    @ 3,1 RADIOBUTTON NHREST '&No restraints'                               
+% IF HRESTF .EQ. 2 THEN                                                         
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI   }                                                                        
+^^WI   @ 4,1 GRID HR NROWS=4 NCOLS=1 OUTLINE='Remaining hydrogens'              
+^^WI   {                                                                        
+^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix (do not refine)'                         
+% IF HRTYP .LE. 0 THEN                                                          
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ri&de'                                        
+% IF HRTYP .EQ. 3 .OR. HRTYP .EQ. 10 THEN                                       
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine positions'                            
+% IF HRTYP .EQ. 1 THEN                                                          
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI     @ 4,1 RADIOBUTTON HREFUI 'Refine positions and &Uiso'                  
+% IF HRTYP .EQ. 2 THEN                                                          
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI   }                                                                        
+% END IF                                                                        
+^^WI   @ 5,1 GRID XP NROWS=3 NCOLS=1 OUTLINE='Other parameters'                 
+^^WI   {                                                                        
+^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF                        
+% IF ( CENTRO .GT. 0.9 ) THEN                                                   
+^^WI           DISABLED=YES                                                     
+% END IF                                                                        
+^^WI    @ 2,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF                   
+^^WI    @ 3,1 CHECKBOX TWINS 'Twin element scales'                              
+% IF ( DOTWIN ) THEN                                                            
+^^WI     STATE = ON                                                             
+% ELSE                                                                          
+^^WI     STATE = OFF                                                            
+% END IF                                                                        
+^^WI   }                                                                        
+%% Edit Markus 3                                                                
+% IF ASSEFOUND THEN                                                             
+^^WI   @ 6,1 GRID AR NROWS=1 NCOLS=1 OUTLINE='Disorder assemblies'              
+^^WI   {                                                                        
+^^WI    @ 1,1 CHECKBOX ARSOF                                                    
+^^WI    '&Refine site occupancy factors of assemblies keeping the sum at 1'     
+% IF REFSOFASS THEN                                                             
+^^WI           STATE=ON                                                         
+% END IF                                                                        
+^^WI   }                                                                        
+% END IF                                                                        
+%% End edit                                                                     
+^^WI   @ 7,1 GRID RN NROWS=2 NCOLS=1                                            
+^^WI   {                                                                        
+^^WI    @ 1,1 CHECKBOX ALTER                                                    
+^^WI      'Advanced: Edit directives or restraints before proceeding'           
+^^WI      STATE=OFF                                                             
+^^WI    @ 2,1 CHECKBOX SXFOUR                                                   
+^^WI      'Follow refinement with difference Fourier'                           
+^^WI      STATE=OFF                                                             
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,4 GRID R NROWS=3 NCOLS=1                                              
+^^WI  {                                                                         
+^^WI   @ 1,1 BUTTON W5_BOK '&OK' DEFAULT                                        
+^^WI   @ 3,1 BUTTON W5_BXX '&Cancel'                                            
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%%                                                                              
+%  IF ( SETADP .LE. 0 ) THEN                                                    
+{S * Direct call of XWRITE5 - setting default refinement                        
+{S   mode to current assessment by ASSESS5.                                     
+%    EVALUATE SETADP = ADP                                                      
+%  END IF                                                                       
+%  CASE ( SETADP + 1 )                                                          
+%    BLOCK   % Zero                                                             
+{E No atomic parameters to refine.                                              
+%    END BLOCK                                                                  
+%    BLOCK   % setadp is 1 - pos only                                           
+^^CO SET REFPXO STATE=ON                                                        
+%    END BLOCK                                                                  
+%    BLOCK   % setadp is 2 - pos and uiso                                       
+^^CO SET REFPUI STATE=ON                                                        
+%    END BLOCK                                                                  
+%    BLOCK   % setadp is 3 - pos and uij                                        
+^^CO SET REFPUA STATE=ON                                                        
+%    END BLOCK                                                                  
+%  END CASE                                                                     
+%  IF ( DOFLACK .EQ. TRUE ) THEN                                                
+^^CO SET FLACK STATE=ON                                                         
+%  END IF                                                                       
+%  IF ( DOEXTNC .EQ. TRUE ) THEN                                                
+^^CO SET EXTNC STATE=ON                                                         
+%  END IF                                                                       
+%  IF ( TWINNED .EQ. FALSE ) THEN                                               
+^^CO SET TWINS DISABLED=YES                                                     
+%  END IF                                                                       
+%%                                                                              
+%% Get OK and Cancel button press:                                              
+%%                                                                              
+% LOOP                                                                          
+%  VERIFY W5_BXX W5_BOK                                                         
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'W5_BOK'                            
+%%                                                                              
+%  CASE VALUE                                                                   
+%  BLOCK                                                                        
+^^CO DISPOSE XRSETUP                                                            
+%    FINISH                                                                     
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+%%                                                                              
+%% Retrieve info from the dialog:                                               
+%%                                                                              
+%  EVALUATE SETADP = 0                                                          
+^^?? REFPXO STATE                                                               
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE SETADP = 1                                                        
+%  END IF                                                                       
+^^?? REFPUI STATE                                                               
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE SETADP = 2                                                        
+^^CO SET _MODBAR ITEM _MADP STATE ON ITEM _MBALL STATE OFF                      
+^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250                                   
+%  END IF                                                                       
+^^?? REFPUA STATE                                                               
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE SETADP = 3                                                        
+^^CO SET _MODBAR ITEM _MADP STATE ON ITEM _MBALL STATE OFF                      
+^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250                                   
+%  END IF                                                                       
+%%                                                                              
+%  EVALUATE HMODE = 0                                                           
+% IF ( HFIRST .GE. 0.0 ) THEN                                                   
+%%                                                                              
+^^?? HFIX STATE                                                                 
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE HMODE = 0                                                         
+%  END IF                                                                       
+^^??  HRIDE STATE                                                               
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE HMODE = 10                                                        
+%  END IF                                                                       
+^^?? HREFN STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE HMODE = 1                                                         
+%  END IF                                                                       
+^^?? HREFUI STATE                                                               
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE HMODE = 2                                                         
+%  END IF                                                                       
+%  EVALUATE HREST = FALSE                                                       
+%  EVALUATE HRESTF = 2                                                          
+^^?? HREST STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE HREST = TRUE                                                      
+%    EVALUATE HRESTF = 1                                                        
+%  END IF                                                                       
+^^?? DREST STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE HREST = TRUE                                                      
+%    EVALUATE DREST = TRUE                                                      
+%    EVALUATE HRESTF = 0                                                        
+%  END IF                                                                       
+%%                                                                              
+% END IF                                                                        
+%%                                                                              
+%  EVALUATE OVERRIDE = FALSE                                                    
+^^?? OVRD STATE                                                                 
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE OVERRIDE = TRUE                                                   
+%  END IF                                                                       
+%%                                                                              
+^^?? FLACK STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE DOFLACK = TRUE                                                    
+%  ELSE IF ( DOFLACK ) THEN                                                     
+%%                                                                              
+%% Flack was refined but is being removed by user.                              
+%%                                                                              
+%    EVALUATE DOFLACK = FALSE                                                   
+%    EVALUATE WORK1 = 0.0                                                       
+%    COPY '#GENERALEDIT 30'                                                     
+%    COPY 'LOCATE RECORDTYPE = 106'                                             
+%    COPY 'TRANSFER TO OFFSET = 6 FROM WORK1'                                   
+%    COPY 'TRANSFER TO OFFSET = 7 FROM WORK1'                                   
+%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%    COPY 'END'                                                                 
+%    COPY "#GENERALEDIT 5"                                                      
+%    COPY 'LOCATE RECORDTYPE=102'                                               
+%    COPY 'TRANSFER TO OFFSET=4 FROM WORK1'                                     
+%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%    COPY 'END'                                                                 
+%  ELSE                                                                         
+%    EVALUATE DOFLACK = FALSE                                                   
+%  END IF                                                                       
+%%                                                                              
+^^?? EXTNC STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE DOEXTNC = TRUE                                                    
+%  ELSE IF ( DOEXTNC ) THEN                                                     
+%%                                                                              
+%% Extinction was refined but is being removed by user.                         
+%%                                                                              
+%    EVALUATE DOEXTNC = FALSE                                                   
+%    EVALUATE WORK1 = 0.0                                                       
+%    COPY "#GENERALEDIT 5"                                                      
+%    COPY 'LOCATE RECORDTYPE=102'                                               
+%    COPY 'TRANSFER TO OFFSET=5 FROM WORK1'                                     
+%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%    COPY 'END'                                                                 
+{R Extinction turned off - setting parameter to zero in List 5.                 
+%  ELSE                                                                         
+%    EVALUATE DOEXTNC = FALSE                                                   
+%  END IF                                                                       
+%  IF ( .NOT. DOEXTNC ) THEN                                                    
+%    COPY '#GENERALEDIT 23'                                                     
+%    COPY 'LOCATE RECORDTYPE = 101'                                             
+%    COPY 'TRANSFER FROM OFFSET = 1 TO IEXTIN'                                  
+%    IF ( IEXTIN .EQ. 0 ) THEN                                                  
+{R Extinction correction turned off - turning off calculation using List 23.    
+%      EVALUATE IEXTIN = - 1                                                    
+%      COPY 'TRANSFER TO OFFSET = 1 FROM IEXTIN'                                
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
+%    END IF                                                                     
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%%                                                                              
+^^?? TWINS STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    IF ( DOTWIN .EQ. FALSE ) THEN                                              
+%      COPY '#SCRIPT ADDTWIN'                                                   
+%      EVALUATE DOTWIN = TRUE                                                   
+%    END IF                                                                     
+%  END IF                                                                       
+%%                                                                              
+%% Edit Markus 4                                                                
+% IF ( ASSEFOUND ) THEN                                                         
+^^?? ARSOF STATE                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE REFSOFASS = TRUE                                                  
+%  ELSE                                                                         
+%    EVALUATE REFSOFASS = FALSE                                                 
+%  END IF                                                                       
+% ELSE                                                                          
+%  EVALUATE REFSOFASS = FALSE                                                   
+% END IF                                                                        
+%% End edit                                                                     
+%%                                                                              
+^^?? ALTER STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE XREFINE = FALSE                                                   
+%  ELSE                                                                         
+%    EVALUATE XREFINE = TRUE                                                    
+%  END IF                                                                       
+%%                                                                              
+^^?? ALTER STATE                                                                
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%    EVALUATE XREFINE = FALSE                                                   
+%  ELSE                                                                         
+%    EVALUATE XREFINE = TRUE                                                    
+%  END IF                                                                       
+%%                                                                              
+%  IF ( .NOT. DOREFINE ) THEN                                                   
+^^?? XR_GO STATE                                                                
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                               
+%    IF ( VALUE .EQ. 2 ) THEN                                                   
+%      EVALUATE DOREFINE = TRUE                                                 
+%    END IF                                                                     
+%  END IF                                                                       
+%%                                                                              
+% IF ( DOREFINE ) THEN                                                          
+^^?? SXFOUR STATE                                                               
+%    VERIFY ON OFF                                                              
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                               
+%    IF ( VALUE .EQ. 1 ) THEN                                                   
+%      EVALUATE DOFOUR = TRUE                                                   
+%    ELSE                                                                       
+%      EVALUATE DOFOUR = FALSE                                                  
+%    END IF                                                                     
+%  END IF                                                                       
+%%                                                                              
+%  EVALUATE LOOPEND = LOOPCOUNTER                                               
+%  END BLOCK                                                                    
+%  END CASE                                                                     
+% END LOOP                                                                      
+%%                                                                              
+^^CO DISPOSE XRSETUP                                                            
+%%                                                                              
+%% Edit Markus 5                                                                
+%% IF REFSOFASS THEN                                                            
+%%   TRANSFER "{I SOF's of assemblies will be refined" TO DISPLAY               
+%% ELSE                                                                         
+%%   TRANSFER "{I SOF's of assemblies will not be refined" TO DISPLAY           
+%% END IF                                                                       
+%% End edit                                                                     
+%%                                                                              
+%% SECTION 2                                                                    
+%%                                                                              
+%% Set the refinement flags in L5 for all the non-sticky atoms.                 
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%  EVALUATE STUCK = FALSE                                                       
+%  EVALUATE HRIDE = FALSE                                                       
+%  IF ( HMODE .EQ. 10 ) THEN                                                    
+%    EVALUATE HRIDE = TRUE                                                      
+%  END IF                                                                       
+%  IF ( HMODE .EQ. 1 .OR. HMODE .EQ. 2 ) THEN                                   
+%    EVALUATE STUCK = TRUE                       %X's or X's,Uiso%
+%  END IF                                                                       
+%  IF EXISTS 5 .GE. 1 THEN                                                      
+%    IF OVERRIDE .EQ. TRUE THEN                                                 
+{S * CRYSTALS is setting refinement modes for all atoms.                        
+%    ELSE                                                                       
+%%{S * CRYSTALS is setting refinement modes for non-sticky atoms.               
+%    END IF                                                                     
+%    IF SETADP .EQ. 1 THEN                                                      
+{R   Atomic positions will be refined                                           
+%    ELSE IF SETADP .EQ. 2 THEN                                                 
+{R   Positions and isotropic temperature factors will be refined                
+%    ELSE IF SETADP .EQ. 0 THEN                                                 
+{R   Scale factor will be refined                                               
+%    ELSE IF SETADP .EQ. 3 THEN                                                 
+{R   Positions and anisotropic temperature factors will be refined              
+%    END IF                                                                     
+%    EVALUATE DOWRITE = FALSE                                                   
+%    COPY '#GENERALEDIT 5'                                                      
+%    COPY 'LOCATE RECORDTYPE=101'                                               
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                    
+%    LOOP                                                                       
+%      ON EDITERROR TERMINATE                                                   
+%      COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                   
+%      COPY 'TRANSFER FROM OFFSET=14 TO PART'                                   
+%      COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                 
+%      COPY 'TRANSFER FROM OFFSET=16 TO RESI'                                   
+%      EVALUATE STICKY = FALSE                                                  
+%      IF ( REFLAG .LT. 0 ) THEN                                                
+%        EVALUATE STICKY = TRUE                                                 
+%        EVALUATE REFLAG = - REFLAG                                             
+%      END IF                                                                   
+%% Only keep low 8 bits of REFLAG                                               
+%      EVALUATE REFLAG = ( REFLAG IAND 255 )                                    
+%      IF ( PART .GT. 999999 ) THEN                                             
+%        EVALUATE PART = 0                                                      
+{I Detected old L5 entry with invalid PART numbers. Correcting.                 
+%        COPY 'TRANSFER TO OFFSET=14 FROM PART'                                 
+%      END IF                                                                   
+%      IF ( RESI .GT. 999999 ) THEN                                             
+%        EVALUATE RESI = 0                                                      
+{I Detected old L5 entry with invalid RESIDUE numbers. Correcting.              
+%        COPY 'TRANSFER TO OFFSET=16 FROM RESI'                                 
+%      END IF                                                                   
+%      IF ( ( CTYPE .EQ. 'H' ) .or. ( CTYPE .EQ. 'D' ) ) THEN                   
+%        IF ( REFLAG .NE. HMODE ) THEN                                          
+%          IF ( .NOT. STICKY )  THEN                                            
+%% Non-sticky atom, just change the value.                                      
+%            EVALUATE DOWRITE = TRUE                                            
+%            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'         
+%          ELSE IF ( OVERRIDE .EQ. TRUE ) THEN                                  
+%% Sticky atom, but override allowed, just change the value.                    
+%            EVALUATE DOWRITE = TRUE                                            
+%            COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                            
+%            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'                            
+%            CLEAR                                                              
+%            INSERT '{R   Overriding sticky settings for atom: '                
+%            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE                       
+%            INSERT '('                                                         
+%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL                         
+%            INSERT ')'                                                         
+%            OUTPUT                                                             
+%          ELSE IF ( REFLAG .NE.  HMODE ) THEN                                  
+%% Remember that there are some sticky atoms of different                       
+%% refinement mode to the default.                                              
+%            EVALUATE STUCK = TRUE                                              
+%            IF ( REFLAG .EQ.  10 ) THEN                                        
+%               EVALUATE HRIDE = TRUE                                           
+%            END IF                                                             
+%          END IF                                                               
+%        END IF                                                                 
+%      ELSE                                                                     
+%        IF ( REFLAG .NE. SETADP ) THEN                                         
+%          IF ( .NOT. STICKY )  THEN                                            
+%% Non-sticky atom, just change the value.                                      
+%            EVALUATE DOWRITE = TRUE                                            
+%            COPY 'TRANSFER TO OFFSET=15 FROM SETADP' 
+%          ELSE IF ( OVERRIDE .EQ. TRUE ) THEN                                  
+%% Sticky atom, but override allowed, just change the value.                    
+%            EVALUATE DOWRITE = TRUE                                            
+%            COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                            
+%            COPY 'TRANSFER TO OFFSET=15 FROM SETADP'                           
+%            CLEAR                                                              
+%            INSERT '{R   Overriding sticky settings for atom: '                
+%            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE                       
+%            INSERT '('                                                         
+%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL                         
+%            INSERT ')'                                                         
+%            OUTPUT                                                             
+%          ELSE IF ( REFLAG .NE.  SETADP ) THEN                                 
+%% Remember that there are some sticky atoms of different                       
+%% refinement mode to the default.                                              
+%            EVALUATE STUCK = TRUE                                              
+%          END IF                                                               
+%        END IF                                                                 
+%      END IF                                                                   
+%      COPY 'NEXT'                                                              
+%    END LOOP                                                                   
+%    IF ( DOWRITE .EQ. TRUE ) THEN                                              
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
+%    END IF                                                                     
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%% SECTION 3                                                                    
+%%                                                                              
+%%             
+%%                                                                              
+%% Write a list 12 from the flags in list 5.                                    
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%% First write the bits for the disorder assemblies if present                  
+%%                                                                              
+%% Edit Markus 6                                                                
+%  IF REFSOFASS THEN                                                            
+%    COPY '#SCRIPT A_L12PARTSSOF'                                               
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'Residues.dat' ) ) THEN                                    
+%    EVALUATE T = FILEDELETE ( 'Residues.dat' )                                 
+%  END IF                                                                       
+%  IF ( FILEEXISTS ( 'Parts.dat' ) ) THEN                                       
+%    EVALUATE T = FILEDELETE ( 'Parts.dat' )                                    
+%  END IF                                                                       
+%% End edit                                                                     
+%%                                                                              
+%  IF ( HREST )  THEN                                                            
+ Working out H restraints                                                       
+%% Put a CONTINUATION list of all sticky H atoms into someh.12                  
+%     COPY '#RELEASE SCPQ someh.12'                                             
+%     QUEUE REWIND                                                              
+%     COPY '#GENERALEDIT 5'                                                     
+%     COPY 'LOCATE RECORDTYPE=101'                                              
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                   
+%     LOOP                                                                      
+%       ON EDITERROR TERMINATE                                                  
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
+%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
+%       EVALUATE STICKY = FALSE                                                 
+%       IF ( REFLAG .LT. 0 ) THEN                                               
+%         EVALUATE STICKY = TRUE                                                
+%         EVALUATE REFLAG = - REFLAG                                            
+%       END IF                                                                  
+%       EVALUATE REFLAG = ( REFLAG IAND 255 )         
+%       IF ( CTYPE .EQ. 'H' ) .AND. ( STICKY ) THEN                             
+%         CLEAR                                                                 
+%         INSERT 'CONT H('                                                      
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         INSERT ')'                                                            
+%%         OUTPUT                                                               
+%         QUEUE SEND                                                            
+%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( STICKY ) THEN                        
+%         CLEAR                                                                 
+%         INSERT 'CONT D('                                                      
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         INSERT ')'                                                            
+%%         OUTPUT                                                               
+%         QUEUE SEND                                                            
+%       END IF                                                                  
+%       COPY 'NEXT'                                                             
+%     END LOOP                                                                  
+%     COPY 'END'                                                                
+%     EVALUATE HREST = FALSE                                                    
+%     COPY '#RELEASE PUNCH new16bit.pch'                                        
+%     COPY '#CLOSE SCPQ'                                                        
+%     COPY '#CLOSE SCPDATA'                                                     
+%     COPY '#OPEN SCPQ restdat.12'                                              
+%     COPY '#DISTANCES'                                                         
+%     COPY 'OUTPUT MON=OFF PUNCH=H-REST'                                        
+%     COPY 'SELECT SYMMETRY=NONE RANGE=L41'                                     
+%% Maybe here limit pivots to ALL, or just O and N.                             
+%     IF ( DREST ) THEN                                                         
+%       COPY 'PIVOT O N'                                                        
+%     END IF                                                                    
+%     COPY 'notbonded'                                                          
+%     COPY '#use someh.12'                                                      
+%     COPY 'END'                                                                
+%     COPY '#RELEASE PUNCH bfile.pch'                                           
+%     COPY '#RELEASE SCPQ bfile.spq'                                            
+%%                                                                              
+%% Now take all the atoms in restdat.12 and set their refine flag to 1,         
+%% (or 2 if HMODE=2). Set STUCK true so that a custom L12 is written.           
+%%                                                                              
+%     COPY '#CLOSE SCPDATA'                                                     
+%     COPY '#OPEN SCPDATA restdat.12'                                           
+%     EXTRACT REWIND                                                            
+%     EVALUATE ICHK = 1                                                         
+%     IF ( HMODE .EQ. 2 ) THEN                                                  
+%       EVALUATE ICHK = 2                                                       
+%     END IF                                                                    
+%     COPY '#GENERALEDIT 5'                                                     
+%     COPY 'TRANSHEAD FROM OFFSET=3 TO N5'                                      
+%     EVALUATE I5 = 1                                                           
+%     COPY 'LOCATE RECORDTYPE=101'                                              
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                   
+%     LOOP                                                                      
+%       ON ERROR TERMINATE                                                      
+%       ON END TERMINATE                                                        
+%%                                                                              
+%% Extract the atom line:                                                       
+%%                                                                              
+%       EXTRACT NEXT                                                            
+%       EXTRACT TRANSFER INPUT                                                  
+%       CLEAR                                                                   
+%% Read the atom                                                                
+%       GET NOSTORE SILENT KEYWORD ' '                                          
+%       EVALUATE ISER = FIRSTINT ( CVALUE )                                     
+%       EVALUATE CELE = FIRSTSTR ( CVALUE )                                     
+%       LOOP N5 TIMES                                                           
+%         ON EDITERROR TERMINATE                                                
+%         COPY 'TRANSFER FROM OFFSET=0 TO CCHK'                                 
+%         COPY 'TRANSFER FROM OFFSET=1 TO RCHK'                                 
+%         IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN   
+%           COPY 'TRANSFER TO OFFSET=15 FROM ICHK'                              
+%           EVALUATE STUCK = TRUE                                               
+%           EVALUATE HREST = TRUE                                               
+%           EVALUATE LOOPEND = LOOPCOUNTER                                      
+%         END IF                                                                
+%         EVALUATE I5 = I5 + 1                                                  
+%         IF ( I5 .GT. N5 ) THEN                                                
+%           COPY 'TOP'                                                          
+%           EVALUATE I5 = 1                                                     
+%         ELSE                                                                  
+%           COPY 'NEXT'                                                         
+%         END IF                                                                
+%       END LOOP                                                                
+%     END LOOP                                                                  
+%     COPY 'WRITE OVERWRITE=OVERWRITE'                                          
+%     COPY 'END'                                                                
+%     COPY '#CLOSE SCPDATA'                                                     
+%  END IF                                                                       
+%  IF ( .NOT. HREST ) THEN                                                      
+%    COPY '#RELEASE punch new16bit.pch'                                         
+%    TRANSFER ' ' TO PUNCH                                                      
+%  END IF                                                                       
+%  EVALUATE KEYBREAK = 'HREST'                                                  
+%  COPY '#SCRIPT ZADDLI16'                                                      
+%%                                                                              
+%  IF ( HRIDE ) THEN                                                            
+ Working out RIDES                                                              
+%     EVALUATE HRIDE = FALSE                                                    
+%     QUEUE REWIND                                                              
+%     COPY '#GENERALEDIT 5'                                                     
+%     COPY 'LOCATE RECORDTYPE=101'                                              
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                   
+%     LOOP                                                                      
+%       ON EDITERROR TERMINATE                                                  
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
+%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
+%       IF REFLAG .LT. 0 THEN                                                   
+%         EVALUATE REFLAG = - REFLAG                                            
+%       END IF                                                                  
+%       EVALUATE REFLAG = ( REFLAG IAND 255 )                                   
+%       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .EQ. 10 ) THEN                     
+%         EVALUATE HRIDE = TRUE                                                 
+%         CLEAR                                                                 
+%         INSERT 'CONT H('                                                      
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         INSERT ')'                                                            
+%%         OUTPUT                                                               
+%         QUEUE SEND                                                            
+%       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( REFLAG .EQ. 10 ) THEN                
+%         EVALUATE HRIDE = TRUE                                                 
+%         CLEAR                                                                 
+%         INSERT 'CONT D('                                                      
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         INSERT ')'                                                            
+%%         OUTPUT                                                               
+%         QUEUE SEND                                                            
+%       END IF                                                                  
+%       COPY 'NEXT'                                                             
+%     END LOOP                                                                  
+%     COPY 'END'                                                                
+%  END IF                                                                       
+%% If HRIDE is still set, we found some atoms to ride.                          
+%  IF ( HRIDE ) THEN                                                            
+ Calculating RIDES.                                                             
+%     COPY '#RELEASE PUNCH ridedat.12'                                          
+%     COPY '#DISTANCES'                                                         
+%     COPY 'OUTPUT MON=OFF PUNCH=SCRIPT'                                        
+%     COPY 'SELECT SYMMETRY=NONE  RANGE=L41'                                    
+%     COPY 'NOTPIVOT H D'                                                       
+%     COPY 'BONDED'                                                             
+%     QUEUE PROCESS                                                             
+%     COPY 'END'                                                                
+%     COPY '#RELEASE PUNCH bfile.pch'                                           
+%  END IF                                                                       
+%%                                                                              
+%  IF ( STUCK ) THEN                                                            
+%%                                                                              
+%% Write a custom L12, using each atoms REFINE flag to specify                  
+%% its treatment. Neighbouring atoms with same flags are grouped                
+%% using UNTIL.                                                                 
+%%                                                                              
+%    CLEAR                                                                      
+%    COPY '#RELEASE SCPQUEUE l12.spq'                                           
+%    QUEUE REWIND                                                               
+%    EVALUATE CURMODE = 0                                                       
+%    EVALUATE INBLOCK = 0                                                       
+%    QUEUE COPY #LIST 12                                                        
+%    QUEUE COPY BLOCK                                                           
+%    QUEUE COPY CONT SCALE                                                      
+%    COPY '#GENERALEDIT 5'                                                      
+%    COPY 'LOCATE RECORDTYPE=101'                                               
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                    
+%    LOOP                                                                       
+%       ON EDITERROR TERMINATE                                                  
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
+%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
+%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
+%       IF ( REFLAG .LT. 0 ) THEN                                               
+%         EVALUATE REFLAG = - REFLAG                                            
+%       END IF                                                                  
+%       EVALUATE REFLAG = ( REFLAG IAND 255 )                                   
+%       IF CURMODE .NE. REFLAG THEN                                             
+%% Finish off current block.                                                    
+%         IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN                   
+%           IF ( INBLOCK .GT. 1 ) THEN                                          
+%             INSERT ' UNTIL '                                                  
+%             STORE CHARACTER CTYPE2                                            
+%             INSERT '('                                                        
+%             STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2              
+%             INSERT ')'                                                        
+%           END IF                                                              
+%           OUTPUT                                                              
+%           QUEUE SEND                                                          
+%         END IF                                                                
+%         EVALUATE INBLOCK = 0                                                  
+%         EVALUATE CURMODE = REFLAG                                             
+%         IF ( REFLAG .NE. 5 ) THEN                                             
+%         CLEAR                                                                 
+%         INSERT 'CONT '                                                        
+%         STORE CHARACTER CTYPE                                                 
+%         INSERT '('                                                            
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN                         
+%          CASE REFLAG                                                          
+%           INSERT ",X's)"                                                      
+%           INSERT ",X's,U[iso])"                                               
+%           INSERT ",X's,U's)"                                                  
+%          END CASE                                                             
+%         ELSE                                                                  
+%          CLEAR                                                                
+%          EVALUATE CURMODE = 0                                                 
+%         END IF                                                                
+%         ELSE                                                                  
+%% Fix atom                                                                     
+%           EVALUATE CURMODE = 0                                                
+%         END IF                                                                
+%       END IF                                                                  
+%       EVALUATE CTYPE2 = CTYPE                                                 
+%       EVALUATE SERIAL2 = SERIAL                                               
+%       EVALUATE INBLOCK = INBLOCK + 1                                          
+%       COPY 'NEXT'                                                             
+%    END LOOP                                                                   
+%    COPY 'END'                                                                 
+%% Finish off last block.                                                       
+%    IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN                        
+%       IF ( INBLOCK .GT. 1 ) THEN                                              
+%         INSERT ' UNTIL '                                                      
+%         STORE CHARACTER CTYPE2                                                
+%         INSERT '('                                                            
+%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2                  
+%         INSERT ')'                                                            
+%       END IF                                                                  
+%       OUTPUT                                                                  
+%       QUEUE SEND                                                              
+%    END IF                                                                     
+%    IF ( DOEXTNC ) THEN                                                        
+%      QUEUE COPY CONT EXTPARAM                                                 
+%    END IF                                                                     
+%    IF ( DOFLACK ) THEN                                                        
+%      QUEUE COPY CONT ENANTIO                                                  
+%    END IF                                                                     
+%    IF ( DOTWIN ) THEN                                                         
+%      QUEUE COPY SUMFIX ELEMENT SCALES                                         
+%    END IF                                                                     
+%%                                                                              
+%% Edit Markus 7                                                                
+%    IF ( REFSOFASS ) THEN                                                      
+%%     TRANSFER "Insert the bits and pieces 1..." TO DISPLAY                    
+%      QUEUE COPY #USE refsofass.12                                             
+%    END IF                                                                     
+%% End edit                                                                     
+%%                                                                              
+%    IF ( HRIDE ) THEN                                                          
+%      QUEUE COPY #USE RIDEDAT.12                                               
+%    END IF                                                                     
+%    QUEUE COPY END                                                             
+%    COPY '#RELEASE SCPQUEUE bfile.spq'                                         
+%    COPY '#USE l12.spq'                                                        
+%%                                                                              
+%% Very simple L12's:                                                           
+%%                                                                              
+%  ELSE                                                                         
+%    COPY '#LIST 12'                                                            
+%    CASE SETADP + 1                                                            
+%      COPY "BLOCK SCALE "                                                      
+%      COPY "BLOCK SCALE X'S"                                                   
+%      COPY "BLOCK SCALE X'S  U[ISO]"                                           
+%      COPY "BLOCK SCALE X'S  U'S"                                              
+%    END CASE                                                                   
+%    IF ( DOEXTNC ) THEN                                                        
+%      COPY 'CONT EXTPARAM'                                                     
+%    END IF                                                                     
+%    IF ( DOFLACK ) THEN                                                        
+%      COPY 'CONT ENANTIO'                                                      
+%    END IF                                                                     
+%    IF ( DOTWIN ) THEN                                                         
+%      COPY 'SUMFIX ELEMENT SCALES'                                             
+%    END IF                                                                     
+%%                                                                              
+%% Edit Markus 8                                                                
+%    IF ( REFSOFASS ) THEN                                                      
+%%     TRANSFER "Insert the bits and pieces 2..." TO DISPLAY                    
+%      COPY '#USE refsofass.12'                                                 
+%    END IF                                                                     
+%% End edit                                                                     
+%%                                                                              
+%    IF ( HMODE .EQ. 10 ) THEN                                                  
+%      COPY '#USE ridedat.12'                                                   
+%    ELSE IF ( HMODE .GE. 1 ) THEN                                              
+%      CLEAR                                                                    
+%      INSERT "CONT H("                                                         
+%      STORE FORMAT /(F5.0)/ LENGTH 5 REAL HFIRST                               
+%      IF ( HMODE .EQ. 1 ) THEN                                                 
+%        INSERT ",X'S) UNTIL LAST"                                              
+%      ELSE                                                                     
+%        INSERT ",X'S,U[ISO]) UNTIL LAST"                                       
+%      END IF                                                                   
+%      SEND                                                                     
+%    END IF                                                                     
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%  COPY '#SCRIPT VALID12'                                                       
+%%                                                                              
+%  COPY '#GENERALEDIT 12'                                                       
+%  COPY 'GETSERIAL L12SER'                                                      
+%  COPY 'END'                                                                   
+%  EVALUATE L12SMASK = TRUE                                                     
+%  EVALUATE HRTYP    = HMODE                                                    
+%  EVALUATE HRMASK   = TRUE                                                     
+%  EVALUATE HRESTM   = TRUE                                                     
+%  COPY '#SCRIPT XPUTINFO'                                                      
+%%                                                                              
+%  IF ( DOREFINE ) THEN                                                         
+%    COPY '#SCRIPT XREFINE'                                                     
+%  END IF                                                                       
+%  IF ( DOFOUR ) THEN                                                           
+%    COPY '#GENERALEDIT 5'                                                      
+%    COPY 'TRANSHEAD FROM OFFSET=3 TO N5'                                       
+%    COPY 'END'                                                                 
+%    COPY '#SCRIPT PREFOUR'                                                     
+%    COPY 'MAP TYPE=DIFF'                                                       
+%    CLEAR                                                                      
+%    INSERT 'PEAK HEIGHT=0.1 NPEAK= '                                           
+%    STORE CHARACTER CHARACTER INTEGER ( REAL ( N5 ) * 1.4 )                    
+%    SEND                                                                       
+%    COPY 'END'                                                                 
+%    COPY '#SCRIPT POSTFOUR'                                                    
+%    COPY '#PEAKS'                                                              
+%    COPY '#COLLECT'                                                            
+%    COPY 'SELECT TYPE = PEAKS'                                                 
+%    COPY 'END'                                                                 
+%    COPY '#SCRIPT XPRUNE'                                                      
+%  END IF                                                                       
+%END SCRIPT                                                                     
