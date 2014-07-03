@@ -1991,14 +1991,14 @@ C
             ITWIN = 10
       ENDIF
 C--SETUP A GRAPH HERE
-      IF ( LEVEL .EQ. 4 ) THEN                 ! Fo vs Fc scatter
+      IF ( LEVEL.EQ.4 ) THEN                 ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
      2  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
      3  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
-      IF ( LEVEL .EQ. 5 ) THEN                 ! Normal probability plot
+      IF ( LEVEL.EQ.5 ) THEN                 ! Normal probability plot
         WRITE(CMON,'(A,/,A)')
      1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
      3  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000'
@@ -2012,7 +2012,7 @@ C--SETUP A GRAPH HERE
         END IF
         CALL XPRVDU(NCVDU, 1,0)
       END IF
-      IF ( LEVEL .EQ. 6 ) THEN                 ! Weight vs Sigma
+      IF ( LEVEL.EQ.6 ) THEN                 ! Weight vs Sigma
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG',
      1  '^^PL YAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
@@ -2056,6 +2056,7 @@ C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
 C
       IFTYPE = ISTORE(L23MN+1)+2
       SCALE = STORE(L5O)
+      SCALESQ = SCALE*SCALE
       FSCALE = 1./(SCALE*SCALE)
       TOP = 0.0
       BOTTOM = 0.0
@@ -2081,7 +2082,7 @@ cjun2010  FO = STORE(M6+itwin)
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
 
-        IF ( LEVEL .EQ. 4 ) THEN
+        IF ( LEVEL.EQ.4 ) THEN
           PLOTMAX = MAX( PLOTMAX, FC )
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
@@ -2107,7 +2108,7 @@ C - FSQ REFINENENT
         WTOP = WTOP + WDEL*WDEL
         WBOT = WBOT + WFO*WFO
 
-        IF ( LEVEL .EQ. 5 ) THEN
+        IF ( LEVEL.EQ.5 ) THEN
 C If you have more than 8.8 million reflections you might be in trouble.
          IF ( N6ACC .LE. MAX11/2 ) THEN
           STR11(N6ACC*2-1) = WDEL     !Format:   [WDEL,INDICES]
@@ -2115,7 +2116,7 @@ C If you have more than 8.8 million reflections you might be in trouble.
          END IF
         END IF
 
-        IF ( LEVEL .EQ. 6 ) THEN
+        IF ( LEVEL.EQ.6 ) THEN
 C-PLOT WEIGHT VS 1/SIGMA
           FSIGN = STORE(M6+3)
           SIG = STORE(M6+12)
@@ -2149,7 +2150,7 @@ c         refinement on F
       GO TO 1100
 1200  CONTINUE
 
-      IF ( LEVEL .EQ. 4 ) THEN      !Also output the omitted refls.
+      IF ( LEVEL.EQ.4 ) THEN      !Also output the omitted refls.
 
         WRITE(CMON,'(A)')
      1  '^^PL ADDSERIES Omitted TYPE SCATTER'
@@ -2210,7 +2211,7 @@ C -- PRINT THE R VALUE ETC.
      5     'Rsigma=', F6.2 )
 
 
-      IF ( LEVEL .EQ. 5 ) THEN
+      IF ( LEVEL.EQ.5 ) THEN
 
         IF ( N6ACC .GT. MAX11/2 ) THEN
           WRITE(CMON,'(A,I8)') '{E Too many reflections: ', N6ACC
@@ -2256,12 +2257,21 @@ c
 
       END IF
 
-      IF (( LEVEL .EQ. 4) .OR. (LEVEL .EQ. 6)) THEN
+      IF ( LEVEL.EQ.4)  THEN
 c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
         WRITE(CMON,'(A/A,2F10.2)')
      1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
      2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
         CALL XPRVDU(NCVDU,2,0)
+
+      ELSE IF (LEVEL.EQ.6) THEN
+c  add A SERIES FOR STRAIGHT LINE AT WT=1/SIGSQ
+        WRITE(CMON,'(A/A,2F10.2)')
+     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
+     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+
+
       ELSE IF (LEVEL.EQ.5) THEN
         WRITE(CMON,'(A/2(A,2F10.2))')
      1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
@@ -2270,13 +2280,13 @@ c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
       ENDIF
 c
 C -- FINISH THE GRAPH DEFINITION
-      IF ( ( LEVEL .EQ. 4 ).OR.( LEVEL .EQ. 5 )
-     1 .OR.( LEVEL .EQ. 6 )) THEN
+      IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
+     1 .OR.( LEVEL.EQ.6 )) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
 C
-      if (level .eq. 5) then
+      if (LEVEL.EQ.5) then
 c      find slope and intercept
 c      determinant
         deter = ss*sxx-sx*sx
