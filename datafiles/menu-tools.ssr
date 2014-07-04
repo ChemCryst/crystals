@@ -25,7 +25,7 @@
 ^^WI   ITEM WWTB   '&Who wants to be..'  '#SCRIPT WWTB'                         
 ^^WI   SPLIT                                                                    
 ^^WI   MENU NEW '&New Things'                                                
-^^WI    ITEM XSPEK '&Spek' '#SCRIPT TON' DISABLEIF='IN'              
+^^WI    ITEM XSPEK '&Absolute' '#SCRIPT XFLACK' DISABLEIF='IN'              
 ^^WI    ITEM XREWT '&Reweight' '#SCRIPT REWEIGHT' DISABLEIF='IN'              
 ^^WI   ITEM INFO 'Information' '#SCRIPT NEWINF'
 ^^WI              DISABLEIF='IN'
