@@ -20,7 +20,7 @@
 %  TRANSFER "# lines from this file before saving." TO PUNCH
 %  TRANSFER "# " TO PUNCH
 %  TRANSFER "# To remove all restraints, replace them with the" TO PUNCH
-%  TRANSFER "# keyword single keyword NO, so that the file reads:" TO PUNCH
+%  TRANSFER "# single keyword NO, so that the file reads:" TO PUNCH
 %  TRANSFER "#     #LIST 16" TO PUNCH
 %  TRANSFER "#     NO" TO PUNCH
 %  TRANSFER "#     END" TO PUNCH
