@@ -3777,7 +3777,7 @@ Mean C-C su =   0.0000
 
       6628.          3570.           3118.                                   On scale of /FC/
 
-      6482.          3491.           3049.               0.1828E+05          On scale of /FO/
+      6482.          3492.           3049.               0.1828E+05          On scale of /FO/
 
  New scale factor (G) is      0.978,    1119 reflections used in refinement
 
@@ -8673,7 +8673,7 @@ All cycle   Min function          0.0           0.89E+03       0.10E+16
  R.M.S.         0.00   0.0000   0.0000   0.0001   0.0001   0.0001   0.0007   0.0006   0.0007   0.0009   0.0004   0.0008
                                          0.0007   0.0012   0.0014
 
- RMS sh/esd     0.05     0.00     0.00     0.12     0.25     0.27     0.32     0.27     0.28     0.40     0.16     0.35
+ RMS sh/esd     0.05     0.00     0.00     0.12     0.25     0.27     0.32     0.27     0.28     0.40     0.15     0.35
 
 
  Maximum        0.00   0.0000   0.0000   0.0003   0.0002   0.0002   0.0020   0.0012   0.0015   0.0020   0.0008   0.0016
@@ -11782,7 +11782,7 @@ LS-scale=  1.673   Wilson Scale=  0.000
 
  SRATIO    5           5           -0.0010     -0.4E+01    0.291E-02         -0.35        C      1 U[11]   
  SRATIO    6           6            0.0004     -0.3E+01    0.323E-02          0.11        C      1 U[22]   
- SRATIO   13          13            0.0000     -0.3E+02    0.453E-03         -0.02        C      2 Z       
+ SRATIO   13          13            0.0000     -0.4E+02    0.453E-03         -0.02        C      2 Z       
  SRATIO   30          30           -0.0001     -0.2E+03    0.761E-03         -0.07        C      4 Y       
  SRATIO   33          33           -0.0001     -0.3E+01    0.364E-02         -0.04        C      4 U[22]   
  SRATIO   34          34            0.0004     -0.3E+01    0.394E-02          0.11        C      4 U[33]   
@@ -14601,7 +14601,7 @@ LS-scale=  1.840   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   16          16            0.0000      0.4E+02    0.197E-03          0.03        O      5 Z       
+ SRATIO   16          16            0.0000      0.5E+02    0.197E-03          0.03        O      5 Z       
  SRATIO   26          26            0.0002      0.4E+02    0.105E-02          0.23        C      9 X       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              1.
@@ -14615,7 +14615,7 @@ All cycle   R-factor              0.0            7.5           0.10E+03
 All cycle   Rw                    0.0            8.3           0.10E+03
 All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.88E+03       0.10E+16
-Inter cycle R-factor             -5.0          -0.38E-02       0.10E+03
+Inter cycle R-factor             -5.0          -0.37E-02       0.10E+03
 Inter cycle Rw                   -5.0           0.45E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.10           0.10E+05
 Inter cycle Min function          0.0           0.97           0.10E+16
@@ -20066,7 +20066,7 @@ LS-scale=  1.632   Wilson Scale=  0.000
  S/ESD    33          33            0.0066     -0.3E+00    0.333E-02          1.97        C      4 U[22]   
  S/ESD    37          37           -0.0050     -0.3E+00    0.480E-02         -1.04        C      4 U[12]   
  S/ESD    41          41            0.0047      0.2E+00    0.424E-02          1.11        O      5 U[11]   
- SRATIO   47          47            0.0007     -0.8E+01    0.123E-02          0.59        N      6 X       
+ SRATIO   47          47            0.0007     -0.8E+01    0.123E-02          0.58        N      6 X       
  S/ESD    56          56            0.0016     -0.4E+01    0.150E-02          1.06        C      7 X       
  S/ESD    60          60            0.0043     -0.4E+00    0.304E-02          1.42        C      7 U[22]   
  S/ESD    68          68            0.0030     -0.2E+00    0.224E-02          1.35        O      8 U[11]   
@@ -20252,7 +20252,7 @@ Mean C-C su =   0.0081
 
     4.   1.   0.     0.74     1.17
     3.   2.   0.     4.82     3.45
-    3.   6.   0.     5.06     3.61
+    3.   6.   0.     5.06     3.62
     5.   6.   0.    -0.76     0.13
     0.  10.   0.     0.54     1.50
     2.  11.   0.     0.57     0.41
@@ -21710,12 +21710,12 @@ Mean C-C su =   0.0000
     5.   6.   0.    -5.16     0.10
     5.   7.   2.    -7.95     0.13
     0.   9.   2.    -2.25     0.71
-    3.  12.   3.    -6.33     1.15
+    3.  12.   3.    -6.32     1.15
     0.  14.   3.   -13.44     0.41
     0.  13.   6.    -4.30     0.39
     2.   0.   9.    -7.91     0.27
     0.  12.   9.    -7.33     0.37
-    2.  10.  10.   -18.98     0.55
+    2.  10.  10.   -18.97     0.55
     0.  12.  10.    -7.46     0.82
     2.   6.  14.   -11.07     1.51
     2.   0.  16.    -2.37     0.39
@@ -21770,7 +21770,7 @@ LS-scale=  1.747   Wilson Scale=  0.000
     5.   7.   2.    -1.17     0.13
     0.   9.   2.    -0.33     0.71
     3.  12.   3.    -0.93     1.15
-    0.  14.   3.    -1.98     0.41
+    0.  14.   3.    -1.97     0.41
     1.   0.   5.     0.43     2.55
     0.  13.   6.    -0.63     0.39
     2.   0.   9.    -1.16     0.27
@@ -21780,7 +21780,7 @@ LS-scale=  1.747   Wilson Scale=  0.000
     0.  12.  10.    -1.10     0.82
     2.   6.  14.    -1.63     1.51
     2.   0.  16.    -0.35     0.39
-    0.   6.  16.    -1.98     0.01
+    0.   6.  16.    -1.97     0.01
     1.   0.  17.    -1.08     0.54
     3.   3.  17.    -0.45     0.78
     1.   0.  18.    -2.56     0.36
@@ -21952,7 +21952,7 @@ Mean C-C su =   0.0000
     4.   2.   0.    13.10     7.36
     5.   2.   0.     5.50     3.54
     6.   2.   0.    -2.47     0.88
-    1.   3.   0.    51.06    29.87
+    1.   3.   0.    51.05    29.87
     2.   3.   0.     5.41     1.83
     4.   3.   0.    19.36    11.04
     4.   5.   0.    11.58     7.48
@@ -21961,7 +21961,7 @@ Mean C-C su =   0.0000
     5.   7.   0.     2.94     1.32
     0.   8.   0.    26.86    14.27
     2.   8.   0.    23.63    13.14
-    4.   8.   0.    19.46    12.44
+    4.   8.   0.    19.45    12.44
     1.   9.   0.    25.15    14.69
     2.   9.   0.    22.40    12.99
     3.   9.   0.     7.40     3.79
@@ -21986,7 +21986,7 @@ Mean C-C su =   0.0000
 
       3710.          3521.            401.                                   On scale of /FC/
 
-      6482.          6151.            700.               0.9462E+03          On scale of /FO/
+      6482.          6151.            700.               0.9461E+03          On scale of /FO/
 
  New scale factor (G) is      1.747,    1119 reflections used in refinement
 
@@ -22138,14 +22138,14 @@ Mean C-C su =   0.0000
     2.   3.   0.     5.25     1.83
     4.   3.   0.    18.80    11.04
     2.   4.   0.     2.21     2.95
-    4.   5.   0.    11.25     7.48
+    4.   5.   0.    11.24     7.48
     5.   6.   0.    -0.77     0.10
     1.   7.   0.     2.30     3.66
     5.   7.   0.     2.86     1.32
-    0.   8.   0.    26.09    14.27
+    0.   8.   0.    26.08    14.27
     2.   8.   0.    22.95    13.14
-    4.   8.   0.    18.90    12.44
-    1.   9.   0.    24.43    14.69
+    4.   8.   0.    18.89    12.44
+    1.   9.   0.    24.42    14.69
     2.   9.   0.    21.75    12.99
     3.   9.   0.     7.19     3.79
     4.   9.   0.     8.39     5.10
@@ -22217,7 +22217,7 @@ Inter cycle Min function          0.0           0.65           0.10E+16
 
  Statistics for     1 least squares parameters, with  1120 degrees of freedom
  Number of observations              1119                 2              1121
- Minimisation function              0.946E+03         0.000E+00         0.946E+03
+ Minimisation function              0.945E+03         0.000E+00         0.945E+03
  Hamilton weighted R-value          17.155             0.000            17.155
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -22316,9 +22316,9 @@ Mean C-C su =   0.0000
     4.   2.   0.    12.66     7.36
     5.   2.   0.     5.32     3.54
     6.   2.   0.    -2.39     0.88
-    1.   3.   0.    49.36    29.87
+    1.   3.   0.    49.35    29.87
     2.   3.   0.     5.23     1.83
-    4.   3.   0.    18.72    11.04
+    4.   3.   0.    18.71    11.04
     2.   4.   0.     2.20     2.95
     4.   5.   0.    11.19     7.48
     5.   6.   0.    -0.77     0.10
@@ -22388,7 +22388,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
     4.   2.   0.    12.48     7.36
     5.   2.   0.     5.25     3.54
     6.   2.   0.    -2.35     0.88
-    1.   3.   0.    48.67    29.87
+    1.   3.   0.    48.66    29.87
     2.   3.   0.     5.16     1.83
     4.   3.   0.    18.45    11.04
     2.   4.   0.     2.17     2.95
@@ -22459,7 +22459,7 @@ LS-scale=  1.772   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            139.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           8.325
+                                 The rms (shift/su)  =           8.324
                               The mean abs(shift/su) =           8.299
  The largest (shift/esd) =      8.95, for Parameter    2, BATCH2
 
@@ -22644,8 +22644,8 @@ LS-scale=  1.838   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             15.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           2.748
-                              The mean abs(shift/su) =           2.641
+                                 The rms (shift/su)  =           2.747
+                              The mean abs(shift/su) =           2.640
  The largest (shift/esd) =      3.40, for Parameter    2, BATCH2
 
                                 Min          Actual           Max
@@ -23642,8 +23642,8 @@ LS-scale=  1.825   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   24          24            0.0000      0.5E+01    0.313E-03          0.00        O      8 Y       
- SRATIO   27          27            0.0000      0.2E+02    0.463E-03          0.00        C      9 Y       
+ SRATIO   24          24            0.0000      0.6E+01    0.313E-03          0.00        O      8 Y       
+ SRATIO   27          27            0.0000      0.6E+01    0.463E-03          0.00        C      9 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          35 parameters
@@ -23692,7 +23692,7 @@ All cycle   shift/esd            0.30E-01       0.20E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    63.64    54.55    27.27     0.00     0.00     0.00     0.00     0.00     0.00
+ Reversals    50.00     0.00     0.00    72.73    45.45    27.27     0.00     0.00     0.00     0.00     0.00     0.00
 
 
  Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  48.57 for all parameters.
@@ -24739,7 +24739,7 @@ LS-scale=  1.769   Wilson Scale=  0.000
  SRATIO   10          10            0.0000     -0.4E+01    0.115E-02         -0.03        O      3 X       
  SRATIO   11          11            0.0001      0.2E+02    0.434E-03          0.21        O      3 Y       
  SRATIO   14          14           -0.0003      0.5E+01    0.159E-02         -0.16        C      4 X       
- SRATIO   45          45            0.0000      0.5E+03    0.185E-02          0.01        C     11 U[ISO]  
+ SRATIO   45          45            0.0000      0.6E+03    0.185E-02          0.01        C     11 U[ISO]  
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          46 parameters
@@ -25887,7 +25887,7 @@ LS-scale=  1.824   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   13          13            0.0000      0.4E+02    0.301E-03         -0.02        C      2 Z       
+ SRATIO   13          13            0.0000      0.3E+02    0.301E-03         -0.02        C      2 Z       
  SRATIO   49          49            0.0000     -0.2E+02    0.239E-03          0.10        N      6 Z       
  SRATIO   55          55            0.0001     -0.3E+01    0.191E-02          0.03        N      6 U[12]   
  SRATIO   65          65            0.0000      0.2E+02    0.736E-03          0.03        O      8 X       
@@ -30439,7 +30439,7 @@ Mean C-C su =   0.0000
     4.   2.   0.    13.08     7.36
     5.   2.   0.     5.50     3.54
     6.   2.   0.    -2.46     0.88
-    1.   3.   0.    50.99    29.87
+    1.   3.   0.    50.98    29.87
     2.   3.   0.     5.40     1.83
     4.   3.   0.    19.33    11.04
     4.   5.   0.    11.56     7.48
@@ -30450,13 +30450,13 @@ Mean C-C su =   0.0000
     2.   8.   0.    23.60    13.14
     4.   8.   0.    19.43    12.44
     1.   9.   0.    25.11    14.69
-    2.   9.   0.    22.37    12.99
+    2.   9.   0.    22.36    12.99
     3.   9.   0.     7.39     3.78
     4.   9.   0.     8.62     5.10
     0.  10.   0.     0.54     1.54
-    1.  10.   0.     8.06     4.81
+    1.  10.   0.     8.05     4.81
     1.  11.   0.     1.90     0.06
-    3.  11.   0.     6.07     3.46
+    3.  11.   0.     6.06     3.46
 
  And so on ------------
 
@@ -30523,7 +30523,7 @@ Inter cycle Min function          0.0            24.           0.10E+16
  Statistics for     1 least squares parameters, with  1120 degrees of freedom
  Number of observations              1119                 2              1121
  Minimisation function              0.946E+03         0.000E+00         0.946E+03
- Hamilton weighted R-value          17.159             0.000            17.159
+ Hamilton weighted R-value          17.158             0.000            17.158
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -30621,7 +30621,7 @@ Mean C-C su =   0.0000
     4.   2.   0.    12.70     7.36
     5.   2.   0.     5.34     3.54
     6.   2.   0.    -2.39     0.88
-    1.   3.   0.    49.53    29.87
+    1.   3.   0.    49.52    29.87
     2.   3.   0.     5.25     1.83
     4.   3.   0.    18.78    11.04
     2.   4.   0.     2.21     2.95
@@ -30837,7 +30837,7 @@ Mean C-C su =   0.0000
 
       3710.          3521.            395.                                   On scale of /FC/
 
-      6482.          6151.            691.               0.9453E+03          On scale of /FO/
+      6482.          6151.            691.               0.9452E+03          On scale of /FO/
 
  New scale factor (G) is      1.772,    1119 reflections used in refinement
 
@@ -30875,7 +30875,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
     4.   2.   0.    12.47     7.36
     5.   2.   0.     5.24     3.54
     6.   2.   0.    -2.35     0.88
-    1.   3.   0.    48.61    29.87
+    1.   3.   0.    48.60    29.87
     2.   3.   0.     5.15     1.83
     4.   3.   0.    18.43    11.04
     2.   4.   0.     2.17     2.95
@@ -30884,7 +30884,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
     1.   7.   0.     2.26     3.66
     5.   7.   0.     2.80     1.32
     0.   8.   0.    25.57    14.27
-    2.   8.   0.    22.50    13.14
+    2.   8.   0.    22.49    13.14
     4.   8.   0.    18.52    12.44
     1.   9.   0.    23.94    14.69
     2.   9.   0.    21.32    12.99
@@ -30947,7 +30947,7 @@ LS-scale=  1.772   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =            138.
                                                 for           2 parameters
                                  The rms (shift/su)  =           8.307
-                              The mean abs(shift/su) =           8.282
+                              The mean abs(shift/su) =           8.281
  The largest (shift/esd) =      8.93, for Parameter    2, BATCH2
 
                                 Min          Actual           Max
@@ -31132,7 +31132,7 @@ LS-scale=  1.838   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =             15.
                                                 for           2 parameters
                                  The rms (shift/su)  =           2.730
-                              The mean abs(shift/su) =           2.624
+                              The mean abs(shift/su) =           2.623
  The largest (shift/esd) =      3.38, for Parameter    2, BATCH2
 
                                 Min          Actual           Max
@@ -32129,7 +32129,7 @@ LS-scale=  1.826   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   24          24            0.0000      0.4E+01    0.313E-03          0.00        O      8 Y       
+ SRATIO   24          24            0.0000      0.5E+01    0.313E-03          0.00        O      8 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          35 parameters
@@ -32140,7 +32140,7 @@ LS-scale=  1.826   Wilson Scale=  0.000
                                 Min          Actual           Max
 All cycle   R-factor              0.0            8.1           0.10E+03
 All cycle   Rw                    0.0            16.           0.10E+03
-All cycle   shift/esd            0.30E-01       0.22E-03       0.10E+05
+All cycle   shift/esd            0.30E-01       0.21E-03       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 

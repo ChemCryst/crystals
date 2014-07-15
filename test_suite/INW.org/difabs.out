@@ -114,8 +114,7 @@
                                                                                                                                                                                                                                                                 
   2553 Reflections corrected                                                                                                                                                                                                                                    
  Minimum absorption correction = 0.750     at  PHI(P)=257.5 MU(P)= 23.0                                                                                                                                                                                         
-                                               PHI(S)= 65.7 MU(S)= 23.0                                                                                                                                                                                         
- Maximum absorption correction = 0.896     at  PHI(P)=159.1 MU(P)=  0.1                                                                                                                                                                                         
+                                               PHI(S)= 65.7 MU(S)= 23.0 Maximum absorption correction = 0.896     at  PHI(P)=159.1 MU(P)=  0.1                                                                                                                                                                                         
                                                PHI(S)=329.9 MU(S)=  0.1                                                                                                                                                                                         
  Average absorption correction = 0.804                                                                                                                                                                                                                          
 
@@ -2777,7 +2776,7 @@
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.52858E-03    0.11656E+03    0.17996E+02    0.25984E+02
+     0.33430E-03    0.11656E+03    0.17997E+02    0.25984E+02
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
