@@ -781,7 +781,7 @@ Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.088
 
  Weighting scheme type   11
 
- With parameter(s) :    0.686213E+02   0.640297E+02
+ With parameter(s) :    0.686214E+02   0.640298E+02
  Agreement analysis on /FC/
 
 
@@ -968,7 +968,7 @@ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062
 
  Weighting scheme type   11
 
- With parameter(s) :    0.713886E+02   0.681721E+02   0.418027E+01
+ With parameter(s) :    0.713888E+02   0.681724E+02   0.418042E+01
  Agreement analysis on /FC/
 
 
