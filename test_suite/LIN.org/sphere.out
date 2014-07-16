@@ -792,7 +792,7 @@ LS-scale=  0.424   Wilson Scale=  0.000
  S/ESD     6           6           -0.0080     -0.5E+04    0.192E-02         -4.17        O      1 X       
  S/ESD     7           7            0.0093      0.1E+05    0.185E-02          5.00        O      1 Y       
  S/ESD     8           8           -0.0071     -0.1E+05    0.193E-02         -3.68        O      1 Z       
- S/ESD     9           9            0.0074      0.3E+06    0.714E-02          1.03        O      1 U[11]   
+ S/ESD     9           9            0.0074      0.4E+06    0.714E-02          1.03        O      1 U[11]   
  SRATIO   10          10            0.0028      0.1E+04    0.692E-02          0.41        O      1 U[22]   
  SRATIO   11          11            0.0021      0.5E+03    0.752E-02          0.28        O      1 U[33]   
  SRATIO   12          12           -0.0052     -0.7E+05    0.634E-02         -0.82        O      1 U[23]   
@@ -3346,7 +3346,7 @@ All cycle   shift/esd            0.30E-01       0.28E-01       0.10E+05
  R.M.S.         0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0001
                                          0.0001   0.0000   0.0000
 
- RMS sh/esd     0.01     0.00     0.00     0.02     0.01     0.01     0.00     0.01     0.02     0.00     0.02     0.03
+ RMS sh/esd     0.00     0.00     0.00     0.02     0.01     0.01     0.00     0.01     0.02     0.00     0.02     0.03
 
 
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0001
@@ -4470,7 +4470,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
  S/ESD    12          12           -0.0096      0.7E+03    0.494E-02         -1.95        O      1 U[23]   
  SRATIO   13          13            0.0023     -0.5E+02    0.501E-02          0.46        O      1 U[13]   
  SRATIO   14          14           -0.0040      0.2E+03    0.520E-02         -0.77        O      1 U[12]   
- SRATIO   15          15           -0.0136      0.5E+05    0.544E-01         -0.25        C      1 U[ISO]  
+ SRATIO   15          15           -0.0136      0.4E+05    0.544E-01         -0.25        C      1 U[ISO]  
  SRATIO   16          16           -0.0412     -0.2E+05    0.861E-01         -0.48        C      1 SIZE    
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            163.
@@ -6808,7 +6808,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =             44.
                                                 for          16 parameters
                                  The rms (shift/su)  =           1.660
-                              The mean abs(shift/su) =           1.079
+                              The mean abs(shift/su) =           1.080
  The largest (shift/esd) =      4.34, for Parameter   14, O1U[12]
 
                                 Min          Actual           Max

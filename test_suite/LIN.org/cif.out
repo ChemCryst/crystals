@@ -362,7 +362,7 @@ _reflns_limit_l_max               19
 _oxford_diffrn_Wilson_B_factor    0.00 
 _oxford_diffrn_Wilson_scale       0.00 
  
-_atom_sites_solution_primary      Other  #heavy,direct,difmap,geom
+_atom_sites_solution_primary      Other  #heavy,direct,difmap,geom,iterative
 # _atom_sites_solution_secondary  difmap
 _atom_sites_solution_hydrogens    difmap
  
@@ -383,7 +383,7 @@ _refine_ls_number_parameters      55
 _oxford_refine_ls_R_factor_ref    0.0886 
 _refine_ls_wR_factor_ref          0.2182 
 _refine_ls_goodness_of_fit_ref    1.6777 
-_refine_ls_shift/su_max           0.00005
+_refine_ls_shift/su_max           0.00003
 _refine_ls_shift/su_mean          0.00000
  
  
@@ -409,7 +409,7 @@ _refine_ls_matrix_type            full
 _refine_ls_hydrogen_treatment     noref          #undef, noref, refall,
                                                  # refxyz, refU, constr or mixed
  
-# WARNING. The IUCr will not accept Unit Weights 
+# WARNING. The IUCr will not accept pure Unit Weights for F-squared refinements 
 _refine_ls_weighting_scheme       calc 
 _refine_ls_weighting_details 
 ;

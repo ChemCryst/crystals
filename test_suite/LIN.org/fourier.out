@@ -19247,7 +19247,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        14.     0.7275    0.6758    0.0706       35.8  Good Shape  
  Q        15.     0.7050    0.6764    0.0690       35.3  Good Shape  
  Q        16.     0.8637    0.7394    0.1827       34.4  Good Shape  
- Q        17.     0.7550    0.5992    0.1835       32.5  Good Shape  
+ Q        17.     0.7550    0.5992    0.1835       32.4  Good Shape  
  Q        18.     0.8037    0.7244    0.1627       29.2  Good Shape  
  Q        19.     0.2900    0.2442    0.0400       27.9  Good Shape  
  Q        20.     0.4187    0.0506    0.1581       25.1  Good Shape  
@@ -19375,7 +19375,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
                                                                                     0.00000     0.00000     0.00000    34.4
           0.          0.          0.          0.
  Q             17.      1.00000     1.00000     0.75500     0.59917     0.18354     0.05000     0.00000     0.00000
-                                                                                    0.00000     0.00000     0.00000    32.5
+                                                                                    0.00000     0.00000     0.00000    32.4
           0.          0.          0.          0.
  Q             18.      1.00000     1.00000     0.80375     0.72444     0.16271     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    29.2
@@ -31694,7 +31694,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP     12   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -33448,7 +33448,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -35232,7 +35232,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -37016,7 +37016,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -38821,7 +38821,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -40049,7 +40049,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP      1   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -41172,7 +41172,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP      1   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -41667,7 +41667,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.32579   0.46770   0.16339
+ Malformed peak at    0.32578   0.46770   0.16340
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -41742,7 +41742,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.17688   0.53620   0.07873
+ Malformed peak at    0.17691   0.53618   0.07877
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42076,7 +42076,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.00000   0.03954   0.40561
+ Malformed peak at    0.00000   0.03954   0.40560
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42318,7 +42318,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05634
+      1.73340     0.05000     0.05000     1.00000     0.00000   786.05615
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
