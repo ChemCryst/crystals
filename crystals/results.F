@@ -3625,6 +3625,7 @@ C----- CLEAR THE CELL PROPERTY DETAILS
         FELEC = 0.0
         ICHECK=N5
         JCHECK=0
+		W = 1.0
         I29=L29 + (N29-1)*MD29
         I5 = L5 + (N5-1)*MD5
 C
