@@ -3625,21 +3625,20 @@ C----- CLEAR THE CELL PROPERTY DETAILS
         FELEC = 0.0
         ICHECK=N5
         JCHECK=0
-		W = 1.0
         I29=L29 + (N29-1)*MD29
         I5 = L5 + (N5-1)*MD5
 C
         DO 1510 M5=L5,I5,MD5
           CWGHT = 0.0
           CABSN = 0.0
+          if (iupdat .ge.0) then
+                w = store(m5+2)*store(m5+13)
+          else
+                w = store(m5+2)
+          endif
           DO 1521 M29= L29,I29,MD29
             IF (ISTORE(M5) .EQ. ISTORE(M29)) THEN
 C----- MATCH
-              if (iupdat .ge.0) then
-                w = store(m5+2)*store(m5+13)
-              else
-                w = store(m5+2)
-              endif
               WEIGHT = WEIGHT + W * STORE(M29+6)
               ABSN = ABSN + W * STORE(M29+5)
               ICHECK = ICHECK - 1
