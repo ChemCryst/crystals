@@ -189,7 +189,7 @@
 ^^WI     @ 5,1 STATIC XRT3 'The graph on the right shows how far the'
 ^^WI     @ 6,1 STATIC XRT3 '30 bad reflections deviate from exact lattice'
 ^^WI     @ 7,1 STATIC XRT3 'points when transformed by the twin-law matrix'
-^^WI     @ 8,1 STATIC XRT3 'above. Blue bars are not included in the f.o.m.'
+^^WI     @ 8,1 STATIC XRT3 'above. Green bars are not included in the f.o.m.'
 ^^WI    }
 ^^WI   }
 ^^WI  }
