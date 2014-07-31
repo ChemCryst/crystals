@@ -1495,6 +1495,10 @@ C-----------------------------------------------------------------------
       IF ( L(3,IM) .EQ. IC .OR. L(3,IM) .EQ. 10 ) D(NC,NAXIS) = 0.5
       IF ( L(4,IM) .EQ. IA .OR. L(4,IM) .EQ. 10 ) D(NA,NAXIS) = 0.5
       IF ( L(4,IM) .EQ. IC .OR. L(4,IM) .EQ. 10 ) D(NC,NAXIS) = 0.5
+      IF ( L(3,IM) .EQ. 11 ) D(NA,NAXIS) = 0.25
+      IF ( L(3,IM) .EQ. 11 ) D(NC,NAXIS) = 0.25
+      IF ( L(4,IM) .EQ. 11 ) D(NA,NAXIS) = 0.25
+      IF ( L(4,IM) .EQ. 11 ) D(NC,NAXIS) = 0.25      
       GO TO 620
   390 CONTINUE
 C-----------------------------------------------------------------------
