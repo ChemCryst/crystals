@@ -209,7 +209,7 @@
 # set file opening messages off
 #set open off
 #DISK
-EXTEND SIZE = 0
+EXTEND SIZE = 500
 END
 # dont create an 'export' file
 #set export off
