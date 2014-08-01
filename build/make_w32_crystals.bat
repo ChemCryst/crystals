@@ -37,6 +37,9 @@
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFPORTMD.DLL"
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBMMD.DLL"
 
+@if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIOMP5MD.DLL"
+@if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\SVML_DISPMD.DLL"
+
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
 @echo %LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
