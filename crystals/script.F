@@ -3621,6 +3621,11 @@ C
       LEN1 = MAX ( LEN1, 1 )
       CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
+#if defined(_INW_) 
+	  IF ( .NOT. LRESLT ) THEN
+        INQUIRE(DIRECTORY=CWORK1(1:LEN1), EXIST=LRESLT)
+      END IF	  
+#endif
       IF ( LRESLT ) THEN
           ICODE(JVALUE,IARG(1)) = 1
       ELSE

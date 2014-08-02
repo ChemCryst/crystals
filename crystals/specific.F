@@ -3228,12 +3228,12 @@ C on all platforms.
       END DO
 #endif
 
-c      WRITE(6,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
+c      WRITE(126,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
 C TEST IF SOMETHING CAN BE DONE
 
       IF(COLPOS(LEVEL).LT.3) THEN   
 
-c        WRITE(6,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
+c        WRITE(126,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
 
         IF(IWHAT.EQ.2) GOTO 9999
         INQNAM=NAME(LEVEL)(1:NAMLEN(LEVEL))
@@ -3248,7 +3248,13 @@ c anchors specified after filename. e.g. myfile.html#sect1
         END DO
 
         INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
+c        write(126,*) 'File test ', LEXIST, IOTEST, INQNAM
         if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
+#if defined(_INW_) 
+        INQUIRE(DIRECTORY=INQNAM,EXIST=LEXIST, iostat=iotest)
+c        write(126,*) 'Dir test ', LEXIST, IOTEST, INQNAM
+        if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
+#endif 
         LEVEL=LEVEL-1
         IF(LEVEL.GE.1) GOTO 3
         LEVEL=1
@@ -3377,7 +3383,7 @@ C
         FILNAM(I:I)=' '
 8888  CONTINUE
       LENNAM = KSTRLN(FILNAM)
-c      WRITE(6,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
+c      WRITE(126,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
 c      WRITE(CMON,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
 c      CALL XPRVDU(NCVDU,1,0)
 

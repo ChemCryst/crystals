@@ -2,9 +2,9 @@
 # Remember that lines with a space in column 2 are comment lines
 #
 #SET AUTOUPDT OFF
-#STORE SYST VERS 1453
+#STORE SYST VERS 1460
 #STORE CSYS OPER 'Win 32' MACH 'i386'
-#STORE CSYS DATE 'Apr, 2014'
+#STORE CSYS DATE 'Aug, 2014'
 #
 # ensure that file names are fully lower case
 #SET FILE MIXED

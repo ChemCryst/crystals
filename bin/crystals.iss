@@ -18,15 +18,15 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 1453 ({#crysVDATE})
-AppVersion=1453
+AppVerName=CRYSTALS 1460 ({#crysVDATE})
+AppVersion=1460
 ;OutputBaseFilename=crystals-a1452-Sep12-setup
-OutputBaseFilename=crystals-{#crysOS}-2453-{#crysDATE}-setup
+OutputBaseFilename=crystals-{#crysOS}-1460-{#crysDATE}-setup
 
 
 AppName=CRYSTALS
 OutputDir=..\installer
-AppCopyright=Copyright (c) University of Oxford, 20 October 2009. All rights reserved.
+AppCopyright=Copyright (c) University of Oxford, 1 August 2014. All rights reserved.
 AppPublisher=Chemical Crystallography Laboratory, University of Oxford
 AppPublisherURL=http://www.xtl.ox.ac.uk/
 BackSolid=0
