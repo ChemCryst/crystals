@@ -278,6 +278,7 @@ enum
     Plot_SeriesBar,
     Plot_SeriesLine,
     Plot_SeriesScatter,
+    Plot_SeriesScatterX,
     Plot_SeriesArea
 };
 

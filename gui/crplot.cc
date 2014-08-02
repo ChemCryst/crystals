@@ -265,6 +265,11 @@ void CrPlot::SetText( const string &text )
 }
 
 
+void CrPlot::DrawCross(int x, int y, int w)
+{
+    ((CxPlot*)ptr_to_cxObject)->DrawCross(x,y,w);
+}
+
 void CrPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
 {
     ((CxPlot*)ptr_to_cxObject)->DrawEllipse(x,y,w,h,fill);

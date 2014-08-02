@@ -1,7 +1,9 @@
 %SCRIPT SIR92                                                                   
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                       
 %   VARIABLE LOGICAL ANSWER                                                     
-%   VARIABLE INTEGER IRUN                                                       
+%   VARIABLE INTEGER IRUN 
+-GID%  VARIABLE LOGICAL EDITOR_OK
+-GID%  VARIABLE CHARACTER EDITOR_FILE                     
 %   IF EXISTS 6 .LT. 1 THEN                                                     
 {E            You do not have any reflections stored.                           
 {E            It is impossible to proceed without data.                         
@@ -119,16 +121,22 @@
 ^^WI   DISPOSE SIR92                                                            
 ^^CR                                                                            
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
-%           COPY '#SPAWN +notepad.exe sir92.ini'                                
-%           EVALUATE QTITLE = 'Sir92 Preparation'                               
-%           EVALUATE QLINE1 = 'Do you still want to'                            
-%           EVALUATE QLINE2 = 'run the Sir92 job?'                              
-%           EVALUATE BUTTOK = '&Yes'                                            
-%           EVALUATE BUTTXX = '&No'                                             
-%           COPY '#SCRIPT XQUESTIO'                                             
-%           IF ANSWER .EQ. FALSE THEN                                           
-%               FINISH                                                          
-%           END IF                                                              
++GID%           COPY '#SPAWN +notepad.exe sir92.ini'                                
++GID%           EVALUATE QTITLE = 'Sir92 Preparation'                               
++GID%           EVALUATE QLINE1 = 'Do you still want to'                            
++GID%           EVALUATE QLINE2 = 'run the Sir92 job?'                              
++GID%           EVALUATE BUTTOK = '&Yes'                                            
++GID%           EVALUATE BUTTXX = '&No'                                             
++GID%           COPY '#SCRIPT XQUESTIO'                                             
++GID%           IF ANSWER .EQ. FALSE THEN                                           
++GID%               FINISH                                                          
++GID%           END IF                                                              
+-GID%           EVALUATE EDITOR_FILE = 'sir92.ini'
+-GID%           COPY '#SCRIPT XEDITOR'
+-GID%           IF ( .NOT. EDITOR_OK ) THEN
+-GID User cancelled Sir92 run.
+-GID%              FINISH
+-GID%            END IF                                                                             
 %      END IF                                                                   
 %      IF ( IRUN .EQ. 2 ) THEN                                                  
 %           FINISH                                                              

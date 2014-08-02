@@ -111,7 +111,8 @@ class CrPlot : public CrGUIElement
         void DrawText(int x, int y, string text, int param, int fontsize);// STEVE added justification parameter
         void DrawRect(int x1, int y1, int x2, int y2, bool fill);
         void DrawPoly(int nVertices, int* vertices, bool fill);
-        void DrawEllipse(int x, int y, int w, int h, bool fill);
+		void DrawCross(int x, int y, int w);
+       void DrawEllipse(int x, int y, int w, int h, bool fill);
         void SetColour(int r, int g, int b);                            // STEVE added this - set colour in cxplot class
         void Clear();
         CcPoint GetTextArea(int size, string text, int param);

@@ -157,6 +157,14 @@ CcParse CrMultiEdit::ParseInput( deque<string> &  tokenList )
                 tokenList.pop_front();
                 break;
             }
+            case kTLoad:
+            {
+                tokenList.pop_front(); // Remove that token!
+                ((CxMultiEdit*)ptr_to_cxObject)->Load( tokenList.front() );
+                LOGSTAT( "Loading MultiEdit contents from: " + tokenList.front() );
+                tokenList.pop_front();
+                break;
+            }
             case kTNoEcho:
             {
                 tokenList.pop_front(); // Remove that token!

@@ -43,8 +43,9 @@
 #include "crystalsinterface.h"
 
 #ifdef __BOTHWX__
-#include <wx/textctrl.h>
-#define BASEMULTIEDIT wxTextCtrl
+//#include <wx/textctrl.h>
+ #include <wx/stc/stc.h>
+#define BASEMULTIEDIT wxStyledTextCtrl
 #endif
 
 #ifdef __CR_WIN__
@@ -84,6 +85,7 @@ class CxMultiEdit : public BASEMULTIEDIT
         void            SetGeometry(int top, int left, int bottom, int right );
 
         void            SaveAs(string filename);
+        void            Load(string filename);
 
 
     private:

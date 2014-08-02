@@ -3209,6 +3209,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                else DESCRIPTOR(PlotPrint)
                else DESCRIPTOR(PlotSave)
                else DESCRIPTOR(Save)
+               else DESCRIPTOR(Load)
                else DESCRIPTOR(ShowH)
              break;
 

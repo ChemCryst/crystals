@@ -2153,7 +2153,7 @@ c         refinement on F
       IF ( LEVEL.EQ.4 ) THEN      !Also output the omitted refls.
 
         WRITE(CMON,'(A)')
-     1  '^^PL ADDSERIES Omitted TYPE SCATTER'
+     1  '^^PL ADDSERIES Omitted TYPE SCATTERX'
         CALL XPRVDU(NCVDU,1,0)
 
         CALL XFAL06 (IULN, 0 )

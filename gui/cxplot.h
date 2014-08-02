@@ -187,6 +187,7 @@ class CxPlot : public BASEPlot
         void DrawPoly(int nVertices, int* vertices, bool fill);
         void DrawText(int x, int y, string text, int param, int fontsize);// STEVE added a parameter (justification of text)
         void DrawEllipse(int x, int y, int w, int h, bool fill);
+		void DrawCross(int x, int y, int w);
         void SetColour(int r, int g, int b);                            // STEVE added this function
         void Clear();
 

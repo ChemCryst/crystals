@@ -3,6 +3,8 @@
 %  VARIABLE LOGICAL ANSWER LCRY T                                               
 %  VARIABLE INTEGER IRUN F67                                                    
 %  VARIABLE LOGICAL TWINNED MERGED DOCALC DOSCALE                               
+-GID%  VARIABLE LOGICAL EDITOR_OK
+-GID%  VARIABLE CHARACTER EDITOR_FILE                     
 %  EVALUATE DOCALC = FALSE                                                      
 %  EVALUATE DOSCALE = FALSE                                                     
 %% variables used by the question box below                                     
@@ -142,17 +144,22 @@
 ^^WI DISPOSE FLIP                                                               
 ^^CR                                                                            
 %    IF ( VALUE .EQ. 1 ) THEN                                                   
-%      COPY '#SPAWN +notepad.exe sflip.inflip'                                  
-%%++GILLIN% COPY '#SPAWN +nedit SFLIP.INFLIP'                                   
-%      EVALUATE QTITLE = 'Superflip Preparation'                                
-%      EVALUATE QLINE1 = 'Do you want to'                                       
-%      EVALUATE QLINE2 = 'run Superflip now?'                                   
-%      EVALUATE BUTTOK = '&Yes'                                                 
-%      EVALUATE BUTTXX = '&No'                                                  
-%      COPY '#SCRIPT XQUESTIO'                                                  
-%      IF ANSWER .EQ. FALSE THEN                                                
-%        FINISH                                                                 
-%      END IF                                                                   
++GID%      COPY '#SPAWN +notepad.exe sflip.inflip'                                  
++GID%      EVALUATE QTITLE = 'Superflip Preparation'                                
++GID%      EVALUATE QLINE1 = 'Do you want to'                                       
++GID%      EVALUATE QLINE2 = 'run Superflip now?'                                   
++GID%      EVALUATE BUTTOK = '&Yes'                                                 
++GID%      EVALUATE BUTTXX = '&No'                                                  
++GID%      COPY '#SCRIPT XQUESTIO'                                                  
++GID%      IF ANSWER .EQ. FALSE THEN                                                
++GID%        FINISH                                                                 
++GID%      END IF                                                                   
+-GID%      EVALUATE EDITOR_FILE = 'sflip.inflip'
+-GID%      COPY '#SCRIPT XEDITOR'
+-GID%      IF ( .NOT. EDITOR_OK ) THEN
+-GID User cancelled super flip run.
+-GID%         FINISH
+-GID%      END IF                                                                             
 %    END IF                                                                     
 %    IF ( IRUN .EQ. 2 ) THEN                                                    
 %      FINISH                                                                   

@@ -628,6 +628,8 @@ int CcPlotData::FindSeriesType(string textstyle)
         style = Plot_SeriesBar;
     else if(textstyle == "SCATTER")
         style = Plot_SeriesScatter;
+    else if(textstyle == "SCATTERX")
+        style = Plot_SeriesScatterX;
     else if(textstyle == "LINE")
         style = Plot_SeriesLine;
     else if(textstyle == "AREA")

@@ -360,6 +360,24 @@ void CcPlotScatter::DrawView(bool print)
                     break;
 
                 }
+                // draw this data series as a scatter graph of X's
+                case Plot_SeriesScatterX:
+                {
+                    // loop through the data members of this series
+                    vector<float>::iterator itx = m_Series[j].m_DataXY[0].begin();
+                    vector<float>::iterator ity = m_Series[j].m_DataXY[1].begin();
+                    for( ; itx != m_Series[j].m_DataXY[0].end(); itx++ )
+                    {
+                        x1 = (int)(xorigin + (axiswidth  * ( *itx / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
+                        y1 = (int)(yorigin - (axisheight * ( *ity - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax- m_Axes.m_AxisData[axis].m_AxisMin)));
+//                        attachedPlot->DrawLine(2, x1-10, y1-10, x1+10, y1+10);
+//                        attachedPlot->DrawLine(2, x1-10, y1+10, x1+10, y1-10);
+                        attachedPlot->DrawCross(x1, y1, 4);
+                        ity++;
+                    }
+                    break;
+
+                }
 
                 // draw this data series as a connected line of points
                 case Plot_SeriesLine:

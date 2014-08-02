@@ -508,6 +508,47 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
 #endif
 }
 
+
+void CxPlot::DrawCross(int x, int y, int w)
+{
+    //NB w is half diameter. (i.e. radii) - to match DrawEllipse
+
+    if(m_FlippedPlot) 
+    {
+        y = 2400-y;
+    }
+	
+    CcPoint centre = DeviceToLogical(x,y);
+
+    CcPoint topleft     = CcPoint( centre.x - w, centre.y - w );
+    CcPoint bottomright = CcPoint( centre.x + w, centre.y + w );
+
+#ifdef __CR_WIN__
+    CPen pen(PS_SOLID,2,mfgcolour), *oldpen;
+
+    m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
+    oldpen =   m_memDC->SelectObject(&pen);
+    m_memDC->MoveTo(CPoint(topleft.x,topleft.y));
+    m_memDC->LineTo(CPoint(bottomright.x,bottomright.y));
+    m_memDC->MoveTo(CPoint(topleft.x,bottomright.y));
+    m_memDC->LineTo(CPoint(bottomright.x,topleft.y));
+    m_memDC->SelectObject(m_oldMemDCBitmap);
+    m_memDC->SelectObject(oldpen);
+#endif
+#ifdef __BOTHWX__
+      wxPen apen(mfgcolour,2,wxSOLID);
+      m_memDC->SetPen(apen);
+      m_memDC->DrawLine(topleft.x,topleft.y,bottomright.x,bottomright.y);
+//      wxPen bpen(wxColour(0,0,0),2,wxSOLID);
+//      m_memDC->SetPen(bpen);
+      m_memDC->DrawLine(topleft.x,bottomright.y,bottomright.x,topleft.y);
+#endif
+}
+
+
+
+
+
 // STEVE added the fourth parameter, to allow for justification of text
 // param can be:    TEXT_VCENTRE    y is the coordinate of the CENTRE of the text
 //                  TEXT_HCENTRE    x is the centre coordinate
