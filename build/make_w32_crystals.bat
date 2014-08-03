@@ -33,6 +33,8 @@
 @if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxmsw294u_core_vc90.dll
 @if "%COMPCODE%" == "INW" echo copy %WXWIN%\lib\vc90_dll\wxmsw294u_gl_vc90.dll
 @if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxmsw294u_gl_vc90.dll
+@if "%COMPCODE%" == "INW" echo copy %WXWIN%\lib\vc90_dll\wxmsw294u_stc_vc90.dll
+@if "%COMPCODE%" == "INW" copy %WXWIN%\lib\vc90_dll\wxmsw294u_stc_vc90.dll
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFCOREMD.DLL"
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFPORTMD.DLL"
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBMMD.DLL"
