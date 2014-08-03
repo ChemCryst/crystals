@@ -235,7 +235,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
                0.014           0.106          0.535                                                                                                                                                                                                             
 #                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
- Disc file extended by    74 record(s) for new list    6
 
 
 
@@ -2233,9 +2232,9 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.498    0.050    0.050    1.000    0.000    -0.2794E-05
-      0.011    0.000    0.000    0.000    0.000    -0.2794E-05
-      0.014    0.000    0.000    0.000    0.000     0.3729E-05
+      1.498    0.050    0.050    1.000    0.000    -0.2806E-05
+      0.011    0.000    0.000    0.000    0.000    -0.2806E-05
+      0.014    0.000    0.000    0.000    0.000     0.3733E-05
 
 
 
@@ -2468,9 +2467,9 @@ Inter cycle Min function          0.0           0.14E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.507    0.050    0.050    1.000    0.000    -0.5368E-05
-      0.008    0.000    0.000    0.000    0.000    -0.2574E-05
-      0.013    0.000    0.000    0.000    0.000     0.3433E-05
+      1.507    0.050    0.050    1.000    0.000    -0.5376E-05
+      0.008    0.000    0.000    0.000    0.000    -0.2570E-05
+      0.013    0.000    0.000    0.000    0.000     0.3427E-05
 
 
 
@@ -2666,7 +2665,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R  8.81% Rw 13.34% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.81% Rw 13.34% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1018 reflections   R  7.80% Rw 11.38% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1015 reflections   R  7.76% Rw 11.36% with I/u(I) >   2.0                                                                                                                                                                                                  
 SumFo/SumFc=  1.498   SumFoFc/SumFc^2=  1.505   SumwFoFc/SumwFc^2=  1.505                                                                                                                                                                                       
 LS-scale=  1.507   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.041    100*(<Fo>-<Fc>)/<Fo> =    -0.59                                                                                                                                                                                                         
@@ -3144,7 +3143,7 @@ All cycle   Min function          0.0           0.66E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.499    0.050    0.050    1.000    0.000    -0.5368E-05
+      1.499    0.050    0.050    1.000    0.000    -0.5376E-05
      -0.008    0.000    0.000    0.000    0.000     0.0000E+00
       0.011    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3307,7 +3306,7 @@ LS-scale=  1.499   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =             39.
                                                 for          55 parameters
                                  The rms (shift/su)  =           0.842
-                              The mean abs(shift/su) =           0.353
+                              The mean abs(shift/su) =           0.352
  The largest (shift/esd) =      5.58, for Parameter   22, C4U[11]
 
                                 Min          Actual           Max
@@ -3380,7 +3379,7 @@ All cycle   Min function          0.0           0.50E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.501    0.050    0.050    1.000    0.000    -0.5368E-05
+      1.501    0.050    0.050    1.000    0.000    -0.5376E-05
       0.003    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3615,7 +3614,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5368E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5376E-05
       0.001    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3745,7 +3744,7 @@ Mean C-C su =   0.0079
  Structure factor least squares calculation   15  ends  2
 SumFo/SumFc=  1.497   SumFoFc/SumFc^2=  1.502   SumwFoFc/SumwFc^2=  1.502                                                                                                                                                                                       
 LS-scale=  1.502   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.35                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.35                                                                                                                                                                                                         
 #INVERT  EIGE                                                                                                                                                                                                                                                   
 
 
@@ -3845,7 +3844,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5368E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5376E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -3996,10 +3995,10 @@ LS-scale=  1.502   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    1           1             0.000     -0.4E+01    0.965E-02          0.00                          SCALE   
+ SRATIO    1           1             0.000     -0.5E+01    0.965E-02          0.00                          SCALE   
  SRATIO    8           8            0.0000     -0.6E+01    0.457E-03          0.01        C      2 Z       
  SRATIO   34          34            0.0000     -0.3E+01    0.361E-03          0.00        N      6 Z       
- SRATIO   48          48            0.0000      0.5E+01    0.168E-02          0.00        C     10 X       
+ SRATIO   48          48            0.0000      0.4E+01    0.168E-02          0.00        C     10 X       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          55 parameters
@@ -4077,7 +4076,7 @@ All cycle   shift/esd            0.30E-01       0.42E-02       0.10E+05
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5368E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5376E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -4375,7 +4374,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
                0.014           0.106          0.535                                                                                                                                                                                                             
 #                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
- Disc file extended by    74 record(s) for new list    6
 
 
 
@@ -6291,7 +6289,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
  R.M.S.         0.01   0.0000   0.0000   0.0000   0.0000   0.0000   0.0130   0.0081   0.0072   0.0056   0.0047   0.0058
                                          0.0000   0.0000   0.0000
 
- RMS sh/esd     0.78     0.00     0.00     0.00     0.00     0.00     2.74     1.85     1.61     1.30     1.13     1.03
+ RMS sh/esd     0.77     0.00     0.00     0.00     0.00     0.00     2.74     1.85     1.61     1.30     1.13     1.03
 
 
  Maximum        0.01   0.0000   0.0000   0.0000   0.0000   0.0000   0.0260   0.0157   0.0113   0.0121   0.0115   0.0142
@@ -6326,9 +6324,9 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.498    0.050    0.050    1.000    0.000    -0.2822E-05
-      0.011    0.000    0.000    0.000    0.000    -0.2822E-05
-      0.014    0.000    0.000    0.000    0.000     0.3693E-05
+      1.498    0.050    0.050    1.000    0.000    -0.2804E-05
+      0.011    0.000    0.000    0.000    0.000    -0.2804E-05
+      0.014    0.000    0.000    0.000    0.000     0.3672E-05
 
 
 
@@ -6561,9 +6559,9 @@ Inter cycle Min function          0.0           0.14E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.507    0.050    0.050    1.000    0.000    -0.5332E-05
-      0.008    0.000    0.000    0.000    0.000    -0.2510E-05
-      0.013    0.000    0.000    0.000    0.000     0.3413E-05
+      1.507    0.050    0.050    1.000    0.000    -0.5321E-05
+      0.008    0.000    0.000    0.000    0.000    -0.2517E-05
+      0.013    0.000    0.000    0.000    0.000     0.3422E-05
 
 
 
@@ -6759,7 +6757,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R  8.80% Rw 13.34% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.80% Rw 13.34% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1018 reflections   R  7.79% Rw 11.37% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1015 reflections   R  7.75% Rw 11.36% with I/u(I) >   2.0                                                                                                                                                                                                  
 SumFo/SumFc=  1.498   SumFoFc/SumFc^2=  1.505   SumwFoFc/SumwFc^2=  1.505                                                                                                                                                                                       
 LS-scale=  1.507   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.041    100*(<Fo>-<Fc>)/<Fo> =    -0.59                                                                                                                                                                                                         
@@ -6820,7 +6818,7 @@ LS-scale=  1.507   Wilson Scale=  0.000
  H       102.     0.6992    0.8862    0.1393       -0.2   
  H       111.     0.2602    0.9338    0.1833       -0.1   
  H       112.     0.1428    0.9587    0.0911        0.0   
- Q         1.     0.0969    0.9914    0.1517        4.5  Poor Shape  
+ Q         1.     0.0969   -0.0086    0.1517        4.5  Poor Shape  
  Q         2.     0.8781    0.6086    0.2102        4.3  Poor Shape  
  Q         3.     0.2950    0.3936    0.1988        4.1  Good Shape  
  Q         4.     0.1512    0.6500    0.1027        3.9  Poor Shape  
@@ -6848,7 +6846,7 @@ LS-scale=  1.507   Wilson Scale=  0.000
 
      C         9.         Q         4.      3   1    1   -1    0    0.424      Deleted    0.151   0.650   0.103      3.9
 
-     C        11.         Q         1.      1   1    1   -1    0    0.398      Deleted    0.097   0.991   0.152      4.5
+     C        11.         Q         1.      1   1    1    0    0    0.398      Deleted    0.097  -0.009   0.152      4.5
  List now contains    28 atoms
 Bonds: Update required - List5 length change
 #EDIT                                                                                                                                                                                                                                                           
@@ -7232,7 +7230,7 @@ All cycle   Min function          0.0           0.65E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.499    0.050    0.050    1.000    0.000    -0.5332E-05
+      1.499    0.050    0.050    1.000    0.000    -0.5321E-05
      -0.008    0.000    0.000    0.000    0.000     0.0000E+00
       0.011    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -7469,7 +7467,7 @@ All cycle   Min function          0.0           0.50E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.501    0.050    0.050    1.000    0.000    -0.5332E-05
+      1.501    0.050    0.050    1.000    0.000    -0.5321E-05
       0.003    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -7705,7 +7703,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5332E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5321E-05
       0.001    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -7935,7 +7933,7 @@ All cycle   Min function          0.0           0.49E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5332E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5321E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -8088,7 +8086,7 @@ LS-scale=  1.502   Wilson Scale=  0.000
 
  SRATIO    9           9            0.0000     -0.3E+01    0.152E-02         -0.01        C      2 U[ISO]  
  SRATIO   18          18            0.0000     -0.3E+01    0.284E-02          0.00        O      3 U[12]   
- SRATIO   53          53            0.0000     -0.8E+01    0.784E-03          0.00        C     11 Y       
+ SRATIO   53          53            0.0000     -0.7E+01    0.784E-03          0.00        C     11 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          55 parameters
@@ -8166,7 +8164,7 @@ All cycle   shift/esd            0.30E-01       0.47E-02       0.10E+05
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.502    0.050    0.050    1.000    0.000    -0.5332E-05
+      1.502    0.050    0.050    1.000    0.000    -0.5321E-05
       0.000    0.000    0.000    0.000    0.000     0.0000E+00
       0.010    0.000    0.000    0.000    0.000     0.0000E+00
 
@@ -8464,7 +8462,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
                0.014           0.106          0.535                                                                                                                                                                                                             
 #                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
- Disc file extended by    74 record(s) for new list    6
 
 
 
@@ -9802,7 +9799,7 @@ Mean C-C su =   0.0104
 
       8465.          8214.           1219.                                   On scale of /FC/
 
-     12019.         11663.           1731.               0.7719E+04          On scale of /FO/
+     12019.         11663.           1731.               0.7720E+04          On scale of /FO/
 
  New scale factor (G) is      1.420,    1133 reflections used in refinement
 
@@ -9844,7 +9841,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.56E-01       0.10E+05
 All cycle   Min function          0.0           0.77E+04       0.10E+16
 Inter cycle R-factor             -5.0           0.19           0.10E+03
-Inter cycle Rw                   -5.0           0.12           0.10E+03
+Inter cycle Rw                   -5.0           0.11           0.10E+03
 Inter cycle shift/esd            -10.           0.33           0.10E+05
 Inter cycle Min function          0.0            51.           0.10E+16
 
@@ -10410,9 +10407,9 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.426    0.050    0.050    1.000    0.000    -0.2100E-04
-      0.008    0.000    0.000    0.000    0.000    -0.2100E-04
-      0.018    0.000    0.000    0.000    0.000     0.3507E-04
+      1.426    0.050    0.050    1.000    0.000    -0.2085E-04
+      0.008    0.000    0.000    0.000    0.000    -0.2085E-04
+      0.018    0.000    0.000    0.000    0.000     0.3485E-04
 
 
 
@@ -10646,9 +10643,9 @@ Inter cycle Min function          0.0           0.10E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.438    0.050    0.050    1.000    0.000    -0.5261E-04
-      0.011    0.000    0.000    0.000    0.000    -0.3161E-04
-      0.017    0.000    0.000    0.000    0.000     0.3238E-04
+      1.438    0.050    0.050    1.000    0.000    -0.5251E-04
+      0.011    0.000    0.000    0.000    0.000    -0.3166E-04
+      0.017    0.000    0.000    0.000    0.000     0.3244E-04
 
 
 
@@ -10845,7 +10842,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R 10.17% Rw 24.75% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R 10.17% Rw 24.75% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1018 reflections   R  9.18% Rw 23.01% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1015 reflections   R  9.15% Rw 22.99% with I/u(I) >   2.0                                                                                                                                                                                                  
 SumFo/SumFc=  1.458   SumFoFc/SumFc^2=  1.478   SumwFoFc/SumwFc^2=  1.434                                                                                                                                                                                       
 LS-scale=  1.438   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.105    100*(<Fo>-<Fc>)/<Fo> =     1.42                                                                                                                                                                                                         
@@ -10912,7 +10909,7 @@ LS-scale=  1.438   Wilson Scale=  0.000
  Q         4.     0.8919    0.6086    0.2119        4.8  Poor Shape  
  Q         5.     0.8331    0.9403    0.1771        4.5  Poor Shape  
  Q         6.     0.8294    0.9431    0.1771        4.5  Poor Shape  
- Q         7.     0.9494    0.0883    0.2575        4.5  Poor Shape  
+ Q         7.     0.0506    0.5883    0.2425        4.5  Poor Shape  
  Q         8.     0.2887    0.3939    0.1983        4.2  Good Shape  
  Q         9.     0.7344    0.3158    0.1069        3.9  Poor Shape  
  Q        10.     0.4800    0.5914    0.1654        3.8  Poor Shape  
@@ -10942,7 +10939,7 @@ LS-scale=  1.438   Wilson Scale=  0.000
 
      C         4.         Q        11.      1   1    0    0    0    0.392      Deleted    0.706   0.352   0.099      3.6
 
-     N         6.         Q         7.      1   1    0    0    0    0.297      Deleted    0.949   0.088   0.257      4.5
+     N         6.         Q         7.      3   1    1   -1    0    0.297      Deleted    0.051   0.588   0.243      4.5
 
      O         8.         Q        10.      3   1    1   -1    0    0.341      Deleted    0.480   0.591   0.165      3.8
 
@@ -12559,7 +12556,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
                0.014           0.106          0.535                                                                                                                                                                                                             
 #                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
- Disc file extended by    74 record(s) for new list    6
 
 
 
@@ -12974,7 +12970,7 @@ LS-scale=  1.255   Wilson Scale=  0.000
  LARGE     1           1             0.389      0.4E+00    0.263E-01         14.78                          SCALE   
  S/ESD     4           4           -0.0010     -0.6E+00    0.913E-03         -1.08        C      1 Z       
  S/ESD     9           9           -0.0012     -0.7E+00    0.883E-03         -1.31        O      3 Y       
- S/ESD    17          17           -0.0059     -0.9E+00    0.308E-02         -1.91        N      6 X       
+ S/ESD    17          17           -0.0059     -0.9E+00    0.309E-02         -1.91        N      6 X       
  SRATIO   18          18            0.0000     -0.2E+02    0.131E-02          0.04        N      6 Y       
  S/ESD    20          20           -0.0041     -0.6E+00    0.275E-02         -1.49        C      7 X       
  S/ESD    30          30            0.0019     -0.7E+00    0.130E-02          1.44        C     10 Y       
@@ -14505,9 +14501,9 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.426    0.050    0.050    1.000    0.000    -0.2090E-04
-      0.008    0.000    0.000    0.000    0.000    -0.2090E-04
-      0.018    0.000    0.000    0.000    0.000     0.3492E-04
+      1.426    0.050    0.050    1.000    0.000    -0.2096E-04
+      0.008    0.000    0.000    0.000    0.000    -0.2096E-04
+      0.018    0.000    0.000    0.000    0.000     0.3504E-04
 
 
 
@@ -14741,9 +14737,9 @@ Inter cycle Min function          0.0           0.10E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.438    0.050    0.050    1.000    0.000    -0.5254E-04
-      0.011    0.000    0.000    0.000    0.000    -0.3164E-04
-      0.017    0.000    0.000    0.000    0.000     0.3241E-04
+      1.438    0.050    0.050    1.000    0.000    -0.5265E-04
+      0.011    0.000    0.000    0.000    0.000    -0.3168E-04
+      0.017    0.000    0.000    0.000    0.000     0.3245E-04
 
 
 
@@ -14940,7 +14936,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R 10.17% Rw 24.75% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R 10.17% Rw 24.75% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1018 reflections   R  9.18% Rw 23.01% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1015 reflections   R  9.15% Rw 22.99% with I/u(I) >   2.0                                                                                                                                                                                                  
 SumFo/SumFc=  1.458   SumFoFc/SumFc^2=  1.478   SumwFoFc/SumwFc^2=  1.434                                                                                                                                                                                       
 LS-scale=  1.438   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.105    100*(<Fo>-<Fc>)/<Fo> =     1.42                                                                                                                                                                                                         
