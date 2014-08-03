@@ -20,7 +20,7 @@ ifeq ($(COMPCODE),MAC)
 else
  ifeq ($(COMPCODE),GIL)
     GUIFLAGS = -fno-inline -fexceptions
-    GUILIBRARIES = `wx-config-2.9 --libs --gl-libs` 
+    GUILIBRARIES = `wx-config-2.9 --libs std,stc --gl-libs` 
     CLFLAGS = 
     CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
