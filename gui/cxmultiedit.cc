@@ -396,7 +396,7 @@ void CxMultiEdit::Load(string filename)
 #ifdef __CR_WIN__
 void CxMultiEdit::Load(string filename)
 {
-    wxMessageBox("Programming error - load function not implemented on MFC version.");
+     // Not implemented (or used) on MFC
 }
 
     void CxMultiEdit::SaveAs(string filename)
