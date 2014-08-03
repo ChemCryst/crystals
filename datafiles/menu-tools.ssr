@@ -3,7 +3,6 @@
 ^^WI   ITEM XBENCH '&Preferences' '#SCRIPT XPREFS' DISABLEIF='IN'                 
 ^^WI   SPLIT
 ^^WI   ITEM NOTE '&Notepad' '$notepad' DISABLEIF='IN'
-^^WI   ITEM DOSP '&Command prompt' '$command' DISABLEIF='IN'                    
 ^^WI   ITEM XBENCH '&Benchmark' '#SCRIPT XBENCH' DISABLEIF='IN'                 
 ^^WI ITEM XDL '&Delete bfiles' '#spawn + "crysdir:crdelbf.BAT"' DISABLEIF='IN'
 ^^WI   ITEM PLAT  '&Platon' '#SCRIPT PLATON'                                    

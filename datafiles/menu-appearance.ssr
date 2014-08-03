@@ -26,10 +26,6 @@
 ^^WI                 DISABLEIF='IN'                                             
 ^^WI     ITEM _REFF 'Auto update ON'  '#SCRIPT updton'                          
 ^^WI                 DISABLEIF='IN'                                             
-^^WI     SPLIT                                                                  
-^^WI     ITEM _MODW '&Set Wallpaper' '#SCRIPT XMODELBACK'                       
-^^WI                 DISABLEIF='IN' ENABLEIF='L5 L1 L2'                         
-^^WI     ITEM _MODW '&No Wallpaper' '^^CO SET MODEL01 LOADBITMAP='              
 ^^WI     ENDMENU                                                                
 ^^WI    ITEM SIZEAUT '&Auto scale (zoom off)'                                   
 ^^WI       '^^CO SET MODEL01 AUTOSIZE=YES'                                      
