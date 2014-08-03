@@ -360,7 +360,7 @@ void CxMultiEdit::Init()
 //    StyleSetFont 	(  0, &pFont );
 //    StyleSetFont 	(  1, &pFont );
     wxFont f =  wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
-    StyleSetFont 	(  wxSTC_STYLE_DEFAULT, &f);
+    StyleSetFont 	(  wxSTC_STYLE_DEFAULT, f);
 //	this->SetFont       ( pFont );
 	
 //	wxMessageBox("this is definitely running");
