@@ -120,11 +120,11 @@
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM CK '&Check for updates'                                             
-^^WI   '#SPAWN http://www.xtl.ox.ac.uk/download.html'
+^^WI   '#SPAWN http://www.xtl.ox.ac.uk/tag/crystals-release.html'
 ^^WI DISABLEIF='IN'
 ^^WI   ITEM HWEB '&Oxford Web Page' '#SPAWN http://www.xtl.ox.ac.uk/'           
 ^^WI   ITEM HWEB '&Bug report form'                                             
-^^WI   '#SPAWN http://www.xtl.ox.ac.uk/bug.html' DISABLEIF='IN'                 
+^^WI   '#SPAWN https://redmine.debroglie.net/projects/crystals/issues/new' DISABLEIF='IN'                 
 ^^WI   ITEM HWEB '&News'                                                        
 ^^WI   '#SPAWN http://www.xtl.ox.ac.uk/news.html' DISABLEIF='IN'                
 ^^WI   SPLIT                                                                    
