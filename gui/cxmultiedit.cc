@@ -394,7 +394,12 @@ void CxMultiEdit::Load(string filename)
 #endif
 
 #ifdef __CR_WIN__
-void CxMultiEdit::SaveAs(string filename)
+void CxMultiEdit::Load(string filename)
+{
+    wxMessageBox("Programming error - load function not implemented on MFC version.");
+}
+
+    void CxMultiEdit::SaveAs(string filename)
 {
     CFile file;
     file.Open(filename.c_str(), CFile::modeCreate | CFile::modeWrite);
