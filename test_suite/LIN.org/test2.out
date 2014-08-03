@@ -330,7 +330,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
                0.017           0.040          0.010                                                                                                                                                                                                             
 #LIST 6                                                                                                                                                                                                                                                         
- Disc file extended by   131 record(s) for new list    6
 
 
 
@@ -3687,7 +3686,6 @@ value in the case of a highly skew unit cell
 #                                                                                                                                                                                                                                                               
 #                      USE TWIN LAW TO ASSIGN ELEMENT TYPES.                                                                                                                                                                                                    
 #LIST 6                                                                                                                                                                                                                                                         
- Disc file extended by   131 record(s) for new list    6
 
 
 
