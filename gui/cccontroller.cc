@@ -800,6 +800,8 @@ CcController::CcController( const string & directory, const string & dscfile )
       mGUIThread = AfxGetThread();
 #endif
 
+
+//    wxMessageBox(directory);
     if ( directory.length() )
     {
       string dirtemp = directory;
@@ -1002,6 +1004,8 @@ CcController::CcController( const string & directory, const string & dscfile )
     }
 
     LOGSTAT( "Starting Crystals Thread" );
+
+//	wxMessageBox("Got here");
     
     StartCrystalsThread();
 
@@ -2809,12 +2813,14 @@ void CcController::ChangeDir (string newDir)
 
 #endif
 #ifdef __BOTHWX__
-#ifdef __BOTHWIN__
-      _chdir ( newDir.c_str());
-#else      
-      chdir ( newDir.c_str());
-      std::cerr << "\n\n\nChanged directory to: " << newDir << "\n\n\n";
-#endif
+      wxSetWorkingDirectory(newDir);
+
+//#ifdef __BOTHWIN__
+ //     _chdir ( newDir.c_str());
+//#else      
+//      chdir ( newDir.c_str());
+//      std::cerr << "\n\n\nChanged directory to: " << newDir << "\n\n\n";
+//#endif
 #endif
 }
 

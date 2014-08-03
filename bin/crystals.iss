@@ -115,10 +115,18 @@ Root: HKCR; SubKey: CrystalsFile\Shell\Open; ValueType: NONE; Flags: uninsdelete
 Root: HKCR; SubKey: CrystalsFile\Shell\Open\Command; ValueType: STRING; ValueData: """{app}\crystals.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; SubKey: CrystalsFile\DefaultIcon; ValueType: STRING; ValueData: {app}\crystals.exe,1; Flags: uninsdeletevalue
 
+
+
 ;These were only to correct v11.99 error, now removed.
 ;
 ; Root: HKCR; SubKey: Directory\shell; ValueType: STRING; ValueData: none; MinVersion: 5,5
 ; Root: HKCR; SubKey: Directory\shell; ValueType: NONE;  OnlyBelowVersion: 5,5; Flags: deletevalue
 
 Root: HKCR; SubKey: Directory\shell\crystals; ValueType: STRING; ValueData: Open Crystals Here;  Flags: uninsdeletekey
-Root: HKCR; SubKey: Directory\shell\crystals\command; ValueType: STRING; ValueData: """{app}\crystals.exe"" ""%L\crfilev2.dsc""";  Flags: uninsdeletekey
+Root: HKCR; SubKey: Directory\shell\crystals\command; ValueType: STRING; ValueData: """{app}\crystals.exe"" ""%v\crfilev2.dsc""";  Flags: uninsdeletekey
+Root: HKCR; SubKey: Directory\shell\crystals; ValueName: Icon; ValueType: STRING; ValueData: "{app}\crystals.exe,0";  Flags: uninsdeletekey
+
+Root: HKLM; SubKey: SOFTWARE\Classes\Directory\Background\shell\crystals; ValueType: STRING; ValueData: Open Crystals Here;  Flags: uninsdeletekey
+Root: HKLM; SubKey: SOFTWARE\Classes\Directory\Background\shell\crystals\command; ValueType: STRING; ValueData: """{app}\crystals.exe"" ""%v\crfilev2.dsc""";  Flags: uninsdeletekey
+Root: HKLM; SubKey: SOFTWARE\Classes\Directory\Background\shell\crystals; ValueName: Icon; ValueType: STRING; ValueData: "{app}\crystals.exe,0";  Flags: uninsdeletekey
+

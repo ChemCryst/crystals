@@ -388,8 +388,8 @@ using namespace std;
         string command = string(argv[i]);
         if ( command.length() > 0 )
         {
-// we need a directory name. Look for last slash
-          string::size_type ils = command.find_last_of('/');
+// we need a directory name. Look for last slash or back slash
+          string::size_type ils = command.find_last_of("/\\");
 //Check: is there a directory name?
           if ( ils != string::npos )
             directory = command.substr(0,ils);
