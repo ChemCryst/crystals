@@ -992,7 +992,6 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, string theText, bool rotat
     wxFont theFont = memDC->GetFont();
     wxString wtext (theText.c_str());
 
-    theFont.SetPointSize(48);
 
     CcPoint coord = DeviceToLogical(x1,y1);
     CcPoint coord2= DeviceToLogical(x2,y2);
@@ -1007,9 +1006,10 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, string theText, bool rotat
     }
 
 
-    bool fontIsTooBig = true;
-    while (fontIsTooBig)
-    {
+	for ( int iPointSize = 48; iPointSize  > 4; --iPointSize  ) 
+	{
+       memDC->SetFont( wxNullFont );
+       theFont.SetPointSize(iPointSize);
        memDC->SetFont(theFont);
        int cx,cy;
        memDC->GetTextExtent( wtext, &cx, &cy );
@@ -1017,7 +1017,6 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, string theText, bool rotat
        if ((( cx < cwide )&&( cy < chigh ))||(theFont.GetPointSize()<=8))
        {
            //Output the text, and exit.
-           fontIsTooBig = false;
            int xcrd= coord.x;
            int ycrd= coord.y;
            if ( centred )
@@ -1032,13 +1031,10 @@ void CxChart::FitText(int x1, int y1, int x2, int y2, string theText, bool rotat
               memDC->DrawRotatedText(wtext, xcrd , ycrd, 90.0 );
            else             
               memDC->DrawText(wtext, xcrd , ycrd );
-       }
-       else
-       {
-           //Reduced the font height and repeat.
-           theFont.SetPointSize( theFont.GetPointSize()-1 );
-           memDC->SetFont( wxNullFont );
-       }
+
+		   break;
+
+	   }
     }
     memDC->SetFont( wxNullFont );
     memDC->SetBrush( wxNullBrush );
