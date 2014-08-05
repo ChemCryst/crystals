@@ -520,7 +520,7 @@ void CcChartDoc::FastText( const int &x, const int &y,
       }
       else
       {
-         yoffs = - ((double) fs) * 13.333;
+         yoffs = - ((double) fs) * 4;
          xoffs = yoffs * 10;
          item->Init(x, y, x+xoffs, y+yoffs, text , false );
       }
