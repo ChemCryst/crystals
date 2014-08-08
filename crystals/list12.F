@@ -1145,7 +1145,11 @@ c            mod23 = 2
             store(l5o+3) = 1.
             imod5 = imod5 + 1
 c       if FLACK is exactly zero, probably first cycle - set to 0.5
-            if (abs(store (L5o+4)) .le. zerosq) then
+c djw July 2014
+c - problem if user sets Flack to zero in #edit - this code immediately
+c   resets it to 0.5
+c   check if it was refined (value in List 30) and if so, dont fiddle
+            if (abs(store (L30ge+6)) .le. zerosq) then
                   WRITE ( CMON, '(A,G8.2,A)')
      1 'Flack = ',store(l5o+4),'Starting FLACK refinement from 0.5'
                   CALL XPRVDU(NCVDU, 1,0)
