@@ -8,7 +8,20 @@
 %  IF EXISTS 5 .LE. 0 THEN                                                      
 WARNING - You have no atoms                                                     
 %    FINISH                                                                     
-%  END IF                                                                       
+%  END IF
+%% Do not continue if PARTS have been set
+% BLOCK
+%  VARIABLE INTEGER IPART
+%  COPY '#GENERALEDIT 23'                                                        
+%  COPY 'LOCATE RECORDTYPE = 101'                                                
+%  COPY 'TRANSFER FROM OFFSET = 4 TO IPART'                                     
+%  IF IPART .GE. 0 THEN
+
+{I Remove PARTS (LIST 23) before re-centring
+
+%   FINISH
+%  END IF
+% END BLOCK
 %                                                                               
 %% MOVE TO MAKE FIRST ATOM CLOSE TO .5 .5 .5                                    
 % COPY '#ORIGIN MODE=FIRST'                                                     
@@ -40,7 +53,7 @@ WARNING - You have no atoms
 %%                                                                              
 % queue rewind                                                                  
 % queue copy #edit                                                              
-% queue copy monitor  off                                                       
+% queue copy monitor  OFF                                                       
 % loop oldresidue times                                                         
 %  evaluate residue = oldresidue + 1 - loopcounter                              
 %   CLEAR                                                                       
@@ -56,7 +69,7 @@ WARNING - You have no atoms
 % queue process                                                                 
 % queue rewind                                                                  
 % queue copy #edit                                                              
-% queue copy monitor  off                                                       
+% queue copy monitor  OFF                                                       
 % queue copy move q(1)                                                          
 % loop oldresidue times                                                         
 %   CLEAR                                                                       
@@ -68,23 +81,24 @@ WARNING - You have no atoms
 % queue copy END                                                                
 % queue process                                                                 
 % copy '#collect'                                                               
-% copy 'sel type = all tol=20 monitor = off'                                    
+% copy 'sel type = all tol=20 monitor = OFF'                                    
 % copy 'end'                                                                    
 % copy '#edit'                                                                  
-% copy 'monitor off'                                                            
+% copy 'monitor OFF'                                                            
 % copy 'del q(1)'                                                               
 % copy 'end'                                                                    
-%% REMOVED APR 2011 TO REDUCE RISK OF NON-BONDED CONTACTS                       
-%% BEING USED                                                                   
-%% copy '#collect'                                                              
-%% copy 'sel type = all tol = 2. monitor = off'                                 
-%% copy 'end'                                                                   
+% copy '#collect'                                                              
+% copy 'sel type = all tol = 5. monitor = OFF'                                 
+% copy 'end'                                                                   
 % copy '#collect'                                                               
-% copy 'sel type = all monitor = off'                                           
+% copy 'sel type = all monitor = OFF'                                           
 % copy 'end'                                                                    
-% COPY '#SCRIPT INSIDE'
 % copy '#script xdelq'                                                          
 % COPY '#PURGE LIST=41'                                                         
 % COPY 'END'                                                                    
+%% MOVE TO MAKE FIRST ATOM CLOSE TO .5 .5 .5                                    
+% COPY '#ORIGIN MODE=FIRST'                                                     
+% COPY 'END'                                                                    
+% COPY '#SCRIPT INSIDE'                                                         
 %%                                                                              
 %END SCRIPT                                                                     
