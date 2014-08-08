@@ -1815,9 +1815,12 @@ cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
 
 
       IF ( IPLOT .GE. 0 ) THEN
+        write(cmon,'(a/2(a,i9))')  ' Completeness of hkl data.',
+     1 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
+        CALL XPRVDU(NCVDU,2,0)
         IF (ISSPRT .EQ. 0) 
-     1   WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',
-     2 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
+     1    write(ncwu,'(/a/a/)')
+     2   CMON(1)(:nctrim(cmon(1))), CMON(2)(:nctrim(cmon(2)))
       END IF
 
       THMCMP = FLOAT( NFOUND ) / FLOAT ( NALLWD )
@@ -3561,9 +3564,10 @@ CODE FOR XSGDST
       SUBROUTINE XSGDST
 c----- produce data for tabbed analysis display
       DIMENSION KSIGS(110)
-      DIMENSION LSIGS(25,3)
       DIMENSION MSIGS(120)
-      dimension sios(25),nios(25)
+      parameter (nbin=30)
+      DIMENSION LSIGS(nbin,3)
+      dimension sios(nbin),nios(nbin)
       CHARACTER *15 HKLLAB
       PARAMETER ( RTDIV = 19.09859 ) ! Radians to divisions.
       INCLUDE 'ISTORE.INC'
@@ -3572,6 +3576,7 @@ c----- produce data for tabbed analysis display
       INCLUDE 'XLST01.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST13.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
@@ -3581,15 +3586,16 @@ c----- produce data for tabbed analysis display
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
       DATA ICOMSZ / 5 /
-      DATA IVERSN /101/
+      DATA IVERSN /102/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 
       CALL XTIME1 ( 2 )
       CALL XCSAE
 
-      call xzerof (sios, 25)
-      call xzerof (nios, 25)
+      call xzerof (sios, nbin)
+      call xzerof (nios, nbin)
+      bin = float(nbin)
 
 C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       ICOMBF = KSTALL( ICOMSZ )
@@ -3608,6 +3614,23 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       CALL XFAL06 (IULN, 0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF (KHUNTR ( 13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
+      IF (KHUNTR ( 30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+c
+c     check if thetamax is set
+      thetamax = store(l30ix+7)
+      wave = store(l13dc)
+      if (thetamax .le. zero) then
+        if(wave .le. 1.0) then
+            thetamax = 27.0   ! something like Mo
+        else
+            thetamax = 60.0   ! something like Cu
+        endif
+      endif
+    
+c
+      rmax = sin(thetamax*dtr)/wave    ! maximum permitted resolution
+      rmax = rmax*rmax
 
       DO I = 1,110
         KSIGS(I) = 0
@@ -3616,7 +3639,7 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
         MSIGS(I) = 0
       END DO
       DO I = 1,3
-        DO J = 1,25
+        DO J = 1,nbin
           LSIGS(J,I) = 0
         END DO
       END DO
@@ -3626,9 +3649,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       NTOT = 0
       NALLOW = 0
 c      nmax=0
-
-
-
+c
       DO WHILE ( KLDRNR(0) .GE. 0 )
         IF ( KALLOW(IALLOW).EQ. 0 ) THEN
           NALLOW = NALLOW + 1
@@ -3650,15 +3671,14 @@ c      nmax=0
          IF ( SIGNOI .LT. 10 ) JSIGS = 2
          IF ( SIGNOI .LT. 3 ) JSIGS = 1
  
-         MSIG = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
+         MSIG = 1 + NINT( STORE(M6+16) * bin / rmax )
          MSIG = MAX ( 1,MSIG )
-         MSIG = MIN ( 25,MSIG )
+         MSIG = MIN ( nbin,MSIG )
          LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
 c         nmax=max(nmax,LSIGS(MSIG,JSIGS))
          sios(msig)=sios(msig)+signoi
          nios(msig)=nios(msig)+1
         endif
-
       END DO
 
       if (issprt .eq. 0) write(ncwu,'(a)')'I/sig(i) vs resolution'
@@ -3666,20 +3686,20 @@ c         nmax=max(nmax,LSIGS(MSIG,JSIGS))
       smax=0.
       slim=5.
       call outcol(6)
-      do i=1,25
+      do i=1,nbin
             mios=mios+nios(I)
             if(nios(i) .gt. 0) sios(i)=sios(i)/float(nios(i))
             if((sios(I) .lt. slim).and.(sios(i).gt. 0.)) then
             write(cmon,'(A,f4.1,a,f6.2)')
      1      '<I/sigma(I)> falls below', slim,
-     2      ' at (sintheta/lambda)^2=',(float(i)*.4/25.0)
+     2      ' at (sintheta/lambda)^2=',(float(i)*rmax/bin)
             CALL XPRVDU(NCVDU, 1,0)
             slim=slim-1.
             endif
             smax=max(smax,sios(I))
             if (issprt .eq. 0) then
             write(ncwu,'(f5.2,2i8,f10.3)') 
-     1      (float(i)*.4/25.),nios(I),mios,sios(I)
+     1      (float(i)*rmax/bin),nios(I),mios,sios(I)
             endif
       enddo
       call outcol(1)
@@ -3689,10 +3709,10 @@ c      nmax=min(90,nmax)
 c      nmax=max(1,nmax)
       IF (IPLOT2 .EQ. 1) THEN
 c        WRITE(CMON,'(A,10(/A))')
-        WRITE(CMON,'(A,3(/A),/a,i6,a,5(/a))')
+        WRITE(CMON,'(a/a/a,i6,/a,/a,i6,a,5(/a))')
      1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
      2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=4',
-     3  '^^PL LENGTH=25',
+     3  '^^PL LENGTH=',nbin,
      4  '^^PL YAXIS TITLE ''Frequency''',
      5  '^^PL YAXISRIGHT ZOOM 0 ',nint(smax),
      5  ' TITLE ''Average(I/sigmaI)''',
@@ -3704,10 +3724,10 @@ c        WRITE(CMON,'(A,10(/A))')
 
         CALL XPRVDU(NCVDU, 10,0)
 
-        DO I = 1,25
+        DO I = 1,nbin
           WRITE(CMON,'(A,4(F7.3,1X,I8,1X))')
-     1     '^^PL DATA ',((I*0.4/25.0),LSIGS(I,J),J=1,3),
-     2     (I*0.4/25.0),nint(sios(I))
+     1     '^^PL DATA ',((float(I)*rmax/bin),LSIGS(I,J),J=1,3),
+     2     (float(I)*rmax/bin),nint(sios(I))
           CALL XPRVDU(NCVDU, 1,0)
         END DO
  
