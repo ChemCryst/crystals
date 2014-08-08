@@ -1590,14 +1590,18 @@ C
 C--THE DERIVATIVES FOR THE OVERALL SCALE FACTORS ARE COMPUTED SEPARATELY
 C  OTHER OVERALL PARAMETERS.
 C
-C----- PARTIAL DERIVATIVE RELATIONSHIPS
+C----- PARTIAL DERIVATIVE RELATIONSHIPS - SEE ABOVE FOR A,B,C AND D
 C
-C      FTSQ  = (1-X)*FP**2 + X*FN**2
+C      FTSQ  = (1-X)*FP**2 + X*FN**2  = Fc^2
 C      where FPSQ is for the given index, and FNSQ for its Friedel inver
 C
 C      dFTSQ = 2*FP*(1-X)*dFP + 2*FN*X*dFN
 C
 C      dFT   = (FP/FT)*(1-X)*dFP   +    (FN/FT)*dFN
+C
+C      2FcdFc = -FPSQ dx + FNSQ dx
+c
+c      dFc = [(FNSQ-FPSQ)/(2fC)] dx
 C
 C            COSA := (1-X)*FP/FT,       SINA := X*FN/FT
 C
