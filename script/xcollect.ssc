@@ -69,6 +69,11 @@ to existing atoms.
 %                 END IF
 %                 COPY '#COLLECT'
 %                 QUEUE PROCESS
+%                 COPY 'CONT TOL=2.0'
+%                 COPY 'END'
+
+%                 COPY '#COLLECT'
+%                 QUEUE PROCESS
 %                 COPY 'END'
  * Done.
 ^^WI              DISPOSE COLLECT
