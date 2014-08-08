@@ -7122,7 +7122,7 @@ C This can be done with the script COPY67
 C
 C      ITYPE = 0 FOR Do/Ds, 1 FOR Qo/Qs
 C      IPLOT = 0 FOR NONE, 1 FOR YES
-C      ipunch  no/table/restraint/graph  0/1/2/3
+C      ipunch  no/table/restraint/graph/summary  0/1/2/3/4
 C      FILTER(5) - see FILTERS below
 C
 C
@@ -7134,8 +7134,9 @@ C
       CHARACTER*16 CFILTER(NFAILN)
       CHARACTER*32 CFAILN(NFAILN,2)
       DIMENSION FILTER(5), AFILTER(5)
-      PARAMETER (NPLT=7)
+      PARAMETER (NPLT=10)
       DIMENSION IFOPLT(2*NPLT+1), IFCPLT(2*NPLT+1)
+      PARAMETER (DISTPLT = 3.0)
       DIMENSION DATC(401)
       PARAMETER (MD6ACC=10)
       DIMENSION TEMP(MD6ACC)
@@ -7215,21 +7216,6 @@ C
 c zero the R factor accumulators
       CALL XZEROF(HFLACK, 8)
 c
-c--- copy the filter values to an output area
-c 1      /Ds/ > filter(1)*sigma(Do)
-c 2       As  > filter(2)*sigma(Ao)
-c 3      /Do/ < filter(3)*Ds(max)
-c 4
-c 5      Ratio Ao/Ac >< filter(5)
-C
-      WRITE(CFILTER(1),'(F12.2)')  filter(1)
-      WRITE(CFILTER(2),'(F12.2)')  filter(2)
-      WRITE(CFILTER(3),'(F12.2)')  filter(3)
-      WRITE(CFILTER(4),'(F12.5)')  filter(4)
-      WRITE(CFILTER(5),'(F12.5)')  filter(5)
-      do i=1,5
-        call xcras(cfilter(i), len)
-      enddo
 c
 C--FIND OUT IF LISTS EXIST
 c
@@ -7277,6 +7263,31 @@ C----- OUTPUT A TITLE, FIRST 20 CHARACTERS ONLY
         IF (ISSPRT.EQ.0) WRITE (NCWU,1234) (KTITL(I),I=1,20)
 1234  FORMAT(//20A4//)
 c
+c
+C- COMPUTE Friedif and <D^2>
+      I=KCPROP(APROP)
+      FRIEDIF=APROP(11)
+      IFTYPE=ISTORE(L23MN+1)+2
+c
+C
+c--- copy the filter values to an output area
+c 1      /Ds/ > filter(1)*sigma(Do)
+c 2       As  > filter(2)*sigma(Ao)
+c 3      /Do/ < filter(3)*Ds(max)
+c 4
+c 5      Ratio Ao/Ac >< filter(5)
+c
+C
+      WRITE(CFILTER(1),'(F12.2)')  filter(1)
+      WRITE(CFILTER(2),'(F12.2)')  filter(2)
+      WRITE(CFILTER(3),'(F12.2)')  filter(3)
+      WRITE(CFILTER(4),'(F12.5)')  filter(4)
+      WRITE(CFILTER(5),'(F12.5)')  filter(5)
+      do i=1,5
+        call xcras(cfilter(i), len)
+      enddo
+c
+c
       if((abs(store(l30ge+6)).le.zero).and.(store(l30ge+7).le.zero))
      1 then
             call outcol(9)
@@ -7307,12 +7318,19 @@ C
       ELSE IF (IPUNCH.EQ.2) THEN
         WRITE (NCPU,'(A,F9.4,A,F9.4)') 'REM Flack parameter = ',
      1   STORE(L30GE+6),' Pre-flack =',preflack
+        WRITE(NCPU,'(A,F9.4)')
+     1  'REM Signal:noise filter(1) = ', filter(1)
         WRITE (NCPU,400)
 400      FORMAT ('REM '6X,'Delta Io',12X,'Sigma',33X,'Delta Ic'24X,
      1   'h  k  l     DIo-DIc/sig')
       else if (ipunch .eq. 3) then
          WRITE(ncpu,'(a)') cplot
          write(ncpu,'(a)') ' Graph points, Do, Ds, x, y, weight'
+      else if (ipunch.eq.4) then
+         Write(ncpu,'(a/a/a)')
+     1 'R, wR2, Friedif, Filter_1, Flack, sigma, difference/quotient,', 
+     2 'sigma, Hooft, sigma, histogram, sigma, n-pair, n-used,', 
+     3 '%used, H-used, %good, npp slope, p2, p3'
       END IF
 c
 C
@@ -7324,11 +7342,6 @@ C
       SCALE=STORE(L5O)
       SCALE=1./(SCALE*SCALE)
 C
-C
-C- COMPUTE Friedif and <D^2>
-      I=KCPROP(APROP)
-      FRIEDIF=APROP(11)
-      IFTYPE=ISTORE(L23MN+1)+2
 C
 c     size of STR11 - used as reflection holding stack
       MAX11=ISIZ11
@@ -7530,10 +7543,10 @@ C SIGNAL:NOISE FOR DELTA FO AND FC
         STNFC=FckD/SIGMAD
         STNFOM=MAX(STNFOM,STNFO)
         STNFCM=MAX(STNFCM,STNFC)
-        NFO=NINT(STNFO)+NPLT+1
+        NFO=NINT(DISTPLT*STNFO)+NPLT+1   
         NFO=MAX(NFO,1)
         NFO=MIN(NFO,2*NPLT+1)
-        NFC=NINT(STNFC)+NPLT+1
+        NFC=NINT(DISTPLT*STNFC)+NPLT+1
         NFC=MAX(NFC,1)
         NFC=MIN(NFC,2*NPLT+1)
         IFOPLT(NFO)=IFOPLT(NFO)+1
@@ -7768,16 +7781,16 @@ C
 C                                ---- ALL REFELCTIONS NOW PROCESSED.
 C
 c  compute reduced Chisq and rescale weights
-      goto 12345                  ! dont rescale - only cosmetic
-      s = chiD/n6acc
-      write(123,'(a,f12.4)')'Reduced chisq=',s
-      s = sqrt(s)
-      m6acc=l6acc
-      chiloop: DO I=1,N6ACC
-       str11(m6acc+4)=str11(m6acc+4)*s
-       m6acc = m6acc + md6acc
-      ENDDO chiloop
-12345  continue
+c  dont rescale - only cosmetic
+c      s = chiD/n6acc
+c      write(123,'(a,f12.4)')'Reduced chisq=',s
+c      s = sqrt(s)
+c      m6acc=l6acc
+c      chiloop: DO I=1,N6ACC
+c       str11(m6acc+4)=str11(m6acc+4)*s
+c       m6acc = m6acc + md6acc
+c      ENDDO chiloop
+c
 C
 C                                                ---- SOME GENERAL OUTPUT
 C
@@ -7858,23 +7871,14 @@ C
       END IF
 C
       if(issprt.eq.0)then
-          WRITE (ncwu,'(//A/A)') 
+          WRITE (ncwu,'(//A/A)')  
      1' Distribution of NINT(D/sigma) for all data',
      1' Rabinovich & Hope, Acta A36, (1980), 670-674'
-          WRITE (NCWU,'(a,15I6)') 'Do',IFOPLT
-          WRITE (NCWU,'(a,15I6)') 'Dc',IFCPLT
-          WRITE (NCWU,'(a,15I6)') ' n',(KDJW,KDJW=-NPLT,NPLT,1)
+          WRITE (NCWU,'(a,21I6)') 'Do',IFOPLT
+          WRITE (NCWU,'(a,21I6)') 'Dc',IFCPLT
+          WRITE (NCWU,'(a,21F6.2)') 
+     1    ' n',((KDJW/DISTPLT),KDJW=-NPLT,NPLT,1)
       endif
-          WRITE (cmon,'(A/A)') 
-     1' Distribution of NINT(D/sigma) for all data',
-     1' Rabinovich & Hope, Acta A36, (1980), 670-674'
-          CALL XPRVDU (NCVDU, 2, 0)
-          WRITE (cmon,'(a,15I6)') 'Do',IFOPLT
-          CALL XPRVDU (NCVDU, 1, 0)
-          WRITE (cmon,'(a,15I6)') 'Dc',IFCPLT
-          CALL XPRVDU (NCVDU, 1, 0)
-          WRITE (cmon,'(a,15I6)') ' n',(KDJW,KDJW=-NPLT,NPLT,1)
-          CALL XPRVDU (NCVDU, 1, 0)
 c
       if(iplot.eq.1) then
          DISTMAX=0.
@@ -7888,18 +7892,21 @@ C                                 Distribution graph definition
      2  '^^PL XAXIS TITLE ''D/sigma(Do)''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM ', 0.0, 100.,
-     4  ' TITLE ''Frequency of Do (%)'' ',
+     4  ' TITLE ''Frequency of Do (% of Dmax)'' ',
      5  '^^PL YAXISRIGHT ZOOM ', 0.0, 100.,
-     5  ' TITLE ''Frequency of Dsingle (%)''  ',
+     5  ' TITLE ''Frequency of Dsingle (% of Dmax)''  ',
      6  '^^PL SERIES 1 SERIESNAME ''Dobs'' TYPE LINE',
      7  '^^PL SERIES 2 SERIESNAME ''Dsingle''    TYPE LINE',
      8  '^^PL USERIGHTAXIS'
           CALL XPRVDU (NCVDU, 8, 0)
 c
+c  in here, replace start (-nplt) by first non-empty bin, and stop
+c  at last non-empty bin.  May then have to scale x axis.
+c
           do i=1,2*nplt+1
             WRITE (CMON,'(A,4F11.3)') '^^PL DATA ',
-     1      float(i-nplt-1), 100.*float(ifoplt(i))/DISTMAX, 
-     2      float(i-nplt-1), 100.*float(ifcplt(i))/DISTMAX
+     1      float(i-nplt-1)/DISTPLT, 100.*float(ifoplt(i))/DISTMAX, 
+     2      float(i-nplt-1)/DISTPLT, 100.*float(ifcplt(i))/DISTMAX
             CALL XPRVDU (NCVDU, 1, 0)
           enddo
 C -- FINISH THE GRAPH DEFINITION
@@ -7907,7 +7914,7 @@ C -- FINISH THE GRAPH DEFINITION
           CALL XPRVDU (NCVDU, 2, 0)
       endif
 C
-      write(cmon,'(/a,f5.3)')' Maximum accepted quotient=',qmax
+      write(cmon,'(/a,f6.2)')' Maximum accepted quotient=',qmax
       call xprvdu (ncvdu, 2, 0)
       write(cmon,'(a/4(2x,a,i1,A,f7.4) )')
      1 ' Reflection Filters:',
@@ -8641,7 +8648,8 @@ c      PREFLACK = 1. - 2.* STORE(L30GE+6)
            fokd=str11(m6acc+2)
            sigmad=str11(m6acc+4)
            fckd=str11(m6acc+3)
-           if((wt.gt.0.0001) .and. (fckd .ge. 0.5*sigmad))then
+           if((wt.gt.0.0001) .and. 
+     1     (abs(fckd) .ge. filter(1)*sigmad))then
 C           Unpack HKL
             D=FLOAT(NINT(STR11(m6acc+1)/256.))
             MH=STR11(m6acc+1)-D*256.
@@ -8797,15 +8805,30 @@ C
             ypm = 0.
           endif
 c
-          WRITE (NCWU,'(//A,a)')
+          WRITE (cmon,'(A,a)')
      1    'Quadrant averages: N, Mean(Do), Mean(Ds)',
      2    ' [Summary of scatterplot]'
-          WRITE (NCWU,'(/a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )')
+          call xprvdu(ncvdu,1,0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a)')
+     1    CMON(1)(:nctrim(cmon(1)))
+          WRITE (cmon,'(/a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )')
      1     '-+', nmp,ymp,xmp,'|','++',npp,ypp,xpp
-          WRITE (ncwu,'(4x,a,a,a)') '---------------------------','|',
+          call xprvdu(ncvdu,2,0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)')
+     1    CMON(2)(:nctrim(cmon(2)))
+
+          WRITE (cmon,'(4x,a,a,a)') '---------------------------','|',
      1     '----------------------------'
-          WRITE (NCWU,'(a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )') 
+          call xprvdu(ncvdu,1,0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')
+     1    CMON(1)(:nctrim(cmon(1)))
+
+          WRITE (cmon,'(a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )') 
      1     '--',nmm,ymm,xmm,'|','+-',npm,ypm,xpm
+          call xprvdu(ncvdu,1,0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')
+     1    CMON(1)(:nctrim(cmon(1)))
+
 
           WRITE (NCWU,1950)
 1950      FORMAT (//'No of reflections for which delta(Io)',
@@ -9161,29 +9184,32 @@ C
       write(cmon,'(a,5i9)')'Rejects',  ifailn
       call xprvdu(ncvdu, 1,0)
 
-      tempdjw(1)=friedif
-      tempdjw(2)=filter(1)
-      tempdjw(3)=store(l30ge+6)
-      tempdjw(4)=store(l30ge+7)
-      tempdjw(5)=pseudof
-      tempdjw(6)=pseudos
-      tempdjw(7)=tony
-      tempdjw(8)=tonsy
-      tempdjw(9)=fmean
+      if(ipunch.eq.4) then       !Summary for import to spread sheet
+c                                !R
+c                                !wR2
+       tempdjw(1)=friedif        !Friedif
+       tempdjw(2)=filter(1)      !Filter_1
+       tempdjw(3)=store(l30ge+6) !Flack
+       tempdjw(4)=store(l30ge+7) !sigma
+       tempdjw(5)=pseudof        !difference/quotient Flack
+       tempdjw(6)=pseudos        !sigma
+       tempdjw(7)=tony           !Hooft
+       tempdjw(8)=tonsy          !sigma
+       tempdjw(9)=fmean          !histogram
 
-      tempdjw(10)=sigxbar
-      tempdjw(11)=mfried
-      tempdjw(12)=nfried
-      tempdjw(13)=(100*MFRIED)/(MFRIED+LFRIED)
-      tempdjw(14)=ngood
-      tempdjw(15)=(nle3s*100./n6acc)
-      tempdjw(16)=yslope
-      tempdjw(17)=xpll2
-      tempdjw(18)=xplll
-      write(123,9876) tempdjw
-9876  format(f7.2, f6.3, 4(x,2f8.4,x),  2f8.0, f6.1, f8.0, f6.1, f5.2,
-     1       2f7.4)
-
+       tempdjw(10)=sigxbar       !sigma
+       tempdjw(11)=mfried        !n-pair
+       tempdjw(12)=nfried        !n-used
+       tempdjw(13)=(100*MFRIED)/(MFRIED+LFRIED)
+       tempdjw(14)=ngood         !H-used
+       tempdjw(15)=(nle3s*100./n6acc)
+       tempdjw(16)=yslope        !npp slope
+       tempdjw(17)=xpll2         !p2
+       tempdjw(18)=xplll         !p3
+       write(ncpu,9876) store(l30rf), store(l30rf+1),tempdjw
+9876  format(3f7.2, f6.3, 4(x,2f8.4,x),  2f8.0, f6.1, f8.0, f6.1,
+     1       f5.2, 2f7.4)
+      endif
 
 
       GOTO 2860
