@@ -6,16 +6,16 @@
 %%
 
 New Things
-{1,11 Spek       {12,11Hoof-Straver-Spek Absolute configuration test.
-{1,11            {12,11  
-{1,11            {12,11At the end of an absolute structure determination
-{1,11            {12,11the Flack parameter is re-set to zero, structure factors 
-{1,11            {12,11calculated and some hypothoses tested
+{1,11 Absoute    {12,11Perforn post-refinement absolute structure analysis.
+{1,11 config     {12,11Includes Hooft analysis (from PLATON), Normal
+{1,11            {12,11probability plot of Friedel pairs, Parsons Difference
+{1,11            {12,11analysis and various plot.
+{1,11            {12,11
 {1,11            {12,11
 {1,11 Reweight   {12,11Rescale refinement weights.  
 {1,11            {12,11This utility may be able to get a GooF to unity by 
 {1,11            {12,11rescaling all the weights by a constant. This will not
-{1,11            {12,11change the parameter values, but will affect their esds.
+{1,11            {12,11change the parameter values or their esds.
 
 {1,0
 %END SCRIPT
