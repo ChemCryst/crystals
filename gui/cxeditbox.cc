@@ -116,7 +116,7 @@ CxEditBox * CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
     theEditBox->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-      theEditBox->Create(guiParent, -1, "edit");
+      theEditBox->Create(guiParent, -1, "edit", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 #endif
     return theEditBox;
 }
