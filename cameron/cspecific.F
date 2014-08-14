@@ -1044,6 +1044,11 @@ C
       CHARACTER*(*) CTEXT
       CHARACTER*80  NTEXT
       NTEXT = CTEXT
+      CALL XCTRIM(NTEXT,N)
+      N = MAX(1,N)         ! SET N TO LAST NON-BLANK
+      N = MIN(N,79)        ! SET N TO BE NO MORE THAN 79
+      NTEXT(N+1:N+1) = CHAR(0)  ! Make into a c string.
+
 #if defined(_GNUF77_) 
       CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
 #else

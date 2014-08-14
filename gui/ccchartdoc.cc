@@ -624,19 +624,22 @@ void FORCALL(fastepoly) ( int nv, int * points )
       m_thread_critical_section.Leave();
 }
 
-void FORCALL(fasttext)  ( int x,  int y,  char theText[80], int fs )
+void FORCALL(fasttext)  ( int x,  int y,  char * theText, int fs )
 {
       m_thread_critical_section.Enter();
-      theText[80] = '\0';
-      for ( int i = 80; i >= 0; i-- )
-      {
-            if ( (theText[i]==' ') || (theText[i]=='\0') )
-                  theText[i] = '\0';
-            else
-                  i = -1;
-      }
+//      theText[80] = '\0';
+//      for ( int i = 80; i >= 0; i-- )
+//      {
+//            if ( (theText[i]==' ') || (theText[i]=='\0') )
+//                  theText[i] = '\0';
+//            else
+//                  i = -1;
+//      }
       string text = theText;
-      CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
+      string::size_type strim = text.find_last_not_of(" ");
+      if ( strim != string::npos ) text = text.substr(0,strim+1);
+
+	  CcChartDoc * doc = CcChartDoc::sm_CurrentChartDoc;
       if ( doc )
             doc->FastText( x,y,text, fs );
       m_thread_critical_section.Leave();
