@@ -263,7 +263,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //   LOGERR("Adding App icon");
     if ( mycon.Ok() )
     {
-      m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str());
+      m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str(), newTool->tText.c_str());
 //      m_ToolBar->AddTool(newTool->CxID, mycon, "Text");
       m_ToolBar->Realize();
       m_ImageIndex++;
@@ -336,7 +336,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 			                 //mymap, wxEmptyString, 
 							 //(newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
           m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(), 
-			                 mymap, wxEmptyString, 
+			                 mymap, newTool->tText.c_str(), 
 							 (newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
 
 //		  if ( newTool->toggleable ) { 
