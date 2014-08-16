@@ -1913,9 +1913,9 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      0.913    0.022    0.050    1.000    0.000     0.1132E+03
-      0.003    0.000    0.000    0.000    0.000     0.0000E+00
-      0.001    0.000    0.000    0.000    0.000     0.0000E+00
+      0.913    0.022    0.050    1.000    0.000   113.17
+      0.003    0.000    0.000    0.000    0.000     0.00
+      0.001    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -2846,9 +2846,9 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      0.909    0.022    0.050    1.000    0.000     0.1132E+03
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
+      0.909    0.022    0.050    1.000    0.000   113.17
+      0.000    0.000    0.000    0.000    0.000     0.00
+      0.000    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -3523,9 +3523,9 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      0.909    0.022    0.050    1.000    0.000     0.1132E+03
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
+      0.909    0.022    0.050    1.000    0.000   113.17
+      0.000    0.000    0.000    0.000    0.000     0.00
+      0.000    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -4143,9 +4143,9 @@ All cycle   Min function          0.0           0.16E+06       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      0.909    0.022    0.050    1.000    0.000     0.1132E+03
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
+      0.909    0.022    0.050    1.000    0.000   113.17
+      0.000    0.000    0.000    0.000    0.000     0.00
+      0.000    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -4696,11 +4696,11 @@ SumFo/SumFc=  0.914   SumFoFc/SumFc^2=  0.913   SumwFoFc/SumwFc^2=  0.913
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =     0.55                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      10990 Physical writes      10071 Cache hits     196984
- Cache hit distribution   179141   12747    1982     490     474     175
- Cache hit distribution      160     201     217     280     154     161
- Cache hit distribution      175     127     118      49      48      75
- Cache hit distribution       49      47      41      19      21      33
+ Physical reads      10995 Physical writes      10071 Cache hits     196995
+ Cache hit distribution   179141   12717    2012     490     484     154
+ Cache hit distribution      157     174     231     301     152     173
+ Cache hit distribution      178     122     119      52      47      51
+ Cache hit distribution       71      53      39      22      20      35
 
 
           : Job ends ok       with     0 warnings and     0 errors
