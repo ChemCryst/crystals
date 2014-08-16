@@ -124,7 +124,8 @@
 ^^WI DISABLEIF='IN'
 ^^WI   ITEM HWEB '&Oxford Web Page' '#SPAWN http://www.xtl.ox.ac.uk/'           
 ^^WI   ITEM HWEB '&Bug report form'                                             
-^^WI   '#SPAWN https://redmine.debroglie.net/projects/crystals/issues/new' DISABLEIF='IN'                 
+^^WI  '#SPAWN https://redmine.debroglie.net/projects/crystals/issues/new' 
+^^WI  DISABLEIF='IN'                 
 ^^WI   ITEM HWEB '&News'                                                        
 ^^WI   '#SPAWN http://www.xtl.ox.ac.uk/news.html' DISABLEIF='IN'                
 ^^WI   SPLIT                                                                    
