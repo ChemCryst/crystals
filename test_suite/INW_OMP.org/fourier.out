@@ -2007,7 +2007,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     12   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -3756,7 +3756,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -5535,7 +5535,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -7314,7 +7314,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -9123,7 +9123,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -10359,7 +10359,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -11041,7 +11041,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.50000   0.12677   0.29578
+ Malformed peak at     0.5000    0.1268    0.2958
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11227,7 +11227,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.26621   0.27190   0.36511
+ Malformed peak at     0.2662    0.2719    0.3651
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11534,7 +11534,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -12031,7 +12031,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.50000   0.50000   0.14251
+ Malformed peak at     0.5000    0.5000    0.1425
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -12705,7 +12705,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -13017,7 +13017,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    1.05685   0.13028   0.24125
+ Malformed peak at     1.0568    0.1303    0.2412
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -13462,7 +13462,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.33380   0.50000   0.34240
+ Malformed peak at     0.3338    0.5000    0.3424
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -13884,7 +13884,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -15641,7 +15641,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     12   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -16498,7 +16498,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *
          27  28  29  30  31  32  33  34  35   0   1
  
- Malformed peak at    0.79367   0.71895   0.15790
+ Malformed peak at     0.7937    0.7190    0.1579
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -17426,7 +17426,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -19280,7 +19280,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -21132,7 +21132,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -22983,7 +22983,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -24219,7 +24219,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -24901,7 +24901,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.50000   0.12677   0.29578
+ Malformed peak at     0.5000    0.1268    0.2958
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -25087,7 +25087,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.26621   0.27190   0.36511
+ Malformed peak at     0.2662    0.2719    0.3651
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -25394,7 +25394,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -25891,7 +25891,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.50000   0.50000   0.14251
+ Malformed peak at     0.5000    0.5000    0.1425
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -26565,7 +26565,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -26877,7 +26877,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    1.05685   0.13028   0.24125
+ Malformed peak at     1.0568    0.1303    0.2412
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -27322,7 +27322,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.33380   0.50000   0.34240
+ Malformed peak at     0.3338    0.5000    0.3424
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -27744,7 +27744,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.45602     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.45602     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -28027,9 +28027,9 @@ All cycle   Min function          0.0           0.98E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.457    0.050    0.050    1.000    0.000     0.0000E+00
-      0.001    0.000    0.000    0.000    0.000     0.0000E+00
-      0.009    0.000    0.000    0.000    0.000     0.0000E+00
+      1.457    0.050    0.050    1.000    0.000     0.00
+      0.001    0.000    0.000    0.000    0.000     0.00
+      0.009    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -28258,9 +28258,9 @@ Inter cycle Min function          0.0           0.12E+03       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.457    0.050    0.050    1.000    0.000     0.0000E+00
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
-      0.009    0.000    0.000    0.000    0.000     0.0000E+00
+      1.457    0.050    0.050    1.000    0.000     0.00
+      0.000    0.000    0.000    0.000    0.000     0.00
+      0.009    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -28480,9 +28480,9 @@ All cycle   shift/esd            0.30E-01       0.21E-01       0.10E+05
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.457    0.050    0.050    1.000    0.000     0.0000E+00
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
-      0.009    0.000    0.000    0.000    0.000     0.0000E+00
+      1.457    0.050    0.050    1.000    0.000     0.00
+      0.000    0.000    0.000    0.000    0.000     0.00
+      0.009    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -28723,9 +28723,9 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.483    0.050    0.050    1.000    0.000     0.0000E+00
-      0.026    0.000    0.000    0.000    0.000     0.0000E+00
-      0.014    0.000    0.000    0.000    0.000     0.0000E+00
+      1.483    0.050    0.050    1.000    0.000     0.00
+      0.026    0.000    0.000    0.000    0.000     0.00
+      0.014    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -28962,9 +28962,9 @@ Inter cycle Min function          0.0           0.11E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.488    0.050    0.050    1.000    0.000     0.0000E+00
-      0.006    0.000    0.000    0.000    0.000     0.0000E+00
-      0.014    0.000    0.000    0.000    0.000     0.0000E+00
+      1.488    0.050    0.050    1.000    0.000     0.00
+      0.006    0.000    0.000    0.000    0.000     0.00
+      0.014    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -29194,9 +29194,9 @@ Inter cycle Min function          0.0            59.           0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.488    0.050    0.050    1.000    0.000     0.0000E+00
-     -0.001    0.000    0.000    0.000    0.000     0.0000E+00
-      0.014    0.000    0.000    0.000    0.000     0.0000E+00
+      1.488    0.050    0.050    1.000    0.000     0.00
+     -0.001    0.000    0.000    0.000    0.000     0.00
+      0.014    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -29428,9 +29428,9 @@ Inter cycle Min function          0.0            1.1           0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.488    0.050    0.050    1.000    0.000     0.0000E+00
-      0.000    0.000    0.000    0.000    0.000     0.0000E+00
-      0.014    0.000    0.000    0.000    0.000     0.0000E+00
+      1.488    0.050    0.050    1.000    0.000     0.00
+      0.000    0.000    0.000    0.000    0.000     0.00
+      0.014    0.000    0.000    0.000    0.000     0.00
 
 
 
@@ -29708,9 +29708,9 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.664    0.050    0.050    1.000    0.000     0.6550E+03
-      0.176    0.000    0.000    0.000    0.000     0.6550E+03
-      0.017    0.000    0.000    0.000    0.000     0.3604E+02
+      1.664    0.050    0.050    1.000    0.000   655.05
+      0.176    0.000    0.000    0.000    0.000   655.05
+      0.017    0.000    0.000    0.000    0.000    36.04
 
 
 
@@ -29952,9 +29952,9 @@ Inter cycle Min function          0.0           0.31E+04       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.733    0.050    0.050    1.000    0.000     0.7861E+03
-      0.069    0.000    0.000    0.000    0.000     0.1310E+03
-      0.018    0.000    0.000    0.000    0.000     0.1025E+03
+      1.733    0.050    0.050    1.000    0.000   786.06
+      0.069    0.000    0.000    0.000    0.000   131.01
+      0.018    0.000    0.000    0.000    0.000   102.48
 
 
 
@@ -31691,7 +31691,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP     12   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -33445,7 +33445,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -35229,7 +35229,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -37013,7 +37013,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP     22   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -38818,7 +38818,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP     36   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -40046,7 +40046,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP      1   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -41169,7 +41169,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP      1   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -41664,7 +41664,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.32578   0.46770   0.16340
+ Malformed peak at     0.3258    0.4677    0.1634
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -41739,7 +41739,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.17690   0.53618   0.07876
+ Malformed peak at     0.1769    0.5362    0.0788
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42073,7 +42073,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at    0.00000   0.03952   0.40560
+ Malformed peak at     0.0000    0.0395    0.4056
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42315,7 +42315,7 @@ Mean C-C su =   0.0000
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.73340     0.05000     0.05000     1.00000     0.00000   786.05646
+      1.73340     0.05000     0.05000     1.00000     0.00000      786.06
 
 
  Record  101    LGRP   18  NGRP     14   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
