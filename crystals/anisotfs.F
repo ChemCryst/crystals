@@ -1449,10 +1449,10 @@ C--PRINT THE DATA THUS ACQUIRED
       END IF
 1600  FORMAT (' Rotation matrix from orthogonal axes',' to coordinate sy
      1stem defined by L'//' Latent roots',13X,'L',9X,'M',9X,'N',9X,'w.r.
-     2t. a*, b'' and c'//3(1X,F10.3,9X,3F10.5/)//' Rotation matrices fro
+     2t. a*, b'' and c'//3(1X,F10.3,9X,3F10.4/)//' Rotation matrices fro
      3m crystal fractions',' w.r.t. libration centre '/,' to axial syste
-     4m  defined by L',/,15X,' Angstrom',31X,'Fractions',//,3(4X,3F10.4,
-     511X,3F10.5/))
+     4m  defined by L',/,15X,' Angstrom',31X,'Fractions',//,3(4X,3F10.3,
+     514X,3F10.4/))
 C----- SAVE EIGENVECTORS
       CALL XMOVE(WB,STOREE,9)
 C----- COPY MATRICES FOR SAVING IN LIST 20
@@ -1739,7 +1739,7 @@ C
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
          IF (MON.EQ.2) CALL XPRVDU (NCVDU,1,0)
 100   CONTINUE
-150   FORMAT ((3(3F9.4,X)))
+150   FORMAT ((3(3F9.3,2X)))
       CALL XLINES
       RETURN
       END

@@ -113,10 +113,10 @@ CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, arg
     m_NotSetupYet = true;
     m_MouseCaught = false;
 // This is for the PaintBannerInstead() function.
-    wxBitmap newbit = wxBitmap(wxBITMAP(IDB_SPLASH));
+//    wxBitmap newbit = wxBitmap(wxBITMAP(IDB_SPLASH));
 //    m_bitmap = newbit;
-    m_bitmap = newbit.GetSubBitmap(wxRect(0, 0, newbit.GetWidth(), newbit.GetHeight()));
-    m_bitmapok = m_bitmap.Ok();
+//    m_bitmap = newbit.GetSubBitmap(wxRect(0, 0, newbit.GetWidth(), newbit.GetHeight()));
+//    m_bitmapok = m_bitmap.Ok();
 
     string crysdir ( getenv("CRYSDIR") );
     if ( crysdir.length() == 0 )
@@ -154,11 +154,11 @@ CxModel::CxModel(CrModel* container)
   ptr_to_crObject = container;
   m_hGLContext = NULL;
   m_hPalette = 0;
-  m_bitmapbits = NULL;
-  m_bitmapinfo = NULL;
+//  m_bitmapbits = NULL;
+//  m_bitmapinfo = NULL;
 #endif
   m_bMouseLeaveInitialised = false;
-  m_bitmapok = false;
+//  m_bitmapok = false;
   m_bNeedReScale = true;
   m_bPickListOK = false;
   m_bFullListOK = false;
@@ -409,7 +409,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       glMatrixMode ( GL_PROJECTION );
       glLoadIdentity();
-      ModelBackground();
+//      ModelBackground();
       glMatrixMode ( GL_PROJECTION );
       glPopMatrix();
       glMatrixMode ( GL_MODELVIEW );
@@ -657,7 +657,13 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 #ifdef __BOTHWX__ 
 void CxModel::OnMouseLeave(wxMouseEvent & event)
 {
-    DeletePopup();
+	if ( m_TextPopup ) {
+//Don't delete popup if we are over it - mouseleave event is
+//generated.
+		if ( m_TextPopup->GetRect().Contains( event.GetPosition() ) ) return; 
+	}
+
+	DeletePopup();
     m_bMouseLeaveInitialised = false;
     return;
 }
@@ -1177,7 +1183,7 @@ bool CxModel::setCurrentGL() {
 #endif
 }
 
-void CxModel::ModelBackground()
+/*void CxModel::ModelBackground()
 {
 #ifdef __CR_WIN__
    int ic = 5000;
@@ -1192,7 +1198,7 @@ void CxModel::ModelBackground()
                   GL_BGR_EXT, GL_UNSIGNED_BYTE, m_bitmapbits);
    }
 #endif
-}
+}*/
 
 #ifdef __CR_WIN__
 BOOL CxModel::SetWindowPixelFormat()
@@ -1636,7 +1642,7 @@ void CxModel::SetShading( bool shade )
 
 
 #ifdef __CR_WIN__
-
+/*
 void CxModel::PaintBannerInstead( CPaintDC * dc )
 {
   if ( m_bitmapok )
@@ -1674,6 +1680,7 @@ void CxModel::PaintBannerInstead( CPaintDC * dc )
         banDC.SelectObject( pBmpOld );
   }
 }
+*/
 
 BOOL CxModel::OnEraseBkgnd( CDC* pDC )
 {
@@ -1684,7 +1691,7 @@ BOOL CxModel::OnEraseBkgnd( CDC* pDC )
 
 #ifdef __BOTHWX__
 
-void CxModel::PaintBannerInstead( wxPaintDC * dc )
+/*void CxModel::PaintBannerInstead( wxPaintDC * dc )
 {
   if ( m_bitmapok )
   {
@@ -1696,7 +1703,7 @@ void CxModel::PaintBannerInstead( wxPaintDC * dc )
     dc->SetUserScale(x,y);
   }
 }
-
+*/
 
 void CxModel::OnEraseBackground( wxEraseEvent& evt )
 {
@@ -1727,6 +1734,7 @@ void CxModel::DeletePopup()
 #ifdef __BOTHWX__
     m_TextPopup->Destroy();
     m_DoNotPaint = false;
+	NeedRedraw(false);
 #endif
     m_TextPopup=nil;
   }
@@ -1777,7 +1785,7 @@ void CxModel::CreatePopup(string atomname, CcPoint point)
 #endif
 }
 
-
+/*
 void CxModel::LoadDIBitmap(string filename)
 {
 #ifdef __CR_WIN__
@@ -1878,6 +1886,7 @@ void CxModel::LoadDIBitmap(string filename)
 #endif
     return;
 }
+*/
 
 void CxModel::PolyCheck()
 {

@@ -223,12 +223,12 @@ class CxModel : public BASEMODEL
     void ModelChanged(bool needrescale = true);
     void NewSize(int cx, int cy);
     void ChooseCursor( int cursor );
-#ifdef __CR_WIN__
-    void PaintBannerInstead(CPaintDC *dc);
-#endif
-#ifdef __BOTHWX__
-    void PaintBannerInstead(wxPaintDC *dc);
-#endif
+//#ifdef __CR_WIN__
+//    void PaintBannerInstead(CPaintDC *dc);
+//#endif
+//#ifdef __BOTHWX__
+//    void PaintBannerInstead(wxPaintDC *dc);
+//#endif
 
 // The usual functions:
     static CxModel *    CreateCxModel( CrModel * container, CxGrid * guiParent );
@@ -258,7 +258,7 @@ class CxModel : public BASEMODEL
     void PolyCheck();
     void CameraSetup();
     void ModelSetup();
-    void ModelBackground();
+//    void ModelBackground();
 
 
 
@@ -297,7 +297,7 @@ class CxModel : public BASEMODEL
     void DeletePopup();
     void CreatePopup(string atomname, CcPoint point);
 
-    void LoadDIBitmap(string filename);
+//    void LoadDIBitmap(string filename);
 
     CcPoint AtomCoordsToScreenCoords(CcPoint atomCoords);
 
@@ -369,8 +369,8 @@ class CxModel : public BASEMODEL
 
 	
 #ifdef __CR_WIN__
-    BYTE * m_bitmapbits;
-    BITMAPINFO * m_bitmapinfo;
+//    BYTE * m_bitmapbits;
+//    BITMAPINFO * m_bitmapinfo;
 #endif
 
 protected:
@@ -385,7 +385,7 @@ protected:
 //    bool m_bQuickListOk;
     float m_stretchX ;
     float m_stretchY ;
-    bool  m_bitmapok;
+//    bool  m_bitmapok;
     bool m_bMouseLeaveInitialised;
 
     bool setCurrentGL();
@@ -405,8 +405,8 @@ protected:
     BOOL SetWindowPixelFormat();
     BOOL CreateViewGLContext();
 
-    CBitmap m_bitmap;
-    CPalette m_pal;
+//    CBitmap m_bitmap;
+//    CPalette m_pal;
 
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnPaint();
@@ -424,7 +424,7 @@ protected:
     bool m_DoNotPaint;
     bool m_NotSetupYet;
     bool m_MouseCaught;
-    wxBitmap m_bitmap;
+//    wxBitmap m_bitmap;
 
 	wxGLContext*	m_context;
     void OnEraseBackground(wxEraseEvent & evt);

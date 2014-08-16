@@ -206,8 +206,8 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
         default:
         {
           hasTokenForMe = false;
-          string bitmap = (CcController::theController)->GetKey( mName );
-          ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(bitmap);
+//          string bitmap = (CcController::theController)->GetKey( mName );
+//          ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(bitmap);
 
           break;
         }
@@ -608,8 +608,7 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       case kTLoadBitmap:
       {
         tokenList.pop_front();
-        if ( ptr_to_cxObject) ((CxModel*)ptr_to_cxObject)->LoadDIBitmap(tokenList.front());
-        (CcController::theController)->StoreKey( mName, tokenList.front() );
+        LOGERR ( "ModelWindow no longer supports BITMAP background keyword.");
         tokenList.pop_front();
         break;
       }
