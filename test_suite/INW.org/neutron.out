@@ -4885,7 +4885,7 @@ Resetting shift for Extinction  Shift=       5.54  Esd=       0.37  New shift=  
 
  LARGE     2           2             0.597      0.1E+02    0.372E+00         14.90                          EXTPARAM
  SRATIO   75          75            0.0000      0.4E+01    0.298E-03          0.00        C      7 X       
- SRATIO  136         136            0.0000     -0.5E+01    0.231E-02          0.00        H     92 U[13]   
+ SRATIO  136         136            0.0000     -0.6E+01    0.231E-02          0.00        H     92 U[13]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            222.
                                                 for         144 parameters
@@ -6350,7 +6350,7 @@ Mean C-C su =   0.0032
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-     67973.         66110.           8688.                                   On scale of /FC/
+     67973.         66109.           8688.                                   On scale of /FC/
 
      19829.         19285.           2535.               0.4063E+04          On scale of /FO/
 
@@ -8791,7 +8791,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q        14.     0.0350    0.2723    0.1789        9.2  Poor Shape  
  Q        15.     0.0325    0.1027    0.2236        9.1  Poor Shape  
  Q        16.     0.1663    0.4315    0.1196        9.1  Poor Shape  
- Q        17.     0.4604    0.2738    0.2596        9.0  Poor Shape  
+ Q        17.     0.0396    0.7738    0.2404        9.0  Poor Shape  
  QN       18.     0.5417    0.0417    0.1429      -15.7  Hole        
  The new list  10 contains    34 atoms
  The minimum and maximum map densities are  -1.57      2.50        barns /A^3                                                                                                                                                                                   
@@ -13304,7 +13304,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
+ Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
  Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
@@ -17651,7 +17651,7 @@ Mean C-C su =   0.0017
   -3  11   3  112.3  118.9   2.0  0.94     0   5  11   13.3    2.4   2.0  5.62                                                                                                                                                                                  
    3   9   6    9.6   17.7   1.9  0.54    -3   2   7  101.3  107.6   1.9  0.94                                                                                                                                                                                  
   -9   3   2   13.2    3.3   1.9  4.03     4   2   0  107.2  113.4   1.9  0.94                                                                                                                                                                                  
-   4  16   3   12.3    0.3   1.9 36.39    -7   7   8   14.3    5.8   1.9  2.44                                                                                                                                                                                  
+   4  16   3   12.3    0.3   1.9 36.39    -7   7   8   14.3    5.9   1.9  2.44                                                                                                                                                                                  
 
                               ***
                              ***
