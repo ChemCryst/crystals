@@ -117,6 +117,34 @@ CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, arg
 //    m_bitmap = newbit;
     m_bitmap = newbit.GetSubBitmap(wxRect(0, 0, newbit.GetWidth(), newbit.GetHeight()));
     m_bitmapok = m_bitmap.Ok();
+
+    string crysdir ( getenv("CRYSDIR") );
+    if ( crysdir.length() == 0 )
+    {
+#if defined(__WXGTK__) || defined(__WXMAC__)
+		std::cerr << "You must set CRYSDIR before running crystals.\n";
+#endif
+	} else {
+		int nEnv = (CcController::theController)->EnvVarCount( crysdir );
+		for ( int i = 0; i < nEnv; ++i )
+		{
+			string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
+#if defined(__WXGTK__) || defined(__WXMAC__)
+	        string file = dir + "script/arrowcop.cur";
+#endif
+#ifdef __BOTHWIN__
+	        string file = dir + "script\\arrowcop.cur";
+#endif
+			m_selectcursor = wxCursor(file, wxBITMAP_TYPE_CUR);
+			if (m_selectcursor.IsOk()) break;
+		}
+	}
+
+	if (! m_selectcursor.IsOk()){
+		m_selectcursor = wxCursor(wxCURSOR_CROSS);
+	}
+
+
 #endif
 #ifdef __CR_WIN__
 
@@ -1576,7 +1604,7 @@ void CxModel::ChooseCursor( int cursor )
                         SetCursor( wxCURSOR_CROSS );
                         break;
                 case CURSORCOPY:
-                        SetCursor( wxCURSOR_BULLSEYE );
+                        SetCursor( m_selectcursor );
                         break;
                 default:
                         SetCursor( wxCURSOR_ARROW );

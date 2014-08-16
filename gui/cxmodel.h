@@ -149,6 +149,7 @@
 #include  <wx/glcanvas.h>
 #include  <wx/event.h>
 #include <wx/stattext.h>
+#include <wx/cursor.h>
 #define BASEMODEL wxGLCanvas
 #endif
 
@@ -436,6 +437,8 @@ protected:
     void OnMenuSelected(wxCommandEvent &event );
 	void OnMouseLeave(wxMouseEvent & event);
     DECLARE_EVENT_TABLE()
+
+	wxCursor m_selectcursor;
 #endif
 
 };
