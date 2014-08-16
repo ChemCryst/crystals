@@ -3589,7 +3589,7 @@ Bonds: Update required - There is no list 41
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      0.13493     0.04961     0.05446     1.00000     0.00000     0.00000
+      0.13493     0.04961     0.05446     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     33   ATOMIC PARAMETERS                                                               
@@ -3882,7 +3882,7 @@ Bonds: Update required - List5 length change
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-     99.21000     0.04961     0.05446     1.00000     0.00000     0.00000
+     99.21000     0.04961     0.05446     1.00000     0.00000        0.00
 
 
  Record  103    LGRP    5  NGRP      1   THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING                            
@@ -4062,7 +4062,7 @@ Bonds: Update required - List5 length change
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-     99.21000     0.04961     0.05446     1.00000     0.00000     0.00000
+     99.21000     0.04961     0.05446     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     28   THE PEAKS FOUND FROM THE SCANNING OF A FOURIER MAP                              
@@ -4309,7 +4309,7 @@ Bonds: Update required - List5 length change
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      8.98675     0.05000     0.05000     1.00000     0.00000     0.00000
+      8.98675     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  103    LGRP    5  NGRP      1   THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING                            
@@ -4470,7 +4470,7 @@ Bonds: Update required - List5 length change
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      4.85805     0.05000     0.05000     1.00000     0.00000     0.00000
+      4.85805     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     33   ATOMIC PARAMETERS                                                               
@@ -5044,7 +5044,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      4.85805     0.05000     0.05000     1.00000     0.00000     0.00000
+      4.85805     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP     33   ATOMIC PARAMETERS                                                               
@@ -6290,7 +6290,7 @@ Slope=    -3376.367 Intercept = 2538926.000 C-Coef=      -0.026
 
  Weighting scheme type   11
 
- With parameter(s) :    0.132179E+05   0.155996E+05
+ With parameter(s) :      0.1322E+05     0.1560E+05
  Agreement analysis on /FC/
 
 
@@ -6475,7 +6475,7 @@ Slope=        0.008 Intercept =      -0.033 C-Coef=       0.194
 
  Weighting scheme type   11
 
- With parameter(s) :    0.162225E+05   0.200974E+05   0.453891E+04
+ With parameter(s) :      0.1622E+05     0.2010E+05     0.4539E+04
  Agreement analysis on /FC/
 
 
@@ -6862,7 +6862,7 @@ Bonds: Update required - List5 length change
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.00000     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.00000     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  103    LGRP    5  NGRP      1   THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING                            
@@ -8501,7 +8501,7 @@ Bonds: Update required - List5 length change
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.00000     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.00000     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  104    LGRP   13  NGRP      1   THE LAYER SCALE FACTORS, STARTING WITH THE SCALE FOR AN INDEX OF 1              
