@@ -38,6 +38,13 @@ diffraction data and extract from it a detailed description of the molecules in 
 software has two major parts: the underlying mathematical and crystallographic utilities written
 in FORTRAN and a graphical user interface written in C++.
 
+Icons
+-----
+
+A number of the toolbar icons are from the free 'Silk' icons set available from 
+http://www.famfamfam.com/lab/icons/silk/. The icons are licensed under a Creative
+Commons Attribution 2.5 License (see http://creativecommons.org/licenses/by/2.5/) 
+
 
 
      CRYSTALS uses some functions from the LAPACK and BLAS mathematical libraries. 
