@@ -11,6 +11,13 @@
   #define crysOS 'win-int-openmp'
 #endif
 
+
+#if Len(GetEnv('CRYSVNVER')) > 0 
+  #define crysSVN GetEnv('CRYSVNVER')
+#else
+  #define crysSVN 'xxxx'
+#endif
+
 #define crysDATE GetDateTimeString('mmmyy','','')
 #define crysVDATE GetDateTimeString('mmm yyyy','','')
 
@@ -18,10 +25,10 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 1461 ({#crysVDATE})
-AppVersion=1461
+AppVerName=CRYSTALS 14.{#crysSVN} ({#crysVDATE})
+AppVersion=14.{#crysSVN}
 ;OutputBaseFilename=crystals-a1452-Sep12-setup
-OutputBaseFilename=crystals-{#crysOS}-1461-{#crysDATE}-setup
+OutputBaseFilename=crystals-{#crysOS}-14.{#crysSVN}-{#crysDATE}-setup
 
 
 AppName=CRYSTALS
