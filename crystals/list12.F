@@ -286,6 +286,7 @@ C
       INCLUDE 'XLST22.INC'
       INCLUDE 'XFRM22.INC'
       INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST30.INC'
       INCLUDE 'XSPECC.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XERVAL.INC'
@@ -416,6 +417,10 @@ C Ric Error if empty L5.
 C
 C-----  LOAD LIST 2 AND INITIALISE SPECIAL POSITION CODE
         CALL XFAL02
+c
+c----- load list 30 to enable FLACK resetting if required
+        call xfal30
+c
 c        NUPDAT = 0
         IF ( KSPINI ( -1, ABTOL) .LE. 0) GOTO 9800
 C       INITIALISE BARI CODE
@@ -1151,9 +1156,11 @@ c   resets it to 0.5
 c   check if it was refined (value in List 30) and if so, dont fiddle
             if (abs(store (L30ge+6)) .le. zerosq) then
                   WRITE ( CMON, '(A,G8.2,A)')
-     1 'Flack = ',store(l5o+4),'Starting FLACK refinement from 0.5'
+     1 '{I Flack = ',store(l5o+4),
+     2 '  Starting FLACK refinement from 0.5'
                   CALL XPRVDU(NCVDU, 1,0)
-                  IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
+                  IF (ISSPRT .EQ. 0)  
+     1            WRITE(NCWU, '(A)') CMON(1)(3:nctrim(cmon(1)))
                   store(L5O+4) = 0.5
                   imod5 = imod5 + 1
             endif
