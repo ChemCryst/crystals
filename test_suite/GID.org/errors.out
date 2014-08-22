@@ -729,7 +729,7 @@ REAL
 
       SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
 
-      1.00000     0.05000     0.05000     1.00000     0.00000     0.00000
+      1.00000     0.05000     0.05000     1.00000     0.00000        0.00
 
 
  Record  101    LGRP   18  NGRP      0   ATOMIC PARAMETERS                                                               
