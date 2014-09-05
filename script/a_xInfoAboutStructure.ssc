@@ -1,0 +1,758 @@
+%SCRIPT XINFOABOUTSTRUCTURE
+%%
+%  VARIABLE INTEGER IPRT IHYB
+%  VARIABLE INTEGER IPEG IPEP
+%  VARIABLE CHARACTER MESSAGE
+%%
+%% Variables for call of script a_SelectAtoms
+%%
+%  VARIABLE CHARACTER MODE ATOM
+%  VARIABLE INTEGER PARA
+%%
+%% Variables for call of script a_restorePoint
+%%
+%  VARIABLE INTEGER ISER5 ISER12 ISER16
+%%
+%  VARIABLE CHARACTER CRECORD1 CRECORD2
+%  VARIABLE LOGICAL LNEWRECFOUND LDEBUG T
+%  VARIABLE INTEGER IALL ICOUNT ILOOP1 IMIN ILASTMIN ILAST
+%  VARIABLE INTEGER ICOUNTR ICOUNTP IROWSP IROWP
+%%
+%  COPY '#SCRIPT A_RESTOREPOINT'
+%%
+%  EVALUATE LDEBUG = FALSE
+%%
+%% Get residues
+%  IF LDEBUG THEN
+%    TRANSFER "..." TO DISPLAY
+%    TRANSFER "Working on residues..." TO DISPLAY
+%  END IF
+%%
+%    EVALUATE ICOUNT = 0
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%%     COPY 'TRANSFER FROM OFFSET=14 TO IPRT'
+%      COPY 'TRANSFER FROM OFFSET=16 TO IHYB'
+%      EVALUATE CRECORD1 = CHARACTER ( IHYB )
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        IF LDEBUG THEN
+%          TRANSFER CRECORD1 // " is new" TO DISPLAY
+%        END IF
+%        COPY '#RELEASE PUNCH SortR.dat'
+%        TRANSFER CRECORD1 TO PUNCH
+%        COPY '#RELEASE PUNCH bfile.pch'
+%        EVALUATE ICOUNT = ICOUNT + 1
+%      ELSE
+%        EVALUATE LNEWRECFOUND = TRUE
+%        COPY '#OPEN SCPDATA SortR.dat'
+%        LOOP
+%          ON ERROR TERMINATE
+%          ON END TERMINATE
+%          EXTRACT NEXT
+%%         EXTRACT TRANSFER COMMAND
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET TEXT 'Residue'
+%          EVALUATE CRECORD2 = CVALUE
+%          IF CRECORD1 .EQ. CRECORD2 THEN
+%            EVALUATE LNEWRECFOUND = FALSE
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END LOOP
+%        COPY '#CLOSE SCPDATA'
+%        IF LNEWRECFOUND THEN
+%          IF LDEBUG THEN
+%            TRANSFER CRECORD1 // " is new" TO DISPLAY
+%          END IF
+%          COPY '#APPEND PUNCH SortR.dat'
+%          TRANSFER CRECORD1 TO PUNCH
+%          COPY '#RELEASE PUNCH bfile.pch'
+%          EVALUATE ICOUNT = ICOUNT + 1
+%        END IF
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%  EVALUATE ICOUNTR = ICOUNT
+%%
+%% Sort residues
+%%
+%% Variables are IALL ICOUNT ILOOP1 IMIN ILASTMIN
+%%
+%  COPY '#RELEASE PUNCH Residues.dat'
+%  LOOP ICOUNTR TIMES
+%    EVALUATE ILOOP1 = LOOPCOUNTER
+%    IF LDEBUG THEN
+%      TRANSFER "..." TO DISPLAY
+%    END IF
+%    COPY '#OPEN SCPDATA SortR.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%%     EXTRACT TRANSFER COMMAND
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET INTEGER 'Number'
+%      EVALUATE IALL = VALUE
+%      IF ILOOP1 .EQ. 1 THEN
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .LT. IMIN THEN
+%            EVALUATE IMIN = IALL
+%            IF LDEBUG THEN
+%              TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%            END IF
+%          END IF
+%        END IF
+%      ELSE
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .GT. ILASTMIN THEN
+%            IF IMIN .LE. ILASTMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%            IF IALL .LT. IMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%          END IF
+%        END IF
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%    TRANSFER CHARACTER ( IMIN ) TO PUNCH
+%    EVALUATE ILASTMIN = IMIN
+%  END LOOP
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  EVALUATE T = FILEDELETE ( 'SortR.dat' )
+%%
+%% Get parts
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "..." TO DISPLAY
+%    TRANSFER "Working on parts..." TO DISPLAY
+%  END IF
+%%
+%    EVALUATE ICOUNT = 0
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=14 TO IPRT'
+%%     COPY 'TRANSFER FROM OFFSET=16 TO IHYB'
+%      EVALUATE CRECORD1 = CHARACTER ( IPRT )
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        IF LDEBUG THEN
+%          TRANSFER CRECORD1 // " is new" TO DISPLAY
+%        END IF
+%        COPY '#RELEASE PUNCH SortP.dat'
+%        TRANSFER CRECORD1 TO PUNCH
+%        COPY '#RELEASE PUNCH bfile.pch'
+%        EVALUATE ICOUNT = ICOUNT + 1
+%      ELSE
+%        EVALUATE LNEWRECFOUND = TRUE
+%        COPY '#OPEN SCPDATA SortP.dat'
+%        LOOP
+%          ON ERROR TERMINATE
+%          ON END TERMINATE
+%          EXTRACT NEXT
+%%         EXTRACT TRANSFER COMMAND
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET TEXT 'Entry'
+%          EVALUATE CRECORD2 = CVALUE
+%          IF CRECORD1 .EQ. CRECORD2 THEN
+%            EVALUATE LNEWRECFOUND = FALSE
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END LOOP
+%        COPY '#CLOSE SCPDATA'
+%        IF LNEWRECFOUND THEN
+%          IF LDEBUG THEN
+%            TRANSFER CRECORD1 // " is new" TO DISPLAY
+%          END IF
+%          COPY '#APPEND PUNCH SortP.dat'
+%          TRANSFER CRECORD1 TO PUNCH
+%          COPY '#RELEASE PUNCH bfile.pch'
+%          EVALUATE ICOUNT = ICOUNT + 1
+%        END IF
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%  EVALUATE ICOUNTP = ICOUNT
+%%
+%% Sort parts
+%%
+%% Variables are IALL ICOUNT ILOOP1 IMIN ILASTMIN
+%%
+%  COPY '#RELEASE PUNCH Parts.dat'
+%  LOOP ICOUNTP TIMES
+%    EVALUATE ILOOP1 = LOOPCOUNTER
+%    IF LDEBUG THEN
+%      TRANSFER "..." TO DISPLAY
+%    END IF
+%    COPY '#OPEN SCPDATA SortP.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%%     EXTRACT TRANSFER COMMAND
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET INTEGER 'Number'
+%      EVALUATE IALL = VALUE
+%      IF ILOOP1 .EQ. 1 THEN
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .LT. IMIN THEN
+%            EVALUATE IMIN = IALL
+%            IF LDEBUG THEN
+%              TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%            END IF
+%          END IF
+%        END IF
+%      ELSE
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE IMIN = IALL
+%          IF LDEBUG THEN
+%            TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%          END IF
+%        ELSE
+%          IF IALL .GT. ILASTMIN THEN
+%            IF IMIN .LE. ILASTMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%            IF IALL .LT. IMIN THEN
+%              EVALUATE IMIN = IALL
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            END IF
+%          END IF
+%        END IF
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%    TRANSFER CHARACTER ( IMIN ) TO PUNCH
+%    EVALUATE ILASTMIN = IMIN
+%  END LOOP
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  EVALUATE T = FILEDELETE ( 'SortP.dat' )
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "Residues: " // CHARACTER ( ICOUNTR ) // ", parts: " //  CHARACTER ( ICOUNTP ) TO DISPLAY
+%  END IF
+%%
+%  EVALUATE MESSAGE = "The structure contains the following parts:"
+%% TRANSFER '{I ' // MESSAGE TO DISPLAY
+%%
+%  EVALUATE IROWSP = ( ICOUNTP * 2 ) - 1
+%%
+^^WI WINDOW XPARTS
+% TRANSFER "^^WI 'Parts in this structure:'" TO DISPLAY
+^^WI POSITION CASCADE '_MAINTEXTOUTPUT'
+^^WI MODAL
+^^WI GRID M NROWS=7 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=1 NCOLS=1 {
+% TRANSFER "^^WI     @ 1,1   STATIC XMSG '" // MESSAGE // "'" TO DISPLAY
+^^WI   }
+% TRANSFER "^^WI   @ 4,2 GRID C NROWS=" // CHARACTER ( IROWSP ) // " NCOLS=3 {" TO DISPLAY
+%  COPY '#OPEN SCPDATA Parts.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%%   EXTRACT TRANSFER COMMAND
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET INTEGER 'Number'
+%    EVALUATE IPRT = VALUE
+%%   EVALUATE IPEG = ( IPRT IDECMASK 111000 ) / 1000
+%%   EVALUATE IPEP = IPRT IDECMASK 000111
+%    COPY '#SCRIPT A_SPLITPARTNUMBER'
+%    IF LDEBUG THEN
+%      TRANSFER '{I part ' // CHARACTER ( IPRT ) // ", assembly " // CHARACTER ( IPEG ) // ", group " // CHARACTER ( IPEP ) // "..." TO DISPLAY
+%    END IF
+%% Calculate position
+%    EVALUATE IROWP = ( LOOPCOUNTER * 2 ) - 1
+%    IF LOOPCOUNTER .EQ. 1 THEN
+%      IF LDEBUG THEN
+%        TRANSFER "Assembly is " // CHARACTER ( IPEG ) // ", group is " // CHARACTER ( IPEP ) TO DISPLAY
+%      END IF
+%      TRANSFER "^^WI  @ " // CHARACTER ( IROWP ) // ",1 GRID A" // CHARACTER ( IROWSP ) // " NROWS=1 NCOLS=9 OUTLINE= 'assembly " // CHARACTER ( IPEG ) // "' {" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,1   CHECKBOX SA" // CHARACTER ( IPEG ) // " 'select' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,3   CHECKBOX MA" // CHARACTER ( IPEG ) // " 'modify' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,5   CHECKBOX RA" // CHARACTER ( IPEG ) // " 'refine' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,7   RADIOBUTTON RAGI" // CHARACTER ( IPEG ) // " 'group, iso' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,9   RADIOBUTTON RAGA" // CHARACTER ( IPEG ) // " 'group, aniso' STATE=OFF" TO DISPLAY
+^^WI   }
+%      TRANSFER "^^WI  @ " // CHARACTER ( IROWP ) // ",3 GRID G" // CHARACTER ( IROWSP ) // " NROWS=1 NCOLS=9 OUTLINE= 'group " // CHARACTER ( IPEP ) // "' {" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,1   CHECKBOX SG" // CHARACTER ( IPRT ) // " 'select' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,3   CHECKBOX MG" // CHARACTER ( IPRT ) // " 'modify' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,5   CHECKBOX RG" // CHARACTER ( IPRT ) // " 'refine' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,7   RADIOBUTTON RGGI" // CHARACTER ( IPRT ) // " 'group, iso' STATE=OFF" TO DISPLAY
+%      TRANSFER "^^WI  @ 1,9   RADIOBUTTON RGGA" // CHARACTER ( IPRT ) // " 'group, aniso' STATE=OFF" TO DISPLAY
+^^WI   }
+%    ELSE
+%      IF ILAST .EQ. IPEG THEN
+%        IF LDEBUG THEN
+%          TRANSFER "               group is " // CHARACTER ( IPEP ) TO DISPLAY
+%        END IF
+%        TRANSFER "^^WI  @ " // CHARACTER ( IROWP ) // ",3 GRID G" // CHARACTER ( IROWSP ) // " NROWS=1 NCOLS=9 OUTLINE= 'group " // CHARACTER ( IPEP ) // "' {" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,1   CHECKBOX SG" // CHARACTER ( IPRT ) // " 'select' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,3   CHECKBOX MG" // CHARACTER ( IPRT ) // " 'modify' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,5   CHECKBOX RG" // CHARACTER ( IPRT ) // " 'refine' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,7   RADIOBUTTON RGGI" // CHARACTER ( IPRT ) // " 'group, iso' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,9   RADIOBUTTON RGGA" // CHARACTER ( IPRT ) // " 'group, aniso' STATE=OFF" TO DISPLAY
+^^WI   }
+%      ELSE
+%        IF LDEBUG THEN
+%          TRANSFER "Assembly is " // CHARACTER ( IPEG ) // ", group is " // CHARACTER ( IPEP ) TO DISPLAY
+%        END IF
+%        TRANSFER "^^WI  @ " // CHARACTER ( IROWP ) // ",1 GRID A" // CHARACTER ( IROWSP ) // " NROWS=1 NCOLS=9 OUTLINE= 'assembly " // CHARACTER ( IPEG ) // "' {" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,1   CHECKBOX SA" // CHARACTER ( IPEG ) // " 'select' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,3   CHECKBOX MA" // CHARACTER ( IPEG ) // " 'modify' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,5   CHECKBOX RA" // CHARACTER ( IPEG ) // " 'refine' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,7   RADIOBUTTON RAGI" // CHARACTER ( IPEG ) // " 'group, iso' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,9   RADIOBUTTON RAGA" // CHARACTER ( IPEG ) // " 'group, aniso' STATE=OFF" TO DISPLAY
+^^WI   }
+%        TRANSFER "^^WI  @ " // CHARACTER ( IROWP ) // ",3 GRID G" // CHARACTER ( IROWSP ) // " NROWS=1 NCOLS=9 OUTLINE= 'group " // CHARACTER ( IPEP ) // "' {" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,1   CHECKBOX SG" // CHARACTER ( IPRT ) // " 'select' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,3   CHECKBOX MG" // CHARACTER ( IPRT ) // " 'modify' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,5   CHECKBOX RG" // CHARACTER ( IPRT ) // " 'refine' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,7   RADIOBUTTON RGGI" // CHARACTER ( IPRT ) // " 'group, iso' STATE=OFF" TO DISPLAY
+%        TRANSFER "^^WI  @ 1,9   RADIOBUTTON RGGA" // CHARACTER ( IPRT ) // " 'group, aniso' STATE=OFF" TO DISPLAY
+^^WI   }
+%      END IF
+%    END IF
+%    EVALUATE  ILAST = IPEG
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+^^WI   }
+^^WI   @ 6,2 GRID C NROWS=1 NCOLS=9 {
+^^WI     @ 1,1 BUTTON SPA 'Select'
+^^WI     @ 1,3 BUTTON MPA 'Modify'
+^^WI     @ 1,5 BUTTON RPA 'Refine'
+^^WI     @ 1,9 BUTTON BOK 'Close' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  LOOP
+%   VERIFY BOK SPA MPA RPA
+%   GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%%
+%    BLOCK        % BOK - CLOSE window
+^^CO   DISPOSE XPARTS
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % SPA - Select chosen groups
+%      TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%      TRANSFER "Debugging output" TO DISPLAY
+%      COPY '#OPEN SCPDATA Parts.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%%       EXTRACT TRANSFER COMMAND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET INTEGER 'Number'
+%        EVALUATE IPRT = VALUE
+%%       EVALUATE IPEG = ( IPRT IDECMASK 111000 ) / 1000
+%%       EVALUATE IPEP = IPRT IDECMASK 000111
+%        COPY '#SCRIPT A_SPLITPARTNUMBER'
+%        TRANSFER '{I part ' // CHARACTER ( IPRT ) // ", assembly " // CHARACTER ( IPEG ) // ", group " // CHARACTER ( IPEP ) // "..." TO DISPLAY
+%% Calculate position and token name
+%%       EVALUATE IROWP = ( LOOPCOUNTER * 2 ) - 1
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%%
+%          TRANSFER "^^??  SA" // CHARACTER ( IPEG ) // " STATE" TO DISPLAY
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            BLOCK
+%              EVALUATE MODE = "ASSEMBLY"
+%              EVALUATE ATOM = "NOATOM"
+%              EVALUATE PARA = IPEG
+%              COPY '#SCRIPT A_SELECTATOMS'
+%              TRANSFER "1 Selected SA" // CHARACTER ( IPEG ) TO DISPLAY
+%            END BLOCK
+%            BLOCK
+%              TRANSFER "1 Not selected SA" // CHARACTER ( IPEG ) TO DISPLAY
+%            END BLOCK
+%          END CASE
+%%
+%          TRANSFER "^^??  SG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            BLOCK
+%              EVALUATE MODE = "GROUP"
+%              EVALUATE ATOM = "NOATOM"
+%              EVALUATE PARA = IPRT
+%              COPY '#SCRIPT A_SELECTATOMS'
+%              TRANSFER "1 Selected SG" // CHARACTER ( IPRT ) TO DISPLAY
+%            END BLOCK
+%            BLOCK
+%              TRANSFER "1 Not selected SG" // CHARACTER ( IPRT ) TO DISPLAY
+%            END BLOCK
+%          END CASE
+%        ELSE
+%          IF ILAST .EQ. IPEG THEN
+%%
+%            TRANSFER "^^??  SG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              BLOCK
+%                EVALUATE MODE = "GROUP"
+%                EVALUATE ATOM = "NOATOM"
+%                EVALUATE PARA = IPRT
+%                COPY '#SCRIPT A_SELECTATOMS'
+%                TRANSFER "e Selected SG" // CHARACTER ( IPRT ) TO DISPLAY
+%              END BLOCK
+%              BLOCK
+%                TRANSFER "e Not selected SG" // CHARACTER ( IPRT ) TO DISPLAY
+%              END BLOCK
+%            END CASE
+%          ELSE
+%%
+%            TRANSFER "^^??  SA" // CHARACTER ( IPEG ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              BLOCK
+%                EVALUATE MODE = "ASSEMBLY"
+%                EVALUATE ATOM = "NOATOM"
+%                EVALUATE PARA = IPEG
+%                COPY '#SCRIPT A_SELECTATOMS'
+%                TRANSFER "  Selected SA" // CHARACTER ( IPEG ) TO DISPLAY
+%              END BLOCK
+%              BLOCK
+%                TRANSFER "  Not selected SA" // CHARACTER ( IPEG ) TO DISPLAY
+%              END BLOCK
+%            END CASE
+%%
+%            TRANSFER "^^??  SG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              BLOCK
+%                EVALUATE MODE = "GROUP"
+%                EVALUATE ATOM = "NOATOM"
+%                EVALUATE PARA = IPRT
+%                COPY '#SCRIPT A_SELECTATOMS'
+%                TRANSFER "  Selected SG" // CHARACTER ( IPRT ) TO DISPLAY
+%              END BLOCK
+%              BLOCK
+%                TRANSFER "  Not selected SG" // CHARACTER ( IPRT ) TO DISPLAY
+%              END BLOCK
+%            END CASE
+%%
+%          END IF
+%        END IF
+%        EVALUATE  ILAST = IPEG
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%    END BLOCK
+%%
+%    BLOCK        % MPA - Modify chosen groups
+%      COPY '#OPEN SCPDATA Parts.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%%       EXTRACT TRANSFER COMMAND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET INTEGER 'Number'
+%        EVALUATE IPRT = VALUE
+%%       EVALUATE IPEG = ( IPRT IDECMASK 111000 ) / 1000
+%%       EVALUATE IPEP = IPRT IDECMASK 000111
+%        COPY '#SCRIPT A_SPLITPARTNUMBER'
+%% Calculate token name
+%%       EVALUATE IROWP = ( LOOPCOUNTER * 2 ) - 1
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%%
+%          TRANSFER "^^??  MA" // CHARACTER ( IPEG ) // " STATE" TO DISPLAY
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            TRANSFER "1 Selected" TO DISPLAY
+%            TRANSFER "1 Not selected" TO DISPLAY
+%          END CASE
+%%
+%          TRANSFER "^^??  MG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            TRANSFER "1 Selected" TO DISPLAY
+%            TRANSFER "1 Not selected" TO DISPLAY
+%          END CASE
+%        ELSE
+%          IF ILAST .EQ. IPEG THEN
+%%
+%            TRANSFER "^^??  MG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              TRANSFER "e Selected" TO DISPLAY
+%              TRANSFER "e Not selected" TO DISPLAY
+%            END CASE
+%          ELSE
+%%
+%            TRANSFER "^^??  MA" // CHARACTER ( IPEG ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              TRANSFER "  Selected" TO DISPLAY
+%              TRANSFER "  Not selected" TO DISPLAY
+%            END CASE
+%%
+%            TRANSFER "^^??  MG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              TRANSFER "  Selected" TO DISPLAY
+%              TRANSFER "  Not selected" TO DISPLAY
+%            END CASE
+%%
+%          END IF
+%        END IF
+%        EVALUATE  ILAST = IPEG
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%    END BLOCK
+%%
+%    BLOCK        % RPA - Refine chosen groups
+%      COPY '#OPEN SCPDATA Parts.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%%       EXTRACT TRANSFER COMMAND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET INTEGER 'Number'
+%        EVALUATE IPRT = VALUE
+%%       EVALUATE IPEG = ( IPRT IDECMASK 111000 ) / 1000
+%%       EVALUATE IPEP = IPRT IDECMASK 000111
+%        COPY '#SCRIPT A_SPLITPARTNUMBER'
+%% Calculate token name
+%%       EVALUATE IROWP = ( LOOPCOUNTER * 2 ) - 1
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%%
+%          TRANSFER "^^??  RA" // CHARACTER ( IPEG ) // " STATE" TO DISPLAY
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            TRANSFER "1 Selected" TO DISPLAY
+%            TRANSFER "1 Not selected" TO DISPLAY
+%          END CASE
+%%
+%          TRANSFER "^^??  RG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            TRANSFER "1 Selected" TO DISPLAY
+%            TRANSFER "1 Not selected" TO DISPLAY
+%          END CASE
+%        ELSE
+%          IF ILAST .EQ. IPEG THEN
+%%
+%            TRANSFER "^^??  RG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              TRANSFER "e Selected" TO DISPLAY
+%              TRANSFER "e Not selected" TO DISPLAY
+%            END CASE
+%          ELSE
+%%
+%            TRANSFER "^^??  RA" // CHARACTER ( IPEG ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              TRANSFER "  Selected" TO DISPLAY
+%              TRANSFER "  Not selected" TO DISPLAY
+%            END CASE
+%%
+%            TRANSFER "^^??  RG" // CHARACTER ( IPRT ) // " STATE" TO DISPLAY
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%            CASE VALUE
+%              TRANSFER "  Selected" TO DISPLAY
+%              TRANSFER "  Not selected" TO DISPLAY
+%            END CASE
+%%
+%          END IF
+%        END IF
+%        EVALUATE  ILAST = IPEG
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%    END BLOCK
+%%
+%   END CASE
+%  END LOOP
+%%
+%END SCRIPT
+%%
+%%     EVALUATE IPEG = ( IPRT IDECMASK 111000 ) / 1000
+%%     EVALUATE IPEP = IPRT IDECMASK 000111
+%% or
+%%     COPY '#SCRIPT A_SPLITPARTNUMBER'
+%%
+%%     TRANSFER "^^WI  @ " // CHARACTER ( IROWP ) // ",7   STATIC XMSG 'group'" TO DISPLAY
+%%     TRANSFER "^^WI  @ " // CHARACTER ( IROWP ) // ",9   STATIC XMSG '" // CHARACTER ( IPEP ) // "'" TO DISPLAY
+%%
+%  EVALUATE MESSAGE = "Part of residue " // CHARACTER ( IHYB ) // ", assembly " // CHARACTER ( IPEG ) // " and group " // CHARACTER ( IPEP ) // "."
+%% TRANSFER '{I ' // MESSAGE TO DISPLAY
+%%
+^^WI WINDOW XINFO
+% TRANSFER "^^WI 'Info about Atom " // ATOM // ":'" TO DISPLAY
+^^WI MODAL
+^^WI GRID M NROWS=7 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=1 NCOLS=1 {
+% TRANSFER "^^WI     @ 1,1   STATIC XMSG '" // MESSAGE // "'" TO DISPLAY
+^^WI   }
+^^WI   @ 4,2 GRID C NROWS=9 NCOLS=3 {
+% TRANSFER "^^WI     @ 1,1 BUTTON BSC 'Select atom " // ATOM // "' DISABLED=NO" TO DISPLAY
+% TRANSFER "^^WI     @ 1,3 BUTTON BMC 'Modify atom " // ATOM // "' DISABLED=NO" TO DISPLAY
+%%
+% TRANSFER "^^WI     @ 3,1 BUTTON BSR 'Select residue " // CHARACTER ( IHYB ) // "' DISABLED=YES" TO DISPLAY
+% TRANSFER "^^WI     @ 3,3 BUTTON BMR 'Modify residue " // CHARACTER ( IHYB ) // "' DISABLED=YES" TO DISPLAY
+%%
+% TRANSFER "^^WI     @ 5,1 BUTTON BSA 'Select assembly " // CHARACTER ( IPEG ) // "' DISABLED=YES" TO DISPLAY
+% TRANSFER "^^WI     @ 5,3 BUTTON BMA 'Modify assembly " // CHARACTER ( IPEG ) // "' DISABLED=YES" TO DISPLAY
+%%
+% TRANSFER "^^WI     @ 7,1 BUTTON BSG 'Select group " // CHARACTER ( IPEP ) // "' DISABLED=YES" TO DISPLAY
+% TRANSFER "^^WI     @ 7,3 BUTTON BMG 'Modify group " // CHARACTER ( IPEP ) // "' DISABLED=YES" TO DISPLAY
+%%
+^^WI     @ 9,1 BUTTON USA 'UnSelect all'
+^^WI     @ 9,3 BUTTON BOK 'Close' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  IF IHYB .NE. 0 THEN
+^^CO   SET BSR DISABLED=NO
+^^CO   SET BMR DISABLED=NO
+%  END IF
+%%
+%  IF IPEG .NE. 0 THEN
+^^CO   SET BSA DISABLED=NO
+^^CO   SET BMA DISABLED=NO
+%  END IF
+%%
+%  IF IPEP .NE. 0 THEN
+^^CO   SET BSG DISABLED=NO
+^^CO   SET BMG DISABLED=NO
+%  END IF
+%%
+%  LOOP
+%   VERIFY BOK USA BSC BSR BSA BSG BMC BMR BMA BMG
+%   GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%%
+%    BLOCK        % BOK - CLOSE window
+^^CO   DISPOSE XPARA
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % USA - unselect all
+%      TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BSC - Select ATOM
+%      TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%      TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM // ' YES' TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BSR - Select residue
+%      EVALUATE MODE = "RESIDUE"
+%      COPY '#SCRIPT A_SELECTATOMS'
+%    END BLOCK
+%%
+%    BLOCK        % BSA - Select assembly
+%      TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%      EVALUATE MODE = "ASSEMBLY"
+%      COPY '#SCRIPT A_SELECTATOMS'
+%    END BLOCK
+%%
+%    BLOCK        % BSG - Select group
+%      TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%      EVALUATE MODE = "GROUP"
+%      COPY '#SCRIPT A_SELECTATOMS'
+%    END BLOCK
+%%
+%    BLOCK        % BMR - Modify atom
+%      COPY '#SCRIPT A_XPARAM'
+^^CO   DISPOSE XPARA
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BMR - Modify residue
+%      EVALUATE MODE = "RESIDUE"
+%      COPY '#SCRIPT A_XMODIFYATOMS'
+^^CO   DISPOSE XPARA
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BMA - Modify assembly
+%      EVALUATE MODE = "ASSEMBLY"
+%      COPY '#SCRIPT A_XMODIFYATOMS'
+^^CO   DISPOSE XPARA
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BMG - Modify group
+%      EVALUATE MODE = "GROUP"
+%      COPY '#SCRIPT A_XMODIFYATOMS'
+^^CO   DISPOSE XPARA
+%      FINISH
+%    END BLOCK
+%   END CASE
+%  END LOOP
+%%
+%END SCRIPT

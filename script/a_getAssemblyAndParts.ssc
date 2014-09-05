@@ -1,0 +1,96 @@
+%SCRIPT GETASSEMBLYANDPARTS
+%%
+%  VARIABLE CHARACTER ATOM CELE CCHK
+%  VARIABLE INTEGER ISER IASS
+%  VARIABLE REAL RPKH RCHK
+%  VARIABLE LOGICAL LNOATOM T
+%%
+%% We need to change the names as otherwise they are not local anymore and other scripts
+%% may experience problems. I have addes S for subroutine. MN
+%%
+%  VARIABLE INTEGER IPRTS IASSS
+%%
+%% OK, get the information about all residues and parts
+%%
+%  COPY '#SCRIPT A_GETRESIDUESANDPARTS'
+%%
+%  EVALUATE LNOATOM = TRUE
+%  COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EVALUATE ATOM = CVALUE
+%      EVALUATE LNOATOM = FALSE
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%  EVALUATE T = FILEDELETE ( 'AtomsToWorkOn.dat' )
+%%
+%  IF LNOATOM THEN
+%%
+%    TRANSFER '{E No atom, so no assembly to work on, CRYSTALS has to quit.' TO DISPLAY
+%%
+%  ELSE
+%%
+%    EVALUATE CELE = FIRSTSTR ( ATOM )
+%    EVALUATE ISER = FIRSTINT ( ATOM )
+%%
+%%   TRANSFER '{I Atom type: ' // CELE // ', serial: ' // CHARACTER ( ISER ) TO DISPLAY
+%%
+%    BLOCK
+%      EVALUATE IASS = 0
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%       COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%       IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%        COPY 'END'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%        EVALUATE IASS = IPRTS / 1000
+%%
+%       END IF
+%       COPY 'NEXT'
+%      END LOOP
+%    END BLOCK
+%  END IF
+%%
+%  TRANSFER '{I Assembly we work on has the number ' // CHARACTER ( IASS ) // '.' TO DISPLAY
+%%
+%  COPY '#RELEASE PUNCH PartsToWorkOn.dat'
+%  COPY '#OPEN SCPDATA Parts.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET INTEGER 'Number'
+%    EVALUATE IPRTS = VALUE
+%    EVALUATE IASSS = IPRTS / 1000
+%    IF IASS .EQ. IASSS THEN
+%      TRANSFER CHARACTER ( IPRTS ) TO PUNCH
+%%     TRANSFER CHARACTER ( IPRTS ) TO DISPLAY
+%    END IF
+%  END LOOP
+%  TRANSFER 'END' TO PUNCH
+%  COPY '#CLOSE SCPDATA'
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  EVALUATE T = FILEDELETE ( 'Residues.dat' )
+%  EVALUATE T = FILEDELETE ( 'Parts.dat' )
+%%
+%END SCRIPT

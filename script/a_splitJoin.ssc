@@ -1,0 +1,839 @@
+%SCRIPT SPLITJOIN
+%%
+%% Variables used by script calcDistPivot
+%%
+%  VARIABLE CHARACTER CPIVOT
+%  VARIABLE LOGICAL LCALCALL LSELRANGE
+%%
+%% Variables to call script getResiduesAndParts
+%%
+%  VARIABLE INTEGER NEXTFREER NEXTFREEA NEXTFREEP
+%%
+%% Variables to call script selectAtoms and to get atom name
+%%
+%  VARIABLE CHARACTER MODE ATOM
+%  VARIABLE INTEGER PARA
+%%
+%  VARIABLE CHARACTER CRECORD CMIN CELEM1 CELEM2 CELEM3 CELEM4 CELEM5 CELEM6
+%  VARIABLE CHARACTER CELE CCHK
+%  VARIABLE INTEGER IRECORD ISER
+%  VARIABLE REAL RCHK ROCC RFLG RU11 RU22 RU33 RUISO
+%  VARIABLE INTEGER IPRTS IHYBS IPEGS IPEPS
+%  VARIABLE LOGICAL T LASTTIME LCHANGED
+%  VARIABLE INTEGER ITHISPART ITHISASS ILASTASS IASSEMBLY INUMASS ISELPART
+%  VARIABLE REAL RTHISOCC RTHISUISO
+%% Variables for sorting
+%  VARIABLE INTEGER IREC IALL ICOUNT IOUTERLOOP INNERLOOP IMIN ILASTMIN IPART
+%% Variables for generating the new positions
+%  VARIABLE INTEGER OFFSET OFFSETSPLIT OFFSETREN NGROUPS
+%  VARIABLE REAL ROCCTOTAL ROCCGROUP RUISOPIVOT
+%  VARIABLE LOGICAL LANISO
+%% Variables for the atoms
+%  VARIABLE CHARACTER CTYPE CLINE
+%  VARIABLE INTEGER ISERIAL ISERIAL1 ISERIAL2 ISERIALR ISERIALS1 ISERIALS2 IPART1 IPART2
+%  VARIABLE REAL ROCC1 ROCC2 RUISO1 RUISO2
+%  VARIABLE LOGICAL ISFREE LCLASH LFLIP
+%%
+%  VARIABLE LOGICAL LDEBUG
+%%
+%  EVALUATE LDEBUG = TRUE
+%  EVALUATE LDEBUG = FALSE
+%%
+%  EVALUATE CPIVOT = ATOM
+%  TRANSFER "{I Pivot atom is " // CPIVOT // "..." TO DISPLAY
+%%
+%  EVALUATE CTYPE = FIRSTSTR ( CPIVOT )
+%  EVALUATE ISERIAL = FIRSTINT ( CPIVOT )
+%%
+%% Get info about this atom, in particular if it is anisotropically refined
+%%
+%  EVALUATE LANISO = FALSE
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%      COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%      IF ( ( CTYPE .EQ. CCHK ) .AND. ( ISERIAL .EQ. INTEGER ( RCHK ) ) ) THEN
+%        COPY 'TRANSFER FROM OFFSET=2 TO ROCC'
+%        COPY 'TRANSFER FROM OFFSET=3 TO RFLG'
+%        COPY 'TRANSFER FROM OFFSET=7 TO RU11'
+%        COPY 'TRANSFER FROM OFFSET=8 TO RU22'
+%        COPY 'TRANSFER FROM OFFSET=9 TO RU33'
+%%       COPY 'END' %% It is safer to close the edit with the loop end
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%% Write if atom is isotropic or anisotropic, and write down corresponding U[iso] value
+%%
+%        IF RFLG .GT. 0.1 THEN
+%% Iso: store in flag
+%          EVALUATE RUISOPIVOT = RU11
+%          EVALUATE LANISO = FALSE
+%%
+%        ELSE
+%% Aniso: calculate arithmetic mean and store in flag
+%          EVALUATE RUISOPIVOT = ( RU11 + RU22 + RU33 ) / 3.0
+%          EVALUATE LANISO = TRUE
+%%
+%        END IF
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%% Calculate distances and write them to workfile1.dat
+%  COPY '#RELEASE PUNCH workfile1.dat'
+%%
+%  EVALUATE LCALCALL = TRUE
+%  EVALUATE LSELRANGE = TRUE
+%  COPY '#SCRIPT A_CALCDISTPIVOT'
+%%
+%% Filter atom names of atoms involved in bonding
+%  COPY '#RELEASE PUNCH workfile2.dat'
+%%
+%  COPY '#OPEN SCPDATA workfile1.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record'
+%    EVALUATE CRECORD = CVALUE
+%%   TRANSFER CRECORD // "/" TO DISPLAY
+%    IF ( CRECORD STARTSWITH "DIST" ) THEN
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Instruction'
+%      EVALUATE CELEM1 = CVALUE
+%      GET KEYWORD 'Dist'
+%      EVALUATE CELEM2 = CVALUE
+%      GET KEYWORD 'esd'
+%      EVALUATE CELEM3 = CVALUE
+%      GET KEYWORD 'Atom 1'
+%      EVALUATE CELEM4 = CVALUE
+%      GET KEYWORD 'to'
+%      EVALUATE CELEM5 = CVALUE
+%      GET TEXT 'Atom 2'
+%      EVALUATE CELEM6 = CVALUE
+%%     TRANSFER "Distance found from " // CELEM4 // " to " // CELEM6 TO DISPLAY
+%      IF CELEM4 .EQ. CPIVOT THEN
+%        TRANSFER CELEM6 TO PUNCH
+%      END IF
+%      IF CELEM6 .EQ. CPIVOT THEN
+%        TRANSFER CELEM4 TO PUNCH
+%      END IF
+%%     EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF .NOT. LDEBUG THEN
+%    EVALUATE T = FILEDELETE ( 'workfile1.dat' )
+%  END IF
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%% Filter duplicates
+%  COPY '#RELEASE PUNCH workfile3.dat'
+%%
+%  EVALUATE IRECORD = 1
+%  COPY '#OPEN SCPDATA workfile2.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    LOOP IRECORD TIMES
+%      EXTRACT NEXT
+%    END LOOP
+%    EVALUATE IRECORD = IRECORD + 1
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CELEM1 = CVALUE
+%    IF CELEM1 .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%%     TRANSFER CELEM1 // " " // CHARACTER ( IRECORD ) TO DISPLAY
+%      EVALUATE LASTTIME = TRUE
+%      LOOP
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET TEXT 'Atom'
+%        EVALUATE CELEM2 = CVALUE
+%        IF CELEM2 .EQ. "END" THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%          IF LASTTIME THEN
+%            TRANSFER CELEM1 TO PUNCH
+%          END IF
+%        ELSE
+%%         TRANSFER CELEM1 // " " // CELEM2 TO DISPLAY
+%          IF CELEM1 .EQ. CELEM2 THEN
+%            EVALUATE LASTTIME = FALSE
+%          END IF
+%        END IF
+%      END LOOP
+%    END IF
+%    EXTRACT REWIND
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF .NOT. LDEBUG THEN
+%    EVALUATE T = FILEDELETE ( 'workfile2.dat' )
+%  END IF
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%% Find atoms that are part of assemblies and groups
+%  COPY '#RELEASE PUNCH workfile4.dat'
+%%
+%  COPY '#OPEN SCPDATA workfile3.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CELEM1 = CVALUE
+%    IF CELEM1 .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+%%
+%    EVALUATE CELE = FIRSTSTR ( CELEM1 )
+%    EVALUATE ISER = FIRSTINT ( CELEM1 )
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%      COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%      IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%%
+%        COPY 'TRANSFER FROM OFFSET=2 TO ROCC'
+%        COPY 'TRANSFER FROM OFFSET=3 TO RFLG'
+%        COPY 'TRANSFER FROM OFFSET=7 TO RU11'
+%        COPY 'TRANSFER FROM OFFSET=8 TO RU22'
+%        COPY 'TRANSFER FROM OFFSET=9 TO RU33'
+%%
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%%       COPY 'TRANSFER FROM OFFSET=16 TO IHYBS'
+%%       COPY 'END'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%% Write to file if the atom is part of a assembly
+%%
+%        IF IPRTS .NE. 0 THEN
+%%
+%          IF RFLG .GT. 0.1 THEN
+%% Iso
+%            EVALUATE RUISO = RU11
+%%
+%          ELSE
+%% Aniso: calculate arithmetic mean
+%            EVALUATE RUISO = ( RU11 + RU22 + RU33 ) / 3.0
+%%
+%          END IF
+%%
+%%         EVALUATE IPEGS = IPRTS / 1000
+%%         EVALUATE IPEPS = IPRTS - ( IPEGS * 1000 )
+%%
+%          TRANSFER CHARACTER ( IPRTS ) // " " // CHARACTER ( ROCC ) // " " // CHARACTER ( RUISO ) TO PUNCH
+%%
+%        END IF
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF .NOT. LDEBUG THEN
+%    EVALUATE T = FILEDELETE ( 'workfile3.dat' )
+%  END IF
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%% Filter duplicates
+%  COPY '#RELEASE PUNCH workfile5.dat'
+%%
+%  EVALUATE IRECORD = 1
+%  EVALUATE IREC = 0
+%  COPY '#OPEN SCPDATA workfile4.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%%   TRANSFER "Round " // CHARACTER ( IRECORD ) TO DISPLAY
+%    LOOP IRECORD TIMES
+%      EXTRACT NEXT
+%    END LOOP
+%    EVALUATE IRECORD = IRECORD + 1
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record 1'
+%    EVALUATE CRECORD = CVALUE
+%%   TRANSFER CRECORD // "/" TO DISPLAY
+%    IF CRECORD .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EXTRACT TRANSFER INPUT
+%      GET KEYWORD 'Partnumber 1'
+%      EVALUATE CELEM1 = CVALUE
+%      GET TEXT 'Rest 1'
+%      EVALUATE CELEM2 = CVALUE
+%      EVALUATE LASTTIME = TRUE
+%      LOOP
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET TEXT 'Record 2'
+%        EVALUATE CRECORD = CVALUE
+%        IF CRECORD .EQ. "END" THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%          IF LASTTIME THEN
+%            TRANSFER CELEM1 // " " // CELEM2 TO PUNCH
+%            EVALUATE IREC = IREC + 1
+%          END IF
+%        ELSE
+%          EXTRACT TRANSFER INPUT
+%          GET KEYWORD 'Partnumber 2'
+%          EVALUATE CELEM3 = CVALUE
+%          GET TEXT 'Rest 2'
+%          EVALUATE CELEM4 = CVALUE
+%%         TRANSFER CELEM1 // " " // CELEM3 TO DISPLAY
+%          IF CELEM1 .EQ. CELEM3 THEN
+%            EVALUATE LASTTIME = FALSE
+%          END IF
+%        END IF
+%      END LOOP
+%    END IF
+%  EXTRACT REWIND
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF .NOT. LDEBUG THEN
+%    EVALUATE T = FILEDELETE ( 'workfile4.dat' )
+%  END IF
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%% Sort part numbers
+%%
+%% Variables are IREC IALL ICOUNT IOUTERLOOP IMIN ILASTMIN
+%%
+%  COPY '#RELEASE PUNCH workfile6.dat'
+%%
+%  IF IREC .GT. 0 THEN
+%%
+%    TRANSFER "{I Number of records: " // CHARACTER ( IREC ) TO DISPLAY
+%%
+%    LOOP IREC TIMES
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EVALUATE IOUTERLOOP = LOOPCOUNTER
+%      IF LDEBUG THEN
+%        TRANSFER "..." TO DISPLAY
+%      END IF
+%      COPY '#OPEN SCPDATA workfile5.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EVALUATE INNERLOOP = LOOPCOUNTER
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET TEXT 'Record'
+%        IF CVALUE .EQ. "END" THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET INTEGER 'Number'
+%          EVALUATE IALL = VALUE
+%          GET TEXT 'Record'
+%          EVALUATE CRECORD = CVALUE
+%          IF LDEBUG THEN
+%            TRANSFER "  Record is " // CHARACTER ( IALL ) // " " // CRECORD TO DISPLAY
+%          END IF
+%          IF IOUTERLOOP .EQ. 1 THEN
+%            IF INNERLOOP .EQ. 1 THEN
+%              EVALUATE IMIN = IALL
+%              EVALUATE CMIN = CRECORD
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            ELSE
+%              IF IALL .LT. IMIN THEN
+%                EVALUATE IMIN = IALL
+%                EVALUATE CMIN = CRECORD
+%                IF LDEBUG THEN
+%                  TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%                END IF
+%              END IF
+%            END IF
+%          ELSE
+%            IF INNERLOOP .EQ. 1 THEN
+%              EVALUATE IMIN = IALL
+%              EVALUATE CMIN = CRECORD
+%              IF LDEBUG THEN
+%                TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%              END IF
+%            ELSE
+%              IF IALL .GT. ILASTMIN THEN
+%                IF IMIN .LE. ILASTMIN THEN
+%                  EVALUATE IMIN = IALL
+%                  EVALUATE CMIN = CRECORD
+%                  IF LDEBUG THEN
+%                    TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%                  END IF
+%                END IF
+%                IF IALL .LT. IMIN THEN
+%                  EVALUATE IMIN = IALL
+%                  EVALUATE CMIN = CRECORD
+%                  IF LDEBUG THEN
+%                    TRANSFER "  Value is now " // CHARACTER ( IMIN ) TO DISPLAY
+%                  END IF
+%                END IF
+%              END IF
+%            END IF
+%          END IF
+%        END IF
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%      TRANSFER CHARACTER ( IMIN ) // " " // CMIN TO PUNCH
+%      EVALUATE ILASTMIN = IMIN
+%    END LOOP
+%  ELSE
+%    TRANSFER "{I No records to process." TO DISPLAY
+%  END IF
+%%
+%  IF .NOT. LDEBUG THEN
+%    EVALUATE T = FILEDELETE ( 'workfile5.dat' )
+%  END IF
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%% Finding the assemblies
+%%
+%  COPY '#RELEASE PUNCH assemblies.dat'
+%%
+%  EVALUATE ITHISASS = 0
+%  EVALUATE ILASTASS = 0
+%  EVALUATE INUMASS = 0
+%  EVALUATE ITHISPART = 0
+%  COPY '#OPEN SCPDATA workfile6.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record'
+%    IF CVALUE .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET INTEGER 'Number'
+%      EVALUATE ITHISPART = VALUE
+%      EVALUATE ITHISASS = ITHISPART / 1000
+%      GET TEXT 'Record'
+%      EVALUATE CRECORD = CVALUE
+%      IF ITHISASS .NE. ILASTASS THEN
+%        TRANSFER CHARACTER ( ITHISASS ) TO PUNCH
+%        EVALUATE ILASTASS = ITHISASS
+%        EVALUATE INUMASS = INUMASS + 1
+%      END IF
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  TRANSFER "{I Number of assemblies near " // CPIVOT // ": " // CHARACTER ( INUMASS ) TO DISPLAY
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%% We close the punch, from now on all values will be stored in variables
+%%
+%  COPY '#RELEASE PUNCH bfile.pch'
+%%
+%% Deciding on which assemly to take or if a new one is created
+%%
+%  EVALUATE OFFSET = 100
+%  EVALUATE OFFSETSPLIT = 100
+%  EVALUATE OFFSETREN = 1000
+%  EVALUATE NGROUPS = 2
+%  EVALUATE ROCCTOTAL = 1.0
+%  EVALUATE ROCCGROUP = ROCCTOTAL / REAL ( NGROUPS )
+%  EVALUATE IASSEMBLY = 0
+%%
+%  EVALUATE ISERIAL1 = ISERIAL
+%  EVALUATE ISERIAL2 = ISERIAL + OFFSET
+%  EVALUATE ISERIALR = ISERIAL + OFFSETREN
+%  EVALUATE ISERIALS1 = ISERIAL * OFFSETSPLIT
+%  EVALUATE ISERIALS2 = ISERIAL * OFFSETSPLIT + 1
+%%
+%% Check if serial numbers are available, no check for ISERIAL1 as it will not change.
+%%
+%  EVALUATE LCLASH = FALSE
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "{I Label 1 OK." TO DISPLAY
+%  END IF
+%  LOOP 4 TIMES
+%    CASE LOOPCOUNTER
+%      EVALUATE ISERIAL = ISERIAL2
+%      EVALUATE ISERIAL = ISERIALR
+%      EVALUATE ISERIAL = ISERIALS1
+%      EVALUATE ISERIAL = ISERIALS2
+%    END CASE
+%    EVALUATE ISFREE = FALSE
+%    COPY '#SCRIPT ISFREE'
+%    IF .NOT. ISFREE THEN
+%      EVALUATE LCLASH = TRUE
+%    ELSE
+%      IF LDEBUG THEN
+%        CASE LOOPCOUNTER
+%          TRANSFER "{I Label 2 OK." TO DISPLAY
+%          TRANSFER "{I Label for rename OK." TO DISPLAY
+%          TRANSFER "{I Label 1 for split OK" TO DISPLAY
+%          TRANSFER "{I Label 2 for split OK." TO DISPLAY
+%        END CASE
+%      END IF
+%    END IF
+%  END LOOP
+%  IF LCLASH THEN
+%    TRANSFER "{I Clash for atom labels detected." TO DISPLAY
+%  END IF
+%% Reset to previous value after check with ISFREE
+%  EVALUATE ISERIAL = ISERIAL1
+%%
+%  IF INUMASS .EQ. 0 THEN
+%    COPY '#SCRIPT A_GETRESIDUESANDPARTS'
+%%   TRANSFER "{I Next free residue: " // CHARACTER ( NEXTFREER ) // ", assembly: " //  CHARACTER ( NEXTFREEA ) // ", part: " //  CHARACTER ( NEXTFREEP ) TO DISPLAY
+%    EVALUATE IASSEMBLY = NEXTFREEA
+%    TRANSFER "{I Assembly " // CHARACTER ( IASSEMBLY ) // " will be created." TO DISPLAY
+%% We will write all the information later to file.
+%  END IF
+%%
+%  IF INUMASS .EQ. 1 THEN
+%    EVALUATE IASSEMBLY = ITHISASS
+%  END IF
+%%
+%  IF INUMASS .GT. 1 THEN
+%    TRANSFER "{I Choose the assembly to add the new positions to." TO DISPLAY
+%%
+%%
+^^WI WINDOW XSA
+% TRANSFER "^^WI '" // "Choose assembly" // "'" TO DISPLAY
+%%^^WI MODAL
+% TRANSFER "^^WI POSITION" // "=CENTERED '_MAINTEXTOUTPUT'" TO DISPLAY
+^^WI GRID M NROWS=3 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=5 NCOLS=3 {
+% TRANSFER "^^WI     @ 1,1 STATIC T1 '" // "Assemblies near atom " // CPIVOT // "'" TO DISPLAY
+^^WI     @ 1,3 DROPDOWN DASS INFORM=YES ADDTOLIST
+%%
+%    COPY '#OPEN SCPDATA assemblies.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Record'
+%      IF CVALUE .EQ. "END" THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        TRANSFER "^^WI     '" // CVALUE // "'" TO DISPLAY
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%%
+^^WI     'NULL' SELECTION = 1
+%% Read out value for selection 1
+%    COPY '#OPEN SCPDATA assemblies.dat'
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET INTEGER 'Record'
+%    EVALUATE IASSEMBLY = VALUE
+%    COPY '#CLOSE SCPDATA'
+%%
+^^WI     @ 3,1 BUTTON BSA 'Show atom to be split' DISABLED=NO
+^^WI     @ 3,3 BUTTON BSH 'Show' DISABLED=NO
+^^WI     @ 5,3 BUTTON BOK 'Choose' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%    EVALUATE LCHANGED = FALSE
+%%
+%    LOOP
+%%
+%      IF LCHANGED THEN
+%%
+%%       TRANSFER "{I Chosen option is " // CHARACTER ( VALUE ) TO DISPLAY
+%        COPY '#OPEN SCPDATA assemblies.dat'
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        LOOP VALUE TIMES
+%          EXTRACT NEXT
+%        END LOOP
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET INTEGER 'Record'
+%        EVALUATE IASSEMBLY = VALUE
+%        COPY '#CLOSE SCPDATA'
+%%
+%        EVALUATE LCHANGED = FALSE
+%      END IF
+%%
+%      VERIFY DASS BSA BSH BOK
+%      GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%      CASE VALUE
+%%
+%        BLOCK        % DASS - Read out the choice and go on
+%%         TRANSFER "{I DD activated..." TO DISPLAY
+^^CO SET MODEL01 SELECT ALL=NO
+%          EVALUATE LCHANGED = TRUE
+%          GET SILENT NOSTORE INTEGER 'New value' '0'
+%        END BLOCK
+%%
+%        BLOCK        % BSA - Show the chosen assembly
+%          TRANSFER '^^CO SET MODEL01 SELECT ' // CPIVOT // ' YES' TO DISPLAY
+%        END BLOCK
+%%
+%        BLOCK        % BSH - Show the chosen assembly
+%          TRANSFER "{I Chosen assembly is " // CHARACTER ( IASSEMBLY ) TO DISPLAY
+^^CO SET MODEL01 SELECT ALL=NO
+%          EVALUATE MODE = "ASSEMBLY"
+%          EVALUATE ATOM = "NOATOM"
+%          EVALUATE PARA = IASSEMBLY
+%          COPY '#SCRIPT A_SELECTATOMS'
+%        END BLOCK
+%%
+%        BLOCK        % BOK - CLOSE window and quit operation
+^^CO SET MODEL01 SELECT ALL=NO
+^^CO DISPOSE XSA
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        END BLOCK
+%%
+%      END CASE
+%    END LOOP
+%%
+%  END IF
+%%
+%  TRANSFER "{I New positions will be added to assembly " // CHARACTER ( IASSEMBLY ) TO DISPLAY
+%%
+%% We count the number of parts in the assembly for security
+%%
+%  EVALUATE IPART = 0
+%%
+%  IF INUMASS .GT. 0 THEN
+%    COPY '#OPEN SCPDATA workfile6.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Record'
+%      IF CVALUE .EQ. "END" THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET INTEGER 'Number'
+%        EVALUATE ITHISPART = VALUE
+%        EVALUATE ITHISASS = ITHISPART / 1000
+%        GET REAL 'sof'
+%        EVALUATE RTHISOCC = VALUE
+%        GET REAL 'u[iso]'
+%        EVALUATE RTHISUISO = VALUE
+%%       GET TEXT 'Record'
+%%       EVALUATE CRECORD = CVALUE
+%        IF LDEBUG THEN
+%          TRANSFER "{I Current assembly is " // CHARACTER ( ITHISASS ) TO DISPLAY
+%        END IF
+%        IF ITHISASS .EQ. IASSEMBLY THEN
+%          EVALUATE IPART = IPART + 1
+%          CASE IPART
+%            BLOCK
+%%             TRANSFER CHARACTER ( ITHISPART ) // " " // CTYPE // " " // CHARACTER ( ISERIAL1 ) // " " // CRECORD TO PUNCH
+%              EVALUATE IPART1 = ITHISPART
+%              EVALUATE ROCC1 = RTHISOCC
+%              EVALUATE RUISO1 = RTHISUISO
+%             TRANSFER CHARACTER ( IPART1 ) // " " // CTYPE // " " // CHARACTER ( ISERIAL1 ) // " " // CHARACTER ( ROCC1 ) // " " // CHARACTER ( RUISO1 ) TO DISPLAY
+%            END BLOCK
+%            BLOCK
+%%             TRANSFER CHARACTER ( ITHISPART ) // " " // CTYPE // " " // CHARACTER ( ISERIAL2 ) // " " // CRECORD TO PUNCH
+%              EVALUATE IPART2 = ITHISPART
+%              EVALUATE ROCC2 = RTHISOCC
+%              EVALUATE RUISO2 = RTHISUISO
+%             TRANSFER CHARACTER ( IPART2 ) // " " // CTYPE // " " // CHARACTER ( ISERIAL2 ) // " " // CHARACTER ( ROCC2 ) // " " // CHARACTER ( RUISO2 ) TO DISPLAY
+%            END BLOCK
+%          END CASE
+%          IF IPART .GT. 2 THEN
+%            TRANSFER "{A Number of parts is " // CHARACTER ( IPART ) // ", split atoms will be joined to the first two parts." TO DISPLAY
+%          END IF
+%        END IF
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%  ELSE
+%% We take the values determined earlier for creating the new assembly
+%%   EVALUATE ITHISPART = IASSEMBLY * 1000 + 1
+%    EVALUATE IPART1 = IASSEMBLY * 1000 + 1
+%    EVALUATE ROCC1 = ROCCGROUP
+%    EVALUATE RUISO1 = RUISOPIVOT
+%   TRANSFER CHARACTER ( IPART1 ) // " " // CTYPE // " " // CHARACTER ( ISERIAL1 ) // " " // CHARACTER ( ROCC1 ) // " " // CHARACTER ( RUISO1 ) TO DISPLAY
+%%   TRANSFER CHARACTER ( ITHISPART ) // " " // CTYPE // " " // CHARACTER ( ISERIAL1 ) // " " // CHARACTER ( ROCCGROUP ) // " " // CHARACTER ( RUISOPIVOT ) TO PUNCH
+%%
+%%   EVALUATE ITHISPART = ITHISPART + 1
+%    EVALUATE IPART2 = IPART1 + 1
+%    EVALUATE ROCC2 = ROCCGROUP
+%    EVALUATE RUISO2 = RUISOPIVOT
+%   TRANSFER CHARACTER ( IPART2 ) // " " // CTYPE // " " // CHARACTER ( ISERIAL2 ) // " " // CHARACTER ( ROCC2 ) // " " // CHARACTER ( RUISO2 ) TO DISPLAY
+%%   TRANSFER CHARACTER ( ITHISPART ) // " " // CTYPE // " " // CHARACTER ( ISERIAL2 ) // " " // CHARACTER ( ROCCGROUP ) // " " // CHARACTER ( RUISOPIVOT ) TO PUNCH
+%  END IF
+%%
+%  IF .NOT. LDEBUG THEN
+%    EVALUATE T = FILEDELETE ( 'workfile6.dat' )
+%    EVALUATE T = FILEDELETE ( 'assemblies.dat' )
+%    EVALUATE T = FILEDELETE ( 'Residues.dat' )
+%    EVALUATE T = FILEDELETE ( 'Parts.dat' )
+%  END IF
+%%
+%% Now let us do the work!
+%%
+%  BLOCK
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT
+%    QUEUE COPY MONITOR OFF
+%%
+%    IF LANISO THEN
+%%
+%      TRANSFER "{I " // CPIVOT // " will be split." TO DISPLAY
+%%
+%      EVALUATE CLINE = "SPLIT " // CHARACTER ( OFFSETSPLIT ) // " " // CTYPE // "(" // CHARACTER ( ISERIAL1 ) // ")"
+%      TRANSFER CLINE TO DISPLAY
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%%
+%      EVALUATE CLINE = "DELETE " // CTYPE // "(" // CHARACTER ( ISERIAL1 ) // ")"
+%      TRANSFER CLINE TO DISPLAY
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%%
+%      EVALUATE CLINE = "RENAME " // CTYPE // "(" // CHARACTER ( ISERIALS1 ) // ") " // CTYPE // "(" // CHARACTER ( ISERIAL1 ) // ")"
+%      TRANSFER CLINE TO DISPLAY
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%%
+%      EVALUATE CLINE = "RENAME " // CTYPE // "(" // CHARACTER ( ISERIALS2 ) // ") " // CTYPE // "(" // CHARACTER ( ISERIAL2 ) // ")"
+%      TRANSFER CLINE TO DISPLAY
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%%
+%    ELSE
+%%
+%      TRANSFER "{I " // CPIVOT // " is isotropic and will be duplicated." TO DISPLAY
+%%
+%      EVALUATE CLINE = "CREATE " // CTYPE // "(" // CHARACTER ( ISERIAL1 ) // " " // CHARACTER ( OFFSET )
+%      TRANSFER CLINE TO DISPLAY
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%%
+%      EVALUATE CLINE = "CHANGE " // CTYPE // "(" // CHARACTER ( ISERIAL1 ) // ", OCC) " // CHARACTER ( ROCC1 )
+%      TRANSFER CLINE TO DISPLAY
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%%
+%      EVALUATE CLINE = "CHANGE " // CTYPE // "(" // CHARACTER ( ISERIAL2 ) // ", OCC) " // CHARACTER ( ROCC2 )
+%      TRANSFER CLINE TO DISPLAY
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%%
+%    END IF
+%%
+%    QUEUE COPY END
+%    QUEUE PROCESS
+%%
+%    TRANSFER "..." TO DISPLAY
+%%
+%  END BLOCK
+%%
+%  EVALUATE ISELPART = IPART1
+%  EVALUATE LFLIP = FALSE
+%  COPY '#SCRIPT A_SETFLIPPARTS'
+%%
+%  EVALUATE MODE = "GROUP"
+%  EVALUATE ATOM = "NOATOM"
+%  EVALUATE PARA = ISELPART
+%  COPY '#SCRIPT A_SELECTATOMS'
+%%
+^^WI WINDOW XFG
+^^WI 'Flip group numbers'
+%%^^WI MODAL
+^^WI POSITION=CENTERED '_MAINTEXTOUTPUT'
+^^WI GRID M NROWS=5 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=3 NCOLS=1 {
+^^WI     @ 1,1 STATIC T1 'Flip the group numbers and'
+^^WI     @ 3,1 STATIC T2 'choose best solution:'
+^^WI   }
+^^WI   @ 4,2 GRID C NROWS=1 NCOLS=9 {
+^^WI     @ 1,7 BUTTON BFG 'Flip' DISABLED=NO
+^^WI     @ 1,9 BUTTON BOK '&Ok' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  LOOP
+%%
+%    VERIFY BFG BOK
+%    GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%    CASE VALUE
+%%
+%      BLOCK        % BFG - Read out the choice and go on
+%%       TRANSFER "{I Flipping part numbers..." TO DISPLAY
+^^CO SET MODEL01 SELECT ALL=NO
+%        EVALUATE LFLIP = TRUE
+%        COPY '#SCRIPT A_SETFLIPPARTS'
+%%
+%        EVALUATE MODE = "GROUP"
+%        EVALUATE ATOM = "NOATOM"
+%        EVALUATE PARA = ISELPART
+%        COPY '#SCRIPT A_SELECTATOMS'
+%      END BLOCK
+%%
+%      BLOCK        % BOK - CLOSE window and quit operation
+^^CO SET MODEL01 SELECT ALL=NO
+^^CO DISPOSE XFG
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END BLOCK
+%%
+%    END CASE
+%  END LOOP
+%%
+%END SCRIPT

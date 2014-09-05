@@ -1,0 +1,96 @@
+%SCRIPT XGETPARAMSATOM
+%%
+%% Get the parameters from the GUI
+%%
+%  VARIABLE INTEGER IMODE
+%  VARIABLE INTEGER IOPTION
+%%
+%  VARIABLE LOGICAL LSELECTATOMS
+%% The only atom can also be given to a script by this variable
+%  VARIABLE CHARACTER ATOM
+%%
+%  GET NOSTORE SILENT INTEGER 'Mode?' ' '
+%  EVALUATE IMODE = VALUE
+%%
+%  GET NOSTORE SILENT INTEGER 'Option?' ' '
+%  EVALUATE IOPTION = VALUE
+%%
+%% Store atom in file
+%%
+%  CASE IMODE
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomSelected.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomSelected.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomSelected.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomSelected.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomSelected.dat' TO CRYSTALS
+%  END CASE
+%
+%  GET NOSTORE SILENT KEYWORD 'Atom?' ' '
+%  EVALUATE ATOM = CVALUE
+%  TRANSFER CVALUE TO PUNCH
+%  TRANSFER 'END' TO PUNCH
+%% TRANSFER CVALUE TO DISPLAY
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+%% Store the selected atoms in file
+%%
+%  CASE IMODE
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%  END CASE
+%% Think of a better solution for IMODE = 4 as we do not need the selection, if present
+%  LOOP
+%   ON END TERMINATE
+%   GET NOSTORE SILENT TEXT 'Atoms?' ' '
+%   TRANSFER CVALUE TO PUNCH
+%%  TRANSFER CVALUE TO DISPLAY
+%  END LOOP
+%  TRANSFER 'END' TO PUNCH
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+%  CASE IMODE
+%    TRANSFER '{I Required operation is multiple select.' TO DISPLAY
+%    TRANSFER '{I Required operation is best line.' TO DISPLAY
+%    TRANSFER '{I Required operation is create assembly.' TO DISPLAY
+%    TRANSFER '{I Required operation is refine assembly.' TO DISPLAY
+%    TRANSFER '{I Required operation is change res/ass/grp.' TO DISPLAY
+%    TRANSFER '{I Required operation is make res/ass/grp isotropic.' TO DISPLAY
+%    TRANSFER '{I Required operation is split and join.' TO DISPLAY
+%    TRANSFER '{I Required operation is exchange group number.' TO DISPLAY
+%    TRANSFER '{I Required operation is rotate selection.' TO DISPLAY
+%    TRANSFER '{I Required operation is change atom type.' TO DISPLAY
+%  END CASE
+%%
+%% Variable that can be used to keep atoms selected
+%%
+%  EVALUATE LSELECTATOMS = TRUE
+%%
+%  CASE IMODE
+%    COPY '#SCRIPT A_SELECTATOMS'
+%    COPY '#SCRIPT A_CALCMOLAX'
+%    COPY '#SCRIPT A_CREATEASSEMBLY'
+%    COPY '#SCRIPT A_REFINEASSEMBLY'
+%    COPY '#SCRIPT A_CHANGERAG'
+%    COPY '#SCRIPT A_SETUISORAG'
+%    COPY '#SCRIPT A_SPLITJOIN'
+%    COPY '#SCRIPT A_CHANGEGRP'
+%    COPY '#SCRIPT A_ROTATEATOMSMENU'
+%    COPY '#SCRIPT A_CHANGEATOMTYPE'
+%  END CASE
+%%
+%  COPY '#SCRIPT A_TIDYUP'
+%%
+%END SCRIPT

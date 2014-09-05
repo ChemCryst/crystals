@@ -1,0 +1,82 @@
+%SCRIPT CENTERTOCELL
+%%
+%% RETURN VALUES:
+%%     X, Y and Z of the center of gravity, H-atoms are not used for calculation
+%%
+%  VARIABLE CHARACTER CTYPE
+%  VARIABLE INTEGER ICNT
+%% VARIABLE REAL SERIAL
+%  VARIABLE REAL ATX ATY ATZ ATSX ATSY ATSZ ATMX ATMY ATMZ
+%  VARIABLE INTEGER IATX IATY IATZ
+%%
+%  EVALUATE ICNT = 0
+%%
+%  EVALUATE ATSX = 0.0
+%  EVALUATE ATSY = 0.0
+%  EVALUATE ATSZ = 0.0
+%%
+%% Sum all coordinates of non-H-atoms and build mean value
+%%
+%  COPY '#GENERALEDIT 5'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%    IF CTYPE .NE. "H" THEN
+%      COPY 'TRANSFER FROM OFFSET=4 TO ATX'
+%      COPY 'TRANSFER FROM OFFSET=5 TO ATY'
+%      COPY 'TRANSFER FROM OFFSET=6 TO ATZ'
+%      EVALUATE ATSX = ATSX + ATX
+%      EVALUATE ATSY = ATSY + ATY
+%      EVALUATE ATSZ = ATSZ + ATZ
+%      EVALUATE ICNT = ICNT + 1
+%    END IF
+%    COPY 'NEXT'
+%  END LOOP
+%  COPY 'END'
+%%
+%  EVALUATE ATMX = ATSX / REAL ( ICNT )
+%  EVALUATE ATMY = ATSY / REAL ( ICNT )
+%  EVALUATE ATMZ = ATSZ / REAL ( ICNT )
+%%
+%  EVALUATE IATX = INTEGER ( ATMX )
+%  EVALUATE IATY = INTEGER ( ATMY )
+%  EVALUATE IATZ = INTEGER ( ATMZ )
+%  IF ATMX .LT. 0.0 THEN
+%    EVALUATE IATX = IATX - 1
+%  END IF
+%  IF ATMY .LT. 0.0 THEN
+%    EVALUATE IATY = IATY - 1
+%  END IF
+%  IF ATMZ .LT. 0.0 THEN
+%    EVALUATE IATZ = IATZ - 1
+%  END IF
+%%
+%% TRANSFER "{I Result of calculation:" TO DISPLAY
+%% TRANSFER "{I Sum of coordinates X, Y and Z:  " // CHARACTER ( ATSX ) // ", " // CHARACTER ( ATSY ) // ", " // CHARACTER ( ATSZ ) TO DISPLAY
+%% TRANSFER "{I Number of contributors:         " // CHARACTER ( ICNT ) TO DISPLAY
+%% TRANSFER "{I Mean of coordinates X, Y and Z: " // CHARACTER ( ATMX ) // ", " // CHARACTER ( ATMY ) // ", " // CHARACTER ( ATMZ ) TO DISPLAY
+%% TRANSFER "{I Integer values of X, Y and Z:   " // CHARACTER ( IATX ) // ", " // CHARACTER ( IATY ) // ", " // CHARACTER ( IATZ ) TO DISPLAY
+%% TRANSFER "{I End of calculation of centre of gravity." TO DISPLAY
+%%
+%  IF ( IATX .NE. 0 ) .OR. ( IATY .NE. 0 ) .OR. ( IATZ .NE. 0 ) THEN
+%    TRANSFER "{I Shift needed to bring structure back to the unit cell." TO DISPLAY
+%    COPY '#EDIT'
+%    COPY 'MONITOR OFF'
+%    IF IATX .NE. 0 THEN
+%      TRANSFER "{I Shifting X by " // CHARACTER ( IATX ) TO DISPLAY
+%      TRANSFER 'SUBTRACT ' // CHARACTER ( IATX ) // ' FIRST(X) UNTIL LAST' TO CRYSTALS
+%    END IF
+%    IF IATY .NE. 0 THEN
+%      TRANSFER "{I Shifting Y by " // CHARACTER ( IATY ) TO DISPLAY
+%      TRANSFER 'SUBTRACT ' // CHARACTER ( IATY ) // ' FIRST(Y) UNTIL LAST' TO CRYSTALS
+%    END IF
+%    IF IATZ .NE. 0 THEN
+%      TRANSFER "{I Shifting Z by " // CHARACTER ( IATZ ) TO DISPLAY
+%      TRANSFER 'SUBTRACT ' // CHARACTER ( IATZ ) // ' FIRST(Z) UNTIL LAST' TO CRYSTALS
+%    END IF
+%    COPY 'END'
+%  END IF
+%%
+%END SCRIPT

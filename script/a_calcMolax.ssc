@@ -1,0 +1,932 @@
+%SCRIPT CALCMOLAX
+%%
+%% Variables used by calling script
+%%
+%  VARIABLE INTEGER IMODE
+%  VARIABLE LOGICAL LSELECTATOMS
+%  VARIABLE LOGICAL T
+%%
+%% Variables used to call the message script
+%%
+%  VARIABLE CHARACTER CTITLE CTEXT1 CTEXT2 CPOSITION
+%%
+%  VARIABLE CHARACTER CATM CATM1 CATM2 CATOMS CMODE CMODES CCOMMON CANCHOR
+%  VARIABLE REAL ABOND SBOND ABONDNEW SBONDNEW RSHIFT
+%  VARIABLE REAL M2E1 M2E2 M2E3 M2E4 M2E5 M2E6 M2E7 M2E8 M2E9
+%  VARIABLE REAL M4E1 M4E2 M4E3 M4E4 M4E5 M4E6 M4E7 M4E8 M4E9
+%  VARIABLE REAL OFFSETX OFFSETY OFFSETZ
+%  VARIABLE CHARACTER CELE CCHK CLINE CENTROID
+%  VARIABLE REAL RCHK BDISTS BDIST MAXDEVD MAXDEVE
+%  VARIABLE REAL RATX RATY RATZ RATXS RATYS RATZS RATXT RATYT RATZT
+%  VARIABLE LOGICAL LDEBUG LGRIDOPENED LAMODIFIED LCENTROID
+%  VARIABLE LOGICAL LATOMONLP LEVALONLP LEVALSHIFT LEDITBOX
+%% Variables for call to script xBondSValMenu
+%  VARIABLE LOGICAL LCALLED
+%  VARIABLE REAL RBOND
+%% Various counters and flags
+%  VARIABLE INTEGER ISER IREADMODE IMOLAX IEVAL ITIMES IROUND ICOMMON IROW ICNT
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%  EVALUATE LCENTROID = FALSE
+%  EVALUATE LEDITBOX = FALSE
+%%
+%% Put a restore point somewhere
+%%
+%% First we look at the mode and options chosen
+%%
+%  CASE IMODE
+%    EVALUATE CMODE = "ShouldNotHappen"
+%    EVALUATE CMODE = "LINE"
+%    EVALUATE CMODE = "PLANE"
+%  END CASE
+%%
+%  IF CMODE .EQ. "LINE" THEN
+%    EVALUATE CMODES = "line"
+%  ELSE IF CMODE .EQ. "PLANE" THEN
+%    EVALUATE CMODES = "plane"
+%  ELSE
+%% We should stop if we get here
+%    EVALUATE CMODES = "not defined"
+%    EVALUATE CTITLE = "Error calling script calcMolax"
+%    EVALUATE CTEXT1 = "Selected mode is " // CHARACTER ( IMODE ) // " which is " // CMODES // "."
+%    EVALUATE CTEXT2 = "The supported modes are 2 (line) and 3 (plane)."
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%    FINISH
+%  END IF
+%%
+%% The atom names to define line or plane are stored in the text file MolaxDefinition.dat
+%% Let us first check if there are enough positions for the LINE calculation
+%%
+%  IF CMODE .EQ. "LINE" THEN
+%    EVALUATE LCENTROID = FALSE
+%    COPY '#SCRIPT A_ADDCENTROID'
+%  END IF
+%%
+%  EVALUATE CATOMS = "ATOM"
+%  EVALUATE IMOLAX = 0
+%%
+%  COPY '#OPEN SCPDATA MolaxDefinition.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CATM = CVALUE
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%% Should we think of very long line or plane definitions?
+%      EVALUATE CATOMS = CATOMS // " " // CVALUE
+%% We keep the first two atoms to check consistency with atoms to evaluate.
+%% Passed like this we do not need to read MolaxDefinition.dat while grabbing the
+%% atoms form AtomsToWorkOn.dat at the same time. This is maybe a problem if this
+%% functuonality should be available even if line definition contains more atoms.
+%      CASE LOOPCOUNTER
+%        EVALUATE CATM1 = CVALUE
+%        EVALUATE CATM2 = CVALUE
+%      END CASE
+%      EVALUATE IMOLAX = IMOLAX + 1
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%% We check the line and plane definitions:
+%%
+%  IF CMODE .EQ. "LINE" THEN
+%    IF IMOLAX .EQ. 0 THEN
+%% If the line definition does not contain at least one atom we stop. We should never reach here.
+%      EVALUATE CTITLE = "Error calling script calcMolax"
+%      EVALUATE CTEXT1 = "Selected number of atoms is " // CHARACTER ( IMOLAX ) // "."
+%      EVALUATE CTEXT2 = "We need at least two atoms for a valid line definition."
+%      EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%      COPY '#SCRIPT A_XMESSAGE'
+%      FINISH
+%    END IF
+%% We only got one atom from popup-atom.srt, so we calculate the centroid of the selection.
+%    IF IMOLAX .EQ. 1 THEN
+%      TRANSFER "{I We need to calculate the centroid of the selected atoms, should have been done earlier." TO DISPLAY
+%%     COPY '#SCRIPT A_FINDCENTROID'
+%%     EVALUATE LCENTROID = TRUE
+%%     EVALUATE CENTROID = CATM2
+%    END IF
+%% If line defined by two atoms one may be in error if called from the model window by popup-bond.srt.
+%% Moreover we look for a common atom in the line definition and in the evaluated atoms.
+%%   IF IMOLAX .GE. 2 THEN
+%    IF IMOLAX .EQ. 2 THEN
+%      TRANSFER "{I We look for a common atom..." TO DISPLAY
+%      COPY '#SCRIPT A_FINDCOMMONATOM'
+%    END IF
+%  ELSE IF CMODE .EQ. "PLANE" THEN
+%    IF IMOLAX .LT. 3 THEN
+%% If the plane definition does not contain at least three atoms we stop.
+%      EVALUATE CTITLE = "Error calling script calcMolax"
+%      EVALUATE CTEXT1 = "Selected number of atoms is " // CHARACTER ( IMOLAX ) // "."
+%      EVALUATE CTEXT2 = "We need at least three atoms for a valid plane definition."
+%      EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%      COPY '#SCRIPT A_XMESSAGE'
+%      FINISH
+%    END IF
+%  ELSE
+%% This case is already handled earlier
+%  END IF
+%%
+%% TRANSFER CATOMS TO DISPLAY
+%% TRANSFER CMODE TO DISPLAY
+%%
+%  COPY '#GEOMETRY'
+%  CLEAR
+%  STORE CHARACTER CATOMS
+%  SEND
+%  CLEAR
+%  STORE CHARACTER CMODE
+%  SEND
+%  COPY 'SAVE'
+%  COPY 'END'
+%%
+%% Get hold of the matrices
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 20'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%%
+%% The matrix for transformation to the reference system in angstrom
+%%
+%    COPY 'TRANSFER FROM OFFSET=9  TO M2E1'
+%    COPY 'TRANSFER FROM OFFSET=10 TO M2E2'
+%    COPY 'TRANSFER FROM OFFSET=11 TO M2E3'
+%    COPY 'TRANSFER FROM OFFSET=12 TO M2E4'
+%    COPY 'TRANSFER FROM OFFSET=13 TO M2E5'
+%    COPY 'TRANSFER FROM OFFSET=14 TO M2E6'
+%    COPY 'TRANSFER FROM OFFSET=15 TO M2E7'
+%    COPY 'TRANSFER FROM OFFSET=16 TO M2E8'
+%    COPY 'TRANSFER FROM OFFSET=17 TO M2E9'
+%%
+%    COPY 'LOCATE RECORDTYPE=102'
+%%
+%% The matrix for transformation back to fractions
+%%
+%    COPY 'TRANSFER FROM OFFSET=9  TO M4E1'
+%    COPY 'TRANSFER FROM OFFSET=10 TO M4E2'
+%    COPY 'TRANSFER FROM OFFSET=11 TO M4E3'
+%    COPY 'TRANSFER FROM OFFSET=12 TO M4E4'
+%    COPY 'TRANSFER FROM OFFSET=13 TO M4E5'
+%    COPY 'TRANSFER FROM OFFSET=14 TO M4E6'
+%    COPY 'TRANSFER FROM OFFSET=15 TO M4E7'
+%    COPY 'TRANSFER FROM OFFSET=16 TO M4E8'
+%    COPY 'TRANSFER FROM OFFSET=17 TO M4E9'
+%%
+%    COPY 'LOCATE RECORDTYPE=103'
+%%
+%% The offset from the origin of the unit cell in fractions
+%%
+%    COPY 'TRANSFER FROM OFFSET=3 TO OFFSETX'
+%    COPY 'TRANSFER FROM OFFSET=4 TO OFFSETY'
+%    COPY 'TRANSFER FROM OFFSET=5 TO OFFSETZ'
+
+%    COPY 'END'
+%  END BLOCK
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "***" TO DISPLAY
+%    TRANSFER "Matrix2: " // CHARACTER ( M2E1 ) // " " // CHARACTER ( M2E4 ) // " " // CHARACTER ( M2E7 ) TO DISPLAY
+%    TRANSFER "         " // CHARACTER ( M2E2 ) // " " // CHARACTER ( M2E5 ) // " " // CHARACTER ( M2E8 ) TO DISPLAY
+%    TRANSFER "         " // CHARACTER ( M2E3 ) // " " // CHARACTER ( M2E6 ) // " " // CHARACTER ( M2E9 ) TO DISPLAY
+%    TRANSFER "***" TO DISPLAY
+%    TRANSFER "Matrix4: " // CHARACTER ( M4E1 ) // " " // CHARACTER ( M4E4 ) // " " // CHARACTER ( M4E7 ) TO DISPLAY
+%    TRANSFER "         " // CHARACTER ( M4E2 ) // " " // CHARACTER ( M4E5 ) // " " // CHARACTER ( M4E8 ) TO DISPLAY
+%    TRANSFER "         " // CHARACTER ( M4E3 ) // " " // CHARACTER ( M4E6 ) // " " // CHARACTER ( M4E9 ) TO DISPLAY
+%    TRANSFER "***" TO DISPLAY
+%    TRANSFER "Offset:  " // CHARACTER ( OFFSETX ) // " " // CHARACTER ( OFFSETY ) // " " // CHARACTER ( OFFSETZ ) TO DISPLAY
+%    TRANSFER "***" TO DISPLAY
+%  END IF
+%%
+%  EVALUATE IMOLAX = 0
+%  EVALUATE IEVAL = 0
+%  EVALUATE ITIMES = 0
+%  EVALUATE ICOMMON = 0
+%%
+%  IF ( FILEEXISTS ( 'MolaxDefinition.dat' ) ) THEN
+%    EVALUATE ITIMES = 1
+%  END IF
+%  IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%    EVALUATE ITIMES = 2
+%  END IF
+%%
+%  COPY '#RELEASE PUNCH AtomsEvaluated.dat'
+%%
+%% We need to loop twice and write results to the same file
+%%
+%  LOOP ITIMES TIMES
+%    EVALUATE IROUND = LOOPCOUNTER
+%    CASE IROUND
+%      COPY '#OPEN SCPDATA MolaxDefinition.dat'
+%      COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%    END CASE
+%    CASE IROUND
+%      TRANSFER CMODE // " 0.0 0.0 0.0" TO PUNCH
+%      TRANSFER "EVAL 0.0 0.0 0.0" TO PUNCH
+%    END CASE
+%    EVALUATE IROUND = LOOPCOUNTER
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CATM = CVALUE
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%%
+%      CASE IROUND
+%        BLOCK
+%          EVALUATE IMOLAX = IMOLAX + 1
+%          CASE LOOPCOUNTER
+%            EVALUATE CATM1 = CATM
+%            EVALUATE CATM2 = CATM
+%          END CASE
+%        END BLOCK
+%        BLOCK
+%          EVALUATE IEVAL = IEVAL + 1
+%          IF CATM .EQ. CATM1 THEN
+%            EVALUATE CANCHOR = CATM2
+%            EVALUATE CCOMMON = CATM1
+%            EVALUATE ICOMMON = ICOMMON + 1
+%          END IF
+%          IF CATM .EQ. CATM2 THEN
+%            EVALUATE CANCHOR = CATM1
+%            EVALUATE CCOMMON = CATM2
+%            EVALUATE ICOMMON = ICOMMON + 1
+%          END IF
+%        END BLOCK
+%      END CASE
+%%
+%      EVALUATE CELE = FIRSTSTR ( CATM )
+%      EVALUATE ISER = FIRSTINT ( CATM )
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%        IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%          COPY 'TRANSFER FROM OFFSET=4 TO RATX'
+%          COPY 'TRANSFER FROM OFFSET=5 TO RATY'
+%          COPY 'TRANSFER FROM OFFSET=6 TO RATZ'
+%          COPY 'END'
+%%
+%          EVALUATE RATXS = RATX - OFFSETX
+%          EVALUATE RATYS = RATY - OFFSETY
+%          EVALUATE RATZS = RATZ - OFFSETZ
+%%
+%          EVALUATE RATXT = RATXS * M2E1 + RATYS * M2E4 + RATZS * M2E7
+%          EVALUATE RATYT = RATXS * M2E2 + RATYS * M2E5 + RATZS * M2E8
+%          EVALUATE RATZT = RATXS * M2E3 + RATYS * M2E6 + RATZS * M2E9
+%%
+%          IF LDEBUG THEN
+%            TRANSFER CATM // " " // CHARACTER ( RATXT ) // " " // CHARACTER ( RATYT ) // " " // CHARACTER ( RATZT ) TO DISPLAY
+%          END IF
+%          TRANSFER CATM // " " // CHARACTER ( RATXT ) // " " // CHARACTER ( RATYT ) // " " // CHARACTER ( RATZT ) TO PUNCH
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%        END IF
+%        COPY 'NEXT'
+%      END LOOP
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%  END LOOP
+%  IF ITIMES .EQ. 1 THEN
+%    TRANSFER "EVAL 0.0 0.0 0.0" TO PUNCH
+%  END IF
+%  TRANSFER "END  0.0 0.0 0.0" TO PUNCH
+%  COPY '#RELEASE PUNCH bfile.pch'
+%%
+%  TRANSFER "{I Number of atoms defining the " // CMODES // " is " // CHARACTER ( IMOLAX ) // "." TO DISPLAY
+%  IF IMOLAX .EQ. 2 THEN
+%    TRANSFER "{I The atoms are " // CATM1 // " and " // CATM2 // "." TO DISPLAY
+%  END IF
+%  IF ICOMMON .EQ. 1 THEN
+%    TRANSFER "{I The anchor is " // CANCHOR // ", the common atom is " // CCOMMON // "." TO DISPLAY
+%  END IF
+%  TRANSFER "{I Number of atoms evaluated is " // CHARACTER ( IEVAL ) // "." TO DISPLAY
+%%
+%  EVALUATE ICNT = 0
+%%
+%  COPY '#SCRIPT A_CALCANCHORBOND'
+%  IF ABOND .GT. 0.0 THEN
+%    CLEAR
+%    INSERT '{I Anchor bond distance is '
+%    STORE FORMAT /(F8.5)/ LENGTH 9 REAL ABOND
+%    OUTPUT
+%  ELSE
+%    COPY '#SCRIPT A_CALCNEAREST'
+%    IF SBOND .GT. 0.0 THEN
+%      CLEAR
+%      INSERT '{I Shortest distance between line or plane and evaluated atoms is '
+%      STORE FORMAT /(F8.5)/ LENGTH 9 REAL SBOND
+%      OUTPUT
+%    END IF
+%  END IF
+%  EVALUATE ABONDNEW = ABOND
+%  EVALUATE SBONDNEW = SBOND
+%%
+%  EVALUATE MAXDEVD = 0.0
+%  EVALUATE MAXDEVE = 0.0
+%%
+%  EVALUATE IREADMODE = 0
+%%
+%  IF ( FILEEXISTS ( 'AtomsEvaluated.dat' ) ) THEN
+%    COPY '#OPEN SCPDATA AtomsEvaluated.dat'
+%%
+^^WI WINDOW XMOLAX
+% TRANSFER "^^WI 'Best " // CMODES // " calculation'" TO DISPLAY
+^^WI POSITION=CENTERED '_MAINTEXTOUTPUT'
+%%^^WI MODAL
+^^WI GRID M NROWS=13 NCOLS=3 {
+%%
+%% Now we put the values from the file in the window
+%%
+%    EVALUATE IROW = 1
+%    EVALUATE LGRIDOPENED = FALSE
+%%   EVALUATE LEVALFOUND = FALSE
+%%
+%    LOOP
+%      ON ERROR TERMINATE
+%%     ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Atom'
+%      EVALUATE CATM = CVALUE
+%      GET REAL 'x'
+%      EVALUATE RATX = VALUE
+%      GET REAL 'y'
+%      EVALUATE RATY = VALUE
+%      GET REAL 'z'
+%      EVALUATE RATZ = VALUE
+%%
+%      EVALUATE ICNT = ICNT + 1
+%%
+%% TRANSFER CATM // " " // CHARACTER ( RATX ) // " " // CHARACTER ( RATY ) // " " // CHARACTER ( RATZ ) TO DISPLAY
+%%
+%      IF CATM .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%        IF LGRIDOPENED THEN
+^^WI   }
+%          EVALUATE LGRIDOPENED = FALSE
+%        END IF
+%%
+%      ELSE IF ( CATM .EQ. "LINE" ) .OR. ( CATM .EQ. "PLANE" ) THEN
+%%
+%        EVALUATE IREADMODE = 1
+%        IF IMOLAX .GT. 0 THEN
+% TRANSFER "^^WI   @ 2,2 GRID B NROWS=" // CHARACTER ( 2 * IMOLAX - 1 ) // " NCOLS=11 OUTLINE='Atoms defining the " // CMODES // ", coordinates in Angstrom' {" TO DISPLAY
+%          EVALUATE IROW = 1
+%          EVALUATE LGRIDOPENED = TRUE
+%        END IF
+%%
+%      ELSE IF CATM .EQ. "EVAL" THEN
+%%
+%        EVALUATE IREADMODE = 2
+%        TRANSFER "{I Max deviation in definitions is " // CHARACTER ( MAXDEVD ) TO DISPLAY
+%        IF LGRIDOPENED THEN
+^^WI   }
+%          EVALUATE LGRIDOPENED = FALSE
+%        END IF
+%%
+%        IF CMODE .EQ. "LINE" THEN
+% TRANSFER "^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 OUTLINE='Actions on atoms defining the line' {" TO DISPLAY
+%          IF IMOLAX .LE. 2 THEN
+^^WI     @ 1,1 CHECKBOX CBALP 'Put atoms on the line: two atoms are always perfectly linear' STATE=OFF DISABLED=YES
+%          ELSE
+^^WI     @ 1,1 CHECKBOX CBALP 'Put atoms on the line' STATE=OFF
+%            IF MAXDEVD .GT. 0.5 THEN
+^^WI     @ 1,3 BUTTON BWD 'Warning' DISABLED=NO
+%            ELSE IF MAXDEVD .GT. 0.1 THEN
+^^WI     @ 1,3 BUTTON BWD 'Information' DISABLED=NO
+%            END IF
+%          END IF
+%        ELSE IF CMODE .EQ. "PLANE" THEN
+% TRANSFER "^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 OUTLINE='Actions on atoms defining the plane' {" TO DISPLAY
+%          IF IMOLAX .LE. 3 THEN
+^^WI     @ 1,1 CHECKBOX CBALP 'Put atoms on the plane: three atoms are always perfectly planar' STATE=OFF DISABLED=YES
+%          ELSE
+^^WI     @ 1,1 CHECKBOX CBALP 'Put atoms on the plane' STATE=OFF
+%            IF MAXDEVD .GT. 0.5 THEN
+^^WI     @ 1,3 BUTTON BWD 'Warning' DISABLED=NO
+%            ELSE IF MAXDEVD .GT. 0.1 THEN
+^^WI     @ 1,3 BUTTON BWD 'Information' DISABLED=NO
+%            END IF
+%          END IF
+%        ELSE
+% TRANSFER "^^WI   @ 4,2 GRID C NROWS=1 NCOLS=1 OUTLINE='Actions not defined' {" TO DISPLAY
+^^WI     @ 1,1 CHECKBOX CBALP 'Action is not defined' STATE=OFF DISABLED=YES
+%        END IF
+^^WI   }
+%%
+%        IF IEVAL .EQ. 0 THEN
+^^WI   @ 6,2 GRID D NROWS=1 NCOLS=1 OUTLINE='Atoms evaluated' {
+^^WI     @ 1,1 STATIC XNAE 'No atoms evaluated'
+^^WI   }
+%          EVALUATE LGRIDOPENED = FALSE
+%        ELSE
+% TRANSFER "^^WI   @ 6,2 GRID D NROWS=" // CHARACTER ( 2 * IEVAL - 1 ) // " NCOLS=11 OUTLINE='Atoms evaluated, coordinates in Angstrom' {" TO DISPLAY
+%          EVALUATE IROW = 1
+%          EVALUATE LGRIDOPENED = TRUE
+%%         EVALUATE LEVALFOUND = TRUE
+%        END IF
+%%
+%      ELSE
+%        IF LGRIDOPENED THEN
+%          TRANSFER "^^WI     @ " // CHARACTER ( IROW ) // ",1   STATIC XATL" // CHARACTER ( ICNT ) // " " // CATM TO DISPLAY
+%%
+%          CLEAR
+%          EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",3   STATIC XATX" // CHARACTER ( ICNT ) // " "
+%          STORE CHARACTER CLINE
+%          STORE FORMAT /(F8.5)/ LENGTH 9 REAL RATX
+%          OUTPUT
+%          CLEAR
+%          EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",5   STATIC XATY" // CHARACTER ( ICNT ) // " "
+%          STORE CHARACTER CLINE
+%          STORE FORMAT /(F8.5)/ LENGTH 9 REAL RATY
+%          OUTPUT
+%          CLEAR
+%          EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",7   STATIC XATZ" // CHARACTER ( ICNT ) // " "
+%          STORE CHARACTER CLINE
+%          STORE FORMAT /(F8.5)/ LENGTH 9 REAL RATZ
+%          OUTPUT
+%%
+%          IF CMODE .EQ. "LINE" THEN
+%% There is no need to subtract the vectors as x and y on the line are 0 anyway, so we compute the distance directly...
+%            EVALUATE BDISTS = RATX * RATX + RATY * RATY
+%            EVALUATE BDIST = SQRT ( BDISTS )
+%          ELSE IF CMODE .EQ. "PLANE" THEN
+%% In the case of the plane the distance is simply the Z coordinate...
+%            IF RATZ .GE. 0.0 THEN
+%              EVALUATE BDIST = RATZ
+%            ELSE
+%              EVALUATE BDIST = - RATZ
+%            END IF
+%          ELSE
+%            EVALUATE BDIST = 0.0
+%          END IF
+%%
+%          IF IREADMODE .EQ. 1 THEN
+%            IF BDIST .GT. MAXDEVD THEN
+%              EVALUATE MAXDEVD = BDIST
+%            END IF
+%          ELSE IF IREADMODE .EQ. 2 THEN
+%            IF BDIST .GT. MAXDEVE THEN
+%              EVALUATE MAXDEVE = BDIST
+%            END IF
+%          END IF
+%%
+%          IF ( BDIST .GE. 0.00001 ) .OR. ( BDIST .LE. - 0.000005 ) THEN
+%            CLEAR
+%            EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",9   STATIC XATT 'distance to " // CMODES // ":'"
+%            STORE CHARACTER CLINE
+%            OUTPUT
+%            CLEAR
+%            EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",11   STATIC XATD" // CHARACTER ( ICNT ) // " "
+%            STORE CHARACTER CLINE
+%            STORE FORMAT /(F8.5)/ LENGTH 9 REAL BDIST
+%            OUTPUT
+%          ELSE
+%            IF CMODE .EQ. "LINE" THEN
+%              CLEAR
+%              EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",9   STATIC XATT 'perfectly on " // CMODES // "'"
+%              STORE CHARACTER CLINE
+%              OUTPUT
+%            ELSE IF CMODE .EQ. "PLANE" THEN
+%              CLEAR
+%              EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",9   STATIC XATT 'perfectly in " // CMODES // "'"
+%              STORE CHARACTER CLINE
+%              OUTPUT
+%            ELSE
+%              CLEAR
+%              EVALUATE CLINE = "^^WI     @ " // CHARACTER ( IROW ) // ",9   STATIC XATT '...'"
+%              STORE CHARACTER CLINE
+%              OUTPUT
+%            END IF
+%          END IF
+%%
+%          EVALUATE IROW = IROW + 2
+%        END IF
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%%
+%    TRANSFER "{I Max deviation in evaluated atoms is " // CHARACTER ( MAXDEVE ) TO DISPLAY
+%%
+%    IF CMODE .EQ. "LINE" THEN
+% TRANSFER "^^WI   @ 8,2 GRID E NROWS=5 NCOLS=3 OUTLINE='Actions on evaluated atoms' {" TO DISPLAY
+%      IF IEVAL .EQ. 0 THEN
+^^WI     @ 1,1 CHECKBOX CBELP 'Put evaluated atoms on the line: no atoms evaluated' STATE=OFF DISABLED=YES
+%      ELSE
+^^WI     @ 1,1 CHECKBOX CBELP 'Put evaluated atoms on the line' STATE=OFF
+%        IF MAXDEVE .GT. 0.5 THEN
+^^WI     @ 1,3 BUTTON BWE 'Warning!' DISABLED=NO
+%        ELSE IF MAXDEVE .GT. 0.1 THEN
+^^WI     @ 1,3 BUTTON BWE 'Information' DISABLED=NO
+%        END IF
+%      END IF
+%%
+%      IF ABOND .GT. 0.0 THEN
+%        CLEAR
+%        INSERT "^^WI     @ 3,1 STATIC XEA1 'Anchoring bond distance is"
+%        STORE FORMAT /(F8.5)/ LENGTH 9 REAL ABOND
+%        INSERT "Angstrom'"
+%        OUTPUT
+^^WI     @ 3,3 BUTTON BEB 'Evaluate' DISABLED=NO
+^^WI     @ 5,1 CHECKBOX CBSLP 'Shift evaluated atoms, final distance will be' STATE=OFF
+%        CLEAR
+%        INSERT '^^WI     @ 5,3 EDITBOX XEBN '
+%        STORE FORMAT /(F8.5)/ LENGTH 9 REAL ABONDNEW
+%        INSERT ' CHARS=9 REAL'
+%        OUTPUT
+%        EVALUATE LEDITBOX = TRUE
+%%
+%      ELSE IF SBOND .GT. 0.0 THEN
+%        CLEAR
+%        INSERT "^^WI     @ 3,1 STATIC XEA1 'Shortest distance is"
+%        STORE FORMAT /(F8.5)/ LENGTH 9 REAL SBOND
+%        INSERT "Angstrom'"
+%        OUTPUT
+^^WI     @ 3,3 BUTTON BEB 'Evaluate' DISABLED=NO
+^^WI     @ 5,1 CHECKBOX CBSLP 'Shift evaluated atoms, final distance will be' STATE=OFF
+%        CLEAR
+%        INSERT '^^WI     @ 5,3 EDITBOX XEBN '
+%        STORE FORMAT /(F8.5)/ LENGTH 9 REAL SBONDNEW
+%        INSERT ' CHARS=9 REAL'
+%        OUTPUT
+%        EVALUATE LEDITBOX = TRUE
+%%
+%      ELSE
+^^WI     @ 3,1 STATIC XEA1 'No distances calculated'
+^^WI     @ 5,1 CHECKBOX CBSLP 'The shift option is not available due to this reason' STATE=OFF DISABLED=YES
+%      END IF
+%%
+%    ELSE IF CMODE .EQ. "PLANE" THEN
+% TRANSFER "^^WI   @ 8,2 GRID E NROWS=5 NCOLS=3 OUTLINE='Actions on evaluated atoms' {" TO DISPLAY
+%      IF IEVAL .EQ. 0 THEN
+^^WI     @ 1,1 CHECKBOX CBELP 'Put evaluated atoms on the plane: no atoms evaluated' STATE=OFF DISABLED=YES
+%      ELSE
+^^WI     @ 1,1 CHECKBOX CBELP 'Put evaluated atoms on the plane' STATE=OFF
+%        IF MAXDEVE .GT. 0.5 THEN
+^^WI     @ 1,3 BUTTON BWE 'Warning!' DISABLED=NO
+%        ELSE IF MAXDEVE .GT. 0.1 THEN
+^^WI     @ 1,3 BUTTON BWE 'Information' DISABLED=NO
+%        END IF
+%      END IF
+%      IF ABOND .GT. 0.0 THEN
+%        CLEAR
+%        INSERT "^^WI     @ 3,1 STATIC XEA1 'Anchoring bond distance is"
+%        STORE FORMAT /(F8.5)/ LENGTH 9 REAL ABOND
+%        INSERT "Angstrom'"
+%        OUTPUT
+^^WI     @ 3,3 BUTTON BEB 'Evaluate' DISABLED=NO
+%      ELSE IF SBOND .GT. 0.0 THEN
+%        CLEAR
+%        INSERT "^^WI     @ 3,1 STATIC XEA1 'Shortest distance is"
+%        STORE FORMAT /(F8.5)/ LENGTH 9 REAL SBOND
+%        INSERT "Angstrom'"
+%        OUTPUT
+^^WI     @ 3,3 BUTTON BEB 'Evaluate' DISABLED=NO
+%      ELSE
+^^WI     @ 3,1 STATIC XEA1 'No distances calculated'
+%      END IF
+^^WI     @ 5,1 CHECKBOX CBSLP 'Shift option only available with best line!' STATE=OFF DISABLED=YES
+%    ELSE
+% TRANSFER "^^WI   @ 8,2 GRID E NROWS=5 NCOLS=5 OUTLINE='Actions not defined' {" TO DISPLAY
+^^WI     @ 1,1 CHECKBOX CBELP 'Actions are not defined' STATE=OFF DISABLED=YES
+%    END IF
+^^WI   }
+%%
+^^WI   @ 10,2 GRID F NROWS=1 NCOLS=9 OUTLINE='Show' {
+%    IF CMODE .EQ. "LINE" THEN
+^^WI     @ 1,1 BUTTON BSD 'Line' DISABLED=NO
+%    ELSE IF CMODE .EQ. "PLANE" THEN
+^^WI     @ 1,1 BUTTON BSD 'Plane' DISABLED=NO
+%    END IF
+%    IF IEVAL .EQ. 0 THEN
+^^WI     @ 1,3 BUTTON BSE 'Evaluated' DISABLED=YES
+%    ELSE
+^^WI     @ 1,3 BUTTON BSE 'Evaluated' DISABLED=NO
+%    END IF
+%    IF ABOND .NE. 0.0 THEN
+^^WI     @ 1,5 BUTTON BSA 'Anchor' DISABLED=NO
+%    ELSE
+^^WI     @ 1,5 BUTTON BSA 'Anchor' DISABLED=YES
+%    END IF
+%    IF SBOND .NE. 0.0 THEN
+^^WI     @ 1,7 BUTTON BSS 'Shortest' DISABLED=NO
+%    ELSE
+^^WI     @ 1,7 BUTTON BSS 'Shortest' DISABLED=YES
+%    END IF
+^^WI     @ 1,9 BUTTON BHA 'Hide all' DISABLED=NO
+^^WI   }
+%%
+^^WI   @ 12,2 GRID G NROWS=1 NCOLS=15 OUTLINE='Options' {
+^^WI     @ 1,1 BUTTON BAP 'Apply changes' DISABLED=NO
+^^WI     @ 1,15 BUTTON BOK 'Quit, no changes' DEFAULT COMMIT CANCEL
+
+^^WI   }
+%%
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  LOOP
+%   VERIFY BOK BWD BWE BEB BSD BSE BSA BSS BHA BAP
+%   GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%%  TRANSFER CHARACTER ( VALUE ) TO DISPLAY
+%   CASE VALUE
+%    BLOCK        % BOK - CLOSE window
+^^CO   DISPOSE XMOLAX
+%      IF LCENTROID THEN
+%        TRANSFER "{I Deleting centroid..." TO DISPLAY
+%        COPY '#EDIT'
+%        CLEAR
+%        INSERT 'DELETE '
+%        STORE CHARACTER CENTROID
+%        SEND
+%        COPY 'END'
+%      END IF
+%% Delete the scratch files...
+%      IF ( FILEEXISTS ( 'MolaxDefinition.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'MolaxDefinition.dat' )
+%      END IF
+%      IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'AtomsToWorkOn.dat' )
+%      END IF
+%      IF ( FILEEXISTS ( 'AtomsEvaluated.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'AtomsEvaluated.dat' )
+%      END IF
+%% and exit
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BWD - warning definition
+%      IF MAXDEVD .GT. 0.5 THEN
+%        EVALUATE CTITLE = "Warning: very big deviations!"
+%      ELSE IF MAXDEVD .GT. 0.1 THEN
+%        EVALUATE CTITLE = "Information: big deviations detected"
+%      END IF
+%      EVALUATE CTEXT1 = "The maximum deviation from the " // CMODES // " is " // CHARACTER ( MAXDEVD ) // " Angstrom."
+%      EVALUATE CTEXT2 = "Please evaluate the deviations carefully before continuing."
+%      EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%      COPY '#SCRIPT A_XMESSAGE'
+%    END BLOCK
+%%
+%    BLOCK        % BWE - warning evaluated atoms
+%      IF MAXDEVE .GT. 0.5 THEN
+%        EVALUATE CTITLE = "Warning: very big deviations!"
+%      ELSE IF MAXDEVE .GT. 0.1 THEN
+%        EVALUATE CTITLE = "Information: big deviations detected"
+%      END IF
+%      EVALUATE CTEXT1 = "The maximum deviation from the " // CMODES // " is " // CHARACTER ( MAXDEVE ) // " Angstrom."
+%      EVALUATE CTEXT2 = "Please evaluate the deviations carefully before continuing."
+%      EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%      COPY '#SCRIPT A_XMESSAGE'
+%    END BLOCK
+%%
+%    BLOCK        % BEB - evaluate bond
+%      TRANSFER "{I Evaluating the bond..." TO DISPLAY
+%      EVALUATE LCALLED = TRUE
+%      COPY '#SCRIPT A_BONDSVALMENU'
+%      EVALUATE LCALLED = FALSE
+%%     TRANSFER "{I New distance is " // CHARACTER ( RBOND ) TO DISPLAY
+%      IF LEDITBOX THEN
+%        TRANSFER "^^CO SET XEBN TEXT '" // CHARACTER ( RBOND ) // "'" TO DISPLAY
+%      END IF
+%    END BLOCK
+%%
+%    BLOCK        % BSD - show definition
+^^CO SET MODEL01 SELECT ALL=NO
+%      COPY '#SCRIPT A_REFRESHDEFINITION'
+%    END BLOCK
+%%
+%    BLOCK        % BSE - show evaluated atoms
+^^CO SET MODEL01 SELECT ALL=NO
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END BLOCK
+%%
+%    BLOCK        % BSA - show anchor
+^^CO SET MODEL01 SELECT ALL=NO
+%      TRANSFER "^^CO SET MODEL01 SELECT " // CANCHOR // " YES" TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BSS - show shortest distance
+^^CO SET MODEL01 SELECT ALL=NO
+%      TRANSFER "^^CO SET MODEL01 SELECT " // CANCHOR // " YES" TO DISPLAY
+%      TRANSFER "^^CO SET MODEL01 SELECT " // CCOMMON // " YES" TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BHA - hide all
+^^CO SET MODEL01 SELECT ALL=NO
+%    END BLOCK
+%%
+%    BLOCK        % BAP - apply changes
+%      IF LEDITBOX THEN
+^^??   XEBN TEXT
+%        GET NOSTORE SILENT REAL ' ' ' '
+%        IF ABOND .GT. 0.0 THEN
+%          EVALUATE ABONDNEW = VALUE
+%          EVALUATE RSHIFT = ABONDNEW - ABOND
+%        ELSE IF SBOND .GT. 0.0 THEN
+%          EVALUATE SBONDNEW = VALUE
+%          EVALUATE RSHIFT = SBONDNEW - SBOND
+%        END IF
+%      END IF
+%%
+%% Atoms from definition
+^^??   CBALP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LATOMONLP = TRUE
+%        EVALUATE LATOMONLP = FALSE
+%      END CASE
+%%
+%% Evaluated atoms
+^^??   CBELP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LEVALONLP = TRUE
+%        EVALUATE LEVALONLP = FALSE
+%      END CASE
+%%
+%% Shift
+^^??   CBSLP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LEVALSHIFT = TRUE
+%        EVALUATE LEVALSHIFT = FALSE
+%      END CASE
+%%
+%      IF LEVALSHIFT THEN
+%        IF ( RSHIFT .GE. 0.00001 ) .OR. ( RSHIFT .LE. - 0.000005 ) THEN
+%          CLEAR
+%          INSERT '{I Shift to be applied is '
+%          STORE FORMAT /(F8.5)/ LENGTH 9 REAL RSHIFT
+%          OUTPUT
+%        ELSE
+%          TRANSFER "{I Shift smaller than 0.00001, so it will not be applied." TO DISPLAY
+%          EVALUATE LEVALSHIFT = FALSE
+%        END IF
+%      END IF
+%%
+%      IF ( LATOMONLP ) .OR. ( LEVALONLP ) .OR. ( LEVALSHIFT ) THEN
+%%
+%        IF ( FILEEXISTS ( 'AtomsEvaluated.dat' ) ) THEN
+%          COPY '#OPEN SCPDATA AtomsEvaluated.dat'
+%%
+%          EVALUATE IREADMODE = 0
+%%         EVALUATE LSHIFT = FALSE
+%          EVALUATE ICNT = 0
+%%
+%          QUEUE REWIND
+%          QUEUE COPY #EDIT
+%          QUEUE COPY MONITOR OFF
+%%
+%          LOOP
+%            ON ERROR TERMINATE
+%%           ON END TERMINATE
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET KEYWORD 'Atom'
+%            EVALUATE CATM = CVALUE
+%            GET REAL 'x'
+%            EVALUATE RATX = VALUE
+%            GET REAL 'y'
+%            EVALUATE RATY = VALUE
+%            GET REAL 'z'
+%            EVALUATE RATZ = VALUE
+%%
+%            IF CATM .EQ. 'END' THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%            ELSE IF ( CATM .EQ. "LINE" ) .OR. ( CATM .EQ. "PLANE" ) THEN
+%              EVALUATE IREADMODE = 1
+%%
+%            ELSE IF CATM .EQ. "EVAL" THEN
+%              EVALUATE IREADMODE = 2
+%%
+%            ELSE
+%% Put on line or plane
+%              EVALUATE LAMODIFIED = FALSE
+%              IF ( IREADMODE .EQ. 1 ) .AND. ( LATOMONLP ) THEN
+%                IF CMODE .EQ. "LINE" THEN
+%                  EVALUATE RATX = 0.0
+%                  EVALUATE RATY = 0.0
+%                  EVALUATE LAMODIFIED = TRUE
+%                ELSE IF CMODE .EQ. "PLANE" THEN
+%                  EVALUATE RATZ = 0.0
+%                  EVALUATE LAMODIFIED = TRUE
+%                END IF
+%              END IF
+%              IF ( IREADMODE .EQ. 2 ) .AND. ( LEVALONLP ) THEN
+%                IF CMODE .EQ. "LINE" THEN
+%                  EVALUATE RATX = 0.0
+%                  EVALUATE RATY = 0.0
+%                  EVALUATE LAMODIFIED = TRUE
+%                ELSE IF CMODE .EQ. "PLANE" THEN
+%                  EVALUATE RATZ = 0.0
+%                  EVALUATE LAMODIFIED = TRUE
+%                END IF
+%              END IF
+%% Apply the shift
+%              IF ( IREADMODE .EQ. 2 ) .AND. ( LEVALSHIFT ) THEN
+%%               TRANSFER " Old Z coord: " // CHARACTER ( RATZ ) TO DISPLAY
+%                IF RATZ .GE. 0.0 THEN
+%                  EVALUATE RATZ = RATZ + RSHIFT
+%                ELSE
+%                  EVALUATE RATZ = RATZ - RSHIFT
+%                END IF
+%%               TRANSFER " New Z coord: " // CHARACTER ( RATZ ) TO DISPLAY
+%                EVALUATE LAMODIFIED = TRUE
+%              END IF
+%% Now we transform back
+%              IF LAMODIFIED THEN
+%                EVALUATE CELE = FIRSTSTR ( CATM )
+%                EVALUATE ISER = FIRSTINT ( CATM )
+%%
+%                EVALUATE RATXT = RATX * M4E1 + RATY * M4E4 + RATZ * M4E7
+%                EVALUATE RATYT = RATX * M4E2 + RATY * M4E5 + RATZ * M4E8
+%                EVALUATE RATZT = RATX * M4E3 + RATY * M4E6 + RATZ * M4E9
+%%
+%                EVALUATE RATXS = RATXT + OFFSETX
+%                EVALUATE RATYS = RATYT + OFFSETY
+%                EVALUATE RATZS = RATZT + OFFSETZ
+%%
+%                EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", X) " // CHARACTER ( RATXS )
+%                CLEAR
+%                STORE CHARACTER CLINE
+%                QUEUE SEND
+%                EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", Y) " // CHARACTER ( RATYS )
+%                CLEAR
+%                STORE CHARACTER CLINE
+%                QUEUE SEND
+%                EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", Z) " // CHARACTER ( RATZS )
+%                CLEAR
+%                STORE CHARACTER CLINE
+%                QUEUE SEND
+%                EVALUATE ICNT = ICNT + 1
+%              END IF
+%%
+%            END IF
+%          END LOOP
+%          COPY '#CLOSE SCPDATA'
+%          QUEUE COPY END
+%          IF ICNT .GT. 0 THEN
+%            QUEUE PROCESS
+%          END IF
+%%
+%        END IF
+%%
+%      ELSE
+%        TRANSFER "{I No change indicated." TO DISPLAY
+%      END IF
+^^CO   DISPOSE XMOLAX
+%      IF LCENTROID THEN
+%        TRANSFER "{I Deleting centroid..." TO DISPLAY
+%        COPY '#EDIT'
+%        COPY 'MONITOR OFF'
+%        CLEAR
+%        INSERT 'DELETE '
+%        STORE CHARACTER CENTROID
+%        SEND
+%        COPY 'END'
+%      END IF
+%% Delete the scratch files...
+%      IF ( FILEEXISTS ( 'MolaxDefinition.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'MolaxDefinition.dat' )
+%      END IF
+%      IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'AtomsToWorkOn.dat' )
+%      END IF
+%      IF ( FILEEXISTS ( 'AtomsEvaluated.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'AtomsEvaluated.dat' )
+%      END IF
+%% and exit
+%      FINISH
+%    END BLOCK
+%   END CASE
+%  END LOOP
+%%
+%  END IF
+%%
+%END SCRIPT

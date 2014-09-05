@@ -1,0 +1,147 @@
+%SCRIPT GETATOM
+%%
+%% Local variable for checking the edit status
+%%
+%  VARIABLE LOGICAL LPEV
+%%
+%% Get following parameters from calling routine
+%%
+%  VARIABLE CHARACTER ATOM1 ATOM2
+%  VARIABLE CHARACTER CTITLE CTEXT1 CTEXT2 CPOSITION
+%%
+%% Variables to check if atom exists
+%%
+%  VARIABLE CHARACTER CATOMLABEL CELEM
+%  VARIABLE INTEGER ISERI
+%  VARIABLE LOGICAL LATOMEXISTS LSHOWATOM
+%%
+%% EVALUATE CTITLE = "Choose paired atom"
+%% EVALUATE CTEXT1 = "A previous step has failed: specify paired atom"
+%% EVALUATE CTEXT2 = "Use this atom as pair of X: "
+%%
+%  TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%  TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM1 // ' YES' TO DISPLAY
+%%
+^^WI WINDOW XVAL
+% TRANSFER "^^WI '" // CTITLE // "'" TO DISPLAY
+% TRANSFER "^^WI POSITION" // CPOSITION TO DISPLAY
+%%^^WI POSITION=CENTERED '_MAINTEXTOUTPUT'
+%%^^WI MODAL
+^^WI GRID M NROWS=5 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=1 NCOLS=1 {
+% TRANSFER "^^WI     @ 1,1   STATIC XMSG '" // CTEXT1 // "'" TO DISPLAY
+^^WI   }
+^^WI   @ 4,2 GRID C NROWS=1 NCOLS=3 {
+^^WI     @ 1,1 GRID D NROWS=1 NCOLS=3 {
+% TRANSFER "^^WI     @ 1,1   STATIC XPTV '" // CTEXT2 // "'" TO DISPLAY
+^^WI       @ 1,3 EDITBOX XPEV '' INFORM=YES
+^^WI     }
+^^WI     @ 1,3 GRID E NROWS=5 NCOLS=1 {
+^^WI       @ 1,1 BUTTON BOK 'OK' DISABLED=YES
+^^WI       @ 3,1 BUTTON BCL 'Clear' DISABLED=YES
+^^WI       @ 5,1 BUTTON BQT 'Quit' DEFAULT COMMIT CANCEL
+^^WI     }
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM
+%%
+^^CO FOCUS XPEV
+%%
+%  EVALUATE LPEV = FALSE
+%%
+%  LOOP
+%   VERIFY BQT BCL XPEV ATOM BOK
+%   GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%%
+%    BLOCK        % BQT - CLOSE window and quit without change
+^^CO   DISPOSE XVAL
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BCL - CLEAR value in editbox
+^^CO     SET XPEV TEXT ''
+^^CO     SET BOK DISABLED=YES
+^^CO     SET BCL DISABLED=YES
+^^CO     FOCUS XPEV
+%      EVALUATE LPEV = FALSE
+%    END BLOCK
+%%
+%    BLOCK        % XPEV - values changed
+%% Retrieve edited value
+^^??     XPEV TEXT
+%      GET SILENT NOSTORE KEYWORD 'Editbox?' ' '
+%%
+%      EVALUATE CATOMLABEL = UPPERCASE CVALUE
+%      CLEAR
+%      TRANSFER "^^CO SET XPEV TEXT '" // CATOMLABEL // "'" TO BUFFER
+%      OUTPUT
+^^CO     FOCUS XPEV
+%%
+%      EVALUATE CELEM = FIRSTSTR ( CATOMLABEL )
+%      EVALUATE ISERI = FIRSTINT ( CATOMLABEL )
+%%
+%      EVALUATE CATOMLABEL = CELEM // "(" // CHARACTER ( ISERI ) // ")"
+%      EVALUATE LATOMEXISTS = FALSE
+%%     TRANSFER CATOMLABEL TO DISPLAY
+%%
+%      EVALUATE LSHOWATOM = TRUE
+%      COPY '#SCRIPT A_CHECKATOM'
+%%
+%      IF LATOMEXISTS THEN
+%%       TRANSFER "TRUE" TO DISPLAY
+^^CO     SET BOK DISABLED=NO
+^^CO     SET BCL DISABLED=NO
+%        EVALUATE LPEV = TRUE
+%      ELSE
+%%       TRANSFER "FALSE" TO DISPLAY
+^^CO     SET BOK DISABLED=YES
+^^CO     SET BCL DISABLED=YES
+%        EVALUATE LPEV = FALSE
+%      END IF
+%% See to it that the buffer is empty
+%      GET SILENT NOSTORE TEXT 'Remaining text in buffer?' '?'
+%    END BLOCK
+%%
+%    BLOCK       %ATOM - fill in atom name
+%      GET SILENT TEXT ' ' ' '
+%      CLEAR
+%      TRANSFER "^^CO SET XPEV TEXT '" // CVALUE // "'" TO BUFFER
+%      OUTPUT
+^^CO     SET BOK DISABLED=NO
+^^CO     SET BCL DISABLED=NO
+^^CO     FOCUS XPEV
+%      EVALUATE LPEV = TRUE
+%      TRANSFER '^^CO SET MODEL01 SELECT ' // CVALUE // ' YES' TO DISPLAY
+%      COPY '#PAUSE 1'
+%      TRANSFER '^^CO SET MODEL01 SELECT ' // CVALUE // ' NO' TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK         %BOK - apply changes and continue
+%% return changed value to calling routine
+%      IF LPEV THEN
+^^??     XPEV TEXT
+%        GET SILENT NOSTORE KEYWORD ' ' ' '
+%%
+%        EVALUATE CELEM = FIRSTSTR ( CVALUE )
+%        EVALUATE ISERI = FIRSTINT ( CVALUE )
+%%
+%        EVALUATE ATOM2 = CELEM // "(" // CHARACTER ( ISERI ) // ")"
+%%
+%        TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM2 // ' YES' TO DISPLAY
+%        COPY '#PAUSE 1'
+%        TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM2 // ' NO' TO DISPLAY
+%        TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM1 // ' NO' TO DISPLAY
+%      END IF
+^^CO   DISPOSE XVAL
+%      FINISH
+%    END BLOCK
+%%
+%   END CASE
+%
+%  END LOOP
+%%
+%END SCRIPT

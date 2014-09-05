@@ -1,0 +1,84 @@
+%SCRIPT CALCANCHORBOND
+%%
+%% Variables used by calling script
+%%
+%  VARIABLE CHARACTER CCOMMON CANCHOR
+%  VARIABLE REAL ABOND
+%%
+%  VARIABLE CHARACTER CATM
+%  VARIABLE REAL RATX RATY RATZ BDISTS
+%  VARIABLE REAL AATX AATY AATZ CATX CATY CATZ
+%  VARIABLE LOGICAL LDEBUG LANCHORFOUND LCOMMONFOUND
+%  VARIABLE INTEGER ISER
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%  EVALUATE LANCHORFOUND = FALSE
+%  EVALUATE LCOMMONFOUND = FALSE
+%%
+%  IF ( FILEEXISTS ( 'AtomsEvaluated.dat' ) ) THEN
+%    COPY '#OPEN SCPDATA AtomsEvaluated.dat'
+%%
+%    LOOP
+%      ON ERROR TERMINATE
+%%     ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Atom'
+%      EVALUATE CATM = CVALUE
+%      GET REAL 'x'
+%      EVALUATE RATX = VALUE
+%      GET REAL 'y'
+%      EVALUATE RATY = VALUE
+%      GET REAL 'z'
+%      EVALUATE RATZ = VALUE
+%%
+%      IF CATM .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%      ELSE IF CATM .EQ. CANCHOR THEN
+%        EVALUATE AATX = RATX
+%        EVALUATE AATY = RATY
+%        EVALUATE AATZ = RATZ
+%%       TRANSFER CATM // " " // CHARACTER ( RATX ) // " " // CHARACTER ( RATY ) // " " // CHARACTER ( RATZ ) TO DISPLAY
+%        EVALUATE LANCHORFOUND = TRUE
+%%
+%      ELSE IF CATM .EQ. CCOMMON THEN
+%        EVALUATE CATX = RATX
+%        EVALUATE CATY = RATY
+%        EVALUATE CATZ = RATZ
+%%       TRANSFER CATM // " " // CHARACTER ( RATX ) // " " // CHARACTER ( RATY ) // " " // CHARACTER ( RATZ ) TO DISPLAY
+%        EVALUATE LCOMMONFOUND = TRUE
+%%
+%      END IF
+%      IF LANCHORFOUND .AND. LCOMMONFOUND THEN
+%        IF LDEBUG THEN
+%          TRANSFER CANCHOR // " " // CHARACTER ( AATX ) // " " // CHARACTER ( AATY ) // " " // CHARACTER ( AATZ ) TO DISPLAY
+%          TRANSFER CCOMMON // " " // CHARACTER ( CATX ) // " " // CHARACTER ( CATY ) // " " // CHARACTER ( CATZ ) TO DISPLAY
+%        END IF
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%       TRANSFER "Now calculating the anchoring bond..." TO DISPLAY
+%% Subtract the vectors...
+%        EVALUATE RATX = CATX - AATX
+%        EVALUATE RATY = CATY - AATY
+%        EVALUATE RATZ = CATZ - AATZ
+%% and compute the distance...
+%        EVALUATE BDISTS = RATX * RATX + RATY * RATY + RATZ * RATZ
+%        EVALUATE ABOND = SQRT ( BDISTS )
+%% and tell us the result
+%        IF LDEBUG THEN
+%          CLEAR
+%          INSERT 'Anchor bond distance is '
+%          STORE FORMAT /(F8.5)/ LENGTH 9 REAL ABOND
+%          OUTPUT
+%        END IF
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%  ELSE
+%    TRANSFER "File AtomsEvaluated.dat not found." TO DISPLAY
+%  END IF
+%%
+%END SCRIPT

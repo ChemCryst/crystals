@@ -1,0 +1,353 @@
+%SCRIPT SORTRING
+%%
+%% Variables to give back to calling script:
+%% COMMAND is the TARGET card for #REGULARISE
+%% IRINGCNT is the number of atoms in the ring and is expected to be 5 or 6
+%% Maybe we can give back the MEANDIST for the HEXAGON option to give a starting value for the command
+%%
+%  VARIABLE CHARACTER COMMAND
+%  VARIABLE INTEGER IRINGCNT IMEAN
+%  VARIABLE REAL MEANBOND
+%%
+%% Variable to get atom count from script orthoAtoms called by calling script
+%%
+%  VARIABLE INTEGER IATOMCOUNT
+%%
+%  VARIABLE REAL BDIST BDISTS
+%%
+%  VARIABLE CHARACTER CATM CATP CATC CELE CCHK
+%  VARIABLE INTEGER ISER ICNT IPVT IREM ITRY ISHIFT IBDC
+%  VARIABLE REAL AT1X AT1Y AT1Z AT2X AT2Y AT2Z RCHK
+%  VARIABLE REAL ATCX ATCY ATCZ
+%%
+%% Variables to find the shortest and longest bond and the order
+%%
+%  VARIABLE CHARACTER ATL1 ATL2 ATL3 ATL4 ATL5 ATL6 ATL7
+%  VARIABLE CHARACTER ATLP ATLN ATLT ATLL ATLB ATLM
+%  VARIABLE CHARACTER CSEARCH
+%  VARIABLE INTEGER NBOND NMIN NMID NMAX
+%  VARIABLE REAL BMIN BMAX BINTMIN BINTMAX
+%  VARIABLE REAL BMMIN BMMID BMMAX
+%  VARIABLE INTEGER IORTHO IORTHO1 IORTHO2 IMETA1 IMETA2 IPARA
+%  VARIABLE INTEGER IPOS
+%%
+%% VARIABLE LOGICAL LCUT
+%%
+%% The script expects the file AtomsOrtho.dat to be present that contains the atoms to work on in orthogonal coordinates
+%% COPY '#SCRIPT A_ORTHOATOMS' % can be left if called elsewhere
+%%
+%  EVALUATE ICNT = IATOMCOUNT
+%%
+%% Here are the values used to distinguish between the different distances in the ring, the second is only used for 6-membered rings
+%%
+%  EVALUATE BINTMIN = 1.8
+%  EVALUATE BINTMAX = 2.6
+%  EVALUATE IMEAN = 0
+%  EVALUATE MEANBOND = 0.0
+%%
+%  TRANSFER "Number of atoms evaluated is " // CHARACTER ( ICNT ) // "." TO DISPLAY
+%%
+%% Compute all distances and keep atom labels
+%  TRANSFER '#RELEASE PUNCH AllDistances.dat' TO CRYSTALS
+%  COPY '#OPEN SCPDATA AtomsOrtho.dat'
+%  LOOP ICNT TIMES
+%    EVALUATE IPVT = LOOPCOUNTER
+%%   TRANSFER CHARACTER ( IPVT ) TO DISPLAY
+%% First get the pivot atom
+%    LOOP IPVT TIMES
+%      ON ERROR TERMINATE
+%      EXTRACT NEXT
+%    END LOOP
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET KEYWORD 'Atom'
+%    EVALUATE CATP = CVALUE
+%    GET REAL 'x'
+%    EVALUATE AT1X = VALUE
+%    GET REAL 'y'
+%    EVALUATE AT1Y = VALUE
+%    GET REAL 'z'
+%    EVALUATE AT1Z = VALUE
+%% Keep the atom label
+%    CASE IPVT
+%      EVALUATE ATL1 = CATP
+%      EVALUATE ATL2 = CATP
+%      EVALUATE ATL3 = CATP
+%      EVALUATE ATL4 = CATP
+%      EVALUATE ATL5 = CATP
+%      EVALUATE ATL6 = CATP
+%      EVALUATE ATL7 = CATP
+%    END CASE
+%%   TRANSFER CATP // " " // CHARACTER ( AT1X ) // " " // CHARACTER ( AT1Y ) // " " // CHARACTER ( AT1Z ) // " is pivot atom." TO DISPLAY
+%%   TRANSFER "Pivot " // CHARACTER ( IPVT ) // " " // CATP TO PUNCH
+%% We need the distances only once, so we do not rewind here
+%    EVALUATE IREM = ICNT - IPVT
+%%   TRANSFER CHARACTER ( IREM ) TO DISPLAY
+%    LOOP IREM TIMES
+%      ON ERROR TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Atom'
+%      EVALUATE CATM = CVALUE
+%      GET REAL 'x'
+%      EVALUATE AT2X = VALUE
+%      GET REAL 'y'
+%      EVALUATE AT2Y = VALUE
+%      GET REAL 'z'
+%      EVALUATE AT2Z = VALUE
+%      IF CATM .NE. CATP THEN
+%% Subtract the vectors.
+%        EVALUATE AT2X = AT2X - AT1X
+%        EVALUATE AT2Y = AT2Y - AT1Y
+%        EVALUATE AT2Z = AT2Z - AT1Z
+%% Compute the distance.
+%        EVALUATE BDISTS = AT2X * AT2X + AT2Y * AT2Y + AT2Z * AT2Z
+%        EVALUATE BDIST = SQRT ( BDISTS )
+%%       TRANSFER "Distance to pivot atom is " // CHARACTER ( BDIST ) // "." TO DISPLAY
+%% Write down the distances from the first atom for the ring ordering
+%%       TRANSFER CHARACTER ( IPVT ) // " " // CHARACTER ( IPVT + LOOPCOUNTER ) // " " // CHARACTER ( BDIST ) TO PUNCH
+%        TRANSFER CATP // " " // CATM // " " // CHARACTER ( BDIST ) TO PUNCH
+%        TRANSFER CATM // " " // CATP // " " // CHARACTER ( BDIST ) TO PUNCH
+%%
+%      ELSE
+%% We do not want to calculate the distance of the atom to itself, should be excluded as we calculate only looking ahead in the file
+%%       TRANSFER "This is the pivot atom." TO DISPLAY
+%      END IF
+%    END LOOP
+%    EXTRACT REWIND
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%  TRANSFER 'END' TO PUNCH
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+%  TRANSFER "{I Now assign labels to " // CHARACTER ( IRINGCNT - ICNT ) // " atoms to be created..." TO DISPLAY
+%%
+%  IF ( ICNT .GE. 3 ) .AND. ( IRINGCNT - ICNT .GT. 0 ) THEN
+%    TRANSFER CHARACTER ( IRINGCNT ) // ", " // CHARACTER ( ICNT ) TO DISPLAY
+%    TRANSFER "{I To be done later." TO DISPLAY
+%    FINISH
+%  END IF
+%%
+%  TRANSFER "{I Now find " // CHARACTER ( ICNT ) // " shortest and longest bonds..." TO DISPLAY
+%%
+%  EVALUATE NBOND = 0
+%%
+%  COPY '#OPEN SCPDATA AllDistances.dat'
+%  LOOP
+%    ON END TERMINATE
+%    ON ERROR TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET KEYWORD 'Atom'
+%    IF CVALUE .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EVALUATE CATP = CVALUE
+%      GET KEYWORD 'Atom'
+%      EVALUATE CATM = CVALUE
+%      GET REAL 'z'
+%      EVALUATE BDIST = VALUE
+%% Get the mean distance for the bonded atoms
+%      IF BDIST .LT. BINTMIN THEN
+%        EVALUATE IMEAN = IMEAN + 1
+%        EVALUATE MEANBOND = MEANBOND + BDIST
+%      END IF
+%% Find minimum and maximum
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        EVALUATE BMIN = BDIST
+%        EVALUATE BMAX = BDIST
+%      ELSE
+%        IF BDIST .LT. BMIN THEN
+%          EVALUATE BMIN = BDIST
+%        END IF
+%        IF BDIST .GT. BMAX THEN
+%          EVALUATE BMAX = BDIST
+%        END IF
+%      END IF
+%      EVALUATE NBOND = NBOND + 1
+%    END IF
+%  END LOOP
+%%
+%  TRANSFER "{I Shortest distance is " // CHARACTER ( BMIN ) // ", longest distance is "  // CHARACTER ( BMAX ) TO DISPLAY
+%%
+%  EVALUATE MEANBOND = MEANBOND / REAL ( IMEAN )
+%  TRANSFER "{I Mean bond distance is " // CHARACTER ( MEANBOND ) // "." TO DISPLAY
+%%
+%  TRANSFER "{I Finding neighbours..." TO DISPLAY
+%% TRANSFER "{I " // CHARACTER ( ICNT ) // " rounds:" TO DISPLAY
+%% TRANSFER "{I Labels " // ATL1 // " " // ATL2 // " " // ATL3 // " " // ATL4 // " " // ATL5 // " " // ATL6 // " " // ATL7 TO DISPLAY
+%%
+%  IF ICNT .EQ. 5 THEN
+%    EVALUATE ATL6 = ATL1
+%    EVALUATE ATL7 = ATL2
+%  END IF
+%  IF ICNT .EQ. 6 THEN
+%    EVALUATE ATL7 = ATL1
+%  END IF
+%%
+%% COPY '#OPEN SCPDATA AllDistances.dat'
+%  LOOP ICNT TIMES
+%    EVALUATE IPVT = LOOPCOUNTER
+%%
+%    EVALUATE IORTHO1 = IPVT + 1
+%    IF IORTHO1 .GT. ICNT THEN
+%      EVALUATE IORTHO1 = IORTHO1 - ICNT
+%    END IF
+%    EVALUATE IORTHO2 = IPVT + ICNT - 1
+%    IF IORTHO2 .GT. ICNT THEN
+%      EVALUATE IORTHO2 = IORTHO2 - ICNT
+%    END IF
+%    EVALUATE IMETA1 = IPVT + 2
+%    IF IMETA1 .GT. ICNT THEN
+%      EVALUATE IMETA1 = IMETA1 - ICNT
+%    END IF
+%    EVALUATE IMETA2 = IPVT + ICNT - 2
+%    IF IMETA2 .GT. ICNT THEN
+%      EVALUATE IMETA2 = IMETA2 - ICNT
+%    END IF
+%    EVALUATE IPARA = IPVT + 3
+%    IF IPARA .GT. ICNT THEN
+%      EVALUATE IPARA = IPARA - ICNT
+%    END IF
+%%   TRANSFER "{I o1: " // CHARACTER ( IORTHO1 ) // ", o2: "  // CHARACTER ( IORTHO2 ) // ",m1: "  // CHARACTER ( IMETA1 ) // ", m2: "  // CHARACTER ( IMETA2 ) // ", p: "  // CHARACTER ( IPARA ) TO DISPLAY
+%%
+%    ON END TERMINATE
+%    ON ERROR TERMINATE
+%    CASE LOOPCOUNTER
+%      EVALUATE ATLP = ATL1
+%      EVALUATE ATLP = ATL2
+%      EVALUATE ATLP = ATL3
+%      EVALUATE ATLP = ATL4
+%      EVALUATE ATLP = ATL5
+%      EVALUATE ATLP = ATL6
+%      EVALUATE ATLP = ATL7
+%    END CASE
+%%   TRANSFER "Round " // CHARACTER ( LOOPCOUNTER ) // " with pivot atom " // ATLP // "..." TO DISPLAY
+%%
+%    EVALUATE IREM = ICNT - IPVT
+%%   TRANSFER CHARACTER ( IREM ) TO DISPLAY
+%    LOOP IREM TIMES
+%%
+%      EVALUATE ITRY = IPVT + LOOPCOUNTER
+%%     TRANSFER CHARACTER ( ITRY ) TO DISPLAY
+%      CASE ITRY
+%        EVALUATE ATLN = ATL1
+%        EVALUATE ATLN = ATL2
+%        EVALUATE ATLN = ATL3
+%        EVALUATE ATLN = ATL4
+%        EVALUATE ATLN = ATL5
+%        EVALUATE ATLN = ATL6
+%        EVALUATE ATLN = ATL7
+%      END CASE
+%%
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        EVALUATE IORTHO = ITRY
+%      END IF
+%%
+%      EVALUATE CSEARCH = ATLP // " " // ATLN
+%%     TRANSFER " /" // CSEARCH // "/" TO DISPLAY
+%      CLEAR
+%      INSERT '% EXTRACT FIND STRING "'
+%      STORE CHARACTER CSEARCH
+%      INSERT '"'
+%      EXECUTE SEND
+%% Debug
+%      EXTRACT TRANSFER INPUT
+%      GET TEXT 'Record?'
+%%     TRANSFER CVALUE TO DISPLAY
+%% Debug
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Atoms'
+%      IF CVALUE .EQ. "END" THEN
+%%       EVALUATE LOOPEND = LOOPCOUNTER
+%        TRANSFER "Subround " // CHARACTER ( LOOPCOUNTER ) // ": Search string /" // CSEARCH1 // "/ not found." TO DISPLAY
+%      ELSE
+%        EVALUATE CATP = CVALUE
+%        GET KEYWORD 'Atom'
+%        EVALUATE CATM = CVALUE
+%        GET REAL 'z'
+%        EVALUATE BDIST = VALUE
+%%       TRANSFER "Subround " // CHARACTER ( LOOPCOUNTER ) // ": " // CATP // " " // CATM // ": " // CHARACTER ( BDIST ) TO DISPLAY
+%%       TRANSFER "Subround " // CHARACTER ( LOOPCOUNTER ) // ": " // CATP // ": " // CHARACTER ( BDIST ) TO DISPLAY
+%%
+%        IF BDIST .LE. BINTMIN THEN
+%%         IF ( ITRY .EQ. IORTHO1 ) .OR. ( ITRY .EQ. IORTHO2 ) THEN
+%          IF ITRY .EQ. IORTHO1 THEN
+%%           TRANSFER "{I " // CATP // "-" // CATM // ", ortho OK" TO DISPLAY
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          ELSE
+%            TRANSFER "{E Shift " // CATM // " to position " // CHARACTER ( IORTHO ) // "!" TO DISPLAY
+%            EVALUATE ISHIFT = ( ITRY - IORTHO ) + 1
+%%           TRANSFER "{E Shift " // CHARACTER ( ISHIFT ) // " times..." TO DISPLAY
+%%           TRANSFER "{E Round " // CHARACTER ( ITRY ) // "..." TO DISPLAY
+%            EVALUATE ATLM = CATM
+%%           TRANSFER "{I Move: " // ATLM TO DISPLAY
+%            LOOP ISHIFT TIMES
+%              EVALUATE IPOS = IORTHO + LOOPCOUNTER - 1
+%              IF IPOS .GT. ICNT THEN
+%                EVALUATE IPOS = IPOS - ( ICNT - IORTHO - 1 )
+%              END IF
+%%             TRANSFER "{E Working on position " // CHARACTER ( IPOS ) // " ..." TO DISPLAY
+%              CASE IPOS
+%                EVALUATE ATLB = ATL1
+%                EVALUATE ATLB = ATL2
+%                EVALUATE ATLB = ATL3
+%                EVALUATE ATLB = ATL4
+%                EVALUATE ATLB = ATL5
+%                EVALUATE ATLB = ATL6
+%                EVALUATE ATLB = ATL7
+%              END CASE
+%              CASE IPOS
+%                EVALUATE ATL1 = ATLM
+%                EVALUATE ATL2 = ATLM
+%                EVALUATE ATL3 = ATLM
+%                EVALUATE ATL4 = ATLM
+%                EVALUATE ATL5 = ATLM
+%                EVALUATE ATL6 = ATLM
+%                EVALUATE ATL7 = ATLM
+%              END CASE
+%%             TRANSFER "{I Move: " // ATLM TO DISPLAY
+%%             TRANSFER "{I Labels " // ATL1 // " " // ATL2 // " " // ATL3 // " " // ATL4 // " " // ATL5 // " " // ATL6 // " " // ATL7 TO DISPLAY
+%              EVALUATE ATLM = ATLB
+%%             TRANSFER "{I Move: " // ATLM TO DISPLAY
+%%
+%            END LOOP
+%%           TRANSFER "{I Labels " // ATL1 // " " // ATL2 // " " // ATL3 // " " // ATL4 // " " // ATL5 // " " // ATL6 // " " // ATL7 TO DISPLAY
+%          END IF
+%%       ELSE IF ( BDIST .GT. BINTMIN ) .AND. ( BDIST .LT. BINTMAX ) THEN
+%%         IF ( ITRY .EQ. IMETA1 ) .OR. ( ITRY .EQ. IMETA2 ) THEN
+%%           TRANSFER "{I Meta OK" TO DISPLAY
+%%         ELSE
+%%           TRANSFER "{E Action requited, not meta!" TO DISPLAY
+%%         END IF
+%%       ELSE IF BDIST .GE. BINTMAX THEN
+%%         IF ITRY .EQ. IPARA THEN
+%%           TRANSFER "{I Para OK" TO DISPLAY
+%%         ELSE
+%%           TRANSFER "{E Action requited, not para!" TO DISPLAY
+%%         END IF
+%        END IF
+%%
+%      END IF
+%    END LOOP
+%%
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF ICNT .EQ. 5 THEN
+%    EVALUATE COMMAND = "TARGET " // ATL1 // " " // ATL2 // " " // ATL3 // " " // ATL4 // " " // ATL5
+%  ELSE IF ICNT .EQ. 6 THEN
+%    EVALUATE COMMAND = "TARGET " // ATL1 // " " // ATL2 // " " // ATL3 // " " // ATL4 // " " // ATL5 // " " // ATL6
+%  END IF
+%  TRANSFER COMMAND TO DISPLAY
+%%
+%END SCRIPT
+%
+%  CLEAR
+%  INSERT 'Distance : '
+%  STORE FORMAT /(F8.5)/ LENGTH 9 REAL BDIST
+%  OUTPUT
+%END SCRIPT

@@ -1,0 +1,223 @@
+%SCRIPT CREATEASSEMBLY
+%%
+%% Variable to get various options from GUI
+%%
+%  VARIABLE INTEGER IOPTION
+%%
+%% Variables to call script getResiduesAndParts
+%%
+%  VARIABLE INTEGER NEXTFREER NEXTFREEA NEXTFREEP
+%%
+%% Variable to call script setUiso
+%%
+%  VARIABLE LOGICAL LSETMEAN
+%%
+%% Variables to call script addCentroid
+%%
+%  VARIABLE CHARACTER CENTROID
+%  VARIABLE LOGICAL LCENTROID
+%%
+%% Local variables
+%%
+%  VARIABLE CHARACTER CATM CELE CLINE CVEC CDEG
+%  VARIABLE INTEGER ISER IROUND ISELECTED IPEG IPEP
+%%
+%  VARIABLE INTEGER OFFSET OFFSETINC NGROUPS NROUNDS
+%  VARIABLE REAL ROCCTOTAL ROCCGROUP
+%%
+%% Variables for calling message window
+%%
+%  VARIABLE CHARACTER CTITLE CTEXT1 CTEXT2 CPOSITION
+%%
+%% CDEG???????????
+%%
+%  TRANSFER '{I Passed rotation angle is ' // CDEG // ' degrees...' TO DISPLAY
+%  TRANSFER '{I Passed option is ' // CHARACTER ( IOPTION ) // '.' TO DISPLAY
+%%
+%  COPY '#SCRIPT A_GETRESIDUESANDPARTS'
+%%
+%  EVALUATE IPEG = NEXTFREEP / 1000
+%  EVALUATE IPEP = NEXTFREEP - ( IPEG * 1000 )
+%%
+%% TRANSFER "{I Next free residue: " // CHARACTER ( NEXTFREER ) // ", assembly: " //  CHARACTER ( NEXTFREEA ) // ", part: " //  CHARACTER ( NEXTFREEP ) TO DISPLAY
+%%
+%% We want to start with group 1 in each assembly
+%  IF IPEP .EQ. 0 THEN
+%    EVALUATE NEXTFREEP = NEXTFREEP + 1
+%  END IF
+%%
+%  TRANSFER "{I Next free residue: " // CHARACTER ( NEXTFREER ) // ", assembly: " //  CHARACTER ( NEXTFREEA ) // ", part: " //  CHARACTER ( NEXTFREEP ) TO DISPLAY
+%%
+%  EVALUATE OFFSET = 0
+%  EVALUATE OFFSETINC = 100
+%  EVALUATE NGROUPS = 2
+%% EVALUATE NROUNDS = NGROUPS + 2
+%  EVALUATE NROUNDS = NGROUPS
+%  EVALUATE ROCCTOTAL = 1.0
+%  EVALUATE ROCCGROUP = ROCCTOTAL / REAL ( NGROUPS )
+%%
+%  TRANSFER "{I SOF of groups will be " // CHARACTER ( ROCCGROUP ) // "." TO DISPLAY
+%%
+%% Check the input and add centroid if needed
+%%
+%  EVALUATE LCENTROID = FALSE
+%%
+%  COPY '#SCRIPT A_ADDCENTROID'
+%%
+%% Get the atoms to define the rotation
+%%
+%  COPY '#OPEN SCPDATA MolaxDefinition.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card or after second atom
+%    IF ( CVALUE .EQ. 'END') .OR. ( LOOPCOUNTER .GT. 2 ) THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      CASE LOOPCOUNTER
+%        EVALUATE CVEC = CVALUE
+%        EVALUATE CVEC = CVEC // " " // CVALUE
+%      END CASE
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  TRANSFER '{I Vector is ' // CVEC // '.' TO DISPLAY
+%%
+%% Now we set all the atoms to be isotropic, and we set the U[iso] to the common mean
+%%
+%  EVALUATE LSETMEAN = TRUE
+%  COPY '#SCRIPT A_SETUISO'
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%  BLOCK
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT
+%    QUEUE COPY MONITOR OFF
+%    LOOP NROUNDS TIMES
+%      EVALUATE IROUND = LOOPCOUNTER
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          EVALUATE CATM = CVALUE
+%          EVALUATE CELE = FIRSTSTR ( CATM )
+%          EVALUATE ISER = FIRSTINT ( CATM )
+%          IF IROUND .EQ. 1 THEN
+%            CASE IOPTION
+%              EVALUATE CDEG = "0"
+%              EVALUATE CDEG = "-15"
+%              EVALUATE CDEG = "0"
+%            END CASE
+%% Modify original positions
+%%           EVALUATE CLINE = "UEQUIV " // CELE // "(" // CHARACTER ( ISER ) // ")"
+%%           CLEAR
+%%           STORE CHARACTER CLINE
+%%           QUEUE SEND
+%            EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", PART) " // CHARACTER ( NEXTFREEP )
+%            CLEAR
+%            STORE CHARACTER CLINE
+%            QUEUE SEND
+%            EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", OCC) " // CHARACTER ( ROCCGROUP )
+%            CLEAR
+%            STORE CHARACTER CLINE
+%            QUEUE SEND
+%% Now we rotate the original positions of the atoms
+%            IF CDEG .NE. "0" THEN
+%              EVALUATE CLINE = "ROTATE " // CDEG // " " // CVEC // " " // CELE // "(" // CHARACTER ( ISER ) // ")"
+%              CLEAR
+%              STORE CHARACTER CLINE
+%              QUEUE SEND
+%            END IF
+%            EVALUATE ISELECTED = ISELECTED + 1
+%%         ELSE IF IROUND .EQ. NROUNDS THEN
+%% We might be interested to keep the original positions, but for the moment we get rid of them
+%%           EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", TYPE) H"
+%% The idea to keep them as hydrogens with occ=0 is nice, but creates almost always clashes if not handled properly
+%%           EVALUATE CLINE = "DELETE " // CELE // "(" // CHARACTER ( ISER ) // ")"
+%%           CLEAR
+%%           STORE CHARACTER CLINE
+%%           QUEUE SEND
+%          ELSE
+%            CASE IOPTION
+%              EVALUATE CDEG = "180"
+%              EVALUATE CDEG = "30"
+%              EVALUATE CDEG = "15"
+%            END CASE
+%% Create the new positions
+%            EVALUATE CLINE = "CREATE " // CHARACTER ( OFFSET ) // " " // CATM
+%            CLEAR
+%            STORE CHARACTER CLINE
+%            QUEUE SEND
+%%           EVALUATE CLINE = "UEQUIV " // CELE // "(" // CHARACTER ( ISER + OFFSET ) // ")"
+%%           CLEAR
+%%           STORE CHARACTER CLINE
+%%           QUEUE SEND
+%            EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER + OFFSET ) // ", PART) " // CHARACTER ( NEXTFREEP )
+%            CLEAR
+%            STORE CHARACTER CLINE
+%            QUEUE SEND
+%            EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER + OFFSET ) // ", OCC) " // CHARACTER ( ROCCGROUP )
+%            CLEAR
+%            STORE CHARACTER CLINE
+%            QUEUE SEND
+%% Now we rotate the newly created atoms
+%            IF CDEG .NE. "0" THEN
+%              EVALUATE CLINE = "ROTATE " // CDEG // " " // CVEC // " " // CELE // "(" // CHARACTER ( ISER + OFFSET ) // ")"
+%              CLEAR
+%              STORE CHARACTER CLINE
+%              QUEUE SEND
+%            END IF
+%          END IF
+%        END IF
+%      END LOOP
+%      EVALUATE NEXTFREEP = NEXTFREEP + 1
+%      EVALUATE OFFSET = OFFSET + OFFSETINC
+%      EXTRACT REWIND
+%    END LOOP
+%    QUEUE COPY END
+%  END BLOCK
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    QUEUE PROCESS
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot execute your request"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%% If needed we rotate the new group here to match new positions with Q-peaks
+%%
+%  IF LCENTROID THEN
+%    TRANSFER "{I Deleting centroid..." TO DISPLAY
+%    COPY '#EDIT'
+%    COPY 'MONITOR OFF'
+%    CLEAR
+%    INSERT 'DELETE '
+%    STORE CHARACTER CENTROID
+%    SEND
+%    COPY 'END'
+%  END IF
+%%
+%% COPY '#SCRIPT A_REMOVEDUMMYATOMS'
+%%
+%END SCRIPT

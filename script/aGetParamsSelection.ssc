@@ -1,0 +1,92 @@
+%SCRIPT XGETPARAMSSELECTION
+%%
+%% Get the parameters from the GUI
+%%
+%  VARIABLE INTEGER IMODE
+%  VARIABLE INTEGER IOPTION
+%%
+%  VARIABLE LOGICAL LSELECTATOMS
+%%
+%  GET NOSTORE SILENT INTEGER 'Mode?' ' '
+%  EVALUATE IMODE = VALUE
+%%
+%  GET NOSTORE SILENT INTEGER 'Option?' ' '
+%  EVALUATE IOPTION = VALUE
+%%
+%% If IMODE = 6 or 9 store content of AtomsToWorkOn.dat in MolaxDefinition.dat
+%%
+%  IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%    IF ( IMODE .EQ. 6 ) .OR. ( IMODE .EQ. 9 ) THEN
+%      TRANSFER '{I Preserving content of AtomsToWorkOn.dat...' TO DISPLAY
+%      COPY '#RELEASE PUNCH MolaxDefinition.dat'
+%      COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET TEXT 'Atom'
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          TRANSFER CVALUE TO PUNCH
+%        END IF
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%      TRANSFER 'END' TO PUNCH
+%%     TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%    END IF
+%  END IF
+%%
+%  CASE IMODE
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%  END CASE
+%  LOOP
+%   ON END TERMINATE
+%   GET NOSTORE SILENT TEXT 'Atoms?' ' '
+%   TRANSFER CVALUE TO PUNCH
+%  END LOOP
+%  TRANSFER 'END' TO PUNCH
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+%  CASE IMODE
+%    TRANSFER '{I Required operation is store selection.' TO DISPLAY
+%    TRANSFER '{I Required operation is best line.' TO DISPLAY
+%    TRANSFER '{I Required operation is best plane.' TO DISPLAY
+%    TRANSFER '{I Required operation is regularize.' TO DISPLAY
+%    TRANSFER '{I Required operation is refine selection.' TO DISPLAY
+%    TRANSFER '{I Required operation is create assembly.' TO DISPLAY
+%    TRANSFER '{I Required operation is create dummy atom.' TO DISPLAY
+%    TRANSFER '{I Required operation is evaluate bond.' TO DISPLAY
+%    TRANSFER '{I Required operation is rotate selection.' TO DISPLAY
+%    TRANSFER '{I Required operation is exchange properties.' TO DISPLAY
+%  END CASE
+%%
+%% Variable that can be used to keep atoms selected
+%%
+%  EVALUATE LSELECTATOMS = TRUE
+%%
+%  CASE IMODE
+%    COPY '#SCRIPT A_RESETSELECTION'
+%    COPY '#SCRIPT A_CALCMOLAX'
+%    COPY '#SCRIPT A_CALCMOLAX'
+%    COPY '#SCRIPT A_REGULARISE'
+%    COPY '#SCRIPT A_REFINESELECTION'
+%    COPY '#SCRIPT A_CREATEASSEMBLY'
+%    COPY '#SCRIPT A_CREATECENTROID'
+%    COPY '#SCRIPT A_BONDSVALMENU'
+%    COPY '#SCRIPT A_ROTATEATOMSMENU'
+%    COPY '#SCRIPT A_EXCHANGEPOS'
+%  END CASE
+%%
+%END SCRIPT

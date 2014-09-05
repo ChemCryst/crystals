@@ -1,0 +1,49 @@
+%SCRIPT GETOTHERPART
+%%
+%% We need to count the atoms and give the count back to the calling routine
+%%
+%% Variables from calling routine
+%%
+%  VARIABLE INTEGER PRTNUM PRTCNT OPTNUM
+%%
+%% Local variables
+%%
+%  VARIABLE INTEGER IPTNM IPTFST ASSNUM IASNM
+%  VARIABLE LOGICAL LAWITH2PRTS
+%%
+%  EVALUATE ASSNUM = PRTNUM / 1000
+%  EVALUATE PRTCNT = 0
+%  EVALUATE IPTFST = 0
+%  EVALUATE LAWITH2PRTS = TRUE
+%  EVALUATE OPTNUM = 0
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=14 TO IPTNM'
+%      EVALUATE IASNM = IPTNM / 1000
+%% We want everything in the assembly without the part with the number PRTNUM
+%      IF ( ASSNUM .EQ. IASNM ) .AND. ( PRTNUM .NE. IPTNM ) THEN
+%        IF PRTCNT .EQ. 0 THEN
+%          EVALUATE IPTFST = IPTNM
+%        ELSE
+%          IF IPTFST .NE. IPTNM THEN
+%            EVALUATE LAWITH2PRTS = FALSE
+%          END IF
+%        END IF
+%        EVALUATE PRTCNT = PRTCNT + 1
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%  IF LAWITH2PRTS THEN
+%    EVALUATE OPTNUM = IPTFST
+%  END IF
+%%
+%END SCRIPT

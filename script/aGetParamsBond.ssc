@@ -1,0 +1,132 @@
+%SCRIPT XGETPARAMSBOND
+%%
+%% Get the parameters from the GUI
+%%
+%  VARIABLE INTEGER IMODE
+%  VARIABLE INTEGER IOPTION
+%  VARIABLE INTEGER NSEL
+%  VARIABLE LOGICAL T LSELECTATOMS
+%%
+%  GET NOSTORE SILENT INTEGER 'Mode?' ' '
+%  EVALUATE IMODE = VALUE
+%%
+%  GET NOSTORE SILENT INTEGER 'Option?' ' '
+%  EVALUATE IOPTION = VALUE
+%%
+%% Store atoms forming the bond in file
+%%
+%  CASE IMODE
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH SymmDefinition.dat' TO CRYSTALS
+%  END CASE
+%%
+%% No handling needed if second atom has symmetry information, this will be handled later.
+%%
+%  GET NOSTORE SILENT KEYWORD 'Atom1?' ' '
+%  TRANSFER CVALUE TO PUNCH
+%  GET NOSTORE SILENT TEXT 'Atom2?' ' '
+%  TRANSFER CVALUE TO PUNCH
+%  TRANSFER 'END' TO PUNCH
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+%% If IMODE = 2 store content of AtomsToWorkOn.dat, in case a previous selection should be used
+%%
+%  IF ( IMODE .EQ. 2 ) .AND. ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%    TRANSFER '{I Preserving content of AtomsToWorkOn.dat...' TO DISPLAY
+%    COPY '#RELEASE PUNCH PreviousSelection.dat'
+%    COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Atom'
+%      IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        TRANSFER CVALUE TO PUNCH
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%    TRANSFER 'END' TO PUNCH
+%%   TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%  END IF
+%%
+%% Store the selected atoms in file
+%%
+%  EVALUATE NSEL = 0
+%%
+%  CASE IMODE
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsNotUsed.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsNotUsed.dat' TO CRYSTALS
+%    TRANSFER '#RELEASE PUNCH AtomsToWorkOn.dat' TO CRYSTALS
+%  END CASE
+%  LOOP
+%   ON END TERMINATE
+%   GET NOSTORE SILENT TEXT 'Atoms?' ' '
+%   TRANSFER CVALUE TO PUNCH
+%   EVALUATE NSEL = NSEL + 1
+%  END LOOP
+%  IF NSEL .EQ. 0 THEN
+%    IF FILEEXISTS ( 'PreviousSelection.dat' ) THEN
+%      TRANSFER '{I Using preserved content of AtomsToWorkOn.dat...' TO DISPLAY
+%      COPY '#OPEN SCPDATA PreviousSelection.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET TEXT 'Atom'
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          TRANSFER CVALUE TO PUNCH
+%        END IF
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%    END IF
+%  END IF
+%  TRANSFER 'END' TO PUNCH
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+%  IF ( FILEEXISTS ( 'PreviousSelection.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'PreviousSelection.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'AtomsNotUsed.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'AtomsNotUsed.dat' )
+%  END IF
+%%
+%  CASE IMODE
+%    TRANSFER '{I Required operation is rotation.' TO DISPLAY
+%    TRANSFER '{I Required operation is best line.' TO DISPLAY
+%    TRANSFER '{I Required operation is evaluate bond.' TO DISPLAY
+%    TRANSFER '{I Required operation is create assembly.' TO DISPLAY
+%    TRANSFER '{I Required operation is select symm atom.' TO DISPLAY
+%    TRANSFER '{I Required operation is relocate symm selection.' TO DISPLAY
+%  END CASE
+%%
+%% Variables for a_rotateAtomsMenu
+%%
+%  EVALUATE LSELECTATOMS = TRUE
+%% CDEG is determined by a_rotateAtomsMenu
+%% EVALUATE CDEG = CHARACTER ( IOPTION )
+%%
+%  CASE IMODE
+%    COPY '#SCRIPT A_ROTATEATOMSMENU'
+%    COPY '#SCRIPT A_CALCMOLAX'
+%    COPY '#SCRIPT A_BONDSVALMENU'
+%    COPY '#SCRIPT A_CREATEASSEMBLY'
+%    COPY '#SCRIPT A_SELECTSYMMATOM'
+%    COPY '#SCRIPT A_TRANSSELECTION'
+%  END CASE
+%%
+%END SCRIPT

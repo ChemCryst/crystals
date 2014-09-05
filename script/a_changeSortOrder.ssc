@@ -1,0 +1,273 @@
+%SCRIPT CHANGESORTORDER
+%%
+%% Variable from calling script
+%%
+%  VARIABLE CHARACTER SORTORDER
+%%
+%  VARIABLE CHARACTER CTITLE CPOSITION NEWSORTORDER
+%  VARIABLE INTEGER ISEL NSEL NITEM
+%  VARIABLE LOGICAL LCHANGED LSELECTED L_OK T LDEBUG
+%%
+%  EVALUATE NSEL = 0
+%  EVALUATE NITEM = 1
+%  EVALUATE CTITLE = "Change sort order"
+%  EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%  EVALUATE LCHANGED = FALSE
+%  EVALUATE L_OK = FALSE
+%  EVALUATE LDEBUG = TRUE
+%  EVALUATE LDEBUG = FALSE
+%%
+%  IF ( FILEEXISTS ( 'NewSortOrder.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'NewSortOrder.dat' )
+%  END IF
+%%
+%% Keep a copy of this sort order in a file
+%%
+%  COPY '#OPEN SCPDATA SortOrder.dat'
+%  COPY '#RELEASE PUNCH SortOrderBck.dat'
+%  LOOP
+%    ON END TERMINATE
+%    ON ERROR TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    GET NOSTORE SILENT TEXT 'Next element?' ' '
+%    IF CVALUE .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      TRANSFER CVALUE TO PUNCH
+%    END IF
+%  END LOOP
+%  TRANSFER "END" TO PUNCH
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#CLOSE SCPDATA'
+%%
+%% Now the selection process starts
+%%
+%  LOOP
+%%
+%    IF LCHANGED THEN
+%%
+%      EVALUATE NSEL = NSEL + 1
+%      EVALUATE ISEL = VALUE
+%      COPY '#OPEN SCPDATA SortOrder.dat'
+%      LOOP ISEL TIMES
+%        EXTRACT NEXT
+%      END LOOP
+%      EXTRACT TRANSFER INPUT
+%      GET NOSTORE SILENT KEYWORD 'Bond length?' ' '
+%% Keep selection in character string NEWSORTORDER and in a file
+%      IF NSEL .EQ. 1 THEN
+%        EVALUATE NEWSORTORDER = CVALUE
+%        COPY '#RELEASE PUNCH SortOrderNew.dat'
+%          TRANSFER CVALUE TO PUNCH
+%        COPY '#RELEASE PUNCH bfile.pch'
+%      ELSE
+%        EVALUATE NEWSORTORDER = NEWSORTORDER // " " // CVALUE
+%        COPY '#APPEND PUNCH SortOrderNew.dat'
+%          TRANSFER CVALUE TO PUNCH
+%        COPY '#RELEASE PUNCH bfile.pch'
+%      END IF
+%      EVALUATE LCHANGED = FALSE
+%      COPY '#CLOSE SCPDATA'
+%%
+%      COPY '#OPEN SCPDATA SortOrder.dat'
+%      COPY '#RELEASE PUNCH NewSortOrder.dat'
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET NOSTORE SILENT TEXT 'Next element?' ' '
+%        IF LDEBUG THEN
+%          TRANSFER "1 " // CVALUE TO DISPLAY
+%        END IF
+%        IF CVALUE .EQ. "END" THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          IF LOOPCOUNTER .NE. ISEL THEN
+%            TRANSFER CVALUE TO PUNCH
+%          END IF
+%        END IF
+%      END LOOP
+%      TRANSFER "END" TO PUNCH
+%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#CLOSE SCPDATA'
+%%
+%      EVALUATE NITEM = 0
+%%
+%      COPY '#OPEN SCPDATA NewSortOrder.dat'
+%      COPY '#RELEASE PUNCH SortOrder.dat'
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET NOSTORE SILENT TEXT 'Next element?' ' '
+%        IF LDEBUG THEN
+%          TRANSFER "2 " // CVALUE TO DISPLAY
+%        END IF
+%        IF CVALUE .EQ. "END" THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          TRANSFER CVALUE TO PUNCH
+%          EVALUATE NITEM = NITEM + 1
+%        END IF
+%      END LOOP
+%      TRANSFER "END" TO PUNCH
+%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#CLOSE SCPDATA'
+%      EVALUATE T = FILEDELETE ( 'NewSortOrder.dat' )
+%%
+%    END IF
+%%
+%    IF LDEBUG THEN
+%      TRANSFER "{I Items:  " // CHARACTER ( NITEM ) TO DISPLAY
+%    END IF
+%%
+%    IF NITEM .EQ. 0 THEN
+%      IF LDEBUG THEN
+%        TRANSFER "{I End loop" TO DISPLAY
+%      END IF
+%      COPY '#APPEND PUNCH SortOrderNew.dat'
+%        TRANSFER "END" TO PUNCH
+%      COPY '#RELEASE PUNCH bfile.pch'
+%      EVALUATE L_OK = TRUE
+%    END IF
+%%
+^^WI WINDOW XCS
+% TRANSFER "^^WI '" // CTITLE // "'" TO DISPLAY
+^^WI MODAL
+% TRANSFER "^^WI POSITION" // CPOSITION TO DISPLAY
+^^WI GRID M NROWS=5 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=3 NCOLS=3 {
+^^WI     @ 1,1 STATIC T1 'Actual sort order:'
+% TRANSFER "^^WI     @ 1,3 STATIC T2 '" // SORTORDER // "'" TO DISPLAY
+^^WI     @ 3,1 STATIC T3 'New sort order:'
+% TRANSFER "^^WI     @ 3,3 STATIC T4 '" // NEWSORTORDER // "'" TO DISPLAY
+^^WI   }
+^^WI   @ 4,2 GRID B NROWS=1 NCOLS=5 {
+^^WI     @ 1,1 DROPDOWN DDEL INFORM=YES ADDTOLIST
+%%
+%    COPY '#OPEN SCPDATA SortOrder.dat'
+%    LOOP
+%      ON END TERMINATE
+%      ON ERROR TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      GET NOSTORE SILENT TEXT 'Next element?' ' '
+%      IF LDEBUG THEN
+%        TRANSFER "3 " // CVALUE TO DISPLAY
+%      END IF
+%      IF CVALUE .EQ. "END" THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        TRANSFER "^^WI     '" // CVALUE // "'" TO DISPLAY
+%      END IF
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%%
+^^WI     'NULL'
+^^WI     @ 1,3 BUTTON BCL '&Cancel'
+%    IF L_OK THEN
+^^WI     @ 1,5 BUTTON BOK '&OK' DEFAULT COMMIT CANCEL DISABLED=NO
+%    ELSE
+^^WI     @ 1,5 BUTTON BOK '&OK' DEFAULT COMMIT CANCEL DISABLED=YES
+%    END IF
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  VERIFY DDEL BCL BOK
+%  GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%  CASE VALUE
+%%
+%    BLOCK        % DDEL - dropdown
+%%
+%%     TRANSFER "{I DD activated..." TO DISPLAY
+%      GET SILENT NOSTORE INTEGER 'New value' '0'
+%      EVALUATE LCHANGED = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BCL - Cancel
+%%
+%      TRANSFER "{I Sort order is unchanged." TO DISPLAY
+%%
+%% Give back the original sort order in the file SortOrder.dat so that we can restart the process
+%%
+%      COPY '#OPEN SCPDATA SortOrderBck.dat'
+%      COPY '#RELEASE PUNCH SortOrder.dat'
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET NOSTORE SILENT TEXT 'Next element?' ' '
+%        IF CVALUE .EQ. "END" THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          TRANSFER CVALUE TO PUNCH
+%        END IF
+%      END LOOP
+%      TRANSFER "END" TO PUNCH
+%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#CLOSE SCPDATA'
+%%
+%      IF ( FILEEXISTS ( 'SortOrderBck.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'SortOrderBck.dat' )
+%      END IF
+%      IF ( FILEEXISTS ( 'SortOrderNew.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'SortOrderNew.dat' )
+%      END IF
+%%
+%      EVALUATE LOOPEND = LOOPCOUNTER
+^^CO   DISPOSE XCS
+%      FINISH
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BOK - CLOSE window
+%%
+%      EVALUATE SORTORDER = NEWSORTORDER
+%      TRANSFER "{I New sort order is " // SORTORDER // "." TO DISPLAY
+%%
+%% Give back the new sort order in the file SortOrder.dat so that we can restart the process
+%%
+%      COPY '#OPEN SCPDATA SortOrderNew.dat'
+%      COPY '#RELEASE PUNCH SortOrder.dat'
+%      LOOP
+%        ON END TERMINATE
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET NOSTORE SILENT TEXT 'Next element?' ' '
+%        IF CVALUE .EQ. "END" THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          TRANSFER CVALUE TO PUNCH
+%        END IF
+%      END LOOP
+%      TRANSFER "END" TO PUNCH
+%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#CLOSE SCPDATA'
+%%
+%      IF ( FILEEXISTS ( 'SortOrderBck.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'SortOrderBck.dat' )
+%      END IF
+%      IF ( FILEEXISTS ( 'SortOrderNew.dat' ) ) THEN
+%        EVALUATE T = FILEDELETE ( 'SortOrderNew.dat' )
+%      END IF
+%%
+%      EVALUATE LOOPEND = LOOPCOUNTER
+^^CO   DISPOSE XCS
+%      FINISH
+%%
+%    END BLOCK
+%%
+%  END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

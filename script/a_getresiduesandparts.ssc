@@ -9,8 +9,8 @@
 %%
 %% Variables for call of script a_SelectAtoms
 %%
-%  VARIABLE CHARACTER MODE ATOM
-%  VARIABLE INTEGER PARA
+%% VARIABLE CHARACTER MODE ATOM
+%% VARIABLE INTEGER PARA
 %%
 %% Variables for call of script a_restorePoint
 %%
@@ -289,14 +289,11 @@
 %  EVALUATE NEXTFREEP = NEXTFREEA * 1000 + 1
 %%
 %  IF LDEBUG THEN
-%    TRANSFER "{I Residues: " // CHARACTER ( ICOUNTR ) TO DISPLAY
-%    TRANSFER "{I parts   : " //  CHARACTER ( ICOUNTP ) TO DISPLAY
+%    TRANSFER "{I Residues: " // CHARACTER ( ICOUNTR ) // ", parts: " //  CHARACTER ( ICOUNTP ) TO DISPLAY
 %  END IF
 %%
 %  IF LDEBUG THEN
-%    TRANSFER "{I Next free residue: " // CHARACTER ( NEXTFREER ) TO DISPLAY
-%    TRANSFER "{I assembly: " //  CHARACTER ( NEXTFREEA ) TO DISPLAY
-%    TRANSFER "{I part: " //  CHARACTER ( NEXTFREEP ) TO DISPLAY
+%    TRANSFER "{I Next free residue: " // CHARACTER ( NEXTFREER ) // ", assembly: " //  CHARACTER ( NEXTFREEA ) // ", part: " //  CHARACTER ( NEXTFREEP ) TO DISPLAY
 %  END IF
 %%
 %END SCRIPT

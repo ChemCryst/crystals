@@ -1,0 +1,123 @@
+%SCRIPT SETUISO
+%%
+%% Variable to control if the Uiso values should be set to the common mean
+%%
+%  VARIABLE LOGICAL LSETMEAN
+%%
+%% Variable to give back to calling script
+%%
+%  VARIABLE INTEGER IATOMCOUNT
+%  VARIABLE REAL MEANUISO
+%%
+%  VARIABLE CHARACTER CATM CLINE CELE CCHK
+%  VARIABLE INTEGER ISER
+%  VARIABLE REAL RCHK RU11
+%%
+%% This should be set by the calling script
+%% EVALUATE LSETMEAN = TRUE
+%%
+%  EVALUATE IATOMCOUNT = 0
+%  EVALUATE MEANUISO = 0.0
+%%
+%  COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%  QUEUE REWIND
+%  QUEUE COPY #EDIT
+%  QUEUE COPY MONITOR OFF
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CATM = CVALUE
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EVALUATE IATOMCOUNT = IATOMCOUNT + 1
+%      EVALUATE CLINE = "UEQUIV " // CATM
+%      CLEAR
+%      STORE CHARACTER CLINE
+%      QUEUE SEND
+%    END IF
+%  END LOOP
+%  QUEUE COPY END
+%  IF IATOMCOUNT .EQ. 0 THEN
+%    TRANSFER "{I No atoms were investigated." TO DISPLAY
+%    EVALUATE MEANUISO = 0.05
+%    COPY '#CLOSE SCPDATA'
+%    FINISH
+%  END IF
+%% If we arrive here we have something to work on
+%  QUEUE PROCESS
+%  EXTRACT REWIND
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CATM = CVALUE
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EVALUATE CELE = FIRSTSTR ( CATM )
+%      EVALUATE ISER = FIRSTINT ( CATM )
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%        IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%          COPY 'TRANSFER FROM OFFSET=7 TO RU11'
+%          COPY 'END'
+%% Store Uiso in accumulator
+%          EVALUATE MEANUISO = MEANUISO + RU11
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%        END IF
+%        COPY 'NEXT'
+%      END LOOP
+%    END IF
+%  END LOOP
+%  EVALUATE MEANUISO = MEANUISO / REAL ( IATOMCOUNT )
+%  TRANSFER "{I Number of atoms investigated is " // CHARACTER ( IATOMCOUNT ) // "." TO DISPLAY
+%  TRANSFER "{I Mean U[iso] is " // CHARACTER ( MEANUISO ) // "." TO DISPLAY
+%%
+%% Now we see if we should also modify the Uiso values
+%  IF LSETMEAN THEN
+%    EXTRACT REWIND
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT
+%    QUEUE COPY MONITOR OFF
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Atom'
+%      EVALUATE CATM = CVALUE
+%      IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE CELE = FIRSTSTR ( CATM )
+%        EVALUATE ISER = FIRSTINT ( CATM )
+%        EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", U[ISO]) " // CHARACTER ( MEANUISO )
+%        CLEAR
+%        STORE CHARACTER CLINE
+%        QUEUE SEND
+%      END IF
+%    END LOOP
+%    QUEUE COPY END
+%    QUEUE PROCESS
+%    TRANSFER "{I The U[iso] values of " // CHARACTER ( IATOMCOUNT ) // " atoms have been set to the common mean." TO DISPLAY
+%  END IF
+%%
+%  COPY '#CLOSE SCPDATA'
+%%
+%END SCRIPT

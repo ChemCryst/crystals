@@ -1,0 +1,9 @@
+%  SCRIPT REFINE5
+%%
+%  LOOP 5 TIMES
+%    COPY '#SFLS'
+%    COPY 'REFINE'
+%    COPY 'END'
+%  END LOOP
+%%
+%END SCRIPT

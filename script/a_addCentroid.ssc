@@ -1,0 +1,74 @@
+%SCRIPT ADDCENTROID
+%%
+%% RETURN VALUES:
+%%     CENTROID - Name of centroid of the atoms to work on, is determined by a_createCentroid.scp
+%%     LCENTROID - Logical that tells the calling script that the centroid has been added
+%%
+%% INPUT:
+%%     The files MolaxDefinitions.dat and AtomsToWorkOn.dat
+%%
+%% Check if we can get rid of this variable when adding the call early enough
+%% VARIABLE CHARACTER CATOMS
+%%
+%  VARIABLE CHARACTER CATOM CATOM1 CATOM2 CENTROID
+%% VARIABLE CHARACTER CATN
+%  VARIABLE INTEGER ICNT 
+%% VARIABLE INTEGER IATS
+%  VARIABLE LOGICAL LCENTROID
+%%
+%% VARIABLE CHARACTER CLTYPE
+%% VARIABLE REAL SERIAL
+%% VARIABLE REAL ATX ATY ATZ ATSX ATSY ATSZ ATMX ATMY ATMZ
+%%
+%  EVALUATE LCENTROID = FALSE
+%  EVALUATE ICNT = 0
+%%
+%  COPY '#OPEN SCPDATA MolaxDefinition.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CATOM = CVALUE
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%% We keep the atom name of the first atom, in case we need it later
+%      CASE LOOPCOUNTER
+%        EVALUATE CATOM1 = CATOM
+%      END CASE
+%      EVALUATE ICNT = ICNT + 1
+%    END IF
+%  END LOOP
+%%
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF ICNT .LT. 1 THEN
+%    TRANSFER "{E No atoms are found in MolaxDefinitions.dat, CRYSTALS has to stop." TO DISPLAY
+%    FINISH
+%  END IF
+%%
+%  IF ICNT .GE. 2 THEN
+%    TRANSFER "{I At least two atoms are found in MolaxDefinitions.dat, CRYSTALS can continue without adding the centroid." TO DISPLAY
+%    FINISH
+%  END IF
+%%
+%% If we arrive here we have to add the centroid to the file MolaxDefinitions.dat. a_createCentroid stores it in CENTROID
+%%
+%  COPY '#SCRIPT A_CREATECENTROID'
+%%
+%  EVALUATE CATOM2 = CENTROID
+%%
+%  TRANSFER '#RELEASE PUNCH MolaxDefinition.dat' TO CRYSTALS
+%  TRANSFER CATOM1 TO PUNCH
+%  TRANSFER CATOM2 TO PUNCH
+%  TRANSFER 'END' TO PUNCH
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+%  TRANSFER "{I Centroid added to MolaxDefinitions.dat." TO DISPLAY
+%%
+%  EVALUATE LCENTROID = TRUE
+%%
+%END SCRIPT

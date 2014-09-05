@@ -1,0 +1,1143 @@
+%SCRIPT GETBONDSANGLES
+%%
+%% Call: \script a_getbondsangles
+%%
+%% Variables we need from calling script
+%%
+%  VARIABLE INTEGER IASSEMBLY
+%  VARIABLE LOGICAL LDISTEXT LDISTEQEXT LDISTEQEXTM LDIST LDISTEQINT LDISTEQINTM
+%  VARIABLE REAL RDISTEXTVAL RDISTEXTESD RDISTVAL RDISTESD
+%  VARIABLE LOGICAL LANGL LANGLEQALL LANGLEQMEAN
+%  VARIABLE REAL RANGLVAL RANGLESD
+%  VARIABLE LOGICAL LVIBR LVIBRPAIRS
+%  VARIABLE REAL RVIBRESD
+%  VARIABLE LOGICAL LUIJS LUIJSPAIRS
+%  VARIABLE REAL RUIJSESD
+%  VARIABLE LOGICAL LSAME LDELU LSIMU
+%%
+%% Variables used by script calcDistPivot
+%%
+%  VARIABLE CHARACTER CPIVOT
+%  VARIABLE LOGICAL LCALCALL LSELRANGE
+%%
+%% Variables to call the scripts checkAtom, listPart, (listOtherPart,) getOtherPart and checkAssembly
+%%
+%  VARIABLE CHARACTER CATOMLABEL CPAIRLABEL
+%  VARIABLE INTEGER PRTNUM PRTCNT OPTNUM IRCOUNT
+%  VARIABLE LOGICAL LATOMEXISTS
+%%
+%% Variables to call script xMessage
+%%
+%  VARIABLE CHARACTER CTITLE CTEXT1 CTEXT2 CPOSITION
+%%
+%% Variables to call script zAddLi16
+%%
+%  VARIABLE CHARACTER KEYBREAK
+%%
+%% Variables to call script selectAtoms and to get atom name
+%% CHECK THIS!!!!!
+%%
+%  VARIABLE CHARACTER MODE ATOM
+%  VARIABLE INTEGER PARA
+%%
+%% Local variables, IPART will be defined by script a_getFirstPart
+%%
+%  VARIABLE INTEGER IPART IOPRT IPART1 IPART2 IPART3 IPART11 IPART12 IPART13 PCOUNT1 PCOUNT2
+%%
+%  VARIABLE CHARACTER CPIVOT1 CPIVOT2
+%  VARIABLE CHARACTER CRECORD CELEM1 CELEM2 CELEM3 CELEM4 CELEM5 CELEM6 CELEM7 CELEM8
+%  VARIABLE CHARACTER CELEM14 CELEM16 CELEM18
+%%
+%  VARIABLE CHARACTER CATYPE1 CATYPE2 CATYPE3
+%  VARIABLE INTEGER ISER1 ISER2 ISER3 OFFSET ICYCLE IPCOUNT INPART1 INPART2 INPAIRS IPERL IONL
+%% VARIABLE INTEGER ISER11 ISER12 ISER13
+%%
+%  VARIABLE LOGICAL L_ATEXALL L_ATEXALL2 L_EXT1 L_EXT2
+%%
+%  VARIABLE LOGICAL LDEBUG LTEST LSCP2
+%%
+%% The following variable determines if the second unit to read from is available for the script getpairs
+%%
+%  EVALUATE LSCP2 = TRUE
+% EVALUATE LSCP2 = FALSE
+%%
+%  EVALUATE LDEBUG = TRUE
+%  EVALUATE LDEBUG = FALSE
+%  EVALUATE LTEST = TRUE
+%  EVALUATE LTEST = FALSE
+%%
+%% We get the assembly number as variable IASSEMBY from the calling script, the following call gets the first part number of the assembly
+%%
+%  COPY '#SCRIPT A_GETFIRSTPART'
+%%
+%% The part number is now stored in PRTNUM: If it is 0, some error occured
+%%
+%  IF PRTNUM = 0 THEN
+%    EVALUATE CTITLE = "Error searching first group of assembly " // CHARACTER ( IASSEMBLY )
+%    EVALUATE CTEXT1 = "Something is odd if the first part number of the"
+%    EVALUATE CTEXT2 = "assembly is returned as being zero. We have to stop."
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_XMESSAGE'
+%    FINISH
+%  END IF
+%%
+%% Now we get the second part number of the assembly
+%%
+%  COPY '#SCRIPT A_GETOTHERPART'
+%%
+%% If OPTNUM = 0 then some error occured. There could be user choices to handle that.
+%%
+%  IF OPTNUM = 0 THEN
+%    EVALUATE CTITLE = "Error searching second group of assembly " // CHARACTER ( IASSEMBLY )
+%    EVALUATE CTEXT1 = "This script is designed to generate restraints for two component"
+%    EVALUATE CTEXT2 = "disorder assemblies. Please repeat after fixing this problem."
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_XMESSAGE'
+%    FINISH
+%  END IF
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "{I Assembly contains groups " // CHARACTER ( PRTNUM ) // " and " // CHARACTER ( OPTNUM ) // "." TO DISPLAY
+%  END IF
+%%
+%  EVALUATE CPIVOT1 = "PART(" // CHARACTER ( PRTNUM ) // ")"
+%  EVALUATE CPIVOT2 = "PART(" // CHARACTER ( OPTNUM ) // ")"
+%  EVALUATE CPIVOT = CPIVOT1
+%  TRANSFER "{I Pivot 'atom' is " // CPIVOT // "." TO DISPLAY
+%  EVALUATE IPART = PRTNUM
+%  EVALUATE IOPRT = OPTNUM
+%%
+%% Get a list of all atoms in both parts of the assembly
+%%
+%  COPY '#RELEASE PUNCH thisAssembly.dat'
+%%
+%  TRANSFER "PART1" TO PUNCH
+%  COPY '#SCRIPT A_LISTPART'
+%  EVALUATE PCOUNT1 = PRTCNT
+%%
+%  TRANSFER "PART2" TO PUNCH
+%  EVALUATE PRTNUM = OPTNUM
+%  COPY '#SCRIPT A_LISTPART'
+%  EVALUATE PCOUNT2 = PRTCNT
+%  EVALUATE PRTNUM = IPART
+%%
+%  COPY '#RELEASE PUNCH bfile.pch'
+%%
+%  IF PCOUNT1 .LT. PCOUNT2 THEN
+%%
+%    IF LDEBUG THEN
+%      TRANSFER "{I Second group contains more atoms than first, swapping groups." TO DISPLAY
+%    END IF
+%%
+%    COPY '#RELEASE PUNCH thisAssembly.dat'
+%%
+%    TRANSFER "PART1" TO PUNCH
+%    EVALUATE PRTNUM = OPTNUM
+%    COPY '#SCRIPT A_LISTPART'
+%    EVALUATE PCOUNT1 = PRTCNT
+%    EVALUATE PRTNUM = IPART
+%%
+%    TRANSFER "PART2" TO PUNCH
+%    COPY '#SCRIPT A_LISTPART'
+%    EVALUATE PCOUNT2 = PRTCNT
+%%
+%    COPY '#RELEASE PUNCH bfile.pch'
+%%
+%% This is to keep everything consistent
+%%
+%    TRANSFER CPIVOT1 // " " // CPIVOT2 TO DISPLAY
+%    EVALUATE CPIVOT = CPIVOT2
+%    EVALUATE CPIVOT2 = CPIVOT1
+%    EVALUATE CPIVOT1 = CPIVOT
+%    TRANSFER CPIVOT1 // " " // CPIVOT2 TO DISPLAY
+%%
+%  END IF
+%%
+%% This variable is needed to produce the strings for the SAME, DELU and SIMU instructions
+%%
+%  EVALUATE INPAIRS = PCOUNT2
+%%
+%% Check consistency of assembly and work out the offset
+%%
+%  EVALUATE OFFSET = 0
+%  COPY '#SCRIPT A_CHECKASSEMBLY'
+%%
+%  TRANSFER "{I Offset is " // CHARACTER ( OFFSET ) // "." TO DISPLAY
+%%
+%% Calculate distances and write them to files
+%%
+%  TRANSFER "{I Calculating connectivity of groups in the assembly, this may take a few seconds..." TO DISPLAY
+%%
+%% Value of LCALCALL depends on whether we are looking for contacts within the part or outside
+%% Choosing FALSE will not produce the duplicates, and searching external distances there are no
+%% duplicates when calculating the distances from the part used as pivot atom.
+%%
+%% See if we need to change PIVOT1 and PIVOT2 if the second group contains more atoms and is swapped
+%%
+%  COPY '#RELEASE PUNCH external.dat'
+%%
+%  TRANSFER "PART1" TO PUNCH
+%%
+%  EVALUATE LCALCALL = TRUE
+%  EVALUATE LSELRANGE = FALSE
+%  EVALUATE CPIVOT = CPIVOT1
+%  COPY '#SCRIPT A_CALCDISTPIVOT'
+%%
+%  TRANSFER "PART2" TO PUNCH
+%%
+%  EVALUATE LCALCALL = TRUE
+%  EVALUATE LSELRANGE = FALSE
+%  EVALUATE CPIVOT = CPIVOT2
+%  COPY '#SCRIPT A_CALCDISTPIVOT'
+%%
+%  COPY '#RELEASE PUNCH internal.dat'
+%%
+%% If the second unit to read from is not present we need to write the pairs in the same file
+%%
+%  IF .NOT. LSCP2 THEN
+%    COPY '#SCRIPT A_WRITEPAIRS'
+%  END IF
+%%
+%  EVALUATE LCALCALL = FALSE
+%  EVALUATE LSELRANGE = FALSE
+%  EVALUATE CPIVOT = CPIVOT1
+%  COPY '#SCRIPT A_CALCDISTPIVOT'
+%%
+%  COPY '#RELEASE PUNCH extbonds.dat'
+%%
+%  EVALUATE IRCOUNT = 0
+%  EVALUATE IPCOUNT = 0
+%  EVALUATE INPART1 = 0
+%  EVALUATE INPART2 = 0
+%%
+%  COPY '#OPEN SCPDATA external.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EVALUATE IRCOUNT = IRCOUNT + 1
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record'
+%    EVALUATE CRECORD = CVALUE
+%%   TRANSFER CRECORD // "/" TO DISPLAY
+%    IF ( CRECORD STARTSWITH "PART" ) THEN
+%      EVALUATE IPCOUNT = IPCOUNT + 1
+%      IF IPCOUNT .GT. 1 THEN
+%        TRANSFER "END" TO PUNCH
+%      END IF
+%      TRANSFER CVALUE TO PUNCH
+%    END IF
+%    IF ( CRECORD STARTSWITH "DIST" ) THEN
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Instruction'
+%      EVALUATE CELEM1 = CVALUE
+%      GET KEYWORD 'Dist'
+%      EVALUATE CELEM2 = CVALUE
+%      GET KEYWORD 'esd'
+%      EVALUATE CELEM3 = CVALUE
+%      GET KEYWORD 'Atom 1'
+%      EVALUATE CELEM4 = CVALUE
+%      GET KEYWORD 'to'
+%      EVALUATE CELEM5 = CVALUE
+%      GET TEXT 'Atom 2'
+%      EVALUATE CELEM6 = CVALUE
+%      IF LDEBUG THEN
+%        TRANSFER "Distance found from " // CELEM4 // " to " // CELEM6 TO DISPLAY
+%      END IF
+%% Check if atoms exist
+%      EVALUATE L_ATEXALL = TRUE
+%      EVALUATE CATOMLABEL = CELEM4
+%      COPY '#SCRIPT A_CHECKATOM'
+%      EVALUATE IPART1 = PRTNUM
+%      IF .NOT. LATOMEXISTS THEN
+%        EVALUATE L_ATEXALL = FALSE
+%      END IF
+%      EVALUATE CATOMLABEL = CELEM6
+%      COPY '#SCRIPT A_CHECKATOM'
+%      EVALUATE IPART2 = PRTNUM
+%      IF .NOT. LATOMEXISTS THEN
+%        EVALUATE L_ATEXALL = FALSE
+%      END IF
+%%
+%% For the external bonds only one atom has to be in the part
+%%
+%      EVALUATE L_EXT1 = FALSE
+%      EVALUATE L_EXT2 = FALSE
+%      IF ( ( IPART1 .EQ. IPART ) .AND. ( IPART2 .NE. IPART ) ) .OR. ( ( IPART1 .NE. IPART ) .AND. ( IPART2 .EQ. IPART ) ) THEN
+%        EVALUATE L_EXT1 = TRUE
+%      END IF
+%      IF ( ( IPART1 .EQ. IOPRT ) .AND. ( IPART2 .NE. IOPRT ) ) .OR. ( ( IPART1 .NE. IOPRT ) .AND. ( IPART2 .EQ. IOPRT ) ) THEN
+%        EVALUATE L_EXT2 = TRUE
+%      END IF
+%%
+%      IF L_EXT1 .OR. L_EXT2 THEN
+%%
+%% We only generate restraints for non H atoms, so find type and calculate new serial
+%%
+%        EVALUATE CATYPE1 = FIRSTSTR ( CELEM4 )
+%%       EVALUATE ISER1 = FIRSTINT ( CELEM4 )
+%        EVALUATE CATYPE2 = FIRSTSTR ( CELEM6 )
+%%       EVALUATE ISER2 = FIRSTINT ( CELEM6 )
+%%
+%        IF ( CATYPE1 .NE. "H" ) .AND. ( CATYPE2 .NE. "H" ) THEN
+%%
+%% With the external bonds we do not search pairs as all bonds are calculated, so write the line to file
+%%
+%          IF L_ATEXALL THEN
+%            CASE IPCOUNT
+%              EVALUATE INPART1 = INPART1 + 1
+%              EVALUATE INPART2 = INPART2 + 1
+%            END CASE
+%            TRANSFER CELEM4 // " TO " // CELEM6 TO PUNCH
+%          END IF
+%%
+%        END IF
+%%
+%      END IF
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%  COPY '#RELEASE PUNCH templates.dat'
+%%
+%% First we write the pairs
+%%
+%  TRANSFER "PAIRS" TO PUNCH
+%%
+%  COPY '#OPEN SCPDATA pairs.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record'
+%    IF CVALUE .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EXTRACT TRANSFER INPUT
+%      GET KEYWORD 'Atom 1'
+%      EVALUATE CELEM1 = CVALUE
+%      GET TEXT 'Atom 2'
+%      EVALUATE CELEM2 = CVALUE
+%      IF CELEM1 .NE. "DUMMY" .AND. CELEM2 .NE. "DUMMY" THEN
+%        TRANSFER "CONTINUE " // CELEM1 // " TO " // CELEM2 TO PUNCH
+%      END IF
+%    END IF
+%  END LOOP
+%%
+%% Now we write the two groups as strings for the SAME, DELU and SIMU instructions
+%%
+%  TRANSFER "GROUPS" TO PUNCH
+%%
+%  EXTRACT REWIND
+%%
+%  EVALUATE IPERL = 8
+%%
+%  LOOP 2 TIMES
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EVALUATE ICYCLE = LOOPCOUNTER
+%    EVALUATE IONL = 0
+%%
+%    LOOP INPAIRS TIMES
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        EVALUATE CRECORD = "CONTINUE"
+%      END IF
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Record'
+%      IF CVALUE .EQ. "END" THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EXTRACT TRANSFER INPUT
+%        GET KEYWORD 'Atom 1'
+%        EVALUATE CELEM1 = CVALUE
+%        GET TEXT 'Atom 2'
+%        EVALUATE CELEM2 = CVALUE
+%        IF CELEM1 .NE. "DUMMY" .AND. CELEM2 .NE. "DUMMY" THEN
+%          EVALUATE IONL = IONL + 1
+%          CASE ICYCLE
+%            EVALUATE CRECORD = CRECORD // " " // CELEM1
+%            EVALUATE CRECORD = CRECORD // " " // CELEM2
+%          END CASE
+%          IF LOOPCOUNTER .EQ. INPAIRS THEN
+%            IF ICYCLE .EQ. 1 THEN
+%              EVALUATE CRECORD = CRECORD // " AND"
+%            END IF
+%            TRANSFER CRECORD TO PUNCH
+%          ELSE
+%            IF IONL .GE. IPERL THEN
+%              TRANSFER CRECORD TO PUNCH
+%              EVALUATE CRECORD = "CONTINUE"
+%              EVALUATE IONL = 0
+%            END IF
+%          END IF
+%        END IF
+%      END IF
+%    END LOOP
+%%
+%    EXTRACT REWIND
+%%
+%  END LOOP
+%%
+%  COPY '#CLOSE SCPDATA'
+%%
+%% Filter bonds and angles within the part: first find the external bonds
+%%
+%  TRANSFER "EXTERNAL" TO PUNCH
+%%
+%  COPY '#OPEN SCPDATA extbonds.dat'
+%  LOOP INPART1 TIMES
+%    EVALUATE ICYCLE = LOOPCOUNTER
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%%
+%    EXTRACT FIND STRING "PART1"
+%    LOOP ICYCLE TIMES
+%      EXTRACT NEXT
+%    END LOOP
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Bond 1'
+%    EVALUATE CELEM1 = CVALUE
+%%
+%    IF INPART2 .GE. ICYCLE THEN
+%      EXTRACT FIND STRING "PART2"
+%      LOOP ICYCLE TIMES
+%        EXTRACT NEXT
+%      END LOOP
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Bond 2'
+%      EVALUATE CELEM2 = CVALUE
+%      TRANSFER "CONTINUE " // CELEM1 // " " // CELEM2 TO PUNCH
+%    ELSE
+%      TRANSFER "CONTINUE " // CELEM1 TO PUNCH
+%    END IF
+%%
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%% Filter bonds and angles within the part: Now find the internal bonds and the angles
+%%
+%  TRANSFER "DISTANCES" TO PUNCH
+%%
+%  EVALUATE IRCOUNT = 0
+%%
+%  COPY '#OPEN SCPDATA internal.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%%   ON ERROR CONTINUE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EVALUATE IRCOUNT = IRCOUNT + 1
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record'
+%    EVALUATE CRECORD = CVALUE
+%%   TRANSFER CRECORD // "/" TO DISPLAY
+%    IF ( CRECORD STARTSWITH "DIST" ) THEN
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Instruction'
+%      EVALUATE CELEM1 = CVALUE
+%      GET KEYWORD 'Dist'
+%      EVALUATE CELEM2 = CVALUE
+%      GET KEYWORD 'esd'
+%      EVALUATE CELEM3 = CVALUE
+%      GET KEYWORD 'Atom 1'
+%      EVALUATE CELEM4 = CVALUE
+%      GET KEYWORD 'to'
+%      EVALUATE CELEM5 = CVALUE
+%      GET TEXT 'Atom 2'
+%      EVALUATE CELEM6 = CVALUE
+%      IF LDEBUG THEN
+%        TRANSFER "Distance found from " // CELEM4 // " to " // CELEM6 TO DISPLAY
+%      END IF
+%% Check if atoms exist
+%      EVALUATE L_ATEXALL = TRUE
+%      EVALUATE CATOMLABEL = CELEM4
+%      COPY '#SCRIPT A_CHECKATOM'
+%      EVALUATE IPART1 = PRTNUM
+%      IF .NOT. LATOMEXISTS THEN
+%        EVALUATE L_ATEXALL = FALSE
+%      END IF
+%      EVALUATE CATOMLABEL = CELEM6
+%      COPY '#SCRIPT A_CHECKATOM'
+%      EVALUATE IPART2 = PRTNUM
+%      IF .NOT. LATOMEXISTS THEN
+%        EVALUATE L_ATEXALL = FALSE
+%      END IF
+%%
+%% For the internal bonds both atoms have to be in the same part
+%%
+%      IF ( IPART1 .EQ. IPART ) .AND. ( IPART2 .EQ. IPART ) .OR. ( IPART1 .EQ. IOPRT ) .AND. ( IPART2 .EQ. IOPRT ) THEN
+%%
+%% We only generate restraints for non H atoms, so find type and calculate new serial
+%%
+%        EVALUATE CATYPE1 = FIRSTSTR ( CELEM4 )
+%%       EVALUATE ISER1 = FIRSTINT ( CELEM4 )
+%        EVALUATE CATYPE2 = FIRSTSTR ( CELEM6 )
+%%       EVALUATE ISER2 = FIRSTINT ( CELEM6 )
+%%
+%        IF ( CATYPE1 .NE. "H" ) .AND. ( CATYPE2 .NE. "H" ) THEN
+%%
+%% We search the pair
+%%
+%          EVALUATE CATOMLABEL = CELEM4
+%          COPY '#SCRIPT A_GETPAIRS'
+%          EVALUATE CELEM14 = CPAIRLABEL
+%%
+%% The same for the second atom of the bond
+%%
+%          EVALUATE CATOMLABEL = CELEM6
+%          COPY '#SCRIPT A_GETPAIRS'
+%          EVALUATE CELEM16 = CPAIRLABEL
+%%
+%% Check if both atoms from other group exist and get their part numbers
+%% If atoms exist only from one pair because one is a DUMMY then write one
+%%
+%          EVALUATE L_ATEXALL2 = TRUE
+%%
+%          EVALUATE CATOMLABEL = CELEM14
+%          COPY '#SCRIPT A_CHECKATOM'
+%          EVALUATE IPART11 = PRTNUM
+%          IF .NOT. LATOMEXISTS THEN
+%            EVALUATE L_ATEXALL2 = FALSE
+%          END IF
+%          EVALUATE CATOMLABEL = CELEM16
+%          COPY '#SCRIPT A_CHECKATOM'
+%          EVALUATE IPART12 = PRTNUM
+%          IF .NOT. LATOMEXISTS THEN
+%            EVALUATE L_ATEXALL2 = FALSE
+%          END IF
+%% Now write the line to file
+%          IF L_ATEXALL THEN
+%            IF L_ATEXALL2 THEN
+%              TRANSFER "CONTINUE " // CELEM4 // " TO " // CELEM6 // " " // CELEM14 // " TO " // CELEM16 TO PUNCH
+%            ELSE
+%              TRANSFER "CONTINUE " // CELEM4 // " TO " // CELEM6 TO PUNCH
+%            END IF
+%          END IF
+%%
+%        END IF
+%%
+%      END IF
+%    END IF
+%  END LOOP
+%%
+%  EXTRACT REWIND
+%%
+%  TRANSFER "ANGLES" TO PUNCH
+%%
+%  EVALUATE IRCOUNT = 0
+%%
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EVALUATE IRCOUNT = IRCOUNT + 1
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record'
+%    EVALUATE CRECORD = CVALUE
+%%   TRANSFER CRECORD // "/" TO DISPLAY
+%    IF ( CRECORD STARTSWITH "ANGL" ) THEN
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Instruction'
+%      EVALUATE CELEM1 = CVALUE
+%      GET KEYWORD 'Angle'
+%      EVALUATE CELEM2 = CVALUE
+%      GET KEYWORD 'esd'
+%      EVALUATE CELEM3 = CVALUE
+%      GET KEYWORD 'Atom 1'
+%      EVALUATE CELEM4 = CVALUE
+%      GET KEYWORD 'to'
+%      EVALUATE CELEM5 = CVALUE
+%      GET KEYWORD 'Atom 2'
+%      EVALUATE CELEM6 = CVALUE
+%      GET KEYWORD 'to'
+%      EVALUATE CELEM7 = CVALUE
+%      GET TEXT 'Atom 3'
+%      EVALUATE CELEM8 = CVALUE
+%      IF LDEBUG THEN
+%        TRANSFER "Angle found from " // CELEM4 // " to " // CELEM6 // " to " // CELEM8 TO DISPLAY
+%      END IF
+%% Check if atoms exist
+%      EVALUATE L_ATEXALL = TRUE
+%      EVALUATE CATOMLABEL = CELEM4
+%      COPY '#SCRIPT A_CHECKATOM'
+%      EVALUATE IPART1 = PRTNUM
+%      IF .NOT. LATOMEXISTS THEN
+%        EVALUATE L_ATEXALL = FALSE
+%      END IF
+%      EVALUATE CATOMLABEL = CELEM6
+%      COPY '#SCRIPT A_CHECKATOM'
+%      EVALUATE IPART2 = PRTNUM
+%      IF .NOT. LATOMEXISTS THEN
+%        EVALUATE L_ATEXALL = FALSE
+%      END IF
+%      EVALUATE CATOMLABEL = CELEM8
+%      COPY '#SCRIPT A_CHECKATOM'
+%      EVALUATE IPART3 = PRTNUM
+%      IF .NOT. LATOMEXISTS THEN
+%        EVALUATE L_ATEXALL = FALSE
+%      END IF
+%% We take all the angles we find in the file
+%%
+%% We only generate restraints for non H atoms, so find type and calculate new serial
+%%
+%      EVALUATE CATYPE1 = FIRSTSTR ( CELEM4 )
+%%     EVALUATE ISER1 = FIRSTINT ( CELEM4 )
+%      EVALUATE CATYPE2 = FIRSTSTR ( CELEM6 )
+%%     EVALUATE ISER2 = FIRSTINT ( CELEM6 )
+%      EVALUATE CATYPE3 = FIRSTSTR ( CELEM8 )
+%%     EVALUATE ISER3 = FIRSTINT ( CELEM8 )
+%%
+%      IF ( CATYPE1 .NE. "H" ) .AND. ( CATYPE2 .NE. "H" ) .AND. ( CATYPE3 .NE. "H" ) THEN
+%%
+%% We search the pair
+%%
+%        EVALUATE CATOMLABEL = CELEM4
+%        COPY '#SCRIPT A_GETPAIRS'
+%        EVALUATE CELEM14 = CPAIRLABEL
+%%
+%% The same for the second atom of the angle
+%%
+%        EVALUATE CATOMLABEL = CELEM6
+%        COPY '#SCRIPT A_GETPAIRS'
+%        EVALUATE CELEM16 = CPAIRLABEL
+%%
+%% The same for the third atom of the angle
+%%
+%        EVALUATE CATOMLABEL = CELEM8
+%        COPY '#SCRIPT A_GETPAIRS'
+%        EVALUATE CELEM18 = CPAIRLABEL
+%%
+%% Check if both atoms from other group exist and get their part numbers
+%% If atoms exist only from one pair because one is a DUMMY then write one
+%%
+%        EVALUATE L_ATEXALL2 = TRUE
+%%
+%        EVALUATE CATOMLABEL = CELEM14
+%        COPY '#SCRIPT A_CHECKATOM'
+%        EVALUATE IPART11 = PRTNUM
+%        IF .NOT. LATOMEXISTS THEN
+%          EVALUATE L_ATEXALL2 = FALSE
+%        END IF
+%        EVALUATE CATOMLABEL = CELEM16
+%        COPY '#SCRIPT A_CHECKATOM'
+%        EVALUATE IPART12 = PRTNUM
+%        IF .NOT. LATOMEXISTS THEN
+%          EVALUATE L_ATEXALL2 = FALSE
+%        END IF
+%        EVALUATE CATOMLABEL = CELEM18
+%        COPY '#SCRIPT A_CHECKATOM'
+%        EVALUATE IPART13 = PRTNUM
+%        IF .NOT. LATOMEXISTS THEN
+%          EVALUATE L_ATEXALL2 = FALSE
+%        END IF
+%% Now write the line to file
+%        IF L_ATEXALL THEN
+%          IF L_ATEXALL2 THEN
+%            TRANSFER "CONTINUE " // CELEM4 // " TO " // CELEM6 // " TO " // CELEM8 // " " // CELEM14 // " TO " // CELEM16 // " TO " // CELEM18 TO PUNCH
+%          ELSE
+%            TRANSFER "CONTINUE " // CELEM4 // " TO " // CELEM6 // " TO " // CELEM8 TO PUNCH
+%          END IF
+%        END IF
+%%
+%      END IF
+%%
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF .NOT. LDEBUG THEN
+%%    EVALUATE T = FILEDELETE ( 'thisAssembly.dat' )
+%%    EVALUATE T = FILEDELETE ( 'pairs.dat' )
+%%    EVALUATE T = FILEDELETE ( 'external.dat' )
+%%    EVALUATE T = FILEDELETE ( 'extbonds.dat' )
+%%    EVALUATE T = FILEDELETE ( 'internal.dat' )
+%  END IF
+%%
+%  TRANSFER "END" TO PUNCH
+%%
+%  TRANSFER "{I Writing the restraints..." TO DISPLAY
+%%
+%% To test we need the hardcoded values
+%  IF LTEST THEN
+%    EVALUATE LDISTEXT = TRUE
+%    EVALUATE LDISTEQEXT = FALSE
+%    EVALUATE LDISTEQEXTM = TRUE
+%    EVALUATE LDIST = TRUE
+%    EVALUATE LDISTEQINT = TRUE
+%    EVALUATE LDISTEQINTM = TRUE
+%    EVALUATE RDISTEXTVAL = 1.54
+%    EVALUATE RDISTEXTESD = 0.01
+%    EVALUATE RDISTVAL = 1.54
+%    EVALUATE RDISTESD = 0.01
+%%
+%    EVALUATE LANGL = TRUE
+%    EVALUATE LANGLEQALL = TRUE
+%    EVALUATE LANGLEQMEAN = TRUE
+%    EVALUATE RANGLVAL = 109.5
+%    EVALUATE RANGLESD = 0.5
+%%
+%    EVALUATE LVIBR = TRUE
+%    EVALUATE LVIBRPAIRS = TRUE
+%    EVALUATE RVIBRESD = 0.01
+%%
+%    EVALUATE LUIJS = TRUE
+%    EVALUATE LUIJSPAIRS = TRUE
+%    EVALUATE RUIJSESD = 0.03
+%%
+%    EVALUATE LSAME = TRUE
+%    EVALUATE LDELU = TRUE
+%    EVALUATE LSIMU = TRUE
+%  END IF
+%%
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE SCPQUEUE new16bit.pch'
+%%
+%  COPY '#OPEN SCPDATA templates.dat'
+%  LOOP 7 TIMES
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    CASE LOOPCOUNTER
+%%
+%      BLOCK
+%        IF LDISTEXT THEN
+%          CLEAR
+%          INSERT "REM   EXTERNAL BONDS"
+%          QUEUE SEND
+%%
+%          IF LDISTEQEXT THEN
+%            CLEAR
+%            INSERT "DISTANCES "
+%            IF LDISTEQEXTM THEN
+%              INSERT "0.0"
+%            ELSE
+%              STORE FORMAT /(F7.3)/ LENGTH 7 REAL RDISTEXTVAL
+%            END IF
+%            INSERT ", "
+%            STORE FORMAT /(F5.3)/ LENGTH 5 REAL RDISTEXTESD
+%            IF LDISTEQEXTM THEN
+%              INSERT " = MEAN "
+%            ELSE
+%              INSERT " = "
+%            END IF
+%            QUEUE SEND
+%          END IF
+%%
+%          EXTRACT FIND STRING "EXTERNAL"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              IF .NOT. LDISTEQEXT THEN
+%                CLEAR
+%                INSERT "DISTANCES "
+%                IF LDISTEQEXTM THEN
+%                  INSERT "0.0"
+%                ELSE
+%                  STORE FORMAT /(F7.3)/ LENGTH 7 REAL RDISTEXTVAL
+%                END IF
+%                INSERT ", "
+%                STORE FORMAT /(F5.3)/ LENGTH 5 REAL RDISTEXTESD
+%                IF LDISTEQEXTM THEN
+%                  INSERT " = MEAN "
+%                ELSE
+%                  INSERT " = "
+%                END IF
+%                QUEUE SEND
+%              END IF
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%%
+%        END IF
+%%
+%        IF LDIST THEN
+%          CLEAR
+%          INSERT "REM   INTERNAL BONDS"
+%          QUEUE SEND
+%          IF LDISTEQINT THEN
+%            CLEAR
+%            INSERT "DISTANCES "
+%            IF LDISTEQINTM THEN
+%              INSERT "0.0"
+%            ELSE
+%              STORE FORMAT /(F7.3)/ LENGTH 7 REAL RDISTVAL
+%            END IF
+%            INSERT ", "
+%            STORE FORMAT /(F5.3)/ LENGTH 5 REAL RDISTESD
+%            IF LDISTEQINTM THEN
+%              INSERT " = MEAN "
+%            ELSE
+%              INSERT " = "
+%            END IF
+%            QUEUE SEND
+%          END IF
+%%
+%          EXTRACT FIND STRING "DISTANCES"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              IF .NOT. LDISTEQINT THEN
+%                CLEAR
+%                INSERT "DISTANCES "
+%                IF LDISTEQINTM THEN
+%                  INSERT "0.0"
+%                ELSE
+%                  STORE FORMAT /(F7.3)/ LENGTH 7 REAL RDISTVAL
+%                END IF
+%                INSERT ", "
+%                STORE FORMAT /(F5.3)/ LENGTH 5 REAL RDISTESD
+%                IF LDISTEQINTM THEN
+%                  INSERT " = MEAN "
+%                ELSE
+%                  INSERT " = "
+%                END IF
+%                QUEUE SEND
+%              END IF
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%%
+%        END IF
+%%
+%      END BLOCK
+%%
+%      BLOCK
+%        IF LANGL THEN
+%          CLEAR
+%          INSERT "REM   ANGLES RESTRAINTS"
+%          QUEUE SEND
+%%
+%          IF LANGLEQALL THEN
+%            CLEAR
+%            INSERT "ANGLES "
+%            IF LANGLEQMEAN THEN
+%              INSERT "0.0"
+%            ELSE
+%              STORE FORMAT /(F7.2)/ LENGTH 7 REAL RANGLVAL
+%            END IF
+%            INSERT ", "
+%            STORE FORMAT /(F5.3)/ LENGTH 5 REAL RANGLESD
+%            IF LANGLEQMEAN THEN
+%              INSERT " = MEAN "
+%            ELSE
+%              INSERT " = "
+%            END IF
+%            QUEUE SEND
+%          END IF
+%%
+%          EXTRACT FIND STRING "ANGLES"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              IF .NOT. LANGLEQALL THEN
+%                CLEAR
+%                INSERT "ANGLES "
+%                IF LANGLEQMEAN THEN
+%                  INSERT "0.0"
+%                ELSE
+%                  STORE FORMAT /(F7.2)/ LENGTH 7 REAL RANGLVAL
+%                END IF
+%                INSERT ", "
+%                STORE FORMAT /(F5.3)/ LENGTH 5 REAL RANGLESD
+%                IF LANGLEQMEAN THEN
+%                  INSERT " = MEAN "
+%                ELSE
+%                  INSERT " = "
+%                END IF
+%                QUEUE SEND
+%              END IF
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%%
+%        END IF
+%%
+%      END BLOCK
+%%
+%      BLOCK
+%        IF LVIBR THEN
+%          CLEAR
+%          INSERT "REM   VIBRATIONAL RESTRAINTS"
+%          QUEUE SEND
+%%
+%          CLEAR
+%          INSERT "VIBRATIONS 0.0, "
+%          STORE FORMAT /(F7.5)/ LENGTH 7 REAL RVIBRESD
+%          INSERT " = "
+%          QUEUE SEND
+%%
+%          IF LDISTEXT THEN
+%            EXTRACT FIND STRING "EXTERNAL"
+%            LOOP
+%              EXTRACT NEXT
+%              EXTRACT TRANSFER INPUT
+%              CLEAR
+%              GET TEXT 'Record'
+%              EVALUATE CRECORD = CVALUE
+%              IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%                CLEAR
+%                STORE CHARACTER CRECORD
+%                QUEUE SEND
+%              ELSE
+%                EVALUATE LOOPEND = LOOPCOUNTER
+%              END IF
+%            END LOOP
+%          END IF
+%%
+%          EXTRACT FIND STRING "DISTANCES"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%%
+%          IF LVIBRPAIRS THEN
+%            EXTRACT FIND STRING "PAIRS"
+%            LOOP
+%              EXTRACT NEXT
+%              EXTRACT TRANSFER INPUT
+%              CLEAR
+%              GET TEXT 'Record'
+%              EVALUATE CRECORD = CVALUE
+%              IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%                CLEAR
+%                STORE CHARACTER CRECORD
+%                QUEUE SEND
+%              ELSE
+%                EVALUATE LOOPEND = LOOPCOUNTER
+%              END IF
+%            END LOOP
+%          END IF
+%%
+%        END IF
+%%
+%      END BLOCK
+%%
+%      BLOCK
+%        IF LUIJS THEN
+%          CLEAR
+%          INSERT "REM   SIMILARITY RESTRAINTS"
+%          QUEUE SEND
+%%
+%          CLEAR
+%          INSERT "U(IJ)'S 0.0, "
+%          STORE FORMAT /(F7.5)/ LENGTH 7 REAL RUIJSESD
+%          INSERT " = "
+%          QUEUE SEND
+%%
+%          IF LDISTEXT THEN
+%            EXTRACT FIND STRING "EXTERNAL"
+%            LOOP
+%              EXTRACT NEXT
+%              EXTRACT TRANSFER INPUT
+%              CLEAR
+%              GET TEXT 'Record'
+%              EVALUATE CRECORD = CVALUE
+%              IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%                CLEAR
+%                STORE CHARACTER CRECORD
+%                QUEUE SEND
+%              ELSE
+%                EVALUATE LOOPEND = LOOPCOUNTER
+%              END IF
+%            END LOOP
+%          END IF
+%%
+%          EXTRACT FIND STRING "DISTANCES"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%%
+%          IF LUIJSPAIRS THEN
+%            EXTRACT FIND STRING "PAIRS"
+%            LOOP
+%              EXTRACT NEXT
+%              EXTRACT TRANSFER INPUT
+%              CLEAR
+%              GET TEXT 'Record'
+%              EVALUATE CRECORD = CVALUE
+%              IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%                CLEAR
+%                STORE CHARACTER CRECORD
+%                QUEUE SEND
+%              ELSE
+%                EVALUATE LOOPEND = LOOPCOUNTER
+%              END IF
+%            END LOOP
+%          END IF
+%%
+%        END IF
+%%
+%      END BLOCK
+%%
+%      BLOCK
+%        IF LSAME THEN
+%          CLEAR
+%          INSERT "REM   SAME RESTRAINT"
+%          QUEUE SEND
+%%
+%          CLEAR
+%          INSERT "SAME "
+%          STORE FORMAT /(F7.5)/ LENGTH 7 REAL RDISTESD
+%          INSERT " "
+%          STORE FORMAT /(F7.5)/ LENGTH 7 REAL RANGLESD
+%          INSERT " FOR"
+%          QUEUE SEND
+%%
+%          EXTRACT FIND STRING "GROUPS"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%        END IF
+%%
+%      END BLOCK
+
+%      BLOCK
+%        IF LDELU THEN
+%          CLEAR
+%          INSERT "REM   DELU RESTRAINT"
+%          QUEUE SEND
+%%
+%          CLEAR
+%          INSERT "DELU "
+%          STORE FORMAT /(F7.5)/ LENGTH 7 REAL RVIBRESD
+%          QUEUE SEND
+%%
+%          EXTRACT FIND STRING "GROUPS"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%        END IF
+%%
+%      END BLOCK
+
+%      BLOCK
+%        IF LSIMU THEN
+%          CLEAR
+%          INSERT "REM   SIMU RESTRAINT"
+%          QUEUE SEND
+%%
+%          CLEAR
+%          INSERT "SIMU "
+%          STORE FORMAT /(F7.5)/ LENGTH 7 REAL RUIJSESD
+%          QUEUE SEND
+%%
+%          EXTRACT FIND STRING "GROUPS"
+%          LOOP
+%            EXTRACT NEXT
+%            EXTRACT TRANSFER INPUT
+%            CLEAR
+%            GET TEXT 'Record'
+%            EVALUATE CRECORD = CVALUE
+%            IF ( CRECORD STARTSWITH "CONTINUE" ) THEN
+%              CLEAR
+%              STORE CHARACTER CRECORD
+%              QUEUE SEND
+%            ELSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            END IF
+%          END LOOP
+%        END IF
+%%
+%      END BLOCK
+%%
+%    END CASE
+%%
+%  END LOOP
+%%
+%  COPY '#CLOSE SCPDATA'
+%%
+%  COPY '#RELEASE SCPQUEUE bfile.spq'
+%  EVALUATE KEYBREAK = "ASSEMBLY" // CHARACTER ( PRTNUM / 1000 )
+%  COPY '#SCRIPT ZADDLI16'
+ * Done. New restraints added.
+%% COPY '#SCRIPT EDLIST16'
+%%
+%  IF .NOT. LDEBUG THEN
+%%    EVALUATE T = FILEDELETE ( 'templates.dat' )
+%  END IF
+%%
+%END SCRIPT

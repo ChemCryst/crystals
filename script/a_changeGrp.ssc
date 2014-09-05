@@ -1,0 +1,387 @@
+%SCRIPT CHANGEGRP
+%%
+%  VARIABLE CHARACTER ATOM MODE ATOM1 ATOM2 CATOMLABEL
+%%
+%  VARIABLE CHARACTER CELE CELE1 CELE2 CCHK
+%  VARIABLE INTEGER ISER ISER1 ISER2 IASS1 IASS2 IPAR1 IPAR2 IGRP IGRP1 IGRP2
+%  VARIABLE INTEGER NASS NGRP1 NGRP2 IOFFSET IPART ISPARTOFGRP OFFSETREN PARA
+%  VARIABLE REAL RCHK RSUMS1 RSUMS2 ROFFSET ROCC RFLG RU11 RU22 RU33
+%  VARIABLE LOGICAL LATOMEXISTS LSHOWATOM LANISO1 LANISO2 ISFREE
+%%
+%% Variables used to call script a_setFlipParts
+%%
+%  VARIABLE LOGICAL LFLIP LDEBUG
+%  VARIABLE CHARACTER CTYPE
+%  VARIABLE INTEGER ISERIAL ISERIAL1 ISERIAL2 ISERIALR IPART1 IPART2
+%  VARIABLE REAL ROCC1 ROCC2 RUISO1 RUISO2
+%%
+%% Variables for call to script nextfree
+%%
+%  VARIABLE INTEGER STARTFROM NEXTFREE
+%%
+%% Variables to call message windows
+%%
+%  VARIABLE CHARACTER CTITLE CTEXT1 CTEXT2 CPOSITION
+%%
+%% ATOM is the atom we are looking for its paired atom that we will give back as ATOM2
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%  EVALUATE CELE1 = FIRSTSTR ( ATOM )
+%  EVALUATE ISER1 = FIRSTINT ( ATOM )
+%  EVALUATE ATOM1 = ATOM
+%  EVALUATE CTYPE = CELE1
+%%
+%% TRANSFER '{I Atom type: ' // CELE1 // ', serial: ' // CHARACTER ( ISER1 ) TO DISPLAY
+%%
+%  BLOCK
+%    EVALUATE IASS1 = 0
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%      COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%      IF ( ( CELE1 .EQ. CCHK ) .AND. ( ISER1 .EQ. INTEGER ( RCHK ) ) ) THEN
+%        COPY 'TRANSFER FROM OFFSET=2 TO ROCC'
+%        COPY 'TRANSFER FROM OFFSET=3 TO RFLG'
+%        COPY 'TRANSFER FROM OFFSET=7 TO RU11'
+%        COPY 'TRANSFER FROM OFFSET=8 TO RU22'
+%        COPY 'TRANSFER FROM OFFSET=9 TO RU33'
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%        COPY 'END'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%        EVALUATE ISERIAL1 = ISER1
+%%
+%        EVALUATE ROCC1 = ROCC
+%%
+%% Write if atom is isotropic or anisotropic, and write down corresponding U[iso] value
+%%
+%        IF RFLG .GT. 0.1 THEN
+%% Iso: store in flag
+%          EVALUATE RUISO1 = RU11
+%          EVALUATE LANISO1 = FALSE
+%%
+%        ELSE
+%% Aniso: calculate arithmetic mean and store in flag
+%          EVALUATE RUISO1 = ( RU11 + RU22 + RU33 ) / 3.0
+%          EVALUATE LANISO1 = TRUE
+%%
+%        END IF
+%%
+%        EVALUATE IASS1 = IPART / 1000
+%        EVALUATE IPAR1 = IPART
+%        EVALUATE IPART1 = IPART
+%%
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%  END BLOCK
+%%
+%% TRANSFER "{I Assembly is " // CHARACTER ( IASS1 ) TO DISPLAY
+%%
+%  IF IASS1 .EQ. 0 THEN
+%%
+%    EVALUATE CTITLE = "Atom not part of assembly"
+%    EVALUATE CTEXT1 = "Chosen atom is not part of a assembly"
+%    EVALUATE CTEXT2 = "Please repeat with a different atom"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_XMESSAGE'
+%%
+%    FINISH
+%%
+%  END IF
+%%
+%  EVALUATE NASS = 0
+%  EVALUATE NGRP1 = 0
+%  EVALUATE NGRP2 = 0
+%%
+%  EVALUATE RSUMS1 = 0.0
+%  EVALUATE RSUMS2 = 0.0
+%%
+%  EVALUATE ISPARTOFGRP = 0
+%%
+%  BLOCK
+%    EVALUATE IASS2 = 0
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%      COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%      COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%%
+%      EVALUATE IASS2 = IPART / 1000
+%      EVALUATE IPAR2 = IPART
+%      EVALUATE IGRP = IPART - IASS2 * 1000
+%%
+%      IF IASS1 .EQ. IASS2 THEN
+%        EVALUATE CELE = FIRSTSTR ( CCHK )
+%        EVALUATE ISER = INTEGER ( RCHK )
+%%
+%        EVALUATE NASS = NASS + 1
+%        IF NASS .EQ. 1 then
+%          EVALUATE IGRP1 = IGRP
+%        ELSE
+%          IF ( IGRP .NE. IGRP1 ) .AND. ( IGRP2 .EQ. 0 ) THEN
+%            EVALUATE IGRP2 = IGRP
+%          END IF
+%          IF ( IGRP .NE. IGRP1 ) .AND. ( IGRP .NE. IGRP2 ) THEN
+%%
+%            EVALUATE CTITLE = "More than two groups in assembly"
+%            EVALUATE CTEXT1 = "Chosen assembly contains more than two groups, as"
+%            EVALUATE CTEXT2 = "results may be unpredictable, CRYSTALS has to stop"
+%            EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%            COPY '#SCRIPT A_XMESSAGE'
+%%
+%            FINISH
+%%           TRANSFER '{E Assembly contains more than two groups.' TO DISPLAY
+%%
+%          END IF
+%        END IF
+%        IF IGRP .EQ. IGRP1 THEN
+%          EVALUATE NGRP1 = NGRP1 + 1
+%          EVALUATE RSUMS1 = RSUMS1 + RCHK
+%          IF ( ( CELE1 .EQ. CELE ) .AND. ( ISER1 .EQ. ISER ) ) THEN
+%            EVALUATE ISPARTOFGRP = 1
+%            IF LDEBUG THEN
+%              TRANSFER '{I Value of isPartOfGrp is now ' // CHARACTER ( ISPARTOFGRP ) // '.' TO DISPLAY
+%            END IF
+%          END IF
+%        ELSE IF IGRP .EQ. IGRP2 THEN
+%          EVALUATE NGRP2 = NGRP2 + 1
+%          EVALUATE RSUMS2 = RSUMS2 + RCHK
+%          IF ( ( CELE1 .EQ. CELE ) .AND. ( ISER1 .EQ. ISER ) ) THEN
+%            EVALUATE ISPARTOFGRP = - 1
+%            IF LDEBUG THEN
+%              TRANSFER '{I Value of isPartOfGrp is now ' // CHARACTER ( ISPARTOFGRP ) // '.' TO DISPLAY
+%            END IF
+%          END IF
+%        END IF
+%%
+%%       TRANSFER '{I Working on ' // CELE // '(' // CHARACTER ( ISER ) // ') in group ' // CHARACTER ( IGRP ) // '...' TO DISPLAY
+%%       TRANSFER '^^CO SET MODEL01 SELECT ' // CELE // '(' // CHARACTER ( ISER ) // ') YES' TO DISPLAY
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%% TRANSFER '{I Assembly contains ' // CHARACTER ( NASS ) // ' atoms.' TO DISPLAY
+%% TRANSFER '{I Group ' // CHARACTER ( IGRP1 ) // ' contains ' // CHARACTER ( NGRP1 ) // ' atoms.' TO DISPLAY
+%% TRANSFER '{I Group ' // CHARACTER ( IGRP2 ) // ' contains ' // CHARACTER ( NGRP2 ) // ' atoms.' TO DISPLAY
+%%
+%  EVALUATE RSUMS1 = RSUMS1 / REAL ( NGRP1 )
+%  EVALUATE RSUMS2 = RSUMS2 / REAL ( NGRP2 )
+%  EVALUATE ROFFSET = RSUMS2 - RSUMS1
+%  IF LDEBUG THEN
+%    TRANSFER '{I Offset between mean of serials in both groups is ' // CHARACTER ( ROFFSET ) // '.' TO DISPLAY
+%  END IF
+%%
+%  IF ISPARTOFGRP .NE. 0 THEN
+%    EVALUATE ROFFSET = ROFFSET * REAL ( ISPARTOFGRP )
+%  END IF
+%%
+%  EVALUATE IOFFSET = INTEGER ( ROFFSET )
+%%
+%  IF NGRP1 .NE. NGRP2 THEN
+%    TRANSFER '{E The groups in this assembly have a unequal number of atoms.' TO DISPLAY
+%  END IF
+%  IF ROFFSET .NE. REAL ( IOFFSET ) THEN
+%    TRANSFER '{E Offset is not a integer number: the calculated value is ' // CHARACTER ( ROFFSET ) // '.' TO DISPLAY
+%  END IF
+%%
+%  IF ( NGRP1 .NE. NGRP2 ) .OR. ( ROFFSET .NE. REAL ( IOFFSET ) ) THEN
+%    EVALUATE CTITLE = "Choose paired atom"
+%    EVALUATE CTEXT1 = "Some error occured calculating the offset to be applied."
+%    EVALUATE CTEXT2 = "Please select the paired atom"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_GETATOM'
+%%
+%    IF LDEBUG THEN
+%      TRANSFER "{I Atom chosen is " // ATOM2 // "." TO DISPLAY
+%    END IF
+%    EVALUATE CELE2 = FIRSTSTR ( ATOM2 )
+%    EVALUATE ISER2 = FIRSTINT ( ATOM2 )
+%  ELSE
+%    EVALUATE CELE2 = CELE1
+%    EVALUATE ISER2 = ISER1 + IOFFSET
+%  END IF
+%%
+%  EVALUATE CATOMLABEL = CELE2 // "(" // CHARACTER ( ISER2 ) // ")"
+%  EVALUATE LATOMEXISTS = FALSE
+%%
+%  TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM1 // ' YES' TO DISPLAY
+%  EVALUATE LSHOWATOM = TRUE
+%  COPY '#SCRIPT A_CHECKATOM'
+%  TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%%
+%  IF .NOT. LATOMEXISTS THEN
+%    EVALUATE CTITLE = "Choose paired atom"
+%    EVALUATE CTEXT1 = "Some error occured searching the paired atom of " // ATOM1 // "."
+%    EVALUATE CTEXT2 = "Please select the paired atom"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_GETATOM'
+%%
+%    IF LDEBUG THEN
+%      TRANSFER "{I Atom chosen is " // ATOM2 // "." TO DISPLAY
+%    END IF
+%    EVALUATE CELE2 = FIRSTSTR ( ATOM2 )
+%    EVALUATE ISER2 = FIRSTINT ( ATOM2 )
+%  END IF
+%%
+%  EVALUATE LATOMEXISTS = FALSE
+%%
+%  BLOCK
+%    EVALUATE IASS2 = 0
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%      COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%      IF ( ( CELE2 .EQ. CCHK ) .AND. ( ISER2 .EQ. INTEGER ( RCHK ) ) ) THEN
+%        EVALUATE LATOMEXISTS = TRUE
+%        COPY 'TRANSFER FROM OFFSET=2 TO ROCC'
+%        COPY 'TRANSFER FROM OFFSET=3 TO RFLG'
+%        COPY 'TRANSFER FROM OFFSET=7 TO RU11'
+%        COPY 'TRANSFER FROM OFFSET=8 TO RU22'
+%        COPY 'TRANSFER FROM OFFSET=9 TO RU33'
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPART'
+%        COPY 'END'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%        EVALUATE ISERIAL2 = ISER2
+%%
+%        EVALUATE ROCC2 = ROCC
+%%
+%% Write if atom is isotropic or anisotropic, and write down corresponding U[iso] value
+%%
+%        IF RFLG .GT. 0.1 THEN
+%% Iso: store in flag
+%          EVALUATE RUISO2 = RU11
+%          EVALUATE LANISO2 = FALSE
+%%
+%        ELSE
+%% Aniso: calculate arithmetic mean and store in flag
+%          EVALUATE RUISO2 = ( RU11 + RU22 + RU33 ) / 3.0
+%          EVALUATE LANISO2 = TRUE
+%%
+%        END IF
+%%
+%        EVALUATE IASS2 = IPART / 1000
+%        EVALUATE IPAR2 = IPART
+%        EVALUATE IPART2 = IPART
+%%
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%  END BLOCK
+%%
+%  IF LATOMEXISTS .AND. ( IASS1 .EQ. IASS2 ) .AND. ( IPAR1 .NE. IPAR2 ) THEN
+%    EVALUATE ATOM2 = CELE2 // '(' // CHARACTER ( ISER2 ) // ')'
+%    IF LDEBUG THEN
+%      TRANSFER '{I The name of the paired atom of ' // ATOM1 // ' is ' // ATOM2 // '.' TO DISPLAY
+%    END IF
+%    TRANSFER '^^CO SET MODEL01 SELECT ALL=NO' TO DISPLAY
+%    TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM1 // ' YES' TO DISPLAY
+%    TRANSFER '^^CO SET MODEL01 SELECT ' // ATOM2 // ' YES' TO DISPLAY
+%  ELSE
+%    EVALUATE CTITLE = "No paired atom for " // ATOM1
+%    EVALUATE CTEXT1 = "If the chosen atom exist, it is not in the same"
+%    EVALUATE CTEXT2 = "assembly, or it is not in a different group"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_XMESSAGE'
+%%
+%    FINISH
+%%   TRANSFER '{E Some error occured searching the paired atom of ' // ATOM1 // '.' TO DISPLAY
+%  END IF
+%%
+%  EVALUATE OFFSETREN = 1000
+%%
+%  EVALUATE ISERIALR = ISERIAL1 + OFFSETREN
+%  EVALUATE ISERIAL = ISERIALR
+%%
+%  EVALUATE ISFREE = FALSE
+%  COPY '#SCRIPT ISFREE'
+%  IF .NOT. ISFREE THEN
+%    EVALUATE STARTFROM = ISERIAL
+%    COPY '#SCRIPT NEXTFREE'
+%    EVALUATE ISERIALR = NEXTFREE
+%    IF LDEBUG THEN
+%      TRANSFER "{I Label for renaming changed to " // CTYPE // "(" // CHARACTER ( NEXTFREE ) // ")." TO DISPLAY
+%    END IF
+%  ELSE
+%    IF LDEBUG THEN
+%      TRANSFER "{I Label for renaming OK." TO DISPLAY
+%    END IF
+%  END IF
+%%
+%  IF LANISO1 .OR. LANISO2 THEN
+%    TRANSFER "{I From the chosen atoms at least one is anisotropic." TO DISPLAY
+%  END IF
+%%
+^^CO SET MODEL01 SELECT ALL=NO
+%  EVALUATE MODE = "GROUP"
+%  EVALUATE ATOM = "NOATOM"
+%  EVALUATE PARA = IPAR1
+%  COPY '#SCRIPT A_SELECTATOMS'
+%%
+^^WI WINDOW XFG
+^^WI 'Flip group numbers'
+%%^^WI MODAL
+^^WI POSITION=CENTERED '_MAINTEXTOUTPUT'
+^^WI GRID M NROWS=5 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=3 NCOLS=1 {
+^^WI     @ 1,1 STATIC T1 'Flip the group numbers and'
+^^WI     @ 3,1 STATIC T2 'choose best solution:'
+^^WI   }
+^^WI   @ 4,2 GRID C NROWS=1 NCOLS=9 {
+^^WI     @ 1,7 BUTTON BFG 'Flip' DISABLED=NO
+^^WI     @ 1,9 BUTTON BOK '&Ok' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  LOOP
+%%
+%    VERIFY BFG BOK
+%    GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%    CASE VALUE
+%%
+%      BLOCK        % BFG - Read out the choice and go on
+%%       TRANSFER "{I Flipping part numbers..." TO DISPLAY
+^^CO SET MODEL01 SELECT ALL=NO
+%        EVALUATE LFLIP = TRUE
+%        COPY '#SCRIPT A_SETFLIPPARTS'
+%%
+%        EVALUATE MODE = "GROUP"
+%        EVALUATE ATOM = "NOATOM"
+%        EVALUATE PARA = IPAR1
+%        COPY '#SCRIPT A_SELECTATOMS'
+%      END BLOCK
+%%
+%      BLOCK        % BOK - CLOSE window and quit operation
+^^CO SET MODEL01 SELECT ALL=NO
+^^CO DISPOSE XFG
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END BLOCK
+%%
+%    END CASE
+%  END LOOP
+%%
+%END SCRIPT

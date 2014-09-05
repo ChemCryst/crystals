@@ -1,0 +1,179 @@
+%SCRIPT GENL12PARTS
+%%
+%% Variables from calling script
+%%
+%  VARIABLE LOGICAL LPOS LGRP LUISO LUANI LUISOEQ LOCC
+%%
+%  VARIABLE CHARACTER CLINE CPARAM
+%% VARIABLE INTEGER ISELECTED
+%  VARIABLE LOGICAL LATOMSFOUND
+%%
+%% EVALUATE ISELECTED = 0
+%  EVALUATE LATOMSFOUND = FALSE
+%%
+%  IF LPOS THEN
+%    EVALUATE CPARAM = CPARAM // ", X'S"
+%  END IF
+%  IF LUISO THEN
+%    EVALUATE CPARAM = CPARAM // ", U[ISO]"
+%  ELSE IF LUANI THEN
+%    EVALUATE CPARAM = CPARAM // ", U'S"
+%  END IF
+%% IF LOCC THEN
+%%   EVALUATE CPARAM = CPARAM // ", OCC"
+%% END IF
+%  EVALUATE CPARAM = CPARAM // ")"
+%%
+%  COPY '#OPEN SCPDATA PartsToWorkOn.dat'
+%  EXTRACT NEXT
+%  EXTRACT TRANSFER INPUT
+%  CLEAR
+%  GET INTEGER 'Entry'
+%  IF VALUE .EQ. 0 THEN
+%    TRANSFER "{E Assembly number is zero, CRYSTALS has to stop." TO DISPLAY
+%    COPY '#CLOSE SCPDATA'
+%    FINISH
+%  END IF
+%  EXTRACT REWIND
+%%
+%  TRANSFER "{I General refinement instructions..." TO DISPLAY
+%  QUEUE REWIND
+%  QUEUE COPY #LIST 12
+%  QUEUE COPY BLOCK SCALE
+%  TRANSFER "#LIST 12" TO DISPLAY
+%  TRANSFER "BLOCK SCALE" TO DISPLAY
+%%
+%  IF ( LPOS ) .OR. ( LUISO ) .OR. ( LUANI ) THEN
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%      IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE CLINE = "CONTINUE PART(" // CVALUE // CPARAM
+%       TRANSFER CLINE TO DISPLAY
+%        CLEAR
+%        STORE CHARACTER CLINE
+%        QUEUE SEND
+%        EVALUATE LATOMSFOUND = TRUE
+%      END IF
+%    END LOOP
+%    EXTRACT REWIND
+%  END IF
+%%
+%  IF LGRP THEN
+%    TRANSFER "{I Group instructions..." TO DISPLAY
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%      IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE CLINE = "GROUP PART(" // CVALUE // ")"
+%       TRANSFER CLINE TO DISPLAY
+%        CLEAR
+%        STORE CHARACTER CLINE
+%        QUEUE SEND
+%        EVALUATE LATOMSFOUND = TRUE
+%      END IF
+%    END LOOP
+%    EXTRACT REWIND
+%  END IF
+%%
+%  IF LUISOEQ THEN
+%    TRANSFER "{I Common U[iso] instructions..." TO DISPLAY
+%    QUEUE COPY EQUIVALENCE
+%    TRANSFER "EQUIVALENCE" TO DISPLAY
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%      IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE CLINE = "CONTINUE PART(" // CVALUE // ", U[ISO])"
+%       TRANSFER CLINE TO DISPLAY
+%        CLEAR
+%        STORE CHARACTER CLINE
+%        QUEUE SEND
+%        EVALUATE LATOMSFOUND = TRUE
+%      END IF
+%    END LOOP
+%    EXTRACT REWIND
+%  END IF
+%%
+%  IF LOCC THEN
+%    TRANSFER "{I Sof instructions..." TO DISPLAY
+%    QUEUE COPY EQUIVALENCE
+%    TRANSFER "EQUIVALENCE" TO DISPLAY
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card and write WEIGHT instruction stored before
+%% This works only if there are only two groups in one assembly!!!
+%      IF CVALUE .EQ. 'END' THEN
+%        CLEAR
+%        STORE CHARACTER CLINE
+%        QUEUE SEND
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE CLINE = "CONTINUE PART(" // CVALUE // ", OCC)"
+%       TRANSFER CLINE TO DISPLAY
+%        CLEAR
+%        STORE CHARACTER CLINE
+%        QUEUE SEND
+%        EVALUATE LATOMSFOUND = TRUE
+%        EVALUATE CLINE = "WEIGHT -1 PART(" // CVALUE // ", OCC)"
+%      END IF
+%    END LOOP
+%%   EXTRACT REWIND
+%%   QUEUE COPY SUMFIX
+%%   TRANSFER "SUMFIX" TO DISPLAY
+%%   LOOP
+%%     ON ERROR TERMINATE
+%%     ON END TERMINATE
+%%     EXTRACT NEXT
+%%     EXTRACT TRANSFER INPUT
+%%     CLEAR
+%%     GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%%     IF CVALUE .EQ. 'END' THEN
+%%       EVALUATE LOOPEND = LOOPCOUNTER
+%%     ELSE
+%%       EVALUATE CLINE = "CONTINUE PART(" // CVALUE // ", OCC)"
+%%      TRANSFER CLINE TO DISPLAY
+%%       CLEAR
+%%       STORE CHARACTER CLINE
+%%       QUEUE SEND
+%%       EVALUATE LATOMSFOUND = TRUE
+%%     END IF
+%%   END LOOP
+%  END IF
+%%
+%  COPY '#CLOSE SCPDATA'
+%%
+%  QUEUE COPY END
+%%
+%  IF LATOMSFOUND THEN
+%    QUEUE PROCESS
+%  END IF
+%%
+%END SCRIPT

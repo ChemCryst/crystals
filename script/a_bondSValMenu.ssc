@@ -1,0 +1,281 @@
+%SCRIPT BONDSVALMENU
+%%
+%% Get the parameters from the GUI, bond must not be symmetry generated, at least for now.
+%% LCALLED is defined outside the script to know if we need to get the atoms from the GUI or not
+%%
+%  VARIABLE CHARACTER CBOND CATOM1 CATOM2 CANCHOR CCOMMON CTYPE1 CTYPE2
+%  VARIABLE LOGICAL LSELECTATOMS LCHANGED LCALLED LRANGE
+%%
+%  VARIABLE CHARACTER CBDEF1 CBDEF2 CBDFF CBDDF CSEL
+%  VARIABLE INTEGER ISEL
+%  VARIABLE CHARACTER CTITLE CPOSITION CTEXT1 CTEXT2 CDIST1
+%  VARIABLE CHARACTER SBND
+%  VARIABLE REAL RBOND BDIST RBDFF DBOND DMATCH
+%  VARIABLE LOGICAL T
+%%
+%% CATOM1, CATOM2 and BDIST are used for the call to ydist.scp, BDIST is the return value
+%%
+%  IF LCALLED THEN
+%    EVALUATE CATOM1 = CANCHOR
+%    EVALUATE CATOM2 = CCOMMON
+%  ELSE
+%    IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%      COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        GET NOSTORE SILENT KEYWORD 'Atom?' ' '
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          CASE LOOPCOUNTER
+%            EVALUATE CATOM1 = CVALUE
+%            EVALUATE CATOM2 = CVALUE
+%          END CASE
+%        END IF
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%% We do not need the file anymore
+%      EVALUATE T = FILEDELETE ( 'AtomsToWorkOn.dat' )
+%    ELSE
+%      TRANSFER "{A File AtomsToWorkOn.dat not found. CRYSTALS has to quit." TO DISPLAY
+%      FINISH
+%    END IF
+%  END IF
+%%
+%  EVALUATE CTYPE1 = FIRSTSTR ( CATOM1 )
+%  EVALUATE CTYPE2 = FIRSTSTR ( CATOM2 )
+%  EVALUATE CBDEF1 = CTYPE1 // "-" // CTYPE2
+%  EVALUATE CBDEF2 = CTYPE2 // "-" // CTYPE1
+%%
+%  IF ( CTYPE1 .EQ. "Q" ) .OR. ( CTYPE2 .EQ. "Q" ) THEN
+%    EVALUATE LRANGE = TRUE
+%    TRANSFER "{I Mode is range." TO DISPLAY
+%  ELSE
+%    EVALUATE LRANGE = FALSE
+%    TRANSFER "{I Mode is atom type." TO DISPLAY
+%  END IF
+%%
+%% Calculate actual distance
+%%
+%  COPY '#SCRIPT YDIST'
+%%
+%  EVALUATE RBOND = BDIST
+%  EVALUATE CBOND = CHARACTER ( RBOND )
+%%
+%  EVALUATE CTITLE = "Distance between " // CATOM1 // " and " // CATOM2
+%  EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%  EVALUATE CTEXT1 = "Choose bond lenght from literature:"
+%  EVALUATE CTEXT2 = "or choose distance to be"
+%  EVALUATE CDIST1 = CTITLE // " is " // CHARACTER ( BDIST )
+%%
+%  TRANSFER '#RELEASE PUNCH BondDefs.dat' TO CRYSTALS
+%%
+%  COPY '#OPEN SCPDATA CRYSDIR:script/a_bond.dat'
+%  EXTRACT NEXT
+%  LOOP
+%    ON END TERMINATE
+%    ON ERROR TERMINATE
+%    EXTRACT TRANSFER INPUT
+%    GET NOSTORE SILENT KEYWORD 'Bond definition?' ' '
+%    IF CVALUE .EQ. "END" THEN
+%      EVALUATE loopend = LOOPCOUNTER
+%    ELSE
+%      IF LRANGE THEN
+%        GET NOSTORE SILENT REAL 'Bond length?' ' '
+%        EVALUATE RBDFF = VALUE
+%        GET NOSTORE SILENT TEXT 'Bond description?' ' '
+%        EXTRACT TRANSFER INPUT
+%% In the range mode we need the bond definitions
+%        GET NOSTORE SILENT TEXT 'Bond description?' ' '
+%        EVALUATE CBDDF = CVALUE
+%        EVALUATE DBOND = BDIST - RBDFF
+%        IF ( DBOND .LE. 0.1 ) .AND. ( DBOND .GE. - 0.1 ) THEN
+%          TRANSFER CBDDF TO PUNCH
+%        END IF
+%      ELSE
+%        EVALUATE CBDFF = CVALUE
+%        GET NOSTORE SILENT TEXT 'Bond description?' ' '
+%        EVALUATE CBDDF = CVALUE
+%        IF ( CBDFF .EQ. CBDEF1 ) .OR. ( CBDFF .EQ. CBDEF2 ) THEN
+%          TRANSFER CBDDF TO PUNCH
+%        END IF
+%      END IF
+%      EXTRACT NEXT
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  TRANSFER 'END' TO PUNCH
+%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%
+^^WI WINDOW XRB
+% TRANSFER "^^WI '" // CTITLE // "'" TO DISPLAY
+^^WI MODAL
+% TRANSFER "^^WI POSITION" // CPOSITION TO DISPLAY
+^^WI GRID M NROWS=5 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=1 NCOLS=7 OUTLINE = 'Actual distance' {
+% TRANSFER "^^WI     @ 1,1 STATIC T1 '" // CDIST1 // "'" TO DISPLAY
+^^WI     @ 1,3 BUTTON BSA '&Show' DISABLED=NO
+^^WI     @ 1,5 BUTTON BHA '&Hide' DISABLED=NO
+^^WI     @ 1,7 BUTTON BAH '&Hide all' DISABLED=NO
+^^WI   }
+^^WI   @ 4,2 GRID B NROWS=5 NCOLS=5 OUTLINE = 'Values from literature' {
+% TRANSFER "^^WI     @ 1,1 STATIC T1 '" // CTEXT1 // "'" TO DISPLAY
+^^WI     @ 1,3 DROPDOWN DBND INFORM=YES ADDTOLIST
+%%
+%  EVALUATE ISEL = 0
+%  EVALUATE CSEL = CHARACTER ( ISEL )
+%  COPY '#OPEN SCPDATA BondDefs.dat'
+%  EXTRACT NEXT
+%  LOOP
+%    ON END TERMINATE
+%    ON ERROR TERMINATE
+%    EXTRACT TRANSFER INPUT
+%    GET NOSTORE SILENT TEXT 'Bond definition?' ' '
+%    IF CVALUE .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      TRANSFER "^^WI     '" // CVALUE // "'" TO DISPLAY
+%% Now we find the nearest match
+%      EXTRACT TRANSFER INPUT
+%      IF LRANGE THEN
+%        GET NOSTORE SILENT KEYWORD 'Bond definition?' ' '
+%      END IF
+%      GET NOSTORE SILENT REAL 'Bond length?' ' '
+%      EVALUATE RBDFF = VALUE
+%      GET NOSTORE SILENT TEXT 'Bond description?' ' '
+%      EVALUATE DBOND = BDIST - RBDFF
+%      IF DBOND .LT. 0.0 THEN
+%        EVALUATE DBOND = - DBOND
+%      END IF
+%      IF DMATCH .EQ. 0.0 THEN
+%        EVALUATE DMATCH = DBOND
+%        EVALUATE ISEL = LOOPCOUNTER
+%        EVALUATE CSEL = CHARACTER ( ISEL )
+%      END IF
+%      IF DBOND .LT. DMATCH THEN
+%        EVALUATE DMATCH = DBOND
+%        EVALUATE ISEL = LOOPCOUNTER
+%        EVALUATE CSEL = CHARACTER ( ISEL )
+%      END IF
+%      EXTRACT NEXT
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+^^WI     'NULL'
+%  IF ISEL .GT. 0 THEN
+%    TRANSFER "^^WI     SELECTION = " // CSEL TO DISPLAY
+%  END IF
+^^WI     @ 1,5 STATIC T2 'Angstrom'
+%%
+% TRANSFER "^^WI     @ 3,1 STATIC T3 '" // CTEXT2 // "'" TO DISPLAY
+^^WI     @ 3,3 EDITBOX SBND '0' CHARS=8 REAL
+^^WI     @ 3,5 STATIC T4 'Angstrom'
+%%
+%  IF LCALLED THEN
+^^WI     @ 5,1 BUTTON BAP '&Apply' DISABLED=NO
+%  ELSE
+^^WI     @ 5,1 BUTTON BAP '&Apply' DISABLED=YES
+%  END IF
+%%
+^^WI     @ 5,5 BUTTON BOK '&Quit' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  IF ISEL .GT. 0 THEN
+%    COPY '#OPEN SCPDATA BondDefs.dat'
+%    LOOP ISEL TIMES
+%      EXTRACT NEXT
+%    END LOOP
+%    EXTRACT TRANSFER INPUT
+%    IF LRANGE THEN
+%      GET NOSTORE SILENT KEYWORD 'Bond definition?' ' '
+%    END IF
+%    GET NOSTORE SILENT KEYWORD 'Bond length?' ' '
+%    IF CVALUE .NE. "END" THEN
+%      EVALUATE CBOND = CVALUE
+%      GET NOSTORE SILENT TEXT 'Bond definition?' ' '
+%%     TRANSFER "{I    Chosen bond length is " // CBOND // " Angstrom..." TO DISPLAY
+%    END IF
+%    COPY '#CLOSE SCPDATA'
+%  ELSE
+%    EVALUATE CBOND = CHARACTER ( BDIST )
+%%   TRANSFER "{I    Calculated bond length is " // CBOND // " Angstrom..." TO DISPLAY
+%  END IF
+%%
+%  TRANSFER "^^CO SET SBND TEXT '" // CBOND // "'" TO DISPLAY
+%%
+%  EVALUATE LCHANGED = FALSE
+%%
+%  LOOP
+%%
+%    IF LCHANGED THEN
+%%
+%      COPY '#OPEN SCPDATA BondDefs.dat'
+%      LOOP VALUE TIMES
+%        EXTRACT NEXT
+%      END LOOP
+%      EXTRACT TRANSFER INPUT
+%      IF LRANGE THEN
+%        GET NOSTORE SILENT KEYWORD 'Bond definition?' ' '
+%      END IF
+%      GET NOSTORE SILENT KEYWORD 'Bond length?' ' '
+%      EVALUATE CBOND = CVALUE
+%      GET NOSTORE SILENT TEXT 'Bond definition?' ' '
+%      TRANSFER "^^CO SET SBND TEXT '" // CBOND // "'" TO DISPLAY
+%%     TRANSFER "{I DD Chosen bond length is " // CBOND // " Angstrom..." TO DISPLAY
+%      EVALUATE LCHANGED = FALSE
+%      COPY '#CLOSE SCPDATA'
+%    END IF
+%%
+%  VERIFY BOK BSA BHA BAH DBND BAP
+%  GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%  CASE VALUE
+%%
+%    BLOCK        % BOK - CLOSE window
+^^CO   DISPOSE XRB
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BSA - SHOW atoms
+%      TRANSFER "^^CO SET MODEL01 SELECT " // CATOM1 // " YES" TO DISPLAY
+%      TRANSFER "^^CO SET MODEL01 SELECT " // CATOM2 // " YES" TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BHA - HIDE atoms
+%      TRANSFER "^^CO SET MODEL01 SELECT " // CATOM1 // " NO" TO DISPLAY
+%      TRANSFER "^^CO SET MODEL01 SELECT " // CATOM2 // " NO" TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BAH - HIDE all
+^^CO SET MODEL01 SELECT ALL=NO
+%    END BLOCK
+%%
+%    BLOCK        % DBND - dropdown
+%%     TRANSFER "{I DD activated..." TO DISPLAY
+%      GET SILENT NOSTORE INTEGER 'New value' '0'
+%      EVALUATE LCHANGED = TRUE
+%    END BLOCK
+%%
+%    BLOCK        % BAP - take this value
+%%
+^^??   SBND TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RBOND = VALUE
+%      EVALUATE CBOND = CHARACTER ( RBOND )
+%%
+%%     TRANSFER "{I EB Chosen bond length is " // CBOND // " Angstrom..." TO DISPLAY
+%%
+^^CO   DISPOSE XRB
+%      FINISH
+%    END BLOCK
+%%
+%  END CASE
+%  END LOOP
+%%
+%END SCRIPT

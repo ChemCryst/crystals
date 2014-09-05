@@ -4,14 +4,15 @@
 %%                                                                              
 %  VARIABLE LOGICAL REFSOFASS                                                   
 %%                                                                              
-%  VARIABLE INTEGER IPRT IPEG IPEP IPRL ILST ICNT
-%% VARIABLE CHARACTER CL16
+%  VARIABLE INTEGER IPRT IPEG IPEP IPRL ILST                                    
 %  VARIABLE LOGICAL LDEBUG L_OPEN  
 %%
+%  VARIABLE LOGICAL L_EQUIV                                             
+%%                                                                              
 %  EVALUATE LDEBUG = FALSE                                                      
 %% EVALUATE LDEBUG = TRUE                                                       
 %  EVALUATE L_OPEN = FALSE  
-%  EVALUATE ICNT = 0
+%  EVALUATE L_EQUIV = FALSE                                                    
 %%                                                                              
 %  COPY '#RELEASE PUNCH refsofass.12'                                           
 %  COPY '#OPEN SCPDATA Parts.dat'                                               
@@ -25,86 +26,67 @@
 %    EVALUATE IPRT = VALUE                                                      
 %    COPY '#SCRIPT A_SPLITPARTNUMBER'                                           
 %    IF LDEBUG THEN  
-%      TRANSFER "{I part " // CHARACTER ( IPRT ) // ", assembly " // CHARACTER ( IPEG ) // ", group " // CHARACTER ( IPEP ) // "..." TO DISPLAY
+%      transfer "{E Loop " // character ( loopcounter ) to display                                                           
+%      TRANSFER "{I part " // CHARACTER ( IPRT ) TO DISPLAY                     
+%      TRANSFER "{I assembly " // CHARACTER ( IPEG ) TO DISPLAY                 
+%      TRANSFER "{I group " // CHARACTER ( IPEP ) // "..." TO DISPLAY           
 %    END IF                                                                     
 %% Calculate position                                                           
-%    IF LOOPCOUNTER .EQ. 1 THEN
+%    IF .NOT. L_EQUIV THEN                                                 
 %      IF LDEBUG THEN                                                           
-%        TRANSFER "{I Assembly is " // CHARACTER ( IPEG ) // ", group is " // CHARACTER ( IPEP ) TO DISPLAY
+%        TRANSFER "{I Assembly is " // CHARACTER ( IPEG ) TO DISPLAY            
+%        TRANSFER "{I group is " // CHARACTER ( IPEP ) TO DISPLAY               
 %      END IF                                                                   
 %      IF IPEP .NE. 0 THEN                                                      
-%        TRANSFER "EQUIVALENCE PART(" // CHARACTER ( IPRT ) // ", OCC)" TO PUNCH
+%        TRANSFER "EQUIVALENCE PART(" // CHARACTER ( IPRT ) // -                
+         ", OCC)" TO PUNCH                                                      
 %        EVALUATE L_OPEN = TRUE                                                 
-%        EVALUATE ICNT = 1
-%%       EVALUATE CL16 = "RESTRAIN 1,0.000001 = " // " PART(" // CHARACTER ( IPRT ) // ", OCC)"
+%        EVALUATE L_EQUIV = TRUE                                                 
 %      END IF                                                                   
 %%                                                                              
 %    ELSE                                                                       
 %      IF ILST .EQ. IPEG THEN                                                   
 %        IF LDEBUG THEN                                                         
-%          TRANSFER "{I                group is " // CHARACTER ( IPEP ) TO DISPLAY
+%          TRANSFER "{I                group is " // -                          
+           CHARACTER ( IPEP ) TO DISPLAY                                        
 %        END IF                                                                 
 %        IF IPEP .NE. 0 THEN                                                    
-%          TRANSFER "CONTINUE    PART(" // CHARACTER ( IPRT ) // ", OCC)" TO PUNCH
-%          EVALUATE ICNT = ICNT + 1
-%%         EVALUATE CL16 = CL16 // " + PART(" // CHARACTER ( IPRT ) // ", OCC)"
+%          TRANSFER "CONTINUE    PART(" // CHARACTER ( IPRT ) // -              
+           ", OCC)" TO PUNCH                                                    
 %        END IF                                                                 
 %%                                                                              
 %      ELSE                                                                     
 %        IF LDEBUG THEN                                                         
-%          TRANSFER "{I Assembly is " // CHARACTER ( IPEG ) // ", group is " // CHARACTER ( IPEP ) TO DISPLAY
+%          TRANSFER "{I Assembly is " // CHARACTER ( IPEG ) TO DISPLAY          
+%          TRANSFER "{I group is " // CHARACTER ( IPEP ) TO DISPLAY             
 %        END IF                                                                 
 %        IF IPEP .NE. 0 THEN                                                    
-%% First finish instructions for previous assembly
 %          IF ILST .NE. 0 THEN                                                  
-%            IF LDEBUG THEN
-%              TRANSFER "{I Assembly with " // CHARACTER ( ICNT ) // " groups." TO DISPLAY
-%            END IF
-%            IF ICNT .EQ. 1 THEN
-%%             TRANSFER CL16 TO DISPLAY
-%            ELSE
-%              TRANSFER "WEIGHT -1   PART(" // CHARACTER ( IPRL ) // ", OCC)" TO PUNCH
-%            END IF
-%            IF ICNT .GT. 2 THEN
-%              TRANSFER "{E Number of groups in assembly " // CHARACTER ( IPEG ) // " is " // CHARACTER ( ICNT ) // ", manual intervention may be needed." TO DISPLAY
-%            END IF
+%            TRANSFER "WEIGHT -1   PART(" // CHARACTER ( IPRL ) // -            
+             ", OCC)" TO PUNCH                                                  
 %            EVALUATE L_OPEN = FALSE                                            
 %          END IF                                                               
-%          TRANSFER "EQUIVALENCE PART(" // CHARACTER ( IPRT ) // ", OCC)" TO PUNCH
+%          TRANSFER "EQUIVALENCE PART(" // CHARACTER ( IPRT ) // -              
+           ", OCC)" TO PUNCH                                                    
 %          EVALUATE L_OPEN = TRUE                                               
-%          EVALUATE ICNT = 1
-%%         EVALUATE CL16 = "RESTRAIN 1,0.000001 = " // " PART(" // CHARACTER ( IPRT ) // ", OCC)"
 %        END IF                                                                 
 %%                                                                              
 %      END IF                                                                   
 %    END IF                                                                     
-%    IF LDEBUG THEN
-%      TRANSFER "Assembly: " // CHARACTER ( IPEG ) // ", part: " // CHARACTER ( IPRT ) TO DISPLAY
-%    END IF
-%% Part and group numbers must not be 0
-%    IF ( IPEG .NE. 0 ) .AND. ( IPEP .NE. 0 ) THEN
+%%   TRANSFER "Assembly: " // CHARACTER ( IPEG ) // ", part: " // -             
+     CHARACTER ( IPRT ) TO DISPLAY                                              
+%    IF IPEG .NE. 0 THEN                                                        
 %      EVALUATE ILST = IPEG                                                     
 %      EVALUATE IPRL = IPRT                                                     
-%      IF LDEBUG THEN
-%        TRANSFER "  Updating..." TO DISPLAY
-%      END IF
+%%     TRANSFER "  Updating..." TO DISPLAY                                      
 %    END IF                                                                     
 %  END LOOP                                                                     
 %  IF L_OPEN THEN                                                               
-%    IF LDEBUG THEN
-%      TRANSFER "{I Assembly with " // CHARACTER ( ICNT ) // " groups." TO DISPLAY
-%    END IF
-%    IF ICNT .EQ. 1 THEN
-%%     TRANSFER CL16 TO DISPLAY
-%    ELSE
-%      TRANSFER "WEIGHT -1   PART(" // CHARACTER ( IPRL ) // ", OCC)" TO PUNCH
-%    END IF
-%    IF ICNT .GT. 2 THEN
-%      TRANSFER "{E Number of groups in assembly " // CHARACTER ( IPEG ) // " is " // CHARACTER ( ICNT ) // ", manual intervention may be needed." TO DISPLAY
-%    END IF
+%    TRANSFER "WEIGHT -1   PART(" // CHARACTER ( IPRL ) // -                    
+     ", OCC)" TO PUNCH                                                          
 %    EVALUATE L_OPEN = FALSE                                                    
 %  END IF                                                                       
 %  COPY '#CLOSE SCPDATA'                                                        
 %  COPY '#RELEASE PUNCH bfile.pch'                                              
 %%                                                                              
-%END SCRIPT
+%END SCRIPT                                                                     

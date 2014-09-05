@@ -1,0 +1,99 @@
+%SCRIPT FINDELEMENTS
+%%
+%% This script finds all atom types actually used in list 5 and writes them to
+%% the file SortOrder.dat and stores them in the character string SORTORDER
+%%
+%  VARIABLE CHARACTER CATYPE1 CATYPE2 SORTORDER
+%  VARIABLE INTEGER ICOUNT
+%  VARIABLE LOGICAL LNEWATFOUND LDEBUG T
+%%
+%  EVALUATE LDEBUG = TRUE
+%  EVALUATE LDEBUG = FALSE
+%%
+%  EVALUATE ICOUNT = 0
+%%
+%  IF ( FILEEXISTS ( 'SortOrder.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'SortOrder.dat' )
+%  END IF
+%%
+%  ON EDITERROR TERMINATE
+%  COPY '#GENERALEDIT 5'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=0 TO CATYPE1'
+%    IF ( .NOT. FILEEXISTS ( 'SortOrder.dat' ) ) THEN
+%      IF LDEBUG THEN
+%        TRANSFER CATYPE1 // " is new" TO DISPLAY
+%      END IF
+%      COPY '#RELEASE PUNCH SortOrder.dat'
+%      TRANSFER CATYPE1 TO PUNCH
+%      COPY '#RELEASE PUNCH bfile.pch'
+%      EVALUATE ICOUNT = ICOUNT + 1
+%    ELSE
+%      EVALUATE LNEWATFOUND = TRUE
+%      COPY '#OPEN SCPDATA SortOrder.dat'
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET TEXT 'Atom type'
+%        EVALUATE CATYPE2 = CVALUE
+%        IF CATYPE1 .EQ. CATYPE2 THEN
+%          EVALUATE LNEWATFOUND = FALSE
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        END IF
+%      END LOOP
+%      COPY '#CLOSE SCPDATA'
+%      IF LNEWATFOUND THEN
+%        IF LDEBUG THEN
+%          TRANSFER CATYPE1 // " is new" TO DISPLAY
+%        END IF
+%        COPY '#APPEND PUNCH SortOrder.dat'
+%        TRANSFER CATYPE1 TO PUNCH
+%        COPY '#RELEASE PUNCH bfile.pch'
+%        EVALUATE ICOUNT = ICOUNT + 1
+%      END IF
+%    END IF
+%    COPY 'NEXT'
+%  END LOOP
+%  COPY 'END'
+%  COPY '#APPEND PUNCH SortOrder.dat'
+%  TRANSFER "END" TO PUNCH
+%  COPY '#RELEASE PUNCH bfile.pch'
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "{I " // CHARACTER ( ICOUNT ) // " atom types found in this structure." TO DISPLAY
+%  END IF
+%%
+%% Now all atom types found are written to the character variable SORTORDER
+%%
+%  COPY '#OPEN SCPDATA SortOrder.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom type'
+%% force an exit from loop on reading an END card
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      IF LOOPCOUNTER .EQ. 1 THEN
+%        EVALUATE SORTORDER = CVALUE
+%      ELSE
+%        EVALUATE SORTORDER = SORTORDER // " " // CVALUE
+%      END IF
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "{I Sort order is: " // SORTORDER // "." TO DISPLAY
+%  END IF
+%%
+%END SCRIPT

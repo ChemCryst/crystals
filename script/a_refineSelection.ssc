@@ -1,0 +1,265 @@
+%SCRIPT REFINESELECTION
+%%
+%% Variables used by calling script
+%%
+%% VARIABLE INTEGER IMODE
+%  VARIABLE INTEGER IOPTION
+%%
+%  VARIABLE CHARACTER CTITLE CPOSITION CTEXT1 CTEXT2
+%  VARIABLE CHARACTER CELE CLINE
+%  VARIABLE INTEGER ISELECTED ISER
+%  VARIABLE LOGICAL LDEBUG T
+%%
+%% Variables for script genL12singleAtoms
+%%
+%  VARIABLE LOGICAL LPOS LGRP LUISO LUANI LUISOEQ
+%%
+%% Variables for restore point
+%%
+%  VARIABLE INTEGER ISER5 ISER12 ISER16
+%  VARIABLE LOGICAL LEX5 LEX12 LEX16
+%%
+%% We set a restore point for security
+%%
+%  COPY '#SCRIPT A_RESTOREPOINT'
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%% and initialize all flags
+%%
+%  EVALUATE LPOS = FALSE
+%  EVALUATE LGRP = FALSE
+%  EVALUATE LUISO = FALSE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = FALSE
+%%
+%  CASE IOPTION
+%%
+%    BLOCK                   % 1, as group, position alone
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = TRUE
+%  EVALUATE LUISO = FALSE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = FALSE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 2, as group, one isotropic U value
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = TRUE
+%  EVALUATE LUISO = TRUE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = TRUE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 3, as group, isotropic U values
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = TRUE
+%  EVALUATE LUISO = TRUE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = FALSE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 4, as group, anisotropic U values
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = TRUE
+%  EVALUATE LUISO = FALSE
+%  EVALUATE LUANI = TRUE
+%  EVALUATE LUISOEQ = FALSE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 5, positions alone
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = FALSE
+%  EVALUATE LUISO = FALSE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = FALSE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 6, positions, one isotropic U value
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = FALSE
+%  EVALUATE LUISO = TRUE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = TRUE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 7, positions, isotropic U values
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = FALSE
+%  EVALUATE LUISO = TRUE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = FALSE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 8, positions, anisotropic U values
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  EVALUATE LPOS = TRUE
+%  EVALUATE LGRP = FALSE
+%  EVALUATE LUISO = FALSE
+%  EVALUATE LUANI = TRUE
+%  EVALUATE LUISOEQ = FALSE
+%%
+%  COPY '#SCRIPT A_GENL12SINGLEATOMS'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    COPY '#SCRIPT A_REFINE5'
+%    COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no atoms are specified"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%    END BLOCK
+%%
+%  END CASE
+%%
+%END SCRIPT
