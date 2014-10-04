@@ -2016,7 +2016,7 @@ bool CcController::InputPlaceIsInTopLevelModalWindow()
 {
 	if ( CrWindow::mModalWindowStack.empty() ) return true; //shouldn't happen, but maybe top level window isn't in stack
 	if ( GetInputPlace() ) {
-		GetInputPlace()->GetRootWidget() == CrWindow::mModalWindowStack.back() ) return true;
+		if ( GetInputPlace()->GetRootWidget() == CrWindow::mModalWindowStack.back() ) return true;
 	}
 	return false;
 }
