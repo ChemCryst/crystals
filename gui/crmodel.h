@@ -78,6 +78,7 @@
 class CcModelDoc;
 class CcModelAtom;
 class CcModelObject;
+class CrMultiEdit;
 class CrMenu;
 class Cc2DAtom;
 #define CR_SELECT   1
@@ -87,6 +88,7 @@ class Cc2DAtom;
 #define CR_SENDD    5
 #define CR_APPEND   6
 #define CR_SENDC_AND_SELECT 7
+#define CR_INSERTIN 8
 
 class CxModel;
 
@@ -143,7 +145,7 @@ class   CrModel : public CrGUIElement
 // Called from CcModelDoc:
     void    DocRemoved();
     void    ApplyIndexColour( GLuint indx );
-
+    void    SendInsertText( string s );
 
 // Attributes:
     CcModelStyle m_style; //only public 'til I fix CxModel to use GL_SELECT
@@ -151,6 +153,7 @@ class   CrModel : public CrGUIElement
   private:
 
 // Attributes:
+    CrMultiEdit* m_InsertWindow;
     CcModelDoc* m_ModelDoc;
     CrMenu     *m_popupMenu1, *m_popupMenu2, *m_popupMenu3,
                *m_popupMenu4;
@@ -186,6 +189,7 @@ class   CrModel : public CrGUIElement
 #define kSSendC             "HEADERATOM"
 #define kSSendD             "HEADERSPLITATOM"
 #define kSSendCAndSelect    "SENDANDSELECT"
+#define kSInsertIn          "INSERTIN"
 #define kSCheckValue        "CHECKVALUE"
 #define kSNRes              "NRES"
 #define kSStyle             "STYLE"
@@ -231,6 +235,7 @@ enum
  kTSendC,
  kTSendD,
  kTSendCAndSelect,
+ kTInsertIn,
  kTCheckValue,
  kTNRes,
  kTStyle,

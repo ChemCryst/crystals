@@ -9,6 +9,7 @@ using namespace std;
 #include "ccmodeldoc.h"
 #include "crmodel.h"
 #include "creditbox.h"
+#include "crmultiedit.h"
 #include "ccpoint.h"
 #include "cccontroller.h"
 
@@ -365,6 +366,11 @@ void CcModelAtom::SendAtom(int style, bool output)
     case CR_APPEND:
     {
       ((CrEditBox*)(CcController::theController)->GetInputPlace())->AddText(" "+m_label+" ");
+      break;
+    }
+    case CR_INSERTIN:
+    {
+      mp_parent->SendInsertText(m_label);
       break;
     }
     case CR_SENDA:

@@ -41,6 +41,7 @@
 #define     __CxMultiEdit_H__
 
 #include "crystalsinterface.h"
+#include "ciinputcontrol.h"
 
 #ifdef __BOTHWX__
 //#include <wx/textctrl.h>
@@ -58,11 +59,12 @@ class CxGrid;
 class CrGUIElement;
 //End of user code.
 
-class CxMultiEdit : public BASEMULTIEDIT
+class CxMultiEdit : public BASEMULTIEDIT, public IInputControl
 {
     public:
         void Empty();
         void Spew();
+		bool CxIsModified();
         void Focus();
 
 // methods
@@ -87,7 +89,7 @@ class CxMultiEdit : public BASEMULTIEDIT
         void            SaveAs(string filename);
         void            Load(string filename);
 
-
+		void			InsertText(const string text);
     private:
         static int      AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
         static void     RemoveMultiEdit( void) { mMultiEditCount--; };

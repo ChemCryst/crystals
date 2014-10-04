@@ -759,13 +759,14 @@ CcParse CrGrid::InitElement( CrGUIElement * element, deque<string> & tokenList, 
 
   if ( this->SetPointer ( xpos, ypos, element ))
   {
+    m_ItemList.push_back( element );  // Add now so that FindObject searches from sibling elements can work OK.
 // Parse the item specific stuff
     retVal = element->ParseInput( tokenList );
   }
 
   if ( retVal.OK() )
   {
-    m_ItemList.push_back( element );
+//    m_ItemList.push_back( element );
     m_ColCanResize[xpos-1] = m_ColCanResize[xpos-1] || retVal.CanXResize();
     m_RowCanResize[ypos-1] = m_RowCanResize[ypos-1] || retVal.CanYResize();
     mXCanResize = mXCanResize || retVal.CanXResize();
@@ -778,6 +779,7 @@ CcParse CrGrid::InitElement( CrGUIElement * element, deque<string> & tokenList, 
   }
   else
   {
+    m_ItemList.remove(element);
     delete element;
   }
 

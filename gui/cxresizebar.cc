@@ -113,7 +113,7 @@ CxResizeBar * CxResizeBar::CreateCxResizeBar( CrResizeBar * container, CxGrid * 
     control->Create(NULL, "Resize", WS_VISIBLE|WS_CHILD|WS_CLIPCHILDREN, CRect(0,0,10,10), guiParent, mResizeBarCount++);
 #endif
 #ifdef __BOTHWX__
-    control->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10));
+    control->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), wxWANTS_CHARS);
 #endif
     return control;
 }

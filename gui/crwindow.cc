@@ -458,7 +458,48 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
                 if ( cgeom.length() )
                    oldSize = CcRect( cgeom );
 
-                if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
+// Ensure all edges are on screen.
+                CcRect sRect;
+//                CcRect sRect(GetScreenArea());
+
+				
+				sRect.mTop = wxGetClientDisplayRect().GetY();
+			    sRect.mLeft = wxGetClientDisplayRect().GetX();
+				sRect.mBottom = wxGetClientDisplayRect().GetY() + wxGetClientDisplayRect().GetHeight();
+				sRect.mRight =  wxGetClientDisplayRect().GetX() + wxGetClientDisplayRect().GetWidth();
+
+				int shift; 
+				shift = oldSize.Height() - sRect.Height();
+				if ( shift > 0 ) {
+					oldSize.mBottom = oldSize.mTop + sRect.Height();
+				}
+				shift = oldSize.Width() - sRect.Width();
+				if ( shift > 0 ) {
+					oldSize.mRight = oldSize.mLeft + sRect.Width();
+				}
+				shift = oldSize.Top() - sRect.Top();
+				if ( shift < 0 ) {
+					oldSize.mTop -= shift;
+					oldSize.mBottom -= shift;
+				}
+				shift = oldSize.Left() - sRect.Left();
+				if ( shift < 0 ) {
+					oldSize.mLeft -= shift;
+					oldSize.mRight -= shift;
+				}
+				shift = oldSize.Bottom() - sRect.Bottom();
+				if ( shift > 0 ) {
+					oldSize.mTop -= shift;
+					oldSize.mBottom -= shift;
+				}
+				shift = oldSize.Right() - sRect.Right();
+				if ( shift > 0 ) {
+					oldSize.mLeft -= shift;
+					oldSize.mRight -= shift;
+				}
+
+				
+				if (( oldSize.Height() > 10) && ( oldSize.Width() > 10 ))
                 {
                    ((CxWindow*)ptr_to_cxObject)->SetGeometry(oldSize.mTop,
                                                              oldSize.mLeft,

@@ -161,6 +161,7 @@ CxModel::CxModel(CrModel* container)
 //  m_bitmapok = false;
   m_bNeedReScale = true;
   m_bPickListOK = false;
+  m_bPixelsOK = false;
   m_bFullListOK = false;
   m_bOkToDraw = false;
   m_fastrotate = false;
@@ -172,6 +173,9 @@ CxModel::CxModel(CrModel* container)
   m_stretchY = 1.0f ;
   m_fbsize = 2048;
   m_sbsize = 256;
+  m_pixels = nil;
+  m_pixels_w = 0;
+  m_pixels_h = 0;
 
   m_movingPoint.Set(-1,-1);
 
@@ -202,6 +206,7 @@ CxModel::~CxModel()
 {
   mModelCount--;
   delete [] mat;
+  delete m_pixels;
   DeletePopup();
 #ifdef __BOTHWX__
   delete m_context;
@@ -477,6 +482,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
         m_fastrotate = false;
         m_bFullListOK = false;  //Redraw double bonds perpendicular to viewer
         m_bPickListOK = false;  //Redraw double bonds perpendicular to viewer
+	    m_bPixelsOK = false;
         NeedRedraw();
       }
       break;
@@ -561,7 +567,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
       int type = 0;
       if( type = IsAtomClicked(point.x, point.y, &atomname, &object, false))
       {
-//        LOGERR( string(point.x) + ", " + string(point.y) + " " + atomname);
+//        LOGERR( atomname);
         if ( type == CC_ATOM )
          ((CcModelAtom*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
         else if ( type == CC_SPHERE )
@@ -1320,6 +1326,8 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 {
 
 	bool ok_to_draw = true;
+	int rgbHit = 0;
+
 
 	if ( ! m_bPickListOK ) {
 		setCurrentGL();
@@ -1344,26 +1352,32 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
                 ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderAtoms(true);
 		ok_to_draw |= ((CrModel*)ptr_to_crObject)->RenderBonds(true);
 
+
+		if ( ok_to_draw ) m_bPickListOK = true;
+
 		if ( tex2DIsEnabled ) glEnable(GL_TEXTURE_2D);
 		if ( fogIsEnabled )  glEnable(GL_FOG);
 		if ( lightIsEnabled ) glEnable(GL_LIGHTING);
 		
 		glEndList();
-    }
+	} 
 
+	if ( m_pixels_w != GetWidth() ||	m_pixels_h != GetHeight() ) {  //sneaky resize
+		m_bPixelsOK = false;
+	}
 
-	
-	if ( ok_to_draw ) {
+	if ( (! m_bPixelsOK) && ok_to_draw ) {
+		
+		delete m_pixels;
+    	m_pixels = new unsigned char[4 * GetWidth() * GetHeight()];
+		m_pixels_w = GetWidth();
+		m_pixels_h = GetHeight();
 
-		m_bPickListOK = true;
-	
 		setCurrentGL();
 		glRenderMode ( GL_RENDER ); //Switching to render mode.
 
 		GLint viewport[4];
 		glGetIntegerv ( GL_VIEWPORT, viewport ); //Get the current viewport.
-
-		
 	  
 		glMatrixMode ( GL_PROJECTION );
 		glLoadIdentity();
@@ -1372,52 +1386,43 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		 
 		glClearColor( 0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
 		glCallList( PICKLIST );
-		 
 		
 	//Read back test pixel
-		unsigned char pixel[3];
-		int rgbHit;
+//		unsigned char pixel[4];
 		glReadBuffer(GL_BACK);
-		glReadPixels(xPos, viewport[3] - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+//		glReadPixels(xPos, viewport[3] - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
+		glReadPixels(0, 0, m_pixels_w, m_pixels_h, GL_RGBA, GL_UNSIGNED_BYTE, m_pixels);
 
-                rgbHit = DecodeColour ( pixel );
+		m_bPixelsOK = true;
+	}
 
-//                rgbHit= ((pixel[0]&0xff)<<16) | ((pixel[1]&0xff)<<8) | (pixel[2]&0xff);
+	if ( m_bPixelsOK ) {
 
-		if ( rgbHit == 0 ) {
-			for ( int range = 1; range < 4; range++ ) {
-				for ( int x1 = -range; x1 <= range; ++x1 ) {
-					glReadPixels(xPos + x1, viewport[3] - range - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-                                        rgbHit = DecodeColour ( pixel );
-					if ( rgbHit ) break;
-				}
-				if ( rgbHit ) break;
-				for ( int x1 = -range; x1 <= range; ++x1 ) {
-					glReadPixels(xPos + x1, viewport[3] + range - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-                                        rgbHit = DecodeColour ( pixel );
-					if ( rgbHit ) break;
-				}
-				if ( rgbHit ) break;
-				for ( int y1 = -range+1; y1 <= range-1; ++y1 ) {
-					glReadPixels(xPos - range, viewport[3] + y1 - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-                                        rgbHit = DecodeColour ( pixel );
-					if ( rgbHit ) break;
-				}
-				if ( rgbHit ) break;
-				for ( int y1 = -range; y1 <= range; ++y1 ) {
-					glReadPixels(xPos + range, viewport[3] + y1 - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
-                                        rgbHit = DecodeColour ( pixel );
-					if ( rgbHit ) break;
-				}
-				if ( rgbHit ) break;
-			}
-		}
+  // Avoid testing over the edges by moving the tested pixel a bit
+		int xAdj = max(xPos,3);
+		int yAdj = max(yPos,3);
+		xAdj = min(xAdj, m_pixels_w - 4);
+		yAdj = min(yAdj, m_pixels_h - 4);
+
+  //Coordinates of pixels to test (starting a centre and going out in shells)
+        int testx[49] = {0,  
+                         -1, -1, -1,   0,  0,   1,  1,  1,  
+                         -2, -2, -2,  -2, -2,  -1, -1,  0, 0,  1, 1,  2,  2, 2, 2, 2  
+                         -3, -3, -3, -3, -3, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3};
 		
+        int testy[49] = {0,  
+                         -1,  0,  1,  -1,  1,  -1,  0,  1,  
+                         -2, -1,  0,   1,  2,  -2,  2, -2, 2, -2, 2, -2, -1, 0, 1, 2
+                         -3, -2,  -1, 0, 1, 2, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3, -2,  -1, 0, 1, 2, 3 };
 
+		for ( int i = 0; i < 49; ++i ){
+            rgbHit = DecodeColour ( & m_pixels[4* (xAdj + testx[i] + ( m_pixels_h - yAdj - 1 - testy[i] ) * m_pixels_w )] );
+    		if ( rgbHit ) break;
+        }            
 
-
+	}
+		
 		
 //		ostringstream o;
 //		o << xPos << " " << viewport[3] << " " << yPos << " " << pixel[2];
@@ -1429,16 +1434,15 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		rrr << (pixel[0]&0xffffff) << " " << (pixel[1]&0xffffff) << " "  << (pixel[2]&0xffffff);
 		LOGERR(rrr.str());*/
 		 
-		if ( rgbHit != 0 ) {
+	if ( rgbHit != 0 ) {
 
-			*outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( rgbHit );
-			if ( *outObject )
-			{
-				*atomname = (*outObject)->Label();
-				return (*outObject)->Type();
-			}
-	   }
-	}
+		*outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( rgbHit );
+		if ( *outObject )
+		{
+			*atomname = (*outObject)->Label();
+			return (*outObject)->Type();
+		}
+   }
    return 0;
 }
 
@@ -1563,6 +1567,7 @@ void CxModel::ModelChanged(bool needrescale)
 
   m_bFullListOK = false;
   m_bPickListOK = false;
+  m_bPixelsOK = false;
 
   NeedRedraw(needrescale);
 }
@@ -1733,8 +1738,8 @@ void CxModel::DeletePopup()
 #endif
 #ifdef __BOTHWX__
     m_TextPopup->Destroy();
-    m_DoNotPaint = false;
-	NeedRedraw(false);
+//    m_DoNotPaint = false;
+//	NeedRedraw(false);
 #endif
     m_TextPopup=nil;
   }
@@ -1743,7 +1748,7 @@ void CxModel::DeletePopup()
 void CxModel::CreatePopup(string atomname, CcPoint point)
 {
 #ifdef __BOTHWX__
-  m_DoNotPaint = true;
+//  m_DoNotPaint = true;
 #endif
 
   DeletePopup();
@@ -1777,7 +1782,8 @@ void CxModel::CreatePopup(string atomname, CcPoint point)
   GetTextExtent( atomname.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
   m_TextPopup = new mywxStaticText(this, -1, atomname.c_str(),
-                                 wxPoint(CRMAX(0,point.x-cx-4),CRMAX(0,point.y-cy-4)),
+//  m_TextPopup = new mywxStaticText((wxWindow*)ptr_to_crObject->GetRootWidget()->ptr_to_cxObject, -1, atomname.c_str(),
+                                 wxPoint(CRMAX(0,point.x-cx-9),CRMAX(0,point.y-cy-9)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
 //  m_TextPopup->SetEvtHandlerEnabled(true);

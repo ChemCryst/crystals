@@ -131,6 +131,7 @@
 #define kSQExists   "EXISTS"
 #define kSQListtext "LISTTEXT"
 #define kSQText     "TEXT"
+#define kSQModified     "MODIFIED"
 #define kSQListrow  "LISTROW"
 #define kSQListitem "LISTITEM"
 #define kSQNselected    "NSELECTED"
@@ -181,6 +182,7 @@ enum
  kTQExists,
  kTQListtext,
  kTQText,
+ kTQModified,
  kTQListrow,
  kTQListitem,
  kTQNselected,

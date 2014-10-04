@@ -221,6 +221,15 @@ void  CrMultiEdit::GetValue( deque<string> &  tokenList )
             tokenList.pop_front();
             ((CxMultiEdit*)ptr_to_cxObject)->Spew();
       }
+      else if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQModified )
+      {
+            tokenList.pop_front();
+			if ( ((CxMultiEdit*)ptr_to_cxObject)->CxIsModified() ) {
+	            SendCommand( "YES",true);
+			} else {
+	            SendCommand( "NO",true);
+			}
+      }
       else
       {
             SendCommand( "ERROR",true );
@@ -249,6 +258,10 @@ void CrMultiEdit::CrFocus()
     ((CxMultiEdit*)ptr_to_cxObject)->Focus();
 }
 
+void CrMultiEdit::InsertAtom(string s)
+{
+    ((CxMultiEdit*)ptr_to_cxObject)->InsertText(s);
+}
 
 void CrMultiEdit::NoEcho(bool noEcho)
 {

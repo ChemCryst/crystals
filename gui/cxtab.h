@@ -81,7 +81,8 @@ class CxTab : public BASETAB
 #ifdef __BOTHWX__
         void LetGoOfTabs();
         void OnChar(wxKeyEvent & event);
-        DECLARE_EVENT_TABLE()
+		void OnIdle(wxIdleEvent & event);
+//        DECLARE_EVENT_TABLE()
 #endif
 
 };

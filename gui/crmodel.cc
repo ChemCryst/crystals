@@ -110,6 +110,7 @@ using namespace std;
 #include    "ccrect.h"
 #include    "crgrid.h"
 #include    "crmenu.h"
+#include    "crmultiedit.h"
 #include    "ccmenuitem.h"
 #include    "cxmodel.h"
 #include    "ccmodeldoc.h"
@@ -133,6 +134,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_popupMenu3 = nil;
   m_popupMenu4 = nil;
   m_AtomSelectAction = CR_SELECT;
+  m_InsertWindow = nil;
   ptr_to_cxObject = CxModel::CreateCxModel( this,(CxGrid *)(mParentPtr->GetWidget()) );
   ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this );
   m_style.normal_res = 15;
@@ -351,6 +353,25 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
           case kTSendCAndSelect:
             tokenList.pop_front();
             m_AtomSelectAction = CR_SENDC_AND_SELECT;
+            break;
+          case kTInsertIn:
+            tokenList.pop_front();
+            m_AtomSelectAction = CR_INSERTIN;
+//			LOGERR(tokenList.front());
+			m_InsertWindow = (CrMultiEdit*) GetRootWidget()->FindObject(tokenList.front());
+			if ( m_InsertWindow == nil ) {
+//		        LOGERR("Insert editor window not found");
+				m_InsertWindow = (CrMultiEdit*) (CcController::theController)->FindObject(tokenList.front());				
+				if ( m_InsertWindow == nil ) {
+			        LOGERR("Insert editor window not found.");
+				} //else {
+//					LOGERR("Insert editor finally found :) ");
+//				}
+//			} else {
+//				LOGERR("Insert editor found :) ");
+			}
+//			LOGERR(tokenList.front());
+			tokenList.pop_front();
             break;
         }
         break;
@@ -644,6 +665,16 @@ int CrModel::GetIdealHeight()
 void CrModel::DocRemoved()
 {
   m_ModelDoc = nil;
+}
+
+
+void CrModel::SendInsertText( string s )
+{
+
+	if ( m_InsertWindow ) {
+		m_InsertWindow->InsertAtom(s);
+	}
+
 }
 
 

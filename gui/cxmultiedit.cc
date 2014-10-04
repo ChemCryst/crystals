@@ -125,6 +125,43 @@ void CxMultiEdit::CxDestroyWindow()
 #endif
 }
 
+// Part of the IInputControl interface - insert text at cursor.
+void CxMultiEdit::InsertText(const string text) {
+
+	long pos = GetInsertionPoint();
+	bool insertspacebefore = false;
+	bool insertspaceafter = false;
+	int spb = 0;
+	int spa = 0;
+
+	if ( pos ) {
+		spb = GetCharAt(pos-1);
+	}
+
+	if ( pos != GetLastPosition()) {
+		spa = GetCharAt(pos);
+	}
+
+//    ostringstream strm;
+//    strm << "Chars before and after" << spb << " and " << spa;
+//	LOGERR(strm.str());
+
+	if (( spb != 32 ) && ( spb != 10 ) && ( spb !=13 ) && ( spb !=0 ) ) {
+		insertspacebefore = true;
+	}
+	if (( spa != 32 ) && ( spa != 10 ) && ( spa !=13 ) && ( spa !=0 ) ) {
+		insertspaceafter = true;
+	}
+	
+	string in = string(insertspacebefore?" ":"") + text + string(insertspaceafter?" ":"");
+
+	wxStyledTextCtrl::InsertText(pos, in);
+	SetCurrentPos(pos + in.length());
+	SetInsertionPoint(pos + in.length());
+	GotoPos(pos + in.length());
+
+}
+
 
 void  CxMultiEdit::SetText( const string & cText )
 {
@@ -258,6 +295,11 @@ void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #endif
 
 
+bool CxMultiEdit::CxIsModified()
+{
+	return IsModified();
+}
+
 void CxMultiEdit::Spew()
 {
 //Send all text to crystals a line at a time.
@@ -356,6 +398,11 @@ void CxMultiEdit::Init()
     StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour (75, 75, 75) );
     StyleSetBackground (wxSTC_STYLE_LINENUMBER, wxColour (220, 220, 220));
     SetMarginType (MARGIN_LINE_NUMBERS, wxSTC_MARGIN_NUMBER);
+
+	SetEdgeColumn(80);
+	SetEdgeMode(wxSTC_EDGE_BACKGROUND);
+	SetWordChars(" ");
+//	SetScrollWidth(5);
 
 //    StyleSetFont 	(  0, &pFont );
 //    StyleSetFont 	(  1, &pFont );

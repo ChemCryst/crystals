@@ -277,7 +277,7 @@ void CrButton::GetValue( deque<string> &  tokenList)
     else
     {
         SendCommand( "ERROR",true );
-        LOGWARN( "CrCheckBox:GetValue Error unrecognised token." + tokenList.front());
+        LOGWARN( "CrButton:GetValue Error unrecognised token." + tokenList.front());
         tokenList.pop_front();
     }
 }

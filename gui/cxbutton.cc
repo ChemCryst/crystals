@@ -76,7 +76,7 @@ CxButton *  CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
     theStdButton->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-      theStdButton->Create(guiParent,-1,"Button",wxPoint(0,0),wxSize(10,10));
+      theStdButton->Create(guiParent,-1,"Button",wxPoint(0,0),wxSize(10,10), wxWANTS_CHARS);
 #endif
 
     return theStdButton;
@@ -262,6 +262,11 @@ void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 #ifdef __BOTHWX__
 void CxButton::OnChar( wxKeyEvent & event )
 {
+
+//	ostringstream os;
+//	os << event.GetKeyCode();
+//	LOGERR("Cxbutton code is:");
+//		LOGERR(os.str());
       switch(event.GetKeyCode())
     {
         case 9:     //TAB. Shift focus back or forwards.

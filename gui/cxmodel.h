@@ -374,6 +374,12 @@ class CxModel : public BASEMODEL
 #endif
 
 protected:
+
+	unsigned char *m_pixels;  // Selection RGB for currently rendered view
+	bool m_bPixelsOK;         // Only computed when needed
+	int m_pixels_w;
+	int m_pixels_h;
+
     int m_DrawStyle;         // Rendering style
     bool m_Autosize;      // Resize when rotating?
     bool m_Hover;         // Highlight atoms on hover?

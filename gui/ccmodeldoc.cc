@@ -347,6 +347,11 @@ void CcModelDoc::ApplyIndexColour( GLuint indx ) {
       (*aview)->ApplyIndexColour( indx );
  };
 
+void CcModelDoc::SendInsertText(string s) {
+     for ( list<CrModel*>::const_iterator aview=attachedViews.begin(); aview != attachedViews.end(); aview++)
+      (*aview)->SendInsertText( s );
+}
+
 
 void CcModelDoc::DrawViews(bool rescaled)
 {
@@ -855,23 +860,38 @@ void CcModelDoc::ZoomAtoms( bool doZoom )
 
 CcModelObject * CcModelDoc::FindObjectByGLName(GLuint name)
 {
+
+// These could be speeded up by breaking on a hit.
+
   CcModelObject * ratom = nil;
   m_thread_critical_section.Enter();
   if ( ! mAtomList.empty() )
     for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
-        if ( (*atom).m_glID == name )  ratom = &(*atom);
+        if ( (*atom).m_glID == name )  { 
+              ratom = &(*atom);
+              break;
+        } 
 
-  if ( ! mBondList.empty() )
+  if ( ! mBondList.empty() && !ratom )
     for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
-        if ( (*bond).m_glID == name )  ratom = &(*bond);
+        if ( (*bond).m_glID == name )  {
+              ratom = &(*bond);
+              break;
+        } 
 
-  if ( ! mSphereList.empty() )
+  if ( ! mSphereList.empty() && !ratom)
     for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
-       if ( (*sphere).m_glID == name )  ratom = &(*sphere);
+       if ( (*sphere).m_glID == name )  {
+              ratom = &(*sphere);
+              break;
+        } 
 
-  if ( ! mDonutList.empty() )
+  if ( ! mDonutList.empty() && !ratom)
     for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
-        if ( (*donut).m_glID == name )  ratom = &(*donut);
+        if ( (*donut).m_glID == name )  {
+              ratom = &(*donut);
+              break;
+        } 
 
   m_thread_critical_section.Leave();
   return ratom;

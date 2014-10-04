@@ -31,6 +31,7 @@
 //
 
 #include    "crystalsinterface.h"
+#include    "cccontroller.h"
 #include    "cxstretch.h"
 #include    "cxgrid.h"
 //#include    "cccontroller.h"

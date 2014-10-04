@@ -215,7 +215,9 @@ class CcModelDoc
         string mName;
 
         void    ApplyIndexColour( GLuint indx );
-    protected:
+        void    SendInsertText( string s );
+
+	protected:
 
     private:
         void     FlagFrag ( const string & atomname );

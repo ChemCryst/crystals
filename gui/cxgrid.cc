@@ -108,7 +108,7 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
 #endif
 
 #ifdef __BOTHWX__
-  theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0); //wxTRANSPARENT_WINDOW);
+  theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),wxWANTS_CHARS); //wxTRANSPARENT_WINDOW);
 //  theGrid->Show(true);
   mGridCount++;
 #endif

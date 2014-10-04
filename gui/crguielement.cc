@@ -179,7 +179,8 @@ void CrGUIElement::NextFocus(bool bPrevious)
 
 void CrGUIElement::FocusToInput(char theChar)
 {
-    GetRootWidget()->FocusToInput(theChar); //Give the window a chance to handle the
+//    LOGERR( string(&theChar) );
+	GetRootWidget()->FocusToInput(theChar); //Give the window a chance to handle the
                                           //input first.
 }
 

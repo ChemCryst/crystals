@@ -40,6 +40,7 @@
 #define     __CxEditBox_H__
 //Insert your own code here.
 #include    "crguielement.h"
+#include    "ciinputcontrol.h"
 
 /*#ifdef __POWERPC__
 class LEditField;
@@ -68,7 +69,7 @@ class CxGrid;
 #define CXE_REAL_NUMBER 2
 #define CXE_READ_ONLY   3
 
-class CxEditBox : public BASEEDITBOX
+class CxEditBox : public BASEEDITBOX, public IInputControl
 {
 // The interface exposed to the CrClass:
     public:
@@ -125,6 +126,12 @@ class CxEditBox : public BASEEDITBOX
 			void OnKeyUp( wxKeyEvent & event );
             DECLARE_EVENT_TABLE()
 #endif
+
+
+// The IInputControl interface:
+
+			void InsertText(const string text){ AddText(text); };
+
 
 
 };

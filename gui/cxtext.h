@@ -70,5 +70,17 @@ class CxText : public BASETEXT
         // attributes
         static int  mTextCount;
         int mCharsWidth;
+
+		#ifdef __CR_WIN__
+  protected:
+    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+    DECLARE_MESSAGE_MAP()
+#endif
+#ifdef __BOTHWX__
+  public:
+    void OnChar(wxKeyEvent & event );
+    DECLARE_EVENT_TABLE()
+#endif
+
 };
 #endif

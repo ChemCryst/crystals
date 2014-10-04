@@ -62,6 +62,7 @@ class CxMultiEdit;
         CcRect  GetGeometry ();
         CcRect CalcLayout(bool recalculate=false);
         void    Changed();
+		void    InsertAtom(string s);
 //      void    SetWidthScale(float w);
 //      CcRect  GetOriginalGeometry();
             void SetFontHeight(int height);

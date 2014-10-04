@@ -80,9 +80,11 @@ CxTab *    CxTab::CreateCxTab( CrTab * container, CxGrid * guiParent )
     theTabCtrl->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-      theTabCtrl->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
+      theTabCtrl->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10), wxWANTS_CHARS);
       theTabCtrl->Show(true);
-      mTabCount++;
+	  theTabCtrl->Connect(wxID_ANY, wxEVT_CHAR, wxKeyEventHandler(CxTab::OnChar),NULL,theTabCtrl); 
+	  theTabCtrl->Connect(wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(CxTab::OnIdle),NULL,theTabCtrl); 
+	  mTabCount++;
 #endif
     return theTabCtrl;
 
@@ -118,9 +120,9 @@ END_MESSAGE_MAP()
 
 #ifdef __BOTHWX__
 //wx Message Map
-BEGIN_EVENT_TABLE(CxTab, wxNotebook)
-      EVT_CHAR(CxTab::OnChar)
-END_EVENT_TABLE()
+//BEGIN_EVENT_TABLE(CxTab, wxNotebook)
+//      EVT_CHAR(CxTab::OnChar)
+//END_EVENT_TABLE()
 #endif
 
 CXONCHAR(CxTab)
@@ -216,6 +218,15 @@ void CxTab::LetGoOfTabs()
                    //associated window.
 //NB. Remove pages last first as the index changes each time.
   }
+}
+
+void CxTab::OnIdle(wxIdleEvent & event)
+{
+
+	if ( HasFocus() ){
+//		LOGERR("Idle event");
+		ptr_to_crObject->FocusToInput(0);
+	}
 }
 
 #endif

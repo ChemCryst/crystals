@@ -191,6 +191,8 @@ class   CcController
     int m_start_ticks;
     FILE *  mErrorLog;
 
+	bool InputPlaceIsInTopLevelModalWindow();
+
     list<CrWindow*>  mWindowList;
     list<CrGUIElement*>  mTextOutputWindowList;
     list<CrProgress*>  mProgressOutputWindowList;

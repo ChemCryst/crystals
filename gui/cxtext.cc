@@ -52,7 +52,7 @@ CxText *    CxText::CreateCxText( CrText * container, CxGrid * guiParent )
     theText->SetFont(CcController::mp_font);
 #endif
 #ifdef __BOTHWX__
-    theText->Create(guiParent, -1, "text", wxPoint(0,0),wxSize(0,0), 0); // wxTRANSPARENT_WINDOW);
+    theText->Create(guiParent, -1, "text", wxPoint(0,0),wxSize(0,0), wxWANTS_CHARS); // wxTRANSPARENT_WINDOW);
 #endif
     return theText;
 }
@@ -93,6 +93,21 @@ void    CxText::SetText( const string & text )
 #endif
 
 }
+
+#ifdef __CR_WIN__
+BEGIN_MESSAGE_MAP(CxText, CStatic)
+   ON_WM_CHAR()
+END_MESSAGE_MAP()
+#endif
+
+#ifdef __BOTHWX__
+//wx Message Map
+BEGIN_EVENT_TABLE(CxText, wxStaticText)
+      EVT_CHAR(CxText::OnChar)
+END_EVENT_TABLE()
+#endif
+
+CXONCHAR(CxText)
 
 CXSETGEOMETRY(CxText)
 
