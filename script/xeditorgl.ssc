@@ -1,0 +1,108 @@
+%SCRIPT XEDITORGL
+%%
+% VARIABLE CHARACTER EDITOR_FILE
+% VARIABLE LOGICAL EDITOR_OK
+% EVALUATE EDITOR_OK = FALSE
+%% The variables needed by XQUESTIO                                             
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+% VARIABLE LOGICAL   ANSWER                                                     
+%% 
+%% Check it exists
+%%
+% IF ( .NOT. ( FILEEXISTS ( EDITOR_FILE ) ) ) THEN
+
+ The file passed to xeditor for editing does not exist.
+%    SHOW EDITOR_FILE
+%    FINISH
+% END IF 
+%%
+%%
+%% Check for alternative editor user setting
+%%
+^^CO GETKEY CRYEDITOR
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  IF CVALUE .NE. '1' .AND. FILEEXISTS ( CVALUE ) THEN 
+Using user-specified editor.
+%%    TRANSFER "#SPAWN +'" // CVALUE // "' " // EDITOR_FILE TO DISPLAY
+%    TRANSFER '#SPAWN +"' // CVALUE // '" ' // EDITOR_FILE TO CRYSTALS
+%    EVALUATE EDITOR_OK = TRUE
+%    FINISH
+%  END IF
+%%
+%%
+%TRANSFER "^^WI WINDOW XEDITOR 'Editing " // EDITOR_FILE // "'" TO DISPLAY
+^^WI SIZE MODAL KEEP
+^^WI GRID OUTER NROWS=1 NCOLS=3
+^^WI {
+^^WI   @ 1,1 RESIZE _RSZXED VERTICAL {
+^^WI     ITEM GRID _GRXEDIT NROWS=1 NCOLS=1 {
+^^WI       @ 1,1 MULTIEDIT TEXT5 '' NROWS=25 NCOLS=80
+^^WI         IGNORE DISABLED=NO
+^^WI     }
+^^WI     ITEM GRID _GREDMOD NROWS=3 NCOLS=1 {
+^^WI       @ 1,1 MODELWINDOW MODEL01 'N' NROWS=5 NCOLS=65                     
+^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
+^^WI            MOUSEACTION INSERTIN TEXT5
+^^WI       @ 3,1 STATIC T1 'Click an atom to insert into editor'
+^^WI     }
+^^WI   }
+^^WI   @ 1,3 GRID BTNS NROWS=7 NCOLS=3
+^^WI   {
+^^WI     @ 2,2 BUTTON BOK '&Save and exit' DEFAULT COMMIT
+^^WI     @ 4,2 BUTTON BRR '&Revert'
+^^WI     @ 6,2 BUTTON BXX 'Cance&l' CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
+%%
+% LOOP
+%   VERIFY BOK BXX BRR
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'BOK?' ' '
+%   IF VALUE .EQ. 1 THEN
+%TRANSFER "^^CO SET TEXT5 EDITSAVE '" // EDITOR_FILE // "'" TO DISPLAY
+^^??   _ANYTHING_ EXISTS
+%      GET NOSTORE SILENT TEXT 'Waiting for save' ' '
+^^CO   DISPOSE XEDITOR
+%      EVALUATE EDITOR_OK = TRUE
+%      FINISH
+%   ELSE IF ( VALUE .EQ. 2 ) THEN
+^^??   TEXT5 MODIFIED
+%      VERIFY YES NO
+%      GET SILENT NOSTORE FINAL ABBREVIATED 'Mod?' ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%         EVALUATE QTITLE = 'Unsaved changes'                                       
+%         EVALUATE QLINE1 = 'Closing the editor will lose your recent changes.'              
+%         EVALUATE QLINE2 = 'Are you sure?'                           
+%         EVALUATE BUTTOK = 'Clo&se'                                              
+%         EVALUATE BUTTXX = '&Cancel'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+^^CO         DISPOSE XEDITOR
+%            FINISH
+%         END IF
+%      ELSE
+^^CO     DISPOSE XEDITOR
+%        FINISH
+%      END IF
+%   ELSE IF ( VALUE .EQ. 3 ) THEN
+^^??   TEXT5 MODIFIED
+%      VERIFY YES NO
+%      GET SILENT NOSTORE FINAL ABBREVIATED 'Mod?' ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%         EVALUATE QTITLE = 'Unsaved changes'                                       
+%         EVALUATE QLINE1 = 'Reverting the text will lose your changes.'              
+%         EVALUATE QLINE2 = 'Are you sure?'                           
+%         EVALUATE BUTTOK = '&Revert'                                              
+%         EVALUATE BUTTXX = '&Cancel'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
+%         END IF
+%      ELSE
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
+%      END IF
+%   END IF
+% END LOOP
+%END SCRIPT
