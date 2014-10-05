@@ -459,14 +459,15 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
                    oldSize = CcRect( cgeom );
 
 // Ensure all edges are on screen.
-                CcRect sRect;
-//                CcRect sRect(GetScreenArea());
-
-				
+#ifdef __BOTHWX__
+				CcRect sRect;
 				sRect.mTop = wxGetClientDisplayRect().GetY();
 			    sRect.mLeft = wxGetClientDisplayRect().GetX();
 				sRect.mBottom = wxGetClientDisplayRect().GetY() + wxGetClientDisplayRect().GetHeight();
 				sRect.mRight =  wxGetClientDisplayRect().GetX() + wxGetClientDisplayRect().GetWidth();
+#else
+				CcRect sRect(GetScreenArea());
+#endif
 
 				int shift; 
 				shift = oldSize.Height() - sRect.Height();
