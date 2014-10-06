@@ -128,6 +128,7 @@ void CxMultiEdit::CxDestroyWindow()
 // Part of the IInputControl interface - insert text at cursor.
 void CxMultiEdit::InsertText(const string text) {
 
+#ifdef __BOTHWX__
 	long pos = GetInsertionPoint();
 	bool insertspacebefore = false;
 	bool insertspaceafter = false;
@@ -159,7 +160,8 @@ void CxMultiEdit::InsertText(const string text) {
 	SetCurrentPos(pos + in.length());
 	SetInsertionPoint(pos + in.length());
 	GotoPos(pos + in.length());
-
+#endif
+// Not implemented for MFC version
 }
 
 
@@ -297,7 +299,11 @@ void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 
 bool CxMultiEdit::CxIsModified()
 {
+#ifdef __BOTHWX__
 	return IsModified();
+#else
+	return true; // We don't know on this platform (MFC), so best to assume it *is* modified.
+#endif 
 }
 
 void CxMultiEdit::Spew()
