@@ -78,16 +78,22 @@
 ^^WI   DISPOSE SHELX                                                            
 ^^CR                                                                            
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
-%           COPY '#SPAWN +notepad.exe shelxs.ins'                               
-%           EVALUATE QTITLE = 'Shelxs Preparation'                              
-%           EVALUATE QLINE1 = 'Do you want to'                                  
-%           EVALUATE QLINE2 = 'run SHELXS now?'                                 
-%           EVALUATE BUTTOK = '&Yes'                                            
-%           EVALUATE BUTTXX = '&No'                                             
-%           COPY '#SCRIPT XQUESTIO'                                             
-%           IF ANSWER .EQ. FALSE THEN                                           
-%               FINISH                                                          
-%           END IF                                                              
++GID%           COPY '#SPAWN +notepad.exe shelxs.ins'                               
++GID%           EVALUATE QTITLE = 'Shelxs Preparation'                              
++GID%           EVALUATE QLINE1 = 'Do you want to'                                  
++GID%           EVALUATE QLINE2 = 'run SHELXS now?'                                 
++GID%           EVALUATE BUTTOK = '&Yes'                                            
++GID%           EVALUATE BUTTXX = '&No'                                             
++GID%           COPY '#SCRIPT XQUESTIO'                                             
++GID%           IF ANSWER .EQ. FALSE THEN                                           
++GID%               FINISH                                                          
++GID%           END IF                      
+-GID%           EVALUATE EDITOR_FILE = 'shelxs.ins'
+-GID%           COPY '#SCRIPT XEDITOR'
+-GID%           IF ( .NOT. EDITOR_OK ) THEN
+-GID{I User cancelled SHELXS run.
+-GID%              FINISH
+-GID%            END IF                                                                             
 %      END IF                                                                   
 %      IF ( IRUN .EQ. 2 ) THEN                                                  
 %           FINISH                                                              

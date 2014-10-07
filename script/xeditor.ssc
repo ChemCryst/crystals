@@ -13,6 +13,19 @@
 %    FINISH
 % END IF 
 %%
+%% Check for alternative editor user setting
+%%
+^^CO GETKEY CRYEDITOR
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  IF CVALUE .NE. '1' .AND. FILEEXISTS ( CVALUE ) THEN 
+Using user-specified editor.
+%%    TRANSFER "#SPAWN +'" // CVALUE // "' " // EDITOR_FILE TO DISPLAY
+%    TRANSFER '#SPAWN +"' // CVALUE // '" ' // EDITOR_FILE TO CRYSTALS
+%    EVALUATE EDITOR_OK = TRUE
+%    FINISH
+%  END IF
+%%
+%%
 %TRANSFER "^^WI WINDOW XEDITOR 'Editing " // EDITOR_FILE // "'" TO DISPLAY
 ^^WI SIZE MODAL KEEP
 ^^WI GRID OUTER NROWS=3 NCOLS=5

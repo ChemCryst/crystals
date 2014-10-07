@@ -356,7 +356,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
 	  
       glLoadIdentity();
 	  
-	  
+	  glFlush();
 #ifdef __CR_WIN__
       SwapBuffers(m_hdc);
 #endif
@@ -1478,7 +1478,7 @@ void CxModel::OnMenuSelected(wxCommandEvent & event)
 }
 
 
-void CxModel::Update(bool rescale)
+void CxModel::CxUpdate(bool rescale)
 {
    ModelChanged(rescale);
 }
@@ -1559,6 +1559,7 @@ void CxModel::NeedRedraw(bool needrescale)
 #ifdef __BOTHWX__
   m_DoNotPaint = false;
   Refresh();
+//   Update();
 #endif
 }
 

@@ -53,7 +53,7 @@
 -GID%    VARIABLE CHARACTER EDITOR_FILE
 -GID%    VARIABLE LOGICAL EDITOR_OK
 -GID%    EVALUATE EDITOR_FILE = 'scplst12.dat'
--GID%    COPY '#SCRIPT xeditor'
+-GID%    COPY '#SCRIPT xeditorgl'
 -GID%    IF ( .NOT. EDITOR_OK ) THEN
 -GID%      IF ( EDITED_ONCE ) THEN
 -GID%        COPY '#USE scporg12.dat'

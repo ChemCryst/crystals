@@ -74,10 +74,17 @@
 %  IF FILEEXISTS ( CDIR // 'check.def' ) .EQ. FALSE THEN                        
 %   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY              
 %   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS             
-%  END IF                                                                       
+%  END IF      
+%%                                                                 
+%% Run Platon
+%%
 %  TRANSFER '#SPAWN + "' // CFILE // '" crysplat.cif' TO DISPLAY                  
 %  TRANSFER '#SPAWN + "' // CFILE // '" crysplat.cif' TO CRYSTALS                 
-%%                                                                              
-%  COPY '#spawn notepad crysplat.lis'                                             
+%%
+%% Show results                                                                             
++GID%  COPY '#SPAWN notepad.exe crysplat.lis'                              
+-GID%  VARIABLE CHARACTER READER_FILE
+-GID%  EVALUATE READER_FILE = 'crysplat.lis'
+-GID%  COPY '#SCRIPT XREADER'
 %%                                                                              
 %END SCRIPT                                                                     

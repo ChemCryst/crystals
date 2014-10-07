@@ -75,7 +75,7 @@
 ^^WI  @ 6,2 GRID GRIDV NROWS=3 NCOLS=3 OUTLINE='Display'
 ^^WI  {
 ^^WI    @ 1,1 RADIOBUTTON CFNONE 'None' STATE=ON
-^^WI    @ 2,1 RADIOBUTTON CFNOTE 'Notepad' 
+^^WI    @ 2,1 RADIOBUTTON CFNOTE 'Default editor' 
 ^^WI    @ 3,1 RADIOBUTTON CFCCDC 'EnCIFer' 
 ^^WI    @ 1,3 RADIOBUTTON CFPLAT 'Platon' 
 ^^WI    @ 2,3 RADIOBUTTON CFCHKC 'Platon checkcif' 
@@ -257,8 +257,11 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
-{I Starting notepad to display publish.cif
-%      COPY '#SPAWN notepad publish.cif'
++GID{I Starting notepad to display publish.cif
++GID%  COPY '#SPAWN notepad.exe publish.cif'
+-GID%  VARIABLE CHARACTER READER_FILE
+-GID%  EVALUATE READER_FILE = 'publish.cif'
+-GID%  COPY '#SCRIPT XREADER'
 %    ELSE
 ^^??   CFCCDC STATE
 %      VERIFY ON OFF

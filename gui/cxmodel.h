@@ -214,7 +214,7 @@ class mywxStaticText : public wxStaticText
 class CxModel : public BASEMODEL
 {
   public:
-    void Update(bool rescale=true);
+    void CxUpdate(bool rescale=true);
     void GLDrawStyle();
     int IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject **outObject, bool atomsOnly=false);
     void SelectBoxedAtoms(CcRect rectangle, bool select);

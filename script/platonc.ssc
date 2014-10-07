@@ -49,5 +49,8 @@
 %  TRANSFER '#SPAWN + "' // CFILE // '" -u publish.cif' TO CRYSTALS             
 %%                                                                              
 %%                                                                              
-%  COPY '#spawn notepad publish.chk'                                            
++GID%  COPY '#SPAWN notepad.exe publish.chk'                              
+-GID%  VARIABLE CHARACTER READER_FILE
+-GID%  EVALUATE READER_FILE = 'publish.chk'
+-GID%  COPY '#SCRIPT XREADER'
 %END SCRIPT                                                                     

@@ -258,7 +258,10 @@
 %     END BLOCK                                                                    
 %     BLOCK
 %%  view the log file
-%      COPY '#SPAWN +notepad.exe sir92.lis'                              
++GID%  COPY '#SPAWN +notepad.exe sir92.lis'                              
+-GID%  VARIABLE CHARACTER READER_FILE
+-GID%  EVALUATE READER_FILE = 'sir92.lis'
+-GID%  COPY '#SCRIPT XREADER'
 %      FINISH
 %     END BLOCK                                                                    
 %%                                                                              

@@ -741,7 +741,7 @@ void CrModel::MenuSelected(int id)
 
 void CrModel::Update(bool rescale)
 {
-  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->Update(rescale);
+  if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->CxUpdate(rescale);
   else LOGERR ( "Unusable ModelWindow " + mName + ": failed to create.");
 }
 

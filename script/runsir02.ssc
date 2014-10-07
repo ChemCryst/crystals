@@ -30,6 +30,5 @@
 %  TRANSFER '#SPAWN + "' // CFILE // '" ' TO DISPLAY                  
 %  TRANSFER '#SPAWN + "' // CFILE // '" ' TO CRYSTALS                 
 %%                                                                              
-%%  COPY '#spawn notepad platon.lis'                                             
 %%                                                                              
 %END SCRIPT                                                                     
