@@ -1,220 +1,222 @@
-%%SSR INFOTABS
-%  The information tabs
-%
-^^WI               @ 1,1 TABCTRL _MAINTABS
-^^WI               {
-^^WI                 TAB _MAINTAB4 'Refinement' GRID _MAINTG4
-^^WI                                              NROWS=3 NCOLS=1
-^^WI                 {
-^^WI                   @ 2,1 GRID GRIDAAA NROWS=1 NCOLS=1
-^^WI                   {
-^^WI                     @ 1,1 STATIC _MTG15 'Results of last cycle:'
-^^WI                   }
-^^WI                   @ 3,1 GRID GRIDAAA NROWS=4 NCOLS=8
-^^WI                   {
-^^WI                     @ 1,1  STATIC _MTG15 'R'
-^^WI                     @ 1,3  STATIC _MT_REF_R '100.000'
-^^WI                     @ 2,1  STATIC _MTG15 'Rw'
-^^WI                     @ 2,3  STATIC _MT_REF_RW '100.000'
-^^WI                     @ 1,5  STATIC _MTG15 'Parameters'
-^^WI                     @ 1,7 STATIC _MT_REF_NPAR '00000'
-^^WI                     @ 2,5 STATIC _MTG15 'Reflections'
-^^WI                     @ 2,7 STATIC _MT_REF_NREF '0000000'
-^^WI                     @ 3,1  STATIC _MTG15 'GooF'
-^^WI                     @ 3,3  STATIC _MT_REF_GOOF '00.0000'
-^^WI                     @ 3,5  STATIC _MTG15 'max shift'
-^^WI                     @ 3,7  STATIC _MT_REF_MAXRMS '000.0000'
-^^WI                     @ 4,1  STATIC _MTG15 'Refining against'
-^^WI                     @ 4,3 STATIC _MT_REF_COEF 'F squared'
-^^WI                     @ 4,5  STATIC _MTG15 'Sigma cutoff'
-^^WI                     @ 4,7 STATIC _MT_REF_SCUT '00.000'
-^^WI                     @ 1,4 STRETCH _MTS15 HORIZONTAL
-^^WI                     @ 1,8 STRETCH _MTS15 HORIZONTAL
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB0 'Cell/Sym' GRID _MAINTG0
-^^WI                                         NROWS=2 NCOLS=1
-^^WI                 {
-^^WI                   @ 1,1 GRID _MAINTG01 NROWS=4 NCOLS=5
-^^WI                   {
-^^WI                     @ 1,1 GRID _ABC NROWS=3 NCOLS=3
-^^WI                     {
-^^WI                       @ 1,1  STATIC _MTG011 a
-^^WI                       @ 2,1  STATIC _MTG011 b
-^^WI                       @ 3,1  STATIC _MTG011 c
-^^WI                       @ 1,3  STATIC _MT_CELL_A 0.000000
-^^WI                       @ 2,3  STATIC _MT_CELL_B 0.000000
-^^WI                       @ 3,3 STATIC _MT_CELL_C 0.000000
-^^WI                     }
-^^WI                     @ 1,3 GRID _ABG NROWS=3 NCOLS=3
-^^WI                     {
-^^WI                       @ 1,1  STATIC _MTG011 alpha
-^^WI                       @ 2,1  STATIC _MTG011 beta
-^^WI                       @ 3,1  STATIC _MTG011 gamma
-^^WI                       @ 1,3  STATIC _MT_CELL_AL 0.00000
-^^WI                       @ 2,3  STATIC _MT_CELL_BE 0.00000
-^^WI                       @ 3,3 STATIC _MT_CELL_GA 0.00000
-^^WI                     }
-^^WI                     @ 1,4 STRETCH H HORIZONTAL
-^^WI                     @ 1,5 GRID _ABED NROWS=1 NCOLS=1
-^^WI                     {
-^^WI                       @ 1,1 BUTTON '#SCRIPT XCELLIN' 'Set cell' SLIM
-^^WI                        DISABLEIF='IN' LENGTH='Set Space group'
-^^WI                     }
-^^WI                     @ 2,1 STATIC MTWAVELEN 'Space group'
-^^WI                     @ 2,3 STATIC _MT_SPACEGROUP
-^^WI                         'Space group is not known.'
-^^WI                     @ 2,5 BUTTON '#SCRIPT XSPACE' 'Set space group' 
-^^WI                        SLIM   DISABLEIF='IN' 
-^^WI                     @ 3,1 STATIC MTWAVELEN 'Scatterers'
-^^WI                     @ 3,3 STATIC _MT_FORMULA
-^^WI                         'The formula is not known'
-^^WI                     @ 4,1 STATIC MTWAVELEN 'Wavelength'
-^^WI                     @ 4,3 STATIC _MT_WAVE '000.00000 Angstroms (X-rays)'
-^^WI                     @ 4,5 BUTTON '#SCRIPT XINLIST3' 'Set formula' 
-^^WI                        SLIM   DISABLEIF='IN' 
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB0 'Weights' GRID _MAINTG0
-^^WI                 NROWS=3 NCOLS=1 ISOLATE
-^^WI                 {
-^^WI                   @ 1,1 TEXTOUT _MT_WGHT ' ' NCOLS=45 NROWS=3 TRANSPARENT
-^^WI                   @ 3,1 GRID _ABED NROWS=1 NCOLS=1
-^^WI                   {
-^^WI                     @ 1,1 BUTTON '#SCRIPT XWEIGHTS' 'Set weights' SLIM
-^^WI                      DISABLEIF='IN' ENABLEIF='L6'
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB0 'Constrain' GRID _MAINTG0
-^^WI                 NROWS=3 NCOLS=1 ISOLATE
-^^WI                 {
-^^WI                   @ 1,1 TEXTOUT _MT_L12 ' ' NCOLS=45 NROWS=3 TRANSPARENT
-^^WI                   @ 3,1 GRID _ABED NROWS=1 NCOLS=3
-^^WI                   {
-^^WI                     @ 1,3 BUTTON '#SCRIPT XWRITE5'
-^^WI               'Auto-setup constraints' SLIM DISABLEIF='IN' ENABLEIF='L5'
-^^WI                     @ 1,2 STRETCH S HORIZONTAL
-^^WI                     @ 1,1 BUTTON '#SCRIPT EDLIST12'
-^^WI                     'Edit constraints' SLIM DISABLEIF='IN' ENABLEIF='L5'
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB0 'Restrain' GRID _MAINTG0
-^^WI                 NROWS=3 NCOLS=1 ISOLATE
-^^WI                 {
-^^WI                   @ 1,1 TEXTOUT _MT_L16 ' ' NCOLS=45 NROWS=3 TRANSPARENT
-^^WI                   @ 3,1 GRID _ABED NROWS=1 NCOLS=1
-^^WI                   {
-^^WI                     @ 1,1 BUTTON '#SCRIPT EDLIST16' 'Edit restraints'
-^^WI                     SLIM DISABLEIF='IN' ENABLEIF='L5'
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB1 'Files' GRID _MAINTG1 NROWS=1 NCOLS=1
-^^WI                 COMMAND='#SCRIPT XOPFILES'
-^^WI                 {
-^^WI                   @ 1,1 GRID GRAFA NROWS=5 NCOLS=3
-^^WI                   {
-^^WI                     @ 1,1 BUTTON _MT_BLIS 'View listing:'
-^^WI                                                SLIM DISABLEIF='IN'
-^^WI                     @ 1,3 STATIC _MT_LIS 'Listing file not in use'
-^^WI                     @ 2,1 BUTTON _MT_BLOG 'View log:'
-^^WI                                                SLIM DISABLEIF='IN'
-^^WI                     @ 2,3 STATIC _MT_LOG 'Log file not in use'
-^^WI                     @ 3,1 BUTTON _MT_BPCH 'View punch:'
-^^WI                                                SLIM DISABLEIF='IN'
-^^WI                     @ 3,3 STATIC _MT_PCH 'Punch file not in use'
-^^WI                     @ 4,3 STRETCH _MTS11 HORIZONTAL
-^^WI                     @ 5,1 BUTTON _MT_USE 'Use file...'
-^^WI                                                SLIM DISABLEIF='IN'
-^^WI                     @ 5,3 STATIC MTUSEF
-^^WI                           'Process a file of CRYSTALS instructions'
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB2 'Crystal' GRID _MAINTG3 NROWS=2 NCOLS=1
-^^WI                 {
-^^WI                   @ 1,1 GRID GRIDACA NROWS=3 NCOLS=11
-^^WI                   {
-^^WI                     @ 1,1  STATIC _MTG13 'Size(mm): Min'
-^^WI                     @ 1,3  STATIC _MT_CR_MIN '00.000    '
-^^WI                     @ 1,4  STRETCH _MTS13 HORIZONTAL
-^^WI                     @ 1,5  STATIC _MTG13 'Med'
-^^WI                     @ 1,7  STATIC _MT_CR_MED '00.000    '
-^^WI                     @ 1,8  STRETCH _MTS13 HORIZONTAL
-^^WI                     @ 1,9  STATIC _MTG13 'Max'
-^^WI                     @ 1,11 STATIC _MT_CR_MAX '00.000    '
-^^WI                     @ 2,1 STATIC _MTG13 'Temperature(K):'
-^^WI                     @ 2,3 STATIC _MT_CR_TEMP '0         '
-^^WI                     @ 2,5  STATIC _MTG13 'Z'
-^^WI                     @ 2,7  STATIC _MT_CR_CELLZ '1.        '
-^^WI                     @ 3,1  STATIC _MTG13 'Mol. weight:'
-^^WI                     @ 3,3  STATIC _MT_CR_MOLWT  '000.00   '
-^^WI                     @ 3,5  STATIC _MTG13 'Calc density:'
-^^WI                     @ 3,7  STATIC _MT_CR_DCALC '000.000  '
-^^WI                     @ 2,9  STATIC _MTG13 'Crystal shape:'
-^^WI                     @ 2,11  STATIC _MT_CR_SHAPE  'XXXXXXXXXXXXXXXX'
-^^WI                     @ 3,9  STATIC _MTG13 'Colour:'
-^^WI                     @ 3,11  STATIC _MT_CR_COLOUR 'XXXXXXXXXXXXXXXX'
-^^WI                   }
-^^WI                   @ 2,1 GRID _ABED NROWS=1 NCOLS=1
-^^WI                   {
-^^WI                     @ 1,1 BUTTON '#SCRIPT ED30' 'Edit goodies'
-^^WI                     SLIM DISABLEIF='IN'
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB3 'Reflns' GRID _MAINTG3
-^^WI                                              NROWS=4 NCOLS=1
-^^WI                 {
-^^WI                   @ 2,1 GRID GRIDAAA NROWS=1 NCOLS=7
-^^WI                   {
-^^WI                     @ 1,1 STATIC _MTG14 'Measured'
-^^WI                     @ 1,3 STATIC _MT_OBS_MEAS '000000'
-^^WI                     @ 1,5 STATIC _MTG14 'Instrument'
-^^WI                     @ 1,7 STATIC _MT_OBS_INST 'INSTRUMENT'
-^^WI                   }
-^^WI                   @ 3,1 GRID GRIDAAB NROWS=2 NCOLS=9
-^^WI                   {
-^^WI                     @ 1,1 STATIC _MTG14 'After merge'
-^^WI                     @ 1,3 STATIC _MT_OBS_NMRG '000000'
-^^WI                     @ 1,5 STATIC _MTG14 'R merge'
-^^WI                     @ 1,7 STATIC _MT_OBS_RMRG '0.0000'
-^^WI                     @ 1,9 STATIC _MTG14 '(Friedels merged)'
-^^WI                     @ 2,1 STATIC _MTG14 'After merge'
-^^WI                     @ 2,3 STATIC _MT_OBS_NFMRG '000000'
-^^WI                     @ 2,5 STATIC _MTG14 'R merge'
-^^WI                     @ 2,7 STATIC _MT_OBS_RFMRG '0.0000'
-^^WI                     @ 2,9 STATIC _MTG14 '(Friedels not merged)'
-^^WI                   }
-^^WI                   @ 4,1 GRID GRIDAAC NROWS=2 NCOLS=15
-^^WI                   {
-^^WI                     @ 1,1  STATIC _MTG14 'H min'
-^^WI                     @ 1,3  STATIC _MT_OBS_HMIN '-000'
-^^WI                     @ 1,5  STATIC _MTG14 'L min'
-^^WI                     @ 1,7  STATIC _MT_OBS_LMIN '-000'
-^^WI                     @ 1,9  STATIC _MTG14 'K min'
-^^WI                     @ 1,11 STATIC _MT_OBS_KMIN '-000'
-^^WI                     @ 1,13 STATIC _MTG14 'Theta min'
-^^WI                     @ 1,15 STATIC _MT_OBS_THMIN '00.00'
-^^WI                     @ 2,1  STATIC _MTG14 'H max'
-^^WI                     @ 2,3  STATIC _MT_OBS_HMAX '000'
-^^WI                     @ 2,5  STATIC _MTG14 'L max'
-^^WI                     @ 2,7  STATIC _MT_OBS_LMAX '000'
-^^WI                     @ 2,9  STATIC _MTG14 'K max'
-^^WI                     @ 2,11 STATIC _MT_OBS_KMAX '000'
-^^WI                     @ 2,13 STATIC _MTG14 'Theta max'
-^^WI                     @ 2,15 STATIC _MT_OBS_THMAX '00.00'
-^^WI                   }
-^^WI                 }
-^^WI                 TAB _MAINTAB0 'Twin' GRID _MAINTG0
-^^WI                 NROWS=3 NCOLS=1 ISOLATE
-^^WI                 {
-^^WI                   @ 1,1 TEXTOUT _MT_L25 ' ' NCOLS=45 NROWS=3 TRANSPARENT
-^^WI                   @ 3,1 GRID _AB25 NROWS=1 NCOLS=3
-^^WI                   {
-^^WI                     @ 1,1 BUTTON '#SCRIPT ED25'
-^^WI           'Input/edit twin laws' SLIM DISABLEIF='IN' ENABLEIF='L5 L6'
-^^WI                     @ 1,2 STRETCH S HORIZONTAL
-^^WI                     @ 1,3 BUTTON '#SCRIPT XROTAX'
-^^WI                   'Rotax Analysis' SLIM DISABLEIF='IN' ENABLEIF='L5 L6'
-^^WI                   }
-^^WI                 }
-^^WI               }
-%%END SSR
+%%SSR INFOTABS                                                                  
+%  The information tabs                                                         
+%                                                                               
+^^WI               @ 1,1 TABCTRL _MAINTABS                                      
+^^WI               {                                                            
+^^WI                 TAB _MAINTAB4 'Refinement' GRID _MAINTG4                   
+^^WI                                              NROWS=3 NCOLS=1               
+^^WI                 {                                                          
+^^WI                   @ 2,1 GRID GRIDAAA NROWS=1 NCOLS=1                       
+^^WI                   {                                                        
+^^WI                     @ 1,1 STATIC _MTG15 'Results of last cycle:'           
+^^WI                   }                                                        
+^^WI                   @ 3,1 GRID GRIDAAA NROWS=4 NCOLS=8                       
+^^WI                   {                                                        
+^^WI                     @ 1,1  STATIC _MTG15 'R'                               
+^^WI                     @ 1,3  STATIC _MT_REF_R '100.000'                      
+^^WI                     @ 2,1  STATIC _MTG15 'Rw'                              
+^^WI                     @ 2,3  STATIC _MT_REF_RW '100.000'                     
+^^WI                     @ 1,5  STATIC _MTG15 'Parameters'                      
+^^WI                     @ 1,7 STATIC _MT_REF_NPAR '00000'                      
+^^WI                     @ 2,5 STATIC _MTG15 'Reflections'                      
+^^WI                     @ 2,7 STATIC _MT_REF_NREF '0000000'                    
+^^WI                     @ 3,1  STATIC _MTG15 'GooF'                            
+^^WI                     @ 3,3  STATIC _MT_REF_GOOF '00.0000'                   
+^^WI                     @ 3,5  STATIC _MTG15 'max shift'                       
+^^WI                     @ 3,7  STATIC _MT_REF_MAXRMS '000.0000'                
+^^WI                     @ 4,1  STATIC _MTG15 'Refining against'                
+^^WI                     @ 4,3 STATIC _MT_REF_COEF 'F squared'                  
+^^WI                     @ 4,5  STATIC _MTG15 'Sigma cutoff'                    
+^^WI                     @ 4,7 STATIC _MT_REF_SCUT '00.000'                     
+^^WI                     @ 1,4 STRETCH _MTS15 HORIZONTAL                        
+^^WI                     @ 1,8 STRETCH _MTS15 HORIZONTAL                        
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB0 'Cell/Sym' GRID _MAINTG0                     
+^^WI                                         NROWS=2 NCOLS=1                    
+^^WI                 {                                                          
+^^WI                   @ 1,1 GRID _MAINTG01 NROWS=4 NCOLS=5                     
+^^WI                   {                                                        
+^^WI                     @ 1,1 GRID _ABC NROWS=3 NCOLS=3                        
+^^WI                     {                                                      
+^^WI                       @ 1,1  STATIC _MTG011 a                              
+^^WI                       @ 2,1  STATIC _MTG011 b                              
+^^WI                       @ 3,1  STATIC _MTG011 c                              
+^^WI                       @ 1,3  STATIC _MT_CELL_A 0.000000                    
+^^WI                       @ 2,3  STATIC _MT_CELL_B 0.000000                    
+^^WI                       @ 3,3 STATIC _MT_CELL_C 0.000000                     
+^^WI                     }                                                      
+^^WI                     @ 1,3 GRID _ABG NROWS=3 NCOLS=3                        
+^^WI                     {                                                      
+^^WI                       @ 1,1  STATIC _MTG011 alpha                          
+^^WI                       @ 2,1  STATIC _MTG011 beta                           
+^^WI                       @ 3,1  STATIC _MTG011 gamma                          
+^^WI                       @ 1,3  STATIC _MT_CELL_AL 0.00000                    
+^^WI                       @ 2,3  STATIC _MT_CELL_BE 0.00000                    
+^^WI                       @ 3,3 STATIC _MT_CELL_GA 0.00000                     
+^^WI                     }                                                      
+^^WI                     @ 1,4 STRETCH H HORIZONTAL                             
+^^WI                     @ 1,5 GRID _ABED NROWS=1 NCOLS=1                       
+^^WI                     {                                                      
+^^WI                       @ 1,1 BUTTON '#SCRIPT XCELLIN' 'Set cell' SLIM       
+^^WI                        DISABLEIF='IN' LENGTH='Set Space group'             
+^^WI                     }                                                      
+^^WI                     @ 2,1 STATIC MTWAVELEN 'Space group'                   
+^^WI                     @ 2,3 STATIC _MT_SPACEGROUP                            
+^^WI                         'Space group is not known.'                        
+^^WI                     @ 2,5 BUTTON '#SCRIPT XSPACE' 'Set space group'        
+^^WI                        SLIM   DISABLEIF='IN'                               
+^^WI                     @ 3,1 STATIC MTWAVELEN 'Scatterers'                    
+^^WI                     @ 3,3 STATIC _MT_FORMULA                               
+^^WI                         'The formula is not known'                         
+^^WI                     @ 4,1 STATIC MTWAVELEN 'Wavelength'                    
+^^WI                     @ 4,3 STATIC _MT_WAVE '000.00000 Angstroms (X-rays)'   
+^^WI                     @ 4,5 BUTTON '#SCRIPT XINLIST3' 'Set formula'          
+^^WI                        SLIM   DISABLEIF='IN'                               
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB0 'Weights' GRID _MAINTG0                      
+^^WI                 NROWS=3 NCOLS=1 ISOLATE                                    
+^^WI                 {                                                          
+^^WI                   @ 1,1 TEXTOUT _MT_WGHT ' ' NCOLS=45 NROWS=3 TRANSPARENT  
+^^WI                   @ 3,1 GRID _ABED NROWS=3 NCOLS=1                         
+^^WI                   {                                                        
+^^WI                    @ 1,1 BUTTON '#SCRIPT XWEIGHTS' 'Optimise weights' SLIM
+^^WI                      DISABLEIF='IN' ENABLEIF='L6'                          
+^^WI                    @ 3,1 BUTTON '#SCRIPT EDSXWT' 'Input SX weights' SLIM
+^^WI                      DISABLEIF='IN' ENABLEIF='L6'                          
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB0 'Constrain' GRID _MAINTG0                    
+^^WI                 NROWS=3 NCOLS=1 ISOLATE                                    
+^^WI                 {                                                          
+^^WI                   @ 1,1 TEXTOUT _MT_L12 ' ' NCOLS=45 NROWS=3 TRANSPARENT   
+^^WI                   @ 3,1 GRID _ABED NROWS=1 NCOLS=3                         
+^^WI                   {                                                        
+^^WI                     @ 1,3 BUTTON '#SCRIPT XWRITE5'                         
+^^WI               'Auto-setup constraints' SLIM DISABLEIF='IN' ENABLEIF='L5'   
+^^WI                     @ 1,2 STRETCH S HORIZONTAL                             
+^^WI                     @ 1,1 BUTTON '#SCRIPT EDLIST12'                        
+^^WI                     'Edit constraints' SLIM DISABLEIF='IN' ENABLEIF='L5'   
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB0 'Restrain' GRID _MAINTG0                     
+^^WI                 NROWS=3 NCOLS=1 ISOLATE                                    
+^^WI                 {                                                          
+^^WI                   @ 1,1 TEXTOUT _MT_L16 ' ' NCOLS=45 NROWS=3 TRANSPARENT   
+^^WI                   @ 3,1 GRID _ABED NROWS=1 NCOLS=1                         
+^^WI                   {                                                        
+^^WI                     @ 1,1 BUTTON '#SCRIPT EDLIST16' 'Edit restraints'      
+^^WI                     SLIM DISABLEIF='IN' ENABLEIF='L5'                      
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB1 'Files' GRID _MAINTG1 NROWS=1 NCOLS=1        
+^^WI                 COMMAND='#SCRIPT XOPFILES'                                 
+^^WI                 {                                                          
+^^WI                   @ 1,1 GRID GRAFA NROWS=5 NCOLS=3                         
+^^WI                   {                                                        
+^^WI                     @ 1,1 BUTTON _MT_BLIS 'View listing:'                  
+^^WI                                                SLIM DISABLEIF='IN'         
+^^WI                     @ 1,3 STATIC _MT_LIS 'Listing file not in use'         
+^^WI                     @ 2,1 BUTTON _MT_BLOG 'View log:'                      
+^^WI                                                SLIM DISABLEIF='IN'         
+^^WI                     @ 2,3 STATIC _MT_LOG 'Log file not in use'             
+^^WI                     @ 3,1 BUTTON _MT_BPCH 'View punch:'                    
+^^WI                                                SLIM DISABLEIF='IN'         
+^^WI                     @ 3,3 STATIC _MT_PCH 'Punch file not in use'           
+^^WI                     @ 4,3 STRETCH _MTS11 HORIZONTAL                        
+^^WI                     @ 5,1 BUTTON _MT_USE 'Use file...'                     
+^^WI                                                SLIM DISABLEIF='IN'         
+^^WI                     @ 5,3 STATIC MTUSEF                                    
+^^WI                           'Process a file of CRYSTALS instructions'        
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB2 'Crystal' GRID _MAINTG3 NROWS=2 NCOLS=1      
+^^WI                 {                                                          
+^^WI                   @ 1,1 GRID GRIDACA NROWS=3 NCOLS=11                      
+^^WI                   {                                                        
+^^WI                     @ 1,1  STATIC _MTG13 'Size(mm): Min'                   
+^^WI                     @ 1,3  STATIC _MT_CR_MIN '00.000    '                  
+^^WI                     @ 1,4  STRETCH _MTS13 HORIZONTAL                       
+^^WI                     @ 1,5  STATIC _MTG13 'Med'                             
+^^WI                     @ 1,7  STATIC _MT_CR_MED '00.000    '                  
+^^WI                     @ 1,8  STRETCH _MTS13 HORIZONTAL                       
+^^WI                     @ 1,9  STATIC _MTG13 'Max'                             
+^^WI                     @ 1,11 STATIC _MT_CR_MAX '00.000    '                  
+^^WI                     @ 2,1 STATIC _MTG13 'Temperature(K):'                  
+^^WI                     @ 2,3 STATIC _MT_CR_TEMP '0         '                  
+^^WI                     @ 2,5  STATIC _MTG13 'Z'                               
+^^WI                     @ 2,7  STATIC _MT_CR_CELLZ '1.        '                
+^^WI                     @ 3,1  STATIC _MTG13 'Mol. weight:'                    
+^^WI                     @ 3,3  STATIC _MT_CR_MOLWT  '000.00   '                
+^^WI                     @ 3,5  STATIC _MTG13 'Calc density:'                   
+^^WI                     @ 3,7  STATIC _MT_CR_DCALC '000.000  '                 
+^^WI                     @ 2,9  STATIC _MTG13 'Crystal shape:'                  
+^^WI                     @ 2,11  STATIC _MT_CR_SHAPE  'XXXXXXXXXXXXXXXX'        
+^^WI                     @ 3,9  STATIC _MTG13 'Colour:'                         
+^^WI                     @ 3,11  STATIC _MT_CR_COLOUR 'XXXXXXXXXXXXXXXX'        
+^^WI                   }                                                        
+^^WI                   @ 2,1 GRID _ABED NROWS=1 NCOLS=1                         
+^^WI                   {                                                        
+^^WI                     @ 1,1 BUTTON '#SCRIPT ED30' 'Edit goodies'             
+^^WI                     SLIM DISABLEIF='IN'                                    
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB3 'Reflns' GRID _MAINTG3                       
+^^WI                                              NROWS=4 NCOLS=1               
+^^WI                 {                                                          
+^^WI                   @ 2,1 GRID GRIDAAA NROWS=1 NCOLS=7                       
+^^WI                   {                                                        
+^^WI                     @ 1,1 STATIC _MTG14 'Measured'                         
+^^WI                     @ 1,3 STATIC _MT_OBS_MEAS '000000'                     
+^^WI                     @ 1,5 STATIC _MTG14 'Instrument'                       
+^^WI                     @ 1,7 STATIC _MT_OBS_INST 'INSTRUMENT'                 
+^^WI                   }                                                        
+^^WI                   @ 3,1 GRID GRIDAAB NROWS=2 NCOLS=9                       
+^^WI                   {                                                        
+^^WI                     @ 1,1 STATIC _MTG14 'After merge'                      
+^^WI                     @ 1,3 STATIC _MT_OBS_NMRG '000000'                     
+^^WI                     @ 1,5 STATIC _MTG14 'R merge'                          
+^^WI                     @ 1,7 STATIC _MT_OBS_RMRG '0.0000'                     
+^^WI                     @ 1,9 STATIC _MTG14 '(Friedels merged)'                
+^^WI                     @ 2,1 STATIC _MTG14 'After merge'                      
+^^WI                     @ 2,3 STATIC _MT_OBS_NFMRG '000000'                    
+^^WI                     @ 2,5 STATIC _MTG14 'R merge'                          
+^^WI                     @ 2,7 STATIC _MT_OBS_RFMRG '0.0000'                    
+^^WI                     @ 2,9 STATIC _MTG14 '(Friedels not merged)'            
+^^WI                   }                                                        
+^^WI                   @ 4,1 GRID GRIDAAC NROWS=2 NCOLS=15                      
+^^WI                   {                                                        
+^^WI                     @ 1,1  STATIC _MTG14 'H min'                           
+^^WI                     @ 1,3  STATIC _MT_OBS_HMIN '-000'                      
+^^WI                     @ 1,5  STATIC _MTG14 'L min'                           
+^^WI                     @ 1,7  STATIC _MT_OBS_LMIN '-000'                      
+^^WI                     @ 1,9  STATIC _MTG14 'K min'                           
+^^WI                     @ 1,11 STATIC _MT_OBS_KMIN '-000'                      
+^^WI                     @ 1,13 STATIC _MTG14 'Theta min'                       
+^^WI                     @ 1,15 STATIC _MT_OBS_THMIN '00.00'                    
+^^WI                     @ 2,1  STATIC _MTG14 'H max'                           
+^^WI                     @ 2,3  STATIC _MT_OBS_HMAX '000'                       
+^^WI                     @ 2,5  STATIC _MTG14 'L max'                           
+^^WI                     @ 2,7  STATIC _MT_OBS_LMAX '000'                       
+^^WI                     @ 2,9  STATIC _MTG14 'K max'                           
+^^WI                     @ 2,11 STATIC _MT_OBS_KMAX '000'                       
+^^WI                     @ 2,13 STATIC _MTG14 'Theta max'                       
+^^WI                     @ 2,15 STATIC _MT_OBS_THMAX '00.00'                    
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI                 TAB _MAINTAB0 'Twin' GRID _MAINTG0                         
+^^WI                 NROWS=3 NCOLS=1 ISOLATE                                    
+^^WI                 {                                                          
+^^WI                   @ 1,1 TEXTOUT _MT_L25 ' ' NCOLS=45 NROWS=3 TRANSPARENT   
+^^WI                   @ 3,1 GRID _AB25 NROWS=1 NCOLS=3                         
+^^WI                   {                                                        
+^^WI                     @ 1,1 BUTTON '#SCRIPT ED25'                            
+^^WI           'Input/edit twin laws' SLIM DISABLEIF='IN' ENABLEIF='L5 L6'      
+^^WI                     @ 1,2 STRETCH S HORIZONTAL                             
+^^WI                     @ 1,3 BUTTON '#SCRIPT XROTAX'                          
+^^WI                   'Rotax Analysis' SLIM DISABLEIF='IN' ENABLEIF='L5 L6'    
+^^WI                   }                                                        
+^^WI                 }                                                          
+^^WI               }                                                            
+%%END SSR                                                                       
