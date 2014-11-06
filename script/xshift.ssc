@@ -17,7 +17,7 @@ WARNING - You have no atoms
 %  COPY 'TRANSFER FROM OFFSET = 4 TO IPART'                                     
 %  IF IPART .GE. 0 THEN
 
-{I Remove PARTS (LIST 23) before re-centring
+{I Remove Structure Factor A & B PARTS (LIST 23) before re-centring
 
 %   FINISH
 %  END IF
