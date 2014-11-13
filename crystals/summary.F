@@ -1895,9 +1895,25 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
      1  '^^PL YAXISRIGHT ZOOM 0 100 TITLE ''Shell Completeness''',
      1 '^^PL SERIES 1 SERIESNAME ''Cumulative Completeness'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Shell Completeness''',
-c     1  '^^PL SERIES 3 SERIESNAME ''Theta value'' TYPE LINE',
      1  '^^PL USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
+
+
+C send expected to screen
+        WRITE(CMON,'(A,I8,A)')
+     1  '^^CO SAFESET [ _TH_E TEXT ', nallwd,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+
+C send found to screen
+        WRITE(CMON,'(A,I8,A)')
+     1  '^^CO SAFESET [ _TH_F TEXT ', nfound,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+
+C send missing to screen
+        WRITE(CMON,'(A,I8,A)')
+     1  '^^CO SAFESET [ _TH_M TEXT ', nallwd-nfound,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+
 
         DO I = 1,100
           IF ( ALLBIN(I) .EQ. 0 ) THEN
