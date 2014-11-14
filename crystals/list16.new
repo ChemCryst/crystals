@@ -1378,8 +1378,7 @@ C
 C--'ORIGIN' CARD
 7200  CONTINUE
       ISTORE(LCG+1) = 20
-c See table at end of file.
-c 0.01 may be too harsh for some refinements
+c See table at end of file
       ESD=0.01
       GOTO 4600
 C
@@ -1409,7 +1408,7 @@ C--CHECK THE TYPE OF THE FIRST ARGUMENT  -  IT MAY NOT BE AN OPERATOR
 C--WE HAVE FOUND A NUMBER WHICH MUST BE THE E.S.D.
 4700  CONTINUE
 C      IF(Z-ESD)3650,3650,4750
-cdjw Aug 2014. Just abandoning card with a brief message not useful in
+cdjw Aug 2014. Just abandonig card with a brief message not useful in
 c modern environment - message is not noticed and absence of restraint
 c may not be recognised
       if(z .le. zero) z = esd
