@@ -552,14 +552,14 @@ C
       if (ISTORE(M33CD+5) .eq. 1) then
             call open_normalfile(73)
             write(73, '(A,I12)') '% ', ISTORE(M12B+1)
-            write(73, '(''N={};'')')
-            if (ISTORE(M33CD+15) .eq. 1 ) then
-                  write(73, '(''NNorm={};'')')
-                  write(73, '(''VCNorm={};'')')
-            end if
-            write(73, '(''VC={};'')')
-            write(73, '(''NormVect={};'')')
-            write(73, '(''NBackNorm={};'')')
+c            write(73, '(''N={};'')')
+c            if (ISTORE(M33CD+15) .eq. 1 ) then
+c                  write(73, '(''NNorm={};'')')
+c                  write(73, '(''VCNorm={};'')')
+c            end if
+c            write(73, '(''VC={};'')')
+c            write(73, '(''NormVect={};'')')
+c            write(73, '(''NBackNorm={};'')')
       end if
       DO 3500 JZ=1,N12B
 C---- RESET MATRIX AREA
@@ -603,10 +603,10 @@ C     If we are going to threshhold the normal matrix then we do it here
      1       JY*(JY+1)/2, JY, store(M33CD+16))
       end if
 C --- If we are doing matlab punching then do it here.      
-      IF ( ISTORE(M33CD+5) .Eq. 1 ) THEN
-          call matlab_add_matrix_to_cell(73, STR11(L11C), JY*(JY+1)/2, 
-     1      JY, 'N')
-      END IF
+c      IF ( ISTORE(M33CD+5) .Eq. 1 ) THEN
+c          call matlab_add_matrix_to_cell(73, STR11(L11C), JY*(JY+1)/2, 
+c     1      JY, 'N')
+c      END IF
 Cc ---If we want to normalise the normal matrix do so...      
 C      if (ISTORE(M33CD+15) .eq. 1) then
 CC --- Allocate space for the normalisation vector
@@ -787,9 +787,20 @@ C         end if
          
 C-- If we are doing matlab punching then do it here.      
          if ( ISTORE(M33CD+5) .Eq. 1 ) then
-            call matlab_add_matrix_to_cell(73, STR11(L11C), 
-     1            JY*(JY+1)/2, JY, 'VC')
-         end if
+c            call matlab_add_matrix_to_cell(73, STR11(L11C), 
+c     1            JY*(JY+1)/2, JY, 'VC')
+
+            do xpos = 1, jy
+               do ypos = 1, jy
+                  maxpos = max(xpos, ypos)
+                  minpos = min(xpos, ypos) - 1
+                  mat_elem = (jy-(minpos+1))*minpos+minpos*
+     1             (minpos+1)/2 + maxpos
+                  write (73, '(G16.8,'', '',$)'), str11(L11C+mat_elem-1)
+               end do
+               write(73,'(A)')' '
+           end do
+       end if
 
                  
 2050     CONTINUE
@@ -961,12 +972,12 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
          M12B=M12B+MD12B
 3500  CONTINUE
       if (ISTORE(M33CD+5) .eq. 1) then
-            write(73, '(''N=collectBlocks(N)'')')
-            if (ISTORE(M33CD+15) .eq. 1 ) then
-                  write(73, '(''NNorm=collectBlocks(NNorm);'')')
-                  write(73, '(''VCNorm=collectBlocks(VCNorm);'')')
-            end if
-            write(73, '(''VC=collectBlocks(VC);'')')
+c            write(73, '(''N=collectBlocks(N)'')')
+c            if (ISTORE(M33CD+15) .eq. 1 ) then
+c                  write(73, '(''NNorm=collectBlocks(NNorm);'')')
+c                  write(73, '(''VCNorm=collectBlocks(VCNorm);'')')
+c            end if
+c            write(73, '(''VC=collectBlocks(VC);'')')
             CLOSE(73)
       end if
 C--PRINT THE OVERALL STATISTICS

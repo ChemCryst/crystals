@@ -583,7 +583,7 @@ C If outputting design matrix and deltaF's then open files now.
        IF (ISTORE(M33CD+5).EQ.1) THEN
         MATLAB = 1
         CALL XRDOPN (5,JFRN(1,1),'design.m',8)
-        WRITE (NCFPU1, '(''A=['')')
+c        WRITE (NCFPU1, '(''A=['')')
         CALL XRDOPN (5,JFRN(1,2),'wdf.m',5)
         WRITE (NCFPU2, '(''DF=['')')
        END IF
@@ -2299,13 +2299,17 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
           END IF
 
           IF (ISTORE(M33CD+5).EQ.1) THEN   ! Check if we should output matrix in MATLAB format.
-            WRITE(NCFPU1,'(A,3(1X,F5.0))')'%',
+            WRITE(NCFPU1,'(A,3(1X,F5.0),$)')' ',
      1       STORE(M6),STORE(M6+1),STORE(M6+2)
-            DO I = JO,JP-MOD(JP-JO,5)-1,5
-              WRITE(NCFPU1,'(5G16.8,'' ...'')') (STORE(I+J),J=0,4)
-            END DO
-            WRITE(NCFPU1,'(5G16.8)') (STORE(JP+J),J=0-MOD(JP-JO,5),0)
+c            DO I = JO,JP-MOD(JP-JO,5)-1,5
+c              WRITE(NCFPU1,'(5G16.8,'' ...'')') (STORE(I+J),J=0,4)
+c            END DO
+c            WRITE(NCFPU1,'(5G16.8)') (STORE(JP+J),J=0-MOD(JP-JO,5),0)
+1011        FORMAT (', ',G16.8,$)
+C PP-Leverage paper - output one row of matrix on a single line with commas.
+            WRITE(NCFPU1,1011) (STORE(J),J=JO,JP)
             WRITE(NCFPU2,'(F16.8)') WDF
+            WRITE(NCFPU1,'(A)') ' '
           END IF
 
           CALL XADRHS(WDF,STORE(JO),righthandside,JP-JO+1)  ! ACCUMULATE THE RIGHT HAND SIDES
