@@ -113,7 +113,8 @@ C-----    WRITE A LIST 22 HEADER
           CALL XISRC( CEND )
           WRITE ( CMON,1000)
 CNOV98          CALL XPRVDU(NCVDU, 1,0)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') 
+     1    CMON(1 )(:nctrim(cmon(1)))
 1000      FORMAT(5X,' Refinement directives (LIST 12) ',
      1 'processed to activate constraints')
           CALL XRSRQ (IADSRQ, NSRQ)
@@ -215,7 +216,8 @@ C----- SET THE TIMER AND LOAD THE LISTS
       IF (IERFLG .LT. 0) THEN
             WRITE ( CMON, '(A)' ) ' LIST 1, 2 or 5 not available '
             CALL XPRVDU(NCVDU, 1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') 
+     1      CMON(1 )(:nctrim(cmon(1)))
             GOTO 9000
       ENDIF
       NRESTR = 0
@@ -224,20 +226,22 @@ C
 C
       IF (IACTN .GE. 0) THEN
         WRITE ( CMON,100)
-        CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c        CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') 
+     1  CMON(1 )(:nctrim(cmon(1)))
 100     FORMAT(10X,' Notification of SPECIAL conditions ')
       ENDIF
       IF (IACTN .GE. 1) THEN
         WRITE ( CMON,110)
-        CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+c        CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') 
+     1  CMON(1)(:nctrim(cmon(1)))
 110     FORMAT(10X,' Fixing of floating origins')
       ENDIF
       IF (IACTN .GE. 2) THEN
         WRITE ( CMON,120)
-        CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A/)') CMON(1)(:)
+c        CALL XPRVDU(NCVDU, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A/)') CMON(1)(:nctrim(cmon(1)))
 120     FORMAT(10X,' Restraining atomic parameters')
       ENDIF
 C
@@ -246,7 +250,7 @@ C----- FORCE INITIALISATION OF THE SPECIAL POSITION VARIABLES
       IF (KSPINI (IFORCE, ABTOL ) .LE. 0) THEN
          WRITE ( CMON, '(A)') ' Error initialising special positions'
          CALL XPRVDU(NCVDU, 1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
          GOTO 9000
       ENDIF
 C
@@ -324,7 +328,8 @@ C----- BEGIN TO TIDY UP
             IF (NRESTR .GT. 0) THEN
              WRITE ( CMON,560) NRESTR
              CALL XPRVDU(NCVDU, 1,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') 
+     1       CMON(1)(:nctrim(cmon(1)))
 560    FORMAT (6X, I6, ' Symmetry restraints written to LIST 17')
 C
 C----- UPDATE LIST 23 TO INDICATE THAT RESTRAINTS HAVE BEEN GENERATED
@@ -340,7 +345,8 @@ C
              CALL XISRC( CEND )
              WRITE ( CMON,570)
              CALL XPRVDU(NCVDU, 1,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') 
+     1       CMON(1)(:nctrim(cmon(1)))
 570          FORMAT(10X,' LIST 23 updated to include restraints')
             ELSE
 C----- NO RESTRAINTS, SO WE CAN REWIND THE SRQ
@@ -350,7 +356,8 @@ C----- NO RESTRAINTS, SO WE CAN REWIND THE SRQ
         ENDIF
         IF (NUPDAT .GT. 0) THEN
           WRITE ( CMON,580) NUPDAT
-          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') 
+     1    CMON(1)(:nctrim(cmon(1)))
 580   FORMAT(6X,I6, ' Atoms modified.',6X,'New LIST 5 written to DISK')
 C-----    WRITE UPDATED LIST 5 TO DISK
           CALL XSTR05 (5, 0, -1)
@@ -509,7 +516,7 @@ C               FLOATING DIRECTION
                 IFLOR(K) = 1
 C
                 WRITE(CMON,13) AXIS(K)
-                CALL XPRVDU(NCVDU, 1,0)
+c                CALL XPRVDU(NCVDU, 1,0)
                 IF (ISSPRT .EQ. 0) WRITE(NCWU,13) AXIS(K)
 13      FORMAT(' Floating origin in ', A2, ' direction')
                 WRITE(CLINE,14) AXIS(K)
