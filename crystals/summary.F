@@ -2012,14 +2012,14 @@ C
 C--SETUP A GRAPH HERE
       IF ( LEVEL.EQ.4 ) THEN                 ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
-     1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
+     1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
      2  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
      3  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
       IF ( LEVEL.EQ.5 ) THEN                 ! Normal probability plot
         WRITE(CMON,'(A,/,A)')
-     1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
+     1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP KEY',
      3  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000'
         CALL XPRVDU(NCVDU, 2,0)
         IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
@@ -2033,7 +2033,7 @@ C--SETUP A GRAPH HERE
       END IF
       IF ( LEVEL.EQ.6 ) THEN                 ! Weight vs Sigma
         WRITE(CMON,'(A,/,A,/,A)')
-     1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG',
+     1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG KEY',
      1  '^^PL YAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
      1  '^^PL XAXIS TITLE ''1/Sigma'' SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
@@ -2273,39 +2273,6 @@ c
      1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
             CALL XPRVDU(NCVDU, 1,0)
         END DO
-
-      END IF
-
-      IF ( LEVEL.EQ.4)  THEN
-c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
-        WRITE(CMON,'(A/A,2F10.2)')
-     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
-        CALL XPRVDU(NCVDU,2,0)
-
-      ELSE IF (LEVEL.EQ.6) THEN
-c  add A SERIES FOR STRAIGHT LINE AT WT=1/SIGSQ
-        WRITE(CMON,'(A/A,2F10.2)')
-     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
-        CALL XPRVDU(NCVDU,2,0)
-
-
-      ELSE IF (LEVEL.EQ.5) THEN
-        WRITE(CMON,'(A/2(A,2F10.2))')
-     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     2  '^^PL DATA ', -PLOTMAX, -PLOTMAX,' DATA ', PLOTMAX, PLOTMAX
-        CALL XPRVDU(NCVDU,2,0)
-      ENDIF
-c
-C -- FINISH THE GRAPH DEFINITION
-      IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
-     1 .OR.( LEVEL.EQ.6 )) THEN
-        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
-        CALL XPRVDU(NCVDU, 2,0)
-      ENDIF
-C
-      if (LEVEL.EQ.5) then
 c      find slope and intercept
 c      determinant
         deter = ss*sxx-sx*sx
@@ -2313,6 +2280,7 @@ c      determinant
           cutter = (sxx*sy-sx*sxy)/deter
           slope = (ss*sxy-sx*sy)/deter
           yslope = slope
+          ycut = cutter
           denom = (ss*sxx-sx*sx)*(ss*syy-sy*sy)
           if (denom .gt. 0.) then
             denom=sqrt(denom)
@@ -2341,10 +2309,14 @@ c      determinant
                 call xprvdu(ncvdu, 1,0)
                 if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
             endif
-
-
-
-
+c-----      update list 30 - 
+c           NOTE values put in Data Reduction slot for the moment
+c           to avoid changing LIST 30 in COMMANDS.SRC etc
+c           Probably best to add to LIST 39
+            store(l30dr+8) = slope
+            store(l30dr+9) = cutter
+            call xwlstd ( 30, icom30, idim30, -1, -1)
+c
           else
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
@@ -2369,13 +2341,53 @@ c      determinant
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
         endif
-      endif
+      END IF
 c
-C----- UPDATE LIST 30
-C----- DONT UPDATE LIST 30 -  THE USER MIGHT BE FIDDLING WITH LIST 28
-C      STORE(L30RF) = RFACT
-C      STORE(L30RF+1) = WRFAC
-C      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+      IF ( LEVEL.EQ.4)  THEN
+c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
+        WRITE(CMON,'(A/A,2F10.2)')
+     1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+
+      ELSE IF (LEVEL.EQ.6) THEN
+c  add A SERIES FOR STRAIGHT LINE AT WT=1/SIGSQ
+        WRITE(CMON,'(A/A,2F10.2)')
+     1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+c
+      ELSE IF (LEVEL.EQ.5) THEN
+        WRITE(CMON,'(A/2(A,2F10.2))')
+     1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2  '^^PL DATA ', -PLOTMAX, -PLOTMAX,' DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+c----- plot side bands
+        z_max=plotmax
+        djwx=z_max
+        djwy=yslope*z_max
+        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+     1 '^^PL ADDSERIES ''+10%'' TYPE LINE',
+     2 '^^PL DATA ', -djwx,-djwy+ycut+0.1*z_max,
+     3 ' DATA ',djwx,djwy+ycut+0.1*Z_max
+        CALL XPRVDU (NCVDU,2,0)
+c
+        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+     1 '^^PL ADDSERIES ''-10%'' TYPE LINE',
+     2 '^^PL DATA ', -djwx,-djwy+ycut-0.1*z_max,
+     3 ' DATA ',djwx,djwy+ycut-0.1*Z_max
+        CALL XPRVDU (NCVDU,2,0)
+C 
+      ENDIF
+c
+C -- FINISH THE GRAPH DEFINITION
+      IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
+     1 .OR.( LEVEL.EQ.6 )) THEN
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+      ENDIF
+C
+c
       RETURN
       END
 C
