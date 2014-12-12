@@ -74,6 +74,36 @@ Files INITIAL.* will be created in your directory. They may be important.
 {I  If you have a SHELX ins/res file, input it from the Data menu.
 %   FINISH
 %  end if
+%%
+
+%  if ( exists 2 .eq. 1 ) .and. ( exists 5 .eq. 1 ) then
+{S sort out atoms
+%% variables used by the question box below                                     
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
+% VARIABLE LOGICAL ANSWER                                                       
+%%
+%     EVALUATE QTITLE = 'Renumber Atoms?'                              
+%     EVALUATE QLINE1 = 'Do you want to change atom'                  
+%     EVALUATE QLINE2 = 'numbers to CRYSTALS system?'                             
+%     EVALUATE BUTTOK = '&Yes'                                         
+%     EVALUATE BUTTXX = '&No'                                          
+%     COPY '#SCRIPT XQUESTIO'                                          
+%     IF ANSWER .EQ. TRUE THEN                                         
+%        COPY '#EDIT'
+%        COPY 'INSERT ELECTRON'
+%        COPY 'DSORT SPARE'
+%        COPY 'KEEP 1 ALL'
+%        COPY 'END'
+%        COPY '#SCRIPT XCENTRE'                                             
+%%       RESOLVE H ATOMS                                                             
+%        COPY '#SCRIPT HNAM'
+%        copy '#EDIT'
+%        COPY 'SORT SERIAL'
+%        COPY 'END'                                                    
+%     END IF
+%%                                                                              
+%  end if
+
 %%                                                                             
 %  if ( cextn .eq. 'FCF' ) then                                                                            
 %   if ( .not. FILEEXISTS ( 'cif-reflections.cry' ) ) THEN 
