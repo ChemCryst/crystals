@@ -56,7 +56,7 @@
 %    STORE REAL VALUE                                                           
 %    QUEUE SEND                                                                 
 %    CLEAR                                                                      
-%    GET NOSTORE REAL 'Minimum acceptable Ui? ' '.01'                           
+%    GET NOSTORE REAL 'Minimum acceptable Ui? ' '.00'                           
 %    INSERT 'ALLCYCLES U[MIN]='                                                 
 %    STORE REAL VALUE                                                           
 %    QUEUE SEND                                                                 
