@@ -40,7 +40,7 @@ integer, dimension(8) :: measuredtime
 allocate(preconditioner(nmsize))
 do i=1,nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
-    if(abs(nmatrix(1+j))<epsilon(0.0)) then
+    if(abs(nmatrix(1+j))>epsilon(0.0)) then
         preconditioner(i)=nmatrix(1+j)
     else
         preconditioner(i)=1.0
@@ -212,7 +212,7 @@ info=0
 allocate(preconditioner(nmsize))
 do i=1,nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
-    if(abs(nmatrix(1+j))<epsilon(0.0)) then
+    if(abs(nmatrix(1+j))>epsilon(0.0)) then
         preconditioner(i)=nmatrix(1+j)
     else
         preconditioner(i)=1.0
@@ -336,10 +336,8 @@ integer, dimension(:), allocatable :: ipiv, iwork
 real rcond
 integer, external :: ILAENV
 
-#if defined(_GIL_) || defined(_LIN_)
 integer :: starttime
 integer, dimension(8) :: measuredtime
-#endif
 
 info=0
 
@@ -348,7 +346,7 @@ info=0
 allocate(preconditioner(nmsize))
 do i=1,nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
-    if(abs(nmatrix(1+j))<epsilon(0.0)) then
+    if(abs(nmatrix(1+j))>epsilon(0.0)) then
         preconditioner(i)=nmatrix(1+j)
     else
         preconditioner(i)=1.0
@@ -377,18 +375,15 @@ end do
 !write(666) unpacked
 !close(666)
 
-#if defined(_GIL_) || defined(_LIN_) 
 call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
-#endif
 
 allocate(ipiv(nmsize))
 lwork = ILAENV( 1, 'SSYTRF', 'L', nmsize, nmsize, -1, -1)
 allocate(work(nmsize*lwork))
 call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, nmsize*lwork, INFO )
-#if defined(_GIL_) || defined(_LIN_)
+print *, ''
 print *, 'SSYTRF info: ', info
-#endif
 deallocate(work)
 
 if(info>0) then 
@@ -398,30 +393,28 @@ end if
 allocate(work(2*nmsize))
 allocate(iwork(nmsize))
 call SSYCON( 'L', nmsize, unpacked, nmsize, ipiv, 1.0, rcond, work, iwork, info )
-#if defined(_GIL_) || defined(_LIN_)
+print *, ''
 print *, 'SSYCON info: ', info
-#endif
 deallocate(work)
 deallocate(iwork)
-#if defined(_GIL_) || defined(_LIN_)
+print *, ''
 print *, 'condition number ', 1.0/rcond
 print *, 'relative error ', 1.0/rcond*epsilon(1.0)
-#endif
 
 allocate(work(nmsize))
 call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
 #if defined(_GIL_) || defined(_LIN_)
+print *, ''
 print *, 'SSYTRI info: ', info
 #endif
 deallocate(ipiv)
 deallocate(work)
 
-#if defined(_GIL_) || defined(_LIN_) 
 call date_and_time(VALUES=measuredtime)
+print *, ''
 print *, 'invert via LDL^t decomposition', &
 &       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000 +&
 &       measuredtime(8)-starttime, 'ms'
-#endif
 
 if(info>0) then 
 	return
@@ -477,7 +470,7 @@ info=0
 allocate(preconditioner(nmsize))
 do i=1,nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
-    if(abs(nmatrix(1+j))<epsilon(0.0)) then
+    if(abs(nmatrix(1+j))>epsilon(0.0)) then
         preconditioner(i)=nmatrix(1+j)
     else
         preconditioner(i)=1.0
