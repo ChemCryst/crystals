@@ -2697,6 +2697,9 @@ c
             ed3 = 0
         endif
       endif
+CRIC2015:Ignore ESD on DH-A angles with constrained atoms.
+                IF ((IHFIXD.EQ.1).AND.
+     1                (LHFIXD(1).OR.LHFIXD(2).OR.LHFIXD(3))) ESD = 0.0
 c
                 WRITE(MTE) 'H',TERM,ESD,
 c--- ATOM 2

@@ -201,7 +201,7 @@
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
 %      COPY '#DISTANCE '
-%      COPY 'OUT PUNCh=H-CIF mon=ang'
+%      COPY 'OUT PUNCh=H-CIF mon=ang HESD=NONFIXED'
 %      COPY 'SELECT RANGE=LIMIT'
 %      COPY 'LIMIT 0.7 2.6 0.7 2.6 '
 %      COPY 'E.S.D YES YES'
