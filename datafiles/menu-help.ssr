@@ -13,7 +13,7 @@
 ^^WI   SPLIT 
 ^^WI   MENU HDEMO '&Simple Worked Examples'                                            
 ^^WI     ITEM DEMO '&Basic'                                                     
-^^WI     '#SPAWN CRYSDIR:DEMO/CYCLO/cyclo-routine.pdf' DISABLEIF='IN'           
+^^WI     '#SPAWN CRYSDIR:DEMO/CYCLO/cyclo-A4.pdf' DISABLEIF='IN'           
 
 ^^WI     ITEM DEMO '&Ylid'                                                     
 ^^WI     '#SPAWN CRYSDIR:DEMO/YLID/ylid.pdf' DISABLEIF='IN'
