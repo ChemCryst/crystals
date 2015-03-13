@@ -1953,7 +1953,7 @@ C
       CHARACTER *8 CNAME(35)
       CHARACTER *15 HKLLAB
 
-      INCLUDE 'ICOM30.INC'
+      INCLUDE 'ICOM39.INC'
       DIMENSION KEY(35)
       INCLUDE 'ISTORE.INC'
 C
@@ -1961,7 +1961,7 @@ C
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST23.INC'
-      INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST39.INC'
 C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
@@ -1975,7 +1975,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
-      INCLUDE 'QLST30.INC'
+      INCLUDE 'QLST39.INC'
 C
 C
       DATA KEY/ 1, 2, 3, 4, 5, 6, 0, 0, 0, 0,
@@ -1999,7 +1999,7 @@ C
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL39
 
       IFSQ = ISTORE(L23MN+1)
 c set flag for twinned/normal data
@@ -2309,13 +2309,16 @@ c      determinant
                 call xprvdu(ncvdu, 1,0)
                 if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
             endif
-c-----      update list 30 - 
-c           NOTE values put in Data Reduction slot for the moment
-c           to avoid changing LIST 30 in COMMANDS.SRC etc
-c           Probably best to add to LIST 39
-            store(l30dr+8) = slope
-            store(l30dr+9) = cutter
-            call xwlstd ( 30, icom30, idim30, -1, -1)
+c-----      update list 39 - 
+            iflac = 'FLAC'
+            m39f=l39f
+            do i=1,n39f
+              if (istore(m39f) .eq. iflac) then
+                store(m39f+2) = slope
+              endif
+              m39f = m39f+md39f
+            enddo
+            call xwlstd ( 39, icom39, idim39, -1, -1)
 c
           else
             write(cmon,471) 

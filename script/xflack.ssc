@@ -1,7 +1,7 @@
 %SCRIPT XFLACK
-% VARIABLE INTEGER IDJW ITYPE
+% VARIABLE INTEGER IDJW ITYPE JTYPE
 % VARIABLE LOGICAL SOMEERROR SERR
-% VARIABLE CHARACTER CPUNCH CTYPE
+% VARIABLE CHARACTER CPUNCH CTYPE CWEIGHT
 % EVALUATE CPUNCH = 'NO'
 % VARIABLE INTEGER   IPUNCH
 % EVALUATE SOMEERROR = TRUE
@@ -122,16 +122,18 @@
 ^^WI            }
 ^^WI          }
 ^^WI    }
-^^WI    TAB _TAB3 'Do vs Ds' GRID _MAINTG2 NROWS=3 NCOLS=3
+^^WI    TAB _TAB3 'Signal' GRID _MAINTG2 NROWS=3 NCOLS=3
 ^^WI    {
-^^WI              @ 1,1 GRID EXP2 NROWS=3 NCOLS=1 OUTLINE=' '
+^^WI              @ 1,1 GRID EXP2 NROWS=3 NCOLS=2 OUTLINE=' '
 ^^WI              {                                                                       
 ^^WI               @ 1,1 STATIC XFW1                                                      
-^^WI               "Anomalous Difference Plot"                
+^^WI              "<|Ds|/sigma(Do)> plot for shells of constant volume"
 ^^WI               @ 2,1 STATIC XFW2                                                      
-^^WI                'The points should lie in a line of unit gradient'    
+^^WI                'The red line is the number of pairs in each shell'   
 ^^WI               @ 3,1 STATIC XFW3                                                      
-^^WI               'A gradient of -1 indicates the model needs inverting'
+^^WI               'The green curve is the average <Ds/sigma(Do)>'
+^^WI               @ 3,2 STATIC XWF4
+^^WI               'in each shell>'
 ^^WI              }                                                                       
 ^^WI              @ 2,1 PLOTWINDOW _VDO NROWS=20 NCOLS=48
 ^^WI              @ 3,1 GRID RB NROWS=1 NCOLS=2
@@ -142,7 +144,7 @@
 ^^WI    }
 ^^WI   }
 ^^WI  }
-^^WI  @ 4,2 GRID BTNS NROWS=1 NCOLS=12   OUTLINE='Output '
+^^WI  @ 4,2 GRID BTNS NROWS=1 NCOLS=13   OUTLINE='Output '
 ^^WI  {
 ^^WI     @ 1,1 RADIOBUTTON IPUNCHA 'None'
 ^^WI            STATE=ON
@@ -159,10 +161,15 @@
 ^^WI       @ 1,1 RADIOBUTTON ITYPEA 'Difference' STATE=ON
 ^^WI       @ 1,3 RADIOBUTTON ITYPEB 'Quotient' STATE=OFF
 ^^WI     }
-^^WI     @ 1,7 STRETCH VB HORIZONTAL
-^^WI     @ 1,8 BUTTON HELP   '&Help'
-^^WI     @ 1,10 BUTTON RF_BXX '&Quit'
-^^WI     @ 1,12 BUTTON CALC  '&Recalculate'
+^^WI     @ 1,8 GRID BTNS2 NROWS=1 NCOLS=4 OUTLINE='Weight'
+^^WI     {
+^^WI       @ 1,1 RADIOBUTTON ITYPEC 'Sigma' STATE=ON
+^^WI       @ 1,3 RADIOBUTTON ITYPED 'Lsq' STATE=OFF
+^^WI     }
+^^WI     @ 1,9 STRETCH VB HORIZONTAL
+^^WI     @ 1,10 BUTTON HELP   '&Help'
+^^WI     @ 1,11 BUTTON RF_BXX '&Quit'
+^^WI     @ 1,13 BUTTON CALC  '&Recalculate'
 ^^WI  }
 ^^WI  @ 6,2 GRID RESLT NROWS=2 NCOLS=5
 ^^WI  {
@@ -174,7 +181,7 @@
 ^^WI               @ 2,2 STATIC _NREF '0000.0'
 ^^WI               @ 1,4 STATIC HPF 
 ^^WI               ' Try setting filter 1 to '
-^^WI               @ 1,5 STATIC _FIL1 '0.50'
+^^WI               @ 1,5 STATIC _FIL1 '      0.50'
 ^^WI  }
 ^^WI  @ 8,2 GRID REFCON NROWS=2 NCOLS=5 OUTLINE='Reflections Accepted if:'
 ^^WI  {                                                                        
@@ -217,7 +224,6 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
-
 % copy '#ton plot=yes punch =no'
 % copy 'end'
 % VARIABLE INTEGER JLOOP
@@ -275,7 +281,6 @@
 %       EVALUATE IPUNCH = 3
 %       EVALUATE CPUNCH = 'GRAPH'
 %     END IF
-
 ^^??  IPUNCHE STATE
 %     VERIFY ON OFF
 %     GET SILENT NOSTORE FINAL ABBREVIATED ' '
@@ -283,7 +288,6 @@
 %       EVALUATE IPUNCH = 4
 %       EVALUATE CPUNCH = 'SUMMARY'
 %     END IF
-
 ^^??  ITYPEA STATE
 %     VERIFY ON OFF
 %     GET SILENT NOSTORE FINAL ABBREVIATED ' '
@@ -299,6 +303,20 @@
 %       EVALUATE CTYPE = 'QOQC'
 %     END IF
 %%
+^^??  ITYPEC STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%       EVALUATE JTYPE = 0
+%       EVALUATE CWEIGHT = 'SIG'
+%     END IF
+^^??  ITYPED STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%       EVALUATE JTYPE = 1
+%       EVALUATE CWEIGHT = 'lsq'
+%     END IF
 %%
 Starting calculation
 %      IF IPUNCH .EQ. 2 THEN
@@ -307,10 +325,10 @@ Starting calculation
 %      TRANSFER '#TON  PLOT=YES ' //  -
        ' PUNCH = ' // CPUNCH TO CRYSTALS
 %      TRANSFER 'CONT TYPE  = ' //  CTYPE TO CRYSTALS
+%      TRANSFER 'CONT WEIGHT  = ' //  CWEIGHT TO CRYSTALS
 %      TRANSFER 'CONT FILTER1= '  // CHARACTER ( FILTER1 ) // -
        ' FILTER2= '  // CHARACTER ( FILTER2 ) // -
        ' FILTER3= '  // CHARACTER ( FILTER3 ) TO CRYSTALS
-
 %      TRANSFER 'CONT FILTER4= '  // CHARACTER ( FILTER4 ) // -
        ' FILTER5= '  // CHARACTER ( FILTER5 )  - 
        TO CRYSTALS
@@ -360,11 +378,7 @@ Starting calculation
 ^^CO SET _VDIST SAVE 800 600 distribution_
 %     END BLOCK
 %     BLOCK  %HELP%
-%        COPY '#SCRIPT XHELP1'
-
-Help text
-
-%        COPY '#SCRIPT XHELP2'
+%        COPY '#SCRIPT FLACK-HELP'
 %     END BLOCK
 %   END CASE
 % END LOOP

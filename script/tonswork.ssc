@@ -11,7 +11,14 @@
 {E **** FATAL: There are no reflections to work with                            
 %      FINISH                                                                   
 %    END IF                                                                     
-%  END BLOCK                                                                    
+%  END BLOCK 
+%%
+%% make sure FLAC record exists in LIST 39
+%    COPY '#SCRIPT FLACK39'
+%%
+%% Make sure npp gradient is stored in L39
+%  copy '#sum list 6 level=norm'
+%  copy 'end'                                                                   
 %  IF ( EXISTS 7 .EQ. 1 ) THEN                                                  
 %    COPY '#DISK'                                                               
 %    COPY 'DELETE 7'                                                            

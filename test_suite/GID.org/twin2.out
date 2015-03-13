@@ -768,7 +768,7 @@ LS-scale=  9.913   Wilson Scale=  0.000
 #LIST 4                                                                                                                                                                                                                                                         
 
  Slope, intercept and Cc of plot = -0.182E-02  1.41    -0.885E-01                                                                                                                                                                                               
-Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.088                                                                                                                                                                                                 
+ Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.088                                                                                                                                                                                                
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -871,7 +871,7 @@ Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.088
 
  Chebyshev weighting scheme for   3  terms
 
- Maximum /FO/    =     0.76E+03           Estimated variance =    1827.4        
+ Maximum /FO/    =     0.76E+03           Estimated variance =    1827.5        
          /Fo/ weight =   0.00
 
 
@@ -955,7 +955,7 @@ Slope=       -0.002 Intercept =       1.409 C-Coef=      -0.088
 #SFLS                                                                                                                                                                                                                                                           
 
  Slope, intercept and Cc of plot = -0.110E-02  1.24    -0.624E-01                                                                                                                                                                                               
-Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062                                                                                                                                                                                                 
+ Slope=       -0.001 Intercept =       1.235 C-Coef=      -0.062                                                                                                                                                                                                
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          

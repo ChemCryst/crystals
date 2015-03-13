@@ -8551,7 +8551,7 @@ Mean C-C su =   0.0020
 #ANALYSE                                                                                                                                                                                                                                                        
 
  Slope, intercept and Cc of plot =  0.454E-03 0.938     0.105E-01                                                                                                                                                                                               
-Slope=        0.000 Intercept =       0.938 C-Coef=       0.010                                                                                                                                                                                                 
+ Slope=        0.000 Intercept =       0.938 C-Coef=       0.010                                                                                                                                                                                                
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -9732,10 +9732,10 @@ LS-scale=  4.642   Wilson Scale=  4.723
  H        92.    -0.0215   -0.0113    0.1268       -0.1   
  H        93.     0.0652    0.8749    0.2105        0.2   
  H         1.     0.3162    0.5387    0.0968       -0.2   
- QN        1.     0.3750    0.4375    0.2500       -1.7  Hole        
+ QN        1.     0.6250    0.9375    0.2500       -1.7  Hole        
  The new list  10 contains    24 atoms
  The minimum and maximum map densities are -0.169     0.151    electrons /A^3                                                                                                                                                                                   
-                  The deepest hole is at    0.375   0.438   0.250                                                                                                                                                                                               
+                  The deepest hole is at    0.625   0.938   0.250                                                                                                                                                                                               
  Mean electron density at original atomic sites is     0.00
                       with an R.M.S. deviation of      0.04
 #SFLS                                                                                                                                                                                                                                                           
@@ -9821,8 +9821,8 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   80          80            0.0000      0.4E+01    0.101E-02          0.00        C      9 U[23]   
- SRATIO   81          81            0.0000      0.5E+01    0.762E-03          0.00        C      9 U[13]   
+ SRATIO   80          80            0.0000      0.5E+01    0.101E-02          0.00        C      9 U[23]   
+ SRATIO   81          81            0.0000      0.4E+01    0.762E-03          0.00        C      9 U[13]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -9871,10 +9871,10 @@ All cycle   shift/esd            0.30E-01       0.15E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    80.00    50.00    40.00    90.00    70.00    90.00    60.00    80.00    70.00
+ Reversals    50.00     0.00     0.00    80.00    50.00    40.00    90.00    70.00    90.00    60.00    80.00    80.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  69.57 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  70.65 for all parameters.
 
 
  Shift
@@ -10062,7 +10062,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            6.3           0.10E+03
-All cycle   shift/esd            0.30E-01       0.68E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.67E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -10100,10 +10100,10 @@ All cycle   shift/esd            0.30E-01       0.68E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    50.00    70.00    10.00    80.00    60.00    40.00    70.00   100.00    50.00
+ Reversals    50.00     0.00     0.00    60.00    60.00    20.00    70.00    60.00    50.00    50.00    90.00    40.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  58.70 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  55.43 for all parameters.
 
 
  Shift
@@ -10285,18 +10285,18 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   69          69            0.0000     -0.4E+01    0.927E-03          0.00        C      8 U[22]   
+ SRATIO   37          37            0.0000      0.3E+01    0.596E-03          0.00        N      4 U[12]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter   67, C8Z
+ The largest (shift/esd) =      0.00, for Parameter   85, CL10Z
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            6.3           0.10E+03
-All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.69E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -10334,10 +10334,10 @@ All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals   100.00     0.00     0.00    20.00    20.00     0.00    60.00    60.00    70.00    50.00    60.00    50.00
+ Reversals    50.00     0.00     0.00    50.00    10.00     0.00    70.00    60.00    60.00    40.00    50.00    50.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  44.57 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  43.48 for all parameters.
 
 
  Shift
@@ -10516,6 +10516,13 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
+ Block   1
+        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
+
+ SRATIO   23          23            0.0000     -0.4E+01    0.783E-03          0.00        C      3 U[11]   
+ SRATIO   62          62            0.0000     -0.4E+01    0.803E-03          0.00        C      7 U[23]   
+ SRATIO   69          69            0.0000      0.5E+01    0.927E-03          0.00        C      8 U[22]   
+
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
@@ -10525,7 +10532,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            6.3           0.10E+03
-All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -10563,10 +10570,10 @@ All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    10.00     0.00     0.00    20.00    50.00    10.00    40.00    50.00    20.00
+ Reversals    50.00     0.00     0.00    40.00    10.00    10.00    80.00    70.00    90.00    70.00    80.00    80.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  22.83 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  58.70 for all parameters.
 
 
  Shift
@@ -10754,7 +10761,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            6.3           0.10E+03
-All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -10792,10 +10799,10 @@ All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00     0.00     0.00     0.00    10.00    30.00     0.00    40.00    30.00    20.00
+ Reversals    50.00     0.00     0.00    30.00     0.00     0.00    60.00    50.00    40.00    30.00    50.00    60.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  15.22 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  35.87 for all parameters.
 
 
  Shift
@@ -11021,10 +11028,10 @@ All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00     0.00     0.00     0.00    30.00    30.00    20.00    10.00    10.00    20.00
+ Reversals    50.00     0.00     0.00     0.00     0.00     0.00    50.00    10.00    30.00    50.00    50.00    50.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  14.13 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  27.17 for all parameters.
 
 
  Shift
@@ -12634,7 +12641,7 @@ LS-scale=  4.854   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   12          12            0.0000     -0.9E+02    0.418E-03          0.00        N      4 Y       
+ SRATIO   12          12            0.0000     -0.1E+03    0.418E-03          0.00        N      4 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          32 parameters
@@ -15156,7 +15163,7 @@ Inter cycle Min function          0.0           0.12E+04       0.10E+16
  Statistics for    92 least squares parameters, with  1924 degrees of freedom
  Number of observations              2016                 0              2016
  Minimisation function              0.325E+05         0.000E+00         0.325E+05
- Hamilton weighted R-value           6.511             0.000             6.511
+ Hamilton weighted R-value           6.510             0.000             6.510
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -16619,9 +16626,9 @@ LS-scale=  4.629   Wilson Scale=  4.723
  SRATIO    1           1             0.000      0.7E+01    0.657E-02          0.01                          SCALE   
  SRATIO    7           7            0.0000      0.3E+02    0.765E-03         -0.01        C      1 U[33]   
  SRATIO    9           9            0.0000      0.3E+02    0.730E-03         -0.04        C      1 U[13]   
- SRATIO   12          12            0.0000     -0.2E+03    0.155E-03         -0.25        N      2 Y       
+ SRATIO   12          12            0.0000     -0.1E+03    0.155E-03         -0.25        N      2 Y       
  SRATIO   18          18            0.0000      0.5E+01    0.602E-03          0.00        N      2 U[13]   
- SRATIO   22          22            0.0000      0.2E+02    0.175E-03         -0.06        C      3 Z       
+ SRATIO   22          22            0.0000      0.1E+02    0.175E-03         -0.06        C      3 Z       
  SRATIO   33          33           -0.0002      0.4E+01    0.879E-03         -0.23        N      4 U[22]   
  SRATIO   34          34            0.0000     -0.6E+01    0.711E-03          0.03        N      4 U[33]   
  SRATIO   41          41           -0.0001      0.7E+02    0.918E-03         -0.07        C      5 U[11]   
@@ -16654,7 +16661,7 @@ All cycle   Rw                    0.0            3.5           0.10E+03
 All cycle   shift/esd            0.30E-01       0.97E-01       0.10E+05
 All cycle   Min function          0.0           0.95E+04       0.10E+16
 Inter cycle R-factor             -5.0           0.31E-03       0.10E+03
-Inter cycle Rw                   -5.0           0.61E-03       0.10E+03
+Inter cycle Rw                   -5.0           0.60E-03       0.10E+03
 Inter cycle shift/esd            -10.          -0.92E-02       0.10E+05
 Inter cycle Min function          0.0            3.3           0.10E+16
 
@@ -17059,7 +17066,7 @@ Mean C-C su =   0.0023
 #ANALYSE                                                                                                                                                                                                                                                        
 
  Slope, intercept and Cc of plot = -0.813E-02  1.54    -0.139                                                                                                                                                                                                   
-Slope=       -0.008 Intercept =       1.543 C-Coef=      -0.139                                                                                                                                                                                                 
+ Slope=       -0.008 Intercept =       1.543 C-Coef=      -0.139                                                                                                                                                                                                
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -17167,7 +17174,7 @@ Slope=       -0.008 Intercept =       1.543 C-Coef=      -0.139
     H   = 2N         1002        47.07        47.2       0.549E+01       0.133E+01     3.26    4.13           *      
     H   = 2N+1       1014        48.93        49.1       0.398E+01       0.977E+00     2.81    3.51           *      
     K   = 2N         1002        47.71        47.7       0.524E+01       0.121E+01     3.13    3.99           *      
-    K   = 2N+1       1014        48.30        48.5       0.423E+01       0.109E+01     2.94    3.68           *      
+    K   = 2N+1       1014        48.30        48.5       0.423E+01       0.109E+01     2.93    3.68           *      
     L   = 2N         1059        48.30        48.4       0.501E+01       0.111E+01     3.01    3.80           *      
     L   = 2N+1        957        47.68        47.8       0.442E+01       0.120E+01     3.06    3.87           *      
    K+L  = 2N         1067        48.82        49.0       0.475E+01       0.117E+01     3.04    3.87           *      
@@ -17422,7 +17429,7 @@ LS-scale=  4.629   Wilson Scale=  4.723
  S/ESD    39          39           -0.0005      0.7E+03    0.172E-03         -2.74        C      5 Y       
  SRATIO   40          40            0.0000     -0.1E+03    0.136E-03          0.18        C      5 Z       
  SRATIO   41          41           -0.0002      0.3E+02    0.798E-03         -0.24        C      5 U[11]   
- SRATIO   42          42           -0.0001     -0.8E+01    0.863E-03         -0.11        C      5 U[22]   
+ SRATIO   42          42           -0.0001     -0.9E+01    0.863E-03         -0.11        C      5 U[22]   
  SRATIO   43          43            0.0002     -0.8E+02    0.762E-03          0.28        C      5 U[33]   
  S/ESD    44          44            0.0017      0.1E+04    0.656E-03          2.55        C      5 U[23]   
  SRATIO   45          45            0.0002     -0.6E+02    0.674E-03          0.28        C      5 U[13]   
@@ -17464,7 +17471,6 @@ LS-scale=  4.629   Wilson Scale=  4.723
  S/ESD    82          82            0.0016     -0.5E+04    0.107E-02          1.52        C      9 U[12]   
  SRATIO   83          83            0.0001      0.2E+03    0.583E-04          0.92        CL    10 X       
  SRATIO   84          84            0.0000      0.6E+02    0.375E-04          0.69        CL    10 Y       
- SRATIO   85          85            0.0000     -0.1E+04    0.327E-04          0.11        CL    10 Z       
  SRATIO   86          86            0.0000     -0.7E+03    0.207E-03          0.24        CL    10 U[11]   
  SRATIO   87          87            0.0000      0.2E+02    0.191E-03         -0.12        CL    10 U[22]   
  SRATIO   88          88            0.0001      0.3E+03    0.174E-03          0.30        CL    10 U[33]   
@@ -17521,10 +17527,10 @@ All cycle   Min function          0.0           0.23E+04       0.10E+16
  Maximum        0.01   0.0000   0.0000   0.0005   0.0005   0.0002   0.0012   0.0011   0.0017   0.0017   0.0020   0.0016
                                          0.0038   0.0048   0.0028
 
- Reversals     0.00     0.00     0.00    10.00    40.00    40.00    60.00    40.00    50.00    50.00    60.00    60.00
+ Reversals     0.00     0.00     0.00    10.00    40.00    30.00    60.00    40.00    50.00    50.00    60.00    60.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  44.57 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  43.48 for all parameters.
 
 
  Shift
@@ -18330,6 +18336,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
+ SRATIO   19          19            0.0000     -0.5E+02    0.504E-03          0.00        N      2 U[12]   
  SRATIO   37          37            0.0000     -0.7E+01    0.604E-03          0.00        N      4 U[12]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
@@ -18341,7 +18348,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.30E-03       0.10E+05
+All cycle   shift/esd            0.30E-01       0.31E-03       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -18379,7 +18386,7 @@ All cycle   shift/esd            0.30E-01       0.30E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    70.00    10.00    40.00    70.00    30.00    60.00    30.00    50.00    40.00
+ Reversals    50.00     0.00     0.00    60.00    10.00    30.00    80.00    30.00    60.00    30.00    50.00    50.00
 
 
  Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  44.57 for all parameters.
@@ -18565,7 +18572,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  SRATIO   10          10            0.0000      0.3E+01    0.701E-03          0.00        C      1 U[12]   
- SRATIO   20          20            0.0000      0.4E+01    0.239E-03          0.00        C      3 X       
+ SRATIO   20          20            0.0000      0.3E+01    0.239E-03          0.00        C      3 X       
  SRATIO   62          62            0.0000     -0.3E+01    0.805E-03          0.00        C      7 U[23]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
@@ -18577,7 +18584,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.78E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.75E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -18615,10 +18622,10 @@ All cycle   shift/esd            0.30E-01       0.78E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    30.00    40.00    20.00    70.00    30.00    50.00    30.00    50.00    30.00
+ Reversals    50.00     0.00     0.00    30.00    50.00    10.00    80.00    30.00    70.00    40.00    50.00    30.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  39.13 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  43.48 for all parameters.
 
 
  Shift
@@ -18806,7 +18813,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -18844,10 +18851,10 @@ All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    30.00    40.00    10.00    40.00    60.00    60.00    30.00    80.00    50.00
+ Reversals   100.00     0.00     0.00    50.00    20.00     0.00    50.00    70.00    50.00    30.00    60.00    30.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  44.57 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  41.30 for all parameters.
 
 
  Shift
@@ -19026,16 +19033,11 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
- Block   1
-        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
-
- SRATIO   78          78            0.0000     -0.5E+01    0.167E-02          0.00        C      9 U[22]   
-
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter   85, CL10Z
+ The largest (shift/esd) =      0.00, for Parameter   67, C8Z
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
@@ -19078,10 +19080,10 @@ All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    10.00     0.00    10.00    60.00    30.00    80.00    20.00    60.00    60.00
+ Reversals     0.00     0.00     0.00    10.00    20.00     0.00    30.00    50.00    40.00    30.00    50.00    50.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  35.87 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  30.43 for all parameters.
 
 
  Shift
@@ -19260,11 +19262,6 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
- Block   1
-        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
-
- SRATIO   68          68            0.0000     -0.4E+01    0.900E-03          0.00        C      8 U[11]   
-
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
@@ -19312,10 +19309,10 @@ All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    10.00    10.00     0.00    30.00    40.00    80.00    20.00    30.00    50.00
+ Reversals    50.00     0.00     0.00    10.00     0.00     0.00    50.00    20.00    50.00    50.00    20.00    30.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  29.35 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  26.09 for all parameters.
 
 
  Shift
@@ -19494,21 +19491,16 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
- Block   1
-        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
-
- SRATIO   66          66            0.0000      0.3E+01    0.175E-03          0.00        C      8 Y       
-
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter   85, CL10Z
+ The largest (shift/esd) =      0.00, for Parameter   67, C8Z
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -19546,10 +19538,10 @@ All cycle   shift/esd            0.30E-01       0.65E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    50.00    20.00    10.00    50.00    60.00    50.00    50.00    40.00    30.00
+ Reversals     0.00     0.00     0.00     0.00     0.00     0.00    20.00    40.00    40.00     0.00     0.00    30.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  39.13 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  14.13 for all parameters.
 
 
  Shift
@@ -23629,7 +23621,7 @@ Mean C-C su =   0.0040
 
      20544.         20542.           1065.                                   On scale of /FC/
 
-     96782.         96775.           5019.               0.2642E+05          On scale of /FO/
+     96782.         96774.           5019.               0.2642E+05          On scale of /FO/
 
  New scale factor (G) is      4.711,    2016 reflections used in refinement
 
@@ -24842,7 +24834,7 @@ Mean C-C su =   0.0020
 #ANALYSE                                                                                                                                                                                                                                                        
 
  Slope, intercept and Cc of plot =  0.486E-03 0.937     0.112E-01                                                                                                                                                                                               
-Slope=        0.000 Intercept =       0.937 C-Coef=       0.011                                                                                                                                                                                                 
+ Slope=        0.000 Intercept =       0.937 C-Coef=       0.011                                                                                                                                                                                                
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -25017,7 +25009,7 @@ Slope=        0.000 Intercept =       0.937 C-Coef=       0.011
         113.80                                                                                                . 
                        45       122.73       121.9       0.248E+06       0.957E+00     1.31    3.30           *      
         133.56                                                                                                . 
-                       34       145.44       144.4       0.531E+06       0.120E+01     1.34    3.39           *      
+                       34       145.44       144.4       0.532E+06       0.120E+01     1.34    3.39           *      
         154.90                                                                                                . 
                        13       165.84       164.9       0.750E+06       0.109E+01     1.28    3.09           *      
         177.81                                                                                                . 
@@ -25203,7 +25195,7 @@ LS-scale=  4.627   Wilson Scale=  4.723
  SRATIO   37          37           -0.0001      0.4E+02    0.605E-03         -0.17        N      4 U[12]   
  SRATIO   38          38           -0.0001      0.3E+02    0.223E-03         -0.60        C      5 X       
  S/ESD    39          39           -0.0002      0.2E+03    0.166E-03         -1.00        C      5 Y       
- SRATIO   40          40            0.0000      0.2E+04    0.133E-03         -0.14        C      5 Z       
+ SRATIO   40          40            0.0000      0.3E+04    0.133E-03         -0.14        C      5 Z       
  SRATIO   41          41            0.0002     -0.8E+02    0.761E-03          0.24        C      5 U[11]   
  SRATIO   42          42           -0.0006      0.2E+03    0.852E-03         -0.71        C      5 U[22]   
  SRATIO   43          43            0.0005     -0.2E+03    0.744E-03          0.62        C      5 U[33]   
@@ -25249,7 +25241,7 @@ LS-scale=  4.627   Wilson Scale=  4.723
  SRATIO   86          86            0.0002     -0.8E+02    0.192E-03          0.87        CL    10 U[11]   
  SRATIO   87          87            0.0001     -0.4E+03    0.178E-03          0.43        CL    10 U[22]   
  SRATIO   88          88            0.0001     -0.1E+03    0.159E-03          0.64        CL    10 U[33]   
- SRATIO   89          89            0.0000      0.2E+04    0.145E-03          0.12        CL    10 U[23]   
+ SRATIO   89          89            0.0000      0.3E+04    0.145E-03          0.12        CL    10 U[23]   
  SRATIO   90          90            0.0000      0.2E+02    0.166E-03         -0.22        CL    10 U[13]   
  SRATIO   91          91            0.0001      0.4E+02    0.167E-03          0.82        CL    10 U[12]   
  SRATIO   92          92             0.000      0.3E+02    0.118E-02          0.10                          ELEMENT   1
@@ -26106,7 +26098,8 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   81          81            0.0000      0.6E+01    0.762E-03          0.00        C      9 U[13]   
+ SRATIO   81          81            0.0000      0.5E+01    0.762E-03          0.00        C      9 U[13]   
+ SRATIO   89          89            0.0000     -0.4E+01    0.144E-03          0.00        CL    10 U[23]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -26155,7 +26148,7 @@ All cycle   shift/esd            0.30E-01       0.16E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    80.00    80.00    50.00    90.00    70.00    90.00    60.00    80.00    90.00
+ Reversals    50.00     0.00     0.00    80.00    80.00    50.00    90.00    70.00    90.00    70.00    80.00    80.00
 
 
  Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  76.09 for all parameters.
@@ -26340,7 +26333,8 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   19          19            0.0000      0.6E+01    0.491E-03          0.00        N      2 U[12]   
+ SRATIO   19          19            0.0000     -0.9E+01    0.491E-03          0.00        N      2 U[12]   
+ SRATIO   75          75            0.0000     -0.3E+01    0.247E-03          0.00        C      9 Y       
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -26351,7 +26345,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            6.3           0.10E+03
-All cycle   shift/esd            0.30E-01       0.62E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.64E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -26389,10 +26383,10 @@ All cycle   shift/esd            0.30E-01       0.62E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals   100.00     0.00     0.00    30.00    60.00    30.00    70.00    40.00    80.00    60.00    80.00    40.00
+ Reversals    50.00     0.00     0.00    20.00    50.00    20.00    70.00    50.00    80.00    60.00    80.00    40.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  55.43 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  52.17 for all parameters.
 
 
  Shift
@@ -26574,9 +26568,8 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   44          44            0.0000     -0.3E+01    0.641E-03          0.00        C      5 U[23]   
- SRATIO   46          46            0.0000     -0.3E+01    0.648E-03          0.00        C      5 U[12]   
- SRATIO   64          64            0.0000     -0.1E+02    0.111E-02          0.00        C      7 U[12]   
+ SRATIO   56          56            0.0000      0.5E+01    0.373E-03          0.00        C      7 X       
+ SRATIO   64          64            0.0000     -0.5E+01    0.111E-02          0.00        C      7 U[12]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -26625,10 +26618,10 @@ All cycle   shift/esd            0.30E-01       0.57E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    30.00    40.00    10.00    50.00    30.00    50.00    50.00    60.00    70.00
+ Reversals    50.00     0.00     0.00    30.00    20.00    20.00    50.00    70.00    60.00    60.00    50.00    60.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  43.48 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  46.74 for all parameters.
 
 
  Shift
@@ -26807,6 +26800,13 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
+ Block   1
+        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
+
+ SRATIO    1           1             0.000     -0.6E+01    0.610E-01          0.00                          SCALE   
+ SRATIO   25          25            0.0000     -0.3E+01    0.753E-03          0.00        C      3 U[33]   
+ SRATIO   69          69            0.0000      0.4E+01    0.927E-03          0.00        C      8 U[22]   
+
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
@@ -26854,10 +26854,10 @@ All cycle   shift/esd            0.30E-01       0.56E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    40.00    20.00    10.00    80.00    30.00    60.00    50.00    70.00    70.00
+ Reversals    50.00     0.00     0.00    50.00    20.00     0.00    60.00    50.00    60.00    50.00    70.00    50.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  46.74 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  45.65 for all parameters.
 
 
  Shift
@@ -27039,7 +27039,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   78          78            0.0000     -0.4E+01    0.164E-02          0.00        C      9 U[22]   
+ SRATIO   60          60            0.0000     -0.3E+01    0.936E-03          0.00        C      7 U[22]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -27088,10 +27088,10 @@ All cycle   shift/esd            0.30E-01       0.56E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    10.00    10.00     0.00    40.00    70.00    30.00    30.00    60.00    40.00
+ Reversals    50.00     0.00     0.00    30.00     0.00     0.00    60.00    40.00    70.00    60.00    70.00    40.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  31.52 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  41.30 for all parameters.
 
 
  Shift
@@ -27273,7 +27273,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   69          69            0.0000     -0.5E+01    0.927E-03          0.00        C      8 U[22]   
+ SRATIO   59          59            0.0000     -0.5E+01    0.168E-02          0.00        C      7 U[11]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -27322,10 +27322,10 @@ All cycle   shift/esd            0.30E-01       0.56E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    30.00     0.00     0.00    50.00    40.00    40.00    30.00    60.00    40.00
+ Reversals    50.00     0.00     0.00    50.00     0.00     0.00    80.00    80.00    40.00    50.00    50.00    60.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  31.52 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  45.65 for all parameters.
 
 
  Shift
@@ -32945,7 +32945,7 @@ All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.5           0.10E+03
 All cycle   shift/esd            0.30E-01       0.35E-01       0.10E+05
 All cycle   Min function          0.0           0.95E+04       0.10E+16
-Inter cycle R-factor             -5.0           0.39E-03       0.10E+03
+Inter cycle R-factor             -5.0           0.38E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.38E-03       0.10E+03
 Inter cycle shift/esd            -10.           0.49E-01       0.10E+05
 Inter cycle Min function          0.0            2.1           0.10E+16
@@ -33356,7 +33356,7 @@ Mean C-C su =   0.0023
 #ANALYSE                                                                                                                                                                                                                                                        
 
  Slope, intercept and Cc of plot = -0.808E-02  1.54    -0.138                                                                                                                                                                                                   
-Slope=       -0.008 Intercept =       1.539 C-Coef=      -0.138                                                                                                                                                                                                 
+ Slope=       -0.008 Intercept =       1.539 C-Coef=      -0.138                                                                                                                                                                                                
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -33678,7 +33678,7 @@ LS-scale=  4.629   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- S/ESD     1           1             0.012      0.6E+03    0.827E-02          1.45                          SCALE   
+ S/ESD     1           1             0.012      0.6E+03    0.827E-02          1.46                          SCALE   
  SRATIO    2           2            0.0002     -0.2E+03    0.239E-03          0.81        C      1 X       
  S/ESD     3           3           -0.0002      0.3E+02    0.147E-03         -1.35        C      1 Y       
  SRATIO    4           4            0.0001      0.8E+02    0.124E-03          0.66        C      1 Z       
@@ -33723,7 +33723,7 @@ LS-scale=  4.629   Wilson Scale=  4.723
  S/ESD    44          44            0.0017     -0.1E+03    0.657E-03          2.55        C      5 U[23]   
  SRATIO   45          45            0.0002     -0.5E+02    0.674E-03          0.28        C      5 U[13]   
  SRATIO   46          46            0.0003     -0.4E+02    0.672E-03          0.39        C      5 U[12]   
- SRATIO   47          47            0.0000      0.3E+04    0.213E-03          0.08        C      6 X       
+ SRATIO   47          47            0.0000      0.2E+04    0.213E-03          0.08        C      6 X       
  S/ESD    48          48           -0.0002     -0.2E+03    0.151E-03         -1.44        C      6 Y       
  S/ESD    49          49           -0.0002      0.8E+03    0.134E-03         -1.67        C      6 Z       
  S/ESD    50          50            0.0010     -0.5E+03    0.776E-03          1.35        C      6 U[11]   
@@ -33766,8 +33766,8 @@ LS-scale=  4.629   Wilson Scale=  4.723
  SRATIO   89          89           -0.0001      0.5E+02    0.143E-03         -0.52        CL    10 U[23]   
  SRATIO   90          90           -0.0002      0.6E+03    0.180E-03         -0.97        CL    10 U[13]   
  S/ESD    91          91            0.0002     -0.3E+03    0.166E-03          1.42        CL    10 U[12]   
- SRATIO   92          92             0.001      0.1E+05    0.138E-02          0.50                          ELEMENT   1
- SRATIO   92          92             0.001      0.1E+05    0.138E-02          0.50                          ELEMENT   2
+ SRATIO   92          92             0.001      0.8E+04    0.138E-02          0.50                          ELEMENT   1
+ SRATIO   92          92             0.001      0.8E+04    0.138E-02          0.50                          ELEMENT   2
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             88.
                                                 for          92 parameters
@@ -34237,11 +34237,11 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    4           4            0.0000     -0.1E+02    0.121E-03          0.00        C      1 Z       
+ SRATIO    4           4            0.0000     -0.9E+01    0.121E-03          0.00        C      1 Z       
  SRATIO   65          65            0.0000     -0.1E+03    0.249E-03          0.00        C      8 X       
  SRATIO   91          91            0.0000      0.7E+01    0.161E-03          0.01        CL    10 U[12]   
- SRATIO   92          92             0.000      0.4E+01    0.135E-02          0.00                          ELEMENT   1
- SRATIO   92          92             0.000      0.4E+01    0.135E-02          0.00                          ELEMENT   2
+ SRATIO   92          92             0.000      0.5E+01    0.135E-02          0.00                          ELEMENT   1
+ SRATIO   92          92             0.000      0.5E+01    0.135E-02          0.00                          ELEMENT   2
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -34872,7 +34872,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.23E-03       0.10E+05
+All cycle   shift/esd            0.30E-01       0.22E-03       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -34910,10 +34910,10 @@ All cycle   shift/esd            0.30E-01       0.23E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    60.00    80.00    60.00    90.00    90.00    60.00   100.00    80.00    90.00
+ Reversals    50.00     0.00     0.00    70.00    80.00    60.00    90.00    90.00    70.00   100.00    80.00    80.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  78.26 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  79.35 for all parameters.
 
 
  Shift
@@ -35095,18 +35095,18 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   82          82            0.0000     -0.1E+02    0.103E-02          0.00        C      9 U[12]   
+ SRATIO    1           1             0.000     -0.3E+01    0.808E-02          0.00                          SCALE   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
                               The mean abs(shift/su) =           0.000
- The largest (shift/esd) =      0.00, for Parameter   69, C8U[22]
+ The largest (shift/esd) =      0.00, for Parameter   67, C8Z
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.85E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.77E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -35144,7 +35144,7 @@ All cycle   shift/esd            0.30E-01       0.85E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    50.00    90.00     0.00    80.00    90.00    50.00   100.00    30.00    80.00
+ Reversals   100.00     0.00     0.00    80.00    70.00     0.00    70.00    70.00    70.00    80.00    50.00    60.00
 
 
  Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  61.96 for all parameters.
@@ -35329,10 +35329,9 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   43          43            0.0000     -0.7E+01    0.744E-03          0.00        C      5 U[33]   
- SRATIO   45          45            0.0000     -0.7E+01    0.656E-03          0.00        C      5 U[13]   
- SRATIO   56          56            0.0000     -0.3E+01    0.404E-03          0.00        C      7 X       
- SRATIO   79          79            0.0000     -0.6E+01    0.958E-03          0.00        C      9 U[33]   
+ SRATIO   43          43            0.0000     -0.4E+01    0.744E-03          0.00        C      5 U[33]   
+ SRATIO   57          57            0.0000      0.4E+01    0.183E-03          0.00        C      7 Y       
+ SRATIO   82          82            0.0000      0.1E+02    0.103E-02          0.00        C      9 U[12]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -35343,7 +35342,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.63E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.58E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -35381,10 +35380,10 @@ All cycle   shift/esd            0.30E-01       0.63E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    30.00    80.00     0.00    80.00    90.00    90.00    80.00    50.00    90.00
+ Reversals    50.00     0.00     0.00    30.00    60.00     0.00    70.00    50.00    80.00    70.00    50.00    50.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  65.22 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  51.09 for all parameters.
 
 
  Shift
@@ -35563,6 +35562,12 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
+ Block   1
+        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
+
+ SRATIO   35          35            0.0000      0.3E+01    0.493E-03          0.00        N      4 U[23]   
+ SRATIO   51          51            0.0000     -0.6E+01    0.746E-03          0.00        C      6 U[22]   
+
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
                                  The rms (shift/su)  =           0.000
@@ -35572,7 +35577,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.56E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.59E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -35610,10 +35615,10 @@ All cycle   shift/esd            0.30E-01       0.56E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals     0.00     0.00     0.00    30.00    20.00     0.00    70.00    60.00    60.00    80.00    60.00    50.00
+ Reversals     0.00     0.00     0.00    40.00    40.00     0.00    80.00    60.00    60.00    40.00    80.00    80.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  46.74 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  52.17 for all parameters.
 
 
  Shift
@@ -35795,18 +35800,9 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO    5           5            0.0000      0.3E+01    0.787E-03          0.00        C      1 U[11]   
- SRATIO    6           6            0.0000      0.1E+02    0.727E-03          0.00        C      1 U[22]   
- SRATIO   17          17            0.0000      0.4E+01    0.483E-03          0.00        N      2 U[23]   
- SRATIO   19          19            0.0000      0.5E+01    0.504E-03          0.00        N      2 U[12]   
- SRATIO   23          23            0.0000     -0.4E+01    0.798E-03          0.00        C      3 U[11]   
- SRATIO   25          25            0.0000     -0.6E+01    0.759E-03          0.00        C      3 U[33]   
- SRATIO   28          28            0.0000      0.5E+01    0.679E-03          0.00        C      3 U[12]   
- SRATIO   36          36            0.0000     -0.3E+01    0.604E-03          0.00        N      4 U[13]   
+ SRATIO    5           5            0.0000     -0.5E+01    0.787E-03          0.00        C      1 U[11]   
+ SRATIO   60          60            0.0000     -0.3E+01    0.941E-03          0.00        C      7 U[22]   
  SRATIO   62          62            0.0000     -0.5E+01    0.805E-03          0.00        C      7 U[23]   
- SRATIO   64          64            0.0000     -0.2E+02    0.113E-02          0.00        C      7 U[12]   
- SRATIO   73          73            0.0000      0.1E+02    0.780E-03          0.00        C      8 U[12]   
- SRATIO   77          77            0.0000     -0.6E+01    0.947E-03          0.00        C      9 U[11]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          92 parameters
@@ -35817,7 +35813,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
 All cycle   Rw                    0.0            3.7           0.10E+03
-All cycle   shift/esd            0.30E-01       0.57E-04       0.10E+05
+All cycle   shift/esd            0.30E-01       0.59E-04       0.10E+05
  Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
 
 
@@ -35855,10 +35851,10 @@ All cycle   shift/esd            0.30E-01       0.57E-04       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals   100.00     0.00     0.00     0.00    30.00     0.00    50.00    10.00    20.00    30.00    30.00    20.00
+ Reversals     0.00     0.00     0.00    30.00    40.00     0.00    90.00    90.00    70.00    90.00    80.00    90.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  22.83 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  63.04 for all parameters.
 
 
  Shift

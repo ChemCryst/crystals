@@ -3634,7 +3634,7 @@ C COMPUTE CORRELLATION COEFFICIENT
        call xprvdu(ncvdu, 3,0)
       if (imode .eq. 3) then
        write(cmon,'(3(a,f12.3))') 
-     1 'Slope= ', slope, ' Intercept =', rinter, ' C-Coef=', correl
+     1 ' Slope= ', slope, ' Intercept =', rinter, ' C-Coef=', correl
        call xprvdu(ncvdu, 1,0)
         if (issprt.eq.0) write (ncwu,'(A)') cmon(1)
       endif

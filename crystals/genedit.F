@@ -248,6 +248,8 @@ C
       IF ( NGRP .LE. 0 ) GO TO 8960
 C
       ITYPE = ISTORE(ICOMBL)
+      idjwtype = istore(icombl+1)
+      idjwlines = istore(icombl+2)
 C
       IF ( ITYPE .EQ. 1 ) THEN
         IDTYPE = IKYTYP
@@ -273,10 +275,23 @@ C RICJUN99 - The XPRVDU call was only outputting one line.
 C This does not allow for format statements with linefeeds in.
 C I don't see how we can handle that really.
       NLINES = 1 + ( LIM2 - LIM1 ) / LENGRP
+c overall, integer and reals all have ITYPE =3, IDTYPE = 1
+c the correct format statement is loaded, but for reals
+c the first two items must be output as integer
+
+c      write(cmon,*)'ITYPE',itype, idtype, idjwtype, nlines,
+c     1 IDJWLINES
+c      call xprvdu(ncvdu, 1 ,0)
+c      write(cmon,*)'LIM1',lim1, lim2, lengrp, iof, iend
+c      call xprvdu(ncvdu, 1 ,0)
+c      write(cmon,'(a)') cform(itype)
+c      call xprvdu(ncvdu, 1 ,0)
+
+
       DO I = 1,NLINES
         WRITE(CMON(I),'(A)')' ' !Clear CMON, just in case.
       END DO
-      IF ( ( IDTYPE .EQ. 1 ) .OR. ( IDTYPE .EQ. 3 ) ) THEN
+      IF ( ( IDjwTYPE .EQ. 1 ) .OR. ( IDjwTYPE .EQ. 3 ) ) THEN
         WRITE ( NCAWU , CFORM(ITYPE) , ERR = 8950 ) ( ( ISTORE(J) ,
      2                              J = I + IOFF , I + IEND ) ,
      3                              I = LIM1 , LIM2 , LENGRP )
@@ -284,14 +299,16 @@ C I don't see how we can handle that really.
      2                              J = I + IOFF , I + IEND ) ,
      3                              I = LIM1 , LIM2 , LENGRP )
         CALL XPRVDU(NCVDU, NLINES ,0)
-      ELSE IF ( IDTYPE .EQ. 2 ) THEN
-        WRITE ( NCAWU , CFORM(ITYPE) , ERR = 8950 ) ( ( STORE(J) ,
-     2                              J = I + IOFF , I + IEND ),
-     3                              I = LIM1 , LIM2 , LENGRP )
-        WRITE ( CMON, CFORM(ITYPE) , ERR = 8950 ) ( ( STORE(J) ,
-     2                              J = I + IOFF , I + IEND ),
-     3                              I = LIM1 , LIM2 , LENGRP )
-        CALL XPRVDU(NCVDU, NLINES ,0)
+
+      ELSE IF ( IDjwTYPE .EQ. 2 ) THEN
+        do I = LIM1 , LIM2 , LENGRP
+        WRITE ( NCAWU , CFORM(ITYPE) , ERR = 8950 ) 
+     2  istore(i+iof),istore(i+iof+1),(STORE(J), J=I+IOFF+2,I+IEND)
+        WRITE ( CMON , CFORM(ITYPE) , ERR = 8950 ) 
+     2  istore(i+iof),istore(i+iof+1),(STORE(J), J=I+IOFF+2,I+IEND)
+        CALL XPRVDU(NCVDU, IDJWLINES ,0)
+        enddo
+
       ENDIF
       GO TO 8000
 C
