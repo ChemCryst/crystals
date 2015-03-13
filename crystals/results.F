@@ -8407,15 +8407,11 @@ C           Unpack HKL
            ML=FLOAT(NINT(D/256.))
            MK=D-ML*256.
 
-c--check if list 1 is available
-           snthl2=0.
-           if(l1s.gt. zero) then
 c--calculate (sin(theta)/lambda)**3
-      snthl2=mh*mh*store(l1s)+mk*mk
-     2 *store(l1s+1)+ml*ml*store(l1s+2)+mk
-     3 *ml*store(l1s+3)+mh*ml*store(l1s+4)
-     4 +mh*mk*store(l1s+5)
-           endif
+           snthl2=mh*mh*store(l1s)+mk*mk
+     2     *store(l1s+1)+ml*ml*store(l1s+2)+mk
+     3     *ml*store(l1s+3)+mh*ml*store(l1s+4)
+     4     +mh*mk*store(l1s+5)
            snthl1 = sqrt(snthl2)
            snthl3 = snthl1*snthl1*snthl1
 c
@@ -8434,12 +8430,10 @@ c           fcka is average of Fc
 c           FckD is difference of Fc
 c----       default is to accumulate for a Difference plot
             ston=abs(fckd/sigmad)
-c            ston=abs(fckd)
            else
 c           quotient plot
 c           Qc and Qo
             ston=abs(fckd/(2.*fcka*sigmaq))
-c            ston=abs(fckd*foka/fcka)
            end if
 C
 c          add data point
@@ -8488,13 +8482,14 @@ c
          CALL XPRVDU (NCVDU, 8, 0)
 c
          do i=1,nbin
-            bbin(i)=bbin(i)*yscale
-c      write(123,'(2f15.6)') float(ibin(i)), bbin(i)
-
+          bbin(i)=bbin(i)*yscale
+c      write(123,'(i4,2f15.6)') i, float(ibin(i)), bbin(i)
+          if(ibin(i) .gt. 0) then  
             WRITE (CMON,'(A,4F15.6)') '^^PL DATA ',
      1      range*float(i-1), float(ibin(i)), 
      2      range*float(i-1), bbin(i)
             CALL XPRVDU (NCVDU, 1, 0)
+           endif
          enddo
 
 C -- FINISH THE GRAPH DEFINITION

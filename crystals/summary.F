@@ -3661,7 +3661,7 @@ c     check if thetamax is set
     
 c
       rmax = sin(thetamax*dtr)/wave    ! maximum permitted resolution
-      rmax = rmax*rmax
+      rmax = rmax*rmax*rmax
 
       DO I = 1,110
         KSIGS(I) = 0
@@ -3701,8 +3701,9 @@ c
          JSIGS = 3
          IF ( SIGNOI .LT. 10 ) JSIGS = 2
          IF ( SIGNOI .LT. 3 ) JSIGS = 1
- 
-         MSIG = 1 + NINT( STORE(M6+16) * bin / rmax )
+         stol3 = sqrt(store(m6+16))
+         stol3=stol3*stol3*stol3
+         MSIG = 1 + NINT( stol3 * bin / rmax )
          MSIG = MAX ( 1,MSIG )
          MSIG = MIN ( nbin,MSIG )
          LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
@@ -3723,7 +3724,7 @@ c         nmax=max(nmax,LSIGS(MSIG,JSIGS))
             if((sios(I) .lt. slim).and.(sios(i).gt. 0.)) then
             write(cmon,'(A,f4.1,a,f6.2)')
      1      '<I/sigma(I)> falls below', slim,
-     2      ' at (sintheta/lambda)^2=',(float(i)*rmax/bin)
+     2      ' at (sintheta/lambda)^3=',(float(i)*rmax/bin)
             CALL XPRVDU(NCVDU, 1,0)
             slim=slim-1.
             endif
@@ -3742,7 +3743,7 @@ c      nmax=max(1,nmax)
 c        WRITE(CMON,'(A,10(/A))')
         WRITE(CMON,'(a/a/a,i6,/a,/a,i6,a,5(/a))')
      1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
-     2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=4',
+     2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**3'' NSERIES=4',
      3  '^^PL LENGTH=',nbin,
      4  '^^PL YAXIS TITLE ''Frequency''',
      5  '^^PL YAXISRIGHT ZOOM 0 ',nint(smax),
@@ -3756,6 +3757,11 @@ c        WRITE(CMON,'(A,10(/A))')
         CALL XPRVDU(NCVDU, 10,0)
 
         DO I = 1,nbin
+          point = (float(I)*rmax/bin)
+          point=exp((2.0*log(point))/3.)
+          write(cmon,'(a,f10.3)') 
+     1    '^^PL LABEL ', point
+          call xprvdu(ncvdu, 1,0)
           WRITE(CMON,'(A,4(F7.3,1X,I8,1X))')
      1     '^^PL DATA ',((float(I)*rmax/bin),LSIGS(I,J),J=1,3),
      2     (float(I)*rmax/bin),nint(sios(I))

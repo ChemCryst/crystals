@@ -106,14 +106,14 @@
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'You are looking at the distribution of I/sigma(I) against '               
 ^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI '(sin(theta)/lambda)**2'                                                   
+^^WI '(sin(theta)/lambda)**3'                                                   
 ^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
 ^^WI     @ 4,2 PLOTWINDOW _VSIGRES NROWS=20 NCOLS=64                            
 ^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
-^^WI        ITEM _SDELA '&Reject data: rho > _X' 'RHOMIT1_N_X'                  
+^^WI        ITEM _SDELA '&Reject data: rho > _L' 'RHOMIT1_N_L'                  
 ^^WI      ENDDEFINEMENU                                                         
 ^^WI    }                                                                       
 ^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3                 
@@ -732,7 +732,7 @@
 %      BLOCK    %XC_REF                                                         
 %        EVALUATE LOOPCOUNTER = LOOPEND                                         
 %      END BLOCK                                                                
-%      BLOCK    %RHOMIT                                                         
+%      BLOCK    %RHOMIT1                                                         
 %        GET SILENT NOSTORE REAL ' ' ' '                                        
 %        EVALUATE NEWRHO = VALUE                                                
 %        EVALUATE LNEWRAT = FALSE                                               

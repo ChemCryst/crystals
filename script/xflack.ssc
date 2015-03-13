@@ -363,7 +363,7 @@ Starting calculation
 %        FINISH
 %     END BLOCK
 %     BLOCK  %SAVEVDO%
-^^CO SET _VDO SAVE 800 600 Do-Ds_
+^^CO SET _VDO SAVE 800 600 Signal-Noise_
 %     END BLOCK
 %     BLOCK  %SAVEVAO%
 ^^CO SET _VAO SAVE 800 600 Do-Ao_
