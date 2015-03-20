@@ -8929,21 +8929,21 @@ C
         if(issprt.eq.0) write(ncwu,'(//)')
         CALL outcol (3)
 c
+        WRITE (CMON,'(6x,a,2f10.3)') ' Flack Parameter & su',
+     1   STORE(L30GE+6),STORE(L30GE+7)
+        CALL XPRVDU (NCVDU, 1, 0)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A,a)') CMON(1)(:50),'@ '
+c
         if (iweight.eq.1) then
             CWEIGHT='Least Squares'
         else
             CWEIGHT='counting statistics'
         endif
-        write(cmon,'(a,a,a)')' Using ', cweight(:nctrim(cweight)),
+        write(cmon,'(/a,a,a)')' Using ', cweight(:nctrim(cweight)),
      1  ' weights'
-        call xprvdu(ncvdu,1,0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')
-     1  CMON(1)(:nctrim(cmon(1)))
-c
-        WRITE (CMON,'(6x,a,2f10.3)') ' Flack Parameter & su',
-     1   STORE(L30GE+6),STORE(L30GE+7)
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A,a)') CMON(1)(:50),'@ '
+        call xprvdu(ncvdu,2,0)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)')
+     1  CMON(2)(:nctrim(cmon(2)))
 c
 c
         WRITE (CMON,'(6x,a,2f10.3)') ' Hooft Parameter & su',
@@ -8969,7 +8969,7 @@ c
      1  ' (Using', nfofc,' reflections. '
         CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:50),'£ ',
-     1  CMON(1)(52:)
+     1  CMON(1)(52:nctrim(cmon(1)))
 c
 c
         write(cmon,'(/,a,I6,A,f5.1,a)')' Histogram re-weighted,',
@@ -8984,7 +8984,7 @@ c
      1  ' (Ratio of Averages) '
         CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,2x,a)') CMON(1)(:50),
-     1  CMON(1)(52:)
+     1  CMON(1)(52:nctrim(cmon(2)))
 c
         WRITE (CMON,'(1x,a,2f10.3)') 'Average of Ratios (x) & su',
      1   fmean, sigxbar
@@ -8998,7 +8998,7 @@ c
      1  ' (corrected for npp, *',yslope,')'
         CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,a,a)') CMON(1)(:50),'% ',
-     1  CMON(1)(52:)
+     1  CMON(1)(52:nctrim(cmon(2)))
 c
         CALL outcol (1)
 c

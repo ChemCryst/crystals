@@ -5144,7 +5144,7 @@ POLARITY AND ENANTIOPOLE REFINEMENT TEST
 
 
  No of Reflections processed =    904         No of Friedel Pairs =    314
- No of Friedel Pairs found =      314 No of Friedel Pairs used  =      300
+ No of Friedel Pairs found =      314 No of Friedel Pairs used  =      224
  No of Unpaired Reflections  =    178
  No of Centric Reflections   =     98
      Friedel Coverage        =    63 %
@@ -5164,58 +5164,58 @@ Do    43     7     7    11    15    15    14    13    14    20    27    17    14
 Dc    30     4     7     7    11    11    11    17    19    26    29    30    19    22     9    13     5     2     5     6    31
  n -3.33 -3.00 -2.67 -2.33 -2.00 -1.67 -1.33 -1.00 -0.67 -0.33  0.00  0.33  0.67  1.00  1.33  1.67  2.00  2.33  2.67  3.00  3.33
 
- Reflection Filters:  filter_1=-1.0000  filter_2= 1.0000  filter_3= 2.0000  filter_4= 0.0010
+ Reflection Filters:  filter_1= 0.5000  filter_2= 1.0000  filter_3= 2.0000  filter_4= 0.0010
 
- Continuing Calculations with     300 reflections
- Normal Probability Plot for    241 reflections
- Reduced Chisq=  1.4454
- Gradient for zero intercept =               1.315
-  Slope, intercept and Cc (R) of NPP Plot =  1.318  0.253  0.999                                                                                                                                                                                                
+ Continuing Calculations with     224 reflections
+ Normal Probability Plot for    180 reflections
+ Reduced Chisq=  1.5038
+ Gradient for zero intercept =               1.377
+  Slope, intercept and Cc (R) of NPP Plot =  1.377  0.162  0.999                                                                                                                                                                                                
 
  The slope should be unity and the intercept zero                                                                                                                                                                                                               
 
- Outliers in Normal Probability Plot at delta(Z) > 0.29
+ Outliers in Normal Probability Plot at delta(Z) > 0.28
     Indices       Ds        Do        Zo         Zc     /Zc-Zo/
-   1   3   4    20.736   130.004    -4.668    -3.618     1.051
-   0   2   1   176.873   389.433    -4.201    -3.143     1.058
-   0   6   5    -9.745     9.376    -3.953    -2.903     1.050
-   1   4   2   -10.109    60.344    -3.677    -2.737     0.940
-   1   2   4    -9.966    24.273    -3.338    -2.608     0.730
-   3   3   1   138.404   245.265    -3.259    -2.501     0.757
-   3   6   3    12.741    26.543    -3.178    -2.410     0.768
-   0   1   1   116.170   144.266    -2.962    -2.330     0.631
-   2   5   4    -2.874     8.331    -2.854    -2.259     0.596
-   4   6   1    11.796    43.335    -2.641    -2.194     0.447
-   2   4   4   -35.052    -2.289    -2.555    -2.135     0.420
-   1   1   4   -31.309     5.715    -2.440    -2.080     0.360
-   1   6   5    -4.258     6.879    -2.405    -2.029     0.376
-   0   4   2   101.713   123.879    -2.383    -1.981     0.403
-   4   4   1    -3.602    38.494    -2.299    -1.936     0.364
-   0   2   2    -3.209    -8.850     3.207     2.836     0.371
-  -1   5   1    96.452    44.485     3.337     2.916     0.421
-  -1   3   2    32.412    -3.261     3.372     3.007     0.365
-  -1   2   1  -170.242  -280.667     3.457     3.114     0.344
-  -2   8   2    -2.704   -14.282     3.727     4.123     0.396
+   1   3   4    20.736   130.004    -4.668    -3.755     0.913
+   0   2   1   176.873   389.433    -4.201    -3.245     0.956
+   0   6   5    -9.745     9.376    -3.953    -2.985     0.968
+   1   4   2   -10.109    60.344    -3.677    -2.805     0.873
+   1   2   4    -9.966    24.273    -3.338    -2.664     0.674
+   3   3   1   138.404   245.265    -3.259    -2.548     0.711
+   3   6   3    12.741    26.543    -3.178    -2.448     0.730
+   0   1   1   116.170   144.266    -2.962    -2.360     0.601
+   2   5   4    -2.874     8.331    -2.854    -2.282     0.572
+   4   6   1    11.796    43.335    -2.641    -2.211     0.430
+   2   4   4   -35.052    -2.289    -2.555    -2.145     0.410
+   1   1   4   -31.309     5.715    -2.440    -2.085     0.356
+   1   6   5    -4.258     6.879    -2.405    -2.028     0.377
+   0   4   2   101.713   123.879    -2.383    -1.975     0.409
+   2   6   3    23.766    -4.753     3.014     2.683     0.330
+   0   2   2    -3.209    -8.850     3.207     2.771     0.436
+  -1   5   1    96.452    44.485     3.337     2.871     0.466
+  -1   3   2    32.412    -3.261     3.372     2.987     0.385
+  -1   2   1  -170.242  -280.667     3.457     3.128     0.329
+  -2   8   2    -2.704   -14.282     3.727     4.079     0.351
 
-     20 outliers in Normal Probability Plot at delta(Z) >  0.29
+     20 outliers in Normal Probability Plot at delta(Z) >  0.28
 
 
 
- Difference Calcuation for     300 reflections
+ Difference Calcuation for     224 reflections
 
 
  Principal Componenet Analysis                                                                                                                                                                                                                                  
- Major root,Components,angle         6201.      0.672      0.741     47.811                                                                                                                                                                                     
- Minor root,Components,angle          315.     -0.741      0.672    -42.189                                                                                                                                                                                     
+ Major root,Components,angle         6123.      0.679      0.734     47.231                                                                                                                                                                                     
+ Minor root,Components,angle          259.     -0.734      0.679    -42.769                                                                                                                                                                                     
 
- Gradient for zero intercept =                0.986
+ Gradient for zero intercept =                0.987
                               Slope, sigma =  0.988  0.018
-                          Intercept, sigma = -0.002  0.001
+                          Intercept, sigma = -0.001  0.001
                      Post-Refinement Flack =  0.006  0.009
 
- Correlation coeff and r^2 of Scatter Plot =  0.904  0.817
+ Correlation coeff and r^2 of Scatter Plot =  0.919  0.844
 
- Computing Histogram starting with    300 reflections
+ Computing Histogram starting with    224 reflections
 
 
                               Reflection Distributions
@@ -5227,45 +5227,46 @@ I represents Fsquared
 
           Number +ve   mean(deltaI)   rms(deltaI)   Number -ve   mean(deltaI)   rms(deltaI)
 For Io
-             136        25.8600        57.3928          164       -24.6396       50.2153
+             109        30.5708        63.7365          115       -29.1735       56.3519
 For Ic
-             149        20.5433        42.3914          151       -18.7895       38.3655
+             110        27.1694        49.3112          114       -24.2412       44.1298
 
 
 Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
--+      21     9.46    -6.07   |++     114    29.11    24.88
+-+      10    12.13   -10.93   |++      98    32.76    28.66
     ---------------------------|----------------------------
---     130   -27.63   -20.84   |+-      35   -12.82     6.42
+--     104   -31.63   -25.52   |+-      12    -5.48    14.97
 
 
 No of reflections for which delta(Io) has same sign as delta(Ic)
 Same sign   Opposite sign
-     244            56
+     202            22
 
            Histogram distributions (deciles, octiles, quartiles)
       1/10      1/8       1/4       mean     3/4        7/8       9/10
-     -1.15     -0.91     -0.38     -0.02      0.33      0.98      1.44
+     -0.66     -0.54     -0.31     -0.03      0.20      0.46      0.48
 
- Initial mean Flack(x) =     -0.0044
+ Initial mean Flack(x) =     -0.0043
    Final mean Flack(x) =     -0.0035 and LSQ Flack(x)      -0.0035
-           Internal su =      0.1401
-           External su =      0.1248
- Number of reflections with probability greater than  0.0010 =    223
+           Internal su =      0.1407
+           External su =      0.1201
+ Number of reflections with probability greater than  0.0010 =    200
 
 
 
- Using counting statistics weights
 
        Flack Parameter & su     0.009     0.028   @ 
-       Hooft Parameter & su    -0.004     0.012   $ 
-           Hole-in-one & su    -0.003     0.009     
-    Parsons Difference & su     0.006     0.009   £  (Using   300 reflections.                                                                                                                                                                                   
 
- Histogram re-weighted,   223 reflections,  71.0% within -.5 to 1.5
-    Parsons Difference & su    -0.003     0.013      (Ratio of Averages)                                                                                                                                                                                         
+ Using counting statistics weights
+       Hooft Parameter & su    -0.004     0.013   $ 
+           Hole-in-one & su    -0.004     0.009     
+    Parsons Difference & su     0.006     0.009   £  (Using   224 reflections.
+
+ Histogram re-weighted,   200 reflections,  85.3% within -.5 to 1.5
+    Parsons Difference & su    -0.003     0.014      (Ratio of Avera
  Average of Ratios (x) & su    -0.003     0.008   & 
- Average of Ratios (x) & su    -0.003     0.011   %  (corrected for npp, * 1.32)                                                                                                                                                                                 
+ Average of Ratios (x) & su    -0.003     0.012   %  (corrected for 
 
 
 @  Flack,1983, Acta Cryst A39, 876-881
@@ -5281,16 +5282,16 @@ $  Hooft et al, 2008, J Appl Cryst, 41, 96-103
  P3(correct)     1.0000   i.e. 0.100000E+01                                     
  P3(rac-twin)    0.0000   i.e. 0.000000E+00                                     
  P3(inverse)     0.0000   i.e. 0.000000E+00                                     
- G              1.0087                                                          
- G S.U.         0.0244                                                          
+ G              1.0086                                                          
+ G S.U.         0.0255                                                          
 
 
  Excluded reflections - A reflection may fail more than one test
 
- /Ds/ < -1.00  sig(Do)                   0
+ /Ds/ < 0.50  sig(Do)                   85
  As < 1.00  sig(Ao)                      9
  /Do/ > 2.00  2Ds(max)                   0
- Weight < 0.00100                       77
+ Weight < 0.00100                       24
  Ratio > 2.50000                         8
 #END                                                                                                                                                                                                                                                            
 
