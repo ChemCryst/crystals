@@ -4696,11 +4696,11 @@ SumFo/SumFc=  0.914   SumFoFc/SumFc^2=  0.913   SumwFoFc/SumwFc^2=  0.913
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =    0.335    100*(<Fo>-<Fc>)/<Fo> =     0.55                                                                                                                                                                                                         
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      10994 Physical writes      10071 Cache hits     197079
- Cache hit distribution   179215   12721    2014     490     484     154
- Cache hit distribution      157     175     232     301     152     173
- Cache hit distribution      176     124     120      52      47      51
- Cache hit distribution       71      53      39      22      21      35
+ Physical reads      11016 Physical writes      10071 Cache hits     197069
+ Cache hit distribution   179212   12701    2018     484     483     144
+ Cache hit distribution      146     190     221     297     170     171
+ Cache hit distribution      140     170     122      53      58      39
+ Cache hit distribution       80      47      45      22      25      31
 
 
           : Job ends ok       with     0 warnings and     0 errors
