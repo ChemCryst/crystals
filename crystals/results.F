@@ -7202,6 +7202,13 @@ C
 
       DATA CFAILN(5,1) /'Ratio > '/
       DATA CFAILN(5,2) /' '/
+	  
+#if defined (_HOL_)
+      DATA IFLAC/4HFLAC/
+#else
+      DATA IFLAC/'FLAC'/
+#endif
+
 C
 C      set packing constants
       PARAMETER  (NPAK=256)
@@ -9332,7 +9339,7 @@ c
      1 f6.1, i6, f6.1, 3f5.2)
       endif
 c now update LIST 39
-      iflac = 'FLAC'
+c      iflac = 'FLAC'
       if (n39f.gt.0) then
        m39f = l39f
        do i=1,n39f
