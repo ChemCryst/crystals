@@ -1986,6 +1986,12 @@ C
       DATA CNAME/ 'H','K','L','Fo','Weight','Fc',6*' ',
      1 'Sigma',3*' ','Sth/L**2','Fo/Fc',17*' '/
 C
+#if defined (_HOL_)
+      DATA IFLAC/4HFLAC/
+#else
+      DATA IFLAC/'FLAC'/
+#endif
+
 CDJW08      DATA MAX11 /16777216/
 C
 c      DIMENSION X(N6D)
@@ -2310,7 +2316,7 @@ c      determinant
                 if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
             endif
 c-----      update list 39 - 
-            iflac = 'FLAC'
+c            iflac = 'FLAC'
             m39f=l39f
             do i=1,n39f
               if (istore(m39f) .eq. iflac) then
