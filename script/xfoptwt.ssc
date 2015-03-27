@@ -50,7 +50,7 @@
 ^^WI         @ 1,1 STATIC XFW1                                                  
 ^^WI 'To choose the best scheme: (1) Smooth fit (red,top), no local maxima.'    
 ^^WI         @ 2,1 STATIC XFW2                                                  
-^^WI '(2) Weighted residual (blue,bottom) should be flat and average ~= 1.0'    
+^^WI '(2) Weighted residual (green,bottom) should be flat and average ~= 1.0'    
 ^^WI         @ 3,1 STATIC XFW3                                                  
 ^^WI '(3) Low number of outliers. (4) Favour lower number of parameters.'       
 ^^WI       }                                                                    
