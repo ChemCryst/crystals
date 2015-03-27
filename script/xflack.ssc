@@ -322,6 +322,7 @@ Starting calculation
 %      IF IPUNCH .EQ. 2 THEN
 %       COPY '#RELEASE PUNCH flack.l16'
 %      END IF
+%      EVALUATE _BADNPP = 0
 %      TRANSFER '#TON  PLOT=YES ' //  -
        ' PUNCH = ' // CPUNCH TO CRYSTALS
 %      TRANSFER 'CONT TYPE  = ' //  CTYPE TO CRYSTALS
