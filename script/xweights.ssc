@@ -34,8 +34,8 @@ A SCRIPT to assist with the weighting of least squares refinement
 % END IF                                                                        
 ^^WI   }                                                                        
 ^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=8 ADDTOLIST                               
-^^WI         'Quasi-Unit' 'Statistical' 'Optimal Chebychev' 'Auto-statistical'        
-^^WI         'Chebychev(F)' 'Chebychev(Fsq)' NULL                                   
+^^WI         'Quasi-Unit' 'Statistical' 'Auto-statistical' 'Optimal Chebychev'  
+^^WI         'Chebychev(F)' 'Chebychev(Fsq)' NULL                               
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1                                          
 ^^WI   {                                                                        
 ^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT                                  
@@ -48,15 +48,15 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^CR                                                                            
 % IF ( LED23 ) THEN                                                             
 %  IF ( FTYPE .eq. 0 ) THEN                                                     
-^^CO SET XW_LIST SELECTION=1                                                    
+^^CO SET XW_LIST SELECTION=1                                                                
 %  ELSE                                                                         
 ^^CO SET XW_LIST SELECTION=2                                                    
 %  END IF                                                                       
 % ELSE                                                                          
 %  IF ( FTYPE .eq. 0 ) THEN                                                     
-^^CO SET XW_LIST SELECTION=5                                                    
-%  ELSE                                                                         
 ^^CO SET XW_LIST SELECTION=4                                                    
+%  ELSE                                                                       
+^^CO SET XW_LIST SELECTION=3                                              
 %  END IF                                                                       
 % END IF                                                                        
 %  LOOP                                                                         
@@ -83,13 +83,13 @@ STATISTICAL WEIGHTS
 quality data free from serious systematic error, and where there                
 the model is complete and well behaved.                                         
                                                                                 
-OPTIMAL CHEBYCHEV WEIGHTS                                                               
+OPTIMAL CHEBYCHEV WEIGHTS                                                       
       (w=function of residual)                                                  
-      This scheme is more flexible than the Auto-statistical.  
-It tries to compensate for errors in both the data and the model, and
-give optimal values for those parameters which are being refined.
-CRYSTALS tries to choose the optimal terms depending upon whether the 
-refinement is against F or Fsq
+      This scheme is more flexible than the Auto-statistical.                   
+It tries to compensate for errors in both the data and the model, and           
+give optimal values for those parameters which are being refined.               
+CRYSTALS tries to choose the optimal terms depending upon whether the           
+refinement is against F or Fsq                                                  
                                                                                 
 AUTO-STATISTICAL                                                                
       w= 1.0 / ( sigma^2 + (aP)^2 + bP ), P = (Fo + 2Fc)/3                      
@@ -99,15 +99,15 @@ AUTO-STATISTICAL
  approximately one and a flat analysis of variance across all ranges            
  of Fc.                                                                         
                                                                                 
-CHEBYCHEV(F)                                                                         
-       Explicitly instruct CRYSTALS to optimise terms for refinement
-against F.  May sometimes be useful for refinement against Fsq if the
-errors have an unusual distribution
-
-CHEBYCHEV(Fsq)                                                                         
-       Explicitly instruct CRYSTALS to optimise terms for refinement
-against Fsq.  May sometimes be useful for refinement against F if the
-errors have an unusual distribution
+CHEBYCHEV(F)                                                                    
+       Explicitly instruct CRYSTALS to optimise terms for refinement            
+against F.  May sometimes be useful for refinement against Fsq if the           
+errors have an unusual distribution                                             
+                                                                                
+CHEBYCHEV(Fsq)                                                                  
+       Explicitly instruct CRYSTALS to optimise terms for refinement            
+against Fsq.  May sometimes be useful for refinement against F if the           
+errors have an unusual distribution                                             
                                                                                 
 ANALYSIS OF RESIDUALS      w(Fo - Fc)**2 versus /Fc/                            
 In the table, examine the weighted residual                                     
@@ -166,14 +166,6 @@ routine work.
 %            BLOCK                                    %STATISTICAL%             
 %                COPY '#SCRIPT STATWT'                                          
 %            END BLOCK                                                          
-%            BLOCK                                    %OPTIMAL cHEBYCHEV%               
-%                IF FTYPE .EQ. 0 THEN                                           
-%% Fo refinement                                                                
-%                    COPY '#SCRIPT XFOPTWT'                                     
-%                ELSE                                                           
-%                    COPY '#SCRIPT XFSQWT'                                      
-%                END IF                                                         
-%            END BLOCK                                                          
 %            BLOCK                                   %AUTO-STAT%                
 %                COPY '#LIST 4'                                                 
 %                COPY 'SCHEME 17'                                               
@@ -182,12 +174,20 @@ routine work.
 %                COPY 'END'                                                     
 %                COPY '#SCRIPT XANAL'                                           
 %            END BLOCK                                                          
-%            BLOCK                                    %CHEBYCHEV(F)%  
+%            BLOCK                                    %OPTIMAL CHEBYCHEV%       
+%                IF FTYPE .EQ. 0 THEN                                           
+%% Fo refinement                                                                
+%                    COPY '#SCRIPT XFOPTWT'                                     
+%                ELSE                                                           
+%                    COPY '#SCRIPT XFSQWT'                                      
+%                END IF                                                         
+%            END BLOCK                                                          
+%            BLOCK                                    %CHEBYCHEV(F)%            
 %% Fo refinement                                                                
 %                    COPY '#SCRIPT XFOPTWT'                                     
 %            END BLOCK                                                          
-%%                                                                                
-%            BLOCK                                    %CHEBYCHEV(Fsq)%
+%%                                                                              
+%            BLOCK                                    %CHEBYCHEV(Fsq)%          
 %% Fsq refinement                                                               
 %                    COPY '#SCRIPT XFSQWT'                                      
 %            END BLOCK                                                          
