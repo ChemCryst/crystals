@@ -3048,6 +3048,7 @@ bool CcController::DoCommandTransferStuff()
            }
   #endif
 
+  #ifdef __WXINT__
 		    CR_EXCEPTION_INFO ei;
 			memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
 			ei.cb = sizeof(CR_EXCEPTION_INFO);
@@ -3064,7 +3065,7 @@ bool CcController::DoCommandTransferStuff()
 			  TCHAR szErrorMsg[256];
 			  crGetLastErrorMsg(szErrorMsg, 256);
 			}
-		   
+  #endif		   
 			// Manually terminate program
 //			ExitProcess(0);
 
