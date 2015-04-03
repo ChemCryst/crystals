@@ -72,6 +72,7 @@ class   CcController
     ~CcController();
      
     class MyException { public: MyException(){}; ~MyException(){}; };
+    class MyBadException { public: MyBadException(){}; ~MyBadException(){}; };
 
     void SendCommand( string command , bool jumpQueue = false);
     bool GetCrystalsCommand( char * line, bool & bWait);

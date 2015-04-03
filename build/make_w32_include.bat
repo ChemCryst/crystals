@@ -21,19 +21,18 @@ goto ALLDVF
 @
 @rem 
 :INW
-@if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib  shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
-@if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB% wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw%WXNUM%u_gl.lib  user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib  CrashRpt1402.lib shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw%WXNUM%u_gl.lib  CrashRpt1402.lib user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @set LIBS=%LIBS% rc.res
-@if "%CRDEBUG%" == "TRUE"     @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXLIB%\mswud /D"WXUSINGDLL"
-@if not "%CRDEBUG%" == "TRUE" @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXLIB%\mswu /D"WXUSINGDLL"
+@if "%CRDEBUG%" == "TRUE"     @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXLIB%\mswud /I..\crashrpt /D"WXUSINGDLL"
+@if not "%CRDEBUG%" == "TRUE" @set CDEF=/D"__WXINT__" /D"_GNUF77_" /I%WXWIN%\include /I%WXLIB%\mswu /I..\crashrpt /D"WXUSINGDLL"
 @if "%CROPENMP%" == "TRUE" @set COPENMP=/Qopenmp
 @if not "%CROPENMP%" == "TRUE" @set COPENMP=
 @set FDEF=/define:_%COMPCODE%_ /define:_INTELF77_
 @rem @set LD=xilink
 @set LD=ifort
 @set OUT=-out:
-@set OPT=/O2
-@rem @set OPT=/Zi
+@set OPT=/O2 /Zi
 @set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
 @set LDEBUG=/Zi
 @rem /debugtype:cv /pdb:none /incremental:no
@@ -42,13 +41,13 @@ goto ALLDVF
 @
 @set CC=cl
 @set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D_CRT_SECURE_NO_WARNINGS
-@set COPTS=/EHs  /W3 /nologo /c /TP /I..\gui /O2 /D"NDEBUG" /MD 
+@set COPTS=/EHs  /W3 /nologo /c /TP /I..\gui /O2 /Zi /Oy- /D"NDEBUG" /MD 
 @set CDEBUG=/EHs /W3 /nologo /c /TP /I..\gui /Od /D"DEBUG" /RTC1 /MDd /Z7  
 @set COUT=/Foobj\
 @
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /fp:source /nolink %COPENMP%
+@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /fp:source /Zi /Oy- /nolink %COPENMP%
 @set FNOOPT=/fpp /I..\crystals /MD /O0 /fp:source /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\

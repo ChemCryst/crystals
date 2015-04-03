@@ -696,6 +696,10 @@ using namespace std;
   CcThread * CcController::mCrystalsThread = nil;
 #endif
 
+#ifdef __WXINT__
+#include "CrashRpt.h"
+#endif
+
 #ifdef __WXMSW__
   #include <stdio.h>
 //  #include <direct.h>
@@ -1261,8 +1265,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
             }
             case kTSet:
             {
-              
-                // remove that token
+             // remove that token
                 tokenList.pop_front();
 
                 string name = string(tokenList.front());  // Get the name of the object
@@ -2447,10 +2450,17 @@ void CcController::ReLayout()
   int CrystalsThreadProc( void * arg )
 #endif
 {
+#if defined (__WXINT__) 
+    crInstallToCurrentThread2(0);
+#endif
+
+  // Unset exception handlers before exiting the thread
     LOGSTAT("FORTRAN: Grabbing Crystals_Thread_Alive mutex");
     m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
     LOGSTAT("FORTRAN: Posting wait_for_thread_start semaphore");
     m_wait_for_thread_start.Signal(true);
+
+
 
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
@@ -2466,15 +2476,27 @@ void CcController::ReLayout()
     }
     catch (CcController::MyException ccme )
     {
-        LOGSTAT ("Exception caught. Thread ends. Releasing mutex. Goodbye. " );
+        LOGSTAT ("Normal close down exception caught. Thread ends. Releasing mutex. Goodbye. " );
     }
-    catch ( ... )
+    catch (CcController::MyBadException ccme )
     {
-        LOGERR ("Unhandled exception caught. Thread ends. Releasing mutex. Goodbye. " );
+        LOGSTAT ("Error Exception caught. Thread ends. Releasing mutex. Goodbye. " );
+#if defined (__WXINT__) 
+        m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
+	    (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
+		throw;  //rethrow for the crash handler
+#endif
     }
+//    catch ( ... )
+//    {
+ //       LOGERR ("Unhandled exception caught. Thread ends. Releasing mutex. Goodbye. " );
+//    }
     m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
 	(CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
     LOGSTAT ("Final word from the CRYSTALS thread: Bye." );
+#if defined (__WXINT__) 
+    //crUninstallFromCurrentThread();    
+#endif
     return 0;
 }
 
@@ -3021,10 +3043,31 @@ bool CcController::DoCommandTransferStuff()
   #ifdef __CR_WIN__
            if ( !CcController::theController->m_BatchMode )
            {
-             MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
-             ASSERT(0);
+		          MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
+		          ASSERT(0);
            }
   #endif
+
+		    CR_EXCEPTION_INFO ei;
+			memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
+			ei.cb = sizeof(CR_EXCEPTION_INFO);
+			ei.exctype = CR_SEH_EXCEPTION;
+			ei.code = 1234;
+			ei.pexcptrs = NULL;
+
+			int result = crGenerateErrorReport(&ei);
+
+			if(result!=0)
+			{
+			  // If goes here, crGenerateErrorReport() has failed
+			  // Get the last error message
+			  TCHAR szErrorMsg[256];
+			  crGetLastErrorMsg(szErrorMsg, 256);
+			}
+		   
+			// Manually terminate program
+//			ExitProcess(0);
+
 //  #ifdef __BOTHWX__
 //           if ( !CcController::theController->m_BatchMode )
 //                 wxMessageBox("Closing","Crystals ends in error",
@@ -3037,6 +3080,9 @@ bool CcController::DoCommandTransferStuff()
 			m_Crystals_Thread_Alive.Leave();
 			pthread_exit(0);
 		#else
+        if ( theExitcode != 0 && theExitcode != 1000 )
+			throw CcController::MyBadException();   // Leap right out of the Fortran
+		else
 			throw CcController::MyException();   // Leap right out of the Fortran
 												 // to the top of the call stack. 
 		#endif

@@ -5,6 +5,7 @@
 #include "crystals.h"
 #include <string>
 #include <iostream>
+#include "CrashRpt.h"
 using namespace std;
 
 
@@ -312,10 +313,93 @@ using namespace std;
     putenv(tResources.c_str()); 
   }
 #endif    
+class BriefMessageBox;
+
+class MyBriefMessageTimer :  public wxTimer   // Used by BriefMessageBox.  Notify() kills the BriefMessageBox when the timer 'fires'
+{
+	public:
+		void Setup( wxDialog* ptrtobox ){ p_box = ptrtobox; }
+	protected:
+		void Notify(){ p_box->EndModal( wxID_CANCEL ); }
+		wxDialog* p_box;
+};
+class BriefMessageBox : wxDialog // Displays a message dialog for a defined time only
+{
+public:
+BriefMessageBox( wxString Message, double secondsdisplayed = -1, wxString Caption = wxEmptyString );
+protected:
+MyBriefMessageTimer BriefTimer;
+};
+const int DEFAULT_BRIEFMESSAGEBOX_TIME = 5;
+
+BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= -1*/, wxString Caption /*= wxEmptyString*/ ) : wxDialog( NULL, -1, Caption )
+{
+	wxStaticBox* staticbox = new wxStaticBox( this, -1, wxT("") );
+	wxStaticBoxSizer *textsizer = new wxStaticBoxSizer( staticbox, wxHORIZONTAL );   
+	textsizer->Add( CreateTextSizer( Message ), 1, wxCENTRE | wxALL, 10 );
+
+	wxBoxSizer *mainsizer = new wxBoxSizer( wxHORIZONTAL );
+	mainsizer->Add( textsizer, 1, wxCENTER | wxALL, 20 );
+
+	SetSizer( mainsizer ); mainsizer->Fit( this );
+	Centre( wxBOTH | wxCENTER_FRAME);
+
+	BriefTimer.Setup(this);
+
+	double length;
+	if ( secondsdisplayed <= 0 )    // Minus number means default, and zero would mean infinite which we don't want here
+		length = DEFAULT_BRIEFMESSAGEBOX_TIME;
+	else length = secondsdisplayed;
+ 
+	BriefTimer.Start( (int)(length * 1000), wxTIMER_ONE_SHOT );  // Start timer as one-shot.  *1000 gives seconds
+
+	ShowModal();
+} 
+
+
 
   bool CCrystalsApp::OnInit()
   {
-    m_locale.Init(wxLANGUAGE_ENGLISH_US);
+
+	  // Define CrashRpt configuration parameters
+  CR_INSTALL_INFO info;  
+  memset(&info, 0, sizeof(CR_INSTALL_INFO));  
+  info.cb = sizeof(CR_INSTALL_INFO);    
+  info.pszAppName = _T("Crystals");  
+  info.pszAppVersion = _T("14.0.0");  
+  info.pszEmailSubject = _T("Crystals 14.0.0 Error Report");  
+  info.pszEmailTo = _T("richard.cooper@chem.ox.ac.uk");    
+  info.pszUrl = _T("http://crystals.xtl.org.uk/tools/crashrpt.php");  
+  info.uPriorities[CR_HTTP] = 3;  // First try send report over HTTP 
+  info.uPriorities[CR_SMTP] = 2;  // Second try send report over SMTP  
+  info.uPriorities[CR_SMAPI] = 1; // Third try send report over Simple MAPI    
+  // Install all available exception handlers
+  info.dwFlags |= CR_INST_ALL_POSSIBLE_HANDLERS;
+  // Restart the app on crash 
+  info.dwFlags |= CR_INST_APP_RESTART; 
+  info.dwFlags |= CR_INST_SEND_QUEUED_REPORTS; 
+  info.pszRestartCmdLine = _T("");
+  // Define the Privacy Policy URL 
+  info.pszPrivacyPolicyURL = _T("http://crytals.xtl.org.uk/tools/privacypolicy.html"); 
+  
+  // Install crash reporting
+  int nResult = crInstall(&info);
+  if(nResult!=0)  
+  {    
+    BriefMessageBox("Crash reporting not initialised");
+  }
+//    // Something goes wrong. Get error message.
+//    TCHAR szErrorMsg[512] = _T("");        
+//    crGetLastErrorMsg(szErrorMsg, 512);    
+//    _tprintf_s(_T("%s\n"), szErrorMsg);    
+//    return 1;
+//  } 
+  
+	  
+	  
+	  
+	  
+	m_locale.Init(wxLANGUAGE_ENGLISH_US);
    
     string directory;
     string dscfile;
@@ -415,6 +499,24 @@ using namespace std;
 	theControl->DoCommandTransferStuff();
   }
 
+
+
+  int CCrystalsApp::OnRun()
+  {
+
+	int bRun;
+	int bExit=0;
+	while(!bExit)
+	{
+		bRun= wxApp::OnRun();
+		bExit=1;
+	}
+
+  // Uninstall CrashRpt here...
+    crUninstall();
+	return bRun;
+}
+  
   int CCrystalsApp::OnExit()
   {
     delete theControl;

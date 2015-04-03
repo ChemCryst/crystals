@@ -123,6 +123,7 @@ public:
 //    virtual void Activate(wxActivateEvent& event);
     virtual bool OnInit();
     virtual int OnExit();
+    virtual int OnRun();
 	virtual void OnCrystCommand(wxEvent & event);
     DECLARE_EVENT_TABLE()
 
