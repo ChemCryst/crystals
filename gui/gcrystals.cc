@@ -361,6 +361,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   bool CCrystalsApp::OnInit()
   {
 
+#ifdef __WXINT__
 	  // Define CrashRpt configuration parameters
   CR_INSTALL_INFO info;  
   memset(&info, 0, sizeof(CR_INSTALL_INFO));  
@@ -395,7 +396,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 //    return 1;
 //  } 
   
-	  
+#endif	  
 	  
 	  
 	  
@@ -512,8 +513,11 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 		bExit=1;
 	}
 
-  // Uninstall CrashRpt here...
+#ifdef __WXINT__
+	// Uninstall CrashRpt here...
     crUninstall();
+#endif
+
 	return bRun;
 }
   
