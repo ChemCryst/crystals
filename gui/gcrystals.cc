@@ -5,7 +5,10 @@
 #include "crystals.h"
 #include <string>
 #include <iostream>
+
+#ifdef __WXINT__
 #include "CrashRpt.h"
+#endif 
 using namespace std;
 
 
