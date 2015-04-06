@@ -1372,6 +1372,7 @@ C----- SAVE THE NEXT FREE ADDRESS
         END IF
 
         JPART = 1
+        KPLOOP = 1
 
         PARTLOOP: DO WHILE ( JPART .GE. 1 ) 
 
@@ -1609,8 +1610,16 @@ c           discard first
 
 C----- SCRIPT READABLE RIDE LINES
 2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
-          WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
-     1    (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+2186      FORMAT( 'CONT ',50(A4,'(',I4,',X''S)',1X) )
+
+          IF ( KPLOOP .EQ. 1 ) THEN
+            WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
+     1      (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+            KPLOOP = KPLOOP + 1
+          ELSE
+            WRITE(NCPU,2186) 
+     1      (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+          END IF
 C
 C
 C
