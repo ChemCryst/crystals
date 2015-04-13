@@ -7217,6 +7217,7 @@ c  Thresholding removed. Filters should do the work more
 c  flexibly.
 c      PARAMETER (THRESH=.5)
 c      PARAMETER (THRESH2 = 3.)
+      INCLUDE 'IDIM39.INC'
 
       IERROR=1
 c
@@ -7457,6 +7458,7 @@ C                         should be about unity anyway.  Will be computed later
       LFRIED=0                         ! UNPAIRED ACENTRIC REFLECTIONS
       NCENTRIC=0                       ! CENTRIC PAIRS
       QMAX = 0                         ! MAximum Quotient value
+      NREF = 0 ! Was used without being defined, but may not be required at all...
 C     Excluded reflection categories
       CALL XZEROF (IFAILN, NFAILN)
 c
@@ -10005,6 +10007,7 @@ c
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
 c
+      LINFIT = 0
       if(mode.eq.1) then
 	ss = 0.
 	sx = 0.
@@ -10013,8 +10016,8 @@ c
 	syy = 0.
 	sxy = 0.
         nitem=0
-        xmax = 0.
-        ymax = 0.
+c        xmax = 0.
+c        ymax = 0.
 
       else if (mode.eq.2) then	
         nitem=nitem+1
@@ -10024,8 +10027,8 @@ c
 	sy = sy + y*wt
 	syy = syy + y*y*wt
 	sxy = sxy + x*y*wt
-        xmax = max(xmax, abs(x*wt))
-        ymax = max(ymax, abs(y*wt))
+c        xmax = max(xmax, abs(x*wt))
+c        ymax = max(ymax, abs(y*wt))
 
 
       else
