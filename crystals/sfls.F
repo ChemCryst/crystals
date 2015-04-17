@@ -3255,8 +3255,8 @@ C if JPNX is zero then we use the VCVVEC to pre and post multiply each
 C (Zit)(Zi) matrix, and get the stuff.
 
 
-       WRITE(125,'(1000G15.9)')(DF(I),I=1,NDF)
-       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
+c       WRITE(125,'(1000G15.9)')(DF(I),I=1,NDF)
+c       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
 
 
        M11 = 1
