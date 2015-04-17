@@ -895,7 +895,6 @@ C     LOOPS BACK TO 2500 UNTIL MATOM=N5
 C
       JPART = 1
       PARTLOOP: DO WHILE ( JPART .GE. 1 ) 
-
 C----- FIX THE RADII FOR 1-3 CONTACTS
       AC=D13
       AO=D13
@@ -904,9 +903,9 @@ C
 C----- RESET THE CONTACT ATOM AND FUNCTION VECTOR ADDRESSES
       M5=L5
 C
-C
 C----RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
       NFL=JE
+C
 C
 C----END OF LOOP ?
       IF (MATOM.GE.N5) GO TO 2300
@@ -942,7 +941,8 @@ C TODO: Check for bonding to more than one non-zero part. If this happens,
 C each part should be treated independently.
 cdjwmar09
 c       if (issprt .eq. 0) then
-c         WRITE(ncwu,'(/A,I3,6X,A4,I4)')'Bonds found: ',NDIST,
+
+c         WRITE(ncwu,'(A,I3,6X,A4,I4)')'Bonds found: ',NDIST,
 c     1   ISTORE(M5A),NINT(STORE(M5A+1))
 c         DO MMMI=JE,JE+JT*(NDIST-1),JT
 c          WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
@@ -1038,6 +1038,7 @@ C           GET THE NEXT SHORTEST BOND
             MHYB=KHYB(IADD(2),STORE(IADD(2)+10),DELTA2)
          END IF
 C-----  LOOK FOR SECONDARY CONTACTS
+c         ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
          ISEC=KSEC2(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
          LHYB=0
          DELTAA=999.
@@ -1516,11 +1517,11 @@ C    THE START OF THE NEW STACK
         JJE=JL
         M5=L5
 C
-        NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
+        NDTEMP = KDIST1(N5, JJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
         IF (NDTEMP .LT. 2) GOTO 1631
 C
 C
-        DO 1580 IJJE=JJJE, JJJE-JT, JT
+        DO 1580 IJJE=JJE, JJE-JT, JT
 CHECK WE DONT HAVE THE REVERSE DISTANCE
         IF (ISTORE(IJJE) .EQ. ISTORE(JE)) GOTO 1580
 CHECK IT IS A CARBON
@@ -1905,7 +1906,7 @@ c103   FORMAT(10X, A, I5 )
       END
 C
 CODE FOR KSEC2
-       FUNCTION KSEC2(AOTEMP,APTEMP,NDTEMP, IADD, NBONDS, JADD, IPART)
+       FUNCTION KSEC2(AOTEMP,APTEMP,NDTEMP, IADD, NBONDS, JADD)
 C
 C RETURNS THE ADDRESS IN ISTORE OF A USABLE SECOND CONTACT FOR THE
 C TARGET ATOM AT M5.
@@ -1961,6 +1962,7 @@ C        THE START OF THE NEW STACK
           JJE=JL
           M5=L5
 
+c          NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 1)
           NDTEMP = KDIST4( JJJE, JT, 0, 0 ) 
 
           IF (NDTEMP .LT. 2)    GOTO 1630 ! No good - need at least one other contact
