@@ -82,7 +82,7 @@ goto ALLDVF
 @set FNOOPT=/fpp /I..\crystals /MD /optimize:0 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
-@set FDEBUG=/fpp /I..\crystals /MDd /debug /Zt /check:bounds /check:format /check:overflow /check:underflow /warn:argument_checking /warn:nofileopt /nolink /pdbfile:temp.pdb
+@set FDEBUG=/fpp /I..\crystals /MDd /debug /Zt /check:bounds /check:format /check:overflow /check:underflow /warn:argument_checking /warn:nofileopt /nolink 
 @if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
 @if "%CRDEBUG%" == "TRUE" set COUT=/Fodobj\
 @goto exit
