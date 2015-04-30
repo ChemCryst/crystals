@@ -142,7 +142,7 @@
 @if exist %FILESTEM%.obj del %FILESTEM%.obj
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-%CC% %CCSRC% %COUT%%FILESTEM%.obj %COPTIONS% 2> obj\output || ( make_err.bat CPP_RELEASE_COMPILE %CCSRC% obj\output )
+%CC% %CCSRC% %COUT%%FILESTEM%.obj %COPTIONS% || ( make_err.bat CPP_RELEASE_COMPILE %CCSRC% obj\output )
 @goto %JUMPBACK%
 
 :fcomp
@@ -153,7 +153,7 @@
 @if  not "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @if      "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
-%F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output )
+%F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output )
 @goto %JUMPBACK%
 
 :f90comp
@@ -162,7 +162,7 @@
 @set FSRC= %SRCDIR%\%FILESTEM%.f90
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
-%F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  2> obj\output || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output )
+%F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS%  || ( make_err.bat FPP_RELEASE_COMPILE %FSRC% obj\output )
 @goto %JUMPBACK%
 
 
