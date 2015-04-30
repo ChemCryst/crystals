@@ -11326,6 +11326,105 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Distances and angles  -  with standard deviations estimated from the full variance-covariance matrix
  Distance limits  0.000 to  1.700
  Angles   limits  0.000 to  1.700
+
+ Distances about atom  C      1.          X =  0.20248     Y =  0.16567     Z =  0.89323
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         2.      1   1    0    0    0      1.497  0.002
+       C         7.      1   1    0    0    0      1.515  0.002
+       C         8.      1   1    0    0    0      1.521  0.002
+       C         9.      1   1    0    0    0      1.516  0.002
+
+
+ Angles about atom  C      1.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         7.      1   1    0    0    0     106.95  0.13
+   3   C         8.      1   1    0    0    0     108.50  0.12  110.57  0.14
+   4   C         9.      1   1    0    0    0     108.87  0.12  111.57  0.17  110.27  0.14
+
+  KEY                                                 1             2             3
+
+ Distances about atom  N      2.          X =  0.29201     Y =  0.11544     Z =  0.80756
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         3.      1   1    0    0    0      1.328  0.002
+       C         6.      1   1    0    0    0      1.384  0.002
+
+
+ Angles about atom  N      2.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         1.      1   1    0    0    0
+   2   C         3.      1   1    0    0    0     126.49  0.13
+   3   C         6.      1   1    0    0    0     125.50  0.12  107.93  0.13
+
+  KEY                                                 1             2
+
+ Distances about atom  C      3.          X =  0.21426     Y =  0.03840     Z =  0.71708
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         4.      1   1    0    0    0      1.321  0.002
+
+
+ Angles about atom  C      3.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   N         4.      1   1    0    0    0     109.11  0.14
+
+  KEY                                                 1
+
+ Distances about atom  N      4.          X =  0.33287     Y =  0.01955     Z =  0.65863
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         5.      1   1    0    0    0      1.367  0.002
+
+
+ Angles about atom  N      4.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         3.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     108.84  0.12
+
+  KEY                                                 1
+
+ Distances about atom  C      5.          X =  0.49259     Y =  0.08664     Z =  0.71226
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         6.      1   1    0    0    0      1.351  0.002
+
+
+ Angles about atom  C      5.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         4.      1   1    0    0    0
+   2   C         6.      1   1    0    0    0     107.22  0.14
+
+  KEY                                                 1
+
+ Distances about atom  C      6.          X =  0.46841     Y =  0.14727     Z =  0.80565
+
+
+ Angles about atom  C      6.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     106.90  0.13
+
+  KEY                                                 1
 #                                                                                                                                                                                                                                                               
 #                      SECOND EXPERIMENT. NOFSQ, NOANOM                                                                                                                                                                                                         
 #LIST 23                                                                                                                                                                                                                                                        
@@ -11412,7 +11511,7 @@ LS-scale=  4.746   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        9     Address    70790     Length     148     Created on      
+ Print list type    12     serial number        9     Address    70754     Length     148     Created on      
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
 
@@ -12642,7 +12741,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       10     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       10     Address    70754     Length     148     Created on      
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
 
@@ -13365,7 +13464,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       11     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       11     Address    70754     Length     148     Created on      
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
 
@@ -14348,7 +14447,7 @@ Mean C-C su =   0.0052
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       12     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       12     Address    70754     Length     148     Created on      
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
 
@@ -17137,7 +17236,7 @@ Mean C-C su =   0.0023
  List type  11 with serial number   120 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
- List type   11  serial number  120 from    92445 to    96880 will not be copied ( deleted )         
+ List type   11  serial number  120 from    92807 to    97242 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -19689,6 +19788,105 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Distances and angles  -  with standard deviations estimated from the full variance-covariance matrix
  Distance limits  0.000 to  1.700
  Angles   limits  0.000 to  1.700
+
+ Distances about atom  C      1.          X =  0.20263     Y =  0.16574     Z =  0.89329
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         2.      1   1    0    0    0      1.499  0.002
+       C         7.      1   1    0    0    0      1.514  0.002
+       C         8.      1   1    0    0    0      1.520  0.002
+       C         9.      1   1    0    0    0      1.515  0.003
+
+
+ Angles about atom  C      1.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         7.      1   1    0    0    0     106.97  0.13
+   3   C         8.      1   1    0    0    0     108.48  0.12  110.69  0.15
+   4   C         9.      1   1    0    0    0     108.82  0.12  111.54  0.18  110.22  0.15
+
+  KEY                                                 1             2             3
+
+ Distances about atom  N      2.          X =  0.29219     Y =  0.11535     Z =  0.80750
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         3.      1   1    0    0    0      1.327  0.002
+       C         6.      1   1    0    0    0      1.382  0.002
+
+
+ Angles about atom  N      2.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         1.      1   1    0    0    0
+   2   C         3.      1   1    0    0    0     126.44  0.14
+   3   C         6.      1   1    0    0    0     125.43  0.13  108.06  0.14
+
+  KEY                                                 1             2
+
+ Distances about atom  C      3.          X =  0.21440     Y =  0.03828     Z =  0.71728
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         4.      1   1    0    0    0      1.320  0.002
+
+
+ Angles about atom  C      3.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   N         4.      1   1    0    0    0     109.06  0.15
+
+  KEY                                                 1
+
+ Distances about atom  N      4.          X =  0.33274     Y =  0.01954     Z =  0.65871
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         5.      1   1    0    0    0      1.367  0.002
+
+
+ Angles about atom  N      4.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         3.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     108.85  0.13
+
+  KEY                                                 1
+
+ Distances about atom  C      5.          X =  0.49267     Y =  0.08647     Z =  0.71235
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         6.      1   1    0    0    0      1.351  0.002
+
+
+ Angles about atom  C      5.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         4.      1   1    0    0    0
+   2   C         6.      1   1    0    0    0     107.15  0.14
+
+  KEY                                                 1
+
+ Distances about atom  C      6.          X =  0.46836     Y =  0.14723     Z =  0.80562
+
+
+ Angles about atom  C      6.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     106.88  0.14
+
+  KEY                                                 1
 #                                                                                                                                                                                                                                                               
 #                      THIRD EXPERIMENT. FSQ, ANOM                                                                                                                                                                                                              
 #LIST 23                                                                                                                                                                                                                                                        
@@ -19775,7 +19973,7 @@ LS-scale=  4.646   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       14     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       14     Address    70754     Length     148     Created on      
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
 
@@ -21008,7 +21206,7 @@ Mean C-C su =   0.0062
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       15     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       15     Address    70754     Length     148     Created on      
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
 
@@ -21499,7 +21697,7 @@ Mean C-C su =   0.0062
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       16     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       16     Address    70754     Length     148     Created on      
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
 
@@ -22479,7 +22677,7 @@ Mean C-C su =   0.0050
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       17     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       17     Address    70754     Length     148     Created on      
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
 
@@ -24758,7 +24956,7 @@ Mean C-C su =   0.0020
  List type  11 with serial number   108 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
- List type   11  serial number  108 from    92180 to    96615 will not be copied ( deleted )         
+ List type   11  serial number  108 from    92542 to    96977 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -27298,6 +27496,105 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Distances and angles  -  with standard deviations estimated from the full variance-covariance matrix
  Distance limits  0.000 to  1.700
  Angles   limits  0.000 to  1.700
+
+ Distances about atom  C      1.          X =  0.20248     Y =  0.16567     Z =  0.89323
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         2.      1   1    0    0    0      1.497  0.002
+       C         7.      1   1    0    0    0      1.515  0.002
+       C         8.      1   1    0    0    0      1.521  0.002
+       C         9.      1   1    0    0    0      1.516  0.002
+
+
+ Angles about atom  C      1.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         7.      1   1    0    0    0     106.95  0.13
+   3   C         8.      1   1    0    0    0     108.50  0.12  110.57  0.14
+   4   C         9.      1   1    0    0    0     108.87  0.12  111.58  0.17  110.26  0.14
+
+  KEY                                                 1             2             3
+
+ Distances about atom  N      2.          X =  0.29201     Y =  0.11544     Z =  0.80756
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         3.      1   1    0    0    0      1.328  0.002
+       C         6.      1   1    0    0    0      1.384  0.002
+
+
+ Angles about atom  N      2.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         1.      1   1    0    0    0
+   2   C         3.      1   1    0    0    0     126.48  0.13
+   3   C         6.      1   1    0    0    0     125.50  0.12  107.93  0.13
+
+  KEY                                                 1             2
+
+ Distances about atom  C      3.          X =  0.21425     Y =  0.03840     Z =  0.71708
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         4.      1   1    0    0    0      1.321  0.002
+
+
+ Angles about atom  C      3.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   N         4.      1   1    0    0    0     109.10  0.14
+
+  KEY                                                 1
+
+ Distances about atom  N      4.          X =  0.33287     Y =  0.01955     Z =  0.65863
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         5.      1   1    0    0    0      1.367  0.002
+
+
+ Angles about atom  N      4.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         3.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     108.84  0.12
+
+  KEY                                                 1
+
+ Distances about atom  C      5.          X =  0.49259     Y =  0.08664     Z =  0.71226
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         6.      1   1    0    0    0      1.351  0.002
+
+
+ Angles about atom  C      5.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         4.      1   1    0    0    0
+   2   C         6.      1   1    0    0    0     107.22  0.14
+
+  KEY                                                 1
+
+ Distances about atom  C      6.          X =  0.46841     Y =  0.14727     Z =  0.80565
+
+
+ Angles about atom  C      6.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     106.90  0.13
+
+  KEY                                                 1
 #                                                                                                                                                                                                                                                               
 #                      FOURTH EXPERIMENT. NOFSQ, ANOM                                                                                                                                                                                                           
 #LIST 23                                                                                                                                                                                                                                                        
@@ -27384,7 +27681,7 @@ LS-scale=  4.745   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       19     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       19     Address    70754     Length     148     Created on      
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
 
@@ -28620,7 +28917,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       20     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       20     Address    70754     Length     148     Created on      
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
 
@@ -29352,7 +29649,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       21     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       21     Address    70754     Length     148     Created on      
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
 
@@ -30332,7 +30629,7 @@ Mean C-C su =   0.0052
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       22     Address    70790     Length     148     Created on      
+ Print list type    12     serial number       22     Address    70754     Length     148     Created on      
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
 
@@ -33105,7 +33402,7 @@ Mean C-C su =   0.0023
  List type  11 with serial number   120 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
- List type   11  serial number  120 from    92445 to    96880 will not be copied ( deleted )         
+ List type   11  serial number  120 from    92807 to    97242 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -35658,6 +35955,105 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Distances and angles  -  with standard deviations estimated from the full variance-covariance matrix
  Distance limits  0.000 to  1.700
  Angles   limits  0.000 to  1.700
+
+ Distances about atom  C      1.          X =  0.20263     Y =  0.16574     Z =  0.89329
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         2.      1   1    0    0    0      1.499  0.002
+       C         7.      1   1    0    0    0      1.514  0.002
+       C         8.      1   1    0    0    0      1.520  0.002
+       C         9.      1   1    0    0    0      1.515  0.003
+
+
+ Angles about atom  C      1.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         7.      1   1    0    0    0     106.97  0.13
+   3   C         8.      1   1    0    0    0     108.48  0.12  110.69  0.15
+   4   C         9.      1   1    0    0    0     108.82  0.12  111.56  0.18  110.21  0.15
+
+  KEY                                                 1             2             3
+
+ Distances about atom  N      2.          X =  0.29220     Y =  0.11536     Z =  0.80751
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         3.      1   1    0    0    0      1.327  0.002
+       C         6.      1   1    0    0    0      1.382  0.002
+
+
+ Angles about atom  N      2.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         1.      1   1    0    0    0
+   2   C         3.      1   1    0    0    0     126.43  0.14
+   3   C         6.      1   1    0    0    0     125.43  0.13  108.06  0.14
+
+  KEY                                                 1             2
+
+ Distances about atom  C      3.          X =  0.21438     Y =  0.03826     Z =  0.71727
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       N         4.      1   1    0    0    0      1.320  0.002
+
+
+ Angles about atom  C      3.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   N         4.      1   1    0    0    0     109.05  0.15
+
+  KEY                                                 1
+
+ Distances about atom  N      4.          X =  0.33274     Y =  0.01954     Z =  0.65870
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         5.      1   1    0    0    0      1.367  0.002
+
+
+ Angles about atom  N      4.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   C         3.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     108.86  0.13
+
+  KEY                                                 1
+
+ Distances about atom  C      5.          X =  0.49266     Y =  0.08647     Z =  0.71233
+
+       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+       C         6.      1   1    0    0    0      1.351  0.002
+
+
+ Angles about atom  C      5.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         4.      1   1    0    0    0
+   2   C         6.      1   1    0    0    0     107.15  0.14
+
+  KEY                                                 1
+
+ Distances about atom  C      6.          X =  0.46836     Y =  0.14723     Z =  0.80562
+
+
+ Angles about atom  C      6.
+
+  KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
+
+   1   N         2.      1   1    0    0    0
+   2   C         5.      1   1    0    0    0     106.88  0.14
+
+  KEY                                                 1
 #                                                                                                                                                                                                                                                               
 #END                                                                                                                                                                                                                                                            
 
