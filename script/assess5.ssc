@@ -96,13 +96,13 @@
 %  END IF
 %  IF ( DOEXTNC .EQ. TRUE ) THEN
 %    CLEAR
-%    INSERT '{R   Extinction  has been refined to '
+%    INSERT '{R   Extinction parameter is: '
 %    STORE FORMAT /(F15.5)/ LENGTH 15 REAL EXTP
 %    OUTPUT
 %  END IF
 %  IF ( DOFLACK .EQ. TRUE ) THEN
 %    CLEAR
-%    INSERT '{R   Flack param has been refined to '
+%    INSERT '{R   Flack parameter is: '
 %    STORE FORMAT /(F15.5)/ LENGTH 15 REAL FLACKP
 %    OUTPUT
 %  END IF
