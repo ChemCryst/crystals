@@ -2325,21 +2325,21 @@ c      CALL XOPMSG ( IOPSLA , IOPABN , 0 )
 c      GOTO 9000
 c      END
 code for oldroman
-      subroutine oldroman(idecimal,croman)
+C      subroutine oldroman(idecimal,croman)
 c---- return roman character representation of integer number
-      parameter (nromtxt = 10)
-      character *4 croman, cromtxt(nromtxt)
-      data cromtxt/'i','ii','iii','iv','v','vi','vii',
-     1 'viii','ix','x'/
+C      parameter (nromtxt = 10)
+C      character *4 croman, cromtxt(nromtxt)
+C      data cromtxt/'i','ii','iii','iv','v','vi','vii',
+C     1 'viii','ix','x'/
 cdjw convert to roman
-      if ((idecimal .gt. 0) .and. (idecimal .le. nromtxt)) then
-       croman = cromtxt(idecimal)
-      else
-       croman = ' '
-      endif
-      write(ncwu, '(i4,3x,a)') ippack, croman
-      return
-      end
+C      if ((idecimal .gt. 0) .and. (idecimal .le. nromtxt)) then
+C       croman = cromtxt(idecimal)
+C      else
+C       croman = ' '
+C      endif
+C      write(ncwu, '(i4,3x,a)') ippack, croman
+C      return
+C      end
 CRYSTALS CODE FOR ZROMAN
       SUBROUTINE ZROMAN(ARB, ROM)
 !***********************************************************************************************************************************

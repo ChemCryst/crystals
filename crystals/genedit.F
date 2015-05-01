@@ -303,9 +303,9 @@ c      call xprvdu(ncvdu, 1 ,0)
       ELSE IF ( IDjwTYPE .EQ. 2 ) THEN
         do I = LIM1 , LIM2 , LENGRP
         WRITE ( NCAWU , CFORM(ITYPE) , ERR = 8950 ) 
-     2  istore(i+iof),istore(i+iof+1),(STORE(J), J=I+IOFF+2,I+IEND)
+     2  istore(i+ioff),istore(i+ioff+1),(STORE(J), J=I+IOFF+2,I+IEND)
         WRITE ( CMON , CFORM(ITYPE) , ERR = 8950 ) 
-     2  istore(i+iof),istore(i+iof+1),(STORE(J), J=I+IOFF+2,I+IEND)
+     2  istore(i+ioff),istore(i+ioff+1),(STORE(J), J=I+IOFF+2,I+IEND)
         CALL XPRVDU(NCVDU, IDJWLINES ,0)
         enddo
 

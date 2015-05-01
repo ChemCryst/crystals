@@ -1138,7 +1138,7 @@ c            mod23 = 2
             imod23 = imod23 +1
             istore(l23m) = 0
             istore(l23m+6) = -1
-            store(l50+4) = 0.
+            store(l5o+4) = 0.
             imod5 = imod5 + 1
         else if(isdopee(5).ne. 0) then
 c           turn on anomalous and enantio

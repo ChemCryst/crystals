@@ -889,18 +889,11 @@ C    AND ALWAYS RETURNS THE VALUE 1
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-#if defined(_PPC_) 
-CS***
       CHARACTER*31 FNAME
 C
-      INQUIRE ( UNIT = IUNIT, NAME = FNAME )
-      IF ( IUNIT .EQ. 20 .AND. FNAME .EQ. 'CRYSTALS.SRT' ) THEN
-         CALL killsplash
-      ENDIF
-CE***
-#endif
       CLOSE ( UNIT = IUNIT , ERR = 2000 )
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        INQUIRE ( UNIT = IUNIT, NAME = FNAME )
         WRITE(NCWU,1006) IUNIT, fname
 1006    FORMAT('SPECIFIC  Closing File       ',8x, ': Unit =',I8,1X,A)
       ENDIF
