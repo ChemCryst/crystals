@@ -312,7 +312,8 @@
 %             EVALUATE OPTIM = TRUE
 %           END BLOCK
 %           BLOCK % n-CYCLES 9
-%             COPY '#SCRIPT XNCYCLES'
+%%             COPY '#SCRIPT XNCYCLES'   %replace with XREFINE
+%             COPY '#SCRIPT XREFINE'
 %           END BLOCK
 %           BLOCK % 6-CYCLES 10
 %             COPY '#SCRIPT SIXCYCLE'

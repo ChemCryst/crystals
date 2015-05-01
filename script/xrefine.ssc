@@ -1,292 +1,339 @@
-%SCRIPT XREFINE                                                                 
+%SCRIPT XREFINE
 %%
-%  VARIABLE REAL SHIFT                                                                             
+%  VARIABLE INTEGER LSQ:FLAG 
+%  EVALUATE LSQ:FLAG = 3
+%  VARIABLE REAL SHIFT  FREESHIFT
 %  EVALUATE SHIFT = 1.0
-%%                                                                              
-%  VARIABLE LOGICAL EDONE PDONE PMASK SERR XREFINE CONVRG                       
-%  VARIABLE INTEGER NCYCLE NFORCE                                               
-%  VARIABLE REAL RMIN R OSCALE                                                  
-%  EVALUATE SERR = TRUE                                                         
-%  EVALUATE CONVRG = FALSE                                                      
-%%                                                                              
-%%                                                                              
-%% If xrefine is set to true before calling, then ncycle and nforce should      
-%% also be set - otherwise if xrefine is false (not set) then ncycle and        
-%% nforce are set here:                                                         
-%%                                                                              
-%%                                                                              
-%  IF XREFINE .EQ. FALSE THEN                                                   
-%%                                                                              
-%    COPY '#SCRIPT CHECK3'                                                      
-%%                                                                              
-^^CO GETKEY XREFINE_CONVERGE                                                    
-%    GET SILENT NOSTORE FINAL TEXT '1' '1'                                      
-%    IF CVALUE .EQ. '1' THEN                                                    
-%       EVALUATE CONVRG = TRUE                                                  
-%    END IF                                                                     
-%%                                                                              
-^^CO GETKEY XREFINE_CYCLES                                                      
-%    GET SILENT NOSTORE INTEGER '5' '5'                                         
-%    EVALUATE NCYCLE = VALUE                                                    
-%%                                                                              
-%%                                                                              
-^^WI WINDOW XREFINE 'Least Squares Refinement' MODAL                            
-^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'                                            
-^^WI GRID MAIN NROWS=4 NCOLS=7                                                  
-^^WI {                                                                          
-^^WI  @ 2,2 GRID L NROWS=7 NCOLS=1                                              
-^^WI  {                                                                         
-^^WI   @ 1,1 GRID NCYC NROWS=3 NCOLS=3                                          
-^^WI   {                                                                        
-^^WI    @ 1,1 STATIC T1 'Maximum number of cycles of refinement'                
-^^WI    @ 1,3 EDITBOX NC                                                        
-%        TRANSFER "^^WI '  " // CHARACTER ( NCYCLE )  // "'" TO DISPLAY         
-^^WI     CHARS=5 INTEGER 
-
-
-^^WI    @ 3,1 STATIC T1 'Partial Shift Factor'                
-^^WI    @ 3,3 EDITBOX NS                                                        
-%        TRANSFER "^^WI '  " // CHARACTER ( SHIFT )  // "'" TO DISPLAY         
+%%
+%  VARIABLE LOGICAL EDONE PDONE PMASK SERR XREFINE CONVRG FREEGIFT
+%  VARIABLE INTEGER NCYCLE NFORCE
+%  VARIABLE REAL RMIN R OSCALE
+%  EVALUATE SERR = TRUE
+%  EVALUATE CONVRG = FALSE
+%%
+%  COPY '#SCRIPT RFACTOR'
+%%
+%% If xrefine is set to true before calling, then ncycle and nforce should
+%% also be set - otherwise if xrefine is false (not set) then ncycle and
+%% nforce are set here:
+%%
+%%
+%  IF XREFINE .EQ. FALSE THEN
+%%
+%    COPY '#SCRIPT CHECK3'
+%%
+^^CO GETKEY XREFINE_CONVERGE
+%    GET SILENT NOSTORE FINAL TEXT '1' '1'
+%    IF CVALUE .EQ. '1' THEN
+%       EVALUATE CONVRG = TRUE
+%    END IF
+%%
+%%
+^^CO GETKEY XREFINE_FREEGIFT
+%    GET SILENT NOSTORE FINAL TEXT '1' '1'
+%    IF CVALUE .EQ. '1' THEN
+%       EVALUATE FREEGIFT = TRUE
+%    END IF
+%%
+^^CO GETKEY XREFINE_CYCLES
+%    GET SILENT NOSTORE INTEGER '5' '5'
+%    EVALUATE NCYCLE = VALUE
+%%
+%%
+^^WI WINDOW XREFINE 'Least Squares Refinement' MODAL
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=4 NCOLS=7
+^^WI {
+^^WI  @ 2,2 GRID L NROWS=7 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID NCYC NROWS=3 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 STATIC T1 'Maximum number of cycles of refinement'
+^^WI    @ 1,3 EDITBOX NC
+%        TRANSFER "^^WI '  " // CHARACTER ( NCYCLE )  // "'" TO DISPLAY
+^^WI     CHARS=5 INTEGER
+^^WI    @ 3,1 STATIC T1 'Partial Shift Factor'
+^^WI    @ 3,3 EDITBOX NS
+%        TRANSFER "^^WI '  " // CHARACTER ( SHIFT )  // "'" TO DISPLAY
 ^^WI     CHARS=5 REAL
+^^WI   }
+^^WI   @ 3,1 CHECKBOX NF
+^^WI   'Stop cycling if convergence is detected       '
+%    IF CONVRG THEN
+^^WI     STATE=ON
+%    ELSE
+^^WI     STATE=OFF
+%    END IF
 
+^^WI   @ 4,1 CHECKBOX FG 'Free Gift'
+%    IF  FREEGIFT .AND. R .LE. 10. THEN
+^^WI     STATE=ON
+%    ELSE
+^^WI     STATE=OFF
+%    END IF
 
+^^WI    @ 5,1  CHECKBOX ND
+^^WI         'Minimise disk useage' STATE=ON
+^^WI    @ 7,1 GRID LED NROWS=1 NCOLS=5
+^^WI   {
+^^WI    @ 1,1 BUTTON RF_B12 'Edit directives'
+^^WI    @ 1,3 BUTTON RF_B16 'Edit restraints'
+^^WI    @ 1,5 BUTTON RF_INFO 'Info'
+^^WI   }
+^^WI  }
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+%%
+%    LOOP
+%      ON ERROR TERMINATE
+%      VERIFY RF_BXX RF_BOK RF_B12 RF_B16 RF_INFO
+%      GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%      CASE VALUE
+%       BLOCK
+^^CO      DISPOSE XREFINE
+%         FINISH
+%       END BLOCK
+%       BLOCK
+%         EVALUATE SERR = FALSE
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%       END BLOCK
+%       BLOCK         % EDIT 12
+%         COPY '#SCRIPT EDLIST12'
+%       END BLOCK
+%       BLOCK         % EDIT 16
+%         COPY '#SCRIPT EDLIST16'
+%       END BLOCK
+%       BLOCK
+{1,11 Partial Shift Factor:
+{12,11      Least Squares shifts are multiplied by this value.
+{12,11      Try 0.5 if the maximum shift keeps changing sign
+{12,11
+{1,11 Free Gift:
+{12,11      This causes a fast subsiduary cycle to be computed
+{12,11      without re-evaluating the normal matrix.
+{12,11      This may speed up the slow refinement of a good
+{12,11      large structure, but will not help refine a poor model
+{12,11      or poor data.  A Partial Shift of 0.75 is used for 
+{12,11      this cycle unless the user has set a smaller value.
+{12,11      (see J.S. Rollett, Crystallographic Computing, ed Ahmed.
+{12,11      Mungsgaard, 1970, page 175)
+%        END BLOCK
+%      END CASE
+%    END LOOP
+%    IF SERR .EQ. TRUE THEN
+^^CO      DISPOSE XREFINE
+{E An error of some type occured. The xrefine script has stopped just
+{E in case it is serious. A possible cause is an invalid List 12 - maybe
+{E it refers to non-existant atoms.
+%         FINISH
+%    END IF
+%%
 
+^^??   ND STATE
+%      VERIFY ON OFF
+%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
+^^CR
+%      IF VALUE .EQ. 1 THEN
+%       COPY '#SUM LIST 12'
+%       COPY 'END'
+%       IF EXISTS 11 .EQ. 1 THEN
+%         COPY '#DISK'
+%         COPY 'DELETE 11'
+%         COPY 'END'
+%       END IF
+%% Purge everything until bug is fixed.
+%       COPY '#PURGE LIST=11 MON=LOW'
+%%      COPY '#PURGE '
+%       COPY 'END'
+%       COPY '#LIST 22'
+%       COPY 'END'
+%      END IF
+%%
 
-                                                       
-^^WI   }                                                                        
-^^WI   @ 3,1 CHECKBOX NF 'Stop cycling if convergence is detected'              
-%    IF CONVRG THEN                                                             
-^^WI     STATE=ON                                                               
-%    ELSE                                                                       
-^^WI     STATE=OFF                                                              
-%    END IF                                                                     
-^^WI    @ 5,1  CHECKBOX ND                                                      
-^^WI         'Minimise disk useage' STATE=ON                                    
-^^WI    @ 7,1 GRID LED NROWS=1 NCOLS=3                                          
-^^WI   {                                                                        
-^^WI    @ 1,1 BUTTON RF_B12 'Edit directives'                                   
-^^WI    @ 1,3 BUTTON RF_B16 'Edit restraints'                                   
-^^WI   }                                                                        
-^^WI  }                                                                         
-^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1                                              
-^^WI  {                                                                         
-^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT                                        
-^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'                                            
-^^WI  }                                                                         
-^^WI }                                                                          
-^^WI SHOW                                                                       
-^^CR                                                                            
-%%                                                                              
-%%                                                                              
-%%                                                                              
-%    LOOP                                                                       
-%      ON ERROR TERMINATE                                                       
-%      VERIFY RF_BXX RF_BOK RF_B12 RF_B16                                       
-%      GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                             
-%      CASE VALUE                                                               
-%       BLOCK                                                                   
-^^CO      DISPOSE XREFINE                                                       
-%         FINISH                                                                
-%       END BLOCK                                                               
-%       BLOCK                                                                   
-%         EVALUATE SERR = FALSE                                                 
-%         EVALUATE LOOPEND = LOOPCOUNTER                                        
-%       END BLOCK                                                               
-%       BLOCK         % EDIT 12                                                 
-%         COPY '#SCRIPT EDLIST12'                                               
-%       END BLOCK                                                               
-%       BLOCK         % EDIT 16                                                 
-%         COPY '#SCRIPT EDLIST16'                                               
-%       END BLOCK                                                               
-%      END CASE                                                                 
-%    END LOOP                                                                   
-%    IF SERR .EQ. TRUE THEN                                                     
-^^CO      DISPOSE XREFINE                                                       
-{E An error of some type occured. The xrefine script has stopped just           
-{E in case it is serious. A possible cause is an invalid List 12 - maybe        
-{E it refers to non-existant atoms.                                             
-%         FINISH                                                                
-%    END IF                                                                     
-%%                                                                              
-                                                                                
-^^??   ND STATE                                                                 
-%      VERIFY ON OFF                                                            
-%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '                       
-^^CR                                                                            
-%      IF VALUE .EQ. 1 THEN                                                     
-%       COPY '#SUM LIST 12'                                                     
-%       COPY 'END'                                                              
-%       IF EXISTS 11 .EQ. 1 THEN                                                
-%         COPY '#DISK'                                                          
-%         COPY 'DELETE 11'                                                      
-%         COPY 'END'                                                            
-%       END IF                                                                  
-%% Purge everything until bug is fixed.                                         
-%       COPY '#PURGE LIST=11 MON=LOW'                                           
-%%      COPY '#PURGE '                                                          
-%       COPY 'END'                                                              
-%       COPY '#LIST 22'                                                         
-%       COPY 'END'                                                              
-%      END IF                                                                   
-%%                                                                              
-                                                                                
-                                                                                
-^^?? NC TEXT                                                                    
-%    GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'                     
-%    EVALUATE NCYCLE = VALUE                                                    
-% TRANSFER "^^CO SETKEY XREFINE_CYCLES " // CHARACTER ( NCYCLE ) TO DISPLAY     
+^^?? NC TEXT
+%    GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
+%    EVALUATE NCYCLE = VALUE
+% TRANSFER "^^CO SETKEY XREFINE_CYCLES " // CHARACTER ( NCYCLE ) TO DISPLAY
 
-^^?? NS TEXT                                                                    
-%    GET NOSTORE SILENT FINAL REAL 'Partial Shift Factor' '1.0'                     
-%    EVALUATE SHIFT = VALUE                                                    
+^^?? NS TEXT
+%    GET NOSTORE SILENT FINAL REAL 'Partial Shift Factor' '1.0'
+%    EVALUATE SHIFT = VALUE
 
-^^?? NF STATE                                                                   
-%    VERIFY ON OFF                                                              
-%    GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '                         
-%    EVALUATE NFORCE = VALUE                                                    
-^^CO DISPOSE XREFINE                                                            
-%%                                                                              
-%  END IF                                                                       
-%%  COPY '#SUM LIST 12'                                                         
-%%  COPY 'END'                                                                  
-%%                                                                              
-%  COPY '#SCRIPT RFACTOR'                                                       
-%  EVALUATE RMIN = R                                                            
-% if ( oscale - 1.000 .ge. - .0001 ) .and. ( oscale - 1.000 .le. .0001 ) then   
-%      copy '#sfls'                                                             
-%      copy 'scale'                                                             
-%      copy 'end'                                                               
-%      end if                                                                   
-%%                                                                              
-%  COPY '#SCRIPT XGETINFO'                                                      
-%  IF ( EDONE .EQ. TRUE ) .AND. ( PDONE .EQ. FALSE ) THEN                       
-%    IF EXISTS 11 .EQ. 1 THEN                                                   
-%      COPY '#DISK'                                                             
-%      COPY 'DELETE 11'                                                         
-%      COPY 'END'                                                               
-%    END IF                                                                     
-%    EVALUATE PMASK = TRUE                                                      
-%    EVALUATE PDONE = TRUE                                                      
-%    COPY '#SCRIPT XPUTINFO'                                                    
-%    COPY '#PURGE LIST=11 MON=LOW'                                              
-%    COPY 'END'                                                                 
-%  END IF                                                                       
-%%                                                                              
-%  COPY '#SCRIPT XDELQ'                                                         
-%%                                                                              
-%  COPY '#LIST 22'                                                              
-%  COPY 'END'                                                                   
-%%                                                                              
-%  IF NCYCLE .GT. 0 THEN                                                        
-%    CASE NFORCE                                                                
-%      BLOCK                                        % NORMAL (not forced)       
-%%                                                                              
-%% Cope with people who insist on more than 5 lsq cycles in one go.             
-%% Do them in blocks of 5. Even if convergence is detected, we'll               
-%% still have to do one from every block of 5.                                  
-%%                                                                              
-^^CO     SETKEY XREFINE_CONVERGE 1                                              
-%        IF NCYCLE .GT. 5 THEN                                                  
-^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5                   
-^^WI { @ 2,2 STATIC T1 'Click to abort (after at most 5 more cycles).'          
-^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW        
-^^CR                                                                            
-%          LOOP                                                                 
-%            COPY '#SFLS'                                                       
-%            LOOP 5 TIMES                                                       
-%              COPY 'REFINE'                                                    
+^^?? NF STATE
+%    VERIFY ON OFF
+%    GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
+%    EVALUATE NFORCE = VALUE
+
+^^?? FG STATE
+%   VERIFY ON OFF
+%    GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
+%    IF VALUE .EQ. 1 THEN
+%     EVALUATE FREEGIFT = TRUE
+^^CO     SETKEY XREFINE_FREEGIFT 1
+%    ELSE
+%     EVALUATE FREEGIFT = FALSE
+^^CO     SETKEY XREFINE_FREEGIFT 0
+%    END IF
+^^CO DISPOSE XREFINE
+%%
+%  END IF
+%%  COPY '#SUM LIST 12'
+%%  COPY 'END'
+%%
+%  EVALUATE RMIN = R
+% if ( oscale - 1.000 .ge. - .0001 ) .and. ( oscale - 1.000 .le. .0001 ) then
+%      copy '#sfls'
+%      copy 'scale'
+%      copy 'end'
+%      end if
+%%
+%  COPY '#SCRIPT XGETINFO'
+%  IF ( EDONE .EQ. TRUE ) .AND. ( PDONE .EQ. FALSE ) THEN
+%    IF EXISTS 11 .EQ. 1 THEN
+%      COPY '#DISK'
+%      COPY 'DELETE 11'
+%      COPY 'END'
+%    END IF
+%    EVALUATE PMASK = TRUE
+%    EVALUATE PDONE = TRUE
+%    COPY '#SCRIPT XPUTINFO'
+%    COPY '#PURGE LIST=11 MON=LOW'
+%    COPY 'END'
+%  END IF
+%%
+%  COPY '#SCRIPT XDELQ'
+%%
+%  COPY '#LIST 22'
+%  COPY 'END'
+%%
+%  IF NCYCLE .GT. 0 THEN
+%    CASE NFORCE
+%%
+%      BLOCK                                        % NORMAL (not forced)
+%%
+^^CO     SETKEY XREFINE_CONVERGE 1
+^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
+^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
+^^CR
+%          LOOP NCYCLE TIMES
+%            COPY '#SFLS'
+%            COPY 'REFINE'
 %              IF SHIFT .LT. 1.0 THEN
-%                clear                                                                      
-%                insert 'SHIFT GENERAL ='                                                            
-%                store real  shift                                                       
-%                send                                                                       
+%               clear
+%               insert 'SHIFT GENERAL ='
+%               store real  shift
+%               send
 %              END IF
-%              EVALUATE NCYCLE = NCYCLE - 1                                     
-%              IF ( NCYCLE .LE. 0 ) THEN                                        
-%                EVALUATE LOOPEND = LOOPCOUNTER                                 
-%              END IF                                                           
-%            END LOOP                                                           
-%            COPY 'END'                                                         
-^^??         RF_BAB STATE                                                       
-%            VERIFY ON OFF                                                      
-%            GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                       
-%            IF VALUE .EQ. 1 THEN                                               
-%              EVALUATE LOOPEND = LOOPCOUNTER                                   
-{I Further refinement cycles abandoned at users request.                        
-%            END IF                                                             
-%            IF ( NCYCLE .LE. 0 ) THEN                                          
-%              EVALUATE LOOPEND = LOOPCOUNTER                                   
-%            END IF                                                             
-%          END LOOP                                                             
-%        ELSE                                                                   
-%%                                                                              
-%% Normal less than or eq 5 lsq cycles.                                         
-%%                                                                              
-^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=3                   
-^^WI { @ 2,2 STATIC T1 'Please wait. Refinement in progress' } SHOW             
-^^CR                                                                            
-%          COPY '#SFLS'                                                         
-%          LOOP NCYCLE TIMES                                                    
-%            COPY 'REFINE'                                                      
+%            COPY 'END'
+%%         TEST IF CONVERGED 
+%            IF LSQ:FLAG .GT. 1 THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+{I Refinement has converged
+%            ELSE
+%             IF FREEGIFT THEN
+{I This is a Free Gift cycle
+%              COPY '#SFLS'
+%              COPY 'REFINE MATRIX=OLD'
 %              IF SHIFT .LT. 1.0 THEN
-%                clear                                                                      
-%                insert 'SHIFT GENERAL ='                                                            
-%                store real  shift                                                       
-%                send                                                                       
+%                 EVALUATE FREESHIFT = SHIFT
+%              ELSE
+%                 EVALUATE FREESHIFT = .75
 %              END IF
-%          END LOOP                                                             
-%          COPY 'END'                                                           
-%        END IF                                                                 
-%      END BLOCK                                                                
-%      BLOCK                                        % FORCE                     
-%%                                                                              
-%% n forced cycles.                                                             
-%%                                                                              
-^^CO SETKEY XREFINE_CONVERGE 0                                                  
-^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5                   
-^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'                     
-^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW        
-^^CR                                                                            
-%        LOOP NCYCLE TIMES                                                      
-%          COPY '#SFLS'                                                         
-%          COPY 'REFINE'                                                        
+%              CLEAR
+%              INSERT 'SHIFT GENERAL ='
+%              STORE REAL  FREESHIFT
+%              SEND
+%              COPY 'END'
+%             END IF
+%%         TEST IF CONVERGED 
+%             IF LSQ:FLAG .GT. 1 THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+{I Refinement has converged
+%             END IF
+%            END IF
+%  TRANSFER '{I Finished Cycle ' // character loopcounter //  ' of ' //  character ncycle TO DISPLAY 
+^^??         RF_BAB STATE
+%            VERIFY ON OFF
+%            GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%            IF VALUE .EQ. 1  THEN
+%              EVALUATE LOOPEND = LOOPCOUNTER
+{I Further refinement cycles abandoned at users request.
+%            END IF
+%          END LOOP
+%      END BLOCK
+%%
+%      BLOCK                                        % FORCE
+%%
+%% n forced cycles.
+%%
+^^CO SETKEY XREFINE_CONVERGE 0
+^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
+^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
+^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
+^^CR
+%        LOOP NCYCLE TIMES
+%          COPY '#SFLS'
+%          COPY 'REFINE'
 %              IF SHIFT .LT. 1.0 THEN
-%                clear                                                                      
-%                insert 'SHIFT GENERAL ='                                                            
-%                store real  shift                                                       
-%                send                                                                       
+%                clear
+%                insert 'SHIFT GENERAL ='
+%                store real  shift
+%                send
 %              END IF
-%          COPY 'END'                                                           
-^^??       RF_BAB STATE                                                         
-%          VERIFY ON OFF                                                        
-%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                         
-%          IF VALUE .EQ. 1 THEN                                                 
-{I Further refinement cycles abandoned at users request.                        
-%              EVALUATE LOOPEND = LOOPCOUNTER                                   
-%          END IF                                                               
-%        END LOOP                                                               
-%      END BLOCK                                                                
-%    END CASE                                                                   
-%  END IF                                                                       
-^^CO DISPOSE XABORT                                                             
-%%                                                                              
-%  COPY '#SCRIPT RFACTOR'                                                       
-%  CLEAR                                                                        
-%  INSERT '{RThe old R-factor was'                                              
-%  STORE FORMAT /(F8.3)/ LENGTH 8 REAL RMIN                                     
-%  INSERT '%'                                                                   
-%%                                                                              
-%  IF ( RMIN .GT. 0.0 ) THEN                                                    
-%   IF R .GT. RMIN * 1.1 THEN                                                   
-%    INSERT ', the R-factor is worse.'                                          
-%   ELSE IF R .GE. RMIN * 0.99 THEN                                             
-%    INSERT ', the refinement has probably converged.'                          
-%   END IF                                                                      
-%  END IF                                                                       
-%  OUTPUT                                                                       
-                                                                                
-%%                                                                              
-%  EVALUATE RMIN = R                                                            
-%%                                                                              
-%END SCRIPT                                                                     
-                                                                                
+%          COPY 'END'
+%          IF FREEGIFT THEN
+{I This is a Free Gift cycle
+%            COPY '#SFLS'
+%            COPY 'REFINE MATRIX=OLD'
+%            IF SHIFT .LT. 1.0 THEN
+%                EVALUATE FREESHIFT = SHIFT
+%            ELSE
+%                EVALUATE FREESHIFT = .75
+%            END IF
+%            clear
+%            insert 'SHIFT GENERAL ='
+%            store real  freeshift
+%            send
+%            COPY 'END'
+%          END IF
+%  TRANSFER '{I Finished Cycle ' // character loopcounter //  ' of ' //  character ncycle TO DISPLAY 
+^^??       RF_BAB STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          IF VALUE .EQ. 1 THEN
+{I Further refinement cycles abandoned at users request.
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END LOOP
+%      END BLOCK
+%    END CASE
+%  END IF
+^^CO DISPOSE XABORT
+%%
+%  COPY '#SCRIPT RFACTOR'
+%  CLEAR
+%  INSERT '{RThe old R-factor was'
+%  STORE FORMAT /(F8.3)/ LENGTH 8 REAL RMIN
+%  INSERT '%'
+%%
+%  IF ( RMIN .GT. 0.0 ) THEN
+%   IF R .GT. RMIN * 1.1 THEN
+%    INSERT ', the R-factor is worse.'
+%   ELSE IF R .GE. RMIN * 0.99 THEN
+%    INSERT ', the refinement has probably converged.'
+%   END IF
+%  END IF
+%  OUTPUT
+%%
+%  EVALUATE RMIN = R
+%%
+%END SCRIPT
