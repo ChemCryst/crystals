@@ -1,11 +1,42 @@
 %SCRIPT TONSWORK
 %%                                                                   
+%% Prepare for the absolute structure determination
 %% Create a LIST 7 from 6, gather together FRIEDEL pairs                                                                              
-%%                                                                              
+%%                                                 
+%  VARIABLE LOGICAL FLACKERROR                             
+%  EVALUATE FLACKERROR = TRUE
 %  VARIABLE LOGICAL SERR
 %  VARIABLE INTEGER L5SER L5NEW
+%%
+%% Check SG in non centro
+%  BLOCK
+%   VARIABLE INTEGER CENTRO
+%   COPY '#GENERALEDIT 2'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%   COPY 'END'
+%   IF CENTRO .NE. 0 THEN
+{E **** FATAL: The Space Group is Centrosymmetric
+%    FINISH
+%   END IF                            
+%  END BLOCK
+%% Anomalous scattering
+%%
+{I Checking anomalous scattering is used.
+%  BLOCK
+%  VARIABLE INTEGER IANOMA
+%    COPY '#GENERALEDIT 23'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO IANOMA'
+%    COPY 'END'
+%    IF ( IANOMA .EQ. - 1 ) THEN
+{E *** FATAL:  You should include anomalous scattering
+%      COPY '#SCRIPT ED23'
+{I *** You probably now need some cycles of refinement
+%       FINISH
+%    END IF
+%  END BLOCK
 %%                                                                              
-%% Create special LIST 7 with F+ and F- in adjacent slots                       
 %  BLOCK                                                                        
 %    IF ( EXISTS 6 .NE. 1 ) THEN                                                
 {E **** FATAL: There are no reflections to work with                            
@@ -24,6 +55,9 @@
 %    COPY 'DELETE 7'                                                            
 %    COPY 'END'                                                                 
 %  END IF                                                                       
+%%
+%% Create special LIST 7 with F+ and F- in adjacent slots                       
+%%
 %COPY '#SCRIPT copy67'                                                          
 %  BLOCK                                                                        
 %    IF ( EXISTS 7 .NE. 1 ) THEN                                                
@@ -70,5 +104,7 @@
 %copy 'end'                                                                     
 %copy '#purge  list=7'                                                          
 %copy 'end'                                                                     
+%%
+% EVALUATE FLACKERROR = FALSE
 %%        
 % END SCRIPT

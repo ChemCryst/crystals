@@ -13,12 +13,17 @@
 % EVALUATE FILTER4 = 0.001
 % EVALUATE FILTER5 = 2.5
 % VARIABLE INTEGER _BADNPP 
+%%
 % IF ( EXISTS 6 ) .NE. 1 THEN
 {E  No reflections have been stored.
 {E  Absolute configuration analysis is not possible.
 %   FINISH
 % ELSE
+%   VARIABLE LOGICAL FLACKERROR
 %   COPY '#SCRIPT TONSWORK'
+%   IF FLACKERROR .EQ. TRUE THEN
+%    FINISH
+%   END IF
 %   IF ( EXISTS 7 ) .NE. 1 THEN
 {E   Reflections could not be re-formatted
 %    FINISH
@@ -318,7 +323,6 @@
 %       EVALUATE CWEIGHT = 'lsq'
 %     END IF
 %%
-Starting calculation
 %      IF IPUNCH .EQ. 2 THEN
 %       COPY '#RELEASE PUNCH flack.l16'
 %      END IF
