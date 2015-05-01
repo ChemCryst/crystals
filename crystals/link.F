@@ -680,6 +680,7 @@ C----- UNIT CARDS
         WRITE (NCFPU1, ' (''UNIT '', 12F6.0)')
      1  (F*STORE(J+4), J = L29, M29, MD29)
       ENDIF
+        WRITE (NCFPU1, ' (''WGHT '')')
 C
       IF (IEFORT .EQ. 3) THEN
 C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
