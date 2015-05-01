@@ -392,6 +392,8 @@ C>DJWOCT96
 cdjwapril2015
 c      SMAX = -1000000.0
        smax = zero
+       JSAVE = 0
+       CSAVE = ' '
 C<DJWOCT96
 C--FIND THE NEW MATRIX FLAG
       JK=ISTORE(M33CD+6)
