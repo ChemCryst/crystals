@@ -358,6 +358,8 @@ C--LOAD A FEW MORE LISTS
 cdjwdec06 - save the last r-factor
       rlast = store(l30rf)
 c
+c send non-convergence message to SCRIPT
+      ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 1, 1 )
 C--PRINT OUT THE PAGE HEADING
       CALL XPRTCN
       I=NINT(STORE(M33V))
@@ -387,7 +389,9 @@ C----- SET THE EIGENVALUE FILTERS
       DISCRM = STORE(M33CD+11)
 C----- MAXIMUM  SHIFT/ESD
 C>DJWOCT96
-      SMAX = -1000000.0
+cdjwapril2015
+c      SMAX = -1000000.0
+       smax = zero
 C<DJWOCT96
 C--FIND THE NEW MATRIX FLAG
       JK=ISTORE(M33CD+6)
@@ -848,8 +852,10 @@ C----- SUM OF SQUARES SHIFT / ESD
             ABSF = ABSF + ABS(S)
 C ----- FIND THE MAXIMUM SHIFT /ESD
 C>DJWOCT96
-            IF (ABS(S) .GT. SMAX) THEN
-               SMAX = ABS(S)
+cdjwapri2015
+c hang onto sign for the moment
+            IF (ABS(S) .GT. abs(SMAX)) THEN
+               SMAX = S
                JSAVE = JT
                CSAVE = CTEXT
             ENDIF
@@ -988,8 +994,6 @@ C MEAN ABSOLUTE SHIFT/ESD
       ABSFM = ABSF/STORE(L11P+23)
 c----- RMS (shift/esd)
       STORE(M33V+3)=RMSS
-C----- STORE MAXIMUM SHIFT/ESD
-CDJW0202      STORE(M33V+3) = ABS(SMAX)
 
       IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS,absfm 
 CRIC13:3556  FORMAT(29X,'    The rms (shift/su)  =', F16.7/
@@ -997,7 +1001,9 @@ CRIC13:     1 29x,      ' The mean abs(shift/su) =', F16.7)
 3556  FORMAT(29X,'    The rms (shift/su)  =', F16.3/
      1 29x,      ' The mean abs(shift/su) =', F16.3)
 
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,3557) SMAX, JSAVE, CSAVE(1:LENNAM)
+      IF (ISSPRT .EQ. 0) 
+c remove the ABS() at some time in the future
+     1 WRITE(NCWU,3557) abs(SMAX), JSAVE, CSAVE(1:LENNAM)
 CRIC13:3557  FORMAT(' The largest (shift/esd) =',F10.6,
 3557  FORMAT(' The largest (shift/esd) =',F10.2,
      1 ', for Parameter ', I4,', ', A/)
@@ -1121,6 +1127,8 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
      3 ' Actual value condition on: ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+c send convergence message to SCRIPT
+       ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 2, 1 )
       ENDIF
       IF (J .GT. 0) THEN
        WRITE(CMON,4351) CLST23(J)(:)
@@ -1128,6 +1136,8 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
      3 ' Relative change condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+c send convergence message to SCRIPT
+       ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 2, 1 )
       ENDIF
 C
 C--REWRITE LIST 33 TO THE DISC
@@ -1216,7 +1226,8 @@ c     1      (STORE(L11P+24)+ STORE(L11P+27)- STORE(L30RF+2)))
 cdjwjun09
       ENDIF
 C----- MAXIMUM SHIFT/ESD
-      STORE(L30RF+7 ) = SMAX
+c     now remove sign from maximum shift
+      STORE(L30RF+7 ) = abs(SMAX)
       STORE(L30RF+8 ) = STORE(L11P+24)
       IF (STORE(L11P+24) .GT. ZERO) STORE(L30RF+9 ) = STORE(L11P+25)
       IF (STORE(L11P+27) .GT. ZERO) STORE(L30RF+10 ) = STORE(L11P+28)
@@ -2103,7 +2114,7 @@ C---------  COMPUTE ESD
 C--CHECK IF WE ARE USING AN OLD LIST 24
 cdjw0202
             c = 0.
-            idjw = iquest
+            IDJW = IQUEST
             IF(M24 .GT. 0) THEN
 C---------- USING AN OLD LIST 24 - CHECK THAT SHIFT IS NOT SINGULAR
 C---------- COMPUTE THE RATIO OF THE TWO SHIFTS
