@@ -14072,7 +14072,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation   26  ends  2
 SumFo/SumFc=  1.835   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.978                                                                                                                                                                                       
 LS-scale=  1.776   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    0.106    100*(<Fo>-<Fc>)/<Fo> =     3.23                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.105    100*(<Fo>-<Fc>)/<Fo> =     3.23                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -14857,7 +14857,7 @@ All cycle   shift/esd            0.30E-01       0.15           0.10E+05
 All cycle   Min function          0.0           0.88E+03       0.10E+16
 Inter cycle R-factor             -5.0           0.23E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.12E-02       0.10E+03
-Inter cycle shift/esd            -10.          -0.98E-04       0.10E+05
+Inter cycle shift/esd            -10.          -0.10E-03       0.10E+05
 Inter cycle Min function          0.0           0.26           0.10E+16
 
 
@@ -20947,7 +20947,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation   15  ends  2
 SumFo/SumFc=  1.877   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.362                                                                                                                                                                                       
 LS-scale=  0.257   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   19.478    100*(<Fo>-<Fc>)/<Fo> =    86.32                                                                                                                                                                                                         
+<Fo>-<Fc> =   19.478    100*(<Fo>-<Fc>)/<Fo> =    86.33                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -21130,7 +21130,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation   16  ends  2
 SumFo/SumFc=  1.871   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.362                                                                                                                                                                                       
 LS-scale=  0.257   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   19.467    100*(<Fo>-<Fc>)/<Fo> =    86.28                                                                                                                                                                                                         
+<Fo>-<Fc> =   19.468    100*(<Fo>-<Fc>)/<Fo> =    86.28                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -21566,7 +21566,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation   18  ends  2
 SumFo/SumFc=  1.853   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.362                                                                                                                                                                                       
 LS-scale=  0.257   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   19.438    100*(<Fo>-<Fc>)/<Fo> =    86.15                                                                                                                                                                                                         
+<Fo>-<Fc> =   19.439    100*(<Fo>-<Fc>)/<Fo> =    86.15                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -21703,23 +21703,23 @@ Mean C-C su =   0.0000
 
     h    k    l      Fo        Fc 
 
-    6.   2.   0.   -20.56     0.88
+    6.   2.   0.   -20.55     0.88
     5.   6.   0.    -5.16     0.10
     5.   7.   2.    -7.95     0.13
     0.   9.   2.    -2.25     0.71
-    3.  12.   3.    -6.33     1.15
+    3.  12.   3.    -6.32     1.15
     0.  14.   3.   -13.44     0.41
     0.  13.   6.    -4.30     0.39
     2.   0.   9.    -7.91     0.27
     0.  12.   9.    -7.33     0.37
-    2.  10.  10.   -18.98     0.55
+    2.  10.  10.   -18.97     0.55
     0.  12.  10.    -7.46     0.82
     2.   6.  14.   -11.07     1.51
     2.   0.  16.    -2.37     0.39
     0.   6.  16.   -13.44     0.01
     1.   0.  17.    -7.33     0.54
     3.   3.  17.    -3.03     0.78
-    1.   0.  18.   -17.40     0.36
+    1.   0.  18.   -17.39     0.36
     0.   2.  18.    -8.48     0.19
     2.   4.  18.   -11.07     0.53
     1.   0.  19.   -11.86     1.03
@@ -21745,7 +21745,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation   19  ends  1
 SumFo/SumFc=  1.840   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.362                                                                                                                                                                                       
 LS-scale=  1.747   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    0.168    100*(<Fo>-<Fc>)/<Fo> =     5.06                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.168    100*(<Fo>-<Fc>)/<Fo> =     5.05                                                                                                                                                                                                         
 #SFLS                                                                                                                                                                                                                                                           
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
@@ -21767,7 +21767,7 @@ LS-scale=  1.747   Wilson Scale=  0.000
     5.   7.   2.    -1.17     0.13
     0.   9.   2.    -0.33     0.71
     3.  12.   3.    -0.93     1.15
-    0.  14.   3.    -1.98     0.41
+    0.  14.   3.    -1.97     0.41
     1.   0.   5.     0.43     2.55
     0.  13.   6.    -0.63     0.39
     2.   0.   9.    -1.16     0.27
@@ -21777,7 +21777,7 @@ LS-scale=  1.747   Wilson Scale=  0.000
     0.  12.  10.    -1.10     0.82
     2.   6.  14.    -1.63     1.51
     2.   0.  16.    -0.35     0.39
-    0.   6.  16.    -1.98     0.01
+    0.   6.  16.    -1.97     0.01
     1.   0.  17.    -1.08     0.54
     3.   3.  17.    -0.45     0.78
     1.   0.  18.    -2.56     0.36
@@ -21799,14 +21799,14 @@ LS-scale=  1.747   Wilson Scale=  0.000
 
       3710.          3523.            431.                                   On scale of /FC/
 
-      6482.          6154.            753.               0.9699E+03          On scale of /FO/
+      6482.          6154.            753.               0.9698E+03          On scale of /FO/
 
  New scale factor (G) is      1.747,    1119 reflections used in refinement
 
  Structure factor least squares calculation   20  ends  2
 SumFo/SumFc=  1.840   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.362                                                                                                                                                                                       
 LS-scale=  1.747   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    0.168    100*(<Fo>-<Fc>)/<Fo> =     5.06                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.168    100*(<Fo>-<Fc>)/<Fo> =     5.05                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -21851,7 +21851,7 @@ All cycle   Min function          0.0           0.97E+03       0.10E+16
  Statistics for     1 least squares parameters, with  1120 degrees of freedom
  Number of observations              1119                 2              1121
  Minimisation function              0.970E+03         0.000E+00         0.970E+03
- Hamilton weighted R-value          17.375             0.000            17.375
+ Hamilton weighted R-value          17.374             0.000            17.374
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -21949,18 +21949,18 @@ Mean C-C su =   0.0000
     4.   2.   0.    13.10     7.36
     5.   2.   0.     5.50     3.54
     6.   2.   0.    -2.47     0.88
-    1.   3.   0.    51.06    29.87
+    1.   3.   0.    51.05    29.87
     2.   3.   0.     5.41     1.83
     4.   3.   0.    19.36    11.04
     4.   5.   0.    11.58     7.48
     5.   6.   0.    -0.77     0.10
     1.   7.   0.     2.37     3.66
     5.   7.   0.     2.94     1.32
-    0.   8.   0.    26.86    14.27
+    0.   8.   0.    26.85    14.27
     2.   8.   0.    23.63    13.14
-    4.   8.   0.    19.46    12.44
+    4.   8.   0.    19.45    12.44
     1.   9.   0.    25.15    14.69
-    2.   9.   0.    22.40    12.99
+    2.   9.   0.    22.39    12.99
     3.   9.   0.     7.40     3.79
     4.   9.   0.     8.64     5.10
     0.  10.   0.     0.54     1.54
@@ -21983,7 +21983,7 @@ Mean C-C su =   0.0000
 
       3710.          3521.            401.                                   On scale of /FC/
 
-      6482.          6151.            700.               0.9462E+03          On scale of /FO/
+      6482.          6151.            700.               0.9461E+03          On scale of /FO/
 
  New scale factor (G) is      1.747,    1119 reflections used in refinement
 
@@ -22033,7 +22033,7 @@ Inter cycle Min function          0.0            24.           0.10E+16
  Statistics for     1 least squares parameters, with  1120 degrees of freedom
  Number of observations              1119                 2              1121
  Minimisation function              0.946E+03         0.000E+00         0.946E+03
- Hamilton weighted R-value          17.161             0.000            17.161
+ Hamilton weighted R-value          17.160             0.000            17.160
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -22135,19 +22135,19 @@ Mean C-C su =   0.0000
     2.   3.   0.     5.25     1.83
     4.   3.   0.    18.80    11.04
     2.   4.   0.     2.21     2.95
-    4.   5.   0.    11.25     7.48
+    4.   5.   0.    11.24     7.48
     5.   6.   0.    -0.77     0.10
     1.   7.   0.     2.30     3.66
     5.   7.   0.     2.86     1.32
-    0.   8.   0.    26.09    14.27
+    0.   8.   0.    26.08    14.27
     2.   8.   0.    22.95    13.14
-    4.   8.   0.    18.90    12.44
-    1.   9.   0.    24.43    14.69
+    4.   8.   0.    18.89    12.44
+    1.   9.   0.    24.42    14.69
     2.   9.   0.    21.75    12.99
     3.   9.   0.     7.19     3.79
     4.   9.   0.     8.39     5.10
     0.  10.   0.     0.54     1.54
-    1.  10.   0.     7.84     4.81
+    1.  10.   0.     7.83     4.81
     1.  11.   0.     1.84     0.06
 
  And so on ------------
@@ -22214,7 +22214,7 @@ Inter cycle Min function          0.0           0.65           0.10E+16
 
  Statistics for     1 least squares parameters, with  1120 degrees of freedom
  Number of observations              1119                 2              1121
- Minimisation function              0.946E+03         0.000E+00         0.946E+03
+ Minimisation function              0.945E+03         0.000E+00         0.945E+03
  Hamilton weighted R-value          17.155             0.000            17.155
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -22313,16 +22313,16 @@ Mean C-C su =   0.0000
     4.   2.   0.    12.66     7.36
     5.   2.   0.     5.32     3.54
     6.   2.   0.    -2.39     0.88
-    1.   3.   0.    49.36    29.87
+    1.   3.   0.    49.35    29.87
     2.   3.   0.     5.23     1.83
-    4.   3.   0.    18.72    11.04
+    4.   3.   0.    18.71    11.04
     2.   4.   0.     2.20     2.95
     4.   5.   0.    11.19     7.48
     5.   6.   0.    -0.77     0.10
     1.   7.   0.     2.29     3.66
     5.   7.   0.     2.84     1.32
     0.   8.   0.    25.96    14.27
-    2.   8.   0.    22.85    13.14
+    2.   8.   0.    22.84    13.14
     4.   8.   0.    18.81    12.44
     1.   9.   0.    24.31    14.69
     2.   9.   0.    21.65    12.99
@@ -22354,7 +22354,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation   23  ends  1
 SumFo/SumFc=  1.841   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.362                                                                                                                                                                                       
 LS-scale=  1.772   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    0.123    100*(<Fo>-<Fc>)/<Fo> =     3.77                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.123    100*(<Fo>-<Fc>)/<Fo> =     3.76                                                                                                                                                                                                         
 # NOW TRY ALL THE SCALES TOGETHER. (NOTE: CONSTRAINT ON BATCH SCALES)                                                                                                                                                                                           
 #LIST 12                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
@@ -22385,7 +22385,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
     4.   2.   0.    12.48     7.36
     5.   2.   0.     5.25     3.54
     6.   2.   0.    -2.35     0.88
-    1.   3.   0.    48.67    29.87
+    1.   3.   0.    48.66    29.87
     2.   3.   0.     5.16     1.83
     4.   3.   0.    18.45    11.04
     2.   4.   0.     2.17     2.95
@@ -22394,8 +22394,8 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
     1.   7.   0.     2.26     3.66
     5.   7.   0.     2.80     1.32
     0.   8.   0.    25.60    14.27
-    2.   8.   0.    22.53    13.14
-    4.   8.   0.    18.55    12.44
+    2.   8.   0.    22.52    13.14
+    4.   8.   0.    18.54    12.44
     1.   9.   0.    23.97    14.69
     2.   9.   0.    21.35    12.99
     3.   9.   0.     7.06     3.79
@@ -22411,7 +22411,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
                              ***
  R-value    Weighted R      ************              ************
                            *************  HERE IT IS  ************
-  10.31       16.94         ************              ************
+  10.31       16.93         ************              ************
                              ***
                               ***
 
@@ -22419,14 +22419,14 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
 
       3658.          3521.            379.                                   On scale of /FC/
 
-      6482.          6238.            672.               0.9215E+03          On scale of /FO/
+      6482.          6238.            672.               0.9214E+03          On scale of /FO/
 
  New scale factor (G) is      1.772,    1119 reflections used in refinement
 
  Structure factor least squares calculation   24  ends  2
 SumFo/SumFc=  1.841   SumFoFc/SumFc^2=  0.978   SumwFoFc/SumwFc^2=  0.362                                                                                                                                                                                       
 LS-scale=  1.772   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =    0.123    100*(<Fo>-<Fc>)/<Fo> =     3.77                                                                                                                                                                                                         
+<Fo>-<Fc> =    0.123    100*(<Fo>-<Fc>)/<Fo> =     3.76                                                                                                                                                                                                         
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -22456,8 +22456,8 @@ LS-scale=  1.772   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            139.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           8.326
-                              The mean abs(shift/su) =           8.300
+                                 The rms (shift/su)  =           8.323
+                              The mean abs(shift/su) =           8.298
  The largest (shift/esd) =      8.95, for Parameter    2, BATCH2
 
                                 Min          Actual           Max
@@ -22495,7 +22495,7 @@ All cycle   Min function          0.0           0.92E+03       0.10E+16
  R.M.S.         0.17   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- RMS sh/esd     8.33     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+ RMS sh/esd     8.32     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
 
 
  Maximum        0.24   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
@@ -22641,8 +22641,8 @@ LS-scale=  1.838   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             15.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           2.749
-                              The mean abs(shift/su) =           2.642
+                                 The rms (shift/su)  =           2.747
+                              The mean abs(shift/su) =           2.640
  The largest (shift/esd) =      3.40, for Parameter    2, BATCH2
 
                                 Min          Actual           Max
@@ -23688,10 +23688,10 @@ All cycle   shift/esd            0.30E-01       0.20E-03       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals    50.00     0.00     0.00    72.73    54.55    27.27     0.00     0.00     0.00     0.00     0.00     0.00
+ Reversals    50.00     0.00     0.00    72.73    45.45    18.18     0.00     0.00     0.00     0.00     0.00     0.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  51.43 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  45.71 for all parameters.
 
 
  Shift
@@ -24735,7 +24735,7 @@ LS-scale=  1.769   Wilson Scale=  0.000
  SRATIO   10          10            0.0000     -0.4E+01    0.115E-02         -0.03        O      3 X       
  SRATIO   11          11            0.0001      0.2E+02    0.434E-03          0.21        O      3 Y       
  SRATIO   14          14           -0.0003      0.5E+01    0.159E-02         -0.16        C      4 X       
- SRATIO   45          45            0.0000      0.7E+03    0.185E-02          0.01        C     11 U[ISO]  
+ SRATIO   45          45            0.0000      0.8E+03    0.185E-02          0.01        C     11 U[ISO]  
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          46 parameters
@@ -25444,7 +25444,7 @@ Inter cycle Min function          0.0           0.74E+03       0.10E+16
                       0.0000            0.0008   0.0004   0.0002   0.0017   0.0022   0.0018   0.0018   0.0017   0.0019
                                         0.0040   0.0046   0.0038
 
-     C          7.    1.0000   0.0000   0.7628   0.1147   0.3342   0.0268   0.0248   0.0409   0.0019  -0.0005  -0.0029
+     C          7.    1.0000   0.0000   0.7628   0.1147   0.3342   0.0268   0.0247   0.0409   0.0019  -0.0005  -0.0029
                       0.0000            0.0016   0.0000  -0.0002   0.0007   0.0043   0.0010  -0.0006   0.0008   0.0022
                       0.0000            0.0010   0.0004   0.0003   0.0020   0.0020   0.0024   0.0020   0.0020   0.0019
                                         0.0049   0.0044   0.0049
@@ -25883,7 +25883,7 @@ LS-scale=  1.824   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- SRATIO   13          13            0.0000      0.3E+02    0.301E-03         -0.02        C      2 Z       
+ SRATIO   13          13            0.0000      0.4E+02    0.301E-03         -0.02        C      2 Z       
  SRATIO   49          49            0.0000     -0.2E+02    0.239E-03          0.10        N      6 Z       
  SRATIO   55          55            0.0001     -0.3E+01    0.191E-02          0.03        N      6 U[12]   
  SRATIO   65          65            0.0000      0.2E+02    0.736E-03          0.03        O      8 X       
@@ -29824,8 +29824,8 @@ LS-scale=  0.257   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              3.
                                                 for           1 parameters
-                                 The rms (shift/su)  =           1.757
-                              The mean abs(shift/su) =           1.757
+                                 The rms (shift/su)  =           1.756
+                              The mean abs(shift/su) =           1.756
  The largest (shift/esd) =      1.76, for Parameter    1, BATCH2
 
                                 Min          Actual           Max
@@ -30026,7 +30026,7 @@ Mean C-C su =   0.0000
     0.   6.  16.    -3.11     0.01
     1.   0.  17.    -8.86     0.54
     3.   3.  17.    -3.66     0.78
-    1.   0.  18.    -4.03     0.36
+    1.   0.  18.    -4.02     0.36
     0.   2.  18.   -10.24     0.19
     2.   4.  18.    -2.56     0.53
     1.   0.  19.    -2.74     1.03
@@ -30205,7 +30205,7 @@ Mean C-C su =   0.0000
     0.   6.  16.   -13.42     0.01
     1.   0.  17.    -7.33     0.54
     3.   3.  17.    -3.03     0.78
-    1.   0.  18.   -17.37     0.36
+    1.   0.  18.   -17.36     0.36
     0.   2.  18.    -8.48     0.19
     2.   4.  18.   -11.05     0.53
     1.   0.  19.   -11.84     1.03
@@ -30467,7 +30467,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      3710.          3521.            401.                                   On scale of /FC/
+      3710.          3521.            400.                                   On scale of /FC/
 
       6482.          6152.            700.               0.9459E+03          On scale of /FO/
 
@@ -30942,7 +30942,7 @@ LS-scale=  1.772   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            138.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           8.307
+                                 The rms (shift/su)  =           8.306
                               The mean abs(shift/su) =           8.281
  The largest (shift/esd) =      8.93, for Parameter    2, BATCH2
 
@@ -31127,7 +31127,7 @@ LS-scale=  1.838   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =             15.
                                                 for           2 parameters
-                                 The rms (shift/su)  =           2.730
+                                 The rms (shift/su)  =           2.729
                               The mean abs(shift/su) =           2.623
  The largest (shift/esd) =      3.38, for Parameter    2, BATCH2
 
@@ -32696,7 +32696,7 @@ Inter cycle Min function          0.0           0.32E+04       0.10E+16
  R.M.S.         0.02   0.0000   0.0050   0.0009   0.0013   0.0004   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0046   0.0138   0.0055
 
- RMS sh/esd     0.38     0.00     3.53     0.69     2.06     0.87     0.00     0.00     0.00     0.00     0.00     0.00
+ RMS sh/esd     0.39     0.00     3.53     0.69     2.06     0.87     0.00     0.00     0.00     0.00     0.00     0.00
 
 
  Maximum        0.03   0.0000   0.0147   0.0019   0.0030   0.0007   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000

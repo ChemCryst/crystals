@@ -9830,7 +9830,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.56E-01       0.10E+05
 All cycle   Min function          0.0           0.77E+04       0.10E+16
 Inter cycle R-factor             -5.0           0.19           0.10E+03
-Inter cycle Rw                   -5.0           0.11           0.10E+03
+Inter cycle Rw                   -5.0           0.12           0.10E+03
 Inter cycle shift/esd            -10.           0.33           0.10E+05
 Inter cycle Min function          0.0            51.           0.10E+16
 
@@ -10287,7 +10287,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.562      0.0E+00    0.455E-01         12.34                          SCALE   
- LARGE     2           2           563.375      0.0E+00    0.285E+02         19.74                          EXTPARAM
+ LARGE     2           2           563.376      0.0E+00    0.285E+02         19.74                          EXTPARAM
  S/ESD     4           4            0.0114      0.0E+00    0.445E-02          2.57        C      1 U[22]   
  S/ESD     5           5            0.0060      0.0E+00    0.448E-02          1.33        C      1 U[33]   
  S/ESD     9           9            0.0073      0.0E+00    0.472E-02          1.55        C      2 U[11]   
@@ -10367,7 +10367,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
  RMS sh/esd    16.46     0.00     0.00     0.00     0.00     0.00     3.35     1.88     2.24     1.48     1.09     0.96
 
 
- Maximum      563.37   0.0000   0.0000   0.0000   0.0000   0.0000   0.0334   0.0143   0.0173   0.0158   0.0107   0.0113
+ Maximum      563.38   0.0000   0.0000   0.0000   0.0000   0.0000   0.0334   0.0143   0.0173   0.0158   0.0107   0.0113
                                          0.0000   0.0000   0.0000
 
  Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
@@ -12960,7 +12960,7 @@ LS-scale=  1.255   Wilson Scale=  0.000
  LARGE     1           1             0.389      0.4E+00    0.263E-01         14.78                          SCALE   
  S/ESD     4           4           -0.0010     -0.6E+00    0.913E-03         -1.08        C      1 Z       
  S/ESD     9           9           -0.0012     -0.7E+00    0.883E-03         -1.31        O      3 Y       
- S/ESD    17          17           -0.0059     -0.9E+00    0.308E-02         -1.91        N      6 X       
+ S/ESD    17          17           -0.0059     -0.9E+00    0.309E-02         -1.91        N      6 X       
  SRATIO   18          18            0.0000     -0.2E+02    0.131E-02          0.04        N      6 Y       
  S/ESD    20          20           -0.0041     -0.6E+00    0.275E-02         -1.49        C      7 X       
  S/ESD    30          30            0.0019     -0.7E+00    0.130E-02          1.44        C     10 Y       
@@ -14382,7 +14382,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.562      0.0E+00    0.455E-01         12.34                          SCALE   
- LARGE     2           2           563.382      0.0E+00    0.285E+02         19.74                          EXTPARAM
+ LARGE     2           2           563.383      0.0E+00    0.285E+02         19.74                          EXTPARAM
  S/ESD     4           4            0.0114      0.0E+00    0.445E-02          2.57        C      1 U[22]   
  S/ESD     5           5            0.0060      0.0E+00    0.448E-02          1.34        C      1 U[33]   
  S/ESD     9           9            0.0073      0.0E+00    0.472E-02          1.55        C      2 U[11]   
@@ -14440,7 +14440,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
  Statistics for    68 least squares parameters, with  1065 degrees of freedom
  Number of observations              1133                 0              1133
  Minimisation function              0.772E+04         0.000E+00         0.772E+04
- Hamilton weighted R-value          34.810             0.000            34.810
+ Hamilton weighted R-value          34.809             0.000            34.809
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -14619,7 +14619,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      7567.          7483.            777.                                   On scale of /FC/
+      7566.          7483.            777.                                   On scale of /FC/
 
      12019.         11888.           1234.               0.4613E+04          On scale of /FO/
 
@@ -16314,10 +16314,10 @@ All cycle   shift/esd            0.30E-01       0.14E-02       0.10E+05
  Maximum        0.00   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
                                          0.0000   0.0000   0.0000
 
- Reversals   100.00     0.00   100.00    54.55    90.91    72.73   100.00    66.67   100.00    66.67    50.00   100.00
+ Reversals   100.00     0.00   100.00    54.55    90.91    72.73   100.00    66.67    66.67    66.67    50.00   100.00
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  78.18 for all parameters.
+ Reversals is the percentage of shifts whose signs have changed since the last cycle, and is  76.36 for all parameters.
 
 
  Shift
