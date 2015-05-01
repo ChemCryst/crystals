@@ -1395,8 +1395,11 @@ void CxModList::RightClick( wxListEvent& event )
  {
    wxListItem li = event.GetItem();
 
-   bool bHighlight = (li.GetState() & wxLIST_STATE_SELECTED) != 0;
+//   int d = li.GetState();
 
+//   bool bHighlight = (d & wxLIST_STATE_SELECTED) != 0;
+
+   bool bHighlight = ((GetItemState (item, wxLIST_STATE_SELECTED) & wxLIST_STATE_SELECTED) != 0);
    int id = IDlist[item]-1;
 
    if ( bHighlight )

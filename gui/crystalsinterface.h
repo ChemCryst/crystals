@@ -374,6 +374,7 @@ void a ::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
 #define CXONCHAR(a)  \
 void a ::OnChar(wxKeyEvent &event){ \
 if(event.GetKeyCode()==9){ptr_to_crObject->NextFocus(event.m_shiftDown);return;}  \
+else if (event.IsKeyInCategory(WXK_CATEGORY_ARROW|WXK_CATEGORY_PAGING )) event.Skip();  \
 else {ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
 //else {(CcController::theController)->LogError(#a,0);ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
 
