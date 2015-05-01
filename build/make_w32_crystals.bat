@@ -7,8 +7,6 @@
 
 @if exist ..\crystals.exe del ..\crystals.exe
 @if exist ..\crystalsd.exe del ..\crystalsd.exe
-@if exist link.lis del link.lis
-@if exist dlink.lis del dlink.lis
 @if not exist obj mkdir obj
 @if "%COMPCODE%" == "INW" del crystals\lapack.f
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
@@ -45,16 +43,15 @@
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
 @echo %LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
-@%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe >link.lis || ( make_err.bat FPP_RELEASE_COMPILE %LD% link.lis )
+@%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe || ( make_err.bat  )
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 @goto fini
 
 :debug
-@%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe >link.lis
+@%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystalsd.exe.manifest -outputresource:crystalsd.exe;1
 
 :fini
-@type link.lis
 @goto next1
 
 :error

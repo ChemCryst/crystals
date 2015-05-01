@@ -32,6 +32,7 @@ for /f "delims=" %%a in ('svnversion') do @set CRYSVNVER=%%a
 @echo type   SET COMPCODE=DVF    for text-only Digital Fortran version.
 @echo type   SET COMPCODE=F95    for FTN95 version.
 @echo type   SET COMPCODE=GID    for GUI version [Digital and Microsoft]
+@echo type   SET COMPCODE=INW    for GUI version [Intel and Microsoft]
 @echo ----------------------------------------------------------------
 @goto exit
 
