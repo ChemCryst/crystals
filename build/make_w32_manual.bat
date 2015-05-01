@@ -23,6 +23,7 @@ copy ..\manual\analyse\*.gif  manual\analyse
 copy ..\manual\analyse\*.tif  manual\analyse
 copy ..\manual\analyse\*.css  manual\analyse
 copy ..\manual\analyse\*.pdf  manual\analyse
+copy ..\manual\analyse\*.png  manual\analyse
 
 copy ..\manual\Xray-data\*.html manual\Xray-data
 copy ..\manual\Xray-data\*.jpg  manual\Xray-data
