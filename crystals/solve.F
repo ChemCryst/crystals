@@ -855,6 +855,13 @@ C----- SUM OF SQUARES SHIFT / ESD
 C ----- FIND THE MAXIMUM SHIFT /ESD
 C>DJWOCT96
 cdjwapri2015
+cRIC Ordering problem comparing zero with zero. Ensure that one
+c value is always chosen as smallest.
+            IF (JSAVE .EQ. 0) THEN
+               SMAX = S
+               JSAVE = JT
+               CSAVE = CTEXT
+            ENDIF
 c hang onto sign for the moment
             IF (ABS(S) .GT. abs(SMAX)) THEN
                SMAX = S
