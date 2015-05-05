@@ -732,7 +732,7 @@ Mean C-C su =   0.0044
      CU(1) to       O(6) to       C(7) to       C(9)         176.5    0.3    0.6
       C(7) to       O(6) to      CU(1) to      O(10)         176.4    0.4    0.5
       C(7) to       O(6) to      CU(1) to       C(3)          61.1    0.4    0.5
-     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.2    0.0
+     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.3    0.0
       C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1)   -176.4    0.6    1.7
 #TORS                                                                                                                                                                                                                                                           
 
@@ -765,7 +765,7 @@ Variance-covariance matrix of selected atoms (x10^6)
 
 
 
-     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.2    0.0
+     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.3    0.0
 #TORS                                                                                                                                                                                                                                                           
 
 
@@ -775,7 +775,7 @@ Variance-covariance matrix of selected atoms (x10^6)
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3                                                                                                                                                                                
  The SU is computed from the full VcV matrix if available                                                                                                                                                                                                       
                                                       Torsion angle & su    VcV-su
-     O(10) to      CU(1) to CU(1,2,1,0,1) to O(10,2,1,0,1)  -131.3    0.2    0.9
+     O(10) to      CU(1) to CU(1,2,1,0,1) to O(10,2,1,0,1)  -131.3    0.3    0.9
 # THE MIS-MATCH BETWEEN LISTS 5 AND 12 CAUSES THE FILE TO                                                                                                                                                                                                       
 # BE ABANDONED AND CONTROL PASSED TO THE USER.                                                                                                                                                                                                                  
 # NOT MUCH USE IN BATCH MODE                                                                                                                                                                                                                                    
@@ -811,7 +811,7 @@ Variance-covariance matrix of selected atoms (x10^6)
      CU(1) to       O(6) to       C(7) to       C(9)         176.5    0.3
       C(7) to       O(6) to      CU(1) to      O(10)         176.4    0.4
       C(7) to       O(6) to      CU(1) to       C(3)          61.1    0.4
-     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.2
+     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.3
       C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1)   -176.4    0.6
 
 
