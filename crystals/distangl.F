@@ -7405,8 +7405,9 @@ C -- Copy data down.
      1    'Breaking bond from ',ISTORE(INFO51),NINT(STORE(INFO51+1)),
      1               ' to ',ISTORE(INFO52),NINT(STORE(INFO52+1))
 C            CALL XPRVDU(NCVDU, 1,0)
-             IF ((ISSPRT .EQ. 0) .AND. (LEVEL.EQ.3))
-     1       WRITE(NCWU, '(A)') CMON( 1)(:)
+C NB - Level not defined here ("3" was "debug" in XDIST analogous routine)
+c             IF ((ISSPRT .EQ. 0) .AND. (LEVEL.EQ.3))
+c     1       WRITE(NCWU, '(A)') CMON( 1)(:)
             IF ( KM41B .NE. M41B ) THEN
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
             END IF

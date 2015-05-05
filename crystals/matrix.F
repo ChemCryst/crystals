@@ -2203,27 +2203,27 @@ C  ================Local Variables================
       end do
       end
 
-CODE FOR diag_get
-      function diag_get(diag, diag_dim, xpos, ypos)
-      implicit none
-      real diag_get
-C
-C     Description:
-C           Returns the value at xpos, ypos in the diagonal matrix
-C     Returns:
-C           Returns the value at xpos, ypos in the diagonal matrix
-C  ================   Arguments   ================
-      integer diag_dim
-      real diag(diag_dim)
-      integer xpos, ypos
-      
-      if (xpos .ne. ypos) then
-            diag_get = 0.0
-      else 
-            diag_get = diag(xpos)
-      end if
-      return
-      end
+cCODE FOR diag_get
+c      function diag_get(diag, diag_dim, xpos, ypos)
+c      implicit none
+c      real diag_get
+cC
+cC     Description:
+cC           Returns the value at xpos, ypos in the diagonal matrix
+cC     Returns:
+cC           Returns the value at xpos, ypos in the diagonal matrix
+cC  ================   Arguments   ================
+c      integer diag_dim
+c      real diag(diag_dim)
+c      integer xpos, ypos
+c      
+c      if (xpos .ne. ypos) then
+c            diag_get = 0.0
+c      else 
+c            diag_get = diag(xpos)
+c      end if
+c      return
+c      end
       
 CODE FOR tri_matrix_apply_threshhold
       function tri_matrix_apply_threshhold(matrix, matrix_size, 
@@ -2360,114 +2360,114 @@ CODE FOR matlab_add_matrix_to_cell
 C======================================================================C
 C                       Sub block matrix routines                      C
 C======================================================================C     
-CODE FOR sum_block
-      function sum_block(mat, nmat, mat_dim, params1_add, 
-     1 params2_add, num_param_sumed, block_start_parm)
-     
-      double precision sum_block
-C
-C     Description:
-C        Sums all the values in the block of the mat pointed to by the
-C       parameters in the parts which are pointed to by. 
-C
-C     Precondition:
-C       params1_add and params2_add are pointers to valid atoms parts
-C       List 12 has already been loaded.
-C       List 12 has been loaded with the parameter numbers set
-C        to there number not to pointer in the derivative stack.
-C
-C     Returns:
-C           The sum of the values for the rectangle referenced or -1 
-C           if for some reason the suming was invalid
-C
-      INCLUDE 'ISTORE.INC'
-      INCLUDE 'STORE.INC'
-      INCLUDE 'QSTORE.INC'
-C  ================   Arguments   ================
-      integer nmat, mat_dim          !The size of the matrix and it's dimension
-      real mat(nmat)                 !The upper triangulare matrix
-      integer params1_add            !Address in istore of the part information. 
-      integer params2_add            !Address in istore of the part information. 
-      integer num_param_sumed        !On return the number of values sumed
-      integer block_start_parm       !The first parameter in this block.
-C  ================Local Variables================     
-      integer param_iterator1(3)
-      integer param_iterator2(3)
-      integer tempa, tempb
-C  ================Function calls ================     
-      integer list_iter_next
-      logical iter_has_next
-      real tri_get, abs
-            
-      sum_block = 0.0
-      num_param_sumed = 0
-      block_start = block_start - 1
+cCODE FOR sum_block
+c      function sum_block(mat, nmat, mat_dim, params1_add, 
+c     1 params2_add, num_param_sumed, block_start_parm)
+c     
+c      double precision sum_block
+cC
+cC     Description:
+cC        Sums all the values in the block of the mat pointed to by the
+cC       parameters in the parts which are pointed to by. 
+cC
+cC     Precondition:
+cC       params1_add and params2_add are pointers to valid atoms parts
+cC       List 12 has already been loaded.
+cC       List 12 has been loaded with the parameter numbers set
+cC        to there number not to pointer in the derivative stack.
+cC
+cC     Returns:
+cC           The sum of the values for the rectangle referenced or -1 
+cC           if for some reason the suming was invalid
+cC
+c      INCLUDE 'ISTORE.INC'
+c      INCLUDE 'STORE.INC'
+c      INCLUDE 'QSTORE.INC'
+cC  ================   Arguments   ================
+c      integer nmat, mat_dim          !The size of the matrix and it's dimension
+c      real mat(nmat)                 !The upper triangulare matrix
+c      integer params1_add            !Address in istore of the part information. 
+c      integer params2_add            !Address in istore of the part information. 
+c      integer num_param_sumed        !On return the number of values sumed
+c      integer block_start_parm       !The first parameter in this block.
+cC  ================Local Variables================     
+c      integer param_iterator1(3)
+c      integer param_iterator2(3)
+c      integer tempa, tempb
+cC  ================Function calls ================     
+c      integer list_iter_next
+c      logical iter_has_next
+c      real tri_get, abs
+c            
+c      sum_block = 0.0
+c      num_param_sumed = 0
+c      block_start = block_start - 1
+c      
+c      call part_create_list_iter(param_iterator1, istore(params1_add))  ! Create an iterator to go over the part
+c      do while (iter_has_next(param_iterator1))                         ! Check that there is a parameter to use
+c            tempa = istore(list_iter_next(param_iterator1))
+c     1               -block_start_parm                                  ! Get the current parameter number in this block
+c            if (tempa .gt. 0 .and. 
+c     1       tempa .le. mat_dim) then                                   ! If the parameter is withing this block 
+c              call part_create_list_iter(param_iterator2,
+c     1         istore(params2_info_add))
+c              do while (iter_has_next(param_iterator2))
+c                  tempb = istore(list_iter_next(param_iterator2))
+c     1               -block_start_parm                                  ! Get the current parameter number in this block
+c                  if (tempb .gt. 0 .and.
+c     1                tempb .le. mat_dim) then                          ! If the parameter is withing this block 
+c                  sum_block = sum_block + abs(tri_get(mat, nmat,        ! Get the current element and add it to the current number total
+c     2              mat_dim, tempa, tempb))
+c                   num_param_sumed = num_param_sumed + 1                ! Count that this element has been included
+c                  else                                                  ! If the parameter was outside the matrix block then don't sum any of it.
+c                        sum_block = -1                                  ! Inform the caller that we didn't sum it.
+c                        return
+c                  end if
+c             enddo
+c           else                                                         ! If the parameter was outside the matrix block then don't sum any of it.
+c              sum_block = -1                                            ! Inform the caller that we didn't sum it.
+c              return
+c           end if
+c      end do
+c      end
       
-      call part_create_list_iter(param_iterator1, istore(params1_add))  ! Create an iterator to go over the part
-      do while (iter_has_next(param_iterator1))                         ! Check that there is a parameter to use
-            tempa = istore(list_iter_next(param_iterator1))
-     1               -block_start_parm                                  ! Get the current parameter number in this block
-            if (tempa .gt. 0 .and. 
-     1       tempa .le. mat_dim) then                                   ! If the parameter is withing this block 
-              call part_create_list_iter(param_iterator2,
-     1         istore(params2_info_add))
-              do while (iter_has_next(param_iterator2))
-                  tempb = istore(list_iter_next(param_iterator2))
-     1               -block_start_parm                                  ! Get the current parameter number in this block
-                  if (tempb .gt. 0 .and.
-     1                tempb .le. mat_dim) then                          ! If the parameter is withing this block 
-                  sum_block = sum_block + abs(tri_get(mat, nmat,        ! Get the current element and add it to the current number total
-     2              mat_dim, tempa, tempb))
-                   num_param_sumed = num_param_sumed + 1                ! Count that this element has been included
-                  else                                                  ! If the parameter was outside the matrix block then don't sum any of it.
-                        sum_block = -1                                  ! Inform the caller that we didn't sum it.
-                        return
-                  end if
-             enddo
-           else                                                         ! If the parameter was outside the matrix block then don't sum any of it.
-              sum_block = -1                                            ! Inform the caller that we didn't sum it.
-              return
-           end if
-      end do
-      end
-      
-CODE FOR mean_of_block
-      function mean_of_block(mat, nmat, mat_dim, params1_add, 
-     1 params2_add, block_start_parm)
-      implicit none
-      double precision mean_of_block
-C
-C     Description:
-C        Calculates the mean of the abs rectange of parameters pointed to by the part which
-C       is pointed to by params1_add and params2_add. 
-C
-C     Precondition:
-C       params1_info_add and params2_info_add are pointers to valid atoms parts
-C       List 12 has already been loaded.
-C       List 12 has been loaded with the parameter numbers set
-C        to there number not to pointer in the derivative stack.
-C
-C     Returns:
-C           Returns the mean of the abs rectange referenced or -1 if for some reason the
-C          mean wasn't calculated
-C
-
-C  ================   Arguments   ================
-      integer nmat, mat_dim               ! The size of the block of the normal matrix
-      real mat(nmat)                      ! The current upper triangler block of the normal matrix
-      integer params1_add, params2_add    ! The addresses to the parameter parts
-      integer block_start_parm            ! The parameter number of the first element in the matrix
-
-C  ================Local Variables================       
-      integer block_size
-C  ================Function calls ================       
-      double precision sum_block
-
-      mean_of_block = sum_block(mat, nmat, mat_dim, params1_add,
-     1 params2_add, block_size, block_start_parm)                 ! Get the sum of a
-      if (mean_of_block .ge. 0)                                   ! If the sum isn't negative
-     1       mean_of_block = mean_of_block/block_size             ! There wasn't a problem
-      end
+cCODE FOR mean_of_block
+c      function mean_of_block(mat, nmat, mat_dim, params1_add, 
+c     1 params2_add, block_start_parm)
+c      implicit none
+c      double precision mean_of_block
+cC
+cC     Description:
+cC        Calculates the mean of the abs rectange of parameters pointed to by the part which
+cC       is pointed to by params1_add and params2_add. 
+cC
+cC     Precondition:
+cC       params1_info_add and params2_info_add are pointers to valid atoms parts
+cC       List 12 has already been loaded.
+cC       List 12 has been loaded with the parameter numbers set
+cC        to there number not to pointer in the derivative stack.
+cC
+cC     Returns:
+cC           Returns the mean of the abs rectange referenced or -1 if for some reason the
+cC          mean wasn't calculated
+cC
+c
+cC  ================   Arguments   ================
+c      integer nmat, mat_dim               ! The size of the block of the normal matrix
+c      real mat(nmat)                      ! The current upper triangler block of the normal matrix
+c      integer params1_add, params2_add    ! The addresses to the parameter parts
+c      integer block_start_parm            ! The parameter number of the first element in the matrix
+c
+cC  ================Local Variables================       
+c      integer block_size
+cC  ================Function calls ================       
+c      double precision sum_block
+c
+c      mean_of_block = sum_block(mat, nmat, mat_dim, params1_add,
+c     1 params2_add, block_size, block_start_parm)                 ! Get the sum of a
+c      if (mean_of_block .ge. 0)                                   ! If the sum isn't negative
+c     1       mean_of_block = mean_of_block/block_size             ! There wasn't a problem
+c      end
 
 
 C The following level 2 BLAS routines are only required on digital build. All other platforms
