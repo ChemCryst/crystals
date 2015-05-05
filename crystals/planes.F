@@ -489,8 +489,13 @@ C--LOOP OVER EACH ATOM IN TURN
       I=I-MD5A
 2850  CONTINUE
 cdjwjun08
-      meand = sumdev/float(nitem)
-      sigdev = sqrt((sumdsq - float(nitem)*meand*meand)/float(nitem))
+      if ( nitem .eq. 0 ) then
+       meand = 0
+       sigdev = 0.0
+      else
+       meand = sumdev/float(nitem)
+       sigdev = sqrt((sumdsq - float(nitem)*meand*meand)/float(nitem))
+      endif
 2504  format('    mean deviation from plane = ',f10.3,3x,'(',f6.3,')')
       if (jpunch .ne. 0) write(ncpu,2504) meand, sigdev
 c 
