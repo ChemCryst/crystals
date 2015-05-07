@@ -3742,9 +3742,24 @@ C
         WEIGHT=0.
         ABSN=0.
 
+        FELEC = 0.0
         DO 1580 M29=L29,I29,MD29
           WEIGHT = WEIGHT + STORE(M29+4)*STORE(M29+6)
           ABSN = ABSN + STORE(M29+4)*STORE(M29+5)
+
+C Find electron count for L29 formula
+          DO M3 = L3, L3+(N3-1)*MD3, MD3
+            IF (ISTORE(M29) .EQ. ISTORE(M3)) THEN
+              F = 0.0
+              DO I = 3, 11, 2
+                F = F + STORE(M3+I)
+              END DO
+              F = REAL(NINT(F))
+              FELEC = FELEC + STORE(M29+4) * F
+              GOTO 1579
+            ENDIF
+          END DO
+1579      CONTINUE
 1580    CONTINUE
 
         ABSN = ABSN * RVOL * 10.
@@ -3758,6 +3773,10 @@ c        CALL XPRVDU(NCVDU, 1,0)
         A(8) = ABSN
         A(9) = WEIGHT
         A(10) = FELEC * ASYM
+
+
+
+
 1600    CONTINUE
 c
 cdjwjul09

@@ -5,11 +5,14 @@ c----- convert the PLATON squeezed outout to CRYSTALS format
       in2 = 11
       iout1 = 12
       open(in1,file='PLATON6',status='old')
-      open(in2,file='platon.hkp',status='old',err=50)
-      GOTO 60
+      open(in2,file='platon_sqd.hkl',status='old',err=50)
+      GOTO 70
 50    CONTINUE
-      open(in2,file='platon-sr.hkl',status='old',err=250)
+      open(in2,file='platon-sr.hkl',status='old',err=60)
+      GOTO 70
 60    CONTINUE
+      open(in2,file='platon.hkp',status='old',err=250)
+70    CONTINUE
       open(iout1,file='LIST6.ABC',status='unknown')
       do  i=1,3
         read(in1,'(a)') cline
@@ -74,9 +77,11 @@ c
       stop
 250   continue
       rewind(iout1)
-      write(iout1,'(A)') 'Could not open platon.hkp or platon-sr.hkl'
+      write(iout1,'(A)')
+     1  'Could not open platon_sqd.hkl, platon-sr.hkl, platon.hkp'
       write(6,'(A)')
-     1 'Could not open platon.hkp or platon-sr.hkl. Press return.'
+     1 'Cannot open platon_sqd.hkl,platon-sr.hkl,or platon.hkp.'
+      write(6,'(A)') 'Press return'
       read(5,'(a)') cline
 
       end

@@ -1225,6 +1225,8 @@ C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         NCPU = NCFPU1
         CALL XPCH5C(1)
         NCPU = J
+        WRITE(NCFPU1,'(A)') 'HKLF 4'
+        WRITE(NCFPU1,'(A)') 'END'
 C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU1,'(/)')
 C

@@ -88,6 +88,7 @@
 %  TRANSFER '#SPAWN + "' // CFILE // '" -q  platon.res' TO CRYSTALS
 %%
 %  IF .not. ( FILEEXISTS ( 'platon.hkp' ) .OR. - 
+              FILEEXISTS ( 'platon_sqd.hkl' ) .OR. - 
               FILEEXISTS ( 'platon-sr.hkl' ) ) THEN                                    
 {1,9  PLATON/SQUEEZE has not created a suitable output file.
 {1,9  There may not be any voids in your structure
