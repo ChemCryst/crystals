@@ -1,557 +1,562 @@
-%SCRIPT XSHELXIN                                                                
+%SCRIPT XSHELXIN
 %%
-%%                                                                              
-%% Read in a the cell, symm and atoms from a shelx file.                        
-%%                                                                              
-{R SHELX Script version by R. Cooper. Based on the fortran program SXTOCA by    
-{R R.O. Gould, The University of Edinburgh, March 1994.                         
-%%                                                                              
-% VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM                       
-% VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD                      
-% VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND                                  
-% VARIABLE LOGICAL SFILERR LCANCEL LCRY SXGETALL LQS SPACETEXT                  
-% VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA                                      
-% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ                          
-% VARIABLE REAL SXU33 SXU23 SXU13 SXU12                                         
-% VARIABLE REAL SXOCC CRYOCC SPECOCC                                            
+%%
+%% Read in a the cell, symm and atoms from a shelx file.
+%%
+{R SHELX Script version by R. Cooper. Based on the fortran program SXTOCA by
+{R R.O. Gould, The University of Edinburgh, March 1994.
+%%
+% VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM
+% VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD
+% VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND
+% VARIABLE LOGICAL SFILERR LCANCEL LCRY SXGETALL LQS SPACETEXT
+% VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA
+% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ
+% VARIABLE REAL SXU33 SXU23 SXU13 SXU12
+% VARIABLE REAL SXOCC CRYOCC SPECOCC
 % VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
 % VARIABLE REAL HKLT31 HKLT32 HKLT33
 % EVALUATE HKLT11 = 1.0
 % EVALUATE HKLT22 = 1.0
 % EVALUATE HKLT33 = 1.0
 % VARIABLE INTEGER ATOMCOUNT
-%%                                                                              
-% EVALUATE SXGETALL = TRUE                                                      
-%%                                                                              
-%% variables used by the question box below                                     
-% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
-% VARIABLE LOGICAL ANSWER                                                       
-%%                                                                              
-% EVALUATE LCRY = FALSE                                                         
+%%
+% EVALUATE SXGETALL = TRUE
+%%
+%% variables used by the question box below
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+% VARIABLE LOGICAL ANSWER
+%%
+% EVALUATE LCRY = FALSE
 %%
 %% If no 23 or no 1, set refinement type
 %  IF ( ( EXISTS 23 ) .EQ. - 1 ) THEN
-{R Setting refinement type                                                      
+{R Setting refinement type
 %      COPY '#SCRIPT XQCK23'
 %  END IF
 %%
 % IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
 %%
-^^WI WINDOW XINSHELX 'Input RES or INS data' MODAL                              
-^^WI        COMMIT='BOK' CANCEL='BXX'                                           
-^^WI GRID GRIDM NROWS=5 NCOLS=3                                                 
-^^WI {                                                                          
-^^WI  @ 2,2 GRID TP NROWS=1 NCOLS=2                                             
-^^WI  {                                                                         
-^^WI   @ 1,1 GRID TX NROWS=4 NCOLS=1                                            
-^^WI   {                                                                        
-^^WI    @ 1,1 STATIC T1 'Input cell, space group and atomic parameters from'    
-^^WI    @ 2,1 STATIC T2 'a SHELX file. During input, you will be asked to'      
-^^WI    @ 3,1 STATIC T3 'confirm the space group.  An existing structure'       
-^^WI    @ 4,1 STATIC T4 'will be overwritten by the new one.'                   
-^^WI   }                                                                        
-^^WI   @ 1,2 GRID GB NROWS=5 NCOLS=5                                            
-^^WI   {                                                                        
-^^WI    @ 2,5 BUTTON BOK '&Ok' DEFAULT                                          
-^^WI    @ 4,5 BUTTON BXX '&Cancel'                                              
-^^WI   }                                                                        
-^^WI  }                                                                         
-^^WI  @ 4,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='Shelx File to input:'              
-^^WI  {                                                                         
-% TRANSFER "^^WI @ 1,1 EDITBOX L6FILE '" // INSTITLE // -                                         
-  "' CHARS=48 INFORM=NO INPUT " TO DISPLAY                                                        
-^^WI    @ 1,3 BUTTON BROWSE 'Browse...'                                         
-^^WI  }                                                                         
-^^WI }                                                                          
-^^WI SHOW                                                                       
-^^CR                                                                            
-%  LOOP                                                                          
-%   VERIFY BROWSE BXX BOK                                                       
-%   GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'                           
-%   CASE VALUE                                                                  
-%     BLOCK                         %BROWSE%                                    
-^^WI    SYSOPENFILE '*.ins;*.res' 'Shelx file (*.res,*.ins)'                    
-^^CR                                                                            
-%       GET SILENT TEXT 'New filename:'                                         
-%       IF CVALUE .NE. 'CANCEL' THEN                                            
-%         CLEAR                                                                 
-^^WI      SET L6FILE TEXT                                                       
-%         TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                         
-^^CR                                                                            
-%         EVALUATE CFILE = CVALUE                                               
-%         IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN                                
-{E Error: Filename given does not exist.                                        
-%         ELSE                                                                  
+^^WI WINDOW XINSHELX 'Input RES or INS data' MODAL
+^^WI        COMMIT='BOK' CANCEL='BXX'
+^^WI GRID GRIDM NROWS=5 NCOLS=3
+^^WI {
+^^WI  @ 2,2 GRID TP NROWS=1 NCOLS=2
+^^WI  {
+^^WI   @ 1,1 GRID TX NROWS=4 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC T1 'Input cell, space group and atomic parameters from'
+^^WI    @ 2,1 STATIC T2 'a SHELX file. During input, you will be asked to'
+^^WI    @ 3,1 STATIC T3 'confirm the space group.  An existing structure'
+^^WI    @ 4,1 STATIC T4 'will be overwritten by the new one.'
+^^WI   }
+^^WI   @ 1,2 GRID GB NROWS=5 NCOLS=5
+^^WI   {
+^^WI    @ 2,5 BUTTON BOK '&Ok' DEFAULT
+^^WI    @ 4,5 BUTTON BXX '&Cancel'
+^^WI   }
+^^WI  }
+^^WI  @ 4,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='Shelx File to input:'
+^^WI  {
+% TRANSFER "^^WI @ 1,1 EDITBOX L6FILE '" // INSTITLE // -
+  "' CHARS=48 INFORM=NO INPUT " TO DISPLAY
+^^WI    @ 1,3 BUTTON BROWSE 'Browse...'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%  LOOP
+%   VERIFY BROWSE BXX BOK
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'
+%   CASE VALUE
+%     BLOCK                         %BROWSE%
+^^WI    SYSOPENFILE '*.ins;*.res' 'Shelx file (*.res,*.ins)'
+^^CR
+%       GET SILENT TEXT 'New filename:'
+%       IF CVALUE .NE. 'CANCEL' THEN
+%         CLEAR
+^^WI      SET L6FILE TEXT
+%         TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY
+^^CR
+%         EVALUATE CFILE = CVALUE
+%         IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN
+{E Error: Filename given does not exist.
+%         ELSE
 %           EVALUATE INSTITLE = CFILE
-^^CO        DISPOSE XINSHELX                                                    
-%           EVALUATE LOOPEND = LOOPCOUNTER                                      
-%         END IF                                                                
-%       END IF                                                                  
-%     END BLOCK                                                                 
-%     BLOCK                         %BXX%                                       
-^^CO    DISPOSE XINSHELX                                                        
-%       FINISH                                                                  
-%     END BLOCK                                                                 
-%     BLOCK                         %BOK%                                       
-^^??    L6FILE TEXT                                                             
-%       GET SILENT TEXT 'Shelx File (RES or INS file) '                         
-%       EVALUATE CFILE = CVALUE                                                 
-%       IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN                                  
-{E Error: Filename given does not exist.                                        
-%       ELSE                                                                    
+^^CO        DISPOSE XINSHELX
+%           EVALUATE LOOPEND = LOOPCOUNTER
+%         END IF
+%       END IF
+%     END BLOCK
+%     BLOCK                         %BXX%
+^^CO    DISPOSE XINSHELX
+%       FINISH
+%     END BLOCK
+%     BLOCK                         %BOK%
+^^??    L6FILE TEXT
+%       GET SILENT TEXT 'Shelx File (RES or INS file) '
+%       EVALUATE CFILE = CVALUE
+%       IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN
+{E Error: Filename given does not exist.
+%       ELSE
 %         EVALUATE INSTITLE = CFILE
-^^CO      DISPOSE XINSHELX                                                      
-%         EVALUATE LOOPEND = LOOPCOUNTER                                        
-%       END IF                                                                  
-%     END BLOCK                                                                 
-%   END CASE                                                                    
+^^CO      DISPOSE XINSHELX
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END BLOCK
+%   END CASE
 %  END LOOP
 % ELSE
-%   EVALUATE CFILE = INSTITLE   
+%   EVALUATE CFILE = INSTITLE
 %%   EVALUATE INSTITLE = GETTITLE ( CFILE )
 % END IF
 %%
-%%                                                                              
-%%                                                                              
-%%                                                                              
-%%                                                                              
-% TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                           
-%%                                                                              
-%% Cell card is the first thing to look for.                                    
-%%                                                                              
-{I Scanning SHELX file for information. This may take some time...              
-{I Looking for CELL instruction.                                                
-%         EVALUATE SFILERR = TRUE                                               
-%         LOOP                                                                  
-%           ON ERROR TERMINATE                                                  
-%           ON END TERMINATE                                                    
-%           EXTRACT SHRIEK                                                        
-%           CLEAR                                                               
-%%           EXTRACT TRANSFER COMMAND                                           
-%%           EXECUTE SEND                                                       
-%           EXTRACT TRANSFER INPUT                                              
-%           CLEAR                                                               
-%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING                             
-%           IF CVALUE .EQ. 'CELL' THEN                                          
-{R CELL card found .                                                            
-%              GET NOSTORE NOPROMPT REAL NULLSTRING '-0.5'                      
-%              EVALUATE WAVE = VALUE                                            
-%              GET NOSTORE NOPROMPT TEXT 'a,b,c,al,be,ga'                       
-%              COPY '#LIST 1'                                                   
-%              TRANSFER 'REAL ' // CVALUE TO CRYSTALS                           
-%              COPY 'END'                                                       
-%              IF ( WAVE .GT. 0.0 ) THEN                                        
-%                 IF ( EXISTS ( 13 ) .NE. 1 ) THEN                              
-%                    COPY '#LIST 13'                                            
-%                    COPY 'END'                                                 
-%                 END IF                                                        
-%                 COPY '#GENERALEDIT 13'                                        
-%                 COPY 'LOCATE RECORDTYPE=103'                                  
-%                 COPY 'TRANSFER TO OFFSET=0 FROM WAVE'                         
-%                 COPY 'WRITE'                                                  
-%                 COPY 'END'                                                    
-%              END IF                                                           
-%              EVALUATE SFILERR = FALSE                                         
-%              EVALUATE LOOPEND = LOOPCOUNTER                                   
-%           END IF                                                              
-%         END LOOP                                                              
-%         IF SFILERR .EQ. TRUE THEN                                             
-{E *** No valid "CELL" card found in SHELX file.                                
-%            FINISH                                                             
-%         END IF                                                                
-{R CELL card processed.                                                         
-%           EXTRACT REWIND                                                      
-{I Looking for ZERR instruction.                                                
-%         EVALUATE SFILERR = TRUE                                               
-%         LOOP                                                                  
-%           ON ERROR TERMINATE                                                  
-%           ON END TERMINATE                                                    
-%           EXTRACT SHRIEK                                                        
-%           CLEAR                                                               
-%%           EXTRACT TRANSFER COMMAND                                           
-%%           EXECUTE SEND                                                       
-%           EXTRACT TRANSFER INPUT                                              
-%           CLEAR                                                               
-%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING                             
-%           IF CVALUE .EQ. 'ZERR' THEN                                          
-{R ZERR card found .                                                            
-%              GET NOSTORE NOPROMPT REAL NULLSTRING '-1.0'                      
-%              EVALUATE CELLZ = VALUE                                           
-%              IF ( CELLZ .GT. 0.0 ) THEN                                       
-%                 IF ( EXISTS ( 30 ) .NE. 1 ) THEN                              
-%                    COPY '#LIST 30'                                            
-%                    COPY 'END'                                                 
-%                 END IF                                                        
-%                 COPY '#GENERALEDIT 30'                                        
-%                 COPY 'LOCATE RECORDTYPE = 106'                                
-%                 COPY 'TRANSFER TO OFFSET=5 FROM CELLZ'                        
-%                 COPY 'WRITE OVERWRITE=OVERWRITE'                              
-%                 COPY 'END'                                                    
-%              END IF                                                           
-%              GET NOSTORE NOPROMPT REAL ' ' '0.0'                              
-%              EVALUATE SUA = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )           
-%              GET NOSTORE NOPROMPT REAL ' ' '0.001'                            
-%              EVALUATE SUB = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )           
-%              GET NOSTORE NOPROMPT REAL ' ' '0.001'                            
-%              EVALUATE SUC = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )           
-%              GET NOSTORE NOPROMPT REAL ' ' '0.01'                             
-%              EVALUATE SUAL = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )      
-%              GET NOSTORE NOPROMPT REAL ' ' '0.01'                             
-%              EVALUATE SUBE = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )      
-%              GET NOSTORE NOPROMPT REAL ' ' '0.01'                             
-%              EVALUATE SUGA = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )      
-%            if sua .gt. 0.0 then                                               
-%              COPY '#LIST 31'                                                  
-%              COPY 'AMULT 0.000001'                                            
-%              COPY 'MATRIX'                                                    
-%              CLEAR                                                            
-%              INSERT 'CONT V(11)='                                             
-%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUA                       
-%              SEND                                                             
-%              CLEAR                                                            
-%              INSERT 'CONT V(22)='                                             
-%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUB                       
-%              SEND                                                             
-%              CLEAR                                                            
-%              INSERT 'CONT V(33)='                                             
-%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUC                       
-%              SEND                                                             
-%              CLEAR                                                            
-%              INSERT 'CONT V(44)='                                             
-%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUAL                      
-%              SEND                                                             
-%              CLEAR                                                            
-%              INSERT 'CONT V(55)='                                             
-%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUBE                      
-%              SEND                                                             
-%              CLEAR                                                            
-%              INSERT 'CONT V(66)='                                             
-%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUGA                      
-%              SEND                                                             
-%              COPY 'END'                                                       
-%              EVALUATE SFILERR = FALSE                                         
-%              EVALUATE LOOPEND = LOOPCOUNTER                                   
-%            end if                                                             
-%           END IF                                                              
-%         END LOOP                                                              
-%         IF SFILERR .EQ. TRUE THEN                                             
-{E No ZERR card found - not very important. Continuing anyway.                  
-%         END IF                                                                
-{R CELL card processed.                                                         
-%%                                                                              
-%% Space group is the next thing to look for.                                   
-%%                                                                              
-%           EXTRACT REWIND                                                      
-{I Looking for TITL instruction.                                                
-%         EVALUATE SFILERR = TRUE                                               
-%         LOOP                                                                  
-%           ON ERROR TERMINATE                                                  
-%           ON END TERMINATE                                                    
-%           EXTRACT SHRIEK                                                        
-%           CLEAR                                                               
-%%           EXTRACT TRANSFER COMMAND                                           
-%%           EXECUTE SEND                                                       
-%           EXTRACT TRANSFER INPUT                                              
-%           CLEAR                                                               
-%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING                             
-%           IF CVALUE .EQ. 'TITL' THEN                                          
-%              EVALUATE SFILERR = FALSE                                         
-%              EVALUATE LOOPEND = LOOPCOUNTER                                   
-{R TITL card found .                                                            
-%              CLEAR                                                            
-%              INSERT '#TITLE '                                                 
-%              GET NOPROMPT NOREMOVE TEXT ' ' 'Default Title'                   
-%              SEND                                                             
-%              COPY 'END'                                                       
-%              CLEAR                                                            
-%              EVALUATE SPACETEXT = FALSE                                       
-%              EVALUATE SPACEREAD = ' '                                         
-%              LOOP                                                             
-%                GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'                    
-%                IF CVALUE .EQ. '_NOMORE_'  THEN                                 
-%                  EVALUATE LOOPEND = LOOPCOUNTER  
+%%
+%%
+%%
+%%
+% TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS
+%%
+%% Cell card is the first thing to look for.
+%%
+{I Scanning SHELX file for information. This may take some time...
+{I Looking for CELL instruction.
+%         EVALUATE SFILERR = TRUE
+%  variable character cdjw
+%         LOOP
+%           ON ERROR TERMINATE
+%           ON END TERMINATE
+%           EXTRACT SHRIEK
+%           CLEAR
+%%           EXTRACT TRANSFER COMMAND
+%%           EXECUTE SEND
+%           EXTRACT TRANSFER INPUT
+%           CLEAR
+%%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%% permit blank first character for SHELX14 .RES files
+%           GET NOSTORE NOPROMPT KEYWORD ' ' ' ' 
+%           IF CVALUE .EQ. 'CELL' THEN
+{R CELL card found .
+%              GET NOSTORE NOPROMPT REAL NULLSTRING '-0.5'
+%              EVALUATE WAVE = VALUE
+%              GET NOSTORE NOPROMPT TEXT 'a,b,c,al,be,ga'
+%              COPY '#LIST 1'
+%              TRANSFER 'REAL ' // CVALUE TO CRYSTALS
+%              COPY 'END'
+%              IF ( WAVE .GT. 0.0 ) THEN
+%                 IF ( EXISTS ( 13 ) .NE. 1 ) THEN
+%                    COPY '#LIST 13'
+%                    COPY 'END'
+%                 END IF
+%                 COPY '#GENERALEDIT 13'
+%                 COPY 'LOCATE RECORDTYPE=103'
+%                 COPY 'TRANSFER TO OFFSET=0 FROM WAVE'
+%                 COPY 'WRITE'
+%                 COPY 'END'
+%              END IF
+%              EVALUATE SFILERR = FALSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%           END IF
+%         END LOOP
+%         IF SFILERR .EQ. TRUE THEN
+{E *** No valid "CELL" card found in SHELX file.
+%            FINISH
+%         END IF
+{R CELL card processed.
+%           EXTRACT REWIND
+{I Looking for ZERR instruction.
+%         EVALUATE SFILERR = TRUE
+%         LOOP
+%           ON ERROR TERMINATE
+%           ON END TERMINATE
+%           EXTRACT SHRIEK
+%           CLEAR
+%%           EXTRACT TRANSFER COMMAND
+%%           EXECUTE SEND
+%           EXTRACT TRANSFER INPUT
+%           CLEAR
+%%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%           GET NOSTORE NOPROMPT KEYWORD ' '  ' '
+%           IF CVALUE .EQ. 'ZERR' THEN
+{R ZERR card found .
+%              GET NOSTORE NOPROMPT REAL NULLSTRING '-1.0'
+%              EVALUATE CELLZ = VALUE
+%              IF ( CELLZ .GT. 0.0 ) THEN
+%                 IF ( EXISTS ( 30 ) .NE. 1 ) THEN
+%                    COPY '#LIST 30'
+%                    COPY 'END'
+%                 END IF
+%                 COPY '#GENERALEDIT 30'
+%                 COPY 'LOCATE RECORDTYPE = 106'
+%                 COPY 'TRANSFER TO OFFSET=5 FROM CELLZ'
+%                 COPY 'WRITE OVERWRITE=OVERWRITE'
+%                 COPY 'END'
+%              END IF
+%              GET NOSTORE NOPROMPT REAL ' ' '0.0'
+%              EVALUATE SUA = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )
+%              GET NOSTORE NOPROMPT REAL ' ' '0.001'
+%              EVALUATE SUB = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )
+%              GET NOSTORE NOPROMPT REAL ' ' '0.001'
+%              EVALUATE SUC = ( VALUE * 1000.0 ) * ( VALUE * 1000.0 )
+%              GET NOSTORE NOPROMPT REAL ' ' '0.01'
+%              EVALUATE SUAL = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )
+%              GET NOSTORE NOPROMPT REAL ' ' '0.01'
+%              EVALUATE SUBE = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )
+%              GET NOSTORE NOPROMPT REAL ' ' '0.01'
+%              EVALUATE SUGA = ( VALUE * 17.45329 ) * ( VALUE * 17.45329 )
+%            if sua .gt. 0.0 then
+%              COPY '#LIST 31'
+%              COPY 'AMULT 0.000001'
+%              COPY 'MATRIX'
+%              CLEAR
+%              INSERT 'CONT V(11)='
+%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUA
+%              SEND
+%              CLEAR
+%              INSERT 'CONT V(22)='
+%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUB
+%              SEND
+%              CLEAR
+%              INSERT 'CONT V(33)='
+%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUC
+%              SEND
+%              CLEAR
+%              INSERT 'CONT V(44)='
+%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUAL
+%              SEND
+%              CLEAR
+%              INSERT 'CONT V(55)='
+%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUBE
+%              SEND
+%              CLEAR
+%              INSERT 'CONT V(66)='
+%              STORE FORMAT /(F16.10)/ LENGTH 16 REAL SUGA
+%              SEND
+%              COPY 'END'
+%              EVALUATE SFILERR = FALSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%            end if
+%           END IF
+%         END LOOP
+%         IF SFILERR .EQ. TRUE THEN
+{E No ZERR card found - not very important. Continuing anyway.
+%         END IF
+{R CELL card processed.
+%%
+%% Space group is the next thing to look for.
+%%
+%           EXTRACT REWIND
+{I Looking for TITL instruction.
+%         EVALUATE SFILERR = TRUE
+%         LOOP
+%           ON ERROR TERMINATE
+%           ON END TERMINATE
+%           EXTRACT SHRIEK
+%           CLEAR
+%%           EXTRACT TRANSFER COMMAND
+%%           EXECUTE SEND
+%           EXTRACT TRANSFER INPUT
+%           CLEAR
+%%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%           GET NOSTORE NOPROMPT KEYWORD ' '  ' '
+%           IF CVALUE .EQ. 'TITL' THEN
+%              EVALUATE SFILERR = FALSE
+%              EVALUATE LOOPEND = LOOPCOUNTER
+{R TITL card found .
+%              CLEAR
+%              INSERT '#TITLE '
+%              GET NOPROMPT NOREMOVE TEXT ' ' 'Default Title'
+%              SEND
+%              COPY 'END'
+%              CLEAR
+%              EVALUATE SPACETEXT = FALSE
+%              EVALUATE SPACEREAD = ' '
+%              LOOP
+%                GET NOSTORE NOPROMPT KEYWORD ' ' '_NOMORE_'
+%                IF CVALUE .EQ. '_NOMORE_'  THEN
+%                  EVALUATE LOOPEND = LOOPCOUNTER
 %                ELSE IF ( CVALUE STARTSWITH '#' ) THEN
-%                  EVALUATE LOOPEND = LOOPCOUNTER  
-%                ELSE IF SPACETEXT THEN                                         
-%                  EVALUATE SPACEREAD = SPACEREAD // CVALUE // ' '              
-%                END IF                                                         
-%                IF ( UPPERCASE CVALUE ) .EQ. 'IN' THEN                         
-%                  EVALUATE SPACEREAD = ' '                                     
-%                  EVALUATE SPACETEXT = TRUE                                    
-%                END IF                                                         
-%              END LOOP                                                         
-%           END IF                                                              
-%         END LOOP                                                              
-%         IF SFILERR .EQ. TRUE THEN                                             
-{E *** No "TITL" card found in SHELX file. Never mind.                          
-%         ELSE                                                                  
-{R TITL card processed.                                                         
-%         END IF                                                                
-%% TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY         
-%%                                                                              
-%%{I Now check the spacegroup...                                                
-%%                                                                              
-%          EVALUATE SPACEHOOK = 'Space group needed for SHELX file input'       
-%          COPY '#SCRIPT XSPACE'                                                
-%          IF LCANCEL .EQ. TRUE THEN                                            
-{E Shelx files do not contain the space group symbol, therefore                 
-{E it must be entered separately.                                               
-%              FINISH                                                           
-%          END IF                                                               
-%%                                                                              
-%          EXTRACT REWIND                                                       
-%%                                                                              
-%%                                                                              
-%% Find the SFAC and UNIT cards which give respectively, a                      
-%% list of the elements and a list of how many of each element                  
-%% is in the unit cell.                                                         
-%%                                                                              
-%%                                                                              
-{I Looking for cell contents.                                                   
-%%                                                                              
-%%                                                                              
-%% STEP1: Store the SFAC and UNIT cards in CSFAC and CUNIT.                     
-%%                                                                              
-%%                                                                              
-%         EVALUATE SFILERR = TRUE                                               
-%         EVALUATE LEND = 0                                                     
-%         LOOP                                                                  
-%           ON ERROR TERMINATE                                                  
-%           ON END TERMINATE                                                    
-%           EXTRACT SHRIEK                                                        
-%           CLEAR                                                               
-%%           EXTRACT TRANSFER COMMAND                                           
-%%           EXECUTE SEND                                                       
-%           EXTRACT TRANSFER INPUT                                              
-%           CLEAR                                                               
-%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING  'None'                        
-%           IF CVALUE .EQ. 'SFAC' THEN                                          
-{R SFAC card found.                                                             
-%% First token is always an element.                                            
-%             GET NOSTORE KEYWORD ' ' ' ' 
-%             EVALUATE CSFAC = CSFAC // ' ' // CVALUE                           
-%% Second token may be a number or an element or nothing.                       
-%             GET NOSTORE NOREMOVE KEYWORD ' ' '0'                              
-%             IF CVALUE STARTSWITH '0' .OR. CVALUE STARTSWITH '1' .OR. -        
-                  CVALUE STARTSWITH '2' .OR. CVALUE STARTSWITH '3' .OR. -       
-                  CVALUE STARTSWITH '4' THEN                                    
-%% This is an old-fashioned card with actual sfac details on. Carry on looping. 
-%                 EVALUATE LEND = LEND + 1                                      
-%              ELSE IF CVALUE STARTSWITH '5' .OR. CVALUE STARTSWITH '6' .OR. -  
-                  CVALUE STARTSWITH '7' .OR. CVALUE STARTSWITH '8' .OR. -       
-                  CVALUE STARTSWITH '9' THEN                                    
-%% This is an old-fashioned card with actual sfac details on. Carry on looping. 
-%                 EVALUATE LEND = LEND + 1                                      
-%             ELSE                                                              
-%% This is a new fangled card with all the elements on one line.                
-%                 EVALUATE LEND = LEND + 1                                      
-%                 GET NOSTORE TEXT ' ' ' '                                      
-%                 EVALUATE CSFAC = CSFAC // ' ' // CVALUE                       
-%              END IF                                                           
-%           END IF                                                              
-%           IF CVALUE .EQ. 'UNIT' THEN                                          
-{R UNIT card found.                                                             
-%              GET NOSTORE TEXT ' ' ' '                                         
-%              EVALUATE CUNIT = CVALUE                                          
-%              EVALUATE LEND = LEND + 1000                                      
-%           END IF                                                              
-%           IF LEND .GT. 1000 THEN                                              
-%             EVALUATE LOOPEND = LOOPCOUNTER                                    
-%           END IF                                                              
-%         END LOOP                                                              
-%         IF LEND .LT. 1001 THEN                                                
-{E *** No valid "SFAC and UNIT" card pair found in SHELX file.                  
-{E     You must enter your own LIST3 and LIST29.                                
-%         ELSE                                                                  
-%%                                                                              
-%%                                                                              
-%% Extract SFAC and UNIT info to a COMPOSITION card.                            
-%%                                                                              
-%%                                                                              
-%%%%   TRANSFER 'CSFAC starts as ' // CSFAC TO DISPLAY                          
-%%%%   TRANSFER 'CUNIT starts as ' // CUNIT TO DISPLAY                          
-%%                                                                              
-%% This routine uses the new TRANSFER TO INPUT code to copy                     
-%% a character string to the users input buffer, the string                     
-%% can then be picked apart one keyword at a time. This bit                     
-%% of code copies CSFAC to the input, gets a keyword (ie. 'C'),                 
-%% gets the rest of the text and puts it back into CSFAC. It                    
-%% then does the same for CUNIT, and loops until the character                  
-%% strings are exhausted.                                                       
-%%                                                                              
-%%                                                                              
-%           COPY '#COMPOSIT'                                                    
-%           CLEAR                                                               
-%           INSERT 'CONTE '                                                     
-%%                                                                              
-%           LOOP                                                                
-%%                                                                              
-%             TRANSFER CSFAC TO INPUT                                           
-%             GET KEYWORD 'SFAC1' ' '                                           
-%             EVALUATE CTEM = CVALUE                                            
-%%%%%     TRANSFER 'CSFAC, READ: ' // CVALUE TO DISPLAY                         
-%%                                                                              
-%             GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '                      
-%             EVALUATE CSFAC = CVALUE                                           
-%%                                                                              
-%             IF CSFAC .EQ. ' ' THEN                                            
-%               EVALUATE LOOPEND = LOOPCOUNTER                                  
-%             END IF                                                            
-%%                                                                              
-%% There seems to be a bug in the script processor, whereby if                  
-%% we read the last thing on a line with a GET KEYWORD, you can                 
-%% then read it again with a GET TEXT. This works around it, by                 
-%% spotting that the same thing has been read twice:                            
-%%                                                                              
-%             IF CSFAC .EQ. CTEM THEN                                           
-%               EVALUATE LOOPEND = LOOPCOUNTER                                  
-%             END IF                                                            
-%%                                                                              
-%             IF CTEM .EQ. ' ' THEN                                             
-%               EVALUATE LOOPEND = LOOPCOUNTER                                  
-%             ELSE                                                              
-%%%% TRANSFER 'CSFAC is now ' // CSFAC TO DISPLAY                               
-%%                                                                              
-%               TRANSFER CUNIT TO INPUT                                         
-%               GET NOPROMPT KEYWORD ' '                                        
-%               EVALUATE CTEM = CVALUE                                          
-%%%% TRANSFER 'CUNIT, READ: ' // CVALUE TO DISPLAY                              
-%%                                                                              
-%               GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '                    
-%               EVALUATE CUNIT = CVALUE                                         
-%%                                                                              
-%               IF CUNIT .EQ. ' ' THEN                                          
-%                 EVALUATE LOOPEND = LOOPCOUNTER                                
-%               END IF                                                          
-%%                                                                              
-%               IF CTEM .EQ. ' ' THEN                                           
-%                 EVALUATE LOOPEND = LOOPCOUNTER                                
-%               ELSE                                                            
-%%%% TRANSFER 'CUNIT is now ' // CUNIT TO DISPLAY                               
-%               END IF                                                          
-%             END IF                                                            
-%           END LOOP                                                            
-%           SEND                                                                
-%           OUTPUT                                                              
-%           COPY 'SCATT CRYSDIR:script/scatt.dat'                               
-%           COPY 'PROPERTIES CRYSDIR:script/propwin.dat'                        
-%           COPY 'END'                                                          
-%%                                                                              
-%% Now, experience shows that the SCPDATA file is closed and                    
-%% used for something else during the #COMPOSITION command.                     
-%% We must reopen it before continuing.                                         
-%%                                                                              
-%           TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS              
-%         END IF                                                                
-%         EXTRACT REWIND                                                        
-%%                                                                              
-%%                                                                              
-%% Finally, find the atoms and peaks.                                           
-%% Assume all lines not beginning with a recognised SHELX keyword               
-%% are atom records. This causes failure for files with reflections             
-%% in, though I'm sure someone could fix this by making it stop                 
-%% at an HKLF instruction.                                                      
-%%                                                                              
-%        COPY '#SCRIPT ZSHELXIN'                                                
-{R Shelx file processed.                                                        
-%        COPY '#CLOSE SCPDATA'                                                  
-%        IF ( ATOMCOUNT .EQ. 0 ) THEN                                           
-{I No atoms found                                                               
-%        ELSE                                                                   
-%          BLOCK                                                                
-%            IF LQS .EQ. TRUE THEN                                              
-%              EVALUATE QTITLE = 'Change Q atoms?'                              
-%              EVALUATE QLINE1 = 'Do you want to change all Q'                  
-%              EVALUATE QLINE2 = 'atoms to Carbon?'                             
-%              EVALUATE BUTTOK = '&Yes'                                         
-%              EVALUATE BUTTXX = '&No'                                          
-%              COPY '#SCRIPT XQUESTIO'                                          
-%              IF ANSWER .EQ. TRUE THEN                                         
-%               COPY '#EDIT'                                                    
-%               COPY 'MONITOR OFF'                                              
-%               COPY 'TYPECHANGE TYPE EQ Q C'                                   
-%               COPY 'END'                                                      
-%              END IF                                                           
-%            END IF                                                             
-%%                                                                              
-%% Change SHELX occupancies (cryst) to CRYSTALS occupancies (chem)              
-%%                                                                              
-%            BLOCK                                                              
-%%                                                                              
-%% Put crystallographic occupancy into 'SPARE' (offset 13)                      
-%%            
-%             COPY '#SPEC TEST PARAMETER .01'                                   
-%             COPY 'END'                                                        
-%%                                                                              
-%             ON EDITERROR TERMINATE                                            
-%             COPY '#GENERALEDIT 5'                                             
-%             COPY 'LOCATE RECORDTYPE=101'                                      
-%             COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'           
-%             LOOP                                                              
-%              ON EDITERROR TERMINATE                                           
-%              COPY 'TRANSFER FROM OFFSET=2 TO SXOCC'                           
-%              COPY 'TRANSFER FROM OFFSET=13 TO SPECOCC'                        
-%%                                                                              
-%% Divide shelx occ by SPARE to give chemical occupancy.                        
-%%                                                                              
-%              IF ( SPECOCC .LE. 0.0 ) THEN                                     
-%                EVALUATE SPECOCC = 1.0                                         
+%                  EVALUATE LOOPEND = LOOPCOUNTER
+%                ELSE IF SPACETEXT THEN
+%                  EVALUATE SPACEREAD = SPACEREAD // CVALUE // ' '
+%                END IF
+%                IF ( UPPERCASE CVALUE ) .EQ. 'IN' THEN
+%                  EVALUATE SPACEREAD = ' '
+%                  EVALUATE SPACETEXT = TRUE
+%                END IF
+%              END LOOP
+%           END IF
+%         END LOOP
+%         IF SFILERR .EQ. TRUE THEN
+{E *** No "TITL" card found in SHELX file. Never mind.
+%         ELSE
+{R TITL card processed.
+%         END IF
+%% TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY
+%%
+%%{I Now check the spacegroup...
+%%
+%          EVALUATE SPACEHOOK = 'Space group needed for SHELX file input'
+%          COPY '#SCRIPT XSPACE'
+%          IF LCANCEL .EQ. TRUE THEN
+{E Shelx files do not contain the space group symbol, therefore
+{E it must be entered separately.
+%              FINISH
+%          END IF
+%%
+%          EXTRACT REWIND
+%%
+%%
+%% Find the SFAC and UNIT cards which give respectively, a
+%% list of the elements and a list of how many of each element
+%% is in the unit cell.
+%%
+%%
+{I Looking for cell contents.
+%%
+%%
+%% STEP1: Store the SFAC and UNIT cards in CSFAC and CUNIT.
+%%
+%%
+%         EVALUATE SFILERR = TRUE
+%         EVALUATE LEND = 0
+%         LOOP
+%           ON ERROR TERMINATE
+%           ON END TERMINATE
+%           EXTRACT SHRIEK
+%           CLEAR
+%%           EXTRACT TRANSFER COMMAND
+%%           EXECUTE SEND
+%           EXTRACT TRANSFER INPUT
+%           CLEAR
+%           GET NOSTORE NOPROMPT KEYWORD NULLSTRING  'None'
+%           IF CVALUE .EQ. 'SFAC' THEN
+{R SFAC card found.
+%% First token is always an element.
+%             GET NOSTORE KEYWORD ' ' ' '
+%             EVALUATE CSFAC = CSFAC // ' ' // CVALUE
+%% Second token may be a number or an element or nothing.
+%             GET NOSTORE NOREMOVE KEYWORD ' ' '0'
+%             IF CVALUE STARTSWITH '0' .OR. CVALUE STARTSWITH '1' .OR. -
+                  CVALUE STARTSWITH '2' .OR. CVALUE STARTSWITH '3' .OR. -
+                  CVALUE STARTSWITH '4' THEN
+%% This is an old-fashioned card with actual sfac details on. Carry on looping.
+%                 EVALUATE LEND = LEND + 1
+%              ELSE IF CVALUE STARTSWITH '5' .OR. CVALUE STARTSWITH '6' .OR. -
+                  CVALUE STARTSWITH '7' .OR. CVALUE STARTSWITH '8' .OR. -
+                  CVALUE STARTSWITH '9' THEN
+%% This is an old-fashioned card with actual sfac details on. Carry on looping.
+%                 EVALUATE LEND = LEND + 1
+%             ELSE
+%% This is a new fangled card with all the elements on one line.
+%                 EVALUATE LEND = LEND + 1
+%                 GET NOSTORE TEXT ' ' ' '
+%                 EVALUATE CSFAC = CSFAC // ' ' // CVALUE
+%              END IF
+%           END IF
+%           IF CVALUE .EQ. 'UNIT' THEN
+{R UNIT card found.
+%              GET NOSTORE TEXT ' ' ' '
+%              EVALUATE CUNIT = CVALUE
+%              EVALUATE LEND = LEND + 1000
+%           END IF
+%           IF LEND .GT. 1000 THEN
+%             EVALUATE LOOPEND = LOOPCOUNTER
+%           END IF
+%         END LOOP
+%         IF LEND .LT. 1001 THEN
+{E *** No valid "SFAC and UNIT" card pair found in SHELX file.
+{E     You must enter your own LIST3 and LIST29.
+%         ELSE
+%%
+%%
+%% Extract SFAC and UNIT info to a COMPOSITION card.
+%%
+%%
+%%%%   TRANSFER 'CSFAC starts as ' // CSFAC TO DISPLAY
+%%%%   TRANSFER 'CUNIT starts as ' // CUNIT TO DISPLAY
+%%
+%% This routine uses the new TRANSFER TO INPUT code to copy
+%% a character string to the users input buffer, the string
+%% can then be picked apart one keyword at a time. This bit
+%% of code copies CSFAC to the input, gets a keyword (ie. 'C'),
+%% gets the rest of the text and puts it back into CSFAC. It
+%% then does the same for CUNIT, and loops until the character
+%% strings are exhausted.
+%%
+%%
+%           COPY '#COMPOSIT'
+%           CLEAR
+%           INSERT 'CONTE '
+%%
+%           LOOP
+%%
+%             TRANSFER CSFAC TO INPUT
+%             GET KEYWORD 'SFAC1' ' '
+%             EVALUATE CTEM = CVALUE
+%%%%%     TRANSFER 'CSFAC, READ: ' // CVALUE TO DISPLAY
+%%
+%             GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '
+%             EVALUATE CSFAC = CVALUE
+%%
+%             IF CSFAC .EQ. ' ' THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%             END IF
+%%
+%% There seems to be a bug in the script processor, whereby if
+%% we read the last thing on a line with a GET KEYWORD, you can
+%% then read it again with a GET TEXT. This works around it, by
+%% spotting that the same thing has been read twice:
+%%
+%             IF CSFAC .EQ. CTEM THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%             END IF
+%%
+%             IF CTEM .EQ. ' ' THEN
+%               EVALUATE LOOPEND = LOOPCOUNTER
+%             ELSE
+%%%% TRANSFER 'CSFAC is now ' // CSFAC TO DISPLAY
+%%
+%               TRANSFER CUNIT TO INPUT
+%               GET NOPROMPT KEYWORD ' '
+%               EVALUATE CTEM = CVALUE
+%%%% TRANSFER 'CUNIT, READ: ' // CVALUE TO DISPLAY
+%%
+%               GET NOSTORE NOPROMPT TEXT 'Rest of line' ' '
+%               EVALUATE CUNIT = CVALUE
+%%
+%               IF CUNIT .EQ. ' ' THEN
+%                 EVALUATE LOOPEND = LOOPCOUNTER
+%               END IF
+%%
+%               IF CTEM .EQ. ' ' THEN
+%                 EVALUATE LOOPEND = LOOPCOUNTER
+%               ELSE
+%%%% TRANSFER 'CUNIT is now ' // CUNIT TO DISPLAY
+%               END IF
+%             END IF
+%           END LOOP
+%           SEND
+%           OUTPUT
+%           COPY 'SCATT CRYSDIR:script/scatt.dat'
+%           COPY 'PROPERTIES CRYSDIR:script/propwin.dat'
+%           COPY 'END'
+%%
+%% Now, experience shows that the SCPDATA file is closed and
+%% used for something else during the #COMPOSITION command.
+%% We must reopen it before continuing.
+%%
+%           TRANSFER '#OPEN SCPDATA "' // CFILE // '"' TO CRYSTALS
+%         END IF
+%         EXTRACT REWIND
+%%
+%%
+%% Finally, find the atoms and peaks.
+%% Assume all lines not beginning with a recognised SHELX keyword
+%% are atom records. This causes failure for files with reflections
+%% in, though I'm sure someone could fix this by making it stop
+%% at an HKLF instruction.
+%%
+%        COPY '#SCRIPT ZSHELXIN'
+{R Shelx file processed.
+%        COPY '#CLOSE SCPDATA'
+%        IF ( ATOMCOUNT .EQ. 0 ) THEN
+{I No atoms found
+%        ELSE
+%          BLOCK
+%            IF LQS .EQ. TRUE THEN
+%              EVALUATE QTITLE = 'Change Q atoms?'
+%              EVALUATE QLINE1 = 'Do you want to change all Q'
+%              EVALUATE QLINE2 = 'atoms to Carbon?'
+%              EVALUATE BUTTOK = '&Yes'
+%              EVALUATE BUTTXX = '&No'
+%              COPY '#SCRIPT XQUESTIO'
+%              IF ANSWER .EQ. TRUE THEN
+%               COPY '#EDIT'
+%               COPY 'MONITOR OFF'
+%               COPY 'TYPECHANGE TYPE EQ Q C'
+%               COPY 'END'
+%              END IF
+%            END IF
+%%
+%% Change SHELX occupancies (cryst) to CRYSTALS occupancies (chem)
+%%
+%            BLOCK
+%%
+%% Put crystallographic occupancy into 'SPARE' (offset 13)
+%%
+%             COPY '#SPEC TEST PARAMETER .01'
+%             COPY 'END'
+%%
+%             ON EDITERROR TERMINATE
+%             COPY '#GENERALEDIT 5'
+%             COPY 'LOCATE RECORDTYPE=101'
+%             COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%             LOOP
+%              ON EDITERROR TERMINATE
+%              COPY 'TRANSFER FROM OFFSET=2 TO SXOCC'
+%              COPY 'TRANSFER FROM OFFSET=13 TO SPECOCC'
+%%
+%% Divide shelx occ by SPARE to give chemical occupancy.
+%%
+%              IF ( SPECOCC .LE. 0.0 ) THEN
+%                EVALUATE SPECOCC = 1.0
 %              END IF
 %              if sxocc .le. 0. then
 %                  evaluate cryocc = 1.
-%              else                                                           
-%                  EVALUATE CRYOCC = SXOCC / SPECOCC                                
-%              end if                                                           
-%              COPY 'TRANSFER TO OFFSET=2 FROM CRYOCC'                          
-%              COPY 'NEXT'                                                      
-%             END LOOP                                                          
-%%                                                                              
-%% End of list 5 - EditError jumps out of loop.                                 
-%%                                                                              
-%             COPY 'WRITE'                                                      
-%             COPY 'END'                                                        
-%            END BLOCK                                                          
-%          END BLOCK                                                            
-%%                                                                              
-%%                                                                              
-%          BLOCK                                                                
-%            COPY '#SCRIPT XCENTRE'                                             
-%            COPY '#SCRIPT XRETYPE'                                             
-%% Only renumber if importing solution (i.e. Qs).                               
-%            IF LQS .EQ. TRUE THEN                                              
-%              COPY '#SCRIPT XRENUM'                                            
-%            END IF                                                             
-%          END BLOCK                                                            
-%%  Resolve clashes                                                             
-%        COPY '#SCRIPT XRENUMB'                                                 
-%%  RESOLVE H ATOMS                                                             
-%        COPY '#SCRIPT HNAM'                                                    
-%%                                                                              
-%          BLOCK                                                                
-%             COPY '#DISTANCES'                                                 
-%             COPY 'END'                                                        
-%          END BLOCK                                                            
-%%                                                                              
-%% SET Solution type (only if atoms were passed in!)                            
-%%                                                                              
-%          COPY '#GENERALEDIT 30'                                               
-%          COPY 'LOCATE RECORDTYPE=106'                                         
-%          COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'                       
-%          COPY 'WRITE'                                                         
-%          COPY 'END'                                                           
-%        END IF                                                                 
-%%                                                                              
-%% See if an hkl is available and offer to open it.                             
-%%                                                                              
+%              else
+%                  EVALUATE CRYOCC = SXOCC / SPECOCC
+%              end if
+%              COPY 'TRANSFER TO OFFSET=2 FROM CRYOCC'
+%              COPY 'NEXT'
+%             END LOOP
+%%
+%% End of list 5 - EditError jumps out of loop.
+%%
+%             COPY 'WRITE'
+%             COPY 'END'
+%            END BLOCK
+%          END BLOCK
+%%
+%%
+%          BLOCK
+%            COPY '#SCRIPT XCENTRE'
+%            COPY '#SCRIPT XRETYPE'
+%% Only renumber if importing solution (i.e. Qs).
+%            IF LQS .EQ. TRUE THEN
+%              COPY '#SCRIPT XRENUM'
+%            END IF
+%          END BLOCK
+%%  Resolve clashes
+%        COPY '#SCRIPT XRENUMB'
+%%  RESOLVE H ATOMS
+%        COPY '#SCRIPT HNAM'
+%%
+%          BLOCK
+%             COPY '#DISTANCES'
+%             COPY 'END'
+%          END BLOCK
+%%
+%% SET Solution type (only if atoms were passed in!)
+%%
+%          COPY '#GENERALEDIT 30'
+%          COPY 'LOCATE RECORDTYPE=106'
+%          COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
+%          COPY 'WRITE'
+%          COPY 'END'
+%        END IF
+%%
+%% See if an hkl is available and offer to open it.
+%%
 %        EVALUATE HKLTITLE = GETPATH ( INSTITLE ) // -
                              GETTITLE ( INSTITLE ) // '.hkl'
-%        IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                    
-%          VARIABLE LOGICAL INITSETUP                                           
-%          EVALUATE INITSETUP = TRUE  
-%%         weights initialised in XFRESH6                                          
-%          COPY '#SCRIPT XINLIST6'                                              
-%        END IF                                                                 
-%% rem DJW Dec 2011 remove initialise the weights                                                       
-%%          copy '#SCRIPT XWTINI'                                                
-%        FINISH                                                                 
-%END SCRIPT                                                                     
+%        IF ( FILEEXISTS ( HKLTITLE ) ) THEN
+%          VARIABLE LOGICAL INITSETUP
+%          EVALUATE INITSETUP = TRUE
+%%         weights initialised in XFRESH6
+%          COPY '#SCRIPT XINLIST6'
+%        END IF
+%% rem DJW Dec 2011 remove initialise the weights
+%%          copy '#SCRIPT XWTINI'
+%        FINISH
+%END SCRIPT
