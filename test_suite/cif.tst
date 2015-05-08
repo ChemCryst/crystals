@@ -11,6 +11,7 @@
 #
 
 \set time slow
+\store CSYS SVN '0000'
 \use cyclo.in
 # Do a pretty picture:
 \MOLAX

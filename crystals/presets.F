@@ -1830,6 +1830,8 @@ C
       DATA LSSOPS / 5 /
       DATA CSSDAT / 'May 1999' /
       DATA LSSDAT / 8 /
+      DATA CSSSVN / '5555' /
+      DATA LSSSVN / 4 /
 #endif
 #if defined(_VAX_) 
       DATA CSSMAC / 'DEC VAX' /

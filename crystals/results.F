@@ -4718,9 +4718,13 @@ C----- CLEAR OUT THE PAGE BUFFER
         WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 
      1  ''"20'',3(A2,A))')
      2  CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2),'"'
+        WRITE (CLINE,'(F5.2,A,A)')0.01*FLOAT(ISSVER),'_build_',
+     1                              CSSSVN(1:LSSSVN)
+        CALL XCREMS (CLINE,CLINE,NCHAR)
+        CALL XCTRIM (CLINE,NCHAR)
         WRITE (NCFPU1,
-     1   '(''_audit_creation_method CRYSTALS_ver_'',F5.2)')
-     1    0.01*FLOAT(ISSVER)
+     1   '(''_audit_creation_method CRYSTALS_ver_'',A)')
+     1    CLINE(1:NCHAR)
 
 C----- OUTPUT A TITLE, FIRST 44 CHARACTERS ONLY
         WRITE (CLINE,'(20A4)') (KTITL(I),I=1,20)
