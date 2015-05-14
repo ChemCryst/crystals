@@ -680,6 +680,7 @@ C----- UNIT CARDS
         WRITE (NCFPU1, ' (''UNIT '', 12F6.0)')
      1  (F*STORE(J+4), J = L29, M29, MD29)
       ENDIF
+        WRITE (NCFPU1, ' (''WGHT '')')
 C
       IF (IEFORT .EQ. 3) THEN
 C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
@@ -687,6 +688,8 @@ C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         NCPU = NCFPU1
         CALL XPCH5C(1)
         NCPU = J
+        WRITE(NCFPU1,'(A)') 'HKLF 4'
+        WRITE(NCFPU1,'(A)') 'END'
         WRITE(CMON,'(A)') 'Shelx ins written: {&SHELXS.INS{&'
         CALL XPRVDU(NCVDU,1,0)
         GOTO 1850
@@ -1222,6 +1225,8 @@ C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         NCPU = NCFPU1
         CALL XPCH5C(1)
         NCPU = J
+        WRITE(NCFPU1,'(A)') 'HKLF 4'
+        WRITE(NCFPU1,'(A)') 'END'
 C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU1,'(/)')
 C

@@ -871,18 +871,14 @@ cdjw aug99 - try to controll weighting of Fsq refinenent for small Fs
         END IF
 
 C--CHECK IF WE ARE REFINING AGAINST /FO/ **2
-
+c NOTE the test of Fo vs Sigma.  The routines XSQRT and XSQRF compare Fo 
+c with unity,  THis code probably deals better with data on a very small 
+c scale, (lots of Fo and Sigma < 1.0) but the presence of Fc means that
+c sigma(F)  cannot always be recreated from sigma(F^^2)
         IF(JTYPE.EQ.1) THEN      ! WGHTS FRM /FO/, MODIFD TO BE AGAINST FO**2
-c
-cdjwjun09 romove Chris Hardings optimisation.
-c its use restricts the final convergence of the test data
-c It may work better if re-weighting is applied between each cycle
-c
-cdjwjun09          am = 0.5 / max(fo, quasi*foav, aw)
           am = 0.5 / max(fo, fc, aw, 2.)
         ELSE IF ( JTYPE .GE. 2 ) THEN    ! WEIGHTS COMPUTED FROM /FO/ **2,
           if (fo .le. aw) then           ! SO COMPUTE SIGMA**2
-cdjwjun09            AW=2.0*AW*max(FO, quasi*foav, aw)   
             AW=2.0*AW*max(FO, fc, aw, 2.)   
           else
             AW=2.0*AW*FO
@@ -890,6 +886,12 @@ cdjwjun09            AW=2.0*AW*max(FO, quasi*foav, aw)
           FO=FO*FO
           FC=FC*FC
         END IF
+cdjwjun09 romove Chris Hardings optimisation.
+c its use restricts the final convergence of the test data
+c It may work better if re-weighting is applied between each cycle
+c
+cdjwjun09            am = 0.5 / max(fo, quasi*foav, aw)
+cdjwjun09            AW=2.0*AW*max(FO, quasi*foav, aw)   
 
 c2005
 c----- an attempt at Least Modulus weighting - Not very succesful
@@ -2478,7 +2480,7 @@ C--PRINT THE PARAMETERS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3750)(STORE(I),I=L4,M4)
       ENDIF
-3750  FORMAT(/,' With parameter(s) : ',6E15.6/(1X,20X,6E15.6))
+3750  FORMAT(/,' With parameter(s) : ',6E15.4/(1X,20X,6E15.4))
 C--AGREEMENT ANALYSIS ON INDICES  -  PASS OVER H, K AND L
 3800  CONTINUE
       IF(LEVEL)3820,3820,4870
@@ -3643,7 +3645,7 @@ C COMPUTE CORRELLATION COEFFICIENT
        call xprvdu(ncvdu, 3,0)
       if (imode .eq. 3) then
        write(cmon,'(3(a,f12.3))') 
-     1 'Slope= ', slope, ' Intercept =', rinter, ' C-Coef=', correl
+     1 ' Slope= ', slope, ' Intercept =', rinter, ' C-Coef=', correl
        call xprvdu(ncvdu, 1,0)
         if (issprt.eq.0) write (ncwu,'(A)') cmon(1)
       endif

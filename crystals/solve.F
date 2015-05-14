@@ -390,6 +390,8 @@ C--LOAD A FEW MORE LISTS
 cdjwdec06 - save the last r-factor
       rlast = store(l30rf)
 c
+c send non-convergence message to SCRIPT
+      ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 1, 1 )
 C--PRINT OUT THE PAGE HEADING
       CALL XPRTCN
       I=NINT(STORE(M33V))
@@ -419,7 +421,11 @@ C----- SET THE EIGENVALUE FILTERS
       DISCRM = STORE(M33CD+11)
 C----- MAXIMUM  SHIFT/ESD
 C>DJWOCT96
-      SMAX = -1000000.0
+cdjwapril2015
+c      SMAX = -1000000.0
+       smax = zero
+       JSAVE = 0
+       CSAVE = ' '
 C<DJWOCT96
 C--FIND THE NEW MATRIX FLAG
       JK=ISTORE(M33CD+6)
@@ -909,8 +915,17 @@ C----- SUM OF SQUARES SHIFT / ESD
                 ABSF = ABSF + ABS(S)
 C ----- FIND THE MAXIMUM SHIFT /ESD
 C>DJWOCT96
-                IF (ABS(S) .GT. SMAX) THEN
-                   SMAX = ABS(S)
+cdjwapri2015
+cRIC Ordering problem comparing zero with zero. Ensure that one
+c value is always chosen as smallest.
+            IF (JSAVE .EQ. 0) THEN
+               SMAX = S
+               JSAVE = JT
+               CSAVE = CTEXT
+            ENDIF
+c hang onto sign for the moment
+            IF (ABS(S) .GT. abs(SMAX)) THEN
+               SMAX = S
                    JSAVE = JT
                    CSAVE = CTEXT
                 ENDIF
@@ -1050,8 +1065,6 @@ C MEAN ABSOLUTE SHIFT/ESD
       ABSFM = ABSF/STORE(L11P+23)
 c----- RMS (shift/esd)
       STORE(M33V+3)=RMSS
-C----- STORE MAXIMUM SHIFT/ESD
-CDJW0202      STORE(M33V+3) = ABS(SMAX)
 
       IF (ISSPRT .EQ. 0) WRITE( NCWU,3556) RMSS,absfm 
 CRIC13:3556  FORMAT(29X,'    The rms (shift/su)  =', F16.7/
@@ -1059,7 +1072,9 @@ CRIC13:     1 29x,      ' The mean abs(shift/su) =', F16.7)
 3556  FORMAT(29X,'    The rms (shift/su)  =', F16.3/
      1 29x,      ' The mean abs(shift/su) =', F16.3)
 
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,3557) SMAX, JSAVE, CSAVE(1:LENNAM)
+      IF (ISSPRT .EQ. 0) 
+c remove the ABS() at some time in the future
+     1 WRITE(NCWU,3557) abs(SMAX), JSAVE, CSAVE(1:LENNAM)
 CRIC13:3557  FORMAT(' The largest (shift/esd) =',F10.6,
 3557  FORMAT(' The largest (shift/esd) =',F10.2,
      1 ', for Parameter ', I4,', ', A/)
@@ -1192,6 +1207,10 @@ C--UPDATE
           J = 0
       end if ! 4400  CONTINUE
 
+c send convergence message to SCRIPT
+       ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 2, 1 )
+c send convergence message to SCRIPT
+       ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 2, 1 )
       IF ((ICONVG .EQ. 1) .OR. ( JA .NE. 0)) ISTORE(L33CB) = N33IB
       CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
       CALL XDUMP
@@ -1275,7 +1294,8 @@ c     1      (STORE(L11P+24)+ STORE(L11P+27)- STORE(L30RF+2)))
 cdjwjun09
       ENDIF
 C----- MAXIMUM SHIFT/ESD
-      STORE(L30RF+7 ) = SMAX
+c     now remove sign from maximum shift
+      STORE(L30RF+7 ) = abs(SMAX)
       STORE(L30RF+8 ) = STORE(L11P+24)
       IF (STORE(L11P+24) .GT. ZERO) STORE(L30RF+9 ) = STORE(L11P+25)
       IF (STORE(L11P+27) .GT. ZERO) STORE(L30RF+10 ) = STORE(L11P+28)
@@ -2808,7 +2828,7 @@ C<DJWSEP96
       WRITE(NCWU,1500)(STORE(I),I=L5O,J)
       ENDIF
 cRIC13:1500  FORMAT(2X,5F9.5,E15.5,3X,6F9.5)
-1500  FORMAT(2X,5F9.3,E15.4,3X,6F9.4)
+1500  FORMAT(2X,5F9.3,F9.2,3X,6F9.4)
 C--CHECK IF ALL THE INFORMATION IS TO BE PRINTED
       IF(IPRINT==0) then !1700,1550,1700
 C--PRINT THE E.S.D.'S AND SHIFTS

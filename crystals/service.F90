@@ -1472,11 +1472,12 @@
       WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC), &
        CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
 !C
-      WRITE ( CMON,2015)  0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC), &
+      WRITE ( CMON,2015)  0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN), &
+       CSSMAC(1:LSSMAC), &
        CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       CALL XPRVDU(NCVDU, 3,0)
-2015  FORMAT (  9X , 'Version' , F7.2 , ' for ' , A , ' under ' &
-       , A, 3X , A , / , 10X , &
+2015  FORMAT (  2X , 'Version' , F7.2 , ' build ', A, ' for ' , &
+       A , ' under ', &
        'Copyright Chemical Crystallogaphy Laboratory, Oxford' , / )
 !C
 !C -- THIS NEXT HEADER IS ONLY APPROPRIATE FOR INTERACTIVE JOBS
@@ -2747,21 +2748,21 @@
 !C      GOTO 9000
 !C      END
 !Code for oldroman
-      subroutine oldroman(idecimal,croman)
+C      subroutine oldroman(idecimal,croman)
 !C---- return roman character representation of integer number
-      parameter (nromtxt = 10)
-      character *4 croman, cromtxt(nromtxt)
+C      parameter (nromtxt = 10)
+C      character *4 croman, cromtxt(nromtxt)
       data cromtxt/'i','ii','iii','iv','v','vi','vii', &
        'viii','ix','x'/
 !Cdjw convert to roman
-      if ((idecimal .gt. 0) .and. (idecimal .le. nromtxt)) then
-       croman = cromtxt(idecimal)
-      else
-       croman = ' '
-      endif
-      write(ncwu, '(i4,3x,a)') ippack, croman
-      return
-      end
+C      if ((idecimal .gt. 0) .and. (idecimal .le. nromtxt)) then
+C       croman = cromtxt(idecimal)
+C      else
+C       croman = ' '
+C      endif
+C      write(ncwu, '(i4,3x,a)') ippack, croman
+C      return
+C      end
 !CRYSTALS CODE FOR ZROMAN
       SUBROUTINE ZROMAN(ARB, ROM)
 !***********************************************************************************************************************************

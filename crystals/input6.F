@@ -189,7 +189,7 @@ C      G     SHELX HKL OUTPUT of FC with made up sigmas.
 C                  XPCH6X(LSTNO,1)
 C      H     CIF OUTPUT F^2's  on scale of Fc
 C                  XPCH6C(LSTNO,2)
-C
+C      J     SIM WEIGHT TEST
 7000  CONTINUE
       ITEMP1=NR60
       ITEMP2=NR61
@@ -214,8 +214,9 @@ C--NOT LIST 6  -  AN ERROR
       RETURN
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-C           A    B    C    D    E    F    G    H    I
-      GOTO (7310,7340,7320,7330,7350,7360,7370,7380,7390 ) ICLASS+2
+C           A    B    C    D    E    F    G    H    I    J
+      GOTO (7310,7340,7320,7330,7350,7360,7370,7380,7390,7400 ) 
+     1 ICLASS+2
 71    CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,72)ICLASS
@@ -260,6 +261,8 @@ C----- All set keys
 7390  CONTINUE
       CALL XPCH6Z(LSTNO)
       RETURN
+7400  CONTINUE
+      CALL SIMTEST(LSTNO)
       RETURN
       END
 

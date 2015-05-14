@@ -1430,12 +1430,12 @@ C   REPORT CORRECTION SUMMARY
          WRITE ( CMON,198) AMIN,APHINP,AMUNP
          WRITE(NCAWU, '(A)') CMON( 1)(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
-         WRITE ( CMON,199) APHINS,AMUNS,CCRCHR(1:2)
+         WRITE ( CMON,199) APHINS,AMUNS
          WRITE(NCAWU, '(A)') CMON(1 )(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 198   FORMAT( ' Minimum absorption correction =',F6.3,
      2        5X,'at  PHI(P)=',F5.1,' MU(P)=',F5.1 )
-199   FORMAT(47X,    'PHI(S)=',F5.1,' MU(S)=',F5.1,A2 )
+199   FORMAT(47X,    'PHI(S)=',F5.1,' MU(S)=',F5.1 )
          WRITE ( CMON,200) AMAX,APHIXP,AMUXP
          WRITE(NCAWU, '(A)') CMON(1 )(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)

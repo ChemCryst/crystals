@@ -1375,6 +1375,7 @@ C----- SAVE THE NEXT FREE ADDRESS
         END IF
 
         JPART = 1
+        KPLOOP = 1
 
         PARTLOOP: DO WHILE ( JPART .GE. 1 ) 
 
@@ -1612,8 +1613,16 @@ c           discard first
 
 C----- SCRIPT READABLE RIDE LINES
 2185      FORMAT( 'RIDE ',50(A4,'(',I4,',X''S)',1X) )
-          WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
-     1    (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+2186      FORMAT( 'CONT ',50(A4,'(',I4,',X''S)',1X) )
+
+          IF ( KPLOOP .EQ. 1 ) THEN
+            WRITE(NCPU,2185) STORE(M5P), NINT(STORE(M5P+1)),
+     1      (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+            KPLOOP = KPLOOP + 1
+          ELSE
+            WRITE(NCPU,2186) 
+     1      (STORE(ISTORE(J)),NINT(STORE(ISTORE(J)+1)),J=NFLBAS,JS,NW)
+          END IF
 C
 C
 C
@@ -1707,46 +1716,46 @@ C
             ELSE
              IF      (NHY .EQ. 1) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(A)') 'REM            1 H on sp 1'
+                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 1'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL ANG180(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
-                  WRITE(NCPU,'(A)') 'REM            1 H on sp 2'
+                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 3) THEN
-                  WRITE(NCPU,'(A)') 'REM            1 H on sp 3'
+                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 3'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.98)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A)') 'REM            unattached H'
                 ENDIF
 
              ELSE IF (NHY .EQ. 2) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(A)') 'REM            2 H on sp 2'
+                  WRITE(NCPU,'(/A)') 'REM            2 H on sp 2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCC120(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
-                  WRITE(NCPU,'(A)') 'REM            2 H on sp 3'
+                  WRITE(NCPU,'(/A)') 'REM            2 H on sp 3'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.97)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A)') 'REM            unattached H'
                 ENDIF
 
              ELSE IF (NHY .EQ. 3) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(A)') 'REM            3 H on sp 3'
+                  WRITE(NCPU,'(/A)') 'REM            3 H on sp 3'
                   UEQUIV = UEQUIV * 1.25
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.96)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A)') 'REM            unattached H'
                 ENDIF
              ENDIF        
             ENDIF
@@ -2700,6 +2709,9 @@ c
             ed3 = 0
         endif
       endif
+CRIC2015:Ignore ESD on DH-A angles with constrained atoms.
+                IF ((IHFIXD.EQ.1).AND.
+     1                (LHFIXD(1).OR.LHFIXD(2).OR.LHFIXD(3))) ESD = 0.0
 c
                 WRITE(MTE) 'H',TERM,ESD,
 c--- ATOM 2
@@ -7396,8 +7408,9 @@ C -- Copy data down.
      1    'Breaking bond from ',ISTORE(INFO51),NINT(STORE(INFO51+1)),
      1               ' to ',ISTORE(INFO52),NINT(STORE(INFO52+1))
 C            CALL XPRVDU(NCVDU, 1,0)
-             IF ((ISSPRT .EQ. 0) .AND. (LEVEL.EQ.3))
-     1       WRITE(NCWU, '(A)') CMON( 1)(:)
+C NB - Level not defined here ("3" was "debug" in XDIST analogous routine)
+c             IF ((ISSPRT .EQ. 0) .AND. (LEVEL.EQ.3))
+c     1       WRITE(NCWU, '(A)') CMON( 1)(:)
             IF ( KM41B .NE. M41B ) THEN
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
             END IF

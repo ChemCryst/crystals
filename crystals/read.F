@@ -3110,7 +3110,7 @@ C
 C
 cdjwmay99
 cRICjul99
-      PARAMETER ( LADR = 1, NADR = 69)
+      PARAMETER ( LADR = 1, NADR = 70)
       DIMENSION ITRADR(NADR) , ITRAD2(NADR) , ITRLEN(NADR)
       CHARACTER*4 CADDR(NADR)
 C
@@ -3129,7 +3129,7 @@ C----- ICDDIM = 2 * NWK, IN COMMON BLOCK XLEXCH
 C----- NUMBER OF VARIABLES AND CHARACTERS IN COMMON /XSSCHR/
 cdjwmay99one more parameter length 64
 cRICjul99and another length 64
-      PARAMETER (NSSLEN = 14, NSSCHR = 2624 )
+      PARAMETER (NSSLEN = 15, NSSCHR = 2632 )
 C
 C
       DIMENSION ISSBLK(ISSDIM)
@@ -3218,9 +3218,9 @@ C----- DEVI   50 - 55
      9 'HLPD', 'HLPE', 'INDD', 'INDE', 'SCPD', 'SCPE',
 cdjwmay99
 cRICjul99
-C----- CSYS   56 - 69
+C----- CSYS   56 - 70
      1 'MACH', 'OPER', 'DATE', 'PROG', 'CMND', 'NEWD', 'CSRT', 'DSRT',
-     2 'SCAT', 'ELEM', 'TT', 'LP', 'CIF', 'MAP' /
+     2 'SCAT', 'ELEM', 'TT', 'LP', 'CIF', 'MAP', 'SVN' /
 C
 C
       DATA ITRADR /
@@ -3241,8 +3241,9 @@ C----- DEVI   50 - 55
 C----- CSYS   56 - 67
 cdjwmay99 change 448 to 449, add 577
 cRICjul99 add 641.
+CRICmay15 add 8 for 'SVN'
      * 1,   17,  33,  49,  65,  321, 577, 833,1089,1345,1601,1857,
-     * 2113, 2369 /
+     * 2113, 2369, 2625 /
 C
 C
       DATA ITRAD2 /
@@ -3260,8 +3261,8 @@ C----- DEVI   50 - 55
      * 1, 2, 3, 4, 5, 6,
 cdjwmay99
 cRICjul99
-C----- CSYS   56 - 69
-     * 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 /
+C----- CSYS   56 - 70
+     * 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 /
 C
 C
       DATA ITRLEN /
@@ -3279,8 +3280,8 @@ C----- DEVI   50 - 55
      * 64, 64, 64, 64, 64, 64,
 cdjwmay99
 cRICjul99
-C----- CSYS   56 - 69
-     * 16, 16, 16, 16,256,256,256,256,256,256,256,256,256,256 /
+C----- CSYS   56 - 70
+     * 16, 16, 16, 16,256,256,256,256,256,256,256,256,256,256,8 /
 C
 C
 C -- IDENTIFY BLOCK NAME

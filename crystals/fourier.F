@@ -3826,7 +3826,7 @@ C
         WRITE ( CMON ,2005) COORD1,COORD2,COORD3
         CALL XPRVDU(NCVDU, 1,0)
        ENDIF
-2005   FORMAT(1X,'Malformed peak at ', 3F10.5)
+2005   FORMAT(1X,'Malformed peak at ', 3F10.4)
       ENDIF
 C
 C
@@ -4655,7 +4655,8 @@ CODE FOR MDBESL
 C Polynomial approximation to modified Bessel functions I0(x), I1(x)
 C BSLI0 - first order modified bessel function I0(x)
 C BSLI1 - second order modified bessel function I1(x)
-      DOUBLE PRECISION BSLI0,BSLI1,T,T2,X
+c make y double April 2014
+      DOUBLE PRECISION BSLI0,BSLI1,T,T2,X,Y
       IF (X.EQ.0.0D0) THEN
            BSLI0=1.0D0
            BSLI1=0.0D0

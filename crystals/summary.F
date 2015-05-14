@@ -1815,9 +1815,12 @@ cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
 
 
       IF ( IPLOT .GE. 0 ) THEN
+        write(cmon,'(a/2(a,i9))')  ' Completeness of hkl data.',
+     1 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
+        CALL XPRVDU(NCVDU,2,0)
         IF (ISSPRT .EQ. 0) 
-     1   WRITE(NCWU,'(/A/2(A,I9)/)') ' Completeness of hkl data.',
-     2 ' Reflections expected: ', NALLWD, ' Reflections found: ', NFOUND
+     1    write(ncwu,'(/a/a/)')
+     2   CMON(1)(:nctrim(cmon(1))), CMON(2)(:nctrim(cmon(2)))
       END IF
 
       THMCMP = FLOAT( NFOUND ) / FLOAT ( NALLWD )
@@ -1892,9 +1895,25 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
      1  '^^PL YAXISRIGHT ZOOM 0 100 TITLE ''Shell Completeness''',
      1 '^^PL SERIES 1 SERIESNAME ''Cumulative Completeness'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Shell Completeness''',
-c     1  '^^PL SERIES 3 SERIESNAME ''Theta value'' TYPE LINE',
      1  '^^PL USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
+
+
+C send expected to screen
+        WRITE(CMON,'(A,I8,A)')
+     1  '^^CO SAFESET [ _TH_E TEXT ', nallwd,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+
+C send found to screen
+        WRITE(CMON,'(A,I8,A)')
+     1  '^^CO SAFESET [ _TH_F TEXT ', nfound,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+
+C send missing to screen
+        WRITE(CMON,'(A,I8,A)')
+     1  '^^CO SAFESET [ _TH_M TEXT ', nallwd-nfound,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+
 
         DO I = 1,100
           IF ( ALLBIN(I) .EQ. 0 ) THEN
@@ -1934,7 +1953,7 @@ C
       CHARACTER *8 CNAME(35)
       CHARACTER *15 HKLLAB
 
-      INCLUDE 'ICOM30.INC'
+      INCLUDE 'ICOM39.INC'
       DIMENSION KEY(35)
       INCLUDE 'ISTORE.INC'
 C
@@ -1942,7 +1961,7 @@ C
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST23.INC'
-      INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST39.INC'
 C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
@@ -1956,7 +1975,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
-      INCLUDE 'QLST30.INC'
+      INCLUDE 'QLST39.INC'
 C
 C
       DATA KEY/ 1, 2, 3, 4, 5, 6, 0, 0, 0, 0,
@@ -1967,6 +1986,12 @@ C
       DATA CNAME/ 'H','K','L','Fo','Weight','Fc',6*' ',
      1 'Sigma',3*' ','Sth/L**2','Fo/Fc',17*' '/
 C
+#if defined (_HOL_)
+      DATA IFLAC/4HFLAC/
+#else
+      DATA IFLAC/'FLAC'/
+#endif
+
 CDJW08      DATA MAX11 /16777216/
 C
 c      DIMENSION X(N6D)
@@ -1974,13 +1999,14 @@ c      DIMENSION Y(N6D)
 
       DIMENSION TEMP(2)
 CDJW08
+      INCLUDE 'IDIM39.INC'
       MAX11 = ISIZ11
 C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL39
 
       IFSQ = ISTORE(L23MN+1)
 c set flag for twinned/normal data
@@ -1991,16 +2017,16 @@ C
             ITWIN = 10
       ENDIF
 C--SETUP A GRAPH HERE
-      IF ( LEVEL .EQ. 4 ) THEN                 ! Fo vs Fc scatter
+      IF ( LEVEL.EQ.4 ) THEN                 ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
-     1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC',
+     1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
      2  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
      3  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
-      IF ( LEVEL .EQ. 5 ) THEN                 ! Normal probability plot
+      IF ( LEVEL.EQ.5 ) THEN                 ! Normal probability plot
         WRITE(CMON,'(A,/,A)')
-     1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP',
+     1  '^^PL PLOTDATA _NORMPP SCATTER ATTACH _VNORMPP KEY',
      3  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000'
         CALL XPRVDU(NCVDU, 2,0)
         IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
@@ -2012,9 +2038,9 @@ C--SETUP A GRAPH HERE
         END IF
         CALL XPRVDU(NCVDU, 1,0)
       END IF
-      IF ( LEVEL .EQ. 6 ) THEN                 ! Weight vs Sigma
+      IF ( LEVEL.EQ.6 ) THEN                 ! Weight vs Sigma
         WRITE(CMON,'(A,/,A,/,A)')
-     1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG',
+     1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG KEY',
      1  '^^PL YAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
      1  '^^PL XAXIS TITLE ''1/Sigma'' SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
@@ -2056,6 +2082,7 @@ C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
 C
       IFTYPE = ISTORE(L23MN+1)+2
       SCALE = STORE(L5O)
+      SCALESQ = SCALE*SCALE
       FSCALE = 1./(SCALE*SCALE)
       TOP = 0.0
       BOTTOM = 0.0
@@ -2081,7 +2108,7 @@ cjun2010  FO = STORE(M6+itwin)
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
 
-        IF ( LEVEL .EQ. 4 ) THEN
+        IF ( LEVEL.EQ.4 ) THEN
           PLOTMAX = MAX( PLOTMAX, FC )
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
@@ -2107,7 +2134,7 @@ C - FSQ REFINENENT
         WTOP = WTOP + WDEL*WDEL
         WBOT = WBOT + WFO*WFO
 
-        IF ( LEVEL .EQ. 5 ) THEN
+        IF ( LEVEL.EQ.5 ) THEN
 C If you have more than 8.8 million reflections you might be in trouble.
          IF ( N6ACC .LE. MAX11/2 ) THEN
           STR11(N6ACC*2-1) = WDEL     !Format:   [WDEL,INDICES]
@@ -2115,7 +2142,7 @@ C If you have more than 8.8 million reflections you might be in trouble.
          END IF
         END IF
 
-        IF ( LEVEL .EQ. 6 ) THEN
+        IF ( LEVEL.EQ.6 ) THEN
 C-PLOT WEIGHT VS 1/SIGMA
           FSIGN = STORE(M6+3)
           SIG = STORE(M6+12)
@@ -2149,10 +2176,10 @@ c         refinement on F
       GO TO 1100
 1200  CONTINUE
 
-      IF ( LEVEL .EQ. 4 ) THEN      !Also output the omitted refls.
+      IF ( LEVEL.EQ.4 ) THEN      !Also output the omitted refls.
 
         WRITE(CMON,'(A)')
-     1  '^^PL ADDSERIES Omitted TYPE SCATTER'
+     1  '^^PL ADDSERIES Omitted TYPE SCATTERX'
         CALL XPRVDU(NCVDU,1,0)
 
         CALL XFAL06 (IULN, 0 )
@@ -2210,7 +2237,7 @@ C -- PRINT THE R VALUE ETC.
      5     'Rsigma=', F6.2 )
 
 
-      IF ( LEVEL .EQ. 5 ) THEN
+      IF ( LEVEL.EQ.5 ) THEN
 
         IF ( N6ACC .GT. MAX11/2 ) THEN
           WRITE(CMON,'(A,I8)') '{E Too many reflections: ', N6ACC
@@ -2253,30 +2280,6 @@ c
      1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
             CALL XPRVDU(NCVDU, 1,0)
         END DO
-
-      END IF
-
-      IF (( LEVEL .EQ. 4) .OR. (LEVEL .EQ. 6)) THEN
-c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
-        WRITE(CMON,'(A/A,2F10.2)')
-     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
-        CALL XPRVDU(NCVDU,2,0)
-      ELSE IF (LEVEL.EQ.5) THEN
-        WRITE(CMON,'(A/2(A,2F10.2))')
-     1  '^^PL ADDSERIES ''Fo=Fc'' TYPE LINE',
-     2  '^^PL DATA ', -PLOTMAX, -PLOTMAX,' DATA ', PLOTMAX, PLOTMAX
-        CALL XPRVDU(NCVDU,2,0)
-      ENDIF
-c
-C -- FINISH THE GRAPH DEFINITION
-      IF ( ( LEVEL .EQ. 4 ).OR.( LEVEL .EQ. 5 )
-     1 .OR.( LEVEL .EQ. 6 )) THEN
-        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
-        CALL XPRVDU(NCVDU, 2,0)
-      ENDIF
-C
-      if (level .eq. 5) then
 c      find slope and intercept
 c      determinant
         deter = ss*sxx-sx*sx
@@ -2284,6 +2287,7 @@ c      determinant
           cutter = (sxx*sy-sx*sxy)/deter
           slope = (ss*sxy-sx*sy)/deter
           yslope = slope
+          ycut = cutter
           denom = (ss*sxx-sx*sx)*(ss*syy-sy*sy)
           if (denom .gt. 0.) then
             denom=sqrt(denom)
@@ -2312,10 +2316,17 @@ c      determinant
                 call xprvdu(ncvdu, 1,0)
                 if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
             endif
-
-
-
-
+c-----      update list 39 - 
+c            iflac = 'FLAC'
+            m39f=l39f
+            do i=1,n39f
+              if (istore(m39f) .eq. iflac) then
+                store(m39f+2) = slope
+              endif
+              m39f = m39f+md39f
+            enddo
+            call xwlstd ( 39, icom39, idim39, -1, -1)
+c
           else
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
@@ -2340,13 +2351,53 @@ c      determinant
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
         endif
-      endif
+      END IF
 c
-C----- UPDATE LIST 30
-C----- DONT UPDATE LIST 30 -  THE USER MIGHT BE FIDDLING WITH LIST 28
-C      STORE(L30RF) = RFACT
-C      STORE(L30RF+1) = WRFAC
-C      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+      IF ( LEVEL.EQ.4)  THEN
+c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
+        WRITE(CMON,'(A/A,2F10.2)')
+     1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+
+      ELSE IF (LEVEL.EQ.6) THEN
+c  add A SERIES FOR STRAIGHT LINE AT WT=1/SIGSQ
+        WRITE(CMON,'(A/A,2F10.2)')
+     1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2  '^^PL DATA 0 0 DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+c
+      ELSE IF (LEVEL.EQ.5) THEN
+        WRITE(CMON,'(A/2(A,2F10.2))')
+     1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
+     2  '^^PL DATA ', -PLOTMAX, -PLOTMAX,' DATA ', PLOTMAX, PLOTMAX
+        CALL XPRVDU(NCVDU,2,0)
+c----- plot side bands
+        z_max=plotmax
+        djwx=z_max
+        djwy=yslope*z_max
+        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+     1 '^^PL ADDSERIES ''+10%'' TYPE LINE',
+     2 '^^PL DATA ', -djwx,-djwy+ycut+0.1*z_max,
+     3 ' DATA ',djwx,djwy+ycut+0.1*Z_max
+        CALL XPRVDU (NCVDU,2,0)
+c
+        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+     1 '^^PL ADDSERIES ''-10%'' TYPE LINE',
+     2 '^^PL DATA ', -djwx,-djwy+ycut-0.1*z_max,
+     3 ' DATA ',djwx,djwy+ycut-0.1*Z_max
+        CALL XPRVDU (NCVDU,2,0)
+C 
+      ENDIF
+c
+C -- FINISH THE GRAPH DEFINITION
+      IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
+     1 .OR.( LEVEL.EQ.6 )) THEN
+        WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+        CALL XPRVDU(NCVDU, 2,0)
+      ENDIF
+C
+c
       RETURN
       END
 C
@@ -3551,9 +3602,10 @@ CODE FOR XSGDST
       SUBROUTINE XSGDST
 c----- produce data for tabbed analysis display
       DIMENSION KSIGS(110)
-      DIMENSION LSIGS(25,3)
       DIMENSION MSIGS(120)
-      dimension sios(25),nios(25)
+      parameter (nbin=30)
+      DIMENSION LSIGS(nbin,3)
+      dimension sios(nbin),nios(nbin)
       CHARACTER *15 HKLLAB
       PARAMETER ( RTDIV = 19.09859 ) ! Radians to divisions.
       INCLUDE 'ISTORE.INC'
@@ -3562,6 +3614,7 @@ c----- produce data for tabbed analysis display
       INCLUDE 'XLST01.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST13.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
@@ -3571,15 +3624,16 @@ c----- produce data for tabbed analysis display
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
       DATA ICOMSZ / 5 /
-      DATA IVERSN /101/
+      DATA IVERSN /102/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 
       CALL XTIME1 ( 2 )
       CALL XCSAE
 
-      call xzerof (sios, 25)
-      call xzerof (nios, 25)
+      call xzerof (sios, nbin)
+      call xzerof (nios, nbin)
+      bin = float(nbin)
 
 C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       ICOMBF = KSTALL( ICOMSZ )
@@ -3598,6 +3652,23 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       CALL XFAL06 (IULN, 0)
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF (KHUNTR ( 13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
+      IF (KHUNTR ( 30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+c
+c     check if thetamax is set
+      thetamax = store(l30ix+7)
+      wave = store(l13dc)
+      if (thetamax .le. zero) then
+        if(wave .le. 1.0) then
+            thetamax = 27.0   ! something like Mo
+        else
+            thetamax = 60.0   ! something like Cu
+        endif
+      endif
+    
+c
+      rmax = sin(thetamax*dtr)/wave    ! maximum permitted resolution
+      rmax = rmax*rmax*rmax
 
       DO I = 1,110
         KSIGS(I) = 0
@@ -3606,7 +3677,7 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
         MSIGS(I) = 0
       END DO
       DO I = 1,3
-        DO J = 1,25
+        DO J = 1,nbin
           LSIGS(J,I) = 0
         END DO
       END DO
@@ -3616,9 +3687,7 @@ C -- SCAN LIST 6 FOR REFLECTIONS
       NTOT = 0
       NALLOW = 0
 c      nmax=0
-
-
-
+c
       DO WHILE ( KLDRNR(0) .GE. 0 )
         IF ( KALLOW(IALLOW).EQ. 0 ) THEN
           NALLOW = NALLOW + 1
@@ -3639,16 +3708,16 @@ c      nmax=0
          JSIGS = 3
          IF ( SIGNOI .LT. 10 ) JSIGS = 2
          IF ( SIGNOI .LT. 3 ) JSIGS = 1
- 
-         MSIG = 1 + NINT( STORE(M6+16) * 25.0 / 0.5 )
+         stol3 = sqrt(store(m6+16))
+         stol3=stol3*stol3*stol3
+         MSIG = 1 + NINT( stol3 * bin / rmax )
          MSIG = MAX ( 1,MSIG )
-         MSIG = MIN ( 25,MSIG )
+         MSIG = MIN ( nbin,MSIG )
          LSIGS(MSIG,JSIGS) = LSIGS(MSIG,JSIGS) + 1
 c         nmax=max(nmax,LSIGS(MSIG,JSIGS))
          sios(msig)=sios(msig)+signoi
          nios(msig)=nios(msig)+1
         endif
-
       END DO
 
       if (issprt .eq. 0) write(ncwu,'(a)')'I/sig(i) vs resolution'
@@ -3656,20 +3725,20 @@ c         nmax=max(nmax,LSIGS(MSIG,JSIGS))
       smax=0.
       slim=5.
       call outcol(6)
-      do i=1,25
+      do i=1,nbin
             mios=mios+nios(I)
             if(nios(i) .gt. 0) sios(i)=sios(i)/float(nios(i))
             if((sios(I) .lt. slim).and.(sios(i).gt. 0.)) then
             write(cmon,'(A,f4.1,a,f6.2)')
      1      '<I/sigma(I)> falls below', slim,
-     2      ' at (sintheta/lambda)^2=',(float(i)*.4/25.0)
+     2      ' at (sintheta/lambda)^3=',(float(i)*rmax/bin)
             CALL XPRVDU(NCVDU, 1,0)
             slim=slim-1.
             endif
             smax=max(smax,sios(I))
             if (issprt .eq. 0) then
             write(ncwu,'(f5.2,2i8,f10.3)') 
-     1      (float(i)*.4/25.),nios(I),mios,sios(I)
+     1      (float(i)*rmax/bin),nios(I),mios,sios(I)
             endif
       enddo
       call outcol(1)
@@ -3679,10 +3748,10 @@ c      nmax=min(90,nmax)
 c      nmax=max(1,nmax)
       IF (IPLOT2 .EQ. 1) THEN
 c        WRITE(CMON,'(A,10(/A))')
-        WRITE(CMON,'(A,3(/A),/a,i6,a,5(/a))')
+        WRITE(CMON,'(a/a/a,i6,/a,/a,i6,a,5(/a))')
      1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
-     2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**2'' NSERIES=4',
-     3  '^^PL LENGTH=25',
+     2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**3'' NSERIES=4',
+     3  '^^PL LENGTH=',nbin,
      4  '^^PL YAXIS TITLE ''Frequency''',
      5  '^^PL YAXISRIGHT ZOOM 0 ',nint(smax),
      5  ' TITLE ''Average(I/sigmaI)''',
@@ -3694,10 +3763,15 @@ c        WRITE(CMON,'(A,10(/A))')
 
         CALL XPRVDU(NCVDU, 10,0)
 
-        DO I = 1,25
+        DO I = 1,nbin
+          point = (float(I)*rmax/bin)
+          point=exp((2.0*log(point))/3.)
+          write(cmon,'(a,f10.3)') 
+     1    '^^PL LABEL ', point
+          call xprvdu(ncvdu, 1,0)
           WRITE(CMON,'(A,4(F7.3,1X,I8,1X))')
-     1     '^^PL DATA ',((I*0.4/25.0),LSIGS(I,J),J=1,3),
-     2     (I*0.4/25.0),nint(sios(I))
+     1     '^^PL DATA ',((float(I)*rmax/bin),LSIGS(I,J),J=1,3),
+     2     (float(I)*rmax/bin),nint(sios(I))
           CALL XPRVDU(NCVDU, 1,0)
         END DO
  

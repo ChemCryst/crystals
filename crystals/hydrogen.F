@@ -689,6 +689,8 @@ C--LOAD THE INPUT LIST
       IF (IERFLG.LT.0) GO TO 2550
 cdjwmar09
       IF (KHUNTR (29,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL29
+cricapr15
+      IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1) .LT. 0) CALL XFAL41
 C--FIND THE OUTPUT LIST TYPE
       LN2=KTYP05(MY)
 C----- SET THE DEFAULT TEMPERATURE FACTOR OR MULTIPLIER
@@ -717,6 +719,7 @@ C----- LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
       CALL XDIST2
       IF (IERFLG.LT.0) GO TO 2550
 C
+      CALL XBCALC(1)
 C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 12
       IDIM12=40
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
@@ -896,6 +899,8 @@ C
 C     LOOPS BACK TO 2500 UNTIL MATOM=N5
 1450  CONTINUE
 C
+      JPART = 1
+      PARTLOOP: DO WHILE ( JPART .GE. 1 ) 
 C----- FIX THE RADII FOR 1-3 CONTACTS
       AC=D13
       AO=D13
@@ -904,9 +909,9 @@ C
 C----- RESET THE CONTACT ATOM AND FUNCTION VECTOR ADDRESSES
       M5=L5
 C
-C
 C----RESET BEGINNING OF DISTANCE STACK TO JE EVERY TIME
       NFL=JE
+C
 C
 C----END OF LOOP ?
       IF (MATOM.GE.N5) GO TO 2300
@@ -922,25 +927,28 @@ C --- CHECK NITROGEN ALLOWED
 C --  COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
 cdjwaug06
 c      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,0)
-      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,1)
+c      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,1)
+       NDIST = KDIST4( JL, JT, 0, JPART)
 C---- JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
       NFL=JL
       JK=JL-JT
 C
 C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
       IF (NDIST.LE.0) THEN
-         IF (ISSPRT.EQ.0) WRITE (NCWU,1600) STORE(M5A),NINT(STORE(M5A+1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,1601) STORE(M5A),NINT(STORE(M5A+1)
      1    )
-         WRITE (CMON,1600) STORE(M5A),NINT(STORE(M5A+1))
+         WRITE (CMON,1601) STORE(M5A),NINT(STORE(M5A+1))
          CALL XPRVDU (NCVDU,1,0)
          GO TO 2250
       END IF
+1601     FORMAT (10X,' Non-bonded ',A4,I5)
 
 C TODO: Check for bonding to more than one non-zero part. If this happens,
 C each part should be treated independently.
 cdjwmar09
 c       if (issprt .eq. 0) then
-c         WRITE(ncwu,'(/A,I3,6X,A4,I4)')'Bonds found: ',NDIST,
+
+c         WRITE(ncwu,'(A,I3,6X,A4,I4)')'Bonds found: ',NDIST,
 c     1   ISTORE(M5A),NINT(STORE(M5A+1))
 c         DO MMMI=JE,JE+JT*(NDIST-1),JT
 c          WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
@@ -1024,7 +1032,7 @@ C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
          IF (ISSPRT.EQ.0) WRITE (NCWU,1600) ISTORE(M5A),CTEMP(1:LTEMP)
          WRITE (CMON,1600) ISTORE(M5A),CTEMP(1:LTEMP)
          CALL XPRVDU (NCVDU,1,0)
-1600     FORMAT (10X,' Non-bonded',A4,' - ',A)
+1600     FORMAT (10X,' Non-bonded ',A4,' - ',A)
       ELSE IF (ISTORE(M5A).EQ.ICARB) THEN
 C----   WE HAVE CONTACTS.
 C       CALCULATE THE HYBRIDISATION BASED ON SHORTEST BOND
@@ -1036,7 +1044,8 @@ C           GET THE NEXT SHORTEST BOND
             MHYB=KHYB(IADD(2),STORE(IADD(2)+10),DELTA2)
          END IF
 C-----  LOOK FOR SECONDARY CONTACTS
-         ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
+c         ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
+         ISEC=KSEC2(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
          LHYB=0
          DELTAA=999.
          DEV=999.
@@ -1077,20 +1086,20 @@ C         2 ON SP3 , 1 ON SP2 OR 0 ON SP1
          ELSE IF (NBONDS.EQ.1) THEN
 C         3 ON SP3 , 2 ON SP2 OR 1 ON SP1
 cdjwapr06            IF (DELTA.GE..05) THEN
-            IF (DELTA.GE. .01) THEN
+            IF (DELTA.GE. .01) THEN    !Pretty certain of hybridisation from distance
                LHYB=NHYB
-            ELSE
-               SOP=XDSTN2(STORE(IADD(1)+7),STORE(ISEC+7))
+            ELSE                       !Not certain - check angles
+               SOP=XDSTN2(STORE(IADD(1)+7),STORE(ISEC+7))   !First use of ISEC - if 1 bond to target =CH2 or -CH3 or ==CH
                SOP=SQRT(SOP)
                ANG=XANG(STORE(IADD(1)+10),SOP,STORE(ISEC+10))
-               IF (ANG.GT.160.) THEN
+               IF (ANG.GT.160.) THEN    ! >160 - SP1
                   LHYB=1
                   DELTAA=180.-ANG
-               ELSE IF (ANG.GT.113) THEN
+               ELSE IF (ANG.GT.113) THEN    ! 113-160 - SP2
                   LHYB=2
                   DELTAA=113.-ANG
-               ELSE
-                  DELTAA=109.-ANG
+               ELSE                         ! 0-113 - SP3
+                  DELTAA=109.-ANG 
                   LHYB=3
                END IF
             END IF
@@ -1270,6 +1279,8 @@ C----   WRITE COMMAND TO FILE.
         ELSE
         END IF
       END IF
+
+      END DO PARTLOOP
 C
 C--UPDATE FOR THE NEXT TARGET ATOM.
 2250  CONTINUE
@@ -1512,11 +1523,11 @@ C    THE START OF THE NEW STACK
         JJE=JL
         M5=L5
 C
-        NDTEMP = KDIST1(N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
+        NDTEMP = KDIST1(N5, JJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
         IF (NDTEMP .LT. 2) GOTO 1631
 C
 C
-        DO 1580 IJJE=JJJE, JJJE-JT, JT
+        DO 1580 IJJE=JJE, JJE-JT, JT
 CHECK WE DONT HAVE THE REVERSE DISTANCE
         IF (ISTORE(IJJE) .EQ. ISTORE(JE)) GOTO 1580
 CHECK IT IS A CARBON
@@ -1637,7 +1648,7 @@ C CONTACT ATOM TYPE, MMIN,(= ISTORE(ISTORE(IADD))).
 C NHYB = 0 IF IT CANNOT BE ASSIGNED BY THE RULES HERE, I.E. IF
 C THE SHORTEST BOUND ATOM TYPE IS NOT RECOGNISED.
 C
-      PARAMETER (NTYPE=7)
+      PARAMETER (NTYPE=8)
       CHARACTER *(NTYPE*4) CATOMS, CTARG*4
       DIMENSION THRESH (2,NTYPE)
       INCLUDE 'ISTORE.INC'
@@ -1648,13 +1659,13 @@ C
 C
 C----- KNOWN ATOM SYMBOL LIST
       DATA CATOMS
-     1   / 'C   N   O   F   SI  P   CL  '/
+     1   / 'C   N   O   F   SI  P   CL  S   '/
 C
 C THRESHOLD VALUES FOR BOND LENGTHS FOR COMPARISON WITH SHORTEST BOND.
 C       3/2, 2/1 THRESHOLD PAIRS
       DATA THRESH
      2   / 1.43, 1.23, 1.41, 1.22, 1.35, 1.17, 1.34, 1.15,
-     3     1.82, 1.60, 1.60, 1.40, 1.50, 1.40 /
+     3     1.82, 1.60, 1.60, 1.40, 1.50, 1.40, 1.78, 1.70 /
 C
       KHYB = 0
       DELTA= 1000.
@@ -1783,6 +1794,7 @@ C      COMMON /XDISTW/A,BB,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y
       INCLUDE 'XLST29.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
+c      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -1809,61 +1821,176 @@ C----- ONLY LOOK FOR SHORT CONTACTS
       AO = AOTEMP
       AC = AOTEMP
       AP = APTEMP
+
+c      WRITE ( CMON, 101) ' Ksec: NBONDS ',NBONDS 
+c      CALL XPRVDU(NCVDU, 1,0)
+c101   FORMAT(10X, A, I5)
+
 C
 C----- SET UP A LOOP TO TRY ALL THE SHORT CONTACTS IN IADD
       DO 1650 I = 1, NBONDS
-      JADD = I
+
+        JADD = I
 C----- THE ADDRESS OF THE NEW PIVOT IS IN ISTORE(IADD(I))
-      M5S = IADD(I)
-      M5A = ISTORE(M5S)
+        M5S = IADD(I)
+        M5A = ISTORE(M5S)
+
+c        WRITE ( CMON, 100) ' Searching around ', 
+c     1 STORE(M5A), NINT(STORE(M5A+1)),STORE(M5S+10)
+c        CALL XPRVDU(NCVDU, 1,0)
+c100     FORMAT(10X, A, A, I5, F8.3)
+
+
 C
 C CONSIDER ONLY THOSE ATOMS ON THIS STACK WITHIN 1.9 ANGSTROM
 C WHEN DECIDING A PIVOT FOR THE SECOND STACK.
 C
-      IF (STORE(M5S+10) .LT. 1.9) THEN
+        IF (STORE(M5S+10) .LT. 1.9) THEN
 C
 C----- ENSURE THAT NFL POINTS TO THE END OF THE OLD DISTANCE STACK
-         NFL=JL
+          NFL=JL
 C        THE START OF THE NEW STACK
-         JJE=JL
-         M5=L5
+          JJE=JL
+          M5=L5
 C
 cdjwaug06
 c         NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 0)
          NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 1)
-         IF (NDTEMP .LT. 2)    GOTO 1630
+c          NDTEMP = KDIST4( JJJE, JT, 0, 0 ) !Assume 3rd contact has little relevance to H geometry (for now).
+
+c          WRITE ( CMON, 102) ' NDTemp ', NDTEMP
+c          CALL XPRVDU(NCVDU, 1,0)
+c102       FORMAT(10X, A, I6)
+
+
+          IF (NDTEMP .LT. 2)    GOTO 1630 ! No good - need at least one other contact
 C
 C
 C SCAN BOTH STACKS LOOKING FOR A 1-3 CONTACT FOR THE TARGET ATOM,
 C      AND A 1-2 CONTACT FOR THE AUXILLIARY ATOM
 C
-         DO 1600 IJE=JE, JK, JT
-           DO 1590 IJJE=JJE,JJJE-JT,JT
+          DO 1600 IJE=JE, JK, JT          ! The original list of bonds around the target atom
+            DO 1590 IJJE=JJE,JJJE-JT,JT    ! List of bonds around secondary contact
+
+ 
+c              WRITE ( CMON, 104) ' KSEC: ',STORE(ISTORE(IJJE)), 
+c     1 NINT(STORE(ISTORE(IJJE)+1)),
+c     1  STORE(ISTORE(IJE)), NINT(STORE(ISTORE(IJE)+1))
+c              CALL XPRVDU(NCVDU, 1,0)
+c104           FORMAT(10X, A, A, I5, A, I5 )
+
+
 C----- CHECK THE ATOM ADDRESSES IN LIST 5 AGREE (IE SAME ATOM),
 C      AND THAT THE NEW ATOM IS A 1 - 3 CONTACT WITH THE TARGET
 C      AND A 1 - 2 CONTACT WITH THE INTERMEDIATE.
-             IF (  (ISTORE(IJJE) .EQ. ISTORE(IJE)) .AND.
-     1             (STORE(IJE +10) .GT. 1.9)     .AND.
+! Old stack contains long (1-3) contacts (not any more) therefore this will fail.
+! We just need shortest secondary contact, pref not H.
+
+              IF (  (ISTORE(IJJE) .EQ. ISTORE(IJE)) .AND.
+     1             (STORE(IJE +10) .GT. 1.9)     .AND. 
      1             (STORE(IJJE+10) .LE. 1.9)   ) THEN
-                ISEC = IJE
+                ISEC = IJE                                  !Store this one it might do
                 IF( (ISTORE(ISTORE(ISEC)) .NE. KHYD) .AND. 
-     1          (ISTORE(ISTORE(ISEC)) .NE. KDET)) GOTO 1700
-             ENDIF
-C
+     1          (ISTORE(ISTORE(ISEC)) .NE. KDET)) GOTO 1700 !That'll do.
+              ENDIF
+
 1590        CONTINUE
-1600       CONTINUE
+1600      CONTINUE
 1630      CONTINUE
-      ENDIF
-C
-1650  CONTINUE
-C
+        ENDIF
+1650  CONTINUE !End of loop over first atom contacts
+
 1700  CONTINUE
 C     RESTORE OLD TARGET
       M5A = M5B
       KSEC = ISEC
+c      WRITE ( CMON, 103) ' KSEC ret ',KSEC 
+c      CALL XPRVDU(NCVDU, 1,0)
+c103   FORMAT(10X, A, I5 )
+
       RETURN
       END
 C
+CODE FOR KSEC2
+       FUNCTION KSEC2(AOTEMP,APTEMP,NDTEMP, IADD, NBONDS, JADD)
+C
+C RETURNS THE ADDRESS IN ISTORE OF A USABLE SECOND CONTACT FOR THE
+C TARGET ATOM AT M5.
+C
+      DIMENSION IADD(4)
+C
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XDSTNC.INC'
+      INCLUDE 'XPROCC.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XWORKH.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST29.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+c      INCLUDE 'XIOBUF.INC'
+C
+      INCLUDE 'QSTORE.INC'
+C
+      DATA TOLER /0.6/, ITRANS / 0 /
+C
+#if defined (_HOL_)
+      DATA KHYD / 4HH    /
+      DATA KDET / 4HD    /
+#else
+      DATA KHYD / 'H   ' /
+      DATA KDET / 'D   ' /
+#endif
+
+C Use shortest contact from primary atom as secondary atom. Find shortest contact to a different atom
+C that preferably isn't H or D.
+
+      ISEC = -1000
+C----- SAVE OLD TARGET
+      M5B=M5A
+C----- ONLY LOOK FOR SHORT CONTACTS
+      AO = AOTEMP
+      AC = AOTEMP
+      AP = APTEMP
+
+C----- SET UP A LOOP TO TRY ALL THE SHORT CONTACTS IN IADD
+      DO 1650 I = 1, NBONDS
+
+          JADD = I
+C----- THE ADDRESS OF THE NEW PIVOT IS IN ISTORE(IADD(I))
+          M5S = IADD(I)
+          M5A = ISTORE(M5S)
+
+C----- ENSURE THAT NFL POINTS TO THE END OF THE OLD DISTANCE STACK
+          NFL=JL
+C        THE START OF THE NEW STACK
+          JJE=JL
+          M5=L5
+
+c          NDTEMP = KDIST1( N5, JJJE, JT, 0, TOLER, ITRANS, 0, 4, 1)
+          NDTEMP = KDIST4( JJJE, JT, 0, 0 ) 
+
+          IF (NDTEMP .LT. 2)    GOTO 1630 ! No good - need at least one other contact
+
+          DO 1590 IJJE=JJE,JJJE-JT,JT    ! List of bonds around secondary contact
+             IF ( (ISTORE(IJJE) .NE. M5B )) THEN    ! Not back to self. Good.
+                ISEC = IJJE
+                IF( (ISTORE(ISTORE(ISEC)) .NE. KHYD) .AND. 
+     1          (ISTORE(ISTORE(ISEC)) .NE. KDET)) GOTO 1700 !That'll do.
+             ENDIF
+1590      CONTINUE
+
+1630      CONTINUE
+1650  CONTINUE !End of loop over first atom contacts
+
+1700  CONTINUE
+C     RESTORE OLD TARGET
+      M5A = M5B
+      KSEC2 = ISEC
+
+      RETURN
+      END
 C
 CODE FOR XERWH
       SUBROUTINE XERWH (M5A,CTYPE)
@@ -2378,8 +2505,16 @@ C--USE THE T.F. OF THE BONDED ATOM
       I = JB
       CALL XEQUIV(1, I, MD5A, IEQUIV)
       SV = STORE(I+2)
+      IF ( STORE(JB+2-MD5A) .LT. SV ) SV = STORE(JB+2-MD5A)
+      IF ( STORE(JB+2-MD5A*2) .LT. SV ) SV = STORE(JB+2-MD5A*2)
       KPR = ISTORE(I+14)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A*2)
       SY = STORE(IEQUIV) * STORE(IEQUIV+4)
+c      WRITE(CMON,'(A,3(A,I4))')'23: ',STORE(JB),NINT(STORE(JB+1)), 
+c     1 STORE(JB-MD5A),NINT(STORE(JB+1-MD5A)),
+c     1 STORE(JB-MD5A*2),NINT(STORE(JB+1-MD5A*2))
+      CALL XPRVDU(NCVDU, 1,0)
 1050  CONTINUE
       CALL SETV(STORE(JO),1.0)
       CALL XTRANS(STORE(JE),STORE(JN),3,3)
@@ -2834,7 +2969,15 @@ C--WE SHOULD THE USE THE T.F. OF THE BONDED ATOM
       CALL XEQUIV(1, JB, MD5A, IEQUIV)
       SY = STORE(IEQUIV) * STORE(IEQUIV+4)
       SV = STORE(JB+2)
+      IF ( STORE(JB+2-MD5A) .LT. SV ) SV = STORE(JB+2-MD5A)
+      IF ( STORE(JB+2-MD5A*2) .LT. SV ) SV = STORE(JB+2-MD5A*2)
       KPR = ISTORE(JB+14)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A*2)
+c      WRITE(CMON,'(A,3(A,I4))')'3322: ',STORE(JB),NINT(STORE(JB+1)), 
+c     1 STORE(JB-MD5A),NINT(STORE(JB+1-MD5A)),
+c     1 STORE(JB-MD5A*2),NINT(STORE(JB+1-MD5A*2))
+      CALL XPRVDU(NCVDU, 1,0)
 1200  CONTINUE
       CALL SETV(STORE(JO),1.0)
       CALL XTRANS(STORE(JE),STORE(JN),3,3)

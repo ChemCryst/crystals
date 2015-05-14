@@ -892,18 +892,11 @@ C    AND ALWAYS RETURNS THE VALUE 1
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-#if defined(_PPC_) 
-CS***
       CHARACTER*31 FNAME
 C
-      INQUIRE ( UNIT = IUNIT, NAME = FNAME )
-      IF ( IUNIT .EQ. 20 .AND. FNAME .EQ. 'CRYSTALS.SRT' ) THEN
-         CALL killsplash
-      ENDIF
-CE***
-#endif
       CLOSE ( UNIT = IUNIT , ERR = 2000 )
       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        INQUIRE ( UNIT = IUNIT, NAME = FNAME )
         WRITE(NCWU,1006) IUNIT, fname
 1006    FORMAT('SPECIFIC  Closing File       ',8x, ': Unit =',I8,1X,A)
       ENDIF
@@ -3231,12 +3224,12 @@ C on all platforms.
       END DO
 #endif
 
-c      WRITE(6,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
+c      WRITE(126,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
 C TEST IF SOMETHING CAN BE DONE
 
       IF(COLPOS(LEVEL).LT.3) THEN   
 
-c        WRITE(6,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
+c        WRITE(126,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
 
         IF(IWHAT.EQ.2) GOTO 9999
         INQNAM=NAME(LEVEL)(1:NAMLEN(LEVEL))
@@ -3251,7 +3244,13 @@ c anchors specified after filename. e.g. myfile.html#sect1
         END DO
 
         INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
+c        write(126,*) 'File test ', LEXIST, IOTEST, INQNAM
         if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
+#if defined(_INW_) 
+        INQUIRE(DIRECTORY=INQNAM,EXIST=LEXIST, iostat=iotest)
+c        write(126,*) 'Dir test ', LEXIST, IOTEST, INQNAM
+        if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
+#endif 
         LEVEL=LEVEL-1
         IF(LEVEL.GE.1) GOTO 3
         LEVEL=1
@@ -3380,7 +3379,7 @@ C
         FILNAM(I:I)=' '
 8888  CONTINUE
       LENNAM = KSTRLN(FILNAM)
-c      WRITE(6,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
+c      WRITE(126,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
 c      WRITE(CMON,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
 c      CALL XPRVDU(NCVDU,1,0)
 
