@@ -65,7 +65,7 @@ else
 
   else
    ifeq ($(COMPCODE),LIN)
-    GUIFLAGS = -fno-inline -fexceptions -pthread 
+    GUIFLAGS = -fno-inline -fexceptions -pthread -D__BOTHWX__
     GUILIBRARIES =
     CLFLAGS =
     CLLIBRARIES = 
@@ -74,15 +74,14 @@ else
     CPPFLAGS = -s -fexceptions
     CFLAGS = -s
 
-    CXX = g++48
-    CC = gcc48
-    LD = gfortran48
-    F77 = gfortran48
-    F77FLAGS = -std=legacy -ftree-vectorize -fno-automatic  -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_  -fno-sign-zero
-    F90FLAGS =   -I../crystals/  -fno-sign-zero
-    LDFLAGS = /u/ric/pparois/Documents/OpenBLAS/libopenblas_core2p-r0.2.8.a -static-libgfortran -static-libgcc 
-    OPT = -g -O2 -fopenmp -msse2 -ffast-math -ftree-vectorize 
-
+    CXX = g++51
+    CC = gcc51
+    LD = gfortran51
+    F77 = gfortran51
+    F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ -D__BOTHWX__
+    F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2 -I../crystals/  -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ -D__BOTHWX__
+    LDFLAGS = -lGL -lstdc++ -ldl -lGLU -lopenblaso
+    OPT = -g -O2 -fopenmp -Wfatal-errors
 
     INSTALL=/bin/install
 
