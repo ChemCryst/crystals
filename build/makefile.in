@@ -20,23 +20,23 @@ ifeq ($(COMPCODE),MAC)
 else
  ifeq ($(COMPCODE),GIL)
     GUIFLAGS = -fno-inline -fexceptions
-    GUILIBRARIES = `wx-config-2.9 --libs std,stc --gl-libs` 
+    GUILIBRARIES = `wx-config --libs std,stc --gl-libs` 
     CLFLAGS = 
     CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
 
-    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config-2.9 --cppflags` -D_GNUF77_
+    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D_GNUF77_
     CFLAGS = -s
 
-    CXX = g++
-    CC = gcc
-    LD = gfortran
-    LD77 = gfortran
-    F77 = gfortran
+    CXX = g++51
+    CC = gcc51
+    LD = gfortran51
+    LD77 = gfortran51
+    F77 = gfortran51
     F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_ 
-    F90FLAGS = -fno-sign-zero -ffast-math -ftree-vectorize -msse2 -I../crystals/ 
-    LDFLAGS = -lGL -lstdc++ -ldl -lGLU -lopenblaso
-    OPT = -g -O2
+    F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2 -I../crystals/  -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
+    LDFLAGS = -lGL -lstdc++ -ldl -lGLU -lopenblaso 
+    OPT = -g -O2 -fopenmp 
 
     INSTALL=/usr/bin/install
 
@@ -74,14 +74,14 @@ else
     CPPFLAGS = -s -fexceptions
     CFLAGS = -s
 
-    CXX = g++
-    CC = gcc
-    LD = gfortran
-    F77 = gfortran
-    F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-automatic -fno-sign-zero -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_
-    F90FLAGS = -fno-sign-zero -ffast-math -ftree-vectorize -msse2  -I../crystals/
-    LDFLAGS = -lopenblas
-    OPT = -g -O2
+    CXX = g++48
+    CC = gcc48
+    LD = gfortran48
+    F77 = gfortran48
+    F77FLAGS = -std=legacy -ftree-vectorize -fno-automatic  -I../crystals/ -D _$(COMPCODE)_ -D _HOL_ -D _GNUF77_  -fno-sign-zero
+    F90FLAGS =   -I../crystals/  -fno-sign-zero
+    LDFLAGS = /u/ric/pparois/Documents/OpenBLAS/libopenblas_core2p-r0.2.8.a -static-libgfortran -static-libgcc 
+    OPT = -g -O2 -fopenmp -msse2 -ffast-math -ftree-vectorize 
 
 
     INSTALL=/bin/install
