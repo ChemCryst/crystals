@@ -25,12 +25,12 @@ OBJS := $(OBJS) obj/crysload.o
 EXECS := $(patsubst %, %.exe, $(EXECS) crysload)
 endif
 
-LD77 = gfortran
+LD77 = gfortran51
 
 all : obj $(EXECS) rc93.srt form.dat
 
 cif2cry$(SUFFIX) : obj/cif2cry.o obj/nobuf.o
-	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
+	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -lgfortran -o $@ $^
 	strip $@
 
 convplat$(SUFFIX) : obj/convplat.o
