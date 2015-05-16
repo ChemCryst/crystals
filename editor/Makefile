@@ -1,6 +1,6 @@
 include ../build/makefile.in
 
-LD = gfortran
+#LD = gfortran
 
 all : cryseditor
 
