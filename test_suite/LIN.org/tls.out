@@ -4706,7 +4706,7 @@ Mean C-C su =   0.0061
 
 
 
- Centre for which s is symmetric :                   0.8102  0.1041  0.1376                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.8129  0.0639  0.1642                                                                                                                                                                                     
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -4940,7 +4940,7 @@ Mean C-C su =   0.0061
 
 
 
- Centre for which s is symmetric :                   0.9004  0.0470  0.2598                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.7053  0.1136  0.2724                                                                                                                                                                                     
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -5149,7 +5149,7 @@ Mean C-C su =   0.0061
 
       3.777             0.8807   -0.3540    0.3147
       6.913             0.4720    0.7115   -0.5205
-     20.046            -0.0396    0.6070    0.7937
+     20.047            -0.0396    0.6070    0.7937
 
 
  Rotation matrices from crystal fractions w.r.t. libration centre 
@@ -5166,12 +5166,12 @@ Mean C-C su =   0.0061
 
     3.777    0.000    0.000      0.025   -0.004    0.002     -0.017    0.134    0.003                                                                                                                                                                           
     0.000    6.913    0.000     -0.004    0.029   -0.002     -0.032   -0.034   -0.063                                                                                                                                                                           
-    0.000    0.000   20.046      0.002   -0.002    0.030     -0.082    0.129    0.051                                                                                                                                                                           
+    0.000    0.000   20.047      0.002   -0.002    0.030     -0.082    0.129    0.051                                                                                                                                                                           
 
 
 
 
- Centre for which s is symmetric :                   0.8361  0.0934  0.2156                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.7373  0.1421  0.2600                                                                                                                                                                                     
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -5187,7 +5187,7 @@ Mean C-C su =   0.0061
 
     3.777    0.000    0.000      0.024   -0.003    0.002     -0.017    0.000    0.000                                                                                                                                                                           
     0.000    6.913    0.000     -0.003    0.023   -0.003      0.000   -0.034    0.000                                                                                                                                                                           
-    0.000    0.000   20.046      0.002   -0.003    0.029      0.000    0.000    0.051                                                                                                                                                                           
+    0.000    0.000   20.047      0.002   -0.003    0.029      0.000    0.000    0.051                                                                                                                                                                           
 
 
 
@@ -5383,14 +5383,14 @@ Mean C-C su =   0.0061
 
       3.896             0.9848   -0.0740   -0.1570
      12.562             0.0654    0.9961   -0.0591
-     15.381             0.1608    0.0479    0.9858
+     15.380             0.1608    0.0479    0.9858
 
 
  Rotation matrices from crystal fractions w.r.t. libration centre 
  to axial system  defined by L
                 Angstrom                               Fractions
 
-         4.850    -0.816    -2.406                  0.9848   -0.0740   -0.1570
+         4.850    -0.817    -2.406                  0.9848   -0.0740   -0.1570
          0.322    10.992    -0.905                  0.0654    0.9961   -0.0591
          0.792     0.529    15.105                  0.1608    0.0479    0.9858
 
@@ -5400,12 +5400,12 @@ Mean C-C su =   0.0061
 
     3.896    0.000    0.000      0.026    0.000   -0.002      0.086    0.043   -0.050                                                                                                                                                                           
     0.000   12.562    0.000      0.000    0.029   -0.003     -0.195   -0.023    0.009                                                                                                                                                                           
-    0.000    0.000   15.381     -0.002   -0.003    0.032     -0.148    0.024   -0.063                                                                                                                                                                           
+    0.000    0.000   15.380     -0.002   -0.003    0.032     -0.148    0.024   -0.063                                                                                                                                                                           
 
 
 
 
- Centre for which s is symmetric :                   0.7980  0.1089  0.2105                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.8148  0.0864  0.2651                                                                                                                                                                                     
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -5421,7 +5421,7 @@ Mean C-C su =   0.0061
 
     3.896    0.000    0.000      0.021   -0.001   -0.001      0.086    0.000    0.000                                                                                                                                                                           
     0.000   12.562    0.000     -0.001    0.029   -0.002      0.000   -0.023    0.000                                                                                                                                                                           
-    0.000    0.000   15.381     -0.001   -0.002    0.032      0.000    0.000   -0.063                                                                                                                                                                           
+    0.000    0.000   15.380     -0.001   -0.002    0.032      0.000    0.000   -0.063                                                                                                                                                                           
 
 
 
@@ -5492,7 +5492,7 @@ Mean C-C su =   0.0061
                 0.000     0.000     1.000
 
                 4.850     0.322     0.792
-               -0.816    10.992     0.529
+               -0.817    10.992     0.529
                -2.406    -0.905    15.105
 
                 1.000     0.000     0.000

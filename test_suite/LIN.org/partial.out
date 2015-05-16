@@ -921,7 +921,7 @@ Inter cycle Min function          0.0           0.36E+05       0.10E+16
                       0.0000            0.0031   0.0025   0.0055   0.0193   0.0146   0.0443   0.0208   0.0237   0.0141
                                         0.0340   0.0234   0.0483
 
-     C         13.    1.0000   0.0000  -0.1588  -0.2947   0.0425   0.7145   0.5026   0.1140  -0.1203   0.1975  -0.5433
+     C         13.    1.0000   0.0000  -0.1588  -0.2947   0.0425   0.7145   0.5027   0.1140  -0.1203   0.1975  -0.5433
                       0.0000            0.0048  -0.0034   0.0002   0.0604   0.0399  -0.0003   0.0023   0.0061  -0.0435
                       0.0000            0.0076   0.0065   0.0054   0.1093   0.0799   0.0274   0.0377   0.0485   0.0854
                                         0.0842   0.0613   0.0473
@@ -1414,7 +1414,7 @@ Mean C-C su =   0.0283
  C      11.    0.0495    0.0950    0.4478    0.1974    0.1282    0.8594    Might be split                                                                                                                                                                       
  C      12.    0.0259    0.1168    0.5231    0.2219    0.1165    2.3569    Might be split                                                                                                                                                                       
  C      13.    0.0438    0.0785    1.5248    0.5490    0.1737    2.7344    Might be split                                                                                                                                                                       
- C      14.    0.0478    0.1217    0.8871    0.3522    0.1729    2.2558    Might be split                                                                                                                                                                       
+ C      14.    0.0478    0.1217    0.8871    0.3522    0.1729    2.2559    Might be split                                                                                                                                                                       
  C      15.    0.0283    0.1057    0.7025    0.2789    0.1282    2.6208    Might be split                                                                                                                                                                       
 #CYCLENDS                                                                                                                                                                                                                                                       
 #SPEC LIS  NO                                                                                                                                                                                                                                                   
@@ -1546,7 +1546,7 @@ All cycle   Rw                    0.0            7.8           0.10E+03
 All cycle   shift/esd            0.30E-01       0.82E-01       0.10E+05
 All cycle   Min function          0.0           0.15E+06       0.10E+16
 Inter cycle R-factor             -5.0          -0.16E-01       0.10E+03
-Inter cycle Rw                   -5.0           0.32E-02       0.10E+03
+Inter cycle Rw                   -5.0           0.33E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.46E-01       0.10E+05
 Inter cycle Min function          0.0           0.13E+03       0.10E+16
 
@@ -3401,7 +3401,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
  SRATIO  280         280            0.0001      0.4E+01    0.678E-02          0.02        O    109 U[12]   
  SRATIO  283         283            0.0000      0.1E+02    0.150E-02          0.00        O    111 Z       
  SRATIO  294         294            0.0000      0.3E+01    0.724E-02          0.00        N    102 U[22]   
- SRATIO  298         298            0.0000      0.5E+02    0.603E-02          0.00        N    102 U[12]   
+ SRATIO  298         298            0.0000      0.4E+02    0.603E-02          0.00        N    102 U[12]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for         298 parameters
@@ -3417,7 +3417,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 Inter cycle R-factor             -5.0           0.31E-02       0.10E+03
 Inter cycle Rw                   -5.0           0.12E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.20E-01       0.10E+05
-Inter cycle Min function          0.0            21.           0.10E+16
+Inter cycle Min function          0.0            22.           0.10E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          

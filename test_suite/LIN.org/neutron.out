@@ -3417,7 +3417,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.1   
  H        70.     0.6186    0.1145    0.1983       -4.4   
  Q         1.     0.4596    0.1054    0.1436       24.5  Poor Shape  
- Q         2.     0.7579    0.1273    0.2554       19.5  Poor Shape  
+ Q         2.     0.7421    0.6273    0.2446       19.5  Poor Shape  
  Q         3.     0.6958    0.0623    0.1764       15.5  Poor Shape  
  Q         4.     0.7967    0.6444    0.2082       14.8  Poor Shape  
  Q         5.     0.7038    0.0663    0.1214       12.0  Poor Shape  
@@ -3427,15 +3427,15 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q         9.     0.0371    0.2713    0.1782        9.9  Poor Shape  
  Q        10.     0.8442    0.1660    0.0346        9.7  Poor Shape  
  Q        11.     0.9233    0.9519    0.1414        9.4  Poor Shape  
- Q        12.     0.4963    0.3975    0.2614        9.3  Poor Shape  
+ Q        12.     0.0038    0.8975    0.2386        9.3  Poor Shape  
  Q        13.     0.3204    0.6679    0.1496        9.3  Poor Shape  
  Q        14.     0.0408    0.7742    0.2343        9.3  Poor Shape  
  Q        15.     0.1654    0.4331    0.1207        9.2  Poor Shape  
  Q        16.     0.5325    0.2029    0.0386        9.0  Poor Shape  
- QN       17.     0.5000    0.1250    0.2500      -15.6  Hole        
+ QN       17.     0.0000    0.6250    0.2500      -15.6  Hole        
  The new list  10 contains    34 atoms
  The minimum and maximum map densities are  -1.56      2.45        barns /A^3                                                                                                                                                                                   
-                  The deepest hole is at    0.500   0.125   0.250                                                                                                                                                                                               
+                  The deepest hole is at    0.000   0.625   0.250                                                                                                                                                                                               
  Mean electron density at original atomic sites is    -0.41
                       with an R.M.S. deviation of      0.55
 #PEAKS                                                                                                                                                                                                                                                          
@@ -4319,7 +4319,6 @@ Resetting shift for Extinction  Shift=       5.58  Esd=       0.35  New shift=  
 
  LARGE     2           2             0.498      0.1E+02    0.351E+00         15.90                          EXTPARAM
  SRATIO   84          84            0.0000     -0.4E+01    0.271E-03          0.00        C      8 X       
- SRATIO  112         112            0.0000      0.3E+01    0.218E-02          0.00        H     81 U[13]   
  SRATIO  114         114            0.0000      0.9E+01    0.225E-02          0.01        H     82 U[11]   
  SRATIO  118         118            0.0000      0.8E+01    0.192E-02          0.01        H     82 U[13]   
 
@@ -8490,7 +8489,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q        11.     0.0417    0.9827    0.0439        9.4  Poor Shape  
  Q        12.     0.1650    0.4317    0.1214        9.4  Poor Shape  
  Q        13.     0.8450    0.1667    0.0329        9.3  Poor Shape  
- Q        14.     0.4946    0.3975    0.2611        9.3  Poor Shape  
+ Q        14.     0.0054    0.8975    0.2389        9.3  Poor Shape  
  Q        15.     0.4979    0.2292    0.1125        9.2  Poor Shape  
  Q        16.     0.0329    0.1031    0.2221        9.2  Poor Shape  
  Q        17.     0.5396    0.1975    0.0346        9.0  Poor Shape  
@@ -12970,7 +12969,7 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
+ Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
  Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
@@ -15841,7 +15840,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            22.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.32E-01       0.10E+05
 All cycle   Min function          0.0           0.29E+04       0.10E+16
-Inter cycle R-factor             -5.0          -0.51E-03       0.10E+03
+Inter cycle R-factor             -5.0          -0.52E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.14E-01       0.10E+03
 Inter cycle shift/esd            -10.           0.23           0.10E+05
 Inter cycle Min function          0.0            3.8           0.10E+16
@@ -17391,11 +17390,11 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
+ Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
+ Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
  Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
