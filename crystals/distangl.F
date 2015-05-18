@@ -747,7 +747,7 @@ C
 C----- MAXIMUM PARTS PER PARAMETER
       DATA MXPPP /50/
 
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD /4HH   /, KCARB /4HC   /, KAZOT/4HN   /, KOXY/4HO   /
       DATA KDET /4HD   /
 #else
@@ -3591,13 +3591,6 @@ C--CALLL THE TIMING FUNCTION
 C -- READ THE REST OF THE INSTRUCTIONS AND CHECK FOR ERRORS
       IF (   KRDDPV ( PROCS(1) , IDIMN )    .LT.   0   ) GO TO 9910
 C
-#if defined(_PPC_) 
-CS***
-      CALL SETSTA( 'Collect' )
-      CALL nextcursor
-CE***
-C--LOAD THE INPUT LIST
-#endif
       LN1=KTYP05(LN1)
       CALL XLDR05(LN1)
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -6724,7 +6717,7 @@ C      IADDR       PLACE IN STORE TO PUT THE RESULTS
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'QSTORE.INC'
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA ICTO/4HTO  /
 #else
       DATA ICTO/'TO  '/
@@ -6868,7 +6861,7 @@ C--
       INCLUDE 'XLIMIT.INC'
 
       EQUIVALENCE (PROCS(1), IPROCS(1))
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA    IUNKN /4HUNKN/
 #else
       DATA    IUNKN /'UNKN'/
@@ -7054,7 +7047,7 @@ C -- Add this extra element in L29 style at NEWL29.
             STORE(NEWM29+2) = STORE(L40T+2)
 
 C -- Have to get proper covalent radii from file if possible.
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_)
+#ifdef CRY_OSWIN32
             CFILEN = 'CRYSDIR:script\propwin.dat'
 #else
             CFILEN = 'CRYSDIR:script/propwin.dat'

@@ -11,16 +11,14 @@
 #define     __CxModList_H__
 #include    "crguielement.h"
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEMODLIST CListCtrl
-#endif
-
-#ifdef __BOTHWX__
-#include <wx/event.h>
-#include <wx/imaglist.h>
-#include <wx/listctrl.h>
-#define BASEMODLIST wxListCtrl
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEMODLIST CListCtrl
+#else
+ #include <wx/event.h>
+ #include <wx/imaglist.h>
+ #include <wx/listctrl.h>
+ #define BASEMODLIST wxListCtrl
 #endif
 
 #include <string>
@@ -62,7 +60,7 @@ class CxModList : public BASEMODLIST
         void StartUpdate();
         void EndUpdate();
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         void RepaintSelectedItems();
 
         afx_msg void OnKillFocus(CWnd* pNewWnd);
@@ -80,8 +78,7 @@ class CxModList : public BASEMODLIST
         DECLARE_MESSAGE_MAP()
 
         CxGrid* m_listboxparent;
-#endif
-#ifdef __BOTHWX__
+#else
     void ItemSelected ( wxListEvent & event );
     void ItemDeselected ( wxListEvent & event );
     void RightClick ( wxListEvent & event );

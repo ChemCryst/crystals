@@ -4358,7 +4358,7 @@ C
       DIMENSION RTEMP(9), STEMP(9)
 C 
       INCLUDE 'QSTORE.INC'
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JFRN /1HF, 1HR, 1HN, 1H1, 1HF, 1HR, 1HN, 1H2 /
 #else
       DATA JFRN /'F', 'R', 'N', '1', 'F', 'R', 'N', '2'/
@@ -4548,7 +4548,7 @@ C
 c      EQUIVALENCE (ILISTL,PROCS(1))
 C
       DATA IDIMN /3/
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IPEAK/4HQ   /
 #else
       DATA IPEAK/'Q   '/

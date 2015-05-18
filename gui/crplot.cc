@@ -85,7 +85,7 @@
 #include <sstream>
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 // These macros are being defined somewhere. They shouldn't be.
 
 #ifdef GetCharWidth
@@ -115,7 +115,7 @@ CrPlot::~CrPlot()
     if ( ptr_to_cxObject != nil )
     {
         ((CxPlot*)ptr_to_cxObject)->CxDestroyWindow(); 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         delete (CxPlot*)ptr_to_cxObject;
 #endif
         ptr_to_cxObject = nil;

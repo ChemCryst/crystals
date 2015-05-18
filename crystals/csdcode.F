@@ -1348,7 +1348,7 @@ C\TLST18
       INTEGER IOFF
       DATA IOFF /4/    !Offset of positional parameters in LIST 5.
 C                      !Needed when using a compressed L5 during FOURIER.
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD /4HH   /
       DATA KDET /4HD   /
 #else

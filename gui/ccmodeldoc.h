@@ -104,14 +104,15 @@
 #ifndef     __CcModelDoc_H__
 #define     __CcModelDoc_H__
 
-#ifdef __CR_WIN__
-#include <GL/glu.h>
-#include <GL/gl.h>
-#endif
-#ifdef __BOTHWX__
-#include <wx/glcanvas.h>
-//#include <windows.h>
-#include <GL/glu.h>
+#ifdef CRY_USEMFC
+ #include <GL/glu.h>
+ #include <GL/gl.h>
+#elif defined(CRY_OSMAC)
+ #include <wx/glcanvas.h>
+ #include <OpenGL/glu.h>
+#else
+ #include <wx/glcanvas.h>
+ #include <GL/glu.h>
 #endif
 
 #include <string>

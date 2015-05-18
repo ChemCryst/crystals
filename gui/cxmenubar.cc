@@ -20,7 +20,7 @@ int   CxMenuBar::mMenuCount = kMenuBase;
 CxMenuBar *    CxMenuBar::CreateCxMenu( CrMenuBar * container, CxWindow * guiParent)
 {
       CxMenuBar      *theMenu = new CxMenuBar( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theMenu->CreateMenu();
 #endif
       return theMenu;
@@ -42,10 +42,9 @@ CxMenuBar::~CxMenuBar()
 int CxMenuBar::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 {
       int id = CrMenu::FindFreeMenuId();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text.c_str());
-#endif
-#ifdef __BOTHWX__
+#else
       ostringstream strm;
       strm << "cxmenubar " << (long)this << " adding menu called " << text << (long)menuToAdd;
       if ( Append( menuToAdd, text.c_str()) )
@@ -58,10 +57,9 @@ int CxMenuBar::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 
 int CxMenuBar::AddItem(const string & text, int position)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)id, text.c_str());
-#endif
-#ifdef __BOTHWX__
+#else
 //      Append(  text.c_str() );
 #endif
       LOGERR ( "cxmenubar - ERROR - Can't add items to top level menu bar - " + text );
@@ -70,10 +68,9 @@ int CxMenuBar::AddItem(const string & text, int position)
 
 int CxMenuBar::AddItem(int position)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //    InsertMenu( (UINT)-1, MF_BYPOSITION|MF_SEPARATOR);
-#endif
-#ifdef __BOTHWX__
+#else
 //      AppendSeparator();
 #endif
     LOGERR ("cxmenubar - ERROR - Can't add separators to top level menu bar ");
@@ -83,10 +80,9 @@ int CxMenuBar::AddItem(int position)
 
 void CxMenuBar::SetText(const string & theText, int id)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.c_str());
-#endif
-#ifdef __BOTHWX__
+#else
       SetLabel( id, theText.c_str() );
 #endif
 
@@ -94,12 +90,11 @@ void CxMenuBar::SetText(const string & theText, int id)
 
 void CxMenuBar::PopupMenuHere(int x, int y, void *window)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       TrackPopupMenu(
                  TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
                   x, y, (CWnd*)window);
-#endif
-#ifdef __BOTHWX__
+#else
 // This is handled by the window class. But that's easy:
 //      ((wxWindow*)window)->PopupMenu(this, x, y);
       LOGERR("cxmenubar - ERROR - Can't popup a menu bar ");
@@ -108,13 +103,12 @@ void CxMenuBar::PopupMenuHere(int x, int y, void *window)
 
 void CxMenuBar::EnableItem( int id, bool enable )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if (enable)
          EnableMenuItem( id, MF_ENABLED|MF_BYCOMMAND);
       else
          EnableMenuItem( id, MF_GRAYED|MF_BYCOMMAND);
-#endif
-#ifdef __BOTHWX__
+#else
          Enable( id, enable );
 #endif
 }

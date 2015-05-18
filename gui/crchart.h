@@ -44,15 +44,14 @@
 #include    <deque>
 using namespace std;
 
-#ifdef __BOTHWX__
-// These macros are being defined somewhere. They shouldn't be.
-
-#ifdef GetCharWidth
- #undef GetCharWidth
-#endif
-#ifdef DrawText
- #undef DrawText
-#endif
+#ifndef CRY_USEMFC
+ // These macros are being defined somewhere by wx. They shouldn't be.
+ #ifdef GetCharWidth
+  #undef GetCharWidth
+ #endif
+ #ifdef DrawText
+  #undef DrawText
+ #endif
 #endif
 
 

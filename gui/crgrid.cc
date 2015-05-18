@@ -105,7 +105,11 @@
 #include        "crcheckbox.h"
 #include        "crchart.h"
 #include        "crplot.h"
+#ifdef CRY_OSMAC
+#include        <OpenGL/glu.h>
+#else
 #include        <GL/glu.h>
+#endif
 #include        "crmodel.h"
 #include        "crradiobutton.h"
 #include        "crwindow.h"
@@ -168,7 +172,7 @@ CrGrid::~CrGrid()
   if ( ptr_to_cxObject != nil )
   {
     ((CxGrid*)ptr_to_cxObject)->CxDestroyWindow();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     delete (CxGrid*)ptr_to_cxObject;
 #endif
     ptr_to_cxObject = nil;
@@ -219,7 +223,7 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
         case kTPane:
         {
           tokenList.pop_front(); // Remove SetCommandText token!
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 		  unsigned int position;
 		  switch ( CcController::GetDescriptor( tokenList.front(), kPanePositionClass ) )
           {
@@ -404,7 +408,7 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
           }
           case kTCreateWeb:                            // Create a web control
           {
-#ifdef DEPRECATED__BOTHWX__
+#ifdef DEPRECATEDCRY_USEWX
             CrWeb * webPtr = new CrWeb( this );
             if ( webPtr != nil )
               retVal = InitElement( webPtr, tokenList, xpos, ypos );

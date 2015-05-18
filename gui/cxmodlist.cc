@@ -19,14 +19,14 @@
 #include    <string>
 #include    <sstream>
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <wx/defs.h>
 #endif
 
 int CxModList::mModListCount = kModListBase;
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 int wxCALLBACK MySorter(long item1, long item2, long sortData)
 {
     // inverse the order
@@ -42,13 +42,12 @@ int wxCALLBACK MySorter(long item1, long item2, long sortData)
 CxModList *    CxModList::CreateCxModList( CrModList * container, CxGrid * guiParent )
 {
     CxModList  *theModList = new CxModList( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     theModList->Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_OWNERDRAWFIXED|LVS_SHOWSELALWAYS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mModListCount++);
     theModList->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theModList->SetFont(CcController::mp_font);
     theModList->m_listboxparent = guiParent;
-#endif
-#ifdef __BOTHWX__
+#else
       theModList->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10),
                           wxLC_REPORT);
 #endif
@@ -93,11 +92,10 @@ void CxModList::AddCols()
     for ( int i = 0; i < m_numcols ; i++ )
     {
       m_colTypes.push_back(COL_INT); //Always start with INT. This will fail to REAL, and then to TEXT.
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       m_colWidths.push_back(CRMAX(10,GetStringWidth(colHeader[i].c_str())+5));
       InsertColumn( i, colHeader[i].c_str(), LVCFMT_LEFT, 10, i );
-#endif
-#ifdef __BOTHWX__
+#else
       int w,h;
       GetTextExtent(colHeader[i].c_str(),&w,&h);
       m_colWidths.push_back(CRMAX(10,w));
@@ -140,7 +138,7 @@ int CxModList::GetIdealWidth()
 
 int CxModList::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int lines = mVisibleLines;
     CClientDC cdc(this);
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
@@ -148,8 +146,7 @@ int CxModList::GetIdealHeight()
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
     return lines * ( textMetric.tmHeight + 2 );
-#endif
-#ifdef __BOTHWX__
+#else
       return mVisibleLines * ( GetCharHeight() + 2 );
 #endif
 }
@@ -161,7 +158,7 @@ int CxModList::GetValue()
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxModList, CListCtrl)
     ON_WM_CHAR()
     ON_WM_DRAWITEM()
@@ -175,8 +172,7 @@ BEGIN_MESSAGE_MAP(CxModList, CListCtrl)
     ON_NOTIFY_REFLECT( LVN_ITEMCHANGED, ItemChanged )
     ON_NOTIFY_REFLECT( NM_RCLICK,  RightClick )
 END_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
 BEGIN_EVENT_TABLE(CxModList, wxListCtrl)
      EVT_CHAR( CxModList::OnChar )
      EVT_LIST_ITEM_SELECTED(-1, CxModList::ItemSelected )
@@ -197,13 +193,13 @@ CXONCHAR(CxModList)
 
 
 void CxModList::StartUpdate() {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       SetRedraw(FALSE);
 #endif
 }
 
 void CxModList::EndUpdate() {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       SetRedraw(TRUE);
       Invalidate();
       UpdateWindow();
@@ -226,7 +222,7 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 //			oo << "Adding row id " << id << " " << rowOfStrings[0] << " " <<  rowOfStrings[1] << " " << rowOfStrings[2];
 //			LOGERR(oo.str());
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             m_ProgSelecting=m_numcols+1;
 
             for( int j=0; j<m_numcols; j++) {
@@ -239,10 +235,8 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
                SetItemState(i, 0, LVIS_SELECTED);
             m_ProgSelecting=0;
 
-#endif
+#else
 
-
-#ifdef __BOTHWX__
             wxListItem info;
 	        info.SetMask(wxLIST_MASK_TEXT | wxLIST_MASK_STATE);
 			info.SetId( i );
@@ -274,14 +268,13 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 
     IDlist.push_back(IDlist.size()+1);
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int nItem = InsertItem(IDlist.size(), _T(""));
     for (int j = 0; j < m_numcols; j++)
     {
         SetItemText(nItem, j, rowOfStrings[j].c_str());
         int width = GetStringWidth(rowOfStrings[j].c_str());
-#endif
-#ifdef __BOTHWX__
+#else
     int nItem = InsertItem(IDlist.size()-1, _T(""));
     for (int j = 0; j < m_numcols; j++)
     {
@@ -301,20 +294,18 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
         }
     }
     if ( selected ) {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
        SetItemState(nItem, LVIS_SELECTED, LVIS_SELECTED);
-#endif
-#ifdef __BOTHWX__
+#else
        m_ProgSelecting = 2;
 
 	   SetItemState(nItem, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
        m_ProgSelecting = 0;
 #endif
     } else {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
        SetItemState(nItem, 0, LVIS_SELECTED);
-#endif
-#ifdef __BOTHWX__
+#else
        m_ProgSelecting = 2;
        SetItemState(nItem, 0, wxLIST_STATE_SELECTED);
        m_ProgSelecting = 0;
@@ -328,7 +319,7 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
         CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
@@ -452,9 +443,7 @@ void CxModList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
         // Restore dc
         pDC->RestoreDC( nSavedDC );
 }
-#endif
 
-#ifdef __CR_WIN__
 void CxModList::RepaintSelectedItems()
 {
         CRect rcBounds, rcLabel;
@@ -494,7 +483,7 @@ void CxModList::RepaintSelectedItems()
 //    return ( TRUE ) ; //prevent flicker
 //}
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::OnPaint()
 {
 
@@ -526,7 +515,7 @@ void CxModList::OnPaint()
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::OnKillFocus(CWnd* pNewWnd)
 {
         CListCtrl::OnKillFocus(pNewWnd);
@@ -542,7 +531,7 @@ void CxModList::OnKillFocus(CWnd* pNewWnd)
 #endif
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::OnSetFocus(CWnd* pOldWnd)
 {
         CListCtrl::OnSetFocus(pOldWnd);
@@ -559,7 +548,7 @@ void CxModList::OnSetFocus(CWnd* pOldWnd)
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 {
     NM_LISTVIEW* pnmv = (NM_LISTVIEW FAR *) pNMHDR;
@@ -605,9 +594,7 @@ void CxModList::ItemChanged( NMHDR * pNMHDR, LRESULT* pResult )
 
     }
 }
-#endif
-
-#ifdef __BOTHWX__
+#else
 void CxModList::ItemSelected ( wxListEvent& event )
 {
     if(m_ProgSelecting > 0)
@@ -644,10 +631,7 @@ void CxModList::ItemDeselected ( wxListEvent& event )
       ((CrModList*)ptr_to_crObject)->SelectAtomByPosn(id,false);
     }
 }
-#endif
 
-
-#ifdef __BOTHWX__
 void CxModList::HeaderClicked( wxListEvent& wxLE )
 {
 
@@ -838,7 +822,7 @@ bool CxModList::CxSortItems( int colType, int nCol, bool bAscending)
 //         which is then applied to the whole list. This saves an incredible
 //         amount of time.                              R.Cooper Nov 98.
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
 {
         HD_NOTIFY *phdn = (HD_NOTIFY *) pNMHDR;
@@ -864,7 +848,7 @@ void CxModList::OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult)
 // colType              - INT, REAL or TEXT. Makes sure correct sort is done.
 // nCol                 - column that contains the text to be sorted
 // bAscending           - indicate sort order
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 bool CxModList::CxSortItems( int colType, int nCol, bool bAscending)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
@@ -1143,7 +1127,7 @@ int CxModList::WhichType(const string & text)
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::SelectAll(bool select)
 {
     int size = GetItemCount();
@@ -1169,30 +1153,25 @@ void CxModList::SelectAll(bool select)
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 string CxModList::GetCell(int row, int col)
 {
     CString temp = GetItemText(row, col);
     string retVal = temp.GetBuffer(temp.GetLength());
     return retVal;
 }
-#endif
-#ifdef __BOTHWX__
+#else
 string CxModList::GetCell(int row, int col)
 {
  return string("Unimplemented");
 }
-#endif
-
-
-#ifdef __BOTHWX__
 string CxModList::GetListItem(int item)
 {
  return string("unimplemented");
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 string CxModList::GetListItem(int item)
 {
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
@@ -1204,9 +1183,7 @@ string CxModList::GetListItem(int item)
     string result = textresult.GetBuffer(textresult.GetLength());
     return result;
 }
-#endif
 
-#ifdef __CR_WIN__
 void    CxModList::InvertSelection()
 {
     int size = GetItemCount();
@@ -1233,17 +1210,16 @@ void    CxModList::InvertSelection()
     }
 
 }
-#endif
+#else
 
 
-#ifdef __BOTHWX__
 int CxModList::GetNumberSelected()
 {
   return -1;
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 int CxModList::GetNumberSelected()
 {
     int size = GetItemCount();
@@ -1264,15 +1240,15 @@ int CxModList::GetNumberSelected()
     }
     return count;
 }
-#endif
+#else
 
-#ifdef __BOTHWX__
 void CxModList::GetSelectedIndices(  int * values )
 {
   return;
 }
 #endif
-#ifdef __CR_WIN__
+
+#ifdef CRY_USEMFC
 void CxModList::GetSelectedIndices(  int * values )
 {
     int size = GetItemCount();
@@ -1312,15 +1288,14 @@ void CxModList::Update(int newsize)
 
 //       m_listboxparent->LockWindowUpdate();
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
        SetRedraw(FALSE);
 //       SendMessage(WM_SETREDRAW,FALSE,0);
        ((CrModList*)ptr_to_crObject)->DocToList();
        SetRedraw(TRUE);
 //       SendMessage(WM_SETREDRAW,TRUE,0);
        Invalidate(FALSE);
-#endif
-#ifdef __BOTHWX__
+#else
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,FALSE,0);
        ((CrModList*)ptr_to_crObject)->DocToList();
 //       SendMessage((HWND)GetHWND(),WM_SETREDRAW,TRUE,0);
@@ -1330,7 +1305,7 @@ void CxModList::Update(int newsize)
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
 {
  NMITEMACTIVATE* lpnmitem = (LPNMITEMACTIVATE) pNMHDR;
@@ -1379,9 +1354,8 @@ void CxModList::RightClick( NMHDR * pNMHDR, LRESULT* pResult )
  *pResult = 1;
 
 }
-#endif
+#else
 
-#ifdef __BOTHWX__
 void CxModList::RightClick( wxListEvent& event )
 {
  int item = event.m_itemIndex;
@@ -1422,7 +1396,7 @@ void CxModList::RightClick( wxListEvent& event )
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxModList::OnMenuSelected(UINT nID)
 {
     ((CrModList*)ptr_to_crObject)->MenuSelected( nID );
@@ -1437,10 +1411,9 @@ void CxModList::CxEnsureVisible(CcModelAtom* va)
        {
           if ( IDlist[id] == va->id ) break;
        }
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
        EnsureVisible(id,false); //Call library function to ensure it is shown.
-#endif
-#ifdef __BOTHWX__
+#else
        EnsureVisible(id); //Call library function to ensure it is shown.
 #endif
 }

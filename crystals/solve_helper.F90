@@ -30,7 +30,7 @@ integer i, j, k, info
 real, dimension(1) :: lwork
 integer, dimension(1) :: liwork
 
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
 integer :: starttime
 integer, dimension(8) :: measuredtime
 #endif
@@ -74,7 +74,7 @@ end do
 
 ! eigen value filtering
 allocate(eigvalues(nmsize))
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
 call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+ &
     measuredtime(7))*1000.0+measuredtime(8)
@@ -85,13 +85,13 @@ allocate(iwork(3 + 5*nmsize))
 ! eigen decomposition
 call ssyevd ('V', 'L', nmsize, eigvectors, nmsize, eigvalues, &
     work, 1 + 6*nmsize + 2*nmsize**2, iwork, 3 + 5*nmsize, info)
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
 print *, 'ssyevd info: ', info
 #endif
 deallocate(iwork)
 deallocate(work)
 
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
 call date_and_time(VALUES=measuredtime)
 print *, 'eigen decomp done in (ms): ', &
     ((measuredtime(5)*3600+measuredtime(6)*60)+ &
@@ -112,7 +112,7 @@ allocate(iwork(nmsize))
 do while(eigvalues(nmsize)/max(tiny(1.0),eigvalues(i))*epsilon(1.0)>eigcutoff)
     !call mrgrnk(abs(eigvectors(:,i)), iwork)
 	!print *, i, eigvalues(nmsize), eigvalues(i)
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
     print *, i, eigvalues(i), ' eig value rejected, max eig value: ', eigvalues(nmsize)
 #endif
     truncated=.true.
@@ -140,7 +140,7 @@ allocate(invert(nmsize,nmsize))
 !               invert = matmul((eigvectors), matmul(eigvalues, 
 !                   transpose(eigvectors)))
 
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
 call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+ &
     measuredtime(7))*1000.0+measuredtime(8)
@@ -151,7 +151,7 @@ end do
 invert=0.0
 
 call SSYRK('L','N',nmsize,nmsize,1.0,eigvectors,nmsize,1.0,invert,nmsize)
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
 call date_and_time(VALUES=measuredtime)
 print *, 'Formation of the inverse done in (ms): ', &
     ((measuredtime(5)*3600+measuredtime(6)*60)+ &
@@ -311,6 +311,7 @@ do i=1,nmsize
 end do  
             
 deallocate(preconditioner)
+deallocate(unpacked)
 
 end subroutine
 
@@ -336,8 +337,10 @@ integer, dimension(:), allocatable :: ipiv, iwork
 real rcond
 integer, external :: ILAENV
 
+#if defined(CRY_OSLINUX)
 integer :: starttime
 integer, dimension(8) :: measuredtime
+#endif
 
 info=0
 
@@ -375,15 +378,18 @@ end do
 !write(666) unpacked
 !close(666)
 
+#if defined(CRY_OSLINUX) 
 call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+#endif
 
 allocate(ipiv(nmsize))
 lwork = ILAENV( 1, 'SSYTRF', 'L', nmsize, nmsize, -1, -1)
 allocate(work(nmsize*lwork))
 call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, nmsize*lwork, INFO )
-print *, ''
+#if defined(CRY_OSLINUX)
 print *, 'SSYTRF info: ', info
+#endif
 deallocate(work)
 
 if(info>0) then 
@@ -393,28 +399,30 @@ end if
 allocate(work(2*nmsize))
 allocate(iwork(nmsize))
 call SSYCON( 'L', nmsize, unpacked, nmsize, ipiv, 1.0, rcond, work, iwork, info )
-print *, ''
+#if defined(CRY_OSLINUX)
 print *, 'SSYCON info: ', info
+#endif
 deallocate(work)
 deallocate(iwork)
-print *, ''
+#if defined(CRY_OSLINUX)
 print *, 'condition number ', 1.0/rcond
 print *, 'relative error ', 1.0/rcond*epsilon(1.0)
+#endif
 
 allocate(work(nmsize))
 call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
-#if defined(_GIL_) || defined(_LIN_)
-print *, ''
+#if defined(CRY_OSLINUX)
 print *, 'SSYTRI info: ', info
 #endif
 deallocate(ipiv)
 deallocate(work)
 
+#if defined(CRY_OSLINUX) 
 call date_and_time(VALUES=measuredtime)
-print *, ''
 print *, 'invert via LDL^t decomposition', &
 &       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000 +&
 &       measuredtime(8)-starttime, 'ms'
+#endif
 
 if(info>0) then 
 	return
@@ -436,6 +444,7 @@ do i=1,nmsize
 end do    
             
 deallocate(preconditioner)
+deallocate(unpacked)
 
 end subroutine
 
@@ -515,7 +524,7 @@ allocate(iwork(nmsize))
 call SPOCON( 'L', nmsize, unpacked, nmsize, 1.0, rcond, work, iwork, info )
 deallocate(work)
 deallocate(iwork)
-#if defined(_GIL_) || defined(_LIN_)
+#if defined(CRY_OSLINUX)
 print *, 'condition number ', 1.0/rcond
 print *, 'relative error ', 1.0/rcond*epsilon(1.0)
 #endif
@@ -561,6 +570,7 @@ do i=1,nmsize
 end do  
             
 deallocate(preconditioner)
+deallocate(unpacked)
 
 end subroutine
 

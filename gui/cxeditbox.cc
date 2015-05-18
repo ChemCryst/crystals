@@ -86,18 +86,18 @@ using namespace std;
 #include    "cxwindow.h"
 #include    "creditbox.h"
 #include    "crtextout.h"
-#ifdef __BOTHWX__
-#include <ctype.h> //for proto of iscntrl()
-#include <wx/utils.h> //for wxBell!
+#ifdef CRY_USEWX
+ #include <ctype.h> //for proto of iscntrl()
+ #include <wx/utils.h> //for wxBell!
 
 // These macros are being defined somewhere. They shouldn't be.
 
-#ifdef GetCharWidth
- #undef GetCharWidth
-#endif
-#ifdef DrawText
- #undef DrawText
-#endif
+ #ifdef GetCharWidth
+  #undef GetCharWidth
+ #endif
+ #ifdef DrawText
+  #undef DrawText
+ #endif
 #endif
 
 
@@ -110,12 +110,11 @@ CxEditBox * CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
 //and it will do the initialisation for you.
 
     CxEditBox   *theEditBox = new CxEditBox( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theEditBox->Create(ES_LEFT| ES_AUTOHSCROLL| WS_VISIBLE| WS_CHILD| ES_WANTRETURN, CRect(0,0,10,10), guiParent, mEditBoxCount++);
     theEditBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);  //Sink it into the window.
     theEditBox->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
       theEditBox->Create(guiParent, -1, "edit", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 #endif
     return theEditBox;
@@ -137,10 +136,9 @@ CxEditBox::~CxEditBox()
 
 void CxEditBox::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 DestroyWindow();
-#endif
-#ifdef __BOTHWX__
+#else
 Destroy();
 #endif
 }
@@ -171,15 +169,14 @@ void  CxEditBox::SetText( const string & text )
     if ( temp.length() > m_Limit )
     {
        temp.erase(m_Limit);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       MessageBeep(MB_ICONASTERISK);
 #endif
     }
-#ifdef __BOTHWX__
-      SetValue( temp.c_str() );
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       SetWindowText( temp.c_str() );
+#else
+      SetValue( temp.c_str() );
 #endif
 	  mPreviousText = temp;
 }
@@ -187,7 +184,7 @@ void  CxEditBox::SetText( const string & text )
 
 void  CxEditBox::AddText( const string & text )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   if (GetWindowTextLength() + text.length() > m_Limit)
   {
     MessageBeep(MB_ICONASTERISK);
@@ -199,8 +196,7 @@ void  CxEditBox::AddText( const string & text )
     SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
     SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
   }
-#endif
-#ifdef __BOTHWX__
+#else
       AppendText(text.c_str());
       SetFocus();
 #endif	
@@ -219,15 +215,14 @@ int CxEditBox::GetIdealWidth()
 
 int CxEditBox::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);   //See GetIdealWidth for how this works.
     CFont* oldFont = cdc.SelectObject( (m_IsInput ? CcController::mp_inputfont : CcController::mp_font) );
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
     return textMetric.tmHeight + 5;
-#endif
-#ifdef __BOTHWX__
+#else
       int cx, cy;
       GetTextExtent( "Some text", &cx, &cy ) ;
       return cy + 5;
@@ -238,10 +233,9 @@ string CxEditBox::GetText()
 {
       char theText[255];
       int maxlen = 255;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       int textlen = GetWindowText((char*)&theText,maxlen);
-#endif
-#ifdef __BOTHWX__
+#else
       wxString wtext = GetValue();
       int textlen = wtext.length();
       strcpy(theText, wtext.c_str());
@@ -264,15 +258,14 @@ string CxEditBox::GetText()
 
 void    CxEditBox::SetVisibleChars( int count )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);    //Get the device context for this window (edit box).
     CFont* oldFont = cdc.SelectObject(CcController::mp_font); //Select the standard font into the device context, save the old one for later.
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);   //Get the metrics for this font.
     cdc.SelectObject(oldFont);         //Select the old font back into the DC.
       mCharsWidth = count * textMetric.tmAveCharWidth;  //Work out the ideal width.
-#endif
-#ifdef __BOTHWX__
+#else
       mCharsWidth = count * GetCharWidth();
 #endif
 }
@@ -282,13 +275,12 @@ void    CxEditBox::EditChanged()
     ((CrEditBox*)ptr_to_crObject)->BoxChanged();  //Inform container that the text has changed.
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxEditBox, CEdit)
     ON_WM_CHAR()
         ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
 //wx Message Table
 BEGIN_EVENT_TABLE(CxEditBox, BASEEDITBOX)
       EVT_CHAR( CxEditBox::OnChar )
@@ -301,17 +293,16 @@ END_EVENT_TABLE()
 void CxEditBox::Focus()
 {
     SetFocus();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
-#endif
-#ifdef __BOTHWX__
+#else
       SetInsertionPoint( GetLineLength(0) );  //Place caret at end of text.
 #endif
 
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
     if( nChar == 9 )   //TAB. Move focus to next UI object.
@@ -353,8 +344,7 @@ void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
         return;
     }
 }
-#endif
-#ifdef __BOTHWX__
+#else
 void CxEditBox::OnChar( wxKeyEvent & event )
 {
       int nChar = event.GetKeyCode();
@@ -418,13 +408,12 @@ void CxEditBox::OnKeyUp( wxKeyEvent & event )
 
 void CxEditBox::Disable(bool disable)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if(disable)
             EnableWindow(false);
       else
             EnableWindow(true);
-#endif
-#ifdef __BOTHWX__
+#else
       if(disable)
             Enable(false);
     else
@@ -440,16 +429,15 @@ void CxEditBox::SetInputType(int type)
 
 void CxEditBox::ClearBox()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetSel(0,-1);       //Set the selection to the whole of the text buffer.
     Clear();            //Clears the selection.
-#endif
-#ifdef __BOTHWX__
+#else
       Clear();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
             CrGUIElement * theElement;
@@ -476,8 +464,7 @@ void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
                         break;
             }
 }
-#endif
-#ifdef __BOTHWX__
+#else
 void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 {
             switch (event.GetKeyCode())
@@ -498,10 +485,9 @@ void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 void CxEditBox::LimitChars(string::size_type limit)
 {
    m_Limit = limit;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    SetLimitText(limit);
-#endif
-#ifdef __BOTHWX__
+#else
 //
 #endif
 
@@ -511,19 +497,7 @@ void CxEditBox::IsInputPlace()
 {
    if (CcController::mp_inputfont == nil)
    {
-#ifdef __BOTHWX__
-    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
-#ifndef _WINNT
-    *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
-#else
-   *pFont = wxSystemSettings::GetFont( wxDEVICE_DEFAULT_FONT );
-#endif  // !_WINNT
-    string temp;
-    temp = (CcController::theController)->GetKey( "MainFontInfo" );
-    if ( temp.length() ) pFont->SetNativeFontInfo( temp.c_str() );
-    CcController::mp_inputfont = pFont;
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
      LOGFONT lf;
      ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
      string temp;
@@ -542,14 +516,24 @@ void CxEditBox::IsInputPlace()
        SetFont(CcController::mp_inputfont);
      else
        ASSERT(0);
+#else
+    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
+ #ifndef _WINNT
+    *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
+ #else
+   *pFont = wxSystemSettings::GetFont( wxDEVICE_DEFAULT_FONT );
+ #endif  // !_WINNT
+    string temp;
+    temp = (CcController::theController)->GetKey( "MainFontInfo" );
+    if ( temp.length() ) pFont->SetNativeFontInfo( temp.c_str() );
+    CcController::mp_inputfont = pFont;
 #endif
    }
    else
    {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
      SetFont(CcController::mp_inputfont);
-#endif
-#ifdef __BOTHWX__
+#else
      SetFont(*CcController::mp_inputfont);
 #endif
    }
@@ -558,10 +542,9 @@ void CxEditBox::IsInputPlace()
 
 void CxEditBox::UpdateFont()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
      SetFont(CcController::mp_inputfont);
-#endif
-#ifdef __BOTHWX__
+#else
      SetFont(*CcController::mp_inputfont);
 #endif
 }

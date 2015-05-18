@@ -144,23 +144,69 @@ typedef std::wstring tstring;
 typedef std::string tstring;
 #endif 
 
-#if defined(__WXGTK__) || defined(__WXMAC__)
-#define __BOTHWX__ 1
-#endif
 
-#ifdef __WXMSW__
-#define __BOTHWX__ 1
-#define __BOTHWIN__ 1
+#ifdef __GID__
+  #define CRY_GUI
+  #define CRY_USEMFC
+  #define CRY_OSWIN32
+  #define CRY_NONGNU
+  #define CRY_TARGET GID
 #endif
+  
+#ifdef __GIL__
+  #define CRY_GUI
+  #define CRY_USEWX
+  #define CRY_OSLINUX
+  #define CRY_GNU
+  #define CRY_TARGET GIL
+#endif	
 
-#ifdef __WXINT__
-#define __BOTHWX__ 1
-#define __BOTHWIN__ 1
-#endif
+#ifdef __WXS__
+  #define CRY_GUI
+  #define CRY_USEWX
+  #define CRY_OSWIN32
+  #define CRY_NONGNU
+  #define CRY_TARGET WXS
+#endif	
 
-#ifdef __CR_WIN__
-#define __BOTHWIN__ 1
-#endif
+#ifdef __INW__
+  #define CRY_GUI
+  #define CRY_USEWX
+  #define CRY_OSWIN32
+  #define CRY_NONGNU
+  #define CRY_TARGET INW
+#endif	
+
+#ifdef __MAC__
+  #define CRY_GUI
+  #define CRY_USEWX
+  #define CRY_OSMAC
+  #define CRY_GNU
+  #define CRY_TARGET MAC
+#endif	
+
+#ifdef __MIN__
+  #define CRY_GUI
+  #define CRY_USEWX
+  #define CRY_OSWIN32
+  #define CRY_GNU
+  #define CRY_TARGET MIN
+#endif	
+	
+#ifdef __LIN__
+//  #pragma warning(__FILE__" : warning: LIN target should not include crystalsinterface.h")
+  #define CRY_TARGET LIN
+  #define CRY_NOGUI
+#endif	
+
+#ifdef __DVF__
+//  #pragma warning(__FILE__" : warning: DVF target should not include crystalsinterface.h")
+  #define CRY_TARGET DVF
+  #define CRY_NOGUI
+#endif	
+  
+
+
 
 #define CRMAX(a, b)  (((a) > (b)) ? (a) : (b))
 #define CRMIN(a, b)  (((a) < (b)) ? (a) : (b))
@@ -212,48 +258,31 @@ enum {
 
 #define NOTUSED(a) //Gets rid of warnings about unused variables.
 
-#ifdef __MOTO__
-#include <Types.h>
-typedef void AppContext;
-#endif
 
-
-#ifdef __BOTHWX__
-#define nil 0
-#include <wx/wx.h>
-//typedef false GFSHJKLSHGJK;
-//typedef true FHDLJDSGS;
-typedef unsigned int UINT;
-//#include <stdio.h>
-//#include <iostream>
-//#include <wx/file.h>
-//#include <wx/memory.h>
-// #include <wx/fontdlg.h>
-//#include <iomanip>
-//#define TRACE WXTRACE
-#endif
-
-
-#ifdef __CR_WIN__
-#include "stdafx.h"
-#include "crystals.h"
-#define nil NULL
-#define WM_STUFFTOPROCESS 6351
-#endif
-
-
-
-#ifdef __CR_WIN__
-  #ifdef _DEBUG
+#ifdef CRY_USEMFC
+ 
+ #include "stdafx.h"
+ #include "crystals.h"
+ #define nil NULL
+ #define WM_STUFFTOPROCESS 6351
+ #ifdef _DEBUG
     #define __CRDEBUG__
-  #endif
-#endif
+ #endif
 
-#ifdef __BOTHWX__
-  #ifdef __CRDEBUG__
+#else
+
+ #define nil 0
+ #include <wx/wx.h>
+ typedef unsigned int UINT;
+ #ifdef CRY_DEBUG
+    #define __CRDEBUG__
+ #endif
+ #ifdef __CRDEBUG__
     #include <wx/object.h>
-  #endif
-#endif
+ #endif
+
+ #endif
+
 
 #define CRLEFT    0
 #define CRRIGHT   1
@@ -265,11 +294,12 @@ typedef unsigned int UINT;
 #define CRESCAPE  7
 #define CRCONTROL 8
 #define CRSHIFT   9
-#define COVALENT    1
-#define VDW       2
-#define THERMAL   3
-#define SPARE     4
-#define TINY      5
+
+#define CRCOVALENT    1
+#define CRVDW       2
+#define CRTHERMAL   3
+#define CRSPARE     4
+#define CRTINY      5
 
 
 
@@ -278,9 +308,10 @@ typedef unsigned int UINT;
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
  #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #else
+// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
-// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
+ #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #endif
 
 
@@ -342,7 +373,7 @@ rect->mTop,rect->mLeft,rect->mBottom,rect->mRight);\
 }                                                  \
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
 #define CXGETGEOMETRIES(a)    \
 int a ::GetTop()  { RECT windowRect; GetWindowRect(&windowRect); return ( windowRect.top );}\
@@ -359,8 +390,7 @@ NOTUSED(nRepCnt);NOTUSED(nFlags);   \
 if(nChar==9){ptr_to_crObject->NextFocus( ( HIWORD(GetKeyState(VK_SHIFT))) ? true:false);return;}  \
 else {ptr_to_crObject->FocusToInput((char)nChar);}}
 
-#endif
-#ifdef __BOTHWX__
+#else
 
 #define CXGETGEOMETRIES(a)    \
 int a ::GetTop()  { return ( GetScreenRect().y );}\
@@ -382,10 +412,10 @@ else {ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
 
 
 
-#if defined (_DIGITALF77_) || defined (__WXINT__)
-#define FORCALL(a) a
+#if defined CRY_NONGNU
+ #define FORCALL(a) a
 #else
-#define FORCALL(a) a##_
+ #define FORCALL(a) a##_
 #endif
 
 #endif

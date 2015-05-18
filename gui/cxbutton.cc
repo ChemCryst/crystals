@@ -57,13 +57,11 @@ using namespace std;
 #include    "crbutton.h"
 
 
-#ifdef __CR_WIN__
-#include    <afxwin.h>
-#endif
-
-#ifdef __BOTHWX__
-#include    <wx/gdicmn.h>
-#include    <wx/event.h>
+#ifdef CRY_USEMFC
+ #include    <afxwin.h>
+#else
+ #include    <wx/gdicmn.h>
+ #include    <wx/event.h>
 #endif
 
 int CxButton::mButtonCount = kButtonBase;
@@ -71,11 +69,10 @@ int CxButton::mButtonCount = kButtonBase;
 CxButton *  CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
 {
     CxButton    *theStdButton = new CxButton(container);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theStdButton->Create("Button",WS_CHILD |WS_VISIBLE |BS_PUSHBUTTON, CRect(0,0,10,10), guiParent, mButtonCount++);
     theStdButton->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
       theStdButton->Create(guiParent,-1,"Button",wxPoint(0,0),wxSize(10,10), wxWANTS_CHARS);
 #endif
 
@@ -83,10 +80,9 @@ CxButton *  CxButton::CreateCxButton( CrButton * container, CxGrid * guiParent )
 }
 
 CxButton::CxButton(CrButton* container)
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     :CButton()
-#endif
-#ifdef __BOTHWX__
+#else
       :wxButton()
 #endif
 {
@@ -103,22 +99,20 @@ CxButton::~CxButton()
 
 void CxButton::CxDestroyWindow()
 {
-#ifdef __CR_WIN__
-DestroyWindow();
-#endif
-#ifdef __BOTHWX__
-Destroy();
+#ifdef CRY_USEMFC
+ DestroyWindow();
+#else
+ Destroy();
 #endif
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void    CxButton::ButtonClicked()
 {
     ( (CrButton *)ptr_to_crObject)->ButtonClicked();
 }
-#endif
-#ifdef __BOTHWX__
+#else
 void    CxButton::ButtonClicked(wxCommandEvent& e)
 {
     ( (CrButton *)ptr_to_crObject)->ButtonClicked();
@@ -127,11 +121,10 @@ void    CxButton::ButtonClicked(wxCommandEvent& e)
 
 void    CxButton::SetText( const string &text )
 {
-#ifdef __BOTHWX__
-      SetLabel(text.c_str());
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetWindowText(text.c_str());
+#else
+    SetLabel(text.c_str());
 #endif
 }
 
@@ -142,7 +135,7 @@ CXGETGEOMETRIES(CxButton)
 
 int CxButton::GetIdealWidth()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     CClientDC dc(this);
@@ -155,8 +148,7 @@ int CxButton::GetIdealWidth()
     size = dc.GetOutputTextExtent(text);
     dc.SelectObject(oldFont);
     return ( size.cx + 20 );
-#endif
-#ifdef __BOTHWX__
+#else
     int cx,cy;
     wxString text;
     text = GetLabel();
@@ -172,7 +164,7 @@ int CxButton::GetIdealWidth()
 
 int CxButton::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     CClientDC dc(this);
@@ -184,8 +176,7 @@ int CxButton::GetIdealHeight()
       return ( size.cy + 2 );
     else
       return ( size.cy + 10 );
-#endif
-#ifdef __BOTHWX__
+#else
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       if ( m_Slim )
@@ -199,10 +190,9 @@ int CxButton::GetIdealHeight()
 void CxButton::SetDef()
 {
 // create the default outline
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
        ModifyStyle(NULL,BS_DEFPUSHBUTTON,0);
-#endif
-#ifdef __BOTHWX__
+#else
        SetDefault();
 #endif
 
@@ -213,20 +203,18 @@ void CxButton::SetDef()
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //Windows Message Map
-BEGIN_MESSAGE_MAP(CxButton, CButton)
-    ON_CONTROL_REFLECT(BN_CLICKED, ButtonClicked)
-    ON_WM_CHAR()
-END_MESSAGE_MAP()
-#endif
-
-#ifdef __BOTHWX__
+ BEGIN_MESSAGE_MAP(CxButton, CButton)
+     ON_CONTROL_REFLECT(BN_CLICKED, ButtonClicked)
+     ON_WM_CHAR()
+ END_MESSAGE_MAP()
+#else
 //wx Message Map
-BEGIN_EVENT_TABLE(CxButton, wxButton)
-      EVT_BUTTON( -1, CxButton::ButtonClicked )
-      EVT_CHAR( CxButton::OnChar )
-END_EVENT_TABLE()
+ BEGIN_EVENT_TABLE(CxButton, wxButton)
+       EVT_BUTTON( -1, CxButton::ButtonClicked )
+       EVT_CHAR( CxButton::OnChar )
+ END_EVENT_TABLE()
 #endif
 
 void CxButton::Focus()
@@ -234,7 +222,7 @@ void CxButton::Focus()
     SetFocus();
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
     NOTUSED(nRepCnt);
@@ -258,15 +246,9 @@ void CxButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
         }
     }
 }
-#endif
-#ifdef __BOTHWX__
+#else
 void CxButton::OnChar( wxKeyEvent & event )
 {
-
-//	ostringstream os;
-//	os << event.GetKeyCode();
-//	LOGERR("Cxbutton code is:");
-//		LOGERR(os.str());
       switch(event.GetKeyCode())
     {
         case 9:     //TAB. Shift focus back or forwards.
@@ -302,13 +284,12 @@ void CxButton::SetSlim()
 
 void CxButton::Disable(bool disabled)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if(disabled)
             EnableWindow(false);
     else
             EnableWindow(true);
-#endif
-#ifdef __BOTHWX__
+#else
     if(disabled)
             Enable(false);
     else
@@ -318,10 +299,9 @@ void CxButton::Disable(bool disabled)
 }
 void CxButton::CxSetState(bool highlight)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             EnableWindow(false);
-#endif
-#ifdef __BOTHWX__
+#else
  // Not implemented
 #endif
 

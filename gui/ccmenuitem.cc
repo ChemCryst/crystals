@@ -8,8 +8,8 @@ using namespace std;
 
 #include "crconstants.h"
 
-#ifdef __CR_WIN__
-#include "crystals.h"
+#ifdef CRY_USEMFC
+ #include "crystals.h"
 #endif
 
 #include "ccmenuitem.h"
@@ -54,11 +54,10 @@ void CcMenuItem::SetText(string theText)
 void CcMenuItem::SetTitle(string theText)
 {
     if( parent != nil) {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         CxMenu* xp = (CxMenu*)ptr->ptr_to_cxObject;
         ((CxMenu*)parent->ptr_to_cxObject)->SetTitle(theText,xp);
-#endif
-#ifdef __BOTHWX__
+#else
 		((CxMenu*)parent->ptr_to_cxObject)->SetText(theText,id);
 #endif
     }

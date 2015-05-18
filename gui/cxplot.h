@@ -103,26 +103,28 @@
 #include    "ccpoint.h"
 #include    "ccrect.h"
 
-#ifdef __BOTHWX__
-#include <wx/control.h>
-#include <wx/colour.h>
-#include <wx/bitmap.h>
-#include <wx/dcmemory.h>
-#include <wx/stattext.h>
-#define BASEPlot wxControl
-#define BASEPlotKey wxWindow
+
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEPlot CWnd
+ #define BASEPlotKey CWnd
+#else
+ #include <wx/control.h>
+ #include <wx/colour.h>
+ #include <wx/bitmap.h>
+ #include <wx/dcmemory.h>
+ #include <wx/stattext.h>
+ #define BASEPlot wxControl
+ #define BASEPlotKey wxWindow
 
 // These macros are being defined somewhere. They shouldn't be.
 
-#ifdef GetCharWidth
- #undef GetCharWidth
-#endif
-#ifdef DrawText
- #undef DrawText
-#endif
-#endif
-
-#ifdef __BOTHWX__
+ #ifdef GetCharWidth
+  #undef GetCharWidth
+ #endif
+ #ifdef DrawText
+  #undef DrawText
+ #endif
 class mywxStaticText : public wxStaticText
 {
   public:
@@ -135,12 +137,6 @@ class mywxStaticText : public wxStaticText
 };
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEPlot CWnd
-#define BASEPlotKey CWnd
-#endif
-
 class CxPlot;
 
 class CxPlotKey : public BASEPlotKey
@@ -149,13 +145,12 @@ public:
         CxPlotKey(CxPlot* parent, int numser, string* names, int** col);
         ~CxPlotKey();
         int GetNumberOfSeries() {return m_NumberOfSeries;};
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         afx_msg void OnPaint();
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-                void OnPaint(wxPaintEvent & event );
-                DECLARE_EVENT_TABLE()
+#else
+        void OnPaint(wxPaintEvent & event );
+        DECLARE_EVENT_TABLE()
 #endif
 
         CxPlot* m_Parent;
@@ -168,7 +163,7 @@ public:
         string* m_Names;
         int** m_Colours;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         CDC * m_memDC;
 #endif
 
@@ -239,7 +234,7 @@ private:
         CxPlotKey*  m_Key;
 
 //Machine specific parts:
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       public:
         CStatic* m_TextPopup;
 
@@ -255,8 +250,7 @@ private:
     afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
         afx_msg void OnMenuSelected (UINT nID);
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
       public:
     
     mywxStaticText * m_TextPopup;

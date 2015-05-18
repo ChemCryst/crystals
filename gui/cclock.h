@@ -11,7 +11,7 @@
 #ifndef     __CcLock_H__
 #define     __CcLock_H__
 
-#ifdef __BOTHWX__
+#ifndef CRY_USEMFC
 #include <wx/thread.h>
 #endif
 
@@ -31,12 +31,10 @@ class CcLock
   private:
     int m_Locked;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     HANDLE m_CSMutex;
     HANDLE m_EvMutex;
-#endif
-
-#ifdef __BOTHWX__
+#else
     wxMutex * m_CSMutex;
     wxSemaphore * m_EvMutex;
 

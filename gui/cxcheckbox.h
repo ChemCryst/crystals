@@ -42,15 +42,14 @@ class LStdCheckBox;
 #include    <LStdControl.h>;
 #endif
 
-#ifdef __BOTHWX__
-#include <wx/checkbox.h>
-#define BASECHECKBOX wxCheckBox
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASECHECKBOX CButton
+#else
+ #include <wx/checkbox.h>
+ #define BASECHECKBOX wxCheckBox
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASECHECKBOX CButton
-#endif
 
 class CrCheckBox;
 class CxGrid;
@@ -84,16 +83,15 @@ class CxCheckBox : public BASECHECKBOX
         static int  mCheckBoxCount;
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         afx_msg void BoxClicked();
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-            void BoxClicked(wxCommandEvent & e);
-            void OnChar(wxKeyEvent & event );
-            DECLARE_EVENT_TABLE()
+#else
+        void BoxClicked(wxCommandEvent & e);
+        void OnChar(wxKeyEvent & event );
+        DECLARE_EVENT_TABLE()
 #endif
 
 

@@ -440,15 +440,6 @@ C
 C
       DATA ICOMSZ / 3 /
 C
-#if defined(_PPC_) 
-CS***
-      CALL SETSTA( 'Summary ' )
-      CALL NBACUR
-CE***
-C
-C -- SET THE TIMING AND READ THE CONSTANTS
-C
-#endif
       CALL XTIME1 ( 2 )
       CALL XCSAE
 C
@@ -1986,7 +1977,7 @@ C
       DATA CNAME/ 'H','K','L','Fo','Weight','Fc',6*' ',
      1 'Sigma',3*' ','Sth/L**2','Fo/Fc',17*' '/
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IFLAC/4HFLAC/
 #else
       DATA IFLAC/'FLAC'/

@@ -293,7 +293,7 @@ C
 C
       INCLUDE 'QSIZST.INC'
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA MESS(1)/4HCRYS /,MESS(2)/4HTALS/,MESS(3)/4HLOAD/
       DATA MESS(4)/4HNAME/,MESS(5)/4H:= "/,MESS(11)/4H"   /
 #else

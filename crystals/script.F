@@ -3621,7 +3621,7 @@ C
       LEN1 = MAX ( LEN1, 1 )
       CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
-#if defined(_INW_) 
+#ifdef __INW__ 
 	  IF ( .NOT. LRESLT ) THEN
         INQUIRE(DIRECTORY=CWORK1(1:LEN1), EXIST=LRESLT)
       END IF	  
@@ -5055,7 +5055,7 @@ C
       INCLUDE 'XSSVAL.INC'
 C
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JDEV / 1HS, 1HC, 1HP, 1HQ /
 #else
       DATA JDEV / 'S', 'C', 'P', 'Q' /
@@ -7266,23 +7266,23 @@ C            CALL VGACOL ('BOL', 'YEL', 'CYA' )
             IF (ISSTML .EQ. 3) THEN
 C---- SPECIAL  DOS PROMPT - YELLOW ON CYAN
 C Don't use those funny characters in Cameron.
-#if defined(_DOS_) 
+#ifdef _DOS_ 
               IF ( LCLOSE ) THEN
 #endif
                WRITE ( CMON, 1102) CTOP(1:MLNLEN)
                CALL XPRVDU(NCVDU, 1,0)
-#if defined(_DOS_) 
+#ifdef _DOS_ 
               ENDIF
 #endif
               J = 1
               JCP = 1
               DO 1101 I = 1,3
               IF ( IPMBRK(J) .NE. 0 ) THEN
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                 IF ( LCLOSE ) THEN
 #endif
                  CMENU(1:) = CBOX(1:)
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                 ELSE
                  CMENU(1:) = ' '
                 ENDIF
@@ -7299,12 +7299,12 @@ C Don't use those funny characters in Cameron.
               ENDIF
 1101          CONTINUE
 1103          CONTINUE
-#if defined(_DOS_) 
+#ifdef _DOS_ 
               IF ( LCLOSE ) THEN
 #endif
                WRITE ( CMON, 1102) CBTM(1:MLNLEN)
                CALL XPRVDU(NCVDU, 1,0)
-#if defined(_DOS_) 
+#ifdef _DOS_ 
               END IF
 C----       NORMAL DOS PROMPT - RED ON WHITE
 #endif
@@ -7346,7 +7346,7 @@ C
         CALL OUTCOL(1)
        ENDIF
 C----- RECOVER SCRIPT NAME
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
+#ifdef CRY_GUI
       ISTAT= KSCIDN(2,3,'SCRIPTNAME',1,IS,IDSCP,ISCPNM,1)
       ISTAT= KSCSDC( ISCPNM, CSCPNM, LENNM)
       IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
@@ -7370,7 +7370,7 @@ C
         ISTAT = KRDLIN ( NCUFU(1) , CLINPB , IINPLN )
 C -- IF NOT IN SILENT MODE ECHO THE TEXT TO THE OUTPUT FOR THE 
 C    GUI VERSION
-#if defined(_GID_) 
+#ifdef CRY_GUI 
         IF ( ( ISILNT .EQ. 0 ) .OR. ( IFAILS .EQ. 1 ) ) THEN
          WRITE(CMON,'(A)') CLINPB(1:IINPLN)
          CALL XPRVDU(NCVDU,1,0)
@@ -7448,12 +7448,12 @@ CJAN99
 C----  THIS HORRID CODE IS BECAUSE digital visual fortran CANNOT ACCEPT
 C      THE WRITE TO A CHARACTER FORMAT EXPRESSION
        IF ( IVALTP .EQ. ITPREA ) THEN
-#if !defined(_GID_) 
+#if !defined(__GID__) 
          WRITE (CFMTXP, '(''( F'', I2, ''.0)'')') LFMTXP
 #else
        IF (LFMTXP.EQ.1) THEN
 #endif
-#if defined(_GID_) 
+#ifdef __GID__ 
          READ ( CLINPB(NSTART:NENDIN) , '(F1.0)', ERR = 9940 ) VALUE
        ELSEIF (LFMTXP.EQ.2) THEN
          READ ( CLINPB(NSTART:NENDIN) , '(F2.0)', ERR = 9940 ) VALUE
@@ -7488,12 +7488,12 @@ C      THE WRITE TO A CHARACTER FORMAT EXPRESSION
          READ ( CLINPB(NSTART:NENDIN) , CFMTXP , ERR = 9930 ) VALUE
 #endif
        ELSE IF ( IVALTP .EQ. ITPINT ) THEN
-#if !defined(_GID_) 
+#if !defined(__GID__) 
          WRITE (CFMTXP, '(''( I'',I2,''  )'')') LFMTXP
 #else
        IF (LFMTXP.EQ.1) THEN
 #endif
-#if defined(_GID_) 
+#ifdef __GID__ 
          READ ( CLINPB(NSTART:NENDIN) , '(I1)', ERR = 9940 ) IVALUE
        ELSEIF (LFMTXP.EQ.2) THEN
          READ ( CLINPB(NSTART:NENDIN) , '(I2)', ERR = 9940 ) IVALUE

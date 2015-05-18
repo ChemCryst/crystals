@@ -54,7 +54,7 @@ CrCheckBox::~CrCheckBox()
     if ( ptr_to_cxObject != nil )
     {
         ((CxCheckBox*)ptr_to_cxObject)->CxDestroyWindow();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         delete (CxCheckBox*)ptr_to_cxObject;
 #endif
         ptr_to_cxObject = nil;

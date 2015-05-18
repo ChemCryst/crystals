@@ -88,7 +88,7 @@
 #include    <string>
 #include    <sstream>
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <wx/settings.h>
 #endif
 
@@ -98,12 +98,11 @@ int CxListBox::mListBoxCount = kListBoxBase;
 CxListBox * CxListBox::CreateCxListBox( CrListBox * container, CxGrid * guiParent )
 {
     CxListBox   *theListBox = new CxListBox( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theListBox->Create(WS_CHILD| WS_VISIBLE| LBS_NOTIFY| LBS_HASSTRINGS| WS_VSCROLL, CRect(0,0,5,5), guiParent, mListBoxCount++);
     theListBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theListBox->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
       theListBox->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),0,NULL,wxLB_SINGLE|wxLB_NEEDED_SB);
 #endif
     return theListBox;
@@ -125,20 +124,18 @@ CxListBox::~CxListBox()
 
 void CxListBox::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
-#endif
-#ifdef __BOTHWX__
+#else
 Destroy();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void    CxListBox::DoubleClicked()
 {
             int itemIndex = GetCurSel();
-#endif
-#ifdef __BOTHWX__
+#else
 void    CxListBox::DoubleClicked(wxCommandEvent & e)
 {
             int itemIndex = GetSelection();
@@ -146,12 +143,11 @@ void    CxListBox::DoubleClicked(wxCommandEvent & e)
             ((CrListBox *)ptr_to_crObject)->Committed( itemIndex + 1 );
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void    CxListBox::Selected()
 {
             int itemIndex = GetCurSel();
-#endif
-#ifdef __BOTHWX__
+#else
 void    CxListBox::Selected(wxCommandEvent & e)
 {
             int itemIndex = GetSelection();
@@ -161,14 +157,13 @@ void    CxListBox::Selected(wxCommandEvent & e)
 
 void    CxListBox::AddItem( const string &  text )
 {
-#ifdef __BOTHWX__
-      Append (text.c_str());
-      if( !mItems ) SetSelection(0);
-    mItems++;
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     AddString(text.c_str());
     if( !mItems ) SetCurSel(0);
+    mItems++;
+#else
+      Append (text.c_str());
+      if( !mItems ) SetSelection(0);
     mItems++;
 #endif
 
@@ -188,7 +183,7 @@ CXGETGEOMETRIES(CxListBox)
 int CxListBox::GetIdealWidth()
 {
     int maxSiz = 10; //At least you can see it if it's empty!
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     CClientDC dc(this);
@@ -203,8 +198,7 @@ int CxListBox::GetIdealWidth()
     dc.SelectObject(oldFont);
     if(mItems > mVisibleLines) maxSiz += GetSystemMetrics(SM_CXVSCROLL);
     return ( maxSiz + 10 );
-#endif
-#ifdef __BOTHWX__
+#else
     for ( int i=0;i<mItems;i++ )
     {
             int cx,cy;
@@ -226,15 +220,14 @@ int CxListBox::GetIdealWidth()
 
 int CxListBox::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
     return mVisibleLines * ( textMetric.tmHeight + 2 );
-#endif
-#ifdef __BOTHWX__
+#else
       int cx,cy;
       GetTextExtent( "Any old string", &cx, &cy );
       return mVisibleLines * ( cy + 2 );
@@ -245,23 +238,21 @@ int CxListBox::GetIdealHeight()
 int CxListBox::GetBoxValue()
 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       return ( GetCurSel() + 1 );
-#endif
-#ifdef __BOTHWX__
+#else
       return ( GetSelection() + 1 );
 #endif
 
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxListBox, CListBox)
     ON_CONTROL_REFLECT(LBN_DBLCLK, DoubleClicked)
     ON_CONTROL_REFLECT(LBN_SELCHANGE, Selected)
     ON_WM_CHAR()
 END_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
 //wx Message Map
 BEGIN_EVENT_TABLE(CxListBox, BASELISTBOX)
       EVT_LISTBOX_DCLICK(-1, CxListBox::DoubleClicked )
@@ -286,10 +277,9 @@ void CxListBox::CxSetSelection( int select )
 
    select = CRMIN ( select, mItems );
    select = CRMAX ( select, 1 );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetCurSel ( select - 1 );
-#endif
-#ifdef __BOTHWX__
+#else
     SetSelection ( select - 1 );
 #endif
 
@@ -297,7 +287,7 @@ void CxListBox::CxSetSelection( int select )
 
 void CxListBox::CxRemoveItem ( int item )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if ( item > 0 )
     {
        DeleteString ( item - 1 );
@@ -308,8 +298,7 @@ void CxListBox::CxRemoveItem ( int item )
        ResetContent();
        mItems=0;
     }
-#endif
-#ifdef __BOTHWX__
+#else
     if ( item > 0 )
     {
        Delete ( item - 1 );
@@ -330,13 +319,12 @@ string CxListBox::GetListBoxText(int index)
    if ( mItems < 1 ) return string(" ");
    index = CRMIN ( index, mItems );
    index = CRMAX ( index, 1 );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString temp;
     GetText(index-1, temp);
     string result = temp.GetBuffer(temp.GetLength());
     return result;
-#endif
-#ifdef __BOTHWX__
+#else
       wxString temp = GetString( index -1 );
       string result ( temp.c_str() );
     return result;
@@ -346,13 +334,12 @@ string CxListBox::GetListBoxText(int index)
 
 void CxListBox::Disable(bool disable)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if(disable)
             EnableWindow(false);
       else
             EnableWindow(true);
-#endif
-#ifdef __BOTHWX__
+#else
       if(disable)
             Enable(false);
     else

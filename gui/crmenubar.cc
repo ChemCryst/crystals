@@ -59,7 +59,7 @@ CrMenuBar::~CrMenuBar()
     mMenuList.clear();
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if ( ptr_to_cxObject != nil )
     {
         delete (CxMenuBar*)ptr_to_cxObject;

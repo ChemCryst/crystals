@@ -109,11 +109,10 @@ C
 C
       DATA IVERSN /210/
 C
-#if !defined(_HOL_) 
-      DATA BTARG(1) /'AND '/, CTARG(1) /'ALL '/
-#else
+#ifdef _HOL_
       DATA BTARG(1) /4HAND /, CTARG(1) /4HALL /
-C
+#else
+      DATA BTARG(1) /'AND '/, CTARG(1) /'ALL '/
 #endif
           DATA CTYPE(2) /'plane'/, CTYPE(1) /'line '/
           DATA CQUAL(2) /'best '/, CQUAL(1) /'worst'/

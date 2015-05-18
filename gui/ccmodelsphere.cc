@@ -145,12 +145,12 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
   float innerrad = ( (float) rad - (float) covrad ) * style->radius_scale;
   float outerrad = ( (float) rad + (float) covrad ) * style->radius_scale;
 
-  if(style->radius_type == VDW)
+  if(style->radius_type == CRVDW)
   {
     innerrad = ( (float) rad - (float) vdwrad ) * style->radius_scale;
     outerrad = ( (float) rad + (float) vdwrad ) * style->radius_scale;
   }
-  else if(style->radius_type == SPARE)
+  else if(style->radius_type == CRSPARE)
   {
     if ( m_label.length() && ( m_label[0] == 'Q' ) )
     {
@@ -158,7 +158,7 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
       outerrad = ( (float) rad + (float) sparerad ) * style->radius_scale;
     }
   }
-  else if(style->radius_type == THERMAL)
+  else if(style->radius_type == CRTHERMAL)
   {
       innerrad = ( (float) rad * style->radius_scale ) - (float) x11 ;
       outerrad = ( (float) rad * style->radius_scale ) + (float) x11 ;

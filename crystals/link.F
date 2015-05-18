@@ -358,7 +358,7 @@ C- POINTER TO LIST
      7            1, 2, 3, 0, 6, 13, 29,  0,
      8            1, 2, 3, 0, 6, 13, 29,  0/
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD,KDET,CBLANK /4HH   ,4HD   ,' '/
 #else
       DATA KHYD,KDET,CBLANK /'H   ','D   ',' '/
@@ -450,21 +450,15 @@ C-----      SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
 C
 1400  CONTINUE
 C----- OPEN THE OUTPUT DEVICES
-#if defined(_PPC_)
-      CALL stuser
-#endif
 
       IF (KLNKIO (ILINK) .LE. 0 ) GOTO 9900
 
-#if defined(_PPC_)
-      CALL stcrys
 C
 C
 C            SNOOPI, CAMERON, SHELXS86,
 C            MULTAN, SIR88,   SIR92, SIR97
 C            PLATON,  CSD,   MOL2 , SUPERFLIP, SIR02, SIR11
 CAVDLdec06 added superflip
-#endif
       GOTO ( 1600,   1700,    1800,
      1       2000,   1900,    1900,   1900,   
      2       1860,   1870,    1880,   1890, 
@@ -480,19 +474,10 @@ C
      2
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
-#if defined(_PPC_)
-      WRITE ( NCFPU1 ,  '(''CRUSE:SNOOPI.L5'')' )
-#endif
-#if defined(_VAX_)
+#ifdef _VAX_
       WRITE ( NCFPU1 ,  '(''USER:SNOOPI.L5'')' )
 #endif
-#if defined(_DOS_)
-      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
-#endif
-#if defined(_H_P_)
-      WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
-#endif
-#if defined(_CYB_)
+#ifdef _DOS_
       WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
 #endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
@@ -549,36 +534,7 @@ C
      2
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
-#if defined(_PPC_)
-      WRITE ( NCFPU1 ,  '(''CRUSE:CAMERON.L5I'')' )
-#endif
-#if defined(_VAX_)
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_DOS_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_DVF_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_LIN_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_WXS_) || defined(_INW_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_GID_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_H_P_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
-#if defined(_CYB_)
-      WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
-#endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
       DO 26190 IND1=L2P,M2P,3
         DO 26180 IND2=L2,M2,MD2
@@ -1777,11 +1733,6 @@ C----- SNOOPI - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
 C -- SPAWN SNOOPI
-#if defined(_PPC_)
-CS***
-      CALL stsnpi
-CE***
-#endif
       CALL XDETCH ( '$ @ CRSNOOPI:SNOOPI' )
       GOTO 9000
 C
@@ -1790,7 +1741,7 @@ C----- CAMERON - 2 FILES TO CLOSE AND START PROGRAM
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
 C - Only GID, GIL and DOS support Cameron's graphics.
-#if !defined(_DOS_) && !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
+#ifdef CRY_NOGUI
         GOTO 9000 !Skip this Cameron part.
 
 C -- START CAMERON - ONLY TWO ELEMENT OF STORE (CURRENTLY A DUMMY) USED
@@ -1800,20 +1751,14 @@ C      IF (ISSTML .EQ. 4) THEN
 C - Only GID needs funny text strings to initialise the graphics.
 C - Could move these to ZCAMER.
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
+#ifdef CRY_GUI
         WRITE(CHARTC,'(A)') '^^CH CHART _CAMERONCHART'
         CALL ZMORE(CHARTC,0)
         WRITE(CHARTC,'(A)') '^^CH ATTACH _CAMERONVIEW'
         CALL ZMORE(CHARTC,0)
         WRITE(CHARTC,'(A)') '^^CW'
         CALL ZMORE(CHARTC,0)
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
         CALL ZCAMER ( 1, 0 , 0 , 0)
-#endif
-#if defined(_DOS_) || defined(_WXS_) || defined(_INW_)
-        CALL ZCAMER ( 1, 0 , 0 , 0)
-
 #endif
 8025  CONTINUE
         IF (LCLOSE) THEN
@@ -1822,10 +1767,7 @@ C - Could move these to ZCAMER.
         IIIIIN = 1
         ISTAT = KRDREC(IIIIIN)
         WRITE(CHRBUF,'(256A1)')LCMAGE
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-         CALL ZCONTR
-#endif
-#if defined(_DOS_) || defined(_WXS_)|| defined(_INW_)
+#ifdef CRY_GUI
          CALL ZCONTR
 #endif
       GOTO 8025
@@ -1867,9 +1809,6 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DETECTED
-#if defined(_PPC_)
-      CALL stcrys
-#endif
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
       CALL XERHND ( IERWRN )
@@ -1916,7 +1855,7 @@ C
       DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 8, 9, 10, 10, 12, 13 ,
      1             12,  9,  9,   9  /
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JFRN /1HF , 1HR , 1HN , 1H1 ,
      1           1HF , 1HR , 1HN , 1H2 /
 #else
@@ -2008,17 +1947,8 @@ C
 
       CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
 
-#if !defined(_GIL_) && !defined(_WXS_) && !defined(_MAC_)&& !defined(_INW_)
-
      1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
      2 LPATH+LFILE(IFILE))
-
-#else
-
-     1 CFILE(IFILE)(1:LFILE(IFILE)),
-     2 LFILE(IFILE))
-
-#endif
 
 C------ EXIT ON ERROR
       IF (IERFLG .LE. 0) GOTO 9900
@@ -2283,7 +2213,7 @@ C
       DATA LISTS(1) / 1 /, LISTS(2) / 2 /, LISTS(3) / 3 /,
      1     LISTS(4) / 6 /, LISTS(5) / 13/, LISTS(6) / 29/
       DATA LATTYP /'P','I','R','F','A','B','C'/
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JFRN1 /1HF , 1HR , 1HN , 1H1 /
       DATA JFRN2 /1HF , 1HR , 1HN , 1H2 /
 #else

@@ -176,17 +176,10 @@ C        ISCAL = ISCALS
 C        IFONT = 12 (changed from IFSIZE by DJW)
 #if defined(_DOS_)
         ILSIZE = 8
-#endif
-#if defined(_GID_)
+#else
         ILSIZE = 60
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
-        ILSIZE = 60
-#endif
-#if defined(_WXS_)  || defined(_INW_)
-        ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
-#endif
         DO 1000 I = 1 , ICLMAX
 C          IDEVCL(I) = IDEVCS(I)
           IDEVCL(I) = I-1
@@ -380,7 +373,7 @@ C SCALE DOWN FURTHER TO PRODUCE A BORDER
         ELSE
           IF (ISCRN.EQ.6 .OR. ISCRN.EQ.5
      +   .OR. ISCRN.EQ.8 ) THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)  && !defined(_INW_)
+#ifdef CRY_NOGUI
             SCALE = SCLFIX * 10.0
 #else
             SCALE = SCLFIX * 2.0
@@ -402,14 +395,7 @@ c
       SCALE = SCALE * RES
 #if defined(_DOS_)
       ILSIZE = NINT (8 * RES)
-#endif
-#if defined(_GID_)
-      ILSIZE = NINT (60 * RES)
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      ILSIZE = NINT (60 * RES)
-#endif
-#if defined(_WXS_)  || defined(_INW_)
+#else
       ILSIZE = NINT (60 * RES)
 #endif
       SCLSAV = SCALE
@@ -787,17 +773,10 @@ C        ISCAL = ISCALS
 C        IFSIZE = 12
 #if defined(_DOS_)
         ILSIZE = 8
-#endif
-#if defined(_GID_)
+#else
         ILSIZE = 60
 #endif
-#if defined(_GIL_)  || defined(_MAC_)
-        ILSIZE = 60
-#endif
-#if defined(_WXS_) || defined(_INW_)
-        ILSIZE = 60
 C MOVE OVER THE COLOUR NUMBERS
-#endif
         DO 1152 I = 1 , ICLMAX
           IDEVCL(I) = IDEVCS(I)
 1152    CONTINUE
@@ -827,141 +806,71 @@ C      CALL ZATMUL(0,0,0)
       CALL ZDOVI
       ANG = -5.0*PI/180.0
 
-#if defined(_GID_)
+#ifdef CRY_GUI
       CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
-      IUNIT = 5
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
-#endif
-#if defined(_WXS_)
-      CALL ZMORE('^^CO SET _CAMERONVIEW CURSORKEYS=YES',0)
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      IUNIT = 5
-#endif
-#if defined(_WXS_)
       IUNIT = 5
 #endif
 1150  CONTINUE
 #if defined(_DOS_)
       CALL ZGETKY(K)
-#endif
-#if defined(_GID_)
-      K = KRDLIN ( IUNIT, CLINE, LENUSE )
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      K = KRDLIN ( IUNIT, CLINE, LENUSE )
-#endif
-#if defined(_WXS_)
-      K = KRDLIN ( IUNIT, CLINE, LENUSE )
-#endif
-#if defined(_DOS_) || defined(_LIN_)
       IF (K.EQ.0) GOTO 1150
+#else
+      K = KRDLIN ( IUNIT, CLINE, LENUSE )
 #endif
       CALL ZCLARE(0,IDEVCL(IBACK+1))
       ICURS = 1
-#if defined(_DOS_) || defined(_LIN_)
+#if defined(_DOS_) 
         IF (K.EQ.ICLEFT) THEN
-#endif
-#if defined(_GID_)
-        IF (CLINE(1:1).EQ.'L') THEN
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-        IF (CLINE(1:1).EQ.'L') THEN
-#endif
-#if defined(_WXS_)
+#else
         IF (CLINE(1:1).EQ.'L') THEN
 C LEFT
 #endif
         ANG = ABS(ANG)
         CALL ZROT(ANG,2)
-#if defined(_DOS_) || defined(_LIN_)
+#if defined(_DOS_) 
       ELSE IF (K.EQ.ICRGHT) THEN
-#endif
-#if defined(_GID_)
-      ELSE IF (CLINE(1:1).EQ.'R') THEN
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      ELSE IF (CLINE(1:1).EQ.'R') THEN
-#endif
-#if defined(_WXS_)
+#else
       ELSE IF (CLINE(1:1).EQ.'R') THEN
 C RIGHT
 #endif
         ANG = -ABS(ANG)
         CALL ZROT(ANG,2)
 C UP
-#if defined(_DOS_) || defined(_LIN_)
+#if defined(_DOS_) 
       ELSE IF (K.EQ.ICUP) THEN
-#endif
-#if defined(_GID_)
-      ELSE IF (CLINE(1:1).EQ.'U') THEN
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      ELSE IF (CLINE(1:1).EQ.'U') THEN
-#endif
-#if defined(_WXS_) 
+#else
       ELSE IF (CLINE(1:1).EQ.'U') THEN
 #endif
         ANG = ABS(ANG)
         CALL ZROT(ANG,1)
 C DOWN
-#if defined(_DOS_) || defined(_LIN_)
+#if defined(_DOS_) 
       ELSE IF (K.EQ.ICDOWN) THEN
-#endif
-#if defined(_GID_)
-      ELSE IF (CLINE(1:1).EQ.'D') THEN
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      ELSE IF (CLINE(1:1).EQ.'D') THEN
-#endif
-#if defined(_WXS_)
+#else
       ELSE IF (CLINE(1:1).EQ.'D') THEN
 #endif
         ANG = -ABS(ANG)
         CALL ZROT(ANG,1)
 C ANTICLOCKWISE
-#if defined(_DOS_) || defined(_LIN_)
+#if defined(_DOS_)
       ELSE IF (K.EQ.ICANTI) THEN
-#endif
-#if defined(_GID_)
-      ELSE IF (CLINE(1:1).EQ.'A') THEN
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      ELSE IF (CLINE(1:1).EQ.'A') THEN
-#endif
-#if defined(_WXS_)
+#else
       ELSE IF (CLINE(1:1).EQ.'A') THEN
 #endif
         ANG = -ABS(ANG)
         CALL ZROT(ANG,3)
 C CLOCKWISE
-#if defined(_DOS_) || defined(_LIN_)
+#if defined(_DOS_)
       ELSE IF (K.EQ.ICCLCK) THEN
-#endif
-#if defined(_GID_)
-      ELSE IF (CLINE(1:1).EQ.'C') THEN
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      ELSE IF (CLINE(1:1).EQ.'C') THEN
-#endif
-#if defined(_WXS_)
+#else
       ELSE IF (CLINE(1:1).EQ.'C') THEN
 #endif
         ANG = ABS(ANG)
         CALL ZROT(ANG,3)
-#if defined(_DOS_) || defined(_LIN_)
+#if defined(_DOS_)
       ELSE IF (K.NE.0) THEN
-#endif
-#if defined(_GID_)
+#else
       ELSE
-#endif
-#if defined(_GIL_)  || defined(_INW_)
-      ELSE 
-#endif
-#if defined(_WXS_)
-      ELSE 
 #endif
         ICURS = 0
         CALL ZATMUL(0,0,0)
@@ -5785,7 +5694,7 @@ CODE FOR CAMPRESETS
      1              'TEKT',      'POST',         'ENCAP',
      1              'VGA',       'CPOST',        'CENCA' /
 
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
+#ifdef CRY_NOGUI
       DATA RCAMDV / 320.0, 240.0, 30.0,
 #else
       DATA RCAMDV /1200.0,1200.0, 30.0,

@@ -166,11 +166,11 @@ using namespace std;
 #include <cstdlib>
 #include <cstdio>
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 #include <direct.h>
  #include    <afxwin.h>
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
  #include <wx/font.h>
  #include <wx/thread.h>
 
@@ -189,7 +189,7 @@ int CxPlot::mPlotCount = kPlotBase;
 
 CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 /*    const char* wndClass = AfxRegisterWndClass(
                                     CS_HREDRAW|CS_VREDRAW,
                                     IDC_ARROW,
@@ -218,7 +218,7 @@ CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
     theStdPlot->m_memDC->SelectObject(oldBrush);
     theStdPlot->m_memDC->SelectObject(theStdPlot->m_oldMemDCBitmap);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     CxPlot  *theStdPlot = new CxPlot(container);
     theStdPlot->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10));
     theStdPlot->m_newMemDCBitmap = new wxBitmap(10,10);
@@ -230,10 +230,10 @@ CxPlot *   CxPlot::CreateCxPlot( CrPlot * container, CxGrid * guiParent )
 }
 
 CxPlot::CxPlot(CrPlot* container)
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     :CWnd()
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     :wxControl()
 #endif
 {
@@ -242,11 +242,11 @@ CxPlot::CxPlot(CrPlot* container)
     m_FlippedPlot = false;
     mMouseCaptured = false;
     ptr_to_crObject = container;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     mfgcolour = PALETTERGB(0,0,0);
     m_memDC = new CDC();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     mfgcolour = wxColour(0,0,0);
     m_brush = new wxBrush(mfgcolour,wxSOLID);
     m_memDC = new wxMemoryDC();
@@ -259,10 +259,10 @@ CxPlot::~CxPlot()
     DeleteKey();
     mPlotCount--;
     delete m_newMemDCBitmap;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     delete m_memDC;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     delete m_memDC;
     delete m_brush;
 #endif
@@ -270,20 +270,20 @@ CxPlot::~CxPlot()
 
 void CxPlot::CxDestroyWindow()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   Destroy();
 #endif
 }
 
 void CxPlot::SetText( const string & text )
 {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       SetLabel(text.c_str());
 #endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetWindowText(text.c_str());
 #endif
 
@@ -298,12 +298,12 @@ CcPoint CxPlot::DeviceToLogical(int x, int y)
 {
      CcPoint      newpoint;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //     CRect       swindowext;
 //     GetClientRect(&swindowext);
      CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
      wxRect wwindowext = m_memDC->GetSize();// GetRect();
      CcRect windowext( wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
@@ -319,12 +319,12 @@ CcPoint CxPlot::LogicalToDevice(int x, int y)
 {
     CcPoint newpoint;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //  CRect       windowext;
 //  GetClientRect(&windowext);
     CcRect       windowext( m_client.mTop, m_client.mLeft, m_client.mBottom, m_client.mRight);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxRect wwindowext = GetRect();
     CcRect windowext(wwindowext.y, wwindowext.x, wwindowext.GetBottom(), wwindowext.GetRight());
 #endif
@@ -337,15 +337,15 @@ CcPoint CxPlot::LogicalToDevice(int x, int y)
 
 void CxPlot::Display()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       InvalidateRect(NULL,false);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       Refresh();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxPlot::OnPaint()
 {
     RECT winsize;
@@ -370,7 +370,7 @@ void CxPlot::OnPaint()
 #endif
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxPlot::OnPaint(wxPaintEvent & event)
 {
       wxPaintDC dc(this); // device context for painting
@@ -382,7 +382,7 @@ void CxPlot::OnPaint(wxPaintEvent & event)
 
 void CxPlot::Clear()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CRect rect;
     GetClientRect (&rect);
 
@@ -396,7 +396,7 @@ void CxPlot::Clear()
     m_memDC->SelectObject(oldBrush);
     m_memDC->SelectObject(m_oldMemDCBitmap);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       m_memDC->SetBrush( *wxWHITE_BRUSH );
       m_memDC->Clear();
 #endif
@@ -406,10 +406,10 @@ void CxPlot::Clear()
 // sets the colour to be used for drawing.
 void CxPlot::SetColour(int r, int g, int b)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     mfgcolour = PALETTERGB(r,g,b);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     mfgcolour = wxColour(r,g,b);
     m_brush->SetColour ( mfgcolour );
 #endif
@@ -429,7 +429,7 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
     cpoint1 = DeviceToLogical(x1,y1);
     cpoint2 = DeviceToLogical(x2,y2);
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CPen pen(PS_SOLID,thickness,mfgcolour), *oldpen;        // changed 1 to thickness
     oldpen = m_memDC->SelectObject(&pen);
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
@@ -440,7 +440,7 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
     m_memDC->SelectObject(oldpen);
     pen.DeleteObject();                                     // added by steve - clean up resources
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxPen apen(mfgcolour,thickness,wxSOLID);
     m_memDC->SetPen(apen);
     m_memDC->DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
@@ -469,7 +469,7 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
     CcPoint topleft     = CcPoint( centre.x - w, centre.y - h );
     CcPoint bottomright = CcPoint( centre.x + w, centre.y + h );
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //    CRgn        rgn;
 //    rgn.CreateEllipticRgn(topleft.x,topleft.y,bottomright.x,bottomright.y);
 
@@ -496,7 +496,7 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
     if ( fill)  m_memDC->SelectObject(oldbrush);
     brush.DeleteObject();           
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       wxPen apen(mfgcolour,1,wxSOLID);
       m_memDC->SetPen(apen);
       if ( fill )
@@ -523,7 +523,7 @@ void CxPlot::DrawCross(int x, int y, int w)
     CcPoint topleft     = CcPoint( centre.x - w, centre.y - w );
     CcPoint bottomright = CcPoint( centre.x + w, centre.y + w );
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CPen pen(PS_SOLID,2,mfgcolour), *oldpen;
 
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
@@ -534,9 +534,8 @@ void CxPlot::DrawCross(int x, int y, int w)
     m_memDC->LineTo(CPoint(bottomright.x,topleft.y));
     m_memDC->SelectObject(m_oldMemDCBitmap);
     m_memDC->SelectObject(oldpen);
-#endif
-#ifdef __BOTHWX__
-      wxPen apen(mfgcolour,2,wxSOLID);
+#else
+	  wxPen apen(mfgcolour,2,wxSOLID);
       m_memDC->SetPen(apen);
       m_memDC->DrawLine(topleft.x,topleft.y,bottomright.x,bottomright.y);
 //      wxPen bpen(wxColour(0,0,0),2,wxSOLID);
@@ -572,7 +571,7 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 
     CcPoint      coord = DeviceToLogical(x,y);
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    CPen        pen(PS_SOLID,1,mfgcolour);
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     CPen        *oldpen = m_memDC->SelectObject(&pen);
@@ -654,7 +653,7 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
     m_memDC->SelectObject(m_oldMemDCBitmap);
 
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       wxString wtext = wxString(text.c_str());
       m_memDC->SetBrush( *m_brush );
       wxPen apen(mfgcolour,1,wxSOLID);
@@ -721,7 +720,7 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 
 // get the size of a text string on screen
 // NB param is same as above - only TEXT_ANGLE, TEXT_VERTICAL currently dealt with / needed
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
 {
     CcPoint tsize;
@@ -765,7 +764,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
     return (LogicalToDevice(tsize.x, tsize.y));
 }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
 {
 
@@ -791,7 +790,7 @@ CcPoint CxPlot::GetTextArea(int fontsize, string text, int param)
 
 void CxPlot::DrawPoly(int nVertices, int * vertices, bool fill)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_oldMemDCBitmap = m_memDC->SelectObject(m_newMemDCBitmap);
     if(fill)
     {
@@ -845,7 +844,7 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, bool fill)
 
     m_memDC->SelectObject(m_oldMemDCBitmap);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxPen apen(mfgcolour,1,wxSOLID);
     m_memDC->SetPen(apen);
 //    m_memDC->SetPen( *m_pen );
@@ -871,7 +870,7 @@ CXONCHAR(CxPlot)
 
 void CxPlot::SetIdealHeight(int nCharsHigh)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
@@ -879,14 +878,14 @@ void CxPlot::SetIdealHeight(int nCharsHigh)
     cdc.SelectObject(oldFont);
     mIdealHeight = nCharsHigh * textMetric.tmHeight;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     mIdealHeight = nCharsHigh * GetCharHeight();
 #endif
 }
 
 void CxPlot::SetIdealWidth(int nCharsWide)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
@@ -894,14 +893,14 @@ void CxPlot::SetIdealWidth(int nCharsWide)
     cdc.SelectObject(oldFont);
     mIdealWidth = nCharsWide * textMetric.tmAveCharWidth;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     mIdealWidth = nCharsWide * GetCharWidth();
 #endif
 }
 
 void    CxPlot::SetGeometry( int top, int left, int bottom, int right )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   MoveWindow(left,top,right-left,bottom-top,true);
   m_client.Set(top,left,bottom,right);
   if(m_memDC)
@@ -923,7 +922,7 @@ void    CxPlot::SetGeometry( int top, int left, int bottom, int right )
   }
   ((CrPlot*)ptr_to_crObject)->ReDrawView(false);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 
       wxClientDC   dc(this);
       
@@ -961,7 +960,7 @@ int CxPlot::GetIdealHeight()
     return mIdealHeight;
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxPlot, CWnd)
     ON_WM_CHAR()
@@ -977,7 +976,7 @@ BEGIN_MESSAGE_MAP(CxPlot, CWnd)
 END_MESSAGE_MAP()
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Table
 BEGIN_EVENT_TABLE(CxPlot, wxControl)
       EVT_CHAR( CxPlot::OnChar )
@@ -994,7 +993,7 @@ void CxPlot::Focus()
     SetFocus();
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
     DeletePopup();
@@ -1004,7 +1003,7 @@ LRESULT CxPlot::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 #endif
 
 // the mouse-movement code
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 // windows stuff goes here
 void CxPlot::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
@@ -1026,7 +1025,7 @@ void CxPlot::OnMouseMove( UINT nFlags, CPoint wpoint )
     }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 // and now the Linux version
 void CxPlot::OnMouseMove( wxMouseEvent & event )
 {
@@ -1062,11 +1061,11 @@ void CxPlot::DeletePopup()
 {
   if ( m_TextPopup )
   {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_TextPopup->DestroyWindow();
     delete m_TextPopup;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_TextPopup->Destroy();
 //    m_DoNotPaint = false;
 #endif
@@ -1079,13 +1078,13 @@ void CxPlot::DeletePopup()
 // create a pop-up window (contains details of the data-item the mouse is over)
 void CxPlot::CreatePopup(string text, CcPoint point)
 {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //  m_DoNotPaint = true;
 #endif
   if(m_TextPopup) 
      DeletePopup();
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   CClientDC dc(this);
   CFont* oldFont = dc.SelectObject(CcController::mp_font);
   SIZE size = dc.GetOutputTextExtent(text.c_str());
@@ -1099,7 +1098,7 @@ void CxPlot::CreatePopup(string text, CcPoint point)
   m_TextPopup->MoveWindow(CRMAX(0,point.x-size.cx-4),CRMAX(0,point.y-size.cy-4),size.cx+4,size.cy+2, FALSE);
   m_TextPopup->InvalidateRect(NULL,false);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   int cx,cy;
   GetTextExtent( text.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
@@ -1137,7 +1136,7 @@ void CxPlot::DeleteKey()
 {
   if ( m_Key )
   {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_Key->DestroyWindow();
     delete m_Key;
 #endif
@@ -1145,7 +1144,7 @@ void CxPlot::DeleteKey()
   }
 }
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxPlot::PrintPicture() 
 {
 }
@@ -1189,7 +1188,7 @@ void CxPlot::MakeMetaFile(int w, int h, string s)
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 // create a wmf of the graph
 void CxPlot::MakeMetaFile(int w, int h, string s)
 {
@@ -1293,7 +1292,7 @@ void CxPlot::PrintPicture()
 }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxPlot::OnRButtonUp( wxMouseEvent & event )
 {
     CcPoint point = LogicalToDevice(event.m_x,event.m_y);
@@ -1302,7 +1301,7 @@ void CxPlot::OnRButtonUp( wxMouseEvent & event )
     ((CrPlot*)ptr_to_crObject)->ContextMenu(&point,event.m_x,event.m_y);
 }
 #endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
 {
     CcPoint point = LogicalToDevice(wpoint.x,wpoint.y);
@@ -1314,13 +1313,13 @@ void CxPlot::OnRButtonUp( UINT nFlags, CPoint wpoint )
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxPlot::OnMenuSelected(UINT nID)
 {
     ((CrPlot*)ptr_to_crObject)->MenuSelected( nID );
 }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxPlot::OnMenuSelected(wxCommandEvent & event)
 {
       int nID = event.GetId();
@@ -1334,14 +1333,14 @@ void CxPlot::OnMenuSelected(wxCommandEvent & event)
 //
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 // Windows message map for the key
 BEGIN_MESSAGE_MAP(CxPlotKey, CWnd)
     ON_WM_PAINT()
 END_MESSAGE_MAP()
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Table
 BEGIN_EVENT_TABLE(CxPlotKey, wxWindow)
       EVT_PAINT( CxPlotKey::OnPaint )
@@ -1351,7 +1350,7 @@ END_EVENT_TABLE()
 
 CxPlotKey::CxPlotKey(CxPlot* parent, int numser, string* names, int** col)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_Parent = parent;
     mDragPos.x = 0;
     mDragPos.y = 0;
@@ -1429,7 +1428,7 @@ CxPlotKey::CxPlotKey(CxPlot* parent, int numser, string* names, int** col)
   newDC.SelectObject(oldFont);
 
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_Parent = parent;
     mDragPos.x = 0;
     mDragPos.y = 0;
@@ -1500,7 +1499,7 @@ CxPlotKey::~CxPlotKey()
     delete [] m_Colours;
 }
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxPlotKey::OnPaint(wxPaintEvent & event)
 { 
   int cx = m_WinPosAndSize.mRight;
@@ -1528,7 +1527,7 @@ void CxPlotKey::OnPaint(wxPaintEvent & event)
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxPlotKey::OnPaint()
 {
 

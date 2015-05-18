@@ -969,42 +969,33 @@ extern "C" {
 
 //declarations:
 
-#if defined (_DIGITALF77_) || defined (__WXINT__)
+#ifdef CRY_NONGNU
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
-#else
-void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
-                int r, int g, int b,  int rad,int btype,
-                int np, int * ptrs, char label[80], char slabel[80] );
-#endif
-#if defined (_DIGITALF77_) || defined (__WXINT__)
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare);
+void fastsphere  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad);
+void fastdonut  (char* label,int x1,int y1,int z1, 
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad, int idec, int iaz);
 #else
+void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
+                int r, int g, int b,  int rad,int btype,
+                int np, int * ptrs, char label[80], char slabel[80] );
 void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare);
-#endif
-#if defined (_DIGITALF77_) || defined (__WXINT__)
-void fastsphere  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad);
-#else
 void fastsphere_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
-#endif
-#if defined (_DIGITALF77_) || defined (__WXINT__)
-void fastdonut  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad, int idec, int iaz);
-#else
 void fastdonut_  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
@@ -1013,7 +1004,7 @@ void fastdonut_  (char* label,int x1,int y1,int z1,
 
 //implementations:
 
-#if defined (_DIGITALF77_) || defined (__WXINT__)
+#ifdef CRY_NONGNU
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
@@ -1032,7 +1023,7 @@ void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                                          np,ptrs,clabel,slabel);
 }
 
-#if defined (_DIGITALF77_) || defined (__WXINT__)
+#ifdef CRY_NONGNU
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
@@ -1057,7 +1048,7 @@ void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1,
 
 }
 
-#if defined (_DIGITALF77_) || defined (__WXINT__)
+#ifdef CRY_NONGNU
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
@@ -1075,7 +1066,7 @@ void fastsphere_  (char* label,int x1,int y1,int z1,
 
 }
 
-#if defined (_DIGITALF77_) || defined (__WXINT__)
+#ifdef CRY_NONGNU
 	void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)

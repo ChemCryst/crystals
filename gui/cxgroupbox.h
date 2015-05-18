@@ -31,14 +31,12 @@
 #define     __CxGroupBox_H__
 #include    "crguielement.h"
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEGROUPBOX CButton
-#endif
-
-#ifdef __BOTHWX__
-#include <wx/statbox.h>
-#define BASEGROUPBOX wxStaticBox
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEGROUPBOX CButton
+#else
+ #include <wx/statbox.h>
+ #define BASEGROUPBOX wxStaticBox
 #endif
 
 class CrGrid;
@@ -60,7 +58,7 @@ class CxGroupBox : public BASEGROUPBOX
         // attributes
         static int mGroupBoxCount;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     protected:
         afx_msg BOOL OnEraseBkgnd(CDC* pDC);
         DECLARE_MESSAGE_MAP()

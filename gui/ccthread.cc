@@ -1,6 +1,9 @@
-#if !defined (__CR_WIN__)
 
 #include "crystalsinterface.h"
+
+#if !defined (CRY_USEMFC)
+
+#include <string>
 #include "crystals.h"
 #include <wx/thread.h>
 #include "ccthread.h"

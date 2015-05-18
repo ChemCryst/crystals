@@ -884,12 +884,6 @@ C
       CHARACTER*8 RESULT(3)
       CHARACTER*1 WARNPL,ERRPL
 C
-#if defined(_PPC_) 
-CS***
-      INTEGER IOS
-      CHARACTER*80 theLine
-CE***
-#endif
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'UFILE.INC'
@@ -898,10 +892,6 @@ CE***
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XSTATS.INC'
       INCLUDE 'XIOBUF.INC'
-#if defined(_PPC_) 
-\XGSTOP
-C
-#endif
       DATA RESULT(1) / 'ok      ' /
       DATA RESULT(2) / 'in error' /
       DATA RESULT(3) / 'in error' /
@@ -946,59 +936,30 @@ C -- FINAL CALL TO THE SPY
 C
       GO TO ( 8100 , 8200 , 8300 ) , ICODE
 8100  CONTINUE
-#if defined(_PPC_) 
-CS***
-      CALL exitthefortran
-      GLSTOP = 1
-      RETURN
-CE***
-C#PPC      STOP 'OK'
-#else
       CALL GUEXIT(0)
-#endif
+
 8200  CONTINUE
-#if defined(_PPC_) 
-C
-CS***
-      CALL finalcleanup
-      CALL nextlineofcommand( IOS, %loc(theLine) )
-      CALL exitthefortran
-CE***
-      STOP
-#endif
-#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) && !defined(_INW_) 
+#ifdef CRY_NOGUI
       write(*,*) ' Ending in error'
 #endif
-#if defined(_VAX_) 
+#ifdef _VAX_ 
       WRITE ( NCVDU , 8305 ) J/(icode-2)
 #endif
-#if !defined(_PPC_) 
       CALL GUEXIT(1)
-#endif
 8300  CONTINUE
 C
 C VAX -- CAUSE PROG. TO CRASH TO GET TRACEBACK
 C----WRITE STATEMENT IS NECESSARY TO FOOL  VAX FORTRAN OPTIMISER.
 C
-#if defined(_PPC_) 
-CS***
-      CALL finalcleanup
-      CALL nextlineofcommand( IOS, %loc(theLine) )
-      CALL exitthefortran
-CE***
-      STOP
-#endif
-#if !defined(_GID_) && !defined(_PPC_) && !defined(_WXS_) && !defined(_INW_) 
+#ifdef CRY_NOGUI
       write(*,*) ' Ending in serious error'
 #endif
-#if defined(_VAX_) 
+#ifdef _VAX_ 
       WRITE ( NCVDU , 8305 ) J/(icode-3)
 #endif
-#if !defined(_PPC_) 
 8305  FORMAT ( 1X , I10 )
 C
         CALL GUEXIT(2)
-#endif
       END
 C
 C --
@@ -1284,17 +1245,9 @@ C
       CHARACTER *3 CDEV
       CHARACTER *(*) NEWFIL, OLDFIL
 C
-#if defined(_PPC_) 
-CS***
-      INTEGER MYINDX
-CE***
-#endif
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'XSSCHR.INC'
       INCLUDE 'XSSVAL.INC'
-#if defined(_PPC_) 
-\CFLDAT
-#endif
       LENFIL = LEN (NEWFIL)
 C
 C----- RETURN IF THE FILE IS 'SCRATCH, 'READ' OR 'OLD'
@@ -1332,27 +1285,12 @@ C----- SEE IF THERE WAS A NAMED FILE ON THE UNIT
        IF (OLDFIL .NE. ' ') THEN
             NEWFIL = OLDFIL
        ELSE
-#if defined(_PPC_) 
-CS***
-            CALL GINDEX ( IDEV, MYINDX )
-            NEWFIL = FLNAME( MYINDX )(1:LFNAME( MYINDX ) )
-     +//FLTYPE( MYINDX )
-CE***
-#else
        CALL XMAKNM (IDEV, NEWFIL, ISTTUS)
-#endif
        ENDIF
       ENDIF
 C     IF THE FILE EXISTS AND STATUS IS CIF,
 C     CHANGE THE STATUS TO OLD, OTHERWISE NEW
-C(MK
-#if defined(_PPC_) 
-C**** Next Line commented out, no logical names on the Mac
-C**** Ludwig Macko, 8.12.1994
-#else
       CALL MTRNLG(NEWFIL,'OLD',LENNAM)
-C)MK
-#endif
       INQUIRE (FILE = NEWFIL, EXIST = LEXIST)
       IF (ISTTUS .EQ. ISSCIF) THEN
 C            IF (LEXIST .EQV. .TRUE.) THEN  NOT PROCESSED CORRECTLY BY F
@@ -1411,9 +1349,7 @@ C
       INCLUDE 'XSSVAL.INC'
       DATA CDIGIT /'0123456789'/
       LEXIST = .FALSE.
-#if !defined(_PPC_) 
             CALL MTRNLG(CNAME,'OLD',LENNAM)
-#endif
       LENGTH = LEN (CNAME)
 C----- FIND THE ACTUAL FILENAME
 CDJW-NOV-09  Try to spot paths with spaces in them
@@ -1644,7 +1580,7 @@ C------ SWITCH ON LINE FEEDS
 CODE FOR OUTCOL
       SUBROUTINE  OUTCOL( ICOL )
 C----- SET THE ATTRIBUTES AND COLOURS FOR TEXT OUTPUT
-#if defined(_DVF_) 
+#ifdef _DVF_ 
        USE DFWIN
        INTEGER HC,IC,B
 #endif
@@ -1720,7 +1656,7 @@ C
 #else
           HC = GetStdHandle(STD_OUTPUT_HANDLE)
 #endif
-#if defined(_DVF_) 
+#ifdef _DVF_ 
           SELECT CASE ( ICOL )
           CASE (1)
            IC = BACKGROUND_BLUE+FOREGROUND_BLUE+
@@ -1864,7 +1800,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA MODE(1)/1HI/ , MODE(2)/1HB/ , MODE(3)/1HO/
 C     START UP
       DATA IHASH(1)/1HS/,IHASH(2)/1HT/,IHASH(3)/1HA/

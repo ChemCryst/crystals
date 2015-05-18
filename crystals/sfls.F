@@ -511,12 +511,6 @@ C--'#CYCLENDS' INSTRUCTION
 C
 C--SET THE VALUES FOR A S.F.L.S. CALCULATION
 1400  CONTINUE
-#if defined(_PPC_) 
-CS***
-      CALL SETSTA( 'S.F.L.S.' )
-      CALL nextcursor
-CE***
-#endif
       CALL XDUMP
 C--CLEAR THE CORE
       CALL XRSL
@@ -1654,7 +1648,7 @@ C
       CHARACTER*15 HKLLAB
 C
 C
-#if defined(_GIL_) || defined(_LIN_)
+#ifdef CRY_OSLINUX
       integer :: starttime
       integer, dimension(8) :: measuredtime
 #endif
@@ -1689,7 +1683,7 @@ c     getenv is a deprecated extension
       end if
       tid=min(tid, 6)
 
-#if defined(_GIL_) || defined(_LIN_)
+#ifdef CRY_OSLINUX
       print *, 'Number of threads used around DSYRK: ', tid
 #endif
 
@@ -1829,7 +1823,7 @@ C--CHECK IF A PRINT IS REQUIRED
       allocate(righthandside(n11r))
       righthandside=0.0
 
-#if defined(_GIL_) || defined(_LIN_)
+#ifdef CRY_OSLINUX
       call date_and_time(VALUES=measuredtime)
       starttime=((measuredtime(5)*3600+measuredtime(6)*60)+
      1  measuredtime(7))*1000+measuredtime(8)
@@ -2494,7 +2488,7 @@ c            STR11(L11+j:L11+k)=normalmatrix(i:JP-JO+1,i)
 c      end do
       
 
-#if defined(_GIL_) || defined(_LIN_)
+#ifdef CRY_OSLINUX
       call date_and_time(VALUES=measuredtime)
       print *, 'Formation of the normal matrix time (ms): ',
      1  ((measuredtime(5)*3600+measuredtime(6)*60)+
@@ -3300,7 +3294,7 @@ c       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
 
 CODE FOR XSFLSX
       SUBROUTINE XSFLSX
-#if defined(_GIL_) || defined(_LIN_) 
+#ifdef CRY_OSLINUX 
       use sleef    
 #endif
 C
@@ -3354,7 +3348,7 @@ C Some constants for chebychev approx.
 
       INTEGER ISTACK
 
-#if defined(_GIL_) || defined(_LIN_) 
+#ifdef CRY_OSLINUX 
       real, dimension(2) :: scb
 #endif
       DD=1.0/TWOPI
@@ -3629,7 +3623,7 @@ c calculate the iso-temperature factor coefficients for this atom
 c TC = -8 Pi^2 [sin(theta)/lambda]^2
 c T = exp(Uiso *TC)
 c
-#if defined(_GIL_) || defined(_LIN_) 
+#ifdef CRY_OSLINUX 
           T=sleef_expf(STORE(M5A+7)*TC)  
 #else
           T=EXP(STORE(M5A+7)*TC)  
@@ -3661,7 +3655,7 @@ c  T=exp(h*Uij + ...)
 c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
 
 c
-#if defined(_GIL_) || defined(_LIN_) 
+#ifdef CRY_OSLINUX
             T=sleef_expf(STORE(M5A+7)*STORE(M2T+4)
      2       +STORE(M5A+8)*STORE(M2T+5)
      3       +STORE(M5A+9)*STORE(M2T+6)+STORE(M5A+10)*STORE(M2T+7)
@@ -3682,7 +3676,7 @@ c
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             END IF
-#if defined(_GIL_) || defined(_LIN_) 
+#ifdef CRY_OSLINUX 
             T=sleef_expf(STORE(M5A+7)*TC)
 #else
             T=EXP(STORE(M5A+7)*TC)
@@ -3695,7 +3689,7 @@ C--CALCULATE THE SIN/COS TERMS   (NB This is a Chebychev approximation - v. fast
 c  dd = 1.0/twopi
 c  a = h'.x + h.t
 c
-#if defined(_GIL_) || defined(_LIN_) 
+#ifdef CRY_OSLINUX 
           c = mod(a,2.0*3.14159265359)
           call sleef_sincosf(c, scb)          
           s=scb(1)

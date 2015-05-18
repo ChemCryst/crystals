@@ -9,7 +9,7 @@
 //
 #include "afxres.h"
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include "c:\wx\include\wx\msw\wx.rc"
 idb_splash BITMAP image3.bmp
 idi_icon1 ICON wincrys.ico
@@ -88,7 +88,7 @@ END
 // Bitmap
 //
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 IDB_SPLASH              BITMAP  DISCARDABLE     "Image3.bmp"
 #endif
 
@@ -100,7 +100,7 @@ IDB_SPLASH              BITMAP  DISCARDABLE     "Image3.bmp"
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 IDI_ICON1               ICON    DISCARDABLE     "Wincrys.ico"
 IDI_ICON2               ICON    DISCARDABLE     "icon2.ico"
 #endif

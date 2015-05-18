@@ -85,7 +85,7 @@ using namespace std;
 #include    "cxgrid.h"
 #include    "crdropdown.h"
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <wx/settings.h>
 #endif
 
@@ -93,11 +93,11 @@ int CxDropDown::mDropDownCount = kDropDownBase;
 CxDropDown *    CxDropDown::CreateCxDropDown( CrDropDown * container, CxGrid * guiParent )
 {
     CxDropDown* theDropDown = new CxDropDown ( container);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theDropDown->Create(CBS_DROPDOWNLIST |WS_CHILD |WS_VISIBLE, CRect(0,0,10,10), guiParent, mDropDownCount++);
     theDropDown->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
+
       wxArrayString a;
       theDropDown->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),a);
 #endif
@@ -119,27 +119,27 @@ CxDropDown::~CxDropDown()
 
 void CxDropDown::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 DestroyWindow();
-#endif
-#ifdef __BOTHWX__
+#else
+
 Destroy();
 #endif
 }
 
 void CxDropDown::CxSetSelection(int select)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       SetCurSel ( select - 1 );
-#endif
-#ifdef __BOTHWX__
+#else
+
       SetSelection ( select -1 );
 #endif
 }
 
 void CxDropDown::CxRemoveItem ( int item )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if ( item > 0 )
     {
        DeleteString ( item - 1 );
@@ -154,12 +154,12 @@ void CxDropDown::CxRemoveItem ( int item )
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void    CxDropDown::Selected()
 {
     ((CrDropDown *)ptr_to_crObject)->Selected( GetCurSel() + 1 );
-#endif
-#ifdef __BOTHWX__
+#else
+
 void    CxDropDown::Selected(wxCommandEvent & e)
 {
       ((CrDropDown *)ptr_to_crObject)->Selected( GetSelection() + 1 );
@@ -168,11 +168,11 @@ void    CxDropDown::Selected(wxCommandEvent & e)
 
 void    CxDropDown::AddItem( const string & text )
 {
-#ifdef __BOTHWX__
-    Append ( text.c_str() );
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     AddString(text.c_str() );
+#else
+
+    Append ( text.c_str() );
 #endif
     if( !mItems ) CxSetSelection(1);
     mItems++;
@@ -180,18 +180,17 @@ void    CxDropDown::AddItem( const string & text )
 
 void    CxDropDown::SetGeometry( const int top, const int left, const int bottom, const int right )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetItemHeight(-1, bottom-top); //The closed up height is set by this call, MoveWindow sets the dropped height.
     MoveWindow(left,top,right-left,GetDroppedHeight(),true);
-#endif
-#ifdef __BOTHWX__
+#else
     SetSize(left,top,right-left,bottom-top);
 #endif
 }
 
 void CxDropDown::ResetHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   CRect wR; GetWindowRect(&wR);
   SetWindowPos( &wndTop, 0,0, wR.Width(), GetDroppedHeight(), SWP_NOMOVE );
 #endif
@@ -199,37 +198,33 @@ void CxDropDown::ResetHeight()
 
 int   CxDropDown::GetTop()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   RECT windowRect; GetWindowRect(&windowRect); return ( windowRect.top );
-#endif
-#ifdef __BOTHWX__
+#else
   return ( GetRect().y );
 #endif
 }
 int   CxDropDown::GetLeft()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   RECT windowRect; GetWindowRect(&windowRect); return ( windowRect.left );
-#endif
-#ifdef __BOTHWX__
+#else
   return ( GetRect().x );
 #endif
 }
 int   CxDropDown::GetWidth()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   CRect windowRect; GetWindowRect(&windowRect); return ( windowRect.Width() );
-#endif
-#ifdef __BOTHWX__
+#else
   return ( GetRect().GetWidth() );
 #endif
 }
 int   CxDropDown::GetHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   return GetItemHeight(-1);
-#endif
-#ifdef __BOTHWX__
+#else
 // May need to base this on font size if it returns the dropped
 // list height rather than the closed list height.
   return ( GetRect().GetHeight() );
@@ -240,7 +235,7 @@ int CxDropDown::GetIdealWidth()
 {
     int maxSiz = 10; //At least you can see it if it's empty!
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     CClientDC dc(this);
@@ -254,8 +249,7 @@ int CxDropDown::GetIdealWidth()
     }
     dc.SelectObject(oldFont);
     return ( maxSiz + (2 * GetSystemMetrics(SM_CXVSCROLL) ));
-#endif
-#ifdef __BOTHWX__
+#else
     wxString text;
     int cx,cy;
     for ( int i=0;i<mItems;i++ )
@@ -270,10 +264,9 @@ int CxDropDown::GetIdealWidth()
 
 int CxDropDown::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     return CRMAX ( GetItemHeight(-1) + 2, GetSystemMetrics(SM_CYVSCROLL) + 2 ) ;
-#endif
-#ifdef __BOTHWX__
+#else
 // May need to base this on font size if it returns the dropped
 // list height rather than the closed list height.
       int cx,cy;
@@ -285,15 +278,14 @@ int CxDropDown::GetIdealHeight()
 
 int CxDropDown::GetDroppedHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
         return (mItems+3) * ( textMetric.tmHeight + 4 );
-#endif
-#ifdef __BOTHWX__
+#else
       int cx,cy;
       GetTextExtent( "Any old string", &cx, &cy );
       return (cy+5); // nice height for closed list boxes.
@@ -303,22 +295,20 @@ int CxDropDown::GetDroppedHeight()
 
 int CxDropDown::GetDropDownValue()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     return ( GetCurSel() + 1 );
-#endif
-#ifdef __BOTHWX__
+#else
       return ( GetSelection() + 1 );
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxDropDown, BASEDROPDOWN)
     ON_WM_CHAR()
     ON_CONTROL_REFLECT(CBN_SELCHANGE, Selected)
 END_MESSAGE_MAP()
-#endif
+#else
 
-#ifdef __BOTHWX__
 //wx Message Map
 BEGIN_EVENT_TABLE(CxDropDown, BASEDROPDOWN)
       EVT_CHOICE( -1, CxDropDown::Selected )
@@ -338,13 +328,12 @@ string CxDropDown::GetDropDownText(int index)
 {
    index = CRMIN ( index, mItems );
    index = CRMAX ( index, 1 );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString temp;
     GetLBText(index-1,temp);
     string result = temp.GetBuffer(temp.GetLength());
     return result;
-#endif
-#ifdef __BOTHWX__
+#else
       wxString temp = GetString( index-1 );
       string result ( temp.c_str() );
     return result;
@@ -353,13 +342,12 @@ string CxDropDown::GetDropDownText(int index)
 
 void CxDropDown::Disable(bool disable)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if(disable)
             EnableWindow(false);
       else
             EnableWindow(true);
-#endif
-#ifdef __BOTHWX__
+#else
       if(disable)
             Enable(false);
     else

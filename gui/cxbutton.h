@@ -59,16 +59,15 @@
 #include    <LStdControl.h>
 #endif
 
-#ifdef __BOTHWX__
-#include <wx/button.h>
-#include <wx/event.h>
-#define BASEBUTTON wxButton
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEBUTTON CButton
+#else
+ #include <wx/button.h>
+ #include <wx/event.h>
+ #define BASEBUTTON wxButton
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEBUTTON CButton
-#endif
 
 class CrButton;
 class CxGrid;
@@ -110,12 +109,11 @@ class CxButton : public BASEBUTTON
 
 
 // Private machine specific parts:
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         afx_msg void ButtonClicked();
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
             void ButtonClicked(wxCommandEvent & e);
             void OnChar(wxKeyEvent & event );
             DECLARE_EVENT_TABLE()

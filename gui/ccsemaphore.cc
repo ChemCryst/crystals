@@ -19,7 +19,7 @@
 /* Creates a semaphore which will allow you to 
 limit the number of threads which can be running 
 on a resourse concurrently*/
-#if defined(__CR_WIN__)
+#if defined(CRY_USEMFC)
 CcSemaphore::CcSemaphore(const int pInitValue, const int pMaxCount):iSemaphore(CreateSemaphore(NULL, pInitValue, pMaxCount, NULL))
 #else
 CcSemaphore::CcSemaphore(const int pInitValue, const int pMaxCount):iSemaphore(pInitValue, pMaxCount)
@@ -30,7 +30,7 @@ CcSemaphore::CcSemaphore(const int pInitValue, const int pMaxCount):iSemaphore(p
 void CcSemaphore::wait(const unsigned int pTime) //throw(semaphore_timeout, semaphore_error)
 {
 	error_type tResult;
-	#if defined(__CR_WIN__)
+	#if defined(CRY_USEMFC)
 	tResult = WaitForSingleObject( iSemaphore, pTime);
 	if (tResult == WAIT_TIMEOUT)
 	{
@@ -63,7 +63,7 @@ void CcSemaphore::wait(const unsigned int pTime) //throw(semaphore_timeout, sema
 
 void CcSemaphore::signal() //throw(semaphore_error)
 {
-	#if defined(__CR_WIN__)
+	#if defined(CRY_USEMFC)
 		if (ReleaseSemaphore( iSemaphore, 1, NULL ) == 0)
 		{
 			throw semaphore_error(GetLastError());

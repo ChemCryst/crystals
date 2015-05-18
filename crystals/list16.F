@@ -400,7 +400,7 @@ C
 C
       DATA IVERSN /421/
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IEQU(1)/4HDIST /,IEQU(2)/4HANGL /,IEQU(3)/4HFROM /
       DATA IEQU(4)/4HTO   /,IEQU(5)/4HFOR  /,IEQU(6)/4HAND  /
       DATA INMD(1)/4Hst   /,INMD(2)/4Hnd   /,INMD(3)/4Hrd   /,
@@ -1621,7 +1621,7 @@ C
       EQUIVALENCE (Z,MZ)
 C
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA NWCV/1/, NCV/2/, LCV/1/, ICV(1)/ 4HDIFF/, ICV(2)/ 4HMEAN/
 #else
       DATA NWCV/1/, NCV/2/, LCV/1/, ICV(1)/ 'DIFF'/, ICV(2)/ 'MEAN'/
@@ -1740,7 +1740,7 @@ C
       EQUIVALENCE (MZ,Z)
 C
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA NWAS/1/, IAS(1)/ 4HTO  /, IAS(2)/ 4HWITH/
 #else
       DATA NWAS/1/, IAS(1)/ 'TO  '/, IAS(2)/ 'WITH'/

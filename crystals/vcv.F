@@ -1464,7 +1464,7 @@ C
                IIWORK = (I-1)*3 + KK
                IIOUT = ISTORE(KB+NPART*4)-1
 			   RWEIG = STORE(KB+3+NPART*4)
-               WRITE(CMON,'(2(A,I6),A,F10.6))')'IIWORK ',IIWORK,
+               WRITE(CMON,'(2(A,I6),A,F10.6)')'IIWORK ',IIWORK,
      1           'IIOUT ',IIOUT,
      1           'RWEIG ',RWEIG
     	       CALL XPRVDU (NCVDU,1,0)

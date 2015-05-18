@@ -50,7 +50,7 @@ CrIcon::~CrIcon()
     if ( ptr_to_cxObject != nil )
     {
             ((CxIcon*) ptr_to_cxObject)->CxDestroyWindow();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             delete (CxIcon*) ptr_to_cxObject;
 #endif
         ptr_to_cxObject = nil;

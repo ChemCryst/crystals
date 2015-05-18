@@ -23,12 +23,11 @@ int CxListCtrl::mListCtrlCount = kListCtrlBase;
 CxListCtrl *    CxListCtrl::CreateCxListCtrl( CrListCtrl * container, CxGrid * guiParent )
 {
     CxListCtrl  *theListCtrl = new CxListCtrl( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     theListCtrl->Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_OWNERDRAWFIXED|LVS_SHOWSELALWAYS|WS_VSCROLL, CRect(0,0,5,5), guiParent, mListCtrlCount++);
     theListCtrl->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theListCtrl->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
       theListCtrl->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10),
                           wxLC_REPORT);
 #endif
@@ -86,7 +85,7 @@ int CxListCtrl::GetIdealWidth()
 
 int CxListCtrl::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int lines = mVisibleLines;
     CClientDC cdc(this);
     CFont* oldFont = cdc.SelectObject(CcController::mp_font);
@@ -94,8 +93,7 @@ int CxListCtrl::GetIdealHeight()
     cdc.GetTextMetrics(&textMetric);
     cdc.SelectObject(oldFont);
     return lines * ( textMetric.tmHeight + 2 );
-#endif
-#ifdef __BOTHWX__
+#else
       return mVisibleLines * ( GetCharHeight() + 2 );
 #endif
 }
@@ -107,7 +105,7 @@ int CxListCtrl::GetValue()
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxListCtrl, CListCtrl)
     ON_WM_CHAR()
     ON_WM_DRAWITEM()
@@ -118,8 +116,7 @@ BEGIN_MESSAGE_MAP(CxListCtrl, CListCtrl)
     ON_NOTIFY(HDN_ITEMCLICKW, 0, OnHeaderClicked)
     ON_NOTIFY_REFLECT( LVN_ITEMCHANGED, ItemChanged )
 END_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
 BEGIN_EVENT_TABLE(CxListCtrl, wxListCtrl)
      EVT_CHAR( CxListCtrl::OnChar )
 END_EVENT_TABLE()
@@ -144,11 +141,10 @@ void CxListCtrl::AddColumn(string colHeader)
     m_colTypes.push_back(COL_INT);
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_colWidths.push_back( CRMAX(10,GetStringWidth(colHeader.c_str())+15) );
     InsertColumn( m_numcols, colHeader.c_str(), LVCFMT_LEFT, 10, m_numcols );
-#endif
-#ifdef __BOTHWX__
+#else
     int w,h;
     GetTextExtent(colHeader.c_str(),&w,&h);
     m_colWidths.push_back( CRMAX(10,w) );
@@ -161,10 +157,9 @@ void CxListCtrl::AddColumn(string colHeader)
 void CxListCtrl::AddRow(string * rowOfStrings)
 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int nItem = InsertItem(mItems++, _T(""));
-#endif
-#ifdef __BOTHWX__
+#else
     int nItem = InsertItem(mItems++, _T(""));
 #endif
 
@@ -172,11 +167,10 @@ void CxListCtrl::AddRow(string * rowOfStrings)
 
     for (int j = 0; j < m_numcols; j++)
     {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         SetItemText(nItem, j, rowOfStrings[j].c_str());
         int width = GetStringWidth(rowOfStrings[j].c_str());
-#endif
-#ifdef __BOTHWX__
+#else
         SetItem(nItem, j, rowOfStrings[j].c_str());
         int width,h;
         GetTextExtent(rowOfStrings[j].c_str(),&width,&h);
@@ -194,7 +188,7 @@ void CxListCtrl::AddRow(string * rowOfStrings)
 
 //// The following code fragment is from www.codeguru.com and implements full row highlighting:
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
         CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
@@ -780,7 +774,7 @@ bool CxListCtrl::SortTextItems( int colType, int nCol, bool bAscending)
 
 void CxListCtrl::SortCol(int col, bool sort)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
     if( col >= nColCount) return;
     SortTextItems( m_colTypes[col], col, sort );
@@ -880,7 +874,7 @@ int CxListCtrl::WhichType(string text)
 
 void CxListCtrl::SelectAll(bool select)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
     int size = GetItemCount();
     m_ProgSelecting = size;
@@ -905,15 +899,14 @@ void CxListCtrl::SelectAll(bool select)
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 string CxListCtrl::GetCell(int row, int col)
 {
     CString temp = GetItemText(row, col);
     string retVal = temp.GetBuffer(temp.GetLength());
     return retVal;
 }
-#endif
-#ifdef __BOTHWX__
+#else
 string CxListCtrl::GetCell(int row, int col)
 {
  return string("Unimplemented");
@@ -922,7 +915,7 @@ string CxListCtrl::GetCell(int row, int col)
 
 void CxListCtrl::SelectPattern(string * strings, bool select)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int size = GetItemCount();
     bool match = true;
     for ( int i = 0; i < size; i++ )
@@ -997,10 +990,7 @@ void CxListCtrl::SelectPattern(string * strings, bool select)
 
 string CxListCtrl::GetListItem(int item)
 {
-#ifdef __BOTHWX__
-  return string("Unimplemented");
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int nColCount = ((CHeaderCtrl*)GetDlgItem(0))->GetItemCount();
     CString textresult = "";
 
@@ -1009,12 +999,14 @@ string CxListCtrl::GetListItem(int item)
 
     string result = textresult.GetBuffer(textresult.GetLength());
     return result;
+#else
+  return string("Unimplemented");
 #endif
 }
 
 void    CxListCtrl::InvertSelection()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int size = GetItemCount();
     m_ProgSelecting = size;
     LV_ITEM moveItem;
@@ -1043,10 +1035,7 @@ void    CxListCtrl::InvertSelection()
 
 int CxListCtrl::GetNumberSelected()
 {
-#ifdef __BOTHWX__
-  return -1;
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int size = GetItemCount();
     LV_ITEM moveItem;
     int count = 0;
@@ -1064,15 +1053,14 @@ int CxListCtrl::GetNumberSelected()
 
     }
     return count;
+#else
+  return -1;
 #endif
 }
 
 void CxListCtrl::GetSelectedIndices(  int * values )
 {
-#ifdef __BOTHWX__
-   return;
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int size = GetItemCount();
     int count = 0;
     LV_ITEM moveItem;
@@ -1093,6 +1081,8 @@ void CxListCtrl::GetSelectedIndices(  int * values )
         }
     }
     return;
+#else
+   return;
 #endif
 }
 
@@ -1104,10 +1094,9 @@ void CxListCtrl::CxSetSelection( int select )
 
    select = CRMIN ( select, mItems );
    select = CRMAX ( select, 1 );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetItemState(select - 1, 0xFFFF, LVIS_SELECTED);
-#endif
-#ifdef __BOTHWX__
+#else
     SetItemState(select - 1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 #endif
 }

@@ -1414,7 +1414,7 @@ C--
       EQUIVALENCE (IOUFIL, PROCS(28))
 
       DATA NCOL/28/
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IPEAK /4HQ   /
 #else
       DATA IPEAK /'Q   '/

@@ -1290,14 +1290,9 @@ C CURSOR CONTROL
         CALL ZBONDS(I,0,0)
 7     CONTINUE
       IF (IMENCN.EQ.2) CALL ZMENUS
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
+#ifdef CRY_GUI
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
-#endif
-#if defined(_WXS_) || defined(_INW_)
-      CALL ZMORE('^^CH SHOW',0)
-      CALL ZMORE('^^CR',0)
-C &&GILGID      CALL FSTSHW()
 #endif
       RETURN
       ENDIF
@@ -1362,14 +1357,9 @@ cdjwjan00      INLINE = 2
 C ---- GET A TITLE
       IF (ITITLE.GT.0) CALL ZCAPT
       IF (IMENCN.EQ.2) CALL ZMENUS
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
+#ifdef CRY_GUI
       CALL ZMORE('^^CH SHOW',0)
       CALL ZMORE('^^CR',0)
-#endif
-#if defined(_WXS_)  || defined(_INW_)
-      CALL ZMORE('^^CH SHOW',0)
-      CALL ZMORE('^^CR',0)
-C &&GILGID      CALL FSTSHW()
 #endif
       RETURN
       END

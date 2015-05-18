@@ -141,8 +141,8 @@
 #include    <string>
 #include    <sstream>
 
-#if defined(__WXGTK__) || defined(__WXMAC__)
-#include "wincrys.xpm"
+#ifndef CRY_OSWIN32
+  #include "wincrys.xpm"
 #endif
 
 int CxWindow::mWindowCount = kWindowBase;
@@ -157,7 +157,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 
   CxWindow *theWindow = new CxWindow( container, attributes);
 
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
     HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_ARROW);
     const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,
                                        hCursor, (HBRUSH)(COLOR_3DFACE+1),
@@ -171,7 +171,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 //    theWindow->SetIcon(AfxGetApp()->LoadIcon(IDI_ICON1),true);
   #endif
 
-  #ifdef __BOTHWX__
+  #ifdef CRY_USEWX
       wxString a = wxT("Window");
       theWindow->mParentWnd = (wxWindow*) parentWindow;
       theWindow->Create( 
@@ -193,13 +193,14 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
   {
     if ( theWindow->mParentWnd )
     {
-      #ifdef __CR_WIN__
+      #ifdef CRY_USEMFC
         theWindow->mParentWnd->EnableWindow(false);
         theWindow->EnableWindow(true);  //All child windows have been disabled by the last call, so re-enable this one.
         theWindow->ModifyStyle(WS_MINIMIZEBOX,NULL,SWP_NOZORDER); //No Minimize box for modal windows with parents.
       #endif
-      #ifdef __BOTHWX__
+      #ifdef CRY_USEWX
         theWindow->m_wxWinDisabler = new wxWindowDisabler(theWindow);
+		theWindow->SetFocus();
 //        theWindow->mParentWnd->Enable(false);
 //        theWindow->Enable(true);  //All child windows have been disabled, so re-enable this one.
       #endif
@@ -207,15 +208,17 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
   }
   else
   {
-    #ifdef __CR_WIN__
+    #ifdef CRY_USEMFC
       theWindow->ModifyStyleEx(NULL,WS_EX_TOOLWINDOW,NULL); //Small title bar effect.
     #endif
   }
 
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
     if ( attributes & kSize ) theWindow->ModifyStyle(NULL,WS_BORDER|WS_THICKFRAME,SWP_NOZORDER);
   #endif
 
+  
+  
   return (theWindow);
 }
 
@@ -231,7 +234,7 @@ CxWindow::CxWindow( CrWindow * container, int attributes )
     mWindowWantsKeys = false;
     m_PreDestroyed = false;
     m_TimerActive = 0;
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_wxWinDisabler = NULL;
 #endif
 
@@ -248,7 +251,7 @@ void CxWindow::CxPreDestroy()
 //    }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if (mParentWnd)
     {
       mParentWnd->EnableWindow(true); //Re-enable the parent.
@@ -262,7 +265,7 @@ void CxWindow::CxPreDestroy()
       }
     }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       wxDELETE( m_wxWinDisabler );
 //    if (mParentWnd) {
 //      mParentWnd->Enable(true); //Re-enable the parent.
@@ -275,7 +278,7 @@ void CxWindow::CxPreDestroy()
 
 CxWindow::~CxWindow()
 {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     //m_mgr.UnInit();
 #endif
     mWindowCount--;
@@ -286,7 +289,7 @@ CxWindow::~CxWindow()
 }
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::SetIsFrame() {
 	//m_mgr.SetManagedWindow(this);
 }
@@ -308,42 +311,42 @@ void CxWindow::SetPaneMin(wxWindow* pane, int w, int h) {
 
 void CxWindow::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
 
 void    CxWindow::SetText( const string & text )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetWindowText(text.c_str());
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       SetTitle(text.c_str());
 #endif
 }
 
 void    CxWindow::CxShowWindow()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       ShowWindow(SW_SHOW);
     UpdateWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       Show(true);
 #endif
   if ( m_attributes & kModal )
   {
     if ( mParentWnd )
     {
-      #ifdef __CR_WIN__
+      #ifdef CRY_USEMFC
         mParentWnd->EnableWindow(false);
         EnableWindow(true);  //All child windows have been disabled by the last call, so re-enable this one.
       #endif
-      #ifdef __BOTHWX__
+      #ifdef CRY_USEWX
         if ( ! m_wxWinDisabler )
         {
            m_wxWinDisabler = new wxWindowDisabler(this);
@@ -351,6 +354,13 @@ void    CxWindow::CxShowWindow()
       #endif
     }
   }
+#ifdef CRY_USEWX
+      SetFocus();
+//	  Raise();
+//	  ostringstream a;
+//	  a << (int) this << " show/raised " << GetLabel();
+//	  LOGERR(a.str());
+#endif
 
 }
 
@@ -363,10 +373,10 @@ void    CxWindow::SetGeometry( int top, int left, int bottom, int right )
   if(mProgramResizing)  //Only move the window, if the program is resizing it.
   {
     LOGSTAT(" Progresizing is TRUE ");
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     MoveWindow(left, top, (right-left), (bottom-top),true);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     SetSize(left,top,right-left,bottom-top);
     Refresh();
 #endif
@@ -381,12 +391,12 @@ CXGETGEOMETRIES(CxWindow)
 
 int   CxWindow::GetScreenTop()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       RECT windowRect;
       GetWindowRect(&windowRect);
       return ( windowRect.top );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -400,12 +410,12 @@ int   CxWindow::GetScreenTop()
 }
 int   CxWindow::GetScreenLeft()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       RECT windowRect;
       GetWindowRect(&windowRect);
       return ( windowRect.left );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       wxRect windowRect, parentRect;
       windowRect = GetRect();
       wxWindow* parent = GetParent();
@@ -429,12 +439,12 @@ void    CxWindow::SetDefaultButton( CxButton * inButton )
 void CxWindow::Hide()
 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CFrameWnd::ShowWindow(SW_HIDE);
     if (mParentWnd)
             mParentWnd->EnableWindow(true); //Re-enable the parent.
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
    wxDELETE( m_wxWinDisabler );
    Show(false);
 //    if (mParentWnd)
@@ -450,7 +460,35 @@ void CxWindow::Hide()
 // CxWindow
 
 
-#ifdef __CR_WIN__
+//void CxWindow::SetFocus() {
+//	ostringstream a;
+//	a << (int) this << " setFocus called on "  << GetLabel();
+//	LOGERR(a.str());
+//	wxWindow::SetFocus();
+//}
+
+#ifdef CRY_USEWX	
+void CxWindow::OnSetFocus(wxFocusEvent& e) {
+    
+//    ostringstream a;
+//	a << (int) this << " getting focus from "  << (int) e.GetWindow() << " " << e.GetWindow()->GetLabel();
+//	LOGERR(a.str());
+	e.Skip();
+   ((CrWindow*)ptr_to_crObject)->CheckFocus();  //Sometimes focus goes to root window instead of modal dialog. Catch and fix.
+	return;
+}
+#endif
+
+//void CxWindow::TempKillFocus(wxFocusEvent& e) {
+//    ostringstream a;
+//	a << (int) this << " losing focus to " << (int) e.GetWindow() << " " << e.GetWindow()->GetLabel();
+//	LOGERR(a.str());
+//	e.Skip();
+//	return;
+//}
+
+
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
     ON_WM_CLOSE()
     ON_WM_SIZE()
@@ -467,7 +505,7 @@ BEGIN_MESSAGE_MAP(CxWindow, CFrameWnd)
     ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Map
 BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_CLOSE( CxWindow::OnCloseWindow )
@@ -482,16 +520,18 @@ BEGIN_EVENT_TABLE(CxWindow, wxFrame)
       EVT_COMMAND_RANGE(kToolButtonBase, kToolButtonBase+5000,
                         wxEVT_COMMAND_MENU_SELECTED,
                         CxWindow::OnToolSelected)
-#ifdef DEPRECATED__BOTHWX__
+#ifdef DEPRECATEDCRY_USEWX
 	  EVT_MENU_HIGHLIGHT_ALL(CxWindow::OnHighlightMenuItem)
 #endif
 	  EVT_KEY_DOWN( CxWindow::OnKeyDown )
+	  EVT_SET_FOCUS( CxWindow::OnSetFocus)
+//	  EVT_KILL_FOCUS( CxWindow::TempKillFocus)
 END_EVENT_TABLE()
 #endif
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnUpdateMenuItem(CCmdUI* pCmdUI)
 {
     CcMenuItem* theItem = CrMenu::FindMenuItem(pCmdUI->m_nID);
@@ -513,7 +553,7 @@ void CxWindow::OnUpdateTools(CCmdUI* pCmdUI)
             pCmdUI->Enable(false);
 }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
 {
     CcMenuItem* theItem = CrMenu::FindMenuItem(pCmdUI.GetId());
@@ -525,7 +565,7 @@ void CxWindow::OnUpdateMenuItem(wxUpdateUIEvent & pCmdUI)
             pCmdUI.Enable(false);
 }
 #endif
-#ifdef DEPRECATED__BOTHWX__
+#ifdef DEPRECATEDCRY_USEWX
 void CxWindow::OnHighlightMenuItem(wxMenuEvent & event)
 {
 	if ( event.GetMenuId() == -1 ) return;
@@ -542,7 +582,7 @@ void CxWindow::OnHighlightMenuItem(wxMenuEvent & event)
 			string crysdir ( getenv("CRYSDIR") );
 			if ( crysdir.length() == 0 )
 			{
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#ifndef CRY_OSWIN32
 				std::cerr << "You must set CRYSDIR before running crystals.\n";
 #endif
 				return;
@@ -554,11 +594,10 @@ void CxWindow::OnHighlightMenuItem(wxMenuEvent & event)
 			{
 				string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
 				i++;
-#if defined(__WXGTK__) || defined(__WXMAC__)
-				string file = dir + "script/" + theItem->name + ".html";
-#endif
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
 				string file = dir + "script\\" + theItem->name + ".html";
+#else
+				string file = dir + "script/" + theItem->name + ".html";
 #endif
 				struct stat buf;
 				if ( stat(file.c_str(),&buf)==0 )
@@ -586,7 +625,7 @@ void CxWindow::OnHighlightMenuItem(wxMenuEvent & event)
 /////////////////////////////////////////////////////////////////////////////
 // CxWindow message handlers
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnClose()
 {
     ((CrWindow*)ptr_to_crObject)->CloseWindow();
@@ -596,7 +635,7 @@ void CxWindow::OnClose()
 //  CFrameWnd::OnClose();
 }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::OnCloseWindow(wxCloseEvent & event)
 {
 
@@ -614,7 +653,7 @@ void CxWindow::OnCloseWindow(wxCloseEvent & event)
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnSize(UINT nType, int cx, int cy)
 {
     ostringstream strm;
@@ -626,7 +665,7 @@ void CxWindow::OnSize(UINT nType, int cx, int cy)
     ((CrWindow*)ptr_to_crObject)->ResizeWindow( cx, cy );
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::OnSize(wxSizeEvent & event)
 {
       ostringstream strm;
@@ -640,7 +679,7 @@ void CxWindow::OnSize(wxSizeEvent & event)
     mProgramResizing = true;
 }
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::OnIconize(wxIconizeEvent & event) 
 {
 	if ( ! event.IsIconized() ) {
@@ -651,7 +690,7 @@ void CxWindow::OnIconize(wxIconizeEvent & event)
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnGetMinMaxInfo(MINMAXINFO FAR* lpMMI)
 {
     int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
@@ -674,28 +713,28 @@ CXONCHAR(CxWindow)
 void CxWindow::Focus()
 {
 //  ostringstream strm;
-//  strm << "CxWindow Focussed. Addr = " << (long)this;
+//  strm << "CxWindow Focussed. Addr = " << (long)this <<" " << GetLabel();
 //  LOGERR ( strm.str() );
   SetFocus();
 }
 
 void CxWindow::SetMainMenu(CxMenuBar * menu)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       int i = (int)SetMenu(menu);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       SetMenuBar( menu );
 #endif
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnMenuSelected(UINT nID)
 {
  //   LOGSTAT("Menu Selected: ID: " + string((int) nID ));
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::OnMenuSelected(wxCommandEvent & event)
 {
       int nID = event.GetId();
@@ -705,12 +744,12 @@ void CxWindow::OnMenuSelected(wxCommandEvent & event)
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnToolSelected(UINT nID)
 {
     TRACE("Tool ID %d\n", nID);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::OnToolSelected(wxCommandEvent & event)
 {
       int nID = event.GetId();
@@ -721,7 +760,7 @@ void CxWindow::OnToolSelected(wxCommandEvent & event)
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxWindow::PreCreateWindow(CREATESTRUCT& cs)
 {
 //  cs.style |= (WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
@@ -808,7 +847,7 @@ LRESULT CxWindow::OnMyNcPaint(WPARAM wParam, LPARAM lParam)
 
 void CxWindow::AdjustSize(CcRect * size)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int cH = GetSystemMetrics(SM_CYCAPTION);
     int bT = GetSystemMetrics(SM_CXSIZEFRAME); //I think this is the maximum from SM_CXBORDER, SM_CXEDGE, SM_CXDLGFRAME...
     int mN = ( GetMenu() != NULL ) ? GetSystemMetrics(SM_CYMENU) : 0; //Height of the menu, if there is one. Otherwise zero.
@@ -816,7 +855,7 @@ void CxWindow::AdjustSize(CcRect * size)
     size->mRight  = size->Right()  + (2*bT);
     size->mBottom = size->Bottom() + ((2*bT)+cH+mN);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 // The system metrics aren't implemented yet!
 //       int mN = ( GetMenuBar() ) ? 20 : 0;
 //       int cH = 15;
@@ -843,7 +882,7 @@ void CxWindow::AdjustSize(CcRect * size)
     return;
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
       int key = -1;
@@ -901,7 +940,7 @@ void CxWindow::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
       CWnd::OnKeyDown( nChar, nRepCnt, nFlags );
 }
 #endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnKeyUp ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
       int key = -1;
@@ -948,7 +987,7 @@ void CxWindow::OnKeyUp ( UINT nChar, UINT nRepCnt, UINT nFlags )
 }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxWindow::OnKeyDown( wxKeyEvent & event )
 {
       int key = -1;
@@ -997,20 +1036,20 @@ void CxWindow::OnKeyDown( wxKeyEvent & event )
 
 void CxWindow::Redraw()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   Invalidate();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   Refresh();
 #endif
 }
 
 void CxWindow::CxEnable(bool enable)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   EnableWindow(enable);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   Enable(enable);
 #endif
 }
@@ -1018,7 +1057,7 @@ void CxWindow::CxEnable(bool enable)
 
 void CxWindow::CxSetTimer()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   if ( m_TimerActive )
   {
     LOGERR ( "Timer called more than once." );
@@ -1028,7 +1067,7 @@ void CxWindow::CxSetTimer()
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxWindow::OnTimer(UINT nID)
 {
   ((CrWindow*)ptr_to_crObject)->TimerFired();

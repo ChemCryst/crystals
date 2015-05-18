@@ -57,34 +57,26 @@
 #include    "crguielement.h"
 #include    "ccpoint.h"
 
-//#ifdef __POWERPC__
-//class LStdChart;
-//#endif
-
-#ifdef __MOTO__
-#include    <LStdControl.h>
-#endif
-
-#ifdef __BOTHWX__
-#include <wx/control.h>
-#include <wx/colour.h>
-#include <wx/bitmap.h>
-#include <wx/dcmemory.h>
-#define BASECHART wxControl
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASECHART CWnd
+#else
+ #include <wx/control.h>
+ #include <wx/colour.h>
+ #include <wx/bitmap.h>
+ #include <wx/dcmemory.h>
+ #define BASECHART wxControl
 // These macros are being defined somewhere. They shouldn't be.
 
-#ifdef GetCharWidth
- #undef GetCharWidth
-#endif
-#ifdef DrawText
- #undef DrawText
-#endif
+ #ifdef GetCharWidth
+  #undef GetCharWidth
+ #endif
+ #ifdef DrawText
+  #undef DrawText
+ #endif
+
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASECHART CWnd
-#endif
 
 #include "ccrect.h"
 
@@ -148,7 +140,7 @@ private:
         CcRect m_client;
 
 // Private machine specific parts:
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       public:
         COLORREF mfgcolour;
         CBitmap *oldMemDCBitmap, *newMemDCBitmap;
@@ -161,8 +153,7 @@ private:
         afx_msg void OnMouseMove( UINT nFlags, CPoint point );
         afx_msg void OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags );
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
       public:
             wxColour mfgcolour;
             wxBitmap *oldMemDCBitmap, *newMemDCBitmap;

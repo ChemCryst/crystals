@@ -119,7 +119,8 @@ class   CrWindow : public CrGUIElement
     void ToolSelected(int id);
     void SendCommand(const string & theText, bool jumpQueue = false);
     void TimerFired();
-
+	void CheckFocus();
+	
 // attributes
     CrGrid *    mGridPtr;
     list<CrGUIElement*>    mTabGroup;

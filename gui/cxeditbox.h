@@ -50,15 +50,14 @@ class LEditField;
 #include    <LEditField.h>;
 #endif
 
-#ifdef __BOTHWX__
-#include <wx/textctrl.h>
-#define BASEEDITBOX wxTextCtrl
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEEDITBOX CEdit
+#else
+ #include <wx/textctrl.h>
+ #define BASEEDITBOX wxTextCtrl
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEEDITBOX CEdit
-#endif
 
 class CrEditBox;
 class CxGrid;
@@ -115,16 +114,15 @@ class CxEditBox : public BASEEDITBOX, public IInputControl
 		string mPreviousText;
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-            afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+        afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-            void OnChar(wxKeyEvent & event);
-            void OnKeyDown(wxKeyEvent & event);
-			void OnKeyUp( wxKeyEvent & event );
-            DECLARE_EVENT_TABLE()
+#else
+        void OnChar(wxKeyEvent & event);
+        void OnKeyDown(wxKeyEvent & event);
+		void OnKeyUp( wxKeyEvent & event );
+        DECLARE_EVENT_TABLE()
 #endif
 
 

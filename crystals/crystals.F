@@ -45,14 +45,17 @@ C Added changelog to top of file
 C
 C
 CODE FOR CRYSTL
-C      winapp 500000,1000000
-#if defined(_GID_) || defined(_WXS_) 
-      SUBROUTINE CRYSTL
-#elif defined(_GIL_)  || defined(_MAC_) || defined (_INW_)
-      SUBROUTINE CRYSTL
-#else 
-      PROGRAM CRYSTL
+C Entry point for GUI C++ routines.
+#ifdef CRY_FORTDIGITAL
+      SUBROUTINE CRYSTL()
+#else
+      SUBROUTINE CRYSTL() bind (c)
 #endif
+      CALL CRYSTAL()
+      END
+
+C Entry point for command line and library use.
+      SUBROUTINE CRYSTAL()
 C
 C
 C     ******************************************************
@@ -72,10 +75,6 @@ C--
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'TSSCHR.INC'
-#if defined(_PPC_) 
-      CHARACTER*40 theText
-C
-#endif
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -99,7 +98,7 @@ C
 C -- DECLARE LIST 11 REFERENCES TO RESERVE EXTENSIBLE COMMON
 C
       EXTERNAL XFAL11,KADD11,XIN11
-#if defined(_DOS_) 
+#ifdef _DOS_ 
       EXTERNAL MYDRIV
 C
 C -- SET UP AVAILABLE PROGRAM LIST.
@@ -147,7 +146,7 @@ C
 #else
       DATA PROGLS(1,1)  / 4HCRYS / , PROGLS(2,1)  / 4HTALS /
 #endif
-#if defined(_HOL_) 
+#ifdef _HOL_ 
       DATA PROGLS(3,1)  / 4HINPU / , PROGLS(4,1)  / 4HT    /
       DATA PROGLS(1,2)  / 4HCRYS / , PROGLS(2,2)  / 4HTALS /
       DATA PROGLS(3,2)  / 4HFIDD / , PROGLS(4,2)  / 4HLE   /
@@ -190,15 +189,7 @@ C Re-initialise system variables in case starting again.
 C
 C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
       CALL FBCINI
-#if defined(_PPC_) 
-      CALL envini
-      CALL cabout
-      DISKOP = 0
-      GLSTOP = 0
-C
-cnov98 - disable argument type checking
-#endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
       call suppress_argument_type_checks@
 #endif
       CALL STCTLC
@@ -206,14 +197,12 @@ C
 C -- ASSIGN AND OPEN STARTUP CONTROL FILE - CSSCST AND LSSCST
 C    ARE SET IN BLOCK DATA IN PRESETS. THE LOGICAL NAME MAT BE
 C    EXPANDED
-#if !defined(_PPC_) 
       CALL MTRNLG ( CSSCST, 'OLD', LSSCST)
 C----- ALTERNATIVELY, THAY CAN BE SET HERE
 C      CSSCST = '\CRYSTALS\SRT\CRYSTALS.SRT'
 C      LSSCST =  26
 C
-#endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
 C----- HOOK IN THE SALFORD DOS DRIVER TO COUNT LINES
 CWIN_32&DOS      OPEN ( NCVDU, STATUS = 'UNKNOWN', DRIVER = MYDRIV)
 C
@@ -315,13 +304,4 @@ C
 9990  CONTINUE
 C      STOP 'CRYSTALS START ERROR'
       CALL GUEXIT (2004)
-#if defined(_PPC_) 
-CS***
-9999  CONTINUE
-CE***
-#endif
       END
-#if defined(_PPC_) 
-C
-
-#endif

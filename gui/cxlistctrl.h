@@ -11,15 +11,13 @@
 #define     __CxListCtrl_H__
 #include    "crguielement.h"
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASELISTCTRL CListCtrl
-#endif
-
-#ifdef __BOTHWX__
-#include <wx/listctrl.h>
-#include <wx/event.h>
-#define BASELISTCTRL wxListCtrl
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASELISTCTRL CListCtrl
+#else
+ #include <wx/listctrl.h>
+ #include <wx/event.h>
+ #define BASELISTCTRL wxListCtrl
 #endif
 
 #include <string>
@@ -68,7 +66,7 @@ class CxListCtrl : public BASELISTCTRL
         void RepaintSelectedItems();
         int SetHighlightType(EHighlight hilite);
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
         afx_msg void OnKillFocus(CWnd* pNewWnd);
         afx_msg void OnSetFocus(CWnd* pOldWnd);
@@ -82,8 +80,7 @@ class CxListCtrl : public BASELISTCTRL
 
         DECLARE_MESSAGE_MAP()
 
-#endif
-#ifdef __BOTHWX__
+#else
     void OnChar(wxKeyEvent & event );
     DECLARE_EVENT_TABLE()
 #endif

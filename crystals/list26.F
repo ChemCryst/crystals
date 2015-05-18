@@ -324,7 +324,7 @@ C
 C
       DATA IVERSN /404/
 C
-#if defined(_HOL_) 
+#ifdef _HOL_ 
       DATA DIST(1)/4Hdist/,DIST(2)/4Hance/,DIST(3)/4Hs   /
       DATA ANGLE(1)/4H ang/,ANGLE(2)/4Hles /,ANGLE(3)/4H    /
       DATA MSD(1)/4H M.S/,MSD(2)/4H.D.'/,MSD(3)/4Hs   /

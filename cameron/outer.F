@@ -768,7 +768,7 @@ C   Clear the status line
 C    Clear buffer
                CHRBUF = ' '
 C    Clear the input box.
-#if !defined(_GID_) 
+#if !defined(__GID__) 
                IF(.NOT.LCLOSE)CALL ZMNINP
 #endif
             ENDIF
@@ -1166,21 +1166,10 @@ C CONVERT TO UPPERCASE FOR ANALYSIS
             CALL XCTRIM(CC,IIILEN)
             IF(IIILEN.GT.1) THEN
 
-#if defined(_GID_) || defined(_GIL_) || defined(_MAC_)
-
+#ifdef CRY_GUI
               CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
      1 CC(1:IIILEN) // '''',0)
-
-#endif
-
-#if defined(_WXS_) || defined(_INW_)
-
-              CALL ZMORE('^^CO SET TEXTINPUT APPEND='' '//
-     1 CC(1:IIILEN) // '''',0)
-
-#endif
-
-#if defined(_DOS_)
+#else
               CALL ZMORE('Append atom '//CC(1:IIILEN),0)
 #endif
             ENDIF

@@ -661,7 +661,7 @@ c     1              JY, 100.0)
 c               !deallocate(ref)
 
 c L D L^t inversion + preconditioning
-#ifdef _DIGITALF77_
+#ifdef CRY_FORTDIGITAL
 c stupid compiler has a stack overflow by making a temporary array 
                call LDLT_inversion(
      1             STR11(L11C), JY, info)
@@ -2058,7 +2058,7 @@ C
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST12.INC'
       INCLUDE 'XIOBUF.INC'
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IQUEST /4H????/
 #else
       DATA IQUEST /'????'/
@@ -2440,7 +2440,7 @@ C
       DATA IVERSN / 301/
 C
 C---- CARBON
-#if defined (_HOL_)
+#ifdef _HOL_
       data JCARB/4HC   /
 #else
       data JCARB/'C   '/

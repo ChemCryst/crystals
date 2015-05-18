@@ -41,10 +41,10 @@ int CxStretch::mStretchCount = kStretchBase;
 CxStretch *    CxStretch::CreateCxStretch( CrStretch * container, CxGrid * guiParent )
 {
     CxStretch  *theStretch = new CxStretch( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     theStretch->Create(NULL,"Stretch", WS_CHILD| WS_VISIBLE, CRect(0,0,20,20), guiParent, mStretchCount++, NULL);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     theStretch->Create(guiParent,-1,wxPoint(0,0),wxSize(20,20));
 #endif
     return theStretch;
@@ -60,21 +60,21 @@ CxStretch::~CxStretch() { }
 
 void CxStretch::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxStretch, CWnd)
     ON_WM_CHAR()
     ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Table
 BEGIN_EVENT_TABLE(CxStretch, wxWindow)
       EVT_CHAR( CxStretch::OnChar )
@@ -91,7 +91,7 @@ int CxStretch::GetIdealWidth()  { return EMPTY_CELL; }
 
 int CxStretch::GetIdealHeight() { return EMPTY_CELL; }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxStretch::OnEraseBkgnd(CDC* pDC)
 {
 

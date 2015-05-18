@@ -21,20 +21,20 @@
 
 #include "ccthreadingexceptions.h"
 
-#if defined(__BOTHWX__)
-#include <wx/thread.h>
-
-enum
-{
-	kMaxSemaphoreCount = 0,
-	kSemaphoreWaitInfinatly = 0xFFFFFFFF
-};
-#else
-enum
-{
+#ifdef CRY_USEMFC
+ enum
+ {
 	kMaxSemaphoreCount = 99999,
 	kSemaphoreWaitInfinatly = INFINITE
-};
+ };
+#else
+ #include <wx/thread.h>
+
+ enum
+ {
+	kMaxSemaphoreCount = 0,
+	kSemaphoreWaitInfinatly = 0xFFFFFFFF
+ };
 #endif
 
 using namespace std;
@@ -42,10 +42,10 @@ using namespace std;
 class CcSemaphore
 {
 	private:
-		#if defined(__BOTHWX__)
-			wxSemaphore iSemaphore;
-		#else
+		#ifdef CRY_USEMFC
 			HANDLE iSemaphore;
+		#else
+			wxSemaphore iSemaphore;
 		#endif
 	public:
 		/* Creates a semaphore which will allow you to 

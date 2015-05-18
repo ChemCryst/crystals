@@ -138,8 +138,8 @@
 #include    <string>
 #include    <sstream>
 
-#ifdef __BOTHWX__
-#include <wx/thread.h>
+#ifdef CRY_USEWX
+ #include <wx/thread.h>
 #endif
 
 // set the graph type

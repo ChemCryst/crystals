@@ -32,14 +32,12 @@
 #define     __CxRadioButton_H__
 #include    "crguielement.h"
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASERADIOBUTTON CButton
-#endif
-
-#ifdef __BOTHWX__
-#include <wx/radiobut.h>
-#define BASERADIOBUTTON wxRadioButton
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASERADIOBUTTON CButton
+#else
+ #include <wx/radiobut.h>
+ #define BASERADIOBUTTON wxRadioButton
 #endif
 
 class CrRadioButton;
@@ -81,17 +79,16 @@ class CxRadioButton : public BASERADIOBUTTON
 
 // The private platform specific parts.
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       public:
         afx_msg void ButtonChanged();
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-            void ButtonChanged(wxCommandEvent& e);
-            void OnChar(wxKeyEvent & event );
-            DECLARE_EVENT_TABLE()
+#else
+        void ButtonChanged(wxCommandEvent& e);
+        void OnChar(wxKeyEvent & event );
+        DECLARE_EVENT_TABLE()
 #endif
 
 

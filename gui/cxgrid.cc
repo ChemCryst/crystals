@@ -68,7 +68,7 @@ using namespace std;
 #include    "cxgrid.h"
 #include    "crgrid.h"
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <wx/settings.h>
 #endif
 
@@ -79,7 +79,7 @@ int     CxGrid::mGridCount = kGridBase;
 CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
 {
   CxGrid  *theGrid = new CxGrid( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_ARROW);
     CBrush cBrush;
     cBrush.CreateSolidBrush(RGB(255,0,0));
@@ -105,9 +105,7 @@ CxGrid *    CxGrid::CreateCxGrid( CrGrid * container, CxGrid * guiParent )
   {
         theGrid->SetFont(CcController::mp_font);
   }
-#endif
-
-#ifdef __BOTHWX__
+#else
   theGrid->Create(guiParent,-1,wxPoint(0,0),wxSize(10,10),wxWANTS_CHARS); //wxTRANSPARENT_WINDOW);
 //  theGrid->Show(true);
   mGridCount++;
@@ -128,10 +126,9 @@ CxGrid::~CxGrid()
 
 void CxGrid::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
-#endif
-#ifdef __BOTHWX__
+#else
 Destroy();
 #endif
 }
@@ -141,13 +138,12 @@ void    CxGrid::SetText( const string & text )
     NOTUSED(text);
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxGrid, CWnd)
     ON_WM_ERASEBKGND()
     ON_WM_CHAR()
 END_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
 //wx Message Table
 BEGIN_EVENT_TABLE(CxGrid, wxWindow)
       EVT_CHAR( CxGrid::OnChar )
@@ -162,7 +158,7 @@ CXSETGEOMETRY(CxGrid)
 CXGETGEOMETRIES(CxGrid)
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxGrid::OnSize(wxSizeEvent & event)
 {
       ostringstream strm;
@@ -187,7 +183,7 @@ int CxGrid::GetIdealHeight()
 
 void CxGrid::CxShowWindow(bool state)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   if (state)
   {
      ShowWindow(SW_SHOW);
@@ -198,13 +194,12 @@ void CxGrid::CxShowWindow(bool state)
      ShowWindow(SW_HIDE);
      UpdateWindow();
   }
-#endif
-#ifdef __BOTHWX__
+#else
       Show(state);
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxGrid::OnEraseBkgnd(CDC* pDC)
 {
 

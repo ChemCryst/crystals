@@ -19,7 +19,7 @@
 #define     __CrWeb_H__
 #include    "crguielement.h"
 
-#ifdef DEPRECATED__BOTHWX__
+#ifdef DEPRECATEDCRY_USEWX
 
 
 class   CrWeb : public CrGUIElement

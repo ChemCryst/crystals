@@ -401,7 +401,7 @@ C      EQUIVALENCE ( BLANK , IB )
 C
 C
       DATA NXA/9/,LXA/1/
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KMOUSE/1HM ,1HO ,1HU ,1HS ,1HE /
       DATA KCONT/1HC ,1HO ,1HN ,1HT /
       DATA KALL/1HA ,1HL ,1HL /
@@ -506,7 +506,7 @@ C----- LOOK FOR BLANK AFTER 'ALL'
               CALL XFILL (IB, IMAGE(J), 80-J+1)
               CALL XMOVEI ( IMAGE, LCMAGE, 80)
               NMOUSE = 0
-#if !defined(_DVF_) && !defined(_GID_) && !defined(_LIN_) && !defined(_WXS_) && !defined(_INW_)
+#ifdef _DOS_
              CALL XRDMSE (CMOUSE, NMOUSE)
 #endif
               IMOUSE = 1
@@ -935,7 +935,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
-#if defined(_HOL_) 
+#ifdef _HOL_ 
       DATA NOPS/1/,LOPS/1/,IOPS(1)/4HUNTI/
 #else
       DATA NOPS/1/,LOPS/1/,IOPS(1)/'UNTI'/
@@ -1380,7 +1380,7 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD /4HH   /
       DATA KDET /4HD   /
 #else
@@ -1948,7 +1948,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
-#if defined(_HOL_) 
+#ifdef _HOL_ 
       DATA IOPS(1)/4HUNTI/,NOPS/1/,LOPS/1/,NWOPS/1/
 #else
       DATA IOPS(1)/'UNTI'/,NOPS/1/,LOPS/1/,NWOPS/1/

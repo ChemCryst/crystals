@@ -30,16 +30,15 @@
 #include    <string>
 using namespace std;
 
-#ifdef __BOTHWX__
-#include <wx/gauge.h>
-#include <wx/stattext.h>
-#define BASEPROGRESS wxGauge
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEPROGRESS CProgressCtrl
+#else
+ #include <wx/gauge.h>
+ #include <wx/stattext.h>
+ #define BASEPROGRESS wxGauge
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEPROGRESS CProgressCtrl
-#endif
 
 class CrProgress;
 class CxGrid;
@@ -79,11 +78,10 @@ class CxProgress : public BASEPROGRESS
         static int  mProgressCount;
         int mCharsWidth;
 private:
-#ifdef __CR_WIN__
-            CStatic* m_TextOverlay;
-#endif
-#ifdef __BOTHWX__
-            wxStaticText* m_TextOverlay;
+#ifdef CRY_USEMFC
+        CStatic* m_TextOverlay;
+#else
+        wxStaticText* m_TextOverlay;
 #endif
 
 };

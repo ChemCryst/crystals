@@ -56,7 +56,7 @@ using namespace std;
 #include    "crprogress.h"
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 // These macros are being defined somewhere. They shouldn't be.
 
 #ifdef GetCharWidth
@@ -70,11 +70,10 @@ int CxProgress::mProgressCount = kProgressBase;
 CxProgress *    CxProgress::CreateCxProgress( CrProgress * container, CxGrid * guiParent )
 {
     CxProgress  *theProgress = new CxProgress( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     theProgress->Create( WS_CHILD|WS_VISIBLE,CRect(0,0,20,20),guiParent,mProgressCount++);
     theProgress->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
       theProgress->Create( guiParent, -1, 100, wxPoint(0,0), wxSize(10,10));
 #endif
     return theProgress;
@@ -94,11 +93,10 @@ CxProgress::~CxProgress()
     RemoveProgress();
     if(m_TextOverlay != nil)
     {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         m_TextOverlay->DestroyWindow();
         delete m_TextOverlay;
-#endif
-#ifdef __WXMSW__
+#else
         m_TextOverlay->Destroy();
 #endif
     }
@@ -106,10 +104,10 @@ CxProgress::~CxProgress()
 
 void CxProgress::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
@@ -122,24 +120,20 @@ void    CxProgress::SetText( const string & text )
 // Every time we're told to set the progress, we destroy to textoverlay. Simple.
     if(m_TextOverlay == nil)
     {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         m_TextOverlay = new CStatic();
         CRect rectangle;
         GetClientRect(&rectangle);
         m_TextOverlay->Create( text.c_str(), WS_VISIBLE|WS_CHILD, rectangle, this, 54999) ;
         m_TextOverlay->SetFont(CcController::mp_font);
-#endif
-#ifdef ___WXMSW__
+	}
+    else
+        m_TextOverlay->SetWindowText(text.c_str());
+#else
         m_TextOverlay = new wxStaticText();
 //        cerr << "Creating new static text overlay for the Progress Bar.\n";
         m_TextOverlay->Create( (wxWindow*)this, -1, text.c_str(), wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
-#endif
     }
-#ifdef __CR_WIN__
-    else
-        m_TextOverlay->SetWindowText(text.c_str());
-#endif
-#ifdef ___WXMSW__
     else
         m_TextOverlay->SetLabel(text.c_str());
 #endif
@@ -148,7 +142,7 @@ void    CxProgress::SetText( const string & text )
 
 void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
 { 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     MoveWindow(left,top,right-left,bottom-top,true);
     if(m_TextOverlay != nil)
     {
@@ -156,15 +150,13 @@ void    CxProgress::SetGeometry( int top, int left, int bottom, int right )
         GetClientRect(&rectangle);
         m_TextOverlay->MoveWindow(rectangle) ;
     }
-#endif
-#ifdef __WXMSW__
+#elif defined CRY_OSWIN32
     SetSize(left,top,right-left,bottom-top);
     if(m_TextOverlay != nil)
     {
         m_TextOverlay->SetSize( GetRect() ) ;
     }
-#endif
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#else
     SetSize(left,top,right-left,bottom-top);
 #endif
 }
@@ -174,7 +166,7 @@ CXGETGEOMETRIES(CxProgress)
 
 int CxProgress::GetIdealWidth()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       CClientDC cdc(this);    //Get the device context for this window (edit box).
     CFont* oldFont = cdc.SelectObject(CcController::mp_font); //Select the standard font into the device context, save the old one for later.
     TEXTMETRIC textMetric;
@@ -182,7 +174,7 @@ int CxProgress::GetIdealWidth()
     cdc.SelectObject(oldFont);         //Select the old font back into the DC.
     return mCharsWidth * textMetric.tmAveCharWidth;  //Work out the ideal width.
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       return mCharsWidth * GetCharWidth();
 #endif
 }
@@ -190,7 +182,7 @@ int CxProgress::GetIdealWidth()
 
 int CxProgress::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       CString text;
     SIZE size;
     CClientDC dc(this);
@@ -200,7 +192,7 @@ int CxProgress::GetIdealHeight()
     dc.SelectObject(oldFont);
     return ( size.cy + 5);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       return GetCharHeight() + 5;
 #endif
 
@@ -223,20 +215,18 @@ void CxProgress::SetProgress(int complete)
 {
     if(m_TextOverlay != nil)
     {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         m_TextOverlay->DestroyWindow();
         delete m_TextOverlay;
-#endif
-#ifdef ___WXMSW__
+#else
         m_TextOverlay->Destroy();
 #endif
         m_TextOverlay = nil;
     }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetPos ( complete );
-#endif
-#ifdef __BOTHWX__
+#else
       SetValue( complete );
 #endif
 }
@@ -249,12 +239,11 @@ void CxProgress::SwitchText ( const string & text )
             {
                   if ( m_TextOverlay )
                   {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                         CString temp;
                         m_TextOverlay->GetWindowText(temp);
                         m_oldText = (LPCTSTR) temp;
-#endif
-#ifdef ___WXMSW__
+#else
                         m_oldText = string( m_TextOverlay->GetLabel() );
 #endif
 

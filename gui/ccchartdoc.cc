@@ -101,8 +101,8 @@
 #include   <list>
 using namespace std;
 
-#ifdef __BOTHWX__
-#include <wx/thread.h>
+#ifdef CRY_USEWX
+ #include <wx/thread.h>
 #endif
 
 list<CcChartDoc*> CcChartDoc::sm_ChartDocList;
@@ -520,7 +520,11 @@ void CcChartDoc::FastText( const int &x, const int &y,
       }
       else
       {
-         yoffs = - ((double) fs) * 4;
+#ifdef CRY_USEWX
+         yoffs = - ((double) fs) * 13.333;
+#else
+         yoffs = - ((double) fs) * 4.0;
+#endif
          xoffs = yoffs * 10;
          item->Init(x, y, x+xoffs, y+yoffs, text , false );
       }
@@ -666,7 +670,7 @@ void FORCALL (fastclear) ( )
 
 void FORCALL(fastshow) ( )
 {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       ::wxMutexGuiEnter();
 #endif
       m_thread_critical_section.Enter();
@@ -677,7 +681,7 @@ void FORCALL(fastshow) ( )
 			m_thread_critical_section.Leave();
 	  }
       m_thread_critical_section.Leave();
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       ::wxMutexGuiLeave();
 #endif
 }

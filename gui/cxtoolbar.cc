@@ -128,14 +128,14 @@
 #include    "cxgrid.h"
 #include    "cccontroller.h"
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <wx/settings.h>
 #include <iostream>
 #include <sys/stat.h>
 #endif
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 BEGIN_EVENT_TABLE(mywxToolBar, wxToolBar)
       EVT_CHAR( mywxToolBar::OnChar )
 END_EVENT_TABLE()
@@ -158,7 +158,7 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
     CxToolBar *theCxToolBar = new CxToolBar( container );
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     theCxToolBar->EnableToolTips(TRUE);
     theCxToolBar->Create(NULL, NULL, WS_CHILD| WS_VISIBLE, CRect(0,0,5,5), guiParent, ++mToolBarCount);
     theCxToolBar->SetFont(CcController::mp_font);
@@ -166,7 +166,7 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
     theCxToolBar->m_ToolBar->Create(WS_CHILD| WS_VISIBLE|TBSTYLE_FLAT|CCS_NODIVIDER|TBSTYLE_TOOLTIPS, CRect(0,0,5,5), theCxToolBar, mToolBarCount);
     theCxToolBar->m_ToolBar->SetFont(CcController::mp_font);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     theCxToolBar->Create(guiParent,-1);
 //    theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount,wxDefaultPosition,wxDefaultSize,wxTB_FLAT|wxTB_TEXT|wxTB_NODIVIDER|wxTB_TOP);
     theCxToolBar->m_ToolBar->Create(theCxToolBar, ++mToolBarCount,wxDefaultPosition,wxDefaultSize,wxTB_FLAT|wxTB_NODIVIDER|wxTB_TOP);
@@ -180,12 +180,12 @@ CxToolBar::CxToolBar( CrToolBar * container )
       : BASETOOLBAR()
 {
     ptr_to_crObject = container;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_ImageList = new CImageList();
     m_ImageList->Create(16,15,ILC_COLOR24|ILC_MASK,0,2);
     m_ToolBar = new CToolBarCtrl();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_ToolBar = new mywxToolBar();
     m_totWidth = 5;
 #endif
@@ -195,22 +195,22 @@ CxToolBar::CxToolBar( CrToolBar * container )
 CxToolBar::~CxToolBar()
 {
   mToolBarCount--;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   delete m_ImageList;
   m_ToolBar->DestroyWindow();
   delete m_ToolBar;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   m_ToolBar->Destroy();
 #endif
 }
 
 void CxToolBar::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
@@ -222,7 +222,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //  LOGERR("Adding something");
   if ( newTool->toolType == CT_SEP )
   {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     TBBUTTON sepButton;
     sepButton.idCommand = 0;
     sepButton.fsStyle = TBSTYLE_SEP;
@@ -232,7 +232,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     sepButton.dwData = 0;
     m_ToolBar->AddButtons(1,&sepButton);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_ToolBar->AddSeparator();
     m_totWidth += 8;
 #endif                    
@@ -249,7 +249,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
   if ( newTool->toolType == CT_APPICON )
   {
     string file = newTool->tImage;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     HICON hIcon = ExtractIcon( AfxGetInstanceHandle( ), file.c_str(), 0 );
     if( hIcon )
     {
@@ -258,12 +258,13 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       DestroyIcon(hIcon);
     }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxIcon mycon( file.c_str(), wxBITMAP_TYPE_ICO_RESOURCE, -1, -1 );
 //   LOGERR("Adding App icon");
     if ( mycon.Ok() )
     {
-      m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str(), newTool->tText.c_str());
+      m_ToolBar->AddCheckTool(newTool->CxID, newTool->tText.c_str(), mycon, wxNullBitmap, newTool->tText.c_str());
+//      m_ToolBar->AddTool(newTool->CxID, mycon, newTool->tText.c_str(), newTool->tText.c_str());
 //      m_ToolBar->AddTool(newTool->CxID, mycon, "Text");
       m_ToolBar->Realize();
       m_ImageIndex++;
@@ -278,14 +279,14 @@ bool    CxToolBar::AddTool( CcTool* newTool )
   }
   else
   {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CBitmap* abitmap = new CBitmap();
     HBITMAP hBmp;
 #endif
     string crysdir ( getenv("CRYSDIR") );
     if ( crysdir.length() == 0 )
     {
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#ifndef CRY_OSWIN32
 	std::cerr << "You must set CRYSDIR before running crystals.\n";
 #endif
       return false;
@@ -297,14 +298,13 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     {
       string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
       i++;
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#ifdef CRY_OSWIN32
+      string file = dir + "script\\" + newTool->tImage;
+#else
       string file = dir + "script/" + newTool->tImage;
 #endif
-#ifdef __BOTHWIN__
-      string file = dir + "script\\" + newTool->tImage;
-#endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //  	LOGERR("Adding script dir icon");
     struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
@@ -335,11 +335,15 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //          m_ToolBar->AddTool(newTool->CxID, "text", 
 			                 //mymap, wxEmptyString, 
 							 //(newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
-          m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(), 
-			                 mymap, newTool->tText.c_str(), 
-							 (newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
+            if (newTool->toggleable) {
+                m_ToolBar->AddCheckTool(newTool->CxID, newTool->tText.c_str(),
+			                 mymap, wxNullBitmap, newTool->tText.c_str());
+            } else {
+                m_ToolBar->AddCheckTool(newTool->CxID, newTool->tText.c_str(),
+                                   mymap, wxNullBitmap, newTool->tText.c_str());
+            }
 
-//		  if ( newTool->toggleable ) { 
+//		  if ( newTool->toggleable ) {
 //			ostringstream strstrm;
 //			strstrm << "Made " << (newTool->toggleable ? " toggle " : " non-toggle ") << "item: " << newTool->CxID;
 //			LOGERR(strstrm.str() );
@@ -348,7 +352,8 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 
 		  m_ToolBar->Realize();
           m_ImageIndex++;
-          m_totWidth += 23;
+            //          m_totWidth += 23;
+          m_totWidth += m_ToolBar->GetToolSize().GetWidth();
         }
       }
       else if ( i >= nEnv )
@@ -358,7 +363,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       }
     }
 #endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       hBmp = (HBITMAP)::LoadImage( NULL, file.c_str(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
       if( hBmp )
       {
@@ -390,7 +395,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 #endif
   }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   m_ToolBar->SetImageList(m_ImageList);
   TBBUTTON tbbutton;
   tbbutton.iBitmap = bitmapIndex;
@@ -410,11 +415,11 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 
 void    CxToolBar::SetGeometry( int top, int left, int bottom, int right )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       MoveWindow(left,top,right-left,bottom-top);
       m_ToolBar->MoveWindow(0,0,right-left,bottom-top);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       SetSize(left,top,right-left,bottom-top);
       m_ToolBar->SetSize(0,0,right-left,bottom-top);
 // LOGSTAT ("CxToolbar: Setting width: " + string(right-left) );
@@ -429,12 +434,12 @@ CXGETGEOMETRIES(CxToolBar)
 
 int CxToolBar::GetIdealWidth()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
    return CRMIN(1600,tbs.cx);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //   LOGSTAT ( "Toolsize = " + string ( m_ToolBar->GetToolBitmapSize().GetWidth() ) );
 //   LOGSTAT ( "Toolsep = " + string ( m_ToolBar->GetToolSeparation() ) );
 //   LOGSTAT ( "m_ImageIndex = " + string ( m_ImageIndex ) );
@@ -444,31 +449,31 @@ int CxToolBar::GetIdealWidth()
 //   LOGERR ( os.str() );
 //   return ( m_totWidth ) + 50;
 	m_ToolBar->SetSize(0, 0, wxDefaultCoord, wxDefaultCoord);
-	return m_ToolBar->GetSize().x;
+	return m_ToolBar->GetSize().GetWidth();
 #endif
 }
 
 int CxToolBar::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    SIZE tbs;
    m_ToolBar->GetMaxSize(&tbs);
    return CRMIN(200,tbs.cy+2);
 #endif
-#ifdef __BOTHWX__
-     return m_ToolBar->GetSize().y;
+#ifdef CRY_USEWX
+     return m_ToolBar->GetSize().GetHeight();
 //   return 15 + 10;
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxToolBar, BASETOOLBAR)
     ON_COMMAND_RANGE (kToolButtonBase, kToolButtonBase+5000, OnToolSelected)
     ON_NOTIFY_EX( TTN_NEEDTEXT, 0, OnToolTipNotify )
     ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Map
 BEGIN_EVENT_TABLE(CxToolBar, BASETOOLBAR)
       EVT_CHAR( CxToolBar::OnChar )
@@ -477,7 +482,7 @@ END_EVENT_TABLE()
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxToolBar::OnToolTipNotify( UINT id, NMHDR * pNMHDR, LRESULT * pResult )
 {
  // need to handle both ANSI and UNICODE versions of the message
@@ -515,7 +520,7 @@ void CxToolBar::Focus()
 CXONCHAR(CxToolBar)
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxToolBar::ReplaceBackgroundColor (CBitmap& ioBM)
 {
 // figure out how many pixels there are in the bitmap
@@ -557,19 +562,19 @@ void CxToolBar::ReplaceBackgroundColor (CBitmap& ioBM)
 
 void CxToolBar::CxEnable(bool enable, int id)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   bool invcurrent = ( m_ToolBar->IsButtonEnabled(id) == 0 );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   bool invcurrent = ! (m_ToolBar->GetToolEnabled(id));
 #endif
 
   if  ( invcurrent == enable )
   {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
      m_ToolBar->EnableButton(id, enable);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
      m_ToolBar->EnableTool(id, enable);
 #endif
   }
@@ -577,14 +582,14 @@ void CxToolBar::CxEnable(bool enable, int id)
 
 void CxToolBar::CheckTool(bool check, int id)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
  int cstate = m_ToolBar->GetState(id);
  if(check)
    m_ToolBar->SetState ( id, cstate | TBSTATE_CHECKED);
  else
    m_ToolBar->SetState ( id, cstate & ~TBSTATE_CHECKED);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
  m_ToolBar->ToggleTool(id, check);
 // ostringstream strstrm;
  //strstrm << id;
@@ -594,10 +599,10 @@ void CxToolBar::CheckTool(bool check, int id)
 
 bool CxToolBar::GetToolState(int id) {
 	bool cstate = false;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         cstate = ! (m_ToolBar->GetState(id) & TBSTATE_CHECKED);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 	cstate = ! m_ToolBar->GetToolState(id);
 #endif
 	return cstate;
@@ -605,11 +610,11 @@ bool CxToolBar::GetToolState(int id) {
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxToolBar::OnToolSelected(UINT nID)
 {
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxToolBar::OnToolSelected(wxCommandEvent & event)
 {
       int nID = event.GetId();

@@ -81,7 +81,7 @@ CrModList::~CrModList()
 {
     if ( ptr_to_cxObject != nil )
     {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         ((CxModList*)ptr_to_cxObject)->DestroyWindow();
         delete (CxModList*)ptr_to_cxObject;
 #endif

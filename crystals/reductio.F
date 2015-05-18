@@ -473,7 +473,7 @@ C
       DIMENSION JFRN(4), JFRN2(4)
       DATA CFILE / 'absences.dat' /
       DATA CFILE2/ 'histogram.dat' /
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JFRN  /1HF, 1HR, 1HN, 1H1/
       DATA JFRN2 /1HF, 1HR, 1HN, 1H2/
 #else
@@ -1119,7 +1119,7 @@ C
 C
       DATA IVERSN / 500 /
       DATA CFILE / 'mergingr.dat' /
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JFRN /1HF, 1HR, 1HN, 1H1/
 #else
       DATA JFRN /'F', 'R', 'N', '1'/

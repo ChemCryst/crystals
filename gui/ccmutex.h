@@ -16,7 +16,7 @@
 #if !defined(CcMutex_H__)
 #define CcMutex_H__
 
-#ifdef __BOTHWX__
+#ifndef CRY_USEMFC
 #include <wx/thread.h>
 #endif
 
@@ -27,7 +27,7 @@ using namespace std;
 class CcMutex
 {
 	private:
-		#if defined(__CR_WIN__)
+		#if defined(CRY_USEMFC)
 		HANDLE iMutex;
 		#else
 		wxMutex iMutex;

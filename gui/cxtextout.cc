@@ -21,7 +21,7 @@ using namespace std;
 #include    "crtextout.h"
 #include    "crgrid.h"
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <ctype.h>
 #include <wx/settings.h>
 #include <wx/cmndata.h>
@@ -38,7 +38,7 @@ using namespace std;
 #endif
 
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //#define RGB wxColour
 #endif
 
@@ -47,12 +47,12 @@ int CxTextOut::mTextOutCount = kTextOutBase;
 CxTextOut * CxTextOut::CreateCxTextOut( CrTextOut * container, CxGrid * guiParent )
 {
     CxTextOut *theMEdit = new CxTextOut (container);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     theMEdit->Create(NULL, NULL, WS_VSCROLL| WS_HSCROLL| WS_VISIBLE| WS_CHILD, CRect(0,0,10,10), guiParent, mTextOutCount++);
     theMEdit->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
     theMEdit->Init();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     theMEdit->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), wxVSCROLL|wxHSCROLL|wxSUNKEN_BORDER);
     theMEdit->Show(true);
     theMEdit->Init();
@@ -71,10 +71,10 @@ CxTextOut::CxTextOut( CrTextOut * container )
         m_bInLink = false;
 //  TRACE0( "CONSTRUCTOR : CxTextOut()\n" );
     m_pFont = NULL;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_BackCol = GetSysColor( COLOR_WINDOW );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_BackCol = wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW );
     m_pen     = new wxPen(m_BackCol,1,wxSOLID);
     m_brush   = new wxBrush(m_BackCol,wxSOLID);
@@ -90,7 +90,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
 
     // Temporary...
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_ColTable[ COLOUR_WHITE ]      = RGB( 255, 255, 255 );  //0
     m_ColTable[ COLOUR_BLACK ]      = RGB( 0, 0, 0 );
     m_ColTable[ COLOUR_BLUE ]       = RGB( 0, 0, 128 );      //2
@@ -108,7 +108,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_ColTable[ COLOUR_GREY ]       = RGB( 128, 128, 128 );
     m_ColTable[ COLOUR_LIGHTGREY ]  = RGB( 192, 192, 192 );  //15
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_ColTable[ COLOUR_WHITE ]      = wxColour( 255, 255, 255 );  //0
     m_ColTable[ COLOUR_BLACK ]      = wxColour( 0, 0, 0 );
     m_ColTable[ COLOUR_BLUE ]       = wxColour( 0, 0, 128 );      //2
@@ -126,7 +126,7 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_ColTable[ COLOUR_GREY ]       = wxColour( 128, 128, 128 );
     m_ColTable[ COLOUR_LIGHTGREY ]  = wxColour( 192, 192, 192 );  //15
 #endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_hCursor = AfxGetApp()->LoadStandardCursor( IDC_IBEAM );
 #endif
     m_Lines.reserve(m_nMaxLines);
@@ -136,14 +136,14 @@ CxTextOut::~CxTextOut()
 {
     RemoveTextOut();
 	m_Lines.clear();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if( m_pFont != NULL )
     {
         m_pFont->DeleteObject();
         delete( m_pFont );
     }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     delete m_pen;
     delete m_brush;
 #endif
@@ -151,10 +151,10 @@ CxTextOut::~CxTextOut()
 
 void CxTextOut::CxDestroyWindow()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   Destroy();
 #endif
 }
@@ -163,7 +163,7 @@ void CxTextOut::CxDestroyWindow()
 void CxTextOut::Init()
 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 #ifndef _WINNT
 //  HFONT hSysFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
     HFONT hSysFont = ( HFONT )GetStockObject( ANSI_FIXED_FONT );
@@ -193,7 +193,7 @@ void CxTextOut::Init()
 #endif
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
 
 #ifndef _WINNT
@@ -212,19 +212,19 @@ void CxTextOut::Init()
 
     // Initialize the scroll bars:
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetScrollRange( SB_VERT, 0, 0 );
     SetScrollPos( SB_VERT, 0 );
     SetScrollRange( SB_HORZ, 0, 0 );
     SetScrollPos( SB_HORZ, 0 );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     SetScrollbar( wxVERTICAL, 0, 0, 0 );
     SetScrollbar( wxHORIZONTAL, 0, 0, 0 );
 #endif
     mbOkToDraw = true;
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     SetCursor( wxCursor(wxCURSOR_IBEAM) );
 #endif
 
@@ -241,10 +241,10 @@ void  CxTextOut::ViewTop()
 {
 // Scrolls to the top of the text.
         SetHead(GetMaxViewableLines()-2);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         Invalidate();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
         if ( mbOkToDraw )  Refresh();
 #endif
 }
@@ -253,13 +253,13 @@ void  CxTextOut::Empty( )
 {
     m_Lines.clear();
         SetHead(-1);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //        m_Lines.RemoveAll();
 //        SetHead(-1);
 //        UpdateVScroll();
         Invalidate();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //        m_Lines.Clear();
 //        SetHead(-1);
 //        UpdateVScroll();
@@ -278,7 +278,7 @@ int CxTextOut::GetIdealHeight()
 
 void CxTextOut::SetIdealHeight(int nCharsHigh)
 {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       m_nFontHeight = GetCharHeight();
 #endif
       mIdealHeight = nCharsHigh * m_nFontHeight;
@@ -286,14 +286,14 @@ void CxTextOut::SetIdealHeight(int nCharsHigh)
 
 void CxTextOut::SetIdealWidth(int nCharsWide)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
         int owidth = textMetric.tmAveCharWidth;
         mIdealWidth = nCharsWide * owidth;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
         mIdealWidth = nCharsWide * this->GetCharWidth();
 #endif
 }
@@ -307,7 +307,7 @@ void CxTextOut::Focus()
     SetFocus();
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxTextOut, CWnd)
     ON_WM_CHAR()
     ON_WM_PAINT()
@@ -322,7 +322,7 @@ BEGIN_MESSAGE_MAP(CxTextOut, CWnd)
     ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Table
 BEGIN_EVENT_TABLE(CxTextOut, wxWindow)
       EVT_PAINT ( CxTextOut::OnPaint )
@@ -362,7 +362,7 @@ void CxTextOut::AddLine( const string& strLine )
 };
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::CxSetFont( LOGFONT& rFont )
 {
 
@@ -407,7 +407,7 @@ void CxTextOut::CxSetFont( LOGFONT& rFont )
 #endif
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxTextOut::CxSetFont( wxFont* rFont )
 {
 
@@ -448,11 +448,11 @@ void CxTextOut::SetBackColour( COLORREF col )
 
     // Force a repaint if we are displayed.
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if( GetSafeHwnd() )
         Invalidate();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
         if ( mbOkToDraw )
         Refresh();
 #endif
@@ -464,7 +464,7 @@ void CxTextOut::SetHead( int nPos )
     if( nPos < -1 ) nPos = -1;
     if( nPos > (int) GetLineCount() - 1 ) nPos = (int) CRMAX( GetLineCount() - 1, GetMaxViewableLines() -1 );
     m_nHead = nPos;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if( GetSafeHwnd() )
     {
         SetScrollRange( SB_VERT, GetMaxViewableLines()-1, CRMAX(GetMaxViewableLines()-1,GetLineCount()-1));
@@ -472,7 +472,7 @@ void CxTextOut::SetHead( int nPos )
         Invalidate();
     };
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     if ( mbOkToDraw )
     {
         SetScrollbar( wxVERTICAL, CRMAX(0,m_nHead+1-GetMaxViewableLines()), GetMaxViewableLines(), 
@@ -482,14 +482,14 @@ GetLineCount() );
 #endif
 };
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::OnPaint()
 {
     CPaintDC dc( this );
     CRect clientRc; GetClientRect( &clientRc );
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxTextOut::OnPaint(wxPaintEvent & event)
 {
     LOGSTAT("CxTextOut::OnPaint");
@@ -504,10 +504,10 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
 
     // Initialize colours and font:
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CFont* pOldFont = dc.SelectObject( m_pFont );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     dc.SetFont( *m_pFont );
     m_nFontHeight = dc.GetCharHeight();
 #endif
@@ -516,11 +516,11 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
     if( m_nHead != -1 )
     {
         unsigned int nRunner = (unsigned int) m_nHead;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         int nX = clientRc.left - m_nXOffset;
         int nMasterY = clientRc.bottom;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
         int nX = - m_nXOffset;
         int nMasterY = clientRc.GetHeight();
 #endif
@@ -529,11 +529,11 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
         do
         {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             dc.SetBkColor( m_BackCol );
             dc.SetTextColor( m_ColTable[ m_nDefTextCol ] );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
             dc.SetBackgroundMode( wxSOLID );
             m_brush->SetColour( m_BackCol );
             m_pen->SetColour( m_BackCol );
@@ -546,10 +546,10 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
             if ( nRunner >= GetLineCount()  )
             {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                 dc.FillSolidRect( CRect(clientRc.left,nMasterY,clientRc.right,nMasterY+m_nFontHeight), m_BackCol );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //                dc.DrawRectangle( clientRc.x,nMasterY,clientRc.width,nMasterY+m_nFontHeight );
                 dc.DrawRectangle( 0,nMasterY,clientRc.GetWidth(),nMasterY+m_nFontHeight );
 #endif
@@ -572,12 +572,12 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
 
         if( nMasterY >= 0 )
         {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             CRect solidRc = clientRc;
             solidRc.bottom = nMasterY;
             dc.FillSolidRect( &solidRc, m_BackCol );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
             wxRect solidRc = wxRect( wxPoint(0,0), clientRc );
             solidRc.height = nMasterY;
             dc.DrawRectangle( solidRc.x, solidRc.y, solidRc.width, solidRc.height );
@@ -585,13 +585,13 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
         }
     }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     else
         dc.FillSolidRect( &clientRc, m_BackCol );
 
     dc.SelectObject( pOldFont );      // Clean up:
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     else
         dc.DrawRectangle( 0, 0, clientRc.GetWidth(), clientRc.GetHeight() );
 
@@ -602,21 +602,21 @@ void CxTextOut::OnPaint(wxPaintEvent & event)
 
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxTextOut::OnEraseBkgnd( CDC* pDC )
 {
     return( TRUE ); //Reduces flickering.
 }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxTextOut::OnEraseBackground( wxEraseEvent& evt )
 {
     return;  //Reduces flickering. (Window is not erased).
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::OnVScroll( UINT nSBCode,
                             UINT nPos,
                             CScrollBar* pScrollBar )
@@ -669,7 +669,7 @@ void CxTextOut::OnVScroll( UINT nSBCode,
 }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxTextOut::OnScroll(wxScrollWinEvent & evt )
 {
         if ( !mbOkToDraw ) return;
@@ -755,7 +755,7 @@ void CxTextOut::OnScroll(wxScrollWinEvent & evt )
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::OnHScroll( UINT nSBCode,
                             UINT nPos,
                             CScrollBar* pScrollBar )
@@ -797,7 +797,7 @@ void CxTextOut::OnHScroll( UINT nSBCode,
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::OnSize(UINT nType, int cx, int cy)
 {
     CWnd ::OnSize(nType, cx, cy);
@@ -809,7 +809,7 @@ void CxTextOut::OnSize(UINT nType, int cx, int cy)
     };
 }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxTextOut::OnSize(wxSizeEvent & event)
 {
     UpdateHScroll();
@@ -818,7 +818,7 @@ void CxTextOut::OnSize(wxSizeEvent & event)
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxTextOut::OnSetCursor( CWnd* pWnd,
                               UINT nHitTest,
                               UINT message )
@@ -834,7 +834,7 @@ BOOL CxTextOut::OnSetCursor( CWnd* pWnd,
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
 
@@ -851,7 +851,7 @@ void CxTextOut::OnMouseMove( UINT nFlags, CPoint wpoint )
 }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxTextOut::OnMouseMove( wxMouseEvent & evt )
 {
 
@@ -872,11 +872,11 @@ void CxTextOut::OnMouseMove( wxMouseEvent & evt )
 bool CxTextOut::IsAHit( string & commandString, int x, int y )
 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CRect clientRc; GetClientRect( &clientRc );
         int line = m_nHead - ( ( clientRc.Height() - y ) / m_nFontHeight );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxSize clientRc = GetClientSize( );
      int line = m_nHead - ( ( clientRc.GetHeight() - y ) / m_nFontHeight );
 #endif
@@ -905,10 +905,10 @@ bool CxTextOut::IsAHit( string & commandString, int x, int y )
                 commandText = strToRender;
                 if( strToRender.length() > 0 )
                 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                     cx = strToRender.length() * m_nAvgCharWidth;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
                     GetTextExtent( strToRender.c_str(), &cx, &cy );
 #endif
                     nX += cx;
@@ -921,10 +921,10 @@ bool CxTextOut::IsAHit( string & commandString, int x, int y )
             else
             { 
                 commandText = strTemp;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                 cx = strTemp.length() * m_nAvgCharWidth;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
                 GetTextExtent( strTemp.c_str(), &cx, &cy );
 #endif
                 nWidth += cx;
@@ -942,13 +942,13 @@ bool CxTextOut::IsAHit( string & commandString, int x, int y )
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::OnLButtonUp( UINT nFlags, CPoint point )
 {
         int x = point.x;
         int y = point.y;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxTextOut::OnLButtonUp( wxMouseEvent & event )
 {
         int x = event.m_x;
@@ -961,7 +961,7 @@ void CxTextOut::OnLButtonUp( wxMouseEvent & event )
           ((CrTextOut*)ptr_to_crObject)->ProcessLink( temp );
         }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CWnd::OnLButtonUp( nFlags, point );
 #endif
 }
@@ -970,12 +970,12 @@ void CxTextOut::OnLButtonUp( wxMouseEvent & event )
 
 unsigned int CxTextOut::GetMaxViewableLines()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     ASSERT( GetSafeHwnd() != NULL );    // Must have been created
     CRect clientRc; GetClientRect( &clientRc );
     return( clientRc.Height() / m_nFontHeight );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxSize clientRc = GetClientSize();
     return( clientRc.GetHeight() / m_nFontHeight );
 #endif
@@ -984,7 +984,7 @@ unsigned int CxTextOut::GetMaxViewableLines()
 
 void CxTextOut::UpdateHScroll()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CRect clientRc; GetClientRect( &clientRc );
         int nMax = m_nMaxWidth - clientRc.Width();
     if( nMax <= 0 )
@@ -994,7 +994,7 @@ void CxTextOut::UpdateHScroll()
     }
     SetScrollRange( SB_HORZ, 0, nMax );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     wxSize clientRc = GetClientSize();
         int nMax = m_nMaxWidth - clientRc.GetWidth();
     if( nMax <= 0 )
@@ -1007,10 +1007,10 @@ void CxTextOut::UpdateHScroll()
 
 void CxTextOut::UpdateVScroll()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //        SetScrollRange( SB_VERT, GetMaxViewableLines()-1, CRMAX(GetMaxViewableLines()-1,GetLineCount()-1));
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //        SetScrollbar( wxVERTICAL, CRMIN(0,m_nHead-GetMaxViewableLines()), GetMaxViewableLines(), GetLineCount() );
 //        SetScrollbar( wxVERTICAL, GetMaxViewableLines()-1, 16, CRMAX(GetMaxViewableLines()-1,GetLineCount()-1));
 #endif
@@ -1024,13 +1024,13 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
   bool cbFound = false;
   unsigned int nWidth = 0;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   CRect clientRc; GetClientRect( &clientRc );
   SIZE sz;
   unsigned int cx,cy;
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   wxSize clientRc = GetClientSize( );
   m_nAvgCharWidth = pDC->GetCharWidth();
   int cx,cy;
@@ -1056,7 +1056,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
             strToRender = strTemp.substr( 0, nPos );  //String up to the CONTROL BYTE
             if( strToRender.length() > 0 )
             {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                 if( !FLAG( m_lfFont.lfPitchAndFamily, FIXED_PITCH ) )
                 {
                     ::GetTextExtentPoint32( pDC->GetSafeHdc(), strToRender.c_str(), strToRender.length(), &sz );
@@ -1066,7 +1066,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
                     cx = strToRender.length() * m_nAvgCharWidth;
                 pDC->TextOut( nX, nY, strToRender.c_str() );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
                 GetTextExtent( strToRender.c_str(), &cx, &cy );
                 pDC->DrawText( strToRender.c_str(), nX, nY );
 #endif
@@ -1074,14 +1074,14 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
                 if (bUnderline)
                 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                      CPen pen(PS_SOLID,1,m_ColTable[ COLOUR_BLUE ]), *oldpen;
                      oldpen = pDC->SelectObject(&pen);
                      pDC->MoveTo(nX,nY-1+m_nFontHeight);
                      pDC->LineTo(nX+cx,nY-1+m_nFontHeight);
                      pDC->SelectObject(oldpen);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
                      pDC->DrawLine(nX,nY+m_nFontHeight,nX+cx,nY+m_nFontHeight);
 #endif
                 }
@@ -1091,7 +1091,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
             COLOURCODE code;
             strTemp.erase(0,nPos);        // Rest of string, including CONTROL BYTE
             GetColourCodes( strTemp, &code );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             if( code.nFore != -1 ) pDC->SetTextColor( m_ColTable[ code.nFore ] );
             if( code.nBack != -1 )
             {
@@ -1099,7 +1099,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
               lastcol = m_ColTable[ code.nBack ];
             }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
             if( code.nFore != -1 )
             {
               pDC->SetTextForeground( m_ColTable[ code.nFore ] );
@@ -1118,7 +1118,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
         }
         else
         {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             if( !FLAG( m_lfFont.lfPitchAndFamily, FIXED_PITCH ) )
             {
                ::GetTextExtentPoint32( pDC->GetSafeHdc(), strTemp.c_str(), strTemp.length(), &sz );
@@ -1128,7 +1128,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
                 cx = strTemp.length() * m_nAvgCharWidth;
             pDC->TextOut( nX, nY, strTemp.c_str() );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
             GetTextExtent( strTemp.c_str(), &cx, &cy );
             pDC->DrawText( strTemp.c_str(), nX, nY );
 #endif
@@ -1143,7 +1143,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
     else   // There are no CONTROL_BYTES in this line. Just render it.
     {
             cbFound = true;  // No need to mod more than once.
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
             pDC->TextOut( nX, nY, strTemp.c_str() );
             if( !FLAG( m_lfFont.lfPitchAndFamily, FIXED_PITCH ) )
             {
@@ -1153,7 +1153,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
             else
                 cx = strTemp.length() * m_nAvgCharWidth;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
             pDC->DrawText( strTemp.c_str(), nX, nY );
             GetTextExtent( strTemp.c_str(), &cx, &cy );
 #endif
@@ -1169,11 +1169,11 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
   }
 
 // Pad out rest of line with solid colour:
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   CRect solidRc( nX, nY, clientRc.right, nY + m_nFontHeight );
   pDC->FillSolidRect( &solidRc, lastcol);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   m_brush->SetColour( lastcol );
   m_pen->SetColour(  lastcol  );
   pDC->SetTextForeground( lastcol  );
@@ -1199,7 +1199,7 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
 int CxTextOut::GetColourCodes( string& strData, COLOURCODE* pColourCode )
 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     ASSERT( pColourCode != NULL );
     ASSERT( strData[0] == CONTROL_BYTE );
 #endif
@@ -1361,7 +1361,7 @@ int CxTextOut::GetColourCodes( string& strData, COLOURCODE* pColourCode )
 
 void CxTextOut::ChooseFont()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     LOGFONT lf;
         if ( m_pFont != NULL )
         {
@@ -1395,7 +1395,7 @@ void CxTextOut::ChooseFont()
         }
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 
     wxFontData data;
 
@@ -1438,7 +1438,7 @@ void CxTextOut::ChooseFont()
 
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxTextOut::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 // Accumulate delta's until 120 is reached in either direction.
@@ -1486,7 +1486,7 @@ void CxTextOut::ScrollPage(bool up)
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxTextOut::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
 //      CrGUIElement * theElement;
@@ -1507,7 +1507,7 @@ void CxTextOut::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
 
 void CxTextOut::SetTransparent()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetBackColour( GetSysColor(COLOR_3DFACE) );
     ModifyStyleEx(WS_EX_CLIENTEDGE,NULL,SWP_NOSIZE|SWP_NOMOVE);
 #endif

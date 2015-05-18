@@ -171,7 +171,7 @@ C
       EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
 C
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA INEXT(1) / 4HNEXT /
 #else
       DATA INEXT(1) / 'NEXT' /
@@ -640,7 +640,7 @@ C
 C
 CC
 C----- SET THE SYMBOL FOR CARBON AND NITROGEN
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JFRN /4HF   , 4HR   , 4HN   , 4H1   /
       DATA KFRN /4HF   , 4HR   , 4HN   , 4H2   /
 CAPR06 USE THE OLD COMMON BLOCK FILE AS A WORK FILE
@@ -1413,7 +1413,7 @@ C
 C
         EQUIVALENCE (TOLER, DISTS(4))
 C
-#if defined (_HOL_)
+#ifdef _HOL_
         DATA KHYD / 4HH   /
         DATA KDET / 4HD   /
 #else
@@ -1478,7 +1478,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C        EQUIVALENCE (TOLER, DISTS(4))
-#if defined (_HOL_)
+#ifdef _HOL_
         DATA ICARB / 4HC   /
 #else
         DATA ICARB / 'C  ' /
@@ -1796,7 +1796,7 @@ C
 C      EQUIVALENCE (TOLER,DISTS(4))
       DATA TOLER /0.6/, ITRANS / 0 /
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD / 4HH    /
       DATA KDET / 4HD    /
 #else
@@ -1930,7 +1930,7 @@ C
 C
       DATA TOLER /0.6/, ITRANS / 0 /
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD / 4HH    /
       DATA KDET / 4HD    /
 #else
@@ -3095,7 +3095,7 @@ C
       EQUIVALENCE (SY,JY),(SX,JX),(SW,JW),(SV,JV),(KPR,JM)
 C
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IHH(1)/4HH   /
 #else
       DATA IHH(1)/'H   '/
@@ -3309,7 +3309,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
       DIMENSION ID(2)
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD/4HH   /
       DATA KDET/4HD   /
 #else

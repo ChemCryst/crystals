@@ -76,7 +76,7 @@ CrListCtrl::~CrListCtrl()
 {
     if ( ptr_to_cxObject != nil )
     {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         ((CxListCtrl*)ptr_to_cxObject)->DestroyWindow();
         delete (CxListCtrl*)ptr_to_cxObject;
 #endif

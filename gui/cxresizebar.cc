@@ -92,16 +92,16 @@ using namespace std;
 #include    "crresizebar.h"
 #include    "crgrid.h"
 
-#ifdef __BOTHWX__
-#include <ctype.h>
-#include <wx/settings.h>
-#include <wx/cmndata.h>
-#include <wx/fontdlg.h>
+#ifdef CRY_USEWX
+ #include <ctype.h>
+ #include <wx/settings.h>
+ #include <wx/cmndata.h>
+ #include <wx/fontdlg.h>
 #endif
 
-#ifndef __BOTHWIN__
-#define MK_CONTROL 1
-#define MK_SHIFT 2
+#ifndef CRY_OSWIN32
+ #define MK_CONTROL 1
+ #define MK_SHIFT 2
 #endif
 
 int CxResizeBar::mResizeBarCount = kResizeBarBase;
@@ -109,10 +109,9 @@ int CxResizeBar::mResizeBarCount = kResizeBarBase;
 CxResizeBar * CxResizeBar::CreateCxResizeBar( CrResizeBar * container, CxGrid * guiParent )
 {
     CxResizeBar *control = new CxResizeBar (container);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     control->Create(NULL, "Resize", WS_VISIBLE|WS_CHILD|WS_CLIPCHILDREN, CRect(0,0,10,10), guiParent, mResizeBarCount++);
-#endif
-#ifdef __BOTHWX__
+#else
     control->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), wxWANTS_CHARS);
 #endif
     return control;
@@ -133,7 +132,7 @@ CxResizeBar::CxResizeBar( CrResizeBar * container )
     m_BothNonSize = false;
     m_ButtonDrawn = false;
     m_Collapsed = false;
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     m_MouseCaught = false;
 #endif
 }
@@ -145,10 +144,10 @@ CxResizeBar::~CxResizeBar()
 
 void CxResizeBar::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
@@ -159,7 +158,7 @@ CXGETGEOMETRIES(CxResizeBar)
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxResizeBar, CWnd)
     ON_WM_LBUTTONDOWN()
     ON_WM_LBUTTONUP()
@@ -168,8 +167,7 @@ BEGIN_MESSAGE_MAP(CxResizeBar, CWnd)
     ON_WM_CHAR()
     ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
 //wx Message Table
 BEGIN_EVENT_TABLE(CxResizeBar, wxWindow)
       EVT_LEFT_DOWN(CxResizeBar::OnLButtonDown)
@@ -184,13 +182,13 @@ END_EVENT_TABLE()
 CXONCHAR(CxResizeBar)
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxResizeBar::OnMouseLeave(wxMouseEvent & event) {
 	SetCursor(wxNullCursor);
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxResizeBar::OnMouseMove( UINT nFlags, CPoint wpoint )
 {
  int x = wpoint.x;
@@ -198,8 +196,7 @@ void CxResizeBar::OnMouseMove( UINT nFlags, CPoint wpoint )
  bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
  int xoff = 0;
  int yoff = 0;
-#endif
-#ifdef __BOTHWX__
+#else
 void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
 {
  int x = evt.m_x;
@@ -220,14 +217,13 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
 
 
    CcRect newRect;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    CDC* myDC;
    myDC = GetDC();
    CRgn rgn, rgn2;
    rgn.CreateRectRgn(m_oldrec.Left(), m_oldrec.Top(), m_oldrec.Right(), m_oldrec.Bottom());
    myDC -> InvertRgn( &rgn );
-#endif
-#ifdef __BOTHWX__
+#else
    wxWindowDC myDC(this);
    myDC.SetBrush( wxBrush( wxColour(0,0,0), wxSOLID ) );
    myDC.SetLogicalFunction ( wxINVERT );
@@ -252,19 +248,18 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
       newRect.mRight = xoff + x + SIZE_BAR;
    }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    rgn2.CreateRectRgn(newRect.Left(), newRect.Top(), newRect.Right(), newRect.Bottom());
 // Draw over old Rectangle
    myDC -> InvertRgn( &rgn2 );
-#endif
-#ifdef __BOTHWX__
+#else
    myDC.DrawRectangle(newRect.Left(), newRect.Top(), newRect.Width(), newRect.Height());
 #endif
 
 //   TEXTOUT ( newRect.AsString() );
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    ReleaseDC( myDC );
 #endif
 
@@ -274,26 +269,26 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
  {
    if ( m_hotRect.Contains (x, y) )
    {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetCursor( AfxGetApp()->LoadStandardCursor( (m_type==kTHorizontal)?IDC_SIZENS:IDC_SIZEWE));
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     this->SetCursor( (m_type==kTHorizontal)?wxCURSOR_SIZENS:wxCURSOR_SIZEWE );
 #endif
    }
    else
    {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetCursor( AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     this->SetCursor( NULL );
 #endif
    }
  }
  else if ( !m_BothNonSize )
  {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    CDC* myDC;
    myDC = GetDC();
 
@@ -317,13 +312,13 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxResizeBar::OnLButtonDown( UINT nFlags, CPoint point )
 {
         int x = point.x;
         int y = point.y;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
 {
         int x = event.m_x;
@@ -352,13 +347,13 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
       if ( m_type == kTHorizontal ) m_startDrag = y;
       else                          m_startDrag = x;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 // turn off WS_CLIPCHILDREN
       ModifyStyle(WS_CLIPCHILDREN, 0);
 
       SetCapture();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       if (!m_MouseCaught){CaptureMouse(); m_MouseCaught = true;}
 #endif
 
@@ -369,13 +364,13 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
    if ( m_veryHotRect.Contains(x,y) )
    {
 //Outline like a pressed button.
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
      CDC* myDC;
      myDC = GetDC();
      myDC->Draw3dRect(&m_veryHotRect.Native(), ::GetSysColor(COLOR_3DSHADOW), ::GetSysColor(COLOR_3DHILIGHT) );
 #endif
      m_ButtonDrawn=true;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
      ReleaseDC( myDC );
 #endif
    }
@@ -383,7 +378,7 @@ void CxResizeBar::OnLButtonDown( wxMouseEvent & event )
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxResizeBar::OnLButtonUp( UINT nFlags, CPoint point )
 {
   int x = point.x;
@@ -393,7 +388,7 @@ void CxResizeBar::OnLButtonUp( UINT nFlags, CPoint point )
 // turn on WS_CLIPCHILDREN
   ModifyStyle(0, WS_CLIPCHILDREN);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
 {
   int x = event.m_x;
@@ -409,31 +404,31 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
  y = CRMIN(y,GetHeight()-SIZE_BAR);
  y = CRMAX(y,0);
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
  CDC* myDC;
  myDC =  GetDC() ;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
  wxClientDC myDC(this);
 #endif
 
 
  if ( ! m_NonSizePresent )
  {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       ReleaseCapture();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       if(m_MouseCaught){ReleaseMouse();m_MouseCaught=false;}
 #endif
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    CRgn rgn;
    rgn.CreateRectRgn(m_oldrec.Left(), m_oldrec.Top(), m_oldrec.Right(), m_oldrec.Bottom());
    myDC -> InvertRgn( &rgn );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
    myDC.SetBrush( wxBrush( wxColour(0,0,0), wxSOLID ) );
    myDC.SetLogicalFunction ( wxINVERT );
    myDC.DrawRectangle(xoff + m_oldrec.Left(), yoff + m_oldrec.Top(), xoff + m_oldrec.Width(), yoff + m_oldrec.Height());
@@ -451,7 +446,7 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
 
    if ( m_veryHotRect.Contains(x,y) )
    {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //Erase outline
      myDC->Draw3dRect(&m_veryHotRect.Native(), ::GetSysColor(COLOR_3DFACE), ::GetSysColor(COLOR_3DFACE) );
 #endif
@@ -461,7 +456,7 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
    }
  }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
  ReleaseDC( myDC );
 #endif
 
@@ -503,7 +498,7 @@ void CxResizeBar::SetHotRect(CcRect * hotRect)
 
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxResizeBar::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
@@ -511,7 +506,7 @@ void CxResizeBar::OnPaint()
     CPen penMid(PS_SOLID,1,::GetSysColor(COLOR_3DLIGHT));
     CPen penLow(PS_SOLID,1,::GetSysColor(COLOR_3DSHADOW));
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void CxResizeBar::OnPaint(wxPaintEvent & event)
 {
     wxPaintDC dc(this); // device context for painting
@@ -592,7 +587,7 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
 
     if (arrow)
     {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       CRgn blackRgn;
       CBrush blackBrush;
       blackRgn.CreatePolygonRgn((LPPOINT) &points, 3, WINDING);
@@ -608,7 +603,7 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
       dc.LineTo(points[0].x,points[0].y);  //Point between mid and high sides
       dc.SelectObject(oldpen);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       dc.SetBrush ( *wxBLACK_BRUSH );
       dc.DrawPolygon(3, (wxPoint*) &points);
       dc.SetPen ( penHigh );
@@ -667,7 +662,7 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
     }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if (arrow == 0)
     {
       dc.Draw3dRect(&rect1.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
@@ -681,7 +676,7 @@ void CxResizeBar::OnPaint(wxPaintEvent & event)
 //      dc.Draw3dRect(&rect4.Native(), ::GetSysColor(COLOR_3DHILIGHT), ::GetSysColor(COLOR_3DSHADOW) );
     }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     if (arrow == 0)
     {
       dc.SetPen ( penHigh );
@@ -737,7 +732,7 @@ void CxResizeBar::AlreadyCollapsed()
   m_Collapsed = true;
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxResizeBar::OnEraseBkgnd(CDC* pDC)
 {
 

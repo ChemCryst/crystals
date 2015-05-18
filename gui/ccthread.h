@@ -1,4 +1,4 @@
-#if !defined(__CR_WIN__)
+#if !defined(CRY_USEMFC)
 
 #ifndef __CcThread_h_
 #define __CcThread_h_

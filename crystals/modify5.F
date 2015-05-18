@@ -422,7 +422,7 @@ C
       INTEGER QSPHERE,QLINE,QRING
 C
       DATA NWCOND/1/,NCOND/6/,LCOND/1/
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA ICOND(1)/4HEQ  /,ICOND(2)/4HNE  /,ICOND(3)/4HLT  /
       DATA ICOND(4)/4HLE  /,ICOND(5)/4HGT  /,ICOND(6)/4HGE  /
 C

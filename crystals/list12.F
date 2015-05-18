@@ -1666,7 +1666,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XFLAGS.INC'
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD /4HH   /
       DATA KDET /4HD   /
       DATA IDELIM(1)/4HAND /

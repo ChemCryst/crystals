@@ -51,11 +51,11 @@ int CxRadioButton::mRadioButtonCount = kRadioButtonBase;
 CxRadioButton * CxRadioButton::CreateCxRadioButton( CrRadioButton * container, CxGrid * guiParent )
 {
     CxRadioButton   *theStdButton = new CxRadioButton( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theStdButton->Create("RadioButton", WS_CHILD| WS_VISIBLE| BS_AUTORADIOBUTTON, CRect(0,0,10,10), guiParent, mRadioButtonCount++);
     theStdButton->SetFont(CcController::mp_font);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       theStdButton->Create(guiParent,-1,"Radiobutton");
 #endif
     return theStdButton;
@@ -74,15 +74,15 @@ CxRadioButton::~CxRadioButton()
 
 void CxRadioButton::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void    CxRadioButton::ButtonChanged()
 {
     bool state = ( GetRadioState() == 1 ) ? true : false;
@@ -90,7 +90,7 @@ void    CxRadioButton::ButtonChanged()
         ((CrRadioButton*)ptr_to_crObject)->ButtonOn();
 }
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 void    CxRadioButton::ButtonChanged(wxCommandEvent& e)
 {
       if ( GetValue() )
@@ -100,10 +100,10 @@ void    CxRadioButton::ButtonChanged(wxCommandEvent& e)
 
 void    CxRadioButton::SetText( const string & text )
 {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       SetLabel(text.c_str());
 #endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetWindowText(text.c_str());
 #endif
 
@@ -116,7 +116,7 @@ CXGETGEOMETRIES(CxRadioButton)
 
 int   CxRadioButton::GetIdealWidth()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 	CString text;
     SIZE size;
     CClientDC dc(this);
@@ -133,7 +133,7 @@ int   CxRadioButton::GetIdealWidth()
     ReleaseDC(cdc);
     return (size.cx+5); // optimum width for Windows buttons (only joking)*/
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cx+20); // nice width for buttons
@@ -143,7 +143,7 @@ int   CxRadioButton::GetIdealWidth()
 
 int   CxRadioButton::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     HDC hdc= (HDC) (GetDC()->m_hAttribDC);
@@ -151,7 +151,7 @@ int   CxRadioButton::GetIdealHeight()
     GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
     return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cy+5); // nice height for buttons
@@ -172,7 +172,7 @@ void    CxRadioButton::RemoveRadioButton()
 
 void    CxRadioButton::SetRadioState( bool inValue )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int value;
     if ( inValue == true )
         value = 1;
@@ -180,33 +180,33 @@ void    CxRadioButton::SetRadioState( bool inValue )
         value = 0;
     SetCheck( value );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       SetValue ( inValue );
 #endif
 }
 
 bool CxRadioButton::GetRadioState()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       int value = GetCheck();
     if ( value == 1 )
         return (true);
     else
         return (false);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       return GetValue();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxRadioButton, CButton)
     ON_CONTROL_REFLECT(BN_CLICKED, ButtonChanged)
     ON_WM_CHAR()
 END_MESSAGE_MAP()
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Map
 BEGIN_EVENT_TABLE(CxRadioButton, wxRadioButton)
       EVT_RADIOBUTTON( -1, CxRadioButton::ButtonChanged )
@@ -219,7 +219,7 @@ void CxRadioButton::Focus()
     SetFocus();
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxRadioButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
     NOTUSED(nRepCnt);
@@ -243,8 +243,7 @@ void CxRadioButton::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
         }
     }
 }
-#endif
-#ifdef __BOTHWX__
+#else
 void CxRadioButton::OnChar( wxKeyEvent & event )
 {
       switch(event.GetKeyCode())
@@ -271,13 +270,12 @@ void CxRadioButton::OnChar( wxKeyEvent & event )
 
 void CxRadioButton::Disable(bool disabled)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if(disabled)
             EnableWindow(false);
     else
             EnableWindow(true);
-#endif
-#ifdef __BOTHWX__
+#else
     if(disabled)
             Enable(false);
     else

@@ -1649,7 +1649,7 @@ C
 C
       DATA NRQ/8/, NWRQ/3/
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA JTYP33(1)/4H   1/, JTYP33(2)/4H   2/
 
       DATA JRQ(1,1)/4HSPEC/, JRQ(2,1)/4H  NO/, JRQ(3,1)/4H  NO/
@@ -2693,7 +2693,7 @@ C
       DATA CEND /'END'/
 C
 C----- IDEV  = SCPDATA, (NCEXTR)
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IDEV / 1HS, 1HC, 1HP, 1HD /
 #else
       DATA IDEV / 'S', 'C', 'P', 'D' /

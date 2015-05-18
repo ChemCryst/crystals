@@ -52,21 +52,20 @@
 #include    "crguielement.h"
 #include <list>
 
-#ifdef __BOTHWX__
-#include <wx/toolbar.h>
-#define BASETOOLBAR wxWindow
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASETOOLBAR CWnd
+#else
+ #include <wx/toolbar.h>
+ #define BASETOOLBAR wxWindow
 
-class mywxToolBar : public wxToolBar
-{
+ class mywxToolBar : public wxToolBar
+ {
      void OnChar(wxKeyEvent & event );
      DECLARE_EVENT_TABLE()
-};
+ };
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASETOOLBAR CWnd
-#endif
 
 class CrToolBar;
 class CxGrid;
@@ -100,7 +99,7 @@ class CxToolBar : public BASETOOLBAR
      static int  mToolBarCount;
      int m_ImageIndex;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //     list<CBitmap*> m_bitmapList;
      CImageList* m_ImageList;
      CToolBarCtrl * m_ToolBar;
@@ -110,8 +109,7 @@ class CxToolBar : public BASETOOLBAR
      afx_msg void OnToolSelected(UINT nID);
      afx_msg BOOL OnToolTipNotify( UINT id, NMHDR * pNMHDR, LRESULT * pResult );
      DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
 //     list<wxBitmap*> m_bitmapList;
      mywxToolBar * m_ToolBar;
      void OnChar(wxKeyEvent & event );

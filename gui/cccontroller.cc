@@ -610,11 +610,9 @@
 
 #include    "crystalsinterface.h"
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
   #include <wx/app.h>
-#endif
-
-#ifndef __BOTHWX__
+#else
   #include <tchar.h>
 #endif
 
@@ -643,7 +641,11 @@ using namespace std;
 
 #include    "crwindow.h"
 #include    "crmenu.h"
-#include    <GL/glu.h>
+#ifdef CRY_OSMAC
+  #include <wx/glcanvas.h>
+#else
+  #include    <GL/glu.h>
+#endif
 #include    "crmodel.h"
 #include    "crchart.h"
 #include    "crbutton.h"
@@ -667,44 +669,21 @@ using namespace std;
 #include    "crtoolbar.h"
 #include    "cxweb.h"
 
+#ifdef __INW__
+#include "CrashRpt.h"
+#endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   #include <tchar.h>
   #include <afxwin.h>
   #include <shlobj.h> // For the SHBrowse stuff.
   #include <direct.h> // For the _chdir function.
+  #include <process.h>
   CWinThread * CcController::mCrystalsThread = nil;
   CWinThread * CcController::mGUIThread = nil;
-#endif
-
-#if defined(__WXGTK__) || defined(__WXMAC__)
-  #include <errno.h>
-  #include <sys/time.h>
-  #define F77_STUB_REQUIRED
-  #include "ccthread.h"
-  #include <wx/config.h>
-  #include <wx/thread.h>
-  #include <wx/cmndata.h>
-  #include <wx/fontdlg.h>
-  #include <wx/filedlg.h>
-  #include <wx/dirdlg.h>
-  #include <wx/mimetype.h>
-  #include <wx/utils.h>
-  #include <sys/wait.h>
-  #include <fcntl.h>
-#include <unistd.h>
-  CcThread * CcController::mCrystalsThread = nil;
-#endif
-
-#ifdef __WXINT__
-#include "CrashRpt.h"
-#endif
-
-#ifdef __WXMSW__
-  #include <stdio.h>
-//  #include <direct.h>
-//  #define F77_STUB_REQUIRED
-//  #include <math.h>
+  CFont* CcController::mp_font = nil;
+  CFont* CcController::mp_inputfont = nil;
+#else
   #include <wx/fontdlg.h>
   #include <wx/cmndata.h>
   #include <wx/config.h>
@@ -713,25 +692,34 @@ using namespace std;
   #include <wx/mimetype.h>
   #include <wx/utils.h>
   CcThread * CcController::mCrystalsThread = nil;
-  #include <shlobj.h> // For the SHBrowse stuff.
-  #include <direct.h> // For the _chdir function.
-  #include <process.h>
+  #include <wx/settings.h>
+  wxFont* CcController::mp_inputfont = nil;
+  #include <wx/msgdlg.h>
+
+
+  
+  #ifdef CRY_OSWIN32
+    #include <stdio.h>
+    #include <shlobj.h> // For the SHBrowse stuff.
+    #include <direct.h> // For the _chdir function.
+    #include <process.h>
+  #else
+    #include <errno.h>
+    #include <sys/time.h>
+    #include "ccthread.h"
+    #include <wx/thread.h>
+    #include <sys/wait.h>
+    #include <fcntl.h>
+    #include <unistd.h>
+  #endif
+  
+  #ifdef CRY_GNU
+    #define F77_STUB_REQUIRED
+  #endif
+  
 #endif
 
 #include "fortran.h"
-
-#ifdef __BOTHWX__
-#include <wx/settings.h>
-wxFont* CcController::mp_inputfont = nil;
-#include <wx/msgdlg.h>
-#endif
-
-
-#ifdef __CR_WIN__
-CFont* CcController::mp_font = nil;
-CFont* CcController::mp_inputfont = nil;
-#include <process.h>
-#endif
 
 
 //#include <RDGeneral/Invariant.h>
@@ -760,19 +748,17 @@ int CcController::debugIndent = 0;
 
 CcController::CcController( const string & directory, const string & dscfile )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 	CcCrystalsCommandListener tInterfaceCommandListener(AfxGetApp(), WM_CRYSTALS_COMMAND);
 #else
 	CcCrystalsCommandListener tInterfaceCommandListener(wxTheApp, ccEVT_COMMAND_ADDED);
 #endif
+
 	mInterfaceCommandDeq.addAddListener(tInterfaceCommandListener);
-#ifdef __CR_WIN__
+
+#ifdef CRY_OSWIN32
     m_start_ticks = GetTickCount();
-#endif
-#ifdef __WXMSW__
-    m_start_ticks = GetTickCount();
-#endif
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#else
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
@@ -796,16 +782,14 @@ CcController::CcController( const string & directory, const string & dscfile )
     CcController::theController = this;
     CcController::debugIndent = 0;
 
-#ifdef DEPRECATED__BOTHWX__
+#ifdef DEPRECATEDCRY_USEWX
 	CxWeb::InitXULRunner();
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       mGUIThread = AfxGetThread();
 #endif
 
-
-//    wxMessageBox(directory);
     if ( directory.length() )
     {
       string dirtemp = directory;
@@ -847,7 +831,7 @@ CcController::CcController( const string & directory, const string & dscfile )
       i++;
       string buffer = dir + "guimenu.srt" ;
 
-      if( file = fopen( buffer.c_str(), "r" ) ) //Assignment witin conditional - OK
+      if( (file = fopen( buffer.c_str(), "r" ) ) ) //Assignment witin conditional - OK
       {
         ReadStartUp(file,crysdir);
         noLuck = false;
@@ -876,7 +860,7 @@ CcController::CcController( const string & directory, const string & dscfile )
     if ( theElement == nil )
     {
       LOGERR ("Failed to get main window");
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if ( !m_BatchMode ) MessageBox(NULL,"Failed to create and find main Window","CcController",MB_OK);
       ASSERT(0);
       return;
@@ -886,10 +870,9 @@ CcController::CcController( const string & directory, const string & dscfile )
                                          //pacemaker for the GUI to stop
                                          //it freezing up so often ;)
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     AfxGetApp()->m_pMainWnd = (CWnd*)(theElement->GetWidget());
-#endif
-#ifdef __BOTHWX__
+#else
     wxGetApp().SetTopWindow((wxWindow*)(theElement->GetWidget()));
 #endif
     LOGSTAT ( "Main window found\n") ;
@@ -900,7 +883,7 @@ CcController::CcController( const string & directory, const string & dscfile )
     if ( outputWindow == nil )
     {
       LOGERR("Failed to get main text output");
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if ( !m_BatchMode ) MessageBox(NULL,"Failed to create main text output Window","CcController",MB_OK);
       ASSERT(0);
       return;
@@ -916,7 +899,7 @@ CcController::CcController( const string & directory, const string & dscfile )
     if ( progressWindow == nil )
     {
       LOGERR("Failed to get progress window");
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if ( !m_BatchMode ) MessageBox(NULL,"Failed to create progress Window","CcController",MB_OK);
       ASSERT(0);
       return;
@@ -935,7 +918,7 @@ CcController::CcController( const string & directory, const string & dscfile )
       string dsctemp = "CRDSC=" + dscfile;
       string::size_type qp = dsctemp.find_last_of('\"');
       if ( qp != string::npos ) dsctemp.erase(qp,1);
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
       _putenv( dsctemp.c_str() );
 #else
       char * env = new char[dsctemp.size()+1];
@@ -978,21 +961,19 @@ CcController::CcController( const string & directory, const string & dscfile )
 ****/
 
 
-
 // If the CRDSC variable is set, leave it's value the same.
 // Otherwise, set it to the default value of CRFILEV2.DSC
     char* envv;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     envv = getenv( (LPCTSTR) "CRDSC" );
-#endif
-#ifdef __BOTHWX__
+#else
     envv = getenv( "CRDSC" );
 #endif
 
     if ( envv == NULL )
     {
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
        _putenv( "CRDSC=crfilev2.dsc" );
 #else
 //       _setenv("CRDSC", "crfilev2.dsc", 1);
@@ -1008,10 +989,11 @@ CcController::CcController( const string & directory, const string & dscfile )
     }
 
     LOGSTAT( "Starting Crystals Thread" );
-
-//	wxMessageBox("Got here");
     
     StartCrystalsThread();
+    
+//    wxMessageBox("Debug","Started CRYSTALS");
+
 
     LOGSTAT ( "Crystals thread started.\n") ;
 }
@@ -1051,7 +1033,7 @@ void CcController::ReadStartUp( FILE * file, string & crysdir )
           string dir = EnvVarExtract( crysdir, i++ );
           string buffer = dir + inputline ;
           LOGSTAT("Trying: "+buffer);
-          if( newfile = fopen( buffer.c_str(), "r" ) ) //Assignment witin conditional - OK
+          if( (newfile = fopen( buffer.c_str(), "r" ) ) ) //Assignment witin conditional - OK
           {
             LOGSTAT("Success, reading file");
             ReadStartUp( newfile, crysdir );
@@ -1129,7 +1111,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
     mStatusTokenList.clear();
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       delete (CcController::mp_font);
       delete (CcController::mp_inputfont);
 #endif
@@ -1147,6 +1129,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
 		 delete mCrystalsThread;
 
 }
+
 
 bool CcController::ParseInput( deque<string> & tokenList )
 {
@@ -1532,9 +1515,9 @@ bool CcController::ParseInput( deque<string> & tokenList )
                               tokenList.pop_front();    // remove that token
                               string newdsc = "CRDSC=" + tokenList.front();
                               tokenList.pop_front();    // remove that token
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                               _putenv( (LPCTSTR) newdsc.c_str() );
-#elif defined(__BOTHWIN__)
+#elif defined(CRY_OSWIN32)
                               _putenv( newdsc.c_str() );
 #else
                              char * env = new char[newdsc.size()+1];
@@ -1883,7 +1866,7 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
   LOGSTAT("-----------CRYSTALS has put: " + line );
 
 	
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
 #else
 	//wxCommandEvent tEvent(ccEVT_COMMAND_ADDED);
@@ -1929,21 +1912,16 @@ bool CcController::GetInterfaceCommand( string &line )
       LOGSTAT("The CRYSTALS thread has ended.");
       mThisThreadisDead = true;
       LOGSTAT("Shutting down this (GUI) thread.");
-#ifdef __BOTHWX__
       line = "^^CO DISPOSE _MAIN ";
       return (true);
-//      ::wxExit();
-//      LOGSTAT("App did not exit...");
-#endif
-#ifdef __CR_WIN__
-      line = "^^CO DISPOSE _MAIN ";
-      return (true);
-#endif
   }
   
   try
   {
-	line = mInterfaceCommandDeq.pop_front(0);
+      if ( mInterfaceCommandDeq.size() == 0 )
+          return false;
+      
+      line = mInterfaceCommandDeq.pop_front(0);
 //    ostringstream os;
 //    os << "GUI gets (rem: " << mInterfaceCommandDeq.size() << ": " << line;
 //    LOGSTAT(os.str());
@@ -1978,13 +1956,9 @@ void    CcController::LogError( string errString , int level )
       fprintf( mErrorLog, "  ");
     }
 
-#ifdef __CR_WIN__
+#ifdef CRY_OSWIN32
     int now_ticks = GetTickCount();
-#endif
-#ifdef __WXMSW__
-    int now_ticks = GetTickCount();
-#endif
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#else
     struct timeval time;
     struct timezone tz;
     gettimeofday(&time,&tz);
@@ -1997,7 +1971,7 @@ void    CcController::LogError( string errString , int level )
     fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.c_str() );
     fflush( mErrorLog );
 
-    #if defined(__WXGTK__) || defined(__WXMAC__)
+    #ifdef CRY_OSLINUX
           std::cerr << elapse << " " << errString.c_str() << "\n";
     #endif
 }
@@ -2010,7 +1984,7 @@ CrGUIElement* CcController::FindObject(const string & Name)
     for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
     {
       LOGSTAT("Find object, testing: " + (*mw)->mName);
-      if ( theElement = (*mw)->FindObject(Name) ) return theElement;
+      if ( (theElement = (*mw)->FindObject(Name) )) return theElement;
     }
     return nil;
 }
@@ -2210,7 +2184,7 @@ void  CcController::SetProgressText(const string& theText)
 
 void CcController::StoreKey( string key, string value )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
  // Use the registry to store keys.
 
  string subkey = "Software\\Chem Cryst\\Crystals\\";
@@ -2253,7 +2227,7 @@ string CcController::GetKey( string key )
 {
   string value;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
  // Use the registry to fetch keys.
  string subkey = "Software\\Chem Cryst\\Crystals\\";
 
@@ -2287,7 +2261,7 @@ string CcController::GetKey( string key )
  pkey += wxString(key.c_str(),wxConvUTF8);
  wxString wstr;
 
- wxConfig * config = new wxConfig(_T("Chem Cryst"));
+ wxConfig * config = new wxConfig("Chem Cryst");
  if ( config->Read(pkey, &wstr ) ) {
    value = wstr.mb_str();
  }
@@ -2308,7 +2282,7 @@ string CcController::GetRegKey( string key, string name )
 
  string data;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
  HKEY hkey;
  DWORD dwtype, dwsize;
 
@@ -2340,15 +2314,14 @@ string CcController::GetRegKey( string key, string name )
        RegCloseKey(hkey);
     }
  }
-#endif
+#else
 
-#ifdef __BOTHWX__
  wxString str;
  wxString pkey = wxT("Crystals/");
  pkey += wxString(key.c_str(),wxConvUTF8);
  wxString wstr;
 
- wxConfig * config = new wxConfig(_T("Chem Cryst"));
+ wxConfig * config = new wxConfig("Chem Cryst");
  if ( config->Read(pkey, &wstr ) ) {
    data = str.mb_str();
  }
@@ -2436,21 +2409,33 @@ void CcController::ReLayout()
   return;
 }
 
-#if defined (__WXINT__) 
+#if defined (__INW__) 
+
   UINT CrystalsThreadProc( LPVOID arg );
-  extern "C" { void CRYSTL(); }
+  extern "C" { void crystl(); }
   UINT CrystalsThreadProc( LPVOID arg )
-#elif  defined (_DIGITALF77_)
+
+#elif  defined (__GID__)
+
   UINT CrystalsThreadProc( LPVOID arg );
   SUBROUTINE CRYSTL();
   UINT CrystalsThreadProc( LPVOID arg )
-#else
+
+#elif  defined (__MIN__)
+
   int CrystalsThreadProc( void* arg );
-  SUBROUTINE_F77 crystl_();
+  SUBROUTINE_F77 crystl();
   int CrystalsThreadProc( void * arg )
+
+#else
+
+  int CrystalsThreadProc( void* arg );
+  SUBROUTINE_F77 crystl();
+  int CrystalsThreadProc( void * arg )
+
 #endif
 {
-#if defined (__WXINT__) 
+#if defined (__INW__) 
     crInstallToCurrentThread2(0);
 #endif
 
@@ -2460,17 +2445,17 @@ void CcController::ReLayout()
     LOGSTAT("FORTRAN: Posting wait_for_thread_start semaphore");
     m_wait_for_thread_start.Signal(true);
 
-
-
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
     {
-#if defined (__WXINT__) 
-      CRYSTL();
-#elif  defined (_DIGITALF77_)
+#if defined (__INW__) 
+      crystl();
+#elif  defined (__GID__)
         CRYSTL();
+#elif  defined (__MIN__)
+       crystl();
 #else
-       crystl_();
+       crystl();
 #endif
        LOGSTAT ("Exited CRYSTL() without exception. Surely some mistake?");
     }
@@ -2481,7 +2466,7 @@ void CcController::ReLayout()
     catch (CcController::MyBadException ccme )
     {
         LOGSTAT ("Error Exception caught. Thread ends. Releasing mutex. Goodbye. " );
-#if defined (__WXINT__) 
+#if defined (__INW__) 
         m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
 	    (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
 		throw;  //rethrow for the crash handler
@@ -2494,7 +2479,7 @@ void CcController::ReLayout()
     m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
 	(CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
     LOGSTAT ("Final word from the CRYSTALS thread: Bye." );
-#if defined (__WXINT__) 
+#if defined (__INW__) 
     //crUninstallFromCurrentThread();    
 #endif
     return 0;
@@ -2510,10 +2495,13 @@ void CcController::StartCrystalsThread()
 //                                                            //
    int arg = 6;
 
-#ifdef __CR_WIN__
-   mCrystalsThread = AfxBeginThread(CrystalsThreadProc,&arg);
+#ifdef CRY_OSMAC
+    setlocale( LC_ALL, "POSIX");
 #endif
-#ifdef __BOTHWX__
+    
+#ifdef CRY_USEMFC
+   mCrystalsThread = AfxBeginThread(CrystalsThreadProc,&arg);
+#else
    mCrystalsThread = new CcThread();
    wxThreadError a =  mCrystalsThread->Create();
    if ( a == wxTHREAD_NO_ERROR ) 
@@ -2552,7 +2540,7 @@ string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDes
 	list<pair<string,string> >::iterator i = extensionsAndDescriptions.begin();
 	list<pair<string,string> >::iterator e = extensionsAndDescriptions.end();
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString pathname, filename, filetitle;
 
     CString extension;
@@ -2596,8 +2584,7 @@ string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDes
     }
 
     return string(pathname.GetBuffer(256));
-#endif
-#ifdef __BOTHWX__
+#else
     wxString pathname, filename, filetitle;
 
     wxString extension;//  = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
@@ -2652,7 +2639,7 @@ string CcController::SaveFileDialog(const string &defaultName,
                                     const string &extensionDescription) 
 {
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString pathname, filename, filetitle;
 
     CString extension = CString(extensionDescription.c_str()) + "|" + CString(extensionFilter.c_str()) + "||" ;
@@ -2683,9 +2670,8 @@ string CcController::SaveFileDialog(const string &defaultName,
     }
 
     return string(pathname.GetBuffer(256));
-#endif
+#else
 
-#ifdef __BOTHWX__
     wxString pathname, filename, filetitle;
     wxString extension = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
     wxString initName = wxString(defaultName.c_str());
@@ -2716,13 +2702,13 @@ string CcController::SaveFileDialog(const string &defaultName,
 
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 static int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
 #endif
 
 string CcController::OpenDirDialog()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
       string lastPath, result;
       char buffer[MAX_PATH];
@@ -2793,8 +2779,7 @@ string CcController::OpenDirDialog()
             result = "CANCEL";
       }
       return result;
-#endif
-#ifdef __BOTHWX__
+#else
     wxConfig * config = new wxConfig("Chem Cryst");
     wxString pathname;
     wxString cwd = wxGetCwd(); //This dir dialog changes the working dir. Save it.
@@ -2824,7 +2809,7 @@ string CcController::OpenDirDialog()
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
   string* rp = (string*)(lpData);
@@ -2839,7 +2824,7 @@ int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpD
 
 void CcController::ChangeDir (string newDir)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //      _chdir ( newDir.c_str());
 
   if( _chdir( newDir.c_str() )   )
@@ -2850,23 +2835,16 @@ void CcController::ChangeDir (string newDir)
   }
 
 
-#endif
-#ifdef __BOTHWX__
+#else
       wxSetWorkingDirectory(newDir);
 
-//#ifdef __BOTHWIN__
- //     _chdir ( newDir.c_str());
-//#else      
-//      chdir ( newDir.c_str());
-//      std::cerr << "\n\n\nChanged directory to: " << newDir << "\n\n\n";
-//#endif
 #endif
 }
 
 
 void CcController::CcChooseFont()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   LOGFONT lf;
   if ( CcController::mp_inputfont != NULL )
   {
@@ -2874,11 +2852,11 @@ void CcController::CcChooseFont()
   }
   else
   {
-#ifndef _WINNT
+ #ifndef _WINNT
     HFONT hSysFont = ( HFONT )GetStockObject( ANSI_FIXED_FONT );
-#else
+ #else
     HFONT hSysFont = ( HFONT )GetStockObject( DEVICE_DEFAULT_FONT );
-#endif  // !_WINNT
+ #endif  // !_WINNT
     CFont* pFont = CFont::FromHandle( hSysFont );
     pFont->GetLogFont( &lf );
   }
@@ -2901,8 +2879,7 @@ void CcController::CcChooseFont()
     StoreKey( "MainFontFace", strstrm.str() );
     ReLayout();
   }
-#endif
-#ifdef __BOTHWX__
+#else
 
   wxFontData data;
   wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
@@ -3010,10 +2987,6 @@ bool CcController::DoCommandTransferStuff()
   bool appret = false;
   string theLine;
 
-//  ostringstream s;
-//  s << "Window address " << (long int)wxWindow::FindFocus();	
-//  LOGERR(s.str());
-
   if( GetInterfaceCommand(theLine) )
   {
     appret = true;
@@ -3040,15 +3013,15 @@ bool CcController::DoCommandTransferStuff()
         if ( theExitcode != 0 && theExitcode != 1000 )
         {
            CcController::theController->m_ExitCode = theExitcode;
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
            if ( !CcController::theController->m_BatchMode )
            {
-		          MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
-		          ASSERT(0);
+             MessageBox(NULL,"Closing","Crystals ends in error",MB_OK|MB_TOPMOST|MB_TASKMODAL|MB_ICONHAND);
+             ASSERT(0);
            }
   #endif
 
-  #ifdef __WXINT__
+  #ifdef __INW__
 		    CR_EXCEPTION_INFO ei;
 			memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
 			ei.cb = sizeof(CR_EXCEPTION_INFO);
@@ -3077,7 +3050,7 @@ bool CcController::DoCommandTransferStuff()
         }
 
         LOGSTAT ("Really going now. Bye. " );
-		#if defined(__WXMAC__)
+		#ifdef CRY_OSMAC
 			m_Crystals_Thread_Alive.Leave();
 			pthread_exit(0);
 		#else
@@ -3485,7 +3458,7 @@ extern "C" {
   void FORCALL(guexec) ( char* theLine)
   {
 	// Convert to a wchar_t*
-#ifdef _DIGITALF77_
+#ifdef __GID__
 //    char * tempstr = new char[263];
 //    memcpy(tempstr,theLine,262);
 //    *(tempstr+262) = '\0';
@@ -3502,7 +3475,7 @@ extern "C" {
 //  (CcController::theController)->AddInterfaceCommand( "theLine: " + tstring(theLine) );
 
 
-#elif defined(__BOTHWIN__)
+#elif defined(CRY_OSWIN32)
     size_t origsize = strlen(theLine) + 1;
     const size_t newsize = 263;
     size_t convertedChars = 0;
@@ -3581,7 +3554,7 @@ extern "C" {
 //        LOGERR(restLine);
 
         tstring totalcl = firstTok;
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
         totalcl += _T(" ");
 #else
         totalcl += " ";
@@ -3589,7 +3562,7 @@ extern "C" {
         totalcl += restLine;
 //        LOGERR(totalcl);
 
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
 
     if ( bWait )
     {
@@ -3646,7 +3619,7 @@ extern "C" {
         ShellExecuteEx ( & si );
 // It is not possible to wait for rundll32's spawned process, so
 // we just pop up a message box, to hold this app here.
- #ifdef __CR_WIN__
+ #ifdef CRY_USEMFC
         AfxGetApp()->m_pMainWnd->MessageBox("CRYSTALS is waiting.\nClick OK when external application has exited.",
                                             "#SPAWN: Waiting",MB_OK);
  #endif
@@ -4234,7 +4207,7 @@ extern "C" {
   }
 
 
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
   bool IsWinNT()
   {
     OSVERSIONINFO o;

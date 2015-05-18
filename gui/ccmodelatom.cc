@@ -192,7 +192,7 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
         mp_parent->ApplyIndexColour( m_glID );
 //        glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
 
-  } else if ( style->radius_type == TINY ) {  //make invisible (unless selected or no bonds)
+  } else if ( style->radius_type == CRTINY ) {  //make invisible (unless selected or no bonds)
 
     if ( m_nbonds == 0 ) {
 		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 1.0f };
@@ -244,13 +244,13 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 
   if ( (!style->showh) && ( m_label.length() > 1 ) && ( m_label[0] == 'H' ) && ( m_label[1] == '(' ) ) {
 		// draw nothing
-  } else if (style->radius_type == COVALENT) {
+  } else if (style->radius_type == CRCOVALENT) {
 		gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
-  } else if (style->radius_type == TINY) {
+  } else if (style->radius_type == CRTINY) {
 		gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
-  } else if(style->radius_type == VDW) {
+  } else if(style->radius_type == CRVDW) {
     gluSphere(sphere, ((float)vdwrad + extra ) * style->radius_scale,detail,detail);
-  } else if(style->radius_type == SPARE) {
+  } else if(style->radius_type == CRSPARE) {
     if ( m_label.length() && ( m_label[0] == 'Q' ) )
     {
       gluSphere(sphere, ((float)sparerad + extra ) * style->radius_scale,detail,detail);
@@ -259,7 +259,7 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
     {
       gluSphere(sphere, (covrad + extra ) * style->radius_scale,detail,detail);
     }
-  } else if(style->radius_type == THERMAL) {
+  } else if(style->radius_type == CRTHERMAL) {
     if ( m_IsADP) {
      glMultMatrixf(*&localmatrix);
      gluSphere(sphere, ( 1.0f + (extra / 1000.0f) ), detail,detail);
@@ -310,15 +310,15 @@ int CcModelAtom::Radius(CcModelStyle * style) {
  
   int radius = 1;
 
-  if (style->radius_type == COVALENT)
+  if (style->radius_type == CRCOVALENT)
   {
     radius = (int)(covrad * style->radius_scale);
   }
-  else if(style->radius_type == VDW)
+  else if(style->radius_type == CRVDW)
   {
     radius = (int)(vdwrad * style->radius_scale);
   }
-  else if(style->radius_type == SPARE)
+  else if(style->radius_type == CRSPARE)
   {
     if ( m_label.length() && ( m_label[0] == 'Q' ) )
     {
@@ -329,7 +329,7 @@ int CcModelAtom::Radius(CcModelStyle * style) {
       radius =  (int)(covrad  * style->radius_scale);
     }
   }
-  else if(style->radius_type == THERMAL)
+  else if(style->radius_type == CRTHERMAL)
   {
   // Approximate method, consider action on three orthogonal vectors, and return largest
   // there is potential to underestimate edge cases by a factor of about 1.4.

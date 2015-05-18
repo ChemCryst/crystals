@@ -69,7 +69,7 @@ CrToolBar::~CrToolBar()
     if ( ptr_to_cxObject != nil )
     {
         ((CxToolBar*)ptr_to_cxObject)->CxDestroyWindow();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         delete (CxToolBar*)ptr_to_cxObject;
 #endif
         ptr_to_cxObject = nil;

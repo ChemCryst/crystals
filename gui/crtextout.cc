@@ -18,6 +18,11 @@ using namespace std;
 #include    "cccontroller.h"
 #include    "cxtextout.h"
 
+#ifdef CRY_USEWX
+#include <wx/filename.h>
+#include <wx/mimetype.h>
+#endif
+
 
 CrTextOut::CrTextOut( CrGUIElement * mParentPtr )
  : CrGUIElement( mParentPtr )
@@ -34,7 +39,7 @@ CrTextOut::~CrTextOut()
     if ( ptr_to_cxObject != nil )
     {
         ((CxTextOut*)ptr_to_cxObject)->CxDestroyWindow();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         delete (CxTextOut*)ptr_to_cxObject;
 #endif
         ptr_to_cxObject = nil;

@@ -2869,7 +2869,7 @@ C
 C
       DATA CFOUND / '  Not in the map' /
       DATA LFOUND / 16 /
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA IQNEG/4HQN  /
 #else
       DATA IQNEG/'QN  '/

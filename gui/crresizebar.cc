@@ -110,7 +110,7 @@ CrResizeBar::~CrResizeBar()
   if ( ptr_to_cxObject )
   {
     ((CxResizeBar*)ptr_to_cxObject)->CxDestroyWindow();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     delete (CxResizeBar*)ptr_to_cxObject;
 #endif
     ptr_to_cxObject = nil;
@@ -408,10 +408,9 @@ void CrResizeBar::MoveResizeBar(int offset)
 
 // Set new sizes
    CcRect child    = GetGeometry();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
    CcRect parent   = mParentElementPtr->GetGeometry();
-#endif
-#ifdef __BOTHWX__
+#else
    CcRect parent   = mParentElementPtr->GetGeometry();
 //   CcRect parent   = CcRect(0,0,0,0);
 #endif

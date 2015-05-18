@@ -2,7 +2,7 @@
 C The functions in this file are only required on Digital compiler builds
 C other platforms use external libraries (MKL or OpenBLAS).
 
-#if defined(_GID_) || defined(_WXS_)  
+#ifdef CRY_FORTDIGITAL
 
 C This file must be compiled without optimisations...
 
@@ -63,10 +63,8 @@ C This file must be compiled without optimisations...
       INTEGER            BETA, IMAX, IMIN, IT
       REAL               BASE, EMAX, EMIN, EPS, PREC, RMACH, RMAX, RMIN,
      $                   RND, SFMIN, SMALL, T
-#if defined(DVF) || defined(GID) 
       VOLATILE BASE,EMAX,EMIN,EPS,PREC,RMACH,RMAX,RMIN,RND,SFMIN
       VOLATILE SMALL, T
-#endif
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -339,9 +337,7 @@ C This file must be compiled without optimisations...
       LOGICAL            RND
       INTEGER            BETA, EMAX, EMIN, T
       REAL               EPS, RMAX, RMIN
-#if defined(DVF) || defined(GID) 
       VOLATILE EPS,RMAX,RMIN
-#endif
 *     ..
 *
 *  Purpose
@@ -402,10 +398,8 @@ C This file must be compiled without optimisations...
      $                   NGNMIN, NGPMIN
       REAL               A, B, C, HALF, LEPS, LRMAX, LRMIN, ONE, RBASE,
      $                   SIXTH, SMALL, THIRD, TWO, ZERO
-#if defined(DVF) || defined(GID) 
       VOLATILE A,B,C,HALF,LEPS,LRMAX,LRMIN,RBASE,ONE,SIXTH
       VOLATILE SMALL,THIRD,TWO,ZERO
-#endif
 *     ..
 *     .. External Functions ..
       REAL               SLAMC3
@@ -603,9 +597,7 @@ C This file must be compiled without optimisations...
 *
 *     .. Scalar Arguments ..
       REAL               A, B
-#if defined(DVF) || defined(GID) 
       VOLATILE A,B
-#endif
 *     ..
 *
 *  Purpose
@@ -645,9 +637,7 @@ C This file must be compiled without optimisations...
 *     .. Scalar Arguments ..
       INTEGER            BASE, EMIN
       REAL               START
-#if defined(DVF) || defined(GID) 
       VOLATILE START
-#endif
 *     ..
 *
 *  Purpose
@@ -733,9 +723,7 @@ C This file must be compiled without optimisations...
       LOGICAL            IEEE
       INTEGER            BETA, EMAX, EMIN, P
       REAL               RMAX
-#if defined(DVF) || defined(GID) 
       VOLATILE RMAX
-#endif
 *     ..
 *
 *  Purpose
@@ -780,9 +768,7 @@ C This file must be compiled without optimisations...
 *     .. Local Scalars ..
       INTEGER            EXBITS, EXPSUM, I, LEXP, NBITS, TRY, UEXP
       REAL               OLDY, RECBAS, Y, Z
-#if defined(DVF) || defined(GID) 
       VOLATILE OLDY,RECBAS,Y,Z
-#endif
 *     ..
 *     .. External Functions ..
       REAL               SLAMC3

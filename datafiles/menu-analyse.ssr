@@ -35,7 +35,7 @@
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
 ^^WI   SPLIT                                                                    
 ^^WI   MENU XPUBC 'Publication checks'                                          
-^^WI   ITEM ACTA  '&Loacal Acta checks' '#SCRIPT ACTA'                                 
+^^WI   ITEM ACTA  '&Local Acta checks' '#SCRIPT ACTA'                                 
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'  
 ^^WI   ITEM AWEB 'Checkcif on the &web'                                         
 ^^WI '$ http://checkcif.iucr.org'                                                

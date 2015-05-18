@@ -15,16 +15,16 @@
 #include "crystalsinterface.h"
 #include "cccrystcommandlistener.h"
 
-#if defined(__BOTHWX__)
-CcCrystalsCommandListener::CcCrystalsCommandListener(wxEvtHandler * pEventHandler, const wxEventType pEvent):iEventHandler(pEventHandler), iEvent(pEvent)
+#ifdef CRY_USEMFC
+  CcCrystalsCommandListener::CcCrystalsCommandListener(CWinThread* pMessageHandler, const UINT pMessage):iMessageHandler(pMessageHandler), iMessage(pMessage)
 #else
-CcCrystalsCommandListener::CcCrystalsCommandListener(CWinThread* pMessageHandler, const UINT pMessage):iMessageHandler(pMessageHandler), iMessage(pMessage)
+  CcCrystalsCommandListener::CcCrystalsCommandListener(wxEvtHandler * pEventHandler, const wxEventType pEvent):iEventHandler(pEventHandler), iEvent(pEvent)
 #endif
 {}
-#if defined(__BOTHWX__)
-CcCrystalsCommandListener::CcCrystalsCommandListener(const CcCrystalsCommandListener& pListener):iEventHandler(pListener.iEventHandler), iEvent(pListener.iEvent)
+#ifdef CRY_USEMFC
+  CcCrystalsCommandListener::CcCrystalsCommandListener(const CcCrystalsCommandListener& pListener):iMessageHandler(pListener.iMessageHandler), iMessage(pListener.iMessage)
 #else
-CcCrystalsCommandListener::CcCrystalsCommandListener(const CcCrystalsCommandListener& pListener):iMessageHandler(pListener.iMessageHandler), iMessage(pListener.iMessage)
+  CcCrystalsCommandListener::CcCrystalsCommandListener(const CcCrystalsCommandListener& pListener):iEventHandler(pListener.iEventHandler), iEvent(pListener.iEvent)
 #endif
 {}
 
@@ -35,10 +35,10 @@ CcListener* CcCrystalsCommandListener::clone() const
 
 void CcCrystalsCommandListener::perform(const void* pData)
 {
-#if defined(__BOTHWX__)
+#ifdef CRY_USEMFC
+	iMessageHandler->PostThreadMessage(iMessage, (WPARAM)pData, 0);
+#else
 	wxCommandEvent tEvent(iEvent);
 	iEventHandler->AddPendingEvent(tEvent);
-#else
-	iMessageHandler->PostThreadMessage(iMessage, (WPARAM)pData, 0);
 #endif
 }

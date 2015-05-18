@@ -18,11 +18,10 @@ int CxGroupBox::mGroupBoxCount = kGroupBoxBase;
 CxGroupBox *    CxGroupBox::CreateCxGroupBox( CrGrid * container, CxGrid * guiParent )
 {
     CxGroupBox  *theGrid = new CxGroupBox( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theGrid->Create("GroupBox",WS_CHILD| WS_CLIPCHILDREN|WS_VISIBLE| BS_GROUPBOX, CRect(0,0,10,10), guiParent, mGroupBoxCount++);
     theGrid->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
       theGrid->Create(guiParent,-1,"GroupBox",wxPoint(0,0),wxSize(0,0), 0 ); //wxTRANSPARENT_WINDOW);
 #endif
       return theGrid;
@@ -40,7 +39,7 @@ CxGroupBox::~CxGroupBox()
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxGroupBox, CWnd)
     ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
@@ -49,17 +48,16 @@ END_MESSAGE_MAP()
 
 void    CxGroupBox::SetText( const string & text )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetWindowText(text.c_str());
-#endif
-#ifdef __BOTHWX__
+#else
       SetLabel(text.c_str());
 #endif
 }
 
 CXSETGEOMETRY(CxGroupBox)
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BOOL CxGroupBox::OnEraseBkgnd(CDC* pDC)
 {
 

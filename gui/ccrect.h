@@ -56,7 +56,7 @@ class   CcRect
         CcRect& operator=( const CcRect &inRect );
             string AsString();
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
                 CRect Native();
 #endif
         // attributes

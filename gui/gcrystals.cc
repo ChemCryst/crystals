@@ -6,33 +6,31 @@
 #include <string>
 #include <iostream>
 
-#ifdef __WXINT__
+#ifdef __INW__
 #include "CrashRpt.h"
 #endif 
 using namespace std;
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   #include "stdafx.h"
   #include <cstdlib>
-#endif
-
-#ifdef __BOTHWX__
+#else
   #include <wx/event.h>
   #include <wx/app.h>
   #include <wx/config.h>
+  #ifdef CRY_OSWIN32
+    #include <wx/msw/regconf.h>
+  #endif
 #endif
 
-#ifdef __WXMSW__
-  #include <wx/msw/regconf.h>
-#endif
 
 #include "ccrect.h"
 #include "cccontroller.h"
 
 //#include "Stackwalker.h"
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   #ifdef __CRDEBUG__
     #undef THIS_FILE
     static char THIS_FILE[] = __FILE__;
@@ -194,9 +192,7 @@ using namespace std;
     delete (CFrameWnd*)m_pMainWnd;
     return exit;
   }
-#endif
-
-#ifdef __BOTHWX__
+#else
   // The one and only CCrystalsApp object
   IMPLEMENT_APP(CCrystalsApp)
 
@@ -253,61 +249,58 @@ using namespace std;
 
 }
 */
-  #ifdef __WXGTK__
+  #ifdef CRY_OSLINUX
     #include <X11/Xlib.h>
   #endif
 
-#if defined(__WXMAC__)
+#if defined(CRY_OSMAC)
+#include <CoreFoundation/CoreFoundation.h>
   #include <Carbon/Carbon.h>
   #include <stdlib.h>
   #include <iostream>
 
-  const string macWorkingDir()
+wxString macWorkingDir()
   {
-   NavDialogCreationOptions tDialogOptions;
-   NavDialogRef tDialog; 
-   NavReplyRecord tReply;
+    wxDirDialog dlg(NULL, "Choose directory to run CRYSTALS", wxGetCwd(),
+                    wxDD_DEFAULT_STYLE );
 
-   if (NavGetDefaultDialogCreationOptions(&tDialogOptions) == noErr)
+    if ( dlg.ShowModal() == wxID_OK )
     {
-      tDialogOptions.windowTitle = CFSTR("Select Working Directory");
-      tDialogOptions.actionButtonLabel = CFSTR("Choose");
-
-      if (NavCreateChooseFolderDialog(&tDialogOptions, NULL, 
-				      NULL, NULL, &tDialog) == noErr)
-	{
-	  NavDialogRun(tDialog);
-	  NavUserAction tUserAction = NavDialogGetUserAction(tDialog);
-	  if (tUserAction != kNavUserActionCancel && 
-	      tUserAction != kNavUserActionNone)
-	    {
-	      NavDialogGetReply(tDialog, &tReply);
-	      SInt32 tCount;
-	      UInt8  tPath[PATH_MAX];
-	      if (tReply.validRecord && 
-		  AECountItems(&(tReply.selection), &tCount) == noErr && 
-		  tCount == 1)  //1 Directory was chosen 
-		{
-		  FSRef tFolder;
-		  DescType tType;
-		  AEKeyword tKeyWord;
-		  Size tSize;
-	      
-		  AEGetNthPtr(&(tReply.selection), 1, typeFSRef, &tKeyWord, &tType,
-			      (DescType*)&tFolder, sizeof(tFolder), &tSize); 
-		  FSRefMakePath(&tFolder, tPath, PATH_MAX);
-		}
-	      NavDisposeReply(&tReply);
-	      return string((char*)tPath);
-	    }
-	  exit(0);
-	}
-
+        return dlg.GetPath();
+    } else {
+        exit(0);
     }
-   std::cerr << "There was an error when setting up the working directly dialog.\n";
-   exit(0);
-   return string();
-  }
+
+}
+
+
+void macSetCRYSDIR(string pPath)
+	{
+    string tResources = "CRYSDIR=" + pPath + "/";
+    char * writable = new char[tResources.size() + 1];
+    std::copy(tResources.begin(), tResources.end(), writable);
+    writable[tResources.size()] = '\0'; // don't forget the terminating 0
+    // This will leak this much memory - but only once per program instance.
+    putenv(writable);
+}
+
+void CCrystalsApp::MacOpenFile(const wxString & fileName )
+	    {
+    if ( fileName.length() > 0 )
+		{
+        // we need a directory name. Look for last slash
+        string::size_type ils = fileName.find_last_of('/');
+        //Check: is there a directory name?
+        if ( ils != string::npos )
+            m_directory = fileName.substr(0,ils);
+        //Check: is there a dscfilename?
+        int remain = fileName.length() - ils - 1;
+        if ( remain > 0 )
+            m_dscfile = fileName.substr(ils+1,remain);
+		}
+
+//    wxMessageBox("open",fileName);
+    }
 
   void macSetCRYSDIR(const char* pPath)
   {
@@ -364,7 +357,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   bool CCrystalsApp::OnInit()
   {
 
-#ifdef __WXINT__
+#ifdef __INW__
 	  // Define CrashRpt configuration parameters
   CR_INSTALL_INFO info;  
   memset(&info, 0, sizeof(CR_INSTALL_INFO));  
@@ -409,7 +402,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
     string dscfile;
 
 
-#if defined(__WXMAC__)
+#if defined(CRY_OSMAC)
     UInt8 tPath[PATH_MAX];
     if (getenv("FINDER") != NULL)
       {
@@ -436,7 +429,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
       char * env = new char[location.size()+1];
       strcpy(env, location.c_str());
       stringlist.push_back(env);
-#ifdef __BOTHWIN__      
+#ifdef CRY_OSWIN32      
       _putenv( env );
 #else     
       putenv( env );
@@ -445,6 +438,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 #endif
 
 //    MessageBox(NULL,_T("Press OK to start"),_T("Pause for debug"),MB_OK);
+// Parse any command line arguments
 
     for ( int i = 1; i < argc; i++ )
     {
@@ -463,7 +457,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
           char * env = new char[envvar.size()+1];
           strcpy(env, envvar.c_str());
           stringlist.push_back(env);
-#if defined (__BOTHWIN__)
+#if defined (CRY_OSWIN32)
           _putenv( env );
 #else
           putenv( env );
@@ -516,7 +510,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 		bExit=1;
 	}
 
-#ifdef __WXINT__
+#ifdef __INW__
 	// Uninstall CrashRpt here...
     crUninstall();
 #endif
@@ -543,7 +537,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
   // Remove dependency of new MFC library on OLEACC.DLL, by 
   // providing our own proxy functions, which do nothing if 

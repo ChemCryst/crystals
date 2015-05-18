@@ -35,15 +35,14 @@
 #define     __CxStretch_H__
 #include    "crguielement.h"
 
-#ifdef __BOTHWX__
-#include <wx/window.h>
-#define BASESTRETCH wxPanel
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASESTRETCH CWnd
+#else
+ #include <wx/window.h>
+ #define BASESTRETCH wxPanel
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASESTRETCH CWnd
-#endif
 
 class CrStretch;
 class CxGrid;
@@ -71,13 +70,12 @@ class CxStretch : public BASESTRETCH
     protected:
         // attributes
         static int  mStretchCount;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         afx_msg BOOL OnEraseBkgnd(CDC* pDC);
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-  public:
+#else
+    public:
         void OnChar(wxKeyEvent & event );
         DECLARE_EVENT_TABLE()
 #endif

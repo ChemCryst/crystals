@@ -35,18 +35,17 @@
 #ifndef     __CxResizeBar_H__
 #define     __CxResizeBar_H__
 
-#ifdef __BOTHWX__
-#include <wx/window.h>
-#include <wx/dcclient.h>
-#include <wx/dcscreen.h>
-#include <wx/font.h>
-#define BASERESIZEBAR wxWindow
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASERESIZEBAR CWnd
+#else
+ #include <wx/window.h>
+ #include <wx/dcclient.h>
+ #include <wx/dcscreen.h>
+ #include <wx/font.h>
+ #define BASERESIZEBAR wxWindow
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASERESIZEBAR CWnd
-#endif
 
 class CrResizeBar;
 class CxGrid;
@@ -92,7 +91,7 @@ private:
     bool m_ButtonDrawn;
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
 protected:
     afx_msg void OnPaint();
@@ -102,9 +101,8 @@ protected:
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     DECLARE_MESSAGE_MAP()
-#endif
 
-#ifdef __BOTHWX__
+#else
 
 public:
     void OnLButtonDown(wxMouseEvent & evt);

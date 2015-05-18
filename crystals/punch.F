@@ -455,7 +455,7 @@ C
       INCLUDE 'XCOMPD.INC'
 C
       INCLUDE 'QSTORE.INC'
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KHYD /4HH   /
       DATA KDET /4HD   /
 #else

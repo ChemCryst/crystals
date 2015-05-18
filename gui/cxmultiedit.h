@@ -43,16 +43,14 @@
 #include "crystalsinterface.h"
 #include "ciinputcontrol.h"
 
-#ifdef __BOTHWX__
-//#include <wx/textctrl.h>
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEMULTIEDIT CRichEditCtrl
+#else
  #include <wx/stc/stc.h>
-#define BASEMULTIEDIT wxStyledTextCtrl
+ #define BASEMULTIEDIT wxStyledTextCtrl
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEMULTIEDIT CRichEditCtrl
-#endif
 
 class CrMultiEdit;
 class CxGrid;
@@ -104,14 +102,13 @@ class CxMultiEdit : public BASEMULTIEDIT, public IInputControl
         int             mIdealWidth;
         int             mHeight;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
         static DWORD CALLBACK MyStreamOutCallback(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb);
 
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
     public:
         void OnChar(wxKeyEvent & event );
         DECLARE_EVENT_TABLE()

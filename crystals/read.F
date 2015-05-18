@@ -417,12 +417,10 @@ C
       IF ( LPRMPT ) THEN
         IRDLIN = 0
         IF (ITYPFL .EQ. 1 .AND. NCRU .EQ. 5)  THEN
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
+#ifdef CRY_NOGUI
           CALL XPRMPT ( NCVDU , '!' )
 #else
           WRITE(CMON,'(A)')
-#endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
      1     '^^CO SAFESET [ XPRMPT TEXT ''!'' ]'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A)')
@@ -433,12 +431,10 @@ C
           CALL XPRVDU (NCVDU,1,0)
 #endif
         ELSE
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
+#ifdef CRY_NOGUI
           CALL XPRMPT ( NCVDU , '>' )
 #else
           WRITE(CMON,'(A)')
-#endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
      1     '^^CO SAFESET [ XPRMPT TEXT ''>'' ]'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'(A)')
@@ -459,7 +455,7 @@ C If in script mode, set flag.
         END IF
 C Update status information for GUI.
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined(_INW_)
+#ifdef CRY_GUI
         IF (ISSTML .EQ. 4) CALL MENUUP
 #endif
       ENDIF
@@ -470,7 +466,9 @@ C Update status information for GUI.
 C
       ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)|| defined(_INW_)
+c      WRITE(444,*)'IStat is ', ISTAT
+
+#ifdef CRY_GUI
       IF ( NCRU .EQ. 5 ) THEN
       WRITE(CMON,'(A)') '^^CO SAFESET [ XPRMPT TEXT "" ]'
       CALL XPRVDU(NCVDU,1,0)
@@ -497,6 +495,7 @@ C
 1420  CONTINUE
 
 C&GIL      WRITE(6,*) NCRU, ':', CRDLWC
+c      WRITE(555,*) NCRU, ':', CRDLWC
 
 C If the current read unit is a script, then call KSCPRC.
       IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
@@ -692,13 +691,6 @@ C
       CHARACTER*(*) CLINE
       CHARACTER *1 CDOLAR
       CHARACTER *2 CTRAN1 , CTRAN2, CTRAN3
-#if defined(_PPC_) 
-CS***
-      CHARACTER*80 theLine
-CE***
-C
-C
-#endif
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XGUIOV.INC'
@@ -723,72 +715,29 @@ C----- INITIALISE BUFFER
 
 c      WRITE(NCWU,'(A,I5)') 'NWCARD is now:', NWCARD
 
+c      WRITE(444,*)'Reading from ', IUNIT
+
 
 C
-#if defined(_PPC_) 
-CS*** For any event driven system we have to hook in to respond to
-C**** some events (menu, high-level or keypress). The called routine
-C**** will give us back the next command in a variable theLine,
-C**** which is copied then.
-C**** 12.11.1995 Ludwig Macko
-C****
-      IF ( IUNIT .EQ. 5 ) THEN
-        CALL resetcursor
-        CALL SETSTA( 'Crystals' )
-        CALL nextlineofcommand( IOS, %LOC(theLine) )
-        CLINE = theLine
-      ELSE
-CE***
-C&PPCCE***
-
-#endif
       IF (IUNIT .EQ. NCUFU(1)) THEN
 C If in script mode, set flag.
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-        INSTRC = .FALSE.
-        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-          INSTRC = .TRUE.
+#ifdef CRY_GUI
+          INSTRC = .FALSE.
+          IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
+              INSTRC = .TRUE.
+          END IF
+          CALL MENUUP
 #endif
-#if defined(_WXS_) || defined(_INW_)
-        INSTRC = .FALSE.
-        IF ( IRDSCR(IFLIND) .GT. 0 ) THEN
-          INSTRC = .TRUE.
-c&&GILGID          WRITE (CMON,1515) '''SCRIPTS - Awaiting User Action'''
-c&&GILGID          CALL XPRVDU (NCVDU,1,0)
 
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-        END IF
-#endif
-#if defined(_WXS_) || defined(_INW_)
-        END IF
-
-#endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-C Update status information for UI.
-            CALL MENUUP
-#endif
-#if defined(_WXS_) || defined(_INW_)
-            CALL MENUUP
-#endif
-            CALL GETCOM(CLINE)
+          CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-        IF ( INSTRC ) THEN
-          WRITE (CMON,1515) '''Crystals Script Mode'''
-          CALL XPRVDU (NCVDU,1,0)
-1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-        END IF
-
-#endif
-#if defined(_WXS_) || defined(_INW_)
-        IF ( INSTRC ) THEN
-          WRITE (CMON,1515) '''Crystals Script Mode'''
-          CALL XPRVDU (NCVDU,1,0)
-1515      FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
-        END IF
-
+#ifdef CRY_GUI
+          IF ( INSTRC ) THEN
+              WRITE (CMON,1515) '''Crystals Script Mode'''
+              CALL XPRVDU (NCVDU,1,0)
+1515          FORMAT ('^^CO SET PROGOUTPUT TEXT = ',A)
+          END IF
 #endif
       ELSE
       READ ( IUNIT, 1015, ERR = 9910, END = 9920 , IOSTAT = IOS ) CLINE
@@ -796,12 +745,7 @@ C If in script mode, set progress text.
 
 1015  FORMAT ( A )
 1002  CONTINUE
-#if defined(_PPC_) 
-CS***
-      ENDIF
-CE***
-C
-#endif
+
       LENUSE = 0
       DO 1100 I = 1 , LEN ( CLINE )
         IF ( CLINE(I:I) .NE. ' ' ) LENUSE = I
@@ -979,7 +923,7 @@ C
 C
 C        CONT        LAST
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYUSE(1)/1HC/,KEYUSE(2)/1HO/,KEYUSE(3)/1HN/,KEYUSE(4)/1HT/
       DATA KEYUSE(5)/1HL/,KEYUSE(6)/1HA/,KEYUSE(7)/1HS/,KEYUSE(8)/1HT/
 #else
@@ -987,7 +931,7 @@ C
       DATA KEYUSE(5)/'L'/,KEYUSE(6)/'A'/,KEYUSE(7)/'S'/,KEYUSE(8)/'T'/
 #endif
 C----- A DUMMY FILE
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA  IDEV /1H ,1H ,1H ,1H /
 #else
       DATA  IDEV /' ',' ',' ',' ' /
@@ -1178,7 +1122,6 @@ C
         ELSE IF ( ISYSIN .EQ. ISCRIP ) THEN
           CALL XFLPCK ( LCMAGE(NC) , LENGTH ,
      2            CSCPDV(1:LSCPDV) , CSCPEX(1:LSCPEX) , CRFILE , N )
-C DJW Dec11 #if defined(_GIL_)  || defined(_MAC_)
 C FORCE all #SCRIPT arguments to lowercase - all other files can be
 C mixed case, but all script must be lower. This is for compatibility
 C with existing script calls in scripts which are usually uppercase.
@@ -1511,7 +1454,7 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XIOBUF.INC'
 
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KQUOT /1H"/
 #else
       DATA KQUOT /'"'/
@@ -1717,7 +1660,7 @@ C      BOTH        UNKN(OWN)   VT52        VT10(0)     VGA
 C      WIN(OW)     LOWE(R)     UPPE(R)     MIXE(D)     ARIT(H)
 C      GEOM        IO          IC
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYFNC(1,1) / 1HM / , KEYFNC(2,1) / 1HA /
       DATA KEYFNC(3,1) / 1HP / , KEYFNC(4,1) / 1HS /
       DATA KEYFNC(5,1) / 1H  / , KEYFNC(6,1) / 1H  /
@@ -2303,7 +2246,7 @@ C
 C                  SEQU        DIRE
 C
 
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYACC(1,1) / 1HS / , KEYACC(2,1) / 1HE /
       DATA KEYACC(3,1) / 1HQ / , KEYACC(4,1) / 1HU /
       DATA KEYACC(1,2) / 1HD / , KEYACC(2,2) / 1HI /
@@ -2319,7 +2262,7 @@ C
 C
 C     OLD   NEW   CIF   SCRA    UNKN
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYSTA(1,1) / 1HO / , KEYSTA(2,1) / 1HL /
       DATA KEYSTA(3,1) / 1HD / , KEYSTA(4,1) / 1H  /
       DATA KEYSTA(1,2) / 1HN / , KEYSTA(2,2) / 1HE /
@@ -2347,7 +2290,7 @@ C
 C
 C                  FORM        UNFO
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYFRM(1,1) / 1HF / , KEYFRM(2,1) / 1HO /
       DATA KEYFRM(3,1) / 1HR / , KEYFRM(4,1) / 1HM /
       DATA KEYFRM(1,2) / 1HU / , KEYFRM(2,2) / 1HN /
@@ -2363,7 +2306,7 @@ C
 C
 C                  READ        WRIT
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYWRI(1,1) / 1HR / , KEYWRI(2,1) / 1HE /
       DATA KEYWRI(3,1) / 1HA / , KEYWRI(4,1) / 1HD /
       DATA KEYWRI(1,2) / 1HW / , KEYWRI(2,2) / 1HR /
@@ -2379,7 +2322,7 @@ C
 C
 C                  FREE        LOCK
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYLCK(1,1) / 1HF / , KEYLCK(2,1) / 1HR /
       DATA KEYLCK(3,1) / 1HE / , KEYLCK(4,1) / 1HE /
       DATA KEYLCK(1,2) / 1HL / , KEYLCK(2,2) / 1HO /
@@ -2567,21 +2510,7 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XSSCHR.INC'
-#if defined(_PPC_) 
-CO***
-\XDISCS
-#endif
       INCLUDE 'XIOBUF.INC'
-#if defined(_PPC_) 
-\CFLDAT
-C
-      CHARACTER*31  theName
-      INTEGER       MYLENGTH
-      INTEGER*2     theLength
-CE***
-C
-CDJWMAR99[
-#endif
       DATA COPER / ' output sent to ', ' connected to ', 'closed', 
      1 ' appended to '/
       DATA CRESLT / 'released ' , 'opened ' , 'closed '
@@ -2703,27 +2632,10 @@ C
 C
 C
 C
-#if defined(_PPC_) 
-CS***
-        IF ( IDEV .EQ. NCDFU ) THEN
-           DISKOP = 0
-           ISTAT = KDUMP( IN )
-           IF ( ISTAT .LT. 0 ) CALL XERHND ( IERSEV )
-           CALL SETNAM ( ' ', 1 )
-        ENDIF
-CE***
-#endif
         ISTAT = KFLCLS ( IDEV )
       ELSE
         IF ( IACCSS .EQ. 2 ) THEN
-#if !defined(_PPC_) 
           IF ( ISSINI .LE. 0 ) THEN
-#else
-CP***          IF ( ISSINI .LE. 0 ) THEN
-#endif
-#if defined(_PPC_) 
-          IF ( ISSINI .LE. 0 .AND. DISKOP .GT. 0) THEN
-#endif
             GO TO 9960
           ENDIF
         ENDIF
@@ -2771,26 +2683,8 @@ C----- GENERATE NAME IF NECESSARY - NOT FOR D/A FILES
        ISTAT = KFLOPN ( IDEV, NEWFIL, ISTTUS, IRWOPN, IFORMT, ISSSEQ )
        IF ( ISTAT .LE. 0 ) GO TO 9980
       ELSE IF ( IACCSS .EQ. 2 ) THEN
-#if defined(_PPC_) 
-      IF ( IDEV .EQ. NCDFU ) THEN
-       CALL transferdiscname( %loc(theName) , theLength )
-       MYLENGTH = theLength
-       CALL SETNAM ( theName, MYLENGTH )
-      ENDIF
-#endif
        ISTAT = KDAOPN ( IDEV , NEWFIL , ISTTUS , IRDWRI )
-
-#if !defined(_PPC_) 
-      IF ( ISTAT .LT. 0 ) GO TO 9980
-#else
-      IF ( ISTAT .LT. 0 ) THEN
-#endif
-#if defined(_PPC_) 
-        GO TO 9980
-      ELSE
-        IF ( IDEV .EQ. NCDFU ) DISKOP = 1
-      ENDIF
-#endif
+       IF ( ISTAT .LT. 0 ) GO TO 9980
       ENDIF
 C
 
@@ -2817,19 +2711,7 @@ cdjwsep2011
       ENDIF
 CRICFEB01[
 2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT ''', A , ''' ]' )
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      IF ( IDEV .EQ. NCPU ) THEN
-        WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
-        CALL XPRVDU ( NCVDU, 1, 0 )
-      ELSE IF ( IDEV .EQ. NCWU ) THEN
-        WRITE ( CMON,2346) '_MT_LIS', NEWFIL(1:LENNAM)
-        CALL XPRVDU ( NCVDU, 1, 0 )
-      ELSE IF ( IDEV .EQ. NCLU ) THEN
-        WRITE ( CMON,2346) '_MT_LOG', NEWFIL(1:LENNAM)
-        CALL XPRVDU ( NCVDU, 1, 0 )
-      ENDIF
-#endif
-#if defined(_WXS_) || defined(_INW_)
+#ifdef CRY_GUI
       IF ( IDEV .EQ. NCPU ) THEN
         WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
         CALL XPRVDU ( NCVDU, 1, 0 )
@@ -2996,7 +2878,7 @@ C
 C      ENVI(RONMENT) ERRO(R)   MESS(AGE)   DISC        SPY
 C      INDE(X)
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA KEYFNC / 4HENVI , 4HERRO , 4HMESS , 4HDISC , 4HSPY  ,
      2 4HINDE /
 #else

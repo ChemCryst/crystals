@@ -136,7 +136,7 @@
 #include    <string>
 #include    <sstream>
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <wx/thread.h>
 #endif
 

@@ -14,18 +14,17 @@
 #include   <vector>
 using namespace std;
 
-#ifdef __BOTHWX__
-#include <wx/window.h>
-#include <wx/dcclient.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#define BASETEXTOUT wxWindow
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASETEXTOUT CWnd
+#else
+ #include <wx/window.h>
+ #include <wx/dcclient.h>
+ #include <wx/font.h>
+ #include <wx/colour.h>
+ #define BASETEXTOUT wxWindow
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASETEXTOUT CWnd
-#endif
 
 class CrTextOut;
 class CxGrid;
@@ -106,16 +105,17 @@ class CxTextOut : public BASETEXTOUT
 
     unsigned int GetLineCount() const { return m_Lines.size(); };
 
-#ifdef __BOTHWX__
-#define COLORREF wxColour
+
+    void AddLine( const string& strLine );  // Add a Line
+
+#ifdef CRY_USEMFC
+    void CxSetFont( LOGFONT& lf );        // Set the Font
+    void SetColourTable( COLORREF* pColTable ) { memcpy( &m_ColTable, pColTable, sizeof( COLORREF ) * 16 ); if( GetSafeHwnd() ) Invalidate(); };
+#else
+ #define COLORREF wxColour
     void CxSetFont( wxFont* lf );        // Set the Font
 #endif
 
-    void AddLine( const string& strLine );  // Add a Line
-#ifdef __CR_WIN__
-    void CxSetFont( LOGFONT& lf );        // Set the Font
-    void SetColourTable( COLORREF* pColTable ) { memcpy( &m_ColTable, pColTable, sizeof( COLORREF ) * 16 ); if( GetSafeHwnd() ) Invalidate(); };
-#endif
     void SetBackColour( COLORREF col ); // Set the background Colour
     void SetHead( int nHead );          // Set the Head
     int GetHead() const { return( m_nHead ); }; // Return the Head
@@ -132,14 +132,13 @@ class CxTextOut : public BASETEXTOUT
 
     vector<string> m_Lines;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CFont*          m_pFont;            // Font we are using
     LOGFONT         m_lfFont;           // Font as a LOGFONT
     COLORREF        m_BackCol;          // Background Colour
     HCURSOR         m_hCursor;          // Cursor for the window
     COLORREF        m_ColTable[ 16 ];   // Colour Table
-#endif
-#ifdef __BOTHWX__
+#else
     wxFont*         m_pFont;            // Font we are using
     wxBrush*        m_brush;
     wxPen*          m_pen;
@@ -159,17 +158,16 @@ class CxTextOut : public BASETEXTOUT
     void UpdateVScroll();
     int             m_zDelta;
 
-#ifdef __CR_WIN__
-#define PlatformDC CDC
-#endif
-#ifdef __BOTHWX__
-#define PlatformDC wxDC
+#ifdef CRY_USEMFC
+ #define PlatformDC CDC
+#else
+ #define PlatformDC wxDC
 #endif
 
     bool RenderSingleLine( string&, PlatformDC*, int, int );
     int  GetColourCodes( string&, COLOURCODE* );      // Remains the same
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   protected:
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
@@ -185,8 +183,7 @@ class CxTextOut : public BASETEXTOUT
     //}}AFX_MSG
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
   public:
     void OnPaint(wxPaintEvent & evt);
     void OnEraseBackground(wxEraseEvent & evt);

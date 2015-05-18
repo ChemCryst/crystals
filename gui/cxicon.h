@@ -29,16 +29,15 @@
 #define           __CxIcon_H__
 #include    "crguielement.h"
 
-#ifdef __BOTHWX__
-#include <wx/stattext.h>
-#include <wx/icon.h>
-#define BASETEXT wxStaticText
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASETEXT CStatic
+#else
+ #include <wx/stattext.h>
+ #include <wx/icon.h>
+ #define BASETEXT wxStaticText
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASETEXT CStatic
-#endif
 
 class CrIcon;
 class CxGrid;

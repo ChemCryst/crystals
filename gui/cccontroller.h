@@ -11,23 +11,17 @@
 #ifndef     __CcController_H__
 #define     __CcController_H__
 
-#ifdef __CR_WIN__
- #include <afxwin.h>
-#endif
 
 #include <algorithm>
 #include <vector>
 #include <deque>
 #include <list>
-
-#ifdef __BOTHWIN__
- #include <windows.h>
-#endif
-
 #include    <cstdio> //For FILE definition
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+#else
  #include <wx/app.h>
  #include <wx/thread.h>
  #include <wx/event.h>
@@ -39,20 +33,15 @@
 #include    "ccstatus.h"
 #include    "ccrect.h"
 #include    "crystals.h"
-
 #include    <cstdio> //For FILE definition
 
-#ifdef __CR_WIN__
- #include <afxwin.h>
-#endif
 
-
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
  #include <windows.h>
 #endif
 
  
-#ifdef __BOTHWX__
+#ifndef CRY_USEMFC   //  if using wxWidgets
 //DECLARE_EVENT_TYPE(ccEVT_COMMAND_ADDED, 1238) //Made up number 
 extern const wxEventType ccEVT_COMMAND_ADDED;
 #endif
@@ -155,13 +144,12 @@ class   CcController
     CrWindow *      mCurrentWindow;
     int m_ExitCode;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     static CWinThread *mCrystalsThread;
     static CWinThread *mGUIThread;
     static CFont* mp_font;
     static CFont* mp_inputfont;
-#endif
-#ifdef __BOTHWX__
+#else
     static CcThread *mCrystalsThread;
     static wxFont* mp_inputfont;
 #endif
@@ -170,6 +158,8 @@ class   CcController
 
   private:
 
+    
+    
     void AddCrystalsCommand(const string &line , bool jumpQueue = false); // Called by SendCommand
     bool GetInterfaceCommand( string & line );                    // Called by DoCommandTransferStuff
     void GetValue (deque<string> & tokenlist);
@@ -219,7 +209,7 @@ extern "C" {
   void  FORCALL(datain)         ( int id, int *data, int offset, int nwords );
   void  FORCALL(callccode)      (  char *theLine                     );
   void  FORCALL(guexec)         (  char *theLine                     );
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
   bool  IsWinNT();
 #endif
 
@@ -228,7 +218,7 @@ extern "C" {
 }
 
 
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
 class CcProcessInfo
 {
    public:

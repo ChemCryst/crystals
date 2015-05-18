@@ -45,11 +45,10 @@ int CxCheckBox::mCheckBoxCount = kCheckBoxBase;
 CxCheckBox *    CxCheckBox::CreateCxCheckBox( CrCheckBox * container, CxGrid * guiParent )
 {
     CxCheckBox  *theStdButton = new CxCheckBox(container);
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         theStdButton->Create("CheckBox",WS_CHILD| WS_VISIBLE| BS_AUTOCHECKBOX, CRect(0,0,10,10), guiParent, mCheckBoxCount++);
     theStdButton->SetFont(CcController::mp_font);
-#endif
-#ifdef __BOTHWX__
+#else
       theStdButton->Create(guiParent,-1,"CheckBox",wxPoint(0,0),wxSize(0,0));
 #endif
 
@@ -69,20 +68,18 @@ CxCheckBox::~CxCheckBox()
 
 void CxCheckBox::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+  #ifdef CRY_USEMFC
 DestroyWindow();
-#endif
-#ifdef __BOTHWX__
+#else
 Destroy();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void    CxCheckBox::BoxClicked()
 {
       bool state = GetBoxState() == 1 ? true : false;
-#endif
-#ifdef __BOTHWX__
+#else
 void    CxCheckBox::BoxClicked(wxCommandEvent & e)
 {
       bool state = GetValue();
@@ -93,11 +90,10 @@ void    CxCheckBox::BoxClicked(wxCommandEvent & e)
 
 void    CxCheckBox::SetText( const string & text )
 {
-#ifdef __BOTHWX__
-      SetLabel(text.c_str());
-#endif
-#ifdef __CR_WIN__
-    SetWindowText(text.c_str());
+#ifdef CRY_USEMFC
+	SetWindowText(text.c_str());
+#else
+    SetLabel(text.c_str());
 #endif
 }
 
@@ -107,7 +103,7 @@ CXGETGEOMETRIES(CxCheckBox)
 
 int   CxCheckBox::GetIdealWidth()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
 //    HDC hdc= (HDC) (GetDC()->m_hAttribDC);
@@ -122,8 +118,7 @@ int   CxCheckBox::GetIdealWidth()
     dc.SelectObject(oldFont);
     return ( size.cx + 20); //Allow space for checkbox
 
-#endif
-#ifdef __BOTHWX__
+#else
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cx+20); // nice width for buttons
@@ -133,7 +128,7 @@ int   CxCheckBox::GetIdealWidth()
 
 int   CxCheckBox::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     CDC* cdc = GetDC();
@@ -142,8 +137,7 @@ int   CxCheckBox::GetIdealHeight()
     GetTextExtentPoint32(hdc, text, text.GetLength(), &size);
     ReleaseDC(cdc);
     return (size.cy+5); // *** optimum height for MacOS Buttons (depends on users font size?)
-#endif
-#ifdef __BOTHWX__
+#else
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cy+5); // nice height for buttons
@@ -153,15 +147,14 @@ int   CxCheckBox::GetIdealHeight()
 
 void    CxCheckBox::SetBoxState( bool inValue )
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int value;
     if ( inValue == true )
         value = 1;
     else
         value = 0;
     SetCheck( value );
-#endif
-#ifdef __BOTHWX__
+#else
       SetValue (inValue);
 #endif
 
@@ -169,27 +162,24 @@ void    CxCheckBox::SetBoxState( bool inValue )
 
 bool CxCheckBox::GetBoxState()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     int value = GetCheck();
     if ( value == 1 )
         return (true);
     else
         return (false);
-#endif
-#ifdef __BOTHWX__
+#else
       return GetValue();
 #endif
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxCheckBox, BASECHECKBOX)
     ON_CONTROL_REFLECT(BN_CLICKED, BoxClicked)
     ON_WM_CHAR()
 END_MESSAGE_MAP()
-#endif
-
-#ifdef __BOTHWX__
+#else
 //wxWindows Event Table
 BEGIN_EVENT_TABLE(CxCheckBox, BASECHECKBOX)
       EVT_CHECKBOX( -1, CxCheckBox::BoxClicked )
@@ -198,7 +188,7 @@ END_EVENT_TABLE()
 #endif
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxCheckBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
 {
     NOTUSED(nRepCnt);
@@ -223,8 +213,7 @@ void CxCheckBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
         }
     }
 }
-#endif
-#ifdef __BOTHWX__
+#else
 void CxCheckBox::OnChar( wxKeyEvent & event )
 {
       switch(event.GetKeyCode())
@@ -257,13 +246,12 @@ void CxCheckBox::Focus()
 
 void CxCheckBox::Disable(bool disabled)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if(disabled)
             EnableWindow(false);
     else
             EnableWindow(true);
-#endif
-#ifdef __BOTHWX__
+#else
     if(disabled)
             Enable(false);
     else

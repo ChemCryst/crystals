@@ -49,7 +49,7 @@ CrMenu::~CrMenu()
     mMenuList.clear();
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 //for wx version, only delete the top level menu bar.
     if ( ptr_to_cxObject != nil )
     {

@@ -143,16 +143,16 @@
 using namespace std;
 #include    <math.h>
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <wx/thread.h>
 // These macros are being defined somewhere. They shouldn't be.
 
-#ifdef GetCharWidth
- #undef GetCharWidth
-#endif
-#ifdef DrawText
- #undef DrawText
-#endif
+ #ifdef GetCharWidth
+  #undef GetCharWidth
+ #endif
+ #ifdef DrawText
+  #undef DrawText
+ #endif
 #endif
 
 list<CcPlotData*> CcPlotData::sm_PlotList;

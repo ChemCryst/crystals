@@ -119,7 +119,11 @@ using namespace std;
 #include    "ccmodelatom.h"
 #include    "ccmodelbond.h"
 #include        "crwindow.h"      // for getting syskeys
+#ifdef CRY_OSMAC
+#include    <OpenGL/glu.h>
+#else
 #include    <GL/glu.h>
+#endif
 #include    "crmodel.h"
 
 CrModel::CrModel( CrGUIElement * mParentPtr )
@@ -138,7 +142,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   ptr_to_cxObject = CxModel::CreateCxModel( this,(CxGrid *)(mParentPtr->GetWidget()) );
   ((CrWindow*)GetRootWidget())->SendMeSysKeys( (CrGUIElement*) this );
   m_style.normal_res = 15;
-  m_style.radius_type = COVALENT;
+  m_style.radius_type = CRCOVALENT;
   m_style.radius_scale = 0.25;
   m_style.m_modview = (CxModel*)ptr_to_cxObject;
   m_style.showh = true;
@@ -152,7 +156,7 @@ CrModel::~CrModel()
   if ( ptr_to_cxObject )
   {
     ((CxModel*)ptr_to_cxObject)->CxDestroyWindow();
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     delete (CxModel*)ptr_to_cxObject;
 #endif
     ptr_to_cxObject = nil;
@@ -242,27 +246,27 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
         {
           case kTCovalent:
           {
-            m_style.radius_type = COVALENT;
+            m_style.radius_type = CRCOVALENT;
             break;
           }
           case kTVDW:
           {
-            m_style.radius_type = VDW;
+            m_style.radius_type = CRVDW;
             break;
           }
           case kTThermal:
           {
-            m_style.radius_type = THERMAL;
+            m_style.radius_type = CRTHERMAL;
             break;
           }
           case kTTiny:
           {
-            m_style.radius_type = TINY;
+            m_style.radius_type = CRTINY;
             break;
           }
           case kTSpare:
           {
-            m_style.radius_type = SPARE;
+            m_style.radius_type = CRSPARE;
             break;
           }
         }
@@ -784,19 +788,19 @@ void CrModel::GetValue(deque<string> &  tokenList)
     {
         tokenList.pop_front();
 		switch ( m_style.radius_type ) {
-            case COVALENT:
+            case CRCOVALENT:
 				SendCommand( "COVALENT" , true );
 				break;
-            case VDW:
+            case CRVDW:
 				SendCommand( "VDW" , true );
 				break;
-            case THERMAL:
+            case CRTHERMAL:
 				SendCommand( "THERMAL" , true );
 				break;
-			case SPARE:
+			case CRSPARE:
 				SendCommand( "SPARE" , true );
 				break;
-			case TINY:
+			case CRTINY:
 				SendCommand( "TINY" , true );
 				break;
 			default:

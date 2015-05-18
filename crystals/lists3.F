@@ -2734,9 +2734,11 @@ C--PRINT THE LIST TYPE AND DETAILS
       IF (ISSPRT .EQ. 0) THEN
         IF (ID(1).NE.0) THEN
           WRITE(NCWU,1300)LN,LSN,IADDI,LL,ID
-        ELSE
+        ELSE IF (ID(2).GT.0) THEN
           CALL XCDATE(ID(2),CDT)
-          WRITE(NCWU,1300)LN,LSN,IADDI,LL,CDT
+          WRITE(NCWU,1301)LN,LSN,IADDI,LL,CDT
+        ELSE
+          WRITE(NCWU,1301)LN,LSN,IADDI,LL,'Invalid date'
         END IF
       ENDIF
 1300  FORMAT(' Print list type ',I5,5X,'serial number ',I8,5X,

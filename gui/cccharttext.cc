@@ -4,7 +4,7 @@
 #include "cccharttext.h"
 #include "crchart.h"
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 // These macros are being defined somewhere. They shouldn't be.
 
 #ifdef GetCharWidth

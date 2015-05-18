@@ -15,7 +15,7 @@
 #include    "crystalsinterface.h"
 
 
-#ifdef DEPRECATED__BOTHWX__
+#ifdef DEPRECATEDCRY_USEWX
 
 // The whole file. WX only.
 
@@ -28,11 +28,11 @@ using namespace std;
 #include    "crweb.h"
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 #include    <afxwin.h>
 #endif
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include    <wx/gdicmn.h>
 #include <wx/stdpaths.h>
 #include <wx/filename.h>
@@ -71,10 +71,10 @@ CxWeb::~CxWeb()
 
 void CxWeb::CxDestroyWindow()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
@@ -101,31 +101,31 @@ void CxWeb::SetAddress(const string &uri) {
 
 void CxWeb::SetIdealHeight(int nCharsHigh)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       mIdealHeight = nCharsHigh * mHeight;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       mIdealHeight = nCharsHigh * GetCharHeight();
 #endif
 }
 
 void CxWeb::SetIdealWidth(int nCharsWide)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CClientDC cdc(this);
     TEXTMETRIC textMetric;
     cdc.GetTextMetrics(&textMetric);
       int owidth = textMetric.tmAveCharWidth;
       mIdealWidth = nCharsWide * owidth;
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       mIdealWidth = nCharsWide * GetCharWidth();
 #endif
 }
 
 
 
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 //wx Message Map
 BEGIN_EVENT_TABLE(CxWeb, wxWebControl)
 END_EVENT_TABLE()
@@ -139,13 +139,13 @@ void CxWeb::Focus()
 
 void CxWeb::Disable(bool disabled)
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     if(disabled)
             EnableWindow(false);
     else
             EnableWindow(true);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     if(disabled)
             Enable(false);
     else

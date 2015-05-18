@@ -43,15 +43,14 @@
 #include    <LCaption.h>
 #endif
 
-#ifdef __BOTHWX__
-#include <wx/menu.h>
-#define BASEMENU wxMenu
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEMENU CMenu
+#else
+ #include <wx/menu.h>
+ #define BASEMENU wxMenu
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEMENU CMenu
-#endif
 
 class CrMenu;
 class CxMenu;

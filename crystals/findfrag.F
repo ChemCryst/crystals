@@ -588,7 +588,7 @@ C
       DATA TOLER /0.6/, ITRANS / 0 /
       DATA CATFLA, CSERFL, CSPEFL /'*AT', '*SE', '*SP'/
       DATA CNOCC, CMAXS/'*NOCC', '*MAXS'/
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA ISPECQ /4HQ   /
 #else
       DATA ISPECQ /'Q   '/

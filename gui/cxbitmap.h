@@ -10,17 +10,16 @@
 #define         __CxBitmap_H__
 #include    "crguielement.h"
 
-#ifdef __BOTHWX__
-#include <wx/bitmap.h>
-#include <wx/window.h>
-#include <wx/dcclient.h>
-#define BASEBITMAP wxWindow
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEBITMAP CWnd
+#else 
+ #include <wx/bitmap.h>
+ #include <wx/window.h>
+ #include <wx/dcclient.h>
+ #define BASEBITMAP wxWindow
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEBITMAP CWnd
-#endif
 
 class CrBitmap;
 class CxGrid;
@@ -55,16 +54,15 @@ class CxBitmap : public BASEBITMAP
         int mHeight;
         bool mbOkToDraw;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         void ReplaceBackgroundColour();
         CBitmap mbitmap;
         CPalette mpal;
 
         afx_msg void OnPaint();
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-                wxBitmap mbitmap;
+#else
+		wxBitmap mbitmap;
                 wxPalette mpal;
 
                 void OnPaint(wxPaintEvent & event);

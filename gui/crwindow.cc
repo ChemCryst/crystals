@@ -188,12 +188,12 @@ CrWindow::~CrWindow()
 
 
 void CrWindow::SetPane(void* ptr, unsigned int position, string text) {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 	((CxWindow*)ptr_to_cxObject)->AddPane((wxWindow*)ptr, position, text);
 #endif
 }
 void CrWindow::SetPaneMin(void* ptr,int w,int h){
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 	((CxWindow*)ptr_to_cxObject)->SetPaneMin((wxWindow*)ptr, w, h);
 #endif
 }
@@ -459,7 +459,7 @@ CcParse CrWindow::ParseInput( deque<string> &  tokenList )
                    oldSize = CcRect( cgeom );
 
 // Ensure all edges are on screen.
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 				CcRect sRect;
 				sRect.mTop = wxGetClientDisplayRect().GetY();
 			    sRect.mLeft = wxGetClientDisplayRect().GetX();
@@ -819,12 +819,12 @@ CrGUIElement *  CrWindow::FindObject( const string & Name )
 {
     CrGUIElement * theElement = nil;
 
-    if (theElement = CrGUIElement::FindObject( Name )) //Assignment within conditional (OK)
+    if ((theElement = CrGUIElement::FindObject( Name ))) //Assignment within conditional (OK)
         return theElement;
 
     if ( mGridPtr != nil )
     {
-        if (theElement = mGridPtr->FindObject( Name ))  //Assignment (OK)
+        if ((theElement = mGridPtr->FindObject( Name )))  //Assignment (OK)
             return ( theElement );
     }
 
@@ -863,7 +863,7 @@ void CrWindow::Cancelled()
    
       if (mSafeClose > 6)
       {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
           MessageBox(NULL,"Script not responding","Closing window",MB_OK);
 #endif
           LOGERR("Script not responding, window closed. " + mName);
@@ -956,12 +956,32 @@ void CrWindow::FocusToInput(char theChar)
     }
     else if ( ( mCancelSet ) && ( nChar == 27 ) ) //Escape key, Cancel if set.
     {
-        Cancelled();
+		if (mName != "_MAIN")       //Don't close main window with ESC. Bad.
+			Cancelled();
     }
     else
     {
+		if ( (mName == "_MAIN") || (!mIsModal) )
             mControllerPtr->FocusToInput(theChar);
     }
+}
+
+void CrWindow::CheckFocus() {
+	//Under wx occasionally focus goes to main window instead of modal dialog - this 
+	//makes default key presses (ret / escape) get lost until the window is clicked on.
+//	LOGERR("Checkfocus");
+
+	if (mName == "_MAIN") {        //Only concerned if this is the main window.
+//		LOGERR("... is main");
+        if (!mModalWindowStack.empty()) { //Check for topmost modal window
+//			LOGERR("... has modal windows");
+			CrWindow* topModal = mModalWindowStack.back();
+			if ( topModal != this ) {  // Don't refocus onself or we'll loop forever
+//				LOGERR("... calling focus");
+				topModal->CrFocus();
+			}
+		}
+	}
 }
 
 void CrWindow::SetCommitText(const string & text)
@@ -1090,7 +1110,7 @@ void CrWindow::TimerFired()
 CcRect CrWindow::GetScreenArea()
 {
     CcRect retVal;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     RECT screenRect;
     SystemParametersInfo( SPI_GETWORKAREA, 0, &screenRect, 0 );
 
@@ -1098,8 +1118,7 @@ CcRect CrWindow::GetScreenArea()
                 screenRect.left,
                 screenRect.bottom,
                 screenRect.right);
-#endif
-#ifdef __BOTHWX__
+#else
       retVal.mTop = 0;
       retVal.mLeft = 0;
       retVal.mBottom = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);

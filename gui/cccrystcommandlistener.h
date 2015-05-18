@@ -17,25 +17,26 @@
 
 #include "cclistenerperformer.h"
 #include "cclistenablesafedeque.h"
-#if defined(__BOTHWX__)
+
+#ifndef CRY_USEMFC
 #include <wx/event.h>
 #endif
 
 class CcCrystalsCommandListener : public AddListener
 {
 	private:
-		#if defined(__BOTHWX__)
-		wxEvtHandler* iEventHandler;
-		WXTYPE iEvent;
-		#else
+		#ifdef CRY_USEMFC
 		CWinThread* iMessageHandler;
 		UINT iMessage;
+		#else
+		wxEvtHandler* iEventHandler;
+		WXTYPE iEvent;
 		#endif
 	public:
-		#if defined(__BOTHWX__)
-		CcCrystalsCommandListener(wxEvtHandler * pEventHandler, const wxEventType pEvent);
-		#else
+		#ifdef CRY_USEMFC
 		CcCrystalsCommandListener::CcCrystalsCommandListener(CWinThread* pMessageHandler, const UINT pMessage);
+		#else
+		CcCrystalsCommandListener(wxEvtHandler * pEventHandler, const wxEventType pEvent);
 		#endif
 		CcCrystalsCommandListener(const CcCrystalsCommandListener& pListener);
 		virtual CcListener* clone() const;

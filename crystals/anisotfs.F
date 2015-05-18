@@ -122,7 +122,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-#if defined(_HOL_) 
+#ifdef _HOL_ 
       DATA KHYD /4HH   /
       DATA KDET /4HD   /
 #else
@@ -529,7 +529,7 @@ C
 C
 C
       DATA CCALC/' TLS','AXIS'/
-#if defined(_HOL_) 
+#ifdef _HOL_ 
       DATA ITARG(1) / 4HALL /
 #else
       DATA ITARG(1)/'ALL '/
@@ -1071,7 +1071,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-#if defined(_HOL_)
+#ifdef _HOL_
       DATA JFRN /4HF   , 4HR   , 4HN   , 4H1   /
 #else
       DATA JFRN /'F', 'R', 'N', '1'/
@@ -1472,10 +1472,7 @@ C----- COPY MATRICES FOR SAVING IN LIST 20
 C---OUTPUT NEW TENSORS
       IF (ISSPRT.EQ.0) WRITE (NCWU,1750)
       WRITE(CMON,1750)
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-      CALL ZMORE(CMON,0)
-#endif
-#if defined(_WXS_) 
+#ifdef CRY_GUI
       CALL ZMORE(CMON,0)
 #endif
 1750  FORMAT (' Tensors with respect to principal axes of L')

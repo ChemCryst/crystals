@@ -140,25 +140,34 @@
 #define     __CxModel_H__
 #include    "crguielement.h"
 
-#ifdef __BOTHWX__
-#include  <wx/defs.h>
-#include  <wx/app.h>
-#include  <wx/menu.h>
-#include  <wx/dcclient.h>
-#include <wx/dcmemory.h>
-#include  <wx/glcanvas.h>
-#include  <wx/event.h>
-#include <wx/stattext.h>
-#include <wx/cursor.h>
-#define BASEMODEL wxGLCanvas
+#ifdef CRY_USEMFC
+ #include    <GL\gl.h>
+ #include    <GL\glu.h>
+ #include    <afxwin.h>
+ #define BASEMODEL CWnd
+#else
+ #include  <wx/defs.h>
+ #include  <wx/app.h>
+ #include  <wx/menu.h>
+ #include  <wx/dcclient.h>
+ #include <wx/dcmemory.h>
+ #include  <wx/glcanvas.h>
+ #include  <wx/event.h>
+ #include <wx/stattext.h>
+ #define BASEMODEL wxGLCanvas
+
+ class mywxStaticText : public wxStaticText
+ {
+	public:
+		mywxStaticText(wxWindow* wins,int i,wxString s,wxPoint p,wxSize ss,int f);
+		wxWindow * m_parent;
+		void OnLButtonUp(wxMouseEvent & event);
+		void OnLButtonDown(wxMouseEvent & event);
+		void OnRButtonUp(wxMouseEvent & event);
+		DECLARE_EVENT_TABLE()
+ };
 #endif
 
-#ifdef __CR_WIN__
-#include    <GL\gl.h>
-#include    <GL\glu.h>
-#include    <afxwin.h>
-#define BASEMODEL CWnd
-#endif
 
 
 #define RC_NEXT_LINE_TOKEN 0x0790
@@ -197,19 +206,6 @@ class CcModelObject;
 #define MODELLIST 8
 #define PICKLIST 9
 
-#ifdef __BOTHWX__
-class mywxStaticText : public wxStaticText
-{
-  public:
-    mywxStaticText(wxWindow* wins,int i,wxString s,wxPoint p,wxSize ss,int f);
-    wxWindow * m_parent;
-    void OnLButtonUp(wxMouseEvent & event);
-    void OnLButtonDown(wxMouseEvent & event);
-    void OnRButtonUp(wxMouseEvent & event);
-    DECLARE_EVENT_TABLE()
-};
-#endif
-
 
 class CxModel : public BASEMODEL
 {
@@ -232,10 +228,9 @@ class CxModel : public BASEMODEL
 
 // The usual functions:
     static CxModel *    CreateCxModel( CrModel * container, CxGrid * guiParent );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CxModel(CrModel* container);
-#endif
-#ifdef __BOTHWX__
+#else
 //    CxModel(wxWindow* parent, wxWindowID id = -1, int* args = NULL, long style = 0, const wxString& name = "GLWindow");
     CxModel(wxWindow* parent, int* args);
 #endif
@@ -368,10 +363,10 @@ class CxModel : public BASEMODEL
 
 
 	
-#ifdef __CR_WIN__
+//#ifdef __CR_WIN__
 //    BYTE * m_bitmapbits;
 //    BITMAPINFO * m_bitmapinfo;
-#endif
+//#endif
 
 protected:
 
@@ -400,7 +395,7 @@ protected:
 
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     HPALETTE m_hPalette;
     CStatic* m_TextPopup;
 
@@ -424,8 +419,7 @@ protected:
     afx_msg void OnMenuSelected (UINT nID);
     afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
     DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
     mywxStaticText * m_TextPopup;
     bool m_DoNotPaint;
     bool m_NotSetupYet;

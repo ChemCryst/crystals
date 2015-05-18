@@ -43,7 +43,7 @@ C Update files to work with gfortran compiler.
 C
 C Revision 1.60  2011/03/04 05:46:45  rich
 C Now building WXS version with digital compiler on windows, therefore introduce
-C _DIGITALF77_ and _GNUF77_ to distinguish compiler differences, while keeping _WXS_ and _GID_ etc to distinguish library differences.
+C _DIGITALF77_ and _GNUF77_ to distinguish compiler differences, while keeping __WXS__ and __GID__ etc to distinguish library differences.
 C
 C Revision 1.59  2009/01/21 17:01:59  djw
 C Use - rather than # for higher generations of dsc files because of clash with (incomplete) treatment of # in html links
@@ -65,7 +65,7 @@ C Revision 1.3  2005/01/17 09:39:17  rich
 C Remove MTRNLG debugging output
 C
 C Revision 1.2  2004/12/13 16:16:09  rich
-C Changed GIL to _GIL_ etc.
+C Changed GIL to __GIL__ etc.
 C
 C Revision 1.1.1.1  2004/12/13 11:16:06  rich
 C New CRYSTALS repository
@@ -191,11 +191,11 @@ CODE FOR XERIOM
 C -- THIS SUBROUTINE SHOULD OUTPUT A MESSAGE ABOUT THE I/O ERROR THAT JU
 C    OCCURED, ON UNIT 'IUNIT'
 C
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
 #endif
       CHARACTER*80 REASON
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       INTEGER RMSSTS , RMSSTV
 #endif
       INCLUDE 'XUNITS.INC'
@@ -214,42 +214,27 @@ C
       REASON = ' '
       MSGST = 1
       MSGEND = 1
-#if defined(_PPC_) 
-C -- DETERMINE REASON FOR ERROR, USING CUSTOM ROUTINE GETERR
-      CALL GETERR( IOS, REASON, MSGEND )
-#endif
-#if defined(_H_P_) 
+#ifdef _H_P_ 
 C -- OUTPUT OF THE REASON WITH ROUTINE PERROR
       CALL PERROR (' UNIX - perror message ')
-#endif
-#if defined(_DOS_) 
-C -- DETERMINE REASON WITH ENVIRONMENT ROUTINE
-      CALL FORTRAN_ERROR_MESSAGE@ (-IOS, REASON)
-      CALL XCTRIM( REASON, MSGEND )
-#endif
-#if defined(_DVF_) || defined(_GID_) || defined(_WXS_) || defined (_INW_)
-      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
-      CALL XCTRIM( REASON, MSGEND )
-#endif
-#if defined(_DVF_) 
-      CALL PERROR (' perror message ')
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
-      CALL XCTRIM( REASON, MSGEND )
-      CALL PERROR (' perror message ')
-#endif
-#if defined(_LIN_) 
-      WRITE(REASON, '(A,I6)') 'File I/O Error: ', IOS
-      CALL XCTRIM( REASON, MSGEND )
-      CALL PERROR (' perror message ')
-#endif
-#if defined(_VAX_) 
+#elif defined(__VAX__) 
 C -- DETERMINE REASON FOR ERROR, USING SYSTEM ROUTINE
       CALL ERRSNS ( I1,RMSSTS,RMSSTV,I4,I5 )
       CALL LIB$SYS_GETMSG ( RMSSTS , MSGEND , REASON )
       MSGST = INDEX ( REASON , ',' ) + 1
 C
+#elif defined(CRY_OSWIN32)
+      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
+      CALL XCTRIM( REASON, MSGEND )
+
+#ifdef __DVF__ 
+      CALL PERROR (' perror message ')
+#endif
+
+#elif defined(CRY_OSLINUX)  || defined(CRY_OSMAC)
+      WRITE(REASON, '(A,I4)') 'File I/O Error: ', IOS
+      CALL XCTRIM( REASON, MSGEND )
+      CALL PERROR (' perror message ')
 #endif
       WRITE ( CMON,1005) REASON(MSGST:MSGEND)
       CALL XPRVDU(NCEROR, 1, 0)
@@ -277,21 +262,12 @@ C      IFMODE      ACCESS REQUIRED
 C                    ISSREA      READ ONLY
 C                    ISSWRI      READ/WRITE ACCESS
 C                    ISSAPP      WRITE/APPEND
-#if defined(_PPC_) 
-C                    'READ' IMPLIES READONLY,SHARED IS IGNORED
-#endif
-#if defined(_H_P_) 
-C                    THIS PARAMETER IS IGNORED
-#endif
-#if defined(_DOS_) 
-C                    THIS PARAMETER IS IGNORED
-#endif
-#if defined(_VAX_) 
+C                    'READ' IMPLIES READONLY,SHARED IS IGNORED - on VAX
+C                    THIS PARAMETER IS IGNORED - other platforms
 C                    'READ' IMPLIES READONLY,SHARED
 C      IFFORM      FORMATTED/UNFORMATTED FILE
 C                    ISSFRM      FORMATTED FILE
 C                    ISSUFM      UNFORMATTED FILE
-CRICJUL00
 C      ISEQDA      SEQUENTIAL/DIRECT ACCESS FILE
 C                    ISSSEQ      SEQUENTIAL ACCESS
 C                    ISSDAF      DIRECT ACCESS
@@ -308,7 +284,6 @@ C  'XERIOM' IF REQUIRED TO PROVIDE MORE INFORMATION.
 C
 C
 C
-#endif
       CHARACTER *8 CCONT
       CHARACTER *(*) CFNAME
       CHARACTER *256  CLCNAM, FILNAM
@@ -329,7 +304,6 @@ C
       DATA FLSTAT(3) / 'CIF    ' / , FLSTAT(4) / 'SCRATCH' /
       DATA FLSTAT(5) / 'UNKNOWN' /
       DATA FLFORM(1) / 'FORMATTED  ' / , FLFORM(2) / 'UNFORMATTED' /
-CRICJUL00
       DATA FLSQDA(1) / 'SEQUENTIAL ' / , FLSQDA(2) / 'DIRECT     ' /
 C
 C
@@ -338,9 +312,7 @@ C
 C -- CHECK DATA TO SOME EXTENT
 
       IF ( IFSTAT .GT. NFLSTT) GOTO 9910
-CDJWMAR99
       IF ( IFMODE .GT. ISSAPP ) GO TO 9910
-CRICJUL00
       IF ( ISEQDA .GT. ISSDAF ) GO TO 9910
       IF ( IFFORM .GT. 2 ) GO TO 9910
 
@@ -388,7 +360,7 @@ C
 
       IF ( IFMODE .EQ. ISSREA ) GO TO 2500
 
-#if !defined(_VAX_) 
+#if !defined(__VAX__) 
       CCONT = 'LIST'
 #else
 C----- FOR THE VAX, SET THE CARRIAGE CONTROL ATTRIBUTES
@@ -405,7 +377,7 @@ C
      1         STATUS = ACSTAT ,
      1         FORM   = CFORM ,
      1         ACCESS = FLSQDA(ISEQDA) ,
-#if defined(_VAX_) 
+#ifdef __VAX__ 
      1         CARRIAGECONTROL = CCONT,
 #endif
      1         IOSTAT = IOS ,
@@ -418,14 +390,10 @@ C
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IUNIT ,
      1         FILE   = CLCNAM(1:NAMLEN),
-#if defined(_PPC_) 
-     1         STATUS = TESTAT ,
-#else
      1         STATUS = ACSTAT ,
-#endif
      1         FORM   = CFORM ,
      1         ACCESS = FLSQDA(ISEQDA) ,
-#if defined(_VAX_) 
+#ifdef __VAX__ 
      1         CARRIAGECONTROL = CCONT,
 #endif
      1         IOSTAT = IOS ,
@@ -452,17 +420,17 @@ C
 C
 C
 2500  CONTINUE
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
 C
 #endif
       IF ( FILNAM .EQ. ' ' ) THEN
         OPEN ( UNIT   = IUNIT ,
-#if defined(_VAX_) 
+#ifdef __VAX__ 
      1         SHARED ,
      1         READONLY ,
 #endif
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL 
      1         READONLY ,
 #endif
 #if !defined(_DOS_) 
@@ -479,14 +447,14 @@ C
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IUNIT ,
      1         FILE   = CLCNAM(1:NAMLEN),
-#if defined(_VAX_) 
+#ifdef __VAX__ 
      1         SHARED ,
      1         READONLY ,
 #endif
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL 
      1         READONLY ,
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
      1         STATUS = ACSTAT ,
 #endif
 #if !defined(_DOS_) 
@@ -524,7 +492,7 @@ C it is passed a string like "CRDSC:", so we must either check
 C for FNF and BADFILENAME, or better still, just let the system
 C try again with a NEW file, if that still fails, then there is an
 C error.
-#if !defined(_GID_) && !defined(_WXS_) &&  !defined (_INW_)
+#if !defined(CRY_OSWIN32)
       IF ( IOS .NE. ISSFNF ) GO TO 9900
 C
 C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
@@ -604,16 +572,14 @@ C                      'CIF' IS 'CREATE IF FILE CANNOT BE OPENED'
 C
 C    IFMODE       MODE OF ACCESS REQUIRED : - 'ISSREA' OR 'ISSWRI'
 C
-#if defined(_PPC_) 
 C                    'READ' IMPLIES READONLY,SHARED IS IGNORED
-#endif
-#if defined(_H_P_) 
+#ifdef _H_P_ 
 C                    THIS PARAMETER IS IGNORED
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
 C                    THIS PARAMETER IS IGNORED
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 C                    'READ' IMPLIES READONLY,SHARED
 C
 C
@@ -647,7 +613,7 @@ C
 
       FILNAM = CFNAME
 
-#if defined(_CYB_) 
+#ifdef _CYB_ 
 C THE 'DISK' FILE WAS A SCRATCH, CREATED FROM NEW EACH RUN
       IF (FILNAM .EQ. ' ') THEN
             IF(IUNIT .GE. 10)THEN
@@ -767,16 +733,16 @@ C    MUST BE PERFORMED IMMEDIATELY
       GO TO 9000
 
 2500  CONTINUE
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
 
 #endif
       IF ( FILNAM .EQ. ' ' ) THEN
         OPEN ( UNIT   = IDUNIT ,
-#if defined(_VAX_) 
+#ifdef __VAX__ 
      1         SHARED ,
 #endif
-#if defined(_DVF_) || defined(_DIGITALF77_) || defined(_VAX_) 
+#if defined (CRY_FORTDIGITAL) || defined(__VAX__)
      1         READONLY ,
 #endif
 #if !defined(_DOS_) 
@@ -794,10 +760,10 @@ C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
-#if defined(_VAX_) 
+#ifdef __VAX__ 
      1         SHARED ,
 #endif
-#if defined(_DVF_) || defined(_DIGITALF77_) || defined(_VAX_) 
+#if defined (CRY_FORTDIGITAL) || defined(__VAX__)
      1         READONLY ,
 #endif
 #if !defined(_DOS_) 
@@ -830,7 +796,7 @@ C it is passed a string like "CRDSC:", so we must either check
 C for FNF and BADFILENAME, or better still, just let the system
 C try again with a NEW file, if that still fails, then there is an
 C error.
-#if !defined(_GID_) && !defined(_WXS_) && !defined (_INW_)
+#if !defined(CRY_OSWIN32)
       IF ( IOS .NE. ISSFNF ) GO TO 9900
 
 C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
@@ -939,7 +905,7 @@ C
 C
       IF ( IFUNC .EQ. 1 ) THEN
         ILSTLV = 1
-#if defined(_PRI_) 
+#ifdef _PRI_ 
       ISSSTA = 0
 #endif
       ELSE IF ( IFUNC .EQ. 2 ) THEN
@@ -1024,7 +990,7 @@ C>DJWOCT96
       IF (IUNIT .EQ. NCVDU) THEN
         WRITE ( CMON,1005) TEXT
         CALL XPRVDU(NCVDU, 1, 0)
-#if defined(_DOS_) 
+#ifdef _DOS_ 
        IF(.NOT.LCLOSE) CALL ZPRMPT(TEXT)
 C        WRITE ( NCVDU,1005) TEXT
 #endif
@@ -1050,7 +1016,7 @@ C      J SOME MEASURE OF PROGRESS
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'XIOBUF.INC'
-#if defined(_MAC_) 
+#ifdef __MAC__ 
       DATA CLOCK / '|', '/', '-', '\\' /
 #else
       DATA CLOCK / '|', '/', '-', '\' /
@@ -1058,29 +1024,7 @@ C      J SOME MEASURE OF PROGRESS
 #endif
        ICLOCK = 1 + MOD (J,4)
 C
-#if !defined(_PPC_) 
-C       WRITE ( CMON, '(''+'',A,1X,A1,A1)')  CTEXT, CLOCK(ICLOCK),
-C     1     CHAR(13)
-C       CALL XPRVDU(NCVDU, 1, 0)
-#else
-CS***
-#endif
-#if defined(_PPC_) 
-       IF ( LEN(CTEXT) .GT. 2 ) THEN
-CE***
-#endif
-#if defined(_PCC_) 
-       WRITE ( CIOBUF, '(1X,A,1X,A1)')  CTEXT, CLOCK(ICLOCK)
-#endif
-#if defined(_PPC_) 
-       CALL FLBUFF( LEN(CTEXT)+3, 0, -1 )
-CS***
-       ELSE
-            CALL nextmatrixcursor
-       ENDIF
-CE***
-#endif
-#if defined(_XXX_) 
+#ifdef _XXX_ 
 C------ DO NOTHING
 #endif
       RETURN
@@ -1096,69 +1040,27 @@ C----- DRAW A SLIDER TO IVALUE % OF MAXVAL
       CHARACTER*(NINTER) CDISPL
 C
       IPERCN = MIN0 ( 100 , ( 100 * IVALUE ) / MAXVAL )
-CDJWJAN99<
       IF (ISSTML .EQ. 4) THEN
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_)  || defined (_INW_)
-       WRITE (CMON,1505) IPERCN
-1505   FORMAT ('^^CO SET PROGOUTPUT COMPLETE = ',I3)
+#ifdef CRY_GUI
+         WRITE (CMON,1505) IPERCN
+1505     FORMAT ('^^CO SET PROGOUTPUT COMPLETE = ',I3)
 #endif
-       CALL XPRVDU (NCVDU,1,0)
-       RETURN
+         CALL XPRVDU (NCVDU,1,0)
+         RETURN
       ENDIF
       NSTAR = MIN0 ( NINTER, (NINTER * IVALUE ) / MAXVAL)
-#if defined(_XXX_) 
-      STOP 'ROUTINE NOT IMPLEMENTED'
-C
-C----- LOAD THERMOMETER INTO CLEARED CHARACTER BUFFER
-#endif
-#if !defined(_PPC_) 
-          CDISPL = ' '
-          WRITE (CDISPL, 1510)  (IA , J = 1, NSTAR )
-1510      FORMAT (50A1)
-#endif
+      CDISPL = ' '
+      WRITE (CDISPL, 1510)  (IA , J = 1, NSTAR )
+1510  FORMAT (50A1)
       IF (ISSTML .EQ. 3) THEN
-#if !defined(_PPC_) 
-        WRITE(NCVDU,'(A1,$)') IA
-        RETURN
-#endif
+          WRITE(NCVDU,'(A1,$)') IA
+          RETURN
       ELSE
 C----- GET A CARRIAGE RETURN, WITHOUT LINEFEED
-#if !defined(_PPC_) 
-        WRITE ( CMON,1515) IPERCN, CDISPL(1:NINTER) ,CHAR(13)
-        CALL XPRVDU(NCVDU, 1, 0)
-1515   FORMAT( '+', 10X, I4, 1X, A50,12X,A1)
+          WRITE ( CMON,1515) IPERCN, CDISPL(1:NINTER) ,CHAR(13)
+          CALL XPRVDU(NCVDU, 1, 0)
+1515      FORMAT( '+', 10X, I4, 1X, A50,12X,A1)
 C
-C&H-P          WRITE ( NCAWU , 1515 ) IPERCN , ( IA , J = 1 , NSTAR )
-C&H-P1515      FORMAT (  10X , I4 , 1X , 60A1 )
-C&H-PC 27 = ESC, 65=A
-C&H-P          WRITE ( NCAWU, 1516 ) CHAR(27),CHAR(65)
-C&H-P1516      FORMAT ( 2A1 , NN )
-C
-#else
-C**** For the Macintosh version with Motorola compiler we need a
-#endif
-#if defined(_PPC_) 
-C**** special implementation of the thermometer.
-C**** This has by the way the advantage of less IO
-C**** 29.9.1995 Ludwig Macko
-CS***
-          IF ( IPERCN .EQ. 2 ) THEN
-              WRITE ( CIOBUF , 1514 ) IA
-              CALL FLBUFF( 22, 1, ISSPRT )
-          ELSE
-              IF ( IPERCN .EQ. 100 ) THEN
-                  WRITE ( CIOBUF , 1516 ) IA
-                  CALL FLBUFF( 1, 0, ISSPRT )
-              ELSE
-                  WRITE ( CIOBUF , 1515 ) IA
-                  CALL FLBUFF( 1, 1, ISSPRT )
-              ENDIF
-          ENDIF
-1514      FORMAT ( 15X, A1 )
-1515      FORMAT ( A1 )
-1516      FORMAT ( A1 )
-CE***
-#endif
       ENDIF
       RETURN
       END
@@ -1172,78 +1074,25 @@ C
 C -- READS EACH RECORD FROM THE FILE UNTIL ONE READ FAILS. THIS IS
 C    ASSUMED TO BE THE FIRST NON-EXISTANT RECORD.
 C
-#if defined(_DGV_) 
-      CHARACTER*64 CFILE
-#endif
       PARAMETER (NMXREC = 100 000)
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
 C
 C
-#if defined(_DGV_) 
-C
-C -- IN THE DATA GENERAL IMPLEMENTATION THE DIRECT ACCESS FILE IS
-C    REOPENED AS SEQUENTIAL, THE END FOUND, AND THE FILE IS REOPENED
-C    USING DIRECT ACCESS. ( DIRECT ACCESS READ SUCCEEDS WITH ANY
-C    POSITIVE RECORD NUMBER )
-C
-      INQUIRE ( UNIT = IUNIT , NAME = CFILE , RECL = IRECL )
-      CLOSE ( IUNIT )
-C
-      OPEN ( IUNIT , FILE = CFILE , ACCESS = 'SEQUENTIAL' ,
-     2      FORM = 'UNFORMATTED' , STATUS = 'OLD' )
-C
-C
-#endif
       J = NMXREC
       DO 2000 I = 1, J
 C
       LAST = I
 C
-#if defined(_PPC_) 
-      READ ( IUNIT , REC = I , ERR = 3000, END=3000, IOSTAT=IOS ) J
-#endif
-#if defined(_CPU68K_) 
-      READ ( IUNIT , REC = I , ERR = 3000,IOSTAT=IOS) J
-      IF (IOS .EQ. -1) GOTO 3000
-#endif
-#if defined(_H_P_) 
       READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS ) J
-#endif
-#if defined(_DGV_) 
-      READ ( IUNIT , END = 3000 ) J
-#endif
-#if defined(_DOS_) 
-      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
       IF (IOS .EQ. -1) GOTO 3000
-#endif
-#if defined(_LIN_) 
-      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
-      IF (IOS .EQ. -1) GOTO 3000
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
-      IF (IOS .EQ. -1) GOTO 3000
-#endif
-#if defined(_WXS_)  || defined (_INW_)
-      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
-      IF (IOS .EQ. -1) GOTO 3000
-#endif
-#if defined(_DVF_) || defined(_GID_) 
-      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
-      IF (IOS .EQ. -1) GOTO 3000
-#endif
-#if defined(_VAX_) 
-      READ ( IUNIT , REC = I , ERR = 3000, IOSTAT=IOS) J
-      IF (IOS .EQ. -1) GOTO 3000
-C
-#endif
+
 2000  CONTINUE
 C
       WRITE(NCWU,2010) J
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2010) J
+         WRITE(NCWU,2010) J
       ENDIF
 2010  FORMAT (1X, 'File is too long -- more than ', I6,' records' , / )
  
@@ -1253,18 +1102,6 @@ C      STOP 100
 C
 3000  CONTINUE
 C
-#if defined(_DGV_) 
-C
-C -- CLOSE AND REOPEN FILE
-C
-      CLOSE ( IUNIT )
-      OPEN ( IUNIT , FILE = CFILE , ACCESS = 'DIRECT' ,
-     2       RECL = IRECL ,
-     2       FORM = 'UNFORMATTED' , STATUS = 'OLD' )
-C
-C
-C
-#endif
       RETURN
       END
 C
@@ -1277,7 +1114,7 @@ C----- A NULL STRING IS A PERMITTED RETURN VALUE IF THE PROGRAM IS RUN
 C      FROM THE DIRECTORY CONTAINING THE FILES
 C
 C -- RETURN VALUES :-
-C      1      NULL STRING
+C      0      NULL STRING
 C      ELSE    LENGTH
 C
       CHARACTER*(*) CPATH
@@ -1287,19 +1124,14 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XDISCS.INC'
 C
-      KPATH = 1
+      KPATH = 0
       CPATH = ' '
       IF (KFLNAM( NCDFU, CNAME) .GT. 0) THEN
-C----- UNDER MAC OS, LOOK FOR THE ':'
-#if defined(_PPC_) 
-            I = INDEX (CNAME, ':' )
-C----- UNDER UNIX, LOOK FOR THE '/'
-#endif
-#if defined(_H_P_) 
+#ifdef _H_P_ 
             I = INDEX (CNAME, '/' )
-C----- UNDER DOS, LOOK FOR THE LAST BACKSLASH - CHAR(92)
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
+C----- UNDER DOS, LOOK FOR THE LAST BACKSLASH - CHAR(92)
             J = LEN (CNAME)
             DO 10 K = J, 1, -1
               IF (CNAME(K:K) .EQ. CHAR(92)) GOTO 20
@@ -1308,8 +1140,7 @@ C----- UNDER DOS, LOOK FOR THE LAST BACKSLASH - CHAR(92)
 20          CONTINUE
             I = K
 C----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
+#elif defined(CRY_OSLINUX) || defined (CRY_OSMAC)
             J = LEN (CNAME)
             DO 10 K = J, 1, -1
               IF (CNAME(K:K) .EQ. '/') GOTO 20
@@ -1317,26 +1148,13 @@ C----- UNDER LINUX, LOOK FOR THE LAST FORWARDSLASH - CHAR(?)
             K = 0
 20          CONTINUE
             I = K
-#endif
-#if defined(_WXS_)  || defined (_INW_)
-            J = LEN (CNAME)
-            DO 10 K = J, 1, -1
-              IF (CNAME(K:K) .EQ. '/') GOTO 20
-10          CONTINUE
-            K = 0
-20          CONTINUE
-            I = K
-C----- UNDER WIN, LOOK FOR THE LAST BACKSLASH - CHAR(92)
-#endif
-#if defined(_DVF_) || defined(_GID_) 
+#elif defined(CRY_OSWIN32) 
             J = LEN (CNAME)
             I = KCLEQL ( CNAME, CHAR(92))
-#endif
-#if defined(_VAX_) 
+#elif defined(__VAX__) 
 C----- UNDER VMS, LOOK FOR THE ']'
             I = INDEX (CNAME, ']' )
-#endif
-#if defined(_XXX_) 
+#else
             I = 0
 #endif
             IF (I .GT. 0) THEN
@@ -1375,7 +1193,7 @@ C  THE VALUE OF 'JQUN' SHOULD BE EQUAL TO 'IQUN' WHEN THE PROCESS TYPE
 C  IS INTERACTIVE, AND NOT OTHERWISE
 C
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 C
 C -- THE TECHNIQUE USED ON THE VAX IS TO FIND THE VALUE OF THE DCL
 C    SYMBOL 'CRYSTALS_MODE' SET BY THE COMMAND PROCEDURE. THE WILL
@@ -1398,17 +1216,10 @@ C    AND 'KFLCHR' TO DETERMINE (2).
 C
 C
 #endif
-#if defined(_PRI_) 
-      PARAMETER ( KEY = 1 )
-      PARAMETER ( NCHAR = 16 )
-      CHARACTER*(NCHAR) CRESLT
-      INTEGER*2 INFO(8) , ICODE
-#endif
-#if defined(_H_P_) 
+#ifdef _H_P_ 
       INTEGER SYSTEM
 C
 #endif
-#if !defined(_PPC_) 
       CHARACTER*32 CMODE
       CHARACTER*64 CSUBTX(3)
 C
@@ -1416,33 +1227,27 @@ C
       COMMON /XSUBLN/ LSUBTX(3)
 C
 C
-#endif
-#if defined(_ICL_) 
-      INTEGER *8 IQN
-#endif
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCHARS.INC'
 C
-#if !defined(_PPC_) 
       CMODE = ' '
 C
-#endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       ISTAT = LIB$GET_SYMBOL ( 'CRYSTALS_MODE' , CMODE )
       IF ( .NOT. ISTAT ) CALL LIB$STOP ( %VAL(ISTAT) )
 C
 #endif
-#if defined(_PRI_) 
+#ifdef _PRI_ 
       CALL RDTK$$ ( INTS(KEY), INFO, CRESLT, INTS(NCHAR/2), ICODE )
       CMODE = CRESLT
 C
 #endif
-#if defined(_DGV_) 
+#ifdef _DGV_ 
       CALL XRDKEY ( 1 , CMODE , LMODE )
 C
 #endif
-#if defined(_H_P_) 
+#ifdef _H_P_ 
       IER = SYSTEM('tty -s')
       IF ( IER .EQ. 0) THEN
         CMODE = 'INTERACTIVE'
@@ -1451,7 +1256,7 @@ C
       END IF
 C
 #endif
-#if defined(_ICL_) 
+#ifdef _ICL_ 
       CALL READSCLINT('USAGE',IQN,IRES)
       IF ( IQN .EQ. 1 ) THEN
         CMODE = 'BATCH'
@@ -1460,7 +1265,6 @@ C
       ENDIF
 C
 #endif
-#if !defined(_PPC_) 
       IF ( CMODE .EQ. 'BATCH' ) THEN
         IQUN = 3
         JQUN = 0
@@ -1473,16 +1277,7 @@ C
       ENDIF
 C
 C----- READ OTHER PARAMETERS OFF COMMAND LINE (DGV ONLY)
-#else
-CS*** Inserted
-#endif
-#if defined(_PPC_) 
-C**** Ludwig Macko, 5.12.1994
-      IQUN = 1
-      JQUN = 1
-CE*** Inserted
-#endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       DO 2000 I = 1 , 3
         CALL XRDKEY ( I + 1 , CSUBTX(I) , LSUBTX(I) )
 2000  CONTINUE
@@ -1491,7 +1286,7 @@ CE*** Inserted
       END
 C
 CODE FOR XRDKEY
-#if defined(_DGV_) || defined(_VAX_) 
+#ifdef __VAX__ 
       SUBROUTINE XRDKEY ( IKEY , CTEXT , LENGTH )
       IMPLICIT INTEGER ( A - Z )
 C
@@ -1512,12 +1307,12 @@ C
       CHARACTER*(*) CTEXT
 
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       LENGTH = 0
       CTEXT = ' '
 
 #endif
-#if defined(_DGV_) 
+#ifdef _DGV_ 
       CHARACTER*80 CBUFFR
 C
       INTEGER*4 ISYS_GTMES
@@ -1552,7 +1347,7 @@ C
         CTEXT = CBUFFR(1:LENGTH)
       ENDIF
 #endif
-#if defined(_DGV_) || defined(_VAX_) 
+#ifdef __VAX__ 
       RETURN
       END
 C
@@ -1630,16 +1425,14 @@ C    TO ALWAYS RETURN THE VALUE 0.0 FROM THIS ROUTINE
 C    THE VARIABLE 'ISSTIM' IN THE 
 C    COMMON BLOCK 'XSSVAL' CAN BE USED TO DISABLE THESE MESSAGES.
 C
-#if defined(_DIGITALF77_) || defined (_INTELF77_)
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
 #endif
+#ifdef CRY_FORTINTEL
+      USE IFPORT
+#endif
       REAL RTIME
-#if defined(_DIGITALF77_)  || defined (_INTELF77_)
       CALL CPU_TIME(RTIME)
-#endif
-#if defined(_DOS_) 
-      CALL CLOCK@ (RTIME)
-#endif
       RETURN
       END
 C
@@ -1648,26 +1441,29 @@ C RICMAY99 ITIME is an intrinsic on some systems. Renamed JTIME.
       SUBROUTINE JTIME ( I )
 C
 C -- RETURN , AS INTEGER VALUE , THE NUMBER OF SECONDS SINCE MIDNIGHT
-#if defined(_DIGITALF77_)  || defined (_INTELF77_)
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
       I = NINT ( SECNDS ( 0.0 ) )
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
+#elif defined(CRY_FORTINTEL)
+      USE DFPORT
+      I = NINT ( SECNDS ( 0.0 ) )
+#elif defined(CRY_GNU)
       CALL CPU_TIME(A)
       I = NINT ( A )
-#endif
-#if defined(_DOS_) 
+#elif defined(_DOS_) 
       CALL CLOCK@ (A)
       I = NINT (A)
-C
 #endif
       RETURN
       END
 C
 CODE FOR XTIMER
       SUBROUTINE XTIMER ( CTIME2 )
-#if defined(_DIGITALF77_)  || defined (_INTELF77_)
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
+#endif
+#ifdef CRY_FORTINTEL
+      USE IFPORT
 #endif
 C -- GET SYSTEM TIME IN CHARACTER FORM
 C
@@ -1690,10 +1486,9 @@ C
 C
       CHARACTER*8 CTIME2
 
-#if defined(_DOS_)
+#ifdef _DOS_
       CHARACTER*8 TIME@
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)|| defined (_INTELF77_)
+#elif defined(CRY_GNU) || defined (__INW__)
       DIMENSION ITIM(3)
 #endif
 
@@ -1702,15 +1497,13 @@ C
         RETURN
       END IF
                       
-#if defined(_DOS_) 
+#ifdef _DOS_ 
       CTIME2 = TIME@()
-#endif
-#if defined(_DIGITALF77_)  
-      CTIME2 = CLOCK()
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)|| defined (_INTELF77_)
+#elif defined(CRY_GNU) || defined (__INW__)
       CALL ITIME(ITIM)
       WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
+#else
+      CTIME2 = CLOCK()
 #endif
       RETURN
       END
@@ -1718,8 +1511,10 @@ C
 CODE FOR XDATER
       SUBROUTINE XDATER ( CDATE )
 C
-#if defined(_DIGITALF77_)  || defined (_INTELF77_)
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
+#elif defined (CRY_FORTINTEL)
+      USE IFPORT
 #endif
 C -- THIS ROUTINE SHOULD RETURN THE CURRENT DATE IN THE CHARACTER*8
 C    VARIABLE 'CDATE'.
@@ -1743,7 +1538,7 @@ C      DATE              INTEGER ARRAY :- YEAR, MONTH, DAY
 C
       INCLUDE 'XSSVAL.INC'
 C
-#if defined(_H_P_) 
+#ifdef _H_P_ 
 $alias get_time = 'time' (%ref)
 $alias format_time = 'ctime' (%ref)
 $alias copy_time = 'sprintf' (%ref,%ref,%val)
@@ -1757,32 +1552,17 @@ C
 #endif
       CHARACTER*8 CDATE
 C
-#if defined(_DIGITALF77_)  || defined (_INTELF77_)
+#ifdef CRY_NONGNU
       CHARACTER*8 CDATE2
-#endif
-#if defined(_ICL_) 
-      CHARACTER*8 CDATE2
-#endif
-#if defined(_VAX_) 
+#elif defined(__VAX__) 
       CHARACTER*9 CDATE2
       CHARACTER*36 CMONTH
       DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
-#endif
-#if defined(_PPC_) 
-      CHARACTER*9 CDATE2
-      CHARACTER*36 CMONTH
-      DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
-#endif
-#if defined(_PRI_) 
-      CHARACTER*16 CDATE2
-#endif
-#if defined(_DGV_) 
-      DIMENSION IDATE(3)
-#endif
-#if defined(_DOS_) 
+#elif defined(_DOS_) 
       CHARACTER*8 EDATE@
 #endif
-#if defined(_GNUF77_)  || defined(_INTELF77_)
+
+#if defined(CRY_GNU)  || defined(__INW__)
       DIMENSION IDAT(3)
 #endif
       IF ( ISSTIM .EQ. 2 ) THEN
@@ -1790,22 +1570,7 @@ C
          RETURN
       END IF
 
-#if defined(_ICL_) 
-      CALL ICL9LGGDATE ( CDATE2 )
-      CDATE = CDATE2(7:8)//'.'//CDATE2(5:6)//'.'//CDATE2(3:4)
-#endif
-#if defined(_PPC_) 
-      CALL getlsdate( %loc(CDATE2) )
-      CDATE = CDATE2(1:6)//CDATE2(8:9)
-      I = INDEX (CMONTH, CDATE(4:6))
-      I = (I+2)/3
-      WRITE(CDATE(4:6),'(I2.2,A1)') I,'-'
-      I = INDEX(CDATE(1:8), ' ')
-      IF (I .NE. 0) CDATE(I:I) = '0'
-C
-C
-#endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       CALL DATE ( CDATE2 )
       CDATE = CDATE2(1:6)//CDATE2(8:9)
       I = INDEX (CMONTH, CDATE(4:6))
@@ -1814,29 +1579,14 @@ C
       I = INDEX(CDATE(1:8), ' ')
       IF (I .NE. 0) CDATE(I:I) = '0'
 C
-#endif
-#if defined(_PRI_) 
-      CALL DATE$A ( CDATE2 )
-      CDATE = CDATE2(10:11)//'-'//CDATE2(6:8)//CDATE2(15:16)
-C
-#endif
-#if defined(_DGV_) 
-      CALL DATE ( IDATE )
-      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDATE(3) ,
-     2      IDATE(2) , MOD ( IDATE(1) , 100 )
-      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
-      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
-
-#endif
-#if defined(_GNUF77_) 
+#elif defined(_GNUF77_) 
       CALL IDATE ( IDAT )
       WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
      2      IDAT(2) , MOD ( IDAT(3) , 100 )
       IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
       IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 C
-#endif
-#if defined(_INTELF77_)
+#elif defined(__INW__)
 C Intel returns mon, day, year. c.f. gnu which is day, mon, year.
       CALL IDATE ( IDAT(1), IDAT(2), IDAT(3) )
       WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(2) ,
@@ -1844,24 +1594,20 @@ C Intel returns mon, day, year. c.f. gnu which is day, mon, year.
       IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
       IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
 C
-#endif
-#if defined(_H_P_) 
+#elif defined(_H_P_) 
       call get_time (tmbuf)
       char_ptr=format_time(tmbuf)
       call copy_time(buf,'%s'//char(0),char_ptr)
       CDATE=buf(9:10)//'-'//buf(5:7)//buf(23:24)
 C
-#endif
-#if defined(_DOS_) 
+#elif defined(_DOS_) 
       CDATE = EDATE@()
-#endif
-#if defined(_DIGITALF77_) 
+#elif defined(__DVF__) || defined(__GID__) 
       CDATE2 = DATE()
       WRITE(CDATE,'(A,2(''/'',A))')
      1    CDATE2(4:5),CDATE2(1:2),CDATE2(7:8)
 C
-#endif
-#if defined(_XXX_) 
+#else
       CDATE = ' '
 C
 #endif
@@ -1873,41 +1619,10 @@ CODE FOR KOR
 C
 C -- THIS ROUTINE SHOULD PERFORM AN 'INCLUSIVE OR' OF 'I' AND 'J'
 C
-#if defined(_DOS_) 
-      KOR = IOR ( I , J )
-#endif
-#if defined(_PPC_) 
+#ifdef __VAX__ 
       KOR = JIOR ( I , J )
-#endif
-#if defined(_DIGITALF77_) 
+#else
       KOR = IOR ( I , J )
-#endif
-#if defined(_GIL_) || defined(_LIN_)  || defined(_MAC_)
-      KOR = IOR ( I , J )
-#endif
-#if defined(_GNUF77_) || defined(_INTELF77_)
-      KOR = IOR ( I , J )
-#endif
-#if defined(_VAX_) 
-      KOR = JIOR ( I , J )
-#endif
-#if defined(_PRI_) 
-      KOR = OR ( I , J )
-#endif
-#if defined(_DGV_) 
-      KOR = IOR ( I , J )
-#endif
-#if defined(_IBM_) 
-      KOR = IOR ( I , J )
-#endif
-#if defined(_ORI_) 
-      KOR = OR (I, J)
-#endif
-#if defined(_H_P_) 
-      KOR = IOR ( I , J )
-#endif
-#if defined(_XXX_) 
-      STOP 'KOR NOT IMPLEMENTED'
 #endif
       RETURN
       END
@@ -1917,44 +1632,16 @@ CODE FOR KAND
 C
 C -- THIS ROUTINE PERFORMS AN 'AND' OF 'I' AND 'J'
 C
-#if defined(_DOS_) 
-      KAND = IAND ( I , J )
-#endif
-#if defined(_PPC_) 
+#ifdef __VAX__ 
       KAND = JIAND ( I , J )
-#endif
-#if defined(_DIGITALF77_) 
+#else
       KAND = IAND ( I , J )
-#endif
-#if defined(_GNUF77_) || defined(_INTELF77_)
-      KAND = IAND ( I , J )
-#endif
-#if defined(_VAX_) 
-      KAND = JIAND ( I , J )
-#endif
-#if defined(_PRI_) 
-      KAND = AND ( I , J )
-#endif
-#if defined(_DGV_) 
-      KAND = IAND ( I , J )
-#endif
-#if defined(_IBM_) 
-      KAND = IAND ( I , J )
-#endif
-#if defined(_ORI_) 
-      KAND = AND (I, J)
-#endif
-#if defined(_H_P_) 
-      KAND = IAND ( I , J )
-#endif
-#if defined(_XXX_) 
-      STOP 'KAND NOT IMPLEMENTED'
 #endif
       RETURN
       END
 C
 CODE FOR XMOVE
-      SUBROUTINE XMOVEold ( ISRCE , IRESLT , N )
+c      SUBROUTINE XMOVEold ( ISRCE , IRESLT , N )
 C
 C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
 C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
@@ -1963,94 +1650,87 @@ C -- MOVE N WORDS FROM 'ISRCE' TO 'IRESLT' . DIRECT FORTRAN WILL
 C    FAIL IF TWO OVERLAPPING ARRAYS ARE INVOLVED UNLESS THE
 C    SENSE OF THE MOVE CAN BE DETERMINED.
 C
-      DIMENSION ISRCE(N) , IRESLT(N)
-      integer, dimension(N) :: temp
+c      DIMENSION ISRCE(N) , IRESLT(N)
+c      integer, dimension(N) :: temp
+cC
+c#ifdef _DIGITALF77_ 
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+c#endif
+c#ifdef _GNUF77_) || defined(_INTELF77_
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+c#ifdef __VAX__ 
+cC -- USE VAX FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
+cC    DATA WILL BE MOVED
+c      I = %LOC ( ISRCE(1) )
+c      J = %LOC ( IRESLT(1) )
 C
-#if defined(_PPC_) 
-C -- USE MOTO FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = %LOC ( ISRCE(1) )
-      J = %LOC ( IRESLT(1) )
-C
-#endif
-#if defined(_DIGITALF77_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-#endif
-#if defined(_GNUF77_) || defined(_INTELF77_)
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-#if defined(_VAX_) 
-C -- USE VAX FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = %LOC ( ISRCE(1) )
-      J = %LOC ( IRESLT(1) )
-C
-#endif
-#if defined(_DGV_) 
-C -- USE D.G. SPECIFIC FORTRAN FUNCTIONS TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = WORDADDR ( ISRCE(1) )
-      J = WORDADDR ( IRESLT(1) )
-C
-#endif
-#if defined(_IBM_) 
-C -- USE IBM  MACHINE CODE TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = KLOCN ( ISRCE(1) )
-      J = KLOCN ( IRESLT(1) )
-C
-#endif
-#if defined(_H_P_) 
-C---- USE HEWLET PACKARD 'C' CODE TO FIND DIRECTION
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-#if defined(_DOS_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-#if defined(_UNX_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-C This failed because LOC returns address in bytes - but n is in words.
-C Need a portable solution (maybe do an initial LOC lookups on consecutive
-C elements - but not every time.
-c      WRITE(333,*) I, J, N, ABS(I-J)
-c      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
+c#endif
+c#ifdef _DGV_ 
+cC -- USE D.G. SPECIFIC FORTRAN FUNCTIONS TO FIND THE DIRECTION THE
+cC    DATA WILL BE MOVED
+c      I = WORDADDR ( ISRCE(1) )
+c      J = WORDADDR ( IRESLT(1) )
+cC
+c#endif
+c#ifdef _IBM_ 
+cC -- USE IBM  MACHINE CODE TO FIND THE DIRECTION THE
+cC    DATA WILL BE MOVED
+c      I = KLOCN ( ISRCE(1) )
+c      J = KLOCN ( IRESLT(1) )
+cC
+c#endif
+c#ifdef _H_P_ 
+cC---- USE HEWLET PACKARD 'C' CODE TO FIND DIRECTION
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+c#ifdef _DOS_ 
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+c#ifdef _UNX_ 
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+cC This failed because LOC returns address in bytes - but n is in words.
+cC Need a portable solution (maybe do an initial LOC lookups on consecutive
+cC elements - but not every time.
+cc      WRITE(333,*) I, J, N, ABS(I-J)
+cc      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
+cc        DO II = 1 , N
+cc          IRESLT(II) = ISRCE(II)
+cc        END DO
+cc      
+cc      ELSE
+c      IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
+cCDIR$ novector
+c        DO II = N , 1 , -1
+c          temp(II) = ISRCE(II)
+c        END DO
+c        IRESLT=temp
+c      
+c      ELSE  ! overlap, forwards, no vectorizing
+cCDIR$ novector
+c    
 c        DO II = 1 , N
 c          IRESLT(II) = ISRCE(II)
 c        END DO
 c      
-c      ELSE
-      IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
-CDIR$ novector
-        DO II = N , 1 , -1
-          temp(II) = ISRCE(II)
-        END DO
-        IRESLT=temp
-      
-      ELSE  ! overlap, forwards, no vectorizing
-CDIR$ novector
-    
-        DO II = 1 , N
-          IRESLT(II) = ISRCE(II)
-        END DO
-      
-      ENDIF
-C
-#if defined(_XXX_) 
-      STOP 'XMOVE NOT IMPLEMENTED'
-C
-#endif
-      RETURN
-      END
+c      ENDIF
+cC
+c#ifdef _XXX_ 
+c      STOP 'XMOVE NOT IMPLEMENTED'
+cC
+c#endif
+c      RETURN
+c      END
 
 C
 CODE FOR XMOVE (modern replacement)
@@ -2092,98 +1772,98 @@ C
       call XMOVE ( ISRCE , IRESLT , N )
       END
 
-CODE FOR XMOVEI
-      SUBROUTINE XMOVEIold ( ISRCE , IRESLT , N )
-C
-C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
-C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
-C
-C -- MOVE N WORDS FROM 'ISRCE' TO 'IRESLT' . DIRECT FORTRAN WILL
-C    FAIL IF TWO OVERLAPPING ARRAYS ARE INVOLVED UNLESS THE
-C    SENSE OF THE MOVE CAN BE DETERMINED.
-C
-      DIMENSION ISRCE(N) , IRESLT(N)
-C
-#if defined(_PPC_) 
-C -- USE MOTO FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = %LOC ( ISRCE(1) )
-      J = %LOC ( IRESLT(1) )
-C
-#endif
-#if defined(_VAX_) 
-C -- USE VAX FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = %LOC ( ISRCE(1) )
-      J = %LOC ( IRESLT(1) )
-C
-#endif
-#if defined(_DGV_) 
-C -- USE D.G. SPECIFIC FORTRAN FUNCTIONS TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = WORDADDR ( ISRCE(1) )
-      J = WORDADDR ( IRESLT(1) )
-C
-#endif
-#if defined(_IBM_) 
-C -- USE IBM  MACHINE CODE TO FIND THE DIRECTION THE
-C    DATA WILL BE MOVED
-      I = KLOCN ( ISRCE(1) )
-      J = KLOCN ( IRESLT(1) )
-C
-#endif
-#if defined(_H_P_) 
-C---- USE HEWLET PACKARD 'C' CODE TO FIND DIRECTION
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-#if defined(_DOS_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-#if defined(_DIGITALF77_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-#endif
-#if defined(_GNUF77_) || defined(_INTELF77_)
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-#if defined(_UNX_) 
-      I = LOC ( ISRCE(1))
-      J = LOC ( IRESLT(1))
-C
-#endif
-      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
-        
-        DO II = 1 , N
-          IRESLT(II) = ISRCE(II)
-        END DO
-      
-      ELSE IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
-CDIR$ novector
-        DO II = N , 1 , -1
-          IRESLT(II) = ISRCE(II)
-        END DO
-      
-      ELSE  ! overlap, forwards, no vectorizing
-CDIR$ novector
-      
-        DO II = 1 , N
-          IRESLT(II) = ISRCE(II)
-        END DO
-      
-      ENDIF
-C
-#if defined(_XXX_) 
-      STOP 'XMOVEI NOT IMPLEMENTED'
-C
-#endif
-      RETURN
-      END
+cCODE FOR XMOVEI
+c      SUBROUTINE XMOVEIold ( ISRCE , IRESLT , N )
+cC
+cC -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
+cC    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
+cC
+cC -- MOVE N WORDS FROM 'ISRCE' TO 'IRESLT' . DIRECT FORTRAN WILL
+cC    FAIL IF TWO OVERLAPPING ARRAYS ARE INVOLVED UNLESS THE
+cC    SENSE OF THE MOVE CAN BE DETERMINED.
+cC
+c      DIMENSION ISRCE(N) , IRESLT(N)
+cC
+c#ifdef _PPC_ 
+cC -- USE MOTO FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
+cC    DATA WILL BE MOVED
+c      I = %LOC ( ISRCE(1) )
+c      J = %LOC ( IRESLT(1) )
+cC
+c#endif
+c#ifdef __VAX__ 
+cC -- USE VAX FORTRAN BUILT-IN FUNCTIONS TO FIND THE DIRECTION THE
+cC    DATA WILL BE MOVED
+c      I = %LOC ( ISRCE(1) )
+c      J = %LOC ( IRESLT(1) )
+cC
+c#endif
+c#ifdef _DGV_ 
+cC -- USE D.G. SPECIFIC FORTRAN FUNCTIONS TO FIND THE DIRECTION THE
+cC    DATA WILL BE MOVED
+c      I = WORDADDR ( ISRCE(1) )
+c      J = WORDADDR ( IRESLT(1) )
+cC
+c#endif
+c#ifdef _IBM_ 
+cC -- USE IBM  MACHINE CODE TO FIND THE DIRECTION THE
+cC    DATA WILL BE MOVED
+c      I = KLOCN ( ISRCE(1) )
+c      J = KLOCN ( IRESLT(1) )
+cC
+c#endif
+c#ifdef _H_P_ 
+cC---- USE HEWLET PACKARD 'C' CODE TO FIND DIRECTION
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+c#ifdef _DOS_ 
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+c#ifdef _DIGITALF77_ 
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+c#endif
+c#ifdef _GNUF77_) || defined(_INTELF77_
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+c#ifdef _UNX_ 
+c      I = LOC ( ISRCE(1))
+c      J = LOC ( IRESLT(1))
+cC
+c#endif
+c      IF ( ABS(I - J) .GT. N ) THEN ! No overlap, use (possibly) vectorized loop.
+c        
+c        DO II = 1 , N
+c          IRESLT(II) = ISRCE(II)
+c        END DO
+c      
+c      ELSE IF ( I .LT. J ) THEN ! overlap, backwards, no vectorizing
+cCDIR$ novector
+c        DO II = N , 1 , -1
+c          IRESLT(II) = ISRCE(II)
+c        END DO
+c      
+c      ELSE  ! overlap, forwards, no vectorizing
+cCDIR$ novector
+c      
+c        DO II = 1 , N
+c          IRESLT(II) = ISRCE(II)
+c        END DO
+c      
+c      ENDIF
+cC
+c#ifdef _XXX_ 
+c      STOP 'XMOVEI NOT IMPLEMENTED'
+cC
+c#endif
+c      RETURN
+c      END
 C
 C
 CODE FOR XPAUSE
@@ -2199,24 +1879,23 @@ C    THE PROGRAM 'CRYSPY'. IT IS NOT ESSENTIAL TO THE OPERATION OF THE
 C    PROGRAM, AND COULD BE REPLACED BY A DUMMY, EXCEPT THAT THE 'PAUSE'
 C    INSTRUCTION WOULD NO LONGER WORK.
 C
-#if defined(_DVF_) || defined(_GID_) 
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
-C
+#endif
+#ifdef CRY_FORTINTEL
+      USE IFPORT
 #endif
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
 C
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       DIMENSION ITIMVL(2)
       INTEGER SYS$SETIMR , SYS$WAITFR
       DATA ICONFC / -10000 /
-C
-C
 #endif
       IF ( INTERV .LE. 0 ) RETURN
 C
-#if defined(_VAX_) 
 C    THE TECHNIQUE USED FOR THIS TIMER IN VAX SYSTEMS IS :-
 C
 C      1 ) CONVERT TIME VALUE TO INTERNAL DELTA TIME FORMAT ( I.E.
@@ -2226,6 +1905,7 @@ C      3 ) WAIT FOR EVENT FLAG INDICATING THAT INTERVAL HAS ELAPSED
 C
 C -- USE RUN TIME LIBRARY TO CALCULATE QUADWORD TIME VALUE
 C
+#ifdef __VAX__ 
       CALL LIB$EMUL ( INTERV , ICONFC , 0 , ITIMVL(1) )
       ISTAT = SYS$SETIMR ( , ITIMVL(1) , , )
       IF ( ISTAT .NE. 1 ) GO TO 9900
@@ -2235,29 +1915,13 @@ C
 9900  CONTINUE
       CALL LIB$STOP ( %VAL(ISTAT) )
 C
-#endif
-#if defined(_DOS_) 
+#elif defined(_DOS_) 
 C     DOS TIMES ARE IN SECONDS
       TIME = FLOAT(INTERV) *.001
       CALL SLEEP@ ( TIME)
-#endif
-#if defined(_DVF_) || defined(_GID_) 
+#else  
         KTIME = FLOAT(INTERV) *.001
         CALL SLEEP (KTIME)
-C
-#endif
-#if defined(_PRI_) 
-C
-      CALL SLEEP$ ( INTERV )
-C
-C
-#endif
-#if defined(_DGV_) 
-      PARAMETER ( ISYS_WDELAY = 263K )
-      IAC0 = INTERV
-      IAC1 = 0
-      IAC2 = 0
-      IER = ISYS ( ISYS_WDELAY , IAC0 , IAC1 , IAC2 )
 C
 #endif
       RETURN
@@ -2292,7 +1956,7 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       PARAMETER ( DC$_DISK = '00000001'X )
       PARAMETER ( DC$_TERM = '00000042'X )
       PARAMETER ( DVI$_DEVCLASS = 4 )
@@ -2309,7 +1973,7 @@ C
 #endif
       KFLCHR = 0
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 C
       I = KFLNAM ( IUNIT , FNAME )
       IF ( I .LE. 0 ) RETURN
@@ -2328,7 +1992,7 @@ C
 #else
       KFLCHR = 2
 #endif
-#if !defined(_VAX_) 
+#if !defined(__VAX__) 
       IF ( IUNIT .NE. NCUFU(1) ) GO TO 9000
       IF ( IQUN .NE. JQUN ) GO TO 9000
       KFLCHR = 1
@@ -2341,8 +2005,9 @@ C
 C
 CODE FOR XDETCH
       SUBROUTINE XDETCH ( COMMND )
-#if defined(_DVF_) || defined(_GID_) 
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
+#endif
 C
 C -- THIS SUBROUTINE EXECUTES A SYSTEM COMMAND IN A SEPARATE PROCESS.
 C
@@ -2351,8 +2016,6 @@ C    ROUTINES, WHICH ARE NOT ESSENTIAL TO THE PROPER OPERATION OF
 C    THE PROGRAM. IT WOULD BE SUFFICIENT TO REPLACE THIS ROUTINE WITH
 C    A DUMMY THAT IMMEDIATELY RETURNS CONTROL.
 C
-#endif
-#if defined(_VAX_) 
 C
 C -- ON THE VAX, THIS FUNCTION IS IMPLEMENTED USING THE 'SPAWN'
 C    FACILITY, ACCESSED VIA THE RUN-TIME LIBRARY ENTRY-POINT
@@ -2362,9 +2025,8 @@ C    TO REDUCE PHYSICAL MEMORY USAGE.
 C
 C
 C
-#endif
       IMPLICIT INTEGER ( S )
-#if defined(_H_P_) 
+#ifdef _H_P_ 
       INTEGER SYSTEM
 C
 #endif
@@ -2378,8 +2040,21 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSSVAL.INC'
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       DATA ILIMIT(1) / 0 / , ILIMIT(2) / '7FFFFFFF'X /
+
+      ISTAT = SYS$PURGWS ( ILIMIT )
+      IF ( .NOT. ISTAT ) CALL LIB$SIGNAL ( %VAL(ISTAT) )
+C
+C----- LOOK FOR A PURE VMS COMMAND
+      IF (  (INDEX ( COMMND, '@')) .EQ. 0) THEN
+       ISTAT = LIB$SPAWN (  '@CRPROC:SPAWNCMD  "'//COMMND//'" ' ,
+     1 'SYS$COMMAND' , 'SYS$ERROR' )
+      ELSE
+       ISTAT = LIB$SPAWN ( COMMND , 'SYS$COMMAND' , 'SYS$ERROR' )
+      ENDIF
+      IF ( .NOT. ISTAT ) CALL LIB$SIGNAL ( %VAL(ISTAT) )
+C
 
 C Pick out each word in COMMND (space separated) and pass it to MTRNLG,
 C to check for environment labels.
@@ -2389,8 +2064,6 @@ C ICS keeps track of position in COMMND, and ICA the position in ACTUAL
 C Find last non-space.
 #else
       ICL = KCLNEQ ( COMMND, -1, ' ' )
-#endif
-#if !defined(_VAX_) 
       ICS = 1
       IAS = 1
       DO WHILE ( .TRUE. )
@@ -2430,90 +2103,29 @@ C Find next non-space.
 35    CONTINUE
       COMMND = ACTUAL
 
-#else
-      ISTAT = SYS$PURGWS ( ILIMIT )
-#endif
-#if defined(_VAX_) 
-      IF ( .NOT. ISTAT ) CALL LIB$SIGNAL ( %VAL(ISTAT) )
-C
-C----- LOOK FOR A PURE VMS COMMAND
-      IF (  (INDEX ( COMMND, '@')) .EQ. 0) THEN
-       ISTAT = LIB$SPAWN (  '@CRPROC:SPAWNCMD  "'//COMMND//'" ' ,
-     1 'SYS$COMMAND' , 'SYS$ERROR' )
-      ELSE
-       ISTAT = LIB$SPAWN ( COMMND , 'SYS$COMMAND' , 'SYS$ERROR' )
-      ENDIF
-      IF ( .NOT. ISTAT ) CALL LIB$SIGNAL ( %VAL(ISTAT) )
-C
-#endif
-#if defined(_DGV_) 
-      INTEGER PLTH , SNDLTH
-C
-      PARAMETER ( PLTH = 32 , SNDLTH = 8 )
-      PARAMETER ( ISYS_PROC = 326K )
-      PARAMETER ( ISYS_PFEX = 20000K )
-C
-      INTEGER*2 IPACKT(0:PLTH-1) , ISEND(0:SNDLTH-1)
-C
-      CHARACTER*256 TEMPORARY_CMMND
-C
-      EQUIVALENCE ( ADDRESS_OF_PROGRAM_NAME , IPACKT(2) )
-      EQUIVALENCE ( ADDRESS_OF_MESSAGE_HEADER , IPACKT(4) )
-      EQUIVALENCE ( ADDRESS_OF_COMMAND_STRING , ISEND(6) )
-C
-      SAVE IPACKT , ISEND
-C
-      DATA IPACKT / 32 * -1 /
-      DATA ISEND / 8 * 0 /
-C
-      TEMPORARY_CMMND = COMMND
-C
-      ISEND(5) = 128
-      ADDRESS_OF_COMMAND_STRING = WORDADDR ( TEMPORARY_CMMND )
-C
-C -- SET PFEX BIT. CLI WILL EXECUTE WITH FATHER BLOCKED
-C
-      IPACKT(0) = ISYS_PFEX
-      ADDRESS_OF_PROGRAM_NAME = BYTEADDR ( ':CLI.PR<0>' )
-      ADDRESS_OF_MESSAGE_HEADER = WORDADDR ( ISEND(0) )
-C
-      IAC2 = WORDADDR ( IPACKT )
-C
-      IER = ISYS ( ISYS_PROC , IAC0 , IAC1 , IAC2 )
-C
-C
-#endif
-#if defined(_H_P_) 
-                                       WRITE ( NCAWU , 1000 )
-                                       j=system('sh')
+C Now run command
+
+#ifdef _H_P_ 
+      WRITE ( NCAWU , 1000 )
+      j=system('sh')
 1000  FORMAT (1X,'To go back in CRYSTALS environment',
      1 ' strike CTRL-d',/)
 1005  FORMAT ( 1X , 'The following command line cannot be ' ,
      2 'executed in this implementation' , / ,
      3 1X , A , / )
-C
-C
-#endif
-#if defined(_DOS_) 
+#elif defined(_DOS_) 
       CALL CISSUE (COMMND, IFAIL)
       IF (IFAIL .EQ. 0) RETURN
-
-#endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined (_INW_)
+#elif defined(CRY_GUI)
       CALL GDETCH(COMMND)
       RETURN
-#endif
-#if defined(_DVF_) 
+#elif defined(__DVF__) 
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
-#endif
-#if defined(_LIN_) 
+#elif defined(__LIN__) 
       CALL SYSTEM(COMMND,IFAIL)
       IF (IFAIL .EQ. 0 ) RETURN
-
-C
-#endif
-#if defined(_XXX_) 
+#else
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 1005 ) COMMND
       ENDIF
@@ -2521,8 +2133,10 @@ C
 1005  FORMAT ( 1X , 'The following command line cannot be ' ,
      2 'executed in this implementation' , / ,
      3 1X , A , / )
-C
 #endif
+
+#endif
+
       RETURN
       END
 C
@@ -2539,7 +2153,7 @@ C    'EXCTLC' AND 'XOUTPT' FORM A SUBSYSTEM ALLOWING THE USER TO
 C    PERFORM CERTAIN OPERATIONS, SUCH A CREATING A SUBPROCESS,
 C    ASYNCHRONOUSLY.
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 C -- CONTROL-C HANDLING FOR CRYSTALS ( VAX IMPLEMENTATION ONLY )
 C
 C    CONTROL-C PROCESSING UNDER VMS IS IMPLEMENTED BY MEANS OF THE
@@ -2568,9 +2182,7 @@ C
 C
       COMMON / CONTROLC_DATA / ITTCHN
 C
-#endif
       INCLUDE 'XUNITS.INC'
-#if defined(_VAX_) 
 C -- EXTERNALS ARE AST ADDRESS, FUNCTION SPECIFIER,
 C    AND FUNCTION MODIFIER
       EXTERNAL EXCTLC
@@ -2601,7 +2213,7 @@ C
       RETURN
       END
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 CODE FOR EXCTLC
       SUBROUTINE EXCTLC
 C
@@ -2703,9 +2315,9 @@ C
 C
       RETURN
       END
-C
-CODE FOR XMNINI
 #endif
+
+CODE FOR XMNINI
       SUBROUTINE XMNINI (JMNFLG)
 C
 C----- INITIALISE THE MENU VARIABLES, CREATE PASTEBOARD, VIRTUAL
@@ -2737,7 +2349,7 @@ C      MXMNA    MAXIMUM MENU AREA (ITEMS)
 C
 C----- REMEMBER - PAST BOARD ADDRESSES ARE ABSOLUTE SCREEN ADDRESSES
 C      VIRTUAL DISPLAY ADDRESSES ARE RELATIVE TO ORIGIN (1,1) OF V-D
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       INTEGER
      1 SMG$CREATE_PASTEBOARD ,
      1 SMG$CREATE_VIRTUAL_DISPLAY ,
@@ -2748,9 +2360,7 @@ C      VIRTUAL DISPLAY ADDRESSES ARE RELATIVE TO ORIGIN (1,1) OF V-D
       INCLUDE '($SMGDEF)'
 C
 #endif
-#if !defined(_PPC_) 
       PARAMETER (IIS = 4)
-#endif
       INCLUDE 'XSCCHK.INC'
       INCLUDE 'XSSVAL.INC'
 C
@@ -2773,7 +2383,7 @@ C
       MNILMX = LCHK
       MNIDMX = NCHK
       MNISL = MNILMX + IIS
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       ISMG = SMG$CREATE_PASTEBOARD (IPB, 'TT:', NPBR, NPBCOL)
 #endif
       NPBCOL = MIN ( LTERMW, NPBCOL)
@@ -2794,7 +2404,7 @@ C----- FIND NO. OF LINES IN  BIGGEST POSSIBLE MENU
 C
       CALL XMNADD ( MNLIMX)
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       ISMG = SMG$CREATE_VIRTUAL_DISPLAY (NLNFR, NPBCOL, IVD)
       ISMG = SMG$CREATE_VIRTUAL_KEYBOARD (IKB, 'TT:' )
       ISMG = SMG$PASTE_VIRTUAL_DISPLAY (IVD, IPB, NPBR - NLNFR, 1)
@@ -2812,17 +2422,12 @@ CODE FOR XMNPMC
 C
 C      INSERT A MENU ITEM AT SPECIFIED ROW, COLUMN AND ROW OFFSET
 C
-#if defined(_PPC_) 
-C**** This routine is a dummy for the MacOS
-#endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       INCLUDE '($SMGDEF)'
       INTEGER SMG$PUT_CHARS
 #endif
-#if !defined(_PPC_) 
       CHARACTER *(*) CITEM
-#endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       ISMG = SMG$PUT_CHARS (IVD, CITEM, IROW+IOFSET-1, ICOL+1)
 #endif
       RETURN
@@ -2834,22 +2439,19 @@ CODE FOR XMNINV
      1 MNISL, CDUM, IVD, IOFSET)
 C----- RESTORE OLD ITEM TO NORMAL, HIGHLIGHT NEW
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       INCLUDE '($SMGDEF)'
       INTEGER SMG$PUT_CHARS
-#endif
-#if defined(_PPC_) 
-C**** This routine is a dummy for the MacOS
 #endif
       CHARACTER *(*) COLD, CNEW, CDUM
       INCLUDE 'XSSVAL.INC'
 C
       IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) RETURN
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       ISMG = SMG$PUT_CHARS (IVD, COLD, IOROW+IOFSET-1, IOCOL+1 )
 #endif
       CDUM = CNEW
-#if defined(_VAX_) 
+#ifdef __VAX__ 
 C----- FOR VT52, INSERT A *
       IF (ISSTML .EQ. 1) CDUM = '*' // CNEW(1:MNISL-1)
       ISMG = SMG$PUT_CHARS (IVD, CDUM, INROW+IOFSET-1, INCOL+1, ,
@@ -2864,7 +2466,7 @@ CODE FOR XMENUR
 C
 C----- DRAW A MENU BOX AND RETURN USERS SELECTION
 C
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       INCLUDE '($SMGDEF)'
       INTEGER
      1  SMG$PUT_CHARS ,
@@ -2918,24 +2520,10 @@ cdjwjun07
 
 
 C----- PUSH PLAIN TEXT UP TO MAKE ROOM FOR MENU
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       DO  I = 1, NLNFR + 3
       WRITE( NCAWU, '(1X)')
       END DO
-C
-c&&&GILGIDWXS          WRITE(CMON(1),'(A)')
-c&&&GILGIDWXS     1 '^^WI SET PROGOUTPUT TEXT = '
-c&&&GILGIDWXS      IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
-c&&&GILGIDWXS         WRITE(CMON(2),'(5A)')
-c&&&GILGIDWXS     1'^^WI ''Script: ',CSCPNM(1:LENNM),
-c&&&GILGIDWXS     1   ' called from:', CPRVNM, ''''
-c&&&GILGIDWXS      ELSE
-c&&&GILGIDWXS         WRITE(CMON(2),'(3A)')'^^WI ''Script: ',
-c&&&GILGIDWXS     1  CSCPNM(1:LENNM), ''''
-c&&&GILGIDWXS      ENDIF
-c&&&GILGIDWXS          WRITE(CMON(3),'(A)') '^^CR'
-c&&&GILGIDWXS      CALL XPRVDU(NCVDU,3,0)
-
 #endif
       IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) RETURN
 
@@ -2954,7 +2542,7 @@ C---- FIND THE MENU ADDRESSES FOR THE DEFAULT, NEW, AND OLD ITEMS
 C
 C----- SET UP THE PICTURE FRAME
 C      CLEAR THE SIDES
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       DO 400 I = NTPFR, NBFR - 1
         ISMG = SMG$PUT_CHARS ( IVD, ' ', I, IFRML)
         ISMG = SMG$PUT_CHARS ( IVD, ' ', I, IFRMR)
@@ -3009,7 +2597,7 @@ C----- SET REPLY MESSAGE LINE ADDRESS
 C
 C----- NOW LOOP TO GET THE USERS SELECTION
 600   CONTINUE
-#if !defined(_VAX_) 
+#if !defined(__VAX__) 
       MNKEY = 13
 #else
       ISMG = SMG$READ_KEYSTROKE (IKB, MNKEY)
@@ -3038,12 +2626,12 @@ C
 C----- REMOVE TRAILING BLANKS AND RETURN THE ANSWER
               CALL XCTRIM ( CLINPB, IINPLN)
             ELSE
-#if defined(_VAX_) 
+#ifdef __VAX__ 
             ISTAT = STR$TRIM (CLINPB, CCHECK(INEW), IINPLN)
 #endif
             ENDIF
 C           RESTORE CURSOR
-#if defined(_VAX_) 
+#ifdef __VAX__ 
             ISMG = SMG$SET_PHYSICAL_CURSOR ( IPB, NPBR, 1)
 #endif
             RETURN
@@ -3055,7 +2643,7 @@ C             COMPUTE MESSAGE ADDRESS
               IMESC = ITXTR - 20 + J
               CLINPB(J:J) = ' '
 C             DISPLAY CHOICE
-#if defined(_VAX_) 
+#ifdef __VAX__ 
              ISMG = SMG$PUT_CHARS (IVD, CLINPB(J:J), IMESR,
      1       IMESC,, SMG$M_BOLD)
 #endif
@@ -3066,7 +2654,7 @@ C             COMPUTE MESSAGE ADDRESS
               IMESC = ITXTR - 20 + J
               CLINPB(J:J) = CHAR(MNKEY)
 C             DISPLAY CHOICE
-#if defined(_VAX_) 
+#ifdef __VAX__ 
              ISMG = SMG$PUT_CHARS (IVD, CLINPB(J:J), IMESR,
      1       IMESC,, SMG$M_BOLD)
 #endif
@@ -3095,13 +2683,10 @@ C
       END
 C
 CODE FOR MTRNLG
-#if !defined(_PPC_) 
       SUBROUTINE MTRNLG(FILNAM,STATUS,LENNAM)
-#else
-      SUBROUTINE MTRNLG(FILNAM,STATUS,LENNAM,IUNIT)
-#endif
-#if defined(_DVF_) || defined(_GID_) 
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
+#endif
 C
 C----- EXPAND LOGICAL NAMES (ENVIRONMENT VARIABLES) IF THEY
 C      ARE PART OG THE FILE NAME.
@@ -3117,19 +2702,9 @@ C
 C LENNAM USEFUL LENGTH OF FILENAME
 C
 C      IMPLICIT NONE
-#endif
-#if !defined(_PPC_) 
       INTEGER MAXLVL
-#else
-      INTEGER      theIndex, theKind, theStatus
-#endif
-#if defined(_PPC_) 
-      INTEGER      IUNIT,    LENNAM
-#else
       PARAMETER (MAXLVL=30)
-#endif
       CHARACTER*(*) FILNAM,STATUS
-#if !defined(_PPC_) 
       LOGICAL LEXIST
       INTEGER KSTRLN
       INTEGER I,J,K,LEVEL,IWHAT
@@ -3137,7 +2712,6 @@ C      IMPLICIT NONE
       INTEGER LSTLEN(MAXLVL),LSTPOS(MAXLVL)
       CHARACTER*200 INQNAM,NAME(MAXLVL),LIST(MAXLVL)
 C
-#endif
       INCLUDE 'TDVNAM.INC'
       INCLUDE 'XDVNAM.INC'
       INCLUDE 'XUNITS.INC'
@@ -3206,15 +2780,11 @@ C Don't subst things like C:\ - start search from third character.
 C FEB04: On Win32 platform, search for forward slashes and change
 C to back slashes - this will allow consistent file and path naming
 C on all platforms.
-#if defined(_DOS_) || defined(_DVF_) || defined(_GID_) || defined(_WXS_)  || defined (_INW_)
+#ifdef CRY_OSWIN32
       DO WHILE(.TRUE.)
         ISLP = KCCEQL(NAME(LEVEL),1,'/')
         IF ( ISLP .GT. 0 ) THEN
-#if ! defined(_MAC_) 
           NAME(LEVEL)(ISLP:ISLP) = '\'
-#else
-          NAME(LEVEL)(ISLP:ISLP) = '\\'
-#endif
         ELSE
           EXIT
         END IF
@@ -3243,7 +2813,7 @@ c anchors specified after filename. e.g. myfile.html#sect1
         INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
 c        write(126,*) 'File test ', LEXIST, IOTEST, INQNAM
         if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
-#if defined(_INW_) 
+#ifdef __INW__ 
         INQUIRE(DIRECTORY=INQNAM,EXIST=LEXIST, iostat=iotest)
 c        write(126,*) 'Dir test ', LEXIST, IOTEST, INQNAM
         if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
@@ -3260,16 +2830,16 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
         CALL XCCUPC(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
      &              NAME(LEVEL)(1:COLPOS(LEVEL)-1))
         LIST(LEVEL) = ' '
-#if defined(_DOS_) 
+#ifdef _DOS_ 
           CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #endif
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL 
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #endif
-#if defined(_GNUF77_) 
+#ifdef _GNUF77_ 
           CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #endif
-#if defined(_INTELF77_)
+#ifdef CRY_FORTINTEL
 C The intel environment does not pick up changes made by _putenv in C++ code
 C Therefore use this interface to the C++ to get values.
           CALL CGETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
@@ -3281,7 +2851,7 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRSCP') THEN
             LIST(LEVEL) = CSCPDV(1:LSCPDV)
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDIR') THEN
-#if defined(_DIGITALF77_) || defined (_INW_) 
+#ifdef CRY_OSWIN32 
              LIST(LEVEL) = '.\'
 #else
              LIST(LEVEL) = './'
@@ -3379,48 +2949,7 @@ C
 c      WRITE(126,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
 c      WRITE(CMON,*) 'MTRNLG: Output="',FILNAM(1:LENNAM),'"'
 c      CALL XPRVDU(NCVDU,1,0)
-
-
 C
-C This is the PPC version of MTRNLG, preserved for future use:
-#if defined(_WIN_) 
-C----- I DONT KNOW WHERE THIS CAME FROM!
-       WIN_FILER (FILNAM, LENNAM)
-#endif
-#if defined(_PPC_) 
-\CFLDAT
-\XIOBUF
-C
-C**** First get the Filename, if we have none and are allowed to set
-C****
-      IF ( ( STATUS .NE. 'SCRATCH' ) .AND. ( FILNAM .EQ. ' ' ) ) THE
-           CALL GINDEX( IUNIT, theIndex )
-           FILNAM = FLNAME( theIndex )(1:LFNAME( theIndex ) )
-           LENNAM = LFNAME( theIndex )
-      ENDIF
-C****
-C**** Then we have to find out, if there is some kind of logical uni
-C**** For that purpose, we will search for the directory separator a
-C**** the text before is in our table of logicals. If not, we must a
-C**** it is a real directory. If yes, we need to set the kind and cu
-C**** logical.
-C****
-      CALL GDKIND ( IUNIT, theKind , LENNAM, FILNAM )
-C****
-C**** And finally lets set the directory as working directory
-C****
-      CALL setdir ( theKind , theStatus )
-C      WRITE ( CIOBUF, '(A2,A,I2,A,A10,A,I2,A,I3,A2)' ) CCRCHR(1:2),
-C     1 '-- Setting kind: ',theKind,
-C     2 ' name: ',FILNAM(1:LENNAM),' unit: ',IUNIT,
-C     3 ' with Status: ',theStatus, CCRCHR(1:2)
-C      CALL FLBUFF( 66, 0, ISSPRT )
-C
-C****
-C**** Lets do something, if we could not set the directory
-C****
-CE***
-#endif
       RETURN
       END
 C
@@ -3439,7 +2968,7 @@ CODE FOR KSTRLN
       END
 C
 CODE FOR MYDRIV
-#if defined(_DOS_) 
+#ifdef _DOS_ 
       SUBROUTINE MYDRIV (B,NB,NCH,ACTION,IFAIL)
 C
 C                 CONTROL TERMINAL OUTPUT.
@@ -3533,7 +3062,7 @@ C----- IN MONOLITHIC INPLEMENTATIONS THIS IS A DUMMY.
       END
 CODE FOR XRDMSE
 #endif
-#if !defined(_DVF_) && !defined(_GID_) && !defined(_WXS_) && !defined (_INW_)
+#ifdef _DOS_
       SUBROUTINE XRDMSE (CMOUSE, NMOUSE)
 C----- GET A STRING OF ATOM NAMES FROM THE MOUSE
 C----- SHOULD BE REPLACED BY A MACHINE SPECIFIC ROUTINE
@@ -3544,26 +3073,26 @@ C----- SHOULD BE REPLACED BY A MACHINE SPECIFIC ROUTINE
       MMOUSE = 1
       RETURN
       END
+#endif
 
 CODE FOR FRAND
-#endif
       FUNCTION FRAND()
 C------ RETURNS A VALUE BETWEEN 0 and 1 from the compiler library's
 C       random number generator.
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL 
       USE DFPORT
       FRAND = RAND()
 #endif
-#if defined(_INTELF77_) 
+#ifdef CRY_FORTINTEL 
       USE IFPORT
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
           FRAND = RANDOM()
 #endif
-#if defined(_GNUF77_) || defined(_INTELF77_)
+#if defined(_GNUF77_) || defined(CRY_FORTINTEL)
       FRAND = RAND()
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
           FRAND = RAN (NINT(SECNDS(0.0)))
 #endif
       RETURN
@@ -3576,11 +3105,11 @@ C       WITH VARIANCE REQVAR
 C
 C    REQVAR - REQUESTED VARIANCE OF RESULT
 C    ISEED = 0 FOR REPEATED RANDOM NUMBERS
-#if defined(_DVF_) || defined(_GID_) 
+#ifdef CRY_FORTDIGITAL 
       USE DFPORT
 #endif
       SAVE ISET, GSET
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       INTEGER*4 SEED
 #endif
       DOUBLE PRECISION ZZZ
@@ -3589,36 +3118,36 @@ C    ISEED = 0 FOR REPEATED RANDOM NUMBERS
         ISET = 0
         IF (ISEED .EQ. 0) THEN
 C----- REPEAT RANDOM SEQUENCE
-#if defined(_XXX_) 
+#ifdef _XXX_ 
           SEED = 0.0
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
           SEED = 7654321
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
           CALL SET_SEED@(SEED)
 #endif
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL 
           CALL SRAND(0)
 #endif
-#if defined(_GNUF77_) || defined(_INTELF77_)
+#if defined(_GNUF77_) || defined(CRY_FORTINTEL)
           CALL SRAND(0)
 #endif
         ELSE
 C----- CREATE NEW SEQUENCE
-#if defined(_XXX_) 
+#ifdef _XXX_ 
           SEED = 0
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
           SEED = NINT(SECNDS(0.0))
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
           CALL DATE_TIME_SEED@
 #endif
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL 
           CALL SRAND(RND$TIMESEED )
 #endif
-#if defined(_GNUF77_) || defined(_INTELF77_)
+#if defined(_GNUF77_) || defined(CRY_FORTINTEL)
 	  ITIMEI = TIME()
           KSEED = MOD (ITIMEI,(2**30))
           CALL SRAND(KSEED)
@@ -3628,7 +3157,7 @@ C----- CREATE NEW SEQUENCE
       
       
       IF (ISET .EQ. 0) THEN
-#if defined(_XXX_) 
+#ifdef _XXX_ 
         STOP 'NO RANDOM No GENERATOR'
 
 #endif
@@ -3676,7 +3205,7 @@ c      ENDIF
       END
 CODE FOR GETCOM
       SUBROUTINE GETCOM(CLINE)
-#if defined(_GID_) || defined (_WXS_)  || defined (_INW_)
+#ifdef CRY_GUI
       INTERFACE
                     SUBROUTINE CINEXTCOMMAND (istat, caline)
                     !DEC$ ATTRIBUTES C :: cinextcommand
@@ -3686,8 +3215,6 @@ CODE FOR GETCOM
                     END SUBROUTINE CINEXTCOMMAND
             END INTERFACE
       INTEGER ISTAT
-#endif
-#if defined(_GID_)|| defined(_GIL_)|| defined(_MAC_)|| defined(_WXS_) || defined (_INW_)
       CHARACTER*256 CALINE
 #endif
       INCLUDE 'XSSVAL.INC'
@@ -3698,32 +3225,23 @@ CODE FOR GETCOM
       INCLUDE 'XUNITS.INC'
       CHARACTER *(*) CLINE
 
-#if defined(_VAX_) 
+#ifdef CRY_NOGUI
+
+#ifdef _DOS_ 
+      IF ( LCLOSE ) THEN
+         READ( NCUFU(1), 1) CLINE
+      ELSE
+         CALL ZTXT (CLINE)
+      ENDIF
+#else
       READ( NCUFU(1), 1) CLINE
 #endif
-#if defined(_LIN_) 
-      READ( NCUFU(1), 1) CLINE
-#endif
-#if defined(_DVF_) 
-      READ( NCUFU(1), 1) CLINE
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      ISTAT = 0
-      CALL CINEXTCOMMAND(ISTAT,CALINE)
-      READ(CALINE,'(A)') CLINE
-#endif
-#if defined(_WXS_)  || defined (_INW_)
-      ISTAT = 0
-      CALL CINEXTCOMMAND(ISTAT,CALINE)
-      READ(CALINE,'(A)') CLINE
-#endif
-#if defined(_GID_) 
+
+#else
       CALINE=' '
       ISTAT = 0
       CALL CINEXTCOMMAND(ISTAT,CALINE)
       READ(CALINE,'(A)') CLINE
-#endif
-#if defined(_GID_) || defined(_GIL_)|| defined(_MAC_)|| defined(_WXS_) || defined (_INW_)
       IF ( LCLOSE ) THEN
           WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
           CALL XPRVDU (NCVDU,1,0)
@@ -3731,13 +3249,6 @@ CODE FOR GETCOM
           CALL XPRVDU (NCVDU,1,0)
           WRITE(CMON,'(A)')  '^^CR '
           CALL XPRVDU (NCVDU,1,0)
-      ENDIF
-#endif
-#if defined(_DOS_) 
-      IF ( LCLOSE ) THEN
-         READ( NCUFU(1), 1) CLINE
-      ELSE
-         CALL ZTXT (CLINE)
       ENDIF
 #endif
 1     FORMAT ( A )
@@ -3748,14 +3259,13 @@ CODE FOR GETCOM
 
 CODE FOR GUEXIT
       SUBROUTINE GUEXIT(IVAR)
-#if defined(_DIGITALF77_) || defined (_INW_)
+#ifdef CRY_GUI
       INTERFACE
           SUBROUTINE CIENDTHREAD (IVAR)
           !DEC$ ATTRIBUTES C :: ciendthread
           INTEGER IVAR
           END SUBROUTINE CIENDTHREAD
       END INTERFACE
-C
 #endif
       INTEGER IVAR
       INCLUDE 'UFILE.INC'
@@ -3797,28 +3307,11 @@ C----- CLOSE ALL THE FILES
       DO 2001 I = 1,NFLUSD
             J = KFLCLS(IFLUNI(I))
 2001  CONTINUE
-#if defined(_DVF_) 
+#ifdef CRY_NOGUI
       CALL EXIT(IVAR)
-#endif
-#if defined(_LIN_) 
-      CALL EXIT(IVAR)
-#endif
-#if !defined(_DVF_) && !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_)&& !defined (_INW_)
-      STOP
-#endif
-#if defined(_GID_) 
-      CALL CIENDTHREAD(IVAR)
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CALL CIENDTHREAD(IVAR)
-#endif
-#if defined(_WXS_)  || defined (_INW_)
-      CALL CIENDTHREAD(IVAR)
-#endif
-#if defined(_GID_) 
       RETURN
-#endif
-#if defined(_GIL_)  || defined(_MAC_) || defined(_WXS_)  || defined (_INW_)
+#else
+      CALL CIENDTHREAD(IVAR)
       RETURN
 #endif
       END
@@ -3966,25 +3459,19 @@ C
 C
 C---- SET CARRIAGE CONTROL SYMBOLS
 C
-#if defined(_DOS_) 
+#ifdef _DOS_ 
       CCRCHR(1:1) = CHAR(10)
       CCRCHR(2:2) = CHAR(13)
 C
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
       CCRCHR(1:1) = CHAR(10)
       CCRCHR(2:2) = CHAR(13)
 C
 #endif
-#if defined(_UNX_) 
+#ifdef _UNX_ 
       CCRCHR(1:1) = CHAR(32)
       CCRCHR(2:2) = CHAR(10)
-C
-#endif
-#if defined(_PPC_) 
-      CCRCHR(1:1) = CHAR(32)
-      CCRCHR(2:2) = CHAR(10)
-C<DJWOCT96
 C
 #endif
       RETURN
@@ -4066,7 +3553,7 @@ C
       RETURN
       END
 
-#if defined(_INTELF77_)
+#ifdef CRY_FORTINTEL
 CODE FOR CGETENV
       SUBROUTINE CGETENV(CKEY, CVAL)
       INTERFACE
@@ -4089,7 +3576,7 @@ CODE FOR CGETENV
 CODE FOR XPRTDV
       SUBROUTINE XPRTDV(NCDEV, CBUF, LINBUF, NLINES)
 C---- MACHINE SPECIFIC WRITE TO THE SCREEN
-#if defined(_DIGITALF77_) || defined (_INW_)
+#ifdef CRY_GUI
 C{
       INTERFACE
                 SUBROUTINE CALLCCODE (CALINE)
@@ -4112,7 +3599,7 @@ C}
 
       CEXTRA = ' '
       LENBUF = LEN(CBUF(1))
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined (_INW_)
+#ifdef CRY_NOGUI
       IF ((ISSTML.NE.1) .AND. (ISSTML.NE.2)) THEN
          LENBUF = MIN(LENBUF,79)   !LINE LIMITED TO 79
       ENDIF
@@ -4126,112 +3613,118 @@ C- PRINT A WARNING SOMEWHERE
             ENDIF
 
             DO 100 J = 1, NLINES
-
                CALL XCTRIM(CBUF(J),N)
                N = MAX(1,N)         ! SET N TO LAST NON-BLANK
                CFIRST = CBUF(J)(1:1)
                CLAST = CBUF(J)(N:N)
-#if defined(_GIL_)  || defined(_MAC_) ||defined (_INW_)
-               N = MIN(N,261)         ! SET N TO LAST NON-BLANK
-       CBUF(J)(N+1:N+1) = CHAR(0)  ! Make into a c string.
-
+#if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)
+               N = MIN(N,256)         ! SET N TO LAST NON-BLANK
+               CBUF(J)(N+1:N+1) = CHAR(0) ! Make into a c string.
+			   N = N + 1
+			   WRITE(123,*)'INW version', N
 #endif
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_) || defined (_INW_)
+
+#ifdef CRY_GUI
        IF (CBUF(J)(2:2).NE.'^') THEN
           IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
              WRITE( CEXTRA,'(A)') CBUF(J)
           ELSE 
              WRITE( CEXTRA,'(2(A,I2.2),A)')
      1       '{', IOFORE, ',', IOBACK, CBUF(J)
+	         N = N + 6
           ENDIF 
        ELSE 
           WRITE( CEXTRA,'(A)') CBUF(J) !Line not limited (^^ command)
        END IF
-
 #endif
+
+       WRITE(123,'(2A)') 'Input:  ',CBUF(J)
+       WRITE(123,'(2A)') 'Output: ',CEXTRA
+       WRITE(123,'(A,I5)') 'N: ',N
+
        IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                JNL77 = 0                 !--- SWITCH OFF LINE FEEDS
 #endif
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined (_INW_)
-            CFRMAT = '(1X,A)'
+#ifdef CRY_NOGUI
+#ifdef __VAX__ 
+               N = N - 1
+               CFRMAT = '(''+'',A)'
+#else
+               CFRMAT = '(1X,A)'
 #endif
-#if defined(_VAX_) 
-                N = N - 1
-                CFRMAT = '(''+'',A)'
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                 IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 #endif
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined(_INW_)
+
+#ifdef CRY_GUI
+            CALL CALLCCODE ( CEXTRA(1:N))
+#else
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
 #endif
-#if defined(_GID_) || defined(_GIL_)  || defined(_MAC_)
-            CALL CALLCCODE ( CEXTRA(1:N+6))
-#endif
-#if defined(_WXS_)  || defined (_INW_)
-            CALL CALLCCODE ( CEXTRA(1:N+6))
-#endif
-#if defined(_DOS_) 
+
+#ifdef _DOS_ 
                 JNL77 = 1                   !--- SWITCH ON LINE FEEDS
 #endif
+
                ELSEIF ( CFIRST .EQ. '+' ) THEN !--FORTRAN CR WITHOUT LF
-#if defined(_DOS_) 
-C------             
+
+#ifdef _DOS_ 
                 JNL77 = 0               !--- SWITCH OFF LINE FEEDS
 #endif
-                    CFRMAT = '(A)'
-#if defined(_DOS_) 
+                CFRMAT = '(A)'
+#ifdef _DOS_ 
                 IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 Cdjw:      enable thermometer etc in non-vga mode
 #endif
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined (_INW_)
+#ifdef CRY_NOGUI
             WRITE(NCDEV ,'(A,$)') char(13)
             WRITE(NCDEV ,'(A,$)') CBUF(J)(2:LENBUF)
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                 JNL77 = 1               !--- SWITCH ON LINE FEEDS
 #endif
+
                ELSEIF (CLAST .EQ. '$') THEN !--- LEAVE CURSOR AT CURRENT POSITION
-#if defined(_DOS_) 
+
+#ifdef _DOS_ 
                 JNL77 = 0           !--- SWITCH OFF LINE FEEDS
 #endif
-                    CFRMAT = '(A,A1)'
-#if defined(_DOS_) 
+                CFRMAT = '(A,A1)'
+#ifdef _DOS_ 
                 IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
                 WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF),CHAR(13)
 #endif
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_) || defined (_INW_)
-            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+#ifdef CRY_GUI
+            CALL CALLCCODE ( CEXTRA(1:N) )
 #endif
-#if defined(_VAX_) 
+#ifdef __VAX__ 
                 CFRMAT = '(A,$)'
                 WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 #endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                 JNL77 = 1           !--- SWITCH ON LINE FEEDS
 #endif
                ELSEIF ( CFIRST .EQ. '0' ) THEN
                     CFRMAT = '(/,A)'
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                 IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 #endif
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined (_INW_)
+#ifdef CRY_NOGUI
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-#endif
-#if defined(_GID_) || defined(_GIL_)|| defined(_MAC_)|| defined(_WXS_) || defined (_INW_)
-            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+#else 
+            CALL CALLCCODE ( CEXTRA(1:N))
 #endif
                ELSE
                     CFRMAT = '(A)'
-#if !defined(_GID_) && !defined(_GIL_) && !defined(_WXS_)  && !defined(_MAC_) && !defined (_INW_)
+#ifdef CRY_NOGUI
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-#endif
-#if defined(_DOS_) 
+#ifdef _DOS_ 
                 IF ( .NOT. LCLOSE ) CALL WINOUT(CBUF(J)(1:N))
 #endif
-#if defined(_GID_) || defined(_GIL_) ||defined(_MAC_)||defined(_WXS_) || defined (_INW_)
-            CALL CALLCCODE ( CEXTRA(1:LENBUF))
+#else
+            CALL CALLCCODE ( CEXTRA(1:N))
 #endif
                ENDIF
 C
@@ -4243,11 +3736,9 @@ C
       END
 
 
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_) || defined(_MAC_) || defined (_INW_)
+#ifdef CRY_GUI
 CODE FOR GDETCH
       SUBROUTINE GDETCH(CLINE)
-#endif
-#if defined(_DIGITALF77_) || defined (_INW_)
       INTERFACE
                 SUBROUTINE GUEXEC (CALINE)
                     !DEC$ ATTRIBUTES C :: guexec
@@ -4255,8 +3746,6 @@ CODE FOR GDETCH
                     !DEC$ ATTRIBUTES REFERENCE :: CALINE
                     END SUBROUTINE GUEXEC
       END INTERFACE
-#endif
-#if defined(_GID_) || defined(_GIL_) || defined(_WXS_)  || defined(_MAC_) || defined (_INW_)
       CHARACTER*(*) CLINE
       CHARACTER*262 CEXTRA
       CEXTRA = ' '
@@ -4264,18 +3753,18 @@ CODE FOR GDETCH
       CALL GUEXEC ( CEXTRA//CHAR(0) )
       RETURN
       END
+#endif
 
 
 
 CODE FOR GETCWD
-#endif
       SUBROUTINE GETCWD ( CWORK )
-#if defined(_GID_)  || defined (_INTELF77_)
+#if defined(CRY_FORTDIGITAL)  || defined (CRY_FORTINTEL)
       USE DFLIB
 #endif
       CHARACTER*(*) CWORK
 
-#if defined(_GID_)  || defined (_INTELF77_)
+#if defined(CRY_FORTDIGITAL)  || defined (CRY_FORTINTEL)
       cwork = FILE$CURDRIVE
       K= GETDRIVEDIRQQ(cwork)
 #else
@@ -4300,8 +3789,11 @@ C      GET AN 8 BYTE CHARACTER REPRESENTATION OF DATE/TIME
 CRIC2001:
 CODE FOR XNDATE
       SUBROUTINE XNDATE(ISECS)
-#if defined(_DIGITALF77_)  || defined (_INTELF77_)
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
+#endif
+#ifdef CRY_FORTINTEL
+      USE IFPORT
 #endif
 C--SET THE # SECS SINCE 1970 IN ISECS
       ISECS = TIME()
@@ -4310,10 +3802,10 @@ C--SET THE # SECS SINCE 1970 IN ISECS
 
 CODE FOR XCDATE
       SUBROUTINE XCDATE(ISECS,CT)
-#if defined(_DIGITALF77_) 
+#ifdef CRY_FORTDIGITAL 
       USE DFPORT
 #endif
-#if defined(_INTELF77_) 
+#ifdef CRY_FORTINTEL 
       USE IFPORT
 #endif
 C--CONVERT SECS SINCE 1970 INTO 24CHAR STRING

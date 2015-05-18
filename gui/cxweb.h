@@ -16,7 +16,7 @@
 #define     __CxButton_H__
 
 
-#ifdef DEPRECATED__BOTHWX__
+#ifdef DEPRECATEDCRY_USEWX
 
 #include    "crguielement.h"
 
@@ -68,7 +68,7 @@ class CxWeb : public BASEWEB
 
 
 // Private machine specific parts:
-#ifdef __BOTHWX__
+#ifndef CRY_USEMFC
             DECLARE_EVENT_TABLE()
 #endif
 
@@ -76,5 +76,5 @@ class CxWeb : public BASEWEB
 			int mIdealHeight;
 
 };
-#endif
+ #endif
 #endif

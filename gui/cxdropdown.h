@@ -46,15 +46,14 @@ class LStdPopupMenu;
 #include    <LStdControl.h>
 #endif
 
-#ifdef __BOTHWX__
-#include <wx/choice.h>
-#define BASEDROPDOWN wxChoice
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASEDROPDOWN CComboBox
+#else
+ #include <wx/choice.h>
+ #define BASEDROPDOWN wxChoice
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASEDROPDOWN CComboBox
-#endif
 
 class CrDropDown;
 class CxGrid;
@@ -93,15 +92,14 @@ class CxDropDown : public BASEDROPDOWN
         CrGUIElement *  ptr_to_crObject;
         static int  mDropDownCount;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         void    Selected();
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-			void Selected(wxCommandEvent & e);
-			void OnChar(wxKeyEvent & event );
-            DECLARE_EVENT_TABLE()
+#else
+		void Selected(wxCommandEvent & e);
+		void OnChar(wxKeyEvent & event );
+        DECLARE_EVENT_TABLE()
 #endif
 
 

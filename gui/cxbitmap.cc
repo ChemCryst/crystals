@@ -53,7 +53,7 @@
 #include    "cccontroller.h"
 #include    "crbitmap.h"
 #include    <iostream>
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 #include <sys/stat.h>
 #endif
 
@@ -61,10 +61,9 @@ int     CxBitmap::mBitmapCount = kBitmapBase;
 CxBitmap *        CxBitmap::CreateCxBitmap( CrBitmap * container, CxGrid * guiParent )
 {
         CxBitmap  *theBitmap = new CxBitmap( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
       theBitmap->Create(NULL,"Bitmap",WS_CHILD| WS_VISIBLE, CRect(0,0,26,28), guiParent, mBitmapCount++);
-#endif
-#ifdef __BOTHWX__
+#else
       theBitmap->Create(guiParent,-1,wxPoint(0,0),wxSize(0,0));
 #endif
       return theBitmap;
@@ -87,10 +86,9 @@ CxBitmap::~CxBitmap()
 
 void CxBitmap::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 DestroyWindow();
-#endif
-#ifdef __BOTHWX__
+#else
 Destroy();
 #endif
 }
@@ -104,10 +102,7 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
     std::cerr << "You must set CRYSDIR before running crystals.\n";
     return;
   }
-#ifdef __BOTHWX__
-
-#endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   HBITMAP hBmp;
 #endif
 
@@ -118,14 +113,13 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
   {
     string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
     i++;
-#ifdef __BOTHWIN__
+#ifdef CRY_OSWIN32
     string file = dir + "script\\" + bitmap;
-#endif
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#else
     string file = dir + "script/" + bitmap;
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     hBmp = (HBITMAP)::LoadImage( NULL, file.c_str(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
     if( hBmp )
     {
@@ -136,8 +130,7 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
       LOGERR ( "Bitmap not found " + bitmap );
       return;
     }
-#endif
-#ifdef __BOTHWX__
+#else
     struct stat buf;
 	if ( stat(file.c_str(),&buf)==0 ) {
 		wxImage myimage ( file.c_str(), wxBITMAP_TYPE_BMP );
@@ -172,7 +165,7 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
 #endif
   }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     mbitmap.Attach( hBmp );
 
     if ( transp ) ReplaceBackgroundColour();
@@ -217,8 +210,7 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
     }
 
 
-#endif
-#ifdef __BOTHWX__
+#else
     mWidth = mbitmap.GetWidth();
     mHeight = mbitmap.GetHeight();
 #endif
@@ -255,15 +247,14 @@ void    CxBitmap::RemoveBitmap()
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
 //Windows Message Map
 BEGIN_MESSAGE_MAP(CxBitmap, CWnd)
     ON_WM_PAINT()
 END_MESSAGE_MAP()
 
-#endif
-#ifdef __BOTHWX__
+#else
 
 //wx Message Table
 BEGIN_EVENT_TABLE(CxBitmap, wxWindow)
@@ -272,7 +263,7 @@ END_EVENT_TABLE()
 
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 
 void CxBitmap::OnPaint()
 {
@@ -297,9 +288,8 @@ void CxBitmap::OnPaint()
   dc.BitBlt(0, 0, mWidth, mHeight, &memDC, 0, 0,SRCCOPY);
 
 }
-#endif
+#else
 
-#ifdef __BOTHWX__
 void CxBitmap::OnPaint(wxPaintEvent & evt)
 {
   wxPaintDC dc(this);
@@ -308,7 +298,7 @@ void CxBitmap::OnPaint(wxPaintEvent & evt)
 }
 #endif
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 void CxBitmap::ReplaceBackgroundColour()
 {
 // figure out how many pixels there are in the bitmap

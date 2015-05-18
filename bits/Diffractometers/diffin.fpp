@@ -47,7 +47,7 @@ C
 c -d    Diffractometer name
 c       input filename
 c
-#if defined(_DIGITALF77_)
+#if defined(CRY_FORTDIGITAL)
       use dflib
 #endif
 #include "ciftbx.cmn"
@@ -69,7 +69,7 @@ c
       data noutr    /14/
       data nglob    /15/
 
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       call no_stdout_buffer_()
 #endif
 
@@ -106,7 +106,7 @@ c     Make CCDC files the default
       extbl  = '.cry'
 c
       N = 1
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       NARG = IARGC()
 #else
       NARG = NARGS()
@@ -482,7 +482,7 @@ c
       SUBROUTINE NOILLEGAL(OPTION)
         character*32 option
         DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
           IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
 #else
           IF ( option(N:N) .EQ. '\') option(N:N) = '_'
@@ -502,15 +502,15 @@ C=======================================================================
 #include "datain.for"
 C=======================================================================
       SUBROUTINE INARG(N, CARG)
-#if defined(_DVF_) || defined (_DIGITALF77_)  || defined (_GID_)
+#if defined(CRY_FORTDIGITAL)
       USE DFPORT
 #endif
       CHARACTER*80 CMNAM
       character*(*)  CARG
 C--
       optlen=132
-      carg1 = ' '
-#if defined(_DVF_) || defined (_DIGITALF77_)   || defined (_GID_)
+      carg = ' '
+#if defined(CRY_FORTDIGITAL)
       CALL GetArg(N,carg,optlen)
 #elif defined(_DOS_) 
      carg=cmnam()

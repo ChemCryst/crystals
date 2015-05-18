@@ -647,7 +647,7 @@ c         loaded by the calling routine.
       DATA NCLINF /0/
 
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA    IUNKN /4HUNKN/
 #else
       DATA    IUNKN /'UNKN'/
@@ -906,7 +906,7 @@ C Look for properties in our cache: (things like Q, which are not in 29).
 C Atom info not found. Load it and cache it. The info is stored
 C in common, so only needs loading once.
 
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_)
+#ifdef CRY_OSWIN32
              CFILEN = 'CRYSDIR:script\propwin.dat'
 #else
              CFILEN = 'CRYSDIR:script/propwin.dat'
@@ -972,7 +972,7 @@ C Get colour definition from our cache:
                IF ( KFNDPR .EQ. 0 ) THEN
 
 C Get the colour definition for this colour from colour.cmn and cache it.
-#if !defined(_GIL_) && !defined(_LIN_) && !defined(_MAC_)
+#ifdef CRY_OSWIN32
                   CFILEN = 'CRYSDIR:SCRIPT\COLOUR.CMN'
 #else
                   CFILEN = 'CRYSDIR:script/colour.cmn'
@@ -1039,11 +1039,11 @@ C We now have an orthogonal tensor in TENSOR(3,3).
 
 c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
-#if !defined(_DVF_) && !defined(_LIN_) 
+#ifdef CRY_GUI
          CALL ZEIGEN(TENSOR,ROTN)
+#endif
 
 C Filter out tiny axes
-#endif
                  TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
                  TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
                  TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
@@ -1103,7 +1103,7 @@ C                  STORE(I5+3) = 0.0
 
                      CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 
-#if !defined(_DVF_) && !defined(_LIN_) 
+#ifdef CRY_GUI
                 CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,
      1          NINT(STR11(IPLACE)*GSCALE),
      5          NINT(STR11(IPLACE+1)*GSCALE),
@@ -1120,7 +1120,7 @@ C                  STORE(I5+3) = 0.0
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
 
-#if !defined(_DVF_) && !defined(_LIN_) 
+#ifdef CRY_GUI
                CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
      5         NINT(STR11(IPLACE+1)*GSCALE),
      6         NINT(STR11(IPLACE+2)*GSCALE),
@@ -1133,7 +1133,7 @@ C                  STORE(I5+3) = 0.0
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
 
-#if !defined(_DVF_) && !defined(_LIN_) 
+#ifdef CRY_GUI
                CALL FSTRNG(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
      5         NINT(STR11(IPLACE+1)*GSCALE),
      6         NINT(STR11(IPLACE+2)*GSCALE),
@@ -1282,7 +1282,7 @@ c               CALL XPRVDU(NCVDU, 2,0)
                IF (( NINT(STORE(IAT1P+3)) .LT. 2 ).AND.
      1             ( NINT(STORE(IAT2P+3)) .LT. 2 )) THEN !FSTBND can't handle bonds to special shapes.
                 IF ( ISSYM .EQ. 0 ) THEN   !Normal bond
-#if !defined(_DVF_) && !defined(_LIN_) 
+#ifdef CRY_GUI
           CALL FSTBND(NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
      1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
      1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
@@ -1290,7 +1290,7 @@ c               CALL XPRVDU(NCVDU, 2,0)
      1             2,ISTR11(KNF11),LTMN,CMON(1),0,'')
 #endif
                 ELSE                       !Bond across symm op.
-#if !defined(_DVF_) && !defined(_LIN_) 
+#ifdef CRY_GUI
          CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
      1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
      1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
@@ -1370,7 +1370,7 @@ c     1                            CLAB2(1:LLAB2),'''',
 c     1                  ' ''et al. Aromatic Ring'' ', 101
 c               CALL XPRVDU(NCVDU, 2,0)
 
-#if !defined(_DVF_) && !defined(_LIN_) 
+#ifdef CRY_GUI
          CALL FSTBND( NINT(TXYZ(1)*GSCALE),NINT(TXYZ(2)*GSCALE),
      1             NINT(TXYZ(3)*GSCALE),NINT(TXYZ(4)*GSCALE),
      1             NINT(TXYZ(5)*GSCALE),NINT(TXYZ(6)*GSCALE),
@@ -2087,11 +2087,15 @@ c      END
 
 
 
-#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)||defined(_INW_)
+#ifdef CRY_GUI
+
+
+
+
       SUBROUTINE FSTBND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
      1 IBT,INP,LPTS,ILLEN,CLABL,ISLEN,CSLABL)
-#endif
-#if defined(_GID_) ||  defined(_WXS_) ||defined(_INW_)
+
+#ifdef CRY_NONGNU
       INTERFACE
           SUBROUTINE FASTBOND (JX1, JY1, JZ1, JX2, JY2, JZ2,
      1 JR,JG,JB,JRAD,JBT,JNP,KPTS,DLABL,DSLABL)
@@ -2118,60 +2122,45 @@ c      END
       END INTERFACE
 C
 #endif
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
 
       INTEGER IX1, IX2, IZ1, IY1, IY2, IZ2
       INTEGER IR,IG,IB,IRAD,IBT,INP,LPTS(*),ILLEN
       CHARACTER*(*) CLABL
 
-#endif
 
-#if defined(_GID_)  || defined(_WXS_) ||defined(_INW_)
-      CHARACTER*(ILLEN+1) BLABL
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
-      CHARACTER*80 BLABL
-#endif
-
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
       CHARACTER*(*) CSLABL
-#endif
-#if defined(_GID_) ||  defined(_WXS_) ||defined(_INW_)
+
+#ifdef CRY_NONGNU
+      CHARACTER*(ILLEN+1) BLABL
       CHARACTER*(ISLEN+1) BSLABL
-#endif
-#if defined(_GIL_)  ||defined(_MAC_)
+#else
+      CHARACTER*80 BLABL
       CHARACTER*80 BSLABL
 #endif
 
-#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)||defined(_INW_)
       BLABL = CLABL(1:ILLEN)  // CHAR(0)
       BSLABL= CSLABL(1:ISLEN) // CHAR(0)
-#endif
-#if defined(_GID_) ||  defined(_WXS_) ||defined(_INW_)
+	  
+#ifdef CRY_NONGNU
       CALL FASTBOND(IX1,IY1,IZ1,IX2,IY2,IZ2,IR,IG,IB,IRAD,
      1 IBT,INP,LPTS,BLABL,BSLABL)
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
+#else
       CALL FASTBOND(%VAL(IX1),%VAL(IY1),%VAL(IZ1),%VAL(IX2),
      1 %VAL(IY2),%VAL(IZ2),%VAL(IR),%VAL(IG),%VAL(IB),%VAL(IRAD),
      1 %VAL(IBT),%VAL(INP),LPTS,BLABL,BSLABL)
 #endif
 
-#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)||defined(_INW_)
       RETURN
       END
-#endif
 
 
-#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)||defined(_INW_)
 
       SUBROUTINE FSTATM(CE,IS,LL,CL,IX,IY,IZ,IR,IG,IB,IOC,RCO,
      1 IVD,ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,
      1 RFX,RFY,RFZ,IFF,IFA,IFG,RUE,RUS)
 
-#endif
 
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+#ifdef CRY_NONGNU
       INTERFACE
           SUBROUTINE FASTATOM (DE,JS,DL,JX,JY,JZ,JR,JG,JB,JOC,SCO,
      1 JVD,JSP,JFL,SU1,SU2,SU3,SU4,SU5,SU6,SU7,SU8,SU9,
@@ -2218,7 +2207,6 @@ C
 C
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
 
       INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,IVD
       INTEGER ISP,IFL, IFF, IFA, IFG, IS
@@ -2227,27 +2215,22 @@ C
       CHARACTER*(*) CL
       CHARACTER CE*4, BE*5
 
-#endif
 
-#if defined(_GID_)  || defined(_WXS_)||defined(_INW_)
+#ifdef CRY_NONGNU
       CHARACTER*(LL+1) BL
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
+#else
       CHARACTER*80 BL
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
 
       BL = CL(1:LL)  // CHAR(0)
       BE = CE(1:4)  // CHAR(0)
 
-#endif
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+#ifdef CRY_NONGNU
       CALL FASTATOM(BE,IS,BL,IX,IY,IZ,IR,IG,IB,IOC,RCO,IVD,
      1 ISP,IFL,RU1,RU2,RU3,RU4,RU5,RU6,RU7,RU8,RU9,RFX,RFY,RFZ,
      2 IFF, IFA, IFG, RUE, RUS)
-#endif
-#if defined(_GIL_)  || defined(_MAC_)
+#else
       CALL FASTATOM(BE,%VAL(IS),BL,%VAL(IX),%VAL(IY),%VAL(IZ),
      1 %VAL(IR),%VAL(IG),
      1 %VAL(IB),%VAL(IOC),%VAL(RCO),%VAL(IVD),%VAL(ISP),%VAL(IFL),
@@ -2256,18 +2239,15 @@ C
      1 %VAL(IFF),%VAL(IFA),%VAL(IFG),%VAL(RUE),%VAL(RUS))
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
 
       RETURN
       END
 
-#endif
 
-#if defined(_GID_) ||defined(_GIL_)  ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
       SUBROUTINE FSTSPH(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD)
-#endif
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+
+#ifdef CRY_NONGNU
       INTERFACE
           SUBROUTINE FASTSPHERE (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
      1 JSP,JFL,JISO,JRAD)
@@ -2293,44 +2273,34 @@ C
       END INTERFACE
 C
 #endif
-#if defined(_GID_) ||defined(_GIL_)  ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
       INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
       INTEGER ISP,IFL,ISO,IRAD
       CHARACTER*(*) CL
-#endif
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+
+#ifdef CRY_NONGNU
       CHARACTER*(LL+1) BL
-#endif
-#if defined(_GIL_)  ||defined(_MAC_)
+#else
       CHARACTER*80 BL
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
 
       BL = CL(1:LL)  // CHAR(0)
 
-#endif
-
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+#ifdef CRY_NONGNU
       CALL FASTSPHERE(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD)
-#endif
-#if defined(_GIL_)  ||defined(_MAC_)
+#else
       CALL FASTSPHERE(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
      1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
      1 %VAL(IFL),%VAL(ISO),%VAL(IRAD))
 #endif
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_)||defined(_WXS_)||defined(_INW_)
       RETURN
       END
-#endif
 
 
-#if defined(_GID_) ||defined(_GIL_)  ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
       SUBROUTINE FSTRNG(LL,CL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD, IDEC, IAZ)
-#endif
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+#ifdef CRY_NONGNU
       INTERFACE
           SUBROUTINE FASTDONUT (DL,JX,JY,JZ,JR,JG,JB,JOC,JCO,JVD,
      1 JSP,JFL,JISO,JRAD, JDEC, JAZ)
@@ -2359,37 +2329,32 @@ C
 C
 #endif
 
-#if defined(_GID_) ||defined(_GIL_)  ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
       INTEGER LL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD
       INTEGER ISP,IFL,ISO,IRAD,IDEC,IAZ
       CHARACTER*(*) CL
-#endif
 
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+#ifdef CRY_NONGNU
       CHARACTER*(LL+1) BL
-#endif
-
-#if defined(_GIL_)  ||defined(_MAC_)
+#else
       CHARACTER*80 BL
 #endif
 
-#if defined(_GID_)||defined(_GIL_)||defined(_MAC_)||defined(_WXS_)||defined(_INW_)
       BL = CL(1:LL)  // CHAR(0)
-#endif
 
-#if defined(_GID_) ||defined(_WXS_)||defined(_INW_)
+#ifdef CRY_NONGNU
       CALL FASTDONUT(BL,IX,IY,IZ,IR,IG,IB,IOC,ICO,IVD,
      1 ISP,IFL,ISO,IRAD, IDEC,IAZ)
-#endif
-
-#if defined(_GIL_)  || defined(_MAC_)
+#else
       CALL FASTDONUT(BL,%VAL(IX),%VAL(IY),%VAL(IZ),%VAL(IR),
      1 %VAL(IG),%VAL(IB),%VAL(IOC),%VAL(ICO),%VAL(IVD),%VAL(ISP),
      1 %VAL(IFL),%VAL(ISO),%VAL(IRAD),%VAL(IDEC),%VAL(IAZ))
 #endif
 
-#if defined(_GID_) ||defined(_GIL_) ||defined(_MAC_) ||defined(_WXS_)||defined(_INW_)
       RETURN
       END
+
+	 
+	 
+	 
 #endif
 

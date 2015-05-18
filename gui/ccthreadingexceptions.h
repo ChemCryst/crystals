@@ -20,7 +20,7 @@
 #include <sstream>
 #include <string>
 
-#if defined(__CR_WIN__)
+#if defined(CRY_USEMFC)
 typedef DWORD error_type;
 #else
 typedef unsigned int error_type;

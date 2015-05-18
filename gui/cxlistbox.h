@@ -51,15 +51,14 @@ class LListBox;
 #include    <LTabGroup.h>
 #endif
 
-#ifdef __BOTHWX__
-#include <wx/listbox.h>
-#define BASELISTBOX wxListBox
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASELISTBOX CListBox
+#else
+ #include <wx/listbox.h>
+ #define BASELISTBOX wxListBox
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASELISTBOX CListBox
-#endif
 
 class CrListBox;
 class CxGrid;
@@ -99,18 +98,16 @@ class CxListBox : public BASELISTBOX
         int mItems;
         int mVisibleLines;
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
         afx_msg void DoubleClicked();
         afx_msg void Selected();
         afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-
         DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
-           void DoubleClicked(wxCommandEvent & e);
-            void Selected(wxCommandEvent & e);
-            void OnChar(wxKeyEvent & event );
-            DECLARE_EVENT_TABLE()
+#else
+        void DoubleClicked(wxCommandEvent & e);
+        void Selected(wxCommandEvent & e);
+        void OnChar(wxKeyEvent & event );
+        DECLARE_EVENT_TABLE()
 #endif
 
 };

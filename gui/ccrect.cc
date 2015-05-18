@@ -150,7 +150,7 @@ bool CcRect::Contains(int x, int y)
 }
 
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 CRect CcRect::Native()
 {
   return CRect( mLeft, mTop, mRight, mBottom );

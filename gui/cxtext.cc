@@ -47,11 +47,11 @@ int CxText::mTextCount = kTextBase;
 CxText *    CxText::CreateCxText( CrText * container, CxGrid * guiParent )
 {
     CxText  *theText = new CxText( container );
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     theText->Create("Text", SS_LEFTNOWORDWRAP| WS_CHILD| WS_VISIBLE, CRect(0,0,20,20), guiParent);
     theText->SetFont(CcController::mp_font);
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     theText->Create(guiParent, -1, "text", wxPoint(0,0),wxSize(0,0), wxWANTS_CHARS); // wxTRANSPARENT_WINDOW);
 #endif
     return theText;
@@ -71,10 +71,10 @@ CxText::~CxText()
 
 void CxText::CxDestroyWindow()
 {
-  #ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 DestroyWindow();
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
 Destroy();
 #endif
 }
@@ -82,25 +82,23 @@ Destroy();
 
 void    CxText::SetText( const string & text )
 {
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
     SetLabel(text.c_str());
     SetSize(GetIdealWidth(),GetHeight());
     Refresh();
 #endif
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     SetWindowText(text.c_str());
 //    MoveWindow(GetLeft(),GetTop(),GetIdealWidth(),GetHeight(),true); //Naughty but harmless.
 #endif
 
 }
 
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
 BEGIN_MESSAGE_MAP(CxText, CStatic)
    ON_WM_CHAR()
 END_MESSAGE_MAP()
-#endif
-
-#ifdef __BOTHWX__
+#else
 //wx Message Map
 BEGIN_EVENT_TABLE(CxText, wxStaticText)
       EVT_CHAR(CxText::OnChar)
@@ -117,7 +115,7 @@ CXGETGEOMETRIES(CxText)
 
 int CxText::GetIdealWidth()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     CClientDC dc(this);
@@ -127,17 +125,17 @@ int CxText::GetIdealWidth()
     dc.SelectObject(oldFont);
     return ( size.cx );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
-      return cx;
+      return cx + 8;
 #endif
 
 }
 
 int CxText::GetIdealHeight()
 {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     CString text;
     SIZE size;
     CClientDC dc(this);
@@ -147,7 +145,7 @@ int CxText::GetIdealHeight()
     dc.SelectObject(oldFont);
     return ( size.cy );
 #endif
-#ifdef __BOTHWX__
+#ifdef CRY_USEWX
       int cx,cy;
       GetTextExtent( GetLabel(), &cx, &cy );
       return (cy+5); // nice height for static text

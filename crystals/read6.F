@@ -414,7 +414,7 @@ C
 C
       DATA NFORM/41/
 C
-#if defined (_HOL_)
+#ifdef _HOL_
       DATA ISLX(1)/4H(3F4/,ISLX(2)/4H.0,2/,ISLX(3)/4HF8.2/
       DATA ISLX(4)/4H)   /
       DATA LSLX/4/

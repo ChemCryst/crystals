@@ -27,15 +27,14 @@
 #define     __CxText_H__
 #include    "crguielement.h"
 
-#ifdef __BOTHWX__
-#include <wx/stattext.h>
-#define BASETEXT wxStaticText
+#ifdef CRY_USEMFC
+ #include <afxwin.h>
+ #define BASETEXT CStatic
+#else
+ #include <wx/stattext.h>
+ #define BASETEXT wxStaticText
 #endif
 
-#ifdef __CR_WIN__
-#include <afxwin.h>
-#define BASETEXT CStatic
-#endif
 
 class CrText;
 class CxGrid;
@@ -71,12 +70,11 @@ class CxText : public BASETEXT
         static int  mTextCount;
         int mCharsWidth;
 
-		#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
   protected:
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     DECLARE_MESSAGE_MAP()
-#endif
-#ifdef __BOTHWX__
+#else
   public:
     void OnChar(wxKeyEvent & event );
     DECLARE_EVENT_TABLE()

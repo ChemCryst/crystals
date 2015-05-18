@@ -67,7 +67,7 @@ C=======================================================================
 CODE FOR IO
       function  io(ninf,noutf,infil, outfil)
 C<ric02>
-#if defined(_DVF_) || defined(_GID_)
+#ifdef CRY_FORTDIGITAL
       use dflib
 #endif
       parameter (oddchr = 29)    !Number of chars to look out for.
@@ -80,7 +80,7 @@ C      data noutf    /11/
 C      data infil /' '/
 C      data outfil /' '/
       io = -1
-#if defined(_GIL_) || defined(_LIN_) || defined(_MAC_) || defined(_WXS_)
+#ifdef CRY_GNU
       call no_stdout_buffer()
 #endif      
 cdjw open a file for errors since DOS window closes too fast
@@ -90,7 +90,7 @@ c    lots of writes to 17 later
 C<ric02>
 C Read data from the commandline:
       optlen=132
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#ifdef CRY_GNU
       CALL GetArg(0,prognm)
 #else
       CALL GetArg(0,prognm,optlen)
@@ -102,14 +102,14 @@ C Read data from the commandline:
       loutfl = .FALSE.
 
       N = 1
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#ifdef CRY_GNU
       NARG = IARGC()
 #else
       NARG = NARGS()
 #endif
 
       DO WHILE ( N .LT. NARG )
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#ifdef CRY_GNU
         CALL GetArg(N,option) 
 #else
         CALL GetArg(N,option,optlen) 
@@ -125,7 +125,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           namebl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#ifdef CRY_GNU
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -136,7 +136,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           loutfl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#ifdef CRY_GNU
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -148,7 +148,7 @@ C Read data from the commandline:
           IF (linfl) GOTO 8000
           IF ( N .GE. NARG ) GOTO 8000
           linfl=.TRUE.
-#if defined(_GIL_) || defined(_LIN_) || defined (_WXS_)
+#ifdef CRY_GNU
           CALL GetArg(N,infil)
 #else
           CALL GetArg(N,infil,optlen)

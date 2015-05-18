@@ -15,16 +15,14 @@
 using namespace std;
 #include    "cccontroller.h"
 
-#ifdef __CR_WIN__
-#include <iostream>
-#include <iomanip>
-#include <cstdio>
-#include <direct.h>
-#include <process.h>
-#endif
-
-#ifdef __BOTHWX__
-#include <wx/thread.h>
+#ifdef CRY_USEMFC
+ #include <iostream>
+ #include <iomanip>
+ #include <cstdio>
+ #include <direct.h>
+ #include <process.h>
+#else
+ #include <wx/thread.h>
 #endif
 
 
@@ -45,22 +43,20 @@ CcLock::CcLock(bool isMutex )   //true for CS, false for signal.
   if (isMutex)
   {
     m_Locked = 0;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_EvMutex = nil;
     m_CSMutex = CreateMutex(NULL, false, NULL);
-#endif
-#ifdef __BOTHWX__
+#else
     m_EvMutex = nil;
     m_CSMutex = new wxMutex();
 #endif
   }
   else
   {
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     m_CSMutex = CreateMutex(NULL, false, NULL);
     m_EvMutex = CreateSemaphore(NULL, 0, 99999, NULL);
-#endif
-#ifdef __BOTHWX__
+#else
     m_CSMutex = new wxMutex();
     m_EvMutex = new wxSemaphore();
 #endif
@@ -77,11 +73,10 @@ CcLock::~CcLock()
 void CcLock::Enter()
 {
 //    LOGSTAT ("++++Entering critical section: " + string(m_Locked)  + " " + string((int)this) + "\n");
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     WaitForSingleObject( m_CSMutex, INFINITE );
     m_Locked ++;
-#endif
-#ifdef __BOTHWX__
+#else
     if (!( m_CSMutex -> Lock() == wxMUTEX_NO_ERROR) )
     {
        ostringstream strm;
@@ -98,10 +93,9 @@ void CcLock::Leave()
 {
     if ( m_Locked > 0 ) m_Locked --;
 //    LOGSTAT ("++++Leaving critical section: " + string(m_Locked)  + " " + string((int)this) + "\n");
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     ReleaseMutex( m_CSMutex );
-#endif
-#ifdef __BOTHWX__
+#else
     m_CSMutex -> Unlock();
 #endif
 //    LOGSTAT ("++++Critical section left: " + string(m_Locked)  + " " + string((int)this) + "\n");
@@ -118,11 +112,10 @@ bool CcLock::Wait(int timeout_ms)
 {
 //    LOGSTAT ("++++Waiting for object.\n");
 //    if ( m_Locked > 0 ) m_Locked --;
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
     bool ret = (WaitForSingleObject( m_EvMutex, timeout_ms?timeout_ms:INFINITE ) == WAIT_OBJECT_0 ) ;
     return ret;
-#endif
-#ifdef __BOTHWX__
+#else
     if ( timeout_ms ) {
       wxSemaError result =  m_EvMutex -> WaitTimeout( timeout_ms );
 
@@ -159,10 +152,9 @@ bool CcLock::Wait(int timeout_ms)
 void CcLock::Signal(bool all)
 {
 //  LOGSTAT ("++++Signalling object." + string(all?"True ":"False "));
-#ifdef __CR_WIN__
+#ifdef CRY_USEMFC
        ReleaseSemaphore( m_EvMutex, 1, NULL );
-#endif
-#ifdef __BOTHWX__
+#else
        m_EvMutex -> Post();
 #endif
 
