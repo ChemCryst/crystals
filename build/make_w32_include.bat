@@ -31,7 +31,7 @@ goto ALLDVF
 @set FDEF=-D__INW__ -DCRY_GUI -DCRY_USEWX -DCRY_OSWIN32 -DCRY_NONGNU -DCRY_FORTINTEL
 @rem @set LD=xilink
 @set LD=ifort
-@set OUT=-out:
+@set OUT=/exe:
 @set OPT=/O2 /Zi
 @set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
 @set LDEBUG=/Zi
@@ -47,7 +47,7 @@ goto ALLDVF
 @
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /Qvec /QaxSSE2 /fp:source /Zi /Oy- /nolink %COPENMP%
+@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /nolink %COPENMP%
 @set FNOOPT=/fpp /I..\crystals /MD /O0 /fp:source /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
