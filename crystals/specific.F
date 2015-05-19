@@ -1579,7 +1579,7 @@ C
       I = INDEX(CDATE(1:8), ' ')
       IF (I .NE. 0) CDATE(I:I) = '0'
 C
-#elif defined(_GNUF77_) 
+#elif defined(CRY_GNU) 
       CALL IDATE ( IDAT )
       WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
      2      IDAT(2) , MOD ( IDAT(3) , 100 )
@@ -2832,14 +2832,11 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
         LIST(LEVEL) = ' '
 #ifdef _DOS_ 
           CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#endif
-#ifdef CRY_FORTDIGITAL 
+#elif defined (CRY_FORTDIGITAL)
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#endif
-#ifdef _GNUF77_ 
+#elif defined (CRY_GNU)
           CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#endif
-#ifdef CRY_FORTINTEL
+#elif defined (CRY_FORTINTEL)
 C The intel environment does not pick up changes made by _putenv in C++ code
 C Therefore use this interface to the C++ to get values.
           CALL CGETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
@@ -3089,7 +3086,7 @@ C       random number generator.
 #ifdef _DOS_ 
           FRAND = RANDOM()
 #endif
-#if defined(_GNUF77_) || defined(CRY_FORTINTEL)
+#if defined(CRY_GNU) || defined(CRY_FORTINTEL)
       FRAND = RAND()
 #endif
 #ifdef __VAX__ 
@@ -3130,7 +3127,7 @@ C----- REPEAT RANDOM SEQUENCE
 #ifdef CRY_FORTDIGITAL 
           CALL SRAND(0)
 #endif
-#if defined(_GNUF77_) || defined(CRY_FORTINTEL)
+#if defined(CRY_GNU) || defined(CRY_FORTINTEL)
           CALL SRAND(0)
 #endif
         ELSE
@@ -3147,7 +3144,7 @@ C----- CREATE NEW SEQUENCE
 #ifdef CRY_FORTDIGITAL 
           CALL SRAND(RND$TIMESEED )
 #endif
-#if defined(_GNUF77_) || defined(CRY_FORTINTEL)
+#if defined(CRY_GNU) || defined(CRY_FORTINTEL)
 	  ITIMEI = TIME()
           KSEED = MOD (ITIMEI,(2**30))
           CALL SRAND(KSEED)
