@@ -48,6 +48,8 @@ CODE FOR CRYSTL
 C Entry point for GUI C++ routines.
 #ifdef CRY_FORTDIGITAL
       SUBROUTINE CRYSTL()
+#elif defined(CRY_NOGUI)
+      PROGRAM CRYSTL
 #else
       SUBROUTINE CRYSTL() bind (c)
 #endif
