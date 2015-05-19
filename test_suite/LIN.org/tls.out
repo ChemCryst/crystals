@@ -4766,7 +4766,8 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        3     Address    81956     Length     234     Created on      
+ Print list type    20     serial number        3     Address    81956     Length     234     Created on                          
+
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -4997,7 +4998,8 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        4     Address    82190     Length     234     Created on      
+ Print list type    20     serial number        4     Address    82190     Length     234     Created on                          
+
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -5231,7 +5233,8 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        5     Address    82424     Length     234     Created on      
+ Print list type    20     serial number        5     Address    82424     Length     234     Created on                          
+
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            
@@ -5477,7 +5480,8 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        6     Address    82658     Length     234     Created on      
+ Print list type    20     serial number        6     Address    82658     Length     234     Created on                          
+
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            

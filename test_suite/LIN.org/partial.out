@@ -1803,7 +1803,8 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        3     Address    33910     Length      76     Created on      
+ Print list type    23     serial number        3     Address    33910     Length      76     Created on                          
+
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -1855,7 +1856,8 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38679     Length     729     Created on      
+ Print list type    22     serial number        1     Address    38679     Length     729     Created on                          
+
 
             298 parameter(s) in    1 block(s) - as follows:
 
@@ -2043,7 +2045,8 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        5     Address    85651     Length     616     Created on      
+ Print list type    24     serial number        5     Address    85651     Length     616     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP    298   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -4040,7 +4043,8 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        4     Address    33910     Length      76     Created on      
+ Print list type    23     serial number        4     Address    33910     Length      76     Created on                          
+
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -4092,7 +4096,8 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38679     Length     729     Created on      
+ Print list type    22     serial number        1     Address    38679     Length     729     Created on                          
+
 
             298 parameter(s) in    1 block(s) - as follows:
 
@@ -4280,7 +4285,8 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    85651     Length     616     Created on      
+ Print list type    24     serial number        9     Address    85651     Length     616     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP    298   THE CALCULATED AND APPLIED SHIFT FACTORS                                        

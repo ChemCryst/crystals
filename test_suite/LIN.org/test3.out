@@ -35,7 +35,8 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        1     Address     3585     Length      65     Created on      
+ Print list type    28     serial number        1     Address     3585     Length      65     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP      0
@@ -99,7 +100,8 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        4     Address     4314     Length     423     Created on      
+ Print list type     6     serial number        4     Address     4314     Length     423     Created on                          
+
 
 
  Record  105    LGRP   33  NGRP      1   POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER            
@@ -203,7 +205,8 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        6     Address     4983     Length     246     Created on      
+ Print list type     6     serial number        6     Address     4983     Length     246     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.100000E+01   0.410000E+02   0.185000E+02   0.232415E+02
@@ -260,7 +263,8 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        6     Address     4983     Length     246     Created on      
+ Print list type     6     serial number        6     Address     4983     Length     246     Created on                          
+
 
 
  Record  105    LGRP    7  NGRP      1   POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER            
@@ -349,7 +353,8 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       10     Address     5827     Length     596     Created on      
+ Print list type     6     serial number       10     Address     5827     Length     596     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.100000E+01   0.710000E+02   0.326667E+02   0.402823E+02
@@ -409,7 +414,8 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       10     Address     5827     Length     596     Created on      
+ Print list type     6     serial number       10     Address     5827     Length     596     Created on                          
+
 
 
  Record  105    LGRP    8  NGRP      1   POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER            
@@ -548,7 +554,8 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       18     Address     8092     Length    3467     Created on      
+ Print list type     6     serial number       18     Address     8092     Length    3467     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.260000E+02   0.164583E+01   0.500417E+01
@@ -690,7 +697,8 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    12157     Length    9473     Created on      
+ Print list type     6     serial number       22     Address    12157     Length    9473     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.127000E+03   0.127000E+03   0.273381E+01   0.218336E+02
@@ -865,7 +873,8 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        2     Address    21630     Length      95     Created on      
+ Print list type    28     serial number        2     Address    21630     Length      95     Created on                          
+
 
 
  Record  105    LGRP    6  NGRP      2   THE PARAMETERS DEFINING ACCEPTABLE INDEX CONDITIONS                             
@@ -927,7 +936,8 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    12157     Length    9473     Created on      
+ Print list type     6     serial number       22     Address    12157     Length    9473     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.127000E+03   0.127000E+03   0.273381E+01   0.218336E+02
@@ -1064,7 +1074,8 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       26     Address    22252     Length     771     Created on      
+ Print list type     6     serial number       26     Address    22252     Length     771     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.900000E+01   0.281481E+01   0.359629E+01
@@ -1236,7 +1247,8 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       30     Address    23497     Length    1317     Created on      
+ Print list type     6     serial number       30     Address    23497     Length    1317     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.900000E+01   0.281481E+01   0.359629E+01
@@ -1410,7 +1422,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25462     Length    9234     Created on      
+ Print list type     6     serial number       34     Address    25462     Length    9234     Created on                          
+
 
 
  Record  105    LGRP   33  NGRP      1   POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER            
@@ -2844,7 +2857,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        4     Address    34696     Length      89     Created on      
+ Print list type    28     serial number        4     Address    34696     Length      89     Created on                          
+
 
 
  Record  105    LGRP    6  NGRP      2   THE PARAMETERS DEFINING ACCEPTABLE INDEX CONDITIONS                             
@@ -2906,7 +2920,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25462     Length    9234     Created on      
+ Print list type     6     serial number       34     Address    25462     Length    9234     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.900000E+01   0.281481E+01   0.359629E+01
@@ -3082,7 +3097,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    27     serial number        1     Address    36601     Length      72     Created on      
+ Print list type    27     serial number        1     Address    36601     Length      72     Created on                          
+
 
 
  Record  101    LGRP    4  NGRP     16   THE SCALE FACTORS DEDUCED FROM THE HILGER WATTS 4-CIRCLE PROGRAM                
@@ -3126,7 +3142,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        5     Address    36673     Length      80     Created on      
+ Print list type    13     serial number        5     Address    36673     Length      80     Created on                          
+
 
 
  Record  102    LGRP    3  NGRP      1   DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6         
@@ -3187,7 +3204,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       40     Address    37004     Length     251     Created on      
+ Print list type     6     serial number       40     Address    37004     Length     251     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               No details available
@@ -3264,7 +3282,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       48     Address    38761     Length     251     Created on      
+ Print list type     6     serial number       48     Address    38761     Length     251     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               No details available
@@ -3320,7 +3339,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        6     Address    40440     Length      48     Created on      
+ Print list type    13     serial number        6     Address    40440     Length      48     Created on                          
+
 
 
  Record  102    LGRP    3  NGRP      1   DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6         
@@ -3364,7 +3384,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       56     Address    41086     Length     596     Created on      
+ Print list type     6     serial number       56     Address    41086     Length     596     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.300000E+01   0.188889E+01   0.218581E+01
@@ -3444,7 +3465,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       64     Address    46527     Length    3335     Created on      
+ Print list type     6     serial number       64     Address    46527     Length    3335     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.100000E+01   0.239130E+00   0.489010E+00
@@ -3578,7 +3600,8 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     5     serial number        1     Address    51183     Length     677     Created on      
+ Print list type     5     serial number        1     Address    51183     Length     677     Created on                          
+
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -3873,7 +3896,8 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type     5     serial number        2     Address    52544     Length     749     Created on      
+ Print list type     5     serial number        2     Address    52544     Length     749     Created on                          
+
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -4053,7 +4077,8 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    53293     Length     587     Created on      
+ Print list type    10     serial number        1     Address    53293     Length     587     Created on                          
+
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -4298,7 +4323,8 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        4     Address    54626     Length     785     Created on      
+ Print list type     5     serial number        4     Address    54626     Length     785     Created on                          
+
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -4458,7 +4484,8 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        5     Address    55784     Length     677     Created on      
+ Print list type     5     serial number        5     Address    55784     Length     677     Created on                          
+
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -5032,7 +5059,8 @@ for Uprime see Acta Cryst (2000). B56, 747-749
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        6     Address    56695     Length     677     Created on      
+ Print list type     5     serial number        6     Address    56695     Length     677     Created on                          
+
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -6570,7 +6598,8 @@ LS-scale= 11.239   Wilson Scale=  0.000
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    84717     Length    7559     Created on      
+ Print list type     6     serial number       96     Address    84717     Length    7559     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -6702,7 +6731,8 @@ LS-scale= 11.239   Wilson Scale=  0.000
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      100     Address    92874     Length    7559     Created on      
+ Print list type     6     serial number      100     Address    92874     Length    7559     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -6834,7 +6864,8 @@ LS-scale= 11.239   Wilson Scale=  0.000
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address   100433     Length     137     Created on      
+ Print list type     5     serial number       14     Address   100433     Length     137     Created on                          
+
 
 
  Record  101    LGRP   18  NGRP      3   ATOMIC PARAMETERS                                                               
@@ -7535,7 +7566,8 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      106     Address    92874     Length    7559     Created on      
+ Print list type     6     serial number      106     Address    92874     Length    7559     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H               -0.300000E+01   0.300000E+01  -0.531818E+00   0.201246E+01
@@ -8133,7 +8165,8 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   127682     Length     806     Created on      
+ Print list type    11     serial number       20     Address   127682     Length     806     Created on                          
+
  Inverse matrix
 
 
@@ -8183,7 +8216,8 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   127682     Length     806     Created on      
+ Print list type    11     serial number       20     Address   127682     Length     806     Created on                          
+
 
  Print List 11 as correlation matrix
  Inverse matrix
@@ -8274,7 +8308,8 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   127682     Length     806     Created on      
+ Print list type    11     serial number       20     Address   127682     Length     806     Created on                          
+
  Inverse matrix
 
  Block    1
@@ -8463,7 +8498,8 @@ Mean C-C su =   0.0000
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     5     serial number       30     Address   132542     Length     150     Created on      
+ Print list type     5     serial number       30     Address   132542     Length     150     Created on                          
+
 
 
  Record  103    LGRP    5  NGRP      1   THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING                            
@@ -8641,7 +8677,8 @@ LS-scale=  1.000   Wilson Scale=  0.000
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     6     serial number      128     Address   131842     Length     700     Created on      
+ Print list type     6     serial number      128     Address   131842     Length     700     Created on                          
+
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
   H                0.000000E+00   0.200000E+01   0.673913E+00   0.989071E+00
