@@ -19,13 +19,13 @@ C Revision 1.3  2004/12/17 10:03:46  rich
 C Oops - extra line. Removed executable.
 C
 C Revision 1.2  2004/12/17 10:01:02  rich
-C MAC to ___MAC___ etc.
+C MAC to __MAC__ etc.
 C
 C Revision 1.1.1.1  2004/12/13 11:16:12  rich
 C New CRYSTALS repository
 C
 C Revision 1.18  2003/05/12 14:07:18  rich
-C Added ___GID___ EDITOR target to the EDITOR source code itself.
+C Added __GID__ EDITOR target to the EDITOR source code itself.
 C
 C Revision 1.17  2002/12/19 16:25:51  djw
 C Increase number of MACROS
@@ -114,7 +114,7 @@ C      APRIL 1984      FORTRAN CHARACTER CONSTANTS MAY HAVE THE EDIT
 C                      COMMENT CHARACTER INSIDE THEM
 C
 C
-C      FEBRUARY 1997   ___DOS___ VERSION
+C      FEBRUARY 1997   __DOS__ VERSION
       CHARACTER *128 DOSMAC
       CHARACTER *128 DOSSRC
       CHARACTER *128 DOSFOR
@@ -141,7 +141,7 @@ C
 C
 C
 C----- OPEN THE FILE READONLY/SHARED IF POSSIBLE
-#if defined(___VAX___) 
+#if defined(__VAX__) 
       OPEN(UNIT=NCPU,CARRIAGECONTROL='LIST')
       OPEN(UNIT=NEFU, READONLY, SHARED, STATUS='OLD')
       OPEN(UNIT=NUMAC, READONLY, SHARED, STATUS = 'OLD')
@@ -149,27 +149,27 @@ C----- OPEN THE FILE READONLY/SHARED IF POSSIBLE
 #endif
       WRITE(6,*) ' Version Feb 99'
 
-#if !defined(___VAX___) 
+#if !defined(__VAX__) 
       DOSMAC = ' '
 #endif
 C----- DOS OPENS
-#if defined(___GID___)||defined(___LIN___)||defined(___GIL___)||defined(___MAC___)||defined(___WXS___)||defined(___INW___)
+#if defined(__GID__)||defined(__LIN__)||defined(__GIL__)||defined(__MAC__)||defined(__WXS__)||defined(__INW__)
       CALL GETARG(1,DOSSRC)
       CALL GETARG(2,DOSFOR)
       IGTRG = 3
 #endif
-#if defined(___DOS___) 
+#if defined(__DOS__) 
       DOSSRC=CMNAM()
       DOSFOR=CMNAM()
 #endif
 
 100   CONTINUE
 
-#if defined(___GID___) || defined(___LIN___) || defined (___GIL___) || defined (___MAC___) || defined (___WXS___)||defined(___INW___)
+#if defined(__GID__) || defined(__LIN__) || defined (__GIL__) || defined (__MAC__) || defined (__WXS__)||defined(__INW__)
       CALL GETARG(IGTRG,DOSCOD)
       IGTRG = IGTRG + 1
 #endif
-#if defined(___DOS___) 
+#if defined(__DOS__) 
       DOSCOD=CMNAM()
 #endif
 
@@ -201,7 +201,7 @@ C----- DOS OPENS
      1   'code=<XXX> '//
      1   '[macro=macrofil.mac] [incl=&] [excl=#] '//
 
-#if defined(___DOS___) || defined(_DIGITALF77_)
+#if defined(__DOS__) || defined(CRY_FORTDIGITAL)
 
      2   '[comm=CC] [subs=\] [strip]'
 
@@ -226,7 +226,7 @@ C---- THE SOURCE FILE
       ELSE
         WRITE(*,'(A)') 'Leaving comments'
       END IF
-#if defined(___LIN___) || defined (___GIL___) || defined (___MAC___) 
+#if defined(__LIN__) || defined (__GIL__) || defined (__MAC__) 
       OPEN(UNIT=NCRU, FILE=DOSSRC, STATUS = 'OLD')
 #else
       CALL CONVER(DOSSRC,NCRU)
@@ -1205,7 +1205,7 @@ C
       END
 C
 C
-#if defined(__DOS__) || defined(_DIGITALF77_) ||defined (__INW__)
+#if defined(__DOS__) || defined(CRY_FORTDIGITAL) ||defined (__INW__)
       SUBROUTINE CONVER ( CFILE , NUNIT )
 
 
