@@ -58,8 +58,10 @@ goto ALLDVF
 @
 :GID
 @set LIBS=script1.res
-@set CDEF=/D"__CR_WIN__"  /D"_AFXDLL" /D"_DIGITALF77_"
-@set FDEF=/define:_%COMPCODE%_ /define:_DIGITALF77_
+@set CDEF=/D__%COMPCODE%__ /D"_AFXDLL" /D_CRT_SECURE_NO_WARNINGS
+rem @set CDEF=/D"__CR_WIN__"  /D"_AFXDLL" /D"_DIGITALF77_"
+@set FDEF=-D_GID_ -DCRY_GUI -DCRY_USEMFC -DCRY_OSWIN32 -DCRY_NONGNU -DCRY_FORTDIGITAL
+rem @set FDEF=/define:_%COMPCODE%_ /define:_DIGITALF77_
 @
 :ALLDVF
 @set LD=link
