@@ -15,7 +15,7 @@ c DIPIN combines them to find the overall correction per frame,
 c in an attempt to determine the 'absorption' correction inplied if the
 c thecrystal is not really decomposing.
 
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       call no_stdout_buffer_()
 #endif
 

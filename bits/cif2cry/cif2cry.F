@@ -67,7 +67,7 @@ C<ric02/>
 
 	  data probably_neutrons /.false./
 	  
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       call no_stdout_buffer_()
 #endif      
 cdjw open a file for errors since DOS window closes too fast
@@ -77,7 +77,7 @@ c    lots of writes to 17 later
 C<ric02>
 C Read data from the commandline:
       optlen=132
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       CALL GetArg(0,prognm)
 #else
       CALL GetArg(0,prognm,optlen)
@@ -89,14 +89,14 @@ C Read data from the commandline:
       loutfl = .FALSE.
 
       N = 1
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       NARG = IARGC()
 #else
       NARG = NARGS()
 #endif
 
       DO WHILE ( N .LT. NARG )
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
         CALL GetArg(N,option) 
 #else
         CALL GetArg(N,option,optlen) 
@@ -112,7 +112,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           namebl=.TRUE.
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -123,7 +123,7 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           loutfl=.TRUE.
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
           CALL GetArg(N,outfil)
 #else
           CALL GetArg(N,outfil,optlen)
@@ -135,7 +135,7 @@ C Read data from the commandline:
           IF (linfl) GOTO 8000
           IF ( N .GE. NARG ) GOTO 8000
           linfl=.TRUE.
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
           CALL GetArg(N,infil)
 #else
           CALL GetArg(N,infil,optlen)
@@ -228,7 +228,7 @@ C<ric02>
 C Name formed from blockname and outfil is used as extension:
         option = bloc_
         DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
           IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
 #else
           IF ( option(N:N) .EQ. '\') option(N:N) = '_'
@@ -263,7 +263,7 @@ C Any other case, just open it:
 
       option = bloc_
       DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
         IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
 #else
         IF ( option(N:N) .EQ. '\') option(N:N) = '_'

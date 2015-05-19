@@ -31,7 +31,7 @@ C
       EQUIVALENCE (RES,IRES)
 
       DATA NOUTF/10/,NHKL/11/,NCIF/12/
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       call no_stdout_buffer_()
 #endif
 C set default output filename - also used as instrument ID

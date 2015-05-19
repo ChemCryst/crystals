@@ -8,7 +8,7 @@ C
 #else
       DATA IY/'Y','N','O','y','n','o'/
 #endif
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       call no_stdout_buffer_()
 #endif
 

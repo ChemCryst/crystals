@@ -31,7 +31,7 @@ C
 C               This reproduces transforms from the CAD4
 C                                                           JAH
 C 
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       call no_stdout_buffer_()
 #endif
       do 1 i=1,3

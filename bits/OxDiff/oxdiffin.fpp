@@ -30,7 +30,7 @@ C
       PARAMETER (DTR=3.14159/180.)
       EQUIVALENCE (RES,IRES)
 
-#if defined(_GNUF77_)
+#if defined(CRY_GNU)
       call no_stdout_buffer()
 #endif
 C set default output filename - also used as instrument ID
