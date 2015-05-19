@@ -3618,7 +3618,7 @@ C- PRINT A WARNING SOMEWHERE
                N = MIN(N,256)         ! SET N TO LAST NON-BLANK
                CBUF(J)(N+1:N+1) = CHAR(0) ! Make into a c string.
 			   N = N + 1
-			   WRITE(123,*)'INW version', N
+c			   WRITE(123,*)'INW version', N
 #endif
 
 #ifdef CRY_GUI
@@ -3635,9 +3635,9 @@ C- PRINT A WARNING SOMEWHERE
        END IF
 #endif
 
-       WRITE(123,'(2A)') 'Input:  ',CBUF(J)
-       WRITE(123,'(2A)') 'Output: ',CEXTRA
-       WRITE(123,'(A,I5)') 'N: ',N
+c       WRITE(123,'(2A)') 'Input:  ',CBUF(J)
+c       WRITE(123,'(2A)') 'Output: ',CEXTRA
+c       WRITE(123,'(A,I5)') 'N: ',N
 
        IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
 #ifdef _DOS_ 

@@ -310,7 +310,7 @@ C--ERROR BECAUSE NO GROUP HAS BEEN PROCESSED
       WRITE (NCWU,950) CTYPE
       WRITE (CMON,950) CTYPE
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (123,'(a)') CMON(1)(:)
+c      WRITE (123,'(a)') CMON(1)(:)
 950   FORMAT (' Instruction ignored','  -  no ',A,' has been calculated
      1',' or errors have been detected')
       GO TO 50
@@ -1075,18 +1075,18 @@ c        I = IGETVCV(2, JSTACK, LSTACK, IOUT, LEVEL)
 	
 		DO I = 0, N12-1
 		  STORE(IOUT+I) = STORE(IOUT+I)*SRTC
-		  WRITE(123,'(F15.10)') STORE(IOUT+I)
+c		  WRITE(123,'(F15.10)') STORE(IOUT+I)
 		END DO
 
 		CALL XMOVE ( STORE(IOUT), VCVVEC(1), N12 )
 		VCVVSZ = N12
 		
 C Test Variance calc
- 	    WRITE(123,'(a)') ' ' 
-        DO I = 0, N11
-		   WRITE(123,'(F15.10)') STR11(L11+I)
-		END DO
- 	    WRITE(123,'(a)') ' ' 
+c 	    WRITE(123,'(a)') ' ' 
+c        DO I = 0, N11
+c		   WRITE(123,'(F15.10)') STR11(L11+I)
+c		END DO
+c 	    WRITE(123,'(a)') ' ' 
 
         CALL XZEROF(STORE(ISCRAT),N12)
         DO I = 0,N12-1
@@ -1101,7 +1101,7 @@ C Test Variance calc
 		       IOFF = I-J
 		   END IF
   		   
-		   WRITE(123,'(F15.10)') STR11(L11+IROW+IOFF)
+c		   WRITE(123,'(F15.10)') STR11(L11+IROW+IOFF)
 
 		   WRITE(CMON,'(4(A,I4),A)') 'TMP(',I, ') += VCV(',I, 
      1		                        ',',J, ') * IOUT(',J ,')'
