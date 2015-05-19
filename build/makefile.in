@@ -12,7 +12,7 @@ ifeq ($(COMPCODE),MAC)
     CC = gcc
     LD = g++
     F77 = gfortran
-    F77FLAGS = -std=legacy -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_
+    F77FLAGS = -std=legacy -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D __$(COMPCODE)__
     OPT = -O2
 
     INSTALL=/usr/bin/install
@@ -25,8 +25,8 @@ else
     CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
 
-    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D__%COMPCODE%__
-    CFLAGS = -s -D__%COMPCODE%__
+    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D__$(COMPCODE)__
+    CFLAGS = -s -D__$(COMPCODE)__
 
     CXX = g++51
     CC = gcc51
