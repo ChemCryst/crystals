@@ -42,8 +42,7 @@
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
-@echo %LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
-@%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe || ( make_err.bat  )
+%LD% %OPT% %OUT%crystals.exe %LDFLAGS% obj\*.obj %LIBS%  || ( make_err.bat  )
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 @goto fini
 
