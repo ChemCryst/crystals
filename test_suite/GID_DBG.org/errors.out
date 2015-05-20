@@ -12,7 +12,8 @@
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     1     serial number        1     Address     2875     Length     173     Created on      
+ Print list type     1     serial number        1     Address     2875     Length     173     Created on                          
+
 
 
  Record  101    LGRP    7  NGRP      1   REAL UNIT CELL PARAMETERS                                                       
@@ -119,7 +120,8 @@
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     1     serial number        2     Address     2875     Length     173     Created on      
+ Print list type     1     serial number        2     Address     2875     Length     173     Created on                          
+
 
 
  Record  101    LGRP    7  NGRP      1   REAL UNIT CELL PARAMETERS                                                       
@@ -289,7 +291,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     2     serial number        1     Address     3516     Length     210     Created on      
+ Print list type     2     serial number        1     Address     3516     Length     210     Created on                          
+
 
 
  Record  102    LGRP   12  NGRP      4   SYMMETRY OPERATORS                                                              
@@ -399,7 +402,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     2     serial number        2     Address     3726     Length     479     Created on      
+ Print list type     2     serial number        2     Address     3726     Length     479     Created on                          
+
 
 
  Record  102    LGRP   12  NGRP     12   SYMMETRY OPERATORS                                                              
@@ -572,7 +576,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        1     Address     4205     Length      49     Created on      
+ Print list type     4     serial number        1     Address     4205     Length      49     Created on                          
+
 
 
  Record  101    LGRP   15  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
@@ -608,7 +613,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        2     Address     4254     Length      37     Created on      
+ Print list type     4     serial number        2     Address     4254     Length      37     Created on                          
+
 
 
  Record  101    LGRP    3  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
@@ -661,7 +667,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     3     serial number        1     Address     4291     Length      72     Created on      
+ Print list type     3     serial number        1     Address     4291     Length      72     Created on                          
+
 
 
  Record  101    LGRP   12  NGRP      3   THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT                             
@@ -721,7 +728,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     5     serial number        1     Address     4363     Length      83     Created on      
+ Print list type     5     serial number        1     Address     4363     Length      83     Created on                          
+
 
 
  Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
@@ -823,7 +831,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    13     serial number        1     Address     4785     Length     155     Created on      
+ Print list type    13     serial number        1     Address     4785     Length     155     Created on                          
+
 
 
  Record  101    LGRP    3  NGRP      1   DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)                   
@@ -913,7 +922,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    14     serial number        1     Address     4940     Length      72     Created on      
+ Print list type    14     serial number        1     Address     4940     Length      72     Created on                          
+
 
 
  Record  102    LGRP    3  NGRP      1   ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING                     
@@ -956,7 +966,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5012     Length      76     Created on      
+ Print list type    23     serial number        1     Address     5012     Length      76     Created on                          
+
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -1009,7 +1020,8 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5088     Length      52     Created on      
+ Print list type    25     serial number        1     Address     5088     Length      52     Created on                          
+
 
 
  Record  101    LGRP    9  NGRP      2   THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT              

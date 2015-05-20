@@ -697,7 +697,8 @@ AZIMUTH  =    44.97     AZIMUTH /100 =   0.4497
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
 
 
- Print list type    20     serial number        6     Address    35580     Length     234     Created on      
+ Print list type    20     serial number        6     Address    35580     Length     234     Created on                          
+
 
 
  Record  101    LGRP    9  NGRP     10   MATRICES FOR FOREWARD TRANSFORMATION                                            

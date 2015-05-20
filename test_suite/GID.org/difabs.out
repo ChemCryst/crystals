@@ -164,7 +164,8 @@
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        6     Address    22317     Length   18117     Created on      
+ Print list type     6     serial number        6     Address    22317     Length   18117     Created on                          
+
 
 
  Record  105    LGRP    7  NGRP      1   POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER            

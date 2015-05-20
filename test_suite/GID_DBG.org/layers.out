@@ -2604,7 +2604,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        3     Address    63531     Length     318     Created on      
+ Print list type    22     serial number        3     Address    63531     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -2695,7 +2696,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       12     Address    67052     Length     168     Created on      
+ Print list type    24     serial number       12     Address    67052     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -6247,7 +6249,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address   125001     Length     318     Created on      
+ Print list type    22     serial number        7     Address   125001     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -6338,7 +6341,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       27     Address   128522     Length     168     Created on      
+ Print list type    24     serial number       27     Address   128522     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -9679,7 +9683,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   186125     Length     318     Created on      
+ Print list type    22     serial number       11     Address   186125     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -9770,7 +9775,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       41     Address   190211     Length     168     Created on      
+ Print list type    24     serial number       41     Address   190211     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -13124,7 +13130,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       15     Address   247814     Length     318     Created on      
+ Print list type    22     serial number       15     Address   247814     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -13215,7 +13222,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       55     Address   251335     Length     168     Created on      
+ Print list type    24     serial number       55     Address   251335     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
