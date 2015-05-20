@@ -47,7 +47,7 @@
 @goto fini
 
 :debug
-@%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe
+@%LD% %LDEBUG% %OUT%crystalsd.exe %LDFLAGS% dobj\*.obj %LIBS% 
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystalsd.exe.manifest -outputresource:crystalsd.exe;1
 
 :fini
