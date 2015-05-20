@@ -2123,7 +2123,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
  LARGE     1           1             0.176      0.0E+00    0.165E-01         10.67                          SCALE   
- LARGE     2           2           655.046      0.0E+00    0.360E+02         18.18                          EXTPARAM
+ LARGE     2           2           655.047      0.0E+00    0.360E+02         18.18                          EXTPARAM
  S/ESD     4           4            0.0095      0.0E+00    0.438E-02          2.17        C      1 U[22]   
  S/ESD     5           5            0.0071      0.0E+00    0.444E-02          1.60        C      1 U[33]   
  S/ESD     9           9            0.0076      0.0E+00    0.484E-02          1.57        C      2 U[11]   

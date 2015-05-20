@@ -1505,7 +1505,7 @@ LS-scale=  6.258   Wilson Scale=  0.000
  SRATIO   28          28            0.0010     -0.2E+03    0.110E-01          0.09        C      2 U[12]   
  SRATIO   48          48           -0.0001     -0.7E+01    0.250E-02         -0.02        C      5 Y       
  SRATIO   64          64            0.0009     -0.3E+02    0.282E-01          0.03        C     11 U[12]   
- SRATIO   67          67            0.0002      0.7E+03    0.549E-02          0.04        C     12 Z       
+ SRATIO   67          67            0.0002      0.6E+03    0.549E-02          0.04        C     12 Z       
  SRATIO   68          68            0.0005     -0.3E+01    0.197E-01          0.03        C     12 U[11]   
  SRATIO   72          72            0.0006     -0.7E+01    0.238E-01          0.02        C     12 U[13]   
  SRATIO   76          76           -0.0003     -0.5E+01    0.555E-02         -0.05        C     13 Z       
@@ -1546,7 +1546,7 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
 Inter cycle R-factor             -5.0          -0.16E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.32E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.46E-01       0.10E+05
-Inter cycle Min function          0.0           0.12E+03       0.10E+16
+Inter cycle Min function          0.0           0.13E+03       0.10E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1801,7 +1801,8 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        3     Address    35112     Length      76     Created on      
+ Print list type    23     serial number        3     Address    35112     Length      76     Created on                          
+
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -1853,7 +1854,8 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38679     Length     729     Created on      
+ Print list type    22     serial number        1     Address    38679     Length     729     Created on                          
+
 
             298 parameter(s) in    1 block(s) - as follows:
 
@@ -2041,7 +2043,8 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        5     Address    85651     Length     616     Created on      
+ Print list type    24     serial number        5     Address    85651     Length     616     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP    298   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -2921,7 +2924,7 @@ Mean C-C su =   0.0272
  The following atoms should be carefully examined 
  C      11.    0.0506    0.0931    0.4490    0.1976    0.1284    0.8255    Might be split                                                                                                                                                                       
  C      12.    0.0261    0.1156    0.5272    0.2230    0.1168    2.3311    Might be split                                                                                                                                                                       
- C      13.    0.0439    0.0794    1.5452    0.5562    0.1752    2.7974    Might be split                                                                                                                                                                       
+ C      13.    0.0439    0.0794    1.5452    0.5561    0.1752    2.7974    Might be split                                                                                                                                                                       
  C      14.    0.0486    0.1255    0.8898    0.3547    0.1758    2.2958    Might be split                                                                                                                                                                       
  C      15.    0.0276    0.1086    0.6873    0.2745    0.1272    2.7058    Might be split                                                                                                                                                                       
 #CYCLENDS                                                                                                                                                                                                                                                       
@@ -3375,7 +3378,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
  SRATIO   18          18            0.0003     -0.4E+01    0.900E-02          0.03        C      1 U[13]   
  SRATIO   31          31            0.0002      0.8E+01    0.342E-02          0.06        C      3 Z       
  SRATIO   57          57            0.0000      0.7E+02    0.418E-02          0.01        C     11 Y       
- SRATIO   58          58            0.0000      0.8E+01    0.333E-02          0.01        C     11 Z       
+ SRATIO   58          58            0.0000      0.9E+01    0.333E-02          0.01        C     11 Z       
  SRATIO   71          71           -0.0002     -0.8E+01    0.202E-01         -0.01        C     12 U[23]   
  SRATIO   84          84           -0.0003     -0.3E+01    0.514E-02         -0.05        C     14 Y       
  SRATIO   88          88            0.0098      0.6E+01    0.996E-01          0.10        C     14 U[33]   
@@ -3399,7 +3402,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
  SRATIO  280         280            0.0001      0.4E+01    0.678E-02          0.02        O    109 U[12]   
  SRATIO  283         283            0.0000      0.1E+02    0.150E-02          0.00        O    111 Z       
  SRATIO  294         294            0.0000      0.3E+01    0.724E-02          0.00        N    102 U[22]   
- SRATIO  298         298            0.0000      0.5E+02    0.603E-02          0.00        N    102 U[12]   
+ SRATIO  298         298            0.0000      0.4E+02    0.603E-02          0.00        N    102 U[12]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for         298 parameters
@@ -3756,7 +3759,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
  SRATIO   68          68            0.0001     -0.4E+01    0.189E-01          0.01        C     12 U[11]   
  SRATIO   85          85           -0.0005     -0.5E+01    0.903E-02         -0.06        C     14 Z       
  SRATIO   87          87           -0.0025      0.7E+01    0.576E-01         -0.04        C     14 U[22]   
- SRATIO   92          92            0.0000     -0.4E+01    0.342E-02         -0.01        C     15 X       
+ SRATIO   92          92            0.0000     -0.3E+01    0.342E-02         -0.01        C     15 X       
  SRATIO  119         119            0.0000      0.4E+01    0.173E-02          0.01        C    104 X       
  SRATIO  122         122           -0.0001     -0.4E+01    0.912E-02         -0.01        C    104 U[11]   
  SRATIO  126         126            0.0000      0.1E+02    0.816E-02         -0.01        C    104 U[13]   
@@ -3818,7 +3821,7 @@ All cycle   shift/esd            0.30E-01       0.28E-01       0.10E+05
 
 
  Maximum        0.00   0.0000   0.0000   0.0003   0.0002   0.0005   0.0030   0.0029   0.0028   0.0028   0.0020   0.0033
-                                         0.0034   0.0017   0.0047
+                                         0.0034   0.0017   0.0048
 
  Reversals     0.00     0.00     0.00    63.64    63.64    48.48    69.70    81.82    66.67    78.79    66.67    66.67
 
@@ -4038,7 +4041,8 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        4     Address    35112     Length      76     Created on      
+ Print list type    23     serial number        4     Address    35112     Length      76     Created on                          
+
 
 
  Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
@@ -4090,7 +4094,8 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38679     Length     729     Created on      
+ Print list type    22     serial number        1     Address    38679     Length     729     Created on                          
+
 
             298 parameter(s) in    1 block(s) - as follows:
 
@@ -4278,7 +4283,8 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    85651     Length     616     Created on      
+ Print list type    24     serial number        9     Address    85651     Length     616     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP    298   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
