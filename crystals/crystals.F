@@ -44,20 +44,19 @@ C Revision 1.9  2001/02/26 10:24:14  richard
 C Added changelog to top of file
 C
 C
-CODE FOR CRYSTL
-C Entry point for GUI C++ routines.
+#if defined(CRY_NOGUI)
+      PROGRAM CRYSTAL
+      CALL CRYSTL()
+      END
+#endif
+
+
+C Entry point for command line and library use.
 #ifdef CRY_FORTDIGITAL
       SUBROUTINE CRYSTL()
-#elif defined(CRY_NOGUI)
-      PROGRAM CRYSTL
 #else
       SUBROUTINE CRYSTL() bind (c)
 #endif
-      CALL CRYSTAL()
-      END
-
-C Entry point for command line and library use.
-      SUBROUTINE CRYSTAL()
 C
 C
 C     ******************************************************

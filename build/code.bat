@@ -10,11 +10,11 @@
 @
 @if "%CRDEBUG%" == "TRUE"  goto debug
 @
-@%LD% %OPT% %LDFLAGS% obj\*.obj %LIBS% %OUT%crystals.exe
+@%LD% %OPT% %OUT%crystals.exe %LDFLAGS% obj\*.obj %LIBS% 
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 @goto fini
 :debug
-@%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe
+@%LD% %LDEBUG%  %OUT%crystalsd.exe %LDFLAGS% dobj\*.obj %LIBS%
 mt.exe -manifest crystalsd.exe.manifest -outputresource:crystalsd.exe;1
 :fini
 @time /t

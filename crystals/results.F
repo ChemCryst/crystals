@@ -5315,7 +5315,7 @@ cDJW nov97
        write(ncfpu1,'(1x)')
        write(ncfpu1,'(a,a)') '# Given Formula =', cline(1:j)
        write(ncfpu1,'(4(a,f10.2))')
-     1 '# Dc =',a(6),' Fooo =', a(10), ' Mu =', a(8), ' M =', a(9)
+     1 '# Dc =',a(6),' Fooo =', a(10), ' Mu =',a(8),' M =',a(9)/ZPRIME
       endif
 C
 cdjwjun04
@@ -5391,7 +5391,7 @@ Cdjw NOV97
       IF (IPUNCH .EQ. 0) THEN
        WRITE(NCFPU1,'(A,A)') '# Found Formula =', cline(1:j)
        WRITE(NCFPU1,'(4(A,F10.2))')
-     1 '# Dc =',A(1),' FOOO =', A(5), ' Mu =', A(3), ' M =', A(4)
+     1 '# Dc =',A(1),' FOOO =', A(5), ' Mu =', A(3), ' M =',A(4)/ZPRIME
        WRITE(NCFPU1,'(1x)')
       ENDIF
 C
