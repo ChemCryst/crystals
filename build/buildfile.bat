@@ -16,9 +16,19 @@
 :restart
 @
 @rem CRYSTALS FORTRAN FILES with extension
-@if not exist ..\crystals\%FILESTEM% goto tryCPPwithExt
+@if not exist ..\crystals\%FILESTEM% goto tryF90inGUI
 @set FILESTEM=%~n1
 @set SRCDIR=..\crystals
+@set JUMPBACK=endofloop
+@set FILEFOUND=OK
+@if "%~x1" == ".f90" goto f90comp
+@if "%~x1" == ".F90" goto f90comp
+@goto fcomp
+@
+:tryF90inGUI
+@if not exist ..\gui\%FILESTEM% goto tryCPPwithExt
+@set FILESTEM=%~n1
+@set SRCDIR=..\gui
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
 @if "%~x1" == ".f90" goto f90comp
@@ -95,7 +105,6 @@
 @set JUMPBACK=tryScripts
 @set FILEFOUND=OK
 @goto fcomp
-@
 @
 @
 :tryScripts
