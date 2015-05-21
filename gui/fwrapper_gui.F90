@@ -150,6 +150,7 @@ end interface
 
 contains
 
+#if defined(CRY_GUI)
 subroutine fstlin(ix1, iy1, ix2, iy2)
     implicit none
     integer ix1, ix2, iy1, iy2
@@ -212,5 +213,6 @@ subroutine fstclr()
 
     call fastclear()
 end subroutine
+#endif
 
 end module
