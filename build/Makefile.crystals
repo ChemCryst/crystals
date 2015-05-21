@@ -23,6 +23,7 @@ ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
   COBJ    := $(COBJ) $(patsubst %.o, obj/%.o, $(notdir $(WEBFILES:.cpp=.o)))
+  FOBJ     =  $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES90:.F90=.o) ))
   DEP      = $(patsubst %.d, obj/%.d, $(GUIFILES:.cc=.d))
   DEP     := $(DEP) $(patsubst %.d, obj/%.d, $(WEBFILES:.cpp=.d))
  endif
@@ -40,8 +41,6 @@ ifeq ($(COMPCODE),LIN)
   COBJ := $(patsubst %.o, obj/%.o, $(notdir $(CSLEEFFILES:.c=.o))) $(COBJ)
   FOBJ := $(patsubst %.o, obj/%.o, $(notdir $(FSLEEFFILES:.f90=.o))) $(FOBJ)
 endif
-
-FOBJ := $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES90:.F90=.o))) $(FOBJ)
 
 ifneq ($(COMPCODE),GIL)
   ifneq ($(COMPCODE),LIN)
