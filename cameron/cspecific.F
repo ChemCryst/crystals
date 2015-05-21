@@ -7,6 +7,7 @@ CRYSTALS CODE FOR SPECIFIC.FOR
 CAMERON CODE FOR SPECIFIC
 CODE FOR ZCLRA
       SUBROUTINE ZCLRA (IX1,IY1,IX2,IY2,ICOL)
+      use fwrappergui_mod, only: fstclr, fstcol, fstfpo
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -48,6 +49,7 @@ C&&GIDGIL      CHARACTER*80 CHARTC
  
 CODE FOR ZDLINE
       SUBROUTINE ZDLINE (IX1,IY1,IX2,IY2,ICOL)
+      use fwrappergui_mod, only: fstlin, fstcol
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -78,6 +80,7 @@ CODE FOR ZDLINE
  
 CODE FOR ZDTEXT
       SUBROUTINE ZDTEXT (TEXT,IX,IY,ICOL)
+      use fwrappergui_mod, only: fstcol, fstext
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -112,6 +115,7 @@ CODE FOR ZDTEXT
  
 CODE FOR ZFILEL
       SUBROUTINE ZFILEL (IXC,IYC,IMAJ,IMIN,ICOL)
+      use fwrappergui_mod, only: fstcol, fstfel
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -143,6 +147,7 @@ CODE FOR ZFILEL
  
 CODE FOR ZPLINE
       SUBROUTINE ZPLINE (IX,IY,N,ICOL)
+      use fwrappergui_mod, only: fstcol, fstepo
       INTEGER IX(N),IY(N),ICOL
       
       INCLUDE 'CAMPAR.INC'
@@ -203,6 +208,7 @@ C &&GILGID      CHARACTER*80 CHARTC
  
 CODE FOR ZVGAEL
       SUBROUTINE ZVGAEL (IXC,IYC,IMAJ,IMIN,ICOL)
+      use fwrappergui_mod, only: fstcol, fsteel
       INTEGER IMAJ,IMIN,ICOL
 #if defined(_DOS_) 
       INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
@@ -457,6 +463,7 @@ CNOV98      CNPATH = 'CRCAMER:'//CFNAME
  
 CODE FOR ZPOLGN
       SUBROUTINE ZPOLGN ( IX,IY,N,ICOL)
+      use fwrappergui_mod, only: fstcol, fstfpo
       INTEGER IX(N),IY(N),ICOL
       
       INCLUDE 'CAMPAR.INC'
@@ -663,199 +670,6 @@ C DO WE NEED TO CHANGE THE CURSOR ?
 #endif
 
       END
-
-C
-C Only graphical versions need the next few functions
-C
-#ifdef CRY_GUI
-
-      SUBROUTINE FSTLIN(IX1, IY1, IX2, IY2)
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTLINE (JX1, JY1, JX2, JY2)
-          !DEC$ ATTRIBUTES C :: fastline
-          !DEC$ ATTRIBUTES VALUE :: JX1
-          !DEC$ ATTRIBUTES VALUE :: JY1
-          !DEC$ ATTRIBUTES VALUE :: JX2
-          !DEC$ ATTRIBUTES VALUE :: JY2
-          INTEGER JX1, JY1, JX2, JY2
-          END SUBROUTINE FASTLINE
-      END INTERFACE
-#endif
-      INTEGER IX1, IX2, IY1, IY2
-#if defined(CRY_GNU) 
-      CALL FASTLINE(%VAL(IX1), %VAL(IY1), %VAL(IX2), %VAL(IY2))
-#else
-      CALL FASTLINE(IX1, IY1, IX2, IY2)
-#endif
-      RETURN
-      END
-
-      SUBROUTINE FSTFEL(IX, IY, IW, IH)
-
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTFELLI (JX, JY, JW, JH)
-          !DEC$ ATTRIBUTES C :: fastfelli
-          !DEC$ ATTRIBUTES VALUE :: JX
-          !DEC$ ATTRIBUTES VALUE :: JY
-          !DEC$ ATTRIBUTES VALUE :: JW
-          !DEC$ ATTRIBUTES VALUE :: JH
-          INTEGER JX, JY, JW, JH
-          END SUBROUTINE FASTFELLI
-      END INTERFACE
-#endif
-
-      INTEGER IX, IY, IW, IH
-
-#if defined(CRY_GNU) 
-      CALL FASTFELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-#else
-      CALL FASTFELLI(IX, IY, IW, IH)
-#endif
-      RETURN
-      END
-
-      SUBROUTINE FSTEEL(IX, IY, IW, IH)
-
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTEELLI (JX, JY, JW, JH)
-          !DEC$ ATTRIBUTES C :: fasteelli
-          !DEC$ ATTRIBUTES VALUE :: JX
-          !DEC$ ATTRIBUTES VALUE :: JY
-          !DEC$ ATTRIBUTES VALUE :: JW
-          !DEC$ ATTRIBUTES VALUE :: JH
-          INTEGER JX, JY, JW, JH
-          END SUBROUTINE FASTEELLI
-      END INTERFACE
-#endif
-      INTEGER IX, IY, IW, IH
-
-#if defined(CRY_GNU) 
-      CALL FASTEELLI(%VAL(IX), %VAL(IY), %VAL(IW), %VAL(IH))
-#else
-      CALL FASTEELLI(IX, IY, IW, IH)
-#endif
-      RETURN
-      END
-
-      SUBROUTINE FSTFPO(NV, IPTS)
-
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTFPOLY (NV, IPTS)
-          !DEC$ ATTRIBUTES C :: fastfpoly
-          !DEC$ ATTRIBUTES VALUE :: NV
-          !DEC$ ATTRIBUTES REFERENCE :: IPTS
-          INTEGER NV, IPTS(2000)
-          END SUBROUTINE FASTFPOLY
-      END INTERFACE
-#endif
-      INTEGER NV, IPTS(2000)
-
-#if defined(CRY_GNU) 
-      CALL FASTFPOLY(%VAL(NV), IPTS)
-#else
-      CALL FASTFPOLY(NV, IPTS)
-#endif
-      RETURN
-      END
-
-      SUBROUTINE FSTEPO(NV, IPTS)
-
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTEPOLY (NV, IPTS)
-          !DEC$ ATTRIBUTES C :: fastepoly
-          !DEC$ ATTRIBUTES VALUE :: NV
-          !DEC$ ATTRIBUTES REFERENCE :: IPTS
-          INTEGER NV, IPTS(2000)
-          END SUBROUTINE FASTEPOLY
-      END INTERFACE
-#endif
-
-      INTEGER NV, IPTS(2000)
-
-#if defined(CRY_GNU) 
-      CALL FASTEPOLY(%VAL(NV), IPTS)
-#else
-      CALL FASTEPOLY(NV, IPTS)
-#endif
-      RETURN
-      END
-
-      SUBROUTINE FSTEXT(IX, IY, CTEXT, IFSIZE)
-
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTTEXT (JX, JY, CALINE, JFS)
-          !DEC$ ATTRIBUTES C :: fasttext
-          !DEC$ ATTRIBUTES VALUE :: JX
-          !DEC$ ATTRIBUTES VALUE :: JY
-          !DEC$ ATTRIBUTES VALUE :: JFS
-          !DEC$ ATTRIBUTES REFERENCE :: CALINE
-          INTEGER JX,JY, JFS
-          CHARACTER CALINE
-          END SUBROUTINE FASTTEXT
-      END INTERFACE
-#endif
-
-      INTEGER IX, IY, IFSIZE
-      CHARACTER*(*) CTEXT
-      CHARACTER*80  NTEXT
-      NTEXT = CTEXT
-      CALL XCTRIM(NTEXT,N)
-      N = MAX(1,N)         ! SET N TO LAST NON-BLANK
-      N = MIN(N,79)        ! SET N TO BE NO MORE THAN 79
-      NTEXT(N+1:N+1) = CHAR(0)  ! Make into a c string.
-
-#if defined(CRY_GNU) 
-      CALL FASTTEXT(%VAL(IX), %VAL(IY), NTEXT, %VAL(IFSIZE))    
-#else
-      CALL FASTTEXT(IX, IY, NTEXT, IFSIZE )
-#endif
-      RETURN
-      END
-
-      SUBROUTINE FSTCOL(IR, IG, IB)
-
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTCOLOUR ( JR, JG, JB )
-          !DEC$ ATTRIBUTES C :: fastcolour
-          !DEC$ ATTRIBUTES VALUE :: JR
-          !DEC$ ATTRIBUTES VALUE :: JG
-          !DEC$ ATTRIBUTES VALUE :: JB
-          INTEGER JR, JG, JB
-          END SUBROUTINE FASTCOLOUR
-      END INTERFACE
-#endif
-      INTEGER IR, IG, IB
-
-#if defined(CRY_GNU) 
-      CALL FASTCOLOUR(%VAL(IR), %VAL(IG), %VAL(IB))
-#else
-      CALL FASTCOLOUR(IR, IG, IB)
-#endif
-      RETURN
-      END
-
-      SUBROUTINE FSTCLR()
-
-#if defined(CRY_FORTDIGITAL) || defined (CRY_FORTINTEL)
-      INTERFACE
-          SUBROUTINE FASTCLEAR ()
-          !DEC$ ATTRIBUTES C :: fastclear
-          END SUBROUTINE FASTCLEAR
-      END INTERFACE
-#endif
-      CALL FASTCLEAR()
-      RETURN
-      END
-
-#endif
-
 
       SUBROUTINE ZMORE1(text,iarg)
 C ---- updates text message in status bar - iarg is not used but kept
