@@ -2604,7 +2604,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        3     Address    63531     Length     318     Created on      
+ Print list type    22     serial number        3     Address    63531     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -2695,7 +2696,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       12     Address    67052     Length     168     Created on      
+ Print list type    24     serial number       12     Address    67052     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -6247,7 +6249,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address   125001     Length     318     Created on      
+ Print list type    22     serial number        7     Address   125001     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -6338,7 +6341,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       27     Address   128522     Length     168     Created on      
+ Print list type    24     serial number       27     Address   128522     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -6440,14 +6444,14 @@ Mean C-C su =   0.0000
 
             Atom       S(I) L TX TY TZ     Parameter        Value     Delta
   
-                                         PARAMETE          0.86780   0.13220
-                                         PARAMETE          0.90315   0.09685
-                                         PARAMETE          0.90570   0.09430
-                                         PARAMETE          0.93720   0.06280
-                                         PARAMETE          1.01529  -0.01529
-                                         PARAMETE          1.15918  -0.15918
-                                         PARAMETE          1.21167  -0.21167
-      Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.1254
+                                         PARAMETE          0.86786   0.13214
+                                         PARAMETE          0.90320   0.09680
+                                         PARAMETE          0.90574   0.09426
+                                         PARAMETE          0.93722   0.06278
+                                         PARAMETE          1.01528  -0.01528
+                                         PARAMETE          1.15913  -0.15913
+                                         PARAMETE          1.21157  -0.21157
+      Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.1253
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
 C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
@@ -6516,7 +6520,7 @@ Bonds: Update required - List5 length change
     3.   2.   0.     4.40     1.88
     6.   2.   0.    -1.09     0.59
     2.   4.   0.     1.38     0.21
-    3.   5.   0.     2.76     1.35
+    3.   5.   0.     2.77     1.35
     2.   6.   0.     2.38     0.29
     5.   6.   0.    -0.56     0.02
     1.   7.   0.     1.45     2.14
@@ -6567,7 +6571,7 @@ Bonds: Update required - List5 length change
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      6217.          6230.            518.                                   On scale of /FC/
+      6217.          6231.            518.                                   On scale of /FC/
 
      12019.         12046.           1001.               0.3885E+04          On scale of /FO/
 
@@ -6792,7 +6796,7 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
     3.   2.   0.     4.40     1.88
     6.   2.   0.    -1.09     0.59
     2.   4.   0.     1.38     0.21
-    3.   5.   0.     2.76     1.35
+    3.   5.   0.     2.77     1.35
     2.   6.   0.     2.38     0.29
     5.   6.   0.    -0.56     0.02
     1.   7.   0.     1.45     2.14
@@ -6822,7 +6826,7 @@ Refining    74 parameters in    1 block :     2939 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      6217.          6230.            518.                                   On scale of /FC/
+      6217.          6231.            518.                                   On scale of /FC/
 
      12019.         12046.           1001.               0.3885E+04          On scale of /FO/
 
@@ -6855,8 +6859,8 @@ LS-scale=  1.933   Wilson Scale=  0.000
  Block   1
         Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
 
- LARGE     1           1            -0.837      0.0E+00    0.268E+00         -3.13                          SCALE   
-Resetting shift for Extinction  Shift=     250.44  Esd=     116.97  New shift=     161.52                                                                                                                                                                       
+ LARGE     1           1            -0.836      0.0E+00    0.268E+00         -3.13                          SCALE   
+Resetting shift for Extinction  Shift=     250.43  Esd=     116.97  New shift=     161.52                                                                                                                                                                       
  LARGE     2           2           161.517      0.0E+00    0.117E+03          2.14                          EXTPARAM
  S/ESD     3           3           -0.0370      0.0E+00    0.121E-01         -3.06        C      1 U[11]   
  S/ESD     9           9           -0.0362      0.0E+00    0.123E-01         -2.96        C      2 U[11]   
@@ -6914,8 +6918,8 @@ All cycle   Min function          0.0           0.39E+04       0.10E+16
 
  Statistics for    74 least squares parameters, with  1066 degrees of freedom
  Number of observations              1133                 7              1140
- Minimisation function              0.389E+04         0.162E+01         0.389E+04
- Hamilton weighted R-value          12.304            12.539            12.305
+ Minimisation function              0.389E+04         0.161E+01         0.389E+04
+ Hamilton weighted R-value          12.305            12.534            12.305
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -6928,7 +6932,7 @@ All cycle   Min function          0.0           0.39E+04       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
- Mean          20.17   0.0000   0.0000   0.0000   0.0000   0.0000  -0.0370  -0.0022  -0.0032   0.0001  -0.0004  -0.0001
+ Mean          20.17   0.0000   0.0000   0.0000   0.0000   0.0000  -0.0369  -0.0022  -0.0032   0.0001  -0.0004  -0.0001
                                          0.0000   0.0000   0.0000
 
  R.M.S.        57.11   0.0000   0.0000   0.0000   0.0000   0.0000   0.0370   0.0029   0.0041   0.0012   0.0016   0.0012
@@ -6970,7 +6974,7 @@ All cycle   Min function          0.0           0.39E+04       0.10E+16
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
       1.097    0.050    0.050    1.000    0.000   969.10
-     -0.837    0.000    0.000    0.000    0.000   161.52
+     -0.836    0.000    0.000    0.000    0.000   161.52
       0.268    0.000    0.000    0.000    0.000   116.97
 
 
@@ -7084,7 +7088,7 @@ Mean C-C su =   0.0000
     0.  10.   0.     0.67     1.10
     1.  11.   0.     1.47     0.65
     2.  11.   0.     0.73     2.08
-    4.  11.   0.     3.08     1.37
+    4.  11.   0.     3.08     1.38
     1.  12.   0.     5.45     4.03
 
  And so on ------------
@@ -7163,7 +7167,7 @@ Inter cycle R-factor             -5.0           -9.5           0.10E+03
  Statistics for    74 least squares parameters, with  1066 degrees of freedom
  Number of observations              1133                 7              1140
  Minimisation function              0.105E+05         0.175E+02         0.105E+05
- Hamilton weighted R-value          20.211            25.121            20.217
+ Hamilton weighted R-value          20.209            25.123            20.215
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -7176,7 +7180,7 @@ Inter cycle R-factor             -5.0           -9.5           0.10E+03
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
- Mean           8.19   0.0000   0.0000   0.0000   0.0000   0.0000   0.0090   0.0000  -0.0002   0.0001   0.0000  -0.0001
+ Mean           8.18   0.0000   0.0000   0.0000   0.0000   0.0000   0.0090   0.0000  -0.0002   0.0001   0.0000  -0.0001
                                          0.0000   0.0000   0.0000
 
  R.M.S.        23.13   0.0000   0.0000   0.0000   0.0000   0.0000   0.0090   0.0003   0.0008   0.0005   0.0002   0.0008
@@ -7185,7 +7189,7 @@ Inter cycle R-factor             -5.0           -9.5           0.10E+03
  RMS sh/esd     1.01     0.00     0.00     0.00     0.00     0.00     0.41     0.06     0.12     0.08     0.03     0.12
 
 
- Maximum       65.43   0.0000   0.0000   0.0000   0.0000   0.0000   0.0101   0.0007   0.0015   0.0012   0.0003   0.0018
+ Maximum       65.42   0.0000   0.0000   0.0000   0.0000   0.0000   0.0101   0.0007   0.0015   0.0012   0.0003   0.0018
                                          0.0000   0.0000   0.0000
 
  Reversals    75.00     0.00     0.00     0.00     0.00     0.00   100.00    36.36    45.45    45.45    54.55    45.45
@@ -7217,9 +7221,9 @@ Inter cycle R-factor             -5.0           -9.5           0.10E+03
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-      1.410    0.050    0.050    1.000    0.000  1034.53
-      0.313    0.000    0.000    0.000    0.000    65.43
-      0.179    0.000    0.000    0.000    0.000   266.15
+      1.410    0.050    0.050    1.000    0.000  1034.52
+      0.313    0.000    0.000    0.000    0.000    65.42
+      0.179    0.000    0.000    0.000    0.000   266.12
 
 
 
@@ -7228,9 +7232,9 @@ Inter cycle R-factor             -5.0           -9.5           0.10E+03
 
       1        2        3        4        5        6        7
 
-      1.142    1.153    1.095    1.025    0.944    0.887    0.753
+      1.142    1.153    1.095    1.025    0.944    0.886    0.753
      -0.081   -0.089   -0.083   -0.067   -0.023    0.090    0.254
-      0.199    0.184    0.119    0.034    0.106    0.206    0.232
+      0.199    0.184    0.119    0.034    0.105    0.206    0.232
 
 
 
@@ -7274,7 +7278,7 @@ Inter cycle R-factor             -5.0           -9.5           0.10E+03
                       0.0000            0.0000   0.0000   0.0000   0.0215   0.0052   0.0059   0.0046   0.0055   0.0053
                                         0.0000   0.0000   0.0000
 
-     O          8.    1.0000   0.0000   0.5233   0.1080   0.3159   0.0132   0.0483   0.0506  -0.0023  -0.0009  -0.0031
+     O          8.    1.0000   0.0000   0.5233   0.1080   0.3159   0.0131   0.0483   0.0506  -0.0023  -0.0009  -0.0031
                       0.0000            0.0000   0.0000   0.0000   0.0087  -0.0005   0.0001  -0.0001   0.0000  -0.0002
                       0.0000            0.0000   0.0000   0.0000   0.0211   0.0058   0.0054   0.0049   0.0044   0.0046
                                         0.0000   0.0000   0.0000
@@ -7284,13 +7288,13 @@ Inter cycle R-factor             -5.0           -9.5           0.10E+03
                       0.0000            0.0000   0.0000   0.0000   0.0214   0.0066   0.0061   0.0053   0.0063   0.0068
                                         0.0000   0.0000   0.0000
 
-     C         10.    1.0000   0.0000   0.8294  -0.0882   0.1810   0.0273   0.0321   0.0481  -0.0038   0.0004   0.0027
+     C         10.    1.0000   0.0000   0.8294  -0.0882   0.1810   0.0272   0.0321   0.0481  -0.0038   0.0004   0.0027
                       0.0000            0.0000   0.0000   0.0000   0.0097   0.0002  -0.0013   0.0002  -0.0001  -0.0005
                       0.0000            0.0000   0.0000   0.0000   0.0219   0.0062   0.0074   0.0059   0.0066   0.0062
                                         0.0000   0.0000   0.0000
 
      C         11.    1.0000   0.0000   1.1020  -0.0444   0.1518   0.0210   0.0530   0.0531  -0.0139   0.0045   0.0096
-                      0.0000            0.0000   0.0000   0.0000   0.0085   0.0000   0.0001   0.0012   0.0003   0.0012
+                      0.0000            0.0000   0.0000   0.0000   0.0084   0.0000   0.0001   0.0012   0.0003   0.0012
                       0.0000            0.0000   0.0000   0.0000   0.0217   0.0083   0.0081   0.0073   0.0069   0.0070
                                         0.0000   0.0000   0.0000
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
@@ -9679,7 +9683,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   186125     Length     318     Created on      
+ Print list type    22     serial number       11     Address   186125     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -9770,7 +9775,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       41     Address   190211     Length     168     Created on      
+ Print list type    24     serial number       41     Address   190211     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
@@ -13124,7 +13130,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       15     Address   247814     Length     318     Created on      
+ Print list type    22     serial number       15     Address   247814     Length     318     Created on                          
+
 
              74 parameter(s) in    1 block(s) - as follows:
 
@@ -13215,7 +13222,8 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       55     Address   251335     Length     168     Created on      
+ Print list type    24     serial number       55     Address   251335     Length     168     Created on                          
+
 
 
  Record  101    LGRP    2  NGRP     74   THE CALCULATED AND APPLIED SHIFT FACTORS                                        
