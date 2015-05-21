@@ -3200,20 +3200,21 @@ c            ENDIF
 c      ENDIF
       RETURN
       END
+      
+      
 CODE FOR GETCOM
       SUBROUTINE GETCOM(CLINE)
 #ifdef CRY_GUI
       INTERFACE
-                    SUBROUTINE CINEXTCOMMAND (istat, caline)
-                    !DEC$ ATTRIBUTES C :: cinextcommand
-                    INTEGER ISTAT
-                    CHARACTER*256 CALINE
-                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
-                    END SUBROUTINE CINEXTCOMMAND
-            END INTERFACE
+          SUBROUTINE CINEXTCOMMAND (istat, caline)
+              !DEC$ ATTRIBUTES C :: cinextcommand
+              INTEGER ISTAT
+              CHARACTER*256 CALINE
+              !DEC$ ATTRIBUTES REFERENCE :: CALINE
+          END SUBROUTINE CINEXTCOMMAND
+      END INTERFACE
       INTEGER ISTAT
       CHARACTER*256 CALINE
-#endif
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'CAMPAR.INC'
@@ -3222,19 +3223,6 @@ CODE FOR GETCOM
       INCLUDE 'XUNITS.INC'
       CHARACTER *(*) CLINE
 
-#ifdef CRY_NOGUI
-
-#ifdef _DOS_ 
-      IF ( LCLOSE ) THEN
-         READ( NCUFU(1), 1) CLINE
-      ELSE
-         CALL ZTXT (CLINE)
-      ENDIF
-#else
-      READ( NCUFU(1), 1) CLINE
-#endif
-
-#else
       CALINE=' '
       ISTAT = 0
       CALL CINEXTCOMMAND(ISTAT,CALINE)
@@ -3247,12 +3235,28 @@ CODE FOR GETCOM
           WRITE(CMON,'(A)')  '^^CR '
           CALL XPRVDU (NCVDU,1,0)
       ENDIF
+#else
+
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      CHARACTER *(*) CLINE
+
+#ifdef _DOS_ 
+      IF ( LCLOSE ) THEN
+         READ( NCUFU(1), '(A)') CLINE
+      ELSE
+         CALL ZTXT (CLINE)
+      ENDIF
+#else
+      READ( NCUFU(1), '(A)') CLINE
 #endif
-1     FORMAT ( A )
-      RETURN
-      END
 
-
+#endif
+      END SUBROUTINE
 
 CODE FOR GUEXIT
       SUBROUTINE GUEXIT(IVAR)
