@@ -145,7 +145,7 @@
 
 :ccomp
 @rem @echo building %FILESTEM%.obj for %COMPCODE% platform.
-@if exist %FILESTEM%.obj del %FILESTEM%.obj
+@if exist %FOPATH%\%FILESTEM%.obj del %FOPATH%\%FILESTEM%.obj
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
 %CC% %CCSRC% %COUT%%FILESTEM%.obj %COPTIONS% || ( make_err.bat )
@@ -153,7 +153,7 @@
 
 :fcomp
 @echo building %FILESTEM%.obj
-@if exist %FILESTEM%.obj del %FILESTEM%.obj
+@if exist %FOPATH%\%FILESTEM%.obj del %FOPATH%\%FILESTEM%.obj
 @if  not "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.F
 @if      "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.f
 @if  not "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
@@ -164,7 +164,7 @@
 
 :f90comp
 @echo building %FILESTEM%.obj from f90
-@if exist %FILESTEM%.obj del %FILESTEM%.obj
+@if exist %FOPATH%\%FILESTEM%.obj del %FOPATH%\%FILESTEM%.obj
 @set FSRC= %SRCDIR%\%FILESTEM%.f90
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%

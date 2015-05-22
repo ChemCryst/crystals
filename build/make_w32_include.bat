@@ -7,6 +7,10 @@
 @if not "%WXNUM%" == "" goto WX4
 @set WXNUM=30
 :WX4
+
+@set FOPATH=obj
+@if "%CRDEBUG%" == "TRUE" set FOPATH=dobj
+
 @goto %COMPCODE%
 
 @
