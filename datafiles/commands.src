@@ -197,12 +197,12 @@ THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT
 LIST 4             4    0
    4   40960 CRYSTALSINPUT
    1.SCHEME            11    1    0    0
-         1    1    3    1    2    3    3    2    2    2    2
+         1    1    3    2    2    3    3    2    2    2    2
     .NUMBER             1    0    1    0    0         9
     .NPARAMETERS        8    0    1    0    0         0
     .TYPE               2    0    1    4    0 CHOOSE
      NORMAL         1/2FO          /FO/**2        CHOOSE
-    .WEIGHT             3    0    1    0    0         2
+    .WEIGHT             3    0    1    0    0        2.
     .MAXIMUM            4    0    1    0    0    10000.
     .ROBUST            17    0    1    2    0 NO
      NO             YES
@@ -221,7 +221,7 @@ PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION
     .P                  0    0    1    0    0 0.0
    3.INTEGERS           4    0    0    0    4    1  102    9    4
          1    1    1    1    1    1    0    0    0    0
-THE PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED
+THE INTEGER PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)
 (1H ,8(3X,12A1))
 (1H ,I8,7I15)
          1    1    1    1
@@ -231,7 +231,7 @@ THE PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED
     .DUNITZ             0    0    0    0    0         0
    4.REALS              6    0    0    0    6    1  103   13    4
          1    1    1    1    1    1    0    0    0    0
-REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED
+THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)
 (1H ,8(3X,12A1))
 (1H ,F8.4,7F15.4)
          2    2    2    2    2    2
