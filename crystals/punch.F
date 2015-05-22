@@ -988,6 +988,7 @@ C     RATIO          THETA          OMEGA          CHI            PHI
 C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
 C     FACTOR3        RATIO/JCODE    NOTHING
 C
+C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
@@ -1645,9 +1646,319 @@ C sigma's underestimated by a factor of 5.
       RETURN
       END
 C
+CODE FOR XPCH6N
+      SUBROUTINE XPCH6N(IULN,IULN2)
+C BASED ON XPCH6Z, WHICH SEEMS INCOMPLETE
+C  PUNCH       PUNCH LIST 6/7 WITH ALL SET KEYS
+C--
+      DIMENSION JFOT(1), JFOO(1)
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XUSLST.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XOPVAL.INC'
+      CHARACTER*11 C6KEYS(33)
+      CHARACTER*9  C6FORM(33)
+      INTEGER N6KEYS(33)
+      INTEGER N6LEN(33), I6PCH(33)
+      CHARACTER*256 CBGFMT     
+C
+      INCLUDE 'QSTORE.INC'
+
+      DATA C6KEYS/ 'H', 'K', 'L', '/FO/', 'SQRTW',
+     1  '/FC/', 'PHASE', 'A-PART', 'B-PART', 'TBAR',
+     2  '/FOT/', 'ELEMENTS', 'SIGMA(/FO/)', 'BATCH', 'INDICES',
+     3  'BATCH/PHASE','SINTH/L**2','FO/FC','JCODE','SERIAL',
+     4  'RATIO', 'THETA', 'OMEGA',    'CHI',      'PHI',
+     5   'KAPPA', 'PSI', 'CORRECTIONS', 'FACTOR1', 'FACTOR2',
+     6   'FACTOR3', 'RATIO/JCODE','NOTHING'/
+     
+
+C length of each item in FORMAT statement
+      DATA N6LEN/ 4,4,4,10,11, 10,6,10,10,8, 10,8,5,4,8, 
+     1             8,5,8,4,8,   8,5,5,5,5,    5,5,5,8,8, 8,12,8/
+C1                   H           K       L     /FO/(3)   SQRTW(4)
+      DATA C6FORM/ 'F4.0',     'F4.0', 'F4.0', 'F10.2', '1X,G10.3',
+C6                  /FC/(5)    PHASE    A-PART  B-PART   TBAR
+     1             'F10.2',    'F6.2', 'F10.2','F10.2', 'F8.4',
+C11                  /FOT/    ELEMENTS SIGMA(/FO/) BATCH INDICES(14) 
+     2             'F10.2',    'F8.0', 'F8.3',    'F4.0', ' F12.0',
+C16                BATCH/PHASE SINTH/L FO/FC   JCODE   SERIAL
+     3             'F8.4',     'F5.3', 'F8.4', 'F4.0', 'F8.0',
+C21                 RATIO      THETA    OMEGA   CHI     PHI
+     4             'F8.4',     'F5.1', 'F5.1', 'F5.1', 'F5.1',
+C26                 KAPPA      PSI     CORRECTIONS FACTOR1 FACTOR2
+     5             'F5.1',    'F5.1',   'F7.4',   'F8.4', 'F8.4',
+C31                FACTOR3    RATIO/JCODE NOTHING
+     6             'F8.4',     'F12.4',    'F8.4'/
+C
+C1     H              K              L              /FO/(3)       SQRTW(4)
+C6    /FC/(5)         PHASE          A-PART          B-PART       TBAR
+C11    /FOT/          ELEMENTS       SIGMA(/FO/)(12) BATCH        INDICES(14) 
+C16    BATCH/PHASE(15)SINTH/L**2     FO/FC          JCODE         SERIAL
+C21    RATIO          THETA          OMEGA          CHI           PHI
+C26    KAPPA          PSI            CORRECTIONS(27)FACTOR1       FACTOR2
+C31    FACTOR3        RATIO/JCODE(31) NOTHING
+C
+      CALL XZEROF(I6PCH,33)
+C--SET UP LIST 6 FOR READING ONLY
+      IN = 0
+      CALL XFAL06(IULN, IN)
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+
+CDJW mar08
+      lout = ln6
+      write(ncpu,100) iuln, IULN2 
+100   format('# punching LIST',I3,' as LIST',i3,' with all keys set')
+c
+C      WRITE(123,'(4I8)') L6R,   M6R,   N6R,   MD6R
+C      WRITE(123,'(4I8)') L6W,   M6W,   N6W,   MD6W
+C      WRITE(123,'(4I8)') L6D,   M6D,   N6D,   MD6D
+C      WRITE(123,'(4I8)') L6DMP, M6DMP, N6DMP, MD6DMP
+C      WRITE(123,'(4I8)') L6P,   M6P,   N6P,   MD6P
+C      WRITE(123,'(4I8)') L6DTL, M6DTL, N6DTL, MD6DTL
+C      WRITE(123,'(/)')
+C  DECOMPOSE PACKED ITEMS
+      M6PCH = 0
+      do i=l6dmp,m6dmp
+C      write(123,'(3i8,3X,A)') i, istore(i), istore(i)-l6+1,
+C     1 c6keys(istore(i)-l6+1)
+       M6PCH=M6PCH+1
+       IBIN = ISTORE(I)-L6+1
+       IF(IBIN .EQ.15) THEN !INDICES
+       I6PCH(M6PCH)= 1
+       I6PCH(M6PCH+1)= 2
+       I6PCH(M6PCH+2)= 3
+       M6PCH = M6PCH + 2
+      ELSE IF(IBIN.EQ.16) THEN ! BATCH/PHASE
+       I6PCH(M6PCH) = 14
+       I6PCH(M6PCH+1) = 7
+       M6PCH=M6PCH+1
+      ELSE IF (IBIN.EQ.32) THEN      !RATIO/JCODE
+       I6PCH(M6PCH) = 21             !DUMP THE RATIO-ITS COMPUTED LATER
+       I6PCH(M6PCH) = 19
+       M6PCH = M6PCH+0
+      ELSE
+       I6PCH(M6PCH) = IBIN
+      ENDIF  
+      enddo
+
+C      WRITE(123,'(/)')
+C      WRITE(123,'(5I6)') (I6PCH(I),I=1,M6PCH)
+C      WRITE(123,'(6A11)') (C6KEYS(I6PCH(I)),I=1,M6PCH)
+
+      NBGNXT = 2  !Next free char in CBGFMT
+      CBGFMT = '(' !Start with open parenthesis
+      DO I = 1,M6PCH
+        CBGFMT(NBGNXT:) = C6FORM(I6PCH(I)) 
+        CALL XCRAS(CBGFMT,NBGNXT)
+        CBGFMT(NBGNXT+1:NBGNXT+1) = ','
+        NBGNXT = NBGNXT+2
+      END DO
+      NBGNXT = NBGNXT-1
+      WRITE(NCPU,'(A,I5)') '# NBGNXT= ',NBGNXT
+      CBGFMT(NBGNXT:NBGNXT) = ')' ! Overwrite last comma.
+c      
+c
+      WRITE(NCPU,'(A,I3)')'#LIST ', IULN2
+      WRITE(NCPU,101) M6PCH
+101   FORMAT('READ NCOEF = ',I2,' TYPE=FIXED, UNIT=DATAFILE, CHECK=NO')
+      WRITE(NCPU,104) MD6DMP
+104   FORMAT('STORE  NCOEF=',I2) 
+      WRITE(NCPU,105) (C6KEYS(ISTORE(J)-M6+1),J=L6DMP,L6DMP+MD6DMP-1)
+105   FORMAT('OUTPUT',6(1X,A11),5(/,'CONT  ',6(1X,A11)))
+      WRITE(NCPU,102) (C6KEYS(I6PCH(J)),J=1,M6PCH)
+102   FORMAT('INPUT ',6(1X,A11),5(/,'CONT  ',6(1X,A11)))
+      WRITE(NCPU,103) CBGFMT(1:NBGNXT)
+103   FORMAT('FOR ', A)
+      WRITE(NCPU,'(A)')'END'
+c
+      DO WHILE (KLDRNR(IN).GE.0)
+C--FIX THE INDICES
+c      J=M6+2
+c      DO 1150 I=M6,J
+c      ISTORE(I)=NINT(STORE(I))
+c1150  CONTINUE
+C--FIX THE ELEMENTS
+c      ISTORE(M6+11)=NINT(STORE(M6+11))
+C--PUNCH THE REFLECTION
+      WRITE(NCPU,CBGFMT(1:NBGNXT)) (STORE(M6+i6pch(k)-1),K=1,m6pch)
+      END DO
+      I = -512
+      WRITE(NCPU,'(I4)')I
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
+      RETURN
+      END
+C
+C
+C
+CODE FOR XPCH6Y
+      SUBROUTINE XPCH6Y(IULN, IULN2)
+C  PUNCH C      PUNCH LIST 6/7 IN FULL CRYSTALS FORMAT
+C
+C--
+      DIMENSION JFOT(1), JFOO(1)
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XUSLST.INC'
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XOPVAL.INC'
+C
+      INCLUDE 'QSTORE.INC'
+      DATA JFOT(1)/10/
+      DATA JFOO(1)/3/
+C
+C     H              K              L              /FO/           SQRTW
+C     /FC/           PHASE          A-PART         B-PART         TBAR
+C     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
+C     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
+C     RATIO          THETA          OMEGA          CHI            PHI
+C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
+C     FACTOR3        RATIO/JCODE    NOTHING
+C
+      CHARACTER*12 CKEY(33)
+      DATA (CKEY(J),J=1,33)/
+     1'H','K','L','/FO/','SQRTW',
+     2'/FC/','PHASE','A-PART','B-PART','TBAR',
+     3'/FOT/','ELEMENTS','SIGMA(/FO/)','BATCH','INDICES',
+     4'BATCH/PHASE','SINTH/L**2','FO/FC','JCODE','SERIAL',
+     5'RATIO','THETA','OMEGA','CHI','PHI',
+     6'KAPPA','PSI','CORRECTIONS','FACTOR1','FACTOR2',
+     7'FACTOR3','RATIO/JCODE','NOTHING'
+     8/
+C
+      IF (KEXIST(1) .GE. 1) CALL XFAL01
+C--SET UP LIST 6 FOR READING ONLY
+      IN = 0
+      CALL XFAL06(IULN, IN)
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+C
+      lout = ln6
+      WRITE(123,'(A,I6)') 'LOUT=', LOUT
+      if (iuln .ne. iuln2) then
+            if (lout.eq.6) then 
+                  lout=7
+                  write(ncpu,100) 6,7
+            else
+                  lout=6
+                  write(ncpu,100) 7,6
+            endif
+100   format('# punching list', i3, ' as list',i3)
+      endif            
+c
+cdjwjan2001
+C -- CHECK IF 'FO ' OR 'FOT' HAS BEEN SAVED
+c
+      JNFO=KCOMP(1,JFOO(1)+l6,ISTORE(L6DMP),MD6DMP,1)
+      JNFT=KCOMP(1,JFOT(1)+l6,ISTORE(L6DMP),MD6DMP,1)
+c
+
+C      do i=l6dmp,m6dmp
+C      write(123,'(3i8,A)') i, istore(i), istore(i)-l6+1,
+C     1 CKEY(ISTORE(I)-L6+1)
+C      enddo
+
+
+c      DO 1900 I=L6DMP,M6DMP
+C---- SET POINTERS TO INFORMATION ON DISK
+c         IF ((ISTORE(I)-M6).EQ.JFOO(1)) IRFO=JFOO(1)
+c         IF ((ISTORE(I)-M6).EQ.JFOT(1)) IRFT=JFOT(1)
+c         ISTORE(I)=ISTORE(I)-M6+ISTORE(KX+1)
+c1900  CONTINUE
+c
+cdjwjan2001
+C--PUNCH THE INITIAL HEADING
+      CALL XPCHLH(lout,NCPU)
+C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS
+      if (jnft .ge. 1) then
+      WRITE(NCPU,1000)
+      else
+      write (ncpu,1001)
+      endif
+C>DJW280896
+C-------      TWINNED
+1000  FORMAT('READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
+     1 ', CHECK=NO' /
+     3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
+     4 'F10.0, / G12.5, F4.0)'/
+     4 'store ncoef=9'/
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',
+     5 ' /FOT/ ELEMENTS',/
+     2 'INPUT H K L /FO/ SIGMA /FC/ PHASE /FOT/ ELEMENTS'
+     4 ,' SQRTW JCODE' /
+     5 'END')
+c
+C------      NOT TWINNED
+1001  FORMAT('READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE' ,
+     1 ', CHECK=NO' /
+     2 'INPUT H K L /FO/ SIGMA /FC/ PHASE SQRTW JCODE' /
+     3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F4.0)'/
+     4 'store ncoef=7'/
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',/
+     6 'END')
+C<DJW280896
+C--FETCH THE NEXT REFLECTION
+1050  CONTINUE
+CDJWMAR99       PUNCH LESS THANS
+C      IF (KFNR(IN)) 1250, 1100, 1100
+      IF (KLDRNR(IN)) 1250, 1100, 1100
+C--FIX THE INDICES
+1100  CONTINUE
+      J=M6+2
+      DO 1150 I=M6,J
+      ISTORE(I)=NINT(STORE(I))
+1150  CONTINUE
+C--FIX THE ELEMENTS
+      ISTORE(M6+11)=NINT(STORE(M6+11))
+C--PUNCH THE REFLECTION
+      if (jnft .ge. 1) then
+C  TWINNED
+      WRITE(NCPU,1200)(ISTORE(I),I=M6,J),STORE(M6+3),STORE(M6+12),
+     2 STORE(M6+5),STORE(M6+6),STORE(M6+10),ISTORE(M6+11),
+     3 STORE(M6+4), NINT(STORE(M6+18))
+1200  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,F10.2,I10, / G12.5,I4)
+      else
+C  nOT TWINNED
+      WRITE(NCPU,1201)(ISTORE(I),I=M6,J),STORE(M6+3),STORE(M6+12),
+     2 STORE(M6+5),STORE(M6+6),STORE(M6+4),NINT(STORE(M6+18))
+
+1201  FORMAT(3I4,F10.2,F8.2,F10.2,F8.4,G12.5,I4)
+      endif
+      GOTO 1050
+C--TERMINATE THE LIST
+1250  CONTINUE
+      I = -512
+      WRITE(NCPU,1200)I
+      if (jnft .ge. 1) then
+        WRITE(NCPU,'(/)')   ! Otherwise read picks up following # as error.
+      end if
+      CALL XPCHUS(ncpu)
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
+      RETURN
+      END
+C
 CODE FOR XPCH6Z
       SUBROUTINE XPCH6Z(IULN)
 C  PUNCH       PUNCH LIST 6/7 WITH ALL SET KEYS
+C STARTED BY RIC, REPLACED AS XPCH6N BY DJW. MAY 2015
 C--
       DIMENSION JFOT(1), JFOO(1)
       INCLUDE 'ISTORE.INC'
@@ -1796,9 +2107,7 @@ C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
-
-
-
+C
 CODE FOR XPCHIN
       SUBROUTINE XPCHIN(IN)
 C--INITIATE PUNCHING CONSTANTS
