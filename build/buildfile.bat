@@ -10,14 +10,13 @@
 @
 @if "%1" == "" goto clerror
 @
-@set FILESTEM=%~nx1
-@
 @rem  Find the file:
 :restart
+@set FILESTEM=%~n1
+@set FILENAME=%~nx1
 @
 @rem CRYSTALS FORTRAN FILES with extension
-@if not exist ..\crystals\%FILESTEM% goto tryF90inGUI
-@set FILESTEM=%~n1
+@if not exist ..\crystals\%FILENAME% goto tryF90inGUI
 @set SRCDIR=..\crystals
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
@@ -26,38 +25,37 @@
 @goto fcomp
 @
 :tryF90inGUI
-@if not exist ..\gui\%FILESTEM% goto tryCPPwithExt
-@set FILESTEM=%~n1
+@if not exist ..\gui\%FILENAME% goto tryCPPwithExt
 @set SRCDIR=..\gui
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
 @if "%~x1" == ".f90" goto f90comp
 @if "%~x1" == ".F90" goto f90comp
-@goto fcomp
+@rem if not F90 - don't try.
+@set FILEFOUND=
+@set SRCDIR=
+@set JUMPBACK=
 @
 :tryCPPwithExt
 @rem GUI CC FILES
-@if not exist ..\gui\%FILESTEM% goto tryWEBwithExt
-@set CCSRC=..\gui\%FILESTEM%
-@set FILESTEM=%~n1
+@if not exist ..\gui\%FILENAME% goto tryWEBwithExt
+@set CCSRC=..\gui\%FILENAME%
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
 @goto ccomp
 @
 :tryWEBwithExt
 @rem webconnect CPP FILES
-@if not exist ..\webconnect\%FILESTEM% goto tryCamFPPwithExt
+@if not exist ..\webconnect\%FILENAME% goto tryCamFPPwithExt
 @set CCSRC=..\webconnect\%FILESTEM%
-@set FILESTEM=%~n1
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
 @goto ccomp
 @
 :tryCamFPPwithExt
 @rem CAMSRC FORTRAN FILES
-@if not exist ..\cameron\%FILESTEM% goto tryScriptswithExt
+@if not exist ..\cameron\%FILENAME% goto tryScriptswithExt
 @echo Cam source with extension
-@set FILESTEM=%~n1
 @set SRCDIR=..\cameron
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
@@ -66,8 +64,7 @@
 @
 :tryScriptswithExt
 @rem CRYSTALS FORTRAN FILES
-@if not exist ..\script\%FILESTEM% goto tryWithoutExtensions
-@set FILESTEM=%~n1
+@if not exist ..\script\%FILENAME% goto tryWithoutExtensions
 @echo Script source with extension
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
@@ -76,7 +73,7 @@
 :tryWithoutExtensions
 @
 @rem CRYSTALS FORTRAN FILES
-@if not exist ..\crystals\%FILESTEM%.F goto tryCPP
+@if not exist ..\crystals\%FILENAME%.F goto tryCPP
 @set SRCDIR=..\crystals
 @set JUMPBACK=tryCPP
 @set FILEFOUND=OK
@@ -84,7 +81,7 @@
 @
 :tryCPP
 @rem GUI CC FILES
-@if not exist ..\gui\%FILESTEM%.cc goto tryWEB
+@if not exist ..\gui\%FILENAME%.cc goto tryWEB
 @set CCSRC=..\gui\%FILESTEM%.cc
 @set JUMPBACK=tryWEB
 @set FILEFOUND=OK
@@ -92,7 +89,7 @@
 @
 :tryWEB
 @rem webconnect CPP FILES
-@if not exist ..\webconnect\%FILESTEM%.cpp goto tryCamFPP
+@if not exist ..\webconnect\%FILENAME%.cpp goto tryCamFPP
 @set CCSRC=..\webconnect\%FILESTEM%.cpp
 @set JUMPBACK=tryCamFPP
 @set FILEFOUND=OK
@@ -100,7 +97,7 @@
 @
 :tryCamFPP
 @rem CAMSRC FORTRAN FILES
-@if not exist ..\cameron\%FILESTEM%.F goto tryScripts
+@if not exist ..\cameron\%FILENAME%.F goto tryScripts
 @set SRCDIR=..\cameron
 @set JUMPBACK=tryScripts
 @set FILEFOUND=OK
@@ -109,7 +106,7 @@
 @
 :tryScripts
 @rem CRYSTALS FORTRAN FILES
-@if not exist ..\script\%FILESTEM%.* goto endofloop
+@if not exist ..\script\%FILENAME%.* goto endofloop
 @set JUMPBACK=endofloop
 @set FILEFOUND=OK
 @goto scomp

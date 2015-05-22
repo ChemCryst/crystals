@@ -110,7 +110,7 @@ interface
     use, intrinsic :: ISO_C_BINDING
     implicit none
     integer(kind=c_int), value :: nv
-    integer(kind=c_int), dimension(2000) :: ipts
+    integer(kind=c_int), dimension(*) :: ipts
   end subroutine fastfpoly
 end interface
 
@@ -119,7 +119,7 @@ interface
     use, intrinsic :: ISO_C_BINDING
     implicit none
     integer(kind=c_int), value :: nv
-    integer(kind=c_int), dimension(2000) :: ipts
+    integer(kind=c_int), dimension(*) :: ipts
   end subroutine fastepoly
 end interface
 
@@ -174,7 +174,7 @@ end subroutine
 
 subroutine fstfpo(nv, ipts)
     implicit none
-    integer nv, ipts(2000)
+    integer nv, ipts(:)
 
     call fastfpoly(nv, ipts)
 end subroutine
@@ -182,7 +182,7 @@ end subroutine
 subroutine fstepo(nv, ipts)
     implicit none
     integer nv
-    integer, dimension(2000) :: ipts
+    integer, dimension(:) :: ipts
 
     call fastepoly(nv, ipts)
 end subroutine
