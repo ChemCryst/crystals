@@ -256,7 +256,7 @@ C----- CIF OUTPUT F^2's  on scale of Fc- H
       RETURN
 C----- All set keys
 7390  CONTINUE
-      CALL XPCH6Z(LSTNO)
+      CALL XPCH6N(LSTNO,LSTNO)
       RETURN
 7400  CONTINUE
       CALL SIMTEST(LSTNO)
