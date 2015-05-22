@@ -353,6 +353,9 @@ C
          logical   open_,test
          character fname*(*)
          integer   case,i
+         character*2 acute, ogonek
+         data ogonek/'\;'/
+         data acute/'\'''/
 C
 cdjw may2011
          jchar=(linlen)
@@ -393,9 +396,15 @@ C
 C....... Copy the CIF to the direct access file
 C
 160      read(cifdev,'(a)',end=180) buffer
+         do idjw = 1, linlen-1
+            if(buffer(idjw:idjw+1) .eq. ogonek(1:2))
+     1      buffer(idjw+1:idjw+1)='Z'
+            if(buffer(idjw:idjw+1) .eq. acute(1:2)) 
+     1      buffer(idjw+1:idjw+1)='Z'
+         enddo
          nrecd=nrecd+1
          write(dirdev,'(a)',rec=nrecd) buffer
-Cdbg     WRITE(6,'(i5,1x,a)') nrecd,buffer(1:70)
+cdbg         WRITE(6,'(i5,1x,a)') nrecd,buffer(1:70)
          goto 160
 C
 180      lrecd=0
