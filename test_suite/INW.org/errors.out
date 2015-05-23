@@ -589,7 +589,7 @@ REAL
     0.000000E+00   0.000000E+00   0.000000E+00   0.120000E+02   0.000000E+00   0.000000E+00   0.000000E+00
 
 
- Record  102    LGRP    4  NGRP      1   THE PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED               
+ Record  102    LGRP    4  NGRP      1   THE INTEGER PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)               
 
 
     SCHEME         /FO/-TYPE      ROBUST         DUNITZ      
@@ -597,7 +597,7 @@ REAL
         5              3              0              0
 
 
- Record  103    LGRP    6  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
+ Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
 
 
     WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
@@ -625,7 +625,7 @@ REAL
     0.100000E+01   0.200000E+01   0.300000E+01
 
 
- Record  102    LGRP    4  NGRP      1   THE PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED               
+ Record  102    LGRP    4  NGRP      1   THE INTEGER PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)               
 
 
     SCHEME         /FO/-TYPE      ROBUST         DUNITZ      
@@ -633,7 +633,7 @@ REAL
         6              3              0              0
 
 
- Record  103    LGRP    6  NGRP      1   REAL PARAMETERS REQUIRED TO DEFINE THE WEIGHTING SCHEME TO BE USED              
+ Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
 
 
     WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       

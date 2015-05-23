@@ -3694,7 +3694,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.0   
  H        70.     0.6186    0.1145    0.1983       -4.3   
  Q         1.     0.4588    0.1048    0.1439       25.3  Poor Shape  
- Q         2.     0.7421    0.6269    0.2446       18.8  Poor Shape  
+ Q         2.     0.7579    0.1269    0.2554       18.8  Poor Shape  
  Q         3.     0.6958    0.0610    0.1775       15.1  Poor Shape  
  Q         4.     0.7938    0.6446    0.2075       15.0  Poor Shape  
  Q         5.     0.7054    0.0671    0.1204       11.4  Poor Shape  
@@ -3702,7 +3702,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q         7.     0.9942    0.1660    0.2164       10.2  Poor Shape  
  Q         8.     0.3704    0.9071   -0.0018       10.1  Poor Shape  
  Q         9.     0.5417    0.1973    0.0339        9.8  Poor Shape  
- Q        10.     0.0071    0.8956    0.2379        9.8  Poor Shape  
+ Q        10.     0.4929    0.3956    0.2621        9.8  Poor Shape  
  Q        11.     0.4967    0.2298    0.1121        9.8  Poor Shape  
  Q        12.     0.9242    0.9517    0.1407        9.5  Poor Shape  
  Q        13.     0.0413    0.9819    0.0450        9.4  Poor Shape  
@@ -4026,7 +4026,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1       2
 
- Distances about atom  Q      2.          X =  0.24208     Y = -0.12688     Z =  0.74464
+ Distances about atom  Q      2.          X =  0.24208     Y = -0.12687     Z =  0.74464
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -8776,7 +8776,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.0   
  H        70.     0.6186    0.1145    0.1983       -4.3   
  Q         1.     0.4592    0.1048    0.1436       25.0  Poor Shape  
- Q         2.     0.7413    0.6269    0.2454       18.7  Poor Shape  
+ Q         2.     0.7588    0.1269    0.2546       18.7  Poor Shape  
  Q         3.     0.7946    0.6446    0.2075       15.1  Poor Shape  
  Q         4.     0.6950    0.0610    0.1789       15.1  Poor Shape  
  Q         5.     0.7054    0.0671    0.1182       11.9  Poor Shape  
@@ -8784,14 +8784,14 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Q         7.     0.9942    0.1656    0.2164       10.2  Poor Shape  
  Q         8.     0.3692    0.9071   -0.0004       10.1  Poor Shape  
  Q         9.     0.9238    0.9515    0.1411       10.0  Poor Shape  
- Q        10.     0.4946    0.3956    0.2604        9.7  Poor Shape  
+ Q        10.     0.0054    0.8956    0.2396        9.7  Poor Shape  
  Q        11.     0.5417    0.1967    0.0336        9.6  Poor Shape  
  Q        12.     0.4988    0.2298    0.1114        9.5  Poor Shape  
  Q        13.     0.0417    0.9821    0.0457        9.2  Poor Shape  
  Q        14.     0.0350    0.2723    0.1789        9.2  Poor Shape  
  Q        15.     0.0325    0.1027    0.2236        9.1  Poor Shape  
  Q        16.     0.1663    0.4315    0.1196        9.1  Poor Shape  
- Q        17.     0.4604    0.2738    0.2596        9.0  Poor Shape  
+ Q        17.     0.0396    0.7738    0.2404        9.0  Poor Shape  
  QN       18.     0.5417    0.0417    0.1429      -15.7  Hole        
  The new list  10 contains    34 atoms
  The minimum and maximum map densities are  -1.57      2.50        barns /A^3                                                                                                                                                                                   
@@ -9111,7 +9111,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      2.          X =  0.24125     Y = -0.12688     Z =  0.74536
+ Distances about atom  Q      2.          X =  0.24125     Y = -0.12687     Z =  0.74536
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13304,8 +13304,8 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
- Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
+ Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
+ Q         7.     0.9942    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
  Q        10.     0.5292    0.2004    0.0396        9.2  Poor Shape  
@@ -13648,7 +13648,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      7.          X = -0.00583     Y =  0.16729     Z =  0.22036
+ Distances about atom  Q      7.          X =  0.99417     Y =  0.16729     Z =  0.22036
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13682,7 +13682,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q      9.          X = -0.04375     Y =  0.12229     Z =  0.09964
+ Distances about atom  Q      9.          X =  0.95625     Y =  0.12229     Z =  0.09964
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -13726,7 +13726,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1
 
- Distances about atom  Q     13.          X = -0.15458     Y =  0.16938     Z =  0.03464
+ Distances about atom  Q     13.          X =  0.84542     Y =  0.16938     Z =  0.03464
 
 
  Angles about atom  Q     13.
@@ -15618,7 +15618,7 @@ LS-scale=  0.293   Wilson Scale=  0.000
  S/ESD    31          31           -0.0004      0.1E+00    0.216E-03         -1.83        C      6 Y       
  S/ESD    32          32           -0.0010      0.2E+00    0.366E-03         -2.69        C      6 Z       
  S/ESD    33          33           -0.0044      0.5E+00    0.575E-03         -7.67        C      6 U[ISO]  
- S/ESD    35          35           -0.0005      0.1E+00    0.270E-03         -1.78        C      7 Y       
+ S/ESD    35          35           -0.0005      0.1E+00    0.270E-03         -1.77        C      7 Y       
  S/ESD    36          36           -0.0018      0.3E+00    0.465E-03         -3.81        C      7 Z       
  S/ESD    37          37           -0.0051      0.6E+00    0.725E-03         -6.97        C      7 U[ISO]  
  S/ESD    38          38           -0.0015      0.2E+00    0.476E-03         -3.10        C      8 X       
@@ -17735,11 +17735,11 @@ LS-scale=  0.311   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.3   
  H        70.     0.6186    0.1145    0.1983       -4.5   
  Q         1.     0.4596    0.1052    0.1429       23.7  Poor Shape  
- Q         2.     0.7567    0.1275    0.2536       19.9  Poor Shape  
+ Q         2.     0.7433    0.6275    0.2464       19.9  Poor Shape  
  Q         3.     0.6967    0.0625    0.1768       15.8  Poor Shape  
  Q         4.     0.7042    0.0679    0.1232       12.7  Poor Shape  
  Q         5.     0.6242    0.0969    0.0043       11.0  Poor Shape  
- Q         6.     0.0400    0.7717    0.2382       10.2  Poor Shape  
+ Q         6.     0.4600    0.2717    0.2618       10.2  Poor Shape  
  Q         7.    -0.0058    0.1673    0.2204        9.5  Poor Shape  
  Q         8.     0.8658    0.8706    0.0039        9.4  Poor Shape  
  Q         9.     0.9563    0.1223    0.0996        9.3  Poor Shape  
