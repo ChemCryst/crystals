@@ -3704,7 +3704,7 @@ CODE FOR XNDATE
       USE DFPORT
 #endif
 #ifdef CRY_FORTINTEL
-      USE IFPORT integer, dimension(:), allocat
+      USE IFPORT 
 #endif
 C--SET THE # SECS SINCE 1970 IN ISECS
       ISECS = TIME()
