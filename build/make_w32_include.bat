@@ -7,13 +7,13 @@
 @if not "%WXNUM%" == "" goto WX4
 @set WXNUM=30
 :WX4
-
+@
 @set FOPATH=obj
 @if "%CRDEBUG%" == "TRUE" set FOPATH=dobj
 
 @goto %COMPCODE%
 
-@
+
 :WXS
 @if "%CRDEBUG%" == "TRUE"     set LIBS=/LIBPATH:%WXWIN%\lib\vc_lib  wxbase28d.lib wxmsw28d_core.lib wxzlibd.lib wxjpegd.lib wxtiffd.lib wxpngd.lib wxmsw28d_gl.lib wxmsw28d_aui.lib user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @if not "%CRDEBUG%" == "TRUE" set LIBS=/LIBPATH:%WXWIN%\lib\vc_lib  wxbase28.lib  wxmsw28_core.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw28_gl.lib  wxmsw28_aui.lib  user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
@@ -22,8 +22,7 @@
 @set CDEF=/D"__WXMSW__" /D"CRY_FORTDIGITAL"
 @set FDEF=/define:__%COMPCODE%__ /define:CRY_FORTDIGITAL
 goto ALLDVF
-@
-@rem 
+
 :INW
 @if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib  CrashRpt1402.lib shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw%WXNUM%u_gl.lib  CrashRpt1402.lib user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
@@ -42,13 +41,13 @@ goto ALLDVF
 @rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
 @set LDFLAGS= /Qmkl %COPENMP%
-@
+
 @set CC=cl
 @set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D__%COMPCODE%__ /D_CRT_SECURE_NO_WARNINGS
 @set COPTS=/EHs  /W3 /nologo /c /TP /I..\gui /O2 /Zi /Oy- /D"NDEBUG" /MD 
 @set CDEBUG=/EHs /W3 /nologo /c /TP /I..\gui /Od /D"DEBUG" /RTC1 /MDd /Z7  
 @set COUT=/Foobj\
-@
+
 @set F77=ifort
 @set FDEF=%FDEF%
 @set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /nolink %COPENMP%
@@ -59,14 +58,12 @@ goto ALLDVF
 @if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
 @if "%CRDEBUG%" == "TRUE" set COUT=/Fodobj\
 @goto exit
-@
+
 :GID
 @set LIBS=script1.res
 @set CDEF=/D__%COMPCODE%__ /D"_AFXDLL" /D_CRT_SECURE_NO_WARNINGS
-rem @set CDEF=/D"__CR_WIN__"  /D"_AFXDLL" /D"_DIGITALF77_"
 @set FDEF=-D__GID__ -DCRY_GUI -DCRY_USEMFC -DCRY_OSWIN32 -DCRY_FORTDIGITAL
-rem @set FDEF=/define:_%COMPCODE%_ /define:_DIGITALF77_
-@
+
 :ALLDVF
 @set LD=link
 @set OUT=/OUT:
