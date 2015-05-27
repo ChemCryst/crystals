@@ -193,7 +193,7 @@ C
 C Revision 1.36  2002/08/23 11:20:26  richard
 C Increase STR11 and SORT to 32Mb each (8-fold increase), to allow refinement of
 C bigger structures.
-CNOTUSED
+C
 C Revision 1.35  2002/03/15 16:50:01  richard
 C Type #SET BONDTYPE OFF to suppress bond type calculation.
 C
@@ -1631,25 +1631,20 @@ C RICJUL00
       DATA ISSSEQ / 1 / , ISSDAF / 2 /
 C
       DATA ISSREA / 1 /, ISSWRI / 2 /, ISSAPP /3/
-c file not found iostat value, not used anymore, replace with inquire file_exists
-c#ifdef _H_P_ 
-c      DATA ISSFNF / 940 /
-c#elif defined(_DOS_) 
-c      DATA ISSFNF / 128 /
-c#elif defined(CRY_NONGNU) || defined(__VAX__) 
-c      DATA ISSFNF /  29 /
-c#elif defined(CRY_OSMAC)
-c      DATA ISSFNF /  2 /
-c#elif defined(CRY_GNU)
+#ifdef _H_P_ 
+      DATA ISSFNF / 940 /
+#elif defined(_DOS_) 
+      DATA ISSFNF / 128 /
+#elif defined(__INTEL_COMPILER) || defined(__VAX__) 
+      DATA ISSFNF /  29 /
+#elif defined(CRY_OSMAC)
       DATA ISSFNF /  2 /
-c#else
-c      DATA ISSFNF /  2 /
-c#endif
+#else
+      DATA ISSFNF /  2 /
+#endif
       DATA ISSOKF / 0 /
       DATA ISSEOF /-1 /
       DATA ISSERF / 1 /
-c      DATA INOTUSED/-1/
-
 C
 C  BUFFERS INCREASED TO 24, SEPT 1998 - DONT FORGET XLINK
 C^      DATA ISSNBF / 6 / , ISSBFS / 3200 /
@@ -1669,7 +1664,11 @@ C      ON THE VAX, THE RECORD LENGTH IS GIVEN IN LONGWORDS, SO THAT
 C                  ISSDAR = ISSRLI
 C      ON THE HEWLET PACKARD, IT IS IN BYTES, SO THAT
 C                  ISSDAR = 4 * ISSRLI
+#ifdef CRY_NONGNU 
+      DATA ISSDAR / 512 /
+#else
       DATA ISSDAR / 2048 /
+#endif
 #ifdef _HOL_
       DATA ISSPRG(1) / 4HCRYS / , ISSPRG(2) / 4HTALS /
 #else
@@ -2139,7 +2138,6 @@ C
      8          4,4,4,4,4,4,4,4,4,4,
      9          3,3,3,3,3,4,3,5,4,3,
      *          1,1,1,1,1,1,4,1,4,4/
-     
       END
 C
 CODE FOR UTIBLK
