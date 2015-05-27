@@ -50,8 +50,21 @@ C
 c -d    Diffractometer name
 c       input filename
 c
+
 #if defined(CRY_FORTDIGITAL)
       use dflib
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
 #endif
 #include "ciftbx.cmn"
 #include "cifin.cmn"
@@ -72,9 +85,7 @@ c
       data noutr    /14/
       data nglob    /15/
 
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif
+      call no_stdout_buffer()
 
 c
 C----- GET DATE
@@ -109,10 +120,10 @@ c     Make CCDC files the default
       extbl  = '.cry'
 c
       N = 1
-#if defined(CRY_GNU)
-      NARG = IARGC()
+#if defined(CRY_FORTDIGITAL)
+      NARG = NARGC()
 #else
-      NARG = NARGS()
+      NARG = COMMAND_ARGUMENT_COUNT() + 1
 #endif
 6     format(a,3x,i3,3x,a)
       write(6,'(a,i6)') 'Narg', narg
@@ -485,11 +496,7 @@ c
       SUBROUTINE NOILLEGAL(OPTION)
         character*32 option
         DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(CRY_GNU)
-          IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
-#else
           IF ( option(N:N) .EQ. '\') option(N:N) = '_'
-#endif
           IF ( option(N:N) .EQ. '/') option(N:N) = '_'
           IF ( option(N:N) .EQ. ':') option(N:N) = '_'
           IF ( option(N:N) .EQ. '*') option(N:N) = '_'
@@ -515,10 +522,8 @@ C--
       carg = ' '
 #if defined(CRY_FORTDIGITAL)
       CALL GetArg(N,carg,optlen)
-#elif defined(_DOS_) 
-     carg=cmnam()
 #else
-      call GetArg(n, carg)
+      call get_command_argument(n, carg)
 #endif
       RETURN
       END

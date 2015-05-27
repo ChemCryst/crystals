@@ -1,7 +1,19 @@
 #include       "ciftbx.for"
 C<ric02>
-#if defined(_DIGITALF77_)
+#if defined(CRY_FORTDIGITAL)
       use dflib
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
 #endif
       parameter (maxat = 10000)   !Max of 10000 atoms
       parameter (nodchr = 29)    !Number of chars to look out for.
@@ -67,9 +79,8 @@ C<ric02/>
 
 	  data probably_neutrons /.false./
 	  
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif      
+      call no_stdout_buffer()
+
 cdjw open a file for errors since DOS window closes too fast
 c    lots of writes to 17 later
       open(17,file='cif2CRY.lis',status='unknown')
@@ -77,10 +88,10 @@ c    lots of writes to 17 later
 C<ric02>
 C Read data from the commandline:
       optlen=132
-#if defined(CRY_GNU)
-      CALL GetArg(0,prognm)
-#else
+#if defined(CRY_FORTDIGITAL)
       CALL GetArg(0,prognm,optlen)
+#else
+      call get_command_argument (0, prognm, optlen)
 #endif
       lfirst = .FALSE.
       namebl = .FALSE.
@@ -89,17 +100,17 @@ C Read data from the commandline:
       loutfl = .FALSE.
 
       N = 1
-#if defined(CRY_GNU)
-      NARG = IARGC()
+#if defined(CRY_FORTDIGITAL)
+      NARG = NARGC()
 #else
-      NARG = NARGS()
+      NARG = command_argument_count ()+1
 #endif
 
       DO WHILE ( N .LT. NARG )
-#if defined(CRY_GNU)
-        CALL GetArg(N,option) 
-#else
+#if defined(CRY_FORTDIGITAL)
         CALL GetArg(N,option,optlen) 
+#else
+        call get_command_argument (N,option,optlen) 
 #endif
         IF (option.eq.'-f') THEN
           IF ( allbl ) GOTO 8000
@@ -112,10 +123,10 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           namebl=.TRUE.
-#if defined(CRY_GNU)
-          CALL GetArg(N,outfil)
-#else
+#if defined(CRY_FORTDIGITAL)
           CALL GetArg(N,outfil,optlen)
+#else
+          call get_command_argument (N,outfil,optlen)
 #endif
           IF (outfil(1:1).eq.'-') GOTO 8000
         ELSE IF (option.eq.'-o') THEN
@@ -123,11 +134,12 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           loutfl=.TRUE.
-#if defined(CRY_GNU)
-          CALL GetArg(N,outfil)
-#else
+#if defined(CRY_FORTDIGITAL)
           CALL GetArg(N,outfil,optlen)
+#else
+          call get_command_argument (N,outfil,optlen)
 #endif
+
           IF (outfil(1:1).eq.'-') GOTO 8000
         ELSE IF (option(1:1).eq.'-') THEN
           GOTO 8000
@@ -135,10 +147,10 @@ C Read data from the commandline:
           IF (linfl) GOTO 8000
           IF ( N .GE. NARG ) GOTO 8000
           linfl=.TRUE.
-#if defined(CRY_GNU)
-          CALL GetArg(N,infil)
-#else
+#if defined(CRY_FORTDIGITAL)
           CALL GetArg(N,infil,optlen)
+#else
+          call get_command_argument (N,infil,optlen)
 #endif
         END IF
         N = N + 1
@@ -228,11 +240,7 @@ C<ric02>
 C Name formed from blockname and outfil is used as extension:
         option = bloc_
         DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(CRY_GNU)
-          IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
-#else
           IF ( option(N:N) .EQ. '\') option(N:N) = '_'
-#endif
           IF ( option(N:N) .EQ. '/') option(N:N) = '_'
           IF ( option(N:N) .EQ. ':') option(N:N) = '_'
           IF ( option(N:N) .EQ. '*') option(N:N) = '_'
@@ -263,11 +271,7 @@ C Any other case, just open it:
 
       option = bloc_
       DO N = 1,LEN_TRIM(option)    !Remove illegal chars
-#if defined(CRY_GNU)
-        IF ( option(N:N) .EQ. '\\') option(N:N) = '_'
-#else
         IF ( option(N:N) .EQ. '\') option(N:N) = '_'
-#endif
         IF ( option(N:N) .EQ. '/') option(N:N) = '_'
         IF ( option(N:N) .EQ. ':') option(N:N) = '_'
         IF ( option(N:N) .EQ. '*') option(N:N) = '_'

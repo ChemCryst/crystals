@@ -1,5 +1,20 @@
       PROGRAM MAIN
 C
+#if defined(CRY_FORTDIGITAL)
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
+#endif
+
       INTEGER IO(3,3), ONAM(4), IY(6), BUF(2000)
       COMMON CEL(6),A,B,C,DELTA,DELT1,IO,IF,LT,LP,LZ
       CHARACTER *80 FILENM
@@ -8,9 +23,8 @@ C
 #else
       DATA IY/'Y','N','O','y','n','o'/
 #endif
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif
+
+      call no_stdout_buffer()
 
       LT = 6
       LP = 1

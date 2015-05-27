@@ -67,8 +67,20 @@ C=======================================================================
 CODE FOR IO
       function  io(ninf,noutf,infil, outfil)
 C<ric02>
-#ifdef CRY_FORTDIGITAL
+#if defined(CRY_FORTDIGITAL)
       use dflib
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
 #endif
       parameter (oddchr = 29)    !Number of chars to look out for.
       character*256 prognm,infil,outfil,option
@@ -80,9 +92,9 @@ C      data noutf    /11/
 C      data infil /' '/
 C      data outfil /' '/
       io = -1
-#ifdef CRY_GNU
+
       call no_stdout_buffer()
-#endif      
+
 cdjw open a file for errors since DOS window closes too fast
 c    lots of writes to 17 later
       open(17,file='HKL5.lis',status='unknown')
@@ -90,10 +102,10 @@ c    lots of writes to 17 later
 C<ric02>
 C Read data from the commandline:
       optlen=132
-#ifdef CRY_GNU
-      CALL GetArg(0,prognm)
-#else
+#if defined(CRY_FORTDIGITAL)
       CALL GetArg(0,prognm,optlen)
+#else
+      call get_command_argument (0, prognm, optlen)
 #endif
       lfirst = .FALSE.
       namebl = .FALSE.
@@ -102,17 +114,17 @@ C Read data from the commandline:
       loutfl = .FALSE.
 
       N = 1
-#ifdef CRY_GNU
-      NARG = IARGC()
+#if defined(CRY_FORTDIGITAL)
+      NARG = NARGC()
 #else
-      NARG = NARGS()
+      NARG = command_argument_count ()+1
 #endif
 
       DO WHILE ( N .LT. NARG )
-#ifdef CRY_GNU
-        CALL GetArg(N,option) 
-#else
+#if defined(CRY_FORTDIGITAL)
         CALL GetArg(N,option,optlen) 
+#else
+        call get_command_argument (N,option,optlen) 
 #endif
         IF (option.eq.'-f') THEN
           IF ( allbl ) GOTO 8000
@@ -125,10 +137,10 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           namebl=.TRUE.
-#ifdef CRY_GNU
-          CALL GetArg(N,outfil)
-#else
+#if defined(CRY_FORTDIGITAL)
           CALL GetArg(N,outfil,optlen)
+#else
+          call get_command_argument (N,outfil,optlen)
 #endif
           IF (outfil(1:1).eq.'-') GOTO 8000
         ELSE IF (option.eq.'-o') THEN
@@ -136,10 +148,10 @@ C Read data from the commandline:
           N = N + 1
           IF ( N .GE. NARG ) GOTO 8000
           loutfl=.TRUE.
-#ifdef CRY_GNU
-          CALL GetArg(N,outfil)
-#else
+#if defined(CRY_FORTDIGITAL)
           CALL GetArg(N,outfil,optlen)
+#else
+          call get_command_argument (N,outfil,optlen)
 #endif
           IF (outfil(1:1).eq.'-') GOTO 8000
         ELSE IF (option(1:1).eq.'-') THEN
@@ -148,10 +160,10 @@ C Read data from the commandline:
           IF (linfl) GOTO 8000
           IF ( N .GE. NARG ) GOTO 8000
           linfl=.TRUE.
-#ifdef CRY_GNU
-          CALL GetArg(N,infil)
-#else
+#if defined(CRY_FORTDIGITAL)
           CALL GetArg(N,infil,optlen)
+#else
+          call get_command_argument (N,infil,optlen)
 #endif
         END IF
         N = N + 1

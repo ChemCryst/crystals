@@ -969,7 +969,6 @@ extern "C" {
 
 //declarations:
 
-#ifdef CRY_NONGNU
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
@@ -984,37 +983,14 @@ void fastsphere  (char* label,int x1,int y1,int z1,
 void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz);
-#else
-void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
-                int r, int g, int b,  int rad,int btype,
-                int np, int * ptrs, char label[80], char slabel[80] );
-void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,float cov, int vdw,
-                int spare, int flag, float u1,float u2,float u3,float u4,float u5,
-                float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int assembly, int group, float ueq, float fspare);
-void fastsphere_  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad);
-void fastdonut_  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad, int idec, int iaz);
-#endif
 }
 
 //implementations:
 
-#ifdef CRY_NONGNU
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs,
                 char label[80], char slabel[80] )
-#else
-void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
-                int r, int g, int b,  int rad,int btype,
-                int np, int * ptrs,
-                char label[80], char slabel[80] )
-#endif
 {
       string clabel = label;
       LOGSTAT ( "-----------Fastbond added:" + clabel );
@@ -1023,19 +999,11 @@ void fastbond_ (int x1,int y1,int z1, int x2, int y2, int z2,
                                          np,ptrs,clabel,slabel);
 }
 
-#ifdef CRY_NONGNU
 void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare)
-#else
-void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,float cov, int vdw,
-                int spare, int flag, float u1,float u2,float u3,float u4,float u5,
-                float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int assembly, int group, float ueq, float fspare)
-#endif
 {
       string clabel = label;
       string celem  = elem;
@@ -1048,15 +1016,9 @@ void fastatom_  (char* elem,int serial,char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef CRY_NONGNU
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad)
-#else
-void fastsphere_  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad)
-#endif
 {
       string clabel = label;
       LOGSTAT ( "-----------Fastsphere added:" + clabel );
@@ -1066,15 +1028,9 @@ void fastsphere_  (char* label,int x1,int y1,int z1,
 
 }
 
-#ifdef CRY_NONGNU
 	void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz)
-#else
-void fastdonut_  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad, int idec, int iaz)
-#endif
 {
       string clabel = label;
       LOGSTAT ( "-----------Fastdonut added:" + clabel );

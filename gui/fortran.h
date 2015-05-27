@@ -30,6 +30,7 @@ typedef int     LOGICAL;          // LOGICAL              4 bytes
 // #define TRUE  1
 
 // Macros for portable handling of linkage & calling conventions
+/*
 #ifdef F77_STUB_REQUIRED
    // Typically, this branch is for Unix computers
 
@@ -57,4 +58,5 @@ typedef int     LOGICAL;          // LOGICAL              4 bytes
    #define DOUBLE_PRECISION_FUNCTION extern "C" DOUBLE_PRECISION \
                                                            __stdcall
 #endif
+*/
 #endif

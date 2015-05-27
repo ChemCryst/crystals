@@ -54,6 +54,7 @@ C
 C Entry point for command line and library use.
 #ifdef CRY_FORTDIGITAL
       SUBROUTINE CRYSTL()
+      !dec$ attributes c :: crystl
 #else
       SUBROUTINE CRYSTL() bind (c)
 #endif

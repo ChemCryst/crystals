@@ -1,4 +1,19 @@
       PROGRAM DIPIN
+#if defined(CRY_FORTDIGITAL)
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
+#endif
+
       DIMENSION IND(3), F(4), INDRNG(6), scalei(2)
       PARAMETER (NSCALE=360)
       CHARACTER *132 CLINE
@@ -15,9 +30,7 @@ c DIPIN combines them to find the overall correction per frame,
 c in an attempt to determine the 'absorption' correction inplied if the
 c thecrystal is not really decomposing.
 
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif
+      call no_stdout_buffer()
 
       DO 1, I = 1,NSCALE
             SCALE(I) = 0.

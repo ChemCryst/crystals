@@ -1,4 +1,19 @@
       PROGRAM READOD
+#if defined(CRY_FORTDIGITAL)
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
+#endif
+      
 c restored v 14 from cvs
 #include "ciftbx.cmn"
       LOGICAL F1,F2,F3,F4,F5
@@ -30,9 +45,7 @@ C
       PARAMETER (DTR=3.14159/180.)
       EQUIVALENCE (RES,IRES)
 
-#if defined(CRY_GNU)
       call no_stdout_buffer()
-#endif
 C set default output filename - also used as instrument ID
 	filename='od-out'
         lfn=6 

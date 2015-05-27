@@ -203,12 +203,12 @@ extern "C" {
   // FORCALL() macro adds on _ to end of word for linux version.
 
 
-  void  FORCALL(cinextcommand)  (    long *theStatus,    char theLine[80]);
-  void  FORCALL(ciendthread)    (  long theExitcode                  );
-  void  FORCALL(newdata)        (    int isize,      int* id         );
-  void  FORCALL(datain)         ( int id, int *data, int offset, int nwords );
-  void  FORCALL(callccode)      (  char *theLine                     );
-  void  FORCALL(guexec)         (  char *theLine                     );
+  void  cinextcommand  (    long *theStatus,    char theLine[80]);
+  void  ciendthread    (  long theExitcode                  );
+  void  newdata        (    int isize,      int* id         );
+  void  datain         ( int id, int *data, int offset, int nwords );
+  void  callccode      (  char *theLine                     );
+  void  guexec         (  char *theLine                     );
 #ifdef CRY_OSWIN32
   bool  IsWinNT();
 #endif

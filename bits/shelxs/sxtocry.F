@@ -1,4 +1,18 @@
       PROGRAM  SHTOCA
+#if defined(CRY_FORTDIGITAL)
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
+#endif
 C
 C Program to convert shelx ".ins" file to crystals-type ".cam" file.
 C The user must alter any local matters - e.g. "compound codes" that
@@ -28,9 +42,9 @@ C
 C get compound code from instruction line - UNIX specific! 
 C      CALL SXNM(CPCODE,LN)
 C general input - change this as needed.....
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif
+
+      call no_stdout_buffer()
+
       WRITE(6,'('' Compound code (filename without .INS) : A6'')') 
       READ(5,'(A6)') CPCODE
 C set initial values of variables

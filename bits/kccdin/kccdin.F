@@ -1,4 +1,19 @@
       PROGRAM NEWK
+#if defined(CRY_FORTDIGITAL)
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
+#endif
+
 c try to restore v 1.8, May 2010
 #include "ciftbx.cmn"
       LOGICAL F1,F2,F3,F4,F5
@@ -31,9 +46,9 @@ C
       EQUIVALENCE (RES,IRES)
 
       DATA NOUTF/10/,NHKL/11/,NCIF/12/
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif
+
+      call no_stdout_buffer()
+
 C set default output filename - also used as instrument ID
 	filename='kccd'
         lfn = 4 

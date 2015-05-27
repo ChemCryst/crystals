@@ -8,6 +8,18 @@ C*********************************************************************
       PROGRAM RC93
 #if defined(CRY_FORTDIGITAL)
       USE DFLIB
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
 #endif
 C OCT99 - ierfil UNIT to handle catastrophic errors
 C     This is the main controlling program section.
@@ -20,9 +32,8 @@ C
       CHARACTER *8 CTIME, CDATGB, CDATUS
 #endif
       EXTERNAL BLKDAT
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif
+
+      call no_stdout_buffer()
 
 C Is CRYSDIR set on command line?
       CDLEN = 0
@@ -2034,11 +2045,7 @@ C     it is part of the path.
             CH = CINPFL(J:J)
 C *** Annoyingly the backslash may have to be 'escaped' for unix
 C     machines, ie the line for unix machines is
-#if defined (CRY_GNU)
-      IF (((CH .EQ.'/').OR.(CH .EQ.'\\')) .OR.(CH .EQ. ']')) THEN
-#else
       IF (((CH .EQ.'/').OR.(CH .EQ.'\')) .OR.(CH .EQ. ']')) THEN
-#endif
 C                 The '.' is part of the path specification.
                   LSTCHR = LEND
                   GO TO 999

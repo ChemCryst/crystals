@@ -1447,24 +1447,18 @@ C -- RETURN , AS INTEGER VALUE , THE NUMBER OF SECONDS SINCE MIDNIGHT
 #elif defined(CRY_FORTINTEL)
       USE DFPORT
       I = NINT ( SECNDS ( 0.0 ) )
-#elif defined(CRY_GNU)
-      CALL CPU_TIME(A)
-      I = NINT ( A )
 #elif defined(_DOS_) 
       CALL CLOCK@ (A)
       I = NINT (A)
+#else 
+      CALL CPU_TIME(A)
+      I = NINT ( A )
 #endif
       RETURN
       END
 C
 CODE FOR XTIMER
       SUBROUTINE XTIMER ( CTIME2 )
-#ifdef CRY_FORTDIGITAL
-      USE DFPORT
-#endif
-#ifdef CRY_FORTINTEL
-      USE IFPORT
-#endif
 C -- GET SYSTEM TIME IN CHARACTER FORM
 C
 C -- THIS ROUTINE SHOULD RETURN THE CURRENT TIME IN THE CHARACTER*8
@@ -1488,8 +1482,8 @@ C
 
 #ifdef _DOS_
       CHARACTER*8 TIME@
-#elif defined(CRY_GNU) || defined (__INW__)
-      DIMENSION ITIM(3)
+#else 
+      DIMENSION ITIM(8)
 #endif
 
       IF ( ISSTIM .EQ. 2 ) THEN
@@ -1499,11 +1493,9 @@ C
                       
 #ifdef _DOS_ 
       CTIME2 = TIME@()
-#elif defined(CRY_GNU) || defined (__INW__)
-      CALL ITIME(ITIM)
-      WRITE ( CTIME2, '(I2,'':'',I2,'':'',I2)' ) ITIM
 #else
-      CTIME2 = CLOCK()
+      CALL date_and_time(values=ITIM)
+      WRITE ( CTIME2, '(I2.2,'':'',I2.2,'':'',I2.2)' ) ITIM(5:7)
 #endif
       RETURN
       END
@@ -1552,9 +1544,7 @@ C
 #endif
       CHARACTER*8 CDATE
 C
-#ifdef CRY_NONGNU
-      CHARACTER*8 CDATE2
-#elif defined(__VAX__) 
+#if defined(__VAX__) 
       CHARACTER*9 CDATE2
       CHARACTER*36 CMONTH
       DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
@@ -1562,9 +1552,8 @@ C
       CHARACTER*8 EDATE@
 #endif
 
-#if defined(CRY_GNU)  || defined(__INW__)
-      DIMENSION IDAT(3)
-#endif
+      DIMENSION IDAT(8)
+      
       IF ( ISSTIM .EQ. 2 ) THEN
          CDATE = ' '
          RETURN
@@ -1579,21 +1568,6 @@ C
       I = INDEX(CDATE(1:8), ' ')
       IF (I .NE. 0) CDATE(I:I) = '0'
 C
-#elif defined(CRY_GNU) 
-      CALL IDATE ( IDAT )
-      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(1) ,
-     2      IDAT(2) , MOD ( IDAT(3) , 100 )
-      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
-      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
-C
-#elif defined(__INW__)
-C Intel returns mon, day, year. c.f. gnu which is day, mon, year.
-      CALL IDATE ( IDAT(1), IDAT(2), IDAT(3) )
-      WRITE ( CDATE , '(I2,''/'',I2,''/'',I2)' ) IDAT(2) ,
-     2      IDAT(1) , MOD ( IDAT(3) , 100 )
-      IF ( CDATE(1:1) .EQ. ' ' ) CDATE(1:1) = '0'
-      IF ( CDATE(4:4) .EQ. ' ' ) CDATE(4:4) = '0'
-C
 #elif defined(_H_P_) 
       call get_time (tmbuf)
       char_ptr=format_time(tmbuf)
@@ -1607,8 +1581,10 @@ C
       WRITE(CDATE,'(A,2(''/'',A))')
      1    CDATE2(4:5),CDATE2(1:2),CDATE2(7:8)
 C
-#else
-      CDATE = ' '
+#else 
+      call date_and_time(values=idat)
+      WRITE ( CDATE , '(I2.2,''/'',I2.2,''/'',I2.2)' ) IDAT(3) ,
+     2      IDAT(2) , MOD ( IDAT(1) , 100 )
 C
 #endif
       RETURN
@@ -2834,12 +2810,13 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
           CALL DOSPARAM@(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #elif defined (CRY_FORTDIGITAL)
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#elif defined (CRY_GNU)
-          CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #elif defined (CRY_FORTINTEL)
 C The intel environment does not pick up changes made by _putenv in C++ code
 C Therefore use this interface to the C++ to get values.
           CALL CGETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
+#else 
+          call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
+     &      LIST(LEVEL))
 #endif
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
         IF (LIST(LEVEL) .EQ. ' ') THEN
@@ -3073,91 +3050,48 @@ C----- SHOULD BE REPLACED BY A MACHINE SPECIFIC ROUTINE
 #endif
 
 CODE FOR FRAND
-      FUNCTION FRAND()
-C------ RETURNS A VALUE BETWEEN 0 and 1 from the compiler library's
-C       random number generator.
-#ifdef CRY_FORTDIGITAL 
-      USE DFPORT
-      FRAND = RAND()
-#endif
-#ifdef CRY_FORTINTEL 
-      USE IFPORT
-#endif
-#ifdef _DOS_ 
-          FRAND = RANDOM()
-#endif
-#if defined(CRY_GNU) || defined(CRY_FORTINTEL)
-      FRAND = RAND()
-#endif
-#ifdef __VAX__ 
-          FRAND = RAN (NINT(SECNDS(0.0)))
-#endif
-      RETURN
-      END
+      real function frand()
+c------ returns a value between 0 and 1 from the compiler library's
+c       random number generator.
 
+      call random_number(frand)
+      end
+          
 CODE FOR XRAND
-      FUNCTION XRAND(REQVAR, ISEED)
+      real FUNCTION XRAND(REQVAR, ISEED)
 C------ RETURNS A VALUE DISTRIBUTED ABOUT ZERO FROM A DISTRIBUTION
 C       WITH VARIANCE REQVAR
 C
 C    REQVAR - REQUESTED VARIANCE OF RESULT
 C    ISEED = 0 FOR REPEATED RANDOM NUMBERS
-#ifdef CRY_FORTDIGITAL 
-      USE DFPORT
-#endif
+      integer n, i
+      integer, dimension(:), allocatable :: seeds
       SAVE ISET, GSET
-#ifdef __VAX__ 
-      INTEGER*4 SEED
-#endif
-      DOUBLE PRECISION ZZZ
+
       DATA ISET /-1/
+
       IF (ISET .LE. -1) THEN
         ISET = 0
+
+        call random_seed(size = n)
+        allocate(seeds(n))
         IF (ISEED .EQ. 0) THEN
 C----- REPEAT RANDOM SEQUENCE
-#ifdef _XXX_ 
-          SEED = 0.0
-#endif
-#ifdef __VAX__ 
-          SEED = 7654321
-#endif
-#ifdef _DOS_ 
-          CALL SET_SEED@(SEED)
-#endif
-#ifdef CRY_FORTDIGITAL 
-          CALL SRAND(0)
-#endif
-#if defined(CRY_GNU) || defined(CRY_FORTINTEL)
-          CALL SRAND(0)
-#endif
+          seeds=0
+          call random_seed(put= seeds )
         ELSE
 C----- CREATE NEW SEQUENCE
-#ifdef _XXX_ 
-          SEED = 0
-#endif
-#ifdef __VAX__ 
-          SEED = NINT(SECNDS(0.0))
-#endif
-#ifdef _DOS_ 
-          CALL DATE_TIME_SEED@
-#endif
-#ifdef CRY_FORTDIGITAL 
-          CALL SRAND(RND$TIMESEED )
-#endif
-#if defined(CRY_GNU) || defined(CRY_FORTINTEL)
-	  ITIMEI = TIME()
-          KSEED = MOD (ITIMEI,(2**30))
-          CALL SRAND(KSEED)
-#endif
+          do i=1, n
+            ITIMEI = TIME()
+            seeds(i) = MOD (ITIMEI,(2**30))
+          end do
+          call random_seed(put= seeds )
         ENDIF
+        
       ENDIF
       
       
       IF (ISET .EQ. 0) THEN
-#ifdef _XXX_ 
-        STOP 'NO RANDOM No GENERATOR'
-
-#endif
 1       V1 = 2. * FRAND() -1.
         V2 = 2. * FRAND() -1.
         R = V1**2 + V2**2
@@ -3205,14 +3139,7 @@ c      ENDIF
 CODE FOR GETCOM
       SUBROUTINE GETCOM(CLINE)
 #ifdef CRY_GUI
-      INTERFACE
-          SUBROUTINE CINEXTCOMMAND (istat, caline)
-              !DEC$ ATTRIBUTES C :: cinextcommand
-              INTEGER ISTAT
-              CHARACTER*256 CALINE
-              !DEC$ ATTRIBUTES REFERENCE :: CALINE
-          END SUBROUTINE CINEXTCOMMAND
-      END INTERFACE
+      use fwrappergui_mod, only: cinextcommand
       INTEGER ISTAT
       CHARACTER*256 CALINE
       INCLUDE 'XSSVAL.INC'
@@ -3225,7 +3152,7 @@ CODE FOR GETCOM
 
       CALINE=' '
       ISTAT = 0
-      CALL CINEXTCOMMAND(ISTAT,CALINE)
+      CALL cinextcommand(ISTAT,CALINE)
       READ(CALINE,'(A)') CLINE
       IF ( LCLOSE ) THEN
           WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
@@ -3261,12 +3188,7 @@ CODE FOR GETCOM
 CODE FOR GUEXIT
       SUBROUTINE GUEXIT(IVAR)
 #ifdef CRY_GUI
-      INTERFACE
-          SUBROUTINE CIENDTHREAD (IVAR)
-          !DEC$ ATTRIBUTES C :: ciendthread
-          INTEGER IVAR
-          END SUBROUTINE CIENDTHREAD
-      END INTERFACE
+      use fwrappergui_mod, only: ciendthread
 #endif
       INTEGER IVAR
       INCLUDE 'UFILE.INC'
@@ -3579,13 +3501,7 @@ CODE FOR XPRTDV
 C---- MACHINE SPECIFIC WRITE TO THE SCREEN
 #ifdef CRY_GUI
 C{
-      INTERFACE
-                SUBROUTINE CALLCCODE (CALINE)
-					!DEC$ ATTRIBUTES C :: callccode
-                    CHARACTER*(*) CALINE
-                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
-                END SUBROUTINE CALLCCODE
-      END INTERFACE
+      use fwrappergui_mod, only: CALLCCODE
 C}
 #endif
       INCLUDE 'XDRIVE.INC'
@@ -3740,13 +3656,7 @@ C
 #ifdef CRY_GUI
 CODE FOR GDETCH
       SUBROUTINE GDETCH(CLINE)
-      INTERFACE
-                SUBROUTINE GUEXEC (CALINE)
-                    !DEC$ ATTRIBUTES C :: guexec
-                    CHARACTER*(*) CALINE
-                    !DEC$ ATTRIBUTES REFERENCE :: CALINE
-                    END SUBROUTINE GUEXEC
-      END INTERFACE
+      use fwrappergui_mod, only: GUEXEC
       CHARACTER*(*) CLINE
       CHARACTER*262 CEXTRA
       CEXTRA = ' '
@@ -3794,7 +3704,7 @@ CODE FOR XNDATE
       USE DFPORT
 #endif
 #ifdef CRY_FORTINTEL
-      USE IFPORT
+      USE IFPORT integer, dimension(:), allocat
 #endif
 C--SET THE # SECS SINCE 1970 IN ISECS
       ISECS = TIME()

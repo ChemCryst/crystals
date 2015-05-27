@@ -1,4 +1,19 @@
       PROGRAM REINDX
+#if defined(CRY_FORTDIGITAL)
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
+#endif
+      
       DIMENSION R(3,3), IND(3), NIND(3), AIND(3), OHKL(3), AHKL(3)
       dimension NREJ(3),SUMI(3),SUMSIG(3),SUMRAT(3)
       CHARACTER*4 TYPE (4),INPUT
@@ -31,9 +46,9 @@ C
 C               This reproduces transforms from the CAD4
 C                                                           JAH
 C 
-#if defined(CRY_GNU)
-      call no_stdout_buffer_()
-#endif
+
+      call no_stdout_buffer()
+
       do 1 i=1,3
       NREJ(i) = 0
       SUMI(i)  = 0.

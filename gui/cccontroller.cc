@@ -713,10 +713,6 @@ using namespace std;
     #include <unistd.h>
   #endif
   
-  #ifdef CRY_GNU
-    #define F77_STUB_REQUIRED
-  #endif
-  
 #endif
 
 #include "fortran.h"
@@ -2418,19 +2414,13 @@ void CcController::ReLayout()
 #elif  defined (__GID__)
 
   UINT CrystalsThreadProc( LPVOID arg );
-  SUBROUTINE CRYSTL();
+  extern "C" { void __stdcall CRYSTL(); }
   UINT CrystalsThreadProc( LPVOID arg )
-
-#elif  defined (__MIN__)
-
-  int CrystalsThreadProc( void* arg );
-  SUBROUTINE_F77 crystl();
-  int CrystalsThreadProc( void * arg )
 
 #else
 
   int CrystalsThreadProc( void* arg );
-  SUBROUTINE_F77 crystl();
+  extern "C" { void crystl(); }
   int CrystalsThreadProc( void * arg )
 
 #endif
@@ -2448,12 +2438,8 @@ void CcController::ReLayout()
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
     {
-#if defined (__INW__) 
-      crystl();
-#elif  defined (__GID__)
+#if  defined (__GID__)
         CRYSTL();
-#elif  defined (__MIN__)
-       crystl();
 #else
        crystl();
 #endif
@@ -3437,10 +3423,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
 
 extern "C" {
 
-  // new style API for FORTRAN
-  // FORCALL() macro adds on _ to end of word for linux version.
-
-  void FORCALL(callccode) ( char* theLine)
+  void callccode ( char* theLine)
   {
       string temp =  theLine ;    // To be deleted later by the queue.
       string::size_type strim = temp.find_last_not_of(" ");
@@ -3448,14 +3431,14 @@ extern "C" {
       (CcController::theController)->AddInterfaceCommand( temp );
   }
 
-  void FORCALL(getcenv) ( char* key, char* value)
+  void getcenv ( char* key, char* value)
   {
 	  char* v;
 	  v = getenv(key);
 	  if ( v ) strcpy(value,v);
   }
 
-  void FORCALL(guexec) ( char* theLine)
+  void guexec ( char* theLine)
   {
 	// Convert to a wchar_t*
 #ifdef __GID__
@@ -4174,7 +4157,7 @@ extern "C" {
 #endif
   }
 
-  void FORCALL(cinextcommand) ( long *theStatus, char *theLine )
+  void cinextcommand ( long *theStatus, char *theLine )
   {
       NOTUSED(theStatus);
       bool temp = true;
@@ -4195,7 +4178,7 @@ extern "C" {
       }
   }
 
-  void    FORCALL(ciendthread) (long theExitcode )
+  void    ciendthread (long theExitcode )
   {
 // Scope this bit or it appears to leak a tiny bit of memory.
        {

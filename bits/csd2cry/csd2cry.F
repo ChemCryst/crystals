@@ -1,6 +1,18 @@
       PROGRAM CSD2CRY
-#if defined(_DIGITALF77_)
-       use dflib
+#if defined(CRY_FORTDIGITAL)
+      use dflib
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
 #endif
 C       program csdtocry    Version 1.82    01 March 2002
 C
@@ -287,9 +299,7 @@ C      Non-standard settings common in the CSD
      4            ,'P b c 21  ','P b 21 a  ','P 21 a b  '
      5            ,'P n 21 a  ','P 21 c n  ','P b n 21  '/
  
-#if defined(CRY_GNU)
-        call no_stdout_buffer_()
-#endif
+        call no_stdout_buffer()
 c
 c       let's read in the file name and clear some arrays
 c

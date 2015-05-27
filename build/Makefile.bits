@@ -4,7 +4,7 @@ include makefile.in
 VPATH = ../bits/cif2cry ../bits/convplat ../bits/csd2cry ../bits/delred \
         ../bits/dipin   ../bits/hklf5    ../bits/kccdin  ../bits/rc93 \
         ../bits/reindex ../bits/shelxs   ../bits/sxtocry ../bits/sir92 \
-        ../bits/loader ../bits/Diffractometers
+        ../bits/loader ../bits/Diffractometers ../bits/Common
 
 EXECS := cif2cry    convplat    csd2cry    delred \
          dipin      ctwin       kccdin     rc93   \

@@ -149,7 +149,6 @@ typedef std::string tstring;
   #define CRY_GUI
   #define CRY_USEMFC
   #define CRY_OSWIN32
-  #define CRY_NONGNU
   #define CRY_TARGET GID
 #endif
   
@@ -157,7 +156,6 @@ typedef std::string tstring;
   #define CRY_GUI
   #define CRY_USEWX
   #define CRY_OSLINUX
-  #define CRY_GNU
   #define CRY_TARGET GIL
 #endif	
 
@@ -165,7 +163,6 @@ typedef std::string tstring;
   #define CRY_GUI
   #define CRY_USEWX
   #define CRY_OSWIN32
-  #define CRY_NONGNU
   #define CRY_TARGET WXS
 #endif	
 
@@ -173,7 +170,6 @@ typedef std::string tstring;
   #define CRY_GUI
   #define CRY_USEWX
   #define CRY_OSWIN32
-  #define CRY_NONGNU
   #define CRY_TARGET INW
 #endif	
 
@@ -181,7 +177,6 @@ typedef std::string tstring;
   #define CRY_GUI
   #define CRY_USEWX
   #define CRY_OSMAC
-  #define CRY_GNU
   #define CRY_TARGET MAC
 #endif	
 
@@ -189,7 +184,6 @@ typedef std::string tstring;
   #define CRY_GUI
   #define CRY_USEWX
   #define CRY_OSWIN32
-  #define CRY_GNU
   #define CRY_TARGET MIN
 #endif	
 	
@@ -411,11 +405,5 @@ else {ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
 #endif
 
 
-
-#if defined CRY_NONGNU
- #define FORCALL(a) a
-#else
- #define FORCALL(a) a##_
-#endif
 
 #endif
