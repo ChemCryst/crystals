@@ -1631,11 +1631,7 @@ C RICJUL00
       DATA ISSSEQ / 1 / , ISSDAF / 2 /
 C
       DATA ISSREA / 1 /, ISSWRI / 2 /, ISSAPP /3/
-#ifdef _H_P_ 
-      DATA ISSFNF / 940 /
-#elif defined(_DOS_) 
-      DATA ISSFNF / 128 /
-#elif defined(__INTEL_COMPILER) || defined(__VAX__) 
+#elif defined(__INTEL_COMPILER) || defined(__DECC) || defined(__DECCXX)
       DATA ISSFNF /  29 /
 #elif defined(CRY_OSMAC)
       DATA ISSFNF /  2 /
@@ -1664,7 +1660,7 @@ C      ON THE VAX, THE RECORD LENGTH IS GIVEN IN LONGWORDS, SO THAT
 C                  ISSDAR = ISSRLI
 C      ON THE HEWLET PACKARD, IT IS IN BYTES, SO THAT
 C                  ISSDAR = 4 * ISSRLI
-#ifdef CRY_NONGNU 
+#ifdef _WIN32 
       DATA ISSDAR / 512 /
 #else
       DATA ISSDAR / 2048 /
