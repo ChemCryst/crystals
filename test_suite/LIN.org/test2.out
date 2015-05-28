@@ -8551,9 +8551,7 @@ Mean C-C su =   0.0020
 
 
 #ANALYSE                                                                                                                                                                                                                                                        
-
- Slope, intercept and Cc of plot =  0.454E-03 0.938     0.105E-01                                                                                                                                                                                               
- Slope=        0.000 Intercept =       0.938 C-Coef=       0.010                                                                                                                                                                                                
+ Slope =        0.000 Intercept =       0.938 C-Coef=       0.010
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -17004,9 +17002,7 @@ Mean C-C su =   0.0023
 
 
 #ANALYSE                                                                                                                                                                                                                                                        
-
- Slope, intercept and Cc of plot = -0.813E-02  1.54    -0.139                                                                                                                                                                                                   
- Slope=       -0.008 Intercept =       1.543 C-Coef=      -0.139                                                                                                                                                                                                
+ Slope =       -0.008 Intercept =       1.543 C-Coef=      -0.139
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -24710,9 +24706,7 @@ Mean C-C su =   0.0020
 
 
 #ANALYSE                                                                                                                                                                                                                                                        
-
- Slope, intercept and Cc of plot =  0.486E-03 0.937     0.112E-01                                                                                                                                                                                               
- Slope=        0.000 Intercept =       0.937 C-Coef=       0.011                                                                                                                                                                                                
+ Slope =        0.000 Intercept =       0.937 C-Coef=       0.011
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -33160,9 +33154,7 @@ Mean C-C su =   0.0023
 
 
 #ANALYSE                                                                                                                                                                                                                                                        
-
- Slope, intercept and Cc of plot = -0.808E-02  1.54    -0.138                                                                                                                                                                                                   
- Slope=       -0.008 Intercept =       1.539 C-Coef=      -0.138                                                                                                                                                                                                
+ Slope =       -0.008 Intercept =       1.539 C-Coef=      -0.138
 
 
  Keen in P21/c                                                                        Date              Time          
