@@ -2263,7 +2263,7 @@ Inter cycle Min function          0.0           0.94E+05       0.10E+16
                       0.0277            0.0073   0.0069   0.0091   0.0017
                                         0.0811   0.0654   0.0797
 
-     C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0561   0.0981
+     C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0560   0.0981
                      -0.0249            0.0143   0.0081   0.0073  -0.0093
                       0.0277            0.0076   0.0071   0.0095   0.0017
                                         0.0846   0.0668   0.0827
@@ -4478,7 +4478,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 Inter cycle R-factor             -5.0           0.10E-01       0.10E+03
 Inter cycle Rw                   -5.0           0.11E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.11           0.10E+05
-Inter cycle Min function          0.0            53.           0.10E+16
+Inter cycle Min function          0.0            54.           0.10E+16
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
