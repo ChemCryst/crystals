@@ -66,10 +66,10 @@
 ^^WI            {
 ^^WI             @ 1,1 GRID PRIME NROWS=3 NCOLS=1                                          
 ^^WI             {                                                                         
-^^WI               @ 1,1 GRID EXP2 NROWS=3 NCOLS=1 OUTLINE=' '
+^^WI               @ 1,1 GRID EXP2 NROWS=3 NCOLS=2 OUTLINE=' '
 ^^WI               {                                                                       
 ^^WI                @ 1,1 STATIC XFW1                                                      
-^^WI                "Distribution of D/sigma(Do)"                
+^^WI "Distribution of D/sigma(Do). Computed for ALL Bijvoet pairs" 
 ^^WI                @ 2,1 STATIC XFW2                                                      
 ^^WI 'Both curves should be similar to each other'    
 ^^WI                @ 3,1 STATIC XFW3                                                      
@@ -114,9 +114,9 @@
 ^^WI               @ 1,1 STATIC XFW1                                                      
 ^^WI               "Flacks 2Ao/As plot"                
 ^^WI               @ 2,1 STATIC XFW2                                                      
-^^WI                'The green Do points should lie on the '    
+^^WI     'The green Do points should lie on the same line as the '    
 ^^WI               @ 3,1 STATIC XFW3                                                      
-^^WI               'same line as the red 2Ao points'  
+^^WI     'red 2Ao points for a correctly assigned enantiopure sample'  
 ^^WI              }                                                                       
 ^^WI              @ 2,1 PLOTWINDOW _VAO NROWS=20 NCOLS=64
 ^^WI              @ 3,1 GRID RB NROWS=1 NCOLS=2

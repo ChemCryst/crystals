@@ -74,7 +74,8 @@
 % if l5ser .lt. 0 then                                                          
 %  evaluate l5ser = - l5ser                                                     
 % end if                                                                        
-%copy '#edit'                                                                   
+%copy '#edit'
+%copy 'monitor off'                                                                   
 %copy 'change enantio 0'                                                        
 %copy 'end'                                                                     
 %copy '#sfls in=7'                                                              
