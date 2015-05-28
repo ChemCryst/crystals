@@ -4973,6 +4973,13 @@ Rsigma=  2.79
  The intercept should be zero                                                                                                                                                                                                                                 
 
  CRYSTALS suggests that you check your weighting scheme                                                                                                                                                                                                       
+
+ Outliers in Normal Probability Plot at delta(Z) > 0.33
+    Indices        Zo         Zc     /Zc-Zo/
+  -2   3   1     5.754     2.648     3.106
+
+      1 outliers in Normal Probability Plot at delta(Z) >  0.33
+
 #SCRIPT COPY67                                                                                                                                                                                                                                                  
 #RELEASE PUNCH LIST7.TMP                                                                                                                                                                                                                                        
 #COPY 6 7                                                                                                                                                                                                                                                       
@@ -5001,8 +5008,6 @@ List types     6     7
 #DISK                                                                                                                                                                                                                                                           
 #GENERALEDIT 5                                                                                                                                                                                                                                                  
 #EDIT                                                                                                                                                                                                                                                           
- The following overall parameter(s) will be changed                                                                                                                                                                                                             
- ENANTIO     0.000
  List   5 now contains      8 atom(s)
 #SFLS IN=7                                                                                                                                                                                                                                                      
 #SPEC  NO  NO                                                                                                                                                                                                                                                   
@@ -5130,11 +5135,11 @@ POLARITY AND ENANTIOPOLE REFINEMENT TEST
 
            Notification of SPECIAL conditions
  Initialising Special positions
-      8 atoms exists in LIST 5 without details in LIST  29                                                                                                                                                                                                      
+      8 atoms exists in LIST 5 without details in LIST  29
                  molecular weight,  calculated density, absorption coefficient
                                         (gm/cm**3)                (cm-1)
   From LIST    5          0.000              0.000                 0.000
-  From LIST   29          0.000              0.000                 0.000                                                                                                                                                                                        
+  From LIST   29          0.000              0.000                 0.000
   Friedif =    564.4   Estimated Friedel difference =    43.2442
  f computed from scattering factors, including f-prime
 
@@ -5172,9 +5177,9 @@ Dc    30     4     7     7    11    11    11    17    19    26    29    30    19
  Normal Probability Plot for    180 reflections
  Reduced Chisq=  1.5038
  Gradient for zero intercept =               1.377
-  Slope, intercept and Cc (R) of NPP Plot =  1.377  0.162  0.999                                                                                                                                                                                                
+  Slope, intercept and Cc (R) of NPP Plot =  1.377  0.162  0.999
 
- The slope should be unity and the intercept zero                                                                                                                                                                                                               
+ The slope should be unity and the intercept zero
 
  Outliers in Normal Probability Plot at delta(Z) > 0.28
     Indices       Ds        Do        Zo         Zc     /Zc-Zo/
@@ -5203,7 +5208,7 @@ Dc    30     4     7     7    11    11    11    17    19    26    29    30    19
 
 
 
- Difference Calcuation for     224 reflections
+        Difference Calculations for     224 reflections
 
 
  Principal Componenet Analysis                                                                                                                                                                                                                                  
@@ -5240,8 +5245,10 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
     ---------------------------|----------------------------
 --     104   -31.63   -25.52   |+-      12    -5.48    14.97
 
+-+      10    12.13   -10.93   |++      98    32.76    28.66
 
-No of reflections for which delta(Io) has same sign as delta(Ic)
+
+No of reflections for which delta(Io) has same sign as delta(Is)
 Same sign   Opposite sign
      202            22
 
@@ -5258,17 +5265,17 @@ Same sign   Opposite sign
 
 
 
-       Flack Parameter & su     0.009     0.028   @ 
+       Flack Parameter & su  0.009  0.028  @ 
 
  Using counting statistics weights
-       Hooft Parameter & su    -0.004     0.013   $ 
-           Hole-in-one & su    -0.004     0.009     
-    Parsons Difference & su     0.006     0.009   £  (Using   224 reflections.
+       Hooft Parameter & su -0.004  0.013  $ 
+           Hole-in-one & su -0.004  0.009    
+    Parsons Difference & su  0.006  0.009  £  (Using   224 reflections. Correl Coef =  92%)
 
  Histogram re-weighted,   200 reflections,  85.3% within -.5 to 1.5
-    Parsons Difference & su    -0.003     0.014      (Ratio of Avera
- Average of Ratios (x) & su    -0.003     0.008   & 
- Average of Ratios (x) & su    -0.003     0.012   %  (corrected for 
+    Parsons Difference & su -0.003  0.014                           
+ Average of Ratios (x) & su -0.003  0.008  & 
+ Average of Ratios (x) & su -0.003  0.012  %  (corrected for npp, * 1.38)
 
 
 @  Flack,1983, Acta Cryst A39, 876-881
@@ -5279,8 +5286,8 @@ $  Hooft et al, 2008, J Appl Cryst, 41, 96-103
  Hooft probability analysis
  For an enantiopure material, there are 2 choices, P2
  P2(correct)     1.0000   i.e. 0.100000E+01                                     
-                                                                                                                                                                                                                                                                
- If 50:50 twinning is possible, there are 3 choices, P3                                                                                                                                                                                                         
+
+ If 50:50 twinning is possible, there are 3 choices, P3
  P3(correct)     1.0000   i.e. 0.100000E+01                                     
  P3(rac-twin)    0.0000   i.e. 0.000000E+00                                     
  P3(inverse)     0.0000   i.e. 0.000000E+00                                     
