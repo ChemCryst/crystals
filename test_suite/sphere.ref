@@ -4,7 +4,7 @@ R
 R
 R
 END
-#Pre-perturbed structure - keeps tests consistent by removing dependency on platform specific RNG.
+# Pre-perturbed structure - keeps tests consistent by removing dependency on platform specific RNG.
 #LIST      5                                                                    
 READ NATOM =      4, NLAYER =    0, NELEMENT =    0, NBATCH =    0
 OVERALL    0.492628  0.050000  0.050000  1.000000  0.000000         0.0000000
