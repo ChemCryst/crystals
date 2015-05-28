@@ -2405,25 +2405,11 @@ void CcController::ReLayout()
   return;
 }
 
-#if defined (__INW__) 
+int CrystalsThreadProc( void* arg );
 
-  UINT CrystalsThreadProc( LPVOID arg );
-  extern "C" { void crystl(); }
-  UINT CrystalsThreadProc( LPVOID arg )
+extern "C" { void crystl(); }
 
-#elif  defined (__GID__)
-
-  UINT CrystalsThreadProc( LPVOID arg );
-  extern "C" { void __stdcall CRYSTL(); }
-  UINT CrystalsThreadProc( LPVOID arg )
-
-#else
-
-  int CrystalsThreadProc( void* arg );
-  extern "C" { void crystl(); }
-  int CrystalsThreadProc( void * arg )
-
-#endif
+int CrystalsThreadProc( void * arg )
 {
 #if defined (__INW__) 
     crInstallToCurrentThread2(0);
