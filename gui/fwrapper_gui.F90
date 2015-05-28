@@ -1,6 +1,9 @@
+! The module frwrapper_gui contains subroutine calling C functions
 module fwrappergui_mod
 
 #if defined(CRY_FORTDIGITAL)
+!> interface to C function fastline (digital compiler)
+!! Draw a line in cameron component
 interface
   subroutine fastline (jx1, jy1, jx2, jy2)
     !dec$ attributes c :: fastline
@@ -12,6 +15,8 @@ interface
   end subroutine fastline
 end interface
 
+!> interface to C function fastfelli (digital compiler)
+!! Draw an ellipse in cameron component
 interface
   subroutine fastfelli (jx, jy, jw, jh)
     !dec$ attributes c :: fastfelli
@@ -23,6 +28,8 @@ interface
   end subroutine fastfelli
 end interface
 
+!> interface to C function fastfeelli (digital compiler)
+!! Draw an ellipse in cameron component
 interface
   subroutine fasteelli (jx, jy, jw, jh)
     !dec$ attributes c :: fasteelli
@@ -34,6 +41,8 @@ interface
   end subroutine fasteelli
 end interface
 
+!> interface to C function fastfpoly (digital compiler)
+!! Draw a polygon in cameron component
 interface
   subroutine fastfpoly (nv, ipts)
     !dec$ attributes c :: fastfpoly
@@ -43,6 +52,8 @@ interface
   end subroutine fastfpoly
 end interface
 
+!> interface to C function fastepoly (digital compiler)
+!! Draw a polygon in cameron component
 interface
   subroutine fastepoly (nv, ipts)
     !dec$ attributes c :: fastepoly
@@ -52,6 +63,8 @@ interface
   end subroutine fastepoly
 end interface
 
+!> interface to C function fasttext (digital compiler)
+!! Draw a text in cameron component
 interface
   subroutine fasttext (jx, jy, caline, jfs)
     !dec$ attributes c :: fasttext
@@ -64,6 +77,8 @@ interface
   end subroutine fasttext
 end interface
 
+!> interface to C function fastcolour (digital compiler)
+!! Set a color (RGB) in cameron component
 interface
   subroutine fastcolour ( jr, jg, jb )
     !dec$ attributes c :: fastcolour
@@ -74,6 +89,8 @@ interface
     end subroutine fastcolour
 end interface
 
+!> interface to C function fastclear (digital compiler)
+!! Clear screen in cameron component
 interface
   subroutine fastclear () 
     !dec$ attributes c :: fastclear
@@ -82,6 +99,8 @@ end interface
 
 
 
+!> interface to C function guexec (digital compiler)
+!! Unkwown function
 interface
   subroutine guexec (caline)
     !dec$ attributes c :: guexec
@@ -90,6 +109,8 @@ interface
   end subroutine guexec
 end interface
 
+!> interface to C function callccode (digital compiler)
+!! Unkwown function
 interface
   subroutine callccode (caline)
     !dec$ attributes c :: callccode
@@ -98,6 +119,8 @@ interface
   end subroutine callccode
 end interface
 
+!> interface to C function cinextcommand (digital compiler)
+!! Unkwown function
 interface
   subroutine cinextcommand (istat, caline)
     !dec$ attributes c :: cinextcommand
@@ -107,6 +130,8 @@ interface
   end subroutine cinextcommand
 end interface
 
+!> interface to C function ciendthread (digital compiler)
+!! Unkwown function
 interface
   subroutine ciendthread (ivar)
     !dec$ attributes c :: ciendthread
@@ -115,6 +140,8 @@ interface
 end interface
 
 
+!> interface to C function fastbond (digital compiler)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastbond (jx1, jy1, jz1, jx2, jy2, jz2, &
   & jr,jg,jb,jrad,jbt,jnp,kpts,dlabl,dslabl)
@@ -140,6 +167,8 @@ interface
   end subroutine fastbond
 end interface
 
+!> interface to C function fastatom (digital compiler)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastatom (de,js,dl,jx,jy,jz,jr,jg,jb,joc,sco, &
   &  jvd,jsp,jfl,su1,su2,su3,su4,su5,su6,su7,su8,su9, &
@@ -184,6 +213,8 @@ interface
   end subroutine fastatom
 end interface
 
+!> interface to C function fastsphere (digital compiler)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastsphere (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
   &  jsp,jfl,jiso,jrad)
@@ -208,6 +239,8 @@ interface
   end subroutine fastsphere
 end interface
 
+!> interface to C function fastdonut (digital compiler)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastdonut (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
   & jsp,jfl,jiso,jrad, jdec, jaz)
@@ -235,65 +268,109 @@ interface
 end interface
 #else
 
+!> interface to C function fastline (iso_c_bindings)
+!! Draw a line in cameron component
 interface
   subroutine fastline(jx1, jy1, jx2, jy2) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
-    integer(kind=c_int), value, intent(in) :: jx1, jy1, jx2, jy2
+    !> Coordinates of point A making the [AB] line
+    integer(kind=c_int), value, intent(in) :: jx1, jy1
+    !> Coordinates of point B making the [AB] line
+    integer(kind=c_int), value, intent(in) :: jx2, jy2
   end subroutine fastline
 end interface
 
+
+!> interface to C function fastfelli (iso_c_bindings)
+!! Draw an ellipse in cameron component
 interface
   subroutine fastfelli (jx, jy, jw, jh) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
-    integer(kind=c_int), value, intent(in) :: jx, jy, jw, jh
+    !> coordinates of the centre forming the ellipse
+    integer(kind=c_int), value, intent(in) :: jx, jy
+    !> width of the ellipse
+    integer(kind=c_int), value, intent(in) :: jw
+    !> height of the ellipse
+    integer(kind=c_int), value, intent(in) :: jh
   end subroutine fastfelli
 end interface
 
+
+!> interface to C function fastfeelli (iso_c_bindings)
+!! Draw an ellipse in cameron component
 interface
   subroutine fasteelli (jx, jy, jw, jh) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
-    integer(kind=c_int), value, intent(in) :: jx, jy, jw, jh
+    !> coordinates of the centre forming the ellipse
+    integer(kind=c_int), value, intent(in) :: jx, jy
+    !> width of the ellipse
+    integer(kind=c_int), value, intent(in) :: jw
+    !> height of the ellipse
+    integer(kind=c_int), value, intent(in) :: jh
   end subroutine fasteelli
 end interface
 
+
+!> interface to C function fastfpoly (iso_c_bindings)
+!! Draw a polygon in cameron component
 interface
   subroutine fastfpoly (nv, ipts) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
+    !> number of points in the polygon
     integer(kind=c_int), value :: nv
+    !> Array of point coordinates forming a polygon (size 2*nv)
     integer(kind=c_int), dimension(*) :: ipts
   end subroutine fastfpoly
 end interface
 
+
+!> interface to C function fastepoly (iso_c_bindings)
+!! Draw a polygon in cameron component
 interface
   subroutine fastepoly (nv, ipts) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
+    !> number of points in the polygon
     integer(kind=c_int), value :: nv
+    !> Array of point coordinates forming a polygon (size 2*nv)
     integer(kind=c_int), dimension(*) :: ipts
   end subroutine fastepoly
 end interface
 
+
+!> interface to C function fasttext (iso_c_bindings)
+!! Draw a text in cameron component
 interface
   subroutine fasttext (jx, jy, caline, jfs) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
-    integer(kind=c_int), value :: jx,jy, jfs
+    !> location of the text as coordinates
+    integer(kind=c_int), value :: jx,jy
+    !> font size
+    integer(kind=c_int), value :: jfs
+    !> Text to print
     character(kind=c_char) :: caline
   end subroutine fasttext
 end interface
 
+
+!> interface to C function fastcolour (iso_c_bindings)
+!! Set a color (RGB) in cameron component
 interface
   subroutine fastcolour ( jr, jg, jb ) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
+    !> color coded af RGB components
     integer(kind=c_int), value :: jr, jg, jb
     end subroutine fastcolour
 end interface
 
+!> interface to C function fastclear (iso_c_bindings)
+!! Clear screen in cameron component
 interface
   subroutine fastclear () bind(c)
     use, intrinsic :: ISO_C_BINDING
@@ -303,6 +380,9 @@ end interface
 
 
 
+
+!> interface to C function guexec (iso_c_bindings)
+!! Unkwown function
 interface
   subroutine guexec (caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
@@ -311,6 +391,9 @@ interface
   end subroutine guexec
 end interface
 
+
+!> interface to C function callccode (iso_c_bindings)
+!! Unkwown function
 interface
   subroutine callccode (caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
@@ -319,6 +402,9 @@ interface
   end subroutine callccode
 end interface
 
+
+!> interface to C function cinextcommand (iso_c_bindings)
+!! Unkwown function
 interface
   subroutine cinextcommand (istat, caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
@@ -328,6 +414,9 @@ interface
   end subroutine cinextcommand
 end interface
 
+
+!> interface to C function ciendthread (iso_c_bindings)
+!! Unkwown function
 interface
   subroutine ciendthread (ivar) bind(c)
     use, intrinsic :: ISO_C_BINDING
@@ -337,18 +426,31 @@ interface
 end interface
 
 
+
+!> interface to C function fastbond (iso_c_bindings)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastbond (jx1, jy1, jz1, jx2, jy2, jz2, &
   & jr,jg,jb,jrad,jbt,jnp,kpts,dlabl,dslabl) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
-    integer, value :: jx1, jy1, jz1, jx2, jy2, jz2
-    integer, value :: jr, jg, jb, jrad, jbt, jnp
+    !> 3D atomic coordinates of atoms A
+    integer, value :: jx1, jy1, jz1
+    !> 3D atomic coordinates of atoms A
+    integer, value :: jx2, jy2, jz2
+    !> Colour coded as RGB components
+    integer, value :: jr, jg, jb
+    !> radius of the bond
+    integer, value :: jrad
+    integer, value ::  jbt, jnp
     integer, dimension(*) :: kpts
     character dlabl, dslabl
   end subroutine fastbond
 end interface
 
+
+!> interface to C function fastatom (iso_c_bindings)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastatom (de,js,dl,jx,jy,jz,jr,jg,jb,joc,sco, &
   &  jvd,jsp,jfl,su1,su2,su3,su4,su5,su6,su7,su8,su9, &
@@ -363,6 +465,9 @@ interface
   end subroutine fastatom
 end interface
 
+
+!> interface to C function fastsphere (iso_c_bindings)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastsphere (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
   &  jsp,jfl,jiso,jrad) bind(c)
@@ -374,6 +479,9 @@ interface
   end subroutine fastsphere
 end interface
 
+
+!> interface to C function fastdonut (iso_c_bindings)
+!! Unkwown function call from guibits.F
 interface
   subroutine fastdonut (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
   & jsp,jfl,jiso,jrad, jdec, jaz) bind(c)
@@ -389,6 +497,8 @@ end interface
 contains
 
 #if defined(CRY_GUI)
+!! subroutines below are wrappers around the c functions call
+
 subroutine fstlin(ix1, iy1, ix2, iy2)
     implicit none
     integer ix1, ix2, iy1, iy2
