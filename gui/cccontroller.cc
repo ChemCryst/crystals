@@ -2405,11 +2405,20 @@ void CcController::ReLayout()
   return;
 }
 
-int CrystalsThreadProc( void* arg );
-
 extern "C" { void crystl(); }
 
+#ifdef CRY_OSWIN32
+UINT CrystalsThreadProc( void* arg );
+#else
+int CrystalsThreadProc( void* arg );
+#endif
+	
+
+#ifdef CRY_OSWIN32
+UINT CrystalsThreadProc( void * arg )
+#else
 int CrystalsThreadProc( void * arg )
+#endif
 {
 #if defined (__INW__) 
     crInstallToCurrentThread2(0);
