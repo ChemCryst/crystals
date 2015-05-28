@@ -2424,11 +2424,7 @@ int CrystalsThreadProc( void * arg )
     LOGSTAT("FORTRAN: Running CRYSTALS");
     try
     {
-#if  defined (__GID__)
-        CRYSTL();
-#else
        crystl();
-#endif
        LOGSTAT ("Exited CRYSTL() without exception. Surely some mistake?");
     }
     catch (CcController::MyException ccme )
