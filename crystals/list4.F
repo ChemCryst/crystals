@@ -493,14 +493,9 @@ C          not set
           DO WHILE ( KFNR ( 0 ) .GE. 0 )
             N6ACC = N6ACC + 1
             IF (IFSQ .GE. 0) THEN
-C              call xsqrf(fos, store(m6+3), fabs, sigmas, store(m6+12))
-C              shfo(n6acc) = fos/max(.0001,a**2)
               SHFC = STORE(M6+5)**2
-C              sig(n6acc) =sigmas / max(.0001,a**2)
             ELSE
-C              shfo(n6acc) = store(m6+3) / max(.0001,a)
               SHFC = STORE(M6+5)
-C              sig(n6acc) = store(m6+12) / max(.0001,a)
             ENDIF
             FCMAX = MAX ( FCMAX, SHFC )
           END DO
@@ -509,7 +504,6 @@ C Make up some starting values of A and B:
           SXB = 0.1
           SXAG = .2 * SXA
           SXBG = .4 * SXB
-c^^^
 CDJWdec12
           if (fcmax .gt. zero) then
 c          Some non zero Fc - a chance this might all work
@@ -647,7 +641,8 @@ C Converged!
              END IF
              if (sxa .lt. 0.) then
                sxa = 0.001
-               write(cmon,'(A, 2f10.4)') '{E Forced reset of P1', sxa, sxb
+               write(cmon,'(A, 2f10.4)') 
+     1         '{E Forced reset of P1', sxa, sxb
                call xprvdu(ncvdu,1,0)
                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
              endif
@@ -866,6 +861,9 @@ c NOTE the test of Fo vs Sigma.  The routines XSQRT and XSQRF compare Fo
 c with unity,  THis code probably deals better with data on a very small 
 c scale, (lots of Fo and Sigma < 1.0) but the presence of Fc means that
 c sigma(F)  cannot always be recreated from sigma(F^^2)
+c
+c see also impact on SHELX weighting scheme, Case (16)
+c
         IF(JTYPE.EQ.1) THEN      ! WGHTS FRM /FO/, MODIFD TO BE AGAINST FO**2
           am = 0.5 / max(fo, fc, aw, 2.)
         ELSE IF ( JTYPE .GE. 2 ) THEN    ! WEIGHTS COMPUTED FROM /FO/ **2,
@@ -1112,18 +1110,23 @@ cdjw99              H=H+F*F*EW/(1.+FO**CS)
 
         CASE (16)              ! SHELXL WEIGHTS
 
-C -- Convert everything to scale of FC: (for SHELX compatibility).
 cdjwdec12 Watch out for unset Fcs
+c
           if (fc .le. zero) then
                   FCprime = fo
           else
                   FCprime = fc
           endif
+C -- Convert everything to scale of FC: (for SHELX compatibility).
           IF ( JTYPE .EQ. 2 ) THEN   ! Fo**2 refinement
+c123  recover exact sigma(F^2)
+c123            call xsqrf(fsqtemp,store(m6+3),fabs,aw,store(m6+12))
             SFCSIG = AW / A**2
             SFCFO  = FO / A**2
             SFCFC  = FCprime / A**2
           ELSE                       ! Fo refinement
+c123   just use stored sigma(F)
+c123            aw = store(m6+12)
             SFCSIG = AW / A
             SFCFO  = FO / A
             SFCFC  = FCprime / A
@@ -1146,14 +1149,13 @@ C -- Convert weight back onto scale of FO:
           ELSE
             AW = AW / A**2
           END IF
-
         END SELECT
 c
 C--APPLY ROBUST-RESISTANT TO ANY WEIGHTING SCHEME (except 15!)
         IF ((IROBUS .EQ. 1) .AND. (ITYPE4.NE.15)) THEN
            FSQ = (FO-FC)**2
 Cdjwjun03.  For Scheme 15, it is assumed that the computed
-c      weight is a better estimate of 1/signa than the onservation
+c      weight is a better estimate of 1/sigma than the observation
 c      itself.  For other schemes, try to use observed sigma.
 c           IF (AW .LE. ZERO) THEN         !WEIGHT TOO SMALL
 c             AWI = WMX                    !SET INV W TO WMX.
@@ -1416,18 +1418,21 @@ cdjwjun03 SAVE THE OLDVALUE OF ITYPE4
 C--PRINT THE FINAL CAPTION
 C----- WARN USER IF ANY WEIGHTS ARE NEGATIVE
 c----- write the buffers
-      WRITE ( NCAWU ,'(/I6, '' Low weights'')') NGW
+
       IF (NGW .GT. 0) THEN
-       WRITE(NCAWU,11)
+         IF (ISSPRT .EQ. 0) then
+          WRITE ( NCWU ,'(/I6, '' Low weights'')') NGW
+          WRITE(NCWU,11)
 11     FORMAT(2('   h   k  l       Fo        Fc     Wt',2X))
          DO 5565 MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
-         WRITE ( NCAWU ,
+         WRITE ( NCWU ,
      *  '(3I4, 2F9.1, F7.2, 2X,3I4, 2F9.1, F7.2)')
      1  ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
      2  (STORE(IXAP), IXAP= JXAP+3,JXAP+5),
      3  JXAP= MSORT, MSORT+MDSORT, MDSORT)
-5565    CONTINUE
-      ENDIF
+5565     CONTINUE
+        ENDIF
+      endif
 
 C--For SCHEME 15 print outliers etc.
       IF (((ITYPE4.EQ.15).OR.(IROBUS.EQ.1)) .AND. (JPRINT .GT .0)) THEN
@@ -3632,12 +3637,6 @@ C COMPUTE CORRELLATION COEFFICIENT
 2151  format(/' Analysis of residuals:'/
      1'The slope and correlation coefficient should be small')
        call xprvdu(ncvdu, 3,0)
-      if (imode .eq. 3) then
-       write(cmon,'(3(a,f12.3))') 
-     1 ' Slope= ', slope, ' Intercept =', rinter, ' C-Coef=', correl
-       call xprvdu(ncvdu, 1,0)
-        if (issprt.eq.0) write (ncwu,'(A)') cmon(1)
-      endif
 C
       RETURN
       END

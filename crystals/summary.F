@@ -2240,7 +2240,12 @@ C -- PRINT THE R VALUE ETC.
         CALL XPRVDU(NCVDU,1,0)
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
         CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
-
+c Numerical Recipes (ed3) . p265 "Incomplete gamma function"
+C
+        iz10=CEILING(N6ACC*0.05)
+        iz90=CEILING(N6ACC*0.95)
+        z_max = 0.
+c
         DO I=1,N6ACC
            PC = (I-0.5)/float(N6ACC)
            A = sqrt(-2.*log(.5-abs(PC-.5)))
@@ -2253,16 +2258,21 @@ C Unpack HKL
            ML=FLOAT(NINT(D/256.))
            MK=D-ML*256.
 
+           ZH = STR11(I*2-1)
+
            if (I.LE.N6ACC/2) Z=-Z
-c debug          WRITE(CMON,'(I5,2F15.2)') I,STR11(I*2-1),Z
+           IF (I.EQ.iz10) z10=z
+           IF (I.EQ.iz90) z90=z
+           z_max=max(z_max,z)
+c debug          WRITE(CMON,'(I5,2F15.2)') I,ZH,Z
 c debug          CALL XPRVDU(NCVDU,1,0)
 c
            ss =  ss  + 1.
            sx =  sx  + z
-           sy =  sy  + str11(i*2-1)
+           sy =  sy  + zh
            sxx = sxx + z*z
-           syy = syy + str11(i*2-1)*str11(i*2-1)
-           sxy = sxy + str11(i*2-1)*z
+           syy = syy + zh*zh
+           sxy = sxy + zh*z
 c
            PLOTMAX = MAX( PLOTMAX, Z )
            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
@@ -2272,6 +2282,8 @@ c
             CALL XPRVDU(NCVDU, 1,0)
         END DO
 c      find slope and intercept
+        ycut = 0.
+        yslope = 0.
 c      determinant
         deter = ss*sxx-sx*sx
         if (deter .ne. 0.) then
@@ -2342,6 +2354,58 @@ c
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
         endif
+c
+c recycle looking for outliers
+c---------------------------------------------------------
+
+C                                       NEW PASS TO DETECT OUTLIERS
+      noutl=0
+      npploop2:  DO I=1,N6ACC
+C Unpack HKL
+        D=FLOAT(NINT(STR11(I*2)/256.))
+        MH=STR11(I*2)-D*256.
+        ML=FLOAT(NINT(D/256.))
+        MK=D-ML*256.
+C
+        PC = (I-0.5)/float(N6ACC)
+        A = sqrt(-2.*log(.5-abs(PC-.5)))
+        B = 0.27061*A+2.30753
+        C = A*(A*.04481+.99229)+1
+        Z = A-B/C
+        if (I.LE.N6ACC/2) Z=-Z
+        Zcalc = z*yslope+ycut
+        ZH = STR11(I*2-1)
+        ston=abs(Zcalc-ZH)
+C
+        IF((zh.lt.zcalc-.1*z_max).or.(zh.gt.zcalc+0.1*z_max)) THEN
+              IF (issprt.eq.0) THEN
+                IF (noutl.eq.0) THEN
+                WRITE (ncwu,
+     1 '(/A,F4.2/4x,a,7x,a,7x,a,4x,a,3x,a)')
+     1 ' Outliers in Normal Probability Plot at delta(Z) > ',
+     2   0.1*Z_MAX, 
+     2   'Indices',' Zo ',' Zc ', '/Zc-Zo/'
+                END IF
+                WRITE (ncwu,'(3i4, 6f10.3)')
+     1           mh,mk,ml,    zh,zcalc,ston
+              END IF
+              noutl=noutl+1
+        END IF
+      ENDDO npploop2
+c
+c
+      IF (noutl.gt.0) THEN
+        WRITE (cmon,'(1x,i6,a,F5.2)') noutl,
+     1 ' outliers in Normal Probability Plot at delta(Z) > ',
+     1   0.1*Z_MAX
+      CALL xprvdu (ncvdu, 1, 0)
+      IF (issprt.eq.0) WRITE (ncwu,'(/a/)')
+     1     cmon(1)(:nctrim(cmon(1)))
+      endif
+
+
+
+c---------------------------------------------------------
       END IF
 c
       IF ( LEVEL.EQ.4)  THEN
