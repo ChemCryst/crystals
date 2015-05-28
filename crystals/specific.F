@@ -1503,11 +1503,6 @@ C
 CODE FOR XDATER
       SUBROUTINE XDATER ( CDATE )
 C
-#ifdef CRY_FORTDIGITAL
-      USE DFPORT
-#elif defined (CRY_FORTINTEL)
-      USE IFPORT
-#endif
 C -- THIS ROUTINE SHOULD RETURN THE CURRENT DATE IN THE CHARACTER*8
 C    VARIABLE 'CDATE'.
 C
@@ -1518,40 +1513,9 @@ C -- THE DATE IS WRITTEN TO THE DISC FILE INDEX, AND CAN BE
 C    USED TO DISTINGUISH LISTS. HOWEVER, THIS EXACT FORM IS NOT CHANGED
 C    AND SPACES CAN BE USED SATISFACTORILY.
 C
-C -- DATE FORMATS RETURNED BY SYSTEM ROUTINES
-C
-C      ROUTINE           FORMAT
-C      -------           ------
-C      ICL9LGGDATE       YYYYMMDD       ( MM = '01' ETC. )
-C      DATE              DD-MMM-YY      ( MMM = 'JAN' ETC. )
-C      DATE$A            DAY, MMM DD YYYY ( MMM = 'JAN' ETC. ,
-C                                           DAY = 'MON', 'TUE', ETC. )
-C      DATE              INTEGER ARRAY :- YEAR, MONTH, DAY
-C
       INCLUDE 'XSSVAL.INC'
 C
-#ifdef _H_P_ 
-$alias get_time = 'time' (%ref)
-$alias format_time = 'ctime' (%ref)
-$alias copy_time = 'sprintf' (%ref,%ref,%val)
-chp***
-      integer format_time
-      character*26 buf
-      character*3 mese,mesi(12)
-      integer char_ptr,itime(15)
-      real*8 tmbuf
-C
-#endif
       CHARACTER*8 CDATE
-C
-#if defined(__VAX__) 
-      CHARACTER*9 CDATE2
-      CHARACTER*36 CMONTH
-      DATA CMONTH /'JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC'/
-#elif defined(_DOS_) 
-      CHARACTER*8 EDATE@
-#endif
-
       DIMENSION IDAT(8)
       
       IF ( ISSTIM .EQ. 2 ) THEN
@@ -1559,35 +1523,9 @@ C
          RETURN
       END IF
 
-#ifdef __VAX__ 
-      CALL DATE ( CDATE2 )
-      CDATE = CDATE2(1:6)//CDATE2(8:9)
-      I = INDEX (CMONTH, CDATE(4:6))
-      I = (I+2)/3
-      WRITE(CDATE(4:6),'(I2.2,A1)') I,'-'
-      I = INDEX(CDATE(1:8), ' ')
-      IF (I .NE. 0) CDATE(I:I) = '0'
-C
-#elif defined(_H_P_) 
-      call get_time (tmbuf)
-      char_ptr=format_time(tmbuf)
-      call copy_time(buf,'%s'//char(0),char_ptr)
-      CDATE=buf(9:10)//'-'//buf(5:7)//buf(23:24)
-C
-#elif defined(_DOS_) 
-      CDATE = EDATE@()
-#elif defined(__DVF__) || defined(__GID__) 
-      CDATE2 = DATE()
-      WRITE(CDATE,'(A,2(''/'',A))')
-     1    CDATE2(4:5),CDATE2(1:2),CDATE2(7:8)
-C
-#else 
       call date_and_time(values=idat)
       WRITE ( CDATE , '(I2.2,''/'',I2.2,''/'',I2.2)' ) IDAT(3) ,
      2      IDAT(2) , MOD ( IDAT(1) , 100 )
-C
-#endif
-      RETURN
       END
 C
 CODE FOR KOR
