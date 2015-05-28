@@ -573,23 +573,14 @@ C
 C    IFMODE       MODE OF ACCESS REQUIRED : - 'ISSREA' OR 'ISSWRI'
 C
 C                    'READ' IMPLIES READONLY,SHARED IS IGNORED
-#ifdef _H_P_ 
-C                    THIS PARAMETER IS IGNORED
-#endif
-#ifdef _DOS_ 
-C                    THIS PARAMETER IS IGNORED
-#endif
-#ifdef __VAX__ 
-C                    'READ' IMPLIES READONLY,SHARED
-C
 C
 C -- RETURN VALUES :-
 C
 C            -VE         FAILURE ( RETURNS IOSTAT VALUE )
 C            +VE         SUCCESS
 C
-cdjwapr99
-#endif
+
+
       logical lexist
 C
       INTEGER IDUNIT , IFSTAT , IFMODE
@@ -600,6 +591,7 @@ C
 C
       CHARACTER*7 FLSTAT(4)
       CHARACTER*7 ACSTAT
+      integer recordsize
 
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XSSVAL.INC'
@@ -610,21 +602,11 @@ C
       DATA FLSTAT / 'OLD    ' , 'NEW    ' , 'CIF    ','SCRATCH' /
       data cnumber/'0123456789'/
       CLCNAM =  ' '
-
       FILNAM = CFNAME
+      ! inquire the physical i/o record length, this values is specific to compilers
+      ! Used with ISSDAR
+      inquire(iolength=recordsize) 1.0
 
-#ifdef _CYB_ 
-C THE 'DISK' FILE WAS A SCRATCH, CREATED FROM NEW EACH RUN
-      IF (FILNAM .EQ. ' ') THEN
-            IF(IUNIT .GE. 10)THEN
-            WRITE(FILNAM,100) IUNIT
-100         FORMAT('TAPE',I2.2)
-            ELSE
-            WRITE(FILNAM,101) IUNIT
-101         FORMAT('TAPE',I1.1)
-      ENDIF
-
-#endif
       NAMLEN = MAX (INDEX( FILNAM, ' ')-1, 0)
       IF (ISSFLC .EQ. 0) THEN
 C----- CONVERT NAME TO LOWER CASE
@@ -635,7 +617,6 @@ C----- CONVERT NAME TO UPPER CASE
       ELSE
             IF (NAMLEN .GT. 0) CLCNAM(1:NAMLEN) = FILNAM(1:NAMLEN)
       ENDIF
-
 
 C -- CHECK DATA TO SOME EXTENT
       IF ( IFSTAT .GT. ISSSCR ) GO TO 9910
@@ -705,7 +686,7 @@ c
      1         STATUS = ACSTAT ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = ISSDAR ,
+     1         RECL   = ISSDAR*recordsize ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
 
@@ -716,7 +697,7 @@ c
      1         STATUS = ACSTAT ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = ISSDAR ,
+     1         RECL   = ISSDAR*recordsize ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ENDIF
@@ -733,26 +714,15 @@ C    MUST BE PERFORMED IMMEDIATELY
       GO TO 9000
 
 2500  CONTINUE
-#ifdef __VAX__ 
-C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
-
-#endif
       IF ( FILNAM .EQ. ' ' ) THEN
         OPEN ( UNIT   = IDUNIT ,
-#ifdef __VAX__ 
-     1         SHARED ,
-#endif
-#if defined (CRY_FORTDIGITAL) || defined(__VAX__)
+#if defined (CRY_FORTDIGITAL) 
      1         READONLY ,
 #endif
-#if !defined(_DOS_) 
      1         STATUS = ACSTAT ,
-#else
-     1         STATUS = 'READONLY',
-#endif
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = ISSDAR ,
+     1         RECL   = ISSDAR*recordsize ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
 
@@ -760,20 +730,13 @@ C -- SPECIAL 'READONLY' , 'SHARED' OPEN FOR VAX/VMS
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
-#ifdef __VAX__ 
-     1         SHARED ,
-#endif
-#if defined (CRY_FORTDIGITAL) || defined(__VAX__)
+#if defined (CRY_FORTDIGITAL) 
      1         READONLY ,
 #endif
-#if !defined(_DOS_) 
      1         STATUS = ACSTAT ,
-#else
-     1         STATUS = 'READONLY',
-#endif
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = ISSDAR ,
+     1         RECL   = ISSDAR*recordsize ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
       ENDIF
