@@ -268,9 +268,9 @@ interface
 end interface
 #else
 
+interface
 !> interface to C function fastline (iso_c_bindings)
 !! Draw a line in cameron component
-interface
   subroutine fastline(jx1, jy1, jx2, jy2) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -282,9 +282,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastfelli (iso_c_bindings)
 !! Draw an ellipse in cameron component
-interface
   subroutine fastfelli (jx, jy, jw, jh) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -298,9 +298,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastfeelli (iso_c_bindings)
 !! Draw an ellipse in cameron component
-interface
   subroutine fasteelli (jx, jy, jw, jh) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -314,9 +314,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastfpoly (iso_c_bindings)
 !! Draw a polygon in cameron component
-interface
   subroutine fastfpoly (nv, ipts) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -328,9 +328,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastepoly (iso_c_bindings)
 !! Draw a polygon in cameron component
-interface
   subroutine fastepoly (nv, ipts) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -342,9 +342,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fasttext (iso_c_bindings)
 !! Draw a text in cameron component
-interface
   subroutine fasttext (jx, jy, caline, jfs) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -358,9 +358,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastcolour (iso_c_bindings)
 !! Set a color (RGB) in cameron component
-interface
   subroutine fastcolour ( jr, jg, jb ) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -369,9 +369,9 @@ interface
     end subroutine fastcolour
 end interface
 
+interface
 !> interface to C function fastclear (iso_c_bindings)
 !! Clear screen in cameron component
-interface
   subroutine fastclear () bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -381,9 +381,9 @@ end interface
 
 
 
+interface
 !> interface to C function guexec (iso_c_bindings)
 !! Unkwown function
-interface
   subroutine guexec (caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -392,9 +392,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function callccode (iso_c_bindings)
 !! Unkwown function
-interface
   subroutine callccode (caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -403,9 +403,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function cinextcommand (iso_c_bindings)
 !! Unkwown function
-interface
   subroutine cinextcommand (istat, caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -415,9 +415,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function ciendthread (iso_c_bindings)
 !! Unkwown function
-interface
   subroutine ciendthread (ivar) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
@@ -427,9 +427,9 @@ end interface
 
 
 
+interface
 !> interface to C function fastbond (iso_c_bindings)
 !! Unkwown function call from guibits.F
-interface
   subroutine fastbond (jx1, jy1, jz1, jx2, jy2, jz2, &
   & jr,jg,jb,jrad,jbt,jnp,kpts,dlabl,dslabl) bind(c)
     use, intrinsic :: ISO_C_BINDING
@@ -449,9 +449,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastatom (iso_c_bindings)
 !! Unkwown function call from guibits.F
-interface
   subroutine fastatom (de,js,dl,jx,jy,jz,jr,jg,jb,joc,sco, &
   &  jvd,jsp,jfl,su1,su2,su3,su4,su5,su6,su7,su8,su9, &
   &  sfx,sfy,sfz,jff,jfa,jfg,sue,sus ) bind(c)
@@ -466,9 +466,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastsphere (iso_c_bindings)
 !! Unkwown function call from guibits.F
-interface
   subroutine fastsphere (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
   &  jsp,jfl,jiso,jrad) bind(c)
     use, intrinsic :: ISO_C_BINDING
@@ -480,9 +480,9 @@ interface
 end interface
 
 
+interface
 !> interface to C function fastdonut (iso_c_bindings)
 !! Unkwown function call from guibits.F
-interface
   subroutine fastdonut (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
   & jsp,jfl,jiso,jrad, jdec, jaz) bind(c)
     use, intrinsic :: ISO_C_BINDING

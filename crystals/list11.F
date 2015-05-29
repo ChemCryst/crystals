@@ -1018,7 +1018,7 @@ C
 C
 C--SET THE CONSTANTS
       NFLD=1
-      LFLD = KORE ( ITEMP ) / ISSL11
+      LFLD = ITEMP / ISSL11
       NULD=LFLD-NFLD+1
       RETURN
       END
