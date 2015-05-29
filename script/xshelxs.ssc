@@ -2,6 +2,8 @@
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                       
 %   VARIABLE LOGICAL ANSWER LCRY                                                
 %   VARIABLE INTEGER IRUN                                                       
+-GID%  VARIABLE LOGICAL EDITOR_OK
+-GID%  VARIABLE CHARACTER EDITOR_FILE                     
 %   IF EXISTS 6 .LT. 1 THEN                                                     
             You do not have any reflections stored.                             
             It is impossible to proceed without data.                           
