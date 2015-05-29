@@ -540,8 +540,7 @@ C      **** MACHINE SPECIFIC ****
 C
 C    THIS ROUTINE WILL ATTEMPT TO CREATE A NEW DISC FILE IF THE
 C    PARAMETER 'IFSTAT' HAS THE VALUE 'ISSCIF' AND AN OLD FILE CANNOT
-C    BE OPENED . IN THE VAX/VMS VERSION THE ERROR STATUS
-C    'FILE NOT FOUND' IS EXPLICITLY CHECKED.
+C    BE OPENED . 
 C
 C       IF IT IS NOT POSSIBLE ON ANY PARTICULAR SYSTEM TO CREATE A NEW
 C    DIRECT ACCESS FILE IN THE WAY THIS ROUTINE DOES IT,
@@ -581,7 +580,7 @@ C            +VE         SUCCESS
 C
 
 
-      logical lexist
+      logical lexist, ierr
 C
       INTEGER IDUNIT , IFSTAT , IFMODE
       CHARACTER*(*) CFNAME
@@ -591,6 +590,7 @@ C
 C
       CHARACTER*7 FLSTAT(4)
       CHARACTER*7 ACSTAT
+      character(len=9) :: faction 
       integer recordsize
 
       INCLUDE 'XOPVAL.INC'
@@ -607,7 +607,7 @@ C
       ! Used with ISSDAR
       inquire(iolength=recordsize) 1.0
 
-      NAMLEN = MAX (INDEX( FILNAM, ' ')-1, 0)
+      NAMLEN = len_trim(FILNAM) 
       IF (ISSFLC .EQ. 0) THEN
 C----- CONVERT NAME TO LOWER CASE
             IF (NAMLEN .GT. 0) CALL XCCLWC (FILNAM, CLCNAM(1:NAMLEN) )
@@ -619,196 +619,149 @@ C----- CONVERT NAME TO UPPER CASE
       ENDIF
 
 C -- CHECK DATA TO SOME EXTENT
-      IF ( IFSTAT .GT. ISSSCR ) GO TO 9910
-      IF ( IFMODE .GT. ISSWRI ) GO TO 9910
+      IF ( IFSTAT .GT. ISSSCR .or. IFMODE .GT. ISSWRI ) then
+        CALL XOPMSG ( IOPCRY , IOPcmi , 0 )
+      !GO TO 9900
+        KDAOPN = ISIGN ( IOS , -1 )
+        RETURN
+      end if
 
 C -- SET REQUIRED STATUS TO THAT SPECIFIED
       ACSTAT = FLSTAT(IFSTAT)
-
 C -- IF REQUEST IS 'CIF' SET STATUS TO 'OLD'
-
       IF ( ACSTAT .EQ. 'CIF' ) ACSTAT = 'OLD'
 
-
-2000  CONTINUE
-C
+      ! expand file name to full path
       IF ( IFSTAT .NE. ISSSCR ) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
 
-C      if a 'new' file already exists, return a proper message
+C      if a 'new' file already exists, increment file number if possible
+C      if not return a error message
       IF ((FLSTAT(IFSTAT) .EQ. 'NEW' ) .AND. (FILNAM .NE. ' '))THEN
-       lexist = .false.
-       inquire(file=clcnam(1:namlen), exist=lexist)
+        lexist = .false.
+        inquire(file=clcnam(1:namlen), exist=lexist)
 c
 cdjwapr08 - autoincrement file root
-2010   continue
-       if (lexist) then
-        write(cmon,'(a,a,a)')
-     1  ' The D/A file ( ', clcnam(1:namlen) ,
-     2  ' )already exists'
-        call xprvdu(nceror, 1, 0)
-        if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
-c
-        i =index(clcnam(1:namlen),'.')-1
-        if (i .le. 0) goto 9920
-        j =index(cnumber, clcnam(i:i))
-        if (j .eq. 10) then
-          write(cmon,'(a)')
-     1    ' Only 9 generations permitted'
+!2010   continue
+        do while(lexist) !if (lexist) then
+       
+          write(cmon,'(a,a,a)')
+     1      ' The D/A file ( ', clcnam(1:namlen) ,
+     2      ' )already exists'
           call xprvdu(nceror, 1, 0)
           if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
-          goto 9920
-        endif
-        if (j .le. 0) then
-          do k  = namlen, namlen-3, -1
-             clcnam(k+2:k+2)= clcnam(k:k)
-          enddo
+c
+          ierr=.false.
+          i =index(clcnam(1:namlen),'.')-1
+          if (i > 0) then
+            j =index(cnumber, clcnam(i:i))
+            if (j .eq. 10) then
+              write(cmon,'(a)')
+     1        ' Only 9 generations permitted'
+              call xprvdu(nceror, 1, 0)
+              if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
+              ierr=.true. !goto 9920
+            else            
+              if (j .le. 0) then ! no number in name, inserting one
+                do k  = namlen, namlen-3, -1
+                  clcnam(k+2:k+2)= clcnam(k:k)
+                enddo
 cdjwjan09 - replace # with -
-          clcnam(i+1:i+2)='-0'
-          namlen=namlen+2
-        else
-          clcnam(i:i)=cnumber(j+1:j+1)
-        endif
-        inquire(file=clcnam(1:namlen), exist=lexist)
-        if (lexist ) goto 2010
-       endif
-       write(cmon,'(a,a,a)')
-     1  ' A new D/A file ( ', clcnam(1:namlen) ,
-     2  ' )will be created'
+                clcnam(i+1:i+2)='-0'
+                namlen=namlen+2
+              else ! incrementing file number
+                clcnam(i:i)=cnumber(j+1:j+1)
+              endif          
+            endif
+          else ! Cannot find ".", not a valid file name
+            ierr=.true. !goto 9920
+          end if
+        
+          if(ierr) then
+            CALL XCTRIM(CLCNAM, ILEN)
+            write(cmon,'(a,a,a)')
+     1        ' The D/A file ( ', clcnam(1:ILEN) ,
+     2        ' )already exists and cannot be overwritten'
+            CALL XPRVDU(NCEROR, 1, 0)
+            IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+C -- INTERNAL ERROR DETECTED
+            CALL XOPMSG ( IOPCRY , IOPcmi , 0 )
+            !GO TO 9900
+            KDAOPN = ISIGN ( IOS , -1 )
+            RETURN
+          end if
+        
+          inquire(file=clcnam(1:namlen), exist=lexist) ! Is the new file exist?
+          
+        end do !if (lexist ) goto 2010
+        
+        write(cmon,'(a,a,a)')
+     1    ' A new D/A file ( ', clcnam(1:namlen) ,
+     2    ' )will be created'
         CALL XPRVDU(NCEROR, 1, 0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
-      endif
+      endif ! end check for non existent 'new' file
 c
 c
-      IF ( IFMODE .EQ. ISSREA ) GO TO 2500
-c
+      ! check if an 'old' file do exist, otherwise open it as 'new'
+      ! only if the file is "create if not exist"
+      if (trim(FILNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then
+        inquire(file=trim(CLCNAM), exist=lexist)
+        if(.not. lexist) then
+          ACSTAT = FLSTAT(ISSNEW)
+          IF ( IFSTAT .NE. ISSSCR ) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+        end if
+      end if
+
+      ! setting up action mode, read or read/write
+      IF ( IFMODE .EQ. ISSREA ) then !GO TO 2500
+      ! open file for read only (action='read')
+        faction='READ'
+      else
+        faction='READWRITE'
+      end if
+      
+      !2500  CONTINUE
       IF ( FILNAM .EQ. ' ' ) THEN
+        ! read only scratch file, surely this must be a mistake?
         OPEN ( UNIT   = IDUNIT ,
+     1         ACTION = faction, 
      1         STATUS = ACSTAT ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
      1         RECL   = ISSDAR*recordsize ,
-     1         IOSTAT = IOS ,
-     1         ERR    = 3000 )
-
-      ELSE
-
-        OPEN ( UNIT   = IDUNIT ,
-     1         FILE   = CLCNAM ,
-     1         STATUS = ACSTAT ,
-     1         ACCESS = 'DIRECT' ,
-     1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = ISSDAR*recordsize ,
-     1         IOSTAT = IOS ,
-     1         ERR    = 3000 )
-      ENDIF
-
-      IF (IOS .NE. ISSOKF) GOTO 3000
-
-C -- SUCCESS
-
-C -- IF A NEW FILE HAS BEEN CREATED, SOME INITIALISATION TASKS
-C    MUST BE PERFORMED IMMEDIATELY
-
-      IF ((ACSTAT.EQ.'NEW').OR.(ACSTAT.EQ.'SCRATCH'))CALL XDAINI(IDUNIT)
-
-      GO TO 9000
-
-2500  CONTINUE
-      IF ( FILNAM .EQ. ' ' ) THEN
-        OPEN ( UNIT   = IDUNIT ,
-#if defined (CRY_FORTDIGITAL) 
-     1         READONLY ,
-#endif
-     1         STATUS = ACSTAT ,
-     1         ACCESS = 'DIRECT' ,
-     1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = ISSDAR*recordsize ,
-     1         IOSTAT = IOS ,
-     1         ERR    = 3000 )
+     1         IOSTAT = IOS )
 
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
-#if defined (CRY_FORTDIGITAL) 
-     1         READONLY ,
-#endif
+     1         ACTION = faction,
      1         STATUS = ACSTAT ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
      1         RECL   = ISSDAR*recordsize ,
-     1         IOSTAT = IOS ,
-     1         ERR    = 3000 )
+     1         IOSTAT = IOS )
       ENDIF
 
-      IF (IOS .NE. ISSOKF) GOTO 3000
-
-      GO TO 9000
-
-
-3000  CONTINUE
+      IF (IOS/=0) then !GOTO 3000
+c3000  CONTINUE
 C
-C -- OPEN FAILED -- IF IT SHOULD HAVE SUCCEEDED THEN THIS IS AN ERROR
+C -- OPEN FAILED -- 
 C
-      IF ( ACSTAT .EQ. FLSTAT(ISSNEW) ) GO TO 9900
-      IF ( IFSTAT .EQ. ISSOLD ) GO TO 9900
+        KDAOPN = ISIGN ( IOS , -1 )
+        RETURN          
+      end if
+C -- SUCCESS
 
-CRICJUL00
-C NT returns a BADFILENAME error instead of file not found, if
-C it is passed a string like "CRDSC:", so we must either check
-C for FNF and BADFILENAME, or better still, just let the system
-C try again with a NEW file, if that still fails, then there is an
-C error.
-#if !defined(CRY_OSWIN32)
-      IF ( IOS .NE. ISSFNF ) GO TO 9900
+C -- IF A NEW FILE HAS BEEN CREATED, SOME INITIALISATION TASKS
+C    MUST BE PERFORMED IMMEDIATELY
 
-C -- WE HAVE THEREFORE TRIED TO OPEN A NON-EXISTANT FILE WITH STATUS
-C    'OLD' . TRY AGAIN WITH STATUS = 'NEW'
-
-#endif
-      ACSTAT = FLSTAT(ISSNEW)
-      GO TO 2000
-
-
-9000  CONTINUE
-
-C -- NORMAL EXIT FROM ROUTINE
-
-C    SET FLAG
-
+      IF ((ACSTAT.EQ.'NEW').OR.(ACSTAT.EQ.'SCRATCH')) then
+        CALL XDAINI(IDUNIT)
+      end if
+    
       KDAOPN = 1
-      RETURN
-
-
-9900  CONTINUE
-
-C -- ERROR EXIT FROM ROUTINE
-
-C    SET FLAG
-
-      KDAOPN = ISIGN ( IOS , -1 )
-      RETURN
-
-9910  CONTINUE
-C -- INTERNAL ERROR DETECTED
-CS*** The following line has been changed out causing compiling error
-C**** A third parameter has been added (0)
-C**** Ludwig Macko, 23.11.1994
-C****
-cdjw      CALL XOPMSG ( IOPCRY , IOPINT , 0 )
-      CALL XOPMSG ( IOPCRY , IOPcmi , 0 )
-CE*** instead of CALL XOPMSG ( IOPCRY , IOPINT )
-      GO TO 9900
-cdjwapr99
-9920  continue
-      CALL XCTRIM(CLCNAM, ILEN)
-      write(cmon,'(a,a,a)')
-     1 ' The D/A file ( ', clcnam(1:ILEN) ,
-     2 ' )already exists and cannot be overwritten'
-      CALL XPRVDU(NCEROR, 1, 0)
-      IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
-      goto 9910
-      END
+      END function
 C
 CODE FOR KFLCLS
       FUNCTION KFLCLS ( IUNIT )
