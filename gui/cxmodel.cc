@@ -1711,7 +1711,7 @@ void CxModel::DeletePopup()
 #else
     m_TextPopup->Destroy();
 //    m_DoNotPaint = false;
-//	NeedRedraw(false);
+	NeedRedraw(false);
 #endif
     m_TextPopup=nil;
   }
