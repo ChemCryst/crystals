@@ -160,9 +160,9 @@ C--CLEAR THE STORE
       CALL XCSAE
 C
 C DO SOMETHING
-      call xpch6s(iuln1,iuln2)
+c123      call xpch6s(iuln1,iuln2)
 c123 causing problem with large data sets(may 15)
-c123     CALL XPCH6N(IULN1,IULN2)
+      CALL XPCH6N(IULN1,IULN2)
 C
 1810  CONTINUE
       CALL XOPMSG ( IOPREF , IOPEND , 200 )
