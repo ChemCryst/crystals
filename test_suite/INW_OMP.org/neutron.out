@@ -1866,7 +1866,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.57E-01       0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
-Inter cycle R-factor             -5.0          -0.36E-03       0.10E+03
+Inter cycle R-factor             -5.0          -0.37E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.43E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.10           0.10E+05
 Inter cycle Min function          0.0            2.8           0.10E+16
@@ -2149,7 +2149,7 @@ All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.72E-01       0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
 Inter cycle R-factor             -5.0          -0.76E-03       0.10E+03
-Inter cycle Rw                   -5.0           0.45E-03       0.10E+03
+Inter cycle Rw                   -5.0           0.44E-03       0.10E+03
 Inter cycle shift/esd            -10.          -0.15E-01       0.10E+05
 Inter cycle Min function          0.0           0.29           0.10E+16
 
@@ -3610,7 +3610,7 @@ Mean C-C su =   0.0019
   -9   3   2   13.2    3.8   2.9  3.49    -3   4   9    0.0    9.4   2.9  0.00                                                                                                                                                                                  
    3   7   8   10.0    0.6   2.9 15.73    -4  16   2   11.5    2.2   2.9  5.30                                                                                                                                                                                  
    6   9   4    0.0    9.3   2.9  0.00     3   5   0   12.0    2.7   2.9  4.44                                                                                                                                                                                  
-  -8   4   8    9.4    0.3   2.8 37.38     2  18   2    0.0    9.0   2.8  0.00                                                                                                                                                                                  
+  -8   4   8    9.4    0.3   2.8 37.39     2  18   2    0.0    9.0   2.8  0.00                                                                                                                                                                                  
 
                               ***
                              ***
@@ -16435,7 +16435,7 @@ Mean C-C su =   0.0026
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-     68310.         65488.           8818.                                   On scale of /FC/
+     68311.         65488.           8818.                                   On scale of /FC/
 
      19829.         19009.           2560.               0.3029E+04          On scale of /FO/
 
@@ -18314,7 +18314,7 @@ LS-scale=  0.310   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        4.1   
  H        70.     0.6186    0.1145    0.1983       -4.1   
  Q         1.     0.4600    0.1048    0.1436       23.1  Poor Shape  
- Q         2.     0.7563    0.1275    0.2539       20.8  Poor Shape  
+ Q         2.     0.7438    0.6275    0.2461       20.8  Poor Shape  
  Q         3.     0.6967    0.0617    0.1771       15.7  Poor Shape  
  Q         4.     0.4813    0.1238    0.1750       13.3  Poor Shape  
  Q         5.     0.7046    0.0673    0.1207       13.2  Poor Shape  

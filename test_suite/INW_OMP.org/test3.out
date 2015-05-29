@@ -6230,7 +6230,7 @@ LS-scale= 11.239   Wilson Scale=  0.000
  Terms       Coefficients           E.S.D.'S    Ratios
 
 
-   1            13217.87             1240.00     10.66
+   1            13217.86             1239.99     10.66
    2            15599.60             1798.93      8.67
 
 
@@ -6303,7 +6303,7 @@ LS-scale= 11.239   Wilson Scale=  0.000
 
 #ANALYSE                                                                                                                                                                                                                                                        
 #LIST 4                                                                                                                                                                                                                                                         
- Slope =    -3376.352 Intercept = 2538925.500 C-Coef=      -0.026
+ Slope =    -3376.361 Intercept = 2538927.000 C-Coef=      -0.026
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -6412,8 +6412,8 @@ LS-scale= 11.239   Wilson Scale=  0.000
 
 
    1            16222.52             1537.47     10.55
-   2            20097.38             2257.11      8.90
-   3             4538.91             1415.26      3.21
+   2            20097.37             2257.11      8.90
+   3             4538.91             1415.25      3.21
 
 
  Correlation matrix
