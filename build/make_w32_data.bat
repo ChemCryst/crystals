@@ -40,6 +40,7 @@ set CRYSDIR=./
 @if not "%CRDEBUG%" == "TRUE" ..\crystals.exe
 cd ..
 ENDLOCAL
+if not exist dscbuild\commands.dsc make_err.bat
 copy dscbuild\commands.dsc .
 @goto exit
 
