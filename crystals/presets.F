@@ -1631,7 +1631,7 @@ C RICJUL00
       DATA ISSSEQ / 1 / , ISSDAF / 2 /
 C
       DATA ISSREA / 1 /, ISSWRI / 2 /, ISSAPP /3/
-#if defined(__INTEL_COMPILER) || defined(__DECC) || defined(__DECCXX)
+#if defined(__INTEL_COMPILER) || defined(CRY_FORTDIGITAL)
       DATA ISSFNF /  29 /
 #elif defined(CRY_OSMAC)
       DATA ISSFNF /  2 /
