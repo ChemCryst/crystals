@@ -339,8 +339,8 @@ bool    CxToolBar::AddTool( CcTool* newTool )
                 m_ToolBar->AddCheckTool(newTool->CxID, newTool->tText.c_str(),
 			                 mymap, wxNullBitmap, newTool->tText.c_str());
             } else {
-                m_ToolBar->AddCheckTool(newTool->CxID, newTool->tText.c_str(),
-                                   mymap, wxNullBitmap, newTool->tText.c_str());
+                m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(),
+                                   mymap, newTool->tText.c_str());
             }
 
 //		  if ( newTool->toggleable ) {
