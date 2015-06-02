@@ -115,7 +115,7 @@ C Read data from the commandline:
 
       N = 1
 #if defined(CRY_FORTDIGITAL)
-      NARG = NARGC()
+      NARG = IARGC()
 #else
       NARG = command_argument_count ()+1
 #endif

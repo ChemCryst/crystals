@@ -121,7 +121,7 @@ c     Make CCDC files the default
 c
       N = 1
 #if defined(CRY_FORTDIGITAL)
-      NARG = NARGC()
+      NARG = IARGC()
 #else
       NARG = COMMAND_ARGUMENT_COUNT() + 1
 #endif
