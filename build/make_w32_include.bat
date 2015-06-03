@@ -31,7 +31,7 @@ goto ALLDVF
 @if not "%CRDEBUG%" == "TRUE" @set CDEF= /I%WXWIN%\include /I%WXLIB%\mswu /I..\crashrpt /D"WXUSINGDLL"
 @if "%CROPENMP%" == "TRUE" @set COPENMP=/Qopenmp
 @if not "%CROPENMP%" == "TRUE" @set COPENMP=
-@set FDEF=-D__INW__ -DCRY_GUI -DCRY_USEWX -DCRY_OSWIN32 -DCRY_FORTINTEL
+@set FDEF=-D__INW__ -DCRY_GUI -DCRY_USEWX -DCRY_OSWIN32 -DCRY_FORTINTEL 
 @rem @set LD=xilink
 @set LD=ifort
 @set OUT=/exe:
@@ -50,11 +50,11 @@ goto ALLDVF
 
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /nolink %COPENMP%
-@set FNOOPT=/fpp /I..\crystals /MD /O0 /fp:source /nolink
+@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink %COPENMP%
+@set FNOOPT=/fpp /I..\crystals /MD /O0 /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
-@set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:bounds /check:format /check:overflow /check:pointers /check:uninit  /warn:argument_checking /warn:nofileopt /nolink /traceback /Qtrapuv
+@set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:bounds /check:format /check:overflow /check:pointers /check:uninit  /warn:argument_checking /warn:nofileopt /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink /traceback /Qtrapuv
 @if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
 @if "%CRDEBUG%" == "TRUE" set COUT=/Fodobj\
 @goto exit

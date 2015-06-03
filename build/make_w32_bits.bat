@@ -33,7 +33,7 @@ rem %F77% /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\contour\contour.F %BIT
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals /I..\bits\foxman ..\bits\foxman\pcf2cry.F %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals /I..\bits\kccdin ..\bits\kccdin\kccdin.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals /I..\bits\OxDiff ..\bits\OxDiff\OxDiffin.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
-%F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals /I..\bits\Diffractometers\ ..\bits\Diffractometers\diffin.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
+%F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals /I..\bits\Diffractometers ..\bits\Diffractometers\diffin.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals /I ..\bits\rc93 ..\bits\rc93\rc93.F obj\nobuf.obj  /automatic %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\reindex\reindex.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\shelxs.F %BITS_FOPTS% /MD  || ( make_err.bat )
