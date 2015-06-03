@@ -4546,7 +4546,12 @@ CAVDL more solution packages in cif-goodies
       DIMENSION ISOLCD(ISOLMX)
       PARAMETER (IABSMX=16)
       DIMENSION IABSCD(IABSMX)
-
+C
+C Things needed by SGROUP call      
+      DIMENSION SPG(10) 
+      CHARACTER *16 SGLINE
+      CHARACTER *10 SGRP
+	  
 C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
@@ -5044,8 +5049,21 @@ C----- VALUE AND ESD
           END DO
          END IF
 
+         jxt1 = KSTALL ( 288 )
+         jxt2  = KSTALL ( 12 )
+         jxt3  = KSTALL ( 500 )
+         CALL XZEROF (STORE(jxt1), 288)
+         CALL XZEROF (STORE(jxt2), 12)
+         CALL XZEROF (STORE(jxt3), 500)
+         WRITE(SGLINE,'(4a4)') (ISTORE(I), I = L2SG, L2SG + MD2SG - 1)
+         CALL XCREMS(SGLINE,SGRP,NCHAR)
+         read(sgrp,'(10a1)') spg
 
-
+         CALL SGROUP ( spg ,               !spg is input, remainder are output/scratch
+     2  LAUENO , NAXIS , NCENT , LCENT ,
+     3  N2 , NPOL , istore(JXT1),
+     4  store(JXT2) , N2P ,
+     5  NCAWU , NCAWU , store(JXT3) )
 
          VOL = V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA)
 
@@ -5056,7 +5074,32 @@ c     3        + (VOL-V(CIFA,CIFB,CIFC,CIFAL+ESD(4)*DTR,CIFBE,CIFGA))**2
 c     4        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE+ESD(5)*DTR,CIFGA))**2
 c     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
 	 
-         CU=SQRT( 
+         IF ((LAUENO.EQ.4).OR.(LAUENO.EQ.5)) THEN       ! Tetragonal - special case a and b errors are 100% correlated
+
+              CU=SQRT( 
+     1     (VOL**2) * 
+     1       (2*(ESD(1)/CIFA)**2 + 2*(ESD(2)/CIFB)**2 +(ESD(3)/CIFC)**2)
+     7             )
+         
+c         ELSE IF ((LAUENO.EQ.6).OR.(LAUENO.EQ.7)) THEN   ! rhombohedral - not used by default in CRYSTALS
+c TODO
+         ELSE IF ((LAUENO.EQ. 8).OR.(LAUENO.EQ.10)
+     1	      .OR.(LAUENO.EQ.11).OR.(LAUENO.EQ.12)) THEN   ! trigonal or hexagonal (w/ hex axes)
+
+            CU=SQRT( 
+     1     (VOL**2) * 0.8660254 *
+     1       (2*(ESD(1)/CIFA)**2 + 2*(ESD(2)/CIFB)**2 +(ESD(3)/CIFC)**2)
+     7             )
+c TODO
+         ELSE IF ((LAUENO.EQ.13).OR.(LAUENO.EQ.14)) THEN   ! Cubic - a, b and c errors 100% correlated
+
+            CU=SQRT( 
+     1     (VOL**2) * 
+     1    (3*(ESD(1)/CIFA)**2 + 3*(ESD(2)/CIFB)**2 + 3*(ESD(3)/CIFC)**2)
+     7             )
+
+      	 ELSE                                           ! Triclinic, monoclinic, orthorhombox
+    	    CU=SQRT( 
      1     (VOL**2) * 
      1       ((ESD(1)/CIFA)**2 +(ESD(2)/CIFB)**2 +(ESD(3)/CIFC)**2)
      2  +  ( (CIFA*CIFB*CIFC)**4 / (VOL**2) ) * (
@@ -5065,7 +5108,8 @@ c     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
      5 (SIN(CIFGA)*(COS(CIFGA)-COS(CIFAL)*COS(CIFBE))*ESD(6)*DTR)**2 
      6                             ) 
      7         )
-
+         END IF
+	   
          CALL XFILL (IB,IVEC,16)
          CALL SNUM (VOL,CU,-2,0,12,IVEC)
          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
@@ -9320,7 +9364,7 @@ c distribution
           WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
           CALL XPRVDU (NCVDU, 2, 0)
 C clear the percentage at 3 sigma 
-        WRITE(CMON,'(A,F7.1),A')
+        WRITE(CMON,'(A,F7.1,A)')
      1  '^^CO SAFESET [ _HIS_PC TEXT ',0.,' ]'
         CALL XPRVDU(NCVDU, 1,0)
 

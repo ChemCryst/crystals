@@ -745,7 +745,7 @@ c
        jxt1 = KSTALL ( 288 )
        xt2  = KSTALL ( 12 )
        xt3  = KSTALL ( 500 )
-       CALL XZEROF (STORE(jxt1), 228)
+       CALL XZEROF (STORE(jxt1), 288)
        CALL XZEROF (STORE(xt2), 12)
        CALL XZEROF (STORE(xt3), 500)
 c
