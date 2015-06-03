@@ -19,7 +19,7 @@ goto BUILD
 
 :BUILD
 
-%CC% ..\bits\Common\nobuf.c %COUT%nobuf.obj /nologo /c /I..\gui /O2 /Zi /Oy- /D"NDEBUG" /MD  || ( make_err.bat )
+%CC% ..\bits\Common\nobuf.c /Foobj\nobuf.obj /nologo /c /I..\gui /O2 /Zi /Oy- /D"NDEBUG" /MD  || ( make_err.bat )
 
 %F77% /fpp %FDEF% /I..\crystals /I..\bits\cif2cry ..\bits\cif2cry\cif2cry.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 rem contour has not been updated to work woth the new graphics/compiler
