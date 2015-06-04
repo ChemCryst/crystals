@@ -1687,7 +1687,7 @@ C1                   H           K       L     /FO/(3)   SQRTW(4)
 C6                  /FC/(5)    PHASE    A-PART  B-PART   TBAR
      1             'F10.2',    'F6.2', 'F10.2','F10.2', 'F8.4',
 C11                  /FOT/    ELEMENTS SIGMA(/FO/) BATCH INDICES(14) 
-     2             'F10.2',    'F8.0', 'F8.3',    'F4.0', ' F12.0',
+     2             'F10.2',    'F8.0', 'F8.2',    'F4.0', ' F12.0',
 C16                BATCH/PHASE SINTH/L FO/FC   JCODE   SERIAL
      3             'F8.4',     'F5.3', 'F8.4', 'F4.0', 'F8.0',
 C21                 RATIO      THETA    OMEGA   CHI     PHI

@@ -6738,7 +6738,7 @@ C
                  CMOD = ' '
               END IF
 
-              IF ( IDUNIT .EQ. 1 ) THEN
+              IF ( IDUNITZ .EQ. 1 ) THEN
                  CWT = 'w&prime; ='
                  CMOD = ' '
               END IF
@@ -6847,7 +6847,7 @@ C
      1              CMOD = '(1/4F<sub>obs</sub>&sup2;) &times; '
               LMOD = MAX(1,LEN_TRIM(CMOD))
 
-              IF ( ( IROBUS .EQ. 1 ) .AND. ( IDUNIT. EQ. 1 ) ) THEN
+              IF ( ( IROBUS .EQ. 1 ) .AND. ( IDUNITZ. EQ. 1 ) ) THEN
                  WRITE(NCPU,605) 'w&prime;&prime; = ',
      1            ' ',
      2            'e<sup>[8&times;(',DUN01,'/',DUN02,
@@ -6865,7 +6865,7 @@ C
      2           ROBTOL,' &times; &Delta;F<sub>est</sub>)&sup2;]&sup2;'
                  WRITE(NCPU,2) 'w =', CMOD(1:LMOD)//
      1           'w&prime; &times; w&prime;&prime;'
-              ELSE IF ( IDUNIT .EQ. 1 ) THEN
+              ELSE IF ( IDUNITZ .EQ. 1 ) THEN
                  WRITE(NCPU,605) 'w&prime;&prime; = ',
      1            '',
      2            'e<sup>[8&times;(',DUN01,'/',DUN02,
@@ -7274,8 +7274,10 @@ C
 	  
 #ifdef _HOL_
       DATA IFLAC/4HFLAC/
+      DATA IHOOFT/4HHOOF/
 #else
       DATA IFLAC/'FLAC'/
+      DATA IHOOFT/'HOOF'/
 #endif
 
 C
@@ -7948,14 +7950,10 @@ C
 C
 C
 C
-      if(nfried.le.0.1*mfried) goto 2760
+c123      if(nfried.le.0.1*mfried) goto 2760
 C
       WRITE (CMON,'(A)')
      1' Flack parameter obtained from original refinement'
-c      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
-      WRITE (CMON,'(A)')
-     1' Hooft parameter obtained with Flack x set to zero'
 c      CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
 C
@@ -7978,9 +7976,8 @@ C
      2 100.*FLRNUM/FLRDEN,'%'
         CALL XPRVDU (NCVDU, 2, 0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') CMON(1)(:nctrim(cmon(1)))
-      END IF
 C
-      if(issprt.eq.0)then
+       if(issprt.eq.0)then
           WRITE (ncwu,'(//A/A)')  
      1' Distribution of NINT(D/sigma) for all data',
      1' Rabinovich & Hope, Acta A36, (1980), 670-674'
@@ -7988,7 +7985,8 @@ C
           WRITE (NCWU,'(a,21I6)') 'Dc',IFCPLT
           WRITE (NCWU,'(a,21F6.2)') 
      1    ' n',((KDJW/DISTPLT),KDJW=-NPLT,NPLT,1)
-      endif
+       endif
+      END IF
 c
       if(iplot.eq.1) then
          DISTMAX=0.
@@ -7996,6 +7994,7 @@ c
             DISTMAX=MAX(DISTMAX,FLOAT(IFOPLT(I)))
             DISTMAX=MAX(DISTMAX,FLOAT(IFCPLT(I)))
          ENDDO
+         DISTMAX=MAX(DISTMAX,0.1)
 C                                 Distribution graph definition
           WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY',
@@ -8033,14 +8032,14 @@ c      CALL xprvdu (ncvdu, 2, 0)
       IF (issprt.eq.0) WRITE (ncwu,'(/A,A)') 
      1 cmon(1)(:nctrim(cmon(1))),cmon(2)(:nctrim(cmon(2)))
 C
+C
+C
       WRITE (CMON,'(/a,i8,a/)') ' Continuing Calculations with',
      1      NFRIED,' reflections'
 c      CALL XPRVDU (NCVDU, 3, 0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:nctrim(cmon(2)))
 C
 C                                    ---- END OF GENERAL OUTPUT
-C
-C
 C
 C
 C
@@ -8054,19 +8053,23 @@ C                               NORMAL PROBABILITY PLOT GRAPH DEFINITION
           CALL XPRVDU (NCVDU, 3, 0)
       END IF
 C
+      if (n6acc .le. 0) then
+            goto 1730
+      endif
+c
 C Sort the (Do-Dc)/sigma into ascending order.
-      CALL XSHELQ (STR11, md6acc, 1, N6ACC, N6ACC*md6acc, TEMP)
+       CALL XSHELQ (STR11, md6acc, 1, N6ACC, N6ACC*md6acc, TEMP)
 c
 c Numerical Recipes (ed3) . p265 "Incomplete gamma function"
 C
-      iz10=CEILING(N6ACC*0.1)
-      iz90=CEILING(N6ACC*0.9)
+       iz10=CEILING(N6ACC*0.1)
+       iz90=CEILING(N6ACC*0.9)
 C
 C
 C                                  first pass to accumulate totals
-      z_max = 0.
-      m6acc=l6acc
-      npploop1: DO I=1,N6ACC
+       z_max = 0.
+       m6acc=l6acc
+       npploop1: DO I=1,N6ACC
 c       this time we will use all reflections
 C       Unpack HKL
         D=FLOAT(NINT(STR11(m6acc+1)/256.))
@@ -8114,25 +8117,25 @@ c
      1        HKLLAB(1:IHKLLEN),''' DATA ',Z,ZH
               CALL XPRVDU (NCVDU, 1, 0)
         ENDIF
-       m6acc = m6acc + md6acc
-      ENDDO npploop1
+        m6acc = m6acc + md6acc
+       ENDDO npploop1
 C
-      WRITE (CMON,'(a,i7,a)') ' Normal Probability Plot for', 
+       WRITE (CMON,'(a,i7,a)') ' Normal Probability Plot for', 
      1  nint(ss),' reflections'
-      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) THEN
+       CALL XPRVDU (NCVDU,1,0)
+       IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
             WRITE(NCWU,'(A,F7.4)')' Reduced Chisq= ',redchi
-      ENDIF
+       ENDIF
 C
 C      find slope and intercept of NPP
 C      determinant
-      WRITE (CMON,'(a,7x,2f12.3)') ' Gradient for zero intercept = ',
+       WRITE (CMON,'(a,7x,2f12.3)') ' Gradient for zero intercept = ',
      1    SXY/SXX
 c      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
-      DETER=SS*SXX-SX*SX
-      IF (DETER.NE.0.) THEN
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+       DETER=SS*SXX-SX*SX
+       IF (DETER.NE.0.) THEN
             ycut=(SXX*SY-SX*SXY)/DETER
             SLOPE=(SS*SXY-SX*SY)/DETER
             YSLOPE=SLOPE
@@ -8161,57 +8164,57 @@ c               CALL XPRVDU (NCVDU,1,0)
             END IF
 c
 C       Add a series for unit slope (y=x)
-      djwx=z_max
-      WRITE (CMON(1),'(A)')
+        djwx=z_max
+        WRITE (CMON(1),'(A)')
      1 '^^PL ADDSERIES ''Unit Slope'' TYPE SCATTER'
-      write(cmon(2),'(a)') '^^PL LABEL ''unit slope'''
-      WRITE (CMON(3),'(2(A,2(1X,F12.3)) )')
+        write(cmon(2),'(a)') '^^PL LABEL ''unit slope'''
+        WRITE (CMON(3),'(2(A,2(1X,F12.3)) )')
      1 '^^PL DATA ', -djwx,-djwx,' DATA ',djwx,djwx
-      CALL XPRVDU (NCVDU,3,0)
-c----- plot side bands
-       djwx=z_max
-       djwy=yslope*z_max
-       WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+        CALL XPRVDU (NCVDU,3,0)
+c-----  plot side bands
+        djwx=z_max
+        djwy=yslope*z_max
+        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
      1 '^^PL ADDSERIES ''+10%'' TYPE LINE',
      2 '^^PL DATA ', -djwx,-djwy+ycut+0.1*z_max,
      3 ' DATA ',djwx,djwy+ycut+0.1*Z_max
-       CALL XPRVDU (NCVDU,2,0)
+        CALL XPRVDU (NCVDU,2,0)
 c
-       WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
      1 '^^PL ADDSERIES ''-10%'' TYPE LINE',
      2 '^^PL DATA ', -djwx,-djwy+ycut-0.1*z_max,
      3 ' DATA ',djwx,djwy+ycut-0.1*Z_max
-       CALL XPRVDU (NCVDU,2,0)
+        CALL XPRVDU (NCVDU,2,0)
 C 
 C 
-      ELSE
+       ELSE
             WRITE (CMON,1100)
 1100   FORMAT ('NPP Slope and Intercept cannot be computed')
             CALL XPRVDU (NCVDU,1,0)
             IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') 
      1      CMON(1)(:nctrim(cmon(1)))
-      END IF
+       END IF
 C -- FINISH THE GRAPH DEFINITION
-      IF (IPLOT.EQ.1) THEN
+       IF (IPLOT.EQ.1) THEN
           WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
           CALL XPRVDU (NCVDU, 2, 0)
-      END IF
+       END IF
 C
 C 
-      IF ((YSLOPE.GT.1.1).OR.(YSLOPE.LT.0.9).OR.(ycut.LT.-.05).OR.
+       IF ((YSLOPE.GT.1.1).OR.(YSLOPE.LT.0.9).OR.(ycut.LT.-.05).OR.
      1    (ycut.GT..05)) THEN
         WRITE (CMON,'(a,a)') ' The slope should be unity and the',
      1      ' intercept zero'
 c        CALL XPRVDU (NCVDU,1,0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') 
      1  CMON(1)(:nctrim(cmon(1)))
-      END IF
+       END IF
 c
 c
 C                                       NEW PASS TO DETECT OUTLIERS
-      noutl=0
-      m6acc=l6acc
-      npploop2: DO I=1,N6ACC
+       noutl=0
+       m6acc=l6acc
+       npploop2: DO I=1,N6ACC
 C
 C       Unpack HKL
         D=FLOAT(NINT(STR11(m6acc+1)/256.))
@@ -8251,20 +8254,20 @@ C
               END IF
               noutl=noutl+1
         END IF
-       m6acc = m6acc + md6acc
-      ENDDO npploop2
+        m6acc = m6acc + md6acc
+       ENDDO npploop2
 c
 c
-      IF (noutl.gt.0) THEN
+       IF (noutl.gt.0) THEN
         WRITE (cmon,'(1x,i6,a,F5.2)') noutl,
      1 ' outliers in Normal Probability Plot at delta(Z) > ',
      1   0.1*Z_MAX
-      CALL xprvdu (ncvdu, 1, 0)
-      IF (issprt.eq.0) WRITE (ncwu,'(/a/)')
+       CALL xprvdu (ncvdu, 1, 0)
+       IF (issprt.eq.0) WRITE (ncwu,'(/a/)')
      1     cmon(1)(:nctrim(cmon(1)))
-      endif
+       endif
 c
-      if(noutl .ge. 0.1*float(n6acc)) then
+       if(noutl .ge. 0.1*float(n6acc)) then
 C                                         set flag for warning popup Window
         ISTAT = KSCTRN ( 1 , '_BADNPP' , noutl, 1 )
         write(cmon,'(a,f5.2,a/a )') '{E Too many outliers (', 
@@ -8273,9 +8276,7 @@ C                                         set flag for warning popup Window
          CALL xprvdu (ncvdu, 2, 0)
          IF (issprt.eq.0) WRITE (ncwu,'(/a/a/)')
      1     cmon(1)(3:nctrim(cmon(1))),cmon(2)(3:nctrim(cmon(2)))
-      endif
-c
-c
+       endif
 C
 C                                                 COMPUTE HOOFT GOODIES
 C
@@ -9016,97 +9017,100 @@ C
      5    filter(4),' = ',
      6    ngood
         END IF
+c
+        if (nfried .gt .0) then
 C
-        WRITE (CMON,'(/)')
-        CALL XPRVDU (NCVDU, 1, 0)
-        if(issprt.eq.0) write(ncwu,'(//)')
-        CALL outcol (3)
+         WRITE (CMON,'(/)')
+         CALL XPRVDU (NCVDU, 1, 0)
+         if(issprt.eq.0) write(ncwu,'(//)')
+         CALL outcol (3)
 c
-        WRITE (CMON,'(6x,a,2f7.3)') ' Flack Parameter & su',
+         WRITE (CMON,'(6x,a,2f7.3)') ' Flack Parameter & su',
      1   xflack,qflack
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A,a)') CMON(1)(:43),'@ '
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A,a)') CMON(1)(:43),'@ '
 c
-        if (iweight.eq.1) then
-            CWEIGHT='Least Squares'
-        else
+         if (iweight.eq.1) then
+             CWEIGHT='Least Squares'
+         else
             CWEIGHT='counting statistics'
-        endif
-        write(cmon,'(/a,a,a)')' Using ', cweight(:nctrim(cweight)),
+         endif
+         write(cmon,'(/a,a,a)')' Using ', cweight(:nctrim(cweight)),
      1  ' weights'
-        call xprvdu(ncvdu,2,0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)')
+         call xprvdu(ncvdu,2,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)')
      1  CMON(2)(:nctrim(cmon(2)))
 c
 c
-        WRITE (CMON,'(6x,a,2f7.3)') ' Hooft Parameter & su',
+         WRITE (CMON,'(6x,a,2f7.3)') ' Hooft Parameter & su',
      1   tony,tonsy
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:43),'$ '
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:43),'$ '
 c
 c
-        WRITE (CMON,'(6x,a,2f7.3)') '     Hole-in-one & su',
+         WRITE (CMON,'(6x,a,2f7.3)') '     Hole-in-one & su',
      1   hin1,hin1su
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:43),'  '
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:43),'  '
 c
 c
-        IF (itype.eq.1) THEN
+         IF (itype.eq.1) THEN
           WRITE (CMON,'(A,2F7.3)') '      Parsons Quotient & su',
      1     pseudof,pseudos
-        ELSE
+         ELSE
           WRITE (CMON,'(A,2F7.3)') '    Parsons Difference & su',
      1     pseudof,pseudos
-        END IF
-        WRITE (CMON(1)(45:),'(A,I6,A,i4,a)')
+         END IF
+         WRITE (CMON(1)(45:),'(A,I6,A,i4,a)')
      1  ' (Using', nfofc,' reflections. Correl Coef =',
      2  nint(100.*pseudoc),'%)'
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'£ ',
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'£ ',
      1  CMON(1)(45:nctrim(cmon(1)))
 c
 c
-        write(cmon,'(/,a,I6,A,f5.1,a)')' Histogram re-weighted,',
+         write(cmon,'(/,a,I6,A,f5.1,a)')' Histogram re-weighted,',
      1   ngood,' reflections, ', (nle3s*100./n6acc),
      2  '% within -.5 to 1.5'
-        CALL XPRVDU (NCVDU, 2, 0)
-        if (issprt.eq.0)write(ncwu,'(/a)')CMON(2)(:nctrim(cmon(2)))
+         CALL XPRVDU (NCVDU, 2, 0)
+         if (issprt.eq.0)write(ncwu,'(/a)')CMON(2)(:nctrim(cmon(2)))
 c
-        IF (itype.eq.1) THEN
+         IF (itype.eq.1) THEN
           WRITE (CMON,'(A,2F7.3)') '      Parsons Quotient & su',
      1    x_simple, s_simple
-        ELSE
+         ELSE
           WRITE (CMON,'(A,2F7.3)') '    Parsons Difference & su',
      1    x_simple, s_simple
-        END IF
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,2x,a)') CMON(1)(:43),
+         END IF
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,2x,a)') CMON(1)(:43),
      1  CMON(1)(45:nctrim(cmon(2)))
 c
-        WRITE (CMON,'(1x,a,2f7.3)') 'Average of Ratios (x) & su',
+         WRITE (CMON,'(1x,a,2f7.3)') 'Average of Ratios (x) & su',
      1   fmean, sigxbar
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,a,a)') CMON(1)(:43),
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,a,a)') CMON(1)(:43),
      1  '& '
 c
-        WRITE (CMON,'(1x,a,2f7.3)') 'Average of Ratios (x) & su',
+         WRITE (CMON,'(1x,a,2f7.3)') 'Average of Ratios (x) & su',
      1   fmean, sigxbar*yslope
-        WRITE (CMON(1)(45:),'(A,f5.2,a)')
+         WRITE (CMON(1)(45:),'(A,f5.2,a)')
      1  ' (corrected for npp, *',yslope,')'
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,a,a)') CMON(1)(:43),'% ',
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,a,a)') CMON(1)(:43),'% ',
      1  CMON(1)(45:nctrim(cmon(1)))
 c
-        CALL outcol (1)
+         CALL outcol (1)
 c
-        IF (issprt.eq.0) THEN
+         IF (issprt.eq.0) THEN
 2100      FORMAT (/4(/a,a))
           WRITE (ncwu,2100)
      1   '@  ','Flack,1983, Acta Cryst A39, 876-881',
      2   '£  ','Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022',
      3   '$  ','Hooft et al, 2008, J Appl Cryst, 41, 96-103',
      4   '&  ','Cooper et al, to be published'
-        END IF
+         END IF
+        endif
         WRITE (CMON,'(/)')
 c        CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
@@ -9123,17 +9127,18 @@ c        CALL XPRVDU (NCVDU, 1, 0)
      1    CMON(3)(3:nctrim(cmon(3)))
         END IF
 C
-        XPLLL=DATC(NSPP_241)-DATCM
-        XMNLL=DATC(NSPM_161)-DATCM
+      if (nfried .gt. 0) then
+         XPLLL=DATC(NSPP_241)-DATCM
+         XMNLL=DATC(NSPM_161)-DATCM
 C
-        WRITE (CMON,'(/)')
-        CALL XPRVDU (NCVDU, 1, 0)
+         WRITE (CMON,'(/)')
+         CALL XPRVDU (NCVDU, 1, 0)
 C
-        IF (RCN.NE.0) THEN
+         IF (RCN.NE.0) THEN
           RCO=RCT/RCN
-        ELSE
+         ELSE
           RCO=0.0
-        END IF
+         END IF
 c
 C-WHAT IS RCO? Correlation coeficient for NPP?
 C       IF (ISSPRT.EQ.0)
@@ -9143,128 +9148,128 @@ C values can be massive - can scaling be improved?
 c      write(ncwu,'(10f12.2)') datc
 c      write(ncwu,'(//4f12.4)') xplll,xmnll, datcm, datcl
 c save some goodies to avoid divide by zero later
-        xplll3=xplll
-        xmnll3=xmnll
-        XPLLL=EXP(XPLLL)
-        XMNLL=EXP(XMNLL)
+         xplll3=xplll
+         xmnll3=xmnll
+         XPLLL=EXP(XPLLL)
+         XMNLL=EXP(XMNLL)
 c      write(ncwu,'(3e12.4)') xplll,xmnll, xplll+xmnll
 c      write(ncwu,*) xplll,xmnll, xplll+xmnll
 c
 C CALCULATE P2(0)
-        IF (ABS(ABS(TONY-0.5)-0.5).LT.MAX(0.1,3*TONSY)) THEN
-          IF ((xplll+xmnll).le.zero) THEN
-            IF (xplll3.le.xmnll3) THEN
+         IF (ABS(ABS(TONY-0.5)-0.5).LT.MAX(0.1,3*TONSY)) THEN
+           IF ((xplll+xmnll).lt. 0.0) THEN
+             IF (xplll3.le.xmnll3) THEN
               xpll2=0.0
-            ELSE
+             ELSE
               xpll2=1.0
-            END IF
-          ELSE
+             END IF
+           ELSE
             XPLL2=XPLLL/(XPLLL+XMNLL)
-          END IF
-        ELSE
+           END IF
+         ELSE
           XPLL2=-1.0
-        END IF
+         END IF
 c
-        WRITE (cmon,'(a)') ' Hooft probability analysis'
-        CALL xprvdu (ncvdu, 1, 0)
-        IF (issprt.eq.0) WRITE (ncwu,'(A)')cmon(1)(:nctrim(cmon(1)))
+         WRITE (cmon,'(a)') ' Hooft probability analysis'
+         CALL xprvdu (ncvdu, 1, 0)
+         IF (issprt.eq.0) WRITE (ncwu,'(A)')cmon(1)(:nctrim(cmon(1)))
 C P2(True)
-        WRITE (CMON,'(a,a)') ' For an enantiopure material,',
+         WRITE (CMON,'(a,a)') ' For an enantiopure material,',
      1  ' there are 2 choices, P2'
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')CMON(1)(:nctrim(cmon(1)))
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')CMON(1)(:nctrim(cmon(1)))
 C
-        IF (XPLL2.GT.0.001) THEN
-          WRITE (FORM,2150) XPLL2,XPLL2
+         IF (XPLL2.GE.0.0) THEN
+           WRITE (FORM,2150) XPLL2,XPLL2
 2150      FORMAT (X,F9.4,3X,'i.e. ',E12.6)
-        ELSE IF (XPLL2.LT.0.0) THEN
+         ELSE 
           WRITE (FORM,2200)
 2200      FORMAT (6X,'Does not compute')
-        ELSE
-          WRITE (FORM,2150) XPLL2,XPLL2
-        END IF
-        WRITE (LINE,2250) FORM
+         END IF
+         WRITE (LINE,2250) FORM
 2250    FORMAT (' P2(correct) ',A)
-        WRITE (CMON,2300) LINE
-        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+         WRITE (CMON,2300) LINE
+         CALL XPRVDU (NCVDU, 1, 0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
 2300    FORMAT (A)
+c
 C CALCULATE P3(0),P3(TW),P3(1)
-        WRITE (CMON,'(/a,a)') ' If 50:50 twinning is possible,',
+         WRITE (CMON,'(/a,a)') ' If 50:50 twinning is possible,',
      1  ' there are 3 choices, P3'
-        CALL XPRVDU (NCVDU, 2, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') 
+         CALL XPRVDU (NCVDU, 2, 0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') 
      1  CMON(1)(:nctrim(cmon(1))),CMON(2)(:nctrim(cmon(2)))
-        XTWLL=DATC(NSPT_201)-DATCM
-        XTWLL=EXP(XTWLL)
-        XSMLL=XPLLL+XTWLL+XMNLL
-C       write(ncwu,'(4e16.4)') xtwll,xplll, xmnll, xsmll
-        IF (XSMLL.GT.ZEROSQ) THEN
+         XTWLL=DATC(NSPT_201)-DATCM
+         XTWLL=EXP(XTWLL)
+         XSMLL=XPLLL+XTWLL+XMNLL
+c       write(123,'(4e16.4)') xtwll,xplll, xmnll, xsmll
+         IF (XSMLL.GT. 0.0) THEN
           XPLLL=XPLLL/XSMLL
           XMNLL=XMNLL/XSMLL
           XTWLL=XTWLL/XSMLL
 C P3(True)
-          IF (XPLLL.GT.0.001) THEN
+           IF (XPLLL.GT.0.001) THEN
             WRITE (FORM,2150) XPLLL,XPLLL
-          ELSE IF (XPLLL.LT.0.0) THEN
+           ELSE IF (XPLLL.LT.0.0) THEN
             WRITE (FORM,2200)
-          ELSE
+           ELSE
             WRITE (FORM,2150) XPLLL,XPLLL
-          END IF
-          WRITE (LINE,2350) FORM
+           END IF
+           WRITE (LINE,2350) FORM
 2350      FORMAT (' P3(correct) ',A)
-          WRITE (CMON,2300) LINE
-          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+           WRITE (CMON,2300) LINE
+           CALL XPRVDU (NCVDU, 1, 0)
+           IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
 C P3(Twin)
-          IF (XTWLL.GT.0.001) THEN
+           IF (XTWLL.GT.0.001) THEN
             WRITE (FORM,2150) XTWLL,XTWLL
-          ELSE IF (XTWLL.LT.0.0) THEN
+           ELSE IF (XTWLL.LT.0.0) THEN
             WRITE (FORM,2200)
-          ELSE
+           ELSE
             WRITE (FORM,2150) XTWLL,XTWLL
-          END IF
-          WRITE (LINE,2400) FORM
+           END IF
+           WRITE (LINE,2400) FORM
 2400      FORMAT (' P3(rac-twin)',A)
-          WRITE (CMON,2300) LINE
-          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+           WRITE (CMON,2300) LINE
+           CALL XPRVDU (NCVDU, 1, 0)
+           IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
 C P3(False)
-          IF (XMNLL.GT.0.001) THEN
+           IF (XMNLL.GT.0.001) THEN
             WRITE (FORM,2150) XMNLL,XMNLL
-          ELSE IF (XMNLL.LT.0.0) THEN
+           ELSE IF (XMNLL.LT.0.0) THEN
             WRITE (FORM,2200)
-          ELSE
+           ELSE
             WRITE (FORM,2150) XMNLL,XMNLL
-          END IF
-          WRITE (LINE,2450) FORM
+           END IF
+           WRITE (LINE,2450) FORM
 2450      FORMAT (' P3(inverse) ',A)
-          WRITE (CMON,2300) LINE
-          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
-          WRITE (LINE,2500) XG
-2500      FORMAT (' G           ',F9.4)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
-          YUNK=SQRT(XG2/XG0)
-          IF (YUNK.GT.0.0001) THEN
+           WRITE (CMON,2300) LINE
+           CALL XPRVDU (NCVDU, 1, 0)
+           IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+           WRITE (LINE,2500) XG
+ 2500      FORMAT (' G           ',F9.4)
+           IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+           YUNK=SQRT(XG2/XG0)
+           IF (YUNK.GT.0.0001) THEN
             WRITE (FORM,2550) YUNK
 2550        FORMAT (F9.4)
-          ELSE
+           ELSE
             WRITE (FORM,2150) YUNK,YUNK
-          END IF
-          WRITE (LINE,2600) FORM
+           END IF
+           WRITE (LINE,2600) FORM
 2600      FORMAT (' G S.U.      ',A)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
-          WRITE (CMON,'(/)')
+           IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+           WRITE (CMON,'(/)')
 c          CALL XPRVDU (NCVDU, 1, 0)
           IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
-        ELSE
+         ELSE
           WRITE (CMON,'(a//)')
      1     ' Data do not resolve the P3 hypothesis'
           CALL XPRVDU (NCVDU, 2, 0)
           IF (ISSPRT.EQ.0) WRITE (NCWU,'(A//)') 
      1    CMON(1)(:nctrim(cmon(1)))
-        END IF
+         END IF
+      endif
 c
 C                           ----------- All done.
 2750  CONTINUE
@@ -9291,7 +9296,8 @@ C                  ------PRINT SUMMARY OF EXCLUDED REFLECTIONS
          call xprvdu (ncvdu, 1, 0)
          if (issprt.eq.0) write (ncwu,'(a)')cmon(1)(:NCTRIM(CMON(1)))
          call outcol(1)
-         if(filter(1).le. .5) ffz=.1
+         ffz = 0.5
+         if(filter(1).lt. .5) ffz=.1
          if(filter(1).le. .1) ffz=.01
          if(filter(1).le. .01) ffz=.001
          if(filter(1).le. .001) ffz=.0001
@@ -9431,7 +9437,6 @@ c
      1 f6.1, i6, f6.1, 3f5.2)
       endif
 c now update LIST 39
-c      iflac = 'FLAC'
       if (n39f.gt.0) then
        m39f = l39f
        do i=1,n39f
@@ -9440,12 +9445,40 @@ c            store(m39f+2)=store(l30dr+8) !MAIN NPP
             store(m39f+3)=yslope         !BIJVOET NPP
             store(m39f+4)=tempdjw(3)     !Hin1
             store(m39f+5)=tempdjw(4)     !
+c          Note that 'Parsons' might be quotient or difference
             store(m39f+6)=tempdjw(7)     !Parsons
             store(m39f+7)=tempdjw(8)     !
             store(m39f+8)=tempdjw(5)     !Hooft
             store(m39f+9)=tempdjw(6)     !
             store(m39f+10)=tempdjw(11)     !Histogram
             store(m39f+11)=tempdjw(13)     !
+        else if (istore(m39f) .eq. ihooft) then
+c            I have now 'invented' (known to PLATON-CheckCIF) 
+c            datanames for P2, P3 etc.
+c            _platon_Bijvoet-pair_Hooft_y
+c            _platon_Bijvoet-pair_Hooft_P2-true
+c            _platon_Bijvoet-pair_Hooft_P2-false
+c            _platon_Bijvoet-pair_Hooft_P3-true
+c            _platon_Bijvoet-pair_Hooft_P3-rac-twin
+c            _platon_Bijvoet-pair_Hooft_P3-false
+c            _platon_Bijvoet-pair_Parsons_z
+c            Ton
+            if(xpll2 .lt. 0.0) then
+             xpll2 = 0.                 ! P2 does not compute
+             xpln2 = 0.
+            else
+             xpln2 = 1.-xpll2
+            endif
+            store(m39f+2)=xpll2         !p2-true
+            store(m39f+3)=xpln2         !p2-false
+            if(xsmll .le. zerosq) then
+              xplll = 0.                ! P3 does not compute
+              xtwll = 0.
+              xmnll = 0.
+            endif
+            store(m39f+4)=xplll         !p3-true
+            store(m39f+5)=xtwll         !p3-rac-twin
+            store(m39f+6)=xmnll         !p3-false
         endif
         m39f=m39f+md39f
        enddo

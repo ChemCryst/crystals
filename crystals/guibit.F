@@ -1835,7 +1835,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
                  CMOD = ' '
               END IF
 
-              IF ( IDUNIT .EQ. 1 ) THEN
+              IF ( IDUNITZ .EQ. 1 ) THEN
                  CWT = 'w` ='
                  CMOD = ' '
               END IF
@@ -1979,7 +1979,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
      1              CMOD = '(1/4Fo**2) x '
               LMOD = MAX(1,LEN_TRIM(CMOD))
 
-              IF ( ( IROBUS .EQ. 1 ) .AND. ( IDUNIT. EQ. 1 ) ) THEN
+              IF ( ( IROBUS .EQ. 1 ) .AND. ( IDUNITZ. EQ. 1 ) ) THEN
                  WRITE(CMON,605) 'w" = ',
      1            ' ',
      2            'e**[8 x (',DUN01,'/',DUN02,
@@ -2003,7 +2003,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
                  WRITE(CMON,602) 'w =', CMOD(1:LMOD)//'w` x w"'
                  CALL XCREMS(CMON(1),CMON(1),NOCARE)
                  CALL XPRVDU(NCVDU,1,0)
-              ELSE IF ( IDUNIT .EQ. 1 ) THEN
+              ELSE IF ( IDUNITZ .EQ. 1 ) THEN
                  WRITE(CMON,605) 'w" = ',
      1            '',
      2            'e**[8 x (',DUN01,'/',DUN02,
