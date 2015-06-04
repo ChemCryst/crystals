@@ -1,5 +1,5 @@
 US 10  0  0  8
-   1.50   0.70   1.00   0.70   0.15   0.15   0.50
+   1.00   0.70   1.00   0.70   0.15   0.15   0.50
 #TCrystals Manual#
 #Ccrystalsmanual#
 #ZINTRODUCTION TO THE SYSTEM#
@@ -11941,39 +11941,71 @@ weighted R is not affected.
 
 #N   4#
 #J
-\TONSPEK CRITERION= INPUT= PLOT=
+\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= ... FILTER5= WEIGHT=
 END
 #
 #PThis routine contains code kindly donated by Ton Spek for the 
- computation of the Hooft 'y' parameter. 
+ computation of the Hooft 'y' parameter and probabiliies. 
  Rob W. W. Hooft, Leo H. Straver and Anthony L. Spek, 
- J. Appl. Cryst. (2008). 41, 96–103.  It required the current LIST 6 to 
- be comverted to a LIST 7 in which Friedel pairs are adjacent and in 
+ J. Appl. Cryst. (2008). 41, 96–103.  It requires the current LIST 6 to 
+ be converted to a LIST 7 in which Friedel pairs are adjacent and in 
  which Fc has been computed with the Flack 'x' parameter set to zero.
 #PThe pre-preparation for using this routine has been packaged into a 
  script available from the Analyse menu.  The current value of the 
- Flaxk paraemter should already be stored in LIST 30.
+ Flack parameter should already be stored in LIST 30.
 #
-#I\TONSPEK CRITERION= INPUT= PLOT=#
-#KCRITERION#
- If the Friedel Difference exceeds CRITERION times its standard deviation
- the difference is regarded as improbably large, and the reflection is
- excluded from the calculation. The default value of 999.9 effectively
- includes almost all reflections.
-#KINPUT#
+#I\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= ... FILTER5= WEIGHT=#
+#KINPUT=#
 Indicates which reflection list to use.
 #J
       6      Default
       7      Alternative reflection list
 #
 #Q
-#KPLOT#
- When called from a SCRIPT, this flag enables plotting of the data
+#KTYPE=#
+The computations can be carried out using the observed and computed
+Bijvoet differences, or the observed and computed Parsons Quotients.
+#Q
 #J
-      NO      Default value
-      FOFC    Plots the observed versus the calculated Friedel difference
-      NPP     Plots the Normal Probability Plot of the Friedel differences
-#
+      DODC      Bijvoet Differences
+      QOQC      Parsons Quotients
+#KPLOT=#
+ When used from the GUI causes the various graphs to be displayed 
+#J
+      YES     Default value
+      NO      
+#Q
+#KPUNCH=#
+ Controls output to the punch file, BFILE.CPH
+#Q
+#J
+      NONE           Default
+      TABLE          Table of all the Bijvoet pairs.
+      RESTRAINT      List of restriants suitable for adding to a LIST 16.
+      GRAPH          Values suitable for input to an external program
+      SUMMARY        One-line summary of the various parameters and sus.
+#Q
+#KFILTER1=#
+ The minimum acceptable value of Dcalc/sigma(Dobs).  This is the minimum 
+'ideal' theoretical signal:noise ratio.  The default value of 0.5 can be 
+increased for materials with a large Friedif, or may need to be reduced 
+for small Freidif.
+#KFILTER2=#
+ The minimum acceptable value for the ration of the average of the observed Bijvoet 
+pairs to the su of the average, default is 1.0
+#KFILTER3=#
+ The observed Bijvoet differences muse bt less than FILTER3 times the 
+maximum calculated difference, default value is 2.0
+#KFILTER4=#
+ Minimum accaptable weight modifier from the Blessing algorithm.
+#KFILTER5=#
+ Maximum values of Max(Ao,Ac) / Min (Ao,Ac).  Used to filter out 
+reflections where are serious discrepancies between the observed and calculated 
+structure factors. Default value is 2.5.
+#Q
+
+
+
 #Q
 
 #XCIF#
@@ -13340,6 +13372,58 @@ crystallographic information.
  \FINISH
 #
 #
+
+#Q
+#ZSECRET LISTS#
+#HCsecret#
+#XSecret LISTS#
+#YSecret LISTS#
+#HSsecret#
+
+
+
+
+#
+These are LISTS used by programmers to transfer data from one utility
+to another.
+#PThe user can sometimes access them via a SCRIPT or the GUI.
+
+
+
+
+#Q
+#XMiscelaneous#
+#XList 39#
+#YStorage of intermediate results and the status of a refinement -  LIST 39#
+#ALIST39#
+#HSmisc#
+#P
+The INTEGER record stores flags indication what steps of the analysis 
+have been completed.
+#P
+There are two REAL records
+#
+FLAC holds information about the Absolute Structure
+#J
+Slope of the npp for the refinement
+Slope of the npp for the Bijvoet pairs
+Hole-in-one value and su
+Parsons D or Q value and su
+Hooft y value and su
+Histogram value and su
+#
+
+HOOF holds the Hooft probabilities
+#J
+P2 true
+P2 false
+P3 true
+P3 twin
+P3 false
+#
+
+
+
 #
 #ZCRYSTALS Manual#
 #P 
