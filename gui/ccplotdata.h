@@ -178,6 +178,7 @@ public:
 
     virtual void CreateSeries(int numser, vector<int> & type) = 0;   // controls memory allocation for a series
     virtual void AddSeries(int type, int length) = 0;       // add a series (after data transfer for previous ones complete)
+    virtual void SaveToFile(string filename) = 0;       // output data to file
 
     void DrawKey();                                         // get the key redrawn.
     int FindSeriesType(string textstyle);
@@ -239,6 +240,7 @@ private:
 #define kSPlotUseRightAxis "USERIGHTAXIS"
 #define kSPlotKey          "KEY"
 #define kSPlotSave         "SAVE"
+#define kSPlotExport       "EXPORT"
 #define kSPlotPrint        "PLOTPRINT"
 
 enum
@@ -268,7 +270,8 @@ enum
  kTPlotUseRightAxis,
  kTPlotKey,
  kTPlotSave,
- kTPlotPrint
+ kTPlotPrint,
+ kTPlotExport
 };
 
 

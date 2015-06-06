@@ -215,6 +215,28 @@ CcParse CrPlot::ParseInput( deque<string> & tokenList )
                 ((CxPlot*)ptr_to_cxObject)->MakeMetaFile(w,h,name);
                 break;
             }
+            case kTPlotExport:
+            {
+                tokenList.pop_front();  // "EXPORT"
+                string name = string(tokenList.front()); //filename
+                tokenList.pop_front();
+				if(attachedPlotData) {
+#ifdef CRY_USEWX
+					wxString cwd = wxGetCwd();
+#endif
+					string extension = "*.csv";
+					string description = "Delimited text (*.csv)";
+					string result = CcController::theController->SaveFileDialog( name, extension, description);
+					if ( ! ( result == "CANCEL" ) )
+					{
+						attachedPlotData->SaveToFile(result);
+					}
+#ifdef CRY_USEWX
+					wxSetWorkingDirectory(cwd);
+#endif
+				}
+                break;
+            }
       case kTDefinePopupMenu:
       {
         tokenList.pop_front();

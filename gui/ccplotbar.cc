@@ -540,4 +540,29 @@ void CcPlotBar::CreateSeries(int numser, vector<int> & type)
     }
 }
 
+void CcPlotBar::SaveToFile(string filename) 
+{
+        FILE* output = fopen( filename.c_str(), "w+" );
+
+		if ( output == NULL ) {
+             LOGERR("Could not open file to save plot data");
+			 return;
+		}			
+	
+       // check if data is present
+		if(m_Series[0].m_Data.empty())   return;
+        
+        for(int j=0; j<m_NumberOfSeries; j++)
+        {
+			fprintf( output, "\nSeries %d: %s\n", j+1, m_Series[j].m_SeriesName.c_str());
+			vector<string>::iterator its = m_Axes.m_Labels.begin();
+			vector<float>::iterator ity = m_Series[j].m_Data.begin();
+			for( int i = 0; ity != m_Series[j].m_Data.end(); ity++ )
+			{
+				fprintf( output, "%s,%f,%d\n", *its, *ity, j+1 );
+				its++;
+			}
+		}
+		fclose(output);
+}
 

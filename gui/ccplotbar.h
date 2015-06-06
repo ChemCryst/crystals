@@ -79,6 +79,7 @@ class CcPlotBar : public CcPlotData
         PlotDataPopup GetDataFromPoint(CcPoint *point); 
         void CreateSeries(int numser, vector<int> & type);       // creates all data series (type is a block of numser series types)
         void AddSeries(int type, int length);           // add a series to the graph
+        void SaveToFile(string filename);       // output data to file
         int m_NumberOfBarSeries;                        // bar-series are drawn next to one another, others overlap.
 };
 

@@ -515,3 +515,35 @@ void CcPlotScatter::CreateSeries(int numser, vector<int> & type)
     }
 }
 
+
+
+void CcPlotScatter::SaveToFile(string filename) 
+{
+	
+        FILE* output = fopen( filename.c_str(), "w+" );
+
+		if ( output == NULL ) {
+             LOGERR("Could not open file to save plot data");
+			 return;
+		}			
+	
+       // check if data is present
+        if(m_Series[0].m_DataXY[0].empty())     return;
+        
+        // now loop through the data items
+        // loop first through the series
+        for(int j=0; j<m_NumberOfSeries; j++)
+        {
+
+			fprintf( output, "\nSeries %d: %s\n", j+1, m_Series[j].m_SeriesName.c_str());
+			// loop through the data members of this series
+            vector<float>::iterator itx = m_Series[j].m_DataXY[0].begin();
+            vector<float>::iterator ity = m_Series[j].m_DataXY[1].begin();
+            for( ; itx != m_Series[j].m_DataXY[0].end(); itx++ )
+            {
+				fprintf( output, "%f,%f,%d\n", *itx, *ity, j+1 );
+                ity++;
+            }
+        }
+		fclose(output);
+}

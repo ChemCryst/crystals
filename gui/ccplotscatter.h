@@ -86,6 +86,7 @@ class CcPlotScatter : public CcPlotData
         void CreateSeries(int numser, vector<int> & type);
         void AddSeries(int type, int length);
         void ExtendSeriesLength(int ser);
+		void SaveToFile(string filename);       // output data to file
 
         bool series_has_independent_labels;
 };

@@ -315,7 +315,9 @@ void CxWindow::CxDestroyWindow()
 DestroyWindow();
 #endif
 #ifdef CRY_USEWX
-Destroy();
+	Destroy();
+//    wxDELETE( m_wxWinDisabler );
+
 #endif
 }
 
@@ -469,7 +471,8 @@ void CxWindow::Hide()
 
 #ifdef CRY_USEWX	
 void CxWindow::OnSetFocus(wxFocusEvent& e) {
-    
+
+    if ( m_PreDestroyed ) return;
 //    ostringstream a;
 //	a << (int) this << " getting focus from "  << (int) e.GetWindow() << " " << e.GetWindow()->GetLabel();
 //	LOGERR(a.str());
