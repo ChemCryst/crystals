@@ -313,14 +313,16 @@ subroutine hdf5_dic_get(crfile, idunit, error)
     
     !print *, 'hdf5 dic ', size(hdf5_dic)
     error=-1
-    do i=1, size(hdf5_dic)
-        !print *, 'idunit in dic ', i, hdf5_dic(i)%idunit
-        if(hdf5_dic(i)%idunit==idunit) then
-            crfile=>hdf5_dic(i)
-            error=0
-            return
-        end if
-    end do
+    if(allocated(hdf5_dic)) then
+		do i=1, size(hdf5_dic)
+			!print *, 'idunit in dic ', i, hdf5_dic(i)%idunit
+			if(hdf5_dic(i)%idunit==idunit) then
+				crfile=>hdf5_dic(i)
+				error=0
+				return
+			end if
+		end do
+	end if
     
 end subroutine
     
