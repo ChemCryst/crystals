@@ -1,3 +1,39 @@
+#ifdef _NOHDF5_
+
+! dummy hdf5 function to avoid linking to hdf5 when hdf5 is not used
+module hdf5_dsc
+
+type, public :: t_dsc_hdf5
+    integer(hid_t) :: file_id       ! file identifier
+    integer :: idunit
+    character(len=3) :: dsc_dsetname = "dsc"     ! dataset name
+    integer :: dsc_blocksize = 2048 ! size of the chunks for dsc
+    integer(hid_t) :: dsc_dset_id       ! dataset identifier
+    integer(hid_t) :: dsc_dspace_id     ! dataspace identifier
+    integer(hid_t) :: dsc_dtype         ! opaque datatype
+    character(len=10) :: dsc_dtype_tag = "dsc record"
+    !integer(hid_t) :: crp_list      ! dataset creation property identifier 
+    !integer(hid_t) :: filespace     ! dataspace identifier 
+    !integer(hid_t) :: slicespace_id ! memory dataspace identifier
+end type
+
+contains
+
+subroutine hdf5_dic_get(crfile, idunit, error)
+    implicit none
+    type(t_dsc_hdf5), intent(out), pointer :: crfile
+    integer, intent(in) :: idunit
+    integer, intent(out) :: error
+    integer i
+    
+    !print *, 'hdf5 dic ', size(hdf5_dic)
+    error=-1    
+end subroutine
+
+end module
+
+#else
+
 !> The module hdf5_dsc holds the necessary subroutine to handle the new hdf5 
 !> file format storage.
 !> At present, the dsc file remains in place inside a hdf5 dataspace using an opaque datatype
@@ -647,7 +683,6 @@ subroutine xdaini_hdf5(crfile)
     return
 end subroutine
 
-
-
-
 end module
+
+#endif
