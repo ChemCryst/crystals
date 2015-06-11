@@ -503,6 +503,7 @@ C
 C
 CODE FOR KFETCH
       FUNCTION KFETCH ( NU , I , J , NWORD )
+      use hdf5_dsc
 C
 C -- THIS ROUTINE TRANSFERS DATA FROM A DIRECT ACCESS FILE
 C--FETCH DATA FROM THE DISC  -  THIS LINK CONTROLS THE DISC
@@ -558,6 +559,8 @@ C
       INCLUDE 'XDAVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
+      integer error
+      type(t_dsc_hdf5), pointer :: crfile
 C
 C
 C
@@ -571,9 +574,17 @@ C
 C
 1000  CONTINUE
 C
-          READ ( NU, REC = N, ERR = 2000, IOSTAT = IOS ) J
-          IF (IOS .NE. ISSOKF) GOTO 2000
-      RETURN
+      call hdf5_dic_get(crfile, NU, error)
+      !print *, 'kfetch hdf5 search dic: iunit, error', NU, error
+      if(error/=0) then
+        READ ( NU, REC = N, ERR = 2000, IOSTAT = IOS ) J
+        IF (IOS .NE. ISSOKF) GOTO 2000        
+      else
+        call hdf5_dsc_kfetch(crfile, N, J, error)
+        if(error==-1) goto 2000
+      end if  
+      return    
+      
 C
 C--TRANSFER ERROR
 2000  CONTINUE
@@ -645,6 +656,7 @@ C
 C
 CODE FOR KSTORE
       FUNCTION KSTORE ( NU , I , J , NWORD )
+      use hdf5_dsc
 C
 C -- THIS ROUTINE WRITES DATA TO A DIRECT ACCESS FILE
 C
@@ -672,14 +684,23 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XIOBUF.INC'
-C
-C
+      
+      integer error
+      type(t_dsc_hdf5), pointer :: crfile
       KSTORE = 1
 C
       N = I + 1
 C
-      WRITE ( NU , REC = N , ERR = 100 , IOSTAT = IOS ) J
-      IF (IOS .NE. ISSOKF) GOTO 100
+      call hdf5_dic_get(crfile, NU, error)
+      !print *, 'hdf5 search dic', error
+      if(error/=0) then
+        WRITE ( NU , REC = N , ERR = 100 , IOSTAT = IOS ) J
+        IF (IOS .NE. ISSOKF) GOTO 100
+      else
+        !print *, 'kstore hdf5'
+        call hdf5_dsc_kstore(crfile, n, j, error)        
+        if(error/=0) goto 100        
+      end if
       RETURN
 100   CONTINUE
 cjan08       WRITE(NCAWU,200) NU,N
@@ -741,12 +762,11 @@ C
 C
       RETURN
       END
-C
-C --
-C
+
 C
 CODE FOR XDAINI
       SUBROUTINE XDAINI ( IDUNIT )
+      use hdf5_dsc
 C
 C -- INITIALISE THE NEW DIRECT ACCESS FILE ON UNIT 'IDUNIT'
 C
@@ -758,6 +778,16 @@ C
       INCLUDE 'XDAVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
+      ! Check if a hdf5 is  used
+      integer error
+      type(t_dsc_hdf5), pointer :: crfile
+      
+      
+      call hdf5_dic_get(crfile, IDUNIT, error)
+      if(error==0) then      
+        call xdaini_hdf5(crfile)
+      else
+              
       IDATOT = -1
       IREQ = MIN0 ( IDAINI , IDAQUA )
       IREQ = MAX0 ( IREQ , IDAMIN )
@@ -791,6 +821,9 @@ cjan08      WRITE ( NCAWU , 1010 ) IDUNIT , NEWNAM
       CALL XPRVDU(NCVDU, 1,0)
 1011  FORMAT( 1X , 'A new direct access file has been created ' ,
      2 'on unit ' , I3 , ' -- ' , A10 , ' file')
+     
+      end if
+     
 C
       RETURN
       END
@@ -799,6 +832,7 @@ C --
 C
 CODE FOR XDAXTN
       SUBROUTINE XDAXTN ( IUNIT,IBEGIN,ICOUNT )
+      use hdf5_dsc
 C
 C -- WRITE 'ICOUNT' RECORDS TO DISC FILE ON UNIT 'IUNIT'
 C    STARTING AT RECORD 'IBEGIN'
@@ -821,6 +855,15 @@ C
 C
 C    IF IBEGIN IS LESS THAN OR EQUAL TO 0, THE END OF FILE WILL
 C    BE SEARCHED FOR.
+      
+      ! Check if a hdf5 is  used
+      integer error
+      type(t_dsc_hdf5), pointer :: crfile
+      
+      call hdf5_dic_get(crfile, IUNIT, error)
+      if(error==0) then      
+        call xdaxtn_hdf5 (crfile, IBEGIN,ICOUNT )
+      else      
 C
 C -- IBEGIN MAY BE A CONSTANT AND SO SHOULD NOT BE MODIFIED
 C
@@ -868,6 +911,9 @@ cjan08      WRITE ( NCAWU , 9925 ) IUNIT
      2 ' has been exceeded' )
       CALL XERHND ( IERCAT )
       GO TO 9900
+      
+      end if
+      
       END
 C
 C

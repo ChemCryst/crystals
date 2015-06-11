@@ -1,2 +1,3 @@
+      INTEGER NU 
       COMMON/XDISC/NU 
 

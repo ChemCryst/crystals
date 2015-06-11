@@ -507,8 +507,8 @@ C
 C            -VE         FAILURE ( RETURNS IOSTAT VALUE )
 C            +VE         SUCCESS
 C
-
-
+      use hdf5_dsc
+      
       logical lexist, ierr
 C
       INTEGER IDUNIT , IFSTAT , IFMODE
@@ -521,6 +521,8 @@ C
       CHARACTER*7 ACSTAT
       character(len=9) :: faction 
       integer recordsize
+      integer     ::   error ! error flag
+      type(t_dsc_hdf5), pointer :: crfile
 
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XSSVAL.INC'
@@ -662,6 +664,7 @@ c
 
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+        
         OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
      1         ACTION = faction,
@@ -686,7 +689,7 @@ C -- IF A NEW FILE HAS BEEN CREATED, SOME INITIALISATION TASKS
 C    MUST BE PERFORMED IMMEDIATELY
 
       IF ((ACSTAT.EQ.'NEW').OR.(ACSTAT.EQ.'SCRATCH')) then
-        CALL XDAINI(IDUNIT)
+        call XDAINI(IDUNIT)
       end if
     
       KDAOPN = 1
@@ -906,6 +909,7 @@ C
 C
 CODE FOR XDAEND
       SUBROUTINE XDAEND ( IUNIT , LAST )
+      use hdf5_dsc
 C
 C -- RETURNS NUMBER OF RECORD THAT WOULD FOLLOW THE LAST ACTUALLY
 C    PRESENT IN A DISC FILE
@@ -917,8 +921,19 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
+      
+      type(t_dsc_hdf5), pointer :: crfile   
+      integer error
 C
 C
+      call hdf5_dic_get(crfile, IUNIT, error)
+      !print *, 'xdaend hdf5 search dic: iunit, error', iunit, error
+      if(error==0) then
+          !print *, 'xdaend, hdf5 extending'
+          call xdaend_hdf5 (crfile, last)
+          !print *, 'last hdf5', last
+      else
+
       J = NMXREC
       DO 2000 I = 1, J
 C
@@ -941,6 +956,9 @@ C      STOP 100
 C
 3000  CONTINUE
 C
+
+      end if
+
       RETURN
       END
 C
