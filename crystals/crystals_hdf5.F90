@@ -3,6 +3,8 @@
 ! dummy hdf5 function to avoid linking to hdf5 when hdf5 is not used
 module hdf5_dsc
 
+INTEGER, PARAMETER :: HID_T = 4
+
 type, public :: t_dsc_hdf5
     integer(hid_t) :: file_id       ! file identifier
     integer :: idunit
@@ -16,6 +18,8 @@ type, public :: t_dsc_hdf5
     !integer(hid_t) :: filespace     ! dataspace identifier 
     !integer(hid_t) :: slicespace_id ! memory dataspace identifier
 end type
+
+type(t_dsc_hdf5), dimension(:), allocatable, target, private :: hdf5_dic
 
 logical :: hdf5_in_use = .false.
 
@@ -78,7 +82,7 @@ end subroutine
 
 subroutine hdf5_dic_add(crfile, error)
     implicit none
-    type(t_dsc_hdf5), intent(out), pointer :: crfile
+    type(t_dsc_hdf5), pointer :: crfile
     type(t_dsc_hdf5), dimension(size(hdf5_dic)) :: temp
     integer, intent(out) :: error
     integer i
@@ -89,7 +93,7 @@ end subroutine
 
 subroutine hdf5_dic_get(crfile, idunit, error)
     implicit none
-    type(t_dsc_hdf5), intent(out), pointer :: crfile
+    type(t_dsc_hdf5), pointer :: crfile
     integer, intent(in) :: idunit
     integer, intent(out) :: error
     
@@ -122,7 +126,6 @@ subroutine xdaxtn_hdf5 (crfile, ibegin,icount )
     use xerval_mod !include 'XERVAL.INC'
     use xdaval_mod !include 'XDAVAL.INC'
     use xiobuf_mod !include 'XIOBUF.INC'
-    use hdf5
     implicit none
 
     type(t_dsc_hdf5), intent(inout) :: crfile
@@ -137,7 +140,6 @@ subroutine xdaini_hdf5(crfile)
     use xssval_mod !include 'xssval.inc'
     use xdaval_mod !include 'xdaval.inc'
     use xiobuf_mod !include 'xiobuf.inc'
-    use hdf5
     implicit none
 
     type(t_dsc_hdf5), pointer :: crfile
