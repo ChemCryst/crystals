@@ -24,8 +24,8 @@
 goto ALLDVF
 
 :INW
-@if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\hdf5\lib -libpath:..\crashrpt wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib  CrashRpt1402.lib hdf5.lib shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
-@if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB%  -libpath:..\hdf5\lib -libpath:..\crashrpt wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw%WXNUM%u_gl.lib  CrashRpt1402.lib hdf5.lib user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\hdf5\lib -libpath:..\crashrpt wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib  CrashRpt1402.lib hdf5.lib hdf5_fortran.lib shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB%  -libpath:..\hdf5\lib -libpath:..\crashrpt wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw%WXNUM%u_gl.lib  CrashRpt1402.lib hdf5.lib hdf5_fortran.lib user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @set LIBS=%LIBS% rc.res
 @if "%CRDEBUG%" == "TRUE"     @set CDEF= /I%WXWIN%\include /I%WXLIB%\mswud  /I..\crashrpt /D"WXUSINGDLL" /D"CRY_DEBUG"
 @if not "%CRDEBUG%" == "TRUE" @set CDEF= /I%WXWIN%\include /I%WXLIB%\mswu /I..\crashrpt /D"WXUSINGDLL"
@@ -70,7 +70,7 @@ goto ALLDVF
 @set OPT=/OPT:REF /libpath:..\hdf5\lib
 @set LDFLAGS=/SUBSYSTEM:WINDOWS
 @set LDCFLAGS=/SUBSYSTEM:console
-@set LIBS=%LIBS% opengl32.lib glu32.lib 
+@set LIBS=%LIBS% opengl32.lib glu32.lib hdf.lib hdf5_fortran.lib
 @set LDEBUG=/DEBUG /debugtype:cv /pdb:none /incremental:no
 
 @set CC=CL
