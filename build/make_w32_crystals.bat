@@ -14,6 +14,8 @@
 @if "%CRDEBUG%" == "TRUE" if not exist dobj mkdir dobj
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
+@REM - explicit ordering of f90 files so that required modules are build first.
+@FOR %%I IN ( ..\crystals\xdaval.inc.f90 ..\crystals\xunits.inc.f90 ..\crystals\xssval.inc.f90 ..\crystals\xerval.inc.f90 ..\crystals\xiobuf.inc.f90 ..\crystals\xdisc.inc.f90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\gui\*.F90 )      DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\crystals\*.F ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
