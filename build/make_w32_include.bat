@@ -62,15 +62,15 @@ goto ALLDVF
 :GID
 @set LIBS=script1.res
 @set CDEF=/D__%COMPCODE%__ /D"_AFXDLL" /D_CRT_SECURE_NO_WARNINGS
-@set FDEF=-D__GID__ -DCRY_GUI -DCRY_USEMFC -DCRY_OSWIN32 -DCRY_FORTDIGITAL  /include:..\hdf5\include
+@set FDEF=-D__GID__ -DCRY_GUI -DCRY_USEMFC -DCRY_OSWIN32 -DCRY_FORTDIGITAL -D_NOHDF5_
 
 :ALLDVF
 @set LD=link
 @set OUT=/OUT:
-@set OPT=/OPT:REF /libpath:..\hdf5\lib
+@set OPT=/OPT:REF 
 @set LDFLAGS=/SUBSYSTEM:WINDOWS
 @set LDCFLAGS=/SUBSYSTEM:console
-@set LIBS=%LIBS% opengl32.lib glu32.lib hdf.lib hdf5_fortran.lib
+@set LIBS=%LIBS% opengl32.lib glu32.lib
 @set LDEBUG=/DEBUG /debugtype:cv /pdb:none /incremental:no
 
 @set CC=CL
@@ -104,7 +104,7 @@ set COPTS=
 set CDEBUG=
 set COUT=
 set F77=DF
-set FDEF=/define:__%COMPCODE%__ /define:CRY_FORTDIGITAL  /I..\hdf5\include
+set FDEF=/define:__%COMPCODE%__ /define:CRY_FORTDIGITAL  
 set FOPTS=/fpp /I..\crystals /ML /optimize:4 /winapp /nolink
 set FNOOPT=/fpp /I..\crystals /ML /optimize:0 /winapp /nolink
 set FOUT=/object:obj\
