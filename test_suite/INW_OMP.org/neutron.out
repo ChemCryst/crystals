@@ -1866,7 +1866,7 @@ All cycle   R-factor              0.0            13.           0.10E+03
 All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.57E-01       0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
-Inter cycle R-factor             -5.0          -0.36E-03       0.10E+03
+Inter cycle R-factor             -5.0          -0.37E-03       0.10E+03
 Inter cycle Rw                   -5.0           0.43E-02       0.10E+03
 Inter cycle shift/esd            -10.           0.10           0.10E+05
 Inter cycle Min function          0.0            2.8           0.10E+16
@@ -2149,7 +2149,7 @@ All cycle   Rw                    0.0            12.           0.10E+03
 All cycle   shift/esd            0.30E-01       0.72E-01       0.10E+05
 All cycle   Min function          0.0           0.40E+04       0.10E+16
 Inter cycle R-factor             -5.0          -0.76E-03       0.10E+03
-Inter cycle Rw                   -5.0           0.45E-03       0.10E+03
+Inter cycle Rw                   -5.0           0.44E-03       0.10E+03
 Inter cycle shift/esd            -10.          -0.15E-01       0.10E+05
 Inter cycle Min function          0.0           0.29           0.10E+16
 
@@ -3610,7 +3610,7 @@ Mean C-C su =   0.0019
   -9   3   2   13.2    3.8   2.9  3.49    -3   4   9    0.0    9.4   2.9  0.00                                                                                                                                                                                  
    3   7   8   10.0    0.6   2.9 15.73    -4  16   2   11.5    2.2   2.9  5.30                                                                                                                                                                                  
    6   9   4    0.0    9.3   2.9  0.00     3   5   0   12.0    2.7   2.9  4.44                                                                                                                                                                                  
-  -8   4   8    9.4    0.3   2.8 37.38     2  18   2    0.0    9.0   2.8  0.00                                                                                                                                                                                  
+  -8   4   8    9.4    0.3   2.8 37.39     2  18   2    0.0    9.0   2.8  0.00                                                                                                                                                                                  
 
                               ***
                              ***
@@ -3694,7 +3694,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
  H        93.     0.4944    0.7073   -0.0043        3.0   
  H        70.     0.6186    0.1145    0.1983       -4.3   
  Q         1.     0.4588    0.1048    0.1439       25.3  Poor Shape  
- Q         2.     0.7579    0.1269    0.2554       18.8  Poor Shape  
+ Q         2.     0.7421    0.6269    0.2446       18.8  Poor Shape  
  Q         3.     0.6958    0.0610    0.1775       15.1  Poor Shape  
  Q         4.     0.7938    0.6446    0.2075       15.0  Poor Shape  
  Q         5.     0.7054    0.0671    0.1204       11.4  Poor Shape  
@@ -4026,7 +4026,7 @@ Bonds: Update required - List5 length change
 
   KEY                                                1       2
 
- Distances about atom  Q      2.          X =  0.24208     Y = -0.12687     Z =  0.74464
+ Distances about atom  Q      2.          X =  0.24208     Y = -0.12688     Z =  0.74464
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -4885,7 +4885,7 @@ Resetting shift for Extinction  Shift=       5.54  Esd=       0.37  New shift=  
 
  LARGE     2           2             0.597      0.1E+02    0.372E+00         14.90                          EXTPARAM
  SRATIO   75          75            0.0000      0.4E+01    0.298E-03          0.00        C      7 X       
- SRATIO  136         136            0.0000     -0.6E+01    0.231E-02          0.00        H     92 U[13]   
+ SRATIO  136         136            0.0000     -0.5E+01    0.231E-02          0.00        H     92 U[13]   
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            222.
                                                 for         144 parameters
