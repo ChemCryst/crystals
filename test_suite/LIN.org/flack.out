@@ -4953,6 +4953,9 @@ Mean C-C su =   0.0061
 #GENERALEDIT 39                                                                                                                                                                                                                                                 
 #SCRIPT ADD39F                                                                                                                                                                                                                                                  
 #GENERALEDIT 39                                                                                                                                                                                                                                                 
+#GENERALEDIT 39                                                                                                                                                                                                                                                 
+#SCRIPT ADD39F                                                                                                                                                                                                                                                  
+#GENERALEDIT 39                                                                                                                                                                                                                                                 
 #SUM LIST 6 LEVEL=NORM                                                                                                                                                                                                                                          
  Summary of contents of list  6 - Reflection data
  Quantity            Minimum        Maximum
@@ -5107,7 +5110,7 @@ LS-scale=  2.708   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
 #PURGE  LIST=7                                                                                                                                                                                                                                                  
- List type    5  serial number   65 from    51641 to    51867 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51713 to    51939 will not be copied ( deleted )         
 
 
  ************************************************************************
@@ -5153,7 +5156,6 @@ POLARITY AND ENANTIOPOLE REFINEMENT TEST
  No of Centric Reflections   =     98
      Friedel Coverage        =    63 %
  Flack parameter obtained from original refinement
- Hooft parameter obtained with Flack x set to zero
    RA   RD    wRA2  wRD2   Friedif for all data and x=zero
    3.7  48.5   5.0  48.2    564.38
 
