@@ -62,12 +62,12 @@ goto ALLDVF
 :GID
 @set LIBS=script1.res
 @set CDEF=/D__%COMPCODE%__ /D"_AFXDLL" /D_CRT_SECURE_NO_WARNINGS
-@set FDEF=-D__GID__ -DCRY_GUI -DCRY_USEMFC -DCRY_OSWIN32 -DCRY_FORTDIGITAL
+@set FDEF=-D__GID__ -DCRY_GUI -DCRY_USEMFC -DCRY_OSWIN32 -DCRY_FORTDIGITAL  /include:..\hdf5\include
 
 :ALLDVF
 @set LD=link
 @set OUT=/OUT:
-@set OPT=/OPT:REF
+@set OPT=/OPT:REF /libpath:..\hdf5\lib
 @set LDFLAGS=/SUBSYSTEM:WINDOWS
 @set LDCFLAGS=/SUBSYSTEM:console
 @set LIBS=%LIBS% opengl32.lib glu32.lib 
@@ -81,8 +81,8 @@ goto ALLDVF
 
 @set F77=DF
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /optimize:4  /nolink 
-@set FNOOPT=/fpp /I..\crystals /MD /optimize:0 /nolink
+@set FOPTS=/fpp /include:..\crystals /MD /optimize:4  /nolink 
+@set FNOOPT=/fpp /include:..\crystals /MD /optimize:0 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
 @set FDEBUG=/fpp /I..\crystals /MDd /debug /Zt /check:bounds /check:format /check:overflow /check:underflow /warn:argument_checking /warn:nofileopt /nolink 
@@ -104,7 +104,7 @@ set COPTS=
 set CDEBUG=
 set COUT=
 set F77=DF
-set FDEF=/define:__%COMPCODE%__ /define:CRY_FORTDIGITAL
+set FDEF=/define:__%COMPCODE%__ /define:CRY_FORTDIGITAL  /I..\hdf5\include
 set FOPTS=/fpp /I..\crystals /ML /optimize:4 /winapp /nolink
 set FNOOPT=/fpp /I..\crystals /ML /optimize:0 /winapp /nolink
 set FOUT=/object:obj\
