@@ -27,7 +27,7 @@ contains
 
 subroutine hdf5_dsc_open(crfile, filename, error)
     implicit none
-    type(t_dsc_hdf5), pointer, intent(inout) :: crfile
+    type(t_dsc_hdf5), pointer :: crfile
     integer, intent(out) :: error
     character(len=*), intent(in) :: filename
     
