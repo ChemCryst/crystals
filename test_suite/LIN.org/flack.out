@@ -144,10 +144,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.2
-[33]                               The mean abs(shift/su) =           0.2
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.2 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -166,7 +165,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.39 E-03         0.00 E+00         0.39 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -288,10 +287,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.0
-[33]                               The mean abs(shift/su) =           0.0
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [04]  The largest (shift/esd) =      0.00
 
                                 Min          Actual           Max
@@ -310,7 +308,7 @@ All cycle   Rw                    0.0           0.49E-01       0.10E+03
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.38 E-03         0.00 E+00         0.38 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -472,10 +470,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1             2.0       0.0E+00    0.3 E+00          6.0                           POLARITY
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             36.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           6.0
-[33]                               The mean abs(shift/su) =           6.0
+[64]                                  The rms (shift/su)  =           6.
+[64]                               The mean abs(shift/su) =           6.
 [05]  The largest (shift/esd) =      6.0 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -494,7 +491,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.26 E+01         0.00 E+00         0.26 E+01
-[45]  Hamilton weighted R-value           4.0              0.00              4. 
+[45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -607,10 +604,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.4
-[33]                               The mean abs(shift/su) =           0.4
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.4 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -629,7 +625,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.38 E-03         0.00 E+00         0.38 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -774,10 +770,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.2
-[33]                               The mean abs(shift/su) =           0.2
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.2 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -796,7 +791,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.39 E-03         0.00 E+00         0.39 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -918,10 +913,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.0
-[33]                               The mean abs(shift/su) =           0.0
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [04]  The largest (shift/esd) =      0.00
 
                                 Min          Actual           Max
@@ -940,7 +934,7 @@ All cycle   Rw                    0.0           0.49E-01       0.10E+03
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.38 E-03         0.00 E+00         0.38 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1102,10 +1096,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1             2.0       0.0E+00    0.3 E+00          6.0                           POLARITY
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             36.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           6.0
-[33]                               The mean abs(shift/su) =           6.0
+[64]                                  The rms (shift/su)  =           6.
+[64]                               The mean abs(shift/su) =           6.
 [05]  The largest (shift/esd) =      6.0 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -1124,7 +1117,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.26 E+01         0.00 E+00         0.26 E+01
-[45]  Hamilton weighted R-value           4.0              0.00              4. 
+[45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1237,10 +1230,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.4
-[33]                               The mean abs(shift/su) =           0.4
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.4 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -1259,7 +1251,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.38 E-03         0.00 E+00         0.38 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1407,10 +1399,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1            -0.0       0.0E+00    0.4 E-02         -0.2                           POLARITY
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.2
-[33]                               The mean abs(shift/su) =           0.2
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.2 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -1429,7 +1420,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.39 E-03         0.00 E+00         0.39 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1551,10 +1542,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.0
-[33]                               The mean abs(shift/su) =           0.0
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [04]  The largest (shift/esd) =      0.00
 
                                 Min          Actual           Max
@@ -1573,7 +1563,7 @@ All cycle   Rw                    0.0           0.49E-01       0.10E+03
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.38 E-03         0.00 E+00         0.38 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1735,10 +1725,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1            -2.0       0.0E+00    0.3 E+00         -6.0                           POLARITY
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             36.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           6.0
-[33]                               The mean abs(shift/su) =           6.0
+[64]                                  The rms (shift/su)  =           6.
+[64]                               The mean abs(shift/su) =           6.
 [05]  The largest (shift/esd) =      6.0 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -1757,7 +1746,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.26 E+01         0.00 E+00         0.26 E+01
-[45]  Hamilton weighted R-value           4.0              0.00              4. 
+[45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1873,10 +1862,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1             0.0      -0.9E-03    0.4 E-02          0.4                           POLARITY
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.4
-[33]                               The mean abs(shift/su) =           0.4
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.4 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
@@ -1895,7 +1883,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.38 E-03         0.00 E+00         0.38 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2043,10 +2031,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1            -0.0       0.0E+00    0.1 E-02         -0.5                           ENANTIO 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.5
-[33]                               The mean abs(shift/su) =           0.5
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.5 , for Parameter    1, ENANTIO
 
                                 Min          Actual           Max
@@ -2065,7 +2052,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.39 E-03         0.00 E+00         0.39 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2188,10 +2175,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           0.0
-[33]                               The mean abs(shift/su) =           0.0
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [04]  The largest (shift/esd) =      0.00
 
                                 Min          Actual           Max
@@ -2210,7 +2196,7 @@ All cycle   Rw                    0.0           0.49E-01       0.10E+03
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.38 E-03         0.00 E+00         0.38 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2372,10 +2358,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1            -0.9       0.0E+00    0.1 E+00         -6.7                           ENANTIO 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             45.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           6.6
-[33]                               The mean abs(shift/su) =           6.6
+[64]                                  The rms (shift/su)  =           6.
+[64]                               The mean abs(shift/su) =           6.
 [05]  The largest (shift/esd) =      6.7 , for Parameter    1, ENANTIO
 
                                 Min          Actual           Max
@@ -2394,7 +2379,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.26 E+01         0.00 E+00         0.26 E+01
-[45]  Hamilton weighted R-value           4.0              0.00              4. 
+[45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2510,10 +2495,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [13]  LARGE     1           1            -0.0       0.6E-02    0.2 E-02         -3.1                           ENANTIO 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             10.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           3.1
-[33]                               The mean abs(shift/su) =           3.1
+[64]                                  The rms (shift/su)  =           3.
+[64]                               The mean abs(shift/su) =           3.
 [05]  The largest (shift/esd) =      3.1 , for Parameter    1, ENANTIO
 
                                 Min          Actual           Max
@@ -2532,7 +2516,7 @@ All cycle   Min function          0.0           0.50E-03       0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.49 E-03         0.00 E+00         0.49 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2703,10 +2687,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [14]  S/ESD     1           1            0.010       0.0E+00    0.19 E-02          5.5         CL     1 Z       
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             31.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           5.5
-[33]                               The mean abs(shift/su) =           5.5
+[64]                                  The rms (shift/su)  =           5.
+[64]                               The mean abs(shift/su) =           5.
 [05]  The largest (shift/esd) =      5.5 , for Parameter    1, CL1Z
 
                                 Min          Actual           Max
@@ -2725,7 +2708,7 @@ All cycle   Min function          0.0            56.           0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.56 E+02         0.00 E+00         0.56 E+02
-[45]  Hamilton weighted R-value          18.6              0.00             18. 
+[45]  Hamilton weighted R-value          18.              0.00             18. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2788,7 +2771,7 @@ All cycle   Min function          0.0            56.           0.10E+16
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.13    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.13    0.04
 [37]                       0.00             0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.014 
@@ -2843,10 +2826,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             39.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           6.2
-[33]                               The mean abs(shift/su) =           6.2
+[64]                                  The rms (shift/su)  =           6.
+[64]                               The mean abs(shift/su) =           6.
 [05]  The largest (shift/esd) =      6.2 , for Parameter    1, CL1Z
 
                                 Min          Actual           Max
@@ -2856,7 +2838,7 @@ All cycle   Rw                    0.0            7.5           0.10E+03
 All cycle   Min function          0.0            9.2           0.10E+16
 Inter cycle R-factor             -5.0            9.7           0.10E+03
 Inter cycle Rw                   -5.0            11.           0.10E+03
-Inter cycle shift/esd            -10.          -0.66           0.10E+05
+[26] Inter cycle shift/esd            -10.          -0.6            0.1 E+05
 [07] Inter cycle Min function          0.0
 
 
@@ -2869,7 +2851,7 @@ Inter cycle shift/esd            -10.          -0.66           0.10E+05
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.91 E+01         0.00 E+00         0.91 E+01
-[45]  Hamilton weighted R-value           7.5              0.00              7. 
+[45]  Hamilton weighted R-value           7.              0.00              7. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2932,7 +2914,7 @@ Inter cycle shift/esd            -10.          -0.66           0.10E+05
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.008 
@@ -2988,10 +2970,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             44.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           6.6
-[33]                               The mean abs(shift/su) =           6.6
+[64]                                  The rms (shift/su)  =           6.
+[64]                               The mean abs(shift/su) =           6.
 [05]  The largest (shift/esd) =      6.6 , for Parameter    1, CL1Z
 
                                 Min          Actual           Max
@@ -3010,7 +2991,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.33 E+00         0.00 E+00         0.33 E+00
-[45]  Hamilton weighted R-value           1.4              0.00              1. 
+[45]  Hamilton weighted R-value           1.              0.00              1. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -3073,7 +3054,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.002 
@@ -3128,10 +3109,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             21.
                                                 for           1 parameters
-[33]                                  The rms (shift/su)  =           4.6
-[33]                               The mean abs(shift/su) =           4.6
+[64]                                  The rms (shift/su)  =           4.
+[64]                               The mean abs(shift/su) =           4.
 [05]  The largest (shift/esd) =      4.6 , for Parameter    1, CL1Z
 
                                 Min          Actual           Max
@@ -3154,7 +3134,7 @@ Inter cycle shift/esd            -10.            2.1           0.10E+05
  Statistics for     1 least squares parameters, with    45 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.71 E-03         0.00 E+00         0.71 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -3217,7 +3197,7 @@ Inter cycle shift/esd            -10.            2.1           0.10E+05
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
@@ -3330,10 +3310,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 [14]  S/ESD     2           2            0.010       0.0E+00    0.19 E-02          5.5         CL     1 Z       
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             30.
                                                 for           2 parameters
-[33]                                  The rms (shift/su)  =           3.8
-[33]                               The mean abs(shift/su) =           2.7
+[64]                                  The rms (shift/su)  =           3.
+[64]                               The mean abs(shift/su) =           2.
 [05]  The largest (shift/esd) =      5.5 , for Parameter    2, CL1Z
 
                                 Min          Actual           Max
@@ -3352,7 +3331,7 @@ All cycle   Min function          0.0            56.           0.10E+16
  Statistics for     2 least squares parameters, with    44 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.56 E+02         0.00 E+00         0.56 E+02
-[45]  Hamilton weighted R-value          18.6              0.00             18. 
+[45]  Hamilton weighted R-value          18.              0.00             18. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -3415,7 +3394,7 @@ All cycle   Min function          0.0            56.           0.10E+16
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.13    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.13    0.04
 [37]                       0.00             0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.014 
@@ -3471,10 +3450,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             38.
                                                 for           2 parameters
-[33]                                  The rms (shift/su)  =           4.3
-[33]                               The mean abs(shift/su) =           3.1
+[64]                                  The rms (shift/su)  =           4.
+[64]                               The mean abs(shift/su) =           3.
 [05]  The largest (shift/esd) =      6.1 , for Parameter    2, CL1Z
 
                                 Min          Actual           Max
@@ -3484,7 +3462,7 @@ All cycle   Rw                    0.0            7.5           0.10E+03
 All cycle   Min function          0.0            9.2           0.10E+16
 Inter cycle R-factor             -5.0            9.7           0.10E+03
 Inter cycle Rw                   -5.0            11.           0.10E+03
-Inter cycle shift/esd            -10.          -0.47           0.10E+05
+[26] Inter cycle shift/esd            -10.          -0.4            0.1 E+05
 [07] Inter cycle Min function          0.0
 
 
@@ -3497,7 +3475,7 @@ Inter cycle shift/esd            -10.          -0.47           0.10E+05
  Statistics for     2 least squares parameters, with    44 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.91 E+01         0.00 E+00         0.91 E+01
-[45]  Hamilton weighted R-value           7.5              0.00              7. 
+[45]  Hamilton weighted R-value           7.              0.00              7. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -3561,7 +3539,7 @@ Inter cycle shift/esd            -10.          -0.47           0.10E+05
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.008 
@@ -3617,10 +3595,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             43.
                                                 for           2 parameters
-[33]                                  The rms (shift/su)  =           4.6
-[33]                               The mean abs(shift/su) =           3.5
+[64]                                  The rms (shift/su)  =           4.
+[64]                               The mean abs(shift/su) =           3.
 [05]  The largest (shift/esd) =      6.5 , for Parameter    2, CL1Z
 
                                 Min          Actual           Max
@@ -3639,7 +3616,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
  Statistics for     2 least squares parameters, with    44 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.33 E+00         0.00 E+00         0.33 E+00
-[45]  Hamilton weighted R-value           1.4              0.00              1. 
+[45]  Hamilton weighted R-value           1.              0.00              1. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -3702,7 +3679,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.002 
@@ -3757,10 +3734,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =             21.
                                                 for           2 parameters
-[33]                                  The rms (shift/su)  =           3.2
-[33]                               The mean abs(shift/su) =           2.6
+[64]                                  The rms (shift/su)  =           3.
+[64]                               The mean abs(shift/su) =           2.
 [05]  The largest (shift/esd) =      4.5 , for Parameter    2, CL1Z
 
                                 Min          Actual           Max
@@ -3783,7 +3759,7 @@ Inter cycle shift/esd            -10.            1.4           0.10E+05
  Statistics for     2 least squares parameters, with    44 degrees of freedom
  Number of observations                46                 0                46
 [30]  Minimisation function              0.71 E-03         0.00 E+00         0.71 E-03
-[45]  Hamilton weighted R-value           0.0              0.00              0. 
+[45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -3846,7 +3822,7 @@ Inter cycle shift/esd            -10.            1.4           0.10E+05
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04    0.08    0.04   -0.00   -0.01    0.00
+[37]      CL         1.    1.00    0.00   -0.19   -0.20   -0.12    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
@@ -4275,10 +4251,9 @@ LS-scale=  2.699   Wilson Scale=  0.000
  S/ESD     1           1             0.048      0.0E+00    0.330E-01          1.47                          SCALE   
 [13]  LARGE     2           2             0.0       0.0E+00    0.2 E-01          0.2                           ENANTIO 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              4.
                                                 for          56 parameters
-[33]                                  The rms (shift/su)  =           0.2
-[33]                               The mean abs(shift/su) =           0.1
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      1.4 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
@@ -4297,7 +4272,7 @@ All cycle   Min function          0.0           0.58E+03       0.10E+16
  Statistics for    56 least squares parameters, with   848 degrees of freedom
  Number of observations               904                 0               904
 [30]  Minimisation function              0.57 E+03         0.00 E+00         0.57 E+03
-[45]  Hamilton weighted R-value           7.0              0.00              7. 
+[45]  Hamilton weighted R-value           7.              0.00              7. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -4360,42 +4335,42 @@ All cycle   Min function          0.0           0.58E+03       0.10E+16
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      AG         1.    1.00    0.00    1.00    1.00    0.00    0.10    0.10    0.05    0.00    0.00    0.00
+[37]      AG         1.    1.00    0.00    1.00    1.00    0.00    0.10
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
-[38]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07    0.08    0.07    0.01    0.01   -0.01
+[37]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07
 [37]                       0.00             0.00   -0.00    0.00   -0.00    0.00   -0.00    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.005    0.006 
 
-[38]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06    0.05    0.06    0.00    0.00   -0.01
+[37]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06
 [37]                       0.00            -0.00    0.00    0.00    0.00   -0.00    0.00   -0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.005    0.006 
 
-[38]      S          4.    1.00    0.00    0.79    1.36   -0.51    0.04    0.06    0.10    0.00   -0.00   -0.00
+[37]      S          4.    1.00    0.00    0.79    1.36   -0.51    0.04
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.002 
 
-[38]      S          5.    1.00    0.00    0.96    1.38   -0.73    0.07    0.05    0.05   -0.01   -0.01    0.02
+[37]      S          5.    1.00    0.00    0.96    1.38   -0.73    0.07
 [37]                       0.00             0.00   -0.00    0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
-[38]      AS         6.    1.00    0.00    0.50    0.50    0.00    0.05    0.05    0.03    0.00    0.00    0.00
+[37]      AS         6.    1.00    0.00    0.50    0.50    0.00    0.05
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
-[38]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07    0.08    0.28   -0.01   -0.07   -0.01
+[37]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07
 [37]                       0.00             0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.003    0.012 
 
-[38]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45    0.18    0.04    0.00    0.00    0.08
+[37]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.02    0.00    0.00    0.00    0.00    0.01
 [31]                                         0.000    0.000    0.007 
@@ -4485,10 +4460,9 @@ LS-scale=  2.708   Wilson Scale=  0.000
 
 [13]  LARGE     2           2             0.0       0.1E+00    0.2 E-01          0.0                           ENANTIO 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          56 parameters
-[33]                                  The rms (shift/su)  =           0.0
-[33]                               The mean abs(shift/su) =           0.0
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.1 , for Parameter   50, F7U[13]
 
                                 Min          Actual           Max
@@ -4496,9 +4470,9 @@ All cycle   R-factor              0.0            3.6           0.10E+03
 All cycle   Rw                    0.0            7.0           0.10E+03
 [06] All cycle   shift/esd
 All cycle   Min function          0.0           0.57E+03       0.10E+16
-[25] Inter cycle R-factor             -5.0           0.1 E-01       0.1 E+03
-[25] Inter cycle Rw                   -5.0           0.4 E-01       0.1 E+03
-Inter cycle shift/esd            -10.           0.20           0.10E+05
+[25] Inter cycle R-factor             -5.0           0. E-01       0.1 E+03
+[25] Inter cycle Rw                   -5.0           0. E-01       0.1 E+03
+[26] Inter cycle shift/esd            -10.           0.2            0.1 E+05
 [07] Inter cycle Min function          0.0
 
 
@@ -4511,7 +4485,7 @@ Inter cycle shift/esd            -10.           0.20           0.10E+05
  Statistics for    56 least squares parameters, with   848 degrees of freedom
  Number of observations               904                 0               904
 [30]  Minimisation function              0.57 E+03         0.00 E+00         0.57 E+03
-[45]  Hamilton weighted R-value           7.0              0.00              7. 
+[45]  Hamilton weighted R-value           7.              0.00              7. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -4574,42 +4548,42 @@ Inter cycle shift/esd            -10.           0.20           0.10E+05
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      AG         1.    1.00    0.00    1.00    1.00    0.00    0.10    0.10    0.05    0.00    0.00    0.00
+[37]      AG         1.    1.00    0.00    1.00    1.00    0.00    0.10
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
-[38]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07    0.08    0.07    0.01    0.01   -0.01
+[37]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07
 [37]                       0.00             0.00   -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.005    0.006 
 
-[38]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06    0.05    0.06    0.00    0.00   -0.01
+[37]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06
 [37]                       0.00            -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.005    0.006 
 
-[38]      S          4.    1.00    0.00    0.79    1.36   -0.51    0.04    0.06    0.10    0.00   -0.00   -0.00
+[37]      S          4.    1.00    0.00    0.79    1.36   -0.51    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.002 
 
-[38]      S          5.    1.00    0.00    0.96    1.38   -0.73    0.07    0.05    0.05   -0.01   -0.01    0.02
+[37]      S          5.    1.00    0.00    0.96    1.38   -0.73    0.07
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
-[38]      AS         6.    1.00    0.00    0.50    0.50    0.00    0.05    0.05    0.03    0.00    0.00    0.00
+[37]      AS         6.    1.00    0.00    0.50    0.50    0.00    0.05
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
-[38]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07    0.08    0.28   -0.01   -0.07   -0.01
+[37]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07
 [37]                       0.00             0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.003    0.012 
 
-[38]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45    0.18    0.04    0.00    0.00    0.08
+[37]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.01
 [31]                                         0.000    0.000    0.006 
@@ -4698,10 +4672,9 @@ LS-scale=  2.708   Wilson Scale=  0.000
 
 
 
-   Sum of the squares of the ratio (Shift/e.s.d.) =              0.
                                                 for          56 parameters
-[33]                                  The rms (shift/su)  =           0.0
-[33]                               The mean abs(shift/su) =           0.0
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
 [05]  The largest (shift/esd) =      0.1 , for Parameter   45, F7Z
 
                                 Min          Actual           Max
@@ -4720,7 +4693,7 @@ All cycle   Rw                    0.0            7.0           0.10E+03
  Statistics for    56 least squares parameters, with   848 degrees of freedom
  Number of observations               904                 0               904
 [30]  Minimisation function              0.57 E+03         0.00 E+00         0.57 E+03
-[45]  Hamilton weighted R-value           7.0              0.00              7. 
+[45]  Hamilton weighted R-value           7.              0.00              7. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -4783,42 +4756,42 @@ All cycle   Rw                    0.0            7.0           0.10E+03
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
-[38]      AG         1.    1.00    0.00    1.00    1.00    0.00    0.10    0.10    0.05    0.00    0.00    0.00
+[37]      AG         1.    1.00    0.00    1.00    1.00    0.00    0.10
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
-[38]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07    0.08    0.07    0.01    0.01   -0.01
+[37]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.005    0.006 
 
-[38]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06    0.05    0.06    0.00    0.00   -0.01
+[37]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.005    0.006 
 
-[38]      S          4.    1.00    0.00    0.79    1.36   -0.51    0.04    0.06    0.10    0.00   -0.00   -0.00
+[37]      S          4.    1.00    0.00    0.79    1.36   -0.51    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.002 
 
-[38]      S          5.    1.00    0.00    0.96    1.38   -0.73    0.07    0.05    0.05   -0.01   -0.01    0.02
+[37]      S          5.    1.00    0.00    0.96    1.38   -0.73    0.07
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
-[38]      AS         6.    1.00    0.00    0.50    0.50    0.00    0.05    0.05    0.03    0.00    0.00    0.00
+[37]      AS         6.    1.00    0.00    0.50    0.50    0.00    0.05
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
-[38]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07    0.08    0.28   -0.01   -0.07   -0.01
+[37]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07
 [37]                       0.00             0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.003    0.012 
 
-[38]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45    0.18    0.04    0.00    0.00    0.08
+[37]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.01
 [31]                                         0.000    0.000    0.006 
