@@ -284,7 +284,7 @@ sub obscureMachinePrecision() {
               print $fho "[48] $1 $2\n";
 # Large value eigenfilter output    3   H       101.      1   1    0    0    0     119.77  119.77
 	   } elsif($line =~ m/^(\s+\d+\s+\w+\s+\d+\.\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d)\d(\s+\d+\.\d)\d.*/) {
-              print $fho "[49] $1 $2 $3\n";
+              print $fho "[49] $1 $2\n";
 # Too much detail 9 (Print 11)
 	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)/) {
               print $fho "[50] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
