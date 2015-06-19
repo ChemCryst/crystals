@@ -120,6 +120,9 @@ sub obscureMachinePrecision() {
 # Shift/esd stats unstable 
 	  } elsif($line =~ m/^( SRATIO ).*$/ ) {
 #              print $fho "$1\n"; #print nothing
+# Sum of the squares of the ratio unstable
+	  } elsif($line =~ m/Sum of the squares of the ratio/ ) {
+#              print $fho "$1\n"; #print nothing
 # Overall parameter shifts " S/ESD     1           1             0.012      0.6E+03    0.8 E-02          1.4     SCALE"
 #	  } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?\d+\.\d\d\d\s+0\.\dE.\d\d\s+0\.\d)\d\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
  #             print $fho "$1 $2 $3\n";
@@ -140,6 +143,9 @@ sub obscureMachinePrecision() {
 # " Slope =    -3376.353 Intercept = 2538924.750 C-Coef=      -0.026"
 	  } elsif($line =~ m/^(\s+Slope =\s+-?\d+\.\d)\d\d(\s+Intercept =\s+-?\d+)\d\.\d\d\d(\s+C-Coef=\s+-?\d+\.\d)\d\d\s*/ ) {
               print $fho "[11] $1 $2"."0 $3\n";
+# Slope =        0.000 Intercept =       0.937 C-Coef=       0.011  #fewer leading figs on intercept
+	  } elsif($line =~ m/^(\s+Slope =\s+-?\d+\.\d)\d\d(\s+Intercept =\s+-?\d+).\d\d\d(\s+C-Coef=\s+-?\d+\.\d)\d\d\s*/ ) {
+              print $fho "[11] $1 $2"."0 $3\n";
 # Flack table too much precision in Ds "   1   3   4    20.737   130.004    -4.668    -3.755     0.913"
 	  } elsif($line =~ m/^((?:\s+\d){3}\s+\d+\.\d\d)\d(\s+\d+\.\d\d\d(?:\s+-?\d+\.\d\d\d){3}\s*)$/ ) {
               print $fho "[12] $1 $2\n";
@@ -155,10 +161,10 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(\s+-?\d+\.\d)\d(.*)/ ) {
               print $fho "[15] $1 $2 $3 $4\n";
 #Layer based agreement analysis output "        -9             39        25.37        26.3       0.177E+05       0.922E+00     7.34   14.68           *      "
-	   } elsif($line =~ m/^(\s+-?\d+\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d\dE.\d\d\s+0\.\d\d\dE.\d\d\s+\d+\.\d)\d(\s+\d+\.\d)\d(\s+\*\s*)/ ) {
-              print $fho "[16] $1 $2 $3\n";
+	   } elsif($line =~ m/^(\s+-?\d+\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d)\d\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.\d)\d(\s+\d+\.\d)\d(\s+\*\s*)/ ) {
+              print $fho "[16] $1 $2 $3 $4 $5\n";
 #FO Range based agreement analysis output "                        4       293.09       298.7       0.377E+02       0.942E+00     1.90    1.96           * "
-	   } elsif($line =~ m/^(\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d)\d(E.\d\d\s+0\.\d\d)\d(E.\d\d\s+\d+\.\d)\d(\s+\d+\.\d)\d(\s+\*\s*)/ ) {
+	   } elsif($line =~ m/^(\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d)\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+\*\s*)/ ) {
               print $fho "[17] $1 $2 $3 $4 $5\n";
 # Fourier 'collect' edge cases  "QN        1.     0.6250    0.9375    0.2500       -1.7  Hole"
 	   } elsif($line =~ m/^( QN ).*(-\d+\.\d\s+Hole\s*)/ ) { #Get rid of coords, keep height
@@ -185,10 +191,10 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(.*\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+Might be split)\s*/ ) {
               print $fho "[24] $1 $2 $3 $4 $5 $6 $7\n";
 # "Inter cycle R*                   -5.0           0.11E-02       0.10E+03"
-	   } elsif($line =~ m/^(Inter cycle .*\s+-?\d+\.\d\s+-?0\.\d)\d(E.\d\d\s+0\.\d)\d(E.\d\d\s*)/ ) {
+	   } elsif($line =~ m/^(Inter cycle .*\s+-?\d+\.\d*\s+-?0\.)\d\d(E.\d\d\s+0\.\d)\d(E.\d\d\s*)/ ) {
               print $fho "[25] $1 $2 $3\n";
 # "Inter cycle R*                   -5.0           0.11       0.10E+03"
-	   } elsif($line =~ m/^(Inter cycle .*\s+-?\d+\.\d\s+-?0\.\d)\d(\s+0\.\d)\d(E.\d\d\s*)/ ) {
+	   } elsif($line =~ m/^(Inter cycle .*\s+-?\d+\.\d*\s+-?0\.\d)\d(\s+0\.\d)\d(E.\d\d\s*)/ ) {
               print $fho "[26] $1 $2 $3\n";
 # "<Fo>-<Fc> =   19.479    100*(<Fo>-<Fc>)/<Fo> =    86.33"
 	   } elsif($line =~ m/^(<Fo>-<Fc> =\s+\d+\.\d)\d\d(.*\d+\.)\d\d/ ) {
@@ -219,8 +225,8 @@ sub obscureMachinePrecision() {
               print $fho "[33] $1"."000 $2"."0 $3"."00 $4\n";
 #  "                               The rms (shift/su)  =           0.808"
 #  "                            The mean abs(shift/su) =           0.808"
-	   } elsif($line =~ m/^(\s+The.*\(shift\/su\)\s+=\s+\d+\.\d)\d\d\s*/ ) {
-              print $fho "[33] $1\n";
+	   } elsif($line =~ m/^(\s+The.*\(shift\/su\)\s+=\s+\d+\.)\d\d\d\s*/ ) {
+              print $fho "[64] $1\n";
 ## TLS output "    0.000    0.000   20.047      0.002   -0.002    0.030     -0.082    0.129    0.051"
 #	   } elsif($line =~ m/^(    0.000    0.000\s+\d+.\d\d)\d(\s+.*)/ ) {
 #             print $fho "$1 $2\n";
@@ -235,6 +241,9 @@ sub obscureMachinePrecision() {
 # List of Fx.4 x10 -. Fx.2
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[37] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10\n";
+# List of C 1. Fx.4 x5 -. Fx.2    " C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0560   0.0981"
+	   } elsif($line =~ m/^(\s+\S+\s+\d+\.\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
+              print $fho "[37] $1 $2 $3 $4 $5 $6\n";
 # List of Fx.4 x11 following anything -> Fx.2
 	   } elsif($line =~ m/^(.*\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[38] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
@@ -262,7 +271,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(.*\d+\.\d)\d(\s+Esd=\s+\d+\.\d)\d(.*)/) {
               print $fho "[44] $1 $2 $3\n";
 # Weighted r
-	   } elsif($line =~ m/^( Hamilton weighted R-value\s+\d+\.\d)\d\d(\s+\d+\.\d\d)\d(\s+\d+\.)\d\d\d(.*)/ ) {
+	   } elsif($line =~ m/^( Hamilton weighted R-value\s+\d+\.)\d\d\d(\s+\d+\.\d\d)\d(\s+\d+\.)\d\d\d(.*)/ ) {
               print $fho "[45] $1 $2 $3 $4\n";
 # Large shift reset
 	   } elsif($line =~ m/^(Resetting shift for Extinction  Shift=     \d*).\d*(\s+Esd=.*)/ ) {
@@ -274,7 +283,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^( Maximum      \d\d\d\.)\d\d(   0.0000.*)/ ) {
               print $fho "[48] $1 $2\n";
 # Large value eigenfilter output    3   H       101.      1   1    0    0    0     119.77  119.77
-	   } elsif($line =~ m/^(\s+\d+\s+\w+\s+\d+\.\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d)\d(\s+\d+\.\d)\d(.*)/) {
+	   } elsif($line =~ m/^(\s+\d+\s+\w+\s+\d+\.\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d)\d(\s+\d+\.\d)\d.*/) {
               print $fho "[49] $1 $2 $3\n";
 # Too much detail 9 (Print 11)
 	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)/) {
@@ -331,7 +340,22 @@ sub obscureMachinePrecision() {
 # Version number in CIF changes
 	   } elsif($line =~ m/^_audit_creation_method CRYSTALS.*$/ ) {
               print $fho "[63] _audit_creation_method CRYSTALS\n";
-           } else {
+#     TOTALS          2016     96782.09     96957.7       0.105E+06       0.960E+00     3.01    6.37     .  .  *  
+ 	  } elsif($line =~ m/^(\s+TOTALS\s+\d+\s+\d+\.)\d+(\s+\d+\.)\d+(.*)$/ ) {
+              print $fho "[65] $1 $2 $3\n";
+#  Best fit this cycle:      0.017     0.298 .0 .0 .0 .333     
+ 	  } elsif($line =~ m/^(\s*Best fit this cycle.\s+\d+\.\d\d\d\s+\d+.\d)\d\d(.*)$/ ) {
+              print $fho "[66] $1 $2\n";
+#    <wdelsq> :      0.979          S :      1.013 
+ 	  } elsif($line =~ m/^(\s*<wdelsq>\s\S\s+\d+\.\d)\d\d(.*\d+\.\d).*$/ ) {
+              print $fho "[67] $1 $2\n";
+# With parameter(s) :      0.1656E-01     0.2975E+00     0.0000E+00     0.0000E+00     0.0000E+00     0.3333E+00
+ 	  } elsif($line =~ m/^(\s*With parameter\S+\s\S\s+0\.\d\d)\d\d(E\S\d\d\s+0\.\d\d)\d\d(E\S\d\d.*)$/ ) {
+              print $fho "[67] $1 $2 $3\n";
+#     H   = 2N         1002        47.07        47.1       0.101E+06       0.106E+01     3.25    6.72           *      
+ 	  } elsif($line =~ m/^(\s*\S+\s+(?:=|#)\s\S+\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d\dE\S\d\d\s+0\.\d)\d\d(E\S\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+.*)$/ ) {
+              print $fho "[68] $1 $2 $3 $4\n";
+	  } else {
               print $fho "$line\n";
 	   }
  	}
