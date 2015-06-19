@@ -33,6 +33,20 @@ END
 END
 #LIST 22                                                                        
 END
+#LIST 16
+LIMIT      0.01000000 ELEMENT SCALES
+LIMIT      0.01000000 SCALE
+LIMIT      0.01000000 U[ISO] 
+LIMIT      0.01000000 X 
+LIMIT      0.01000000 Y 
+LIMIT      0.01000000 Z 
+LIMIT      0.01000000 U[11] 
+LIMIT      0.01000000 U[22] 
+LIMIT      0.01000000 U[33] 
+LIMIT      0.01000000 U[12] 
+LIMIT      0.01000000 U[13] 
+LIMIT      0.01000000 U[23] 
+LIMIT      0.01000000 OCC 
 #SFLS                                                                           
 REFINE
 REFINE
