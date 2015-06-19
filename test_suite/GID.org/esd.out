@@ -809,20 +809,20 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
                              ***
  R-value    Weighted R      ************              ************
                            *************  HERE IT IS  ************
-  15.90       15.21         ************              ************
+[62]   15.        15.          ************              
                              ***
                               ***
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      2140.          2158.            340.                                   On scale of /FC/
+[33]       2000           2150             300                                    On scale of /FC/
 
-     46257.         46644.           7356.               0.2019E+06          On scale of /FO/
+[32]      46250          46640            7350                0.20 E+06          On scale of /FO/
 
  New scale factor (G) is     21.615,     631 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
-SumFo/SumFc= 21.435   SumFoFc/SumFc^2= 20.217   SumwFoFc/SumwFc^2= 20.217                                                                                                                                                                                       
+[29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
 LS-scale= 21.615   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -843,16 +843,7 @@ LS-scale= 21.615   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
- Block   1
-        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
-
- LARGE     1           1            -2.385      0.0E+00    0.178E+00        -13.42                          SCALE   
- S/ESD     2           2            0.0015      0.0E+00    0.959E-03          1.60        C      1 X       
-                                                                                                            Composite
-
-                                                                      Composite
-
- S/ESD     5           5           -0.0096      0.0E+00    0.101E-02         -9.50        C      1 U[ISO]  
+[13]  LARGE     1           1            -2.3       0.0E+00    0.1 E+00        -13.4                           SCALE   
                                                                                                             Composite
 
                                                                       Composite
@@ -861,12 +852,14 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
                                                                       Composite
 
- S/ESD     6           6            0.0045      0.0E+00    0.998E-03          4.49        C      1 X       
                                                                                                             Composite
 
                                                                       Composite
 
- S/ESD    10          10            0.0061      0.0E+00    0.972E-03          6.26        C      7 X       
+                                                                                                            Composite
+
+                                                                      Composite
+
                                                                                                             Composite
 
                                                                       Composite
@@ -882,14 +875,14 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            335.
                                                 for          13 parameters
-                                 The rms (shift/su)  =           5.075
-                              The mean abs(shift/su) =           3.035
+[33]                                  The rms (shift/su)  =           5.0
+[33]                               The mean abs(shift/su) =           3.0
  The largest (shift/esd) =     13.42, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            16.           0.10E+03
 All cycle   Rw                    0.0            15.           0.10E+03
-All cycle   shift/esd            0.30E-01        5.1           0.10E+05
+[06] All cycle   shift/esd
 All cycle   Min function          0.0           0.20E+06       0.10E+16
 
 
@@ -901,8 +894,8 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
 
  Statistics for    13 least squares parameters, with   618 degrees of freedom
  Number of observations               631                 0               631
- Minimisation function              0.202E+06         0.000E+00         0.202E+06
- Hamilton weighted R-value          15.207             0.000            15.207
+[30]  Minimisation function              0.20 E+06         0.00 E+00         0.20 E+06
+[45]  Hamilton weighted R-value          15.2              0.00             15. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -915,26 +908,25 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
- Mean          -2.38   0.0000  -0.0053   0.0040   0.0000  -0.0002   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+[38]  Mean          -2.38   0.00   -0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
                                          0.0246   0.0000  -0.0026
 
- R.M.S.         2.38   0.0000   0.0068   0.0045   0.0003   0.0003   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.0271   0.0019   0.0039
-
- RMS sh/esd    13.42     0.00     6.73     4.54     0.33     0.69     0.00     0.00     0.00     0.00     0.00     0.00
+[38]  R.M.S.         2.38   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.027    0.001    0.003 
 
 
- Maximum        2.38   0.0000   0.0096   0.0061   0.0004   0.0004   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.0371   0.0025   0.0050
 
- Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+[38]  Maximum        2.38   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.037    0.002    0.005 
+
+[03]  Reversals
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is   0.00 for all parameters.
+[03]  Reversals
 
 
  Shift
- factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+[39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
 #SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
@@ -956,9 +948,9 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-     19.230    0.050    0.050    1.000    0.000    78.72
-     -2.385    0.000    0.000    0.000    0.000     0.00
-      0.178    0.000    0.000    0.000    0.000     0.00
+[41]      19.23     0.05     0.05
+[41]      -2.38     0.00     0.00
+[41]       0.17     0.00     0.00
 
 
 
@@ -970,37 +962,37 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
      C          1.    1.0000   1.0000  -0.2273   0.0848   0.0662   0.0404
                       0.0000            0.0042  -0.0003  -0.0002  -0.0096
                       0.0000            0.0010   0.0011   0.0005   0.0010
-                                        0.0060   0.0058   0.0056
+[31]                                         0.006    0.005    0.005 
 
      C          2.    1.0000   1.0000  -0.1340   0.1479  -0.0636   0.0404
                       0.0000            0.0021   0.0004  -0.0004  -0.0096
                       0.0000            0.0010   0.0011   0.0005   0.0010
-                                        0.0059   0.0058   0.0056
+[31]                                         0.005    0.005    0.005 
 
      C          3.    1.0000   1.0000   0.0364  -0.0428  -0.1255   0.0404
                       0.0000            0.0000   0.0000  -0.0004  -0.0096
                       0.0000            0.0000   0.0000   0.0005   0.0010
-                                        0.0000   0.0000   0.0055
+[31]                                         0.000    0.000    0.005 
 
      C          7.    1.0000   1.0000  -0.3927   0.2819   0.1271   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 
      H         71.    1.0000   1.0000  -0.2886   0.4272   0.1283   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 
      H         72.    1.0000   1.0000  -0.5263   0.3288   0.0843   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 
      H         73.    1.0000   1.0000  -0.4524   0.2402   0.2056   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 Mean C-C su =   0.0048                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #DIST                                                                                                                                                                                                                                                           
@@ -1015,7 +1007,7 @@ Mean C-C su =   0.0048
  Tolerance in determining contacts = .20000    
         Minimum resolved distance  = .15000E-03
 
- Distances about atom  C      1.          X = -0.22734     Y =  0.08484     Z =  0.06619
+[21]  Distances about atom  C      1.          X = -0.227      Y =  0.084      Z =  0.066
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1031,12 +1023,12 @@ Mean C-C su =   0.0048
 
    1   C         2.      1   1    0    0    0
    2   C         3.     -1   1    0    0    0     110.56  0.44
-   3   C         7.      1   1    0    0    0     110.40  0.47  112.62  0.43
-   4   H        11.      1   1    0    0    0     106.76  0.46  111.66  0.43  104.54  0.47
+[49]    3   C         7.      1   1    0    0    0     110.4   0.4   112.62  0.43
+[49]    4   H        11.      1   1    0    0    0     106.7   0.4   111.66  0.43  104.54  0.47
 
   KEY                                                 1             2             3
 
- Distances about atom  C      2.          X = -0.13403     Y =  0.14787     Z = -0.06361
+[21]  Distances about atom  C      2.          X = -0.134      Y =  0.147      Z = -0.063
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1050,13 +1042,13 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         1.      1   1    0    0    0
-   2   C         3.      1   1    0    0    0     111.35  0.46
-   3   H        21.      1   1    0    0    0     106.31  0.47  105.55  0.43
-   4   H        22.      1   1    0    0    0     112.03  0.48  115.19  0.47  105.63  0.51
+[49]    2   C         3.      1   1    0    0    0     111.3   0.4 
+[49]    3   H        21.      1   1    0    0    0     106.3   0.4   105.55  0.43
+[49]    4   H        22.      1   1    0    0    0     112.0   0.4   115.19  0.47  105.63  0.51
 
   KEY                                                 1             2             3
 
- Distances about atom  C      3.          X =  0.03640     Y = -0.04280     Z = -0.12550
+[21]  Distances about atom  C      3.          X =  0.036      Y = -0.042      Z = -0.125
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1069,13 +1061,13 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         1.     -1   1    0    0    0
-   2   C         2.      1   1    0    0    0     113.26  0.43
-   3   H        31.      1   1    0    0    0     108.58  0.30  106.77  0.23
-   4   H        32.      1   1    0    0    0     109.05  0.21  111.15  0.27  107.85  0.41
+[49]    2   C         2.      1   1    0    0    0     113.2   0.4 
+[49]    3   H        31.      1   1    0    0    0     108.5   0.3   106.77  0.23
+[49]    4   H        32.      1   1    0    0    0     109.0   0.2   111.15  0.27  107.85  0.41
 
   KEY                                                 1             2             3
 
- Distances about atom  C      7.          X = -0.39270     Y =  0.28188     Z =  0.12709
+[21]  Distances about atom  C      7.          X = -0.392      Y =  0.281      Z =  0.127
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1089,13 +1081,13 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         1.      1   1    0    0    0
-   2   H        71.      1   1    0    0    0     102.72  0.31
-   3   H        72.      1   1    0    0    0     115.63  0.30  110.83  0.00
-   4   H        73.      1   1    0    0    0     110.04  0.29  105.88  0.00  111.02  0.00
+[49]    2   H        71.      1   1    0    0    0     102.7   0.3 
+[49]    3   H        72.      1   1    0    0    0     115.6   0.3   110.83  0.00
+[49]    4   H        73.      1   1    0    0    0     110.0   0.2   105.88  0.00  111.02  0.00
 
   KEY                                                 1             2             3
 
- Distances about atom  H     21.          X = -0.04445     Y =  0.30270     Z = -0.06538
+[21]  Distances about atom  H     21.          X = -0.044      Y =  0.302      Z = -0.065
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1107,11 +1099,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         2.      1   1    0    0    0
-   2   H        22.      1   1    0    0    0      38.01  0.32
+[49]    2   H        22.      1   1    0    0    0      38.0   0.3 
 
   KEY                                                 1
 
- Distances about atom  H     22.          X = -0.26337     Y =  0.18927     Z = -0.10549
+[21]  Distances about atom  H     22.          X = -0.263      Y =  0.189      Z = -0.105
 
 
  Angles about atom  H     22.
@@ -1119,11 +1111,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         2.      1   1    0    0    0
-   2   H        21.      1   1    0    0    0      36.36  0.32
+[49]    2   H        21.      1   1    0    0    0      36.3   0.3 
 
   KEY                                                 1
 
- Distances about atom  H     31.          X = -0.05659     Y = -0.21163     Z = -0.12421
+[21]  Distances about atom  H     31.          X = -0.056      Y = -0.211      Z = -0.124
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1135,11 +1127,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         3.      1   1    0    0    0
-   2   H        32.      1   1    0    0    0      33.74  0.28
+[49]    2   H        32.      1   1    0    0    0      33.7   0.2 
 
   KEY                                                 1
 
- Distances about atom  H     32.          X =  0.09945     Y =  0.00080     Z = -0.20693
+[21]  Distances about atom  H     32.          X =  0.099      Y =  0.000      Z = -0.206
 
 
  Angles about atom  H     32.
@@ -1147,11 +1139,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         3.      1   1    0    0    0
-   2   H        31.      1   1    0    0    0      38.41  0.13
+[49]    2   H        31.      1   1    0    0    0      38.4   0.1 
 
   KEY                                                 1
 
- Distances about atom  H     71.          X = -0.28861     Y =  0.42724     Z =  0.12828
+[21]  Distances about atom  H     71.          X = -0.288      Y =  0.427      Z =  0.128
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1164,12 +1156,12 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   H        72.      1   1    0    0    0      35.75  0.00
-   3   H        73.      1   1    0    0    0      35.13  0.00   60.45  0.00
+[49]    2   H        72.      1   1    0    0    0      35.7   0.0 
+[49]    3   H        73.      1   1    0    0    0      35.1   0.0    60.45  0.00
 
   KEY                                                 1             2
 
- Distances about atom  H     72.          X = -0.52631     Y =  0.32880     Z =  0.08426
+[21]  Distances about atom  H     72.          X = -0.526      Y =  0.328      Z =  0.084
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -1181,12 +1173,12 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   H        71.      1   1    0    0    0      33.42  0.00
-   3   H        73.      1   1    0    0    0      31.57  0.00   54.65  0.00
+[49]    2   H        71.      1   1    0    0    0      33.4   0.0 
+[49]    3   H        73.      1   1    0    0    0      31.5   0.0    54.65  0.00
 
   KEY                                                 1             2
 
- Distances about atom  H     73.          X = -0.45238     Y =  0.24023     Z =  0.20563
+[21]  Distances about atom  H     73.          X = -0.452      Y =  0.240      Z =  0.205
 
 
  Angles about atom  H     73.
@@ -1194,8 +1186,8 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   H        71.      1   1    0    0    0      38.99  0.00
-   3   H        72.      1   1    0    0    0      37.40  0.00   64.90  0.00
+[49]    2   H        71.      1   1    0    0    0      38.9   0.0 
+[49]    3   H        72.      1   1    0    0    0      37.4   0.0    64.90  0.00
 
   KEY                                                 1             2
 #DISK                                                                                                                                                                                                                                                           
@@ -1936,20 +1928,20 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
                              ***
  R-value    Weighted R      ************              ************
                            *************  HERE IT IS  ************
-  15.90       15.21         ************              ************
+[62]   15.        15.          ************              
                              ***
                               ***
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-      2140.          2158.            340.                                   On scale of /FC/
+[33]       2000           2150             300                                    On scale of /FC/
 
-     46257.         46644.           7356.               0.2019E+06          On scale of /FO/
+[32]      46250          46640            7350                0.20 E+06          On scale of /FO/
 
  New scale factor (G) is     21.615,     631 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
-SumFo/SumFc= 21.435   SumFoFc/SumFc^2= 20.217   SumwFoFc/SumwFc^2= 20.217                                                                                                                                                                                       
+[29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
 LS-scale= 21.615   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1970,12 +1962,7 @@ LS-scale= 21.615   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
- Block   1
-        Param.    Rel. param.    Calc. shift    Shift ratio    E.S.D.     Shift/E.S.D.    Type   Serial    Coordinate
-
- LARGE     1           1            -2.385      0.0E+00    0.178E+00        -13.42                          SCALE   
- S/ESD     2           2            0.0042      0.0E+00    0.987E-03          4.31        C      1 X       
- S/ESD     5           5           -0.0096      0.0E+00    0.101E-02         -9.50        C      1 U[ISO]  
+[13]  LARGE     1           1            -2.3       0.0E+00    0.1 E+00        -13.4                           SCALE   
                                                                                                             Composite
 
                                                                       Composite
@@ -1984,8 +1971,6 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
                                                                       Composite
 
- S/ESD     6           6            0.0021      0.0E+00    0.971E-03          2.15        C      2 X       
- S/ESD    10          10            0.0061      0.0E+00    0.972E-03          6.26        C      7 X       
                                                                                                             Composite
 
                                                                       Composite
@@ -2001,14 +1986,14 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
    Sum of the squares of the ratio (Shift/e.s.d.) =            335.
                                                 for          13 parameters
-                                 The rms (shift/su)  =           5.079
-                              The mean abs(shift/su) =           3.068
+[33]                                  The rms (shift/su)  =           5.0
+[33]                               The mean abs(shift/su) =           3.0
  The largest (shift/esd) =     13.42, for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            16.           0.10E+03
 All cycle   Rw                    0.0            15.           0.10E+03
-All cycle   shift/esd            0.30E-01        5.1           0.10E+05
+[06] All cycle   shift/esd
 All cycle   Min function          0.0           0.20E+06       0.10E+16
 
 
@@ -2020,8 +2005,8 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
 
  Statistics for    13 least squares parameters, with   618 degrees of freedom
  Number of observations               631                 0               631
- Minimisation function              0.202E+06         0.000E+00         0.202E+06
- Hamilton weighted R-value          15.207             0.000            15.207
+[30]  Minimisation function              0.20 E+06         0.00 E+00         0.20 E+06
+[45]  Hamilton weighted R-value          15.2              0.00             15. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2034,26 +2019,25 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
- Mean          -2.38   0.0000  -0.0053   0.0041   0.0002  -0.0003   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+[38]  Mean          -2.38   0.00   -0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
                                          0.0252   0.0009  -0.0037
 
- R.M.S.         2.38   0.0000   0.0068   0.0045   0.0003   0.0003   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.0271   0.0019   0.0039
-
- RMS sh/esd    13.42     0.00     6.73     4.56     0.33     0.70     0.00     0.00     0.00     0.00     0.00     0.00
+[38]  R.M.S.         2.38   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.027    0.001    0.003 
 
 
- Maximum        2.38   0.0000   0.0096   0.0061   0.0004   0.0004   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
-                                         0.0371   0.0021   0.0052
 
- Reversals     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00
+[38]  Maximum        2.38   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.037    0.002    0.005 
+
+[03]  Reversals
 
 
- Reversals is the percentage of shifts whose signs have changed since the last cycle, and is   0.00 for all parameters.
+[03]  Reversals
 
 
  Shift
- factors     1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
+[39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
 #SOLVE                                                                                                                                                                                                                                                          
  Initialising Special positions
@@ -2075,9 +2059,9 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
 
     SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
 
-     19.230    0.050    0.050    1.000    0.000    78.72
-     -2.385    0.000    0.000    0.000    0.000     0.00
-      0.178    0.000    0.000    0.000    0.000     0.00
+[41]      19.23     0.05     0.05
+[41]      -2.38     0.00     0.00
+[41]       0.17     0.00     0.00
 
 
 
@@ -2089,37 +2073,37 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
      C          1.    1.0000   1.0000  -0.2273   0.0848   0.0662   0.0404
                       0.0000            0.0042  -0.0003  -0.0002  -0.0096
                       0.0000            0.0010   0.0011   0.0005   0.0010
-                                        0.0060   0.0058   0.0056
+[31]                                         0.006    0.005    0.005 
 
      C          2.    1.0000   1.0000  -0.1340   0.1479  -0.0636   0.0404
                       0.0000            0.0021   0.0004  -0.0004  -0.0096
                       0.0000            0.0010   0.0011   0.0005   0.0010
-                                        0.0059   0.0058   0.0056
+[31]                                         0.005    0.005    0.005 
 
      C          3.    1.0000   1.0000   0.0364  -0.0428  -0.1255   0.0404
                       0.0000            0.0000   0.0000  -0.0004  -0.0096
                       0.0000            0.0000   0.0000   0.0005   0.0010
-                                        0.0000   0.0000   0.0055
+[31]                                         0.000    0.000    0.005 
 
      C          7.    1.0000   1.0000  -0.3927   0.2819   0.1271   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 
      H         71.    1.0000   1.0000  -0.2886   0.4272   0.1283   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 
      H         72.    1.0000   1.0000  -0.5263   0.3288   0.0843   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 
      H         73.    1.0000   1.0000  -0.4524   0.2402   0.2056   0.0491
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
-                                        0.0059   0.0057   0.0055
+[31]                                         0.005    0.005    0.005 
 Mean C-C su =   0.0048                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #DIST                                                                                                                                                                                                                                                           
@@ -2132,7 +2116,7 @@ Mean C-C su =   0.0048
  Tolerance in determining contacts = .20000    
         Minimum resolved distance  = .15000E-03
 
- Distances about atom  C      1.          X = -0.22734     Y =  0.08484     Z =  0.06619
+[21]  Distances about atom  C      1.          X = -0.227      Y =  0.084      Z =  0.066
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2148,12 +2132,12 @@ Mean C-C su =   0.0048
 
    1   C         2.      1   1    0    0    0
    2   C         3.     -1   1    0    0    0     110.56  0.44
-   3   C         7.      1   1    0    0    0     110.40  0.47  112.62  0.43
-   4   H        11.      1   1    0    0    0     106.76  0.46  111.66  0.43  104.54  0.47
+[49]    3   C         7.      1   1    0    0    0     110.4   0.4   112.62  0.43
+[49]    4   H        11.      1   1    0    0    0     106.7   0.4   111.66  0.43  104.54  0.47
 
   KEY                                                 1             2             3
 
- Distances about atom  C      2.          X = -0.13403     Y =  0.14787     Z = -0.06361
+[21]  Distances about atom  C      2.          X = -0.134      Y =  0.147      Z = -0.063
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2167,13 +2151,13 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         1.      1   1    0    0    0
-   2   C         3.      1   1    0    0    0     111.35  0.46
-   3   H        21.      1   1    0    0    0     106.31  0.47  105.55  0.43
-   4   H        22.      1   1    0    0    0     112.03  0.48  115.19  0.47  105.63  0.51
+[49]    2   C         3.      1   1    0    0    0     111.3   0.4 
+[49]    3   H        21.      1   1    0    0    0     106.3   0.4   105.55  0.43
+[49]    4   H        22.      1   1    0    0    0     112.0   0.4   115.19  0.47  105.63  0.51
 
   KEY                                                 1             2             3
 
- Distances about atom  C      3.          X =  0.03640     Y = -0.04280     Z = -0.12550
+[21]  Distances about atom  C      3.          X =  0.036      Y = -0.042      Z = -0.125
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2186,13 +2170,13 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         1.     -1   1    0    0    0
-   2   C         2.      1   1    0    0    0     113.26  0.43
-   3   H        31.      1   1    0    0    0     108.58  0.30  106.77  0.23
-   4   H        32.      1   1    0    0    0     109.05  0.21  111.15  0.27  107.85  0.41
+[49]    2   C         2.      1   1    0    0    0     113.2   0.4 
+[49]    3   H        31.      1   1    0    0    0     108.5   0.3   106.77  0.23
+[49]    4   H        32.      1   1    0    0    0     109.0   0.2   111.15  0.27  107.85  0.41
 
   KEY                                                 1             2             3
 
- Distances about atom  C      7.          X = -0.39270     Y =  0.28188     Z =  0.12709
+[21]  Distances about atom  C      7.          X = -0.392      Y =  0.281      Z =  0.127
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2206,13 +2190,13 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         1.      1   1    0    0    0
-   2   H        71.      1   1    0    0    0     102.72  0.31
-   3   H        72.      1   1    0    0    0     115.63  0.30  110.83  0.00
-   4   H        73.      1   1    0    0    0     110.04  0.29  105.88  0.00  111.02  0.00
+[49]    2   H        71.      1   1    0    0    0     102.7   0.3 
+[49]    3   H        72.      1   1    0    0    0     115.6   0.3   110.83  0.00
+[49]    4   H        73.      1   1    0    0    0     110.0   0.2   105.88  0.00  111.02  0.00
 
   KEY                                                 1             2             3
 
- Distances about atom  H     21.          X = -0.04445     Y =  0.30270     Z = -0.06538
+[21]  Distances about atom  H     21.          X = -0.044      Y =  0.302      Z = -0.065
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2224,11 +2208,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         2.      1   1    0    0    0
-   2   H        22.      1   1    0    0    0      38.01  0.32
+[49]    2   H        22.      1   1    0    0    0      38.0   0.3 
 
   KEY                                                 1
 
- Distances about atom  H     22.          X = -0.26337     Y =  0.18927     Z = -0.10549
+[21]  Distances about atom  H     22.          X = -0.263      Y =  0.189      Z = -0.105
 
 
  Angles about atom  H     22.
@@ -2236,11 +2220,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         2.      1   1    0    0    0
-   2   H        21.      1   1    0    0    0      36.36  0.32
+[49]    2   H        21.      1   1    0    0    0      36.3   0.3 
 
   KEY                                                 1
 
- Distances about atom  H     31.          X = -0.05659     Y = -0.21163     Z = -0.12421
+[21]  Distances about atom  H     31.          X = -0.056      Y = -0.211      Z = -0.124
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2252,11 +2236,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         3.      1   1    0    0    0
-   2   H        32.      1   1    0    0    0      33.74  0.28
+[49]    2   H        32.      1   1    0    0    0      33.7   0.2 
 
   KEY                                                 1
 
- Distances about atom  H     32.          X =  0.09945     Y =  0.00080     Z = -0.20693
+[21]  Distances about atom  H     32.          X =  0.099      Y =  0.000      Z = -0.206
 
 
  Angles about atom  H     32.
@@ -2264,11 +2248,11 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         3.      1   1    0    0    0
-   2   H        31.      1   1    0    0    0      38.41  0.13
+[49]    2   H        31.      1   1    0    0    0      38.4   0.1 
 
   KEY                                                 1
 
- Distances about atom  H     71.          X = -0.28861     Y =  0.42724     Z =  0.12828
+[21]  Distances about atom  H     71.          X = -0.288      Y =  0.427      Z =  0.128
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2281,12 +2265,12 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   H        72.      1   1    0    0    0      35.75  0.00
-   3   H        73.      1   1    0    0    0      35.13  0.00   60.45  0.00
+[49]    2   H        72.      1   1    0    0    0      35.7   0.0 
+[49]    3   H        73.      1   1    0    0    0      35.1   0.0    60.45  0.00
 
   KEY                                                 1             2
 
- Distances about atom  H     72.          X = -0.52631     Y =  0.32880     Z =  0.08426
+[21]  Distances about atom  H     72.          X = -0.526      Y =  0.328      Z =  0.084
 
        Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
@@ -2298,12 +2282,12 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   H        71.      1   1    0    0    0      33.42  0.00
-   3   H        73.      1   1    0    0    0      31.57  0.00   54.65  0.00
+[49]    2   H        71.      1   1    0    0    0      33.4   0.0 
+[49]    3   H        73.      1   1    0    0    0      31.5   0.0    54.65  0.00
 
   KEY                                                 1             2
 
- Distances about atom  H     73.          X = -0.45238     Y =  0.24023     Z =  0.20563
+[21]  Distances about atom  H     73.          X = -0.452      Y =  0.240      Z =  0.205
 
 
  Angles about atom  H     73.
@@ -2311,8 +2295,8 @@ Mean C-C su =   0.0048
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   H        71.      1   1    0    0    0      38.99  0.00
-   3   H        72.      1   1    0    0    0      37.40  0.00   64.90  0.00
+[49]    2   H        71.      1   1    0    0    0      38.9   0.0 
+[49]    3   H        72.      1   1    0    0    0      37.4   0.0    64.90  0.00
 
   KEY                                                 1             2
 #FINI                                                                                                                                                                                                                                                           

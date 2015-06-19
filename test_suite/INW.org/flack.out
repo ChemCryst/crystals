@@ -4834,6 +4834,9 @@ Mean C-C su =   0.0061
 #GENERALEDIT 39                                                                                                                                                                                                                                                 
 #SCRIPT ADD39F                                                                                                                                                                                                                                                  
 #GENERALEDIT 39                                                                                                                                                                                                                                                 
+#GENERALEDIT 39                                                                                                                                                                                                                                                 
+#SCRIPT ADD39F                                                                                                                                                                                                                                                  
+#GENERALEDIT 39                                                                                                                                                                                                                                                 
 #SUM LIST 6 LEVEL=NORM                                                                                                                                                                                                                                          
  Summary of contents of list  6 - Reflection data
  Quantity            Minimum        Maximum
@@ -4988,7 +4991,7 @@ LS-scale=  2.708   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
 #PURGE  LIST=7                                                                                                                                                                                                                                                  
- List type    5  serial number   65 from    51911 to    52137 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51983 to    52209 will not be copied ( deleted )         
 
 
  ************************************************************************

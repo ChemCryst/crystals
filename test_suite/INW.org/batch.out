@@ -14277,7 +14277,7 @@ All cycle   Rw                    0.0            8.3           0.10E+03
 All cycle   Min function          0.0           0.88E+03       0.10E+16
 [25] Inter cycle R-factor             -5.0           0.2 E-01       0.1 E+03
 [25] Inter cycle Rw                   -5.0           0.1 E-02       0.1 E+03
-Inter cycle shift/esd            -10.          -0.10E-03       0.10E+05
+Inter cycle shift/esd            -10.          -0.98E-04       0.10E+05
 [07] Inter cycle Min function          0.0
 
 
@@ -21540,7 +21540,7 @@ LS-scale=  1.772   Wilson Scale=  0.000
    Sum of the squares of the ratio (Shift/e.s.d.) =            139.
                                                 for           2 parameters
 [33]                                  The rms (shift/su)  =           8.3
-[33]                               The mean abs(shift/su) =           8.2
+[33]                               The mean abs(shift/su) =           8.3
 [05]  The largest (shift/esd) =      8.9 , for Parameter    2, BATCH2
 
                                 Min          Actual           Max

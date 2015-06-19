@@ -151,7 +151,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            210.146 153.870  32.805           210.098 153.245  33.980
+[40]             210.14  153.87   32.80            210.09  153.24   33.98
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -609,7 +609,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            526.702 183.976  31.632           518.078 186.679  32.974
+[40]             526.70  183.97   31.63            518.07  186.67   32.97
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -1119,7 +1119,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            272.556 120.226  34.005           277.451 118.469  32.420
+[40]             272.55  120.22   34.00            277.45  118.46   32.42
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -1626,7 +1626,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            334.910 135.662   4.593           336.970 131.692   7.637
+[40]             334.91  135.66    4.59            336.97  131.69    7.63
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -2070,7 +2070,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            755.376 291.711  80.471           767.449 289.699  82.212
+[40]             755.37  291.71   80.47            767.44  289.69   82.21
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -2728,7 +2728,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            512.814 255.678  50.326           518.935 258.509  47.433
+[40]             512.81  255.67   50.32            518.93  258.50   47.43
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -3300,7 +3300,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-             77.779  47.653   5.574            74.586  48.353   6.109
+[40]              77.77   47.65    5.57             74.58   48.35    6.10
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -3654,7 +3654,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-             83.120  43.653  23.353            81.994  43.199  23.410
+[40]              83.12   43.65   23.35             81.99   43.19   23.41
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -4134,7 +4134,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-           1302.086 207.405 130.621          1297.375 206.955 131.811
+[40]            1302.08  207.40  130.62           1297.37  206.95  131.81
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -4973,7 +4973,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            199.387  40.849  32.551           198.929  41.293  31.372
+[40]             199.38   40.84   32.55            198.92   41.29   31.37
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -5385,7 +5385,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            215.190 102.320  43.597           211.449 103.322  44.032
+[40]             215.19  102.32   43.59            211.44  103.32   44.03
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -5901,7 +5901,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            284.878  71.511  43.568           270.920  72.638  46.152
+[40]             284.87   71.51   43.56            270.92   72.63   46.15
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -6347,7 +6347,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            284.702 228.221  62.186           268.939 248.402  58.280
+[40]             284.70  228.22   62.18            268.93  248.40   58.28
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -7020,7 +7020,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            717.632 344.217 107.447           717.696 348.375 106.436
+[40]             717.63  344.21  107.44            717.69  348.37  106.43
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -7746,7 +7746,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            149.511  35.279  19.904           151.689  36.389  18.738
+[40]             149.51   35.27   19.90            151.68   36.38   18.73
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -8160,7 +8160,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            214.121 157.594  60.840           244.988 163.942  40.733
+[40]             214.12  157.59   60.84            244.98  163.94   40.73
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -8626,7 +8626,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            214.121 157.594  60.840           244.988 163.942  40.733
+[40]             214.12  157.59   60.84            244.98  163.94   40.73
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -9144,7 +9144,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-            328.918 109.259  50.618           352.890  99.869  55.629
+[40]             328.91  109.25   50.61            352.89   99.86   55.62
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                

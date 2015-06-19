@@ -17,7 +17,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -153,7 +153,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -215,7 +215,7 @@ deltas                                       U[ij]                          Prin
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-                           0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
+[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -326,7 +326,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -462,7 +462,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -525,7 +525,7 @@ deltas                                       U[ij]                          Prin
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-                           0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
+[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
 
       6    C        5.  Isotropic
 
@@ -636,7 +636,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -767,7 +767,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -829,7 +829,7 @@ deltas                                       U[ij]                          Prin
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-                           0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
+[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -929,7 +929,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1060,7 +1060,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1123,7 +1123,7 @@ deltas                                       U[ij]                          Prin
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-                           0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
+[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
 
       6    C        5.  Isotropic
 
@@ -1223,7 +1223,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1354,7 +1354,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1416,7 +1416,7 @@ deltas                                       U[ij]                          Prin
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-                           0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
+[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -1516,7 +1516,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1647,7 +1647,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1710,7 +1710,7 @@ deltas                                       U[ij]                          Prin
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-                           0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
+[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
 
       6    C        5.  Isotropic
 
@@ -1810,7 +1810,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-              5.796   3.478   0.000             5.796   3.478   0.000
+[40]               5.79    3.47    0.00              5.79    3.47    0.00
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1872,7 +1872,7 @@ deltas                                       U[ij]                          Prin
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-                           0.000   0.000   0.000   0.008  -0.008   0.000    0.000 0.000 0.000    0.000
+[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -2033,7 +2033,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-             13.431   5.796   3.000            13.431   5.796   3.000
+[40]              13.43    5.79    3.00             13.43    5.79    3.00
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
@@ -2078,7 +2078,7 @@ deltas                                       U[ij]                          Prin
       4    N       52.  Isotropic
       5    O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
            O        4.     0.042   0.047   0.049   0.006  -0.001  -0.001    0.042 0.042 0.054    0.054    0.046
-                           0.008   0.003   0.001  -0.006   0.001   0.001    0.008 0.008-0.004   -0.004
+[40]                            0.00    0.00    0.00   -0.00    0.00    0.00
 
       6    C        3.  Isotropic
       7    Q        6.  Isotropic
@@ -2234,7 +2234,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-             13.431   5.796   3.000            13.431   5.796   3.000
+[40]              13.43    5.79    3.00             13.43    5.79    3.00
 
 
  Calculation of rotation matrix by Kabsch method                                                                                                                                                                                                                
