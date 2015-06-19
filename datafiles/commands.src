@@ -4382,6 +4382,10 @@ BENFORD            1    1
     .SCALE              3    0    1    0    0 100.0
     .INPUTLIST          2    0    1    2    1         6
               6         7
+PROPERTIES       1    3
+  10    4096 CRYSTALSPUBLISH
+    3    5   29
+   1.PROPERTIES         0    1    0    0
 FLIMIT             1    3
    3    4096 CRYSTALSFOREIGN
     1    2   14

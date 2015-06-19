@@ -3769,10 +3769,7 @@ c        CALL XPRVDU(NCVDU, 1,0)
         A(8) = ABSN
         A(9) = WEIGHT
         A(10) = FELEC * ASYM
-
-
-
-
+c
 1600    CONTINUE
 c
 cdjwjul09
@@ -3809,6 +3806,13 @@ chi * 10^4
       ENDIF
       deallocate (table)
       deallocate (type)
+      ISTAT = KSCTRN(1, 'L5:OK', FLOAT(KCPROP), 1)
+      IF (KCPROP .GE .0) THEN
+         WRITE(CMON,'(A)') ' All required atom properties are known'
+         CALL XPRVDU(NCVDU,1,0)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')
+     1   CMON(1)(:nctrim(cmon(1)))
+      ENDIF
       RETURN
       END
 C
