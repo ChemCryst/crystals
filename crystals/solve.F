@@ -2293,7 +2293,7 @@ C
       ENDIF
 1950    FORMAT(/' Block',I4/8X,'Param.',4X,'Rel. param.',4X,
      2  'Calc. shift',4X,'Shift ratio',4X,'E.S.D.',5X,'Shift/E.S.D.',
-     3  4X,'Type',3X,'Serial',4X,'Coordinate'/)
+     3  4X,'Type',3X,'Serial',4X,'Coordinate')
         ICAPT = 1
         ENDIF
         IF (ITYPE .EQ. 1) THEN
