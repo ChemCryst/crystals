@@ -467,9 +467,9 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
           putenv( env );
 #endif
           i = i + 2;
-        }
+        }	
       }
-      else if (command=="--hdf5" or command=="/hdf5")
+      else if (command=="--hdf5" || command=="/hdf5")
       {
         hdf5_dsc_use_set();
       }      
