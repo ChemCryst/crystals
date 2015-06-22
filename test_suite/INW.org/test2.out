@@ -16822,7 +16822,7 @@ All cycle   Min function          0.0           0.33E+05       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
-                                         0.0001  -0.0002   0.0000
+                                         0.0000  -0.0002   0.0000
 
 [38]  R.M.S.         0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -18818,7 +18818,7 @@ Mean C-C su =   0.0022
 
                                                                                                                                                                                                                                                                 
  Agreement analysis on scale of /FO/                                                                                                                                                                                                                            
- Scale factor  =   4.62952                                                                                                                                                                                                                                      
+ Scale factor  =   4.62951                                                                                                                                                                                                                                      
 
 
  Weighting scheme type   16
@@ -20193,6 +20193,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
+
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -20871,7 +20872,6 @@ LS-scale=  4.642   Wilson Scale=  4.723
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          92 parameters
@@ -39118,6 +39118,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
+
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -39569,6 +39570,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
+
 
 
                                                 for          92 parameters
