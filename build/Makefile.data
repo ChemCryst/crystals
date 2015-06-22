@@ -25,10 +25,13 @@ COPYDEST = $(COPYTEMP:../precomp/$(COMPCODE)/%=%)
 TEMPTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
 COPYDIRS = $(filter-out %CVS,$(TEMPTOP))
 
-all : commands.dsc $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
+all : commands.dsc commands.h5 $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
 
 commands.dsc : $(BUILDDIR) $(SRCFILE) $(BUILDDIR)crystals.srt
-	cd $(BUILDDIR); export CRYSDIR=./; ../crystals; cp commands.dsc ..
+	cd $(BUILDDIR); rm delete*; rm commands.dsc; export CRYSDIR=./; ../crystals; mv commands.dsc ..
+
+commands.h5 : $(BUILDDIR) $(SRCFILE) $(BUILDDIR)crystals.srt
+	cd $(BUILDDIR); rm delete*; rm commands.h5; export CRYSDIR=./; ../crystals --hdf5; mv commands.h5 ..
 
 $(BUILDDIR) :
 	mkdir -p $(BUILDDIR)

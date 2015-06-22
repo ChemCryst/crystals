@@ -784,6 +784,7 @@ C
       
       
       call hdf5_dic_get(crfile, IDUNIT, error)
+      !print *, 'check dic ', error, idunit
       if(error==0) then      
         call xdaini_hdf5(crfile)
       else
@@ -861,6 +862,7 @@ C    BE SEARCHED FOR.
       type(t_dsc_hdf5), pointer :: crfile
       
       call hdf5_dic_get(crfile, IUNIT, error)
+      !print *, 'xdaxtn ', iunit, error
       if(error==0) then      
         call xdaxtn_hdf5 (crfile, IBEGIN,ICOUNT )
       else      

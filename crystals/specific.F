@@ -520,7 +520,7 @@ C
       CHARACTER*7 FLSTAT(4)
       CHARACTER*7 ACSTAT
       character(len=9) :: faction 
-      integer recordsize
+      integer recordsize, iposition
       integer     ::   error ! error flag
       type(t_dsc_hdf5), pointer :: crfile
 
@@ -633,16 +633,6 @@ C -- INTERNAL ERROR DETECTED
       endif ! end check for non existent 'new' file
 c
 c
-      ! check if an 'old' file do exist, otherwise open it as 'new'
-      ! only if the file is "create if not exist"
-      if (trim(FILNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then
-        inquire(file=trim(CLCNAM), exist=lexist)
-        if(.not. lexist) then
-          ACSTAT = FLSTAT(ISSNEW)
-          IF ( IFSTAT .NE. ISSSCR ) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
-        end if
-      end if
-
       ! setting up action mode, read or read/write
       IF ( IFMODE .EQ. ISSREA ) then !GO TO 2500
       ! open file for read only (action='read')
@@ -650,6 +640,8 @@ c
       else
         faction='READWRITE'
       end if
+      
+      !print *, 'Opening unit ', idunit, ' filename ', trim(clcnam)
       
       !2500  CONTINUE
       IF ( FILNAM .EQ. ' ' ) THEN
@@ -664,8 +656,42 @@ c
 
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+        !print *, 'idunit ', idunit, trim(clcnam)
         
-        OPEN ( UNIT   = IDUNIT ,
+        iposition=index(CLCNAM, '.dsc')
+        if(iposition==0) iposition=index(CLCNAM, '.DSC')
+        if(hdf5_in_use .and. iposition>1) then
+          CLCNAM(iposition:iposition+3)='.h5 '
+          !print *, 'idunit ', idunit, trim(clcnam)
+          
+          ! check if an 'old' file do exist, otherwise open it as 'new'
+          ! only if the file is "create if not exist"
+          if (trim(FILNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then
+            inquire(file=trim(CLCNAM), exist=lexist)
+            if(.not. lexist) then
+              ACSTAT = FLSTAT(ISSNEW)
+              IF (IFSTAT .NE. ISSSCR) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+            end if
+          end if
+
+          call hdf5_dsc_open(crfile, trim(CLCNAM), ios)
+          crfile%idunit=idunit
+          !call printdic()
+          !if(ios/=0) then
+          !  print *, 'Error in hdf5_dsc_open'
+          !end if
+        else  
+          ! check if an 'old' file do exist, otherwise open it as 'new'
+          ! only if the file is "create if not exist"
+          if (trim(FILNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then
+            inquire(file=trim(CLCNAM), exist=lexist)
+            if(.not. lexist) then
+              ACSTAT = FLSTAT(ISSNEW)
+              IF (IFSTAT .NE. ISSSCR) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+            end if
+          end if
+        
+          OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
      1         ACTION = faction,
      1         STATUS = ACSTAT ,
@@ -673,6 +699,8 @@ c
      1         FORM   = 'UNFORMATTED' ,
      1         RECL   = ISSDAR*recordsize ,
      1         IOSTAT = IOS )
+       end if
+     
       ENDIF
 
       IF (IOS/=0) then !GOTO 3000
@@ -689,6 +717,7 @@ C -- IF A NEW FILE HAS BEEN CREATED, SOME INITIALISATION TASKS
 C    MUST BE PERFORMED IMMEDIATELY
 
       IF ((ACSTAT.EQ.'NEW').OR.(ACSTAT.EQ.'SCRATCH')) then
+        !print *, 'init ', acstat
         call XDAINI(IDUNIT)
       end if
     
@@ -1708,6 +1737,7 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XIOBUF.INC'
+            
 C
 C NOW WE SEARCH FOR THE LENGTH OF OUR FILE NAME AND REMOVE BLANKS.
 C

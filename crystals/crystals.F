@@ -46,6 +46,24 @@ C
 C
 #if defined(CRY_NOGUI)
       PROGRAM CRYSTAL
+      use hdf5_dsc
+      character(len=256) :: args_value
+      integer :: args_count, i, found
+
+C Look for arguments from the command line
+      args_count = command_argument_count()
+      if(args_count>0) then
+        ! Search for hdf5 switch
+        do i=1, args_count
+          call get_command_argument(i , args_value) 
+          found = index(args_value, '--hdf5') 
+          if(found>0) then
+            hdf5_in_use = .true.
+            print *, 'Experimental use of hdf5 files'
+          end if
+        end do
+      end if
+              
       CALL CRYSTL()
       END
 #endif

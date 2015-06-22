@@ -30,6 +30,10 @@ using namespace std;
 
 //#include "Stackwalker.h"
 
+extern"C" {
+void hdf5_dsc_use_set();
+}
+
 #ifdef CRY_USEMFC
   #ifdef __CRDEBUG__
     #undef THIS_FILE
@@ -465,9 +469,14 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
           i = i + 2;
         }
       }
+      else if (command=="--hdf5" or command=="/hdf5")
+      {
+        hdf5_dsc_use_set();
+      }      
       else
       {
         string command = string(argv[i]);
+        
         if ( command.length() > 0 )
         {
 // we need a directory name. Look for last slash or back slash
@@ -479,12 +488,11 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
           int remain = command.length() - ils - 1;
           if ( remain > 0 )
             dscfile = command.substr(ils+1,remain);
+            
         }
+        std::cerr << "DSCfile to be opened: " << dscfile << "\n";
+        std::cerr << "Working directory:    " << directory << "\n";
       }
-
-      std::cerr << "DSCfile to be opened: " << dscfile << "\n";
-      std::cerr << "Working directory:    " << directory << "\n";
-
     }
     theControl = new CcController(directory,dscfile);
    // kickTimer = new wxTimer(this, 5241);
