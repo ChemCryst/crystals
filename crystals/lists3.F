@@ -2005,7 +2005,7 @@ C Close new DA file / copy back from scratch.
         CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
 2740    CONTINUE
-        WRITE (CMON,'(1X,A,I6,A)') 'Copied: ',NRECOR,' dsc records.'
+        WRITE (CMON,'(1X,A,I6,A)') 'Copied: ',NRECOR-1,' dsc records.'
         CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
         ISTAT = KFLCLS(NUNEW)     ! and then close scratch.
