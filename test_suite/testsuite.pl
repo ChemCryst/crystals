@@ -376,6 +376,7 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         $CROUTPUT="$name.out";        # Set environment variable
         unlink "$CROUTPUT";
         unlink "crfilev2.dsc";
+        unlink "crfilev2.h5";
         print("Running Crystals (release version) on $name.tst\n");
         `$CRYSEXE`;                   # Run it
 	
