@@ -658,21 +658,34 @@ c
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         !print *, 'idunit ', idunit, trim(clcnam)
         
-        iposition=index(CLCNAM, '.dsc')
-        if(iposition==0) iposition=index(CLCNAM, '.DSC')
-        if(hdf5_in_use .and. iposition>1) then
-          CLCNAM(iposition:iposition+3)='.h5 '
-          !print *, 'idunit ', idunit, trim(clcnam)
-          
-          ! check if an 'old' file do exist, otherwise open it as 'new'
-          ! only if the file is "create if not exist"
-          if (trim(FILNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then
-            inquire(file=trim(CLCNAM), exist=lexist)
-            if(.not. lexist) then
-              ACSTAT = FLSTAT(ISSNEW)
-              IF (IFSTAT .NE. ISSSCR) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
-            end if
+        ! dsc filename is not always specified
+        ! hack to do part of the job of mtrnlg before mtrlng refactoring
+        iposition=index(CLCNAM, 'CRDSC:')
+        if(iposition>0) then
+          CLCNAM=CLCNAM(1:iposition-1)//'crfilev2.dsc'//
+     1      CLCNAM(iposition+6:len_trim(clcnam))
+        end if
+        
+        if(hdf5_in_use) then
+          iposition=index(CLCNAM, '.dsc')
+          if(iposition==0) iposition=index(CLCNAM, '.DSC')
+          if(iposition>1) then
+            CLCNAM(iposition:iposition+3)='.h5 '
           end if
+        end if
+        
+        ! check if an 'old' file do exist, otherwise open it as 'new'
+        ! only if the file is "create if not exist"
+        if (trim(CLCNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then         
+          inquire(file=trim(CLCNAM), exist=lexist)
+          if(.not. lexist) then
+            ACSTAT = FLSTAT(ISSNEW)
+            IF (IFSTAT .NE. ISSSCR) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+          end if
+        end if
+
+        if(hdf5_in_use .and. iposition>1) then
+          !print *, 'kdaopn: in hdf5 backend ', trim(CLCNAM)
 
           call hdf5_dsc_open(crfile, trim(CLCNAM), ios)
           crfile%idunit=idunit
@@ -680,17 +693,7 @@ c
           !if(ios/=0) then
           !  print *, 'Error in hdf5_dsc_open'
           !end if
-        else  
-          ! check if an 'old' file do exist, otherwise open it as 'new'
-          ! only if the file is "create if not exist"
-          if (trim(FILNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then
-            inquire(file=trim(CLCNAM), exist=lexist)
-            if(.not. lexist) then
-              ACSTAT = FLSTAT(ISSNEW)
-              IF (IFSTAT .NE. ISSSCR) CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
-            end if
-          end if
-        
+        else          
           OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
      1         ACTION = faction,
@@ -699,7 +702,7 @@ c
      1         FORM   = 'UNFORMATTED' ,
      1         RECL   = ISSDAR*recordsize ,
      1         IOSTAT = IOS )
-       end if
+        end if
      
       ENDIF
 

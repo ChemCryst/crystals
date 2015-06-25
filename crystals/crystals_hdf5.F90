@@ -183,6 +183,7 @@ subroutine hdf5_dsc_use_set() bind(c)
     implicit none
     
     hdf5_in_use = .true.
+    !print *, 'hdf5 set in use in fortran'
 end subroutine
     
 
@@ -236,6 +237,7 @@ subroutine hdf5_dsc_open(crfile, filename, error)
         !
         ! Create a new file using the default properties.
         !
+        !print *, 'creating hdf5 ', filename
         CALL h5fcreate_f(filename, H5F_ACC_EXCL_F, crfile%file_id, error)
         if(error/=0) then
             ! destroy record in hdf5 dic
