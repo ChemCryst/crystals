@@ -1982,13 +1982,22 @@ C Close new DA file / copy back from scratch.
         ISTAT = KFLCLS(NUNEW)
       ELSE IF ( NEWFIL .EQ. 2 ) THEN  ! Copy back over current dsc
         NRECOR = 1
-        IOS = ISSOKF
-        DO WHILE ( IOS .EQ. ISSOKF )
-          READ ( NUNEW, REC = NRECOR, ERR = 2740, IOSTAT = IOS ) IRECOR
-          IF ( IOS .EQ. ISSOKF ) THEN
-            WRITE(NUOLD,REC = NRECOR, ERR = 2735, IOSTAT = IOS )IRECOR
+        IOS = 1
+        call XDAEND ( NUNEW , LAST )
+        ! last is the record after the last one
+        ! kfetch looks for the next record
+        ! hence the loop from 0 to last-2
+        DO NRECOR=0, last-2
+          !READ ( NUNEW, REC = NRECOR, ERR = 2740, IOSTAT = IOS ) IRECOR
+          IOS=KFETCH ( NUNEW , NRECOR, IRECOR , ISSRLI )
+          IF ( IOS == 1 ) THEN
+            !WRITE(NUOLD,REC = NRECOR, ERR = 2735, IOSTAT = IOS )IRECOR
+            IOS = KSTORE ( NUOLD , NRECOR , IRECOR, ISSRLI )
+            print *, NRECOR, ios
+            if ( IOS /= 1) goto 2735
+          else
+            goto 2735
           END IF
-          NRECOR = NRECOR + 1
         END DO
         GOTO 2740
 2735    CONTINUE
