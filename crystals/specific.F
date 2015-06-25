@@ -729,6 +729,7 @@ C    MUST BE PERFORMED IMMEDIATELY
 C
 CODE FOR KFLCLS
       FUNCTION KFLCLS ( IUNIT )
+      use hdf5_dsc
 C
 C -- CLOSE THE FILE OPEN ON UNIT 'IUNIT'. THIS ROUTINE IGNORES ERRORS
 C    AND ALWAYS RETURNS THE VALUE 1
@@ -736,15 +737,26 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       CHARACTER*31 FNAME
-C
-      CLOSE ( UNIT = IUNIT , ERR = 2000 )
-      IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
-        INQUIRE ( UNIT = IUNIT, NAME = FNAME )
-        WRITE(NCWU,1006) IUNIT, fname
-1006    FORMAT('SPECIFIC  Closing File       ',8x, ': Unit =',I8,1X,A)
-      ENDIF
 
-2000  CONTINUE
+      integer error
+      type(t_dsc_hdf5), pointer :: crfile
+      
+C
+
+      call hdf5_dic_get(crfile, IUNIT, error)
+      !print *, 'hdf5 search dic', error
+      if(error/=0) then
+        CLOSE ( UNIT = IUNIT , ERR = 2000 )
+        IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+          INQUIRE ( UNIT = IUNIT, NAME = FNAME )
+          WRITE(NCWU,1006) IUNIT, fname
+1006      FORMAT('SPECIFIC  Closing File       ',8x, ': Unit =',I8,1X,A)
+        ENDIF
+
+2000    CONTINUE
+      else
+        call hdf5_dsc_close(crfile, error)  
+      end if
 C
       KFLCLS = 1
       RETURN

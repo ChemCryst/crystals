@@ -35,6 +35,14 @@ subroutine hdf5_dsc_open(crfile, filename, error)
     error = -1
 end subroutine
 
+subroutine hdf5_dsc_close(crfile, error)
+    implicit none
+    type(t_dsc_hdf5), pointer :: crfile
+    integer, intent(out) :: error
+    
+    error = -1
+end subroutine
+
 subroutine hdf5_dsc_kfetch(crfile, fetch_address, dataread, error)
     use xdaval_mod
     implicit none
@@ -255,6 +263,23 @@ subroutine hdf5_dsc_open(crfile, filename, error)
         crfile%dsc_dset_id=0      
         crfile%dsc_dspace_id=0    
         crfile%dsc_dtype=0          
+    end if
+end subroutine
+
+subroutine hdf5_dsc_close(crfile, error)
+    implicit none
+    type(t_dsc_hdf5), pointer, intent(inout) :: crfile
+    integer, intent(out) :: error
+        
+    !call h5dclose_f(crfile%dsc_dset_id, error)
+    !call h5sclose_f(crfile%dsc_dspace_id, error)
+    CALL h5fclose_f(crfile%file_id, error)
+
+    call hdf5_dic_del(crfile%idunit, error)
+    if(error/=0) then
+        print *, 'Impossible to remove the failed open hdf5 file from the dictionary'
+        print *, 'It is not possible to recover'
+        call exit(1)
     end if
 end subroutine
 
