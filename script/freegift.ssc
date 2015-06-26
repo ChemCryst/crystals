@@ -5,7 +5,7 @@
 %  VARIABLE REAL SHIFT  FREESHIFT
 %  EVALUATE SHIFT = 1.0
 %%
-%  VARIABLE LOGICAL EDONE PDONE PMASK SERR XREFINE CONVRG 
+%  VARIABLE LOGICAL EDONE PDONE PMASK SERR XREFINE CONVRG FREEGIFT
 %  VARIABLE INTEGER NCYCLE NFORCE
 %  VARIABLE REAL RMIN R OSCALE
 %  EVALUATE SERR = TRUE
@@ -34,6 +34,12 @@
 %       EVALUATE CONVRG = TRUE
 %    END IF
 %%
+%%
+^^CO GETKEY XREFINE_FREEGIFT
+%    GET SILENT NOSTORE FINAL TEXT '1' '1'
+%    IF CVALUE .EQ. '1' THEN
+%       EVALUATE FREEGIFT = TRUE
+%    END IF
 %%
 ^^CO GETKEY XREFINE_CYCLES
 %    GET SILENT NOSTORE INTEGER '5' '5'
@@ -64,7 +70,14 @@
 %    ELSE
 ^^WI     STATE=OFF
 %    END IF
-%%
+
+^^WI   @ 4,1 CHECKBOX FG 'Free Gift'
+%    IF  FREEGIFT .AND. R .LE. 10. THEN
+^^WI     STATE=ON
+%    ELSE
+^^WI     STATE=OFF
+%    END IF
+
 ^^WI    @ 5,1  CHECKBOX ND
 ^^WI         'Minimise disk useage' STATE=ON
 ^^WI    @ 7,1 GRID LED NROWS=1 NCOLS=5
@@ -109,6 +122,15 @@
 {12,11      Least Squares shifts are multiplied by this value.
 {12,11      Try 0.5 if the maximum shift keeps changing sign
 {12,11
+{1,11 Free Gift:
+{12,11      This causes a fast subsiduary cycle to be computed
+{12,11      without re-evaluating the normal matrix.
+{12,11      This may speed up the slow refinement of a good
+{12,11      large structure, but will not help refine a poor model
+{12,11      or poor data.  A Partial Shift of 0.75 is used for 
+{12,11      this cycle unless the user has set a smaller value.
+{12,11      (see J.S. Rollett, Crystallographic Computing, ed Ahmed.
+{12,11      Mungsgaard, 1970, page 175)
 %        END BLOCK
 %      END CASE
 %    END LOOP
@@ -126,8 +148,8 @@
 %      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
 ^^CR
 %      IF VALUE .EQ. 1 THEN
-%%       COPY '#SUM LIST 12'
-%%       COPY 'END'
+%       COPY '#SUM LIST 12'
+%       COPY 'END'
 %       IF EXISTS 11 .EQ. 1 THEN
 %         COPY '#DISK'
 %         COPY 'DELETE 11'
@@ -141,23 +163,39 @@
 %       COPY 'END'
 %      END IF
 %%
+
 ^^?? NC TEXT
 %    GET NOSTORE SILENT FINAL INTEGER 'How many cycles' '5'
 %    EVALUATE NCYCLE = VALUE
 % TRANSFER "^^CO SETKEY XREFINE_CYCLES " // CHARACTER ( NCYCLE ) TO DISPLAY
+
 ^^?? NS TEXT
 %    GET NOSTORE SILENT FINAL REAL 'Partial Shift Factor' '1.0'
 %    EVALUATE SHIFT = VALUE
+
 ^^?? NF STATE
 %    VERIFY ON OFF
 %    GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
 %    EVALUATE NFORCE = VALUE
+
+^^?? FG STATE
+%   VERIFY ON OFF
+%    GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
+%    IF VALUE .EQ. 1 THEN
+%     EVALUATE FREEGIFT = TRUE
+^^CO     SETKEY XREFINE_FREEGIFT 1
+%    ELSE
+%     EVALUATE FREEGIFT = FALSE
+^^CO     SETKEY XREFINE_FREEGIFT 0
+%    END IF
 ^^CO DISPOSE XREFINE
 %%
 %  END IF
 %%
 %%
 %%
+%%  COPY '#SUM LIST 12'
+%%  COPY 'END'
 %%
 %  EVALUATE RMIN = R
 % if ( oscale - 1.000 .ge. - .0001 ) .and. ( oscale - 1.000 .le. .0001 ) then
@@ -210,6 +248,21 @@
 %              EVALUATE LOOPEND = LOOPCOUNTER
 {I Refinement has converged
 %            ELSE
+%             IF FREEGIFT THEN
+{I This is a Free Gift cycle
+%              COPY '#SFLS'
+%              COPY 'REFINE MATRIX=OLD'
+%              IF SHIFT .LT. 1.0 THEN
+%                 EVALUATE FREESHIFT = SHIFT
+%              ELSE
+%                 EVALUATE FREESHIFT = .75
+%              END IF
+%              CLEAR
+%              INSERT 'SHIFT GENERAL ='
+%              STORE REAL  FREESHIFT
+%              SEND
+%              COPY 'END'
+%             END IF
 %%         TEST IF CONVERGED 
 %             IF LSQ:FLAG .GT. 1 THEN
 %              EVALUATE LOOPEND = LOOPCOUNTER
@@ -246,6 +299,21 @@
 %                send
 %              END IF
 %          COPY 'END'
+%          IF FREEGIFT THEN
+{I This is a Free Gift cycle
+%            COPY '#SFLS'
+%            COPY 'REFINE MATRIX=OLD'
+%            IF SHIFT .LT. 1.0 THEN
+%                EVALUATE FREESHIFT = SHIFT
+%            ELSE
+%                EVALUATE FREESHIFT = .75
+%            END IF
+%            clear
+%            insert 'SHIFT GENERAL ='
+%            store real  freeshift
+%            send
+%            COPY 'END'
+%          END IF
 %  TRANSFER '{I Finished Cycle ' // character loopcounter //  ' of ' //  character ncycle TO DISPLAY 
 ^^??       RF_BAB STATE
 %          VERIFY ON OFF
