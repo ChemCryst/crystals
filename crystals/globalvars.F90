@@ -194,8 +194,8 @@ subroutine env_table_get_c(c_key, c_value, c_error)
     !dec$ attributes reference :: c_key
     character (len=1), dimension (*), intent (out) :: c_value
     !dec$ attributes reference :: c_value
-    integer(kind=c_int), intent(out) :: c_error
-    !dec$ attributes value :: c_error
+    integer, intent(out) :: c_error
+    !dec$ attributes reference :: c_error
 #else
 subroutine env_table_get_c(c_key, c_value, c_error) bind(c)
 	use ISO_C_BINDING
