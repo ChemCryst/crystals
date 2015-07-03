@@ -2,7 +2,9 @@
 !! C++ to fortran
 !! On recent intel and gfortran it uses dynamic allocated character length (f2003 feature)
 module global_vars_mod
+#if !defined(CRY_FORTDIGITAL)
 use iso_c_binding
+#endif
 logical, parameter, private :: debug = .false.
 
 !/* Test for GCC >= 4.7 or intel >= 14 */
@@ -26,7 +28,6 @@ contains
 
 !> Add or replace an element in the dictionary
 subroutine env_table_add(key, value) 
-	use ISO_C_BINDING
 	use c_strings_mod
     implicit none
     character(len=*) :: key, value
@@ -108,11 +109,21 @@ subroutine env_table_add(key, value)
 end subroutine
 
 !> Add or replace an element in a dictionary (function called from C)
-subroutine env_table_add_c(c_key, c_value) bind(c)
-	use ISO_C_BINDING
+#if defined(CRY_FORTDIGITAL)
+subroutine env_table_add_c(c_key, c_value) 
+!dec$ attributes c :: env_table_add_c
 	use c_strings_mod
     implicit none
     character (kind=c_char, len=1), dimension (*), intent (in) :: c_key, c_value
+    !dec$ attributes reference :: c_key
+    !dec$ attributes reference :: c_value
+#else
+subroutine env_table_add_c(c_key, c_value) bind(c)
+	use c_strings_mod
+    implicit none
+    character (kind=c_char, len=1), dimension (*), intent (in) :: c_key, c_value
+#endif
+
 !/* Test for GCC >= 4.7 or intel >= 14 */
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
@@ -174,6 +185,18 @@ subroutine env_table_get(key, value, error)
 end subroutine
 
 !> Look for a value in the dictionary given a key (function called from C)
+#if defined(CRY_FORTDIGITAL)
+subroutine env_table_get_c(c_key, c_value, c_error) 
+!dec$ attributes c :: env_table_get_c
+	use c_strings_mod
+    implicit none
+    character (kind=c_char, len=1), dimension (*), intent (in) :: c_key
+    !dec$ attributes reference :: c_key
+    character (kind=c_char, len=1), dimension (*), intent (out) :: c_value
+    !dec$ attributes reference :: c_value
+    integer(kind=c_int), intent(out) :: c_error
+    !dec$ attributes value :: c_error
+#else
 subroutine env_table_get_c(c_key, c_value, c_error) bind(c)
 	use ISO_C_BINDING
 	use c_strings_mod
@@ -181,6 +204,8 @@ subroutine env_table_get_c(c_key, c_value, c_error) bind(c)
     character (kind=c_char, len=1), dimension (*), intent (in) :: c_key
     character (kind=c_char, len=1), dimension (*), intent (out) :: c_value
     integer(kind=c_int), intent(out) :: c_error
+#endif
+
 !/* Test for GCC >= 4.7 or intel >= 14 */
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
