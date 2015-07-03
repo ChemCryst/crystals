@@ -22,7 +22,7 @@ type, private :: t_env_table
 end type
 #endif
 
-type(t_env_table), dimension(:), allocatable :: environment_table
+type(t_env_table), dimension(:), allocatable, private :: environment_table
 
 contains
 
@@ -114,7 +114,7 @@ subroutine env_table_add_c(c_key, c_value)
 !dec$ attributes c :: env_table_add_c
 	use c_strings_mod
     implicit none
-    character (kind=c_char, len=1), dimension (*), intent (in) :: c_key, c_value
+    character (len=1), dimension (*), intent (in) :: c_key, c_value
     !dec$ attributes reference :: c_key
     !dec$ attributes reference :: c_value
 #else
@@ -190,9 +190,9 @@ subroutine env_table_get_c(c_key, c_value, c_error)
 !dec$ attributes c :: env_table_get_c
 	use c_strings_mod
     implicit none
-    character (kind=c_char, len=1), dimension (*), intent (in) :: c_key
+    character (len=1), dimension (*), intent (in) :: c_key
     !dec$ attributes reference :: c_key
-    character (kind=c_char, len=1), dimension (*), intent (out) :: c_value
+    character (len=1), dimension (*), intent (out) :: c_value
     !dec$ attributes reference :: c_value
     integer(kind=c_int), intent(out) :: c_error
     !dec$ attributes value :: c_error
