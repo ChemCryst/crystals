@@ -862,7 +862,7 @@ subroutine xdaini_hdf5(crfile)
     !
     !modify dataset creation properties, i.e. enable chunking
     !
-    call h5pcreate_f(h5p_dataset_create_f, crp_list, error)
+    call h5pcreate_f(H5P_DATASET_CREATE_F, crp_list, error)
     if(error==-1) then 
         print *, 'Error during initialisation 2'
         call exit(1)
