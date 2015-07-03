@@ -3,13 +3,25 @@
 module c_strings_mod
 interface
     ! steal std c library function rather than writing our own.
+#if defined(CRY_FORTDIGITAL)
+    function strlen(s) 
+    !dec$ attributes c :: strlen
+        implicit none
+        character (len=1), dimension (*), intent(in) :: s
+        !dec$ attributes reference :: s
+        integer :: strlen
+        !dec$ attributes reference :: strlen
+        !----
+    end function strlen
+#else    
     function strlen(s) bind(c, name='strlen')
         use, intrinsic :: iso_c_binding, only: c_size_t, c_char
         implicit none
-        !----
         character (kind=c_char, len=1), dimension (*), intent(in) :: s
         integer(c_size_t) :: strlen
+        !----
     end function strlen
+#endif
 end interface
 
 logical, private, parameter :: debug = .false.
@@ -18,10 +30,17 @@ contains
 
 !> Convert a C string into a fortran character type
 subroutine c_f_strings ( input_string, regular_string ) 
+#if defined(CRY_FORTDIGITAL)
+    implicit none  
+    character (len=1), dimension (*), intent (in) :: input_string
+    !dec$ attributes reference :: input_string
+    character, parameter :: c_null_char = char(0)
+#else
     use iso_c_binding, only: C_CHAR, c_null_char
-    implicit none
-   
+    implicit none  
     character (kind=c_char, len=1), dimension (*), intent (in) :: input_string
+#endif
+    
 !/* Test for GCC >= 4.7 or intel >= 14 */
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
