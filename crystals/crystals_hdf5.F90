@@ -822,7 +822,13 @@ subroutine xdaini_hdf5(crfile)
     integer(hsize_t), dimension(1) :: chunksize 
     integer(size_t) :: datasize
     integer(hid_t) :: crp_list
+    integer(hid_t) :: aspace_id     ! Attribute Dataspace identifier
+    integer(hid_t) :: attr_id       ! Attribute identifier    
+    integer(hsize_t), dimension(1) :: adims  ! Attribute dimension
+    integer(hid_t) :: atype_id      ! Attribute Dataspace identifier 
+    integer(size_t) :: attrlen    ! Length of the attribute string   
     integer recordsize
+    character(len=10), dimension(2) :: createdatetime
 
     character*10 newnam
     integer irecno, ireq, n, nsaveu
@@ -844,12 +850,29 @@ subroutine xdaini_hdf5(crfile)
     chunksize = (/crfile%dsc_blocksize/)
     ! constants only defined after h5open
     maxdims = (/h5s_unlimited_f/)
+    
+    ! Create attribute holding version number
+    adims = 1
+    CALL h5screate_simple_f(1, adims, aspace_id, error)
+    CALL h5acreate_f(crfile%file_id, "Version", H5T_NATIVE_INTEGER, aspace_id, attr_id, error)
+    CALL h5awrite_f(attr_id, H5T_NATIVE_INTEGER, (/0/), adims, error)
+    CALL h5aclose_f(attr_id, error)
 
+    ! Create attribute with date and time
+    adims = 2
+    call DATE_AND_TIME(createdatetime(1), createdatetime(2))
+    CALL h5tcopy_f(H5T_NATIVE_CHARACTER, atype_id, error)
+    attrlen=len(createdatetime(1))
+    CALL h5tset_size_f(atype_id, attrlen, error)    
+    CALL h5screate_simple_f(1, adims, aspace_id, error)
+    CALL h5acreate_f(crfile%file_id, "Creation date", atype_id, aspace_id, attr_id, error)
+    CALL h5awrite_f(attr_id, atype_id, createdatetime, adims, error)
+    CALL h5aclose_f(attr_id, error)
 
     !
     ! create the dataspace.
     !
-    call h5screate_simple_f(rank, dims, crfile%dsc_dspace_id, error, &
+    call h5screate_simple_f(1, adims, crfile%dsc_dspace_id, error, &
     &    maxdims=maxdims)
     if(error==-1) then 
         print *, 'Error during initialisation 1'
@@ -873,6 +896,12 @@ subroutine xdaini_hdf5(crfile)
         call exit(1)
     end if
 
+    ! Set ZLIB / DEFLATE Compression using compression level 6.
+    CALL h5pset_deflate_f(crp_list, 6, error)
+    if(error==-1) then 
+        print *, 'Error during setup of compression in hdf5 file'
+        call exit(1)
+    end if
 
     !
     ! create opaque datatype and set the tag to something appropriate.
