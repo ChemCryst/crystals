@@ -1,13 +1,12 @@
 include makefile.in
-
 BUILDDIR = dscbuild/
 SRCFILE = $(BUILDDIR)commands.src
 ORIG_SRTFILE = ../datafiles/crysdef.srt
 
 VPATH = ../datafiles
 
-CRYSEDIT = ../editor/cryseditor
-SSRCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\# strip
+# CRYSEDIT = ../editor/cryseditor
+# SSRCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\# strip
 SSRFILES = $(notdir $(wildcard ../datafiles/*.ssr))
 SRTFILES = $(SSRFILES:.ssr=.srt)
 
@@ -25,7 +24,7 @@ COPYDEST = $(COPYTEMP:../precomp/$(COMPCODE)/%=%)
 TEMPTOP = $(wildcard ../precomp/all/*) $(wildcard ../precomp/$(COMPCODE)/*)
 COPYDIRS = $(filter-out %CVS,$(TEMPTOP))
 
-all : commands.dsc commands.h5 $(CRYSEDIT) $(SRTFILES) $(COPYDEST)
+all : commands.dsc commands.h5 $(SRTFILES) $(COPYDEST)
 
 commands.dsc : $(BUILDDIR) $(SRCFILE) $(BUILDDIR)crystals.srt
 	cd $(BUILDDIR); rm delete*; rm commands.dsc; export CRYSDIR=./; ../crystals; mv commands.dsc ..
@@ -42,11 +41,8 @@ $(SRCFILE) :
 $(BUILDDIR)crystals.srt :
 	cp $(ORIG_SRTFILE) $@
 
-$(CRYSEDIT) :
-	cd ../editor; $(MAKE)
-
 %.srt : %.ssr
-	$(CRYSEDIT) $< $@ $(SSRCRYEDFLAGS)
+        perl ../editor/filepp.pl -w -imacros ../gui/crystalsinterface.h -o $@ -D__$(COMPCODE)__ -DCRYSVNVER=$(CRYSVNVER) -DCRYMONTH=$(CRYMONTH) -DCRYYEAR=$(CRYYEAR) $<
 
 $(COPYDEST) : $(COPYFILES)
 	cp -fR $(COPYDIRS) .	

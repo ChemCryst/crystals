@@ -1,6 +1,9 @@
-CRYSEDIT = ../editor/cryseditor
-SDACRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\#
-SSCCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\%\%
+# CRYSEDIT = ../editor/cryseditor
+# SDACRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\#
+# SSCCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\%\%
+CRYSVNVER := $(shell svnversion ..)
+CRYMONTH := $(shell date +'%B')
+CRYYEAR := $(shell date +'%Y')
 SSCSRC := $(wildcard ../script/*.ssc)
 SDASRC := $(wildcard ../script/*.sda)
 INSTALLDIR = 
@@ -13,16 +16,15 @@ SCPDIR = script/
 
 VPATH = ../script
 
-all : $(SCPDIR) $(CRYSEDIT) $(SCPOUT) $(DATOUT)
+all : $(SCPDIR) $(SCPOUT) $(DATOUT)
 
-$(CRYSEDIT) :
-	cd ../editor; $(MAKE)
+# $(CRYSEDIT) :
+#	cd ../editor; $(MAKE)
 
 script/%.scp : %.ssc
-	$(CRYSEDIT) $< $@ $(SSCCRYEDFLAGS)
-
+	perl ../editor/filepp.pl -w -imacros ../gui/crystalsinterface.h -o $@ -D__$(COMPCODE)__ -DCRYSVNVER=$(CRYSVNVER) -DCRYMONTH=$(CRYMONTH) -DCRYYEAR=$(CRYYEAR) $<
 script/%.dat : %.sda	
-	$(CRYSEDIT) $< $@ $(SDACRYEDFLAGS)
+	perl ../editor/filepp.pl -w -imacros ../gui/crystalsinterface.h -o $@ -D__$(COMPCODE)__ -DCRYSVNVER=$(CRYSVNVER) -DCRYMONTH=$(CRYMONTH) -DCRYYEAR=$(CRYYEAR) $<
 
 $(SCPDIR) :
 	mkdir $(SCPDIR)
