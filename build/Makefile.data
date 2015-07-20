@@ -42,7 +42,7 @@ $(BUILDDIR)crystals.srt :
 	cp $(ORIG_SRTFILE) $@
 
 %.srt : %.ssr
-        perl ../editor/filepp.pl -w -imacros ../gui/crystalsinterface.h -o $@ -D__$(COMPCODE)__ -DCRYSVNVER=$(CRYSVNVER) -DCRYMONTH=$(CRYMONTH) -DCRYYEAR=$(CRYYEAR) $<
+	perl ../editor/filepp.pl -w -imacros ../gui/crystalsinterface.h -o $@ -D__$(COMPCODE)__ -DCRYSVNVER=$(CRYSVNVER) -DCRYMONTH=$(CRYMONTH) -DCRYYEAR=$(CRYYEAR) $<
 
 $(COPYDEST) : $(COPYFILES)
 	cp -fR $(COPYDIRS) .	
