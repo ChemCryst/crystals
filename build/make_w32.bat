@@ -33,6 +33,14 @@
 @set INNOSETUP=c:\progra~1\innose~1
 
 :dist2
+@rmdir /q/s ..\debuginfo
+@mkdir ..\debuginfo
+@mkdir ..\debuginfo\%CRYSVNVER%
+@copy crystals.pdb ..\debuginfo\%CRYSVNVER%\
+@copy crystals.exe ..\debuginfo\%CRYSVNVER%\
+@copy CrashRpt*.dll ..\debuginfo\%CRYSVNVER%\
+@cd ..\build
+@rem Tidy up
 @call make_w32_crystals.bat tidy
 @call make_w32_data.bat tidy
 @call make_w32_script.bat tidy
