@@ -1,3 +1,5 @@
+set EnableExtensions EnableDelayedExpansion
+
 @if not "%WXWIN%" == "" goto WX2
 @set WXWIN=c:\wx3
 :WX2
