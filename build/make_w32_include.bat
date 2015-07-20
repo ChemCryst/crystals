@@ -1,4 +1,4 @@
-set EnableExtensions EnableDelayedExpansion
+setlocal EnableExtensions EnableDelayedExpansion
 
 @if not "%WXWIN%" == "" goto WX2
 @set WXWIN=c:\wx3
