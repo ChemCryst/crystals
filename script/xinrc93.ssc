@@ -57,8 +57,11 @@
 %    END BLOCK
 %    BLOCK             %RUN RC93%
 {S * Running RC93.
---GILLIN%      COPY '#SPAWN % "CRYSDIR:RC93.EXE" "CRYSDIR:"'
-++GILLIN%      COPY '#SPAWN % "CRYSDIR:rc93"'
+#ifdef CRY_OSWIN32
+%      COPY '#SPAWN % "CRYSDIR:RC93.EXE" "CRYSDIR:"'
+#else
+%      COPY '#SPAWN % "CRYSDIR:rc93"'
+#endif
 {R   Done.
 % copy '#type rc93.err'
 %    END BLOCK

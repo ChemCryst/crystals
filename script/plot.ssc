@@ -15,19 +15,24 @@
 %  VERIFY YES NO
 %  ON ERROR TERMINATE
 %  ON END TERMINATE
---INWGID%  GET NOSTORE FINAL ABBREVIATED  -
---INWGID   'Do you want to see the structure?' 'YES'
---INWGID%  IF VALUE .EQ. 2 THEN
---INWGID%     FINISH
---INWGID%  END IF
+#ifdef CRY_NOGUI
+%  GET NOSTORE FINAL ABBREVIATED  -
+   'Do you want to see the structure?' 'YES'
+%  IF VALUE .EQ. 2 THEN
+%     FINISH
+%  END IF
+#endif
 %  IF GRAPHICS .EQ. TRUE THEN
 %       VARIABLE LOGICAL NOXCAMQ LNEWL5
 %       EVALUATE NOXCAMQ = TRUE
 %       EVALUATE LNEWL5 = TRUE
-++INWGID%      COPY '#SCRIPT XCAM'
-++INWGID%      FINISH
---INWGID%      COPY '#CAMERON'
---INWGID%      COPY 'END'
+#ifdef CRY_GUI
+%      COPY '#SCRIPT XCAM'
+%      FINISH
+#else
+%      COPY '#CAMERON'
+%      COPY 'END'
+#endif
 %      LOOP
 %       ON END TERMINATE
 %       CLEAR

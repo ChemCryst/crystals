@@ -72,8 +72,13 @@
 %%                                                                              
 %  EVALUATE CDIR = GETPATH ( CFILE )                                            
 %  IF FILEEXISTS ( CDIR // 'check.def' ) .EQ. FALSE THEN                        
+#ifdef CRY_OSWIN32
 %   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY              
 %   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS             
+#else
+%   TRANSFER '#spawn +cp "' // CDIR // 'check.def" .' TO DISPLAY              
+%   TRANSFER '#spawn +cp "' // CDIR // 'check.def" .' TO CRYSTALS             
+#endif
 %  END IF      
 %%                                                                 
 %% Run Platon
@@ -81,10 +86,13 @@
 %  TRANSFER '#SPAWN + "' // CFILE // '" crysplat.cif' TO DISPLAY                  
 %  TRANSFER '#SPAWN + "' // CFILE // '" crysplat.cif' TO CRYSTALS                 
 %%
-%% Show results                                                                             
-+GID%  COPY '#SPAWN notepad.exe crysplat.lis'                              
--GID%  VARIABLE CHARACTER READER_FILE
--GID%  EVALUATE READER_FILE = 'crysplat.lis'
--GID%  COPY '#SCRIPT XREADER'
+%% Show results   
+#ifdef __GID__                                                                         
+%  COPY '#SPAWN notepad.exe crysplat.lis'                              
+#else
+%  VARIABLE CHARACTER READER_FILE
+%  EVALUATE READER_FILE = 'crysplat.lis'
+%  COPY '#SCRIPT XREADER'
+#endif
 %%                                                                              
 %END SCRIPT                                                                     

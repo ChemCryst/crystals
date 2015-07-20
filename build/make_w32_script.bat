@@ -2,13 +2,12 @@
 @if "%1" == "clean" goto clean
 @if "%1" == "tidy" goto tidy
 
-@SETLOCAL
-@if not exist ..\editor\cryseditor.exe cd ..\editor&&call make_w32.bat&&cd ..
-@ENDLOCAL
 mkdir script
-@FOR %%I IN ( ..\script\*.ssc ) DO ..\editor\cryseditor %%I script\%%~nI.scp code=%COMPCODE% incl=+ excl=- comm=%%%% 
-@FOR %%I IN ( ..\script\*.sda ) DO ..\editor\cryseditor %%I script\%%~nI.dat code=%COMPCODE% incl=+ excl=- comm=# 
+@FOR %%I IN ( ..\script\*.ssc ) DO perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o script\%%~nI.scp -D__%COMPCODE%__ -DCRYSVNVER=%CRYSVNVER% -DCRYMONTH=%CRYMONTH% -DCRYYEAR=%CRYYEAR% %%I
+@FOR %%I IN ( ..\script\*.sda ) DO perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o script\%%~nI.dat -D__%COMPCODE%__ %%I
+
 @goto exit
+
 
 :clean
 del script\*.scp

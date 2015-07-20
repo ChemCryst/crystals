@@ -104,12 +104,13 @@
 %%
 %% Launch DIFFIN                                                               
 %%                                                                              
+#ifdef CRY_OSWIN32
 % TRANSFER '#SPAWN + "CRYSDIR:diffin.exe"  "'  -
- // CIF //  -
- '" "' -
- // CARG // -
- '"' -
- TO CRYSTALS
+ // CIF // '" "' // CARG //  '"' TO CRYSTALS
+#else
+% TRANSFER '^^!! + "CRYSDIR:diffin"  "'  -
+ // CIF // '" "' // CARG // '"' TO DISPLAY
+#endif
 %%                                                                              
 %%                                                                              
 %END SCRIPT                                                                     

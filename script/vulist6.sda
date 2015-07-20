@@ -1,2 +1,5 @@
---INWGID$edit scplst6.dat
-++INWGID$+notepad scplst6.dat
+#ifdef CRY_NOGUI
+$edit scplst6.dat
+#else
+$+notepad scplst6.dat
+#endif

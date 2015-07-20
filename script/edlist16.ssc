@@ -30,46 +30,49 @@
 %%
 %  VARIABLE LOGICAL ISERR
 %%
--GID%  VARIABLE LOGICAL EDITED_ONCE
--GID%  EVALUATE EDITED_ONCE = FALSE
+%  VARIABLE LOGICAL EDITED_ONCE
+%  EVALUATE EDITED_ONCE = FALSE
 %%
 %  LOOP
 %%
-+GID^^WI WINDOW BLOCK16 'Waiting' MODAL CANCEL='^^CO DISPOSE BLOCK16'
-+GID^^WI GRID MAIN NROWS=4 NCOLS=3 { @ 2,2 STATIC T1 'Starting editor...'
-+GID^^WI @ 3,2 STATIC T1 'Close notepad to continue.' } SHOW
-+GID^^CR
-+GID%    EVALUATE ISERR = TRUE
-+GID%    BLOCK
-+GID%      ON ERROR TERMINATE
-+GID%    COPY '#use crysdir:script/edlist16.dat'
-+GID%%
-+GID%      EVALUATE ISERR = FALSE
-+GID%%
-+GID%    END BLOCK
-+GID%%
-+GID^^CO DISPOSE BLOCK16
-+GID%%
-+GID
-+GID%    IF ( ISERR ) THEN
-+GID{E Missing script file (crysdir:script/edlist16.dat).
-+GID{I Cannot edit restraints. Maybe a reinstall of CRYSTALS would help.
-+GID%      FINISH
-+GID%    END IF
--GID%    VARIABLE CHARACTER EDITOR_FILE
--GID%    VARIABLE LOGICAL EDITOR_OK
--GID%    EVALUATE EDITOR_FILE = 'scplst16.dat'
--GID%    COPY '#SCRIPT xeditorgl'
--GID%    IF ( .NOT. EDITOR_OK ) THEN
--GID%      IF ( EDITED_ONCE ) THEN
--GID%        COPY '#USE scporg16.dat'
--GID Original list 16 restored.
--GID%      ELSE
--GID Changes abandoned by user. List 16 has not been changed.
--GID%      END IF
--GID%      FINISH
--GID%    END IF
--GID%    EVALUATE EDITED_ONCE = TRUE
+#ifdef __GID__
+^^WI WINDOW BLOCK16 'Waiting' MODAL CANCEL='^^CO DISPOSE BLOCK16'
+^^WI GRID MAIN NROWS=4 NCOLS=3 { @ 2,2 STATIC T1 'Starting editor...'
+^^WI @ 3,2 STATIC T1 'Close notepad to continue.' } SHOW
+^^CR
+%    EVALUATE ISERR = TRUE
+%    BLOCK
+%      ON ERROR TERMINATE
+%    COPY '#use crysdir:script/edlist16.dat'
+%%
+%      EVALUATE ISERR = FALSE
+%%
+%    END BLOCK
+%%
+^^CO DISPOSE BLOCK16
+%%
+
+%    IF ( ISERR ) THEN
+{E Missing script file (crysdir:script/edlist16.dat).
+{I Cannot edit restraints. Maybe a reinstall of CRYSTALS would help.
+%      FINISH
+%    END IF
+#else
+%    VARIABLE CHARACTER EDITOR_FILE
+%    VARIABLE LOGICAL EDITOR_OK
+%    EVALUATE EDITOR_FILE = 'scplst16.dat'
+%    COPY '#SCRIPT xeditorgl'
+%    IF ( .NOT. EDITOR_OK ) THEN
+%      IF ( EDITED_ONCE ) THEN
+%        COPY '#USE scporg16.dat'
+ Original list 16 restored.
+%      ELSE
+ Changes abandoned by user. List 16 has not been changed.
+%      END IF
+%      FINISH
+%    END IF
+%    EVALUATE EDITED_ONCE = TRUE
+#endif
 %%
 %    EVALUATE ISERR = TRUE
 %    BLOCK

@@ -12,8 +12,11 @@
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
 ^^WI   ITEM PROBE '&Probe minima' '#SCRIPT XPROBE'                              
 ^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
---GILLIN^^WI   ITEM DRED '&DelRed' '$% "CRYSDIR:delred.exe"' 
-++GILLIN^^WI   ITEM DRED '&DelRed' '$% CRYSDIR:delred'
+#ifdef CRY_OSWIN32
+^^WI   ITEM DRED '&DelRed' '$% "CRYSDIR:delred.exe"' 
+#else
+^^WI   ITEM DRED '&DelRed' '$% CRYSDIR:delred'
+#endif
 ^^WI            DISABLEIF='IN'
 ^^WI   ITEM ED29 '&Atom properties' '#SCRIPT EDLIST29'                              
 ^^WI               ENABLEIF='L29' DISABLEIF='IN'  
@@ -33,11 +36,17 @@
 ^^WI   MENU OBSOLETE '&Obsolete'                                                
 ^^WI    ITEM CONY 'Co&ntour' '$"CRYSDIR:contour.exe"' DISABLEIF='IN'             
 ^^WI    ITEM CSD2 'csd2cry' '$% "CRYSDIR:csd2cry.exe"' DISABLEIF='IN'              
---GILLIN^^WI   ITEM REIN '&Re-index' '$% "CRYSDIR:reindex.exe"'
-++GILLIN^^WI   ITEM REIN '&Re-index' '$% CRYSDIR:reindex' 
+#ifdef CRY_OSWIN32
+^^WI   ITEM REIN '&Re-index' '$% "CRYSDIR:reindex.exe"'
+#else
+^^WI   ITEM REIN '&Re-index' '$% CRYSDIR:reindex' 
+#endif
 ^^WI            DISABLEIF='IN'            
---GILLIN^^WI   ITEM SXTO 's&x2cry' '$% "CRYSDIR:sxtocry.exe"' 
-++GILLIN^^WI   ITEM SXTO 's&x2cry' '$% CRYSDIR:sxtocry' 
+#ifdef CRY_OSWIN32
+^^WI   ITEM SXTO 's&x2cry' '$% "CRYSDIR:sxtocry.exe"' 
+#else
+^^WI   ITEM SXTO 's&x2cry' '$% CRYSDIR:sxtocry' 
+#endif
 ^^WI            DISABLEIF='IN'
 ^^WI    MENU _SIR02 'Sir 0&2'                                                   
 ^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR02' ENABLEIF='L1 L2 L6'         

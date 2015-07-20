@@ -53,9 +53,12 @@
 ^^WI   DISPOSE SIR97
 ^^CR
 %      IF ( VALUE .EQ. 1 ) THEN
-+GID%           COPY '#SPAWN +notepad.exe sir97.ini'
--GID%           EVALUATE EDITOR_FILE = 'sir97.ini'
--GID%           COPY '#SCRIPT XEDITOR'
+#ifdef __GID__
+%           COPY '#SPAWN +notepad.exe sir97.ini'
+#else
+%           EVALUATE EDITOR_FILE = 'sir97.ini'
+%           COPY '#SCRIPT XEDITOR'
+#endif
 %      END IF
 %      EVALUATE QLINE1 = 'A Sir97 job file has been created in the current'
 %      EVALUATE QLINE2 = 'directory. Run Sir97 then input the results.'

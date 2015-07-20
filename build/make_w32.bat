@@ -4,17 +4,9 @@
 @echo instead.
 @echo -------------------------------------------------------------------
 @if "%COMPCODE%" == "" goto edcodeerror
-for /f "delims=" %%a in ('svnversion') do @set CRYSVNVER=%%a
-
-@echo CrySVNver = %CRYSVNVER%
 
 @if "%1" == "debug" set CRDEBUG=TRUE&& shift && echo Building DEBUG version.
 @if "%1" == "dist" goto dist
-
-@SETLOCAL
-@if not exist ..\editor\cryseditor.exe cd ..\editor&&call make_w32.bat&&cd ..
-@ENDLOCAL
-
 
 @call make_w32_crystals.bat %1 || ( echo make_w32_crystals.bat returned an error & exit /b 1 )
 @call make_w32_data.bat %1

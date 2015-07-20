@@ -66,10 +66,13 @@
 %    EVALUATE BUTTXX = '&No'                                                    
 %    COPY '#SCRIPT XQUESTIO'                                                    
 %    IF ANSWER .EQ. TRUE THEN                                                   
-+GID%  COPY '#SPAWN notepad.exe noesds.cif'                              
--GID%  VARIABLE CHARACTER READER_FILE
--GID%  EVALUATE READER_FILE = 'noesds.cif'
--GID%  COPY '#SCRIPT XREADER'
+#ifdef CRY_USEWX
+%  COPY '#SPAWN notepad.exe noesds.cif'                              
+#else
+%  VARIABLE CHARACTER READER_FILE
+%  EVALUATE READER_FILE = 'noesds.cif'
+%  COPY '#SCRIPT XREADER'
+#endif
 %    END IF                                                                     
   Parameters saved in {&noesds.cif{&                                            
 %%                                                                              

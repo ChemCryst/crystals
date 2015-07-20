@@ -1,7 +1,10 @@
 %SCRIPT KCCD
  * Running KCCDIN.
---GILLIN%      COPY '#SPAWN % "CRYSDIR:kccdin.exe"'
-++GILLIN%      COPY '#SPAWN % "CRYSDIR:kccdin"'
+#ifdef CRY_OSWIN32
+%      COPY '#SPAWN % "CRYSDIR:kccdin.exe"'
+#else
+%      COPY '#SPAWN % "CRYSDIR:kccdin"'
+#endif
  * Done.
 % COPY '#SCRIPT XKCCDIN'
 %END SCRIPT

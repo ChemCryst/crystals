@@ -12,7 +12,11 @@
 %  EVALUATE SGOK = FALSE                                                        
 %  EVALUATE SPGTRIC = FALSE                                                     
 %%                                                                              
+#ifdef CRY_OSWIN32
 %      COPY '#SPAWN + "CRYSDIR:superflip.EXE" sflip.inflip'                     
+#else
+%      COPY '#SPAWN % "CRYSDIR:superflip" sflip.inflip' 
+#endif
 %%djwapr11      COPY '#TYPE sflip.sflog'                                        
 %% check the Superflip log-file for convergence indications                     
 %  EVALUATE CFILE = 'SFLIP.SFLOG'                                               
@@ -199,7 +203,11 @@
 %  END IF                                                                       
 %      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS             
 %      COPY 'END'                                                               
+#ifdef CRY_OSWIN32
 %      COPY '#SPAWN + "CRYSDIR:edma.EXE" sflip.inflip'                          
+#else
+%      COPY '#SPAWN % "CRYSDIR:edma" sflip.inflip'                          
+#endif
 %%  clear out merged reflection list                                            
 %%                                                                              
 %    if ( exists 7 .gt. 0 ) then                                                

@@ -1,3 +1,7 @@
-++DOSDVF$edit scplst5.dat
-+++INWGIDWXS$+notepad scplst5.dat
-++GILLIN$+nedit scplst5.dat
+#ifdef CRY_OSLINUX
+$+nedit scplst5.dat
+#elif CRY_NOGUI
+$edit scplst5.dat
+#else
+$+notepad scplst5.dat
+#endif

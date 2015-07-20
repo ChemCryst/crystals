@@ -264,6 +264,8 @@
 %  END LOOP
 %%
 %  END IF
--GID%  COPY '#SCRIPT PLOT'
+#ifdef CRY_NOGUI
+%  COPY '#SCRIPT PLOT'
+#endif
 %%
 %END SCRIPT

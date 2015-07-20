@@ -26,7 +26,11 @@
 %    EVALUATE BUTTXX = '&No'
 %    COPY '#SCRIPT XQUESTIO'
 %    IF ANSWER .EQ. TRUE THEN
+#ifdef CRY_OSMAC
+%      TRANSFER '^^!! open publish.html' TO DISPLAY
+#else
 %      COPY '#SPAWN publish.html'
+#endif
 %    END IF
   Report saved in {&publish.html{&
 %END SCRIPT

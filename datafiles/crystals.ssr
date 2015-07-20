@@ -1,243 +1,260 @@
-# Startup file for CRYSTALS
-# Remember that lines with a space in column 2 are comment lines
-#
-#SET AUTOUPDT OFF
-#STORE SYST VERS 1461
-#STORE CSYS OPER 'Win 32' MACH 'i386'
-#STORE CSYS DATE 'Aug, 2014'
-#
-# ensure that file names are fully lower case
-#SET FILE MIXED
-#
-# The symbolic names to be used in STORE are:
-# 'NCRU', 'NCRR', 'NCWU', 'NCPU', 'NCAR', 'NCAW', 'NCSU', 'NCXT',
-# 'NCQU', 'NCCB', 'NCF1', 'NCF2', 'NUCM', 'NVDU', 'NCER', 'NCAD',
-# 'NCMU', 'NCCH', 'NCPD', 'NCDB',
-#
-# The initial read device, which will read this file, is assigned
-# in PRESETS to channel NCUFU(2) (the same as NCRU).  The default channel
-# for this is 20.
-#
-# Units concerned with the GUI. You may choose to send them all to
-# channel 6 (as follows), otherwise you will have to open files for them
-#       ATOMS   MENUE   CHART   PROGRES DIALOGU
-#       NCAD,   NCMU,   NCCH,   NCPD,   NCDB
-#       40      41      42      43      44
-#STORE UNIT NCAD 6
-#STORE UNIT NCMU 6
-#STORE UNIT NCCH 6
-#STORE UNIT NCPD 6
-#STORE UNIT NCDB 6
-#
-# On some systems you may initially need to assign both NCAWU and NCWU
-# to the same default output channel (typically 6) by editing  PRESETS.
-# Then use STORE, ATTACH and OPEN to  assign them to different channels.
-#
-# enable general messages
-#set message on
-#
-# Generate causes the program to attempt to generate new file names if
-# the operating system does not support generation numbers
-#set generat on
-#
-# If you want the printer output to go to a file, the value of NCWU
-# may need changing in PRESETS or here.
-# hook the printer file to channel 9 - some systems may force you to use 6
-#STORE UNIT NCWU 9
-#ATTACH 9 PRINTER SEQUENTIAL NEW FORMATTED WRITE FREE
-#
-# HOOK IN THE MONITOR
-# If you want the monitor output to go to a file, the value of NCAWU
-# may need changing in PRESETS or here.
-# hook the monitor file to channel 3 - some systems may force you to use 6
-#STORE UNIT NCAW 3
-#ATTACH  3 MONITOR SEQUENTIAL CIF FORMATTED WRITE FREE
-#open monitor bfile.mon
-#
-#
-#
-# Attach 5 to data file for batch-only mode by removing space after #
-# and putting filename onto OPEN command.
-# ATTACH 5 CONTROL SEQUENTIAL OLD FORMATTED READ FREE
-# TT: is a VMS symbol for the terminal.
-# OPEN CONTROL TT:
-#
-#
-# Hook up the HELP, MANUAL and SCRIPT files
-#STORE DEVI HLPD 'CRYSDIR:doc/' HLPE '.hel'
-#STORE DEVI INDD 'CRYSDIR:doc/' INDE '.ind'
-#STORE DEVI SCPD 'CRYSDIR:script/' SCPE '.scp'
-#
-# Store the names of the elemental properties and scattering factor files
-#STORE CSYS SCAT 'CRYSDIR:script/scatt.dat'
-#STORE CSYS ELEM 'CRYSDIR:script/propwin.dat'
-#
-#set term unknown
-#
-# activate this if you can pass the environment into XQUEN in SPECIFIC
-#START ENVIRONMENT
-#START ERRORS
-#START MESSAGE
-# PAUSE 1
-#
-# if you DISlike colour, add a space after the # in the next line
-#
-# set up scratch files - you may want to make some of them permanent to
-# preserve data between runs.
-# Start SPY only if you want to accumulate running statistics
-# STORE UNIT NCSU 11
-# ATTACH 11 SPY SEQUENTIAL SCRATCH FORMATTED WRITE FREE
-#ATTACH 11 SPY SEQUENTIAL CIF FORMATTED WRITE FREE
-# OPEN SPY
-# START SPY
-# STORE UNIT NCCB 14
-# ATTACH 14 EXCOMMON SEQUENTIAL SCRATCH FORMATTED WRITE FREE
-# STORE  TAPE MT1 48
-# ATTACH 48 MT1 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
-# STORE  TAPE MT2 49
-# ATTACH 49 MT2 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
-# STORE  TAPE MT3 50
-# ATTACH 50 MT3 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
-# STORE  TAPE MTE 51
-# ATTACH 51 MTE SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
-# STORE TAPE  MTA 52
-# ATTACH 32 M32 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
-# STORE TAPE  MTB 53
-# ATTACH 33 M33 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
-#ATTACH 63 SRQ SEQUENTIAL SCRATCH   FORMATTED WRITE LOCK
-#OPEN SRQ
-# dont open EXCOMMON - now used for H-placement
-# OPEN EXCOMMON
-#OPEN M32
-#OPEN M33
-#OPEN MT1
-#OPEN MT2
-#OPEN MT3
-#OPEN MTE
-#
-#
-# The foreign files
-# STORE  UNIT  NCF1 71
-# djwmay99ATTACH 71 FRN1 SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
-#ATTACH 71 FRN1 SEQUENTIAL CIF FORMATTED WRITE FREE
-# STORE  UNIT  NCF2 72
-# djwmay99ATTACH 72 FRN2 SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
-#ATTACH 72 FRN2 SEQUENTIAL CIF FORMATTED WRITE FREE
-# djwmay99 set the cif file name
-#STORE CSYS CIF 'publish.cif'
-# RICjul99 set the map file name
-#STORE CSYS MAP 'fourier.map'
-# OPEN FRN1 bfile.fn1
-# OPEN FRN2 bfile.fn2
-# THE SCRIPT FILES
-#STORE  UNIT NCXT 88
-#ATTACH 88 SCPDATA SEQUENTIAL OLD FORMATTED READ FREE
-# STORE  UNIT NCQU 89
-# ATTACH 89 SCPQUEUE SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
-#ATTACH 89 SCPQUEUE SEQUENTIAL CIF FORMATTED WRITE FREE
-#OPEN SCPQUEUE bfile.spq
-#
-# set up the disc files with the system and users data bases.
-# STORE  DISC NCIF 15
-# STORE  DISC NCLD 15
-# ATTACH 15 COMMANDS DIRECT OLD UNFORMATTED READ LOCK
-# STORE  DISC NCDF 1
-# ATTACH 1 DISCFILE DIRECT CIF UNFORMATTED WRITE FREE
-# STORE  DISC NCND 12
-#ATTACH 12 NEWDISC DIRECT CIF UNFORMATTED WRITE FREE
-#
-#START DISC
-# the file COMMANDS.DSC is a CRYSTALS system file all users must be
-# able to access.
-#OPEN COMMANDS CRYSDIR:commands.dsc
-#
-# NOW THE FILES CONCERNED WITH THE CURRENT STRUCTURE
-#
-# the filename bfile.LIS will contain the detailed output listings.
-#OPEN PRINTER bfile.lis
-# Formatted output files.
-# the filenames bfile.PCH and .LOG  will be system dependant
-# STORE UNIT NCPU 7
-# cdjwmay99ATTACH 7 PUNCH SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
-#ATTACH 7 PUNCH SEQUENTIAL CIF FORMATTED WRITE FREE
-#OPEN PUNCH bfile.pch
-# STORE UFIL NCLU 8
-# ATTACH 8 LOG SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
-#ATTACH 8 LOG SEQUENTIAL NEW FORMATTED WRITE FREE
-#OPEN LOG bfile.log
-#
-#
-# The reflection data. User should issue #OPEN HKLI if he needs to read it.
-# STORE UNIT  NCAR 2
-# ATTACH 2 HKLI SEQUENTIAL OLD FORMATTED READ FREE
-# User could issue this manually if he is doing data reduction
-# OPEN HKLI bfile.HKL
-# the filename CRFILE.DSC  will be system dependant
---DVFLIN#OPEN DISCFILE CRDSC:
-++DVFLIN#OPEN DISCFILE crfilev2.dsc
-# Dont open the new disk for PURGE NEW, but store its name in case its needed.
-#STORE CSYS NEWD 'CRDIR:bfile.dsc'
-# OPEN NEWD betacrys.nwd
-#START INDEX
-#
-#
-#STORE SYST INIT 0
-#
-# REMOVE START
-# REMOVE STORE
-#REMOVE DEFINE
-# HELP and SCRIPT make no sense in a batch-only mode. If you want to use them,
-# set the directory and extension using STORE DEVI or by editing PRESETS.
-# REMOVE HELP
-# REMOVE MANUAL
-# REMOVE SCRIPT
-# REMOVE REMOVE
-#
-#
-# Note that in the users personal STARTUP file he may reassign files to
-# channels via #RELEASE and #OPEN. SYS$LOGIN  points to the users filestore.
-# USE SYS$LOGIN:CRYSINIT.DAT
-#
-# Start or stop monitoring and logging input etc
-# SET MONITOR OFF
-# SET LOG OFF
-#SET MESSAGE OFF
-#SET LIST NONE
-#SET TIME OFF
-# write to a file that could be printed
-#SET PRINT ON
-# set file opening messages off
-#set open off
-#DISK
+\ Startup file for CRYSTALS
+\ Remember that lines with a space in column 2 are comment lines
+\
+\SET AUTOUPDT OFF
+\STORE SYST VERS 1461
+\STORE CSYS OPER 'Win 32' MACH 'i386'
+\STORE CSYS DATE 'CRYMONTH, CRYYEAR'
+\STORE CSYS SVN 'CRYSVNVER'
+\
+\ ensure that file names are fully lower case
+\SET FILE MIXED
+\
+\ The symbolic names to be used in STORE are:
+\ 'NCRU', 'NCRR', 'NCWU', 'NCPU', 'NCAR', 'NCAW', 'NCSU', 'NCXT',
+\ 'NCQU', 'NCCB', 'NCF1', 'NCF2', 'NUCM', 'NVDU', 'NCER', 'NCAD',
+\ 'NCMU', 'NCCH', 'NCPD', 'NCDB',
+\
+\ The initial read device, which will read this file, is assigned
+\ in PRESETS to channel NCUFU(2) (the same as NCRU).  The default channel
+\ for this is 20.
+\
+\ Units concerned with the GUI. You may choose to send them all to
+\ channel 6 (as follows), otherwise you will have to open files for them
+\       ATOMS   MENUE   CHART   PROGRES DIALOGU
+\       NCAD,   NCMU,   NCCH,   NCPD,   NCDB
+\       40      41      42      43      44
+\STORE UNIT NCAD 6
+\STORE UNIT NCMU 6
+\STORE UNIT NCCH 6
+\STORE UNIT NCPD 6
+\STORE UNIT NCDB 6
+\
+\ On some systems you may initially need to assign both NCAWU and NCWU
+\ to the same default output channel (typically 6) by editing  PRESETS.
+\ Then use STORE, ATTACH and OPEN to  assign them to different channels.
+\
+\ enable general messages
+\set message on
+\
+\ Generate causes the program to attempt to generate new file names if
+\ the operating system does not support generation numbers
+\set generat on
+\
+\ If you want the printer output to go to a file, the value of NCWU
+\ may need changing in PRESETS or here.
+\ hook the printer file to channel 9 - some systems may force you to use 6
+\STORE UNIT NCWU 9
+\ATTACH 9 PRINTER SEQUENTIAL NEW FORMATTED WRITE FREE
+\
+\ HOOK IN THE MONITOR
+\ If you want the monitor output to go to a file, the value of NCAWU
+\ may need changing in PRESETS or here.
+\ hook the monitor file to channel 3 - some systems may force you to use 6
+\STORE UNIT NCAW 3
+\ATTACH  3 MONITOR SEQUENTIAL CIF FORMATTED WRITE FREE
+\open monitor bfile.mon
+\
+\
+\
+\ Attach 5 to data file for batch-only mode by removing space after \
+\ and putting filename onto OPEN command.
+\ ATTACH 5 CONTROL SEQUENTIAL OLD FORMATTED READ FREE
+\ TT: is a VMS symbol for the terminal.
+\ OPEN CONTROL TT:
+\
+\
+\ Hook up the HELP, MANUAL and SCRIPT files
+\STORE DEVI HLPD 'CRYSDIR:doc/' HLPE '.hel'
+\STORE DEVI INDD 'CRYSDIR:doc/' INDE '.ind'
+\STORE DEVI SCPD 'CRYSDIR:script/' SCPE '.scp'
+\
+\ Store the names of the elemental properties and scattering factor files
+\STORE CSYS SCAT 'CRYSDIR:script/scatt.dat'
+\STORE CSYS ELEM 'CRYSDIR:script/propwin.dat'
+\
+\set term unknown
+\
+\ activate this if you can pass the environment into XQUEN in SPECIFIC
+\START ENVIRONMENT
+\START ERRORS
+\START MESSAGE
+\ PAUSE 1
+\
+\ if you DISlike colour, add a space after the \ in the next line
+\
+\ set up scratch files - you may want to make some of them permanent to
+\ preserve data between runs.
+\ Start SPY only if you want to accumulate running statistics
+\ STORE UNIT NCSU 11
+\ ATTACH 11 SPY SEQUENTIAL SCRATCH FORMATTED WRITE FREE
+\ATTACH 11 SPY SEQUENTIAL CIF FORMATTED WRITE FREE
+\ OPEN SPY
+\ START SPY
+\ STORE UNIT NCCB 14
+\ ATTACH 14 EXCOMMON SEQUENTIAL SCRATCH FORMATTED WRITE FREE
+\ STORE  TAPE MT1 48
+\ ATTACH 48 MT1 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\ STORE  TAPE MT2 49
+\ ATTACH 49 MT2 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\ STORE  TAPE MT3 50
+\ ATTACH 50 MT3 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\ STORE  TAPE MTE 51
+\ ATTACH 51 MTE SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\ STORE TAPE  MTA 52
+\ ATTACH 32 M32 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\ STORE TAPE  MTB 53
+\ ATTACH 33 M33 SEQUENTIAL SCRATCH UNFORMATTED WRITE FREE
+\ATTACH 63 SRQ SEQUENTIAL SCRATCH   FORMATTED WRITE LOCK
+\OPEN SRQ
+\ dont open EXCOMMON - now used for H-placement
+\ OPEN EXCOMMON
+\OPEN M32
+\OPEN M33
+\OPEN MT1
+\OPEN MT2
+\OPEN MT3
+\OPEN MTE
+\
+\
+\ The foreign files
+\ STORE  UNIT  NCF1 71
+\ djwmay99ATTACH 71 FRN1 SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
+\ATTACH 71 FRN1 SEQUENTIAL CIF FORMATTED WRITE FREE
+\ STORE  UNIT  NCF2 72
+\ djwmay99ATTACH 72 FRN2 SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
+\ATTACH 72 FRN2 SEQUENTIAL CIF FORMATTED WRITE FREE
+\ djwmay99 set the cif file name
+\STORE CSYS CIF 'publish.cif'
+\ RICjul99 set the map file name
+\STORE CSYS MAP 'fourier.map'
+\ OPEN FRN1 bfile.fn1
+\ OPEN FRN2 bfile.fn2
+\ THE SCRIPT FILES
+\STORE  UNIT NCXT 88
+\ATTACH 88 SCPDATA SEQUENTIAL OLD FORMATTED READ FREE
+\ STORE  UNIT NCQU 89
+\ ATTACH 89 SCPQUEUE SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
+\ATTACH 89 SCPQUEUE SEQUENTIAL CIF FORMATTED WRITE FREE
+\OPEN SCPQUEUE bfile.spq
+\
+\ set up the disc files with the system and users data bases.
+\ STORE  DISC NCIF 15
+\ STORE  DISC NCLD 15
+\ ATTACH 15 COMMANDS DIRECT OLD UNFORMATTED READ LOCK
+\ STORE  DISC NCDF 1
+\ ATTACH 1 DISCFILE DIRECT CIF UNFORMATTED WRITE FREE
+\ STORE  DISC NCND 12
+\ATTACH 12 NEWDISC DIRECT CIF UNFORMATTED WRITE FREE
+\
+\START DISC
+\ the file COMMANDS.DSC is a CRYSTALS system file all users must be
+\ able to access.
+\OPEN COMMANDS CRYSDIR:commands.dsc
+\
+\ NOW THE FILES CONCERNED WITH THE CURRENT STRUCTURE
+\
+\ the filename bfile.LIS will contain the detailed output listings.
+\OPEN PRINTER bfile.lis
+\ Formatted output files.
+\ the filenames bfile.PCH and .LOG  will be system dependant
+\ STORE UNIT NCPU 7
+\ cdjwmay99ATTACH 7 PUNCH SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
+\ATTACH 7 PUNCH SEQUENTIAL CIF FORMATTED WRITE FREE
+\OPEN PUNCH bfile.pch
+\ STORE UFIL NCLU 8
+\ ATTACH 8 LOG SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
+\ATTACH 8 LOG SEQUENTIAL NEW FORMATTED WRITE FREE
+\OPEN LOG bfile.log
+\
+\
+\ The reflection data. User should issue \OPEN HKLI if he needs to read it.
+\ STORE UNIT  NCAR 2
+\ ATTACH 2 HKLI SEQUENTIAL OLD FORMATTED READ FREE
+\ User could issue this manually if he is doing data reduction
+\ OPEN HKLI bfile.HKL
+\ the filename CRFILE.DSC  will be system dependant
+#ifdef CRY_GUI
+\OPEN DISCFILE CRDSC:
+#else
+\OPEN DISCFILE crfilev2.dsc
+#endif
+\ Dont open the new disk for PURGE NEW, but store its name in case its needed.
+\STORE CSYS NEWD 'CRDIR:bfile.dsc'
+\ OPEN NEWD betacrys.nwd
+\START INDEX
+\
+\
+\STORE SYST INIT 0
+\
+\ REMOVE START
+\ REMOVE STORE
+\REMOVE DEFINE
+\ HELP and SCRIPT make no sense in a batch-only mode. If you want to use them,
+\ set the directory and extension using STORE DEVI or by editing PRESETS.
+\ REMOVE HELP
+\ REMOVE MANUAL
+\ REMOVE SCRIPT
+\ REMOVE REMOVE
+\
+\
+\ Note that in the users personal STARTUP file he may reassign files to
+\ channels via \RELEASE and \OPEN. SYS$LOGIN  points to the users filestore.
+\ USE SYS$LOGIN:CRYSINIT.DAT
+\
+\ Start or stop monitoring and logging input etc
+\ SET MONITOR OFF
+\ SET LOG OFF
+\SET MESSAGE OFF
+\SET LIST NONE
+\SET TIME OFF
+\ write to a file that could be printed
+\SET PRINT ON
+\ set file opening messages off
+\set open off
+\DISK
 EXTEND SIZE = 500
 END
-# dont create an 'export' file
-#set export off
-# disable file opening messages
-#set open off
-#use crysinit.dat
---DVFLIN#SET TERM WIN
-++DVFLIN#SET TERM UNKNOWN
-# Uncomment this to always turn off automatic bond type
-# assignement and rendering
-# SET BONDTYPE ON
-# check for cell and reflections
--DVF#SCRIPT L6CHECK
-# Check for old format list 5's. This can be disabled
-# if you have no old CRYSTALS DSC or list 5 files from
-# before Feb 1999.
--DVF#SCRIPT dsccheck
-#
-# Load lists required for GID model view.
---LINDVF#SCRIPT xnewgui
-#
-# Use local crystart.dat if present.
-#USE crystart.dat
-#
-# Display the "Tip of the day". This line can be removed
-# if it really annoys you:
---LINDVF#SCRIPT TIPAUTO
---LINDVF#SCRIPT GUIDEAUTO
--DVF#USE CRYUSEFILE:
-#
-#USE CONTROL
+\ dont create an 'export' file
+\set export off
+\ disable file opening messages
+\set open off
+\use crysinit.dat
+#ifdef CRY_GUI
+\SET TERM WIN
+#else
+\SET TERM UNKNOWN
+#endif
+\ Uncomment this to always turn off automatic bond type
+\ assignement and rendering
+\ SET BONDTYPE ON
+\ check for cell and reflections
+#ifdef CRY_GUI
+\SCRIPT L6CHECK
+#endif
+\ Check for old format list 5's. This can be disabled
+\ if you have no old CRYSTALS DSC or list 5 files from
+\ before Feb 1999.
+#ifdef CRY_GUI
+\SCRIPT dsccheck
+#endif
+\
+\ Load lists required for GID model view.
+#ifdef CRY_GUI
+\SCRIPT xnewgui
+#endif
+\
+\ Use local crystart.dat if present.
+\USE crystart.dat
+\
+\ Display the "Tip of the day". This line can be removed
+\ if it really annoys you:
+#ifdef CRY_GUI
+\SCRIPT TIPAUTO
+\SCRIPT GUIDEAUTO
+#endif
+#ifndef __DVF__ 
+\USE CRYUSEFILE:
+#endif
+\
+\USE CONTROL

@@ -11,6 +11,28 @@
 @set FOPATH=obj
 @if "%CRDEBUG%" == "TRUE" set FOPATH=dobj
 
+@if defined CRYSVNVER goto SVER
+@set CRYSVNVER=00000
+@for /f "delims=" %%a in ('svnversion') do @set CRYSVNVER=%%a
+@echo CrySVNver = %CRYSVNVER%
+:SVER
+@if defined CRYMONTH goto SDATE
+@echo off
+FOR /F "skip=1 tokens=1-6" %%A IN ('WMIC Path Win32_LocalTime Get Day^,Hour^,Minute^,Month^,Second^,Year /Format:table') DO (
+    IF NOT "%%~F"=="" (
+        SET /A SortDate = 10000 * %%F + 100 * %%D + %%A
+        set CRYYEAR=!SortDate:~0,4!
+        set CRYMON=!SortDate:~4,2!
+        set CRYDAY=!SortDate:~6,2!
+    )
+)
+@echo on
+@set months=January February March April May June^
+@ July August September October November December
+@for /f "tokens=%crymon%" %%a in ("%months%") do @set "CRYMONTH=%%a"
+@echo YR=!CRYYEAR! MON=!CRYMON! DAY=!CRYDAY! MONTH=!CRYMONTH!
+
+:SDATE
 @goto %COMPCODE%
 
 
@@ -19,7 +41,7 @@
 @if not "%CRDEBUG%" == "TRUE" set LIBS=/LIBPATH:%WXWIN%\lib\vc_lib  wxbase28.lib  wxmsw28_core.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw28_gl.lib  wxmsw28_aui.lib  user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @set LIBS=%LIBS% rc.o
 @rem @set LIBS=/LIBPATH:%WXWIN%\lib\vc_lib msvcrtd.lib libcmtd.lib wxbase28d.lib wxmsw28d_core.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib  user32.lib ole32.lib /NODEFAULTLIB:MSVCRT.lib
-@set CDEF=/D"__WXMSW__" /D"CRY_FORTDIGITAL"
+@set CDEF=/D"__WXMSW__" /D"CRY_FORTDIGITAL" /DCRYSVNVER="%CRYSVNVER%"
 @set FDEF=/define:__%COMPCODE%__ /define:CRY_FORTDIGITAL
 goto ALLDVF
 
@@ -43,7 +65,7 @@ goto ALLDVF
 @set LDFLAGS= /Qmkl %COPENMP%
 
 @set CC=cl
-@set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D__%COMPCODE%__ /D_CRT_SECURE_NO_WARNINGS
+@set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D__%COMPCODE%__ /D_CRT_SECURE_NO_WARNINGS /DCRYSVNVER="%CRYSVNVER%"
 @set COPTS=/EHs  /W3 /nologo /c /TP /I..\gui /O2 /Zi /Oy- /D"NDEBUG" /MD 
 @set CDEBUG=/EHs /W3 /nologo /c /TP /I..\gui /Od /D"DEBUG" /RTC1 /MDd /Z7  
 @set COUT=/Foobj\
@@ -61,7 +83,7 @@ goto ALLDVF
 
 :GID
 @set LIBS=script1.res
-@set CDEF=/D__%COMPCODE%__ /D"_AFXDLL" /D_CRT_SECURE_NO_WARNINGS
+@set CDEF=/D__%COMPCODE%__ /D"_AFXDLL" /D_CRT_SECURE_NO_WARNINGS 
 @set FDEF=-D__GID__ -DCRY_GUI -DCRY_USEMFC -DCRY_OSWIN32 -DCRY_FORTDIGITAL -D_NOHDF5_
 
 :ALLDVF
@@ -74,7 +96,7 @@ goto ALLDVF
 @set LDEBUG=/DEBUG /debugtype:cv /pdb:none /incremental:no
 
 @set CC=CL
-@set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_MBCS"
+@set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_MBCS" /DS /DCRYSVNVER="%CRYSVNVER%"
 @set COPTS=/EHs /W3 /nologo /c /TP /I..\gui /O2 /D"NDEBUG" /MD
 @set CDEBUG=/EHs /W3 /nologo /c /Od /RTC1 /MDd /Z7 /TP /I..\gui
 @set COUT=/Foobj\

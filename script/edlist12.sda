@@ -1,3 +1,7 @@
-++DOSDVF$edit scplst12.dat
-+++INWGIDWXS$+notepad scplst12.dat
-++LINGIL$+nedit scplst12.dat
+#ifdef CRY_OSLINUX
+$+nedit scplst12.dat
+#elif CRY_NOGUI
+$edit scplst12.dat
+#else
+$+notepad scplst12.dat
+#endif

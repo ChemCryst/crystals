@@ -1,2 +1,5 @@
---INWGID$edit scplst40.dat
-++INWGID$+notepad scplst40.dat
+#ifdef CRY_GUI
+$+notepad scplst40.dat
+#else
+$edit scplst40.dat
+#endif

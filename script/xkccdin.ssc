@@ -67,7 +67,11 @@
 %    BLOCK             %RUN KCCDIN%                                             
 ^^CO      DISPOSE XKCCDIN                                                       
 {S * Running KCCDIN.                                                            
+#ifdef CRY_OSWIN32
 %      COPY '#SPAWN % "CRYSDIR:kccdin.exe"'                                     
+#else
+%      COPY '#SPAWN % "CRYSDIR:kccdin"'  
+#endif
 {R   Done.                                                                      
 %    END BLOCK                                                                  
 %  END CASE                                                                     

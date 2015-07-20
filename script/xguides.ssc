@@ -81,7 +81,11 @@
                                                                                 
 %  COPY '#SCRIPT XGETINFO'                                                      
 %  IF ( I6DONE ) THEN                                                           
+#ifdef CRY_USEWX     
+%    EVALUATE KTDEFA = 2 
+#else
 %    EVALUATE KTDEFA = 1                                                        
+#endif
 %  ELSE                                                                         
 %    EVALUATE KTDEFA = 10                                                        
 %  END IF                                                                       

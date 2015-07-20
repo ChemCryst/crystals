@@ -257,11 +257,14 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
-+GID{I Starting notepad to display publish.cif
-+GID%  COPY '#SPAWN notepad.exe publish.cif'
--GID%  VARIABLE CHARACTER READER_FILE
--GID%  EVALUATE READER_FILE = 'publish.cif'
--GID%  COPY '#SCRIPT XREADER'
+#ifdef __GID__
+{I Starting notepad to display publish.cif
+%  COPY '#SPAWN notepad.exe publish.cif'
+#else
+%  VARIABLE CHARACTER READER_FILE
+%  EVALUATE READER_FILE = 'publish.cif'
+%  COPY '#SCRIPT XREADER'
+#endif
 %    ELSE
 ^^??   CFCCDC STATE
 %      VERIFY ON OFF

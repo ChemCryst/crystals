@@ -2,8 +2,8 @@
 %   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                       
 %   VARIABLE LOGICAL ANSWER T
 %   VARIABLE INTEGER IRUN 
--GID%  VARIABLE LOGICAL EDITOR_OK
--GID%  VARIABLE CHARACTER EDITOR_FILE                     
+%  VARIABLE LOGICAL EDITOR_OK
+%  VARIABLE CHARACTER EDITOR_FILE                     
 %   IF EXISTS 6 .LT. 1 THEN                                                     
 {E            You do not have any reflections stored.                           
 {E            It is impossible to proceed without data.                         
@@ -121,22 +121,25 @@
 ^^WI   DISPOSE SIR92                                                            
 ^^CR                                                                            
 %      IF ( VALUE .EQ. 1 ) THEN                                                 
-+GID%           COPY '#SPAWN +notepad.exe sir92.ini'                                
-+GID%           EVALUATE QTITLE = 'Sir92 Preparation'                               
-+GID%           EVALUATE QLINE1 = 'Do you still want to'                            
-+GID%           EVALUATE QLINE2 = 'run the Sir92 job?'                              
-+GID%           EVALUATE BUTTOK = '&Yes'                                            
-+GID%           EVALUATE BUTTXX = '&No'                                             
-+GID%           COPY '#SCRIPT XQUESTIO'                                             
-+GID%           IF ANSWER .EQ. FALSE THEN                                           
-+GID%               FINISH                                                          
-+GID%           END IF                                                              
--GID%           EVALUATE EDITOR_FILE = 'sir92.ini'
--GID%           COPY '#SCRIPT XEDITOR'
--GID%           IF ( .NOT. EDITOR_OK ) THEN
--GID User cancelled Sir92 run.
--GID%              FINISH
--GID%            END IF                                                                             
+#ifdef __GID__
+%           COPY '#SPAWN +notepad.exe sir92.ini'                                
+%           EVALUATE QTITLE = 'Sir92 Preparation'                               
+%           EVALUATE QLINE1 = 'Do you still want to'                            
+%           EVALUATE QLINE2 = 'run the Sir92 job?'                              
+%           EVALUATE BUTTOK = '&Yes'                                            
+%           EVALUATE BUTTXX = '&No'                                             
+%           COPY '#SCRIPT XQUESTIO'                                             
+%           IF ANSWER .EQ. FALSE THEN                                           
+%               FINISH                                                          
+%           END IF                                                              
+#else
+%           EVALUATE EDITOR_FILE = 'sir92.ini'
+%           COPY '#SCRIPT XEDITOR'
+%           IF ( .NOT. EDITOR_OK ) THEN
+ User cancelled Sir92 run.
+%              FINISH
+%            END IF                                                                             
+#endif
 %      END IF                                                                   
 %      IF ( IRUN .EQ. 2 ) THEN                                                  
 %           FINISH                                                              
@@ -144,8 +147,11 @@
 %      IF ( FILEEXISTS ( 'sir9x.cry' ) ) THEN
 %         EVALUATE T = FILEDELETE ( 'sir9x.cry' )
 %      END IF
--GIL%      COPY '#SPAWN + "CRYSDIR:SIR92.EXE" sir92.ini sir92.lis'
-+GIL%      COPY '#SPAWN + "CRYSDIR:sir92" SIR92.INI sir92.lis'                                                      
+#ifdef CRY_OSWIN32
+%      COPY '#SPAWN + "CRYSDIR:SIR92.EXE" sir92.ini sir92.lis'
+#else
+%      COPY '#SPAWN + "CRYSDIR:sir92" SIR92.INI sir92.lis'                                                      
+#endif
 %   END BLOCK                                                                   
 %%
 %   IF ( .NOT. FILEEXISTS ( 'sir9x.cry' ) ) THEN
@@ -267,10 +273,13 @@
 %     END BLOCK                                                                    
 %     BLOCK
 %%  view the log file
-+GID%  COPY '#SPAWN +notepad.exe sir92.lis'                              
--GID%  VARIABLE CHARACTER READER_FILE
--GID%  EVALUATE READER_FILE = 'sir92.lis'
--GID%  COPY '#SCRIPT XREADER'
+#ifdef __GID__
+%  COPY '#SPAWN +notepad.exe sir92.lis'                              
+#else
+%  VARIABLE CHARACTER READER_FILE
+%  EVALUATE READER_FILE = 'sir92.lis'
+%  COPY '#SCRIPT XREADER'
+#endif
 %      FINISH
 %     END BLOCK                                                                    
 %%                                                                              

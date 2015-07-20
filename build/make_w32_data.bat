@@ -7,8 +7,8 @@
 @ENDLOCAL
 
 @echo Copying datafiles
-@FOR %%I IN ( ..\datafiles\*.ssr ) DO ..\editor\cryseditor %%I %%~nI.srt code=%COMPCODE% incl=+ excl=- comm=# strip
-
+@FOR %%I IN ( ..\datafiles\*.ssr ) DO perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o %%~nI.srt -D__%COMPCODE%__ -DCRYSVNVER=%CRYSVNVER% -DCRYMONTH=%CRYMONTH% -DCRYYEAR=%CRYYEAR% %%I
+?
 @echo Copying precompiled stuff
 echo CVS > cvs.txt
 echo .svn >> cvs.txt

@@ -362,13 +362,17 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   {
 
 #ifdef __INW__
+
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
 	  // Define CrashRpt configuration parameters
   CR_INSTALL_INFO info;  
   memset(&info, 0, sizeof(CR_INSTALL_INFO));  
   info.cb = sizeof(CR_INSTALL_INFO);    
   info.pszAppName = _T("Crystals");  
-  info.pszAppVersion = _T("14.0.0");  
-  info.pszEmailSubject = _T("Crystals 14.0.0 Error Report");  
+  info.pszAppVersion = _T( STR( CRYSVNVER ));  
+  info.pszEmailSubject = _T("Crystals $WCVER$ Error Report");  
   info.pszEmailTo = _T("richard.cooper@chem.ox.ac.uk");    
   info.pszUrl = _T("http://crystals.xtl.org.uk/tools/crashrpt.php");  
   info.uPriorities[CR_HTTP] = 3;  // First try send report over HTTP 

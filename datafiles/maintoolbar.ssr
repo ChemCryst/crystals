@@ -33,8 +33,10 @@
 ^^WI         SPLIT                                                              
 ^^WI         TOOL _MNP 'notepad.bmp' 'Notepad' '$notepad'                       
 ^^WI          DISABLEIF='IN'                                                    
--GIL^^WI TOOL _MCM 'pifmgr.dll' 'Command' '$"CRYSDIR:oshell.bat" P'         
--GIL^^WI  APPICON DISABLEIF='IN'                                            
+#ifdef CRY_OSWIN32
+^^WI TOOL _MCM 'pifmgr.dll' 'Command' '$"CRYSDIR:oshell.bat" P'         
+^^WI  APPICON DISABLEIF='IN'                                            
+#endif
 ^^WI         TOOL _MEX 'explorer.bmp' 'Explore' '$explorer ./'                  
 ^^WI          DISABLEIF='IN'                                                    
 ^^WI         SPLIT                                                              
