@@ -2,6 +2,9 @@ include makefile.in
 BUILDDIR = dscbuild/
 SRCFILE = $(BUILDDIR)commands.src
 ORIG_SRTFILE = ../datafiles/crysdef.srt
+CRYSVNVER := $(shell svnversion ..)
+CRYMONTH := $(shell date +'%B')
+CRYYEAR := $(shell date +'%Y')
 
 VPATH = ../datafiles
 
