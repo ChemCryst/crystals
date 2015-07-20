@@ -1,10 +1,7 @@
+@setlocal EnableExtensions EnableDelayedExpansion
 @call make_w32_include.bat
 @if "%1" == "clean" goto clean
 @if "%1" == "tidy" goto tidy
-
-@SETLOCAL
-@if not exist ..\editor\cryseditor.exe cd ..\editor&&call make_w32.bat&&cd ..
-@ENDLOCAL
 
 @echo Copying datafiles
 @FOR %%I IN ( ..\datafiles\*.ssr ) DO perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o %%~nI.srt -D__%COMPCODE%__ -DCRYSVNVER=%CRYSVNVER% -DCRYMONTH=%CRYMONTH% -DCRYYEAR=%CRYYEAR% %%I
@@ -26,9 +23,6 @@ xcopy ..\precomp\WIN32 . /S  /F /Y /EXCLUDE:cvs.txt
 del cvs.txt
 
 @echo Creating COMMANDS.DSC file.
-SETLOCAL
-if not exist ..\editor\cryseditor.exe cd ..\editor&&call make_w32.bat&&cd ..
-ENDLOCAL
 rmdir /q /s dscbuild
 mkdir dscbuild
 copy ..\datafiles\commands.src dscbuild\commands.src

@@ -1,4 +1,3 @@
-setlocal EnableExtensions EnableDelayedExpansion
 
 @if not "%WXWIN%" == "" goto WX2
 @set WXWIN=c:\wx3
@@ -15,7 +14,7 @@ setlocal EnableExtensions EnableDelayedExpansion
 
 @if defined CRYSVNVER goto SVER
 @set CRYSVNVER=00000
-@for /f "delims=" %%a in ('svnversion') do @set CRYSVNVER=%%a
+@for /f "delims=" %%a in ('svnversion ..') do @set CRYSVNVER=%%a
 @echo CrySVNver = %CRYSVNVER%
 :SVER
 @if defined CRYMONTH goto SDATE

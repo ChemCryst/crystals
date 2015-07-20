@@ -1,3 +1,4 @@
+@setlocal EnableExtensions EnableDelayedExpansion
 @echo on
 @
 @if "%COMPCODE%" == "" goto edcodeerror
@@ -175,11 +176,13 @@
 :scomp
 @if not exist ..\script\%FILESTEM%.ssc @goto dcomp
 @echo building %FILESTEM%.scp
-@..\editor\cryseditor ..\script\%FILESTEM%.ssc script\%FILESTEM%.scp code=%EDCODE% incl=+ excl=- comm=%%%%
+@perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o script\%FILESTEM%.scp -D__%EDCODE%__ -DCRYSVNVER=%CRYSVNVER% -DCRYMONTH=%CRYMONTH% -DCRYYEAR=%CRYYEAR% ..\script\%FILESTEM%.ssc
+
+
 :dcomp
 @if not exist ..\script\%FILESTEM%.sda @goto %JUMPBACK%
 @echo building %FILESTEM%.dat
-@..\editor\cryseditor ..\script\%FILESTEM%.sda script\%FILESTEM%.dat code=%EDCODE% incl=+ excl=- comm=#
+@perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o script\%FILESTEM%.dat -D__%EDCODE%__ -DCRYSVNVER=%CRYSVNVER% -DCRYMONTH=%CRYMONTH% -DCRYYEAR=%CRYYEAR% ..\script\%FILESTEM%.sda
 @goto %JUMPBACK%
 
 

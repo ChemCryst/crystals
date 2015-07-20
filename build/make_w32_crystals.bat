@@ -1,4 +1,4 @@
-
+@setlocal EnableExtensions EnableDelayedExpansion
 @call make_w32_include.bat
 
 @if "%1" == "clean" goto clean
