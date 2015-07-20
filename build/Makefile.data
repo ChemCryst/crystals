@@ -2,7 +2,7 @@ include makefile.in
 BUILDDIR = dscbuild/
 SRCFILE = $(BUILDDIR)commands.src
 ORIG_SRTFILE = ../datafiles/crysdef.srt
-CRYSVNVER := $(shell svnversion ..)
+CRYSVNVER := $(shell svnversion .. || echo 0000)
 CRYMONTH := $(shell date +'%B')
 CRYYEAR := $(shell date +'%Y')
 

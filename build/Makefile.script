@@ -1,7 +1,7 @@
 # CRYSEDIT = ../editor/cryseditor
 # SDACRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\#
 # SSCCRYEDFLAGS = code=$(COMPCODE) incl=+ excl=- comm=\%\%
-CRYSVNVER := $(shell svnversion ..)
+CRYSVNVER := $(shell svnversion .. || echo 0000)
 CRYMONTH := $(shell date +'%B')
 CRYYEAR := $(shell date +'%Y')
 SSCSRC := $(wildcard ../script/*.ssc)
