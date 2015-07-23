@@ -921,7 +921,6 @@ subroutine xdaini_hdf5(crfile)
     end if
     !print *, error
 
-
     !
     ! create the dataset with default properties.
     !
@@ -934,6 +933,8 @@ subroutine xdaini_hdf5(crfile)
         call exit(1)
     end if
     !print *, 'h5dcreate_f ', error, crfile%dsc_dset_id, crfile%dsc_dspace_id
+
+    call h5pclose_f(crp_list, error) 
 
     idatot = -1
     ireq = min ( idaini , idaqua )
@@ -969,7 +970,6 @@ subroutine xdaini_hdf5(crfile)
     1011  format( 1x , 'a new direct access file has been created ' , &
     & 'on unit ' , i3 , ' -- ' , a10 , ' file')
     !c
-    return
 end subroutine
 
 end module
