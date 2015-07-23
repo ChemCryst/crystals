@@ -6,14 +6,21 @@ type, public :: t_unitcell
     real :: a,b,c,alpha,beta,gamma ! angles in radians
     real :: ra,rb,rc,ralpha,rbeta,rgamma ! angles in radians
 contains    
-    procedure, pass(this) :: set, printall
+    procedure, pass(this) :: set
+    procedure, pass(this) :: printall
     procedure, pass(this) :: volume
     procedure, pass(this) :: rvolume
-    procedure, pass(this) :: orthogonalisation, orthogonalisation_exclcell
-    procedure, pass(this) :: rorthogonalisation, rorthogonalisation_exclcell
-    procedure, pass(this) :: rmetric, rmetric_exclcell
-    procedure, pass(this) :: metric, metric_exclcell
-    procedure, pass(this) :: Rij, adp_coefs, iso_to_aniso
+    procedure, pass(this) :: orthogonalisation
+    procedure, pass(this) :: orthogonalisation_exclcell
+    procedure, pass(this) :: rorthogonalisation
+    procedure, pass(this) :: rorthogonalisation_exclcell
+    procedure, pass(this) :: rmetric
+    procedure, pass(this) :: rmetric_exclcell
+    procedure, pass(this) :: metric
+    procedure, pass(this) :: metric_exclcell
+    procedure, pass(this) :: Rij
+    procedure, pass(this) :: adp_coefs
+    procedure, pass(this) :: iso_to_aniso
 end type
 
 type(t_unitcell), dimension(:), allocatable :: unitcells
