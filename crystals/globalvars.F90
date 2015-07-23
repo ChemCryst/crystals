@@ -13,12 +13,12 @@ logical, parameter, private :: debug = .false.
     (__INTEL_COMPILER > 1399 )
 type, private :: t_env_table
     character(len=:), allocatable :: key
-    character(len=:), allocatable :: value
+    character(len=:), allocatable :: valeur
 end type
 #else
 type, private :: t_env_table
     character(len=2048) :: key
-    character(len=2048) :: value
+    character(len=2048) :: valeur
 end type
 #endif
 
@@ -27,10 +27,10 @@ type(t_env_table), dimension(:), allocatable, private :: environment_table
 contains
 
 !> Add or replace an element in the dictionary
-subroutine env_table_add(key, value) 
+subroutine env_table_add(key, valeur) 
 	use c_strings_mod
     implicit none
-    character(len=*) :: key, value
+    character(len=*) :: key, valeur
     type(t_env_table), dimension(size(environment_table)) :: temp
 !/* Test for GCC >= 4.7 or intel >= 14 */
 #if __GNUC__ > 4 || \
@@ -49,25 +49,25 @@ subroutine env_table_add(key, value)
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
     (__INTEL_COMPILER > 1399 )
-        deallocate(environment_table(error)%value)
-        allocate(character(len_trim(value)) :: environment_table(error)%value)
-        environment_table(error)%value=value
+        deallocate(environment_table(error)%valeur)
+        allocate(environment_table(error)%valeur, source=valeur)
+        environment_table(error)%valeur=valeur
 #else
-        if(len_trim(value)>len(environment_table(error)%value)) then
+        if(len_trim(valeur)>len(environment_table(error)%valeur)) then
             print *, 'Value too large to be hold in environment_table'
             print *, 'Contact the authors'
             call exit(1)
         else
-            environment_table(error)%value=value
+            environment_table(error)%valeur=valeur
         end if
 #endif
 
 		if(debug) then
-			print *, 'Replacing key/val: ', trim(key), '/', trim(value)
+			print *, 'Replacing key/val: ', trim(key), '/', trim(valeur)
 		end if
     else
 		if(debug) then
-			print *, 'Inserting key/val: ', trim(key), '/', trim(value)
+			print *, 'Inserting key/val: ', trim(key), '/', trim(valeur)
 		end if
 
         ! insert new key
@@ -80,14 +80,12 @@ subroutine env_table_add(key, value)
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
     (__INTEL_COMPILER > 1399 )            
             environment_table(1:size(temp))=temp
-            allocate(character(len_trim(key)) :: environment_table(size(temp)+1)%key)
-            environment_table(size(temp)+1)%key=key
-            allocate(character(len_trim(value)) :: environment_table(size(temp)+1)%value)
-            environment_table(size(temp)+1)%value=value
+            allocate(environment_table(size(temp)+1)%key, source=key)
+            allocate(environment_table(size(temp)+1)%valeur, source=valeur)
 #else
             environment_table(1:size(temp))=temp
             environment_table(size(temp)+1)%key=key
-            environment_table(size(temp)+1)%value=value
+            environment_table(size(temp)+1)%valeur=valeur
 #endif
         else
             allocate(environment_table(1))
@@ -95,13 +93,11 @@ subroutine env_table_add(key, value)
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
     (__INTEL_COMPILER > 1399 )            
-            allocate(character(len_trim(key)) :: environment_table(1)%key)
-            environment_table(1)%key=key
-            allocate(character(len_trim(value)) :: environment_table(1)%value)
-            environment_table(1)%value=value
+            allocate(environment_table(1)%key, source=key)
+            allocate(environment_table(1)%valeur, source=valeur)
 #else
             environment_table(1)%key=key
-            environment_table(1)%value=value
+            environment_table(1)%valeur=valeur
 #endif
         end if
     end if
@@ -128,29 +124,29 @@ subroutine env_table_add_c(c_key, c_value) bind(c)
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
     (__INTEL_COMPILER > 1399 )    
-    character(len=:), allocatable :: key, value
+    character(len=:), allocatable :: key, valeur
 #else
-    character(len=2048) :: key, value
+    character(len=2048) :: key, valeur
 #endif
 
 	call c_f_strings(c_key, key)
-	call c_f_strings(c_value, value)
+	call c_f_strings(c_value, valeur)
 
-	call env_table_add(key, value)
+	call env_table_add(key, valeur)
 
 end subroutine
 
 !> Look for a value in the dictionary given a key
-subroutine env_table_get(key, value, error)
+subroutine env_table_get(key, valeur, error)
     implicit none
     character(len=*), intent(in) :: key
 !/* Test for GCC >= 4.7 or intel >= 14 */
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
     (__INTEL_COMPILER > 1399 )    
-    character(len=:), allocatable, intent(out) :: value
+    character(len=:), allocatable, intent(out) :: valeur
 #else
-    character(len=2048), intent(out) :: value
+    character(len=2048), intent(out) :: valeur
 #endif
     integer, intent(out) :: error
     integer i,lengthval,lengthkey
@@ -168,13 +164,16 @@ subroutine env_table_get(key, value, error)
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
     (__INTEL_COMPILER > 1399 )    
-            allocate(character(len(environment_table(i)%value)) :: value)
+            !allocate(valeur, source=environment_table(i)%valeur)
+            allocate(character(len=len(environment_table(i)%valeur)) ::valeur)
+            valeur=environment_table(i)%valeur
+#else
+            valeur=environment_table(i)%valeur
 #endif
-            value=environment_table(i)%value
             error=i
             if(debug) then
-                print *, 'Found in environment_table key `', trim(key), '` value `', trim(value), '` at ', i
-                print *, 'size of key/value: ', len(environment_table(i)%key), '/', len(environment_table(i)%value)
+                print *, 'Found in environment_table key `', trim(key), '` value `', trim(valeur), '` at ', i
+                print *, 'size of key/value: ', len(environment_table(i)%key), '/', len(environment_table(i)%valeur)
             end if
             return
         end if
@@ -210,16 +209,16 @@ subroutine env_table_get_c(c_key, c_value, c_error) bind(c)
 #if __GNUC__ > 4 || \
     (__GNUC__ == 4 && (__GNUC_MINOR__ > 6)) || \
     (__INTEL_COMPILER > 1399 )    
-    character(len=:), allocatable :: key, value
+    character(len=:), allocatable :: key, valeur
 #else
-    character(len=2048) :: key, value
+    character(len=2048) :: key, valeur
 #endif
     integer error
 
 	call c_f_strings(c_key, key)
-	call c_f_strings(c_value, value)
+	call c_f_strings(c_value, valeur)
 
-	call env_table_get(key, value, error)
+	call env_table_get(key, valeur, error)
 	c_error=error
 
 end subroutine
