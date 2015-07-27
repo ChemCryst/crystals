@@ -4,6 +4,7 @@
 #include "crystalsinterface.h"
 #include "crystals.h"
 #include <string>
+#include <algorithm>
 #include <iostream>
 
 #ifdef __INW__
@@ -366,13 +367,18 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-	  // Define CrashRpt configuration parameters
+  tstring vers = _T(STR( CRYSVNVER ));
+  vers.erase ( std::remove(vers.begin(), vers.end(), ':'), vers.end());
+  tstring vers2 =  _T("Crystals ") + vers +  _T(" Error Report");  
+//  tstring vers2;
+
+  // Define CrashRpt configuration parameters
   CR_INSTALL_INFO info;  
   memset(&info, 0, sizeof(CR_INSTALL_INFO));  
   info.cb = sizeof(CR_INSTALL_INFO);    
   info.pszAppName = _T("Crystals");  
-  info.pszAppVersion = _T( STR( CRYSVNVER ));  
-  info.pszEmailSubject = _T("Crystals $WCVER$ Error Report");  
+  info.pszAppVersion = vers2.c_str();
+  info.pszEmailSubject = vers2.c_str(); 
   info.pszEmailTo = _T("richard.cooper@chem.ox.ac.uk");    
   info.pszUrl = _T("http://crystals.xtl.org.uk/tools/crashrpt.php");  
   info.uPriorities[CR_HTTP] = 3;  // First try send report over HTTP 
@@ -390,8 +396,11 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   // Install crash reporting
   int nResult = crInstall(&info);
   if(nResult!=0)  
-  {    
-    BriefMessageBox("Crash reporting not initialised");
+
+  {   
+	  TCHAR szErrorMsg[256];
+	  crGetLastErrorMsg(szErrorMsg, 256);
+      BriefMessageBox(wxString(szErrorMsg));
   }
 //    // Something goes wrong. Get error message.
 //    TCHAR szErrorMsg[512] = _T("");        
