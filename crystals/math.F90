@@ -20,48 +20,58 @@ end function
 !  AINV    = output 3x3 inverse of matrix A
 !  OK_FLAG = (output) .TRUE. if the input matrix could be inverted, and .FALSE. if the input matrix is singular.
 !***********************************************************************************************************************************
-SUBROUTINE M33INV (A, AINV, OK_FLAG)
+subroutine m33inv (a, ainv, ok_flag)
 
-IMPLICIT NONE
+implicit none
 
-real, DIMENSION(3,3), INTENT(IN)  :: A
-real, DIMENSION(3,3), INTENT(OUT) :: AINV
-LOGICAL, INTENT(OUT) :: OK_FLAG
+real, dimension(3,3), intent(in)  :: a
+real, dimension(3,3), intent(out) :: ainv
+logical, intent(out) :: ok_flag
 
-real, PARAMETER :: EPS = 1.0E-10
-real :: DET
-real, DIMENSION(3,3) :: COFACTOR
+real, parameter :: eps = 1.0e-10
+real :: det
+real, dimension(3,3) :: cofactor
 
 
-DET =   A(1,1)*A(2,2)*A(3,3)  &
-&    - A(1,1)*A(2,3)*A(3,2)  &
-&    - A(1,2)*A(2,1)*A(3,3)  &
-&    + A(1,2)*A(2,3)*A(3,1)  &
-&    + A(1,3)*A(2,1)*A(3,2)  &
-&    - A(1,3)*A(2,2)*A(3,1)
+det =   a(1,1)*a(2,2)*a(3,3)  &
+&    - a(1,1)*a(2,3)*a(3,2)  &
+&    - a(1,2)*a(2,1)*a(3,3)  &
+&    + a(1,2)*a(2,3)*a(3,1)  &
+&    + a(1,3)*a(2,1)*a(3,2)  &
+&    - a(1,3)*a(2,2)*a(3,1)
 
-IF (ABS(DET) .LE. EPS) THEN
- AINV = 0.0D0
- OK_FLAG = .FALSE.
- RETURN
-END IF
+if (abs(det) .le. eps) then
+ ainv = 0.0d0
+ ok_flag = .false.
+ return
+end if
 
-COFACTOR(1,1) = +(A(2,2)*A(3,3)-A(2,3)*A(3,2))
-COFACTOR(1,2) = -(A(2,1)*A(3,3)-A(2,3)*A(3,1))
-COFACTOR(1,3) = +(A(2,1)*A(3,2)-A(2,2)*A(3,1))
-COFACTOR(2,1) = -(A(1,2)*A(3,3)-A(1,3)*A(3,2))
-COFACTOR(2,2) = +(A(1,1)*A(3,3)-A(1,3)*A(3,1))
-COFACTOR(2,3) = -(A(1,1)*A(3,2)-A(1,2)*A(3,1))
-COFACTOR(3,1) = +(A(1,2)*A(2,3)-A(1,3)*A(2,2))
-COFACTOR(3,2) = -(A(1,1)*A(2,3)-A(1,3)*A(2,1))
-COFACTOR(3,3) = +(A(1,1)*A(2,2)-A(1,2)*A(2,1))
+cofactor(1,1) = +(a(2,2)*a(3,3)-a(2,3)*a(3,2))
+cofactor(1,2) = -(a(2,1)*a(3,3)-a(2,3)*a(3,1))
+cofactor(1,3) = +(a(2,1)*a(3,2)-a(2,2)*a(3,1))
+cofactor(2,1) = -(a(1,2)*a(3,3)-a(1,3)*a(3,2))
+cofactor(2,2) = +(a(1,1)*a(3,3)-a(1,3)*a(3,1))
+cofactor(2,3) = -(a(1,1)*a(3,2)-a(1,2)*a(3,1))
+cofactor(3,1) = +(a(1,2)*a(2,3)-a(1,3)*a(2,2))
+cofactor(3,2) = -(a(1,1)*a(2,3)-a(1,3)*a(2,1))
+cofactor(3,3) = +(a(1,1)*a(2,2)-a(1,2)*a(2,1))
 
-AINV = TRANSPOSE(COFACTOR) / DET
+ainv = transpose(cofactor) / det
 
-OK_FLAG = .TRUE.
+ok_flag = .true.
 
-RETURN
+return
 
-END SUBROUTINE M33INV
+end subroutine m33inv
+
+!> Compute the determinant of a 3x3 matrix
+real function determinant3x3(a) result(det)
+	implicit none
+    real, dimension(3,3), intent(in) :: a
+
+	det = a(1,1)*(a(2,2)*a(3,3) - a(3,2)*a(2,3)) &
+       + a(1,2)*(a(3,1)*a(2,3) - a(2,1)*a(3,3))  &
+       + a(1,3)*(a(2,1)*a(3,2) - a(3,1)*a(2,2))
+end function
 
 end module

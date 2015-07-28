@@ -5,10 +5,13 @@ CODE FOR XROTAX
 C ROTAX : Simon Parsons & Bob Gould, University of Edinburgh
 C Version 26th November, 2001
 C Crystals implementation - blame Richard Cooper.
+      use unitcell_mod
+      use math_mod, only: determinant3x3
+      implicit none
 
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST23.INC'
       INCLUDE 'XLST06.INC'
@@ -19,12 +22,24 @@ C Crystals implementation - blame Richard Cooper.
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
-      DIMENSION HKL(3)
+      integer, DIMENSION(3) :: HKL
       REAL INVM(9), INVM2(9), MRES(9), SROT(9), PHID, PHIR
       REAL P(3,3,3), V, DISAG(3,30)
       CHARACTER*1 dorr
       INTEGER PORI
       LOGICAL NOTPTG
+      
+      real bottom, fabs, fc, fo, fos
+      integer hk, i, iaddd, iaddl, iaddr
+      integer icombf, icomsz
+      integer ierabo, iercat, iererr, iernop, ierprg, iersev
+      integer iersfl, ierunw, ierwrn, ifsq, ixap
+      integer ipunch, istat, iuln6, iversn, j, jsrtby
+      integer kh, kk, kl, lsort, ltempr, mdsort, msort, n6acc, nsort
+      real rfact, scale, sigma, tol, top, wbot, wdel, wfo, wrfac, wt
+      real wtop, xvalur
+      
+      integer, external :: kstall, krddpv, khuntr, kchnfl, kfnr
 
       DATA ICOMSZ / 7 /
       DATA IVERSN /100/
@@ -253,7 +268,8 @@ C -- PRINT THE R VALUE ETC.
      4' program has not worked. Matrices which have a figure of merit'/
      5' less than 2 are marked with a row of asterisks: ***********'/)
 
-      v = sqrt ( xdetr3(store(L1M1)) )
+      !v = sqrt ( xdetr3(store(L1M1)) )
+      v = sqrt ( determinant3x3(unitcells(1)%rmetric()))
       call make_p(p,v)
 
 
@@ -284,26 +300,28 @@ C loop through them all here:
 
 C Direct vectors
                DORR="d"
-               CALL RTXMAT(PHIR,HKL,DORR,STORE(L1M1),STORE(L1M2),MRES,P)
+               CALL RTXMAT(PHIR,HKL,DORR,unitcells(1)%metric(),
+     1             unitcells(1)%rmetric(),MRES,P)
                IF (PORI .LT. 0) CALL XNEGTR(MRES,MRES,9)
 
                IF ( NOTPTG ( MRES ) ) THEN
 
                   CALL RTXAPP(MRES,HKL,DISAG,
-     1                     TOL,PHID,PORI,STORE(L1M2),DORR,ipunch)
+     1                TOL,PHID,PORI,unitcells(1)%rmetric(),DORR,ipunch)
 
                END IF
 
 C Reciprocal vectors
 
                DORR="r"
-               CALL RTXMAT(PHIR,HKL,DORR,STORE(L1M1),STORE(L1M2),MRES,P)
+               CALL RTXMAT(PHIR,HKL,DORR,unitcells(1)%metric(),
+     1             unitcells(1)%rmetric(),MRES,P)
                IF (PORI .LT. 0) CALL XNEGTR(MRES,MRES,9)
 
                IF ( NOTPTG ( MRES ) ) THEN
 
                   CALL RTXAPP(MRES,HKL,DISAG,
-     1                     TOL,PHID,PORI,STORE(L1M2),DORR,ipunch)
+     1                TOL,PHID,PORI,unitcells(1)%rmetric(),DORR,ipunch)
 
                END IF
        
@@ -389,40 +407,35 @@ C contravariant components.
 C The rotation matrix is then worked out in subroutine eqn442 (see
 C Sands' book eqn 4-42.
 
-      REAL mag,x(3),d(3),r(3), G(3,3),GS(3,3),p(3,3,3),
+      real, dimension(3,3), intent(in) :: g, gs
+      REAL mag,x(3),d(3),r(3), p(3,3,3),
      1     M(3,3),phir,temp(3)
       CHARACTER*1 dorr
 
       IF (dorr=='d') then
-        CALL XMOVE(X,D,3)
-c        x=d
-        CALL XMLTMM(G,D,TEMP,3,3,1)
-c        temp=mvmul(G,d)
-        CALL DVPROD(D,TEMP,MAG)
-c        mag = dot_product(d,temp)
+!        CALL XMOVE(X,D,3)
+        d=x
+!        CALL XMLTMM(G,D,TEMP,3,3,1)
+        temp =matmul(g, d)
+!        CALL DVPROD(D,TEMP,MAG)
+        mag = dot_product(d,temp)
         mag=sqrt(mag)
-        DO I=1,3
-           D(I)=D(I)/MAG
-        END DO
-c        d=d/mag
-        CALL XMLTMM(G,D,R,3,3,1)
-C        r = mvmul(G,d)
+        D=D/MAG
+!        CALL XMLTMM(G,D,R,3,3,1)
+        r = matmul(g, d)
         call eqn442(phir,d,r,p,GS,M)
       endif
       if (dorr=='r') then
-        CALL XMOVE(X,R,3)
-c        r=x
-        CALL XMLTMM(GS,R,TEMP,3,3,1)
-c        temp=mvmul(GS,r)
-        CALL DVPROD(R,TEMP,MAG)
-c        mag = dot_product(r,temp)
+!        CALL XMOVE(X,R,3)
+        r=x
+!        CALL XMLTMM(GS,R,TEMP,3,3,1)
+        temp=matmul(GS,r)
+!        CALL DVPROD(R,TEMP,MAG)
+        mag = dot_product(r,temp)
         mag=sqrt(mag)
-        DO I=1,3
-            R(I)=R(I)/MAG
-        END DO
-c        r=r/mag
-        CALL XMLTMM(GS,R,D,3,3,1)
-c        d = mvmul(GS,r)
+        R=R/MAG
+!        CALL XMLTMM(GS,R,D,3,3,1)
+        d = matmul(GS,r)
         call eqn442(phir,d,r,p,GS,M)
       endif
 
