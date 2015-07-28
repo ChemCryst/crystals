@@ -1,12 +1,15 @@
 !> This module holds the unit cell parameters and related values
 module unitcell_mod
 
+!> Unit cell object
 type, public :: t_unitcell
-    integer :: status=-1
-    real :: a,b,c,alpha,beta,gamma ! angles in radians
-    real :: ra,rb,rc,ralpha,rbeta,rgamma ! angles in radians
+    integer :: status=-1 !< Status of the list
+    real :: a,b,c,alpha,beta,gamma !< Cell parameters (angles in radians)
+    real :: ra,rb,rc,ralpha,rbeta,rgamma !< reciprocal cell parameters (angles in radians)
 contains    
-    procedure, pass(this) :: set
+    procedure, pass(this) :: set_cell
+    procedure, pass(this) :: set_cella
+    generic :: set => set_cell, set_cella
     procedure, pass(this) :: printall
     procedure, pass(this) :: volume
     procedure, pass(this) :: rvolume
@@ -23,34 +26,109 @@ contains
     procedure, pass(this) :: iso_to_aniso
 end type
 
+!> Set the direct cell and reciprocal given either cell (generic interface of ::set_cell, ::set_cella)
+interface set
+	module procedure set_cell, set_cella
+end interface
+    
+private set_cell, set_cella
+
 type(t_unitcell), dimension(:), allocatable :: unitcells
 
 contains
 
-subroutine set(this, a,b,c,alpha,beta,gamma)
+!> Alias of ::set_cell with array input
+subroutine set_cella(this, cell, celltype)
     implicit none
     class(t_unitcell) :: this
-    real a,b,c,alpha,beta,gamma
-    real, dimension(3,3) :: rmetric
+    real, dimension(6), intent(in) :: cell
+    integer, intent(in), optional :: celltype
     
-    this%a=a
-    this%b=b
-    this%c=c
-    this%alpha=alpha
-    this%beta=beta
-    this%gamma=gamma
-    
-    this%rgamma=acos((cos(alpha)*cos(beta)-cos(gamma))/(sin(alpha)*sin(beta)))
+    call set_cell(this, cell(1),cell(2),cell(3),cell(4),cell(5),cell(6), celltype)
+        
+end subroutine
 
-    rmetric=this%rmetric()
+!> Set the direct cell and reciprocal given either cell
+subroutine set_cell(this, a,b,c,alpha,beta,gamma, celltype)
+	use math_mod
+    implicit none
+    class(t_unitcell) :: this
+    real, intent(in) :: a,b,c,alpha,beta,gamma
+    real, dimension(3,3) :: rmetric
+    integer, optional, intent(in) :: celltype !< Values below zero denotes a real cell in input
+    logical :: directcell
+    ! temporary angles for conversions
+    real talpha, tbeta, tgamma
     
-    this%ra=sqrt(rmetric(1,1))
-    this%rb=sqrt(rmetric(2,2))
-    this%rc=sqrt(rmetric(3,3))
-    this%rgamma=acos(rmetric(1,2)/(this%ra*this%rb))
-    this%rbeta=acos(rmetric(1,3)/(this%ra*this%rc))
-    this%ralpha=acos(rmetric(2,3)/(this%rb*this%rc))
-    
+    if(present(celltype)) then
+		if(celltype<=0) then
+			directcell=.true.
+		else
+			directcell=.false.
+		end if
+	else
+		! Guessing if it is a direct cell or reciprocal cell
+		if(a>1.0 .and. b>1.0 .and. c>1.0) then
+			directcell=.true.
+		end if
+	end if
+	
+	! guessing if cosine, radians or degrees have been used
+	if(alpha<=1.0 .and. beta<=1.0 .and. gamma<=1.0) then
+		! We have cosines (most likely)
+		talpha=acos(alpha)
+		tbeta=acos(beta)
+		tgamma=acos(gamma)
+	else if(alpha<pi .and. beta<pi .and. gamma<pi) then
+		! We have radians
+		talpha=alpha
+		tbeta=beta
+		tgamma=gamma
+	else
+		! We have degrees
+		talpha=radians(alpha)
+		tbeta=radians(beta)
+		tgamma=radians(gamma)
+	end if
+	
+	if(directcell) then    
+		this%a=a
+		this%b=b
+		this%c=c
+		this%alpha=talpha
+		this%beta=tbeta
+		this%gamma=tgamma
+		
+		this%rgamma=acos((cos(talpha)*cos(tbeta)-cos(tgamma))/(sin(talpha)*sin(tbeta)))
+
+		rmetric=this%rmetric()
+		
+		this%ra=sqrt(rmetric(1,1))
+		this%rb=sqrt(rmetric(2,2))
+		this%rc=sqrt(rmetric(3,3))
+		this%rgamma=acos(rmetric(1,2)/(this%ra*this%rb))
+		this%rbeta=acos(rmetric(1,3)/(this%ra*this%rc))
+		this%ralpha=acos(rmetric(2,3)/(this%rb*this%rc))
+	else
+		this%ra=a
+		this%rb=b
+		this%rc=c
+		this%ralpha=talpha
+		this%rbeta=tbeta
+		this%rgamma=tgamma
+		
+		this%gamma=acos((cos(talpha)*cos(tbeta)-cos(tgamma))/(sin(talpha)*sin(tbeta)))
+
+		rmetric=this%rmetric()
+		
+		this%ra=sqrt(rmetric(1,1))
+		this%rb=sqrt(rmetric(2,2))
+		this%rc=sqrt(rmetric(3,3))
+		this%rgamma=acos(rmetric(1,2)/(this%ra*this%rb))
+		this%rbeta=acos(rmetric(1,3)/(this%ra*this%rc))
+		this%ralpha=acos(rmetric(2,3)/(this%rb*this%rc))
+	end if	
+	
     this%status=0    
     
 end subroutine
@@ -216,10 +294,10 @@ end function
 !> Anisotropic temperature factor coefficients
 !! 3x3 tensor stored flat as a 1-D array of 6 elements
 function adp_coefs(this)
+	use math_mod
     implicit none
     class(t_unitcell) :: this
     real, dimension(6) :: adp_coefs
-    real, parameter :: pi=3.14159265358979323846
     real, dimension(3,3) :: rmetric
     
     rmetric=this%rmetric()
