@@ -22,15 +22,15 @@ C Crystals implementation - blame Richard Cooper.
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
-      integer, DIMENSION(3) :: HKL
+      real, DIMENSION(3) :: HKL
       REAL INVM(9), INVM2(9), MRES(9), SROT(9), PHID, PHIR
       REAL P(3,3,3), V, DISAG(3,30)
       CHARACTER*1 dorr
       INTEGER PORI
       LOGICAL NOTPTG
       
-      real bottom, fabs, fc, fo, fos
-      integer hk, i, iaddd, iaddl, iaddr
+      real bottom, fabs, fc, fo, fos, hk
+      integer i, iaddd, iaddl, iaddr
       integer icombf, icomsz
       integer ierabo, iercat, iererr, iernop, ierprg, iersev
       integer iersfl, ierunw, ierwrn, ifsq, ixap
@@ -233,7 +233,7 @@ C -- PRINT THE R VALUE ETC.
 13    FORMAT(/,' Reflections with greatest unexpected extra intensity:')
 11    FORMAT('   h   k   l ',
      1                   '(Fo2-Fc2)/s     Fo^2        Fc^2       Sigma')
-      HK=1
+      HK=1.0
       DO MSORT = LSORT, LSORT+(MDSORT*(NSORT-1)), MDSORT
         WRITE ( CMON , '(3I4,F11.3,1X,3(F11.1,1X))' ) 
      1                    (NINT(STORE(MSORT+IXAP)),     IXAP=0,2),
@@ -245,7 +245,7 @@ C -- PRINT THE R VALUE ETC.
         DISAG(1,HK)=STORE(MSORT)
         DISAG(2,HK)=STORE(MSORT+1)
         DISAG(3,HK)=STORE(MSORT+2)
-        HK = HK + 1
+        HK = HK + 1.0
       END DO
 
 
