@@ -32,8 +32,7 @@ C Crystals implementation - blame Richard Cooper.
       real bottom, fabs, fc, fo, fos, hk
       integer i, iaddd, iaddl, iaddr
       integer icombf, icomsz
-      integer ierabo, iercat, iererr, iernop, ierprg, iersev
-      integer iersfl, ierunw, ierwrn, ifsq, ixap
+      integer ifsq, ixap
       integer ipunch, istat, iuln6, iversn, j, jsrtby
       integer kh, kk, kl, lsort, ltempr, mdsort, msort, n6acc, nsort
       real rfact, scale, sigma, tol, top, wbot, wdel, wfo, wrfac, wt
