@@ -708,7 +708,7 @@ c prints the results to rotax.out
       
 7     FORMAT (3f4.0,3X,3f4.0,3x,f8.5,3x,f8.5,a)
       do i=1,30
-        if (d(i,1)>0) then
+        if (d(i,1)>=0.0) then
          write(NCWU,7) (disag(j,i),j=1,3),
      1      (d(i,j),j=2,4),d(i,1),d(i,5),' '
         else
@@ -728,7 +728,7 @@ c prints the results to rotax.out
           N = 1 + (12.0 * abs(d(i,1)) / BINMAX)
           N = MAX(1,N)
           N = MIN(12,N)
-          if (d(i,1)>0) then
+          if (d(i,1)>=0.0) then
              BININC(N) = BININC(N) + 1
           else
              BINREJ(N) = BINREJ(N) + 1
