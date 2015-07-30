@@ -135,6 +135,7 @@ C
 C
 CODE FOR XPRC17
         SUBROUTINE XPRC17 (IACTN, IUPDAT, ABTOL, IOUT)
+        implicit none
 C
 C----- DETERMINATION OF POLAR DIRECTIONS AND RELATIONSHIPS BETWEEN
 C      PARAMETERS OF ATOMS ON SPECIAL POSITIONS, AND CREATE LIST 17
@@ -179,7 +180,9 @@ C
       INCLUDE 'ISTORE.INC'
 C
 C
-      DIMENSION X(10), XO(10), KEY(9), COEF(9)
+      real, DIMENSION(10) :: X, XO
+      integer, dimension(9) :: KEY
+      real, dimension(9) :: COEF
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -187,7 +190,7 @@ C
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCARDS.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XCONST.INC'
@@ -197,8 +200,14 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
-C
-      DATA IVERSN /121/
+      
+      integer iactn, iupdat, iout, i5, iaddd, iaddl, iaddr, iadsrq
+      integer iforce, ik, j, k, kk, mgm, mpos, nrestr, nsrq, nupdat
+      integer nctrim
+      real abtol
+      integer, parameter :: iversn=121
+      
+      integer, external :: khuntr, kspini, kspget
 C
 C
 C
@@ -376,7 +385,9 @@ C----- FINAL MESSAGE AND CLEAN UP
         END
 C
 CODE FOR KSPINI
-      FUNCTION KSPINI (IFORCE, ABTOL)
+      integer FUNCTION KSPINI (IFORCE, ABTOL)
+      use unitcell_mod
+      implicit none
 C
 C----- INITIALISE THE SPECIAL POSITION VARIABLES FOR USE WITH GOMMS CODE
 C      RETURN VALUES
@@ -388,13 +399,13 @@ C             +1      ONLY IF NECESSARY
 C      ABTOL  THE ABSOLUTE TOLERANCE, IN ANGSTROM, FOR IDENTITY
 C
       INCLUDE 'ISTORE.INC'
-      DIMENSION IBRVC(7), NBRV1(7), NBRV2(7)
+      integer, dimension(7) :: IBRVC, NBRV1, NBRV2
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XCONST.INC'
@@ -402,6 +413,14 @@ C
       INCLUDE 'XSPECC.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      integer iforce, i, iaddd, iaddl, iaddr, igl, j, jforce, k
+      integer ngcent
+      
+      integer, external :: khuntr
+      
+      real abtol
+      
 C----- ON COMPILERS WITHOUT GLOBAL 'SAVING' JFORCE MUST BE SAVED
        DATA JFORCE      /-1/
 C
@@ -424,9 +443,9 @@ C----- THERE IS NO NEED FOR LIST 5 AT THIS STAGE
       IF (IERFLG .LE. 0) RETURN
 C
 C----- CONVERT TOLERANCES TO FRACTIONAL
-      TOLER(1) = ABTOL / STORE(L1P1)
-      TOLER(2) = ABTOL / STORE(L1P1 + 1)
-      TOLER(3) = ABTOL / STORE(L1P1 + 2)
+      TOLER(1) = ABTOL / unitcells(1)%a
+      TOLER(2) = ABTOL / unitcells(1)%b
+      TOLER(3) = ABTOL / unitcells(1)%c
 C----- REFORMAT THE SYMMETRY INFORMATION
       NGS = IC - 1
       M2 = L2
