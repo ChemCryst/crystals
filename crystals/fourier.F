@@ -157,6 +157,7 @@ c      SUBROUTINE XFOURP(LNOUT)
 C
 CODE FOR XFOURB
       SUBROUTINE XFOURB
+      implicit none
 C--MAIN FOURIER ROUTINE
 C
 C  NTYP    TYPE OF FOURIER
@@ -379,8 +380,8 @@ C
 C--
       CHARACTER *10 CRADTP
       CHARACTER *25 CSERI
-      DIMENSION KDEV(4)
-      DIMENSION THKL(3)
+      integer, DIMENSION(4) :: KDEV
+      real, DIMENSION(3) :: THKL
       INCLUDE 'ICOM30.INC'
       INCLUDE 'FOURTP.INC'
       INCLUDE 'ISTORE.INC'
@@ -399,7 +400,7 @@ C
       INCLUDE 'XLST14.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST30.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XLST05.INC'
@@ -425,8 +426,19 @@ C To access the MAP file name
 C
 C
 C
-      DATA IVERSN /835/
+      integer, parameter :: iversn=835
+      !DATA IVERSN /835/
       INCLUDE 'IDIMFB.INC'
+      
+      real a, b
+      integer i, j, k, l, m, m81, mstk, n, ndist
+      integer iaddd, iaddl, iaddr, iradtp, istat, itrans, ityp06
+      integer jfnvc, jpoint, jxtot, jytot, jztot, lfl1, lnout, lseri
+      integer lstk, nfl1
+      real tmp, toler, xav, xend, xstar, xstp, yav, yend, ystar
+      real ystp, zav, zend, zstar, zstp
+      
+      integer, external :: krddpv, kexist, khuntr, kchnfl, kdist1
 C
 C
 C--READ THE REMAINDER OF THE DATA
@@ -1210,6 +1222,8 @@ C
       END
 CODE FOR XFOURJ
       SUBROUTINE XFOURJ(ITYP06)
+      use unitcell_mod
+      implicit none
 C--THIS ROUTINE LOADS LISTS 1, 2, 6 AND 14 FROM DISC, SORTS
 C  LIST 5 TO ALLOW FOR VARYING PROJECTIONS AND SETS UP LIST 10
 C  FOR PEAKS LIST OUTPUT.
@@ -1226,8 +1240,8 @@ C--
       INCLUDE 'ISTORE.INC'
 C
 C
-      DIMENSION DISTS(4)
-      DIMENSION KDEV(4)
+      real, dimension(4) :: DISTS
+      integer, dimension(4) :: KDEV
 C
       CHARACTER*24 CDIREC(3)
 C
@@ -1241,7 +1255,7 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCHARS.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
@@ -1263,11 +1277,27 @@ C
 C
 C
       EQUIVALENCE (DISTS(1),AT)
+      
+      integer ityp06, i, ios, iuln, j, k, l, m, n, nd14
+      real a, avol, b
+      
+      integer, external :: kchnfl, kdist1, kchlfl, ktyp06
+      real, external :: xdetr3
+      
+      real, dimension(3,3) :: orthomatrix
+      real, dimension(6) :: workingcell !< temporary cell (a,b,c,alpha,beta,gamma)
+      real, dimension(6) :: originalcell !< original cell as an array (a,b,c,alpha,beta,gamma)
 C
 C
 C
       DATA CDIREC / ' Axis  down  the page : ' ,
      2  ' Axis across the page : ' , ' Sectioned through    : ' /
+     
+      orthomatrix=unitcells(1)%orthogonalisation()
+      originalcell=(/ unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     1    unitcells(1)%alpha, unitcells(1)%beta, unitcells(1)%gamma /)
+C--SET UP THE VOLUME OF THE CELL
+      VOL=unitcells(1)%volume()
 C
 C--LOAD A FEW LISTS
       CALL XZEROF(DISTS(1),4)
@@ -1278,8 +1308,6 @@ C----- LOAD LISTS 1 AND 2
 C----- SET UP SIM WEIGHTING FACTORS
       SSV=SSV*G2*FLOAT(N2)
       SSU=SSU*FLOAT(2-IC)/(SSV)
-C--SET UP THE VOLUME OF THE CELL
-      VOL=STORE(L1P1+6)
 C----- SET THE NUMBER OF PEAKS, ASSUMING AN ATOMIC VOLUME OF AVOL
       AVOL = 15.0
       IF (NPEAK .LE. 0) NPEAK = NINT((VOL )/(AVOL))/ T2
@@ -1310,10 +1338,12 @@ C--CHECK THAT THE ORIENTATION PARAMETERS ARE VALID
 1150  CONTINUE
 C--INTERCHANGE THE LIST 14 DIRECTIVES
       CALL XFSWOP(STORE(L14),3*MD14,MD14,1,MD14)
-C--KEEP ORIGINAL CELL PARAMS
-      CALL XMOVE(STORE(L1P1),C1ORIG,6)
+C--KEEP ORIGINAL CELL PARAMS (changed)
+! A copy of the original cell is created
+      workingcell=originalcell
+!      CALL XMOVE(STORE(L1P1),C1ORIG,6)
 C--SORT THE CELL PARAMETERS
-      CALL XFSWOP(STORE(L1P1),6,1,3,2)
+      CALL XFSWOP(workingcell,6,1,3,2)
 C--SORT THE D/A CONTROL BLOCK
       CALL XFSWOP(BPD,3,1,3,1)
 C--SORT THE COORDINATE DIRECTIONS
@@ -1324,7 +1354,7 @@ C--SET UP THE NUMBER OF Y POINTS TO BE CALCULATED AT A TIME
       JX=1
 C
 C--PROCESS THE FOURIER DIRECTIVES AND SET UP THE COSINE TABLES
-      I=L1P1
+      I=1
       M14=L14
       LN=14
       IREC=1010
@@ -1348,7 +1378,7 @@ C--NO INCREMENT HAS BEEN GIVEN  -  INSERT THE DEFAULT OF 0.3 ANGSTROM
       STORE(M14+1)=0.3
 C--COMPUTE THE DIVISIONS ALONG THIS AXIS
 1400  CONTINUE
-      NUN(J)=IABS(NINT(STORE(I)/STORE(M14+1)))
+      NUN(J)=IABS(NINT(workingcell(I)/STORE(M14+1)))
 C--MAKE SURE THAT THE NUMBER OF DIVISIONS IS A MULTIPLE OF 4
 1450  CONTINUE
       IF(NUN(J)-NUN(J)/4*4)1500,1550,1500
@@ -1630,7 +1660,7 @@ CDJW99[
 C THE MAP IS GENERATED LINE BY LINE IN EACH SECTION. ONCE ALL THE
 C LINES HAVE BEEN GENERATED, THE WHOLE SECTION IS WRITTEN TO THE
 C OUTPUT FILE.
-C
+Cunitcells(1)%orthogonalisation()
 C THE SECTION CAN BE IMAGINED AS A PAGE OF PAPER. THE COLUMNS IN
 C EACH LINE GO ACROSS THE PAGE, AND THE LINER ARE WRITTEN ONE AFTER
 C ANOTHER DOWN THE PAGE.
@@ -1680,7 +1710,7 @@ C SET UP TRANSFORMATION MATRIX  (BRIEFLY)
 C WRITE THE M/T HEADER  DETAILS
           WRITE (MT1) 'INFO  DOWN, ACROSS AND SECTION '
           WRITE (MT1) 'TRAN', (STORE(I), I=NFL,NFL+8)
-          WRITE (MT1) 'CELL', (STORE(I), I = L1P1, L1P1+5)
+          WRITE (MT1) 'CELL', originalcell
           WRITE (MT1) 'L14 ', ((STORE(J), J=I,I+3),
      1                        I=L14,2*MD14+L14, MD14)
           WRITE (MT1) 'SIZE', NUM
@@ -1699,11 +1729,15 @@ C SET UP TRANSFORMATION MATRIX  (BRIEFLY)
           STORE(NFL+5+IAXIS(3)) = 1.0
           IF (XDETR3 (STORE(NFL)) .LE. 0) STORE(NFL+5+IAXIS(3)) = -1.0
 cdjwmay09
-      write(ncwu,'(3f10.3)') (store(i),i=l1o1,l1o1+8)
+      !write(ncwu,'(3f10.3)') (store(i),i=l1o1,l1o1+8)
+      write(ncwu,'(3f10.3)') transpose(orthomatrix)
       write(ncwu,'(3i10)')  (istore(i),i=l14o,l14o+2)
-      call xmove(store(l1o1  +3*(iaxis(1)-1)), store(nfl  ),3)
-      call xmove(store(l1o1  +3*(iaxis(2)-1)), store(nfl+3),3)
-      call xmove(store(l1o1  +3*(iaxis(3)-1)), store(nfl+6),3)
+      store(nfl:nfl+2)=orthomatrix(iaxis(1),:)
+      store(nfl+3:nfl+5)=orthomatrix(iaxis(2),:)
+      store(nfl+6:nfl+8)=orthomatrix(iaxis(3),:)
+      !call xmove(store(l1o1  +3*(iaxis(1)-1)), store(nfl  ),3)
+      !call xmove(store(l1o1  +3*(iaxis(2)-1)), store(nfl+3),3)
+      !call xmove(store(l1o1  +3*(iaxis(3)-1)), store(nfl+6),3)
 C WRITE THE M/T HEADER  DETAILS
 3751      FORMAT(A)
 3752      FORMAT(F15.8)
@@ -1712,12 +1746,12 @@ C WRITE THE M/T HEADER  DETAILS
           WRITE (NCFPU1,3751) 'TRAN'
           WRITE (NCFPU1,3752) (STORE(I), I=NFL,NFL+8),0.0,0.0,0.0
           WRITE (NCFPU1,3751) 'CELL'
-          WRITE (NCFPU1,3752) (C1ORIG(I), I = 1, 6)
+          WRITE (NCFPU1,3752) originalcell
           WRITE (NCFPU1,3751) 'L14 '
 c          WRITE (NCFPU1,3752) ((STORE(J),J=I,I+3),I=L14,2*MD14+L14,MD14)
             m14=l14
             do k=1,3
-             write(ncfpu1,3752) (store(l1p1+iaxis(k)-1)*store(m14+j)
+             write(ncfpu1,3752) (workingcell(iaxis(k)-1)*store(m14+j)
      1       ,j = 0,3)
              m14 = m14+md14
             end do
@@ -1758,15 +1792,15 @@ C STEPX,STEPY,STEPZ
           WRITE (NCFPU1,REC=6) STORE(L14+MD14*2+1)
 C TRANSFORMED CELL
           DO I = 0,2
-            WRITE (NCFPU1,REC=I+7) STORE(L1P1+I)
+            WRITE (NCFPU1,REC=I+7) workingcell(I)
           END DO
           DO I = 3,5
-            WRITE (NCFPU1,REC=I+7) STORE(L1P1+I) * RTD
+            WRITE (NCFPU1,REC=I+7) workingcell(I) * RTD
           END DO
 
-          WRITE(cmon,'(a,3F15.5)')'Cell: ',(STORE(L1P1+I),I=0,2)
+          WRITE(cmon,'(a,3F15.5)')'Cell: ',(workingcell(I),I=0,2)
           call xprvdu(ncvdu,1,0)
-          WRITE(cmon,'(a,3F15.5)')'      ',(STORE(L1P1+I)*RTD,I=3,5)
+          WRITE(cmon,'(a,3F15.5)')'      ',(workingcell(I)*RTD,I=3,5)
           call xprvdu(ncvdu,1,0)
 
 C STARTX,Y,Z
