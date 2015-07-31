@@ -1,2 +1,2 @@
-      DIMENSION PROCS(26)
+      real, dimension(26) :: PROCS
 

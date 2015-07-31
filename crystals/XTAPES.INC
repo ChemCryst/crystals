@@ -1,2 +1,3 @@
+      integer MTA,MTB,MT1,MT2,MT3,MTE 
       COMMON/XTAPES/MTA,MTB,MT1,MT2,MT3,MTE 
 
