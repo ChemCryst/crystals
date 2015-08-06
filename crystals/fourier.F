@@ -1660,7 +1660,7 @@ CDJW99[
 C THE MAP IS GENERATED LINE BY LINE IN EACH SECTION. ONCE ALL THE
 C LINES HAVE BEEN GENERATED, THE WHOLE SECTION IS WRITTEN TO THE
 C OUTPUT FILE.
-Cunitcells(1)%orthogonalisation()
+C
 C THE SECTION CAN BE IMAGINED AS A PAGE OF PAPER. THE COLUMNS IN
 C EACH LINE GO ACROSS THE PAGE, AND THE LINER ARE WRITTEN ONE AFTER
 C ANOTHER DOWN THE PAGE.
@@ -1674,7 +1674,7 @@ C   WRITE (MT1) 'TRAN', (STORE(I), I=NFL,NFL+8)
 C
 C THE UNIT CELL PARAMETERS, A,B,C, ALPHA, BETAA, GAMMA (RADIANS)
 C
-C   WRITE (MT1) 'CELL', (STORE(I), I = L1P1, L1P1+5)
+C   WRITE (MT1) 'CELL', unitcells(1)%(a, b, c, alpha, beta, gamma)
 C
 C THE 'LIST 14' ITEMS, THREE ROWS OF FOUR VALUES. THE ROWS
 C CORRESPOND TO X,Y,Z
@@ -2097,6 +2097,7 @@ C
 C
 CODE FOR XFOURN
       SUBROUTINE XFOURN
+      implicit none
 C--SCAN THE REFLECTIONS TO SET UP THE 'KH' TABLE FOR THE NEXT SECTIONS
 C
 C--
@@ -2105,7 +2106,8 @@ C--
       INCLUDE 'ISTORE.INC'
 C
 C
-      DIMENSION RFL(3), HKL42(3)
+      real, dimension(3) :: RFL
+      integer, dimension(3) :: HKL42
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XFOURC.INC'
@@ -2113,7 +2115,7 @@ C
       INCLUDE 'XCONST.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC' (not used)
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XLST06.INC'
@@ -2124,6 +2126,13 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QFOURC.INC'
+      
+      real a, ap, bp, bsrat, bt, f, fa, fb, fmag, fphi, fps1f, h
+      real p, q, rden, rnum, s, ssc, ssf, sst, ssw, stl, stl2, tden
+      real tnum, tphi, u, v, w
+      integer i, in, ismwt, ix, iy, iz, j, k, l, m, n
+      
+      integer, external :: kfourc, iscntrc
 C
 C
       EQUIVALENCE (IX,IAXIS(1)),(IY,IAXIS(2)),(IZ,IAXIS(3))
@@ -2859,6 +2868,7 @@ C--INTERPOLATE THE HEIGHT OF THE GIVEN ATOM
 C
 CODE FOR XFOURP
       SUBROUTINE XFOURP(LNOUT)
+      implicit none
 C--OUTPUT THE RESULTS OF THE PEAK SEARCH TO THE DISC
 C
 C  LNOUT  THE TYPE OF LIST OUTPUT, USUALLY A LIST TYPE 10.
@@ -2869,7 +2879,8 @@ C--
       INCLUDE 'ICOM05.INC'
 C
 C
-      DIMENSION BLANK(1) , ACCUR(3)
+      real, dimension(1) :: BLANK
+      real, dimension(3) :: ACCUR
 C
       CHARACTER*16 CFOUND
       CHARACTER*12 CFIT(4)
@@ -2883,7 +2894,7 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC' (not used)
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST14.INC'
@@ -2892,6 +2903,12 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QFOURC.INC'
       INCLUDE 'QLST05.INC'
+      
+      integer lnout, i, iqneg, j, k, l, lfound, m, n, new
+      real orgocc, smap
+      
+      integer, external :: kexist, kdist1
+      real, external :: xocc
 C
 C
       EQUIVALENCE (IB,BLANK(1))
@@ -3866,10 +3883,13 @@ C
 
 CODE FOR XMASK
       SUBROUTINE XMASK(INTERN)
+      use unitcell_mod
+      implicit none
 C
 C--
-      PARAMETER (NPROCS = 16)
-      DIMENSION PROCS(NPROCS)
+      integer, parameter :: NPROCS = 16
+      real, dimension(NPROCS) :: PROCS
+      integer intern
       CHARACTER CSRQ*80
       INCLUDE 'STORE.INC'
       INCLUDE 'QSTORE.INC'
@@ -3881,7 +3901,7 @@ C--
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XCHARS.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
@@ -3902,26 +3922,45 @@ C--
       INCLUDE 'XLIMIT.INC'
       COMMON /XMASKD/ IMSKOP,ITYP05,ILIMIT,XMIN,XDIVS,XMAX,YMIN,
      1 YDIVS,YMAX,ZMIN,ZDIVS,ZMAX,IATRAD,ATMULT,ATCNST,ATVOID
-      DIMENSION IDIVS(3)
-      DIMENSION IIND3(3)
-      DIMENSION STEPS(3)
-      DIMENSION XJ(3)
-      DIMENSION X(10), XO(10), KEY(9), COEF(9)
+      integer, dimension(3) :: IDIVS, IIND3
+      real, dimension(3) :: STEPS, XJ
+      real , dimension(10) :: XX, XO
+      integer, dimension(9) :: KEY
+      real, dimension(9) :: COEF
 
       INCLUDE 'ICOM42.INC'
 
       EQUIVALENCE (IMSKOP, PROCS(1))
       INCLUDE 'QLST42.INC'
+      
+      real arange, atcnst, atmult, atvoid, fa, fb
+      integer i29, i5,  iabat, iacces, iad5, iaddd, iaddl, iaddr, iadsrq
+      integer iadrsq, iatrad, idim12, idim42, ifound, ilimit, imskop
+      integer irczap, istat, itrans, ityp05, iuln, ixsect, iysect
+      integer izsect, j42m, jb, jc, jd, je, jfnvc, jk, jl, jt, ju, junk
+      integer jxmax, jxmin, jxsect, jxstps, jymax, jymin, jysect, jystps
+      integer jz, jzmax, jzmin, jzsect, jzstps, maskin, maskou, maskst
+      integer mgm, nbonds, ndist, nnz, nnzs, nsrq, ntot
+      real range, rx, ry, rz, stoler, xdivs, xmax, xmin, ydivs, ymax
+      real ymin, zdivs, zmax, zmin
+      
+      integer, external :: krddpv, kexist, khuntr, kspini, kchlfl
+      integer, external :: kdist1, kspget, ktyp06, kfnr
+      real, external :: xdstn2
+      
+      real, dimension(6) :: unitcell
 
 #if !defined(_HOL_) 
+      character(len=4) :: ipieak
       DATA IPEAK/'Q   '/
 #else
+      integer ipeak
       DATA IPEAK/4HQ   /
-
-
 #endif
       INCLUDE 'IDIM42.INC'
 
+      unitcell=(/ unitcells(1)%a, unitcells(1)%b, unitcells(1)%c,
+     1    unitcells(1)%alpha, unitcells(1)%beta, unitcells(1)%gamma /)
 
 C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(1)
@@ -3962,7 +4001,7 @@ C -- Load existing list forty-two:
      2      ' to ',STORE(L42L+I*3+2),
      2      ' in ',STORE(L42L+I*3+1),' steps of ',
      3      ((STORE(L42L+I*3+2)-STORE(L42L+I*3))/
-     3      STORE(L42L+I*3+1))*STORE(L1P1+I), ' Angstrom.'
+     3      STORE(L42L+I*3+1))*unitcell(i+1), ' Angstrom.'
             CALL XPRVDU(NCVDU,1,0)                     
             IDIVS(I+1) = NINT(STORE(L42L+I*3+1))
           END DO
@@ -4013,7 +4052,7 @@ C -- Set limits
             STORE(L42L+I*3)   = STORE(L14+I*MD14)
             STORE(L42L+I*3+2) = STORE(L14+I*MD14+2)
             RANGE = ABS(STORE(L42L+I*3+2)-STORE(L42L+I*3))
-            ARANGE = STORE(L1P1+I)*RANGE
+            ARANGE = unitcell(i+1)*RANGE
             STORE(L42L+I*3+1)=NINT(0.49999+(ARANGE/STORE(L14+I*MD14+1)))
             WRITE(CMON,'(3(A,F8.3),A)')
      1      'Limits are', STORE(L42L+I*3),
@@ -4233,9 +4272,9 @@ C then need to set MASKIN for this point, and all points within a
 C radius of ATVOID
                     ISTORE(M42M) = 1
 C Work out steps equivalent to ATVOID in each axial direction.
-                    JXSTPS = NINT(.5+(ATVOID /(STORE(L1P1)*STEPS(1))))
-                    JYSTPS = NINT(.5+(ATVOID /(STORE(L1P1+1)*STEPS(2))))
-                    JZSTPS = NINT(.5+(ATVOID /(STORE(L1P1+2)*STEPS(3))))
+                    JXSTPS = NINT(.5+(ATVOID /(unitcell(1)*STEPS(1))))
+                    JYSTPS = NINT(.5+(ATVOID /(unitcell(2)*STEPS(2))))
+                    JZSTPS = NINT(.5+(ATVOID /(unitcell(3)*STEPS(3))))
 C Truncate wrt edges of mask region.
                     JXMIN = MAX(0,IXSECT-JXSTPS)
                     JYMIN = MAX(0,IYSECT-JYSTPS)
@@ -4271,12 +4310,12 @@ C Test distance.
 C If mask is set, do special position calc
                IF ( ISTORE( M42M ) .NE. 0 ) THEN
                  NNZ = NNZ + 1
-C X,XO,KEY & COEF are used/set by KSPGET, and need not be initialised.
+C XX,XO,KEY & COEF are used/set by KSPGET, and need not be initialised.
 C MGM is 1/occ. M5S points to atom record.
 C -1 tells it not to update parameters.
 C JUNK is the number that were updated.
 C Return value = -1 if on a special position.
-                 IF (KSPGET(X,XO,KEY,COEF,MGM,IABAT,1,JUNK).LE.0) THEN
+                 IF (KSPGET(XX,XO,KEY,COEF,MGM,IABAT,1,JUNK).LE.0) THEN
                    NNZS = NNZS + 1
                    ISTORE( M42M )  = MGM
                  END IF
