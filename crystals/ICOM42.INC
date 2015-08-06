@@ -1,2 +1,2 @@
-      DIMENSION ICOM42(12)
+      integer, dimension(12) :: ICOM42
 
