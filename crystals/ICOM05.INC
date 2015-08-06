@@ -1,3 +1,3 @@
-      PARAMETER (IDIM05=40)
-      DIMENSION ICOM05(IDIM05) 
+      integer, parameter :: IDIM05=40
+      integer, dimension(IDIM05) :: ICOM05 
 
