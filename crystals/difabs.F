@@ -36,6 +36,8 @@ C
 C
 CODE FOR XDFABS
       SUBROUTINE XDFABS
+      use unitcell_mod
+      implicit none
 C     **************
 C
 C   EMPIRICAL ABSORPTION CORRECTION PROGRAM
@@ -84,20 +86,38 @@ C      IACTN  -1 = TEST, 0 = UPDATE LIST 6, 1 = WRITE NEW LIST 6
 C      MODE    0 = MODIFY FO, 1 = MODIFY FC, 2 = TRANFER FROM FC TO FO
 C
       LOGICAL TCOR
-      REAL X(3) , MU , MUMIN , MUMAX
+      REAL X(3)
       INTEGER NP(16)
-      COMMON /NORMAL/ ANORM(44,44),ATB(44),ROWJ(88),TERMS(44)
+      real, dimension(44,44) :: anorm
+      real, dimension(44) :: atb
+      real, dimension(88) :: rowj
+      real, dimension(44) :: terms
+      real costh, sinth, fc, fo, fm
+      real, dimension(2) :: phi, mu
+      real twothz, omz, phiz, dst
+      real, dimension(3) :: plus
+      integer ipos, idifrt
+      real, dimension(3,3) :: orient
+      integer nsize
+      real filter, filsta, fildec, filend
+      integer li, ld, lo, lf, lp, ncy, nshape, nacoef, nbcoef
+      real sfmu
+      integer numref
+      real sumres, sumfs, sumrsq, sumfsq
+      real ta, tb, tc, za, zb, zc
+      
+      COMMON /NORMAL/ ANORM,ATB,ROWJ,TERMS
       COMMON /SOLVE/ NSIZE,FILTER,FILSTA,FILDEC,FILEND
-      COMMON /REFL/ FC,FO,FM,PHI(2),MU(2),SINTH,COSTH
+      COMMON /REFL/ FC,FO,FM,PHI,MU,SINTH,COSTH
       COMMON /DRVR/ LI,LD,LO,lf,lp,ncy,NSHAPE,NACOEF,NBCOEF,SFMU,TCOR
      1 ,IMAP
       COMMON /SRES/ NUMREF,SUMRES,SUMFS,SUMRSQ,SUMFSQ
-      COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS(3),IPOS,IDIFRT,ORIENT(3,3),DST
+      COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS,IPOS,IDIFRT,ORIENT,DST
       COMMON /CELLP/ TA,TB,TC,ZA,ZB,ZC
 C
 C
-      PARAMETER (IDIMN=7)
-      DIMENSION IPROCS(IDIMN)
+      integer, parameter :: IDIMN=7
+      integer, dimension(IDIMN) :: IPROCS
 C
       INCLUDE 'ISTORE.INC'
 C
@@ -105,7 +125,7 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XTAPES.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
@@ -116,11 +136,22 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      real a, chie, cthmax, fcalc, fobs, fcut, omega, phie, sfact, sigf
+      real sinl, sthlsq, thmax, twobs, wave
+      integer i, j, m, n, jj, iactn, iallow, ierr
+      integer imode, ioct, is, iuln, iuse, imap, ih, ii, ik, il
+      integer nco, ncutc, ncuto, ncycle, nf, nlow, nrecrd, nref, ntot
+      integer nzero
+      
+      integer, external :: krddpv, ktyp06, kallow, kldrnr
+      real, external :: xdetr3
 C
 C
-      DATA  STHMAX / 0.0 / , MUMIN / 100.0 / , MUMAX / -100.0 /
+      real :: sthmax=0.0
+      real :: mumin=100.0
+      real :: mumax=-100.0
 C
-      DATA IVERSN /901/
+      integer, parameter :: IVERSN=901
 C----- CAN EITHER COMPUTE CORRECTION AS FUNCTION OF FO OR  FC
 C      IF FO, THE CORRECTION IS APPLIED DIRECTLY.
 C      IF FC, IT COMPUTES CORRECTION TO FC, AND STORES IT IN M6+27
@@ -209,8 +240,9 @@ C----- COPY OVER THE ORIENTATION MATRIX
       WRITE(NCAWU, '(A)') (CMON( II)(:),II=1,2)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON( II)(:),II=1,2)
 C----- COPY OVER THE ORTHOGONALISATION MATRIX
-        CALL XMOVE (STORE(L1O2), ORIENT(1,1), 9)
-        CALL MTRANS(ORIENT)
+        !CALL XMOVE (STORE(L1O2), ORIENT(1,1), 9)
+        !CALL MTRANS(ORIENT)
+        orient=transpose(unitcells(1)%rorthogonalisation())
       ENDIF
       IF(SFACT.LE.0.0)SFACT=1.0
       TCOR=.FALSE.
@@ -1472,6 +1504,8 @@ C
 C
 CODE FOR CELL
       SUBROUTINE CELL
+      use unitcell_mod
+      implicit none
 C     ***************
 C
 C   GENERAL SUBROUTINE TO CALCULATE CELL PARAMETERS FROM THE
@@ -1479,21 +1513,36 @@ C   ORIENTATION MATRIX
 C
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
+      real twothz, omz, phiz, dst
+      real, dimension(3) :: plus
+      integer ipos, idifrt
+      real, dimension(3,3) :: orient      
       LOGICAL TCOR
+      integer li, ld, lo, lf, lp, ncy, nshape, nacoef, nbcoef, imap
+      real sfmu
+      real ta, tb, tc, za, zb, zc
       COMMON /DRVR/ LI,LD,LO,lf,lp,ncy,NSHAPE,NACOEF,NBCOEF,SFMU,TCOR
      1 ,IMAP
-      COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS(3),IPOS,IDIFRT,ORIENT(3,3),DST
+      COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS,IPOS,IDIFRT,ORIENT,DST
       COMMON /CELLP/ TA,TB,TC,ZA,ZB,ZC
       REAL DIRECT(3,3),W(3),X(3),Y(3),Z(3)
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XTAPES.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      real cosz, sinz, det
+      integer i, j, k, l, ifail
+      real, dimension(6) :: list1_cell !< unit cell from list 1
 C
-      DATA RAD / 57.2957795 /
+      real, parameter :: RAD=57.2957795 
+      
+      list1_cell = (/ unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     1    unitcells(1)%alpha, unitcells(1)%beta, unitcells(1)%gamma /)
+      
 C
       CALL AMI3(ORIENT,DIRECT,DET)
 C
@@ -1506,7 +1555,7 @@ C
       Y(I)=Y(I)+DIRECT(I,J)**2
 12    CONTINUE
       Y(I)=SQRT(Y(I))
-      IF (ABS( Y(I) - STORE(L1P1+I-1)) .GT. .01) IFAIL = I
+      IF (ABS( Y(I) - list1_cell(i)) .GT. .01) IFAIL = I
 11    CONTINUE
 C
       DO 13 I=1,3
@@ -1524,7 +1573,7 @@ C
       COSZ=Z(I)/Y(J)/Y(K)
       SINZ=SQRT(1. - COSZ*COSZ)
       Z(I) = ATAN2( SINZ, COSZ)
-      IF (ABS(Z(I) - STORE(L1P1+I+2)) .GT. .1) IFAIL = I + 3
+      IF (ABS(Z(I) - list1_cell(i+3)) .GT. .1) IFAIL = I + 3
       Z(I) = Z(I) * RAD
       IF(Z(I).LT.0.)Z(I)=Z(I)+180.
 13    CONTINUE
@@ -1542,8 +1591,8 @@ C
        WRITE(NCAWU, '(A)') CMON(1 )(:)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 202    FORMAT(' WARNING - Cell/orientation matrix mis-match',I2)
-       WRITE(CMON,200) (STORE(J),J = L1P1, L1P1+2),
-     1 (STORE(J)*RAD,J = L1P1+3, L1P1+5)
+       WRITE(CMON,200) (list1_cell(j),J = 1, 3),
+     1 (list1_cell(J)*RAD,J = 4, 6)
 200    FORMAT(' LIST 1  CELL', 6F 8.3)
        CALL XPRVDU(NCVDU, 1,0)
        WRITE(NCAWU, '(A)') CMON(1 )(:)
