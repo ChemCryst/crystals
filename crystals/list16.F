@@ -365,6 +365,7 @@ C      21 REM       22 SAME      23 DELU     24 SIMU
 C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM12.INC'
+      INCLUDE 'IDIM12.INC'
       INCLUDE 'ICOM26.INC'
       INCLUDE 'ISTORE.INC'
 C
@@ -447,7 +448,7 @@ C Grab some space for three atom list vectors (for SAME restraint).
        LATVC = KSTALL (N5*MDATVC)
 C Load list 41 into core (for SAME restraint).
        CALL XFAL41
-      INCLUDE 'IDIM12.INC'
+c      INCLUDE 'IDIM12.INC' (moved to declaration section)
 C--INDICATE THAT LIST 12 IS NOT IN CORE
       DO 1100 I=1,IDIM12
       ICOM12(I)=NOWT

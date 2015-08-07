@@ -44,6 +44,7 @@ C--
       CHARACTER *12 CBUFF
       CHARACTER *32 CATOM(4), CBLANK
       INCLUDE 'ICOM12.INC'
+      INCLUDE 'IDIM12.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'ISTORE.INC'
 C
@@ -137,7 +138,7 @@ C----- GET THE LIST TYPE FROM THE LEXICAL COMMON BLOCK
       IULN5=KTYP05(MX)
       CALL XLDR05(IULN5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
-      INCLUDE 'IDIM12.INC'
+c      INCLUDE 'IDIM12.INC' (moved to declaration section)
 C-----------------------------------------------------------
       IESD = -1
       TAU1 = 0.

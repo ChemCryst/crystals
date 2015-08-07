@@ -404,6 +404,7 @@ C
       DIMENSION UNITMX(9)
       DIMENSION ZEROSH(3)
       INCLUDE 'ICOM12.INC'
+      INCLUDE 'IDIM12.INC'
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -484,7 +485,7 @@ C -- LOAD LIST 5
       IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1).LT. 0) CALL XFAL41
 C -- INITIALISE VALUES FOR REGULARISE
 C -- INDICATE THAT LIST 12 IS NOT TO BE USED
-      INCLUDE 'IDIM12.INC'
+c      INCLUDE 'IDIM12.INC' (moved to declaration section)
       DO 1100 I = 1,IDIM12
       ICOM12(I) = NOWT
 1100  CONTINUE
@@ -5524,6 +5525,7 @@ C
 C LMAP, LONTO, N..., and IUNIQ are required to be passed in through common.
 
       INCLUDE 'ICOM12.INC'
+      INCLUDE 'IDIM12.INC'
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -5556,7 +5558,6 @@ C
       IPCHSA = IPCHRE ! Hide IPCHRE counter
       IPCHRE = -1
 
-      INCLUDE 'IDIM12.INC'
       DO I = 1,IDIM12     
         ICOM12(I) = NOWT   ! Don't use L12.
       END DO
