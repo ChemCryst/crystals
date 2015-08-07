@@ -1,5 +1,6 @@
 CODE FOR SGEOM
       SUBROUTINE SGEOM
+      implicit none
 C--SUBROUTINE TO CALCULATE GENERALISED 
 C  PLANES/LINES/ANISO/AXES/TLS 
 C  AND TO CALCULATE ANGLES BETWEEN PERPENDICULARS
@@ -47,29 +48,23 @@ C                     4      AXES
 C
 C     JPUNCH          >0    PUNCH INFO
 C
-      CHARACTER*5 CTYPE(4),CDEL(2),CQUAL(2),CDEV(2)
 C
 C
 C--
       INCLUDE 'ICOM12.INC'
-      INCLUDE 'IDIM12.INC'
       INCLUDE 'ISTORE.INC'
 C
-C for aniso
-      CHARACTER*4 CCALC(5)
-C
-      DIMENSION VA(3), EQU(3), RPCA(3,3), RPCF(3,3), ROF(3,3), RCA(3,3)
-      DIMENSION RCF(3,3), XCA(3), XCF(3), XCR(3)
+      real, dimension(3) :: VA, EQU, XCA, XCF, XCR
+      real, dimension(3,3) :: RPCA, RPCF, ROF, RCA, RCF
 c      DIMENSION DCOSA(3)
 c      DIMENSION DCOSB(3)
 cdjwdec09
       DOUBLE PRECISION dcosa(3), dcosb(3), DACCUM, DACCA, DACCB
-      INTEGER BTARG,CTARG
-      DIMENSION BTARG(1)
-      DIMENSION CTARG(1)
-      DIMENSION XWORKS(4)
-      DIMENSION AVECT(6), ATENS(9), DJWA(3,3), DJWB(3,3)
-      DIMENSION PAXIS(3)
+      real, dimension(4) :: XWORKS
+      real, dimension(6) :: AVECT
+      real, dimension(9) :: ATENS
+      real, dimension(3,3) :: DJWA, DJWB
+      real, dimension(3) :: PAXIS(3)
 C-C-C-DECL. OF VARIABLES TO CALC. POLAR COORD. OF SPECIAL FIGURES
       REAL VECPD,VECPA
 C
@@ -94,23 +89,45 @@ C
 C
       INCLUDE 'QLST12.INC'
       INCLUDE 'QSTORE.INC'
+      
+      INCLUDE 'IDIM12.INC'      
+      
+      real a, del, dum, f
+      integer i, iall, ibase, ichng, icombf, idirnm, ierr, ii, imod5
+      integer inextd, irpl, isave, istart, istat, istep, iuln5, iupdt
+      integer iwork, j, ja, jbase, jdjw, jg, jh, jj, jk, jl, jn, jo
+      integer jpunch, jtype, jwork, k, kbase, kk, kwork, lbase, lef1
+      integer lef2, n, natom, nb, ngp, np, number
+      
+      integer, external :: kstall, klxsng, ktyp05, kfdarg, kop, ksynum
+      integer, external :: katomu, katoms, kmolax, kinv2, kchnfl, kcomp
+      integer, external :: ktlspt, irtls, kfdnum
 C
 C
-      DATA IVERSN/220/
+      integer, parameter :: IVERSN=220
+      integer, parameter :: IDIMBF=50
+      integer, parameter :: IMDINP=35
 C for aniso
-      DATA CCALC/' None',' Line','Plane',' TLS','Axis'/
-      DATA EIGMIN/0.000001/,EIGRAT/0.01/
+      character(len=4), dimension(5), parameter :: 
+     1    CCALC=(/ ' Non',' Lin','Plan',' TLS','Axis' /)
+      real, parameter :: eigmin=0.000001, eigrat=0.01
 C
 #ifdef _HOL_
+      integer, dimension(1) :: BTARG, CTARG
       DATA BTARG(1)/4HAND /,CTARG(1)/4HALL /
 #else
-      DATA BTARG(1)/'AND '/,CTARG(1)/'ALL '/
+      character(len=4), dimension(1), parameter :: BTARG='AND '
+      character(len=4), dimension(1), parameter :: CTARG='ALL '
 #endif
-      DATA CTYPE(2)/'plane'/,CTYPE(1)/'line '/
-      DATA CTYPE(3)/'TLS  '/,CTYPE(4)/'Axes '/
-      DATA CQUAL(2)/'best '/,CQUAL(1)/'worst'/
-      DATA CDEL(2)/'     '/,CDEL(1)/'delta'/
-      DATA CDEV(2)/' Zp  '/,CDEV(1)/'delta'/
+      CHARACTER(len=5), dimension(4), parameter :: CTYPE=
+     1    (/ 'line ', 'plane', 'TLS  ', 'Axes ' /)
+      CHARACTER(len=5), dimension(2), parameter :: CDEL=
+     1    (/ 'delta', '     ' /)
+      CHARACTER(len=5), dimension(2), parameter :: CDEV=
+     1    (/ 'delta', ' Zp  ' /)
+      CHARACTER(len=5), dimension(2), parameter :: CQUAL=
+     1    (/ 'worst', 'best ' /)
+      
 C
 C
 C--SET UP THE TIMING CONTROL
@@ -131,16 +148,16 @@ C----- WORKSPACE FOR REPLACEMENT
 C----- SPACE FOR ATOM HEADERS
       MQ=KSTALL(100)
 C----- COMMAND BUFFER
-      IDIMBF=50
+C      IDIMBF=50 (moved in declaration section)
       ICOMBF=KSTALL(IDIMBF)
 C----- ZERO THE BUFFER
       CALL XZEROF (ISTORE(ICOMBF),IDIMBF)
 C----- COMMON BLOCK OFFSET(-1) FOR INPUT LIST
-      IMDINP=35
+C      IMDINP=35 (moved to declaration section)
 C----- INITIALSE LEXICAL PROCESSING
       ICHNG=1
       CALL XLXINI (INEXTD,ICHNG)
-C      INCLUDE 'IDIM12.INC' (moved to declaration section)
+C      INCLUDE 'IDIM12.INC' (moved in declaration section)
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 10 I=1,IDIM12
          ICOM12(I)=NOWT
