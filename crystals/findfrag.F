@@ -172,7 +172,7 @@ C LSTRUC = START OF STRUCTURES LIST
 C NSTRUC = NUMBER OF STRUCTURES BEING CONSIDERED
 C MDSTRU = LENGTH OF AN ENTRY
 C
-C     COMMON /STRUCS/ LSTRUC, NSTRUC, MDSTRU, NCPCKT
+C     COMMON /STRUCS/ LSTRUC, NSTRUC, MDSTRU, NCPCKTN2POWS
 C
 C THE LIST CONTAINING THE GRAPH FOR EACH STRUCTURE CONTAINS A FIXED
 C PART WITH FOUR ENTRIES PER NODE, AND THEN AN AREA CONTAINING THE
@@ -6411,6 +6411,7 @@ C INCREMENT THE NUMBER OF KNOWN PAIRS
 CODE FOR XL5TOA
       SUBROUTINE XL5TOA(NCHLIS,L5USED,N5USED,NNODES,LNODES,LATS,NATS,
      1                  MDATS)
+      implicit none
 C
 C BUILD A GRAPH CONSISTING OF NODES CORRESPONDING TO ATOMS
 C
@@ -6420,7 +6421,9 @@ C  ITOMOV = OFFSET OF THE TEMPORARY STORE OF THE NODE INFO FROM ITS
 C           FINAL LOCATION.
 C  NTOMOV = NUMBER OF ITEMS OF INFORMATION TO MOVE
 C  ILOINF = LOWEST ADDRESS OF NODE INFO (AFTER MOVING)
-      DIMENSION ICOM12(40)
+C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 12
+      integer, parameter :: idim12=40
+      integer, dimension(idim12) :: ICOM12
 C
 
       CHARACTER*3 CATFLA, CSERFL, CSPEFL
@@ -6430,6 +6433,43 @@ C
       CHARACTER*5 CMAXS
       LOGICAL LOVERL,LISOMO,LCV,LNEWS,LEXTEN,LMCS,LSORT,LEXACT,LSOVER,
      1        LNOISO, LPERT, LMULTI
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
+C      INCLUDE 'FIND.INC'
+C
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLEXIC.INC'
+      INCLUDE 'XWORKA.INC'
+      !INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      
+      integer nchlis, l5used, n5used, nnodes, lnodes, lats, nats, mdats
+      integer i, ierr, iexte, in, innewass, inpscopy, intype
+      integer inxullrf, iperat, iperno, ispecq, itrans, iunive
+      integer idist, l1int, l5sav, l5tmp, latfou, lbonds, lbox
+      integer ldista, lexte, lflsav, lfnvc, lnew, lpsl, lsets, lstruc
+      integer matfou, matom, maxext, maxiso, mbo, mbonds, mbox, mdatfo
+      integer mdbox, mdfnvc, mdista, mdnode, mdsets, mdstru, mfnvc
+      integer mfnvca, mlast, mmtmp, moffsq, mother, mpivot, mtmp
+      integer nattmp, nbox, nchper, ncpckt, ndista, nerrfi, nfnvc
+      integer nident, nintq, nintsu, nkeybo, nnodeq, nnodsu, nread2
+      integer nremsu, nscree, nsets, nstruc, nstruq, ntopis, nwrit2
+      real rmadef, rmax, rmaxse, rmidef, rmin, rthres, sx, toler
+      real zcoin
+      real ac, ao, ap, at, bt, bc, bp,bmax
+      real d12, d12ms, d12s, dmin12
+
+      real, external :: RMAXDI, RMINDI
+      integer, external :: kchnfl, kchlfl, kdist1
+
       COMMON /CHFIND/ CATFLA, CSERFL, CSPEFL, CNOCC, CMAXS
       COMMON /ICHFIN/ ISPECQ
       COMMON /CARCHA/ CPLUS, CMINUS, CTIMES, CDIV, CDIGIT
@@ -6448,29 +6488,12 @@ C
       COMMON /RMDEF / RMADEF, RMIDEF
       COMMON /SETS  / LSETS, NSETS, MDSETS, L1INT, LPSL, LNEW
       COMMON /CONS  / IUNIVE
-      COMMON /NPOWE2/ N2POWS(0:30)
       COMMON /NMAXIS/ MAXISO, MAXEXT
       COMMON / ERRS / NERRFI
       COMMON /TIMES / INPSCOPY, INXULLRF, INNEWASS
-      INCLUDE 'ISTORE.INC'
-      INCLUDE 'QSTORE.INC'
-C      INCLUDE 'FIND.INC'
-C
       COMMON/XDSTNC/AT,AC,BT,BC,BP,AP,AO,IDIST,LBOX,MBOX,MDBOX,NBOX,
      2 LFNVC,MFNVC,MDFNVC,NFNVC,MFNVCA
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLISTI.INC'
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XCHARS.INC'
-      INCLUDE 'XLEXIC.INC'
-      INCLUDE 'XWORKA.INC'
-      INCLUDE 'XLST01.INC'
-      INCLUDE 'XLST02.INC'
-      INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST12.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XOPVAL.INC'
+      
 C
       EQUIVALENCE (L12,ICOM12(1))
 C
@@ -6500,8 +6523,6 @@ C----- LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
               NERRFI = 3
               GO TO 9900
        END IF
-C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 12
-      IDIM12=40
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 1050 I=1,IDIM12
       ICOM12(I)=NOWT
@@ -6792,6 +6813,7 @@ C
       END
 CODE FOR XL5TOB
       SUBROUTINE XL5TOB(NCHLIS,L5USED,N5USED,NNODES,LNODES)
+      implicit none
 C
 C BUILD A GRAPH CONSISTING OF NODES CORRESPONDING TO INTERATOMIC
 C DISTANCES.
@@ -6802,7 +6824,9 @@ C  ITOMOV = OFFSET OF THE TEMPORARY STORE OF THE NODE INFO FROM ITS
 C           FINAL LOCATION.
 C  NTOMOV = NUMBER OF ITEMS OF INFORMATION TO MOVE
 C  ILOINF = LOWEST ADDRESS OF NODE INFO (AFTER MOVING)
-      DIMENSION ICOM12(40)
+C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 12
+      integer, parameter :: idim12=40
+      integer, dimension(idim12) :: ICOM12
 C
 
       CHARACTER*3 CATFLA, CSERFL, CSPEFL
@@ -6812,6 +6836,42 @@ C
       CHARACTER*5 CMAXS
       LOGICAL LOVERL,LISOMO,LCV,LNEWS,LEXTEN,LMCS,LSORT,LEXACT,LSOVER,
      1        LNOISO, LPERT, LMULTI
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'QSTORE.INC'
+C      INCLUDE 'FIND.INC'
+C
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XLEXIC.INC'
+      INCLUDE 'XWORKA.INC'
+      !INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      
+      integer nchlis, l5used, n5used, nnodes, lnodes, idist, iloinf
+      integer i, in, innewass, inpscopy, intype, inxullrf, iperno
+      integer ispecq, itomov, itrans, iunive, l1int, lbox, ldista
+      integer lfnvc, lnew, lpsl, lsets, lstruc, matom, maxext, maxiso
+      integer mbox, mdbox, mdfnvc, mdista, mdnode, mdsets, mdstru, mfnvc
+      integer mfnvca, minfo, mnodes, moffsq, nbox, nchper, ncpckt
+      integer ndista, nerrfi, nfnvc, nident, nintq, nintsu, nkeybo
+      integer nnodeq, nnodsu, nread2, nremsu, nscree, nsets, nstruc
+      integer nstruq, ntomov, ntopis, nwrit2
+      real AT,AC,BT,BC,BP,AP,AO
+      real bmax, d12, d12s, rmadef, rmax, rmaxse, rmidef, rmin, rthres
+      real sx, toler
+      
+      real, external :: rmaxdi
+      integer, external :: kdist1, kchlfl, kstall
+C
+      COMMON/XDSTNC/AT,AC,BT,BC,BP,AP,AO,IDIST,LBOX,MBOX,MDBOX,NBOX,
+     2 LFNVC,MFNVC,MDFNVC,NFNVC,MFNVCA
       COMMON /CHFIND/ CATFLA, CSERFL, CSPEFL, CNOCC, CMAXS
       COMMON /ICHFIN/ ISPECQ
       COMMON /CARCHA/ CPLUS, CMINUS, CTIMES, CDIV, CDIGIT
@@ -6830,30 +6890,10 @@ C
       COMMON /RMDEF / RMADEF, RMIDEF
       COMMON /SETS  / LSETS, NSETS, MDSETS, L1INT, LPSL, LNEW
       COMMON /CONS  / IUNIVE
-      COMMON /NPOWE2/ N2POWS(0:30)
       COMMON /NMAXIS/ MAXISO, MAXEXT
       COMMON / ERRS / NERRFI
       COMMON /TIMES / INPSCOPY, INXULLRF, INNEWASS
-      INCLUDE 'ISTORE.INC'
-      INCLUDE 'QSTORE.INC'
-C      INCLUDE 'FIND.INC'
-C
-      COMMON/XDSTNC/AT,AC,BT,BC,BP,AP,AO,IDIST,LBOX,MBOX,MDBOX,NBOX,
-     2 LFNVC,MFNVC,MDFNVC,NFNVC,MFNVCA
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLISTI.INC'
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XCHARS.INC'
-      INCLUDE 'XLEXIC.INC'
-      INCLUDE 'XWORKA.INC'
-      INCLUDE 'XLST01.INC'
-      INCLUDE 'XLST02.INC'
-      INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST12.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XOPVAL.INC'
-C
+
       EQUIVALENCE (L12,ICOM12(1))
 C
 C ASSUMING THAT GPDENS AT 4 ESD'S FROM THE MEAN = ENOUGH
@@ -6880,8 +6920,6 @@ C----- LOAD LISTS 1 AND 2, AND SET UP SOME CONSTANTS
               NERRFI = 3
               GO TO 9900
        END IF
-C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 12
-      IDIM12=40
 C--INDICATE THAT LIST 12 IS NOT TO BE USED
       DO 1050 I=1,IDIM12
       ICOM12(I)=NOWT
