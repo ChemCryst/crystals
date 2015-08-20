@@ -378,6 +378,7 @@ C--PICK UP THE L CHAIN FOR THIS K VALUE
 C
 CODE FOR XREORD
       SUBROUTINE XREORD
+      implicit none
 C--REORDER THE REFLECTIONS IN LIST 6 FOR THE S.F.L.S ROUTINES
 C
 C--IF THE DATA ARE NOT TWINNED, REFLECTIONS WHICH COME FROM THE SAME
@@ -388,17 +389,22 @@ C  OVERLAPPED REFLECTIONS WITH COMMON GROUPS OF INDICES ARE BROUGHT
 C  TOGETHER TO SAVE TIME DURING S.F.L.S.
 C
 C--
+C
+      real, dimension(2) :: PROCS
+      real a, b, c, d, e, f, o, p, q, y
+      integer i, ifried, in, itwin, ityp06, iuln, j, k, ka, kb, kc, kd
+      integer ke, kf, kg, kh, ks, kt, ku, kv, ky, kz, m, m6dtlk, m6dtll
+      integer medium, mm, n
+
       INCLUDE 'ISTORE.INC'
 C
-C
-      DIMENSION PROCS(2)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
@@ -408,6 +414,8 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      integer, external :: krddpv, ktyp06, kchnfl, kldrnr
 C
 C
       EQUIVALENCE (PROCS(1),ITYP06),(PROCS(2),MEDIUM)
