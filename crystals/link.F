@@ -403,8 +403,10 @@ c
           WRITE ( NCAWU , 1215 ) LSTNUM
           IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
           WRITE ( CMON, 1215 ) LSTNUM
+          CALL OUTCOL(9)
           CALL XPRVDU(NCEROR, 1,0)
-1215      FORMAT ( 1X , 'List' , I2 , ' does not exist' )
+          CALL OUTCOL(1)
+1215      FORMAT ( 1X , 'List ' , I2 , ' does not exist' )
           IERROR = -1
           GOTO 1300
 1220    CONTINUE
