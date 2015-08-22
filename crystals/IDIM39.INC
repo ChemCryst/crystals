@@ -1,2 +1,2 @@
-      IDIM39 = 12
+      integer, parameter :: IDIM39 = 12
 
