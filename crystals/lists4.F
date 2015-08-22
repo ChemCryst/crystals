@@ -343,6 +343,7 @@ C--ERRORS FOUND
 C
 CODE FOR XFAL01
       SUBROUTINE XFAL01
+      use unitcell_mod
 C--ROUTINE TO LOAD LIST 1 FROM THE DISC
 C
 C--
@@ -356,8 +357,15 @@ C
       INCLUDE 'QLST01.INC'
 C
       INCLUDE 'IDIM01.INC'
+      
+      
 C--LOAD THE LIST
       CALL XLDLST(1,ICOM01,IDIM01,-1)
+
+C--LOAD THE LIST IN NEW MODULE      
+      if(.not. allocated(unitcells)) allocate(unitcells(1))      
+      call unitcells(1)%set(store(icom01(1):icom01(1)+5))      
+      
 C----- LOAD THE MATRIX FOR THE GUI
       CALP=COS(STORE(L1P1+3))
       CBET=COS(STORE(L1P1+4))

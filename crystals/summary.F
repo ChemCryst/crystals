@@ -502,7 +502,8 @@ C
 C
 C
 CODE FOR KSUMLN
-      FUNCTION KSUMLN ( LSTYPE , LEVEL , LOADLN )
+      integer FUNCTION KSUMLN ( LSTYPE , LEVEL , LOADLN )
+      implicit none
 C
 C -- SUBROUTINE PRODIVING LINK TO SUMMARY CODE
 C
@@ -519,15 +520,19 @@ C      -VE      ERROR PRODUCING SUMMARY. THE LIST CANNOT BE
 C               SUMMARISED
 C      +VE      SUCCESS
 C
-      PARAMETER ( NSMTYP = 50 )
-      DIMENSION ISMTYP(NSMTYP)
+      integer, parameter :: NSMTYP = 50 
+      integer, dimension(NSMTYP) :: ISMTYP
       
-      PARAMETER (NLTYPE = 42)
-      CHARACTER*32 CLTYPE(NLTYPE)
-      DIMENSION LLTYPE(NLTYPE)
+      integer, parameter :: NLTYPE = 42
+      CHARACTER(len=32), dimension(NLTYPE) :: CLTYPE
+      integer, dimension(NLTYPE) :: LLTYPE
       character*80 ctext(4)
+      integer lstype, level, loadln
+      integer iaddd, iaddl, iaddr, intltp
+      
+      integer, external :: khuntr
 C
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XLST04.INC'
@@ -756,31 +761,48 @@ C
 C
 CODE FOR XSUM01
       SUBROUTINE XSUM01
+      use unitcell_mod
+      use math_mod, only: degrees
+      implicit none
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 1
 C
-      INCLUDE 'ISTORE.INC'
+C      INCLUDE 'ISTORE.INC'
 C
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+C      INCLUDE 'STORE.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XCONST.INC'
+C      INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
 C
-      INCLUDE 'QSTORE.INC'
+C      INCLUDE 'QSTORE.INC'
+      
+      integer j
 C
 C
 C
 C
 C -- BEGIN OUTPUT
 C
-C -- CONVERT ANGLES TO DEGREES
-C
-      CALL XMULTR ( STORE(L1P1+3) , RTD , STORE(L1P1+3) , 3 )
-C
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU,1015) ( STORE(J),J = L1P1,L1P1+6)
-      WRITE ( CMON, 1015) ( STORE(J),J = L1P1,L1P1+6)
+      IF (ISSPRT .EQ. 0) then
+          WRITE ( NCWU,1015) 
+     1        unitcells(1)%a,  
+     1        unitcells(1)%b, 
+     1        unitcells(1)%c, 
+     1        degrees(unitcells(1)%alpha), 
+     1        degrees(unitcells(1)%beta), 
+     1        degrees(unitcells(1)%gamma), 
+     1        unitcells(1)%volume() 
+      end if
+      WRITE ( CMON,1015) 
+     1    unitcells(1)%a,  
+     1    unitcells(1)%b, 
+     1    unitcells(1)%c, 
+     1    degrees(unitcells(1)%alpha), 
+     1    degrees(unitcells(1)%beta), 
+     1    degrees(unitcells(1)%gamma), 
+     1    unitcells(1)%volume() 
       CALL XPRVDU(NCVDU, 2,0)
 1015  FORMAT (
      2 1X, 'a =     ',F9.4, '    b =    ',F9.4, '    c =     ',F9.4, /,
@@ -797,6 +819,7 @@ C
 C
 CODE FOR XSUM02
       SUBROUTINE XSUM02
+      implicit none
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 2
 C
@@ -809,7 +832,7 @@ C
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -817,6 +840,11 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
+    
+      integer i, j, iaddd, iaddl, iaddr, icentr, ilast, iori   
+      integer lattyp, lencen, length
+      
+      integer, external :: khuntr, kexist, kspini
 C
       DATA LATTIC / 'primitive' , 'body centered' , 'rhombohedral' ,
      2 'face centered' , 'A centered' , 'B centered' , 'C centered' /
@@ -1283,6 +1311,7 @@ C
 CODE FOR XTHLIM
       SUBROUTINE XTHLIM (THMIN,THMAX,THMCMP,THBEST,THBCMP,
      c                                         IPLOT,IULN,IGLST)
+      implicit none
 C
 C -- ROUTINE WORK OUT COMPLETENESS OF DATA
 C
@@ -1292,7 +1321,7 @@ C
       INCLUDE 'ICOM30.INC'
       INCLUDE 'XLST30.INC'
 C
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST25.INC'
       INCLUDE 'XUNITS.INC'
@@ -1302,6 +1331,16 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
+      
+      real thmin, thmax, thmcmp, thbest, thbcmp
+      integer iplot, iuln, iglst, iaddd, iaddl, iaddr, ichg
+      integer icount, ihtot, iklast, iktot, illast, iltot, imaxh
+      integer imaxk, imaxl, iminh, imink, iminl, istat, itrsz
+      real sto, thdum, thdum2
+      
+      integer, external :: kexist, khuntr, kldrnr, ksysab
+      real, external :: xtheta
+      
         if (kexist(25) .ge. 1)  then
          if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
         else
@@ -1938,6 +1977,7 @@ c
 c
 CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
+      implicit none
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
@@ -1945,7 +1985,7 @@ C
       CHARACTER *15 HKLLAB
 
       INCLUDE 'ICOM39.INC'
-      DIMENSION KEY(35)
+      integer, dimension(35) :: KEY
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -1954,7 +1994,7 @@ C
       INCLUDE 'XLST23.INC'
       INCLUDE 'XLST39.INC'
 C
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -1967,6 +2007,16 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST39.INC'
+      
+      integer iuln, level, i, iaddd, iaddl, iaddr, iallow, idjwerr
+      integer ifsq, iftype, ihkllen, istat, itwin, iz10, iz90, j, k
+      integer max11, mh, mk, ml, n6acc, noutl
+      real a, b, bottom, c, correl, cutter, d, denom, deter, djwx, djwy
+      real fabs, fc, fo, fscale, fsign, fsq, pc, plotmax, rfact
+      real rsigm, scale, scalesq, sig, sig1, sigest, sigfsq
+      real sigtop, slope, ss, ston, sx, sxx, sxy, sy, syy, top, wbot
+      real wdel, wfo, wrfac, wt, wtop, ycut, yslope, z, z10, z90, z_max
+      real zcalc, zh
 C
 C
       DATA KEY/ 1, 2, 3, 4, 5, 6, 0, 0, 0, 0,
@@ -1978,8 +2028,10 @@ C
      1 'Sigma',3*' ','Sth/L**2','Fo/Fc',17*' '/
 C
 #ifdef _HOL_
+      integer iflac
       DATA IFLAC/4HFLAC/
 #else
+      character(len=4) :: iflac
       DATA IFLAC/'FLAC'/
 #endif
 
@@ -1988,9 +2040,12 @@ C
 c      DIMENSION X(N6D)
 c      DIMENSION Y(N6D)
 
-      DIMENSION TEMP(2)
+      real, dimension(2) :: TEMP
 CDJW08
       INCLUDE 'IDIM39.INC'
+      
+      integer, external :: khuntr, kfnr, kallow, kldrnr
+      
       MAX11 = ISIZ11
 C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
@@ -2081,7 +2136,7 @@ C
       WBOT = 0.0
       SIGTOP = 0.0
       N6ACC = 0
-      PLOTMAX = 0
+      PLOTMAX = 0.0
 c----- totals for slope and intercept
         ss = 0.
         sx = 0.
@@ -2400,7 +2455,7 @@ c
      1   0.1*Z_MAX
       CALL xprvdu (ncvdu, 1, 0)
       IF (issprt.eq.0) WRITE (ncwu,'(/a/)')
-     1     cmon(1)(:nctrim(cmon(1)))
+     1     trim(cmon(1))
       endif
 
 
@@ -3655,18 +3710,24 @@ C
 C
 CODE FOR XSGDST
       SUBROUTINE XSGDST
+      implicit none
+      
 c----- produce data for tabbed analysis display
-      DIMENSION KSIGS(110)
-      DIMENSION MSIGS(120)
-      parameter (nbin=30)
-      DIMENSION LSIGS(nbin,3)
-      dimension sios(nbin),nios(nbin)
+      integer, dimension(110) ::  KSIGS
+      integer, dimension(120) ::  MSIGS
+      integer, parameter :: nbin=30
+      integer, dimension(nbin, 3) :: LSIGS
+      real, dimension(nbin) ::  sios
+      integer, dimension(nbin) :: nios
       CHARACTER *15 HKLLAB
-      PARAMETER ( RTDIV = 19.09859 ) ! Radians to divisions.
+      real, parameter :: RTDIV = 19.09859  ! Radians to divisions.
+      integer, parameter :: ICOMSZ=5
+      integer, parameter :: IVERSN=102
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST06.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XLST13.INC'
@@ -3678,8 +3739,15 @@ c----- produce data for tabbed analysis display
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
-      DATA ICOMSZ / 5 /
-      DATA IVERSN /102/
+      
+      real bin, fabs, fos, point, rmax, sigma, signoi, slim, smax, stol3
+      real thetamax, wave
+      integer i, iaddd, iaddl, iaddr, iallow, icombf
+      integer iplot1, iplot2, iplot3, iskp28, ityp06, iuln, j, jsigs
+      integer mios, msig, nallow, nntot, ntot
+
+      integer, external :: kstall, krddpv, ktyp06, khuntr, kallow
+      integer, external :: iscntrc, kldrnr
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 
@@ -3907,13 +3975,17 @@ C -- INPUT ERRORS
 
 CODE FOR XTWINP
       SUBROUTINE XTWINP
-      DIMENSION KSIGS(25)
-      DIMENSION BAD(3), TEMP(3), RJKL(3)
+      use unitcell_mod
+      implicit none
+      
+      integer, dimension(25) :: KSIGS
+      real, dimension(3) :: BAD, TEMP, RJKL
       CHARACTER *15 HKLLAB
+      
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST06.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'XLST30.INC'
@@ -3925,8 +3997,14 @@ CODE FOR XTWINP
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
-      DATA ICOMSZ / 12 /
-      DATA IVERSN /100 /
+      integer, parameter ::ICOMSZ=12
+      integer, parameter :: IVERSN=100
+      
+      real d, dmin, dmx, fc, fo, scale, tmx
+      integer i, iaddd, iaddl, iaddr, iagree, icombf, ihkllen, iplot
+      integer istat, ityp06, iuln, j, jsigs, k, l
+      
+      integer, external :: kstall, krddpv, ktyp06, khuntr, kldrnr
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 
@@ -3952,10 +4030,9 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
 
 C Calculate max distance in A^-2.
 
-      bad(1)=0.5
-      bad(2)=0.5
-      bad(3)=0.5
-      CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
+      bad=0.5
+      temp=matmul(unitcells(1)%rmetric(),BAD)
+      !CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
       CALL DVPROD(BAD,TEMP,DMX)
       DMX = MAX(DMX,ZEROSQ)
       DMX = SQRT(DMX)
@@ -3963,14 +4040,15 @@ C Calculate max distance in A^-2.
       WRITE(CMON,'(A,G13.6)')'Highest dist = ',DMX
       CALL XPRVDU(NCVDU,1,0)
 
-      tmx =   store(l1s)*bad(1)*bad(1)
-     1     +store(l1s+1)*bad(2)*bad(2)
-     2     +store(l1s+2)*bad(3)*bad(3)
-     3     +store(l1s+3)*bad(2)*bad(3)
-     4     +store(l1s+4)*bad(1)*bad(3)
-     5     +store(l1s+5)*bad(1)*bad(2)
-
-      tmx = tmx * 4.0
+c      tmx =   store(l1s)*bad(1)*bad(1)
+c     1     +store(l1s+1)*bad(2)*bad(2)
+c     2     +store(l1s+2)*bad(3)*bad(3)
+c     3     +store(l1s+3)*bad(2)*bad(3)
+c     4     +store(l1s+4)*bad(1)*bad(3)
+c     5     +store(l1s+5)*bad(1)*bad(2)
+c     
+c      tmx = tmx * 4.0
+      tmx=dot_product(bad, matmul(unitcells(1)%rmetric(), bad))
 
       TMX = MAX(TMX,ZEROSQ)
       TMX = SQRT(TMX)
@@ -4009,7 +4087,8 @@ C SCAN LIST 6 FOR REFLECTIONS
              BAD(I) = (TEMP(I) - NINT(TEMP(I)) + RJKL(I) )
            END DO
  
-           CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
+c           CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
+           temp=matmul(unitcells(1)%rmetric(),BAD)
            CALL DVPROD(BAD,TEMP,D)
            IF ( D .GT. ZEROSQ ) D = SQRT(D)
            IF ( D .LT. DMIN ) DMIN = D

@@ -1110,7 +1110,7 @@ c  leave room for minus sign
       return
       end
 C
-CODE FOR NCTRIM
+CODE FOR NCTRIM (to be replaced by len_trim() )
       INTEGER FUNCTION NCTRIM( CSOURC )
 C-- LENGTH OF ARGUMENT EXCLUDING TRAINING SPACES.
 C CODE COPIED FROM \BITS\CHARACT.FOR
