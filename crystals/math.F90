@@ -13,6 +13,14 @@ elemental function radians(angle)
 	radians = angle*pi/180.0
 end function
 
+elemental function degrees(angle)
+	implicit none
+	real, intent(in) :: angle
+	real degrees
+	
+	degrees = angle*180.0/pi
+end function
+
 !***********************************************************************************************************************************
 !  M33INV  -  Compute the inverse of a 3x3 matrix.
 !
