@@ -1,563 +1,638 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
 <html>
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org">
-
-  <title>Absolute Structure</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
-  <style type="&rdquo;text/css&rdquo;">
+  <head>
+    <meta name="generator"
+    content="HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org" />
+    <title>Absolute Structure</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <style type="&rdquo;text/css&rdquo;">
 body { background-color:white; color:black;
   #para2 { font-family:fantasy; color:blue }
   p { font-size:12pt; }
   p:first-letter {font-size: 200%; color:red }
   h3 { font-family:monospace; color:#ff00ff }
   h1 {  color:green }
-  </style>
-</head>
+  
+</style>
+  </head>
+  <body>
+    <center>
+      <h1>Absolute Structure Determination</h1>
+    </center>
+    <br />
+    <b>If no plots appear, try reducing the value of Filter(1), the minimum acceptable
 
-<body>
-  <center>
-    <h1>Absolute Structure Determination</h1>
-  </center>
-
-<br>
-<b>
-      If no plots appear, try reducing the value of Filter(1), the minimum
-      acceptable <br>
-      <i>(calculated signal):(observed noise)</i>
-</b><br>
-
-
-  <h3>Determination of Absolute Structure for all-light atom materials using Mo radiation
-  is usually problematic. CRYSTALS offers a variety of tools. Consistency amongst the
-  results should increase your confidence in the analysis. If there are inconsistencies
-  it is likely that there are other problems with the data or the structural model.</h3>
-
-  <p>All materials in a non-centrosymmetric space group will have an absolute
-  structure.<br>
-  This may arise either because the material is composed of enantiopure chiral molecules
-  (eg sucrose) or because achiral entities are arranged into a chiral structure (e.g.
-  SiO4 in quartz).<br>
-  For non-centrosymmetric achiral materials, the crystal will have one or more polar
-  directions which must be correctly assigened if the Polar Axis Dispersion Error is to
-  be avoided.<br>
-  For non-centrosymmetric chiral crystals, the Absolute Cofiguration of the material can
-  be assigned if the absolute structure determination was successful.<br>
-  For a quick overview of absolute structurures and configuration, see: <i>Absolute
-  Configuration Determination: Is There More Information in the Data?. D.J. Watkin, and
-  A.L. Thompson, Acta Cryst., A65, s307 (2009).</i></p>
-
-  <table width="100%" border="1" cellspacing="0" cellpadding="10">
-    <tr>
-      <td width="50%">
+    <i>(calculated signal):(observed noise)</i></b>
+    <br />
+    <h3>Determination of Absolute Structure for all-light atom materials using Mo
+    radiation is usually problematic. CRYSTALS offers a variety of tools. Consistency
+    amongst the results should increase your confidence in the analysis. If there are
+    inconsistencies it is likely that there are other problems with the data or the
+    structural model.</h3>
+    <p>All materials in a non-centrosymmetric space group will have an absolute
+    structure.
+    <br />This may arise either because the material is composed of enantiopure chiral
+    molecules (eg sucrose) or because achiral entities are arranged into a chiral
+    structure (e.g. SiO4 in quartz).
+    <br />For non-centrosymmetric achiral materials, the crystal will have one or more
+    polar directions which must be correctly assigened if the Polar Axis Dispersion Error
+    is to be avoided.
+    <br />For non-centrosymmetric chiral crystals, the Absolute Cofiguration of the
+    material can be assigned if the absolute structure determination was successful.
+    <br />For a quick overview of absolute structurures and configuration, see: 
+    <i>X-ray crystallography and chirality: understanding the limitations. Amber L.
+    Thompson, David John Watkin, Tetrahedron: Asymmetry 20 (2009) 712&ndash;717</i></p>
+    <table width="100%" border="1" cellspacing="0" cellpadding="10">
+      <tr>
+        <td width="50%">
         <h2>Analyse</h2>
-
-        <h3>Absolute Configuration. The Flack "x" parameter</h3>&nbsp; <a href=
-        "./Flack.pdf"><img id="c10" src="./tn_Flack.jpg" align="top" alt="Not Available"
-        name="c10"><br>
-        See: <i>H. D. Flack and G. Bernardinelli., J. Appl. Cryst. (2000). 33,
-        1143-1148</i>.</a>
-      </td>
-
-      <td width="50%">
-        <p>CRYSTALS has two different refineable parameters to help with the
-        determination of absolute structure.<br>
-        The oldest, the Rodger's "eta" parameter is a multiplier onto f", and takes the
-        value +1 if the model has the correct hand, and -1 if it needs inverting. Flack
-        showed that this parameter is unreliable as eta approaches zero.<br>
-        The Flack "x" parameter is the mixing term in<br>
-        F<sup>2</sup> = (1-x)F<sup>2</sup>+h + xF<sup>2</sup>-h<br>
-        and takes the value zero if the model has the correct hand, and +1 if it needs
-        inverting.<br>
-        Either the Rodger's or Flack parameter should be refined simultaneously with the
-        other structural parameters since its value will influence them, and they in turn
-        will influence the s.u. on the absolute configuration parameter.<br>
-        <strong>Interpreting the Absolure Configuration Parameters</strong><br></p>
-
-        <p style="font-size:80%">If the s.u. on the Flack parameter is greater than 0.30,
-        the X-ray data contain no significant anomalous information so that the absolute
-        configuration cannot be assigned by X-ray means. The value of x can be set to
-        zero and not refined. (It may be appropriate to report x and its s.u. to
-        demonstrate that the calculation was actually performed).<br>
-        If the s.u. is small enough (&amp;lt0.04), then the parameter itself can be
-        evaluated. If it falls close to zero or unity, then the absolute configuration
-        has been determined. If it falls within this range, but is significantly distant
-        from the bounds, the material is probably twinned by inversion.</p>
-
-        <p style="font-size:100%"></p>
-      </td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Absolute Configuration Menu</h2><img id="c11" src="./tn_menu.png" align="top"
-        alt="Not Available" name="c11"><br>
-      </td>
-
-      <td width="50%">
+        <h3>Absolute Configuration. The Flack "x" parameter</h3>&nbsp; 
+        <a href="./Flack.pdf">
+        <img id="c10" src="./tn_Flack.jpg" align="top" alt="Not Available" name="c10" />
+        <br />See: 
+        <i>H. D. Flack and G. Bernardinelli., J. Appl. Cryst. (2000). 33,
+        1143-1148</i>.</a></td>
+        <td width="50%">
+          <p>CRYSTALS has two different refineable parameters to help with the
+          determination of absolute structure.
+          <br />The oldest, the Rodger's "eta" parameter is a multiplier onto f", and
+          takes the value +1 if the model has the correct hand, and -1 if it needs
+          inverting. Flack showed that this parameter is unreliable as eta approaches
+          zero.
+          <br />The Flack "x" parameter is the mixing term in
+          <br />F
+          <sup>2</sup> = (1-x)F
+          <sup>2</sup>+h + xF
+          <sup>2</sup>-h
+          <br />and takes the value zero if the model has the correct hand, and +1 if it
+          needs inverting.
+          <br />Either the Rodger's or Flack parameter should be refined simultaneously
+          with the other structural parameters since its value will influence them, and
+          they in turn will influence the s.u. on the absolute configuration parameter.
+          <br />
+          <strong>Interpreting the Absolure Configuration Parameters</strong>
+          <br /></p>
+          <p style="font-size:80%">If the s.u. on the Flack parameter is greater than
+          0.30, the X-ray data contain no significant anomalous information so that the
+          absolute configuration cannot be assigned by X-ray means. The value of x can be
+          set to zero and not refined. (It may be appropriate to report x and its s.u. to
+          demonstrate that the calculation was actually performed).
+          <br />If the s.u. is small enough (&amp;lt0.04), then the parameter itself can
+          be evaluated. If it falls close to zero or unity, then the absolute
+          configuration has been determined. If it falls within this range, but is
+          significantly distant from the bounds, the material is probably twinned by
+          inversion.</p>
+          <p style="font-size:100%"></p>
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Absolute Configuration Menu</h2>
+          <img id="c11" src="./tn_menu.png" align="top" alt="Not Available" name="c11" />
+          <br />
+        </td>
+        <td width="50%">
         <table width="100%" border="1" cellspacing="0" cellpadding="2">
           <tr>
-            <td width="50%"><small>Do = Io<sup>+</sup> - Io<sup>-</sup></small></td>
-
-            <td width="50%"><small>Ds = Is<sup>+</sup> - Is<sup>-</sup></small></td>
+            <td width="50%">
+              <small>Do = Io
+              <sup>+</sup> - Io
+              <sup>-</sup></small>
+            </td>
+            <td width="50%">
+              <small>Ds = Is
+              <sup>+</sup> - Is
+              <sup>-</sup></small>
+            </td>
           </tr>
-
           <tr>
-            <td width="50%"><small>Ao = (Io<sup>+</sup> + Io<sup>-</sup>)</small></td>
-
-            <td width="50%"><small>As = (Is<sup>+</sup> + Is<sup>-</sup>)</small></td>
+            <td width="50%">
+              <small>Ao = (Io
+              <sup>+</sup> + Io
+              <sup>-</sup>)</small>
+            </td>
+            <td width="50%">
+              <small>As = (Is
+              <sup>+</sup> + Is
+              <sup>-</sup>)</small>
+            </td>
           </tr>
-
           <tr>
-            <td width="50%"><small>All quantities are weighted by the inverse of their
-            variance</small></td>
-
+            <td width="50%">
+              <small>All quantities are weighted by the inverse of their variance</small>
+            </td>
             <td width="50%">&nbsp;</td>
           </tr>
-        </table><br>
-        <b>Filters</b><br>
-        <a href="#filters">See also Filters, below</a><br>
-        <b>Filter_1</b> Sets the minimum accetpable significance, <i>|Ds| &frasl;
-        &sigma;(Do)</i>, of the theoretical Bijvoet difference. In many fields 3&sigma;
-        is regarded as significant; <b>for small Friedif materials this threshold may
-        have to be reduced to 0.0001!</b><br>
+        </table>
+        <br />
+        <b>Filters</b>
+        <br />
+        <a href="#filters">See also Filters, below</a>
+        <br />
+        <b>Filter_1</b> Sets the minimum accetpable significance, 
+        <i>|Ds| &frasl; &sigma;(Do)</i>, of the theoretical Bijvoet difference. In many
+        fields 3&sigma; is regarded as significant; 
+        <b>for small Friedif materials this threshold may have to be reduced to
+        0.0001!</b>
+        <br />
         <b>Filer_2</b> Sets the minimum accetpable significance of the theoretical
         Bijvoet average compared with the standard uncertainty of the observed average.
-        This is important when Parson's Quotients are being computed.<br>
+        This is important when Parson's Quotients are being computed.
+        <br />
         <b>Filter_3</b> Rejects Bijvoet pairs where the observed difference is improbably
-        large compared to the computed diference.<br>
+        large compared to the computed diference.
+        <br />
         <b>Filter_4</b>&gt; Regects reflections where the probability of the observed
-        Bijvoet difference is very small.<br>
-        <b>Filter_5</b> Rejects data where the Quotient
+        Bijvoet difference is very small.
+        <br />
+        <b>Filter_5</b> Rejects data where the Quotient 
         <i>(Max(Ao,As)&frasl;(Min(Ao,As)</i> is large. This may occur for very weak
         reflections, where there are outliers in the data, or there is a problem with
-        data reduction or the atomic model.<br>
-        <br>
-        <b>Output</b><br>
-        Table: A table of the Bijvoet pairs, including the intensities, differences,
-        averages and standard uncertainties. Could be pulled inot a spread sheet.<br>
-        Restrain: Significant Bijvoet differences set up as equations of restriant (LIST
-        16)<br>
-        Graph: The values used increating graphs for re-plotting elsewhere. Summary: A
-        summary of the important absolute structure parameters.<br>
-        <br>
+        data reduction or the atomic model.
+        <br />
+        <br />
+        <b>Output</b>
+        <br />Table: A table of the Bijvoet pairs, including the intensities,
+        differences, averages and standard uncertainties. Could be pulled into a spread
+        sheet.
+        <br />Restraint: The post-refinement estimate of the absolute structure parameter
+        and its su are set up as a restraint  (LIST 16)
+        <br />Graph: The values used increating graphs for re-plotting elsewhere.
+        Summary: A summary of the important absolute structure parameters.
+        <br />
+        <br />
         <b>Type</b> Selects whether simple Bijvoet differences or Parson's Quotients will
-        be used.<br>
-        <br>
+        be used.
+        <br />
+        <br />
         <b>Weight</b> Selects whether the weights will be computed from the expereimental
-        variances or be derived from the least squares weights.
-      </td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Normal Probability Plot</h2>Normal probability plot of the residual, Do.<br>
-        <br>
-        <img id="a14" src="./tn_NPP.jpg" align="top" alt="Not Available" name="a14"><br>
-      </td>
-
-      <td width="50%">&nbsp; For a sample with strong anonalous differences, this should
-      be a line of unit gradient, with little scatter and no curving tails. If the
-      gradient is not unity, there is suspicion that the least squares weights in the
-      main refinement are inappropriate or that the structural model is deficient
-      (extinction, disorder, missing atoms, mis-typed atoms). However, a few points off
-      the unit gradient line near the ends of the line are not important.<br>
-      <br>
-      <img id="ac14" src="./bad-npp.png" align="right" alt="Not Available" name=
-      "ac14"><br>
-      A plot deviating greatly from a unit straight line usually indicated problems with
-      the data.</td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>2Ao/Do plots</h2>Plots of Do vs Dm and 2Ao vs 2Am<br>
-        <br>
-        <img id="b14" src="./tn_ao.png" align="top" alt="Not Available" name="b14"><br>
-      </td>
-
-      <td width="50%">&nbsp; These plots were introduced by Flack (Analysing Friedel
-      averages and differences Simon Parsons, Phillip Pattison and Howard D. Flack Acta
-      Cryst. (2012). A68, 736&ndash;749). For a strong scatterer, the anomalous
-      differences (green) cluster around and along the unit gradient, with a similar
-      dispersion to the anomalous averages (red). For a poor anomalous scatterer, the
-      differences cluster around the origin with a large spread in the Do directions<br>
-      <br>
-      <img id="c13" src="./tn_bad-ao.png" align="top" alt="Not Available" name=
-      "c13"></td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Flack Parameter Histogram</h2><img id="c12" src="./flack(x).png" align="top"
-        alt="Not Available" name="c12"><br>
-      </td>
-
-      <td width="50%">Distribution of the Flack Parameter.<br>
-      The top graph is for a material with large anomalous scattering. Note that the
-      <i>x</i> parameter (horizontal axis) runs from &plusmn;3 for the top graph, and
-      &plusmn;30 for the weak Friedif material, lower graph<br>
-      <br>
-      The red line is the actual frequency of observation, the green is modified by
-      robust weights (which down weight outliers).</td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Signal to Noise Histogram</h2><img id="d13" src="./signal-noise.png" align=
-        "top" alt="Not Available" name="d13"><br>
-      </td>
-
-      <td width="50%">Distribution of the Signal-to-Noise ratio.<br>
-      The green line is the ratio of the calculated Bijvoet differences to the observed
-      standard uncertainty, The red line plots the ratio of the observed diffwrences and
-      standard uncertainties.<br>
-      <br>
-      For a high Friedif material one expects to see large computed ratios (i.e. the plot
-      is wide with some data in the extreme bins) and similar observed ratios.<br>
-      For low Friedif data the green (calculated) distrution is narrower. If the data are
-      well-measured the red (observed) plot should follow the green, but usually it is
-      much wider.<br></td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Signal to Noise vs Resolution</h2><img id="c15" src="./resolution.png" align=
-        "top" alt="Not Available" name="c15"><br>
-      </td>
-
-      <td width="50%">Distribution of the calculated Signal:noise as a function of
-      resolution.<br>
-      The horizontal scale corresponds to <a href="flack-help.html">bins containing 
-      approximately</a> the same number
-      of lattice points.<br>
-      The red line is the number of reflections actually used from each bin.<br>
-      The green line is the mean ratio of calculated bijvoet differences to the observed
-      standard uncertainty for each bin.<br>
-      <br>
-      Both plots are for data collected to high theta.<br>
-      The right hand plot corresponds to the same exposure time being used throughout the
-      experiment<br>
-      In the left hand plot the exposure time was increased for the high angle
-      measurements, leading to an improved signal:noise.<br></td>
-    </tr>
-  </table><br>
-
-  <table width="100%" border="1" cellspacing="0" cellpadding="10">
-    <tr>
-      <td colspan="2">
+        variances or be derived from the least squares weights.</td>
+      </tr>
+      <tr>
+        <td width="50%">
+        <h2>Normal Probability Plot</h2>Normal probability plot of the residual, Do.
+        <br />
+        <br />
+        <img id="a14" src="./tn_NPP.jpg" align="top" alt="Not Available" name="a14" />
+        <br /></td>
+        <td width="50%">&nbsp; For a sample with strong anonalous differences, this
+        should be a line of unit gradient, with little scatter and no curving tails. If
+        the gradient is not unity, there is suspicion that the least squares weights in
+        the main refinement are inappropriate or that the structural model is deficient
+        (extinction, disorder, missing atoms, mis-typed atoms). However, a few points off
+        the unit gradient line near the ends of the line are not important.
+        <br />
+        <br />
+        <img id="ac14" src="./bad-npp.png" align="right" alt="Not Available"
+        name="ac14" />
+        <br />A plot deviating greatly from a unit straight line usually indicated
+        problems with the data.</td>
+      </tr>
+      <tr>
+        <td width="50%">
+        <h2>2Ao/Do plots</h2>Plots of Do vs Dm and 2Ao vs 2Am
+        <br />
+        <br />
+        <img id="b14" src="./tn_ao.png" align="top" alt="Not Available" name="b14" />
+        <br /></td>
+        <td width="50%">&nbsp; These plots were introduced by Flack (Analysing Friedel
+        averages and differences Simon Parsons, Phillip Pattison and Howard D. Flack Acta
+        Cryst. (2012). A68, 736&ndash;749). For a strong scatterer, the anomalous
+        differences (green) cluster around and along the unit gradient, with a similar
+        dispersion to the anomalous averages (red). For a poor anomalous scatterer, the
+        differences cluster around the origin with a large spread in the Do directions
+        <br />
+        <br />
+        <img id="c13" src="./tn_bad-ao.png" align="top" alt="Not Available"
+        name="c13" /></td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Flack Parameter Histogram</h2>
+          <img id="c12" src="./flack(x).png" align="top" alt="Not Available"
+          name="c12" />
+          <br />
+        </td>
+        <td width="50%">Distribution of the Flack Parameter.
+        <br />The top graph is for a material with large anomalous scattering. Note that
+        the 
+        <i>x</i> parameter (horizontal axis) runs from &plusmn;3 for the top graph, and
+        &plusmn;30 for the weak Friedif material, lower graph
+        <br />
+        <br />The red line is the actual frequency of observation, the green is modified
+        by robust weights (which down weight outliers).</td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Signal to Noise Histogram</h2>
+          <img id="d13" src="./signal-noise.png" align="top" alt="Not Available"
+          name="d13" />
+          <br />
+        </td>
+        <td width="50%">Distribution of the Signal-to-Noise ratio.
+        <br />The green line is the ratio of the calculated Bijvoet differences to the
+        observed standard uncertainty, The red line plots the ratio of the observed
+        differences and standard uncertainties.
+        <br />
+        <br />For a high Friedif material one expects to see large computed ratios (i.e.
+        the plot is wide with some data in the extreme bins) and similar observed ratios.
+        <br />For low Friedif data the green (calculated) distrution is narrower. If the
+        data are well-measured the red (observed) plot should follow the green, but
+        usually it is much wider.
+        <br /></td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Signal to Noise vs Resolution</h2>
+          <img id="c15" src="./resolution.png" align="top" alt="Not Available"
+          name="c15" />
+          <br />
+        </td>
+        <td width="50%">Distribution of the calculated Signal:noise as a function of
+        resolution.
+        <br />The horizontal scale corresponds to 
+        <a href="flack-help.html">bins containing approximately</a> the same number of
+        lattice points.
+        <br />The red line is the number of reflections actually used from each bin.
+        <br />The green line is the mean ratio of calculated bijvoet differences to the
+        observed standard uncertainty for each bin.
+        <br />
+        <br />Both plots are for data collected to high theta.
+        <br />The right hand plot corresponds to the same exposure time being used
+        throughout the experiment
+        <br />In the left hand plot the exposure time was increased for the high angle
+        measurements, leading to an improved signal:noise.
+        <br /></td>
+      </tr>
+    </table>
+    <br />
+    <table width="100%" border="1" cellspacing="0" cellpadding="10">
+      <tr>
+        <td colspan="2">
         <h2>Text output</h2>In addition to the graphs, a summary of textual output is
         sent to the screen. Full details are in the listing file (bfile#xx.lis). This can
         be viewed by going to the tab "Files" and selecting "View Listing". You may need
         to set your default file viewer to one which enables files to be accessed even
-        while they are in use by other applications (eg MS Notepad)
-      </td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Plot Calculations</h2>
-        <pre>
+        while they are in use by other applications (eg MS Notepad)</td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Plot Calculations</h2>
+          <pre>
 <code>
 
- No of Reflections processed =   8640
- No of Friedel Pairs found =     3831 No of Friedel Pairs used  =     3824
- <font color='blue'>No of Unpaired Reflections  =     18</font>
- No of Centric Reflections   =    960
+
+ No of Reflections processed =   8636         No of Friedel Pairs =   3831
+ No of Friedel Pairs found =     3831 No of Friedel Pairs used  =     3792
+ 
+<font color='blue'>No of Unpaired Reflections  =     18</font>
+ No of Centric Reflections   =    956
+     Friedel Coverage        =    99 %
+ 
+<font color='blue'>Observed:calculated signal  =   1.11</font>
  Flack parameter obtained from original refinement
- Hooft parameter obtained with Flack x set to zero
+<font color='blue'>
+   RA   RD    wRA2  wRD2   Friedif for all data and x=zero
+   2.8  28.0   3.8  29.7    497.51
+</font>
 
-<font color='blue'>   RA   RD    wRA2  wRD2   Friedif  Flack esd
-   2.8  28.0   3.8  29.7    497.51 -0.03  0.01</font>
-
-DO vs Dm scatterplot
+ Do-Dm R-factor(%) with Flack(x) of  -0.03(0.01) =   27.20%
 
 
- Reflection Filters
- Criterion  99999.00  filter_1= 20.00  filter_2= 20.00  filter_3=  0.10  filter_4=  0.00
 
- <font color='blue'>Accumulating scatterplot for    3824 reflections
+ Distribution of NINT(D/sigma) for all data
+ Rabinovich &amp; Hope, Acta A36, (1980), 670-674
+<small>
+Do   562   104    92   140   139   148   153   174   176   165   200   192   165   163  168   146   144    83   112    89   516
+Dc   441    80   100   133   145   142   170   196   179   217   227   202   215   182  163   141   157   100   110    82   449
+ n -3.33 -3.00 -2.67 -2.33 -2.00 -1.67 -1.33 -1.00 -0.67 -0.33  0.00  0.33  0.67  1.00 1.33  1.67  2.00  2.33  2.67  3.00  3.33
+</small>
+ Reflection Filters:  filter_1= 0.0100  filter_2= 1.0000  filter_3= 2.0000  filter_4=0.0010
 
- Current Do-Dm R-factor(%) for these reflections =     27.21</font>
-
-<font color=
-'blue'>Weighted averages of x and y                 0.001     -0.004       3824</font>
-Weighted RMS                                 3.070      3.398
-Weighted Maxima                              0.974      0.939
-
-Principal Componenet Analysis
-
-<font color=
-'blue'>Major root,Components,angle                 78492.      0.669      0.744     48.033</font>
-Minor root,Components,angle                  1723.     -0.744      0.669    -41.967
-
- <font color='blue'>Correlation coeff and r^2 of Scatter Plot =  0.957  0.915</font>
-                              Slope, sigma =  1.059  0.005
-                          Intercept, sigma = -0.815  0.016
-                     Post-Refinement Flack = -0.029  0.003
-
- Computations continued with          3824 reflections.
-
- Normal Probability Plot
-
-                       0 outliers at 6 sigma
-
-                       Z at 10th centile:     -1.280
-                       Z at 90th centile:      1.280
-
- Gradient for zero intercept =                 1.001
- <font color='blue'>Slope, intercept and Cc (R) of NPP Plot =  1.001  0.112  0.999</font>
-
+       Continuing Calculations with    3792 pairs
+<font color='blue'>
+         Normal Probability Plot for   3034 Bijvoet pairs
+</font>
+ Reduced Chisq=  1.0079
+ Gradient for zero intercept =               0.980
+ 
+<font color='blue'> Slope, intercept and Cc (R) of NPP Plot =  0.980  0.111  1.000
+ </font>
  The slope should be unity and the intercept zero
 
+ Outliers in Normal Probability Plot at delta(Z) &gt; 0.37
+    Indices       Ds        Do        Zo         Zc     /Zc-Zo/
+   8  16   2   -19.169    43.187    -4.370    -3.469     0.900
+   1  10  18    -1.056    41.037    -4.067    -3.182     0.885
+   8  15   7   -54.895    31.663    -3.700    -3.041     0.659
+   8   6   3    14.431    59.137    -3.668    -2.945     0.723
+  11  11  10    17.885    61.220    -3.329    -2.871     0.457
+   3  11  20     2.241    86.370    -3.277    -2.811     0.465
+   1   4   1  -461.896  -644.353     3.610     3.093     0.517
+   2   5   5 -1128.662 -1620.748     3.725     3.166     0.559
+   3   3   2  1449.455  1070.492     3.842     3.262     0.580
+   2  16  14   -11.616   -48.718     4.027     3.404     0.623
+   1   3   5   597.285    16.168     4.376     3.691     0.685
+<font color='blue'>
+     11 outliers in Normal Probability Plot at delta(Z) &gt;  0.37
+</font>
 
- Friedif =     497.51      Acta A63, (2007), 257-265
- Flack &amp; Shmueli (2007) recommend a value &gt;200
- for general structures and &gt;80 for enantiopure crystals
+
+        Difference Calculations for    3792 Bijvoet pairs
+
+<font color='blue'>
+ Principal Componenet Analysis                                                           
+                                                                                         
+ Major root,Components,angle        78341.      0.667      0.745     48.161 </font>      
+ Minor root,Components,angle         1736.     -0.745      0.667    -41.839              
+
+ Gradient for zero intercept =                1.063
+                              Slope, sigma =  1.062  0.005
+                          Intercept, sigma = -0.002  0.000
+<font color='blue'>
+                     Post-Refinement Flack = -0.031  0.003
+
+ Correlation coeff and r^2 of Scatter Plot =  0.957  0.916
+</font>
+   Computing Histogram starting with   3792 Bijvoet pairs
+
 </code>
 </pre>
-      </td>
-
-      <td width="50%">
-        For a reliable determination, the number of unpaired reflection should be
-        small.<br>
-        The number of Friedel pairs used should be similar to the number found. If many
-        have been rejected, this may mean that some of the data has been badly
-        measured.<br>
-        The number of reflections used in accumulating the scatterplot should similar to
-        the number found above. If a large fraction have been omitted, this may mean that
-        the anomalous scattering is very weak. Changing the filters to accept more data
-        may just introduce rubbish reflections. In particular, if you have tp raise the
-        value of Filter_2 this may indicate poor data scaling or uncorrected absorption
-        effects. <a href="#filters">See Filters, below</a><br>
-        <br>
-        The Do-Dc Rfactor is computed from<br>
+        </td>
+        <td width="50%">For a reliable determination, the number of unpaired reflection
+        should be small.
+        <br />
+        The ratio of the observed to the computed r.m.s. Bijvoet differences should be around
+        unity.  It is usually higher.  A very large ratio may indicate poor data (multiscan
+        absorption correction, crystal decay etc) or that a heavy element may be missing from the model.
+        <br />The number of Friedel pairs used should be similar to the number found. If
+        many have been rejected, this may mean that some of the data has been badly
+        measured.
+        <br />The number of reflections used in accumulating the scatterplot should
+        similar to the number found above. If a large fraction have been omitted, this
+        may mean that the anomalous scattering is very weak. Changing the filters to
+        accept more data may just introduce rubbish reflections. In particular, if you
+        have to raise the value of Filter_2 this may indicate poor data scaling or
+        uncorrected absorption effects. 
+        <a href="#filters">See Filters, below</a>
+        <br />
+        <br />The Do-Dc Rfactor is computed from
+        <br />
         <pre>
 <code>
 R = 100 * |Do - Dc| / |Do|
 </code>
-</pre><br>
-        If the weighted averages of x and y (the plot axes) are far from zero, there may
-        be a systematic error in the data or the model<br>
-        The larger the rms values, the greater the dispersion of the data. This could
-        either be due to a strong anomalous signal, or to a lot of noise. The plot should
-        make the choice evident.<br>
-        The Roots are the eigenvalues of the scatterplot (Prinicipal Component Analysis).
-        For a Do/Dc or Qo/Qc plot them largest root should have an angle (with the
-        x-axis) of 45 degrees. The minor root is a measure of the noise. You want a big
-        major and a small minor axis. For a Ro/Dc plot the major axis should make a small
-        angle with the x-axis. The minor root measures the noise.<br>
-        <br>
-        For the Do/Dc and Qo/Qc plots the correltaion coefficient and the coefficient of
-        determination (R<sup>2</sup>) should be large. Small values mean that the values
-        of Do or Qo are not determined by the values of Dc or Qc.<br>
-        The slope of the plot should be close to unity, and the intercept close to
-        zero.<br>
-        The Normal Probability Plot should have a unit gradient. values far from unity
-        may mean that the weights for the main Least Squares have not been properly
+</pre>
+        <br />Normal Probability Plot<br />
+        The normal probability plot should have unit gradient and zero intercept.
+        <br />Values far from
+        unity may mean that the weights for the main Least Squares have not been properly
         determined, or that there is a defect in the model. A few outliers can be
         expected. Right clicking on them causes them to be excluded from (filtered out
-        of) the main refinement. They can be re-instated from the Filter menu. Observed
-        Friedif values much larger than the estimated Friedif values indicate that there
-        is a good probability that the absolute structure can be reliably determined.
-      </td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Distribution of Residuals</h2>
-        <pre>
+        of) the main refinement. They can be re-instated from the Filter menu. 
+        Because 
+        there are usually outliers at the ends of the graph, only  points between the first
+        and ninth decile are used in computing the gradient. Observed
+        
+        <br />
+        Principal Component Analysis of the Do Dc scatterplot<br />
+        If the weighted averages of x and y (the plot axes) are far from zero,
+        there may be a systematic error in the data or the model
+        <br />The larger the rms values, the greater the dispersion of the data. This
+        could either be due to a strong anomalous signal, or to a lot of noise. The plot
+        should make the choice evident.
+        <br />The Roots are the eigenvalues of the scatterplot (Prinicipal Component
+        Analysis). For a Do/Dc or Qo/Qc plot them largest root should have an angle (with
+        the x-axis) of 45 degrees. The minor root is a measure of the noise. You want a
+        big major and a small minor axis. For a Ro/Dc plot the major axis should make a
+        small angle with the x-axis. The minor root measures the noise.
+        <br />
+        <br />For the Do/Dc and Qo/Qc plots the correltaion coefficient and the
+        coefficient of determination (R
+        <sup>2</sup>) should be large. Small values mean that the values of Do or Qo are
+        not determined by the values of Dc or Qc.
+        <br />The slope of the plot should be close to unity, and the intercept close to
+        zero.
+        <br />
+        The Histogram calculation computes a distribution of the Flack(x) for every Bijvoet pair.
+        
+</td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Distribution of Residuals</h2>
+          <pre>
 <code>
-Reflection Distributions
 
-I means Fsquared
-deltaI = I(+) - I(-)
+
+                              Reflection Distributions
+
+I represents Fsquared
+     D = I(+) - I(-)
     Do = Io(+) - Io(-)
+
 <small>
-          Number +ve   mean(deltaI)   rms(deltaI)   Number -ve   mean(deltaI)   rms(deltaI)
+          Number +ve   mean(deltaI)   rms(deltaI)   Number -ve   mean(deltaI)  
+rms(deltaI)
 For Io
-            1880        70.6625       138.4689         1944       -82.4336      183.5055
+            1865        71.1810       139.0263         1927       -83.0851      184.3125
 For Ic
-            1914        67.2404       134.8954         1910       -70.5704      158.9606
+            1898        67.7912       135.4657         1894       -71.1456      159.6284
 </small>
 
-Quadrant averages: N, Mean(Do), Mean(Dm)
+Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
-       204    10.75   -10.88   |      1670    78.23    74.84
+-+     196    11.02   -11.23   |++    1663    78.53    75.14
     ---------------------------|----------------------------
-      1706   -91.69   -77.71   |       244   -15.66    15.23
+--    1698   -92.10   -78.06   |+-     235   -15.84    15.76
+
+           Histogram distributions (deciles, octiles, quartiles)
+      1/10      1/8       1/4       mean     3/4        7/8       9/10
+     -0.64     -0.50     -0.21     -0.03      0.15      0.45      0.57
+<font color='blue'>
+ Initial mean Flack(x) =     -0.0294
+   Final mean Flack(x) =     -0.0309 and LSQ Flack(x)      -0.0309 </font>
+           Internal su =      0.1020
+           External su =      0.1342
+ Number of pairs with probability greater than  0.0010 =   3057
 
 
-No of reflections for which delta(Io) has same sign as delta(Ic)
-Same sign   Opposite sign
-    3373           451
+ No of pairs for which delta(Io) has same sign as delta(Is)
+ Same sign   Opposite sign
+    3358           434
 
-<small>
- Distribution of Delta(I)/n(I)
-Delta Io   114    77   112   189   266   427   503   557   496   373   284   158   113    65    97
-Delta Ic    76    52   105   153   237   416   547   644   561   398   261   163    85    56    77
-    n       -7    -6    -5    -4    -3    -2    -1     0     1     2     3     4     5     6     7
-</small>
+<font color='blue'>
+   LePage Analysis</font>
+ Minimum signal : noise used =  6.0437
+ No. Available 3792
+ Total  No.Same  No.Opposite  Signal:noise
+   10       10      0         13.2905
+   20       20      0          9.7892
+   50       50      0          7.3315
+  100      100      0          6.0437
+
 </code>
 </pre>
-      </td>
-
-      <td width="50%">The statistics for Fo and Fc should be roughly similar.<br>
-      <br>
-      The number of reflections for which the residuals for Fo and Fc have the same sign
-      should exceed the number with opposite sign.<br>
-      <br>
-      The distribtion for Fo should be similar to that for Fc. For a poorly determined
-      absolute structure, the Fo distribution is often much wider than the Fc
-      distribution.</td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Estimates of the Absolute Structure Parameter</h2>
-        <pre>
+        </td>
+        <td width="50%">The statistics for Io and Ic should be roughly similar.
+        <br />
+        <br />The number of reflections for which the residuals for Io and Ic have the
+        same sign should exceed the number with opposite sign.
+        <br />
+        <br />The distribtion for Io should be similar to that for Ic. For a poorly
+        determined absolute structure, the Io distribution is often much wider than the
+        Ic distribution.<br /><br />
+        The mean Flack(x) parameter is refined by iterative reweighting to try to exclude
+        inaccurate data.  <br />
+         The Lepage analysis gives the number of reflections with the same or opposite signs
+         for ranges of increasingly unreliable data. The distribution can be used to estimate
+         the probability that the structure has been assigned the correct chirality.
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Estimates of the Absolute Structure Parameter</h2>
+          <pre>
 <code>
 
-       Flack Parameter &amp; su    -0.031     0.007
-    
+       Flack Parameter &amp; su -0.031  0.006  @ 
+
  Using counting statistics weights
+       Hooft Parameter &amp; su -0.025  0.002  $ 
+           Hole-in-one &amp; su -0.032  0.003    
+    Bijvoet Difference &amp; su -0.031  0.003  &pound;  (Using  3792 reflections. Correl
+Coef =  96%)
 
-       Hooft Parameter &amp; su    -0.025     0.002    
-           Hole-in-one &amp; su    -0.032     0.003     
-    Parsons Difference &amp; su    -0.031     0.003     (Using  3805 reflections.
+ Histogram re-weighted,  3057 reflections,  83.3% within -.5 to 1.5
+    Bijvoet Difference &amp; su -0.031  0.003    
+ Average of Ratios (x) &amp; su -0.031  0.002  &amp; 
+ Average of Ratios (x) &amp; su -0.031  0.002  %  (corrected for npp, * 0.98)
 
- Histogram re-weighted,  3036 reflections,  83.0% within -.5 to 1.5
-    Parsons Difference &amp; su    -0.031     0.003     (Ratio of Averages)
- Average of Ratios (x) &amp; su    -0.031     0.002    
- Average of Ratios (x) &amp; su    -0.031     0.002     (corrected for npp, * 0.98)</code>
+
+@  Flack,1983, Acta Cryst A39, 876-881
+&pound;  Thompson &amp; Watkin, 2011, J Appl Cryst, 44, 1077-1022
+$  Hooft et al, 2008, J Appl Cryst, 41, 96-103
+&amp;  Cooper et al, to be published
+
+
+</code>
 </pre>
-      </td>
-
-      <td width="50%">The Flack Parameter and its su were from the main refinement.<br>
-      The first block of post-refinement analyses were computed using the counting
-      statistics variances.<br>
-      The second block were computed with Robust re-weighting.<br>
-      Experience shows that the Hooft and corrected Average of Ratios are often
-      consistent and probably the most reliable estimates of the absolute structure. If
-      there is a general lack of consistency and a substantial difference from the least
-      squares estimate, there may be other problems with the structure or data.<br></td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>The Hooft et al probabilities</h2>
-        <pre>
+        </td>
+        <td width="50%">The Flack Parameter and its su were from the main refinement.
+        <br />The first block of post-refinement analyses were computed using the
+        counting statistics variances.
+        <br />The second block were computed with Robust re-weighting.
+        <br />Experience shows that the Hooft and corrected Average of Ratios are often
+        consistent and probably the most reliable estimates of the absolute structure. If
+        there is a general lack of consistency and a substantial difference from the
+        least squares estimate, there may be other problems with the structure or data.
+        <br /></td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>The Hooft et al probabilities</h2>
+          <pre>
 <code>
+ Hooft probability analysis
  For an enantiopure material, there are 2 choices, P2
-P2(correct)     1.0000   i.e. 0.100000E+01
+ P2(correct)     1.0000   i.e. 0.100000E+01                                     
 
  If 50:50 twinning is possible, there are 3 choices, P3
-P3(correct)     1.0000   i.e. 0.100000E+01
-P3(rac-twin)    0.0000   i.e. 0.000000E+00
-P3(inverse)     0.0000   i.e. 0.000000E+00
+ P3(correct)     1.0000   i.e. 0.100000E+01                                     
+ P3(rac-twin)    0.0000   i.e. 0.000000E+00                                     
+ P3(inverse)     0.0000   i.e. 0.000000E+00                                     
+ G              1.0508                                                          
+ G S.U.         0.0043                                                          
+
+
 </code>
 </pre>
-      </td>
-
-      <td width="50%">We do not have a means of assessing the probability of The
-      Probability being correct.</td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Filters</h2>
-        <pre>
+        </td>
+        <td width="50%">We do not have a means of assessing the probability of The
+        Probability being correct.</td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Filters</h2>
+          <pre>
 <code>
+ 
  Excluded reflections - A reflection may fail more than one test
 
- /Ds/   &lt; 0.50  sig(Do)     2572
- As     &lt; 1.00  sig(Ao)     27
- /Do/   &gt; 2.00  2Ds(max)    0
- Weight &lt; 0.00100           0
- Ratio  &gt; 2.50000           13
+ /Ds/ &lt; 0.01  sig(Do)                   13
+ As &lt; 1.00  sig(Ao)                     21
+ /Do/ &gt; 2.00  2Ds(max)                   0
+ Weight &lt; 0.00100                      735
+ Ratio &gt; 2.50000                        15
+
+
 
 </code>
 </pre>
-      </td>
-
-      <td width="50%"><a name="filters" id="filters">The</a> number of reflections
-      failing each of the tests. Note that a reflection may fail more than one test.<br>
-      <br>
-      In this example Filter_1 (the minimum acceptable Bijboet difference
-      signal&amp;Noise ratio) was left at the default on 0.5. Because the material
-      material contained only light atoms, most of the Bijvoet differences were tiny,
-      causing the exclusion of very many Friedel pairs. Filter_1 was reset manually to
-      something like 0.0001. A signal of this small magnitude is very unreliable, but the
-      Robust Re-weighting down weights the worst outliers.</td>
-    </tr>
-  </table><br>
-
-  <table width="100%" border="1" cellspacing="0" cellpadding="2">
-    <tr>
-      <td colspan="2">
-        <h2>ASCII File Output</h2>
-      </td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Table</h2>
-        <pre>
-<code><small>
-   H   K   L           Fo+       Sig       Fc+       Fo-       Sig       Fc-     Do        Dc         Ao       Ac      Sig(Do)
-  -4   5   0 1 2  28762.53    706.45  29264.90  35556.04    701.30  35820.63  -6793.51  -6555.73  32159.28  32542.77    995.44
-  -1   5   0-1    16160.01    302.59  16617.79
-  -3   6   0 1 2  11109.57    313.61  11413.68  10339.38    196.65  10643.96    770.19    769.71  10724.47  11028.82    370.17
-   0   6   0 1 2  24984.76    493.82  25424.93  25433.55    616.86  25585.65   -448.79   -160.71  25209.16  25505.29    790.17
-  -5   7   0 1 2  11172.38    314.49  11542.74  14592.49    287.54  15679.00  -3420.11  -4136.27  12882.43  13610.87    426.13
-</small></code>
-</pre>
-      </td>
-
-      <td width="50%">Choosing the button Punch causes information about the reflection
-      data to be output to the <i>bfile.pch</i> file. The values for Friedel pairs and
-      derived values are output on each line. As usual, Fo implies F<sup>2</sup>o</td>
-    </tr>
-
-    <tr>
-      <td width="50%">
-        <h2>Restrain</h2>
-        <pre>
+        </td>
+        <td width="50%">
+        <a name="filters" id="filters">The</a> number of reflections failing each of the
+        tests. Note that a reflection may fail more than one test.
+        <br />
+        <br />In this example Filter_1 (the minimum acceptable Bijboet difference
+        signal&amp;Noise ratio) was left at the default on 0.01. Because the material
+        material contained only light atoms, most of the Bijvoet differences were tiny,
+        causing the exclusion of very many Friedel pairs. Filter_1 was reset manually to
+        something like 0.0001. A signal of this small magnitude is very unreliable, but
+        the Robust Re-weighting down weights the worst outliers.</td>
+      </tr>
+    </table>
+    <br />
+    <table width="100%" border="1" cellspacing="0" cellpadding="2">
+      <tr>
+        <td colspan="2">
+          <h2>ASCII File Output</h2>
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Table</h2>
+          <pre>
 <code>
-REM Restraint created if abs(Do-Dc) &lt;    3.00 sigma(Ao)
-REM Flack parameter =   -0.0073 Pre-flack =   1.0145
-REM      Delata Fo            Sigma                                 Delta Fc        h     k    l    DFo-Dfc/sig
-restrain  -6793.51,       995.4366 = - ( 1. - ( 2. * enantio ) ) *   6555.73        -4    5    0    0.239    0.022
-restrain    770.19,       370.1651 = + ( 1. - ( 2. * enantio ) ) *    769.71        -3    6    0    0.001   -0.014
-...
-...
-restrain    707.42,       788.7247 = + ( 1. - ( 2. * enantio ) ) *    871.21        -1    4   16    0.208   -0.203
-restrain   -298.93,       986.2073 = + ( 1. - ( 2. * enantio ) ) *    178.23        -3    5   16    0.484   -2.692
-restrain    379.23,      1072.7726 = + ( 1. - ( 2. * enantio ) ) *     81.52         0    5   16    0.278    3.638
-REM     1410 restraints written out
-REM  restraints R-factor(%) =      30.62
+  <small>
+     H   K   L           Fo+       Sig       Fc+       Fo-       Sig       Fc-     Do    
+     Dc         Ao       Ac      Sig(Do)
+    -4   5   0 1 2  28762.53    706.45  29264.90  35556.04    701.30  35820.63  -6793.51   -6555.73  32159.28  32542.77    995.44
+    -1   5   0-1    16160.01    302.59  16617.79
+    -3   6   0 1 2  11109.57    313.61  11413.68  10339.38    196.65  10643.96    770.19     769.71  10724.47  11028.82    370.17
+     0   6   0 1 2  24984.76    493.82  25424.93  25433.55    616.86  25585.65   -448.79    -160.71  25209.16  25505.29    790.17
+    -5   7   0 1 2  11172.38    314.49  11542.74  14592.49    287.54  15679.00  -3420.11   -4136.27  12882.43  13610.87    426.13
+  </small>
 </code>
 </pre>
-      </td>
-
-      <td width="50%">
-        Choosing the button Restraints causes Parsons-type restraints on the Flack
-        parameter to be written to the <i>flack-restraint.pch</i>.<br>
-        The columns headed :
-        <pre>
+        </td>
+        <td width="50%">Choosing the button Punch causes information about the reflection
+        data to be output to the 
+        <i>bfile.pch</i> file. The values for Friedel pairs and derived values are output
+        on each line. As usual, Fo implies F
+        <sup>2</sup>o</td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Restrain</h2>
+          <pre>
 <code>
-h    k    l    DFo-Dfc/sig
+REM Flack parameter =   -0.0305 SU =   0.0065
+REM Signal:noise filter(1) =    0.0010
+RESTRAIN   -0.0309,   0.0024= ENANTIO
+
 </code>
-</pre>are beyond column 80 of the file, so are not seen by CRYSTALS, and are for
-user-information only.<br>
-        To make use of this file, include<br>
-        <code>#USE flack-restraint.pch</code> in your LIST 16.<br>
-        The column headed Sigma is the su of delta(F<sup>2</sup>. We suspect somone might
-        find a better "su" to use for the restraints.
-      </td>
-    </tr>
-  </table>
-</body>
+</pre>
+        </td>
+        <td width="50%">Choosing the button Restraints causes a single restraint on the
+        Flack parameter to be output to 
+        <i>FLACK.L16</i>. The target value and su are taken from the npp corrected
+        Average of Ratios
+        <br />To make use of this file, include
+        <br />
+        <i>#USE FLACK.L16</i> in your LIST 16.
+        <br /></td>
+      </tr>
+    </table>
+  </body>
 </html>
