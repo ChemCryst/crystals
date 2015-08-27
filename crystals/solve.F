@@ -275,6 +275,7 @@ C
       INCLUDE 'ICOM24.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'ICOM33.INC'
+      INCLUDE 'ICOM39.INC'
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -296,6 +297,7 @@ C
       INCLUDE 'XLST24.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XLST33.INC'
+      INCLUDE 'XLST39.INC'
       INCLUDE 'XAPK.INC'
       INCLUDE 'XOPK.INC'
       INCLUDE 'XSCALE.INC'
@@ -314,6 +316,7 @@ C
       INCLUDE 'QLST30.INC'
       INCLUDE 'QLST24.INC'
       INCLUDE 'QLST33.INC'
+      INCLUDE 'QLST39.INC'
 C
 C---- no of words in summary stack
       DATA MW/7/
@@ -331,8 +334,12 @@ C
       
       real, dimension(:), allocatable :: ref
       real, dimension(:,:), allocatable :: check, unpacked
-
-      
+c
+#ifdef _HOL_
+      DATA ISFLS/4HSFLS/
+#else
+      DATA ISFLS/'SFLS'/
+#endif
 C
 C
 C--INITIALISE THE TIMING FUNCTION
@@ -354,12 +361,32 @@ cdjwdec06 - save the sparsity flag. 0=sparse
 C--LOAD A FEW MORE LISTS
       CALL XFAL01
       CALL XFAL05
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
 cdjwdec06 - save the last r-factor
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
       rlast = store(l30rf)
+c load list 39 to save the convergence flag.
+c XREFINE.SCP needs this flag, but cannot use KSCTRN because #SFLS is
+c running from the SRQ so has no frame stack to write to.
+      if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .lt. 0) then
+            if (kexist(39) .gt. 0) call xfal39
+      endif
 c
-c send non-convergence message to SCRIPT
-      ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 1, 1 )
+c send non-convergence message to LIST 39
+c-----      update list 39 - assumes only one SFLS record
+c            isfls = 'SFLS'
+            if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .eq. 0) then
+             m39f=l39f
+             do i=1,n39f
+               if (istore(m39f) .eq. isfls) then
+                store(m39f+2) = 1.
+                call xwlstd ( 39, icom39, idim39, -1, -1)
+                exit
+               endif
+               m39f = m39f+md39f
+             enddo
+            endif
+c
+c
 C--PRINT OUT THE PAGE HEADING
       CALL XPRTCN
       I=NINT(STORE(M33V))
@@ -1136,8 +1163,20 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
      3 ' Actual value condition on: ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-c send convergence message to SCRIPT
-       ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 2, 1 )
+c
+c send convergence status to LIST 39
+c-----      update list 39 - assumes only one SFLS record
+c            isfls = 'SFLS'
+            if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .eq. 0) then
+             m39f=l39f
+             do i=1,n39f
+               if (istore(m39f) .eq. isfls) then
+                store(m39f+2) = 2.
+                exit
+               endif
+               m39f = m39f+md39f
+             enddo
+            endif
       ENDIF
       IF (J .GT. 0) THEN
        WRITE(CMON,4351) CLST23(J)(:)
@@ -1145,10 +1184,25 @@ c send convergence message to SCRIPT
      3 ' Relative change condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-c send convergence message to SCRIPT
-       ISTAT = KSCTRN ( 1 , 'LSQ:FLAG' , 2, 1 )
+c send convergence status to LIST 39
+c-----      update list 39 - assumes only one SFLS record
+c            isfls = 'SFLS'
+            if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .eq. 0) then
+             m39f=l39f
+             do i=1,n39f
+               if (istore(m39f) .eq. isfls) then
+                store(m39f+2) = 2.
+                exit
+               endif
+               m39f = m39f+md39f
+             enddo
+            endif
       ENDIF
 C
+c write list 39 back to disk
+      if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .eq. 0) then
+                call xwlstd ( 39, icom39, idim39, -1, -1)
+      endif
 C--REWRITE LIST 33 TO THE DISC
 4400  CONTINUE
       IF ((ICONVG .EQ. 1) .OR. ( JA .NE. 0)) ISTORE(L33CB) = N33IB
