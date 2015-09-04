@@ -46,6 +46,7 @@ rejected because of the LIST 28 filters.
    76    0.97   1.37     1.86       2.54    |   0.63       0.40      0.25
    78    0.98   1.38     1.89       2.61    |   0.63       0.40      0.25
    80    0.98   1.39     1.92       2.66    |   0.64       0.41      0.26
+ Theta    Sin  Sin/lam(sin/lam)^2(sin/lam)^3  Sin/lam (sin/lam)^2 (sin/lam)^3
 
-
+                 Mo                                         Cu
 % COPY '#SCRIPT XHELP2'
