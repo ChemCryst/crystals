@@ -2231,23 +2231,28 @@ C
 C
 CODE FOR XLNKMN
       SUBROUTINE XLNKMN(ITYP06)
+      use math_mod, only: degrees
+      use unitcell_mod
+      implicit  none
 C
 C     LINK TO WRITE OUTPUT FOR MULTAN84
 C
       CHARACTER *32 OPERAT, CPATH
-      CHARACTER *1  LATTYP(7)
+      CHARACTER(len=1), dimension(7), parameter ::  LATTYP=
+     1    (/ 'P','I','R','F','A','B','C' /)
 C
 C
       INCLUDE 'ISTORE.INC'
 C
-      DIMENSION LISTS( 6 ), JFRN1(4), JFRN2(4)
+      integer, dimension(6), parameter :: LISTS=
+     1    (/ 1, 2, 3, 6, 13, 29 /)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCOMPD.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XLST06.INC'
@@ -2259,14 +2264,20 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      DATA NLISTS / 6 /
-      DATA LISTS(1) / 1 /, LISTS(2) / 2 /, LISTS(3) / 3 /,
-     1     LISTS(4) / 6 /, LISTS(5) / 13/, LISTS(6) / 29/
-      DATA LATTYP /'P','I','R','F','A','B','C'/
+      integer ityp06, i, iallow, idev, ierror, in, ios, istat, iuln6
+      integer j, jcode, k, length, lpath, lstnum, n
+      real alpha, beta, fs, gamma, scale
+      
+      integer, external :: kpath, ktyp06, kexist, kldrnr, kallow
+      integer, external :: kflcls
+
+      integer, parameter :: NLISTS=6 
 #ifdef _HOL_
+      integer, dimension(4) :: JFRN1, JFRN2
       DATA JFRN1 /1HF , 1HR , 1HN , 1H1 /
       DATA JFRN2 /1HF , 1HR , 1HN , 1H2 /
 #else
+      character(len=1), dimension(4) :: JFRN1, JFRN2
       DATA JFRN1 /'F', 'R', 'N', '1'/
       DATA JFRN2 /'F', 'R', 'N', '2'/
 #endif
@@ -2326,11 +2337,11 @@ C
 C----- LOAD LIST 1 AND 13. CONVERT ANGLES TO DEGREES.
       CALL XFAL01
       CALL XFAL13
-      ALPHA = RTD * STORE(L1P1+3)
-      BETA  = RTD * STORE(L1P1+4)
-      GAMMA = RTD * STORE(L1P1+5)
-      WRITE(NCFPU1,1400) (STORE(I),I=L1P1,L1P1+2),
-     1 ALPHA, BETA, GAMMA
+      ALPHA = degrees(unitcells(1)%alpha)
+      BETA  = degrees(unitcells(1)%beta)
+      GAMMA = degrees(unitcells(1)%gamma)
+      WRITE(NCFPU1,1400) unitcells(1)%a, unitcells(1)%b, 
+     1 unitcells(1)%c, ALPHA, BETA, GAMMA
 1400  FORMAT ('CELL ', 3F7.3, 3F8.3)
 C
 C
