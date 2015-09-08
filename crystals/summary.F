@@ -4170,11 +4170,13 @@ C -- INPUT ERRORS
 
 CODE FOR XSPGPL
       SUBROUTINE XSPGPL
-      DIMENSION KSIGS(50,2), GM(3)
+      implicit none
+      integer, dimension(50,2) :: KSIGS
+      real, dimension(3) :: GM
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST06.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XUNITS.INC'
@@ -4185,8 +4187,16 @@ CODE FOR XSPGPL
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
-      DATA ICOMSZ / 15 /
-      DATA IVERSN /100 /
+      
+      real d
+      integer i, iaddd, iaddl, iaddr, icombf, iplot, istat, ityp06
+      integer iuln, jsigs
+      real rfo, rfomax
+      
+      integer, parameter :: ICOMSZ=15
+      integer, parameter :: IVERSN=100
+      
+      integer, external :: kstall, krddpv, ktyp06, khuntr, kldrnr
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 
