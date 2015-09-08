@@ -1,3 +1,3 @@
 C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 2 
-      IDIM02=32
+      integer, parameter :: IDIM02=32
 

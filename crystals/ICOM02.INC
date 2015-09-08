@@ -1,2 +1,2 @@
-      DIMENSION ICOM02(32)
+      integer, dimension(32) :: ICOM02
 

@@ -1,3 +1,2 @@
-      INTEGER ISTORE
-      DIMENSION ISTORE(16777216) 
+      integer, dimension(16777216) :: istore
 

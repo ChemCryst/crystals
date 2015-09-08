@@ -1,2 +1,2 @@
-      DIMENSION ICOM14(16) 
+      integer, dimension(16) :: ICOM14
 

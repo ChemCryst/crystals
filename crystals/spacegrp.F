@@ -68,6 +68,8 @@ C
 C
 CODE FOR XSPCGR
       SUBROUTINE XSPCGR
+      use unitcell_mod
+      implicit none
 C
 C -- THIS IS THE MAIN SUBROUTINE FOR THE 'SPACEGROUP' INSTRUCTION
 C    PROVIDED BY ERIC GABE, NRCC, WITH PERMISSION TO DISTRIBUTE.
@@ -115,34 +117,34 @@ C    AN ENCODED VALUE. APPROPRIATE TRANSLATIONS ARE MADE BY THIS ROUTINE
 C
 C
 C
-      PARAMETER ( NNPLAT = 7 )
+      integer, parameter :: NNPLAT = 7
+      real, dimension(nnplat) :: XNPLAT
 C
-      DIMENSION XNPLAT(NNPLAT)
-C
-      PARAMETER ( MAXN2 = 24 )
-      PARAMETER ( NWORK = 1000 )
+      integer, parameter :: MAXN2 = 24 
+      integer, parameter :: NWORK = 1000
 C
       CHARACTER *32 CLINE
       CHARACTER *10 SGRP
       CHARACTER *1 XYZ(3)
       CHARACTER*20 CBUFF1 , CBUFF2
-      PARAMETER ( NBUFF2 = 10 )
+      integer, parameter :: NBUFF2 = 10 
 C
 C
-      PARAMETER ( COSMIN = 0.003 )
+      real, parameter :: COSMIN = 0.003 
 C
-      DIMENSION  RMI(3), RMA(3), ABC(6), JAXIS(3), SPG(10)
+      real, dimension(3) :: rmi, rma
+      integer, dimension(3) :: jaxis
+      real, dimension(6) :: abc
+      real, dimension(10) :: spg    
 C
-      DIMENSION TRANS(0:10)
-      PARAMETER ( SIXTH =  1. / 6. , THIRD  = 1. / 3. )
-      PARAMETER ( TWOTHD = 2. / 3. , FIVSXT = 5. / 6. )
-C
+      INCLUDE 'IDIM02.INC'
+      INCLUDE 'IDIM14.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM02.INC'
       INCLUDE 'ICOM14.INC'
 C
       INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST14.INC'
       INCLUDE 'XCARDS.INC'
@@ -157,6 +159,15 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST02.INC'
       INCLUDE 'QLST14.INC'
+      
+      integer i, j, l, icombf, idwzap, isize, ispeci, istat, iuln
+      integer iwork, iuniqu, laueno, naxis, ncent, lcent, lbuff2
+      integer nchar, npol
+      integer, parameter :: idimbf=2, iversn=200
+      real save
+      
+      integer, external :: kstall, krdndc, kfndnp, knequl, krdpv, kexist
+      integer, external :: kinv2
 C
 C
 C
@@ -164,16 +175,12 @@ C
       DATA XYZ /'X', 'Y', 'Z' /
       DATA XNPLAT / 1. , 5. , 6. , 7. , 2. , 4. , 3. /
 C
-      DATA IDIMBF / 2 /
-      DATA IVERSN / 200 /
 C
 C
-      DATA TRANS / 0.00          , 0.00 ,
-     2             SIXTH         , 0.25 ,
-     3             THIRD         , 0.00 ,
-     4             0.50          , 0.00 ,
-     5             TWOTHD        , 0.75 ,
-     6             FIVSXT        /
+      real, dimension(0:10), parameter :: trans=(/ 0.0, 0.0, 1.0/6.0, 
+     1    0.25, 1.0/3.0, 0.0, 
+     1    0.5, 0.0, 2.0/3.0, 
+     1    0.75, 5.0/6.0 /)
 C
 C
 C
@@ -183,8 +190,6 @@ CMAR98
       ICOMBF = KSTALL ( IDIMBF )
       CALL XZEROF (STORE(ICOMBF), IDIMBF)
 C
-      INCLUDE 'IDIM02.INC'
-      INCLUDE 'IDIM14.INC'
 C      INITIALISE THE COMMON BLOCKS
       IDWZAP = 0
       CALL XFILL (IDWZAP, ICOM02, IDIM02)
@@ -258,12 +263,12 @@ C----- TRY TO LOAD LIST 1
         IF ( KEXIST ( 1 ) .GT. 0 ) THEN
           CALL XFAL01
       IF ( IERFLG .LT. 0 ) GO TO 9900
-            ABC(1) = STORE(L1P1  )
-            ABC(2) = STORE(L1P1+1)
-            ABC(3) = STORE(L1P1+2)
-            ABC(4) = ABS ( COS ( STORE(L1P1+3) ) )
-            ABC(5) = ABS ( COS ( STORE(L1P1+4) ) )
-            ABC(6) = ABS ( COS ( STORE(L1P1+5) ) )
+            ABC(1) = unitcells(1)%a
+            ABC(2) = unitcells(1)%b
+            ABC(3) = unitcells(1)%c
+            ABC(4) = ABS ( COS ( unitcells(1)%alpha ) )
+            ABC(5) = ABS ( COS ( unitcells(1)%beta ) )
+            ABC(6) = ABS ( COS ( unitcells(1)%gamma ) )
       ELSE
 C-----      SET DUMMY CELL PARAMETERS
             ABC(1) = 10.
@@ -2615,6 +2620,8 @@ C----- SAVE JAXIS
 
 CODE FOR FOULIM
       SUBROUTINE FOULIM
+      use unitcell_mod
+      implicit none
 C----- FIND AN ASYMMETRIC UNIT FOR FOURIERS ETC
 C
 C-----------------------------------------------------------------------
@@ -2638,26 +2645,28 @@ C     m3m           14        16  16  16     Cubic
 C  The values for groups 8 and 9 are OK for the order X,Y,Z, if the 2
 C  other orders are searched NX and NY should be 24
 C-----------------------------------------------------------------------
-      DIMENSION  RMI(3), RMA(3), ABC(6), JAXIS(3), SPG(10)
+      real, dimension(3) :: rmi, rma
+      real, dimension(6) :: abc
+      integer, dimension(3) :: jaxis
+      real, dimension(10) :: spg
 
       CHARACTER *16 SGRP
       CHARACTER *1 XYZ(3)
       CHARACTER *32 CLINE
 C
-      PARAMETER ( NWORK = 1000 )
+      integer, parameter :: NWORK = 1000 
 C
-      PARAMETER ( SIXTH =  1. / 6. , THIRD  = 1. / 3. )
-      PARAMETER ( TWOTHD = 2. / 3. , FIVSXT = 5. / 6. )
-C
-      PARAMETER ( NNPLAT = 7 )
-      DIMENSION XNPLAT(NNPLAT)
+      integer, parameter :: NNPLAT = 7
+      real, dimension(nnplat) :: XNPLAT
 C
       INCLUDE 'ISTORE.INC'
+      INCLUDE 'IDIM02.INC'
+      INCLUDE 'IDIM14.INC'
       INCLUDE 'ICOM02.INC'
       INCLUDE 'ICOM14.INC'
 C
       INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST14.INC'
       INCLUDE 'XCARDS.INC'
@@ -2673,20 +2682,23 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST02.INC'
       INCLUDE 'QLST14.INC'
+      
+      integer i, j, l, icombf, idwzap, istat, iuln, iwork, jxt1
+      integer laueno, lcent, naxis, ncent, nchar, npol
+      real save, xt2, xt3
+      
+      integer, external :: kstall, krdndc, kfndnp, krdpv, kexist
 C
 
       DATA XYZ /'X', 'Y', 'Z' /
       DATA XNPLAT / 1. , 5. , 6. , 7. , 2. , 4. , 3. /
-      DATA IDIMBF / 1 /
-      DATA IVERSN / 100 /
+      integer, parameter :: IDIMBF=1
+      integer, parameter :: iversn=100
 
 C
 CMAR98
       ICOMBF = KSTALL ( IDIMBF )
       CALL XZEROF (STORE(ICOMBF), IDIMBF)
-C
-      INCLUDE 'IDIM02.INC'
-      INCLUDE 'IDIM14.INC'
 C      INITIALISE THE COMMON BLOCKS
       IDWZAP = 0
       CALL XFILL (IDWZAP, ICOM02, IDIM02)
@@ -2738,12 +2750,12 @@ C----- TRY TO LOAD LIST 1
         IF ( KEXIST ( 1 ) .GT. 0 ) THEN
           CALL XFAL01
       IF ( IERFLG .LT. 0 ) GO TO 9900
-            ABC(1) = STORE(L1P1  )
-            ABC(2) = STORE(L1P1+1)
-            ABC(3) = STORE(L1P1+2)
-            ABC(4) = ABS ( COS ( STORE(L1P1+3) ) )
-            ABC(5) = ABS ( COS ( STORE(L1P1+4) ) )
-            ABC(6) = ABS ( COS ( STORE(L1P1+5) ) )
+            ABC(1) = unitcells(1)%a
+            ABC(2) = unitcells(1)%b
+            ABC(3) = unitcells(1)%c
+            ABC(4) = ABS ( COS ( unitcells(1)%alpha ) )
+            ABC(5) = ABS ( COS ( unitcells(1)%beta ) )
+            ABC(6) = ABS ( COS ( unitcells(1)%gamma ) )            
       ELSE
 C-----      SET DUMMY CELL PARAMETERS
             ABC(1) = 10.
@@ -2829,19 +2841,19 @@ C  RECOVER THE KEYS
 C
            IF (STORE(J) .LE. ZERO) THEN
             ISTORE(J) = 0
-           ELSE IF (STORE(J) .LE. ZERO+SIXTH) THEN
+           ELSE IF (STORE(J) .LE. ZERO+1.0/6.0) THEN
             ISTORE(J) = 2
            ELSE IF (STORE(J) .LE. ZERO+.25) THEN
             ISTORE(J) = 3
-           ELSE IF (STORE(J) .LE. ZERO+THIRD) THEN
+           ELSE IF (STORE(J) .LE. ZERO+1.0/3.0) THEN
             ISTORE(J) = 4
            ELSE IF (STORE(J) .LE. ZERO+.5) THEN
             ISTORE(J) = 6
-           ELSE IF (STORE(J) .LE. ZERO+TWOTHD) THEN
+           ELSE IF (STORE(J) .LE. ZERO+2.0/3.0) THEN
             ISTORE(J) = 8
            ELSE IF (STORE(J) .LE. ZERO+.75) THEN
             ISTORE(J) = 9
-           ELSE IF (STORE(J) .LE. ZERO+FIVSXT) THEN
+           ELSE IF (STORE(J) .LE. ZERO+5.0/6.0) THEN
             ISTORE(J) = 10
            ENDIF
 5070    CONTINUE
