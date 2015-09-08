@@ -1,3 +1,3 @@
 C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 31
-      IDIM31=12 
+      integer, parameter :: IDIM31=12 
 

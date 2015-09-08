@@ -240,6 +240,9 @@ C
 C
 CODE FOR XLNK
       SUBROUTINE XLNK (ILINK, IEFORT, IMETHD, ityp06)
+      use math_mod, only: degrees
+      use unitcell_mod
+      implicit none
 C
 C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
@@ -269,15 +272,15 @@ c      ITYP06                6 OR 7
 C
 Cavdldec06 - now THIRTEEN links (NLINK=13)
 C     ADD SIR02, SIR11
-      PARAMETER (NLINK=13, NLIST=8)
-      PARAMETER ( NWORK = 1000 )
+      integer, parameter :: NLINK=13, NLIST=8
+      integer, parameter :: NWORK = 1000 
 C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
 C      FOREIGN CALL.
 C           FOR SIR92 (only)  IMETHD = 0, NORMAL
 C                             IMETHD = 1, FILTERED (check refl with L28)
 C
 C---- FOR EACH TYPE OF LINK, INDICATE WHICH LISTS MUST BE LOADED
-      DIMENSION LISTS(NLIST, NLINK)
+      integer, dimension(NLIST, NLINK) :: LISTS
 C
 C----- FOR SHELXS86
       CHARACTER *32 OPERAT
@@ -291,22 +294,27 @@ cdjw aug99
 C----- FOR Superflip**
 cavdl dec06
       INTEGER IMAXIND(3),IVOXEL(3)
-      CHARACTER *1 CBLANK
+      CHARACTER(len=1), parameter :: CBLANK=' '
       CHARACTER *4 CATOM(15)
       CHARACTER *21 CDUMF
       CHARACTER *10 CSPG
       character *32 CLINE
       CHARACTER LOCASE*(200)
-      REAL*8 XCEN,YCEN,ZCEN, ACELL(6)
-      DIMENSION   TEMP(10), ITEMP(10),CBUFF1(10)
+      double precision XCEN,YCEN,ZCEN
+      double precision, dimension(6) :: ACELL
+      real, dimension(10) :: TEMP, CBUFF1
+      integer, dimension(10) :: ITEMP
       EQUIVALENCE (TEMP(1), ITEMP(1))
 C
       REAL MAT(3)
 C----- FOR CSD & MOL2
       CHARACTER *18 CLAB, CLAB2
       REAL ANGV(3)
-      CHARACTER*2 CBONDS(9)
+      
+      CHARACTER(len=2), dimension(9), parameter ::  CBONDS=
+     1 (/ '1 ','2 ','3 ','4 ','ar','un','de','un','pi' /)
 
+      INCLUDE 'IDIM31.INC'
 C
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM31.INC'
@@ -318,7 +326,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCOMPD.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XLST05.INC'
@@ -339,6 +347,21 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST31.INC'
+      
+      integer ilink, iefort, imethd, ityp06,  i, i0, i1, i29, ia1, ia2
+      integer iaddd, iaddl, iaddr, iallow, iap, iat, iat1p, iat2p
+      integer ibi, ibt, icent, icf2bp, icsne, idum, ierror, iiiiin
+      integer ilaue, in, inca, ind1, ind2, ind3, ind4, inhy, iroot
+      integer isp, istat, iu, iuln6, ivect, iwork, j, jcode, jxt1
+      integer k, knfree, lattyp, laueno, lcent, ldec
+      integer ldec2, length, llab, llab2, lstnum, m, m31l, n
+      integer naxis, ncent, nhkli, nnh, norig5, npol, nsav
+      
+      real a, biggest, f, fabs, fs, rbiso, rweak, s, sca, scale
+      real xmax, xmin, xt2, xt3, ymax, ymin
+      
+      integer, external :: ktyp06, kexist, klnkio, kldrnr, kstall
+      integer, external :: kmolax, khuntr, kallow, kflcls, krdrec
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2
@@ -359,12 +382,12 @@ C- POINTER TO LIST
      8            1, 2, 3, 0, 6, 13, 29,  0/
 C
 #ifdef _HOL_
-      DATA KHYD,KDET,CBLANK /4HH   ,4HD   ,' '/
+      integer :: KHYD,KDET
+      DATA KHYD,KDET /4HH   ,4HD    /
 #else
-      DATA KHYD,KDET,CBLANK /'H   ','D   ',' '/
+      character(len=4), parameter :: KHYD='H   ',KDET='D   '
 #endif
 
-      DATA CBONDS / '1','2','3','4','ar','un','de','un','pi'/
 c      DATA IDIMBF / 2 /
       INCLUDE 'IDIM02.INC'
 c      ICOMBF = KSTALL ( IDIMBF )
@@ -411,9 +434,9 @@ c
         IF (LSTNUM .EQ. 1 ) THEN
             CALL XFAL01
 C --        CONVERT ANGLES TO DEGREES.
-            STORE(L1P1+3) = RTD * STORE(L1P1+3)
-            STORE(L1P1+4) = RTD * STORE(L1P1+4)
-            STORE(L1P1+5) = RTD * STORE(L1P1+5)
+            !STORE(L1P1+3) = RTD * STORE(L1P1+3)
+            !STORE(L1P1+4) = RTD * STORE(L1P1+4)
+            !STORE(L1P1+5) = RTD * STORE(L1P1+5)
         ELSE IF (LSTNUM .EQ. 2) THEN
             CALL XFAL02
         ELSE IF (LSTNUM .EQ. 3) THEN
@@ -430,7 +453,6 @@ C --        CONVERT ANGLES TO DEGREES.
             CALL XFAL30
         ELSE IF (LSTNUM .EQ. 31) THEN
 C--         LOAD LIST 31 FROM DISC
-      INCLUDE 'IDIM31.INC'
             CALL XLDLST(31,ICOM31,IDIM31,0)
             IF ( IERFLG .LT. 0 ) GO TO 9900
 C-----      SCALE DOWN THE ELEMENTS OF THE V/CV MATRIX
@@ -470,8 +492,10 @@ C----- SNOOPI ------------------------------------------------
 C
       WRITE (NCFPU1, '( ''$DATA'')')
       WRITE ( NCFPU1 ,' (''CELL  '' , 3(F8.4,2X), 3(F8.3,2X ))' )
-     1 ( STORE(J) , J = L1P1 , L1P1+5 )
-     2
+     1 unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     2 degrees(unitcells(1)%alpha), degrees(unitcells(1)%beta), 
+     3 degrees(unitcells(1)%gamma)
+
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
 #ifdef _VAX_
@@ -530,8 +554,10 @@ cdjwjan2000
 C
       WRITE (NCFPU1, '( ''$DATA'')')
       WRITE ( NCFPU1 ,' (''CELL  '' , 3(F8.4,2X), 3(F8.3,2X ))' )
-     1 ( STORE(J) , J = L1P1 , L1P1+5 )
-     2
+     1 unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     2 degrees(unitcells(1)%alpha), degrees(unitcells(1)%beta), 
+     3 degrees(unitcells(1)%gamma)
+
 C--WRITE THE PARAMETER FILE TYPE
         WRITE ( NCFPU1 ,  '(''LIST5'')' )
       WRITE ( NCFPU1 ,  '(''CAMERON.L5I'')' )
@@ -589,7 +615,11 @@ C
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       WRITE(NCFPU1, '(''CELL '', F8.5, 6f10.5)')
-     1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
+     1 STORE(L13DC), 
+     1 unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     2 degrees(unitcells(1)%alpha), degrees(unitcells(1)%beta), 
+     3 degrees(unitcells(1)%gamma)
+     
       WRITE(NCFPU1,1810) NINT(T2),
      1 STORE(L31), STORE(L31+6), STORE(L31+11),
      2 RTD*STORE(L31+15),RTD*STORE(L31+18),RTD*STORE(L31+20)
@@ -723,11 +753,14 @@ C----- DISPLAY SPACE GROUP SYMBOL
 Cavdl do a check on the symbol (script sometimes creates a 'wrong' symbol)
 c      CALL XSPCGR
 cavdl-- pick up the cell parameters
-      J=L1P1
-      DO I=1,6
-        ACELL(I)=STORE(J)
-        J=J+1
-      ENDDO
+
+      ACELL(1)=unitcells(1)%a
+      ACELL(2)=unitcells(1)%b
+      ACELL(3)=unitcells(1)%c
+      ACELL(4)=degrees(unitcells(1)%alpha)
+      ACELL(5)=degrees(unitcells(1)%beta)
+      ACELL(6)=degrees(unitcells(1)%gamma)
+
 c      WRITE ( CTEMP , '(4A4)') (ISTORE(I),I=L2CC,J)
 c      WRITE(CMON,4351) CTEMP(1:4)
 c      CALL XPRVDU(NCVDU, 1,0)
@@ -1128,7 +1161,11 @@ C
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
       WRITE(NCFPU1, '(''CELL '', F8.5, 3F7.3, 3F8.3)')
-     1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
+     1 STORE(L13DC), 
+     2 unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     3 degrees(unitcells(1)%alpha), degrees(unitcells(1)%beta), 
+     4 degrees(unitcells(1)%gamma)     
+     
       WRITE(NCFPU1,1810) NINT(T2),
      1 STORE(L31), STORE(L31+6), STORE(L31+11),
      2 RTD*STORE(L31+15),RTD*STORE(L31+18),RTD*STORE(L31+20)
@@ -1251,7 +1288,10 @@ C Work out best plane projection for all non-H
 
 C CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE AND BACK
 
-      CALL XMLTMT (STORE(IVECT),STORE(L1O1),STORE(ICF2BP),3,3,3)
+      !CALL XMLTMT (STORE(IVECT),STORE(L1O1),STORE(ICF2BP),3,3,3)      
+      STORE(ICF2BP:ICF2BP+8)=reshape( matmul( 
+     1    reshape(STORE(IVECT:IVECT+8), (/3,3/)), 
+     1    transpose(unitcells(1)%orthogonalisation()) ), (/9/) )
 
 
 C TRANSLATE CO-ORDINATES TO PLACE CENTROIDS AT ORIGIN.
@@ -1394,7 +1434,9 @@ C Write the header
 C Write out the atoms
 
       DO I = 0, N5-1
-        CALL XMLTTM(STORE(L1O1),STORE(L5+I*MD5+4),ANGV,3,3,1)
+        !CALL XMLTTM(STORE(L1O1),STORE(L5+I*MD5+4),ANGV,3,3,1)
+        ANGV= matmul(transpose(unitcells(1)%orthogonalisation()), 
+     1      STORE(L5+I*MD5+4:L5+I*MD5+4+2) )
         WRITE(CLAB,'(A,I4)') ISTORE(L5+I*MD5),NINT(STORE(L5+I*MD5+1))
         CALL XCRAS(CLAB,LLAB)
         WRITE(CLAB2,'(2A)') ISTORE(L5+I*MD5),'.1'
@@ -1519,7 +1561,11 @@ C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
         WRITE(NCFPU1, '(''%INITIALISE'', /, ''%JOB '',20A4)')
      1 (KTITL(I),I=1,20)
         WRITE(NCFPU1, '(''%NORMAL '',/,''CELL '', 3F7.3, 3F8.3)')
-     1 (STORE(I),I=L1P1,L1P1+5)
+     1 unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     2 degrees(unitcells(1)%alpha), degrees(unitcells(1)%beta), 
+     3 degrees(unitcells(1)%gamma)
+     
+     
        WRITE(NCFPU1, '(''SPACE '', A )') CSPACE(1:ISP)
        WRITE ( NCFPU1 , '(''CONTENT '', A)' ) CL29(1:I29)
        WRITE(NCFPU1,1940)
@@ -1548,7 +1594,10 @@ C----- OUTPUT A TITLE, FIRST 20 WORDS ONLY
      1 (KTITL(I),I=1,20)
 cdjw1999
         WRITE(NCFPU1, '(''%data '',/,8X,''cell '', 3F7.3, 3F8.3)')
-     1 (STORE(I),I=L1P1,L1P1+5)
+     1 unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     2 degrees(unitcells(1)%alpha), degrees(unitcells(1)%beta), 
+     3 degrees(unitcells(1)%gamma)
+     
        WRITE(NCFPU1, '(8X,''space '', A )') CSPACE(1:ISP)
        WRITE ( NCFPU1 , '(8X,''content '', A)' ) CL29(1:I29)
 CDJWJAN08
