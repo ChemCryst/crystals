@@ -18,6 +18,9 @@ C
 C LOGGING STARTED APRIL 2011
 C
       SUBROUTINE MLTNRM
+      use unitcell_mod
+      use math_mod, only: degrees
+      implicit none
 C VERSION    JAN    1980          UNIVERSITY OF YORK
 C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
 C
@@ -33,7 +36,7 @@ C             1 = UPDATE WEIGHTS
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST03.INC'
       INCLUDE 'XLST29.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'QSTORE.INC'
@@ -41,9 +44,15 @@ C             1 = UPDATE WEIGHTS
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
+      
+      real anat, fz, t, tt
+      integer i, iaddd, iaddl, iaddr, icombf, il28fl, iplotn
+      integer iplotw, istatp, iuln6, iweigt, j, mn, nasu, ntot
 
-      DATA ICOMSZ / 5 /
-      DATA IVERSN /100/
+      integer, parameter :: ICOMSZ=5 
+      integer, parameter :: IVERSN=100
+
+      integer, external :: kstall, krddpv, kexist, khuntr
 
 C -- SET THE TIMING AND READ THE CONSTANTS
 C -- SET UP INITIAL VALUES, READ PROGRAM PARAMETERS                    
@@ -108,10 +117,13 @@ C Store tolerance (only show fom's below this limit)
       IND=1                                                             
 
 CDJW      CALL XFAL01
-      CALL XMULTR ( STORE(L1P1+3) , RTD , STORE(L1P1+3) , 3 ) !Angles to Degr.
-      DO J=1,6
-        CX(J)=STORE(L1P1+J-1)
-      END DO
+      cx(1)=unitcells(1)%a
+      cx(2)=unitcells(1)%b
+      cx(3)=unitcells(1)%c
+      cx(4)=degrees(unitcells(1)%alpha)
+      cx(5)=degrees(unitcells(1)%beta)
+      cx(6)=degrees(unitcells(1)%gamma)
+      
       CALL INCELL                                          
 
       CALL XFAL02
@@ -168,7 +180,7 @@ C CALCULATE WILSON (GIW) SCATTERING FACTORS
       END DO
 
 
-      ANAT=FLOAT(NAT)/(PTS*FLOAT((ICENT+1)*N2))                       
+      ANAT=real(NAT)/(PTS*real((ICENT+1)*N2))                       
       WRITE(NCWU,370) ANAT
 
 370   FORMAT(1H ,39X,36HNUMBER OF ATOMS IN ASYMMETRIC UNIT =,F6.2)
