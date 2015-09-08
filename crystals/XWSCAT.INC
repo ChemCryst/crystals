@@ -1,2 +1,5 @@
-      COMMON/XWSCAT/GIW(142),NK,NAT
+      real, dimension(142) :: GIW
+      integer :: NK,NAT
+      
+      COMMON/XWSCAT/GIW,NK,NAT
 
