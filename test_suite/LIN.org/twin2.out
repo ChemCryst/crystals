@@ -738,9 +738,6 @@ LS-scale=  9.913   Wilson Scale=  0.000
 
 #ANALYSE                                                                                                                                                                                                                                                        
 #LIST 4                                                                                                                                                                                                                                                         
-
- Analysis of residuals:
-The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.0
 
 
@@ -925,9 +922,6 @@ The slope and correlation coefficient should be small
 
 #ANALYSE                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
-
- Analysis of residuals:
-The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.0
 
 
