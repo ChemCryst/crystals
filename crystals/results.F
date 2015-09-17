@@ -3808,9 +3808,9 @@ chi * 10^4
       deallocate (type)
       ISTAT = KSCTRN(1, 'L5:OK', FLOAT(KCPROP), 1)
       IF (KCPROP .GE .0) THEN
-         WRITE(CMON,'(A)') ' All required atom properties are known'
+         WRITE(CMON,'(3x,A)')' All required atom properties are known'
          CALL XPRVDU(NCVDU,1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A/)')
      1   CMON(1)(:nctrim(cmon(1)))
       ENDIF
       RETURN
@@ -7211,7 +7211,7 @@ C
       PARAMETER (DISTPLT = 3.0)
       DIMENSION DATC(401)
       PARAMETER (MD6ACC=10)
-      DIMENSION TEMP(MD6ACC)
+      DIMENSION TEMP6(MD6ACC)
       DIMENSION APROP(12)
       DIMENSION HFLACK(8)
       DIMENSION TENSOR(3)
@@ -7283,25 +7283,15 @@ C
       DATA IFLAC/'FLAC'/
       DATA IHOOFT/'HOOF'/
 #endif
-
-C
-C      set packing constants
+C      set packing constants for Ton's code
       PARAMETER  (NPAK=256)
       PARAMETER  (NN2=NPAK/2)
-c  Thresholding removed. Filters should do the work more
-c  flexibly.
-c      PARAMETER (THRESH=.5)
-c      PARAMETER (THRESH2 = 3.)
       INCLUDE 'IDIM39.INC'
-
-      IERROR=1
-c
 C
       CALL XRSL
       CALL XCSAE
 c zero the R factor accumulators
       CALL XZEROF(HFLACK, 8)
-c
 c
 C--FIND OUT IF LISTS EXIST
 c
@@ -7348,25 +7338,37 @@ Cdjwsep07 check the type of reflections
         END IF
 300   CONTINUE
       IF (IERROR.LE.0) GO TO 2850
-C
-C----- OUTPUT A TITLE, FIRST 20 CHARACTERS ONLY
-        IF (ISSPRT.EQ.0) WRITE (NCWU,1234) (KTITL(I),I=1,20)
-1234  FORMAT(//20A4//)
-c
 c
 C- COMPUTE Friedif and <D^2>
       I=KCPROP(APROP)
+      if(i .le. 0) then
+            write(cmon,'(a)')'  Lists 3,5 and 29 may be incompatible'
+            call outcol(3)
+            call xprvdu(ncvdu,1,0)
+            call outcol(1)
+            if(issprt.eq.0)
+     1      write(ncwu,'(a)')'  Lists 3,5 and 29 may be incompatible'
+      endif
       FRIEDIF=APROP(11)
       IFTYPE=ISTORE(L23MN+1)+2
-c
 C
+C
+      call outcol(5)
+C----- OUTPUT THE TITLE, FIRST 20 CHARACTERS ONLY
+      write(cmon,'(/6x,a//20a4//)')
+     1 ' Absolute Structure Determination',
+     2 (ktitl(i),i=1,20)
+      call xprvdu(ncvdu,3,0)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') cmon(2)(:nctrim(cmon(2))),
+     1 cmon(5)(:nctrim(cmon(5)))
+      call outcol(1)
+c
 c--- copy the filter values to an output area
 c 1      /Ds/ > filter(1)*sigma(Do)
 c 2       As  > filter(2)*sigma(Ao)
 c 3      /Do/ < filter(3)*Ds(max)
 c 4
 c 5      Ratio Ao/Ac >< filter(5)
-c
 C
       WRITE(CFILTER(1),'(F12.2)')  filter(1)
       WRITE(CFILTER(2),'(F12.2)')  filter(2)
@@ -7376,7 +7378,6 @@ C
       do i=1,5
         call xcras(cfilter(i), len)
       enddo
-c
 c
       if(store(l30ge+7).le.zero) then
             call outcol(9)
@@ -7407,12 +7408,9 @@ C
      2   ' Ao ',5X,' As ',5X,'Sig(Do)')
       ELSE IF (IPUNCH.EQ.2) THEN
         WRITE (NCPU,'(A,F9.4,A,F9.4)') 'REM Flack parameter = ',
-     1   xflack,' Pre-flack =',preflack
+     1   xflack,' SU =',qflack
         WRITE(NCPU,'(A,F9.4)')
      1  'REM Signal:noise filter(1) = ', filter(1)
-        WRITE (NCPU,400)
-400      FORMAT ('REM '6X,'Delta Io',12X,'Sigma',33X,'Delta Ic'24X,
-     1   'h  k  l     DIo-DIc/sig')
       else if (ipunch .eq. 3) then
          WRITE(ncpu,'(a)') cplot
          write(ncpu,'(a)') ' Graph points, Do, Ds, x, y, weight'
@@ -7455,7 +7453,7 @@ c
       n6acc=0
       l6acc=1
       m6acc=l6acc
-C     MD6ACC SET AS PARAMETER BECAUSE OF TEMP() WORKSPACE
+C     MD6ACC SET AS PARAMETER BECAUSE OF TEMP6() WORKSPACE
 c     signaL:noise indices Do, Ds, sigma, Ao, Am, delta, ifail
 C
 C ACCUMULATORS FOR RESTRAINT R-FACTOR AND AVERAGES
@@ -7532,6 +7530,8 @@ C                         should be about unity anyway.  Will be computed later
       NFRIED=0                         ! PAIRS ACCEPTED BY FILTERS
       LFRIED=0                         ! UNPAIRED ACENTRIC REFLECTIONS
       NCENTRIC=0                       ! CENTRIC PAIRS
+      SUMBO=0.                         ! SUM OF SQ OF OBSERVED BIJVOET DIFFERENCES
+      SUMBC=0.                         ! SUM OF SQ OF CALCULATED BIJVOET DIFFERENCES
       QMAX = 0                         ! MAximum Quotient value
       NREF = 0 ! Was used without being defined, but may not be required at all...
 C     Excluded reflection categories
@@ -7631,6 +7631,8 @@ COMPARE PACKED INDICES
         SIGMAS=0.5*SIGMAD
         SIGMAQ=SQRT((Fok1*sig2)*(Fok1*sig2)+(Fok2*sig1)*(Fok2*sig1))
         SIGMAQ=SIGMAQ*2./((2.*foka)*(2.*foka))
+        SUMBO = SUMBO + fOKd*fOKd
+        SUMBC = SUMBC + fCKd*fCKd
 c
 C SIGNAL:NOISE FOR DELTA FO AND FC
         STNFO=FokD/SIGMAD
@@ -7888,31 +7890,23 @@ C
 C
 C                                ---- ALL REFELCTIONS NOW PROCESSED.
 c
-c      write(cmon,'(20x,a,i5)')'Hole in one, nref=',nref
-c      call xprvdu (ncvdu, 1, 0)
       i = LINFIT(3,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+c     hole-in-1
       hin1 = b
       hin1su = sb
-c      write(cmon,'(2i6,4f10.3)')i,nref, a, sa, b, sb
-c      call xprvdu (ncvdu, 1, 0)
 c
 C
 c  compute reduced Chisq and rescale weights
       redchi = chiD/n6acc
       redchi = sqrt(redchi)
 c  dont rescale here - correct esds later
-c      m6acc=l6acc
-c      chiloop: DO I=1,N6ACC
-c       str11(m6acc+4)=str11(m6acc+4)*redchi
-c       m6acc = m6acc + md6acc
-c      ENDDO chiloop
 c
 C
 C                                                ---- SOME GENERAL OUTPUT
 C
-CC---- SPLIT UNPAIRD INTO REAL UNPAIRED AND CENTRIC
+C---- SPLIT UNPAIRD INTO REAL UNPAIRED AND CENTRIC
 c      LFRIED=LFRIED-NCENTRIC
-
+c
       WRITE (CMON,'(/1x,a,f10.2,5x,a)') 'Friedif = ',FRIEDIF,
      1   ' Acta A63, (2007), 257-265'
       CALL XPRVDU (NCVDU, 2, 0)
@@ -7952,6 +7946,19 @@ C
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
 C
+      obstocal = sqrt(sumbo/sumbc)
+      WRITE (CMON,'(10(A,F7.2))')' Observed:calculated signal  =',
+     1 obstocal
+      CALL XPRVDU (NCVDU,1,0)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      if(obstocal .gt. 3.) then
+        call outcol(9)
+        write(cmon,'(a,a)')' The observed Bijvoet differences are much',
+     1  ' greater than the calculated differences'
+        call xprvdu (ncvdu,1,0)
+        if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:nctrim(cmon(1)))
+        call outcol(1)
+      endif
 C
 C
 c123      if(nfried.le.0.1*mfried) goto 2760
@@ -7974,11 +7981,11 @@ c      now Howards goodies
 750         FORMAT(4F6.1,2X, F8.2/)
           endif
 C
-       WRITE (CMON,'(a,f6.2,a,f4.2,a,f7.2,a/)')
+       WRITE (CMON,'(a,f6.2,a,f4.2,a,f7.2,a)')
      1 ' Do-Dm R-factor(%) with Flack(x) of ',
      2  xflack, '(',qflack,') = ',
      2 100.*FLRNUM/FLRDEN,'%'
-        CALL XPRVDU (NCVDU, 2, 0)
+        CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') CMON(1)(:nctrim(cmon(1)))
 C
        if(issprt.eq.0)then
@@ -8029,17 +8036,17 @@ C -- FINISH THE GRAPH DEFINITION
 C
       write(cmon,'(/a,f6.2)')' Maximum accepted quotient=',qmax
 c      call xprvdu (ncvdu, 2, 0)
-      write(cmon,'(a/4(2x,a,i1,A,f7.4) )')
+      write(cmon,'(a/5(2x,a,i1,A,f7.4) )')
      1 ' Reflection Filters:',
-     2  ('filter_',i,'=',filter(i),i=1,4)
+     2  ('filter_',i,'=',filter(i),i=1,5)
 c      CALL xprvdu (ncvdu, 2, 0)
       IF (issprt.eq.0) WRITE (ncwu,'(/A,A)') 
      1 cmon(1)(:nctrim(cmon(1))),cmon(2)(:nctrim(cmon(2)))
 C
 C
 C
-      WRITE (CMON,'(/a,i8,a/)') ' Continuing Calculations with',
-     1      NFRIED,' reflections'
+      WRITE (CMON,'(/6x,a,i8,a/)') ' Continuing Calculations with',
+     1      NFRIED,' pairs'
 c      CALL XPRVDU (NCVDU, 3, 0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:nctrim(cmon(2)))
 C
@@ -8062,7 +8069,7 @@ C
       endif
 c
 C Sort the (Do-Dc)/sigma into ascending order.
-       CALL XSHELQ (STR11, md6acc, 1, N6ACC, N6ACC*md6acc, TEMP)
+       CALL XSHELQ (STR11, md6acc, 1, N6ACC, N6ACC*md6acc, TEMP6)
 c
 c Numerical Recipes (ed3) . p265 "Incomplete gamma function"
 C
@@ -8124,8 +8131,8 @@ c
         m6acc = m6acc + md6acc
        ENDDO npploop1
 C
-       WRITE (CMON,'(a,i7,a)') ' Normal Probability Plot for', 
-     1  nint(ss),' reflections'
+       WRITE (CMON,'(7x,a,i7,a)') '  Normal Probability Plot for', 
+     1  nint(ss),' Bijvoet pairs'
        CALL XPRVDU (NCVDU,1,0)
        IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
@@ -8150,7 +8157,7 @@ c      CALL XPRVDU (NCVDU,1,0)
                WRITE (CMON,950) YSLOPE,ycut,CORREL
 950            FORMAT ('  Slope, intercept and Cc (R) of NPP Plot ='
      1         ,F7.3,F7.3,F7.3)
-               CALL XPRVDU (NCVDU,1,0)
+c               CALL XPRVDU (NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') 
      1         CMON(1)(:nctrim(cmon(1)))
             ELSE
@@ -8272,14 +8279,24 @@ c
        endif
 c
        if(noutl .ge. 0.1*float(n6acc)) then
+        call outcol(9)
 C                                         set flag for warning popup Window
         ISTAT = KSCTRN ( 1 , '_BADNPP' , noutl, 1 )
-        write(cmon,'(a,f5.2,a/a )') '{E Too many outliers (', 
-     1  (100.*float(noutl))/float(n6acc),'%) in npp.',
+        write(cmon,'(a,i5,a,i5,a/a )') '{E Too many outliers (', 
+     1  noutl,'/',n6acc,') in npp.',
      2  '{E CRYSTALS suggests you look at the Fo-Fc npp'
-         CALL xprvdu (ncvdu, 2, 0)
-         IF (issprt.eq.0) WRITE (ncwu,'(/a/a/)')
+        CALL xprvdu (ncvdu, 2, 0)
+        IF (issprt.eq.0) WRITE (ncwu,'(/a/a/)')
      1     cmon(1)(3:nctrim(cmon(1))),cmon(2)(3:nctrim(cmon(2)))
+c
+        if(noutl .ge. 0.01*float(n6acc)) then
+         write(cmon,'(a/a )')
+     1  ' Insufficient reflection pairs to continue',
+     2  ' Try relaxing the filters'
+         call xprvdu(ncvdu,3,0)
+         call outcol(1)
+         goto 2860
+        endif
        endif
 C
 C                                                 COMPUTE HOOFT GOODIES
@@ -8390,16 +8407,28 @@ c
          M6ACC = M6ACC+MD6ACC   
         ENDDO DOQOLOOP
 C
+
 C
 C                            find slope and intercept of Fo/Fc plot
 C                                                WRITE TYPE OF PLOT
-      WRITE (cmon,'(7x,a,a,i8,a)') cplot(:nctrim(cplot)),
-     1                          ' for',nfofc,' reflections'
-      CALL xprvdu (ncvdu, 1, 0)
+        WRITE (cmon,'(7x,a,a,i8,a)') cplot(:nctrim(cplot)),
+     1                          ' for',nfofc,' Bijvoet pairs'
+        CALL xprvdu (ncvdu, 1, 0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a/)') cmon(1)(:nctrim(cmon(1)))
-C
+c
+        if (nfofc .le. 10) then
+              call outcol(9)
+              write(cmon,'(a/a )')
+     1        ' Insufficient reflection pairs to continue',
+     2        ' Try relaxing the filters'
+              call xprvdu(ncvdu,3,0)
+              call outcol(1)
+              goto 2850
+        endif
+c
         IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,
      1  COOD,NFOFC,tensor)
+c      write(123,'(4f12.3)') tensor, sqrt(tensor(3)/tensor(1))
 C
         IF (IDJW.GE.0) THEN
           call getroot(tensor,xcoord,ycoord,root,grad)
@@ -8706,7 +8735,7 @@ c average Flack(x) and average sigma
 
 
 c now sort on Flack x to find median value to start cycles.
-        CALL XSHELQ (STR11, md6acc, 6, N6ACC, N6ACC*md6acc, TEMP)
+        CALL XSHELQ (STR11, md6acc, 6, N6ACC, N6ACC*md6acc, TEMP6)
 c save the number of reflections and find the end of the useful data
 c
         n6save = n6acc
@@ -8720,14 +8749,17 @@ c
         enddo
 c
 c
-        write(cmon,'(A,i6,a )') 
-     1  ' Computing Histogram starting with ',n6acc,' reflections'
+        write(cmon,'(2x,a,i6,a )') 
+     1  ' Computing Histogram starting with ',n6acc,
+     1  ' Bijvoet pairs'
         call xprvdu (ncvdu,1,0)
         if (issprt.eq.0) write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
         if(n6acc.le.0.1*n6save) then
+            call outcol(9)
             write(cmon,'(a)') 
-     1      ' Too few reflections for a reliable histogram'
+     1      ' Too few pairs for a reliable histogram'
             call xprvdu (ncvdu,1,0)
+            call outcol(1)
            if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
 c            goto 1730
         endif
@@ -8794,67 +8826,8 @@ C
           if((data.ge.-.5).and.(data.le.1.5)) then
            nle3s=nle3s+1
           endif
-C                                   RESTRAINTS ONLY IF decent weight
-          IF (IPUNCH.EQ.2) THEN
-C----- multiplier to correct Fc for flack parameter value
-C      assigned above
-c      PREFLACK = 1. - 2.* XFLACK
- 
-           fokd=str11(m6acc+2)
-           sigmad=str11(m6acc+4)
-           fckd=str11(m6acc+3)
-           if((wt.gt.0.0001) .and. 
-     1     (abs(fckd) .ge. filter(1)*sigmad))then
-C           Unpack HKL
-            D=FLOAT(NINT(STR11(m6acc+1)/256.))
-            MH=STR11(m6acc+1)-D*256.
-            ML=FLOAT(NINT(D/256.))
-            MK=D-ML*256.
-c
-            IF (FckD.LT.ZERO) THEN
-              CSIGN='-'
-            ELSE
-              CSIGN='+'
-            END IF
-            WRITE (NCPU,600)
-     1         FokD,  SIGMAD , CSIGN, abs(FckD),
-     2         mh,mk,ml,abs(FokD-FckD)/sigmad,
-     3         data
-600            FORMAT ('restrain ',F9.2,', ',F14.4,' = ',A,
-     1         ' ( 1. - ( 2. * enantio ) ) * ',F9.2,20X,3I5,2F9.3)
-            NREST=NREST+1
-            RESTNUM=RESTNUM+ABS(FokD-PREFLACK*FckD)
-            RESTDEN=RESTDEN+ABS(FokD)
-           endif
-          ENDIF
-C                                                END OF RESTRAINTS
-C
           m6acc=m6acc+md6acc
 1700    CONTINUE
-C                                          RESTRAINTS TERMINATOR
-        IF (IPUNCH.EQ.2) THEN
-         if(nrest .le. 0) then
-          write(cmon,'(a)')
-     1 'There are no reflections suitable for use as restraints'
-           if (issprt.eq.0) write (ncwu,'(/a)') 
-           write(ncpu,'(a,a)')'REM ',CMON(1)(:nctrim(cmon(1)))
-         else
-          WRITE (CMON,'(i8,a)') NREST,' restraints written out'
-           CALL XPRVDU (NCVDU,1,0)
-           WRITE (NCPU,'(A,A)') 'REM ', CMON(1)(:nctrim(cmon(1)))
-           IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') 
-     1     CMON(1)(:nctrim(cmon(1)))
-           IF(NREST .GT.0) THEN
-            WRITE (CMON,'(a,f10.2)') ' Restraints R-factor(%) = ',
-     1      100.0*restnum/restden
-            CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCPU,'(A,A)') 'REM ',CMON(1)(:nctrim(cmon(1)))
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)')
-     1      CMON(1)(:nctrim(cmon(1)))
-           ENDIF
-         endif
-        ENDIF
-C
 c
 c       process
         CALL histogram (3, nbin, range, data, ibin, bbin, wt)
@@ -8909,6 +8882,64 @@ c
 1730    continue
 c
 c
+c      One (final?) pass to sort on signal:noise
+c      Format was :   [WDEL,INDICES, Do,Ds,sigmaD, x, sigmax, sigmaQ, ifail]
+c      Format now :   [WDEL,INDICES, Do,Ds,sigmaD, x, sigmax, sig:noise, ifail]
+c                       0      1      2  3    4    5    6        7     8
+        m6acc = l6acc
+        do i=1,n6acc
+c         signal to noise
+          str11(m6acc+7)=str11(m6acc+3)/str11(m6acc+4)
+        m6acc = m6acc + md6acc
+        enddo
+c now sort on signal to noise for Le Page algorithm
+        CALL XSHELR (STR11, md6acc, 8, N6ACC, N6ACC*md6acc, TEMP6)
+c
+c  Lepage totals
+c
+        n10p=0
+        n20p=0
+        n50p=0
+        n100p=0
+        n10n=0
+        n20n=0
+        n50n=0
+        n100n=0
+        m6acc = l6acc
+        do i=1,n6acc
+         lp = 0
+         ln = 0
+         if(str11(m6acc+2)*str11(m6acc+3).gt.0.0) then
+            lp = 1
+         else
+            ln = 1
+         endif
+         if (i .le. 10) then 
+            n10p=n10p+lp
+            n10n=n10n+ln
+            smin10=str11(m6acc+7)
+         endif
+         if(i .le. 20)then
+            n20p=n20p+lp
+            n20n=n20n+ln
+            smin20=str11(m6acc+7)
+         endif
+         if(i .le. 50)then
+            n50p=n50p+lp
+            n50n=n50n+ln
+            smin50=str11(m6acc+7)
+         endif
+         if(i .le. 100)then
+            n100p=n100p+lp
+            n100n=n100n+ln
+            smin100=str11(m6acc+7)
+         endif
+         if(i .gt. 100) then
+            exit
+         endif
+         m6acc = m6acc + md6acc
+        enddo
+c
 c write lots of diagnostics
 c
         IF (ISSPRT.EQ.0) THEN
@@ -8957,52 +8988,17 @@ C
             ypm = 0.
           endif
 c
-          WRITE (cmon,'(A,a)')
+          WRITE (ncwu,'(//A,a)')
      1    'Quadrant averages: N, Mean(Do), Mean(Ds)',
      2    ' [Summary of scatterplot]'
-c          call xprvdu(ncvdu,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a)')
-     1    CMON(1)(:nctrim(cmon(1)))
-          WRITE (cmon,'(/a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )')
+          WRITE (ncwu,'(/a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )')
      1     '-+', nmp,ymp,xmp,'|','++',npp,ypp,xpp
-c          call xprvdu(ncvdu,2,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)')
-     1    CMON(2)(:nctrim(cmon(2)))
-
-          WRITE (cmon,'(4x,a,a,a)') '---------------------------','|',
+          WRITE (ncwu,'(4x,a,a,a)') '---------------------------','|',
      1     '----------------------------'
-c          call xprvdu(ncvdu,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')
-     1    CMON(1)(:nctrim(cmon(1)))
-
-          WRITE (cmon,'(a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )') 
+          WRITE (ncwu,'(a2,3x,i5,2f9.2,a4,a2,3x,i5,2f9.2 )') 
      1     '--',nmm,ymm,xmm,'|','+-',npm,ypm,xpm
-c          call xprvdu(ncvdu,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')
-     1    CMON(1)(:nctrim(cmon(1)))
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)')
-     1    CMON(2)(:nctrim(cmon(2)))
-
-
-          WRITE (CMON,1950)
-1950      FORMAT (//'No of reflections for which delta(Io)',
-     1    ' has same sign as delta(Is)')
-          CALL XPRVDU(NCVDU,3,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a)')
-     1    CMON(3)(:nctrim(cmon(3)))
-
-          WRITE (CMON,2000)
-2000      FORMAT ('Same sign',3X,'Opposite sign')
-          CALL XPRVDU(NCVDU,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')
-     1    CMON(1)(:nctrim(cmon(1)))
-
-          WRITE (CMON,2050) NPLS,NMIN
-2050      FORMAT (I8,6X,I8)
-          CALL XPRVDU(NCVDU,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')
-     1    CMON(1)(:nctrim(cmon(1)))
 C
+c
           write(ncwu,'(/10x,a)') 
      1   ' Histogram distributions (deciles, octiles, quartiles)'
           write(ncwu,'(6x,a,a)')  
@@ -9010,25 +9006,83 @@ C
      2    'mean     3/4        7/8       9/10'
           write(ncwu,'(7f10.2)') f1decile,f1octile,fquart,fmedian,
      1    f3quart,f7octile, f9decile
-
+c
           WRITE (ncwu,'(/a,f12.4,/2(a,f12.4)/,
      1    2(a,f12.4/),a,f7.4,a,i6)')
      *  ' Initial mean Flack(x) =',xbar_init,
      1  '   Final mean Flack(x) =',fmean,' and LSQ Flack(x) ',x_simple,
      2  '           Internal su =',sigint,
      3  '           External su =',sigext,
-     5  ' Number of reflections with probability greater than ', 
+     5  ' Number of pairs with probability greater than ', 
      5    filter(4),' = ',
      6    ngood
-        END IF
+c
+          WRITE (NCWU,1950)
+1950      FORMAT (//' No of pairs for which delta(Io)',
+     1    ' has same sign as delta(Is)')
+          WRITE (NCWU,2000)
+2000      FORMAT (' Same sign',3X,'Opposite sign')
+          WRITE (NCWU,2050) NPLS,NMIN
+2050      FORMAT (I8,6X,I8)
+        ENDIF 
+          write(cmon,'(2x,a)') ' LePage Analysis'
+          call xprvdu(ncvdu,1,0)
+          if(issprt.eq.0) 
+     1    write(ncwu,'(//2x,a)')' LePage Analysis'
+          if(n6acc .le. 0) then
+            write(cmon,'(a)') 
+     1      ' No suitable reflections for LePage analysis'
+            call xprvdu(ncvdu,1,0)
+            if(issprt.eq.0) 
+     1      write(ncwu,'(a///)')
+     1      ' No suitable reflections for LePage analysis'
+          else
+           if(issprt.eq.0) then
+            write(ncwu,'(a,f8.4)')
+     1    ' Minimum signal : noise used =', smin100
+            WRITE(ncwu,'(A,I5)') ' No. Available', n6acc
+            write(ncwu,'(a,2x,a,2x,a,2x,a,2x,a)')
+     1    ' Total','No.Same','No.Opposite', 'Signal:noise'
+     1   ,' Prob Correct'
+            p = 0.5
+            n = n10p+n10n
+            x = n10p
+            call bincdf(x,p,n,cdf)
+            write(ncwu,1720) n10P+n10n, n10p, n10n, smin10,cdf
+            n = n20p+n20n
+            x = n20p
+            call bincdf(x,p,n,cdf)
+            write(ncwu,1720) n20P+n20n, n20p, n20n, smin20,cdf
+            n = n50p+n50n
+            x = n50p
+            call bincdf(x,p,n,cdf)
+            write(ncwu,1720) n50P+n50n, n50p, n50n, smin50,cdf
+            n = n100p+n100n
+            x = n100p
+            call bincdf(x,p,n,cdf)
+            write(ncwu,1720) n100P+n100n, n100p, n100n, smin100,cdf
+1720        format(i5,2x,i7,2x,i5,8x,f8.4, f14.2)
+           endif
+           write(cmon,'(a,2x,a,2x,a,2x,a,2x,a)')
+     1   ' Total','No.Same','No.Opposite', 'Signal:noise'
+     1   ,' Prob Correct'
+           call xprvdu(ncvdu,1,0)
+            n = n20p+n20n
+            x = n20p
+            call bincdf(x,p,n,cdf)
+           write(cmon,1720) n20P+n20n, n20p, n20n, smin20,cdf
+           call xprvdu(ncvdu,1,0)
+            n = n50p+n50n
+            x = n50p
+            call bincdf(x,p,n,cdf)
+           write(cmon,1720) n50P+n50n, n50p, n50n, smin50,cdf
+           call xprvdu(ncvdu,1,0)
+          endif
 c
         if (nfried .gt .0) then
-C
-         WRITE (CMON,'(/)')
-         CALL XPRVDU (NCVDU, 1, 0)
          if(issprt.eq.0) write(ncwu,'(//)')
-         CALL outcol (3)
 c
+         CALL outcol (3)
          WRITE (CMON,'(6x,a,2f7.3)') ' Flack Parameter & su',
      1   xflack,qflack
          CALL XPRVDU (NCVDU, 1, 0)
@@ -9051,39 +9105,40 @@ c
          CALL XPRVDU (NCVDU, 1, 0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:43),'$ '
 c
-c
          WRITE (CMON,'(6x,a,2f7.3)') '     Hole-in-one & su',
      1   hin1,hin1su
          CALL XPRVDU (NCVDU, 1, 0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a)') CMON(1)(:43),'  '
 c
-c
          IF (itype.eq.1) THEN
           WRITE (CMON,'(A,2F7.3)') '      Parsons Quotient & su',
      1     pseudof,pseudos
          ELSE
-          WRITE (CMON,'(A,2F7.3)') '    Parsons Difference & su',
+          WRITE (CMON,'(A,2F7.3)') '    Bijvoet Difference & su',
      1     pseudof,pseudos
          END IF
          WRITE (CMON(1)(45:),'(A,I6,A,i4,a)')
-     1  ' (Using', nfofc,' reflections. Correl Coef =',
-     2  nint(100.*pseudoc),'%)'
+     1   ' (Using', nfofc,' reflections. Correl Coef =',
+     2   nint(100.*pseudoc),'%)'
          CALL XPRVDU (NCVDU, 1, 0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'£ ',
-     1  CMON(1)(45:nctrim(cmon(1)))
+     1   CMON(1)(45:nctrim(cmon(1)))
+         call outcol(1)
+         write(cmon,'(/)')
+         call xprvdu(ncvdu,1,0)
 c
-c
-         write(cmon,'(/,a,I6,A,f5.1,a)')' Histogram re-weighted,',
+         call outcol(3)
+         write(cmon,'(a,I6,A,f5.1,a)')' Histogram re-weighted,',
      1   ngood,' reflections, ', (nle3s*100./n6acc),
      2  '% within -.5 to 1.5'
-         CALL XPRVDU (NCVDU, 2, 0)
-         if (issprt.eq.0)write(ncwu,'(/a)')CMON(2)(:nctrim(cmon(2)))
+         CALL XPRVDU (NCVDU, 1, 0)
+         if (issprt.eq.0)write(ncwu,'(/a)')CMON(1)(:nctrim(cmon(1)))
 c
          IF (itype.eq.1) THEN
           WRITE (CMON,'(A,2F7.3)') '      Parsons Quotient & su',
      1    x_simple, s_simple
          ELSE
-          WRITE (CMON,'(A,2F7.3)') '    Parsons Difference & su',
+          WRITE (CMON,'(A,2F7.3)') '    Bijvoet Difference & su',
      1    x_simple, s_simple
          END IF
          CALL XPRVDU (NCVDU, 1, 0)
@@ -9102,8 +9157,7 @@ c
      1  ' (corrected for npp, *',yslope,')'
          CALL XPRVDU (NCVDU, 1, 0)
          IF (ISSPRT.EQ.0) WRITE(NCWU,'(A,a,a)') CMON(1)(:43),'% ',
-     1  CMON(1)(45:nctrim(cmon(1)))
-c
+     1   CMON(1)(45:nctrim(cmon(1)))
          CALL outcol (1)
 c
          IF (issprt.eq.0) THEN
@@ -9115,6 +9169,14 @@ c
      4   '&  ','Cooper et al, to be published'
          END IF
         endif
+C                                          RESTRAINT
+C       USE average of ratios and scaled su
+        IF (IPUNCH.EQ.2) THEN
+            WRITE(NCPU,600) FMEAN, SIGXBAR*YSLOPE
+600     FORMAT('RESTRAIN ',F9.4,',',F9.4'= ENANTIO')
+        ENDIF
+C
+
         WRITE (CMON,'(/)')
 c        CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
@@ -9131,12 +9193,12 @@ c        CALL XPRVDU (NCVDU, 1, 0)
      1    CMON(3)(3:nctrim(cmon(3)))
         END IF
 C
+C
+c TON'S CODE
+C
       if (nfried .gt. 0) then
          XPLLL=DATC(NSPP_241)-DATCM
          XMNLL=DATC(NSPM_161)-DATCM
-C
-         WRITE (CMON,'(/)')
-         CALL XPRVDU (NCVDU, 1, 0)
 C
          IF (RCN.NE.0) THEN
           RCO=RCT/RCN
@@ -9191,11 +9253,11 @@ C
 2200      FORMAT (6X,'Does not compute')
          END IF
          WRITE (LINE,2250) FORM
-2250    FORMAT (' P2(correct) ',A)
+2250     FORMAT (' P2(correct) ',A)
          WRITE (CMON,2300) LINE
          CALL XPRVDU (NCVDU, 1, 0)
          IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
-2300    FORMAT (A)
+2300     FORMAT (A)
 c
 C CALCULATE P3(0),P3(TW),P3(1)
          WRITE (CMON,'(/a,a)') ' If 50:50 twinning is possible,',
@@ -9248,7 +9310,7 @@ C P3(False)
            WRITE (LINE,2450) FORM
 2450      FORMAT (' P3(inverse) ',A)
            WRITE (CMON,2300) LINE
-           CALL XPRVDU (NCVDU, 1, 0)
+c           CALL XPRVDU (NCVDU, 1, 0)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
            WRITE (LINE,2500) XG
  2500      FORMAT (' G           ',F9.4)
@@ -10606,8 +10668,8 @@ c            re-initialise for next round
 c      write(123,1651)xbar,sbar,sigint,x_simple,s_simple, x_full,s_full
 1651   format(3f6.3, 3x,2f6.3,3x,2f6.3)
 c
+        call outcol(9)
         if(ncycle.ge.ntries) then
-          call outcol(9)
           write(cmon,'(/A/)')' Histogram analysis failed to converge'
           CALL XPRVDU (NCVDU,3,0)
         endif
@@ -10649,3 +10711,303 @@ c     Tukey weight, Prince page 82
 c      write(123,'(3f12.4 )') probx,tukey, smean
       return
       END
+c
+CODE FOR BINCDF
+      SUBROUTINE BINCDF(X,P,N,CDF)
+C
+C  FROM www.nist.gov/itl/sed/upload/
+C
+C     WRITTEN BY--JAMES J. FILLIBEN
+C                 STATISTICAL ENGINEERING LABORATORY (205.03)
+C                 NATIONAL BUREAU OF STANDARDS
+C                 WASHINGTON, D. C. 20234
+C                 PHONE:  301-921-2315
+C     ORIGINAL VERSION--NOVEMBER  1975. 
+C     UPDATED         --MAY       1977. 
+C
+C     PURPOSE--THIS SUBROUTINE COMPUTES THE CUMULATIVE DISTRIBUTION
+C              FUNCTION VALUE AT THE SINGLE PRECISION VALUE X
+C              FOR THE BINOMIAL DISTRIBUTION
+C              WITH SINGLE PRECISION 'BERNOULLI PROBABILITY'
+C              PARAMETER = P, 
+C              AND INTEGER 'NUMBER OF BERNOULLI TRIALS'
+C              PARAMETER = N. 
+C              THE BINOMIAL DISTRIBUTION USED
+C              HEREIN HAS MEAN = N*P
+C              AND STANDARD DEVIATION = SQRT(N*P*(1-P)).
+C              THIS DISTRIBUTION IS DEFINED FOR ALL
+C              DISCRETE INTEGER X BETWEEN 0 (INCLUSIVELY)
+C              AND N (INCLUSIVELY).
+C              THIS DISTRIBUTION HAS THE PROBABILITY FUNCTION
+C              F(X) = C(N,X) * P**X * (1-P)**(N-X).
+C              WHERE C(N,X) IS THE COMBINATORIAL FUNCTION
+C              EQUALING THE NUMBER OF COMBINATIONS OF N ITEMS
+C              TAKEN X AT A TIME.
+C              THE BINOMIAL DISTRIBUTION IS THE
+C              DISTRIBUTION OF THE NUMBER OF
+C              SUCCESSES IN N BERNOULLI (0,1)
+C              TRIALS WHERE THE PROBABILITY OF SUCCESS
+C              IN A SINGLE TRIAL = P.
+C     INPUT  ARGUMENTS--X      = THE SINGLE PRECISION VALUE 
+C                                AT WHICH THE CUMULATIVE DISTRIBUTION 
+C                                FUNCTION IS TO BE EVALUATED.
+C                                X SHOULD BE INTEGRAL-VALUED,
+C                                AND BETWEEN 0.0 (INCLUSIVELY)
+C                                AND N (INCLUSIVELY).
+C                     --P      = THE SINGLE PRECISION VALUE 
+C                                OF THE 'BERNOULLI PROBABILITY'
+C                                PARAMETER FOR THE BINOMIAL 
+C                                DISTRIBUTION.
+C                                P SHOULD BE BETWEEN
+C                                0.0 (EXCLUSIVELY) AND
+C                                1.0 (EXCLUSIVELY).
+C                     --N      = THE INTEGER VALUE
+C                                OF THE 'NUMBER OF BERNOULLI TRIALS'
+C                                PARAMETER.
+C                                N SHOULD BE A POSITIVE INTEGER.
+C     OUTPUT ARGUMENTS--CDF    = THE SINGLE PRECISION CUMULATIVE
+C                                DISTRIBUTION FUNCTION VALUE.
+C     OUTPUT--THE SINGLE PRECISION CUMULATIVE DISTRIBUTION
+C             FUNCTION VALUE CDF
+C             FOR THE BINOMIAL DISTRIBUTION
+C             WITH 'BERNOULLI PROBABILITY' PARAMETER = P
+C             AND 'NUMBER OF BERNOULLI TRIALS' PARAMETER = N.
+C     PRINTING--NONE UNLESS AN INPUT ARGUMENT ERROR CONDITION EXISTS. 
+C     RESTRICTIONS--X SHOULD BE INTEGRAL-VALUED,
+C                   AND BETWEEN 0.0 (INCLUSIVELY) 
+C                   AND N (INCLUSIVELY).
+C                 --P SHOULD BE BETWEEN 0.0 (EXCLUSIVELY)
+C                   AND 1.0 (EXCLUSIVELY).
+C                 --N SHOULD BE A POSITIVE INTEGER.
+C     OTHER DATAPAC   SUBROUTINES NEEDED--NONE.
+C     FORTRAN LIBRARY SUBROUTINES NEEDED--DSQRT, DATAN.
+C     MODE OF INTERNAL OPERATIONS--DOUBLE PRECISION.
+C     LANGUAGE--ANSI FORTRAN. 
+C     COMMENT--NOTE THAT EVEN THOUGH THE INPUT
+C              TO THIS CUMULATIVE
+C              DISTRIBUTION FUNCTION SUBROUTINE
+C              FOR THIS DISCRETE DISTRIBUTION
+C              SHOULD (UNDER NORMAL CIRCUMSTANCES) BE A
+C              DISCRETE INTEGER VALUE,
+C              THE INPUT VARIABLE X IS SINGLE
+C              PRECISION IN MODE.
+C              X HAS BEEN SPECIFIED AS SINGLE
+C              PRECISION SO AS TO CONFORM WITH THE DATAPAC
+C              CONVENTION THAT ALL INPUT ****DATA****
+C              (AS OPPOSED TO SAMPLE SIZE, FOR EXAMPLE)
+C              VARIABLES TO ALL
+C              DATAPAC SUBROUTINES ARE SINGLE PRECISION.
+C              THIS CONVENTION IS BASED ON THE BELIEF THAT
+C              1) A MIXTURE OF MODES (FLOATING POINT
+C              VERSUS INTEGER) IS INCONSISTENT AND
+C              AN UNNECESSARY COMPLICATION
+C              IN A DATA ANALYSIS; AND
+C              2) FLOATING POINT MACHINE ARITHMETIC
+C              (AS OPPOSED TO INTEGER ARITHMETIC) 
+C              IS THE MORE NATURAL MODE FOR DOING 
+C              DATA ANALYSIS. 
+C     REFERENCES--HASTINGS AND PEACOCK, STATISTICAL
+C                 DISTRIBUTIONS--A HANDBOOK FOR
+C                 STUDENTS AND PRACTITIONERS, 1975,
+C                 PAGE 38.
+C               --NATIONAL BUREAU OF STANDARDS APPLIED MATHEMATICS
+C                 SERIES 55, 1964, PAGE 945, FORMULAE 26.5.24 AND
+C                 26.5.28, AND PAGE 929.
+C               --JOHNSON AND KOTZ, DISCRETE
+C                 DISTRIBUTIONS, 1969, PAGES 50-86,
+C                 ESPECIALLY PAGES 63-64.
+C               --FELLER, AN INTRODUCTION TO PROBABILITY
+C                 THEORY AND ITS APPLICATIONS, VOLUME 1,
+C                 EDITION 2, 1957, PAGES 135-142. 
+C               --KENDALL AND STUART, THE ADVANCED THEORY OF
+C                 STATISTICS, VOLUME 1, EDITION 2, 1963, PAGES 120-125.
+C               --MOOD AND GRABLE, INTRODUCTION TO THE THEORY
+C                 OF STATISTICS, EDITION 2, 1963, PAGES 64-69.
+C               --OWEN, HANDBOOK OF STATISTICAL
+C                 TABLES, 1962, PAGES 264-272.
+C---------------------------------------------------------------------
+C
+      DOUBLE PRECISION DX,PI,ANU1,ANU2,Z,SUM,TERM,AI,COEF1,COEF2,ARG
+      DOUBLE PRECISION COEF
+      DOUBLE PRECISION THETA,SINTH,COSTH,A,B
+      DOUBLE PRECISION DSQRT,DATAN
+      DATA PI/3.14159265358979D0/
+C
+      IPR=6
+C
+C     CHECK THE INPUT ARGUMENTS FOR ERRORS
+C
+      AN=N
+      IF(P.LT.0.0.OR.P.GT.1.0)GOTO50
+      IF(N.LT.1)GOTO55
+      IF(X.LT.0.0.OR.X.GT.AN)GOTO60
+      INTX=X+0.0001 
+      FINTX=INTX
+      DEL=X-FINTX
+      IF(DEL.LT.0.0)DEL=-DEL
+      IF(DEL.GT.0.001)GOTO65
+      GOTO90
+   50 WRITE(IPR,11) 
+      WRITE(IPR,46)P
+      CDF=0.0
+      RETURN
+   55 WRITE(IPR,25) 
+      WRITE(IPR,47)N
+      CDF=0.0
+      RETURN
+   60 WRITE(IPR,4)N 
+      WRITE(IPR,46)X
+      IF(X.LT.0.0)CDF=0.0
+      IF(X.GT.AN)CDF=1.0
+      RETURN
+   65 WRITE(IPR,5)
+      WRITE(IPR,46)X
+   90 CONTINUE
+    4 FORMAT(1H ,111H***** NON-FATAL DIAGNOSTIC--THE FIRST  INPUT ARGUME
+     1NT TO THE BINCDF SUBROUTINE IS OUTSIDE THE USUAL (0,N) = (0,,I7,
+     1 11H,INTERVAL *)
+    5 FORMAT(1H ,100H***** NON-FATAL DIAGNOSTIC--THE FIRST  INPUT ARGUME
+     1NT TO THE BINCDF SUBROUTINE IS NON-INTEGRAL *****)
+   11 FORMAT(1H ,115H***** FATAL ERROR--THE SECOND INPUT ARGUMENT TO THE
+     1 BINCDF SUBROUTINE IS OUTSIDE THE ALLOWABLE (0,1) INTERVAL *****)
+   25 FORMAT(1H , 91H***** FATAL ERROR--THE THIRD  INPUT ARGUMENT TO THE
+     1 BINCDF SUBROUTINE IS NON-POSITIVE *****)
+   46 FORMAT(1H , 35H***** THE VALUE OF THE ARGUMENT IS ,E15.8,6H *****)
+   47 FORMAT(1H , 35H***** THE VALUE OF THE ARGUMENT IS ,I8   ,6H *****)
+C
+C-----START POINT-----------------------------------------------------
+C
+C     TREAT IMMEDIATELY THE SPECIAL CASE OF X = N,
+C     IN WHICH CASE CDF = 1.0.
+C     ALSO TREAT IMMEDIATELY THE SPECIAL CASE OF P = 0.0
+C     IN WHICH CASE CDF = 1.0 FOR ALL X.
+C     THIRDLY, TREAT THE SPECIAL CASE IN WHICH P = 1.0
+C     IN WHICH CASE CDF = 0.0 FOR ALL X SMALLER THAN N
+C     AND CDF = 1.0 FOR ALL X EQUAL TO OR LARGER
+C     THAN N.
+C
+      INTX=X+0.0001 
+      CDF=1.0
+      IF(INTX.EQ.N)RETURN
+      IF(P.EQ.0.0)RETURN
+      IF(P.EQ.1.0.AND.INTX.GE.N)RETURN
+      IF(P.EQ.1.0.AND.INTX.LT.N)CDF=0.0 
+      IF(P.EQ.1.0.AND.INTX.LT.N)RETURN
+C
+C     EXPRESS THE BINOMIAL CUMULATIVE DISTRIBUTION
+C     FUNCTION IN TERMS OF THE EQUIVALENT F
+C     CUMULATIVE DISTRIBUTION FUNCTION, 
+C     AND THEN EVALUATE THE LATTER.
+C
+      AN=N
+      DX=(P/(1.0-P))*((AN-X)/(X+1.0))
+      NU1=2.0*(X+1.0)+0.1
+      NU2=2.0*(AN-X)+0.1
+      ANU1=NU1
+      ANU2=NU2
+      Z=ANU2/(ANU2+ANU1*DX)
+C
+C     DETERMINE IF NU1 AND NU2 ARE EVEN OR ODD
+C
+      IFLAG1=NU1-2*(NU1/2)
+      IFLAG2=NU2-2*(NU2/2)
+      IF(IFLAG1.EQ.0)GOTO120
+      IF(IFLAG2.EQ.0)GOTO150
+      GOTO250
+C
+C     DO THE NU1 EVEN AND NU2 EVEN OR ODD CASE
+C
+  120 SUM=0.0D0
+      TERM=1.0D0
+      IMAX=(NU1-2)/2
+      IF(IMAX.LE.0)GOTO110
+      DO100I=1,IMAX 
+      AI=I
+      COEF1=2.0D0*(AI-1.0D0)
+      COEF2=2.0D0*AI
+      TERM=TERM*((ANU2+COEF1)/COEF2)*(1.0D0-Z)
+      SUM=SUM+TERM
+  100 CONTINUE
+C
+  110 SUM=SUM+1.0D0 
+      SUM=(Z**(ANU2/2.0D0))*SUM
+      CDF=SUM
+      RETURN
+C
+C     DO THE NU1 ODD AND NU2 EVEN CASE
+C
+  150 SUM=0.0D0
+      TERM=1.0D0
+      IMAX=(NU2-2)/2
+      IF(IMAX.LE.0)GOTO210
+      DO200I=1,IMAX 
+      AI=I
+      COEF1=2.0D0*(AI-1.0D0)
+      COEF2=2.0D0*AI
+      TERM=TERM*((ANU1+COEF1)/COEF2)*Z
+      SUM=SUM+TERM
+  200 CONTINUE
+C
+  210 SUM=SUM+1.0D0 
+      CDF=1.0D0-((1.0D0-Z)**(ANU1/2.0D0))*SUM
+      RETURN
+C
+C     DO THE NU1 ODD AND NU2 ODD CASE
+C
+  250 SUM=0.0D0
+      TERM=1.0D0
+      ARG=DSQRT((ANU1/ANU2)*DX)
+      THETA=DATAN(ARG)
+      SINTH=ARG/DSQRT(1.0D0+ARG*ARG)
+      COSTH=1.0D0/DSQRT(1.0D0+ARG*ARG)
+      IF(NU2.EQ.1)GOTO320
+      IF(NU2.EQ.3)GOTO310
+      IMAX=NU2-2
+      DO300I=3,IMAX,2
+      AI=I
+      COEF1=AI-1.0D0
+      COEF2=AI
+      TERM=TERM*(COEF1/COEF2)*(COSTH*COSTH)
+      SUM=SUM+TERM
+  300 CONTINUE
+C
+  310 SUM=SUM+1.0D0 
+      SUM=SUM*SINTH*COSTH
+C
+  320 A=(2.0D0/PI)*(THETA+SUM)
+      SUM=0.0D0
+      TERM=1.0D0
+      IF(NU1.EQ.1)B=0.0D0
+      IF(NU1.EQ.1)GOTO450
+      IF(NU1.EQ.3)GOTO410
+      IMAX=NU1-3
+      DO400I=1,IMAX,2
+      AI=I
+      COEF1=AI
+      COEF2=AI+2.0D0
+      TERM=TERM*((ANU2+COEF1)/COEF2)*(SINTH*SINTH)
+      SUM=SUM+TERM
+  400 CONTINUE
+C
+  410 SUM=SUM+1.0D0 
+      SUM=SUM*SINTH*(COSTH**N)
+      COEF=1.0D0
+      IEVODD=NU2-2*(NU2/2)
+      IMIN=3
+      IF(IEVODD.EQ.0)IMIN=2
+      IF(IMIN.GT.NU2)GOTO420
+      DO430I=IMIN,NU2,2
+      AI=I
+      COEF=((AI-1.0D0)/AI)*COEF
+  430 CONTINUE
+C
+  420 COEF=COEF*ANU2
+      IF(IEVODD.EQ.0)GOTO440
+      COEF=COEF*(2.0D0/PI)
+C
+  440 B=COEF*SUM
+C
+  450 CDF=1.0D0-(A-B)
+      RETURN
+C
+      END 
