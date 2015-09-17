@@ -529,7 +529,9 @@ C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
              IF ( IERFLG .LT. 0 ) GO TO 9900
              DO WHILE ( KFNR ( 0 ) .GE. 0 )
                 IF (IFSQ .GE. 0) THEN
-                 CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMAS,STORE(M6+12))
+c123 
+                 CALL XSQRF(FOS, STORE(M6+itwin), 
+     1           FABS, SIGMAS,STORE(M6+12))
                  SHFO = FOS/MAX(.0001,A**2)
                  SHFC = STORE(M6+5)**2
                  SIG =SIGMAS / MAX(.0001,A**2)
@@ -878,6 +880,7 @@ c
 cdjwjun09 romove Chris Hardings optimisation.
 c its use restricts the final convergence of the test data
 c It may work better if re-weighting is applied between each cycle
+c In any case, it was only intended to help initial convergence
 c
 cdjwjun09            am = 0.5 / max(fo, quasi*foav, aw)
 cdjwjun09            AW=2.0*AW*max(FO, quasi*foav, aw)   
@@ -1119,14 +1122,20 @@ c
           endif
 C -- Convert everything to scale of FC: (for SHELX compatibility).
           IF ( JTYPE .EQ. 2 ) THEN   ! Fo**2 refinement
-c123  recover exact sigma(F^2)
-c123            call xsqrf(fsqtemp,store(m6+3),fabs,aw,store(m6+12))
+c
+c123  recover exact sigma(F^2) rather than bodged AW
+c Using the exact sigmas means that there are no points above the
+c limiting line in the SQRT(W) vs 1/sigma plot
+            call xsqrf(fsqtemp,store(m6+itwin),
+     1     fabs,djwaw,store(m6+12))
+            AW = DJWAW
+c
             SFCSIG = AW / A**2
             SFCFO  = FO / A**2
             SFCFC  = FCprime / A**2
           ELSE                       ! Fo refinement
 c123   just use stored sigma(F)
-c123            aw = store(m6+12)
+            aw = store(m6+12)
             SFCSIG = AW / A
             SFCFO  = FO / A
             SFCFC  = FCprime / A
@@ -3632,11 +3641,12 @@ C--EXIT
 2150  CONTINUE
 C COMPUTE CORRELLATION COEFFICIENT
       imode = 2
-      CALL CCOEF(imode, X, Y, NCOEF, ACOEF, SLOPE, RINTER, CORREL)
       write(cmon,2151)
 2151  format(/' Analysis of residuals:'/
      1'The slope and correlation coefficient should be small')
        call xprvdu(ncvdu, 3,0)
+      if(issprt.eq.0) write(ncwu,2151)
+      CALL CCOEF(imode, X, Y, NCOEF, ACOEF, SLOPE, RINTER, CORREL)
 C
       RETURN
       END
