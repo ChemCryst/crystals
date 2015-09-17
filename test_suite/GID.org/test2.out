@@ -3321,7 +3321,7 @@ All cycle   Rw                    0.0            44.           0.10E+03
 Mean C-C su =   0.0133                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #                                                                                                                                                                                                                                                               
-# TITLE  QUICK TEST OF ROTAX                                                                                                                                                                                                                                    
+#                      QUICK TEST OF ROTAX                                                                                                                                                                                                                      
 #ROTAX                                                                                                                                                                                                                                                          
 
 
@@ -3563,10 +3563,10 @@ value in the case of a highly skew unit cell
  -2.  1.  2.     2. -1.  0.    0.00025    0.00000 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #                                                                                                                                                                                                                                                               
-#       IT WILL HAVE FOUND THIS TWIN LAW.                                                                                                                                                                                                                       
+#                      IT WILL HAVE FOUND THIS TWIN LAW.                                                                                                                                                                                                        
 #LIST 25                                                                                                                                                                                                                                                        
 #                                                                                                                                                                                                                                                               
-#       USE TWIN LAW TO ASSIGN ELEMENT TYPES.                                                                                                                                                                                                                   
+#                      USE TWIN LAW TO ASSIGN ELEMENT TYPES.                                                                                                                                                                                                    
 #LIST 6                                                                                                                                                                                                                                                         
 
 
@@ -3574,7 +3574,7 @@ value in the case of a highly skew unit cell
     2016 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 Upating List 13 for twinned data                                                                                                                                                                                                                                
 #                                                                                                                                                                                                                                                               
-# TITLE  FIRST EXPERIMENT. FSQ, NOANOM                                                                                                                                                                                                                          
+#                      FIRST EXPERIMENT. FSQ, NOANOM                                                                                                                                                                                                            
 #LIST 23                                                                                                                                                                                                                                                        
 #USE KEENREF.DAT                                                                                                                                                                                                                                                
 # HERE IS THE ATOM LIST WITH COORDS BEFORE TWIN ELEMENTS HAVE                                                                                                                                                                                                   
@@ -12600,7 +12600,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
 
   KEY                                                 1             2             3
 #                                                                                                                                                                                                                                                               
-# TITLE  SECOND EXPERIMENT. NOFSQ, NOANOM                                                                                                                                                                                                                       
+#                      SECOND EXPERIMENT. NOFSQ, NOANOM                                                                                                                                                                                                         
 #LIST 23                                                                                                                                                                                                                                                        
 #USE KEENREF.DAT                                                                                                                                                                                                                                                
 # HERE IS THE ATOM LIST WITH COORDS BEFORE TWIN ELEMENTS HAVE                                                                                                                                                                                                   
@@ -21605,7 +21605,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
 
   KEY                                                 1             2             3
 #                                                                                                                                                                                                                                                               
-# TITLE  THIRD EXPERIMENT. FSQ, ANOM                                                                                                                                                                                                                            
+#                      THIRD EXPERIMENT. FSQ, ANOM                                                                                                                                                                                                              
 #LIST 23                                                                                                                                                                                                                                                        
 #USE KEENREF.DAT                                                                                                                                                                                                                                                
 # HERE IS THE ATOM LIST WITH COORDS BEFORE TWIN ELEMENTS HAVE                                                                                                                                                                                                   
@@ -31077,7 +31077,7 @@ LS-scale=  4.651   Wilson Scale=  4.723
 
   KEY                                                 1             2             3
 #                                                                                                                                                                                                                                                               
-# TITLE  FOURTH EXPERIMENT. NOFSQ, ANOM                                                                                                                                                                                                                         
+#                      FOURTH EXPERIMENT. NOFSQ, ANOM                                                                                                                                                                                                           
 #LIST 23                                                                                                                                                                                                                                                        
 #USE KEENREF.DAT                                                                                                                                                                                                                                                
 # HERE IS THE ATOM LIST WITH COORDS BEFORE TWIN ELEMENTS HAVE                                                                                                                                                                                                   
