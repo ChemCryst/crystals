@@ -6292,6 +6292,9 @@ LS-scale= 11.239   Wilson Scale=  0.000
 
 #ANALYSE                                                                                                                                                                                                                                                        
 #LIST 4                                                                                                                                                                                                                                                         
+
+ Analysis of residuals:
+The slope and correlation coefficient should be small
 [11]  Slope =    -3376.3  Intercept = 2538920  C-Coef=      -0.0
 
 
@@ -6474,6 +6477,9 @@ LS-scale= 11.239   Wilson Scale=  0.000
 
 #ANALYSE                                                                                                                                                                                                                                                        
 #TITLE P2S1C TEST DECK  -  TAKEN FROM XRAY                                                                                                                                                                                                                      
+
+ Analysis of residuals:
+The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =      -00  C-Coef=       0.1
 
 
