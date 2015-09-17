@@ -4365,7 +4365,7 @@ TONSPEK            1    1
      NONE           YES
     .PUNCH              4    0    1    5    0 NONE
      NONE           TABLE          RESTRAINT      GRAPH          SUMMARY
-    .FILTER1            5    0    1    0    0 0.5
+    .FILTER1            5    0    1    0    0 0.01
     .FILTER2            6    0    1    0    0 1.0
     .FILTER3            7    0    1    0    0 2.0
     .FILTER4            8    0    1    0    0 0.001
