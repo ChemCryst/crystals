@@ -1941,7 +1941,7 @@ C--PRINT THIS CONTRIBUTOR
       WRITE(NCWU,2350)STORE(JFO),KKK,STORE(JREF+12),WORK(7),
      2 STORE(KREF-2),STORE(KREF-1),ISTORE(KREF-4),ISTORE(KREF-3)
       ENDIF
-2350  FORMAT(51X,F10.1,A1,F9.1,2F10.1,E11.2,I6,I10)
+2350  FORMAT(51X,F10.2,A1,F9.2,2F10.2,E11.2,I6,I10)
 2400  CONTINUE
 C----- WORK(29) IS MINIMUM JCODE
       WORK(29) = AMIN1( WORK(20), STORE(JREF+18) )
@@ -1949,6 +1949,9 @@ C----- WORK(29) IS MINIMUM JCODE
 2450  CONTINUE
 C--WORK 28 = 24 = SIGMA W DELTA SQ
       WORK(28)=WORK(28)+WORK(6)
+c
+c all done - work out averages
+c
 C--WEIGHTED AVERAGE
 cdjwsep07
 c      IF (WORK(4) .GT. ZERO) THEN
@@ -1962,6 +1965,16 @@ c      ENDIF
       IF (WORK(4) .LE. ZERO) work(4) = FLOAT(NREF)
       WORK(9)=WORK(6)/WORK(4)
       WORK(10)=WORK(8)/WORK(4)
+c123
+      if (nref .gt.1) then
+        if(jprint.gt.0) then
+          if(issprt.eq.0) then
+            write(ncwu,'(/)')
+            write(ncwu,2350)work(5),'!',sqrt(work(10)),float(nref)
+          endif
+        endif
+      endif
+c
 C
 c adjust sigmas - An Intro to Error Analysis, Taylor, pp89
       WORK(9)=SQRT(WORK(9))/SQRT(FLOAT(NREF))
