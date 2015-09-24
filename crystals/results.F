@@ -8157,7 +8157,7 @@ c      CALL XPRVDU (NCVDU,1,0)
                WRITE (CMON,950) YSLOPE,ycut,CORREL
 950            FORMAT ('  Slope, intercept and Cc (R) of NPP Plot ='
      1         ,F7.3,F7.3,F7.3)
-c               CALL XPRVDU (NCVDU,1,0)
+               CALL XPRVDU (NCVDU,1,0)
                IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') 
      1         CMON(1)(:nctrim(cmon(1)))
             ELSE
