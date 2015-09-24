@@ -3777,11 +3777,11 @@ For example:
  are computed and can be output :
 #N   9#
 #J
- SIGMA1 = Sqrt (sum [ w(i)*q(i)**2 ] / sum [ w(i) ])
+ SIGMA1 = Sqrt (sum [ w(i)*q(i)**2 ] / n * sum [ w(i) ])
              that is, the weighted r.m.s. deviation.
 
- SIGMA2 = Sqrt (sum [ w(i)*s(i)**2 ] / sum [ w(i) ])
-             that is, the weighted standard deviation.
+ SIGMA2 = Sqrt (sum [ w(i)*s(i)**2 ] / n * sum [ w(i) ])
+             that is, the weighted average standard deviation.
 #
  Either of these two standard deviations can be selected as an estimate
  of Sigma(Fsq), and perhaps be converted to a Least Squares weight. If a
