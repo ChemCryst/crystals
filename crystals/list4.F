@@ -380,9 +380,9 @@ C---- SORT OUT THE INPUT
       endif
       if (abs (factor -1.) .ge. zero) then
          write(cmon,'(A, 2f10.4)') 
-     1 'Rescaling weights by a factor of',factor, store(l30rf+4)
+     1 '{I Rescaling weights by a factor of',factor, store(l30rf+4)
          call xprvdu(ncvdu,1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
       endif
 C
       IF (ISTORE(L13CD+1) .LE. -1) THEN    ! F = FO
