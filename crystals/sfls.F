@@ -1829,6 +1829,13 @@ C--CHECK IF A PRINT IS REQUIRED
      1  measuredtime(7))*1000+measuredtime(8)
 #endif
 
+c      write(123,'(a)') 'Start of SFLS'
+c      write(123,'(a)') 'F1: ACT, BCT, F'', PHI'', A'', B'', Pshift ',
+c     1 'Ap: ACT, BCT, ACN, BCN',
+c     2 'Av: Fp, PHIp, Fn, PHIn, FaV, PHIav',
+c     3 'ACT, BCT, Fp, PHIp, A'', B'', Pshift'
+c      write(123,'(/)')
+
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
         IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
@@ -1886,11 +1893,16 @@ C--CLEAR THE PARTIAL CONTRIBUTION FLAGS FOR THIS REFLECTION
         ACN = 0.
         BCN = 0.
 C--CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
-        IF(PARTIALS) THEN 
+        IF(PARTIALS) THEN
+c       retrieve A' and B' into ACT and BCT slots. 
+c       A' & B'  have the phase shift already applied
+c       for compatibility with PLATON
+c       We cannot recover 'true' ACT and BCT until we know PSHIFT.
+c       This is done in XAB4FC 
           ACT=STORE(M6+7)
           BCT=STORE(M6+8)
-          ACN = ACT
-          BCN = BCT
+ccc          ACN = ACT
+ccc          BCN = -BCT
         END IF
 
         FO=STORE(M6+3)  ! SET UP /FO/ ETC. FOR THIS REFLECTION
@@ -2117,9 +2129,7 @@ C--CHECK IF WE SHOULD INCLUDE EXTINCTION
         END IF
 C
         FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
-      
 c
-
         IF(TWINNED)THEN 
           STORE(M6+5)=STORE(M6+5)*EXT4*SCALES
         ELSE
@@ -2127,9 +2137,51 @@ c
         ENDIF
         STORE(M6+6)=P
 C
-        IF(ND.GE.0)THEN ! CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
-          STORE(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
-          STORE(M6+8)=BCT
+        IF(ND.GE.0)THEN !  THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
+c       Apply signs to A and B parts for PLATON compatibility
+c
+          pshift=store(jref_stack_ptr+11)
+          ps = amod(pshift+twopi,twopi)  !get into first revolution
+          fp=sqrt(act*act+bct*bct)       !scattering magnitude
+          pp = atan2(bct,act)            !phi
+
+123        format(a, 3i4,3f8.2,4f8.2)
+c          write(123,123) 'Ap',
+c     1    nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
+c     2    act, bct, acn, bcn
+
+          if (ENANTIO) then
+           fn=sqrt(acn*acn+bcn*bcn)
+           pn = atan2(-bcn,acn) 
+c take average to approximate to no imaginary anomalous contribution
+c since we cannot recover imaginary contributions from A&B later
+           fav = 0.5*(fp+fn)
+           pav = 0.5*sign(1.,pp)*(abs(pp)+abs(pn))  
+c           write(123,123) 'Av',
+c     1     nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
+c     2     fp, rtd*pp, fn, rtd*pn, fav, rtd*pav
+           fp = fav
+           pp = pav
+          end if
+c
+c         phi + pshift
+          pprime = pp + ps
+
+          aprime = fp*cos(pprime)
+          bprime = fp*sin(pprime)
+c          write(123,123)'St',
+c     1    nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
+c     2    act, bct, fp, rtd*pp, aprime, bprime, rtd*ps
+c          write(123,'(/)')
+
+
+
+c          STORE(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
+c          STORE(M6+8)=BCT
+          STORE(M6+7)=APRIME ! STORE A' and B'for PLATON compatibility
+          STORE(M6+8)=BPRIME
+
+
           CALL XACRT(8)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
           CALL XACRT(9)
         END IF
@@ -2197,8 +2249,10 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
      1        STORE(JREF_STACK_PTR+13)*STORE(JREF_STACK_PTR+14) )          
           C=T*200.0/(2.*FC*FC-T)
           IF (ISSPRT .EQ. 0) THEN 
+c   H, K, L, FO
+c   FC, Phase, Delta, SQRT(W)*Delta, FC', FC'', D/F/**2, T.B.R.(%), SINTH/L
             WRITE(NCWU,4600)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,
-     2      FCEXT,P,WJ,VJ,A,S,T,C,ST
+     2      FCEXT,P,WJ,VJ,    A,S,  T,C,ST
           ENDIF
 4600    FORMAT(3X,3F6.0,3F9.1,E13.4,E13.4,F8.1,F8.1,F9.1,F10.1,F10.5)
 c
@@ -4000,10 +4054,35 @@ C--FETCH A AND B ETC. FROM THE STACK
       BCI=STORE(JREF_STACK_PTR+16)
       PSHIFT=STORE(JREF_STACK_PTR+11)
       FRIED=STORE(JREF_STACK_PTR+12)
+
+C-- ACT and BCT are in COMMON XSFWK.INC
+c retrieve A' and B' for Platon compatibility and convert to ACT BCT
+C remove phase shift from A and B prime
+      aprime = act
+      bprime = bct
+      fprime = sqrt(aprime*aprime+bprime*bprime)
+      pprime = atan2(bprime,aprime)      !phi prime
+      ps = amod(pshift+twopi,twopi)
+      pp = pprime - ps
+c ACN and BCN  are not stored in LIST 6,
+c so use corresponding positive items.
+c Implication is that partial contributions should be computed 
+c without anomalous scattering. 
+c SQUEEZE uses real electron density so has no anomalous contribution.
+      act = fprime*cos(pp)
+      bct = fprime*sin(pp)
+c
+      acn = act
+      bcn = -bct
+c          write(123,123) 'F1',
+c     1    nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
+c     2    act, bct, fprime, rtd*pp, aprime, bprime, rtd*ps
+123        format(a, 3i4,7f8.2,/14x, 4f8.2)
+
+
       ACT=AC+ACI*FRIED+ACT
       BCT=BC*FRIED+BCI+BCT
-
-
+c
       IF ( ABS(ACT) .LT. 0.001 ) THEN  ! A-PART is 0
         IF ( ABS(BCT) .LT. 0.001) THEN  ! B-PART is 0
           ACT = 0.000001
@@ -4016,8 +4095,7 @@ C--FETCH A AND B ETC. FROM THE STACK
           BCT = 0.
         END IF
       END IF
-
-
+c
 C--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
       FCSQ = ACT*ACT + BCT*BCT
       FP = SQRT(FCSQ)

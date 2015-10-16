@@ -2374,16 +2374,19 @@ c      determinant
                 call xprvdu(ncvdu, 1,0)
                 if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
             endif
-c-----      update list 39 - 
+c-----      update list 39 - assumes only one FLAC record
 c            iflac = 'FLAC'
-            m39f=l39f
-            do i=1,n39f
-              if (istore(m39f) .eq. iflac) then
+            if (khuntr (39,0, iaddl,iaddr,iaddd, 0) .eq. 0) then
+             m39f=l39f
+             do i=1,n39f
+               if (istore(m39f) .eq. iflac) then
                 store(m39f+2) = slope
-              endif
-              m39f = m39f+md39f
-            enddo
-            call xwlstd ( 39, icom39, idim39, -1, -1)
+                call xwlstd ( 39, icom39, idim39, -1, -1)
+                exit
+               endif
+               m39f = m39f+md39f
+             enddo
+            endif
 c
           else
             write(cmon,471) 

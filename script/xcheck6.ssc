@@ -358,11 +358,12 @@
 ^^WI    }                                                                       
 ^^WI   }                                                                        
 ^^WI  }                                                                         
-^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=5                                           
+^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=7                                           
 ^^WI  {                                                                         
 ^^WI   @ 1,1 STRETCH RS HORIZONTAL                                              
-^^WI   @ 1,2 BUTTON XC_REF 'Refresh'                                            
-^^WI   @ 1,4 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL                        
+^^WI   @ 1,2 BUTTON XC_HLP 'Help'                                            
+^^WI   @ 1,4 BUTTON XC_REF 'Refresh'                                            
+^^WI   @ 1,6 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL                        
 ^^WI  }                                                                         
 ^^WI  @ 3,1 PROGRESS _CHECKPR 'Please wait'                                     
 ^^WI }                                                                          
@@ -721,8 +722,8 @@
 ^^CO SET PROGOUTPUT TEXT 'Ready'                                                
 %%                                                                              
 %  LOOP                                                                         
-%    VERIFY XC_BOK XC_REF RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -       
- WILFILT1 WILFILT2                                                              
+%    VERIFY XC_BOK XC_REF XC_HLP RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 -       
+ SIGFULL WILFILT1 WILFILT2                                                       
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
 %    CASE VALUE                                                                 
 %      BLOCK    %XC_BOK                                                         
@@ -732,6 +733,9 @@
 %      BLOCK    %XC_REF                                                         
 %        EVALUATE LOOPCOUNTER = LOOPEND                                         
 %      END BLOCK                                                                
+%      BLOCK    %XC_HLP
+%        COPY '#SCRIPT SINTHETA'
+%      END BLOCK
 %      BLOCK    %RHOMIT1                                                         
 %        GET SILENT NOSTORE REAL ' ' ' '                                        
 %        EVALUATE NEWRHO = VALUE                                                

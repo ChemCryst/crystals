@@ -715,6 +715,7 @@ C--A AND B PARTS MUST BE ABOUT TO BE STORED
 1300     CONTINUE
          IF (KCOMP(1,IPARTS(I),ISTORE(L6DMP),MD6DMP,1)) 1450,1450,1350
 C--A AND B PARTS MUST NOT HAVE BEEN INPUT
+C--i.e. HAVE NOT HAVE BEEN INPUT so must be computed. Is this a good idea?
 1350     CONTINUE
          IF (KCOMP(1,IPARTS(I),ISTORE(L6IMP),MD6IMP,1)) 1400,1400,1450
 1400  CONTINUE
@@ -1022,7 +1023,7 @@ CDJW2003         LEF=-1
      1   ' At about reflection',i10/
      1   ' Some reflections may be lost'/
      2   ' The file should be terminated with an h value of -512')
-         CALL XPAUSE (500)
+         CALL XPAUSE (2000)
          BACKSPACE (UNIT=IUNIT,ERR=3200)
       END IF
       GO TO 5000

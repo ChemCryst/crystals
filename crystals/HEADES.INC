@@ -1,2 +1,2 @@
-      DIMENSION IBUFF(8)
+      integer, dimension(8) :: IBUFF
 

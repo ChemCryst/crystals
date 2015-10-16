@@ -17,15 +17,15 @@ c      DATA ILSMSG / 1 / , ILSNMS / -1 /
 c      DATA ILSSET / -1 / , ILSCLR / 1 /
 c      DATA ILSOVR / -1 / , ILSRDY / 0 / , ILSUPD / 1 /
 
-      PARAMETER ( ILSCLN=1, ILSCLS=2, ILSCLV=3,
-     1            ILSEXI=4, ILSAVI=5, ILSRFI=6 )
+      integer, parameter :: ILSCLN=1, ILSCLS=2, ILSCLV=3,
+     1            ILSEXI=4, ILSAVI=5, ILSRFI=6 
 
-      PARAMETER ( ILSERF=1, ILSPUF=2, ILSDLF=3,
-     1            ILSOWF=4, ILSCUR=5, ILSRTF=2 )
+      integer, parameter :: ILSERF=1, ILSPUF=2, ILSDLF=3,
+     1            ILSOWF=4, ILSCUR=5, ILSRTF=2 
 
-      PARAMETER ( ILSMSG=1, ILSNMS=-1 )
+      integer, parameter :: ILSMSG=1, ILSNMS=-1 
 
-      PARAMETER ( ILSSET=-1, ILSCLR=1, ILSOVR=-1,
-     1            ILSRDY=0, ILSUPD=1 )
+      integer, parameter :: ILSSET=-1, ILSCLR=1, ILSOVR=-1,
+     1            ILSRDY=0, ILSUPD=1 
 
 

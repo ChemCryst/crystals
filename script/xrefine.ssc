@@ -11,6 +11,11 @@
 %  EVALUATE SERR = TRUE
 %  EVALUATE CONVRG = FALSE
 %  VARIABLE REAL L5:OK
+%  VARIABLE REAL CONVERGE
+%%
+%%
+%% make sure SFLS record exists in LIST 39
+%    COPY '#SCRIPT SFLS39'
 %%
 %  COPY '#SCRIPT RFACTOR'
 %%
@@ -206,15 +211,10 @@
 %              END IF
 %            COPY 'END'
 %%         TEST IF CONVERGED 
-%            IF LSQ:FLAG .GT. 1 THEN
+%          COPY '#SCRIPT SFLSCONVERGE'
+%            IF CONVERGE .GT. 1. THEN
 %              EVALUATE LOOPEND = LOOPCOUNTER
 {I Refinement has converged
-%            ELSE
-%%         TEST IF CONVERGED 
-%             IF LSQ:FLAG .GT. 1 THEN
-%              EVALUATE LOOPEND = LOOPCOUNTER
-{I Refinement has converged
-%             END IF
 %            END IF
 %  TRANSFER '{I Finished Cycle ' // character loopcounter //  ' of ' //  character ncycle TO DISPLAY 
 ^^??         RF_BAB STATE

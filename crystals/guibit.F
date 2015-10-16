@@ -579,6 +579,7 @@ CODE FOR XGUIUP
 #if defined(CRY_GUI)      
       use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
 #endif
+      implicit none
 C----- UPDATE THE GUI
 C
 C Unlike earlier versions of this subroutine, we can now sometimes claim store
@@ -622,9 +623,10 @@ c         loaded by the calling routine.
       INCLUDE 'QSTR11.INC'
       INCLUDE 'XDISCB.INC'
 
-      DIMENSION JDEV(4)
-      DIMENSION CARD(20)
-      REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
+      integer :: iuln
+      integer, dimension(4) :: JDEV
+      real, dimension(20) :: CARD
+      real, dimension(3,3) :: TENSOR, TEMPOR, ROTN, AXES
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
       CHARACTER*5 CWT 
@@ -639,12 +641,27 @@ c         loaded by the calling routine.
       CHARACTER*11 CBONDS(0:9)
 
 
-      DIMENSION LST(15)
-      DIMENSION ICLINF(400)
-      DIMENSION TXYZ(9)
+      integer, dimension(15) :: LST
+      integer, dimension(400), save :: ICLINF
+      real, dimension(9) :: TXYZ
 
+      real cov, gscale, spare, sparev, uequiv, vdw, xmax, xmin
+      real ymax, ymin, zmax, zmin
+      integer i5, ia, ia1, ia2, iaddd, iaddi, iaddl, iaddr, iaddu, iap
+      integer iat1p, iat2p, iattyp, iblu, icent, icol, icsne
+      integer id, iererr, igre, iicol, ileng, ilst, innj, innk, innl
+      integer innm, innn, ins, iow, iplace, irec, ired, iroot, ispare
+      integer issym, istat, itype, ivect, iwork, jgrp, jprt, jtype, kb
+      integer kfndpr, kg, ki, kj, knf11, kr, l01sr, l02sr, l04sr, l05sr
+      integer l12sr, l13sr, l16sr, l23sr, l25sr, l29sr, l30sr, l41sr
+      integer last, lbuf, lfm, ll, llab, llab2, lmod, ln, lsn, ltmn
+      integer mlst, nfw, nlst, nocare, nos, numb
 
-      SAVE NCLINF, ICLINF
+      integer, save :: NCLINF
+      
+      integer, external :: kexist, khuntr, k41dep, kflopn, kstall
+      integer, external :: kmolax, kinv2, klschk, kincrf, klddrh
+      real, external :: xdstn2
 
       DATA ISERnn /50*0/
       DATA NCLINF /0/

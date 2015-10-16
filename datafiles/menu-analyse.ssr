@@ -63,6 +63,8 @@
 ^^WI     '#SPAWN CRYSDIR:manual/analyse/absolute.html' DISABLEIF='IN'             
 ^^WI     ITEM HLPD 'Absences'
 ^^WI     '#SCRIPT XABSDEMO' DISABLEIF='IN'
+^^WI     ITEM HLPE 'Resolution'
+^^WI     '#SCRIPT SINTHETA' DISABLEIF='IN'
 ^^WI   ENDMENU
 ^^WI  ENDMENU                                                                   
 %%SSR END

@@ -1,0 +1,81 @@
+# 0.0 Typical bond length taken from literature
+C-H  1.115 - 1.056 upper and lower limit
+C-H  1.08 single bond, gas phase, rt
+C-BE 1.93 no s.u. available
+C-HG 2.07 +/-1
+C-B  1.56 +/-1
+C-AL 2.24 +/-4
+C-IN 2.16 +/-4
+C-C  1.54 - 1.20 upper and lower limit
+C-C  1.541 +/-3 single bond
+C-C  1.54452 +/-14 in diamond
+C-C  1.53 +/-1 near C-C double bond
+C-C  1.516 +/-5 near C-O double bond
+C-C  1.49 +/- 1 near two C-O double bonds
+C-C  1.471 +/-2 between pyridine rings
+C-C  1.460 +/-3 near C-C triple bond
+C-C  1.4210 +/-1 in graphite (15°C)
+C-C  1.395 +/-3 in aromatic compounds
+C-C  1.373 +/- 4 near two C-C triple bonds
+C-C  1.337 +/-6 double bond
+C-C  1.309 +/-5 partial triple bond
+C-C  1.204 +/-2 triple bond
+C-C  1.206 +/-4 conjugated triple bond
+C-SI 1.865 +/-8 alkyl
+C-SI 1.84 +/-1 aryl
+C-SI 1.88 +/-1 near negative substitutent
+C-GE 1.98 +/-3
+C-SN 2.143 +/-5
+C-SN 2.18 +/-2 near negative substitutent
+C-PB 2.29 +/-5
+C-N  1.47 - 1.16 upper and lower limit
+C-N  1.479 +/-5 N with 4 single bonds
+C-N  1.472 +/-5 N with 3 single bonds
+C-N  1.475 +/-10 in C-N=, e.g. CH3NO2
+C-N  1.426 +/-12 in presence of aromatic ring
+C-N  1.352 +/-5 in heterocyclic systems
+C-N  1.322 +/-3 in N-C=O
+C-N  1.158 +/-2 triple bond
+C-P  1.87 +/-2
+C-AS 1.98 +/-2
+C-SB 2.202 +/-16
+C-BI 2.30 no s.u. available
+C-O  1.43 - 1.15 upper and lower limit
+C-O  1.43 +/-1 single bond
+C-O  1.47 +/-1 strained, e.g. epoxides
+C-O  1.36 +/-1 partial double bond
+C-O  1.23 +/-1 double bond
+C-O  1.207 +/-6 conjugated systems
+C-O  1.17 +/-1 in acyl halides or isocyanates
+C-S  1.81 - 1.55 upper and lower limit
+C-S  1.81 +/-1 single bond
+C-S  1.83 +/-1 lengthened in presence of F
+C-S  1.73 +/-1 in heterocyclic systems
+C-S  1.71 +/-2 double bond
+C-S  1.558 +/-3 in presence of 2 double bonds
+C-CR 1.92 +/-4
+C-SE 1.92 - 1.71 upper and lower limit
+C-TE 2.05 +/-14
+C-MO 2.08 +/-4
+C-W  2.06 no s.u. available
+C-F  1.381 +/-5 monosubstituted (CH3F)
+C-F  1.344 +/-4 disubstituted (CH2F2)
+C-F  1.32 +/-1 olefinic
+C-F  1.30 +/-1 aromatic
+C-CL 1.767 +/-2 single bond
+C-CL 1.72 +/-1 olefinic
+C-CL 1.70 +/-1 aromatic
+C-CL 1.635 +/-4 acetylenic
+C-BR 1.937 +/-3 single bond
+C-BR 1.89 +/-1 olefinic
+C-BR 1.85 +/-1 aromatic
+C-BR 1.79 +/-1 acetylenic
+C-I  2.13 +/-1 single bond
+C-I  2.092 +/-5 olefinic
+C-I  2.05 +/-1 aromatic
+C-I  1.99 +/-2 acetylenic
+C-FE 1.84 +/-2
+C-CO 1.83 +/-2
+C-NI 1.82 +/-3
+C-FE 2.27 +/-4
+END

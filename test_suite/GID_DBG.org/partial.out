@@ -3405,7 +3405,7 @@ Mean C-C su =   0.0273
  Structure factor least squares calculation   12  ends  2
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.26    SumwFoFc/SumwFc^2=  6.22
 LS-scale=  6.251   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.10                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.013    100*(<Fo>-<Fc>)/<Fo> =    -0.10                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 

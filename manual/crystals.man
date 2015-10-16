@@ -3777,11 +3777,11 @@ For example:
  are computed and can be output :
 #N   9#
 #J
- SIGMA1 = Sqrt (sum [ w(i)*q(i)**2 ] / sum [ w(i) ])
+ SIGMA1 = Sqrt (sum [ w(i)*q(i)**2 ] / n * sum [ w(i) ])
              that is, the weighted r.m.s. deviation.
 
- SIGMA2 = Sqrt (sum [ w(i)*s(i)**2 ] / sum [ w(i) ])
-             that is, the weighted standard deviation.
+ SIGMA2 = Sqrt (sum [ w(i)*s(i)**2 ] / n * sum [ w(i) ])
+             that is, the weighted average standard deviation.
 #
  Either of these two standard deviations can be selected as an estimate
  of Sigma(Fsq), and perhaps be converted to a Least Squares weight. If a
@@ -8469,7 +8469,7 @@ factor control, see section #RLIST23#).
  to define the weighting scheme, P(1) is the first such
  parameter and P(NP) the last parameter.
 #PThe available weighting schemes are :
-#N  32#
+#N  36#
 #J
  1.     sqrt(W) = Fo/P(1), Fo < P(1) OR Fo = P(1)
         sqrt(W) = P(1)/Fo, Fo > P(1)
@@ -8521,6 +8521,9 @@ factor control, see section #RLIST23#).
                    refined automatically. Fo and Fc replace Fosq and
                    Fcsq for Fo refinement.
                    Use 0.1 0 0 0 0 .333 to get Sheldrick defaults.
+
+ 17.    Automatically determine the parameters for 16
+
 #
 #YDunitz Seiler weighting - scheme 13#
 #HSdunitz#

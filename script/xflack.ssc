@@ -7,7 +7,7 @@
 % EVALUATE SOMEERROR = TRUE
 % EVALUATE SERR = FALSE
 % VARIABLE REAL FILTER1 FILTER2 FILTER3 FILTER4 FILTER5
-% EVALUATE FILTER1 = 0.5                                                      
+% EVALUATE FILTER1 = 0.001                                                      
 % EVALUATE FILTER2 = 1.0                                                      
 % EVALUATE FILTER3 = 2.0 
 % EVALUATE FILTER4 = 0.001
@@ -186,7 +186,7 @@
 ^^WI               @ 2,2 STATIC _NREF '0000.0'
 ^^WI               @ 1,4 STATIC HPF 
 ^^WI               ' Try setting filter 1 to '
-^^WI               @ 1,5 STATIC _FIL1 '      0.50'
+^^WI               @ 1,5 STATIC _FIL1 '      0.001'
 ^^WI  }
 ^^WI  @ 8,2 GRID REFCON NROWS=2 NCOLS=5 OUTLINE='Reflections Accepted if:'
 ^^WI  {                                                                        
@@ -242,7 +242,7 @@
 %     BLOCK  %CALCULATE%
 %% first get updated filters
 ^^??  NF1 TEXT                                                                    
-%     GET NOSTORE SILENT FINAL REAL 'Filter1' '0.5'                          
+%     GET NOSTORE SILENT FINAL REAL 'Filter1' '0.001'                          
 %     EVALUATE FILTER1 = VALUE                                                    
 ^^??  NF2 TEXT                                                                    
 %     GET NOSTORE SILENT FINAL REAL 'Filter2' '1.0'                          

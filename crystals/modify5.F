@@ -1107,9 +1107,11 @@ C  Inner loop over atoms between current and last.
           IF ( ( ISTORE(K5A)        .EQ. ISTORE(K5B)        ) .AND.
      1         ( NINT(STORE(K5A+1)) .EQ. NINT(STORE(K5B+1)) ) ) THEN
            CALL CATSTR(STORE(K5A),STORE(K5A+1),1,1,0,0,0,CATOM1,LATOM1)
+           call outcol(9)
            WRITE (CMON,'('' Clash detected, atom: '',A)')
      1     CATOM1(1:LATOM1)
            CALL XPRVDU (NCVDU,1,0)
+           call outcol(1)
            IF ( MCLASH .GT. 0 ) THEN
 C  Fix clash. Find highest serial and add one.
              IHSER = 1
