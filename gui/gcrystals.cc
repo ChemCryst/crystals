@@ -367,9 +367,9 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-  tstring vers = _T(STR( CRYSVNVER ));
+  tstring vers = STR( CRYSVNVER );
   vers.erase ( std::remove(vers.begin(), vers.end(), ':'), vers.end());
-  tstring vers2 =  _T("Crystals ") + vers +  _T(" Error Report");  
+  tstring vers2 =  "Crystals " + vers +  " Error Report";  
 //  tstring vers2;
 
   // Define CrashRpt configuration parameters
@@ -379,8 +379,8 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   info.pszAppName = _T("Crystals");  
   info.pszAppVersion = vers2.c_str();
   info.pszEmailSubject = vers2.c_str(); 
-  info.pszEmailTo = _T("richard.cooper@chem.ox.ac.uk");    
-  info.pszUrl = _T("http://crystals.xtl.org.uk/tools/crashrpt.php");  
+  info.pszEmailTo = "richard.cooper@chem.ox.ac.uk";    
+  info.pszUrl = "http://crystals.xtl.org.uk/tools/crashrpt.php";  
   info.uPriorities[CR_HTTP] = 3;  // First try send report over HTTP 
   info.uPriorities[CR_SMTP] = 2;  // Second try send report over SMTP  
   info.uPriorities[CR_SMAPI] = 1; // Third try send report over Simple MAPI    
@@ -389,9 +389,9 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   // Restart the app on crash 
   info.dwFlags |= CR_INST_APP_RESTART; 
   info.dwFlags |= CR_INST_SEND_QUEUED_REPORTS; 
-  info.pszRestartCmdLine = _T("");
+  info.pszRestartCmdLine = "";
   // Define the Privacy Policy URL 
-  info.pszPrivacyPolicyURL = _T("http://crytals.xtl.org.uk/tools/privacypolicy.html"); 
+  info.pszPrivacyPolicyURL = "http://crytals.xtl.org.uk/tools/privacypolicy.html"; 
   
   // Install crash reporting
   int nResult = crInstall(&info);
