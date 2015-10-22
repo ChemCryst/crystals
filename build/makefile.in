@@ -81,8 +81,8 @@ else
     CC = gcc51
     LD = gfortran51
     F77 = gfortran51
-    F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX  
-    F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX 
+    F77FLAGS = -fcheck=all -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX  
+    F90FLAGS = -fcheck=all -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX 
     LDFLAGS = -L/files/pparois/root/lib/ -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
     OPT = -g -O2 -fopenmp -Wfatal-errors 
 
