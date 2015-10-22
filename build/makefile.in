@@ -35,7 +35,7 @@ else
     F77 = gfortran51
     F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX -DCRY_OSLINUX  
     F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX -DCRY_OSLINUX 
-    LDFLAGS = -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
+    LDFLAGS = -L/files/pparois/root/lib/ -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
     OPT = -g -gdwarf-3 -O2 -fopenmp -Wfatal-errors 
 
     INSTALL=/usr/bin/install
@@ -83,7 +83,7 @@ else
     F77 = gfortran51
     F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX  
     F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX 
-    LDFLAGS = /c/Users/Pascal/Downloads/hdf5-1.8.15-patch1/hdf5/lib/libhdf5_fortran.dll.a /c/Users/Pascal/Downloads/hdf5-1.8.15-patch1/hdf5/lib/libhdf5.dll.a -L/files/pparois/root/lib -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
+    LDFLAGS = -L/files/pparois/root/lib/ -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
     OPT = -g -O2 -fopenmp -Wfatal-errors 
 
     INSTALL=/bin/install
