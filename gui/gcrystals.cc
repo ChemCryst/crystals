@@ -367,16 +367,16 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-  tstring vers = STR( CRYSVNVER );
+  string vers = STR( CRYSVNVER );
   vers.erase ( std::remove(vers.begin(), vers.end(), ':'), vers.end());
-  tstring vers2 =  "Crystals " + vers +  " Error Report";  
+  string vers2 =  "Crystals " + vers +  " Error Report";  
 //  tstring vers2;
 
   // Define CrashRpt configuration parameters
-  CR_INSTALL_INFO info;  
+  CR_INSTALL_INFOA info;  
   memset(&info, 0, sizeof(CR_INSTALL_INFO));  
   info.cb = sizeof(CR_INSTALL_INFO);    
-  info.pszAppName = _T("Crystals");  
+  info.pszAppName = "Crystals";  
   info.pszAppVersion = vers2.c_str();
   info.pszEmailSubject = vers2.c_str(); 
   info.pszEmailTo = "richard.cooper@chem.ox.ac.uk";    
@@ -394,7 +394,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   info.pszPrivacyPolicyURL = "http://crytals.xtl.org.uk/tools/privacypolicy.html"; 
   
   // Install crash reporting
-  int nResult = crInstall(&info);
+  int nResult = crInstallA(&info);
   if(nResult!=0)  
 
   {   
