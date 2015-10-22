@@ -1586,10 +1586,17 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
       DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '00  ' /
 #endif
 #elif defined(__WXS__)  || defined (__INW__)
+#ifdef _HOL_
+      DATA ISSMAC(1) / 4HInte / , ISSMAC(2) / 4Hl    /
+      DATA ISSOPS(1) / 4HMacO / , ISSOPS(2) / 4HS    /
+      DATA ISSDAT(1) / 4H     / , ISSDAT(2) / 4H Dec /
+      DATA ISSDAT(3) / 4H  20 / , ISSDAT(4) / 4H13   /
+#else
       DATA ISSMAC(1) / 'Inte' / , ISSMAC(2) / 'l   ' /
       DATA ISSOPS(1) / 'Win3' / , ISSOPS(2) / '2   ' /
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
       DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '13  ' /
+#endif
 #elif defined(__VAX__) 
       DATA ISSMAC(1) / ' DEC' / , ISSMAC(2) / ' VAX' /
       DATA ISSOPS(1) / ' VMS' / , ISSOPS(2) / ' 5.0' /

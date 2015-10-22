@@ -45,21 +45,24 @@ else
 
     SUFFIX =.exe
 
-    GUIFLAGS = -fno-inline -fexceptions -mwindows
-    GUILIBRARIES = -lg2c `wx-config --libs --gl-libs` 
+    GUIFLAGS = -fno-inline -fexceptions -D__BOTHWX__
+    GUILIBRARIES = `wx-config --libs std,stc --gl-libs` 
     CLFLAGS = 
-    CLLIBRARIES = -lg2c
-    NATIVEXLIBS = -lgdi32
+    CLLIBRARIES = 
+    NATIVEXLIBS = 
 
-    CPPFLAGS = -s -fexceptions -I /usr/local/include `wx-config --cppflags` 
-    CFLAGS = -s -I /usr/local/include 
+    CPPFLAGS =  -s -fexceptions -I /usr/local/include `wx-config --cppflags`  -D__$(COMPCODE)__ 
+    CFLAGS = -s -D__$(COMPCODE)__ -DCRY_OSWIN32 
 
     CXX = g++
     CC = gcc
-    LD = g++
-    F77 = g77
-    F77FLAGS = -fexceptions -fno-automatic -fno-globals -Wno-globals -I../crystals/ -D _$(COMPCODE)_ -D_HOL_ 
-    OPT = -O2
+    LD = gfortran
+    LD77 = gfortran
+    F77 = gfortran
+    F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero  -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX -DCRY_OSWIN32 
+    F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2   -I/C/Users/Pascal/Downloads/hdf5-1.8.15/build/hdf5/include -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX 
+    LDFLAGS =  /C/Users/Pascal/Downloads/hdf5-1.8.15/build/hdf5/lib/libhdf5_fortran.a /C/Users/Pascal/Downloads/hdf5-1.8.15/build/hdf5/lib/libhdf5.a -lws2_32 -lm -lstdc++ -L/c/Users/Pascal/Documents/OpenBLAS-0.2.14/ -lopenblas -L/c/Users/Pascal/Downloads/wxWidgets/lib/ -lopengl32 -lglu32
+    OPT = -cpp -g -gdwarf-3 -O1 -fopenmp -Wfatal-errors  
 
     INSTALL=/bin/install
 
@@ -80,7 +83,7 @@ else
     F77 = gfortran51
     F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX  
     F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX 
-    LDFLAGS = -L /files/pparois/root/lib -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
+    LDFLAGS = /c/Users/Pascal/Downloads/hdf5-1.8.15-patch1/hdf5/lib/libhdf5_fortran.dll.a /c/Users/Pascal/Downloads/hdf5-1.8.15-patch1/hdf5/lib/libhdf5.dll.a -L/files/pparois/root/lib -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
     OPT = -g -O2 -fopenmp -Wfatal-errors 
 
     INSTALL=/bin/install

@@ -559,7 +559,7 @@ void CcPlotBar::SaveToFile(string filename)
 			vector<float>::iterator ity = m_Series[j].m_Data.begin();
 			for( int i = 0; ity != m_Series[j].m_Data.end(); ity++ )
 			{
-				fprintf( output, "%s,%f,%d\n", *its, *ity, j+1 );
+				fprintf( output, "%s,%f,%d\n", (*its).c_str(), *ity, j+1 );
 				its++;
 			}
 		}

@@ -611,14 +611,11 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C               15  16  17  18  19  20  21
 C-----------------------------------------------------------------------
-      DO 101 I = 1,4
-       DO 100 J = 1,4
-        L(J,I) = 0
-100    CONTINUE
-101   CONTINUE
       WRITE (CSPG,10000) SPG
 10000 FORMAT (10A1)
-c      write(ncwu,'(a,10a1)')'Space group=',spg
+      write(ncwu,'(a,10a1)')'Space group=',spg
+
+      L=0
 C-----------------------------------------------------------------------
 C  CHECK THAT THERE ARE BLANKS IN THE SYMBOL, SO THAT IT HAS AT LEAST A
 C  SPORTING CHANCE OF BEING INTERPRETED CORRECTLY

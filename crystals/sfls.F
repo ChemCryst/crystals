@@ -3405,6 +3405,9 @@ C Some constants for chebychev approx.
 #ifdef CRY_OSLINUX 
       real, dimension(2) :: scb
 #endif
+      ALPD=0.0
+      BLPD=0.0
+
       DD=1.0/TWOPI
 
       ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
@@ -3653,10 +3656,6 @@ C
         ATOM_REFINE = .FALSE. 
 
         IF(SFLS_TYPE .EQ. SFLS_REFINE) THEN   ! CHECK IF REFINEMENT IS BEING DONE
-          !CALL XZEROF ( ALPD(1),11 )  ! CLEAR PARTIAL DERIVATIVE STACKS
-          ALPD(1:11)=0.0
-          !CALL XZEROF ( BLPD(1),11 )
-          BLPD(1:11)=0.0
           L12A=ISTORE(M12+1)
           IF ( L12A .GE.0 ) ATOM_REFINE = .TRUE.  ! Set if any params of this atom are being refined
           M12=ISTORE(M12)
