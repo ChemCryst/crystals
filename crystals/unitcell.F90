@@ -1,4 +1,16 @@
 !> This module holds the unit cell parameters and related values
+!! 
+!! \par List of old adresses in STORE
+!! - L1P1,M1P1,MD1P1,N1P1 unit cell parameters
+!! - L1P2,M1P2,MD1P2,N1P2 reciprocal unit cell parameters
+!! - L1M1,M1M1,MD1M1,N1M1 REAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS  
+!! - L1M2,M1M2,MD1M2,N1M2 RECIPROCAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+!! - L1O1,M1O1,MD1O1,N1O1 REAL OTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+!! - L102,M1O2,MD1O2,N1O2 RECIPROCAL ORTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+!! - L1S, M1S, MD1S, N1S  THE R(II)'S AND R(IJ)'S USED TO CALCULATE SIN(THETA)/LAMBDA
+!! - L1A, M1A, MD1A, N1A  ANISOTROPIC TEMPERATURE FACTOR COEFFICIENTS
+!! - L1C, M1C, MD1C, N1C  CONSTANTS TO CONVERT AN ATOM FROM ISO TO ANISO
+
 module unitcell_mod
 
 !> Unit cell object
@@ -21,9 +33,10 @@ contains
     procedure, pass(this) :: rmetric_exclcell
     procedure, pass(this) :: metric
     procedure, pass(this) :: metric_exclcell
-    procedure, pass(this) :: Rij
-    procedure, pass(this) :: adp_coefs
-    procedure, pass(this) :: iso_to_aniso
+    procedure, pass(this) :: Rij ! L1S
+    procedure, pass(this) :: Rij_linear ! L1S
+    procedure, pass(this) :: adp_coefs ! L1A
+    procedure, pass(this) :: iso_to_aniso ! L1C
 end type
 
 !> Set the direct cell and reciprocal given either cell (generic interface of ::set_cell, ::set_cella)
@@ -258,6 +271,24 @@ function metric_exclcell(this)
     logical OK_FLAG
         
     call M33INV (this%rmetric_exclcell(), metric_exclcell, OK_FLAG)
+end function
+
+!> Return the R(ii) and R(ij) used to calculate sin(theta)/lambda as a linear array of 6 elements
+function Rij_linear(this)
+    implicit none
+    class(t_unitcell) :: this
+    real, dimension(6) :: Rij_linear
+    real, dimension(3,3) :: Rij
+    integer i
+    
+    Rij=this%Rij()
+    
+    do i=1, 3
+        Rij_linear(i)=Rij(i,i)
+    end do
+    Rij_linear(4)=Rij(2,3)
+    Rij_linear(5)=Rij(1,3)
+    Rij_linear(6)=Rij(1,2)
 end function
 
 !> Return the R(ii) and R(ij) used to calculate sin(theta)/lambda

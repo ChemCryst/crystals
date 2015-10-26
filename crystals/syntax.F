@@ -271,6 +271,9 @@ C--OUTPUT THE INTERDEPENDENCIES RECORD
 C
 CODE FOR XLSV
       SUBROUTINE XLSV
+      use unitcell_mod
+      use xparse_mod
+      implicit none
 C--LOAD SYSTEM VARIABLES
 C
 C--
@@ -280,7 +283,7 @@ C
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLEXIC.INC'
       INCLUDE 'XCONST.INC'
@@ -288,6 +291,18 @@ C
       INCLUDE 'XPARSE.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      integer i
+      
+      integer, external :: kchlfl
+      real, dimension(:), allocatable :: rtemp
+      
+      interface 
+          subroutine XSPRDD_new(data_record, new_address)
+          integer, intent(out) :: new_address
+          real, dimension(:), intent(in) :: data_record  
+          end subroutine    
+      end interface
 C
 C--SET UP THE BASE ADDRESS OF THE WORK STACK
       LC=LFL
@@ -295,32 +310,77 @@ C--LOAD LIST 1
       CALL XFAL01
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--EXPAND LIST 1 TO ALLOW FOR THE DERIVATIVES
-      CALL XSPRDD(7,L1P1,KSV(1,1))
-      KSV(1,2)=KSV(1,1)+12
-      CALL XSPRDD(7,L1P2,KSV(1,3))
-      KSV(1,4)=KSV(1,3)+12
-      CALL XSPRDD(9,L1M1,KSV(1,5))
-      CALL XSPRDD(9,L1M2,KSV(1,6))
-      CALL XSPRDD(9,L1O1,KSV(1,7))
-      CALL XSPRDD(9,L1O2,KSV(1,8))
-      CALL XSPRDD(3,L1C,KSV(1,9))
-      CALL XSPRDD(6,L1S,KSV(1,10))
-      CALL XSPRDD(6,L1A,KSV(1,11))
+
+      ! unit cell parameters
+      allocate(rtemp(7))
+      rtemp=(/ unitcells(1)%a, unitcells(1)%b, unitcells(1)%c, 
+     1     unitcells(1)%alpha, unitcells(1)%beta, unitcells(1)%gamma, 
+     1     unitcells(1)%volume() /)
+      CALL XSPRDD_new(rtemp,KSV_new(1)%address)
+      !CALL XSPRDD(7,L1P1,KSV(1,1))
+      
+      KSV_new(2)%address=KSV_new(1)%address+12
+      !KSV(1,2)=KSV(1,1)+12
+      
+      ! reciprocal unit cell parameters
+      rtemp=(/ unitcells(1)%ra, unitcells(1)%rb, unitcells(1)%rc, 
+     1     unitcells(1)%ralpha, unitcells(1)%rbeta, unitcells(1)%rgamma, 
+     1     unitcells(1)%rvolume() /)
+      CALL XSPRDD_new(rtemp,KSV_new(3)%address)
+      !CALL XSPRDD(7,L1P2,KSV(1,3))
+      
+      KSV_new(4)%address=KSV_new(3)%address+12
+      !KSV(1,4)=KSV(1,3)+12
+      
+      ! real metric tensor
+      CALL XSPRDD_new(reshape(unitcells(1)%metric(),(/9/)),
+     1     KSV_new(5)%address)
+      !CALL XSPRDD(9,L1M1,KSV(1,5))
+
+      ! real metric tensor without cell parameters
+      CALL XSPRDD_new(reshape(unitcells(1)%metric_exclcell(),(/9/)),
+     1     KSV_new(6)%address)
+      !CALL XSPRDD(9,L1M2,KSV(1,6))
+      
+      ! orthogonalisation matrix
+      CALL XSPRDD_new(reshape(unitcells(1)%orthogonalisation(),(/9/)),
+     1     KSV_new(7)%address)
+      !CALL XSPRDD(9,L1O1,KSV(1,7))
+
+      ! orthogonalisation matrix without cell parameters
+      CALL XSPRDD_new(reshape(unitcells(1)%orthogonalisation_exclcell()
+     1         ,(/9/)),
+     1     KSV_new(8)%address)
+      !CALL XSPRDD(9,L1O2,KSV(1,8))
+      
+      ! constants to convert from iso to aniso
+      CALL XSPRDD_new(unitcells(1)%iso_to_aniso(), KSV_new(9)%address)      
+      !CALL XSPRDD(3,L1C,KSV(1,9))
+      
+      ! the r(ii)'s and r(ij)'s used to calculate sin(theta)/lambda
+      CALL XSPRDD_new(unitcells(1)%Rij_linear(), KSV_new(10)%address)
+      !CALL XSPRDD(6,L1S,KSV(1,10))
+      
+      ! anisotropic temperature factor coefficients
+      CALL XSPRDD_new(unitcells(1)%adp_coefs(), KSV_new(11)%address)
+      !CALL XSPRDD(6,L1A,KSV(1,11))
+      
 C--LOAD LIST 2
       CALL XFAL02
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SPREAD THE SYMMETRY OPERATORS
-      CALL XSPRDD(N2*MD2,L2,KSV(1,12))
+      CALL XSPRDD(N2*MD2,L2,KSV_new(12)%address)
 C--SPREAD THE INVERSE SYMMETRY OPERATORS
-      CALL XSPRDD(N2I*MD2I,L2I,KSV(1,13))
+      CALL XSPRDD(N2I*MD2I,L2I,KSV_new(13)%address)
 C--SPREAD THE NON-PRIMITIVE LATTIVE TRANSLATIONS
-      CALL XSPRDD(MD2P*N2P,L2P,KSV(1,14))
+      CALL XSPRDD(MD2P*N2P,L2P,KSV_new(14)%address)
 C--SET UP THE USEFUL CONSTANTS
       LN=2001
       IREC=2001
       I=KCHLFL(12)
 C--ZERO THE ALLOCATED AREA
       CALL XZEROF(STORE(I),12)
+      store(i:i+11)=0.0
       STORE(I)=PI
       STORE(I+2)=TWOPI
       STORE(I+4)=TWOPIS
@@ -328,16 +388,14 @@ C--ZERO THE ALLOCATED AREA
       STORE(I+6)=RTD
       STORE(I+10)=0.0
 C--SET UP THE ADDRESSES OF THE USEFUL CONSTANTS
-      KSV(1,15)=I
-      KSV(1,16)=I+2
-      KSV(1,17)=I+4
-      KSV(1,18)=I+6
-      KSV(1,19)=I+8
-      KSV(1,20)=I+10
+      KSV_new(15)%address=I
+      KSV_new(16)%address=I+2
+      KSV_new(17)%address=I+4
+      KSV_new(18)%address=I+6
+      KSV_new(19)%address=I+8
+      KSV_new(20)%address=I+10
 C--CONVERT ALL THE STORED ADDRESSES TO RELATIVE ONES
-      DO 1000 I=1,NSV
-      KSV(1,I)=KSV(1,I)-LC
-1000  CONTINUE
+      KSV_new(:)%address=KSV_new(:)%address-LC
 C--SET UP THE INITIAL USER VARIABLE STACK
       LUV=LFL
       MDUV=LK2
@@ -377,6 +435,39 @@ C--LOOP OVER EACH VALUE
 1000  CONTINUE
       RETURN
       END
+      
+      subroutine XSPRDD_new(data_record, new_address)      
+      implicit none
+      
+      integer, intent(out) :: new_address
+      real, dimension(:), intent(in) :: data_record
+C--EXPAND A DATA RECORD TO ALLOW FOR STORAGE OF ITS VALUE AND ITS
+C  FIRST DIFFERENTIAL.
+C
+C  N   NUMBER OF WORDS TO BE SPREAD.
+C  L1  INITIAL ADDRESS OF THE DATA TO BE SPREAD.
+C  L2  SET TO THE ADDRESS OF THE SPREAD DATA ON EXIT.
+C
+C--
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLISTI.INC'
+      
+      integer i, k
+      integer, external :: kchlfl
+C
+C--SET THE RECORD TYPE
+      IREC=2001
+      new_address=KCHLFL(2*size(data_record))
+      K=new_address
+C--LOOP OVER EACH VALUE
+      DO I=1,size(data_record)
+        STORE(K)=data_record(I)
+        STORE(K+1)=0.
+        K=K+2
+      end do 
+      RETURN
+      END
+      
 C
 CODE FOR XSETCC
       SUBROUTINE XSETCC
@@ -839,6 +930,7 @@ C--ERROR DURINF PROCESSING
 C
 CODE FOR KPARSE
       FUNCTION KPARSE(IN)
+      use xparse_mod
 C--BASIC COMPILER PARSING ROUTINES  -  OUTPUT CONSISTS OF THE GENERATED
 C  CODE
 C
@@ -1028,7 +1120,7 @@ C--CHECK FOR '-'
       IF(ISTORE(MF)-2)1100,2050,1100
 2050  CONTINUE
       MV=MV+MY
-      ISTORE(MV)=KSV(1,20)
+      ISTORE(MV)=KSV_new(20)%address
       MR=0
       GOTO 1200
 C--ERROR
@@ -1100,6 +1192,7 @@ C--ERROR RETURN
 C
 CODE FOR KNUVAR
       FUNCTION KNUVAR(IN)
+      use xparse_mod
 C--PROCESS A CARD IMAGE AND LOOK FOR AN NUMBER, OR OPERAND
 C
 C  IN  DUMMY ARGUMENT
@@ -1139,6 +1232,9 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QCHAR.INC'
+      
+      integer kshape
+      
       IDWZAP = IN
 C
       KNUVAR=0
@@ -1207,11 +1303,13 @@ C--CHECK THE ARGUMENT AGAINST THE SYSTEM DEFINED VARIABLES
       IF(I)2400,2400,1700
 C--CHECK IF THE VARIABLE IS DIMENSIONED
 1700  CONTINUE
-      ISTORE(MV)=KSV(1,I)
+      ISTORE(MV)=KSV_new(I)%address
       ME=ME-1
       MF=MF+LK2
-      J=KSV(2,I)
-      IF(KSVD(J))2050,1750,1850
+      !J=KSV(2,I)
+      J=0
+      kshape=size(KSV_new(I)%kshape)
+      IF(kshape)2050,1750,1850
 C--CHECK THAT THE FOLLOWING SYMBOL IS NOT '('
 1750  CONTINUE
       IF(ME)1400,1400,1800
@@ -1222,7 +1320,7 @@ C--START OF THE LOOP TO FIND THE DIMENSIONS AND CHECK THEM
 C--LOOK FOR THE '('
       IF(KOP(6))2000,1900,2050
 1900  CONTINUE
-      N=KSVD(J)
+      N=kshape
 C--CHECK THAT THE DIMENSION IS NUMERIC
 1950  CONTINUE
       IF(KSYNUM(Z))2050,2150,2050
@@ -1244,7 +1342,7 @@ C--CHECK THE INPUT DIMENSION
       IF(M)2000,2200,2200
 2200  CONTINUE
       J=J+1
-      IF(M-KSVD(J))2250,2000,2000
+      IF(M-KSV_new(I)%kshape(J))2250,2000,2000
 C--CHECK IF THIS IS THE LAST DIMENSION
 2250  CONTINUE
       M=M+M
@@ -1252,7 +1350,7 @@ C--CHECK IF THIS IS THE LAST DIMENSION
       IF(N)2000,2350,2300
 C--INCREMENT AND GO ROUND FOR MORE
 2300  CONTINUE
-      ISTORE(MV)=ISTORE(MV)+KSVD(J)*M
+      ISTORE(MV)=ISTORE(MV)+KSV_new(I)%kshape(J)*M
 C--CHECK FOR THE ','
       IF(KOP(8))2000,1950,2050
 C--LAST DIMENSION

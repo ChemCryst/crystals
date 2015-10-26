@@ -748,13 +748,10 @@ C  AMAT  THE MATRIX TO BE SET UP AS A UNIT MATRIX.
 C
 C--
 C
-      DIMENSION AMAT(9)
+      real, dimension(9) :: AMAT
 C
 C--ZERO THE MATRIX
-      CALL XZEROF(AMAT(1),9)
-      AMAT(1)=1.
-      AMAT(5)=1.
-      AMAT(9)=1.
+      amat = (/1.0,0.0,0.0,  0.0,1.0,0.0,  0.0,0.0,1.0/)
       RETURN
       END
 C

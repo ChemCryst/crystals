@@ -257,6 +257,8 @@ C
 C
 CODE FOR XREGUL
       SUBROUTINE XREGUL
+      use unitcell_mod
+      implicit none
 C
 C -- THESE ROUTINES IMPLEMENT THE FUNCTIONS OF THE CRYSTALS INSTRUCTION
 C    'REGULARISE'
@@ -400,9 +402,10 @@ C
 C            CONSTANTS      USE SYMBOLS. SET VALUES IN 'DATA'
 C
 C
-      DIMENSION OTEMP(3)
-      DIMENSION UNITMX(9)
-      DIMENSION ZEROSH(3)
+      real, dimension(3) :: OTEMP
+      real, dimension(9), parameter :: UNITMX=
+     1       (/1.0,0.0,0.0,  0.0,1.0,0.0,  0.0,0.0,1.0/)
+      real, dimension(3), parameter :: ZEROSH=0.0
       INCLUDE 'ICOM12.INC'
       INCLUDE 'IDIM12.INC'
       INCLUDE 'ISTORE.INC'
@@ -413,7 +416,7 @@ C
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCARDS.INC'
       INCLUDE 'XCOMPD.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
@@ -431,6 +434,16 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
+      
+      integer i, iaddd, iaddl, iaddr, ifirst, ii, imatrix
+      integer imeth, isvnfl, iuln, la, lb, length, lnewl5, msgt, nl5
+      integer, parameter :: ivers=220
+      
+      real scale, xscal, xyscal, yscal, zmethd, zscal
+      
+      integer, external :: klexan, ktyp05, khuntr, kstall, kldnlr
+      real, external :: xlxrdv
+      
 C --
 C --
 C -- THE ARRAY 'GRPATM' OF CO-ORDINATES IS USED TO DEFINE GROUPS.
@@ -446,13 +459,7 @@ C
 C    THE VALUE N REPRESENTS THE CO-ORDINATES IN : -
 C         GRPATM(1,N) GRPATM(2,N) GRPATM(3,N)
 C
-C -- UNIT MATRIX AND ZERO SHIFT FOR GROUP PLACEMENT
-      DATA UNITMX(1) /1./ UNITMX(2) /0./ UNITMX(3) /0./
-      DATA UNITMX(4) /0./ UNITMX(5) /1./ UNITMX(6) /0./
-      DATA UNITMX(7) /0./ UNITMX(8) /0./ UNITMX(9) /1./
-      DATA ZEROSH(1) /0./ ZEROSH(2) /0./ ZEROSH(3) /0./
 C --
-      DATA IVERS /220/
       CALL XTIME1(2)
 C --
 c  initialise call counter for xrgclc
@@ -522,14 +529,12 @@ C -- SET THE DEFAULT VALUE OF THE 'NEW LIST' FLAG
 C
       NEWLIS=0
 C -- SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
-      CALL XMOVE(STORE(L1O2),RGOM(1,1),9)
+      !CALL XMOVE(STORE(L1O2),RGOM(1,1),9)
+      RGOM=unitcells(1)%rorthogonalisation()
 C -- ZERO ORIGIN
       CALL XZEROF(ORIGIN(1),3)
 C -- SET TO ZERO ROTATION
       CALL XUNTM3(RGMAT(1,1))
-C -- SET UNIT MATRIX AND ZERO SHIFT
-      CALL XUNTM3(UNITMX(1))
-      CALL XZEROF(ZEROSH(1),3)
 C----- ALLOCATE SPACE FOR RENAMING
       MDRENM = 6
       LRENM = KSTALL(MDRENM*N5)
@@ -904,6 +909,9 @@ C
 
 CODE FOR XRGCLC
       SUBROUTINE XRGCLC (IMATRIX,LSPARE)
+      use math_mod, only: degrees
+      use unitcell_mod
+      implicit none
 C 
 C -- THIS SUBROUTINE CONTROLS THE ACTUAL CALCULATION PERFORMED BY
 C    REGULARISE.
@@ -961,9 +969,13 @@ C    THIS IS USED IN THIS SUBROUTINE TO SELECT ONE OF THE POSSIBLE
 C    CALLS WHICH WILL CALCULATE A MATRIX.
 C 
 C 
-      DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3)
-      DIMENSION OPM(4,4), OPN(4,4), OTEMP(4), IBMA(16)
-      DIMENSION TEMP1(3,3), TEMP2(3,3), TEMP3(3,3), DMATRIX(3,3)
+      integer, dimension(3) :: ITEMP
+      real, dimension(3) :: ATEMP
+      real, dimension(3,3) :: RTEMP1, RTEMP2, temp1, temp2, temp3
+      real, dimension(3,3) :: dmatrix
+      real, dimension(4,4) :: opm, opn
+      real, dimension(4) :: otemp
+      real, dimension(16) :: ibma
 C 
 Cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       INCLUDE 'REGTMP.INC'
@@ -980,7 +992,7 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XRGCOM.INC'
@@ -991,6 +1003,18 @@ C
       INCLUDE 'XIOBUF.INC'
 C 
       INCLUDE 'QSTORE.INC'
+      
+      integer, intent(in) :: imatrix, lspare
+      real best, closen, closex, defind, det, dettrc
+      integer i, iaddd, iaddr, iaddl, iatomf, idefin, idjw, ij, indatm
+      integer indnew, indl5, induij, irec, isize, iwors, j, j2, j3, j4
+      integer k1, k2, k3, k4, k5, kdjw, kseril, ktype, l5item, lenfil
+      integer ll5, ll5n, ln, lnewl5, mdlst, mlst, msgt, nfunc, nlst
+      integer nmsgt, nnewl5, nrcomp, numatm
+      real raverage, rmat, rworst, trace
+      
+      integer, external :: kmolax, xdetr3, kinv2, katomf, kstall, khuntr
+      real, external :: cmpmat
 C 
       DATA CELEMT/'23461m'/
       DATA CAXIS/'X','Y','Z'/
@@ -1129,11 +1153,17 @@ c
 
 C -- CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE
 C    AND BACK
-         CALL XMLTMT (VECTO,STORE(L1O1),CFBPOL,3,3,3)
-         CALL XMLTMT (VECTN,STORE(L1O1),CFBPNE,3,3,3)
+         !CALL XMLTMT (VECTO,STORE(L1O1),CFBPOL,3,3,3)
+         CFBPOL=matmul(VECTO, 
+     1       transpose(unitcells(1)%orthogonalisation()))
+         !CALL XMLTMT (VECTN,STORE(L1O1),CFBPNE,3,3,3)
+         CFBPNE=matmul(VECTN, 
+     1       transpose(unitcells(1)%orthogonalisation()))
 C 
-         CALL XMLTMM (STORE(L1O2),COSNO,BPCFOL,3,3,3)
-         CALL XMLTMM (STORE(L1O2),COSNN,BPCFNE,3,3,3)
+         !CALL XMLTMM (STORE(L1O2),COSNO,BPCFOL,3,3,3)
+         BPCFOL=matmul(unitcells(1)%rorthogonalisation(), COSNO)
+         !CALL XMLTMM (STORE(L1O2),COSNN,BPCFNE,3,3,3)
+         BPCFNE=matmul(unitcells(1)%rorthogonalisation(), COSNN)
 Cdjwapr2001
       END IF
 C 
@@ -1789,10 +1819,14 @@ C Output cell.
              CALL XCREMS(CPCH,CPCH,LENFIL)
 
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F9.4))')
-     1    (CHAR(9),STORE(I), I = L1P1, L1P1+2)
+     1      CHAR(9), unitcells(1)%a, 
+     2      CHAR(9), unitcells(1)%b, 
+     3      CHAR(9), unitcells(1)%c 
           CALL XCREMS(CPCH,CPCH,LENFIL)
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F9.4))')
-     1    (CHAR(9),STORE(I)*rtd, I = L1P1+3, L1P1+5)
+     1     CHAR(9), degrees(unitcells(1)%alpha), 
+     2     CHAR(9), degrees(unitcells(1)%beta), 
+     3     CHAR(9), degrees(unitcells(1)%gamma)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 
@@ -2526,6 +2560,8 @@ C --
 C
 CODE FOR XRGPLG
       SUBROUTINE XRGPLG(IATOMS,NATOMS,XSCALE,YSCALE,ZSCALE,SHIFT,ROTN)
+      use unitcell_mod
+      implicit none
 C -- SUBROUTINE TO PLACE A PRE-DEFINED GROUP OF NEW ATOMS
 C    IATOMS CONTAINS LIST OF THE ATOM INDEXES REFERING TO
 C    AN ARRAY GRPATM(3,NNNNN) IN COMMON BLOCK XRGGRP
@@ -2533,16 +2569,23 @@ C    NATOMS IS THE NUMBER OF ATOMS IN THE GROUP
 C    XSCALE,YSCALE,ZSCALE ARE THE SCALE FACTORS APPLIED TO
 C    X,Y,Z COORDINATES
 C --
-      DIMENSION IATOMS(NATOMS)
-      DIMENSION SHIFT(3)
-      DIMENSION ROTN(3)
+      integer, intent(in) :: natoms
+      integer, dimension(natoms) :: IATOMS
+      real xscale, yscale, zscale
+      real, dimension(3), intent(in) :: SHIFT
+      real, dimension(3), intent(in) :: ROTN
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XRGRP.INC'
       INCLUDE 'XRGLST.INC'
+      
+      integer i
+      integer indexf, itmp1, itmp, itmp2, itmp3, itype
+      
+      integer, external :: kstall
 C --
       ITYPE=1
 C -- CALCULATE ROTATION MATRIX
@@ -2563,8 +2606,10 @@ C -- APPLY ROTATION TO ATOMS
       CALL XMLTMM(STORE(ITMP1),STORE(ITMP2),STORE(ITMP3),3,3,1)
 C -- APPLY SHIFT
       CALL XADDR(STORE(ITMP3),SHIFT(1),ATOM(5),3)
-C
-      CALL XRGPLA (ATOM(1), NATOMP, STORE(L1O2), ITYPE )
+C      
+      CALL XRGPLA (ATOM(1), NATOMP, 
+     1    reshape(transpose(unitcells(1)%rorthogonalisation()), (/9/)),
+     2    ITYPE )
 C -- CHECK FOR ERROR
       IF (IERFLG.LT.0) RETURN
 4000  CONTINUE

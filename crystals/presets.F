@@ -2166,6 +2166,7 @@ C
 CODE FOR MACBLK
 
       SUBROUTINE CRESET
+      use xparse_mod
 
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCARDS.INC'
@@ -2543,6 +2544,8 @@ C --- XGUIOV ---
       DO I = 1,50
         ISERNN(I)=0
       END DO
+      
+      call ksv_init()
 
       RETURN
       END
