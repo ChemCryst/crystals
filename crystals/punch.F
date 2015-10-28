@@ -451,6 +451,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST23.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XCOMPD.INC'
 C
@@ -467,6 +468,30 @@ C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
+
+      CALL XFAL23
+      IUPDAT = ISTORE(L23SP+1)
+
+C---- Set occupancies
+C      WRITE(222,*) iupdat
+      IF (IUPDAT .GE. 0)  I = KSPINI( -1, STOLER) ! SET THE OCCUPANCIES
+      NUPDAT = 0  
+      J =NFL
+      I = KCHNFL(40)  ! SAVE SOME WORK SPACE
+      M5 = L5
+      DO I = 1, N5   ! Set occupancies
+        IF (IUPDAT .GE. 0) THEN
+          IGSTAT =KSPGET ( STORE(J), STORE(J+10), ISTORE(J+20),
+     2      STORE(J+30), MGM, M5, IUPDAT, NUPDAT)
+        ELSE
+          STORE(M5+13) = 1.0
+        ENDIF
+        STORE(M5+2) = STORE(M5+2) * STORE(M5+13)
+C        WRITE(222,*) STORE(M5+2), STORE(M5+4), STORE(M5+5), STORE(M5+13)
+        M5 = M5 + MD5
+      END DO
+      NFL= J
+
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCPU,'(''REM TITL '',10A4)') (KTITL(I),I=1,10)
       M5=L5
