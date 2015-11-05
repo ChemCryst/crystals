@@ -229,7 +229,7 @@ function orthogonalisation_exclcell(this)
     
 end function
 
-!> Return the reciprocal metric tensor
+!> Return the metric tensor
 function metric(this)
     use math_mod
     implicit none
@@ -240,7 +240,7 @@ function metric(this)
     metric = matmul(transpose(o), o)
 end function
 
-!> Return the metric tensor
+!> Return the reciprocal metric tensor
 function rmetric(this)
     use math_mod
     implicit none

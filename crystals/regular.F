@@ -257,6 +257,8 @@ C
 C
 CODE FOR XREGUL
       SUBROUTINE XREGUL
+      use unitcell_mod
+      implicit none
 C
 C -- THESE ROUTINES IMPLEMENT THE FUNCTIONS OF THE CRYSTALS INSTRUCTION
 C    'REGULARISE'
@@ -400,9 +402,10 @@ C
 C            CONSTANTS      USE SYMBOLS. SET VALUES IN 'DATA'
 C
 C
-      DIMENSION OTEMP(3)
-      DIMENSION UNITMX(9)
-      DIMENSION ZEROSH(3)
+      real, dimension(3) :: OTEMP
+      real, dimension(9), parameter :: UNITMX=
+     1       (/1.0,0.0,0.0,  0.0,1.0,0.0,  0.0,0.0,1.0/)
+      real, dimension(3), parameter :: ZEROSH=0.0
       INCLUDE 'ICOM12.INC'
       INCLUDE 'IDIM12.INC'
       INCLUDE 'ISTORE.INC'
@@ -413,7 +416,7 @@ C
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCARDS.INC'
       INCLUDE 'XCOMPD.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
@@ -431,6 +434,16 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
+      
+      integer i, iaddd, iaddl, iaddr, ifirst, ii, imatrix
+      integer imeth, isvnfl, iuln, la, lb, length, lnewl5, msgt, nl5
+      integer, parameter :: ivers=220
+      
+      real scale, xscal, xyscal, yscal, zmethd, zscal
+      
+      integer, external :: klexan, ktyp05, khuntr, kstall, kldnlr
+      real, external :: xlxrdv
+      
 C --
 C --
 C -- THE ARRAY 'GRPATM' OF CO-ORDINATES IS USED TO DEFINE GROUPS.
@@ -446,13 +459,7 @@ C
 C    THE VALUE N REPRESENTS THE CO-ORDINATES IN : -
 C         GRPATM(1,N) GRPATM(2,N) GRPATM(3,N)
 C
-C -- UNIT MATRIX AND ZERO SHIFT FOR GROUP PLACEMENT
-      DATA UNITMX(1) /1./ UNITMX(2) /0./ UNITMX(3) /0./
-      DATA UNITMX(4) /0./ UNITMX(5) /1./ UNITMX(6) /0./
-      DATA UNITMX(7) /0./ UNITMX(8) /0./ UNITMX(9) /1./
-      DATA ZEROSH(1) /0./ ZEROSH(2) /0./ ZEROSH(3) /0./
 C --
-      DATA IVERS /220/
       CALL XTIME1(2)
 C --
 c  initialise call counter for xrgclc
@@ -522,14 +529,12 @@ C -- SET THE DEFAULT VALUE OF THE 'NEW LIST' FLAG
 C
       NEWLIS=0
 C -- SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
-      CALL XMOVE(STORE(L1O2),RGOM(1,1),9)
+      !CALL XMOVE(STORE(L1O2),RGOM(1,1),9)
+      RGOM=transpose(unitcells(1)%rorthogonalisation())
 C -- ZERO ORIGIN
       CALL XZEROF(ORIGIN(1),3)
 C -- SET TO ZERO ROTATION
       CALL XUNTM3(RGMAT(1,1))
-C -- SET UNIT MATRIX AND ZERO SHIFT
-      CALL XUNTM3(UNITMX(1))
-      CALL XZEROF(ZEROSH(1),3)
 C----- ALLOCATE SPACE FOR RENAMING
       MDRENM = 6
       LRENM = KSTALL(MDRENM*N5)
@@ -904,6 +909,9 @@ C
 
 CODE FOR XRGCLC
       SUBROUTINE XRGCLC (IMATRIX,LSPARE)
+      use math_mod, only: degrees
+      use unitcell_mod
+      implicit none
 C 
 C -- THIS SUBROUTINE CONTROLS THE ACTUAL CALCULATION PERFORMED BY
 C    REGULARISE.
@@ -961,9 +969,13 @@ C    THIS IS USED IN THIS SUBROUTINE TO SELECT ONE OF THE POSSIBLE
 C    CALLS WHICH WILL CALCULATE A MATRIX.
 C 
 C 
-      DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3)
-      DIMENSION OPM(4,4), OPN(4,4), OTEMP(4), IBMA(16)
-      DIMENSION TEMP1(3,3), TEMP2(3,3), TEMP3(3,3), DMATRIX(3,3)
+      integer, dimension(3) :: ITEMP
+      real, dimension(3) :: ATEMP
+      real, dimension(3,3) :: RTEMP1, RTEMP2, temp1, temp2, temp3
+      real, dimension(3,3) :: dmatrix
+      real, dimension(4,4) :: opm, opn
+      real, dimension(4) :: otemp
+      real, dimension(16) :: ibma
 C 
 Cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       INCLUDE 'REGTMP.INC'
@@ -980,7 +992,7 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XRGCOM.INC'
@@ -991,6 +1003,18 @@ C
       INCLUDE 'XIOBUF.INC'
 C 
       INCLUDE 'QSTORE.INC'
+      
+      integer, intent(in) :: imatrix, lspare
+      real best, closen, closex, defind, det, dettrc
+      integer i, iaddd, iaddr, iaddl, iatomf, idefin, idjw, ij, indatm
+      integer indnew, indl5, induij, irec, isize, iwors, j, j2, j3, j4
+      integer k1, k2, k3, k4, k5, kdjw, kseril, ktype, l5item, lenfil
+      integer ll5, ll5n, ln, lnewl5, mdlst, mlst, msgt, nfunc, nlst
+      integer nmsgt, nnewl5, nrcomp, numatm
+      real raverage, rmat, rworst, trace
+      
+      integer, external :: kmolax, kinv2, katomf, kstall, khuntr
+      real, external :: cmpmat, xdetr3
 C 
       DATA CELEMT/'23461m'/
       DATA CAXIS/'X','Y','Z'/
@@ -1129,11 +1153,19 @@ c
 
 C -- CALCULATE MATRIX TRANSFORMING FROM CRYSTAL SYSTEM TO BEST PLANE
 C    AND BACK
-         CALL XMLTMT (VECTO,STORE(L1O1),CFBPOL,3,3,3)
-         CALL XMLTMT (VECTN,STORE(L1O1),CFBPNE,3,3,3)
+         !CALL XMLTMT (VECTO,STORE(L1O1),CFBPOL,3,3,3)
+         CFBPOL=matmul(VECTO, 
+     1        unitcells(1)%orthogonalisation())
+         !CALL XMLTMT (VECTN,STORE(L1O1),CFBPNE,3,3,3)
+         CFBPNE=matmul(VECTN, 
+     1        unitcells(1)%orthogonalisation()) 
 C 
-         CALL XMLTMM (STORE(L1O2),COSNO,BPCFOL,3,3,3)
-         CALL XMLTMM (STORE(L1O2),COSNN,BPCFNE,3,3,3)
+         !CALL XMLTMM (STORE(L1O2),COSNO,BPCFOL,3,3,3)
+         BPCFOL=matmul(transpose(unitcells(1)%rorthogonalisation()), 
+     1       COSNO)
+         !CALL XMLTMM (STORE(L1O2),COSNN,BPCFNE,3,3,3)
+         BPCFNE=matmul(transpose(unitcells(1)%rorthogonalisation()), 
+     1       COSNN)
 Cdjwapr2001
       END IF
 C 
@@ -1789,10 +1821,14 @@ C Output cell.
              CALL XCREMS(CPCH,CPCH,LENFIL)
 
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F9.4))')
-     1    (CHAR(9),STORE(I), I = L1P1, L1P1+2)
+     1      CHAR(9), unitcells(1)%a, 
+     2      CHAR(9), unitcells(1)%b, 
+     3      CHAR(9), unitcells(1)%c 
           CALL XCREMS(CPCH,CPCH,LENFIL)
           WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(3(A,F9.4))')
-     1    (CHAR(9),STORE(I)*rtd, I = L1P1+3, L1P1+5)
+     1     CHAR(9), degrees(unitcells(1)%alpha), 
+     2     CHAR(9), degrees(unitcells(1)%beta), 
+     3     CHAR(9), degrees(unitcells(1)%gamma)
           CALL XCREMS(CPCH,CPCH,LENFIL)
          END IF
 
@@ -2042,6 +2078,7 @@ C
 C
 CODE FOR XRGCRD
       SUBROUTINE XRGCRD(RESULT,METHOD)
+      implicit none
 C -- SUBROUTINE TO CALCULATE A ROTATION DILATION MATRIX TO
 C    MATCH THE COORDINATES (IN ORTHOGONAL COORDINATES ROTATED
 C    TO INERTIAL SYSTEMS) AT STORE(LOLD) AND STORE(LNEW)
@@ -2050,12 +2087,13 @@ C
 C    ROTATION COMPONENT OF MATRIX, IF METHOD=1
 C    ROTATION-DILATION MATRIX,     IF METHOD=2
 C --
-      DIMENSION RESULT(3,3)
-      DIMENSION WSPAC1(3,3),WSPAC2(3,3),WSPAC3(3,3)
-      DIMENSION ROTDIL(3,3),DILATN(3,3),ROTATN(3,3)
-      DIMENSION VMAT(3,3),UMAT(3,3),UVEC(3)
-      DIMENSION DILNEV(3), DETERM(3)
-      dimension djwa(3),djwb(3),djwc(3)
+      integer, intent(in) :: method
+      real, dimension(3,3), intent(out) :: RESULT
+      real, dimension(3,3) :: WSPAC1,WSPAC2,WSPAC3
+      real, dimension(3,3) :: ROTDIL,DILATN,ROTATN
+      real, dimension(3,3) :: VMAT,UMAT
+      real, dimension(3) :: UVEC, DILNEV, DETERM
+      real, dimension(3) :: djwa(3),djwb(3),djwc(3)
 C --
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
@@ -2065,6 +2103,11 @@ C --
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
+      
+      real detr, det3, toler
+      integer i, j
+      
+      real, external :: xdetr3, ncrop3
 C --
 C --
       IF (ISSPRT .EQ. 0) WRITE (NCWU,1100)
@@ -2526,6 +2569,8 @@ C --
 C
 CODE FOR XRGPLG
       SUBROUTINE XRGPLG(IATOMS,NATOMS,XSCALE,YSCALE,ZSCALE,SHIFT,ROTN)
+      use unitcell_mod
+      implicit none
 C -- SUBROUTINE TO PLACE A PRE-DEFINED GROUP OF NEW ATOMS
 C    IATOMS CONTAINS LIST OF THE ATOM INDEXES REFERING TO
 C    AN ARRAY GRPATM(3,NNNNN) IN COMMON BLOCK XRGGRP
@@ -2533,16 +2578,23 @@ C    NATOMS IS THE NUMBER OF ATOMS IN THE GROUP
 C    XSCALE,YSCALE,ZSCALE ARE THE SCALE FACTORS APPLIED TO
 C    X,Y,Z COORDINATES
 C --
-      DIMENSION IATOMS(NATOMS)
-      DIMENSION SHIFT(3)
-      DIMENSION ROTN(3)
+      integer, intent(in) :: natoms
+      integer, dimension(natoms) :: IATOMS
+      real xscale, yscale, zscale
+      real, dimension(3), intent(in) :: SHIFT
+      real, dimension(3), intent(in) :: ROTN
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XRGRP.INC'
       INCLUDE 'XRGLST.INC'
+      
+      integer i
+      integer indexf, itmp1, itmp, itmp2, itmp3, itype
+      
+      integer, external :: kstall
 C --
       ITYPE=1
 C -- CALCULATE ROTATION MATRIX
@@ -2563,8 +2615,10 @@ C -- APPLY ROTATION TO ATOMS
       CALL XMLTMM(STORE(ITMP1),STORE(ITMP2),STORE(ITMP3),3,3,1)
 C -- APPLY SHIFT
       CALL XADDR(STORE(ITMP3),SHIFT(1),ATOM(5),3)
-C
-      CALL XRGPLA (ATOM(1), NATOMP, STORE(L1O2), ITYPE )
+C      
+      CALL XRGPLA (ATOM(1), NATOMP, 
+     1    reshape(transpose(unitcells(1)%rorthogonalisation()), (/9/)),
+     2    ITYPE )
 C -- CHECK FOR ERROR
       IF (IERFLG.LT.0) RETURN
 4000  CONTINUE
@@ -2882,19 +2936,22 @@ C --
 C
 CODE FOR XRGPCS
       SUBROUTINE XRGPCS(IMATRIX) 
+      use unitcell_mod
+      implicit none
 C
 C -- PRINT THE STORED COORDINATED DATA POINTED TO BY LOLD AND LNEW
 C
 C
-      DIMENSION DELTA(5)
-      DIMENSION SUM(4)
-      DIMENSION RMSDEV(4)
-      DIMENSION XVEC(3)
+      integer, intent(in) ::  imatrix
+      real, dimension(5) :: DELTA, sum, rmsdev
+      real, dimension(3) :: XVEC
 C Our torsion is C-A-B-D
-      DIMENSION ACVEC(3), ABVEC(3), BDVEC(3)
-      DIMENSION TEMPO(3), ROMAT(9)
-      DIMENSION DELUIJ(6), UOUT(3,3), UAXIS(3), UOAXIS(3), DELAX(3)
-      DIMENSION UTYPE(2), USERIAL(2)
+      real, dimension(3) :: ACVEC, ABVEC, BDVEC
+      real, dimension(3) :: TEMPO, UAXIS, UOAXIS, DELAX
+      real, dimension(9) :: ROMAT
+      real, dimension(6) :: DELUIJ
+      real, dimension(3,3) :: UOUT
+      real, dimension(2) :: UTYPE, USERIAL
 
       CHARACTER *36 COLD, CNEW
       CHARACTER *32 CATOM1
@@ -2911,15 +2968,32 @@ C Our torsion is C-A-B-D
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST41.INC'
       INCLUDE 'XCOMPD.INC'
       INCLUDE 'QSTORE.INC'
 c
+
+      real angmax, anull, aser, atype, bdev, bndmax, bndmin, d1, d2
+      real deltsq, dev, dismax, distsq, dser, dtype, dumax, dup, dupmax
+      integer i, i51, i52, ifbnd, ii, indatm, indnew, indold, indr
+      integer j, js, jt, k, kb, l, lenfil, lindr, lns, los
+      integer maends, mastck, mbends, mbstck, mismat, mna, mnb, mnbnd
+      integer mnc, mnd, mnpiv, moa, mob, mobnd, moc, mod, mopiv, nflorig
+      integer nuijs, nuij, numbr, numpt, numt
+      real radius, rbar, sbdev, stdev, t1, t2, tdevn, tdevp
+      real tor1max, tor1min, tor2max, tor2min, tormax, tormin, tp
+      real ugeom, ugmax, uogeom, uogmax, uopmax, uoprime, upmax, uprime
+      
+      integer, external :: kdist4, norm3, ncrop3
+      real, external :: xdstn2
+
+
 C      data cnull/'    '/
-      EQUIVALENCE (ANULL,INULL)
-      INULL = IB
+      !EQUIVALENCE (ANULL,INULL)
+      !INULL = IB
+      ANULL = transfer(IB, 1.0)
 C
       CALL XZEROF ( SUM(1) , 4 )
       RADIUS = 0.0
@@ -3439,11 +3513,17 @@ C Vectors
               CALL XSUBTR(STORE(MOB+4),STORE(MOA+4),ABVEC,3)
               CALL XSUBTR(STORE(MOD+4),STORE(MOB+4),BDVEC,3)
 C Orthogonal
-              CALL XMLTTM(STORE(L1O1),ACVEC,TEMPO,3,3,1)
+              !CALL XMLTTM(STORE(L1O1),ACVEC,TEMPO,3,3,1)
+              tempo = matmul(
+     1            unitcells(1)%orthogonalisation(), acvec)
               CALL XMOVE(TEMPO,ACVEC,3)
-              CALL XMLTTM(STORE(L1O1),ABVEC,TEMPO,3,3,1)
+              !CALL XMLTTM(STORE(L1O1),ABVEC,TEMPO,3,3,1)
+              tempo = matmul(
+     1            unitcells(1)%orthogonalisation(), abvec)
               CALL XMOVE(TEMPO,ABVEC,3)
-              CALL XMLTTM(STORE(L1O1),BDVEC,TEMPO,3,3,1)
+              !CALL XMLTTM(STORE(L1O1),BDVEC,TEMPO,3,3,1)
+              tempo = matmul(
+     1            unitcells(1)%orthogonalisation(), bdvec)
               CALL XMOVE(TEMPO,BDVEC,3)
 C Normalise
               IF(NORM3(ACVEC).LT.0) CYCLE
@@ -3487,11 +3567,17 @@ C Vectors
               CALL XSUBTR(STORE(MNB+4),STORE(MNA+4),ABVEC,3)
               CALL XSUBTR(STORE(MND+4),STORE(MNB+4),BDVEC,3)
 C Orthogonal
-              CALL XMLTTM(STORE(L1O1),ACVEC,TEMPO,3,3,1)
+              !CALL XMLTTM(STORE(L1O1),ACVEC,TEMPO,3,3,1)
+              tempo = matmul(
+     1            unitcells(1)%orthogonalisation(), acvec)
               CALL XMOVE(TEMPO,ACVEC,3)
-              CALL XMLTTM(STORE(L1O1),ABVEC,TEMPO,3,3,1)
+              !CALL XMLTTM(STORE(L1O1),ABVEC,TEMPO,3,3,1)
+              tempo = matmul(
+     1            unitcells(1)%orthogonalisation(), abvec)
               CALL XMOVE(TEMPO,ABVEC,3)
-              CALL XMLTTM(STORE(L1O1),BDVEC,TEMPO,3,3,1)
+              !CALL XMLTTM(STORE(L1O1),BDVEC,TEMPO,3,3,1)
+              tempo = matmul(
+     1            unitcells(1)%orthogonalisation(), bdvec)
               CALL XMOVE(TEMPO,BDVEC,3)
 C Normalise
               IF(NORM3(ACVEC).LT.0) CYCLE
@@ -3742,14 +3828,22 @@ C --
 C
 CODE FOR XRGRCS
       SUBROUTINE XRGRCS
+      use unitcell_mod
+      implicit none
 C -- SUBROUTINE TO READ COORDINATE SYSTEM
       INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSSVAL.INC'
+      
+      integer i, itmp1, itmp2
+      real temp
+      integer, external :: kstall
+      real, external :: xlxrdv
+      
 C --
 C -- ALLOCATE SPACE TO READ IN DATA
       ITMP1=KSTALL(6)
@@ -3776,7 +3870,9 @@ C----- COMPUTE GAMMA*
       STORE(ITMP1+5) = ACOS(TEMP)
 C -- CALCULATE ORTHOGONALISATION MATRIX
       CALL XMXCLO(STORE(ITMP1),STORE(ITMP2))
-      CALL XMLTMT ( STORE(L1O2) , STORE(ITMP2) , RGOM , 3 , 3 , 3 )
+      rgom=matmul(unitcells(1)%rorthogonalisation(), 
+     1     transpose(reshape(STORE(ITMP2:ITMP2+8), (/3,3/))) )
+      !CALL XMLTMT ( STORE(L1O2) , STORE(ITMP2) , RGOM , 3 , 3 , 3 )
 2060  CONTINUE
 C -- RELEASE WORK SPACE
       CALL XSTRLL(ITMP1)
@@ -4324,6 +4420,7 @@ c                    CALL XPRVDU(NCVDU,1,0)
 
 CODE FOR XRGCAM
       SUBROUTINE XRGCAM
+      implicit none
 C
 C    CREATE CAMERON FILES 
 C 
@@ -4351,12 +4448,15 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'REGTMP.INC'
 
       CHARACTER*21 CAMATM
-      DIMENSION JFRN(4,2)
-      DIMENSION RTEMP(9), STEMP(9)
+      integer, dimension(4,2) :: JFRN
+      real, dimension(9) :: RTEMP, STEMP
+      
+      integer i, idjw, indatm, indnew, indold, inouij, inuij, j, jnew
+      integer jold, lcama
 C 
       INCLUDE 'QSTORE.INC'
 #ifdef _HOL_
@@ -4496,6 +4596,7 @@ c
 c
 CODE FOR XMATCH
       SUBROUTINE XMATCH
+      implicit none
 C   IMPLEMENTS #MATCH
 C
 C-- CALCULATE A MATCH OR MATCHES BETWEEN TWO FRAGMENTS, AND RUN REGU COMPARE
@@ -4518,44 +4619,52 @@ c       A.  Collins, R. I.  Cooper and D. J.  Watkin
 c       Journal of Applied Crystallography 2006;39(6):842-849
 c
       INCLUDE 'ISTORE.INC'
-      DIMENSION PROCS(1)
-      DIMENSION KATV(5)
+      integer, dimension(1) :: PROCS
+      integer, dimension(5) :: KATV
       INCLUDE 'STORE.INC'
-      INCLUDE 'XSTR11.INC'
+      !INCLUDE 'XSTR11.INC'
       INCLUDE 'XDSTNC.INC'
 c      COMMON /XPROCM/ILISTL
       INCLUDE 'XLEXIC.INC'
-      INCLUDE 'XPDS.INC'
+      !INCLUDE 'XPDS.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XCHARS.INC'
+      !INCLUDE 'XCHARS.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XTAPES.INC'
-      INCLUDE 'XLST01.INC'
-      INCLUDE 'XLST02.INC'
-      INCLUDE 'XLST03.INC'
+      !INCLUDE 'XTAPES.INC'
+      !INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST02.INC'
+      !INCLUDE 'XLST03.INC'
       INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST41.INC'
+      !INCLUDE 'XLST41.INC'
       INCLUDE 'XMATCH.INC'
-      INCLUDE 'XERVAL.INC'
+      !INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XCOMPD.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      integer, parameter :: idimn=3
+      integer, parameter :: iversn=101
+      character(len=4), parameter :: ipeak='Q   '
+      
+      real crdat
+      integer i, j, iaddd, iaddr, iaddl, ichng, icombf, icur, idimbf
+      integer idirnm, idoub, ieqatm, inextd, inum, iprev, iquad, irs1at
+      integer irs2a1, irs2a2, irs2at, istat, isymbk, itrip, iuln
+      integer jcombf, jdimbf, jobdon, meth  
+      
+      integer, external :: kstall, klxsng, ktyp05, khuntr, kelecn
+      integer, external :: ksctrn, knonln
+      real, external :: xlxrdv
 C
 c      EQUIVALENCE (ILISTL,PROCS(1))
 C
-      DATA IDIMN /3/
-#ifdef _HOL_
-      DATA IPEAK/4HQ   /
-#else
-      DATA IPEAK/'Q   '/
-#endif
 C
-      DATA IVERSN /101/
+
 c
 c     CPCH is a character buffer for punched output
 c
@@ -4691,7 +4800,8 @@ C the EQUALATOM approach.
           IF ( ( ISTORE(1+LATVC+I*MDATVC) .EQ. 1 ) .OR.  
      1         ( ISTORE(2+LATVC+I*MDATVC) .EQ. 1 ) ) THEN
             
-            IF ( ISTORE(L5+ISTORE(LATVC+I*MDATVC)*MD5) .EQ. IPEAK ) THEN
+            IF ( transfer(ISTORE(L5+ISTORE(LATVC+I*MDATVC)*MD5), IPEAK)
+     1                 .EQ. IPEAK ) THEN
               IEQATM = 1
             END IF
           ELSE ! Atom not included in fragment
@@ -5519,6 +5629,8 @@ c        END DO
 
 CODE FOR XREGQK
       SUBROUTINE XREGQK
+      use unitcell_mod
+      implicit none
 C    'REGULARISE' mini implementation, lists already loaded, just do the maths.
 C List 1,2,5/10 must already be loaded.
 C
@@ -5533,34 +5645,37 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCARDS.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
-      INCLUDE 'XPDS.INC'
+      !INCLUDE 'XPDS.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XRGCOM.INC'
       INCLUDE 'XRGLST.INC'
       INCLUDE 'XMATCH.INC'
       INCLUDE 'XDSTNC.INC'
-      INCLUDE 'XRGRP.INC'
-      INCLUDE 'XERVAL.INC'
+      !INCLUDE 'XRGRP.INC'
+      !INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
-      INCLUDE 'XCHARS.INC'
+      !INCLUDE 'XCHARS.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
 
-      DATA IVERS /100/
+      integer, parameter :: IVERS=100
+      
+      integer i, i5, imatrix, ipchsa, irlfl, irnfl, msgt
+      
+      integer, external :: kstall
+      
       CALL XTIME1(2)
 
       NUMDEV = 0      ! INITIALISE THE POOR-FIT COUNTER
       IPCHSA = IPCHRE ! Hide IPCHRE counter
       IPCHRE = -1
 
-      DO I = 1,IDIM12     
-        ICOM12(I) = NOWT   ! Don't use L12.
-      END DO
+      ICOM12 = NOWT   ! Don't use L12.
 
 C -- SET INITIAL VALUES IN COMMON
       MDATMD = MD5
@@ -5581,8 +5696,9 @@ C  IMETHD NOW FOUND FROM METHOD CARD
       ICMPDF=2       ! DEFAULT VALUE OF THE 'COMPARE/REPLACE/KEEP' FLAG
       IFLCMP=ICMPDF  ! SET REPLACE/COMPARE FLAG TO DEFAULT VALUE
 
-      CALL XMOVE(STORE(L1O2),RGOM(1,1),9) ! SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
-      CALL XZEROF(ORIGIN(1),3)   ! ZERO ORIGIN
+      rgom=transpose(unitcells(1)%rorthogonalisation())
+      !CALL XMOVE(STORE(L1O2),RGOM(1,1),9) ! SET DEFAULT COORDINATES SYSTEM TO (1. 1. 1. 90. 90. 90.)
+      origin=0.0
       CALL XUNTM3(RGMAT(1,1))    ! SET TO ZERO ROTATION
       MDRENM = 6
 C -- SET UP BLOCKS
@@ -6026,44 +6142,36 @@ C      COMPRESS THE 3X3 TENSOR TO 6 CRYSTALS UIJ
       END
 CODE FOR DMATRX
       SUBROUTINE DMATRX (DMATRIX)
+      use unitcell_mod
+      implicit none
 c  POST MULTIPLIER FOR ORTHOGONALISATION OF Uij
       INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'QSTORE.INC'
-      DIMENSION DMATRIX(9)
+      real, dimension(9), intent(out) :: DMATRIX
+      real dn
+      real cosalpha, cosbeta, cosgamma
+      
+      cosalpha=cos(unitcells(1)%alpha)
+      cosbeta=cos(unitcells(1)%beta)
+      cosgamma=cos(unitcells(1)%gamma)
 c
 c      dmatrix is a digonal matrix based on cell angles - see
 c      Lipson and Conhran, Second ediition, page 30
       dn = 1.+2.* 
-     1 cos(store(l1p1+3))*cos(store(l1p1+4))*cos(store(l1p1+5))
-     2 - cos(store(l1p1+3))*cos(store(l1p1+3))
-     3 - cos(store(l1p1+4))*cos(store(l1p1+4))
-     4 - cos(store(l1p1+5))*cos(store(l1p1+5))
+     1 cosalpha*cosbeta*cosgamma
+     2 - cosalpha**2
+     3 - cosbeta**2
+     4 - cosgamma**2
       dn = sqrt(dn)
       call xzerof(dmatrix,9)
-      dmatrix(1) = sin(store(l1p1+3))/(dn*store(l1p1))
-      dmatrix(5) = sin(store(l1p1+4))/(dn*store(l1p1+1))
-      dmatrix(9) = sin(store(l1p1+5))/(dn*store(l1p1+2))
+      dmatrix(1) = sin(unitcells(1)%alpha)/(dn*unitcells(1)%a)
+      dmatrix(5) = sin(unitcells(1)%beta)/(dn*unitcells(1)%b)
+      dmatrix(9) = sin(unitcells(1)%gamma)/(dn*unitcells(1)%c)
       return
       end
 C
-C
-CODE FOR ORTUIJ
-      SUBROUTINE ORTUIJ (TEMP)
-c  Matrix to ORTHOGONALISE THE uij
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
-      INCLUDE 'ISTORE.INC'
-      INCLUDE 'QSTORE.INC'
-      DIMENSION DMATRIX(9), TEMP(9)
-c
-      CALL DMATRX(DMATRIX)
-c     form A.D       where A is the orthogonalisation matrix
-c                      and D iS the L&C D matrix
-      call xmlttm (store(l1o1), dmatrix, temp,3,3,3)
-      return
-      end
 C
 CODE FOR RMXUIJ
       SUBROUTINE RMXUIJ (rotate, LU,MDU,NU)
@@ -6113,19 +6221,19 @@ C
 C      EXPAND THE 6 CRYSTALS UIJ TO A 3X3 TENSOR
        CALL EXPUIJ(UIN,TEMP)
 C--DIAGONALIZE THE TENSOR
-            DO  ITEMP2=1,3
-               DO  ITEMP3=1,3
-                TENS(ITEMP3,ITEMP2)=TEMP(ITEMP3,ITEMP2)
-               ENDDO
-            ENDDO
-            INFO = 0
-            CALL DSYEV('V','L',3,TENS,3,ROOTS,WORK,9,INFO)
+       DO  ITEMP2=1,3
+          DO  ITEMP3=1,3
+           TENS(ITEMP3,ITEMP2)=TEMP(ITEMP3,ITEMP2)
+          ENDDO
+       ENDDO
+       INFO = 0
+       CALL DSYEV('V','L',3,TENS,3,ROOTS,WORK,9,INFO)
 c
-            DO  ITEMP3=1,3
-               UAXIS(ITEMP3)=SNGL(ROOTS(ITEMP3))
-               DO  ITEMP4=1,3
-                UOUT(ITEMP4,ITEMP3)=SNGL(TENS(ITEMP4,ITEMP3))
-               ENDDO
-            ENDDO
-            RETURN
-            END
+       DO  ITEMP3=1,3
+          UAXIS(ITEMP3)=SNGL(ROOTS(ITEMP3))
+          DO  ITEMP4=1,3
+           UOUT(ITEMP4,ITEMP3)=SNGL(TENS(ITEMP4,ITEMP3))
+          ENDDO
+       ENDDO
+       RETURN
+       END
