@@ -8423,6 +8423,8 @@ c
      2        ' Try relaxing the filters'
               call xprvdu(ncvdu,3,0)
               call outcol(1)
+              CORREL = -1000.
+              COOD = -1000.
               goto 2850
         endif
 c
@@ -8448,12 +8450,12 @@ c          CALL XPRVDU (NCVDU, 1, 0)
 810       FORMAT (19X,'  Post-Refinement Flack =',2F7.3)
 c          CALL XPRVDU (NCVDU,1,0)
           IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
-
           WRITE (CMON,815) CORREL,cood
-815       FORMAT (/' Correlation coeff and r^2 of Scatter Plot =',F7.3,
-     1     F7.3)
-c          CALL XPRVDU (NCVDU, 2, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:nctrim(cmon(2)))
+815       FORMAT (/'{I Correlation coeff and r^2 of Scatter Plot =',
+     1     F7.3,F7.3)
+          CALL XPRVDU (NCVDU, 2, 0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') 
+     1                     CMON(2)(3:nctrim(cmon(2)))
           IF(ABS(YCUT).GE.0.01*YMAX) THEN
             WRITE(CMON,820)
      1      ' The observed Friedel differences may be biased by',
