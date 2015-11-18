@@ -154,6 +154,14 @@ subroutine xdaini_hdf5(crfile)
     type(t_dsc_hdf5), pointer :: crfile
 end subroutine
 
+subroutine hdf5_dsc_use_set() bind(c)
+    implicit none
+    
+    hdf5_in_use = .false.
+    !print *, 'hdf5 set in use in fortran'
+end subroutine
+
+
 end module
 
 #else

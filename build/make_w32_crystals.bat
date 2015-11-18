@@ -42,7 +42,7 @@ REM @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buil
 @if "%COMPCODE%" == "INW" copy %WXLIB%\wxmsw%WXNUM%u_gl_vc90.dll
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%u_stc_vc90.dll
 @if "%COMPCODE%" == "INW" copy %WXLIB%\wxmsw%WXNUM%u_stc_vc90.dll
-@if "%COMPCODE%" == "INW" copy ..\hdf5\bin\*.dll .
+@rem @if "%COMPCODE%" == "INW" copy ..\hdf5\bin\*.dll .
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFCOREMD.DLL"
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFPORTMD.DLL"
 @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBMMD.DLL"
