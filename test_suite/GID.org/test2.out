@@ -12599,6 +12599,58 @@ LS-scale=  4.715   Wilson Scale=  4.723
 [49]    4   H        93.      1   1    0    0    0     111.6   0.1
 
   KEY                                                 1             2             3
+#SUM L 12                                                                                                                                                                                                                                                       
+ Summary of contents of list 12 - Refinement directives
+
+
+ Keen in P21/c                                                                        Date              Time          
+
+
+ Print list type    12     serial number        8     Address    72343     Length     148     Created on                          
+
+     0 BLOCK SCALE X'S, U'S 
+     1 SUMFIX ELEMENT SCALES 
+
+
+
+#SUM L 16                                                                                                                                                                                                                                                       
+ Summary of contents of list 16 - Restraints
+
+
+ Keen in P21/c                                                                        Date              Time          
+
+
+ Print list type    16     serial number        3     Address    70624     Length     576     Created on                          
+
+     0 LIMIT      0.01000000 ELEMENT SCALES 
+     1 LIMIT      0.01000000 SCALE 
+     2 LIMIT      0.01000000 U[ISO] 
+     3 LIMIT      0.01000000 X 
+     4 LIMIT      0.01000000 Y 
+     5 LIMIT      0.01000000 Z 
+     6 LIMIT      0.01000000 U[11] 
+     7 LIMIT      0.01000000 U[22] 
+     8 LIMIT      0.01000000 U[33] 
+     9 LIMIT      0.01000000 U[12] 
+    10 LIMIT      0.01000000 U[13] 
+    11 LIMIT      0.01000000 U[23] 
+    12 LIMIT      0.01000000 OCC 
+
+
+
+#SUM L 17                                                                                                                                                                                                                                                       
+ Summary of contents of list 17 - Special restraints
+
+
+ Keen in P21/c                                                                        Date              Time          
+
+
+ Print list type    17     serial number        8     Address     3707     Length      36     Created on                          
+
+     0 NO 
+
+
+
 #                                                                                                                                                                                                                                                               
 #                      SECOND EXPERIMENT. NOFSQ, NOANOM                                                                                                                                                                                                         
 #LIST 23                                                                                                                                                                                                                                                        

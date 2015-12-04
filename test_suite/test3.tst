@@ -1077,6 +1077,7 @@ END
 END                                                                             
 \GEOM                                                                            
 ATOMS P(1) UNTIL O(7) C(8,,,,-1) UNTIL C(13)                                    
+\ Failures because instructions in wrong order
 DISTANCES                                                                       
 ANGLES
 TLS
