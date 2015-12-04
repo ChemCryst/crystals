@@ -7931,7 +7931,7 @@ c
       do j=1,khy
        if (ihy(j) .eq. 1) then        
         write(cline,'(a,f6.3,a, a )')
-     1 'REST ', UEQUIV, ', 0.002 = ', cbonda(j)
+     1 'REM REST ', UEQUIV, ', 0.002 = ', cbonda(j)
         call xcrems( cline, cline, nch)
         cline(nch-1:) = ',u[iso])'
         nch = nch + 7
@@ -8208,7 +8208,7 @@ CODE FOR XRESTV
       SUBROUTINE XRESTV
 C---- PRINT OUT THE RESTRAINT TARGET VALUES
       INCLUDE 'XUNITS.INC'
-       WRITE(NCPU,'(A)')'REM No H   No #H U mult dist'
+       WRITE(NCPU,'(A)')'REM No H  No #H U mult   dist'
        WRITE(NCPU,'(A)')'REM C-H'
        WRITE(NCPU,'(A)')'REM >4           1.5    .96 disorder'
        WRITE(NCPU,'(A)')'REM 1      1     1.2    .93 C C-H (acetylene)'
@@ -8231,6 +8231,9 @@ C---- PRINT OUT THE RESTRAINT TARGET VALUES
        WRITE(NCPU,'(A)')'REM Dist      esd = 0.02'
        WRITE(NCPU,'(A)')'REM Vib       esd = 0.002'
        WRITE(NCPU,'(A)')'REM Angle     esd = 2.0'
+       WRITE(NCPU,'(A)')'REM '
+       WRITE(NCPU,'(A)')
+     1 'REM To activate the VIB restraints, remove leading REM'
        RETURN
       END
 
