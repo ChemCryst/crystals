@@ -21,7 +21,7 @@
 ^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
 ^^WI GRID GRIDLR NROWS=1 NCOLS=2
 ^^WI {
-^^WI   @ 1,1 GRID GRIDL NROWS=5 NCOLS=3
+^^WI   @ 1,1 GRID GRIDL NROWS=7 NCOLS=3
 ^^WI   {
 ^^WI     @ 1,2 RADIOBUTTON RS '&Default Shelxs parameters'
 ^^WI           STATE=ON
@@ -33,6 +33,8 @@
 ^^WI           STATE=OFF
 ^^WI     @ 5,2 CHECKBOX CRUN '&Run Shelxs now'
 ^^WI           STATE=ON
+^^WI     @ 7,2 RADIOBUTTON CLIST '&See Last SHELXS.LIS file'
+^^WI           STATE=OFF
 ^^WI   }
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2
 ^^WI   {
@@ -72,6 +74,23 @@
 %      IF ( VALUE .EQ. 1 ) THEN
 %          COPY '#FOREIGN SHELXS PATTERSON'
 %          COPY 'END'
+%      END IF
+%%
+^^??   CLIST STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE ABBREVIATED 'On=edit'
+%      IF ( VALUE .EQ. 1 ) THEN
+%       IF ( FILEEXISTS ( 'shelxs.lis' ) ) THEN
+#ifdef __GID__
+%           COPY '#SPAWN +notepad.exe shelxs.lis'
+#else
+%           EVALUATE EDITOR_FILE = 'shelxs.lis'
+%           COPY '#SCRIPT XEDITOR'
+#endif
+%       ELSE
+{E There is no previous SHEXLS.LIS file
+%       END IF
+%       FINISH
 %      END IF
 %%
 ^^??   CRUN STATE
