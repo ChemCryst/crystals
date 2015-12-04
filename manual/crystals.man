@@ -8171,13 +8171,15 @@ are only going to be calculated.
 #HSgenrestrain#
 #PThere are two directives.
 #DDEFINE NAME = TEXT#
- This may be used to set up a user defined variable,
- which may be referred to later on by 'NAME'.
+ This may be used to set up a user-defined constant which is evaluated
+ at run time, and  which may be referred to later on by 'NAME'.
  The text comprises  a series of variables and
  numeric constants interspersed with operators.
  The 'NAME' must not be one of the standard functions or
  variables, and may be overwritten several times  -  i.e.
- its value may be redefined.
+ its value may be redefined. Derivatives of a DEFINEd constant are not
+ evaluated as part of the restraint, though its numerical value will
+ change in successive cycles of refinement.
 #DRESTRAIN VALUE, E.S.D. = TEXT#
  The physical or chemical quantity defined by the
  'TEXT' is restrained to be 'VALUE', with
@@ -9226,36 +9228,6 @@ default value is 4.0
                   Allocate space for list 24.
  8.   \CYCLENDS
 #
-#Ke.s.d.s#
- Most publication listings require e.s.ds. These are computed
- from the normal matrix. If LIST 5 (the model parameters) has been 
- modified in _b{ANY _B{WAY
- (including simply renaming or ordering atoms) since the last
- refinement cycle, the matrix will be invalid.
-#PCRYSTALS will warn you that LIST 11, the normal matrix, cannot be
- loaded.  To create a valid matrix
- without changing the parameter values, compute a refinement cycle but set
- all the shifts to zero.
-#N   4#
-#J
-      \SFLS
-      REFINE
-      SHIFT GENERAL = 0.0
-      END
-#
-#XESD#
-#XCreate esd list, LIST 9#
-#YCreate esd list - \ESD#
-#HSesd#
-#J
-
- \ESD
- END
- 
-#
-#PThe current LIST 5 must belong to the current VcV matrix (See
- the warning above).
-#Q
 #
 #XANALYSE#
 #XResidual analysis#
@@ -9412,6 +9384,8 @@ Indicates which reflection list to use.
 #PA low order term Fourier series is used to model an absorption surface for
  differences between the observed structure factors and those obtained from a
  structure factor calculation after isotropic least squares refinement.
+
+ For SERIAL diffractometrs (e.g. CAD4)
  Spherical polar angles are used to define the incident and diffracted
  beam path
  directions so that each reflection is characterised by four angles - viz.
@@ -9421,8 +9395,15 @@ Indicates which reflection list to use.
  angles.  A low order term Fourier series is used in Bragg angle THETA,
  but is highly correlated with the temperature factors, and not normally
  recommended.
-  This version is general for any 4-circle diffractometer data collection
+  This version is general for any SERIAL diffractometer data collection
  geometry.
+#PFor AREA detector diffractometers equivalent reflections are usually 
+ measured at different setting angles and then averaged.   
+ The concept of incident and emergent beams has no meaning for merged 
+ data, so instead DIFABS computes the azimuth and declination of the
+ scattering vector.  This cannot be reliably used as the basis for a 
+ correction, but the "absorption" surface is a measure of the mis-match
+ between Fo and Fc.
 #PThe quantity minimised is the sum of the squares of the residuals, Rj, where
 #
 #J
@@ -9501,6 +9482,7 @@ has three values:
 #PIf UPDATE is specified, the stored values of Fo are over written. If
  NEW is specified, a new LIST 6 is written to disc. The
  disc will be extended sufficiently to accommodate the new list.
+
 #KMODE=#
  Controls the mode of application of the correction, and
  has three values:
@@ -9523,13 +9505,14 @@ has three values:
 # Controls the geometry used for data collection to be input.
 #KGEOMETRY=#
  The type of diffractometer used is specified:
-#N   5#
+#N   6#
 #J
       CAD4          - Default value
       SYNTEX-P1
       SYNTEX-P21
       PICKER        - Picker FACS-I
       PW1100        - Philips PW1100
+      AREA          - Any Area detector instrument
 #
 #KMODE=#
  The mode of data collection is given:
@@ -10613,6 +10596,7 @@ section #RLIST20#).
 #N   8#
 #J
  Analysis of residuals                          ANALYSE
+ Output of atom esds                            ESD
  Distance and angles calculations               DISTANCES
  Void search                                    VOIDS
  Global Geometry (planes,lines & libration)     GEOMETRY
@@ -10634,6 +10618,50 @@ section #RLIST20#).
  scheme. It is described in the chapter Structure Factors and Least
  Squares.
 #
+#Q
+#Ke.s.d.s#
+ Most publication listings require e.s.ds. These are computed
+ from the normal matrix. If LIST 5 (the model parameters) has been 
+ modified in _b{ANY _B{WAY
+ (including simply renaming or ordering atoms) since the last
+ refinement cycle, the matrix will be invalid.
+#PCRYSTALS will warn you that LIST 11, the normal matrix, cannot be
+ loaded.  To create a valid matrix
+ without changing the parameter values, compute a refinement cycle but set
+ all the shifts to zero.
+#N   4#
+#J
+      \SFLS
+      REFINE
+      SHIFT GENERAL = 0.0
+      END
+#
+#XESD#
+#XCreate esd list, LIST 9#
+#YCreate esd list - \ESD#
+#HSesd#
+#J
+
+ \ESD
+ END
+ 
+#
+#PThe current LIST 5 must belong to the current VcV matrix (See
+ the warning above).
+#Q
+#XVCV#
+#XOutput VcV matrix of selected atoms#
+#YOutput VcV matrix of selected atoms#
+#HVcV#
+#J
+ \VCV
+ ATOM C(1) C(2) C(3)
+ ACTION
+ END
+
+#
+#q
+
 #Q
 #XDISTANCES#
 #XDistance calculations#
