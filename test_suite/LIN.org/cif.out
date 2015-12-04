@@ -175,7 +175,7 @@ _publ_section_exptl_prep
 # without any spaces (eg a number) or other text enclosed in " " 
 # Remove the leading # in the following example 
  
-#geom_extra_table_head_A 
+#_geom_extra_table_head_A 
 #; 
 #Table 2. 
 #Molecular parameters deviating most from MOGUL averages 

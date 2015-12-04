@@ -1363,7 +1363,7 @@ Bonds: Update required - There is no list 41
  Calculated value    0.1000000000E+01
  Calculated value    0.1000000000E+01
  Calculated value    0.1000000000E+01
- No derivatives found
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
 
 
    1.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
@@ -1687,7 +1687,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Function at     564  :   15   sum       
     1.1000
     1.2000
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    1. The sum is restrained to be   2.3000      with an E.S.D. of  0.10000E-01
 
 
@@ -1702,7 +1702,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
        582  :   -999436  -1000000     ELEMENT 
  Function at     564  :   15   sum       
     1.3000
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    2. The sum is restrained to be   1.3000      with an E.S.D. of  0.10000E-01
 
 
@@ -1721,7 +1721,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Function at     564  :   15   sum       
     1.4000
     1.5000
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    3. The sum is restrained to be   2.9000      with an E.S.D. of  0.10000E-01
 
 
@@ -1747,7 +1747,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Function at     564  :   15   sum       
 [38]  C           1.0000   1.00    1.00    0.10    0.20    0.30    0.05    0.00    0.00    0.00    0.00    0.00
 [38]  C           2.0000   1.00    1.00    0.20    0.30    0.40    0.05    0.00    0.00    0.00    0.00    0.00
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    4. The sum is restrained to be  0.30000      with an E.S.D. of  0.10000E-01
 
 
@@ -1766,7 +1766,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Function at     564  :   15   sum       
    10.0000
    10.0000
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    5. The sum is restrained to be   20.000      with an E.S.D. of  0.10000E-01
 
 
@@ -1789,7 +1789,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
     1.6000
     1.7000
     1.8000
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    6. The sum is restrained to be   5.1000      with an E.S.D. of  0.10000E-01
 
 
@@ -1812,7 +1812,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
     1.6000
     1.7000
     1.8000
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    7. The sum is restrained to be   5.1000      with an E.S.D. of  0.10000E-01
 
 
@@ -1831,7 +1831,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Function at     564  :   15   sum       
     0.9000
     0.8000
- No derivatives found
+ Directive  15 SUM         : No derivatives found during Evaluation
    8. The sum is restrained to be   1.7000      with an E.S.D. of  0.10000E-01
 
 

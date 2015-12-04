@@ -1466,6 +1466,7 @@ Bonds: Update required - There is no list 41
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+ Directive   3 DISTANCE    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2737,6 +2738,8 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+ Directive   3 DISTANCE    : No derivatives found during Evaluation
+ Directive   3 DISTANCE    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   

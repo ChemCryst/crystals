@@ -5035,7 +5035,6 @@ Dc    29     5     7     7    12    10    11    17    20    25    30    28    20
 
  Outliers in Normal Probability Plot at delta(Z) > 0.29
     Indices       Ds        Do        Zo         Zc     /Zc-Zo/
-[12]    1   3   4    20.66    129.941    -4.671    -3.615     1.056
 [12]    0   2   1   176.71    389.242    -4.202    -3.140     1.062
    0   6   5    -9.730     9.371    -3.951    -2.900     1.051
    1   4   2   -10.115    60.314    -3.678    -2.733     0.945
@@ -5112,14 +5111,15 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
      244            55
 
 
-   LePage Analysis
- Minimum signal : noise used =  0.7259
+   LePage Analysis (Assuming Enantio-purity)
+ Minimum signal : noise used =  0.7262
  No. Available  299
- Total  No.Same  No.Opposite  Signal:noise   Prob Correct
-   10       10      0          5.9253          1.00
-   20       20      0          4.7591          1.00
-   50       47      3          1.7485          1.00
-  100       89     11          0.7259          1.00
+ Total  No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
+   10       10      0          7.2238        0.000000
+   20       20      0          5.7160        0.000000
+   50       50      0          3.4944        0.000000
+  100       95      5          2.0331        0.000000
+  200      180     20          0.7262        0.000000
 
 
 

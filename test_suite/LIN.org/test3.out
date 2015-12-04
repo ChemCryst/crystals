@@ -4772,14 +4772,10 @@ for Uprime see Acta Cryst (2000). B56, 747-749
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
-  Instruction ignored. TLS have not been successfully computed
-  Instruction ignored. TLS have not been successfully computed
+# FAILURES BECAUSE INSTRUCTIONS IN WRONG ORDER                                                                                                                                                                                                                  
+ Instruction ignored. TLS has not been successfully computed
+ Instruction ignored. TLS has not been successfully computed
  Results for group number    1
-
-
- BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
-
-
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -4907,14 +4903,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
-  Instruction ignored. TLS have not been successfully computed
-  Instruction ignored. TLS have not been successfully computed
+ Instruction ignored. TLS has not been successfully computed
+ Instruction ignored. TLS has not been successfully computed
  Results for group number    1
-
-
- BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
-
-
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -5868,6 +5859,16 @@ LS-scale= 12.394   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
