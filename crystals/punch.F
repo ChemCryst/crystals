@@ -791,10 +791,10 @@ C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
         CALL SAPPLY (J)
         IF (ITYPE .EQ. 1) THEN
             write(ncpu,20) istore(m5), nint(store(m5+1)), 
-     1      (store(idjw),idjw=m5+2, m5+13)
+     1      (store(idjw),idjw=m5+2, m5+12)
             write(ncpu,20) istore(m5), nint(store(m5+1)), 
      1      (bpd(idjw),idjw=1, 11)
-20          format(a4,i4,12f11.6)
+20          format(a4,i4,11f11.6)
             write(ncpu,'(/)')
         ELSE
 c--         move the type and serial
@@ -802,7 +802,7 @@ c--         move the type and serial
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
             write(ncpu,20)store(m9a),nint(store(m9a+1)),
-     1      (store(idjw),idjw=m9a+2, m9a+13)
+     1      (store(idjw),idjw=m9a+2, m9a+12)
         ENDIF
 C
 1585    CONTINUE
