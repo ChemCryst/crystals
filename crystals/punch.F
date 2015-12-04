@@ -729,7 +729,7 @@ c-- set the output type
       CALL XRSL
       CALL XCSAE
 C--LOAD A FEW LISTS
-      CALL XFAL01 
+      IF (KHUNTR (1,0,IADDL,IADDR,IADDD,-1) .lt. 0)  CALL XFAL01 
 c     if a LIST 5 is already loaded, save the pointers
       isave = 0
       IF (KHUNTR (5,0,IADDL,IADDR,IADDD,-1) .GE. 0) then
@@ -737,7 +737,7 @@ c     if a LIST 5 is already loaded, save the pointers
        isave = 1
       endif
       CALL XFAL05
-      CALL XFAL23
+      IF (KHUNTR (23,0,IADDL,IADDR,IADDD,-1) .lt. 0) CALL XFAL23
       if ( itype .eq. 1) then
         write(cmon,'(a)') 'Writing simple esd file'
       else
@@ -801,6 +801,8 @@ c--         move the type and serial
             call xmove(store(m5),store(m9a),2)
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
+            write(ncpu,20)store(m9a),nint(store(m9a+1)),
+     1      (store(idjw),idjw=m9a+2, m9a+13)
         ENDIF
 C
 1585    CONTINUE
