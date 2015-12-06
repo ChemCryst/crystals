@@ -9945,7 +9945,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 
 
 
-[38]  Maximum      563.37   0.00    0.00    0.00    0.00    0.00    0.03    0.01    0.01    0.01    0.01    0.01
+[38]  Maximum      563.38   0.00    0.00    0.00    0.00    0.00    0.03    0.01    0.01    0.01    0.01    0.01
 [31]                                          0.000    0.000    0.000 
 
 [03]  Reversals
@@ -10130,7 +10130,7 @@ LS-scale=  1.588   Wilson Scale=  0.000
   Eigen filters  0.000       0.5000E-04    100.0    
 
 [13]  LARGE     1           1             0.3       0.6E+00    0.4 E-01          6.4                           SCALE   
-[43] Resetting shift for Extinction  Shift=     851.   Esd=      7   New shift=     102.67                                                                                                                                                                       
+[43] Resetting shift for Extinction  Shift=     852.   Esd=      7   New shift=     102.67                                                                                                                                                                       
 [13]  LARGE     2           2           102.6       0.2E+01    0.7 E+02         11.5                           EXTPARAM
 [14]  S/ESD    21          21            0.013       0.4E+00    0.68 E-02          1.9         C      4 U[11]   
 
