@@ -2943,7 +2943,8 @@ C -- PRINT THE STORED COORDINATED DATA POINTED TO BY LOLD AND LNEW
 C
 C
       integer, intent(in) ::  imatrix
-      real, dimension(5) :: DELTA, sum, rmsdev
+      real, dimension(5) :: DELTA
+      real, dimension(4) :: sum, rmsdev
       real, dimension(3) :: XVEC
 C Our torsion is C-A-B-D
       real, dimension(3) :: ACVEC, ABVEC, BDVEC
@@ -2995,7 +2996,7 @@ C      data cnull/'    '/
       !INULL = IB
       ANULL = transfer(IB, 1.0)
 C
-      CALL XZEROF ( SUM(1) , 4 )
+      sum=0.0
       RADIUS = 0.0
 c
       MISMAT = 0
