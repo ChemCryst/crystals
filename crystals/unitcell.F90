@@ -267,10 +267,11 @@ function metric_exclcell(this)
     use math_mod
     implicit none
     class(t_unitcell) :: this
-    real, dimension(3,3) :: metric_exclcell
-    logical OK_FLAG
+    real, dimension(3,3) :: o, metric_exclcell
+
+    o = this%orthogonalisation_exclcell()
+    metric_exclcell = matmul(transpose(o), o)
         
-    call M33INV (this%rmetric_exclcell(), metric_exclcell, OK_FLAG)
 end function
 
 !> Return the R(ii) and R(ij) used to calculate sin(theta)/lambda as a linear array of 6 elements
