@@ -2386,649 +2386,7 @@ C This file must be compiled without optimisations...
 *     End of DLASWP
 *
       END
-*> \brief \b ILAENV
-*
-*  =========== DOCUMENTATION ===========
-*
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
-*
-*> \htmlonly
-*> Download ILAENV + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ilaenv.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ilaenv.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ilaenv.f"> 
-*> [TXT]</a>
-*> \endhtmlonly 
-*
-*  Definition:
-*  ===========
-*
-*       INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
-* 
-*       .. Scalar Arguments ..
-*       CHARACTER*( * )    NAME, OPTS
-*       INTEGER            ISPEC, N1, N2, N3, N4
-*       ..
-*  
-*
-*> \par Purpose:
-*  =============
-*>
-*> \verbatim
-*>
-*> ILAENV is called from the LAPACK routines to choose problem-dependent
-*> parameters for the local environment.  See ISPEC for a description of
-*> the parameters.
-*>
-*> ILAENV returns an INTEGER
-*> if ILAENV >= 0: ILAENV returns the value of the parameter specified by ISPEC
-*> if ILAENV < 0:  if ILAENV = -k, the k-th argument had an illegal value.
-*>
-*> This version provides a set of parameters which should give good,
-*> but not optimal, performance on many of the currently available
-*> computers.  Users are encouraged to modify this subroutine to set
-*> the tuning parameters for their particular machine using the option
-*> and problem size information in the arguments.
-*>
-*> This routine will not function correctly if it is converted to all
-*> lower case.  Converting it to all upper case is allowed.
-*> \endverbatim
-*
-*  Arguments:
-*  ==========
-*
-*> \param[in] ISPEC
-*> \verbatim
-*>          ISPEC is INTEGER
-*>          Specifies the parameter to be returned as the value of
-*>          ILAENV.
-*>          = 1: the optimal blocksize; if this value is 1, an unblocked
-*>               algorithm will give the best performance.
-*>          = 2: the minimum block size for which the block routine
-*>               should be used; if the usable block size is less than
-*>               this value, an unblocked routine should be used.
-*>          = 3: the crossover point (in a block routine, for N less
-*>               than this value, an unblocked routine should be used)
-*>          = 4: the number of shifts, used in the nonsymmetric
-*>               eigenvalue routines (DEPRECATED)
-*>          = 5: the minimum column dimension for blocking to be used;
-*>               rectangular blocks must have dimension at least k by m,
-*>               where k is given by ILAENV(2,...) and m by ILAENV(5,...)
-*>          = 6: the crossover point for the SVD (when reducing an m by n
-*>               matrix to bidiagonal form, if max(m,n)/min(m,n) exceeds
-*>               this value, a QR factorization is used first to reduce
-*>               the matrix to a triangular form.)
-*>          = 7: the number of processors
-*>          = 8: the crossover point for the multishift QR method
-*>               for nonsymmetric eigenvalue problems (DEPRECATED)
-*>          = 9: maximum size of the subproblems at the bottom of the
-*>               computation tree in the divide-and-conquer algorithm
-*>               (used by xGELSD and xGESDD)
-*>          =10: ieee NaN arithmetic can be trusted not to trap
-*>          =11: infinity arithmetic can be trusted not to trap
-*>          12 <= ISPEC <= 16:
-*>               xHSEQR or related subroutines,
-*>               see IPARMQ for detailed explanation
-*> \endverbatim
-*>
-*> \param[in] NAME
-*> \verbatim
-*>          NAME is CHARACTER*(*)
-*>          The name of the calling subroutine, in either upper case or
-*>          lower case.
-*> \endverbatim
-*>
-*> \param[in] OPTS
-*> \verbatim
-*>          OPTS is CHARACTER*(*)
-*>          The character options to the subroutine NAME, concatenated
-*>          into a single character string.  For example, UPLO = 'U',
-*>          TRANS = 'T', and DIAG = 'N' for a triangular routine would
-*>          be specified as OPTS = 'UTN'.
-*> \endverbatim
-*>
-*> \param[in] N1
-*> \verbatim
-*>          N1 is INTEGER
-*> \endverbatim
-*>
-*> \param[in] N2
-*> \verbatim
-*>          N2 is INTEGER
-*> \endverbatim
-*>
-*> \param[in] N3
-*> \verbatim
-*>          N3 is INTEGER
-*> \endverbatim
-*>
-*> \param[in] N4
-*> \verbatim
-*>          N4 is INTEGER
-*>          Problem dimensions for the subroutine NAME; these may not all
-*>          be required.
-*> \endverbatim
-*
-*  Authors:
-*  ========
-*
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2015
-*
-*> \ingroup auxOTHERauxiliary
-*
-*> \par Further Details:
-*  =====================
-*>
-*> \verbatim
-*>
-*>  The following conventions have been used when calling ILAENV from the
-*>  LAPACK routines:
-*>  1)  OPTS is a concatenation of all of the character options to
-*>      subroutine NAME, in the same order that they appear in the
-*>      argument list for NAME, even if they are not used in determining
-*>      the value of the parameter specified by ISPEC.
-*>  2)  The problem dimensions N1, N2, N3, N4 are specified in the order
-*>      that they appear in the argument list for NAME.  N1 is used
-*>      first, N2 second, and so on, and unused problem dimensions are
-*>      passed a value of -1.
-*>  3)  The parameter value returned by ILAENV is checked for validity in
-*>      the calling subroutine.  For example, ILAENV is used to retrieve
-*>      the optimal blocksize for STRTRI as follows:
-*>
-*>      NB = ILAENV( 1, 'STRTRI', UPLO // DIAG, N, -1, -1, -1 )
-*>      IF( NB.LE.1 ) NB = MAX( 1, N )
-*> \endverbatim
-*>
-*  =====================================================================
-      INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
-*
-*  -- LAPACK auxiliary routine (version 3.6.0) --
-*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
-*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2015
-*
-*     .. Scalar Arguments ..
-      CHARACTER*( * )    NAME, OPTS
-      INTEGER            ISPEC, N1, N2, N3, N4
-*     ..
-*
-*  =====================================================================
-*
-*     .. Local Scalars ..
-      INTEGER            I, IC, IZ, NB, NBMIN, NX
-      LOGICAL            CNAME, SNAME
-      CHARACTER          C1*1, C2*2, C4*2, C3*3, SUBNAM*6
-*     ..
-*     .. Intrinsic Functions ..
-      INTRINSIC          CHAR, ICHAR, INT, MIN, REAL
-*     ..
-*     .. External Functions ..
-      INTEGER            IEEECK, IPARMQ
-      EXTERNAL           IEEECK, IPARMQ
-*     ..
-*     .. Executable Statements ..
-*
-      GO TO ( 10, 10, 10, 80, 90, 100, 110, 120,
-     $        130, 140, 150, 160, 160, 160, 160, 160 )ISPEC
-*
-*     Invalid value for ISPEC
-*
-      ILAENV = -1
-      RETURN
-*
-   10 CONTINUE
-*
-*     Convert NAME to upper case if the first character is lower case.
-*
-      ILAENV = 1
-      SUBNAM = NAME
-      IC = ICHAR( SUBNAM( 1: 1 ) )
-      IZ = ICHAR( 'Z' )
-      IF( IZ.EQ.90 .OR. IZ.EQ.122 ) THEN
-*
-*        ASCII character set
-*
-         IF( IC.GE.97 .AND. IC.LE.122 ) THEN
-            SUBNAM( 1: 1 ) = CHAR( IC-32 )
-            DO 20 I = 2, 6
-               IC = ICHAR( SUBNAM( I: I ) )
-               IF( IC.GE.97 .AND. IC.LE.122 )
-     $            SUBNAM( I: I ) = CHAR( IC-32 )
-   20       CONTINUE
-         END IF
-*
-      ELSE IF( IZ.EQ.233 .OR. IZ.EQ.169 ) THEN
-*
-*        EBCDIC character set
-*
-         IF( ( IC.GE.129 .AND. IC.LE.137 ) .OR.
-     $       ( IC.GE.145 .AND. IC.LE.153 ) .OR.
-     $       ( IC.GE.162 .AND. IC.LE.169 ) ) THEN
-            SUBNAM( 1: 1 ) = CHAR( IC+64 )
-            DO 30 I = 2, 6
-               IC = ICHAR( SUBNAM( I: I ) )
-               IF( ( IC.GE.129 .AND. IC.LE.137 ) .OR.
-     $             ( IC.GE.145 .AND. IC.LE.153 ) .OR.
-     $             ( IC.GE.162 .AND. IC.LE.169 ) )SUBNAM( I:
-     $             I ) = CHAR( IC+64 )
-   30       CONTINUE
-         END IF
-*
-      ELSE IF( IZ.EQ.218 .OR. IZ.EQ.250 ) THEN
-*
-*        Prime machines:  ASCII+128
-*
-         IF( IC.GE.225 .AND. IC.LE.250 ) THEN
-            SUBNAM( 1: 1 ) = CHAR( IC-32 )
-            DO 40 I = 2, 6
-               IC = ICHAR( SUBNAM( I: I ) )
-               IF( IC.GE.225 .AND. IC.LE.250 )
-     $            SUBNAM( I: I ) = CHAR( IC-32 )
-   40       CONTINUE
-         END IF
-      END IF
-*
-      C1 = SUBNAM( 1: 1 )
-      SNAME = C1.EQ.'S' .OR. C1.EQ.'D'
-      CNAME = C1.EQ.'C' .OR. C1.EQ.'Z'
-      IF( .NOT.( CNAME .OR. SNAME ) )
-     $   RETURN
-      C2 = SUBNAM( 2: 3 )
-      C3 = SUBNAM( 4: 6 )
-      C4 = C3( 2: 3 )
-*
-      GO TO ( 50, 60, 70 )ISPEC
-*
-   50 CONTINUE
-*
-*     ISPEC = 1:  block size
-*
-*     In these examples, separate code is provided for setting NB for
-*     real and complex.  We assume that NB will take the same value in
-*     single or double precision.
-*
-      NB = 1
-*
-      IF( C2.EQ.'GE' ) THEN
-         IF( C3.EQ.'TRF' ) THEN
-            IF( SNAME ) THEN
-               NB = 64
-            ELSE
-               NB = 64
-            END IF
-         ELSE IF( C3.EQ.'QRF' .OR. C3.EQ.'RQF' .OR. C3.EQ.'LQF' .OR.
-     $            C3.EQ.'QLF' ) THEN
-            IF( SNAME ) THEN
-               NB = 32
-            ELSE
-               NB = 32
-            END IF
-         ELSE IF( C3.EQ.'HRD' ) THEN
-            IF( SNAME ) THEN
-               NB = 32
-            ELSE
-               NB = 32
-            END IF
-         ELSE IF( C3.EQ.'BRD' ) THEN
-            IF( SNAME ) THEN
-               NB = 32
-            ELSE
-               NB = 32
-            END IF
-         ELSE IF( C3.EQ.'TRI' ) THEN
-            IF( SNAME ) THEN
-               NB = 64
-            ELSE
-               NB = 64
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'PO' ) THEN
-         IF( C3.EQ.'TRF' ) THEN
-            IF( SNAME ) THEN
-               NB = 64
-            ELSE
-               NB = 64
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'SY' ) THEN
-         IF( C3.EQ.'TRF' ) THEN
-            IF( SNAME ) THEN
-               NB = 64
-            ELSE
-               NB = 64
-            END IF
-         ELSE IF( SNAME .AND. C3.EQ.'TRD' ) THEN
-            NB = 32
-         ELSE IF( SNAME .AND. C3.EQ.'GST' ) THEN
-            NB = 64
-         END IF
-      ELSE IF( CNAME .AND. C2.EQ.'HE' ) THEN
-         IF( C3.EQ.'TRF' ) THEN
-            NB = 64
-         ELSE IF( C3.EQ.'TRD' ) THEN
-            NB = 32
-         ELSE IF( C3.EQ.'GST' ) THEN
-            NB = 64
-         END IF
-      ELSE IF( SNAME .AND. C2.EQ.'OR' ) THEN
-         IF( C3( 1: 1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NB = 32
-            END IF
-         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NB = 32
-            END IF
-         END IF
-      ELSE IF( CNAME .AND. C2.EQ.'UN' ) THEN
-         IF( C3( 1: 1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NB = 32
-            END IF
-         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NB = 32
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'GB' ) THEN
-         IF( C3.EQ.'TRF' ) THEN
-            IF( SNAME ) THEN
-               IF( N4.LE.64 ) THEN
-                  NB = 1
-               ELSE
-                  NB = 32
-               END IF
-            ELSE
-               IF( N4.LE.64 ) THEN
-                  NB = 1
-               ELSE
-                  NB = 32
-               END IF
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'PB' ) THEN
-         IF( C3.EQ.'TRF' ) THEN
-            IF( SNAME ) THEN
-               IF( N2.LE.64 ) THEN
-                  NB = 1
-               ELSE
-                  NB = 32
-               END IF
-            ELSE
-               IF( N2.LE.64 ) THEN
-                  NB = 1
-               ELSE
-                  NB = 32
-               END IF
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'TR' ) THEN
-         IF( C3.EQ.'TRI' ) THEN
-            IF( SNAME ) THEN
-               NB = 64
-            ELSE
-               NB = 64
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'LA' ) THEN
-         IF( C3.EQ.'UUM' ) THEN
-            IF( SNAME ) THEN
-               NB = 64
-            ELSE
-               NB = 64
-            END IF
-         END IF
-      ELSE IF( SNAME .AND. C2.EQ.'ST' ) THEN
-         IF( C3.EQ.'EBZ' ) THEN
-            NB = 1
-         END IF
-      ELSE IF( C2.EQ.'GG' ) THEN
-         NB = 32
-         IF( C3.EQ.'HD3' ) THEN
-            IF( SNAME ) THEN
-               NB = 32
-            ELSE
-               NB = 32
-            END IF
-         END IF
-      END IF
-      ILAENV = NB
-      RETURN
-*
-   60 CONTINUE
-*
-*     ISPEC = 2:  minimum block size
-*
-      NBMIN = 2
-      IF( C2.EQ.'GE' ) THEN
-         IF( C3.EQ.'QRF' .OR. C3.EQ.'RQF' .OR. C3.EQ.'LQF' .OR. C3.EQ.
-     $       'QLF' ) THEN
-            IF( SNAME ) THEN
-               NBMIN = 2
-            ELSE
-               NBMIN = 2
-            END IF
-         ELSE IF( C3.EQ.'HRD' ) THEN
-            IF( SNAME ) THEN
-               NBMIN = 2
-            ELSE
-               NBMIN = 2
-            END IF
-         ELSE IF( C3.EQ.'BRD' ) THEN
-            IF( SNAME ) THEN
-               NBMIN = 2
-            ELSE
-               NBMIN = 2
-            END IF
-         ELSE IF( C3.EQ.'TRI' ) THEN
-            IF( SNAME ) THEN
-               NBMIN = 2
-            ELSE
-               NBMIN = 2
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'SY' ) THEN
-         IF( C3.EQ.'TRF' ) THEN
-            IF( SNAME ) THEN
-               NBMIN = 8
-            ELSE
-               NBMIN = 8
-            END IF
-         ELSE IF( SNAME .AND. C3.EQ.'TRD' ) THEN
-            NBMIN = 2
-         END IF
-      ELSE IF( CNAME .AND. C2.EQ.'HE' ) THEN
-         IF( C3.EQ.'TRD' ) THEN
-            NBMIN = 2
-         END IF
-      ELSE IF( SNAME .AND. C2.EQ.'OR' ) THEN
-         IF( C3( 1: 1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NBMIN = 2
-            END IF
-         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NBMIN = 2
-            END IF
-         END IF
-      ELSE IF( CNAME .AND. C2.EQ.'UN' ) THEN
-         IF( C3( 1: 1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NBMIN = 2
-            END IF
-         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NBMIN = 2
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'GG' ) THEN
-         NBMIN = 2
-         IF( C3.EQ.'HD3' ) THEN
-            NBMIN = 2
-         END IF
-      END IF
-      ILAENV = NBMIN
-      RETURN
-*
-   70 CONTINUE
-*
-*     ISPEC = 3:  crossover point
-*
-      NX = 0
-      IF( C2.EQ.'GE' ) THEN
-         IF( C3.EQ.'QRF' .OR. C3.EQ.'RQF' .OR. C3.EQ.'LQF' .OR. C3.EQ.
-     $       'QLF' ) THEN
-            IF( SNAME ) THEN
-               NX = 128
-            ELSE
-               NX = 128
-            END IF
-         ELSE IF( C3.EQ.'HRD' ) THEN
-            IF( SNAME ) THEN
-               NX = 128
-            ELSE
-               NX = 128
-            END IF
-         ELSE IF( C3.EQ.'BRD' ) THEN
-            IF( SNAME ) THEN
-               NX = 128
-            ELSE
-               NX = 128
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'SY' ) THEN
-         IF( SNAME .AND. C3.EQ.'TRD' ) THEN
-            NX = 32
-         END IF
-      ELSE IF( CNAME .AND. C2.EQ.'HE' ) THEN
-         IF( C3.EQ.'TRD' ) THEN
-            NX = 32
-         END IF
-      ELSE IF( SNAME .AND. C2.EQ.'OR' ) THEN
-         IF( C3( 1: 1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NX = 128
-            END IF
-         END IF
-      ELSE IF( CNAME .AND. C2.EQ.'UN' ) THEN
-         IF( C3( 1: 1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
-     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
-     $           THEN
-               NX = 128
-            END IF
-         END IF
-      ELSE IF( C2.EQ.'GG' ) THEN
-         NX = 128
-         IF( C3.EQ.'HD3' ) THEN
-            NX = 128
-         END IF
-      END IF
-      ILAENV = NX
-      RETURN
-*
-   80 CONTINUE
-*
-*     ISPEC = 4:  number of shifts (used by xHSEQR)
-*
-      ILAENV = 6
-      RETURN
-*
-   90 CONTINUE
-*
-*     ISPEC = 5:  minimum column dimension (not used)
-*
-      ILAENV = 2
-      RETURN
-*
-  100 CONTINUE
-*
-*     ISPEC = 6:  crossover point for SVD (used by xGELSS and xGESVD)
-*
-      ILAENV = INT( REAL( MIN( N1, N2 ) )*1.6E0 )
-      RETURN
-*
-  110 CONTINUE
-*
-*     ISPEC = 7:  number of processors (not used)
-*
-      ILAENV = 1
-      RETURN
-*
-  120 CONTINUE
-*
-*     ISPEC = 8:  crossover point for multishift (used by xHSEQR)
-*
-      ILAENV = 50
-      RETURN
-*
-  130 CONTINUE
-*
-*     ISPEC = 9:  maximum size of the subproblems at the bottom of the
-*                 computation tree in the divide-and-conquer algorithm
-*                 (used by xGELSD and xGESDD)
-*
-      ILAENV = 25
-      RETURN
-*
-  140 CONTINUE
-*
-*     ISPEC = 10: ieee NaN arithmetic can be trusted not to trap
-*
-*     ILAENV = 0
-      ILAENV = 1
-      IF( ILAENV.EQ.1 ) THEN
-         ILAENV = IEEECK( 1, 0.0, 1.0 )
-      END IF
-      RETURN
-*
-  150 CONTINUE
-*
-*     ISPEC = 11: infinity arithmetic can be trusted not to trap
-*
-*     ILAENV = 0
-      ILAENV = 1
-      IF( ILAENV.EQ.1 ) THEN
-         ILAENV = IEEECK( 0, 0.0, 1.0 )
-      END IF
-      RETURN
-*
-  160 CONTINUE
-*
-*     12 <= ISPEC <= 16: xHSEQR or related subroutines.
-*
-      ILAENV = IPARMQ( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
-      RETURN
-*
-*     End of ILAENV
-*
-      END
+
 *> \brief \b IPARMQ
 *
 *  =========== DOCUMENTATION ===========
@@ -3422,230 +2780,6 @@ C This file must be compiled without optimisations...
       END IF
 *
 *     ==== End of IPARMQ ====
-*
-      END
-*> \brief \b LSAME
-*
-*  =========== DOCUMENTATION ===========
-*
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
-*
-*  Definition:
-*  ===========
-*
-*      LOGICAL FUNCTION LSAME( CA, CB )
-*
-*     .. Scalar Arguments ..
-*      CHARACTER          CA, CB
-*     ..
-*  
-*
-*> \par Purpose:
-*  =============
-*>
-*> \verbatim
-*>
-*> LSAME returns .TRUE. if CA is the same letter as CB regardless of
-*> case.
-*> \endverbatim
-*
-*  Arguments:
-*  ==========
-*
-*> \param[in] CA
-*> \verbatim
-*> \endverbatim
-*>
-*> \param[in] CB
-*> \verbatim
-*>          CA and CB specify the single characters to be compared.
-*> \endverbatim
-*
-*  Authors:
-*  ========
-*
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
-*
-*  =====================================================================
-      LOGICAL FUNCTION LSAME( CA, CB )
-*
-*  -- LAPACK auxiliary routine (version 3.4.0) --
-*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
-*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
-*
-*     .. Scalar Arguments ..
-      CHARACTER          CA, CB
-*     ..
-*
-* =====================================================================
-*
-*     .. Intrinsic Functions ..
-      INTRINSIC          ICHAR
-*     ..
-*     .. Local Scalars ..
-      INTEGER            INTA, INTB, ZCODE
-*     ..
-*     .. Executable Statements ..
-*
-*     Test if the characters are equal
-*
-      LSAME = CA.EQ.CB
-      IF( LSAME )
-     $   RETURN
-*
-*     Now test for equivalence if both characters are alphabetic.
-*
-      ZCODE = ICHAR( 'Z' )
-*
-*     Use 'Z' rather than 'A' so that ASCII can be detected on Prime
-*     machines, on which ICHAR returns a value with bit 8 set.
-*     ICHAR('A') on Prime machines returns 193 which is the same as
-*     ICHAR('A') on an EBCDIC machine.
-*
-      INTA = ICHAR( CA )
-      INTB = ICHAR( CB )
-*
-      IF( ZCODE.EQ.90 .OR. ZCODE.EQ.122 ) THEN
-*
-*        ASCII is assumed - ZCODE is the ASCII code of either lower or
-*        upper case 'Z'.
-*
-         IF( INTA.GE.97 .AND. INTA.LE.122 ) INTA = INTA - 32
-         IF( INTB.GE.97 .AND. INTB.LE.122 ) INTB = INTB - 32
-*
-      ELSE IF( ZCODE.EQ.233 .OR. ZCODE.EQ.169 ) THEN
-*
-*        EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or
-*        upper case 'Z'.
-*
-         IF( INTA.GE.129 .AND. INTA.LE.137 .OR.
-     $       INTA.GE.145 .AND. INTA.LE.153 .OR.
-     $       INTA.GE.162 .AND. INTA.LE.169 ) INTA = INTA + 64
-         IF( INTB.GE.129 .AND. INTB.LE.137 .OR.
-     $       INTB.GE.145 .AND. INTB.LE.153 .OR.
-     $       INTB.GE.162 .AND. INTB.LE.169 ) INTB = INTB + 64
-*
-      ELSE IF( ZCODE.EQ.218 .OR. ZCODE.EQ.250 ) THEN
-*
-*        ASCII is assumed, on Prime machines - ZCODE is the ASCII code
-*        plus 128 of either lower or upper case 'Z'.
-*
-         IF( INTA.GE.225 .AND. INTA.LE.250 ) INTA = INTA - 32
-         IF( INTB.GE.225 .AND. INTB.LE.250 ) INTB = INTB - 32
-      END IF
-      LSAME = INTA.EQ.INTB
-*
-*     RETURN
-*
-*     End of LSAME
-*
-      END
-*> \brief \b XERBLA
-*
-*  =========== DOCUMENTATION ===========
-*
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
-*
-*> \htmlonly
-*> Download XERBLA + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/xerbla.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/xerbla.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/xerbla.f"> 
-*> [TXT]</a>
-*> \endhtmlonly 
-*
-*  Definition:
-*  ===========
-*
-*       SUBROUTINE XERBLA( SRNAME, INFO )
-* 
-*       .. Scalar Arguments ..
-*       CHARACTER*(*)      SRNAME
-*       INTEGER            INFO
-*       ..
-*  
-*
-*> \par Purpose:
-*  =============
-*>
-*> \verbatim
-*>
-*> XERBLA  is an error handler for the LAPACK routines.
-*> It is called by an LAPACK routine if an input parameter has an
-*> invalid value.  A message is printed and execution stops.
-*>
-*> Installers may consider modifying the STOP statement in order to
-*> call system-specific exception-handling facilities.
-*> \endverbatim
-*
-*  Arguments:
-*  ==========
-*
-*> \param[in] SRNAME
-*> \verbatim
-*>          SRNAME is CHARACTER*(*)
-*>          The name of the routine which called XERBLA.
-*> \endverbatim
-*>
-*> \param[in] INFO
-*> \verbatim
-*>          INFO is INTEGER
-*>          The position of the invalid parameter in the parameter list
-*>          of the calling routine.
-*> \endverbatim
-*
-*  Authors:
-*  ========
-*
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
-*
-*  =====================================================================
-      SUBROUTINE XERBLA( SRNAME, INFO )
-*
-*  -- LAPACK auxiliary routine (version 3.4.0) --
-*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
-*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
-*
-*     .. Scalar Arguments ..
-      CHARACTER*(*)      SRNAME
-      INTEGER            INFO
-*     ..
-*
-* =====================================================================
-*
-*     .. Intrinsic Functions ..
-      INTRINSIC          LEN_TRIM
-*     ..
-*     .. Executable Statements ..
-*
-      WRITE( *, FMT = 9999 )SRNAME( 1:LEN_TRIM( SRNAME ) ), INFO
-*
-      STOP
-*
- 9999 FORMAT( ' ** On entry to ', A, ' parameter number ', I2, ' had ',
-     $      'an illegal value' )
-*
-*     End of XERBLA
 *
       END
 
@@ -4364,209 +3498,602 @@ C This file must be compiled without optimisations...
 *     End of DTRTRI
 *
       END
-*> \brief \b IEEECK
-*
-*  =========== DOCUMENTATION ===========
-*
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
-*
-*> \htmlonly
-*> Download IEEECK + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ieeeck.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ieeeck.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ieeeck.f"> 
-*> [TXT]</a>
-*> \endhtmlonly 
-*
-*  Definition:
-*  ===========
-*
-*       INTEGER          FUNCTION IEEECK( ISPEC, ZERO, ONE )
-* 
-*       .. Scalar Arguments ..
-*       INTEGER            ISPEC
-*       REAL               ONE, ZERO
-*       ..
-*  
-*
-*> \par Purpose:
-*  =============
-*>
-*> \verbatim
-*>
-*> IEEECK is called from the ILAENV to verify that Infinity and
-*> possibly NaN arithmetic is safe (i.e. will not trap).
-*> \endverbatim
-*
-*  Arguments:
-*  ==========
-*
-*> \param[in] ISPEC
-*> \verbatim
-*>          ISPEC is INTEGER
-*>          Specifies whether to test just for inifinity arithmetic
-*>          or whether to test for infinity and NaN arithmetic.
-*>          = 0: Verify infinity arithmetic only.
-*>          = 1: Verify infinity and NaN arithmetic.
-*> \endverbatim
-*>
-*> \param[in] ZERO
-*> \verbatim
-*>          ZERO is REAL
-*>          Must contain the value 0.0
-*>          This is passed to prevent the compiler from optimizing
-*>          away this code.
-*> \endverbatim
-*>
-*> \param[in] ONE
-*> \verbatim
-*>          ONE is REAL
-*>          Must contain the value 1.0
-*>          This is passed to prevent the compiler from optimizing
-*>          away this code.
-*>
-*>  RETURN VALUE:  INTEGER
-*>          = 0:  Arithmetic failed to produce the correct answers
-*>          = 1:  Arithmetic produced the correct answers
-*> \endverbatim
-*
-*  Authors:
-*  ========
-*
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
-*
-*> \date November 2011
-*
-*> \ingroup auxOTHERauxiliary
-*
-*  =====================================================================
-      INTEGER          FUNCTION IEEECK( ISPEC, ZERO, ONE )
-*
-*  -- LAPACK auxiliary routine (version 3.4.0) --
-*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
-*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
-*
+
+      INTEGER FUNCTION IDAMAX(N,DX,INCX)
 *     .. Scalar Arguments ..
-      INTEGER            ISPEC
-      REAL               ONE, ZERO
+      INTEGER INCX,N
 *     ..
+*     .. Array Arguments ..
+      DOUBLE PRECISION DX(*)
+*     ..
+*
+*  Purpose
+*  =======
+*
+*     IDAMAX finds the index of element having max. absolute value.
+*
+*  Further Details
+*  ===============
+*
+*     jack dongarra, linpack, 3/11/78.
+*     modified 3/93 to return if incx .le. 0.
+*     modified 12/3/93, array(1) declarations changed to array(*)
 *
 *  =====================================================================
 *
 *     .. Local Scalars ..
-      REAL               NAN1, NAN2, NAN3, NAN4, NAN5, NAN6, NEGINF,
-     $                   NEGZRO, NEWZRO, POSINF
+      DOUBLE PRECISION DMAX
+      INTEGER I,IX
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC DABS
+*     ..
+      IDAMAX = 0
+      IF (N.LT.1 .OR. INCX.LE.0) RETURN
+      IDAMAX = 1
+      IF (N.EQ.1) RETURN
+      IF (INCX.EQ.1) THEN
+*
+*        code for increment equal to 1
+*
+         DMAX = DABS(DX(1))
+         DO I = 2,N
+            IF (DABS(DX(I)).GT.DMAX) THEN
+               IDAMAX = I
+               DMAX = DABS(DX(I))
+            END IF
+         END DO
+      ELSE
+*
+*        code for increment not equal to 1
+*
+         IX = 1
+         DMAX = DABS(DX(1))
+         IX = IX + INCX
+         DO I = 2,N
+            IF (DABS(DX(IX)).GT.DMAX) THEN
+               IDAMAX = I
+               DMAX = DABS(DX(IX))
+            END IF
+            IX = IX + INCX
+         END DO
+      END IF
+      RETURN
+      END
+
+
+
+      SUBROUTINE DGETF2( M, N, A, LDA, IPIV, INFO )
+*
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     .. Scalar Arguments ..
+      INTEGER            INFO, LDA, M, N
+*     ..
+*     .. Array Arguments ..
+      INTEGER            IPIV( * )
+      DOUBLE PRECISION   A( LDA, * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  DGETF2 computes an LU factorization of a general m-by-n matrix A
+*  using partial pivoting with row interchanges.
+*
+*  The factorization has the form
+*     A = P * L * U
+*  where P is a permutation matrix, L is lower triangular with unit
+*  diagonal elements (lower trapezoidal if m > n), and U is upper
+*  triangular (upper trapezoidal if m < n).
+*
+*  This is the right-looking Level 2 BLAS version of the algorithm.
+*
+*  Arguments
+*  =========
+*
+*  M       (input) INTEGER
+*          The number of rows of the matrix A.  M >= 0.
+*
+*  N       (input) INTEGER
+*          The number of columns of the matrix A.  N >= 0.
+*
+*  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+*          On entry, the m by n matrix to be factored.
+*          On exit, the factors L and U from the factorization
+*          A = P*L*U; the unit diagonal elements of L are not stored.
+*
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,M).
+*
+*  IPIV    (output) INTEGER array, dimension (min(M,N))
+*          The pivot indices; for 1 <= i <= min(M,N), row i of the
+*          matrix was interchanged with row IPIV(i).
+*
+*  INFO    (output) INTEGER
+*          = 0: successful exit
+*          < 0: if INFO = -k, the k-th argument had an illegal value
+*          > 0: if INFO = k, U(k,k) is exactly zero. The factorization
+*               has been completed, but the factor U is exactly
+*               singular, and division by zero will occur if it is used
+*               to solve a system of equations.
+*
+*  =====================================================================
+*
+*     .. Parameters ..
+      DOUBLE PRECISION   ONE, ZERO
+      PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
+*     ..
+*     .. Local Scalars ..
+      DOUBLE PRECISION   SFMIN 
+      INTEGER            I, J, JP
+*     ..
+*     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH      
+      INTEGER            IDAMAX
+      EXTERNAL           DLAMCH, IDAMAX
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           DGER, DSCAL, DSWAP, XERBLA
+*     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Executable Statements ..
-      IEEECK = 1
 *
-      POSINF = ONE / ZERO
-      IF( POSINF.LE.ONE ) THEN
-         IEEECK = 0
+*     Test the input parameters.
+*
+      INFO = 0
+      IF( M.LT.0 ) THEN
+         INFO = -1
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
+         INFO = -4
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'DGETF2', -INFO )
          RETURN
       END IF
 *
-      NEGINF = -ONE / ZERO
-      IF( NEGINF.GE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
+*     Quick return if possible
 *
-      NEGZRO = ONE / ( NEGINF+ONE )
-      IF( NEGZRO.NE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEGINF = ONE / NEGZRO
-      IF( NEGINF.GE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEWZRO = NEGZRO + ZERO
-      IF( NEWZRO.NE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      POSINF = ONE / NEWZRO
-      IF( POSINF.LE.ONE ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEGINF = NEGINF*POSINF
-      IF( NEGINF.GE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      POSINF = POSINF*POSINF
-      IF( POSINF.LE.ONE ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-*
-*
-*
-*     Return if we were only asked to check infinity arithmetic
-*
-      IF( ISPEC.EQ.0 )
+      IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *
-      NAN1 = POSINF + NEGINF
+*     Compute machine safe minimum 
+* 
+      SFMIN = DLAMCH('S')  
 *
-      NAN2 = POSINF / NEGINF
+      DO 10 J = 1, MIN( M, N )
 *
-      NAN3 = POSINF / POSINF
+*        Find pivot and test for singularity.
 *
-      NAN4 = POSINF*ZERO
+         JP = J - 1 + IDAMAX( M-J+1, A( J, J ), 1 )
+         IPIV( J ) = JP
+         IF( A( JP, J ).NE.ZERO ) THEN
 *
-      NAN5 = NEGINF*NEGZRO
+*           Apply the interchange to columns 1:N.
 *
-      NAN6 = NAN5*ZERO
+            IF( JP.NE.J )
+     $         CALL DSWAP( N, A( J, 1 ), LDA, A( JP, 1 ), LDA )
 *
-      IF( NAN1.EQ.NAN1 ) THEN
-         IEEECK = 0
+*           Compute elements J+1:M of J-th column.
+*
+            IF( J.LT.M ) THEN 
+               IF( ABS(A( J, J )) .GE. SFMIN ) THEN 
+                  CALL DSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 ) 
+               ELSE 
+                 DO 20 I = 1, M-J 
+                    A( J+I, J ) = A( J+I, J ) / A( J, J ) 
+   20            CONTINUE 
+               END IF 
+            END IF 
+*
+         ELSE IF( INFO.EQ.0 ) THEN
+*
+            INFO = J
+         END IF
+*
+         IF( J.LT.MIN( M, N ) ) THEN
+*
+*           Update trailing submatrix.
+*
+            CALL DGER( M-J, N-J, -ONE, A( J+1, J ), 1, A( J, J+1 ), LDA,
+     $                 A( J+1, J+1 ), LDA )
+         END IF
+   10 CONTINUE
+      RETURN
+*
+*     End of DGETF2
+*
+      END
+
+*
+************************************************************************
+*
+      SUBROUTINE DTRSM ( SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA,
+     $                   B, LDB )
+*     .. Scalar Arguments ..
+      CHARACTER*1        SIDE, UPLO, TRANSA, DIAG
+      INTEGER            M, N, LDA, LDB
+      DOUBLE PRECISION   ALPHA
+*     .. Array Arguments ..
+      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  DTRSM  solves one of the matrix equations
+*
+*     op( A )*X = alpha*B,   or   X*op( A ) = alpha*B,
+*
+*  where alpha is a scalar, X and B are m by n matrices, A is a unit, or
+*  non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
+*
+*     op( A ) = A   or   op( A ) = A'.
+*
+*  The matrix X is overwritten on B.
+*
+*  Parameters
+*  ==========
+*
+*  SIDE   - CHARACTER*1.
+*           On entry, SIDE specifies whether op( A ) appears on the left
+*           or right of X as follows:
+*
+*              SIDE = 'L' or 'l'   op( A )*X = alpha*B.
+*
+*              SIDE = 'R' or 'r'   X*op( A ) = alpha*B.
+*
+*           Unchanged on exit.
+*
+*  UPLO   - CHARACTER*1.
+*           On entry, UPLO specifies whether the matrix A is an upper or
+*           lower triangular matrix as follows:
+*
+*              UPLO = 'U' or 'u'   A is an upper triangular matrix.
+*
+*              UPLO = 'L' or 'l'   A is a lower triangular matrix.
+*
+*           Unchanged on exit.
+*
+*  TRANSA - CHARACTER*1.
+*           On entry, TRANSA specifies the form of op( A ) to be used in
+*           the matrix multiplication as follows:
+*
+*              TRANSA = 'N' or 'n'   op( A ) = A.
+*
+*              TRANSA = 'T' or 't'   op( A ) = A'.
+*
+*              TRANSA = 'C' or 'c'   op( A ) = A'.
+*
+*           Unchanged on exit.
+*
+*  DIAG   - CHARACTER*1.
+*           On entry, DIAG specifies whether or not A is unit triangular
+*           as follows:
+*
+*              DIAG = 'U' or 'u'   A is assumed to be unit triangular.
+*
+*              DIAG = 'N' or 'n'   A is not assumed to be unit
+*                                  triangular.
+*
+*           Unchanged on exit.
+*
+*  M      - INTEGER.
+*           On entry, M specifies the number of rows of B. M must be at
+*           least zero.
+*           Unchanged on exit.
+*
+*  N      - INTEGER.
+*           On entry, N specifies the number of columns of B.  N must be
+*           at least zero.
+*           Unchanged on exit.
+*
+*  ALPHA  - DOUBLE PRECISION.
+*           On entry,  ALPHA specifies the scalar  alpha. When  alpha is
+*           zero then  A is not referenced and  B need not be set before
+*           entry.
+*           Unchanged on exit.
+*
+*  A      - DOUBLE PRECISION array of DIMENSION ( LDA, k ), where k is m
+*           when  SIDE = 'L' or 'l'  and is  n  when  SIDE = 'R' or 'r'.
+*           Before entry  with  UPLO = 'U' or 'u',  the  leading  k by k
+*           upper triangular part of the array  A must contain the upper
+*           triangular matrix  and the strictly lower triangular part of
+*           A is not referenced.
+*           Before entry  with  UPLO = 'L' or 'l',  the  leading  k by k
+*           lower triangular part of the array  A must contain the lower
+*           triangular matrix  and the strictly upper triangular part of
+*           A is not referenced.
+*           Note that when  DIAG = 'U' or 'u',  the diagonal elements of
+*           A  are not referenced either,  but are assumed to be  unity.
+*           Unchanged on exit.
+*
+*  LDA    - INTEGER.
+*           On entry, LDA specifies the first dimension of A as declared
+*           in the calling (sub) program.  When  SIDE = 'L' or 'l'  then
+*           LDA  must be at least  max( 1, m ),  when  SIDE = 'R' or 'r'
+*           then LDA must be at least max( 1, n ).
+*           Unchanged on exit.
+*
+*  B      - DOUBLE PRECISION array of DIMENSION ( LDB, n ).
+*           Before entry,  the leading  m by n part of the array  B must
+*           contain  the  right-hand  side  matrix  B,  and  on exit  is
+*           overwritten by the solution matrix  X.
+*
+*  LDB    - INTEGER.
+*           On entry, LDB specifies the first dimension of B as declared
+*           in  the  calling  (sub)  program.   LDB  must  be  at  least
+*           max( 1, m ).
+*           Unchanged on exit.
+*
+*
+*  Level 3 Blas routine.
+*
+*
+*  -- Written on 8-February-1989.
+*     Jack Dongarra, Argonne National Laboratory.
+*     Iain Duff, AERE Harwell.
+*     Jeremy Du Croz, Numerical Algorithms Group Ltd.
+*     Sven Hammarling, Numerical Algorithms Group Ltd.
+*
+*
+*     .. External Functions ..
+      LOGICAL            LSAME
+      EXTERNAL           LSAME
+*     .. External Subroutines ..
+      EXTERNAL           XERBLA
+*     .. Intrinsic Functions ..
+      INTRINSIC          MAX
+*     .. Local Scalars ..
+      LOGICAL            LSIDE, NOUNIT, UPPER
+      INTEGER            I, INFO, J, K, NROWA
+      DOUBLE PRECISION   TEMP
+*     .. Parameters ..
+      DOUBLE PRECISION   ONE         , ZERO
+      PARAMETER        ( ONE = 1.0D+0, ZERO = 0.0D+0 )
+*     ..
+*     .. Executable Statements ..
+*
+*     Test the input parameters.
+*
+      LSIDE  = LSAME( SIDE  , 'L' )
+      IF( LSIDE )THEN
+         NROWA = M
+      ELSE
+         NROWA = N
+      END IF
+      NOUNIT = LSAME( DIAG  , 'N' )
+      UPPER  = LSAME( UPLO  , 'U' )
+*
+      INFO   = 0
+      IF(      ( .NOT.LSIDE                ).AND.
+     $         ( .NOT.LSAME( SIDE  , 'R' ) )      )THEN
+         INFO = 1
+      ELSE IF( ( .NOT.UPPER                ).AND.
+     $         ( .NOT.LSAME( UPLO  , 'L' ) )      )THEN
+         INFO = 2
+      ELSE IF( ( .NOT.LSAME( TRANSA, 'N' ) ).AND.
+     $         ( .NOT.LSAME( TRANSA, 'T' ) ).AND.
+     $         ( .NOT.LSAME( TRANSA, 'C' ) )      )THEN
+         INFO = 3
+      ELSE IF( ( .NOT.LSAME( DIAG  , 'U' ) ).AND.
+     $         ( .NOT.LSAME( DIAG  , 'N' ) )      )THEN
+         INFO = 4
+      ELSE IF( M  .LT.0               )THEN
+         INFO = 5
+      ELSE IF( N  .LT.0               )THEN
+         INFO = 6
+      ELSE IF( LDA.LT.MAX( 1, NROWA ) )THEN
+         INFO = 9
+      ELSE IF( LDB.LT.MAX( 1, M     ) )THEN
+         INFO = 11
+      END IF
+      IF( INFO.NE.0 )THEN
+         CALL XERBLA( 'DTRSM ', INFO )
          RETURN
       END IF
 *
-      IF( NAN2.EQ.NAN2 ) THEN
-         IEEECK = 0
+*     Quick return if possible.
+*
+      IF( N.EQ.0 )
+     $   RETURN
+*
+*     And when  alpha.eq.zero.
+*
+      IF( ALPHA.EQ.ZERO )THEN
+         DO 20, J = 1, N
+            DO 10, I = 1, M
+               B( I, J ) = ZERO
+   10       CONTINUE
+   20    CONTINUE
          RETURN
       END IF
 *
-      IF( NAN3.EQ.NAN3 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
+*     Start the operations.
 *
-      IF( NAN4.EQ.NAN4 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
+      IF( LSIDE )THEN
+         IF( LSAME( TRANSA, 'N' ) )THEN
 *
-      IF( NAN5.EQ.NAN5 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
+*           Form  B := alpha*inv( A )*B.
 *
-      IF( NAN6.EQ.NAN6 ) THEN
-         IEEECK = 0
-         RETURN
+            IF( UPPER )THEN
+               DO 60, J = 1, N
+                  IF( ALPHA.NE.ONE )THEN
+                     DO 30, I = 1, M
+                        B( I, J ) = ALPHA*B( I, J )
+   30                CONTINUE
+                  END IF
+                  DO 50, K = M, 1, -1
+                     IF( B( K, J ).NE.ZERO )THEN
+                        IF( NOUNIT )
+     $                     B( K, J ) = B( K, J )/A( K, K )
+                        DO 40, I = 1, K - 1
+                           B( I, J ) = B( I, J ) - B( K, J )*A( I, K )
+   40                   CONTINUE
+                     END IF
+   50             CONTINUE
+   60          CONTINUE
+            ELSE
+               DO 100, J = 1, N
+                  IF( ALPHA.NE.ONE )THEN
+                     DO 70, I = 1, M
+                        B( I, J ) = ALPHA*B( I, J )
+   70                CONTINUE
+                  END IF
+                  DO 90 K = 1, M
+                     IF( B( K, J ).NE.ZERO )THEN
+                        IF( NOUNIT )
+     $                     B( K, J ) = B( K, J )/A( K, K )
+                        DO 80, I = K + 1, M
+                           B( I, J ) = B( I, J ) - B( K, J )*A( I, K )
+   80                   CONTINUE
+                     END IF
+   90             CONTINUE
+  100          CONTINUE
+            END IF
+         ELSE
+*
+*           Form  B := alpha*inv( A' )*B.
+*
+            IF( UPPER )THEN
+               DO 130, J = 1, N
+                  DO 120, I = 1, M
+                     TEMP = ALPHA*B( I, J )
+                     DO 110, K = 1, I - 1
+                        TEMP = TEMP - A( K, I )*B( K, J )
+  110                CONTINUE
+                     IF( NOUNIT )
+     $                  TEMP = TEMP/A( I, I )
+                     B( I, J ) = TEMP
+  120             CONTINUE
+  130          CONTINUE
+            ELSE
+               DO 160, J = 1, N
+                  DO 150, I = M, 1, -1
+                     TEMP = ALPHA*B( I, J )
+                     DO 140, K = I + 1, M
+                        TEMP = TEMP - A( K, I )*B( K, J )
+  140                CONTINUE
+                     IF( NOUNIT )
+     $                  TEMP = TEMP/A( I, I )
+                     B( I, J ) = TEMP
+  150             CONTINUE
+  160          CONTINUE
+            END IF
+         END IF
+      ELSE
+         IF( LSAME( TRANSA, 'N' ) )THEN
+*
+*           Form  B := alpha*B*inv( A ).
+*
+            IF( UPPER )THEN
+               DO 210, J = 1, N
+                  IF( ALPHA.NE.ONE )THEN
+                     DO 170, I = 1, M
+                        B( I, J ) = ALPHA*B( I, J )
+  170                CONTINUE
+                  END IF
+                  DO 190, K = 1, J - 1
+                     IF( A( K, J ).NE.ZERO )THEN
+                        DO 180, I = 1, M
+                           B( I, J ) = B( I, J ) - A( K, J )*B( I, K )
+  180                   CONTINUE
+                     END IF
+  190             CONTINUE
+                  IF( NOUNIT )THEN
+                     TEMP = ONE/A( J, J )
+                     DO 200, I = 1, M
+                        B( I, J ) = TEMP*B( I, J )
+  200                CONTINUE
+                  END IF
+  210          CONTINUE
+            ELSE
+               DO 260, J = N, 1, -1
+                  IF( ALPHA.NE.ONE )THEN
+                     DO 220, I = 1, M
+                        B( I, J ) = ALPHA*B( I, J )
+  220                CONTINUE
+                  END IF
+                  DO 240, K = J + 1, N
+                     IF( A( K, J ).NE.ZERO )THEN
+                        DO 230, I = 1, M
+                           B( I, J ) = B( I, J ) - A( K, J )*B( I, K )
+  230                   CONTINUE
+                     END IF
+  240             CONTINUE
+                  IF( NOUNIT )THEN
+                     TEMP = ONE/A( J, J )
+                     DO 250, I = 1, M
+                       B( I, J ) = TEMP*B( I, J )
+  250                CONTINUE
+                  END IF
+  260          CONTINUE
+            END IF
+         ELSE
+*
+*           Form  B := alpha*B*inv( A' ).
+*
+            IF( UPPER )THEN
+               DO 310, K = N, 1, -1
+                  IF( NOUNIT )THEN
+                     TEMP = ONE/A( K, K )
+                     DO 270, I = 1, M
+                        B( I, K ) = TEMP*B( I, K )
+  270                CONTINUE
+                  END IF
+                  DO 290, J = 1, K - 1
+                     IF( A( J, K ).NE.ZERO )THEN
+                        TEMP = A( J, K )
+                        DO 280, I = 1, M
+                           B( I, J ) = B( I, J ) - TEMP*B( I, K )
+  280                   CONTINUE
+                     END IF
+  290             CONTINUE
+                  IF( ALPHA.NE.ONE )THEN
+                     DO 300, I = 1, M
+                        B( I, K ) = ALPHA*B( I, K )
+  300                CONTINUE
+                  END IF
+  310          CONTINUE
+            ELSE
+               DO 360, K = 1, N
+                  IF( NOUNIT )THEN
+                     TEMP = ONE/A( K, K )
+                     DO 320, I = 1, M
+                        B( I, K ) = TEMP*B( I, K )
+  320                CONTINUE
+                  END IF
+                  DO 340, J = K + 1, N
+                     IF( A( J, K ).NE.ZERO )THEN
+                        TEMP = A( J, K )
+                        DO 330, I = 1, M
+                           B( I, J ) = B( I, J ) - TEMP*B( I, K )
+  330                   CONTINUE
+                     END IF
+  340             CONTINUE
+                  IF( ALPHA.NE.ONE )THEN
+                     DO 350, I = 1, M
+                        B( I, K ) = ALPHA*B( I, K )
+  350                CONTINUE
+                  END IF
+  360          CONTINUE
+            END IF
+         END IF
       END IF
 *
       RETURN
+*
+*     End of DTRSM .
+*
       END
+
+
 
 #else
 
