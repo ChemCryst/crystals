@@ -959,208 +959,51 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
+      integer, dimension(N) :: ipiv
+      integer info, nb
+      double precision, dimension(:), allocatable :: work      
+      double precision, dimension(N,N) :: ab
+      
       DATA ASING/0.0/,BSING/0.0/,CSING/0.0/,E/0.0/,F/0.0/
       DATA M1/0/,M2/0/,M3/0/,M4/0/,M5/0/,M6/0/,M7/0/,M8/0/
       DATA I/0/,J/0/,K/0/,L/0/,M/0/
-C
+      
       KINV2=0
-C--SET 'EPS', SUCH THAT 'EPS' IS THE SMALLEST NUMBER FOR 1.0+EPS>1.0
-      BSING=16.0**(-5)
-C--SET THE SMALLEST NUMBER THAT CAN BE EXACTLY REPRESENTED ON THE MACHIN
-      CSING=SLAMCH( 'S' )
-C--SET THE SINGULARITY CHECK LIMITS
-      CSING=CSING/BSING
-      BSING=BSING*16.
-C--SET ROW INTERCHANGE FLAGS
-      DO 1000 I=1,N
-      D(I)=FLOAT(I)
-1000  CONTINUE
-C--COMMENCE DECOMPOSITION A=L.U  -  BY ROWS WITH INTERCHANGES
-      M5=1
-      M6=1
-      M1=M5
-      M2=M6
-      DO 1100 I=1,N
-      DO 1050 J=1,N
-      B(M2)=A(M1)
-      M1=M1+1
-      M2=M2+1
-1050  CONTINUE
-1100  CONTINUE
-      M8=1
-      DO 1900 J=1,N
-      M2=M6
-      M7=M8
-      F=-1.
-      L=J-1
-C--CALCULATE THE L PART , EXCEPT FOR THE DIVISION BY U(I,I)
-      DO 1450 I=J,N
-      E=B(M2)
-      ASING=BSING*ABS(E)
-      IF(L)1250,1250,1150
-1150  CONTINUE
-      M3=I
-      M4=M7
-      DO 1200 K=1,L
-      E=E-B(M3)*B(M4)
-      M3=M3+N
-      M4=M4+1
-1200  CONTINUE
-C--TRANSFER TO THE B ARRAY AND CHECK FOR THE MAXIMUM VALUE
-1250  CONTINUE
-      B(M2)=E
-      M2=M2+1
-      IF(F-ABS(E))1300,1450,1450
-C--THIS IS THE CURRENT MAXIMUM
-1300  CONTINUE
-      F=ABS(E)
-      M=I
-      D(M)=ABS(D(M))
-C--CHECK SINGULARITY FOR THIS ELEMENT
-      IF(ASING-F)1350,1400,1400
-1350  CONTINUE
-      IF(CSING-F)1450,1400,1400
-1400  CONTINUE
-      D(M)=-D(M)
-1450  CONTINUE
-C--CHECK IF THE MAXIMUM VALUE IS INDICATED AS SINGULAR
-      IF(D(M))1500,1500,1550
-1500  CONTINUE
-      KINV2=J
-      GOTO 3100
-C--INTERCHANGE ROWS
-1550  CONTINUE
-      CALL XINT2(N,B,NA,D,NC,J,M,N)
-      E=1./B(M6)
-      B(M6)=E
-      IF(J-N)1600,1900,1600
-1600  CONTINUE
-      M=J+1
-      M3=M6+1
-      DO 1650 I=M,N
-      B(M3)=B(M3)*E
-      M3=M3+1
-1650  CONTINUE
-      IF(L)1850,1850,1700
-C--COMPLETE CALCULATION OF U
-1700  CONTINUE
-      M2=M6+N
-      M7=M7+N
-      DO 1800 I=M,N
-      M3=J
-      M4=M7
-      DO 1750 K=1,L
-      B(M2)=B(M2)-B(M3)*B(M4)
-      M3=M3+N
-      M4=M4+1
-1750  CONTINUE
-      M2=M2+N
-      M7=M7+N
-1800  CONTINUE
-C--UPDATE VARIOUS FLAGS
-1850  CONTINUE
-      M6=M6+N+1
-      M8=M8+N
-1900  CONTINUE
-C--DECOMPOSITION ENDS.
-C
-C--INVERT THE LOWER TRIANGULAR MATRIX L
-      M5=2
-C--PROCESS BY ROWS
-      DO 2150 I=2,N
-      M4=M5
-C--PROCESS BY COLUMNS
-      DO 2100 J=I,N
-      B(M5)=-B(M5)
-      K=J-I
-      IF(K)2050,2050,1950
-1950  CONTINUE
-      M1=M5+N
-      M2=M4
-      DO 2000 L=1,K
-      B(M5)=B(M5)-B(M1)*B(M2)
-      M1=M1+N
-      M2=M2+1
-2000  CONTINUE
-2050  CONTINUE
-      M5=M5+1
-2100  CONTINUE
-      M5=M5+I
-2150  CONTINUE
-C
-C--INVERT THE UPPER TRIANGULAR MATRIX U
-      M5=N*N-1
-      DO 2300 I=2,N
-      M4=M5+1
-      DO 2250 J=I,N
-      K=J-I+1
-      M1=M5
-      M2=M4
-      E=0.
-      DO 2200 L=1,K
-      E=E-B(M1)*B(M2)
-      M1=M1-N
-      M2=M2-1
-2200  CONTINUE
-      B(M5)=E*B(M1)
-      M5=M5-1
-2250  CONTINUE
-      M5=M5-I
-2300  CONTINUE
-C
-C--ASSEMBLY OF THE FINAL MATRIX  -  STILL WITH ROWS INTERCHANGED
-      M5=1
-      DO 2700 J=1,N
-      M3=M5+N
-      M4=M5+J
-      DO 2650 I=1,N
-      M1=M3
-      M2=M4
-      IF(I-J)2350,2350,2400
-2350  CONTINUE
-      E=B(M5)
-      M3=M3+1
-      K=N-J
-      GOTO 2450
-2400  CONTINUE
-      E=0.
-      M3=M3+N+1
-      M4=M4+1
-      K=N-I+1
-2450  CONTINUE
-      IF(K)2600,2600,2500
-2500  CONTINUE
-      DO 2550 L=1,K
-      E=E+B(M1)*B(M2)
-      M1=M1+N
-      M2=M2+1
-2550  CONTINUE
-2600  CONTINUE
-      B(M5)=E
-      M5=M5+1
-2650  CONTINUE
-2700  CONTINUE
-C--ASSEMBLY ENDS.
-C
-C--SORT OUT THE INTERCHANGES AND STORE FINAL INVERSE MATRIX
-      DO 2850 I=1,N
-      DO 2800 J=1,N
-      K=NINT(D(J))
-      IF(K-I)2800,2750,2800
-2750  CONTINUE
-      CALL XINT2(N,B,NA,D,NC,I,J,1)
-      GOTO 2850
-2800  CONTINUE
-      WRITE(NCAWU,2830)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2830)
-      ENDIF
-      WRITE ( CMON, 2830)
-      CALL XPRVDU(NCVDU, 1,0)
-2830  FORMAT(' Inverter fails  ')
-      CALL XERHND ( IERSEV )
-2850  CONTINUE
-C--FINAL ASSEMBLY ENDS.
+      nb=ilaenv( 1, 'dgetri', '', N, N )
+      allocate(work(n*nb))
+      ab=reshape(a, (/n,n/))
+      call dgetrf( n, n, ab, n, ipiv, info )
+
+      if(info/=0) then
+          KINV2=info
+          !do i=1, n
+          !    print *, real(ab(i, :), 4)
+          !end do  
+          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetrf) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetrf) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )    
+          return
+      end if
+      
+      call dgetri( n, ab, n, ipiv, work, nb, info	)      
+
+      if(info/=0) then
+          KINV2=-1
+          WRITE(NCAWU,*)' Inverter fails (dgetri) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetri) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetri) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )      
+          return
+      end if
+
+      b=reshape(ab, (/n*n/))
 C
 C--SOLVE THE GIVEN EQUATIONS IF ANY
       IF(NM)3100,3100,2900
