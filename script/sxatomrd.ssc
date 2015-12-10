@@ -133,7 +133,7 @@
 %     IF SXU11 .GT. 5.0 THEN
  Warning U[11] was fixed in SHELX file.
  This must be manually fixed in CRYSTALS list 12.
-%        EVALUATE SXU22 = SXU22 - 10.0
+%        EVALUATE SXU11 = SXU11 - 10.0
 %     END IF
 %     COPY '#SCRIPT SXEOLCHK'
 %     IF ( SXEOL .OR. LPEAK ) THEN
@@ -186,7 +186,32 @@
 %     GET NOSTORE NOPROMPT REAL 'U[33]?' '-10.000'
 %     EVALUATE SXU33 = VALUE
 %     IF SXU33 .LT. ( - 5.0 ) THEN
- Error. U[22] found, but no U[33].
+  number found, but no following U[33] - was probably a peak height.
+%% Process now.
+%        IF LFIRST .EQ. TRUE THEN
+%         EVALUATE LFIRST = FALSE
+%         COPY '#LIST 5'
+%         COPY 'END'
+%         COPY '#EDIT'
+%        END IF
+%        CLEAR
+%        INSERT 'ATOM '
+%        TRANSFER FIRSTSTR ( CLINE ) TO BUFFER
+%        STORE FORMAT /(I4)/ LENGTH 5 INTEGER ISERI
+%        STORE FORMAT /(F5.3)/ LENGTH 6 REAL SXO
+%        INSERT " 1.0 "
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXX
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXY
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXZ
+%        EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%        SEND
+%        CLEAR
+%        IF SXU11 .LE. ( - 1.0 ) THEN
+%           EVALUATE SXU11 = 0.05
+%        END IF
+%        INSERT 'CONT U[11]= '
+%        STORE FORMAT /(F9.6)/ LENGTH 10 REAL SXU11
+%        SEND
 %        FINISH
 %     END IF
 %     IF SXU33 .GT. 5.0 THEN
