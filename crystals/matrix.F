@@ -989,7 +989,7 @@ C
           return
       end if
       
-      call dgetri( n, ab, n, ipiv, work, nb, info	)      
+      call dgetri( n, ab, n, ipiv, work, n*nb, info	)      
 
       if(info/=0) then
           KINV2=-1
