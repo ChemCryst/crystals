@@ -1355,7 +1355,7 @@ C
 C 
             WRITE (NCWU,850) ((RESULT(I,J),I=1,3),(WSPAC2(I,J),I=1,3),
      1       (WSPAC3(I,J),I=1,3),J=1,3)
-850         FORMAT (3(1X,15X,3(3F10.4,5X),/))
+850         FORMAT (3(1X,15X,3(3F10.6,5X),/))
          END IF
 C 
          WRITE (CMON,900) AVCNT,DELCNT
@@ -2142,7 +2142,7 @@ c      goto 11111
 cdjw-nov05
       toler=0.1
       if (abs(det3) .le. toler) then
-        write(cmon,'(a,f12.4)') 
+        write(cmon,'(a,f12.6)') 
      1  ' Excessive contraction. Determinant =', det3
         call xprvdu(ncvdu,1,0)
         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
@@ -2159,13 +2159,13 @@ c
              djwc(2)=0.
              djwc(3)=1.
             endif
-        write(cmon,'(a,3(/12x,3f12.4))')' Original matrix',rotdil
+        write(cmon,'(a,3(/12x,3f12.6))')' Original matrix',rotdil
         call xprvdu(ncvdu,4,0)
         if (issprt .eq. 0) write (ncwu,'(a)') (cmon(i)(:),i=1,4)
             rotdil(3,1)=djwc(1)
             rotdil(3,2)=djwc(2)
             rotdil(3,3)=djwc(3)
-        write(cmon,'(a,3(/12x,3f12.4))')' Modified matrix',rotdil
+        write(cmon,'(a,3(/12x,3f12.6))')' Modified matrix',rotdil
         call xprvdu(ncvdu,4,0)
         if (issprt .eq. 0) write (ncwu,'(a)') (cmon(i)(:),i=1,4)
       endif
@@ -2184,7 +2184,7 @@ c
 11111  continue
 
       IF (ABS(ROTDIL(1,1)) .LE. 0.0001*NNEW) then 
-       write(cmon,'(a,f12.4)') 'Fixing Rotdil(1,1) - old value =',
+       write(cmon,'(a,f12.6)') 'Fixing Rotdil(1,1) - old value =',
      1 rotdil(1,1) 
        call xprvdu(ncvdu,1,0)
        if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
@@ -2198,7 +2198,7 @@ C
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
 1300    FORMAT(1X, 'One group is almost colinear - sigma(Y**2) = '
      1  ,F12.8)
-       write(cmon,'(a,f12.4)') 'Fixing Rotdil(2,2) - old value =',
+       write(cmon,'(a,f12.6)') 'Fixing Rotdil(2,2) - old value =',
      1 rotdil(2,2) 
        call xprvdu(ncvdu,1,0)
        if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
@@ -2214,7 +2214,7 @@ C
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
 1200    FORMAT(1X, 'One group is almost coplanar - sigma(Z**2) = '
      1  ,F12.8)
-       write(cmon,'(a,f12.4)') 'Fixing Rotdil(3,3) - old value =',
+       write(cmon,'(a,f12.6)') 'Fixing Rotdil(3,3) - old value =',
      1 rotdil(3,3) 
        call xprvdu(ncvdu,1,0)
        if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
@@ -2271,13 +2271,13 @@ c      dilation.
 Cdone - feb08 - Kabsch method 4
 c
 c      if(uvec(i) .gt. 1.2)  then
-c         write(cmon,'(a,i2,f12.4,a )') 
+c         write(cmon,'(a,i2,f12.6,a )') 
 c     1   ' Excessive dilation. Eigenvalue',i,uvec(i),' reset to unity'
 c          call xprvdu(ncvdu,1,0)
 c          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
 c         uvec(i)=1.0
 c      elseif (uvec(i) .lt. 0.8) then
-c         write(cmon,'(a,i2,f12.4,a )') 
+c         write(cmon,'(a,i2,f12.6,a )') 
 c     1   ' Excessive contraction. Eigenvalue',
 c     2     i,uvec(i),' reset to unity'
 c          call xprvdu(ncvdu,1,0)
@@ -2304,7 +2304,7 @@ C
      3 ( DILATN(I,J) , I=1,3 ) ,
      4 ( ROTATN(I,J) , I=1,3 ) , J=1,3 )
       ENDIF
-3015  FORMAT ( 3 ( 1X , 15X , 3 ( 3F10.4 , 5X ) , / ) )
+3015  FORMAT ( 3 ( 1X , 15X , 3 ( 3F10.5 , 5X ) , / ) )
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3025 )
@@ -2313,7 +2313,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3030) DILNEV
       ENDIF
-3030  FORMAT(1X,15X , 35X, 3F10.3  )
+3030  FORMAT(1X,15X , 35X, 3F10.5  )
       CALL XTRANS(WSPAC1(1,1),WSPAC2(1,1),3,3)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3040)
@@ -2333,7 +2333,7 @@ C----- DETERMINANTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3060) DETERM
       ENDIF
-3060  FORMAT(1X,15X,3(10X,F10.4,15X),//)
+3060  FORMAT(1X,15X,3(10X,F10.5,15X),//)
 C
 C
 C -- COPY RESULT MATRIX TO APPROPRIATE PLACE
@@ -2419,7 +2419,7 @@ c -- check not co-planar
       DETB=XDETR3(WSPAC3(1,1))
 
       if (detb .le. 0.0) then
-         write(cmon,'(a,f12.4)') 
+         write(cmon,'(a,f12.6)') 
      1  '{I Best match involves inversion, determinant  =', detb
          call xprvdu(ncvdu,1,0)
          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
@@ -3780,7 +3780,7 @@ c
              CALL XCREMS(CPCH,CPCH,LENFIL)
 c
 c             IF ( MISMAT .EQ. 0 )
-c     1        WRITE(123,'(15A4,3(A,f12.4))')(KTITL(I),I=1,15),
+c     1        WRITE(123,'(15A4,3(A,F12.5))')(KTITL(I),I=1,15),
 c     1       CHAR(9),RMSDEV(4),CHAR(9),SBDEV,CHAR(9),STDEV
       END IF
 9000  CONTINUE

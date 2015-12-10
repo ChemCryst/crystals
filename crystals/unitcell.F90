@@ -176,7 +176,7 @@ function rorthogonalisation(this)
     real, dimension(3,3) :: rorthogonalisation
     logical OK_FLAG
     
-    call M33INV (this%orthogonalisation(), rorthogonalisation, OK_FLAG)
+    call matinv(this%orthogonalisation(), rorthogonalisation, OK_FLAG)
     rorthogonalisation=transpose(rorthogonalisation)
 end function
 
@@ -248,7 +248,7 @@ function rmetric(this)
     real, dimension(3,3) :: rmetric
     logical OK_FLAG
         
-    call M33INV (this%metric(), rmetric, OK_FLAG)
+    call matinv(this%metric(), rmetric, OK_FLAG)
 end function
 
 !> Return the reciprocal metric tensor excluding cell parameters
