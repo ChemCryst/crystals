@@ -969,7 +969,7 @@ C
       DATA I/0/,J/0/,K/0/,L/0/,M/0/
       
       KINV2=0
-      nb=min(1, ilaenv( 1, 'dgetri', '', N, N ))
+      nb=max(1, ilaenv( 1, 'dgetri', '', N, N ))
       allocate(work(n*nb))
       ab=reshape(a, (/n,n/))
       call dgetrf( n, n, ab, n, ipiv, info )
