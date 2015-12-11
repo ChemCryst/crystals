@@ -924,7 +924,8 @@ C--AND NOW RETURN
       END
 C
 CODE FOR KINV2
-      FUNCTION KINV2(N,A,B,NA,NM,C,D,NC)
+      integer FUNCTION KINV2(N,A,B,NA,NM,C,D,NC)
+C      implicit none
 C--MATRIX INVERSION AND SOLUTION OF SIMULTANEOUS LINEAR EQUATIONS
 C
 C  N       ORDER OF THE MATICES TO BE INVERTED.
@@ -952,7 +953,11 @@ C  >0  SINGULAR  -  RETURN VALUE INDICATES FIRST SIGNULAR ELEMENT FOUND.
 C
 C--
 C
-      DIMENSION A(NA),B(NA),C(NC),D(NC)
+      integer, intent(in) :: n, na, nm, nc
+      real, dimension(na), intent(in) :: A
+      real, dimension(na), intent(out) :: B
+      real, dimension(nc), intent(in) :: C
+      real, dimension(nc), intent(out) :: D
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -960,16 +965,14 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       integer, dimension(N) :: ipiv
-      integer info, nb
+      integer info, nb, i, j, k, m1, m2, m3, m4
       double precision, dimension(:), allocatable :: work      
       double precision, dimension(N,N) :: ab
       
-      DATA ASING/0.0/,BSING/0.0/,CSING/0.0/,E/0.0/,F/0.0/
-      DATA M1/0/,M2/0/,M3/0/,M4/0/,M5/0/,M6/0/,M7/0/,M8/0/
-      DATA I/0/,J/0/,K/0/,L/0/,M/0/
-      
+      integer, external :: ilaenv
+            
       KINV2=0
-      nb=max(1, ilaenv( 1, 'dgetri', '', N, N ))
+      nb=max(1, ilaenv( 1, 'dgetri', '', N, -1,-1,-1 ))
       allocate(work(n*nb))
       ab=reshape(a, (/n,n/))
       call dgetrf( n, n, ab, n, ipiv, info )
