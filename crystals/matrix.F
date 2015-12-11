@@ -969,7 +969,7 @@ C
       integer, external :: ilaenv
             
       KINV2=0
-      nb=max(1, ilaenv( 1, 'dgetri', '', N, N ))
+      nb=max(1, ilaenv( 1, 'dgetri', '', N, -1,-1,-1 ))
       allocate(work(n*nb))
       ab=reshape(a, (/n,n/))
       call dgetrf( n, n, ab, n, ipiv, info )
