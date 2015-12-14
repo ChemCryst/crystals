@@ -37,16 +37,22 @@ ifeq ($(COMPCODE),GIL)
   COBJ := $(patsubst %.o, obj/%.o, $(notdir $(CSLEEFFILES:.c=.o))) $(COBJ)
   FOBJ := $(patsubst %.o, obj/%.o, $(notdir $(FSLEEFFILES:.f90=.o))) $(FOBJ)
 endif
+ifeq ($(COMPCODE),WXS)
+  COBJ := $(patsubst %.o, obj/%.o, $(notdir $(CSLEEFFILES:.c=.o))) $(COBJ)
+  FOBJ := $(patsubst %.o, obj/%.o, $(notdir $(FSLEEFFILES:.f90=.o))) $(FOBJ)
+endif
 ifeq ($(COMPCODE),LIN)
   COBJ := $(patsubst %.o, obj/%.o, $(notdir $(CSLEEFFILES:.c=.o))) $(COBJ)
   FOBJ := $(patsubst %.o, obj/%.o, $(notdir $(FSLEEFFILES:.f90=.o))) $(FOBJ)
 endif
 
-ifneq ($(COMPCODE),GIL)
-  ifneq ($(COMPCODE),LIN)
-    FOBJ := $(FOBJS) lapack.o
+ifneq ($(COMPCODE),WXS)
+  ifneq ($(COMPCODE),GIL)
+    ifneq ($(COMPCODE),LIN)
+      FOBJ := $(FOBJS) lapack.o
+    endif
   endif
-endif
+endif 
 
 all : obj crystals$(SUFFIX)
 
@@ -55,10 +61,10 @@ crystals$(SUFFIX) : $(FOBJ) $(COBJ)
 #	strip $@
 
 obj/resource.o : ../gui/wx.rc
-	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config-2.9 --prefix`/include
+	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config --prefix`/include --include-dir /c/Users/Pascal/Downloads/wxWdigets/wxWidgets/include/wx-3.0/
 
 obj/lapack.o : lapack.f
-	$(F77) -c $(F77FLAGS) -x f77-cpp-input -O0 -o $@ $<
+	gfortran -c $(F77FLAGS) -x f77-cpp-input -O0 -o $@ $<
 
 obj :
 	mkdir obj

@@ -174,6 +174,16 @@ LS-scale= 10.008   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -433,6 +443,29 @@ Mean C-C su =   0.0000
 [29] SumFo/SumFc=  9.88    SumFoFc/SumFc^2=  9.90    SumwFoFc/SumwFc^2=  9.90
 LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27                                                                                                                                                                                                         
+#SUM L 17                                                                                                                                                                                                                                                       
+ Summary of contents of list 17 - Special restraints
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+ Print list type    17     serial number        2     Address    18668     Length    1156     Created on                          
+
+     0 NO 
+     1 RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22]) 
+     2 RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -2.0 * SI  (   1,U[12]) 
+     3 RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -1.0 * SI  (   2,U[22]) 
+     4 RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -2.0 * SI  (   2,U[12]) 
+     5 RESTRAIN  0.0000, .00001 = NA  (   1,X    ) -1.0 * NA  (   1,Y    ) 
+     6 RESTRAIN  0.0000, .00001 = NA  (   1,U[11]) -1.0 * NA  (   1,U[22]) 
+     7 RESTRAIN  0.0000, .00001 = NA  (   1,U[23]) +1.0 * NA  (   1,U[13]) 
+     8 RESTRAIN  0.0000, .00001 = NA  (   2,X    ) -1.0 * NA  (   2,Y    ) 
+     9 RESTRAIN  0.0000, .00001 = NA  (   2,U[11]) -1.0 * NA  (   2,U[22]) 
+    10 RESTRAIN  0.0000, .00001 = NA  (   2,U[23]) +1.0 * NA  (   2,U[13]) 
+
+
+
 #DISTANCES                                                                                                                                                                                                                                                      
 #LIST 31                                                                                                                                                                                                                                                        
 #DISTANCES                                                                                                                                                                                                                                                      
@@ -1082,6 +1115,16 @@ The slope and correlation coefficient should be small
 [29] SumFo/SumFc=  9.88    SumFoFc/SumFc^2=  9.90    SumwFoFc/SumwFc^2=  9.88
 LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27                                                                                                                                                                                                         
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1300,6 +1343,16 @@ Mean C-C su =   0.0000
 [29] SumFo/SumFc=  9.85    SumFoFc/SumFc^2=  9.88    SumwFoFc/SumwFc^2=  9.86
 LS-scale=  9.844   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive   2 RESTRAIN    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 

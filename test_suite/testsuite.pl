@@ -7,7 +7,7 @@ use Env qw(CRYUSEFILE CRYSDIR COMPCODE CROUTPUT);
 
 my $windows=($^O=~/Win/)?1:0;# Are we running on windows?
 
-my $diff = "diff";
+my $diff = "diff --ignore-all-space ";
 if ( $windows ) {
    $diff = "fc";
 }
@@ -409,5 +409,6 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 #	print("Doing diff!\n");
 #        print `diff $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.d.diff`;
     }
+#    print `compare.bat`
 }
 

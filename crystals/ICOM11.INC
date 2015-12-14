@@ -1,2 +1,2 @@
-      DIMENSION ICOM11(16) 
+      integer, dimension(6) :: ICOM11
 

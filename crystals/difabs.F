@@ -69,6 +69,11 @@ C   VERSION 8.08
 C   THIS VERSION USES NON-LINEAR LEAST-SQUARES WITH UNIT WEIGHTS
 C   INPUTS SHELX 'LIST 5' DATA AND OUTPUTS 'HKLF 3' TYPE DATA
 C   GENERAL ROUTINE FOR CALCULATION OF SPHERICAL POLAR ANGLES
+c
+c Oct 2015.  Version 910
+c Add Areas Detector method.  Since reflections are merged,
+c the incident and emergent beams have no meaning.  Insead, the 
+c scattering vector is calculated
 C
 C   SET UP DIFFRACTOMETER CHARACTERISTICS
 C     IDIFRT=0   Enraf-Nonius CAD4
@@ -76,6 +81,7 @@ C     IDIFRT=1   Syntex P-1
 C     IDIFRT=2   Syntex P21
 C     IDIFRT=3   Picker FACS-I
 C     IDIFRT=4   Philips PW1100
+C     IDIFRT=5   Area Detector
 C
 C   SET UP GEOMETRY CHARACTERISTICS
 C     IPOS=0   bisecting geometry
@@ -86,7 +92,7 @@ C      IACTN  -1 = TEST, 0 = UPDATE LIST 6, 1 = WRITE NEW LIST 6
 C      MODE    0 = MODIFY FO, 1 = MODIFY FC, 2 = TRANFER FROM FC TO FO
 C
       LOGICAL TCOR
-      REAL X(3)
+      REAL X(3), phimin, phimax
       INTEGER NP(16)
       real, dimension(44,44) :: anorm
       real, dimension(44) :: atb
@@ -106,6 +112,11 @@ C
       real sumres, sumfs, sumrsq, sumfsq
       real ta, tb, tc, za, zb, zc
       
+      real amin, amax, d
+      integer ndjwm
+      real, dimension(3) ::  djw
+      integer, dimension(40,20) :: ndjwmap
+
       COMMON /NORMAL/ ANORM,ATB,ROWJ,TERMS
       COMMON /SOLVE/ NSIZE,FILTER,FILSTA,FILDEC,FILEND
       COMMON /REFL/ FC,FO,FM,PHI,MU,SINTH,COSTH
@@ -114,6 +125,8 @@ C
       COMMON /SRES/ NUMREF,SUMRES,SUMFS,SUMRSQ,SUMFSQ
       COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS,IPOS,IDIFRT,ORIENT,DST
       COMMON /CELLP/ TA,TB,TC,ZA,ZB,ZC
+      COMMON /WMAP/ ndjwmap
+C
 C
 C
       integer, parameter :: IDIMN=7
@@ -126,6 +139,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XTAPES.INC'
       !INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
@@ -139,9 +153,9 @@ C
       real a, chie, cthmax, fcalc, fobs, fcut, omega, phie, sfact, sigf
       real sinl, sthlsq, thmax, twobs, wave
       integer i, j, m, n, jj, iactn, iallow, ierr
-      integer imode, ioct, is, iuln, iuse, imap, ih, ii, ik, il
+      integer imode, ioct, is, iuln, iuse, imap, ih, ii, ik
       integer nco, ncutc, ncuto, ncycle, nf, nlow, nrecrd, nref, ntot
-      integer nzero
+      integer nzero,iequiv, ndjwp
       
       integer, external :: krddpv, ktyp06, kallow, kldrnr
       real, external :: xdetr3
@@ -150,8 +164,9 @@ C
       real :: sthmax=0.0
       real :: mumin=100.0
       real :: mumax=-100.0
+      data phimin /1000/, phimax /-1000/
 C
-      integer, parameter :: IVERSN=901
+      integer, parameter :: IVERSN=910
 C----- CAN EITHER COMPUTE CORRECTION AS FUNCTION OF FO OR  FC
 C      IF FO, THE CORRECTION IS APPLIED DIRECTLY.
 C      IF FC, IT COMPUTES CORRECTION TO FC, AND STORES IT IN M6+27
@@ -162,6 +177,7 @@ C
 C
       CALL XCSAE
       CALL XRSL
+      ndjwmap = 0
 C
       I=KRDDPV ( IPROCS , IDIMN )
       IF (I.LT.0) GO TO 9910
@@ -179,6 +195,7 @@ C
 C     LOAD A FEW LISTS
 C
       CALL XFAL01
+      CALL XFAL02
       CALL XFAL05
       CALL XFAL13
 C
@@ -193,7 +210,7 @@ C
 C   OUTPUT HEADER.
       WRITE(CMON,1200) FLOAT(IVERSN)*.01
       CALL XPRVDU(NCVDU, 1,0)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
+c      WRITE(NCAWU, '(A)') CMON(1 )(:)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 1200  FORMAT(' DIFABS Version ', F5.2, ' Applied to Fo or Fc')
 C
@@ -219,13 +236,13 @@ C
 C----- IF IMODE IS 2, TRANSFER 1./FC CORRECTION TO FO.
 C      THE CORRECTION IS NOT RECOMPUTED
       IF (IMODE .EQ. 2) THEN
-            CALL ABSPLY(NREF, IACTN, IMODE, IULN)
+            CALL ABSPLY(NREF, IACTN, IMODE, IULN, AMIN, AMAX)
             GOTO 9000
       ENDIF
 C
 C
 CDJWMAR2001
-      IF (L13OM.GT.0) THEN
+      IF ((L13OM).GT.0) THEN
             A=ABS(XDETR3(STORE(L13OM)))
       ELSE
             A=0.
@@ -237,7 +254,7 @@ C----- COPY OVER THE ORIENTATION MATRIX
         WRITE(CMON,'(A/A)')' There is no orientation matrix.',
      1  ' DIFABS correction will not be optimal'
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU, '(A)') (CMON( II)(:),II=1,2)
+c      WRITE(NCAWU, '(A)') (CMON( II)(:),II=1,2)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON( II)(:),II=1,2)
 C----- COPY OVER THE ORTHOGONALISATION MATRIX
         !CALL XMOVE (STORE(L1O2), ORIENT(1,1), 9)
@@ -308,10 +325,25 @@ C
 C
 C
 1000  CONTINUE
+c
+      m2 = l2
+      iequiv = 1
 C
+1001  continue
+      if (idifrt .eq.5) then
+        ih=nint(store(m6)*store(m2+0)+store(m6+1)*store(m2+1)+
+     1     store(m6+2)*store(m2+1))
+
+        ik=nint(store(m6)*store(m2+3)+store(m6+1)*store(m2+4)+
+     1     store(m6+2)*store(m2+5))
+
+        il=nint(store(m6)*store(m2+6)+store(m6+1)*store(m2+7)+
+     1     store(m6+2)*store(m2+8))
+      else
       IH=NINT(STORE(M6))
       IK=NINT(STORE(M6+1))
       IL=NINT(STORE(M6+2))
+      endif
       FOBS=STORE(M6+3)
 C----- REMOVE ANY EXISTING CORRECTION
       FCALC = STORE(M6+5) / STORE(M6+27)
@@ -332,24 +364,56 @@ C   CALCULATE SETTING ANGLES FROM ORIENTATION MATRIX.
       STHLSQ=0.25*(IH*IH*TA+IK*IK*TB+IL*IL*TC+IL*IH*ZB
      ++IK*IL*ZA+IH*IK*ZC)
       SINL=SQRT(STHLSQ)
+      SINTH=WAVE*SINL
+      COSTH=SQRT(1. - SINTH*SINTH)
+C   MAX THETA
+      IF(SINTH.gt.STHMAX) then
+       STHMAX=SINTH
+       CTHMAX=COSTH
+      endif
       DST=2.0*SINL
       X(1)=IH
       X(2)=IK
       X(3)=IL
+c$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+      if (idifrt.eq.5) then
+c      x() are h,k,l
+      DO  I=1,3
+      djw(I)=0.
+       DO  J=1,3
+        djw(I)=djw(I)+ORIENT(I,J)*X(J)
+       enddo
+       djw(I)=djw(I)/DST
+      enddo 
+
+      D = SQRT(djw(2)*djw(2)+djw(3)*djw(3))
+      PHI(1) = ATAN2(djw(2),djw(3))*rtd
+      if (phi(1).lt. 0.0) phi(1)=phi(1)+360.
+      MU(1) = ATAN2(djw(1),D)*rtd
+      if (mu(1) .lt. 0.0) then
+            mu(1) = -mu(1)
+           phi(1) = phi(1)+180
+      endif
+      if (mu(1).gt.90.) then
+            mu(1)=180.-mu(1)
+            phi(1)=180.+phi(1)
+      endif
+      if(NINT(phi(1)) .ge. 360) phi(1)=phi(1)-360.
+
+       mu(2) = mu(1)
+       phi(2) = phi(1)
+
+c      write(125,'(3f4.0,3(2f10.2,4x), 5x, 3f6.2, 5x, f10.7)')
+c     1 x,  phi, mu, djw
+      goto 1488
+c$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+      endif
       CALL ANGLES (OMEGA,PHIE,CHIE,X,IERR)
       IF(IERR.NE.1) GOTO 147
-      IF (ISSPRT .EQ. 0)  WRITE (NCWU,1220) IH,IK,IL
-1220  FORMAT(' *** ERROR IN SETTING ANGLES FOR REFLECTION',3I4,' ***')
+cdjw move error print into ANGLES
       GOTO 250
 C
-147   SINTH=WAVE*SINL
-      COSTH=SQRT(1. - SINTH*SINTH)
-C   MAX THETA
-      IF(SINTH.LE.STHMAX) GOTO 148
-      STHMAX=SINTH
-      CTHMAX=COSTH
-148   CONTINUE
-C
+147   continue
 C   CALCULATE SPHERICAL POLAR COORDS FROM 4-CIRCLE DIFFRACT. EULERIAN AN
 C   calculate primary & secondary beam angles
 C   for bisecting geometry (not Picker)
@@ -357,15 +421,29 @@ C   for bisecting geometry (not Picker)
 C   or for the general case
       IF(IPOS.NE.0.OR.IDIFRT.EQ.3) CALL GEN4C (OMEGA,CHIE,PHIE)
 C
+1488  continue
+c      write(125,'(3f4.0,2(2f7.2,4x),3f8.2)') x,phi,mu, omega,phie,chie
 C   MIN AND MAX MU
       IF(MU(1).LT.MUMIN) MUMIN=MU(1)
       IF(MU(1).GT.MUMAX) MUMAX=MU(1)
+      if(phi(1).lt.phimin) phimin=phi(1)
+      if(phi(1).gt.phimax) phimax=phi(1)
       IF(IPOS.EQ.0)GOTO 149
       IF(MU(2).LT.MUMIN) MUMIN=MU(2)
       IF(MU(2).GT.MUMAX) MUMAX=MU(2)
+      if(phi(2).lt.phimin) phimin=phi(2)
+      if(phi(2).gt.phimax) phimax=phi(2)
+C
+149   CONTINUE
+C  STORE THE DISTRIBUTION OF OBSERVATIONS
+      ndjwp = abs(int(phi(1)/10.) + 1)
+      if(ndjwp.gt.40)ndjwp=40
+      ndjwm = abs(int(2.*mu(1)/10.) + 1)
+      if(ndjwm.gt.20)ndjwm=20
+      ndjwmap(ndjwp,ndjwm) = ndjwmap(ndjwp,ndjwm) +1
 C
 C   TAKE THE SQUARE ROOT OF MU * SFMU
-149   IF(MU(1).GT.0.) MU(1)=SQRT(MU(1))*SFMU
+      IF(MU(1).GT.0.) MU(1)=SQRT(MU(1))*SFMU
       IF(MU(1).LT.0.) MU(1)=-SQRT(ABS(MU(1)))*SFMU
       IF(IPOS.EQ.0)GOTO 150
       IF(MU(2).GT.0.) MU(2)=SQRT(MU(2))*SFMU
@@ -374,8 +452,11 @@ C   TAKE THE SQUARE ROOT OF MU * SFMU
 C   FOR BISECTING GEOMETRY
 150   MU(2)=MU(1)
 C
+155   continue
+148   CONTINUE
+C
 C   COUNT REFLS. IN EACH OCTANT
-155   DO 160 J=1,2
+      DO 160 J=1,2
       JJ=(J-1)*4
       M=0
       IF(MU(J).LT.0.)M=8
@@ -423,6 +504,15 @@ C
 C   SET UP OBSERVATIONAL AND NORMAL EQUATIONS
       IF(IUSE.EQ.1) CALL ABNORM
 C     FETCH NEXT REFLECTION
+c
+c check if we need equivalent reflections
+      if(idifrt .eq.5) then
+      iequiv = iequiv + 1
+      if (iequiv .gt. n2) goto 265
+      m2 = m2+md2
+      goto 1001
+      endif
+265   continue
 260   CONTINUE
       IF (KLDRNR(0)) 290, 1000, 1000
 C
@@ -440,7 +530,7 @@ C
 C   REPORT REFLECTION SUMMARY
       NZERO=NREF-NTOT
       IF (ISSPRT .EQ. 0)WRITE(NCWU,1600)NREF,NZERO,NCUTO,NCUTC,NLOW
-      WRITE(NCAWU,1601)NREF, NLOW
+c      WRITE(NCAWU,1601)NREF, NLOW
 1601  FORMAT(/I6,' Reflections input',
      +       /I6,' Rejected with Fcalc .GT. 2*Fobs')
 1600  FORMAT(/I6,' Reflections input',
@@ -503,7 +593,7 @@ C
 C
 C
 C   APPLY CORRECTION TO ALL DATA
-      CALL ABSPLY ( NREF, IACTN, IMODE, IULN)
+      CALL ABSPLY ( NREF, IACTN, IMODE, IULN, AMIN, AMAX)
       IF(NREF)9900,9900,209
 209   CONTINUE
 C
@@ -512,10 +602,8 @@ C
      +  2(6F10.4/)/ , 2(4F10.4/)/ , 2(7F10.4/)/  , 2(5F10.4/)/ )
 C
 C   PRINT EXAMPLE OF ABSORPTION SURFACE
-      CALL ABSPRI(MUMIN,MUMAX,THMAX)
-C
-C
-C
+      CALL ABSPRI(MUMIN,MUMAX,THMAX, phimin,phimax, amin,amax )
+c
 C
 C
 9000  CONTINUE
@@ -570,7 +658,8 @@ C   of summation, hence:
 C                   Fc = k Fo . {1 + A'(p)}.{1 + A'(s)}.{1 + A'(O)}
 C
 C   Terms Pn,m and Qn,m used are:-
-C    a) n=1,2,3,4,5,6 and m=0  b) n=0 and m=1,2,3,4
+C    a) n=1,2,3,4,5,6 and m=0  
+C    b) n=0 and m=1,2,3,4
 C    c) n=1,2,3,4 and m=1, and n=m=2,3,4    ie. a total of 34
 C   and terms Rn and Sn used are:-
 C      n=1,2,3,4,5    ie. a total of 10
@@ -1099,7 +1188,7 @@ C  NF=1/2       END      REPORT RESULTS
       RMS=SQRT(SUMRSQ/SUMFSQ)
       WRITE(CMON,210) NUMREF, RM , RMS
       IF (NF .EQ.2) CALL XPRVDU(NCVDU, 3,0)
-      WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,3)
+c      WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,3)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON( II)(:),II=1,3)
 210   FORMAT(' For the',I6,
      +' reflections'/' the relative residual was ',F6.4,
@@ -1111,7 +1200,7 @@ C
 C
 C
 CODE FOR ABSPRI
-      SUBROUTINE ABSPRI (MUMIN,MUMAX,THMAX)
+      SUBROUTINE ABSPRI (MUMIN,MUMAX,THMAX, phimin,phimax, amin,amax)
 C     *************************************
 C
 C
@@ -1120,11 +1209,13 @@ C
 C
       INCLUDE 'TSSCHR.INC'
       LOGICAL TCOR
-      REAL MU,MUMIN,MUMAX,A(18)
+      REAL MU,MUMIN,MUMAX,A(18),phimain, phimax
       COMMON /NORMAL/ ANORM(44,44),ATB(44),ROWJ(88),TERMS(44)
+      COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS(3),IPOS,IDIFRT,ORIENT(3,3),DST
       COMMON /REFL/ FC,FO,FM,PHI(2),MU(2),SINTH,COSTH
       COMMON /DRVR/ LI,LD,LO,lf,lp,ncy,NSHAPE,NACOEF,NBCOEF,SFMU,TCOR
      1 ,IMAP
+      COMMON /WMAP/ ndjwmap(40,20)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'ISTORE.INC'
@@ -1147,44 +1238,30 @@ C   AND MU AT INTERVALS OF 5 DEGREES
       MRANGE=IMAX-IMIN + 1
       MUS=IMAX*5
       MUF=IMIN*5
+c
+c
+      jMAX=PHIMAX/10. + 0.8
+      jMIN=PHIMIN/10. - 0.8
+      MpRANGE=jMAX-jMIN + 1
+      mprange = min(mprange, 36)
+      MpS=jMAX*10
+      MpF=jMIN*10
+
+c      write(123,'( a)') 'muf,mus,mrange, mpf,mps,mprange'
+c      write(123,'( 2(3i6,6x))') muf,mus,mrange, mpf,mps,mprange
 C
 CDJW99[  CREATE SCRATCH AREA FOR MAP
       KMAP = KSTALL(36 * MRANGE)
       CALL XZEROF (STORE(KMAP), 36 * MRANGE)
-      IF (IMAP .GE. 1) THEN
-       REWIND MT1
-       WRITE (MT1) 'INFO DOWN, ACROSS AND SECTION'
-       WRITE (MT1) 'TRAN', (STORE(I),I=KMAP,KMAP+11)
-       WRITE (MT1) 'CELL', (STORE(I),I=KMAP,KMAP+5)
-       WRITE (MT1) 'L14 ', (STORE(I),I=KMAP,KMAP+11)
-       WRITE (MT1) 'SIZE', 36, MRANGE, 1
-      ENDIF
-cdjwnov99 - pinched from richards slant bodge
-      IF (IOUFIL .GT. 0 ) THEN
-           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
-           CALL XRDOPN(6, KDEV , CSSMAP, LSSMAP)
-1651       FORMAT(A)
-1652       FORMAT(F15.8)
-1653       FORMAT(I8)
-           WRITE (NCFPU1,1651) 'INFO  DOWN, ACROSS AND SECTION '
-           WRITE (NCFPU1,1651) 'TRAN'
-           WRITE (NCFPU1,1652) (0.0,I=1,12)
-           WRITE (NCFPU1,1651) 'CELL'
-           WRITE (NCFPU1,1652) (0.0,I=1,6)
-           WRITE (NCFPU1,1651) 'L14 '
-           WRITE (NCFPU1,1652) (0.0,I=1,12)
-           WRITE (NCFPU1,1651) 'SIZE'
-           WRITE (NCFPU1,1653) 36, MRANGE, 1
-      ENDIF
-      ISTORE(KMAP) = 36
-      ISTORE(KMAP+1) = 1
+C      ISTORE(KMAP) = 36
+C      ISTORE(KMAP+1) = 1
 CDJW99]
 C
       DO 100 J=1,2
       NPS=(J-1)*180
       NPF=NPS+170
 CDJW99[
-      MPS = NPS/10
+      MMPS = NPS/10
 CDJW99]
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,50)NPS,NPF,MUF,MUS,(JJ,JJ=NPS,NPF,10)
@@ -1208,36 +1285,130 @@ C
       CALL ABSTOR
       CALL AFACT (PS1,PS2,PS3,ABSFAC)
       A(K)=PS1*PS2
+c
+c
+C  COMPARE WITH THE DISTRIBUTION OF OBSERVATIONS
+      ndjwp = abs(int(kk/10.) + 1)
+      if(ndjwp.gt.40)ndjwp=40
+      ndjwm = abs(int(2.*float(II-1)/10.) + 1)
+      if(ndjwm.gt.20)ndjwm=20
+c      WRITE(124,'(I6,3F8.2,3I6 )')K, PHI(1), 
+c     1 float(II), A(K), NDJWP, NDJWM, ndjwmap(ndjwp,ndjwm)
+      if (ndjwmap(ndjwp,ndjwm).le.0) then
+        if(a(k) .lt. amin) a(k)=amin
+        if(a(k) .gt. amax) a(k) = amax
+        IF(A(K).LE.0.) A(K)=1.
+      endif
+c
 80    CONTINUE
 C
 CDJW99[
-      JMAP = KMAP +(I-1)*36 + MPS
+      JMAP = KMAP +(I-1)*36 + MMPS
       CALL XMOVE(A(1), STORE(JMAP), 18)
 CDJW99]
       IF (ISSPRT .EQ. 0)  WRITE(NCWU,200)II,A
 200   FORMAT(I4,1X,18F5.2)
+c£££££££££££££££££££££££££££££££££££££££££££££££££££££
+c      if(j .eq.2)then
+c       jj = kmap+(i-1)*36
+c      write(123,201)jj,ii,(store(jj+idjw),idjw=0,35)
+201   FORMAT(2I6,1X,40F5.2)
+c£££££££££££££££££££££££££££££££££££££££££££££££££££££
 90    CONTINUE
 C
 100   CONTINUE
+c
+c      WRITE(123,'(/)')
+c
+C DISTRIBUTION OF OBSERVATIONS
+      if (issprt.eq.0) then
+       write(ncwu,'(a,f6.2,a,f6.2)')' Mumin ',mumin,' mumax ', mumax
+       write(ncwu,'(a,f6.2,a,f6.2)')' Phimin',phimin,' phimax',phimax
+       write(ncwu,'(a/)') ' Distribution of Observations'
+       write(ncwu,'(10x,36i3/)') ((i),i=1,36)
+       do i=18,1,-1
+        write(ncwu,'(i6,4x,37i3)') 5*(I),(ndjwmap(j,i),j=1,36)
+       enddo
+      endif
+C
+c
+c
 CDJW99[^
-      MPS = 36 * MRANGE
+      MMPS = 36 * MRANGE
       JMAP = KSTALL(36 * MRANGE)
-c----- TRANSPOSE MAP FOR BETTER VIEWING
-       DO 101 I = KMAP,KMAP-1+ MPS
-       STORE(I) = 100.*STORE(I)
+c----- TRANSPOSE  AND SCALE MAP FOR BETTER VIEWING
+       DO 101 I = KMAP,KMAP-1+ MMPS
+        if(idifrt.eq.5) then
+         STORE(I) = 100.*(STORE(I)-1.)
+        else
+         STORE(I) = 100.*STORE(I)
+        endif
 101    CONTINUE
        CALL XTRANS (STORE(KMAP), STORE(JMAP), 36, MRANGE)
+c£££££££££££££££££££££££££££££££££££££££££££££££££££££
+C      do i=1,mrange
+C      ii = kmap+(muf+i-1)*36
+C        jj = mpf
+C        kk = jj + mprange-1
+C        write(123,201)ii,jj,(0.01*store(ii+idjw),idjw=jj,kk)
+C       enddo
+c£££££££££££££££££££££££££££££££££££££££££££££££££££££
+c      do i=1,mprange
+c      ii = jmap+(mpf+i-1)*mrange
+c        jj = muf
+c        kk = jj + mrange-1
+c        write(123,201)ii,jj,(0.01*store(ii+idjw),idjw=jj,kk)
+c       enddo
+c£££££££££££££££££££££££££££££££££££££££££££££££££££££
       IF (IMAP .GE. 1) THEN
-       WRITE(MT1) MPS, (STORE(K),K=JMAP, JMAP+MPS-1)
+C - DEFUNCT CODE
+       REWIND MT1
+       WRITE (MT1) 'INFO DOWN, ACROSS AND SECTION'
+       WRITE (MT1) 'TRAN', (STORE(I),I=KMAP,KMAP+11)
+       WRITE (MT1) 'CELL', (STORE(I),I=KMAP,KMAP+5)
+       WRITE (MT1) 'L14 ', (STORE(I),I=KMAP,KMAP+11)
+       WRITE (MT1) 'SIZE', 36, MRANGE, 1
+       WRITE(MT1) MMPS, (STORE(K),K=JMAP, JMAP+MMPS-1)
       ENDIF
 cdjwnov99
-      IF (IOUFIL .GT. 0) THEN
+      IF (IOUFIL .GT. 0 ) THEN
+c     pinched from richards slant code
+           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+           CALL XRDOPN(6, KDEV , CSSMAP, LSSMAP)
+1651       FORMAT(A)
+1652       FORMAT(F15.8)
+1653       FORMAT(I8)
+           WRITE (NCFPU1,1651) 'INFO  DOWN, ACROSS AND SECTION '
+           WRITE (NCFPU1,1651) 'TRAN'
+           WRITE (NCFPU1,1652) (0.0,I=1,12)
+           WRITE (NCFPU1,1651) 'CELL'
+           WRITE (NCFPU1,1652) (0.0,I=1,6)
+           WRITE (NCFPU1,1651) 'L14 '
+c        WRITE (NCFPU1,1652) (0.0,I=1,12)
+        WRITE (NCFPU1,1652) 0., 1., 18.,0.
+        WRITE (NCFPU1,1652) 0., 1., 35.,0.
+        WRITE (NCFPU1,1652) 0., 0.,  0.,0.
+           WRITE (NCFPU1,1651) 'SIZE'
+        WRITE (NCFPU1,1653) mprange, MRANGE, 2
 2801    FORMAT (A)
 2802    FORMAT (I8)
-2803    FORMAT (F15.8)
+2803    FORMAT (F15.2)
         WRITE(NCFPU1,2801) 'BLOCK'
-        WRITE(NCFPU1,2802) mps
-        WRITE(NCFPU1,2803) (STORE(K),K=JMAP, JMAP+MPS-1)
+        WRITE(NCFPU1,2802) mprange*mrange
+c write surface values
+        do i=1,mprange
+         ii = jmap+(mpf+i-1)*mrange
+         jj = muf
+         kk = jj + mrange-1
+c        write(123,'(6i6)') mprange,mrange, i, ii, jj, kk
+         write(ncfpu1,2803)(store(ii+idjw),idjw=jj,kk)
+        enddo
+
+        WRITE(NCFPU1,2801) 'BLOCK'
+        WRITE(NCFPU1,2802) mprange*mrange
+       do i=1,36,1
+       WRITE(NCFPU1,2803) (FLOAT(ndjwmap(i,j)),j=19,1,-1)
+       enddo
 C
         WRITE (NCFPU1,1651) 'LIST5'
         WRITE (NCFPU1,1653) 0, 0
@@ -1279,7 +1450,7 @@ C
 C
 C
 CODE FOR ABSPLY
-      SUBROUTINE ABSPLY ( NREF, IACTN, IMODE, IULN)
+      SUBROUTINE ABSPLY ( NREF, IACTN, IMODE, IULN, AMIN, AMAX)
 C     ************************
 C
 C
@@ -1290,11 +1461,13 @@ C
 C
       LOGICAL TCOR
       REAL MU
+      real, intent(out) :: amax, amin
 C
       DIMENSION IBUF(7)
       INCLUDE 'ICOM30.INC'
       INCLUDE 'ISTORE.INC'
 C
+      COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS(3),IPOS,IDIFRT,ORIENT(3,3),DST
       COMMON /NORMAL/ ANORM(44,44),ATB(44),ROWJ(88),TERMS(44)
       COMMON /REFL/ FC,FO,FM,PHI(2),MU(2),SINTH,COSTH
       COMMON /DRVR/ LI,LD,LO,lf,lp,ncy,NSHAPE,NACOEF,NBCOEF,SFMU,TCOR
@@ -1327,7 +1500,7 @@ cdjwapr08
             WRITE(CMON,111)
        ENDIF
        CALL XPRVDU(NCVDU, 1,0)
-       WRITE(NCAWU, '(A)') CMON( 1)(:)
+c       WRITE(NCAWU, '(A)') CMON( 1)(:)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 110    FORMAT ('       DIFABS correction applied to ', A)
 111    FORMAT (' Transfering correction from Fc to Fo')
@@ -1338,7 +1511,7 @@ C      READ LIST 6 AGAIN
       CALL XFAL06(IULN,0)
 C     START WRITING NEW LIST 6
       IF (IACTN .EQ. 1) THEN
-      WRITE(NCAWU, 120)
+c      WRITE(NCAWU, 120)
       IF (ISSPRT .EQ. 0)  WRITE(NCWU, 120)
 120    FORMAT( ' Creating new reflection list')
 C----- FIND OUT HOW MUCH ROOM WE NEED
@@ -1350,7 +1523,7 @@ C----- FIND OUT HOW MUCH ROOM WE NEED
         LSTLEN = (LENTOT / IBUF(1)) + 1
         IEXTN =  KDAFRE (NCDFU, -1, LSTLEN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, 150) IEXTN
-        WRITE(NCAWU, 150) IEXTN
+c        WRITE(NCAWU, 150) IEXTN
 150     FORMAT (/,' Disc file extended by ', I6, ' records')
         CALL XSTR06( IULN, 0, 0, 0, 0)
       ELSE IF (IACTN .EQ. 0) THEN
@@ -1451,27 +1624,27 @@ C   REPORT CORRECTION SUMMARY
       AVER=ATOT/NTOT
       IF (IMODE .LE.1 ) THEN
          WRITE ( CMON,197) NTOT
-         WRITE(NCAWU, '(A)') CMON(1 )(:)
+c         WRITE(NCAWU, '(A)') CMON(1 )(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 197   FORMAT(I6,' Reflections corrected')
          WRITE ( CMON,198) AMIN,APHINP,AMUNP
-         WRITE(NCAWU, '(A)') CMON( 1)(:)
+c         WRITE(NCAWU, '(A)') CMON( 1)(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
          WRITE ( CMON,199) APHINS,AMUNS
-         WRITE(NCAWU, '(A)') CMON(1 )(:)
+c         WRITE(NCAWU, '(A)') CMON(1 )(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 198   FORMAT( ' Minimum absorption correction =',F6.3,
-     2        5X,'at  PHI(P)=',F5.1,' MU(P)=',F5.1 )
-199   FORMAT(47X,    'PHI(S)=',F5.1,' MU(S)=',F5.1 )
+     2        5X,'at  PHI(P)=',F6.1,' MU(P)=',F6.1 )
+199   FORMAT(47X,    'PHI(S)=',F6.1,' MU(S)=',F6.1 )
          WRITE ( CMON,200) AMAX,APHIXP,AMUXP
-         WRITE(NCAWU, '(A)') CMON(1 )(:)
+c         WRITE(NCAWU, '(A)') CMON(1 )(:)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
          WRITE ( CMON,201) APHIXS,AMUXS,AVER
-         WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,2)
+c         WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,2)
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II )(:),II=1,2)
 200   FORMAT( ' Maximum absorption correction =',F6.3,
-     2        5X,'at  PHI(P)=',F5.1,' MU(P)=',F5.1)
-201   FORMAT(47X,    'PHI(S)=',F5.1,' MU(S)=',F5.1,/
+     2        5X,'at  PHI(P)=',F6.1,' MU(P)=',F6.1)
+201   FORMAT(47X,    'PHI(S)=',F6.1,' MU(S)=',F6.1,/
      2 ' Average absorption correction =',F6.3)
 C----- WRITE MINIMUM INFO TO VDU
          WRITE ( CMON,202) NTOT, AVER, AMIN, AMAX
@@ -1485,6 +1658,35 @@ C----- WRITE MINIMUM INFO TO VDU
      +      ' Maximum correction =',F6.3)
       ENDIF
 C
+      IF ( IDIFRT.EQ.5) THEN
+        lmin = (100.*(amin-1))-1.
+        lmax = (100.*(amax-1))+1.
+      ELSE
+        lmin = (100.*amin)-1.
+        lmax = (100.*amax)+1.
+      ENDIF
+      lrange = lmax-lmin
+      if(lrange .le. 10) then
+            lstep=1
+            nstep = lrange +1
+      else if (lrange .le. 20) then
+            lstep=2
+            nstep = (lrange+1)/2
+      else 
+            lstep=4
+            nstep = (lrange+1)/4
+      endif
+      lmax = lmin + lstep*nstep
+c
+      write(cmon,'(a, i3,a, i3, a,i3,a,i4)') 
+     1 ' For a contour map we suggest', nstep,
+     2 ' steps of', lstep, ' from', lmin, ' to', lmax
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(A)') 'e.g. '
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(20i4)') (lmin+i*lstep,i=0,nstep-1)
+      call xprvdu(ncvdu,1,0)
+c
       IF (IACTN .GE. 0) THEN
 C----- UPDATE AND STORE LIST 30
         CALL XFAL30
@@ -1588,19 +1790,19 @@ C
       IF (IFAIL .NE. 0) THEN
        WRITE(CMON,202) I
        CALL XPRVDU(NCVDU, 1,0)
-       WRITE(NCAWU, '(A)') CMON(1 )(:)
+c       WRITE(NCAWU, '(A)') CMON(1 )(:)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
 202    FORMAT(' WARNING - Cell/orientation matrix mis-match',I2)
        WRITE(CMON,200) (list1_cell(j),J = 1, 3),
      1 (list1_cell(J)*RAD,J = 4, 6)
 200    FORMAT(' LIST 1  CELL', 6F 8.3)
        CALL XPRVDU(NCVDU, 1,0)
-       WRITE(NCAWU, '(A)') CMON(1 )(:)
+c       WRITE(NCAWU, '(A)') CMON(1 )(:)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
        WRITE(CMON,201) Y,Z
 201    FORMAT(' LIST 13 CELL', 6F8.3)
        CALL XPRVDU(NCVDU, 1,0)
-       WRITE(NCAWU, '(A)') CMON(1 )(:)
+c       WRITE(NCAWU, '(A)') CMON(1 )(:)
        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
@@ -1621,6 +1823,9 @@ CODE FOR ANGLES
       SUBROUTINE ANGLES (OMEGA,PHI,CHI,X,IERR)
 C     ****************************************
 C
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
 C.... CALCULATES DIFFRACTOMETER SETTING ANGLES GIVEN OMEGA
 C
       COMMON/ORIENT/TWOTHZ,OMZ,PHIZ,PLUS(3),IPOS,IDIFRT,ORIENT(3,3),DST
@@ -1665,6 +1870,10 @@ C
    36 IF(IDIFRT.NE.3) GO TO 80
 C
 C    DATA COLLECTED IN BISECTING POSITION.  (PICKER GEOMETRY).
+cdjw Oct 2015.  BEWARE
+c     Bisecting code used with an orthogonalisation matrix used as 
+c     orientation matrix leads to corruption somewhere.
+c     This affects subsequent runs of DIFABS in same CRYSTALS job.
 C
       C=ABS(COS(OMEGA/RAD))
       IF (C-0.000001) 38,38,42
@@ -1694,6 +1903,9 @@ C
    62 OMEGA=OMZ+OMEGA/PLUS(1)
       GO TO 90
    64 IERR=1
+      IF (ISSPRT .EQ. 0)  WRITE (NCWU,1220) 
+     1 nint(x(1)),nint(x(2)),nint(x(3)),  e(1),e(2),e(3)
+1220  FORMAT('ERROR IN SETTING ANGLES FOR REFLECTION',3I4,4x,3f8.4)
       RETURN
 C
 C     DATA COLLECTED IN BISECTING POSITION.  (NONIUS & SYNTEX GEOMETRY)

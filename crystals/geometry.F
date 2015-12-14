@@ -49,6 +49,7 @@ C                     4      AXES
 C
 C     JPUNCH          >0    PUNCH INFO
 C
+      CHARACTER *9 CESD
 C
 C
 C--
@@ -66,8 +67,16 @@ cdjwdec09
       real, dimension(9) :: ATENS
       real, dimension(3,3) :: DJWA, DJWB
       real, dimension(3) :: PAXIS(3)
+C     FRACTIONAL AND ANGSTROM ESDS
+      real, dimension(3) :: ANESD, BNESD
+      real ans, esd
 C-C-C-DECL. OF VARIABLES TO CALC. POLAR COORD. OF SPECIAL FIGURES
       REAL VECPD,VECPA
+C
+      INCLUDE 'TYPE11.INC'
+      INCLUDE 'ICOM11.INC'
+      INCLUDE 'XSTR11.INC'
+      INCLUDE 'XLST11.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -78,6 +87,7 @@ C
       !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST09.INC'
       INCLUDE 'XLST12.INC'
       INCLUDE 'XLST20.INC'
       INCLUDE 'XLEXIC.INC'
@@ -90,6 +100,8 @@ C
 C
       INCLUDE 'QLST12.INC'
       INCLUDE 'QSTORE.INC'
+      INCLUDE 'QSTR11.INC'
+      INCLUDE 'QLST11.INC'
       
       INCLUDE 'IDIM12.INC'      
       
@@ -98,11 +110,11 @@ C
       integer inextd, irpl, isave, istart, istat, istep, iuln5, iupdt
       integer iwork, j, ja, jbase, jdjw, jg, jh, jj, jk, jl, jn, jo
       integer jpunch, jtype, jwork, k, kbase, kk, kwork, lbase, lef1
-      integer lef2, n, natom, nb, ngp, np, number
+      integer lef2, n, natom, nb, ngp, np, number, iesd
       
       integer, external :: kstall, klxsng, ktyp05, kfdarg, kop, ksynum
       integer, external :: katomu, katoms, kmolax, kinv2, kchnfl, kcomp
-      integer, external :: ktlspt, irtls, kfdnum
+      integer, external :: ktlspt, irtls, kfdnum, kexist
 C
 C
       integer, parameter :: IVERSN=220
@@ -135,7 +147,29 @@ C--SET UP THE TIMING CONTROL
       CALL XTIME1 (2)
 C--PRINT THE PAGE HEADING
       CALL XPRTCN
+
+
+C TRY LOADING LIST 11 TO SEE IF ESDS COULD BE CORRECT
+      IESD = +1
+      IF(KEXIST(11).GE. 1) then
+       CALL XFAL11(0,0)
+      ENDIF
+      IF (IERFLG .LE. 0) THEN 
+C       LISTS 5 & 12 DONT MATCH, SO LIST 9 MAY BE WRONG
+        WRITE(CMON,'(A)')
+     1 'You may prefer to exit GEOM and issue "#ESD", otherwise'
+        CALL XPRVDU (NCVDU,1,0)
+        WRITE(CMON,1) '{E Continuing without esds'
+1       FORMAT(/A/)
+        CALL XPRVDU (NCVDU,3,0)
+        IERFLG = 1
+        IESD = -1
+      ENDIF
+
+
+
 C--CLEAR THE CORE
+c      CALL XRSL
       CALL XCSAE
 C----- DISABLE 'PUNCHING'
       JPUNCH=0
@@ -206,6 +240,11 @@ C--LOAD THE RELEVANT LISTS
       IF (IERFLG.LT.0) GO TO 1020
 C--LIST READ IN OKAY  -  SET UP THE INITIAL CONTROL FLAGS
 C--RESET SOME CONTROL FLAGS FOR THIS ROUTINE
+C NOW OPTIONALLY LOAD LIST 9
+      IF((KEXIST(9).GE. 1).AND.(IESD.GE.1)) THEN
+        CALL XFAL09
+        IF (IERFLG.GE.0) IESD = 1
+      ENDIF 
       IPRINT=0
       TESTEV=EIGMIN
       TESTER=EIGRAT
@@ -216,6 +255,7 @@ c--SET THE FLAG TO INDICATE NO ATOMS STORED AT PRESENT
       NATOM=0
 C--SET THE PLANE/LINE  FLAG TO INDICATE NO ATOMS STORED AT PRESENT
       LEF1=-1
+      LEF2 = 0
 C----- SET THE CALCULATION TYPE TO NOTHING
       JTYPE=0
       IERR=1
@@ -414,12 +454,12 @@ C--COMPUTE THE ORTHOGONAL COORDINATES OF THE CENTROID AND PRINT THEM
      1    xcf )
       IF (JJ.NE.1) THEN
          WRITE (CMON,330) (XCF(I),I=1,3)
-330      FORMAT ('Centroid, fractions',3X,4F10.3)
+330      FORMAT (' Centroid, fractions',3X,4F10.3)
          CALL XPRVDU (NCVDU,1,0)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,340) (XCA(I),I=1,3),(XCF(I),I=1,3)
-340         FORMAT (//' Centroid in orthogonal angstrom and crystal',' f
-     1ractions'//3F10.3,10X,3F10.5)
+340         FORMAT (//' Centroid in orthogonal angstrom and crystal',
+     1      ' fractions'//3F10.3,10X,3F10.5)
 C--PRINT THE LATENT ROOTS AND THE DIRECTION COSINES
             WRITE (NCWU,350) CTYPE(JTYPE),(VA(I),(ROF(I,J),J=1,3),I=1,3)
 350         FORMAT (//1X,' Rotation matrix from orthogonal',' to best ',
@@ -429,9 +469,9 @@ C--PRINT THE ROTATION MATRICES FROM CRYSTAL FRACTIONS
             WRITE (NCWU,360) CTYPE(JTYPE),((RCA(I,J),J=1,3),(RCF(I,J),J=
      1       1,3),I=1,3)
          END IF
-360      FORMAT (//1X,' Transformation from crystal fractions w.r.t.','
-     1centroid to best ',A,' coordinates',' in angstrom and fractions'//
-     2    3(14X,3F10.4,11X,3F10.5/))
+360      FORMAT (//1X,' Transformation from crystal fractions w.r.t.',
+     1' centroid to best ',A,' coordinates',' in angstrom and fractions'
+     2  //  3(14X,3F10.4,11X,3F10.5/))
       END IF
 C
 C--CALCULATE THE INVERSE MATRICES
@@ -454,40 +494,39 @@ C-C-C-PRINT EQUATION OF PLANE/LINE AND ORIENT. VECTOR IN POLAR COORD.
 380      FORMAT (//1X,' Equation of the ',A,' :'//F10.5,' * X +',F10.5,'
      1 * Y +',F10.5,' * Z  =',F10.3,20X,'X, Y and Z are in crystal fract
      2ions')
-390      FORMAT (/,A,'-vector (in polar coord.):','Input ONLY in units o
-     1f 100 DEGREES !!!',//,'DECLINAT =',F9.2,5X,'DECLINAT/100 =',F9.4,/
+390      FORMAT (/,A,'-vector (in polar coord.):',
+     1   //,'DECLINAT =',F9.2,5X,'DECLINAT/100 =',F9.4,/
      2    ,'AZIMUTH  =',F9.2,5X,'AZIMUTH /100 =',F9.4)
          WRITE (NCAWU,400) CTYPE(JTYPE),(EQU(I),I=1,3),F
          WRITE (NCAWU,410) CTYPE(JTYPE),VECPD,VECPD/100,VECPA,VECPA/100
 400      FORMAT (/,1X,'Equation of the ',A,' :',/,11X,F10.5,'*X + ',F10.
      1    5,'*Y + ',F10.5,'*Z = ',F10.3,/,1X,20X,'X, Y and Z are in crys
      2tal fractions')
-410      FORMAT (/,A,'-vector (in polar coord.): ','Input ONLY in units
-     1of 100 DEGREES !!!',//,'DECLINAT =',F9.2,5X,'DECLINAT/100 =',F9.4,
+410      FORMAT (/,A,'-vector (in polar coord.): ',
+     1   //,'DECLINAT =',F9.2,5X,'DECLINAT/100 =',F9.4,
      2    /,'AZIMUTH  =',F9.2,5X,'AZIMUTH /100 =',F9.4)
 C
 C--PRINT AN EXPLANATORY CAPTION
-         IF (JJ.NE.1) THEN
-            IF (ISSPRT.EQ.0) WRITE (NCWU,420) CTYPE(JTYPE),CDEV(JTYPE)
-            WRITE (NCAWU,420) CTYPE(JTYPE),CDEV(JTYPE)
-            WRITE (CMON,420) CTYPE(JTYPE),CDEV(JTYPE)
-            CALL XPRVDU (NCVDU,1,0)
-420         FORMAT (' Deviations from the ',A,', in angstrom, are given
-     1by ',A)
-         END IF
+c         IF (JJ.NE.1) THEN
+c            IF (ISSPRT.EQ.0) WRITE (NCWU,420) CTYPE(JTYPE),CDEV(JTYPE)
+c            WRITE (NCAWU,420) CTYPE(JTYPE),CDEV(JTYPE)
+c            WRITE (CMON,420) CTYPE(JTYPE),CDEV(JTYPE)
+c            CALL XPRVDU (NCVDU,1,0)
+420         FORMAT (' Deviations from the ',A,
+     1      ', in angstrom, are given by ',A)
+c         END IF
 C--PRINT THE CO-ORDINATES OF THE ATOMS DEFINING THE PLANE:/LINE
          IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,430) CQUAL(JTYPE),CDEL(JTYPE)
+            WRITE (NCWU,430) CQUAL(2),CTYPE(JTYPE),CDEL(1)
          END IF
-430      FORMAT (1X,' Co-ordinates of the defining atoms',' projected on
-     1to the ',A,' plane'//4X,'Type',5X,'Serial',7X,'Weight',7X,'XP',8X,
-     2    'YP',8X,'ZP',7X,A/)
-         WRITE (NCAWU,440) CQUAL(JTYPE),CDEL(JTYPE)
-         WRITE (CMON,440) CQUAL(JTYPE),CDEL(JTYPE)
+430     FORMAT (1X,' Co-ordinates of the defining atoms',' projected', 
+     1 'onto the ',A,X,A//4X,'Type',5X,'Serial',7X,'Weight',7X,'XP',8X,
+     2    'YP',8X,'ZP',7X,A,3x,'esd'/)
+         WRITE (CMON,440) CQUAL(2),CTYPE(JTYPE),CDEL(1)
          CALL XPRVDU (NCVDU,3,0)
-440      FORMAT (' Co-ordinates of the defining atoms',' projected onto
-     1the ',A,' plane'/4X,'Type',5X,'Serial',7X,'XP',8X,'YP',8X,'ZP',7X,
-     2    A/)
+440      FORMAT (' Co-ordinates of the defining atoms',' projected onto',
+     1   ' the ',A,X,A/4X,'Type',5X,'Serial',7X,'XP',8X,'YP',8X,'ZP',7X,
+     2    A,3x,'esd'/)
       END IF
 C
       IF (JPUNCH.NE.0) WRITE (NCPU,'(''# Plane no '',I4)') NP
@@ -496,34 +535,43 @@ C--COMPUTE A FEW ADDRESSES
       I=JO
 C--LOOP OVER EACH ATOM IN TURN
       DO 480 II=JBASE,JO,MD5A
+c      WRITE(123,'(A4,I8)') ISTORE(I), NINT(STORE(I+1))
+cdjw  find LIST 9 entry.
+         if(iesd .ge.1) THEN
+            call xfndesd(ISTORE(I), STORE(i+1), anesd, bnesd)
+            esd = (bnesd(1)+bnesd(2)+bnesd(3))/3.
+            CALL DESD( ROF, BNESD, ANS)
+c      write(123,'(3(3f8.3,5x))') bnesd, esd, ans
+c NOTE. the simple arithmetic mean esd is closer to PLATON 
+c than Shmueli's expression
+            write(cesd,'(f9.4)')esd
+         else
+            cesd = ' '
+         endif
+C      WRITE(123,'(A,F9.1,F9.5,2X,A5)')
+C     1 ISTORE(i),STORE(i+1),ESD,CESD(5:9)
+C
+C
          CALL XSUBTR (STORE(I+4),XCF,STORE(I+4),3)
          CALL XMLTMM (RCA,STORE(I+4),STORE(I+10),3,3,1)
          IF (JJ.NE.1) THEN
-            DEL=SQRT(STORE(I+10)**2+STORE(I+11)**2)
-            IF (ISSPRT.EQ.0) THEN
-               IF (JTYPE.EQ.1) THEN
-                  WRITE (NCWU,450) STORE(I),STORE(I+1),STORE(I+7),
-     1             STORE(I+10),STORE(I+11),STORE(I+12),DEL
-               ELSE
-                  WRITE (NCWU,450) STORE(I),STORE(I+1),STORE(I+7),
-     1             STORE(I+10),STORE(I+11),STORE(I+12)
-               END IF
-            END IF
-450         FORMAT (5X,A4,F9.0,5X,F9.3,1X,4F10.3)
             IF (JTYPE.EQ.1) THEN
-               WRITE (NCAWU,460) STORE(I),STORE(I+1),STORE(I+10),
-     1          STORE(I+11),STORE(I+12),DEL
-               WRITE (CMON,460) STORE(I),STORE(I+1),STORE(I+10),STORE(I+
-     1          11),STORE(I+12),DEL
-               CALL XPRVDU (NCVDU,1,0)
-            ELSE
-               WRITE (NCAWU,460) STORE(I),STORE(I+1),STORE(I+10),
-     1          STORE(I+11),STORE(I+12)
-               WRITE (CMON,460) STORE(I),STORE(I+1),STORE(I+10),STORE(I+
-     1          11),STORE(I+12)
-               CALL XPRVDU (NCVDU,1,0)
+             DEL=SQRT(STORE(I+10)**2+STORE(I+11)**2)
+            else
+             del = store(i+12)
+            endif
+            IF (ISSPRT.EQ.0) THEN
+              WRITE (NCWU,450) STORE(I),STORE(I+1),STORE(I+7),
+     1        STORE(I+10),STORE(I+11),STORE(I+12),DEL,cesd(5:9)
             END IF
-460         FORMAT (5X,A4,F9.0,2X,4F10.3)
+450         FORMAT (5X,A4,F9.0,5X,F9.3,1X,4F10.3,2X,A5)
+c
+               WRITE (NCAWU,460) STORE(I),STORE(I+1),STORE(I+10),
+     1          STORE(I+11),STORE(I+12),DEL,CESD(5:9)
+               WRITE (CMON,460) STORE(I),STORE(I+1),STORE(I+10),
+     1          STORE(I+11),STORE(I+12),DEL,CESD(5:9)
+               CALL XPRVDU (NCVDU,1,0)
+460         FORMAT (5X,A4,F9.0,2X,4F10.3,2X,A5)
          END IF
          IF (JPUNCH.NE.0) THEN
             WRITE (NCPU,470) STORE(I),STORE(I+1),STORE(I+10),STORE(I+11)
@@ -606,10 +654,11 @@ C--START TO PROCESS THE CARD
 C--PRINT A CAPTION
 600   CONTINUE
       IF (ISSPRT.EQ.0) THEN
-         IF (IRPL.EQ.0) WRITE (NCWU,610) CQUAL(JTYPE)
+         IF (IRPL.EQ.0) WRITE (NCWU,610) CQUAL(2),CTYPE(JTYPE),CDEL(1)
       END IF
 610   FORMAT (//' Co-ordinates of other atoms',' projected onto the ',A,
-     1' plane'//4X,'Type',5X,'Serial',20X,'XP',8X,'YP',8X,'ZP'/)
+     1 X,A//4X,'Type',5X,'Serial',
+     2  20X,'XP',8X,'YP',8X,'ZP',7X,A,3X,'esd'/)
 C--CHECK THE CORE AREA
       LFL=LFL-MD5A
       IF (NFL+27-LFL) 620,620,3660
@@ -643,17 +692,35 @@ C--SUBTRACT THE CENTROID
      1       STORE(LFL+8),STORE(LFL+9)
          END IF
          IF (IRPL.EQ.0) THEN
+cdjw in here, find LIST 9 entry.
+         if(iesd .ge.1) THEN
+c      WRITE(123,'(A4,I8)') ISTORE(LFL), NINT(STORE(LFL+1))
+            call xfndesd(ISTORE(LFL), STORE(LFL+1), anesd, bnesd)
+            esd = (bnesd(1)+bnesd(2)+bnesd(3))/3.
+             CALL DESD( ROF, BNESD, ANS)
+c      write(123,'(3(3f8.3,5x))') bnesd, esd, ans
+            write(cesd,'(f9.4)') esd
+         else
+            cesd = ' '
+         endif
+         IF (JJ.NE.1) THEN
+            IF (JTYPE.EQ.1) THEN
+             DEL=SQRT(STORE(LFL+7)**2+STORE(LFL+8)**2)
+            else
+             del = store(LFL+9)
+            endif
+          ENDIF
             IF (ISSPRT.EQ.0) THEN
                WRITE (NCWU,680) STORE(LFL),STORE(LFL+1),STORE(LFL+7),
-     1          STORE(LFL+8),STORE(LFL+9)
+     1          STORE(LFL+8),STORE(LFL+9),DEL, CESD(5:9)
             END IF
-680         FORMAT (5X,A4,F9.0,15X,3F10.3)
+680         FORMAT (5X,A4,F9.0,15X,4F10.3,2X,A5)
             WRITE (NCAWU,690) STORE(LFL),STORE(LFL+1),STORE(LFL+7),
-     1       STORE(LFL+8),STORE(LFL+9)
+     1       STORE(LFL+8),STORE(LFL+9),DEL,CESD(5:9)
             WRITE (CMON,690) STORE(LFL),STORE(LFL+1),STORE(LFL+7),
-     1       STORE(LFL+8),STORE(LFL+9)
+     1       STORE(LFL+8),STORE(LFL+9),DEL,CESD(5:9)
             CALL XPRVDU (NCVDU,1,0)
-690         FORMAT (5X,A4,F9.0,2X,3F10.3)
+690         FORMAT (5X,A4,F9.0,2X,4F10.3,2X,A5)
          ELSE
 C----- FLATTEN THE STRUCTURE
             STORE(LFL+9)=0.
@@ -868,7 +935,7 @@ C--CHECK IF ANY ERRORS HAVE BEEN GENERATED DURING THE INPUT OF THE ATOMS
       CALL XPRVDU (NCVDU,1,0)
 3240  FORMAT (' Results for group number ',I4)
 C--PRINT THE PAGE HEADING
-      CALL XPRTCN
+c      CALL XPRTCN
 C----- FIND TLS
       LBASE=NFL
 C----- CHECK WORKSPACE FOR NEXT SUBROUTINE
@@ -921,15 +988,14 @@ C -- CHECK THERE ARE SOME ATOMS
       IF (NATOM.LE.0) GO TO 3750
 C----- COMPUTE DISTANCES AND ANGLES
       CALL RDSTAN (JBASE,LBASE,NATOM,MD5A)
-      WRITE (NCAWU,3330)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3330)
       END IF
       WRITE (CMON,3330)
-      CALL XPRVDU (NCVDU,4,0)
-3330  FORMAT (1X,79('*'),/'    Remember that DISTANCE resets the current
-     1 atom counter',/10X,'You must issue a new ATOM directive',/,1X,
-     279('*'))
+      CALL XPRVDU (NCVDU,3,0)
+3330  FORMAT (1X,79('*'),/,10X,
+     1 'To continue, you must issue a new ATOM directive',/,1X,
+     2 79('*'))
       NATOM=0
       JTYPE=0
       GO TO 20
@@ -1055,12 +1121,12 @@ C
 3750  CONTINUE
 C----- NO ATOMS SPECIFIED
       IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,3760)
+         WRITE (NCWU,3760)ctype(jtype)
       END IF
-      WRITE (NCAWU,3760)
-      WRITE (CMON,3760)
-      CALL XPRVDU (NCVDU,1,0)
-3760  FORMAT (1X,'No atoms have been specified ')
+      WRITE (CMON,3760)ctype(jtype)
+      CALL XPRVDU (NCVDU,2,0)
+3760  FORMAT (1X,'No atoms have been specified for a ',A,/
+     1 'Atoms may only be given on a preceeding ATOM card')
       CALL XERHND (IERWRN)
       GO TO 20
 C
@@ -1070,11 +1136,13 @@ C--ERROR BECAUSE TLS  HAS NOT BEEN CALCULATED
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3640)
       END IF
-      WRITE (NCAWU,3640)
       WRITE (CMON,3640)
       CALL XPRVDU (NCVDU,1,0)
-3640  FORMAT (1X,' Instruction ignored. TLS have not been',' successfull
-     1y computed')
+3640  FORMAT (' Instruction ignored. TLS has not been',
+     1 ' successfully computed')
+      write(CMON,3641)
+3641  FORMAT (' Did you really mean DIHEDRAL angles?')
+      CALL XPRVDU (NCVDU,1,0)
       GO TO 20
 C
 C
@@ -1187,5 +1255,62 @@ C
       CALL XTIME2 (2)
       RETURN
 C
+      END
+C
+CODE FOR XFNDESD
+      SUBROUTINE XFNDESD(NAME,ASERIAL, ANESD, BNESD)
+C GET THE POSITIONAL ESDS OF AN ATOM IN ANGSTROM
+C
+      DIMENSION ANESD(3), BNESD(3)
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST09.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'QSTORE.INC'
+C
+      ESD = 0.0
+      M9=L9
+      DO I=1,N9
+        IF(ABS(STORE(M9+1)-ASERIAL).LE.ZERO) THEN
+C           SERIAL FOUND - CHECK TYPE
+            IF(ISTORE(M9).EQ.NAME) THEN
+C           TYPE ALSO FOUND
+            ANESD(1) = store(m9+4)
+            ANESD(2) = store(m9+5)
+            ANESD(3) = store(m9+6)
+C
+            BNESD(1) = ANESD(1)*store(l1p1)
+            BNESD(2) = ANESD(2)*store(l1p1+1)
+            BNESD(3) = ANESD(3)*store(l1p1+2)
+            EXIT
+            ENDIF
+        ENDIF
+        M9 = M9+MD9
+      ENDDO
+      RETURN
+      END
+C
+CODE FOR DESD
+      SUBROUTINE DESD( ROF, ESDS, ANS)
+C ESD OF DISTANCE FROM MEAN PLANE
+      real, dimension(3,3), intent(in) ::  ROF
+      real, dimension(3), intent(in) :: ESDS
+      real, intent(out) :: ANS
+      real temp
+
+C SEE SHMUELI, ACTA 1981, A37, 249-251
+C EQUATIONS 4, 9, 10
+C [B] IS DIAGONAL, ALL ELEMENTS USUALLY VERY SIMILAR
+C ERROR IN PLANE NORMAL IS NEGLECTED
+C ERROR IN CENTROID IS NEGLECTED - COULD BE SIGNIFICANT
+C FOR SMALL NUMBERS OF ATOMS
+C    Var(cent) ~ <Var>/N
+
+      temp=ROF(3,1)*ROF(3,1)*ESDS(1)*ESDS(1) +
+     2      ROF(3,2)*ROF(3,2)*ESDS(2)*ESDS(2) +
+     3      ROF(3,3)*ROF(3,3)*ESDS(3)*ESDS(3) 
+      ANS = SQRT(TEMP)
+      RETURN
       END
 

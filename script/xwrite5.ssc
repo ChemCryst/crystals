@@ -574,7 +574,7 @@
 %            INSERT '{R   Overriding sticky settings for atom: '                
 %            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE                       
 %            INSERT '('                                                         
-%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL                         
+%            STORE FORMAT /(F6.0)/ LENGTH 6 REAL SERIAL                         
 %            INSERT ')'                                                         
 %            OUTPUT                                                             
 %          ELSE IF ( REFLAG .NE.  HMODE ) THEN                                  
@@ -601,7 +601,7 @@
 %            INSERT '{R   Overriding sticky settings for atom: '                
 %            STORE FORMAT /(A4)/ LENGTH 4 CHARACTER CTYPE                       
 %            INSERT '('                                                         
-%            STORE FORMAT /(F5.0)/ LENGTH 5 REAL SERIAL                         
+%            STORE FORMAT /(F6.0)/ LENGTH 6 REAL SERIAL                         
 %            INSERT ')'                                                         
 %            OUTPUT                                                             
 %          ELSE IF ( REFLAG .NE.  SETADP ) THEN                                 
@@ -665,14 +665,14 @@
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( STICKY ) THEN                             
 %         CLEAR                                                                 
 %         INSERT 'CONT H('                                                      
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
 %         INSERT ')'                                                            
 %%         OUTPUT                                                               
 %         QUEUE SEND                                                            
 %       ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( STICKY ) THEN                        
 %         CLEAR                                                                 
 %         INSERT 'CONT D('                                                      
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
 %         INSERT ')'                                                            
 %%         OUTPUT                                                               
 %         QUEUE SEND                                                            
@@ -776,7 +776,7 @@
 %         EVALUATE HRIDE = TRUE                                                 
 %         CLEAR                                                                 
 %         INSERT 'CONT H('                                                      
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
 %         INSERT ')'                                                            
 %%         OUTPUT                                                               
 %         QUEUE SEND                                                            
@@ -784,7 +784,7 @@
 %         EVALUATE HRIDE = TRUE                                                 
 %         CLEAR                                                                 
 %         INSERT 'CONT D('                                                      
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
 %         INSERT ')'                                                            
 %%         OUTPUT                                                               
 %         QUEUE SEND                                                            
@@ -840,7 +840,7 @@
 %             INSERT ' UNTIL '                                                  
 %             STORE CHARACTER CTYPE2                                            
 %             INSERT '('                                                        
-%             STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2              
+%             STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL2              
 %             INSERT ')'                                                        
 %           END IF                                                              
 %           OUTPUT                                                              
@@ -853,7 +853,7 @@
 %         INSERT 'CONT '                                                        
 %         STORE CHARACTER CTYPE                                                 
 %         INSERT '('                                                            
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL                   
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
 %         IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN                         
 %          CASE REFLAG                                                          
 %           INSERT ",X's)"                                                      
@@ -881,7 +881,7 @@
 %         INSERT ' UNTIL '                                                      
 %         STORE CHARACTER CTYPE2                                                
 %         INSERT '('                                                            
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL2                  
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL2                  
 %         INSERT ')'                                                            
 %       END IF                                                                  
 %       OUTPUT                                                                  
@@ -943,7 +943,7 @@
 %    ELSE IF ( HMODE .GE. 1 ) THEN                                              
 %      CLEAR                                                                    
 %      INSERT "CONT H("                                                         
-%      STORE FORMAT /(F5.0)/ LENGTH 5 REAL HFIRST                               
+%      STORE FORMAT /(F6.0)/ LENGTH 6 REAL HFIRST                               
 %      IF ( HMODE .EQ. 1 ) THEN                                                 
 %        INSERT ",X'S) UNTIL LAST"                                              
 %      ELSE                                                                     

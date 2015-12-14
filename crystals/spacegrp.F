@@ -616,14 +616,11 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C               15  16  17  18  19  20  21
 C-----------------------------------------------------------------------
-      DO 101 I = 1,4
-       DO 100 J = 1,4
-        L(J,I) = 0
-100    CONTINUE
-101   CONTINUE
       WRITE (CSPG,10000) SPG
 10000 FORMAT (10A1)
 c      write(ncwu,'(a,10a1)')'Space group=',spg
+
+      L=0
 C-----------------------------------------------------------------------
 C  CHECK THAT THERE ARE BLANKS IN THE SYMBOL, SO THAT IT HAS AT LEAST A
 C  SPORTING CHANCE OF BEING INTERPRETED CORRECTLY
@@ -736,9 +733,9 @@ C-----------------------------------------------------------------------
 C  RHOMBOHEDRAL LATTICE.
 C  MAKE SURE THAT THERE IS A 3-AXIS.
 C-----------------------------------------------------------------------
-      IF ( L(1,2) .NE. 14 ) IER = 3
+      IF ( L(1,2) .NE. 14 ) IER = 3   !"3"
       IF ( IER .GT. 0 ) GO TO 710
-      IF ( L(1,K) .EQ. 8 ) GO TO 160
+      IF ( L(1,K) .EQ. 8 ) GO TO 160   !"R" - in last position (e.g. "R 3 r")
 C-----------------------------------------------------------------------
 C  HEXAGONAL AXES. RETAIN R CENTERING AND SET LAUENO TO 8 OR 9
 C-----------------------------------------------------------------------

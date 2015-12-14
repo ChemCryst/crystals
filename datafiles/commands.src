@@ -600,7 +600,7 @@ THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
 LIST 8             0    0
    8   40960 CRYSTALSINPUT
 LIST  9           10    0
-   5   40960 CRYSTALSINPUT
+   9   40960 CRYSTALSINPUT
    1.OVERALL            6    1    0    0    6    1  102   13   09
          1    1    1    1    1    1    0    0    0    0
 OVERALL PARAMETERS
@@ -4020,8 +4020,9 @@ DIFABS             3    3
      NO             YES
    2.DIFFRACTION        2    1    0    0
          3    3
-    .GEOMETRY           2    0    1    5    0 CAD4
+    .GEOMETRY           2    0    1    6    0 CAD4
      CAD4           SYNTEX-P1      SYNTEX-P21     PICKER         PW1100
+     AREA
     .MODE               3    0    1    3    0 BISECTING
      BISECTING      PARALLEL       GENERAL
    3.DIFABS             4    1    0    0

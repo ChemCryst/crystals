@@ -1739,10 +1739,8 @@ c            return
 c        endif
 c      endif
 c
-      DO I = 1, 100
-        ALLBIN(I) = 0.0
-        FNDBIN(I) = 0.0
-      END DO
+      ALLBIN = 0.0
+      FNDBIN = 0.0
 
       CALL XFAL06(IULN, 0)
 

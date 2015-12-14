@@ -451,6 +451,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST23.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XCOMPD.INC'
 C
@@ -467,6 +468,30 @@ C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
+
+      CALL XFAL23
+      IUPDAT = ISTORE(L23SP+1)
+
+C---- Set occupancies
+C      WRITE(222,*) iupdat
+      IF (IUPDAT .GE. 0)  I = KSPINI( -1, STOLER) ! SET THE OCCUPANCIES
+      NUPDAT = 0  
+      J =NFL
+      I = KCHNFL(40)  ! SAVE SOME WORK SPACE
+      M5 = L5
+      DO I = 1, N5   ! Set occupancies
+        IF (IUPDAT .GE. 0) THEN
+          IGSTAT =KSPGET ( STORE(J), STORE(J+10), ISTORE(J+20),
+     2      STORE(J+30), MGM, M5, IUPDAT, NUPDAT)
+        ELSE
+          STORE(M5+13) = 1.0
+        ENDIF
+        STORE(M5+2) = STORE(M5+2) * STORE(M5+13)
+C        WRITE(222,*) STORE(M5+2), STORE(M5+4), STORE(M5+5), STORE(M5+13)
+        M5 = M5 + MD5
+      END DO
+      NFL= J
+
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCPU,'(''REM TITL '',10A4)') (KTITL(I),I=1,10)
       M5=L5
@@ -704,7 +729,7 @@ c-- set the output type
       CALL XRSL
       CALL XCSAE
 C--LOAD A FEW LISTS
-      CALL XFAL01 
+      IF (KHUNTR (1,0,IADDL,IADDR,IADDD,-1) .lt. 0)  CALL XFAL01 
 c     if a LIST 5 is already loaded, save the pointers
       isave = 0
       IF (KHUNTR (5,0,IADDL,IADDR,IADDD,-1) .GE. 0) then
@@ -712,7 +737,7 @@ c     if a LIST 5 is already loaded, save the pointers
        isave = 1
       endif
       CALL XFAL05
-      CALL XFAL23
+      IF (KHUNTR (23,0,IADDL,IADDR,IADDD,-1) .lt. 0) CALL XFAL23
       if ( itype .eq. 1) then
         write(cmon,'(a)') 'Writing simple esd file'
       else
@@ -766,16 +791,18 @@ C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
         CALL SAPPLY (J)
         IF (ITYPE .EQ. 1) THEN
             write(ncpu,20) istore(m5), nint(store(m5+1)), 
-     1      (store(idjw),idjw=m5+2, m5+13)
+     1      (store(idjw),idjw=m5+2, m5+12)
             write(ncpu,20) istore(m5), nint(store(m5+1)), 
      1      (bpd(idjw),idjw=1, 11)
-20          format(a4,i4,12f11.6)
+20          format(a4,i4,11f11.6)
             write(ncpu,'(/)')
         ELSE
 c--         move the type and serial
             call xmove(store(m5),store(m9a),2)
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
+            write(ncpu,20)store(m9a),nint(store(m9a+1)),
+     1      (store(idjw),idjw=m9a+2, m9a+12)
         ENDIF
 C
 1585    CONTINUE

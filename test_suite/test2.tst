@@ -106,6 +106,12 @@ MODIFY EXTINCTION=NO ANOM=NO
 MINIMISE F-SQ=YES
 END
 #USE keenref.dat
+#sum l 12
+end
+#sum l 16
+end
+#sum l 17
+end
 \
 \                      Second experiment. NOFSQ, NOANOM
 #LIST 23

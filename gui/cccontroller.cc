@@ -3433,33 +3433,33 @@ extern "C" {
   void guexec ( char* theLine)
   {
 	// Convert to a wchar_t*
-#ifdef __GID__
+//#ifdef __GID__
 //    char * tempstr = new char[263];
 //    memcpy(tempstr,theLine,262);
 //    *(tempstr+262) = '\0';
 //    wstring line(tempstr);
 
-    size_t origsize = strlen(theLine) + 1;
-    const size_t newsize = 263;
-    _TCHAR tempstr[newsize];
+//    size_t origsize = strlen(theLine) + 1;
+//    const size_t newsize = 263;
+//    _TCHAR tempstr[newsize];
 
 
 //    towcs(tempstr, theLine,  origsize);
-    tstring line = tstring(theLine);
+//    tstring line = tstring(theLine);
 //  (CcController::theController)->AddInterfaceCommand( "Line: " + line );
 //  (CcController::theController)->AddInterfaceCommand( "theLine: " + tstring(theLine) );
 
 
-#elif defined(CRY_OSWIN32)
-    size_t origsize = strlen(theLine) + 1;
-    const size_t newsize = 263;
-    size_t convertedChars = 0;
-    _TCHAR tempstr[newsize];
-    mbstowcs_s(&convertedChars, tempstr, origsize, theLine, _TRUNCATE);
-    wstring line = wstring(tempstr);
-#else
-    tstring line = tstring(theLine);
-#endif    
+//#elif defined(CRY_OSWIN32)
+//    size_t origsize = strlen(theLine) + 1;
+//    const size_t newsize = 263;
+//    size_t convertedChars = 0;
+//    _TCHAR tempstr[newsize];
+//    mbstowcs_s(&convertedChars, tempstr, origsize, theLine, _TRUNCATE);
+//    wstring line = wstring(tempstr);
+//#else
+    string line = string(theLine);
+//#endif    
 
 	
 
@@ -3529,11 +3529,7 @@ extern "C" {
 //        LOGERR(restLine);
 
         tstring totalcl = firstTok;
-#ifdef CRY_OSWIN32
-        totalcl += _T(" ");
-#else
         totalcl += " ";
-#endif
         totalcl += restLine;
 //        LOGERR(totalcl);
 
@@ -3545,9 +3541,9 @@ extern "C" {
 //Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
       if ( match != string::npos ) {
-         _TCHAR buf[MAX_PATH];
+         char buf[MAX_PATH];
          tstring tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
+         if ( (int)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3561,37 +3557,37 @@ extern "C" {
 #else
       std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
 #endif
-      match = lFirstTok.find(_T("http://"));
+      match = lFirstTok.find("http://");
       if ( match == 0 )
       {
-         restLine = _T("url.dll,FileProtocolHandler ") + firstTok + _T(" ")+ restLine;
+         restLine = "url.dll,FileProtocolHandler " + firstTok + " "+ restLine;
          bRest = true;
-         firstTok = _T("rundll32.exe");
+         firstTok = "rundll32.exe";
        }
 
 
 
-      SHELLEXECUTEINFO si;
+      SHELLEXECUTEINFOA si;
 
       si.cbSize       = sizeof(si);
       si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
       si.hwnd         = GetDesktopWindow();
-      si.lpVerb       = _T("open");
+      si.lpVerb       = "open";
       si.lpFile       = firstTok.c_str();
       si.lpParameters = ( (bRest)? restLine.c_str() : NULL );
       si.lpDirectory  = NULL;
       si.nShow        = SW_SHOWNORMAL;
 
-      int err = (int)ShellExecuteEx ( & si );
+      int err = (int)ShellExecuteExA ( & si );
 
       if ( (int)si.hInstApp == SE_ERR_NOASSOC )
       {
         (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
-        tstring newparam = tstring(_T("shell32.dll,OpenAs_RunDLL "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
-        si.lpFile       = _T("rundll32.exe");
+        tstring newparam = tstring("shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
+        si.lpFile       = "rundll32.exe";
         si.lpParameters = newparam.c_str();
         si.fMask        = SEE_MASK_NOCLOSEPROCESS; //Don't mask errors for this call.
-        ShellExecuteEx ( & si );
+        ShellExecuteExA ( & si );
 // It is not possible to wait for rundll32's spawned process, so
 // we just pop up a message box, to hold this app here.
  #ifdef CRY_USEMFC
@@ -3612,20 +3608,20 @@ extern "C" {
       {
         (CcController::theController)->AddInterfaceCommand( "Could not launch as Win process. Trying command prompt.");
 
-        tstring newparam = tstring(_T("/c "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
+        tstring newparam = tstring("/c ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
         si.cbSize       = sizeof(si);
         si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
         si.hwnd         = GetDesktopWindow();
-        si.lpVerb       = _T("open");
+        si.lpVerb       = "open";
         if ( IsWinNT() )
-          si.lpFile       = _T("cmd.exe");
+          si.lpFile       = "cmd.exe";
         else
-          si.lpFile       = _T("command.com");
+          si.lpFile       = "command.com";
         si.lpParameters = newparam.c_str();
         si.lpDirectory  = NULL;
         si.nShow        = SW_SHOWNORMAL;
  
-        err = (int)ShellExecuteEx ( & si );
+        err = (int)ShellExecuteExA ( & si );
 
         if ( (int)si.hInstApp > 32 ) {
           CcController::theController->AddInterfaceCommand( " ");
@@ -3712,7 +3708,7 @@ extern "C" {
     }
     else if ( bRedir )
     {
-      STARTUPINFO si;
+      STARTUPINFOA si;
       SECURITY_ATTRIBUTES sa;
       SECURITY_DESCRIPTOR sd;               //security information for pipes
       if (IsWinNT())        //initialize security descriptor (Windows NT)
@@ -3735,7 +3731,7 @@ extern "C" {
         return;
       }
 
-      GetStartupInfo(&si);      //set startupinfo for the spawned process
+      GetStartupInfoA(&si);      //set startupinfo for the spawned process
       si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
       si.wShowWindow = SW_HIDE;
       si.hStdOutput = outPipe.input;
@@ -3828,9 +3824,9 @@ extern "C" {
 //Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
       if ( match != string::npos ) {
-         _TCHAR buf[MAX_PATH];
+         char buf[MAX_PATH];
          tstring tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutable(tempfile.c_str(),NULL,buf) >= 32) {
+         if ( (int)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3843,17 +3839,17 @@ extern "C" {
 #else
       std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
 #endif
-      match = lFirstTok.find(_T("http://"));
+      match = lFirstTok.find("http://");
       if ( match == 0 )
       {
-         restLine = _T("url.dll,FileProtocolHandler ") + firstTok + _T(" ")+ restLine;
+         restLine = "url.dll,FileProtocolHandler " + firstTok + " "+ restLine;
          bRest = true;
-         firstTok = _T("rundll32.exe");
+         firstTok = "rundll32.exe";
        }
 
 
-      HINSTANCE ex = ShellExecute( GetDesktopWindow(),
-                                   _T("open"),
+      HINSTANCE ex = ShellExecuteA( GetDesktopWindow(),
+                                   "open",
                                    firstTok.c_str(),
                                    ( (bRest)? restLine.c_str() : NULL ),
                                    NULL,
@@ -3862,10 +3858,10 @@ extern "C" {
       if ( (int)ex == SE_ERR_NOASSOC )
       {
         (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
-         ShellExecute( GetDesktopWindow(),
-                       _T("open"),
-                       _T("rundll32.exe"),
-                       tstring(_T("shell32.dll,OpenAs_RunDLL ")+firstTok).c_str(),
+         ShellExecuteA( GetDesktopWindow(),
+                       "open",
+                       "rundll32.exe",
+                       tstring("shell32.dll,OpenAs_RunDLL "+firstTok).c_str(),
                        NULL,
                        SW_SHOWNORMAL);
       }
@@ -3874,18 +3870,18 @@ extern "C" {
 
         (CcController::theController)->AddInterfaceCommand( "Could not launch Win process. Trying command prompt." );
 
-        tstring newparam = tstring(_T("/c "))+firstTok+( (bRest) ? _T(" ") + restLine : _T("") ) ;
+        tstring newparam = tstring("/c ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
         if ( IsWinNT() )
-           ShellExecute( GetDesktopWindow(),
-                       _T("open"),
-                       _T("cmd.exe"),
+           ShellExecuteA( GetDesktopWindow(),
+                       "open",
+                       "cmd.exe",
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);
         else
-           ShellExecute( GetDesktopWindow(),
-                       _T("open"),
-                       _T("command.com"),
+           ShellExecuteA( GetDesktopWindow(),
+                       "open",
+                       "command.com",
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);

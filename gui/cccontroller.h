@@ -222,12 +222,12 @@ extern "C" {
 class CcProcessInfo
 {
    public:
-      CcProcessInfo(const tstring & app, STARTUPINFO & si, tstring & commandline ) {
+      CcProcessInfo(const tstring & app, STARTUPINFOA & si, tstring & commandline ) {
 
 //        CreateOK = CreateProcess(app.c_str(), const_cast<char*>(commandline.c_str()), NULL,NULL,
 //                                 TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
          commandline.resize( _MAX_PATH );
-         CreateOK = CreateProcess(NULL, &commandline[0], NULL,NULL,
+         CreateOK = CreateProcessA(NULL, &commandline[0], NULL,NULL,
                                  TRUE,CREATE_NEW_CONSOLE,NULL,NULL,&si,&proc);
 
          commandline.erase(

@@ -93,7 +93,11 @@
 %          COPY '#DIFABS NEW'                                                   
 %        ELSE                                                                   
 %          COPY '#DIFABS TEST'                                                  
-%        END IF                                                                 
+%        END IF              
+%        IF INST .NE. 1 .AND. INST .NE. 2 THEN
+{I Assuming Area Detector Data
+%         COPY 'DIFFRACT GEOM=AREA'                                                   
+%        END IF
 %        VERIFY YES NO                                                          
 %        GET NOSTORE YESNO 'Do you want a theta correction?' 'NO'               
 %        IF ( VALUE .EQ. 1 ) THEN                                               
@@ -184,6 +188,10 @@
 %          COPY 'END'                                                         
 %%                                                                              
 %          COPY '#DIFABS UPDATE'                                                
+%          IF INST .NE. 1 .OR. INST .NE. 2 THEN
+{I Assuming Area Detector Data
+%           COPY 'DIFFRACT GEOM=AREA'                                                   
+%          END IF
 %          VERIFY YES NO                                                        
 %          GET NOSTORE YESNO 'Do you want a theta correction?' 'NO'             
 %          IF ( VALUE .EQ. 1 ) THEN                                             

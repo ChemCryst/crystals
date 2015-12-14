@@ -8259,10 +8259,13 @@ C
      1 ' Outliers in Normal Probability Plot at delta(Z) > ',
      2   0.1*Z_MAX, 'Indices','Ds','Do',' Zo ',' Zc ', 
      3             '/Zc-Zo/'
-                END IF
-                WRITE (ncwu,'(3i4, 6f10.3)')
+                ELSE IF (NOUTL.LE.20) THEN
+                 WRITE (ncwu,'(3i4, 6f10.3)')
      1           mh,mk,ml,str11(m6acc+3),str11(m6acc+2),
      2           zh,zcalc,ston
+                 IF (NOUTL.EQ.20) 
+     1           WRITE(NCWU,'(A)')' Further outliers not listed'
+                END IF
               END IF
               noutl=noutl+1
         END IF
@@ -8291,12 +8294,11 @@ C                                         set flag for warning popup Window
      1     cmon(1)(3:nctrim(cmon(1))),cmon(2)(3:nctrim(cmon(2)))
 c
         if(noutl .ge. 0.01*float(n6acc)) then
-         write(cmon,'(a/a )')
-     1  ' Insufficient reflection pairs to continue',
-     2  ' Try relaxing the filters'
-         call xprvdu(ncvdu,3,0)
+         write(cmon,'(a )')
+     1  ' Insufficient good reflection pairs to continue safely'
+         call xprvdu(ncvdu,1,0)
          call outcol(1)
-         goto 2860
+c         goto 2840
         endif
        endif
 C
@@ -8419,12 +8421,13 @@ C                                                WRITE TYPE OF PLOT
 c
         if (nfofc .le. 10) then
               call outcol(9)
-              write(cmon,'(a/a )')
-     1        ' Insufficient reflection pairs to continue',
-     2        ' Try relaxing the filters'
-              call xprvdu(ncvdu,3,0)
+              write(cmon,'(a )')
+     1        ' Insufficient reflection pairs to continue'
+              call xprvdu(ncvdu,1,0)
               call outcol(1)
-              goto 2850
+              CORREL = -1000.
+              COOD = -1000.
+              goto 2840
         endif
 c
         IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,
@@ -8449,12 +8452,12 @@ c          CALL XPRVDU (NCVDU, 1, 0)
 810       FORMAT (19X,'  Post-Refinement Flack =',2F7.3)
 c          CALL XPRVDU (NCVDU,1,0)
           IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
-
           WRITE (CMON,815) CORREL,cood
-815       FORMAT (/' Correlation coeff and r^2 of Scatter Plot =',F7.3,
-     1     F7.3)
-c          CALL XPRVDU (NCVDU, 2, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:nctrim(cmon(2)))
+815       FORMAT (/'{I Correlation coeff and r^2 of Scatter Plot =',
+     1     F7.3,F7.3)
+          CALL XPRVDU (NCVDU, 2, 0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') 
+     1                     CMON(2)(3:nctrim(cmon(2)))
           IF(ABS(YCUT).GE.0.01*YMAX) THEN
             WRITE(CMON,820)
      1      ' The observed Friedel differences may be biased by',
@@ -8890,7 +8893,7 @@ c                       0      1      2  3    4    5    6        7     8
         m6acc = l6acc
         do i=1,n6acc
 c         signal to noise
-          str11(m6acc+7)=str11(m6acc+3)/str11(m6acc+4)
+          str11(m6acc+7)=abs(str11(m6acc+3))/str11(m6acc+4)
         m6acc = m6acc + md6acc
         enddo
 c now sort on signal to noise for Le Page algorithm
@@ -8902,10 +8905,12 @@ c
         n20p=0
         n50p=0
         n100p=0
+        n200p=0
         n10n=0
         n20n=0
         n50n=0
         n100n=0
+        n200n=0
         m6acc = l6acc
         do i=1,n6acc
          lp = 0
@@ -8935,7 +8940,12 @@ c
             n100n=n100n+ln
             smin100=str11(m6acc+7)
          endif
-         if(i .gt. 100) then
+         if(i .le. 200)then
+            n200p=n200p+lp
+            n200n=n200n+ln
+            smin200=str11(m6acc+7)
+         endif
+         if(i .gt. 200) then
             exit
          endif
          m6acc = m6acc + md6acc
@@ -9026,10 +9036,12 @@ c
           WRITE (NCWU,2050) NPLS,NMIN
 2050      FORMAT (I8,6X,I8)
         ENDIF 
-          write(cmon,'(2x,a)') ' LePage Analysis'
+          write(cmon,'(2x,a)') 
+     1   ' LePage Analysis (Assuming Enantio-purity)'
           call xprvdu(ncvdu,1,0)
           if(issprt.eq.0) 
-     1    write(ncwu,'(//2x,a)')' LePage Analysis'
+     1    write(ncwu,'(//2x,a)')
+     2   ' LePage Analysis (Assuming Enantio-purity)'
           if(n6acc .le. 0) then
             write(cmon,'(a)') 
      1      ' No suitable reflections for LePage analysis'
@@ -9040,43 +9052,47 @@ c
           else
            if(issprt.eq.0) then
             write(ncwu,'(a,f8.4)')
-     1    ' Minimum signal : noise used =', smin100
+     1    ' Minimum signal : noise used =', smin200
             WRITE(ncwu,'(A,I5)') ' No. Available', n6acc
             write(ncwu,'(a,2x,a,2x,a,2x,a,2x,a)')
      1    ' Total','No.Same','No.Opposite', 'Signal:noise'
-     1   ,' Prob Correct'
+     1   ,' Prob Wrong Hand'
             p = 0.5
             n = n10p+n10n
             x = n10p
             call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n10P+n10n, n10p, n10n, smin10,cdf
+            write(ncwu,1720) n10P+n10n, n10p, n10n, smin10,1.-cdf
             n = n20p+n20n
             x = n20p
             call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n20P+n20n, n20p, n20n, smin20,cdf
+            write(ncwu,1720) n20P+n20n, n20p, n20n, smin20,1.-cdf
             n = n50p+n50n
             x = n50p
             call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n50P+n50n, n50p, n50n, smin50,cdf
+            write(ncwu,1720) n50P+n50n, n50p, n50n, smin50,1.-cdf
             n = n100p+n100n
             x = n100p
             call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n100P+n100n, n100p, n100n, smin100,cdf
-1720        format(i5,2x,i7,2x,i5,8x,f8.4, f14.2)
+            write(ncwu,1720) n100P+n100n, n100p, n100n, smin100,1.-cdf
+            n = n200p+n200n
+            x = n200p
+            call bincdf(x,p,n,cdf)
+            write(ncwu,1720) n200P+n200n, n200p, n200n, smin200,1.-cdf
+1720        format(i5,2x,i7,2x,i5,8x,f8.4,2x, f14.6)
            endif
            write(cmon,'(a,2x,a,2x,a,2x,a,2x,a)')
      1   ' Total','No.Same','No.Opposite', 'Signal:noise'
-     1   ,' Prob Correct'
+     1   ,' Prob Wrong Hand'
            call xprvdu(ncvdu,1,0)
             n = n20p+n20n
             x = n20p
             call bincdf(x,p,n,cdf)
-           write(cmon,1720) n20P+n20n, n20p, n20n, smin20,cdf
+           write(cmon,1720) n20P+n20n, n20p, n20n, smin20,1.-cdf
            call xprvdu(ncvdu,1,0)
             n = n50p+n50n
             x = n50p
             call bincdf(x,p,n,cdf)
-           write(cmon,1720) n50P+n50n, n50p, n50n, smin50,cdf
+           write(cmon,1720) n50P+n50n, n50p, n50n, smin50,1.-cdf
            call xprvdu(ncvdu,1,0)
           endif
 c
@@ -9448,21 +9464,6 @@ c clear no. good data
        END IF
       endif
 C
-      IF (ISSPRT.EQ.0) THEN
-        WRITE (ncwu,'(/A,A/)') ' Excluded reflections',
-     1  ' - A reflection may fail more than one test'
-        DO 2800 i=1,nfailn
-          WRITE (ncwu,'(1X,a,1X,A,1X,A,T38,i5)') 
-     1    CFAILN(I,1)(1:len_trim(cfailn(i,1))),
-     2    Cfilter(i)(1:len_trim(cfilter(i))),
-     3    CFAILN(I,2)(1:len_trim(cfailn(i,2))),ifailn(i)
-2800    CONTINUE
-      END IF
-      write(cmon,'(a,5f9.4)')'Filters',  filter
-c      call xprvdu(ncvdu, 1,0)
-      write(cmon,'(a,5i9)')'Rejects',  ifailn
-c      call xprvdu(ncvdu, 1,0)
-
        if (iweight.eq.1) then
             CWEIGHT='LSQ'
        else
@@ -9551,8 +9552,21 @@ c            Ton
        enddo
        call xwlstd(39, icom39, idim39, -1, -1)
       endif
-
-
+2840  continue
+      IF (ISSPRT.EQ.0) THEN
+        WRITE (ncwu,'(/A,A/)') ' Excluded reflections',
+     1  ' - A reflection may fail more than one test'
+        DO 2800 i=1,nfailn
+          WRITE (ncwu,'(1X,a,1X,A,1X,A,T38,i5)') 
+     1    CFAILN(I,1)(1:len_trim(cfailn(i,1))),
+     2    Cfilter(i)(1:len_trim(cfilter(i))),
+     3    CFAILN(I,2)(1:len_trim(cfailn(i,2))),ifailn(i)
+2800    CONTINUE
+      END IF
+      write(cmon,'(a,5f9.4)')'Filters',  filter
+c      call xprvdu(ncvdu, 1,0)
+      write(cmon,'(a,5i9)')'Rejects',  ifailn
+c      call xprvdu(ncvdu, 1,0)
       GOTO 2860
 2850  CONTINUE
 C -- ERRORS DETECTED

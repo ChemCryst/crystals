@@ -24,9 +24,10 @@
 ^^WI     DEFINEPOPUPMENU POPUP 'Selection'
 ^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
 ^^WI     ENDDEFINEMENU
-^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=3
 ^^WI   {
 ^^WI    @ 1,1 BUTTON EXT_BOK 'Close' DEFAULT
+^^WI    @ 1,3 BUTTON EXT_EXP 'Export' 
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
@@ -37,12 +38,16 @@
 %  LOOP
 %    COPY '#sum list 6 level=plot'
 %    COPY 'END'
-%    VERIFY EXT_BOK OMIT
+%    VERIFY EXT_BOK EXT_EXP OMIT
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'
-%    IF VALUE .EQ. 1 THEN
+%    CASE VALUE
+%    BLOCK
 ^^CO    DISPOSE xfovsfc
 %       FINISH
-%    END IF
+%    END BLOCK
+%    BLOCK
+^^CO SET _VFOFC EXPORT FOvsFC.csv
+%    END BLOCK
 %    BLOCK
 %      ON EDITERROR TERMINATE
 %      COPY '#GENERALEDIT 28'
@@ -68,6 +73,7 @@
 %      COPY 'WRITE'
 %      COPY 'END'
 %    END BLOCK
+%    END CASE
 %  END LOOP
 %END SCRIPT
 

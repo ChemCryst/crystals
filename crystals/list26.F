@@ -426,6 +426,8 @@ C--CHECK IF ANY DERIVATIVES HAVE BEEN PRODUCED
       IF(ISTORE(L22PD)-4)1450,1400,1450
 C--NO DERIVATIVES
 1400  CONTINUE
+      WRITE(CMON,'(A)')'{I General Restraint: No derivatives found'
+      CALL XPRVDU(NCVDU,1,0)
       CALL XMOVE(IQ1(1),KF1(1),1)
 C--CALCULATE THE COMPUTED VALUE AND PRINT THE RESULTS
 1450  CONTINUE
@@ -619,6 +621,8 @@ C--CHECK IF THIS RESTRAINT IS USEFUL
       CALL XMOVE(IB1(1),KF1(1),1)
       IF(ISTORE(L22PD)-4)2650,2600,2650
 2600  CONTINUE
+      WRITE(CMON,'(A)')'{I Print: No derivatives found'
+      CALL XPRVDU(NCVDU,1,0)
       CALL XMOVE(IQ1(1),KF1(1),1)
 2650  CONTINUE
 C--SET UP A FEW CONSTANTS
@@ -2764,6 +2768,36 @@ C--THE OBSERVED VALUE SQUARED ARE TAKEN FROM THE CONTROL BLOCK AT 'LCG'
 C  THE OTHER ENTRIES FOR THE CALCULATED DELTA AND WEIGHT ARE ASSUMED
 C  TO BE SET ON ENTRY.
 C
+C----- ISTORE (LCG + 1) OPERATIONS
+C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4
+C      5            6  ANGLE     7           8
+C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
+C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
+C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
+C
+      CHARACTER *12 COPERATION(20)
+      DATA 
+     1 coperation(1  ) /'DEFINE'/,
+     1 coperation(2  ) /'RESTRAIN'/,
+     1 coperation(3  ) /'DISTANCE'/,
+     1 coperation(4  ) /'Null'/,
+     1 coperation(5  ) /'Null'/,
+     1 coperation(6  ) /'ANGLE'/,
+     1 coperation(7  ) /'Null'/,
+     1 coperation(8  ) /'Null'/,
+     1 coperation(9  ) /'VIBRATION'/,
+     1 coperation(10 ) /'EXECUTION'/,
+     1 coperation(11 ) /'NOLIST'/,
+     1 coperation(12 ) /'UIJ'/,
+     1 coperation(13 ) /'EQUATE'/,
+     1 coperation(14 ) /'PLANAR'/,
+     1 coperation(15 ) /'SUM'/,
+     1 coperation(16 ) /'FORM'/,
+     1 coperation(17 ) /'AVERAGE'/,
+     1 coperation(18 ) /'LIMIT'/,
+     1 coperation(19 ) /'ENERGY'/,
+     1 coperation(20 ) /'ORIGIN'/
+
 C--
       INCLUDE 'ISTORE.INC'
 C
@@ -2775,7 +2809,7 @@ C
       INCLUDE 'XLST12.INC'
       INCLUDE 'XLST22.INC'
       INCLUDE 'XIOBUF.INC'
-	  INCLUDE 'XCONST.INC'
+      INCLUDE 'XCONST.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
@@ -2870,13 +2904,18 @@ C--CHECK IF ANY P.D.'S HAVE BEEN FOUND
       IF(J-K)2050,2050,1900
 C--NO P.D.'S FOUND
 1900  CONTINUE
-      IF(ISTAT2)2200,2200,1950
+cdjw2015      IF(ISTAT2)2200,2200,1950
 1950  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,2000)
-      ENDIF
-c      WRITE(NCAWU,2000)
-2000  FORMAT(21H No derivatives found)
+c     skip shift limiting and origin fixing.
+       itemp = istore(lcg+1)
+      if ((itemp .ne. 18).and.(itemp .ne. 20)) then
+        WRITE(CMON,'(A,I3,1x,A,A)') '{I Directive ', itemp,
+     1  COPERATION(iabs(itemp)),
+     1 ': No derivatives found during Evaluation'
+        CALL XPRVDU(NCVDU,1,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A,A)')
+     1  CMON(1)(3:nctrim(cmon(1)))
+       endif
       GOTO 2200
 C--DERIVATIVES FOUND  -  CHECK IF THEY ARE TO BE PRINTED
 2050  CONTINUE
