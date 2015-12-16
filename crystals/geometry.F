@@ -464,14 +464,14 @@ C--PRINT THE LATENT ROOTS AND THE DIRECTION COSINES
             WRITE (NCWU,350) CTYPE(JTYPE),(VA(I),(ROF(I,J),J=1,3),I=1,3)
 350         FORMAT (//1X,' Rotation matrix from orthogonal',' to best ',
      1       A,' co-ordinates'//1X,' latent roots',13X,'L',9X,'M',9X,'N'
-     2       ,9X,'w.r.t. A*, B'' and C'//(1X,F10.5,9X,3F10.5))
+     2       ,9X,'w.r.t. A*, B'' and C'//(1X,F10.5,9X,3F10.4))
 C--PRINT THE ROTATION MATRICES FROM CRYSTAL FRACTIONS
             WRITE (NCWU,360) CTYPE(JTYPE),((RCA(I,J),J=1,3),(RCF(I,J),J=
      1       1,3),I=1,3)
          END IF
 360      FORMAT (//1X,' Transformation from crystal fractions w.r.t.',
      1' centroid to best ',A,' coordinates',' in angstrom and fractions'
-     2  //  3(14X,3F10.4,11X,3F10.5/))
+     2  //  3(14X,3F10.4,11X,3F10.4/))
       END IF
 C
 C--CALCULATE THE INVERSE MATRICES
@@ -484,7 +484,7 @@ C--PRINT THE INVERSE ROTATION MATRICES
      1       J=1,3),I=1,3)
 370         FORMAT (//1X,' Transformation to crystal fractions w.r.t.','
      1 centroid from best ',A,' co-ordinates in angstrom and',' fraction
-     2s'//3(14X,3F10.4,11X,3F10.5/))
+     2s'//3(14X,3F10.4,11X,3F10.4/))
 C--PRINT THE EQUATION OF THE PLANE/LINE
 C-C-C-PRINT EQUATION OF PLANE/LINE AND ORIENT. VECTOR IN POLAR COORD.
             WRITE (NCWU,380) CTYPE(JTYPE),(EQU(I),I=1,3),F
