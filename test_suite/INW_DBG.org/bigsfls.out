@@ -2345,7 +2345,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
 [37]      H          1.    1.00    1.00    0.21    0.39    0.37    0.05
                       0.0000           -0.0012   0.0004  -0.0023  -0.0007
-                      0.0000            0.0084   0.0079   0.0068   0.0339
+                      0.0000            0.0084   0.0079   0.0068   0.0338
 [31]                                         0.122    0.123    0.128 
 
 [37]      H        116.    1.00    1.00    0.51    0.41    0.11    0.07
@@ -2736,8 +2736,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
- Directive   3 DISTANCE    : No derivatives found during Evaluation
- Directive   3 DISTANCE    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -2774,10 +2772,10 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for     6 least squares parameters, with 12783 degrees of freedom
- Number of observations             12575               214             12789
+ Statistics for     6 least squares parameters, with 12785 degrees of freedom
+ Number of observations             12575               216             12791
 [30]  Minimisation function              0.13 E+06         0.12 E+06         0.26 E+06
-[45]  Hamilton weighted R-value           4.             16.16              6. 
+[45]  Hamilton weighted R-value           4.             15.99              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
