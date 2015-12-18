@@ -20704,7 +20704,6 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -20929,6 +20928,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
+
 
 
                                                 for          92 parameters
@@ -27920,7 +27920,7 @@ The slope and correlation coefficient should be small
 [16]          8             27        31.02        30.9       0.1 E+05       0.9 E+00     4.5    10.3            *      
 [16]          9              6        28.60        29.0       0.1 E+05       0.9 E+00     5.7    12.6            *      
                                                                                                               .
-[65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
+[65]      TOTALS          2016     96782.      96989.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 
 
@@ -27945,7 +27945,7 @@ The slope and correlation coefficient should be small
 [16]         12             43        23.46        23.7       0.8 E+04       0.9 E+00     7.9    12.6            *      
 [16]         13             12        15.13        16.8       0.8 E+04       0.1 E+01    15.4    25.1            *      
                                                                                                               .
-[65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
+[65]      TOTALS          2016     96782.      96989.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 
 
@@ -27972,7 +27972,7 @@ The slope and correlation coefficient should be small
 [16]         14             42        32.66        32.5       0.1 E+05       0.7 E+00     4.6     9.8            *      
 [16]         15             13        24.10        25.4       0.6 E+04       0.8 E+00     6.9    13.9            *      
                                                                                                               .
-[65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
+[65]      TOTALS          2016     96782.      96989.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 
 
@@ -27999,7 +27999,7 @@ The slope and correlation coefficient should be small
 [68]  -H+K+L = 3N          677        47.84        48.0       0.176E+06       0.9 E+00     3.     6.            *      
 [68]  -H+K+L # 3N         1339        48.09        48.2       0.100E+06       0.9 E+00     2.     6.            *      
                                                                                                               .
-[65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
+[65]      TOTALS          2016     96782.      96989.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 
 
@@ -28018,7 +28018,7 @@ The slope and correlation coefficient should be small
        GUU            255        48.13        48.3       0.561E+05       0.109E+01     3.02    6.70           *      
        UUU            256        49.53        49.8       0.934E+05       0.888E+00     2.81    5.91           *      
                                                                                                               .
-[65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
+[65]      TOTALS          2016     96782.      96989.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
  Agreement analysis on /FC/
 
@@ -28069,7 +28069,7 @@ The slope and correlation coefficient should be small
 [17]                         1       316.12       321.4       0.11 E+08       0.6 E+00     1.     3.            *      
         348.52                                                                                                .
                                                                                                               .
-[65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
+[65]      TOTALS          2016     96782.      96989.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 
 
@@ -28103,7 +28103,7 @@ The slope and correlation coefficient should be small
 [17]                       150        21.95        22.9       0.12 E+05       0.9 E+00     8.    15.            *      
       0.44000                                                                                                 .
                                                                                                               .
-[65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
+[65]      TOTALS          2016     96782.      96989.        0.126E+06       0.977E+00     3.03    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK                                                                                                                                                                                                                                                           
  List type  11 with serial number   136 is the current version. 
@@ -36044,7 +36044,7 @@ Bonds: Update required - List5 length change
    1   3  12   -1.0    1.1   9.9 -0.86     0   1   4   49.7   51.7   9.8  0.96                                                                                                                                                                                  
   -4   2   1   14.9   12.8   9.8  1.16    -5   6  13   -0.8    1.3   9.8 -0.59                                                                                                                                                                                  
    5   6   8   -1.0    1.1   9.7 -0.86    -1   1   4   42.7   44.8   9.7  0.95                                                                                                                                                                                  
-   2   2   0   28.7   30.7   9.6  0.93     4  10   0   -0.2    1.8   9.3 -0.12                                                                                                                                                                                  
+   2   2   0   28.7   30.7   9.5  0.93     4  10   0   -0.2    1.8   9.3 -0.12                                                                                                                                                                                  
 [28]    3   0   2   19.1   21.1   9.3  0.9      1   3   1   42.3   44.2   9.2  0.9
    0   6   0   49.4   51.2   8.8  0.96    -2   1  12   -1.0    0.9   8.8 -1.11                                                                                                                                                                                  
 
@@ -38500,6 +38500,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
+
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -39407,6 +39408,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
+
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -39631,6 +39633,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
+
 
 
                                                 for          92 parameters
