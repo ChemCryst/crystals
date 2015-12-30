@@ -46,7 +46,7 @@ int CxMenuBar::AddMenu(CxMenu * menuToAdd, const string & text, int position)
       InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text.c_str());
 #else
       ostringstream strm;
-      strm << "cxmenubar " << (long)this << " adding menu called " << text << (long)menuToAdd;
+      strm << "cxmenubar " << (uintptr_t)this << " adding menu called " << text << (uintptr_t)menuToAdd;
       if ( Append( menuToAdd, text.c_str()) )
           LOGSTAT ( strm.str() );
       else

@@ -176,7 +176,9 @@ typedef std::string tstring;
 #endif	
 
 #ifdef __MIN__
-  #define CRY_GUI
+#ifndef CRY_GUI 
+ #define CRY_GUI
+#endif
   #define CRY_USEWX
   #define CRY_OSWIN32
   #define CRY_TARGET MIN

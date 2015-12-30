@@ -115,21 +115,21 @@ C
 CODE FOR SMATRX
       SUBROUTINE SMATRX
 C      A BASIC MATRIX CALCULATOR
-C   1.A        
-C   2.B        
-C   3.MM       
-C   4.TM       
-C   5.MT       
-C   6.MM       
-C   7.TRANS    
-C   8.INV      
-C   9.EIG      
-C  10.ACC2A    
-C  11.ACC2B    
-C  12.EXECUTE  
-C  13.SCR2A    
-C  14.SCR2B    
-C  15.MATRIX   
+C   1.A
+C   2.B
+C   3.MM
+C   4.TM
+C   5.MT
+C   6.MM
+C   7.TRANS
+C   8.INV
+C   9.EIG
+C  10.ACC2A
+C  11.ACC2B
+C  12.EXECUTE
+C  13.SCR2A
+C  14.SCR2B
+C  15.MATRIX
 C
       DIMENSION A(3,3),B(3,3),C(3,3),TEMP(3,3),ROW(9)
       DIMENSION ACC(3,3)
@@ -179,7 +179,7 @@ C
       IF (IDIRNM .LT. 0) GOTO 1100
       IF (IDIRNM .EQ. 0) GOTO 4910
 C--NEXT RECORD HAS BEEN LOADED  -  BRANCH ON THE TYPE
-      GOTO (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 
+      GOTO (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
      1  1100, 13, 14, 1210, 1200), IDIRNM
 1200  CONTINUE
       GOTO 9910
@@ -276,13 +276,13 @@ C--ERROR IN THE INPUT NUMBER
 4000  FORMAT(/34H Argument missing or of wrong type)
       GOTO 4910
 C
-C-----MM     
+C-----MM
 3     CONTINUE
 C--MATRIX MULTIPLICATION OF 'A' BY 'B' TO GIVE 'C'.
 C  A(L,M).B(M,N)=C(L,N)
       CALL XMLTMM(A,B,ACC,3,3,3)
       GOTO 101
-C-----TM     
+C-----TM
 4     CONTINUE
 C--MATRIX MULTIPLICATION OF 'A' TRANSPOSED BY 'B' TO GIVE 'C'.
 C  A(M,L)'.B(M,N)=C(L,N)
@@ -300,13 +300,13 @@ C--MATRIX MULTIPLICATION OF 'A' TRANS BY 'B' TRANS TO GIVE 'C'.
 C  A(M,L)'.B'(M,N)=C(L,N)
       CALL XMLTTT(A,B,ACC,3,3,3)
       GOTO 101
-C-----TRANS   
+C-----TRANS
 7     CONTINUE
 C--MATRIC TRANSPOSITION ROUTINE
 C  C(N,L)=A(L,N)'
       CALL XTRANS(A,ACC,3,3)
       GOTO 101
-C-----INV     
+C-----INV
 8     CONTINUE
       CALL MATINV(A,ACC,D)
       CALL MTRANS(ACC)
@@ -316,21 +316,21 @@ C-----INV
       CALL ZMORE(CMON,0)
 #endif
       GOTO 101
-C-----EIG     
+C-----EIG
 9     CONTINUE
 #ifdef CRY_GUI
       call zmore('Not yet implemented',0)
 #endif
       GOTO 101
-C-----ACC2A 
+C-----ACC2A
 10     CONTINUE
       CALL XMOVE (ACC,A,9)
       GOTO 1100
-C-----ACC2B 
+C-----ACC2B
 11     CONTINUE
       CALL XMOVE (ACC,B,9)
       GOTO 1100
-C-----SCR2A 
+C-----SCR2A
 13     CONTINUE
       ISTAT = KSCTRN ( 2 , 'MATRIX:A11' ,A(1,1), 2 )
       ISTAT = KSCTRN ( 2 , 'MATRIX:A12' ,A(1,2), 2 )
@@ -342,7 +342,7 @@ C-----SCR2A
       ISTAT = KSCTRN ( 2 , 'MATRIX:A32' ,A(3,2), 2 )
       ISTAT = KSCTRN ( 2 , 'MATRIX:A33' ,A(3,3), 2 )
       GOTO 1100
-C-----SCR2B 
+C-----SCR2B
 14     CONTINUE
       ISTAT = KSCTRN ( 2 , 'MATRIX:B11' ,B(1,1), 2 )
       ISTAT = KSCTRN ( 2 , 'MATRIX:B12' ,B(1,2), 2 )
@@ -867,11 +867,11 @@ C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
       END
 C
 CODE FOR FDPROD
-      FUNCTION FDPROD(A,B) 
+      FUNCTION FDPROD(A,B)
 C----- THE SUBROUTINE DVPROD PACKAGED AS A FUNCION
 C      FOR USE IN EXPRESSIONS
 C----- RETURN VALUE IS THE PRODUCT.
-C 
+C
       DIMENSION A(3), B(3)
       CALL DVPROD(A,B,C)
       FDPROD = C
@@ -966,11 +966,11 @@ C
 C
       integer, dimension(N) :: ipiv
       integer info, nb, i, j, k, m1, m2, m3, m4
-      double precision, dimension(:), allocatable :: work      
+      double precision, dimension(:), allocatable :: work
       double precision, dimension(N,N) :: ab
-      
+
       integer, external :: ilaenv
-            
+
       KINV2=0
       nb=max(1, ilaenv( 1, 'dgetri', '', N, -1,-1,-1 ))
       allocate(work(n*nb))
@@ -981,18 +981,18 @@ C
           KINV2=info
           !do i=1, n
           !    print *, real(ab(i, :), 4)
-          !end do  
+          !end do
           WRITE(NCAWU,*)' Inverter fails (dgetrf) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetrf) '
           ENDIF
           WRITE ( CMON, *)' Inverter fails (dgetrf) '
           CALL XPRVDU(NCVDU, 1,0)
-          CALL XERHND ( IERSEV )    
+          CALL XERHND ( IERSEV )
           return
       end if
-      
-      call dgetri( n, ab, n, ipiv, work, n*nb, info	)      
+
+      call dgetri( n, ab, n, ipiv, work, n*nb, info	)
 
       if(info/=0) then
           KINV2=-1
@@ -1002,9 +1002,10 @@ C
           ENDIF
           WRITE ( CMON, *)' Inverter fails (dgetri) '
           CALL XPRVDU(NCVDU, 1,0)
-          CALL XERHND ( IERSEV )      
+          CALL XERHND ( IERSEV )
           return
       end if
+      deallocate(work)
 
       b=reshape(ab, (/n*n/))
 C
@@ -1646,7 +1647,7 @@ C -- RCPC is the reciprocal cell lengths.
       DIMENSION ATOMS(MDUIJ,NATM)
       DIMENSION XMATR(3,3), RTEMP(9), STEMP(9)
       DIMENSION RCPC(3), RCPM(9), RCPI(9)
-     
+
       CALL XZEROF(RCPM,9)
       RCPM(1) = RCPC(1)
       RCPM(5) = RCPC(2)
@@ -1764,12 +1765,12 @@ C
 C=================================================================================C
 C                 Upper triangular matrix routines added by stefan                C
 C                             Also some matlab output subroutines                 C
-C=================================================================================C     
+C=================================================================================C
 
 C======================================================================C
 C                  Upper triangular matrix routines                    C
-C======================================================================C     
-CODE FOR tri_matrix_normalise      
+C======================================================================C
+CODE FOR tri_matrix_normalise
       subroutine tri_matrix_normalise(matrix, mat_size, mat_dim, vector)
       implicit none
 C
@@ -1777,24 +1778,24 @@ C     Description:
 C        Takes upper tri matrix and normalises all the values in it using the diagonal elments.
 C       Vector must be an array of reals which is at least mat_dim big.
 C
-C     Returns: 
+C     Returns:
 C         The vector used to normalise the matrix in vector
 C
 C  ================   Arguments   ================
       integer mat_dim            ! the size of one dimention of the matrix
-      integer mat_size           ! the number of elements in the 
+      integer mat_size           ! the number of elements in the
       real matrix(mat_size)      ! the matrix to normalise
       double precision vector(mat_dim)
-C  ================Local Variables================      
+C  ================Local Variables================
       integer x   ! Position in the matrix
-      
+
       do x= 0, mat_dim-1 ! Run though matrix getting sqrt of the diagonal elements
             vector(x+1) = sqrt(matrix((mat_dim - x)*x+x*(x+1)/2+1))
       enddo
       call tri_matrix_normalise_with_inv(matrix, mat_size, mat_dim,
      1  vector)
-      end      
-      
+      end
+
 CODE FOR matrix_normalise_with
       subroutine tri_matrix_normalise_with(matrix, mat_size, mat_dim,
      1 vector)
@@ -1809,10 +1810,10 @@ C        Returns the normalised matrix in the matrix parameter
 C
 C  ================   Arguments   ================
       integer mat_dim            ! the size of one dimention of the matrix
-      integer mat_size           ! the number of elements in the 
+      integer mat_size           ! the number of elements in the
       real matrix(mat_size)   ! the matrix to normalise
       double precision vector(mat_dim)       ! the vector to normalise with
-      
+
       call tri_diag_mul_matrix(vector, mat_dim, matrix, mat_size)
       call tri_matrix_mul_diag(matrix, mat_size, vector, mat_dim)
       end
@@ -1823,7 +1824,7 @@ CODE FOR matrix_normalise_with_inv
       implicit none
 C
 C     Description:
-C        Takes upper tri matrix and pre and post multiplies it with the 
+C        Takes upper tri matrix and pre and post multiplies it with the
 C       inverse of the diagonal matrix vector.
 C
 C     Returns:
@@ -1831,21 +1832,21 @@ C        Returns the denormalised matrix in the matrix parameter
 C
 C  ================   Arguments   ================
       integer mat_dim                        ! the size of one dimention of the matrix
-      integer mat_size                       ! the number of elements in the 
+      integer mat_size                       ! the number of elements in the
       real matrix(mat_size)                  ! the matrix to normalise
       double precision vector(mat_dim)       ! the vector to normalise with
-      
+
       call tri_invdiag_mul_matrix(vector, mat_dim, matrix, mat_size)
       call tri_matrix_mul_invdiag(matrix, mat_size, vector, mat_dim)
       end
-            
+
 CODE FOR tri_matrix_mul_diag
-      subroutine tri_matrix_mul_diag(matrix, matrix_size, diag, 
+      subroutine tri_matrix_mul_diag(matrix, matrix_size, diag,
      1 diag_size)
       implicit none
-C     
+C
 C     Description:
-C        Takes a upper triangular matrix and multiplies it with a diag 
+C        Takes a upper triangular matrix and multiplies it with a diag
 C       matrix. The matrices are assumed to be the same dimension.
 C
 C     Returns:
@@ -1856,23 +1857,23 @@ C  ================   Arguments   ================
       real matrix(matrix_size)
       integer diag_size
       double precision diag(diag_size)
-C  ================Local Variables================         
+C  ================Local Variables================
       integer row, column
       integer mat_elem
-      double precision const 
-      
+      double precision const
+
       mat_elem = 1
       do row = 1, diag_size
         const = diag(row)
         do column = row, diag_size
             matrix(mat_elem) = const*matrix(mat_elem);
             mat_elem = mat_elem + 1;
-        end do 
+        end do
       end do
       end
 
 CODE FOR tri_diag_mul_matrix
-      subroutine tri_diag_mul_matrix(diag, diag_size, matrix, 
+      subroutine tri_diag_mul_matrix(diag, diag_size, matrix,
      1  matrix_size)
       implicit none
 C
@@ -1888,27 +1889,27 @@ C  ================   Arguments   ================
       real matrix(matrix_size)
       integer diag_size
       double precision diag(diag_size)
-C  ================Local Variables================ 
+C  ================Local Variables================
       integer mat_elem
-      double precision const 
-      integer row, column     
-      
+      double precision const
+      integer row, column
+
       row = 1
       mat_elem = 1
       do while (mat_elem .le. matrix_size)
             do column = row, diag_size
                   matrix(mat_elem) = diag(column)*matrix(mat_elem)
                   mat_elem = mat_elem + 1
-            end do 
+            end do
             row = row + 1
       end do
       end
 
 CODE FOR tri_matrix_mul_invdiag
-      subroutine tri_matrix_mul_invdiag(matrix, matrix_size, diag, 
+      subroutine tri_matrix_mul_invdiag(matrix, matrix_size, diag,
      1 diag_size)
       implicit none
-C     
+C
 C     Description:
 C        Takes a upper triangular matrix and multiplies it the inverse of the diag matrix.
 C       The matrices are assumed to be the same dimension.
@@ -1921,23 +1922,23 @@ C  ================   Arguments   ================
       real matrix(matrix_size)
       integer diag_size
       double precision diag(diag_size)
-C  ================Local Variables================ 
+C  ================Local Variables================
       integer row, column
       integer mat_elem
-      double precision const 
-      
+      double precision const
+
       mat_elem = 1
       do row = 1, diag_size
         const = diag(row)
         do column = row, diag_size
             matrix(mat_elem) = matrix(mat_elem)/const;
             mat_elem = mat_elem + 1;
-        end do 
+        end do
       end do
       end
 
 CODE FOR tri_invdiag_mul_matrix
-      subroutine tri_invdiag_mul_matrix(diag, diag_size, matrix, 
+      subroutine tri_invdiag_mul_matrix(diag, diag_size, matrix,
      1  matrix_size)
       implicit none
 C
@@ -1953,18 +1954,18 @@ C  ================   Arguments   ================
       real matrix(matrix_size)
       integer diag_size
       double precision diag(diag_size)
-C  ================Local Variables================       
+C  ================Local Variables================
       integer row, column
       integer mat_elem
-      double precision const 
-      
+      double precision const
+
       row = 1
       mat_elem = 1
       do while (mat_elem .le. matrix_size)
             do column = row, diag_size
                   matrix(mat_elem) = matrix(mat_elem)/diag(column)
                   mat_elem = mat_elem + 1
-            end do 
+            end do
             row = row + 1
       end do
       end
@@ -1990,15 +1991,15 @@ C  ================   Arguments   ================
       integer xpos, ypos
 C  ================Local Variables================
       integer maxpos, minpos
-C  ================Function calls ================      
+C  ================Function calls ================
       integer max, min
-      
+
       maxpos = max(xpos, ypos)
       minpos = min(xpos, ypos) - 1
       tri_get = mat((mat_dim-(minpos+1))*minpos+minpos*(minpos+1)/2+
      1 maxpos)
       end
-      
+
 CODE FOR tri_set
       subroutine tri_set(mat, nmat, mat_dim, xpos, ypos, value)
       implicit none
@@ -2017,9 +2018,9 @@ C  ================   Arguments   ================
       real value
 C  ================Local Variables================
       integer maxpos, minpos
-C  ================Function calls ================      
+C  ================Function calls ================
       integer max, min
-      
+
       maxpos = max(xpos, ypos)
       minpos = min(xpos, ypos) - 1
       mat((mat_dim-(minpos+1))*minpos+minpos*(minpos+1)/2+
@@ -2028,9 +2029,9 @@ C  ================Function calls ================
 
 C======================================================================C
 C                         Diagonal matrix routines                     C
-C======================================================================C     
+C======================================================================C
 
-CODE FOR inv_diag      
+CODE FOR inv_diag
       subroutine inv_diag(diag, diag_size)
       implicit none
 C
@@ -2043,7 +2044,7 @@ C  ================   Arguments   ================
       double precision diag(diag_size)
 C  ================Local Variables================
       integer i
-      
+
       do i = 1, diag_size
             diag(i) = 1.0/diag(i)
       end do
@@ -2062,46 +2063,46 @@ cC  ================   Arguments   ================
 c      integer diag_dim
 c      real diag(diag_dim)
 c      integer xpos, ypos
-c      
+c
 c      if (xpos .ne. ypos) then
 c            diag_get = 0.0
-c      else 
+c      else
 c            diag_get = diag(xpos)
 c      end if
 c      return
 c      end
-      
+
 CODE FOR tri_matrix_apply_threshhold
-      function tri_matrix_apply_threshhold(matrix, matrix_size, 
+      function tri_matrix_apply_threshhold(matrix, matrix_size,
      1 mat_dim, threshhold)
       implicit none
       integer tri_matrix_apply_threshhold
 C
 C     Description:
-C           Take a upper triangluar matrix and replaces all values 
+C           Take a upper triangluar matrix and replaces all values
 C          which are less then threshold*sqrt(Mii)*sqrt(Mjj) with zero
 C
 C     Returns:
-C           The number of elements which where zeroed and 
+C           The number of elements which where zeroed and
 C           the thresh holded matrix in the variable matrix.
 C
-C  ================   Arguments   ================      
+C  ================   Arguments   ================
       integer matrix_size
       real matrix(matrix_size)
       integer mat_dim         ! dimension of the matrix
       real threshhold      ! Threshhold value for the matrix
-C  ================Local Variables================      
+C  ================Local Variables================
       integer curx, cury      ! Current x and y position
       real normilisers(mat_dim)
       real curr_val
-C  ================Function calls ================            
-      real tri_get            
-      
+C  ================Function calls ================
+      real tri_get
+
       tri_matrix_apply_threshhold =0
       do curx = 1, mat_dim
-            normilisers(curx) = 1/sqrt(tri_get(matrix, matrix_size, 
+            normilisers(curx) = 1/sqrt(tri_get(matrix, matrix_size,
      1       mat_dim, curx, curx))
-      end do 
+      end do
       do curx = 2, mat_dim
             do cury = curx+1, mat_dim
                   curr_val = tri_get(matrix, matrix_size, mat_dim,
@@ -2110,31 +2111,31 @@ C  ================Function calls ================
      1             ) then
                         call tri_set(matrix, matrix_size, mat_dim, curx,
      1                    cury, 0.0)
-                        tri_matrix_apply_threshhold = 
+                        tri_matrix_apply_threshhold =
      1                   tri_matrix_apply_threshhold + 1
                   end if
             end do
       end do
-      print '(A, F7.5, I10)', 'Threshold is: ', threshhold, 
+      print '(A, F7.5, I10)', 'Threshold is: ', threshhold,
      1 tri_matrix_apply_threshhold
       end
-            
+
 C======================================================================C
 C                         matlab output routines                       C
-C======================================================================C     
+C======================================================================C
 CODE FOR matlab_tri_mat
       subroutine matlab_tri_mat(unit, matrix, matrix_size, mat_dim,
      1  var_name)
       implicit none
-      
+
       integer unit
       character*(*) var_name
       integer mat_dim
       integer matrix_size
       real matrix(matrix_size)
-      
+
       integer xpos, ypos, maxpos, minpos, mat_elem
-      
+
       write (unit, '(A, '' = ['')'), var_name
       do xpos = 1, mat_dim
             do ypos = 1, mat_dim
@@ -2150,39 +2151,39 @@ CODE FOR matlab_tri_mat
       end do
       write (unit, '(A)'), '];'
       end
-      
+
 CODE FOR matlab_vector
       subroutine matlab_vector(unit, vector, vec_dim, var_name)
       implicit none
-      
+
       integer unit
       character*(*) var_name
       integer vec_dim
       real vector(vec_dim)
       integer pos
-      
+
       write (unit, '(A, '' = ['')'), var_name
       do pos = 1, vec_dim
             if (mod(pos, 6) .eq. 0) write (unit, '(A)'), '...'
             write (unit, '(G16.8$)'), vector(pos)
-      end do 
+      end do
       write (unit, '(A)'), '];'
       end
-      
+
 CODE FOR matlab_add_vector_to_cell
       subroutine matlab_add_vector_to_cell(unit, vector, vec_dim,
      1 var_name)
       implicit none
-      
+
       integer unit
       character*(*) var_name
       integer vec_dim
       real vector(vec_dim)
       character*80 tempstring
-      
+
       tempstring = var_name
-      call matlab_vector(unit, vector, vec_dim, 
-     1 tempstring(1:len(var_name)) // '{length(' // 
+      call matlab_vector(unit, vector, vec_dim,
+     1 tempstring(1:len(var_name)) // '{length(' //
      2 tempstring(1:len(var_name)) // ')+1}')
       end
 
@@ -2190,31 +2191,31 @@ CODE FOR matlab_add_matrix_to_cell
       subroutine matlab_add_matrix_to_cell(unit, matrix, matrix_size,
      1 mat_dim, var_name)
       implicit none
-      
+
       integer unit
       character*(*) var_name
       integer matrix_size, mat_dim
       real matrix(matrix_size)
       character*80 tempstring
-      
+
       tempstring = var_name
-      call matlab_tri_mat(unit, matrix, matrix_size, mat_dim, 
-     1 tempstring(1:len(var_name)) // '{length(' // 
+      call matlab_tri_mat(unit, matrix, matrix_size, mat_dim,
+     1 tempstring(1:len(var_name)) // '{length(' //
      2 tempstring(1:len(var_name)) // ')+1}')
       end
-      
+
 C======================================================================C
 C                       Sub block matrix routines                      C
-C======================================================================C     
+C======================================================================C
 cCODE FOR sum_block
-c      function sum_block(mat, nmat, mat_dim, params1_add, 
+c      function sum_block(mat, nmat, mat_dim, params1_add,
 c     1 params2_add, num_param_sumed, block_start_parm)
-c     
+c
 c      double precision sum_block
 cC
 cC     Description:
 cC        Sums all the values in the block of the mat pointed to by the
-cC       parameters in the parts which are pointed to by. 
+cC       parameters in the parts which are pointed to by.
 cC
 cC     Precondition:
 cC       params1_add and params2_add are pointers to valid atoms parts
@@ -2223,7 +2224,7 @@ cC       List 12 has been loaded with the parameter numbers set
 cC        to there number not to pointer in the derivative stack.
 cC
 cC     Returns:
-cC           The sum of the values for the rectangle referenced or -1 
+cC           The sum of the values for the rectangle referenced or -1
 cC           if for some reason the suming was invalid
 cC
 c      INCLUDE 'ISTORE.INC'
@@ -2232,36 +2233,36 @@ c      INCLUDE 'QSTORE.INC'
 cC  ================   Arguments   ================
 c      integer nmat, mat_dim          !The size of the matrix and it's dimension
 c      real mat(nmat)                 !The upper triangulare matrix
-c      integer params1_add            !Address in istore of the part information. 
-c      integer params2_add            !Address in istore of the part information. 
+c      integer params1_add            !Address in istore of the part information.
+c      integer params2_add            !Address in istore of the part information.
 c      integer num_param_sumed        !On return the number of values sumed
 c      integer block_start_parm       !The first parameter in this block.
-cC  ================Local Variables================     
+cC  ================Local Variables================
 c      integer param_iterator1(3)
 c      integer param_iterator2(3)
 c      integer tempa, tempb
-cC  ================Function calls ================     
+cC  ================Function calls ================
 c      integer list_iter_next
 c      logical iter_has_next
 c      real tri_get, abs
-c            
+c
 c      sum_block = 0.0
 c      num_param_sumed = 0
 c      block_start = block_start - 1
-c      
+c
 c      call part_create_list_iter(param_iterator1, istore(params1_add))  ! Create an iterator to go over the part
 c      do while (iter_has_next(param_iterator1))                         ! Check that there is a parameter to use
 c            tempa = istore(list_iter_next(param_iterator1))
 c     1               -block_start_parm                                  ! Get the current parameter number in this block
-c            if (tempa .gt. 0 .and. 
-c     1       tempa .le. mat_dim) then                                   ! If the parameter is withing this block 
+c            if (tempa .gt. 0 .and.
+c     1       tempa .le. mat_dim) then                                   ! If the parameter is withing this block
 c              call part_create_list_iter(param_iterator2,
 c     1         istore(params2_info_add))
 c              do while (iter_has_next(param_iterator2))
 c                  tempb = istore(list_iter_next(param_iterator2))
 c     1               -block_start_parm                                  ! Get the current parameter number in this block
 c                  if (tempb .gt. 0 .and.
-c     1                tempb .le. mat_dim) then                          ! If the parameter is withing this block 
+c     1                tempb .le. mat_dim) then                          ! If the parameter is withing this block
 c                  sum_block = sum_block + abs(tri_get(mat, nmat,        ! Get the current element and add it to the current number total
 c     2              mat_dim, tempa, tempb))
 c                   num_param_sumed = num_param_sumed + 1                ! Count that this element has been included
@@ -2276,16 +2277,16 @@ c              return
 c           end if
 c      end do
 c      end
-      
+
 cCODE FOR mean_of_block
-c      function mean_of_block(mat, nmat, mat_dim, params1_add, 
+c      function mean_of_block(mat, nmat, mat_dim, params1_add,
 c     1 params2_add, block_start_parm)
 c      implicit none
 c      double precision mean_of_block
 cC
 cC     Description:
 cC        Calculates the mean of the abs rectange of parameters pointed to by the part which
-cC       is pointed to by params1_add and params2_add. 
+cC       is pointed to by params1_add and params2_add.
 cC
 cC     Precondition:
 cC       params1_info_add and params2_info_add are pointers to valid atoms parts
@@ -2304,9 +2305,9 @@ c      real mat(nmat)                      ! The current upper triangler block o
 c      integer params1_add, params2_add    ! The addresses to the parameter parts
 c      integer block_start_parm            ! The parameter number of the first element in the matrix
 c
-cC  ================Local Variables================       
+cC  ================Local Variables================
 c      integer block_size
-cC  ================Function calls ================       
+cC  ================Function calls ================
 c      double precision sum_block
 c
 c      mean_of_block = sum_block(mat, nmat, mat_dim, params1_add,
@@ -2320,19 +2321,19 @@ C The following level 2 BLAS routines are only required on digital build. All ot
 C use optimsed, external libraries. (MKL or OpenBLAS)
 
 
-#ifdef CRY_FORTDIGITAL  
+#if defined (CRY_FORTDIGITAL) || defined (CRY_OWNLAPACK)
 
 
-C     File of the REAL              Level 2 BLAS routines:  
+C     File of the REAL              Level 2 BLAS routines:
 C
 C      SGEMV, SGBMV, SSYMV, SSBMV, SSPMV, STRMV, STBMV, STPMV,
 C      SGER , SSYR , SSPR ,
 C      SSYR2, SSPR2,
 C      STRSV, STBSV, STPSV.
 C
-C     See: 
+C     See:
 C
-C        Dongarra J. J., Du Croz J. J., Hammarling S. and Hanson R. J.. 
+C        Dongarra J. J., Du Croz J. J., Hammarling S. and Hanson R. J..
 C        A proposal for an extended set of Fortran Basic Linear Algebra
 C        Subprograms. Technical Memorandum No.41 (revision 1),
 C        Mathematics and Computer Science Division, Argone National
@@ -2353,7 +2354,7 @@ C
 *
 *  SGEMV  performs one of the matrix-vector operations
 *
-*     y := alpha*A*x + beta*y,   or   y := alpha*A'*x + beta*y, 
+*     y := alpha*A*x + beta*y,   or   y := alpha*A'*x + beta*y,
 *
 *  where alpha and beta are scalars, x and y are vectors and A is an
 *  m by n matrix.
@@ -2363,7 +2364,7 @@ C
 *
 *  TRANS  - CHARACTER*1.
 *           On entry, TRANS specifies the operation to be performed as
-*           follows: 
+*           follows:
 *
 *              TRANS = 'N'  y := alpha*A*x + beta*y.
 *
@@ -2383,7 +2384,7 @@ C
 *           N must be at least zero.
 *           Unchanged on exit.
 *
-*  ALPHA  - REAL            . 
+*  ALPHA  - REAL            .
 *           On entry, ALPHA specifies the scalar alpha.
 *           Unchanged on exit.
 *
@@ -2402,7 +2403,7 @@ C
 *           ( 1 + ( n - 1 )*abs( INCX ) ) when TRANS = 'N'
 *           and at least
 *           ( 1 + ( m - 1 )*abs( INCX ) ) otherwise.
-*           Before entry, the incremented array X must contain the 
+*           Before entry, the incremented array X must contain the
 *           vector x.
 *           Unchanged on exit.
 *
@@ -2412,7 +2413,7 @@ C
 *           Unchanged on exit.
 *
 *  BETA   - REAL
-*           On entry, BETA specifies the scalar beta. When BETA is 
+*           On entry, BETA specifies the scalar beta. When BETA is
 *           supplied as zero then Y need not be set on input.
 *           Unchanged on exit.
 *
@@ -2444,9 +2445,9 @@ C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
-      INTEGER I,IX,IY,J,JX,JY 
-      INTEGER KX,KY,LENX,LENY 
-      REAL ONE,ZERO 
+      INTEGER I,IX,IY,J,JX,JY
+      INTEGER KX,KY,LENX,LENY
+      REAL ONE,ZERO
       PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
       REAL TEMP
       LOGICAL OK,LSAME
@@ -2491,14 +2492,14 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           END IF
 *
       ELSE
-          IF (INCX.GT.0) THEN 
+          IF (INCX.GT.0) THEN
               KX = 1
 *
           ELSE
               KX = 1 - (LENX-1)*INCX
           END IF
 *
-          IF (INCY.GT.0) THEN 
+          IF (INCY.GT.0) THEN
               KY = 1
 *
           ELSE
@@ -2515,7 +2516,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
               ELSE
                   DO 40,I = 1,LENY
-                     Y(IY) = BETA*Y(IY) 
+                     Y(IY) = BETA*Y(IY)
                      IY = IY + INCY
    40             CONTINUE
               END IF
@@ -2529,13 +2530,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *        Form  y := alpha*A*x + y.
 *
-          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
               DO 60,J = 1,N
-                 IF (X(J).NE.ZERO) THEN 
+                 IF (X(J).NE.ZERO) THEN
                      TEMP = ALPHA*X(J)
                      DO 50,I = 1,M
-                        Y(I) = Y(I) + TEMP*A(I,J) 
-   50                CONTINUE 
+                        Y(I) = Y(I) + TEMP*A(I,J)
+   50                CONTINUE
                  END IF
 *
    60         CONTINUE
@@ -2544,12 +2545,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
               JX = KX
               DO 80,J = 1,N
                  IF (X(JX).NE.ZERO) THEN
-                     TEMP = ALPHA*X(JX) 
+                     TEMP = ALPHA*X(JX)
                      IY = KY
                      DO 70,I = 1,M
                         Y(IY) = Y(IY) + TEMP*A(I,J)
                         IY = IY + INCY
-   70                CONTINUE 
+   70                CONTINUE
                  END IF
 *
                  JX = JX + INCX
@@ -2560,7 +2561,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *        Form  y := alpha*A'*x + y.
 *
-          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
               DO 100,J = 1,N
                  TEMP = ZERO
                  DO 90,I = 1,M
@@ -2589,16 +2590,16 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *     End of SGEMV .
 *
-      END 
+      END
       SUBROUTINE SSYMV(UPLO,N,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
       CHARACTER *1 UPLO
-      INTEGER N,LDA,INCX,INCY 
+      INTEGER N,LDA,INCX,INCY
       REAL ALPHA,A(LDA,*),X(*),BETA,Y(*)
 *
 *  Purpose
 *  =======
 *
-*  SSYMV  performs the matrix-vector  operation 
+*  SSYMV  performs the matrix-vector  operation
 *
 *     y := alpha*A*x + beta*y,
 *
@@ -2611,7 +2612,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *  UPLO   - CHARACTER*1.
 *           On entry, UPLO specifies whether the upper or lower
 *           triangular part of the array A is to be referenced as
-*           follows: 
+*           follows:
 *
 *              UPLO = 'U'          Only the upper triangular part of A
 *                                  is to be referenced.
@@ -2626,17 +2627,17 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           N must be at least zero.
 *           Unchanged on exit.
 *
-*  ALPHA  - REAL            . 
+*  ALPHA  - REAL            .
 *           On entry, ALPHA specifies the scalar alpha.
 *           Unchanged on exit.
 *
 *  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
+*           Before entry with  UPLO = 'U', the leading n by n
+*           upper triangular part of the array A must contain the upper
 *           triangular part of the symmetric matrix and the strictly
 *           lower triangular part of A is not referenced.
 *           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
+*           lower triangular part of the array A must contain the lower
 *           triangular part of the symmetric matrix and the strictly
 *           upper triangular part of A is not referenced.
 *           Unchanged on exit.
@@ -2646,7 +2647,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           in the calling (sub) program. LDA must be at least max(n,1).
 *           Unchanged on exit.
 *
-*  X      - REAL             array of dimension at least 
+*  X      - REAL             array of dimension at least
 *           ( 1 + ( n - 1 )*abs( INCX ) ).
 *           Before entry, the incremented array X must contain the n
 *           element vector x.
@@ -2657,12 +2658,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           X.
 *           Unchanged on exit.
 *
-*  BETA   - REAL            . 
-*           On entry, BETA specifies the scalar beta. When BETA is 
+*  BETA   - REAL            .
+*           On entry, BETA specifies the scalar beta. When BETA is
 *           supplied as zero then Y need not be set on input.
 *           Unchanged on exit.
 *
-*  Y      - REAL             array of dimension at least 
+*  Y      - REAL             array of dimension at least
 *           ( 1 + ( n - 1 )*abs( INCY ) ).
 *           Before entry, the incremented array Y must contain the n
 *           element vector y. On exit, Y is overwritten by the updated
@@ -2682,9 +2683,9 @@ C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
-      INTEGER I,IX,IY,J,JX,JY 
-      INTEGER KX,KY 
-      REAL ONE,ZERO 
+      INTEGER I,IX,IY,J,JX,JY
+      INTEGER KX,KY
+      REAL ONE,ZERO
       PARAMETER (ONE=1.0E+0,ZERO=0.0E+0)
       REAL TEMP1,TEMP2
       LOGICAL OK,LSAME
@@ -2693,7 +2694,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *     Quick return if possible.
 *
-      IF ( .NOT. OK .OR. ((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE))) RETURN 
+      IF ( .NOT. OK .OR. ((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE))) RETURN
 *
 *     Start the operations. In this version the elements of A are
 *     accessed sequentially with one pass through the triangular part
@@ -2718,14 +2719,14 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           END IF
 *
       ELSE
-          IF (INCX.GT.0) THEN 
+          IF (INCX.GT.0) THEN
               KX = 1
 *
           ELSE
               KX = 1 - (N-1)*INCX
           END IF
 *
-          IF (INCY.GT.0) THEN 
+          IF (INCY.GT.0) THEN
               KY = 1
 *
           ELSE
@@ -2742,7 +2743,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
               ELSE
                   DO 40,I = 1,N
-                     Y(IY) = BETA*Y(IY) 
+                     Y(IY) = BETA*Y(IY)
                      IY = IY + INCY
    40             CONTINUE
               END IF
@@ -2756,10 +2757,10 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *        Form  y  when A is stored in upper triangle.
 *
-          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
               DO 60,J = 1,N
                  TEMP1 = ALPHA*X(J)
-                 TEMP2 = ZERO 
+                 TEMP2 = ZERO
                  DO 50,I = 1,J - 1
                     Y(I) = Y(I) + TEMP1*A(I,J)
                     TEMP2 = TEMP2 + A(I,J)*X(I)
@@ -2771,7 +2772,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
               IX = KX - INCX
               DO 80,J = 1,N
                  TEMP1 = ALPHA*X(IX+INCX)
-                 TEMP2 = ZERO 
+                 TEMP2 = ZERO
                  IX = KX
                  IY = KY
                  DO 70,I = 1,J - 1
@@ -2780,7 +2781,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                     IX = IX + INCX
                     IY = IY + INCY
    70            CONTINUE
-                 Y(IY) = Y(IY) + TEMP1*A(J,J) + ALPHA*TEMP2 
+                 Y(IY) = Y(IY) + TEMP1*A(J,J) + ALPHA*TEMP2
    80         CONTINUE
           END IF
 *
@@ -2788,10 +2789,10 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *        Form  y  when A is stored in lower triangle.
 *
-          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
               DO 100,J = 1,N
                  TEMP1 = ALPHA*X(J)
-                 TEMP2 = ZERO 
+                 TEMP2 = ZERO
                  Y(J) = Y(J) + TEMP1*A(J,J)
                  DO 90,I = J + 1,N
                     Y(I) = Y(I) + TEMP1*A(I,J)
@@ -2805,7 +2806,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
               JY = KY
               DO 120,J = 1,N
                  TEMP1 = ALPHA*X(JX)
-                 TEMP2 = ZERO 
+                 TEMP2 = ZERO
                  Y(JY) = Y(JY) + TEMP1*A(J,J)
                  IX = JX
                  IY = JY
@@ -2827,7 +2828,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *     End of SSYMV .
 *
-      END 
+      END
       SUBROUTINE STRMV(UPLO,TRANS,DIAG,N,A,LDA,X,INCX)
       CHARACTER *1 UPLO,TRANS,DIAG
       INTEGER N,LDA,INCX
@@ -2838,7 +2839,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *  STRMV  performs one of the matrix-vector operations
 *
-*     x := A*x,   or   x := A'*x, 
+*     x := A*x,   or   x := A'*x,
 *
 *  where x is n element vector and A is an n by n unit, or non-unit,
 *  upper or lower triangular matrix.
@@ -2848,7 +2849,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *  UPLO   - CHARACTER*1.
 *           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows: 
+*           lower triangular matrix as follows:
 *
 *              UPLO = 'U'          A is an upper triangular matrix.
 *
@@ -2858,19 +2859,19 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *  TRANS  - CHARACTER*1.
 *           On entry, TRANS specifies the operation to be performed as
-*           follows: 
+*           follows:
 *
 *              TRANS = 'N' x := A*x.
 *
-*              TRANS = 'T' x := A'*x. 
+*              TRANS = 'T' x := A'*x.
 *
-*              TRANS = 'C' x := A'*x. 
+*              TRANS = 'C' x := A'*x.
 *
 *           Unchanged on exit.
 *
 *  DIAG   - CHARACTER*1.
 *           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows: 
+*           triangular as follows:
 *
 *              DIAG = 'U'          A is assumed to be unit triangular.
 *
@@ -2885,12 +2886,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           Unchanged on exit.
 *
 *  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
+*           Before entry with  UPLO = 'U', the leading n by n
+*           upper triangular part of the array A must contain the upper
 *           triangular matrix and the strictly lower triangular part of
 *           A is not referenced.
 *           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
+*           lower triangular part of the array A must contain the lower
 *           triangular matrix and the strictly upper triangular part of
 *           A is not referenced.
 *           Note that when  DIAG = 'U', the diagonal elements of
@@ -2902,11 +2903,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           in the calling (sub) program. LDA must be at least max(n,1).
 *           Unchanged on exit.
 *
-*  X      - REAL             array of dimension at least 
+*  X      - REAL             array of dimension at least
 *           ( 1 + ( n - 1 )*abs( INCX ) ).
 *           Before entry, the incremented array X must contain the n
 *           element vector x. On exit, X is overwritten with the
-*           tranformed vector x. 
+*           tranformed vector x.
 *
 *  INCX   - INTEGER.
 *           On entry, INCX specifies the increment for the elements of
@@ -2927,12 +2928,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       LOGICAL NOUNIT
       INTEGER I,IX,J,JX,KX
       REAL ZERO
-      PARAMETER (ZERO=0.0E+0) 
+      PARAMETER (ZERO=0.0E+0)
       LOGICAL OK,LSAME
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND.
      .     (LSAME(TRANS,'N') .OR. LSAME(TRANS,'T') .OR.
      .     LSAME(TRANS,'C')) .AND. (LSAME(DIAG,'U') .OR.
-     .     LSAME(DIAG,'N')) .AND. (N.GT.0) .AND. (LDA.GE.N) 
+     .     LSAME(DIAG,'N')) .AND. (N.GT.0) .AND. (LDA.GE.N)
 *
 *
 *     Quick return if possible.
@@ -2944,7 +2945,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *     will be  ( N - 1 )*INCX  too small for descending loops.
 *
       IF (INCX.LE.0) THEN
-          KX = 1 - (N-1)*INCX 
+          KX = 1 - (N-1)*INCX
 *
       ELSE IF (INCX.NE.1) THEN
           KX = 1
@@ -2955,7 +2956,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  x := A*x. 
+*        Form  x := A*x.
 *
           IF (LSAME(UPLO,'U')) THEN
               IF (INCX.EQ.1) THEN
@@ -3025,8 +3026,8 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                   DO 100,J = N,1,-1
                      IF (NOUNIT) X(J) = X(J)*A(J,J)
                      DO 90,I = J - 1,1,-1
-                        X(J) = X(J) + A(I,J)*X(I) 
-   90                CONTINUE 
+                        X(J) = X(J) + A(I,J)*X(I)
+   90                CONTINUE
   100             CONTINUE
 *
               ELSE
@@ -3037,7 +3038,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                      DO 110,I = J - 1,1,-1
                         IX = IX - INCX
                         X(JX) = X(JX) + A(I,J)*X(IX)
-  110                CONTINUE 
+  110                CONTINUE
                      JX = JX - INCX
   120             CONTINUE
               END IF
@@ -3046,9 +3047,9 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
               IF (INCX.EQ.1) THEN
                   DO 140,J = 1,N
                      IF (NOUNIT) X(J) = X(J)*A(J,J)
-                     DO 130,I = J + 1,N 
-                        X(J) = X(J) + A(I,J)*X(I) 
-  130                CONTINUE 
+                     DO 130,I = J + 1,N
+                        X(J) = X(J) + A(I,J)*X(I)
+  130                CONTINUE
   140             CONTINUE
 *
               ELSE
@@ -3056,10 +3057,10 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                   DO 160,J = 1,N
                      IX = JX
                      IF (NOUNIT) X(JX) = X(JX)*A(J,J)
-                     DO 150,I = J + 1,N 
+                     DO 150,I = J + 1,N
                         IX = IX + INCX
                         X(JX) = X(JX) + A(I,J)*X(IX)
-  150                CONTINUE 
+  150                CONTINUE
                      JX = JX + INCX
   160             CONTINUE
               END IF
@@ -3072,7 +3073,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *     End of STRMV .
 *
-      END 
+      END
       SUBROUTINE SGER(M,N,ALPHA,X,INCX,Y,INCY,A,LDA)
       INTEGER M,N,INCX,INCY,LDA
       REAL ALPHA,X(*),Y(*),A(LDA,*)
@@ -3085,7 +3086,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *     A := alpha*x*y' + A,
 *
 *  where alpha is a scalar, x is an m element vector, y is an n element
-*  vector and A is an m by n matrix. 
+*  vector and A is an m by n matrix.
 *
 *  Parameters
 *  ==========
@@ -3100,11 +3101,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           N must be at least zero.
 *           Unchanged on exit.
 *
-*  ALPHA  - REAL            . 
+*  ALPHA  - REAL            .
 *           On entry, ALPHA specifies the scalar alpha.
 *           Unchanged on exit.
 *
-*  X      - REAL             array of dimension at least 
+*  X      - REAL             array of dimension at least
 *           ( 1 + ( m - 1 )*abs( INCX ) ).
 *           Before entry, the incremented array X must contain the m
 *           element vector x.
@@ -3115,7 +3116,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           X.
 *           Unchanged on exit.
 *
-*  Y      - REAL             array of dimension at least 
+*  Y      - REAL             array of dimension at least
 *           ( 1 + ( n - 1 )*abs( INCY ) ).
 *           Before entry, the incremented array Y must contain the n
 *           element vector y.
@@ -3148,7 +3149,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       INTEGER I,IX,J,JY,KX
       REAL ZERO
-      PARAMETER (ZERO=0.0E+0) 
+      PARAMETER (ZERO=0.0E+0)
       REAL TEMP
       LOGICAL OK
       OK = (M.GT.0) .AND. (N.GT.0) .AND. (LDA.GE.M)
@@ -3168,19 +3169,19 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                  DO 10,I = 1,M
                     A(I,J) = A(I,J) + X(I)*TEMP
    10            CONTINUE
-             END IF 
+             END IF
 *
    20     CONTINUE
 *
       ELSE
-          IF (INCX.GT.0) THEN 
+          IF (INCX.GT.0) THEN
               KX = 1
 *
           ELSE
               KX = 1 - (M-1)*INCX
           END IF
 *
-          IF (INCY.GT.0) THEN 
+          IF (INCY.GT.0) THEN
               JY = 1
 *
           ELSE
@@ -3195,7 +3196,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                     A(I,J) = A(I,J) + X(IX)*TEMP
                     IX = IX + INCX
    30            CONTINUE
-             END IF 
+             END IF
 *
              JY = JY + INCY
    40     CONTINUE
@@ -3205,10 +3206,10 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *     End of SGER  .
 *
-      END 
+      END
       SUBROUTINE SSYR2(UPLO,N,ALPHA,X,INCX,Y,INCY,A,LDA)
       CHARACTER *1 UPLO
-      INTEGER N,INCX,INCY,LDA 
+      INTEGER N,INCX,INCY,LDA
       REAL ALPHA,X(*),Y(*),A(LDA,*)
 *
 *  Purpose
@@ -3227,7 +3228,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *  UPLO   - CHARACTER*1.
 *           On entry, UPLO specifies whether the upper or lower
 *           triangular part of the array A is to be referenced as
-*           follows: 
+*           follows:
 *
 *              UPLO = 'U' Only the upper triangular part of A
 *                                  is to be referenced.
@@ -3242,11 +3243,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           N must be at least zero.
 *           Unchanged on exit.
 *
-*  ALPHA  - REAL            . 
+*  ALPHA  - REAL            .
 *           On entry, ALPHA specifies the scalar alpha.
 *           Unchanged on exit.
 *
-*  X      - REAL             array of dimension at least 
+*  X      - REAL             array of dimension at least
 *           ( 1 + ( n - 1 )*abs( INCX ) ).
 *           Before entry, the incremented array X must contain the n
 *           element vector x.
@@ -3257,7 +3258,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           X.
 *           Unchanged on exit.
 *
-*  Y      - REAL             array of dimension at least 
+*  Y      - REAL             array of dimension at least
 *           ( 1 + ( n - 1 )*abs( INCY ) ).
 *           Before entry, the incremented array Y must contain the n
 *           element vector y.
@@ -3269,14 +3270,14 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *           Unchanged on exit.
 *
 *  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
+*           Before entry with  UPLO = 'U', the leading n by n
+*           upper triangular part of the array A must contain the upper
 *           triangular part of the symmetric matrix and the strictly
 *           lower triangular part of A is not referenced. On exit, the
 *           upper triangular part of the array A is overwritten by the
 *           upper triangular part of the updated matrix.
 *           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
+*           lower triangular part of the array A must contain the lower
 *           triangular part of the symmetric matrix and the strictly
 *           upper triangular part of A is not referenced. On exit, the
 *           lower triangular part of the array A is overwritten by the
@@ -3299,10 +3300,10 @@ C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
-      INTEGER I,IX,IY,J,JX,JY 
-      INTEGER KX,KY 
+      INTEGER I,IX,IY,J,JX,JY
+      INTEGER KX,KY
       REAL ZERO
-      PARAMETER (ZERO=0.0E+0) 
+      PARAMETER (ZERO=0.0E+0)
       REAL TEMP1,TEMP2
       LOGICAL OK,LSAME
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0) .AND.
@@ -3312,18 +3313,18 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       IF ( .NOT. OK .OR. (ALPHA.EQ.ZERO)) RETURN
 *
-*     Set up the start points in X and Y if the increments are not both 
+*     Set up the start points in X and Y if the increments are not both
 *     unity.
 *
       IF ((INCX.NE.1) .OR. (INCY.NE.1)) THEN
-          IF (INCX.GT.0) THEN 
+          IF (INCX.GT.0) THEN
               KX = 1
 *
           ELSE
               KX = 1 - (N-1)*INCX
           END IF
 *
-          IF (INCY.GT.0) THEN 
+          IF (INCY.GT.0) THEN
               KY = 1
 *
           ELSE
@@ -3340,14 +3341,14 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *        Form  A  when A is stored in the upper triangle.
 *
-          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
               DO 20,J = 1,N
                  IF ((X(J).NE.ZERO) .OR. (Y(J).NE.ZERO)) THEN
-                     TEMP1 = ALPHA*Y(J) 
-                     TEMP2 = ALPHA*X(J) 
+                     TEMP1 = ALPHA*Y(J)
+                     TEMP2 = ALPHA*X(J)
                      DO 10,I = 1,J
                         A(I,J) = A(I,J) + X(I)*TEMP1 + Y(I)*TEMP2
-   10                CONTINUE 
+   10                CONTINUE
                  END IF
 *
    20         CONTINUE
@@ -3365,7 +3366,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                         A(I,J) = A(I,J) + X(IX)*TEMP1 + Y(IY)*TEMP2
                         IX = IX + INCX
                         IY = IY + INCY
-   30                CONTINUE 
+   30                CONTINUE
                  END IF
 *
                  JX = JX + INCX
@@ -3377,14 +3378,14 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *        Form  A  when A is stored in the upper triangle.
 *
-          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
+          IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
               DO 60,J = 1,N
                  IF ((X(J).NE.ZERO) .OR. (Y(J).NE.ZERO)) THEN
-                     TEMP1 = ALPHA*Y(J) 
-                     TEMP2 = ALPHA*X(J) 
+                     TEMP1 = ALPHA*Y(J)
+                     TEMP2 = ALPHA*X(J)
                      DO 50,I = J,N
                         A(I,J) = A(I,J) + X(I)*TEMP1 + Y(I)*TEMP2
-   50                CONTINUE 
+   50                CONTINUE
                  END IF
 *
    60         CONTINUE
@@ -3402,7 +3403,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                         A(I,J) = A(I,J) + X(IX)*TEMP1 + Y(IY)*TEMP2
                         IX = IX + INCX
                         IY = IY + INCY
-   70                CONTINUE 
+   70                CONTINUE
                  END IF
 *
                  JX = JX + INCX
@@ -3416,10 +3417,10 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
 *     End of SSYR2 .
 *
-      END 
+      END
       LOGICAL FUNCTION LSAME(CA,CB)
 C     TEST IF TWO CHARACTERS ARE ESSENTIALLY THE SAME.
-C     THE CHARACTER CB IS ONE OF THE FORTRAN SET. 
+C     THE CHARACTER CB IS ONE OF THE FORTRAN SET.
 C     (LOWER AND UPPER CASE LETTERS ARE EQUIVALENT.)
 C     THIS IS A SUBPROGRAM FOR THE LEVEL TWO BLAS.
 C     REVISED 860623
@@ -3432,22 +3433,22 @@ C     VERSION FOR CDC SYSTEMS USING 6-12 BIT REPRESENTATIONS.
       CHARACTER *1 CB
       INTEGER ICIRFX
       DATA ICIRFX/62/
-C     SEE IF THE FIRST CHAR. IN STRING CA EQUALS STRING CB. 
+C     SEE IF THE FIRST CHAR. IN STRING CA EQUALS STRING CB.
       LSAME = CA(1) .EQ. CB .AND. CA(1) .NE. CHAR(ICIRFX)
       IF (LSAME) RETURN
 C     THE CHARS. ARE NOT IDENTICAL.  NOW CHECK THEM FOR EQUIVALENCE.
 C     LOOK FOR THE 'ESCAPE' CHARACTER, CIRCUMFLEX, FOLLOWED BY
 C     THE LETTER.
       IVAL = ICHAR(CA(2))
-      IF (IVAL.GE.ICHAR('A') .AND. IVAL.LE.ICHAR('Z')) THEN 
+      IF (IVAL.GE.ICHAR('A') .AND. IVAL.LE.ICHAR('Z')) THEN
           LSAME = CA(1) .EQ. CHAR(ICIRFX) .AND. CA(2) .EQ. CB
       END IF
 *
       RETURN
-C     END 
+C     END
 C     LOGICAL FUNCTION LSAME(CA,CB)
 C     TEST IF TWO CHARACTERS ARE ESSENTIALLY THE SAME.
-C     THE CHARACTER CB IS ONE OF THE FORTRAN SET. 
+C     THE CHARACTER CB IS ONE OF THE FORTRAN SET.
 C     (LOWER AND UPPER CASE LETTERS ARE EQUIVALENT.)
 C     THIS IS A SUBPROGRAM FOR THE LEVEL TWO BLAS.
 C     REVISED 860623
@@ -3459,22 +3460,22 @@ C     VERSION FOR ANY ASCII MACHINE.
 C     CHARACTER *1 CA
 C     CHARACTER *1 CB
 C     INTEGER IOFF
-C     DATA IOFF/32/ 
+C     DATA IOFF/32/
 C     SEE IF THE  CHAR. IN STRING CA EQUALS STRING CB.
 C     LSAME = CA .EQ. CB
 C     IF (LSAME) RETURN
 C     THE CHARS. ARE NOT IDENTICAL.  NOW CHECK THEM FOR EQUIVALENCE.
 C     ISHIFT = ICHAR(CA) - IOFF
 C     IF (ISHIFT.GE.ICHAR('A') .AND. ISHIFT.LE.ICHAR('Z')) THEN
-C         LSAME = ISHIFT .EQ. ICHAR(CB) 
+C         LSAME = ISHIFT .EQ. ICHAR(CB)
 C     END IF
 C
 C     RETURN
-C     END 
+C     END
 C
 C     LOGICAL FUNCTION LSAME(CA,CB)
 C     TEST IF TWO CHARACTERS ARE ESSENTIALLY THE SAME.
-C     THE CHARACTER CB IS ONE OF THE FORTRAN SET. 
+C     THE CHARACTER CB IS ONE OF THE FORTRAN SET.
 C     (LOWER AND UPPER CASE LETTERS ARE EQUIVALENT.)
 C     THIS IS A SUBPROGRAM FOR THE LEVEL TWO BLAS.
 C     REVISED 860623
@@ -3486,27 +3487,27 @@ C     VERSION FOR ANY EBCDIC MACHINE.
 C     CHARACTER *1 CA
 C     CHARACTER *1 CB
 C     INTEGER IOFF
-C     DATA IOFF/64/ 
+C     DATA IOFF/64/
 C     SEE IF THE  CHAR. IN STRING CA EQUALS STRING CB.
 C     LSAME = CA .EQ. CB
 C     IF (LSAME) RETURN
 C     THE CHARS. ARE NOT IDENTICAL.  NOW CHECK THEM FOR EQUIVALENCE.
 C     ISHIFT = ICHAR(CA) + IOFF
 C     IF (ISHIFT.GE.ICHAR('A') .AND. ISHIFT.LE.ICHAR('I')) THEN
-C         LSAME = ISHIFT .EQ. ICHAR(CB) 
+C         LSAME = ISHIFT .EQ. ICHAR(CB)
 C     END IF
 C
 C     IF (ISHIFT.GE.ICHAR('J') .AND. ISHIFT.LE.ICHAR('R')) THEN
-C         LSAME = ISHIFT .EQ. ICHAR(CB) 
+C         LSAME = ISHIFT .EQ. ICHAR(CB)
 C     END IF
 C
 C     IF (ISHIFT.GE.ICHAR('S') .AND. ISHIFT.LE.ICHAR('Z')) THEN
-C         LSAME = ISHIFT .EQ. ICHAR(CB) 
+C         LSAME = ISHIFT .EQ. ICHAR(CB)
 C     END IF
 C
 C     RETURN
-C     END 
-      END 
+C     END
+      END
       subroutine saxpy(n,sa,sx,incx,sy,incy)
 c
 c     constant times a vector plus a vector.
@@ -8812,7 +8813,7 @@ C      STOP
          LWKOPT = MAX( 1, N-1 )*NB
          WORK( 1 ) = LWKOPT
       END IF
-*    
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SORGTR', -INFO )
          RETURN
@@ -11148,7 +11149,7 @@ C      STOP
       ILAENV = 2
       RETURN
 *
-  600 CONTINUE 
+  600 CONTINUE
 *
 *     ISPEC = 6:  crossover point for SVD (used by xGELSS and xGESVD)
 *
@@ -11185,7 +11186,7 @@ C      STOP
 C     ILAENV = 0
       ILAENV = 1
       IF( ILAENV.EQ.1 ) THEN
-         ILAENV = IEEECK( 0, 0.0, 1.0 ) 
+         ILAENV = IEEECK( 0, 0.0, 1.0 )
       END IF
       RETURN
 *
@@ -11196,7 +11197,7 @@ C     ILAENV = 0
 C     ILAENV = 0
       ILAENV = 1
       IF( ILAENV.EQ.1 ) THEN
-         ILAENV = IEEECK( 1, 0.0, 1.0 ) 
+         ILAENV = IEEECK( 1, 0.0, 1.0 )
       END IF
       RETURN
 *
@@ -11210,16 +11211,16 @@ C BLAS & LAPACK routines including and supporting DSYEV
 
 C***********************************************************************
 C
-C     File of the REAL              Level 2 BLAS routines:  
+C     File of the REAL              Level 2 BLAS routines:
 C
 C      SGEMV, SGBMV, SSYMV, SSBMV, SSPMV, STRMV, STBMV, STPMV,
 C      SGER , SSYR , SSPR ,
 C      SSYR2, SSPR2,
 C      STRSV, STBSV, STPSV.
 C
-C     See: 
+C     See:
 C
-C        Dongarra J. J., Du Croz J. J., Hammarling S. and Hanson R. J.. 
+C        Dongarra J. J., Du Croz J. J., Hammarling S. and Hanson R. J..
 C        A proposal for an extended set of Fortran Basic Linear Algebra
 C        Subprograms. Technical Memorandum No.41 (revision 1),
 C        Mathematics and Computer Science Division, Argone National
@@ -19372,7 +19373,7 @@ c
 *
 *     End of DSYTRD
 *
-      END 
+      END
 
       SUBROUTINE SSPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK,
      $                   IWORK, LIWORK, INFO )
@@ -19552,19 +19553,19 @@ c
          CALL XERBLA( 'SSPEVD', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         RETURN 
+         RETURN
       END IF
 *
 *     Quick return if possible
 *
       IF( N.EQ.0 )
-     $   RETURN 
+     $   RETURN
 *
       IF( N.EQ.1 ) THEN
          W( 1 ) = AP( 1 )
          IF( WANTZ )
      $      Z( 1, 1 ) = ONE
-         RETURN 
+         RETURN
       END IF
 *
 *     Get machine constants.
@@ -19924,7 +19925,7 @@ c
 *     End of DSYRK .
 *
       END
-      
+
       SUBROUTINE SSYRK(UPLO,TRANS,N,K,ALPHA,A,LDA,BETA,C,LDC)
 *     .. Scalar Arguments ..
       REAL ALPHA,BETA
@@ -20222,7 +20223,7 @@ c
 *
 *     End of SSYRK .
 *
-      END      
+      END
 
 
       REAL             FUNCTION SLANSP( NORM, UPLO, N, AP, WORK )
@@ -26491,7 +26492,7 @@ c
 *               d(3); otherwise it is between d(1) and d(2).  See
 *               SLAED4 for further details.
 *
-*  RHO          (input) REAL            
+*  RHO          (input) REAL
 *               Refer to the equation f(x) above.
 *
 *  D            (input) REAL array, dimension (3)
@@ -26500,12 +26501,12 @@ c
 *  Z            (input) REAL array, dimension (3)
 *               Each of the elements in z must be positive.
 *
-*  FINIT        (input) REAL            
+*  FINIT        (input) REAL
 *               The value of f at 0. It is more accurate than the one
 *               evaluated inside this routine (if someone wants to do
 *               so).
 *
-*  TAU          (output) REAL            
+*  TAU          (output) REAL
 *               The root of the equation f(x).
 *
 *  INFO         (output) INTEGER
@@ -26546,7 +26547,7 @@ c
       INTEGER            I, ITER, NITER
       REAL               A, B, BASE, C, DDF, DF, EPS, ERRETM, ETA, F,
      $                   FC, SCLFAC, SCLINV, SMALL1, SMALL2, SMINV1,
-     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4, 
+     $                   SMINV2, TEMP, TEMP1, TEMP2, TEMP3, TEMP4,
      $                   LBD, UBD
 *     ..
 *     .. Intrinsic Functions ..
@@ -26566,7 +26567,7 @@ c
       IF( FINIT .LT. ZERO )THEN
          LBD = ZERO
       ELSE
-         UBD = ZERO 
+         UBD = ZERO
       END IF
 *
       NITER = 1
@@ -26734,7 +26735,7 @@ c
 *
          TAU = TAU + ETA
          IF( TAU .LT. LBD .OR. TAU .GT. UBD )
-     $      TAU = ( LBD + UBD )/TWO 
+     $      TAU = ( LBD + UBD )/TWO
 *
          FC = ZERO
          ERRETM = ZERO
@@ -26779,24 +26780,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPOTRF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spotrf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spotrf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spotrf.f"> 
+*> Download SPOTRF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spotrf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spotrf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spotrf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOTRF( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -26804,7 +26805,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -26872,10 +26873,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -27026,24 +27027,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPOTRI + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spotri.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spotri.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spotri.f"> 
+*> Download SPOTRI + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spotri.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spotri.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spotri.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOTRI( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -27051,7 +27052,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -27107,10 +27108,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -27186,24 +27187,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPOTF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spotf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spotf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spotf2.f"> 
+*> Download SPOTF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spotf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spotf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spotf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOTF2( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -27211,7 +27212,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -27281,10 +27282,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -27417,14 +27418,14 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE STRSM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL ALPHA
 *       INTEGER LDA,LDB,M,N
@@ -27433,7 +27434,7 @@ c
 *       .. Array Arguments ..
 *       REAL A(LDA,*),B(LDB,*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -27527,7 +27528,7 @@ c
 *> \param[in] A
 *> \verbatim
 *>          A is REAL array of DIMENSION ( LDA, k ),
-*>           where k is m when SIDE = 'L' or 'l'  
+*>           where k is m when SIDE = 'L' or 'l'
 *>             and k is n when SIDE = 'R' or 'r'.
 *>           Before entry  with  UPLO = 'U' or 'u',  the  leading  k by k
 *>           upper triangular part of the array  A must contain the upper
@@ -27569,10 +27570,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -27861,24 +27862,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download STRTRI + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/strtri.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/strtri.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/strtri.f"> 
+*> Download STRTRI + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/strtri.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/strtri.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/strtri.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE STRTRI( UPLO, DIAG, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, UPLO
 *       INTEGER            INFO, LDA, N
@@ -27886,7 +27887,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -27956,10 +27957,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -28104,24 +28105,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAUUM + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slauum.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slauum.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slauum.f"> 
+*> Download SLAUUM + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slauum.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slauum.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slauum.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAUUM( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -28129,7 +28130,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -28192,10 +28193,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -28323,28 +28324,28 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SISNAN + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sisnan.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sisnan.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sisnan.f"> 
+*> Download SISNAN + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sisnan.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sisnan.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sisnan.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       LOGICAL FUNCTION SISNAN( SIN )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               SIN
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -28368,10 +28369,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -28404,24 +28405,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download STRTI2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/strti2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/strti2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/strti2.f"> 
+*> Download STRTI2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/strti2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/strti2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/strti2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE STRTI2( UPLO, DIAG, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, UPLO
 *       INTEGER            INFO, LDA, N
@@ -28429,7 +28430,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -28500,10 +28501,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -28617,24 +28618,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAUU2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slauu2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slauu2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slauu2.f"> 
+*> Download SLAUU2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slauu2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slauu2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slauu2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLAUU2( UPLO, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -28642,7 +28643,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -28705,10 +28706,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -28816,28 +28817,28 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLAISNAN + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaisnan.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaisnan.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaisnan.f"> 
+*> Download SLAISNAN + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slaisnan.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slaisnan.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slaisnan.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       LOGICAL FUNCTION SLAISNAN( SIN1, SIN2 )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               SIN1, SIN2
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -28876,10 +28877,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -28908,25 +28909,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYEVD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyevd.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssyevd.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyevd.f"> 
+*> Download SSYEVD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyevd.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssyevd.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyevd.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
 *                          LIWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          JOBZ, UPLO
 *       INTEGER            INFO, LDA, LIWORK, LWORK, N
@@ -28935,7 +28936,7 @@ c
 *       INTEGER            IWORK( * )
 *       REAL               A( LDA, * ), W( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -29020,7 +29021,7 @@ c
 *>          The dimension of the array WORK.
 *>          If N <= 1,               LWORK must be at least 1.
 *>          If JOBZ = 'N' and N > 1, LWORK must be at least 2*N+1.
-*>          If JOBZ = 'V' and N > 1, LWORK must be at least 
+*>          If JOBZ = 'V' and N > 1, LWORK must be at least
 *>                                                1 + 6*N + 2*N**2.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
@@ -29068,10 +29069,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -29181,7 +29182,7 @@ c
          CALL XERBLA( 'SSYEVD', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         RETURN 
+         RETURN
       END IF
 *
 *     Quick return if possible
@@ -29193,7 +29194,7 @@ c
          W( 1 ) = A( 1, 1 )
          IF( WANTZ )
      $      A( 1, 1 ) = ONE
-         RETURN 
+         RETURN
       END IF
 *
 *     Get machine constants.
@@ -29264,25 +29265,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SORMTR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormtr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormtr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormtr.f"> 
+*> Download SORMTR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormtr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormtr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormtr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SORMTR( SIDE, UPLO, TRANS, M, N, A, LDA, TAU, C, LDC,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS, UPLO
 *       INTEGER            INFO, LDA, LDC, LWORK, M, N
@@ -29291,7 +29292,7 @@ c
 *       REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -29421,10 +29422,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -29577,25 +29578,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SORMQL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormql.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormql.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormql.f"> 
+*> Download SORMQL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormql.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormql.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormql.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SORMQL( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS
 *       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
@@ -29604,7 +29605,7 @@ c
 *       REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -29732,10 +29733,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -29929,25 +29930,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SORMQR + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormqr.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormqr.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormqr.f"> 
+*> Download SORMQR + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sormqr.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sormqr.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sormqr.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SORMQR( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
 *                          WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS
 *       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
@@ -29956,7 +29957,7 @@ c
 *       REAL               A( LDA, * ), C( LDC, * ), TAU( * ),
 *      $                   WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -30084,10 +30085,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -30279,25 +30280,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SORM2L + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorm2l.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorm2l.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorm2l.f"> 
+*> Download SORM2L + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorm2l.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorm2l.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorm2l.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SORM2L( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
 *                          WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS
 *       INTEGER            INFO, K, LDA, LDC, M, N
@@ -30305,7 +30306,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -30423,10 +30424,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -30558,25 +30559,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SORM2R + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorm2r.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorm2r.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorm2r.f"> 
+*> Download SORM2R + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorm2r.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sorm2r.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorm2r.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SORM2R( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
 *                          WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          SIDE, TRANS
 *       INTEGER            INFO, K, LDA, LDC, M, N
@@ -30584,7 +30585,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -30702,10 +30703,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -30841,24 +30842,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYTRF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytrf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytrf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytrf.f"> 
+*> Download SSYTRF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytrf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytrf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytrf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYTRF( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, LWORK, N
@@ -30867,7 +30868,7 @@ c
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -30881,7 +30882,7 @@ c
 *>    A = U*D*U**T  or  A = L*D*L**T
 *>
 *> where U (or L) is a product of permutation and unit upper (lower)
-*> triangular matrices, and D is symmetric and block diagonal with 
+*> triangular matrices, and D is symmetric and block diagonal with
 *> 1-by-1 and 2-by-2 diagonal blocks.
 *>
 *> This is the blocked version of the algorithm, calling Level 3 BLAS.
@@ -30969,10 +30970,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -31205,24 +31206,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYTF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytf2.f"> 
+*> Download SSYTF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYTF2( UPLO, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -31231,7 +31232,7 @@ c
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -31316,10 +31317,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -31799,29 +31800,29 @@ c
 *     End of SSYTF2
 *
       END
-	  
+
 *> \brief \b SLASYF computes a partial factorization of a real symmetric matrix, using the diagonal pivoting method.
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLASYF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasyf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasyf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasyf.f"> 
+*> Download SLASYF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slasyf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slasyf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slasyf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLASYF( UPLO, N, NB, KB, A, LDA, IPIV, W, LDW, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, KB, LDA, LDW, N, NB
@@ -31830,7 +31831,7 @@ c
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), W( LDW, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -31946,10 +31947,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -32466,7 +32467,7 @@ c
 *     End of SLASYF
 *
       END
- 
+
       SUBROUTINE SSYR(UPLO,N,ALPHA,X,INCX,A,LDA)
 *     .. Scalar Arguments ..
       REAL ALPHA
@@ -32674,25 +32675,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYCON + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssycon.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssycon.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssycon.f"> 
+*> Download SSYCON + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssycon.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssycon.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssycon.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYCON( UPLO, N, A, LDA, IPIV, ANORM, RCOND, WORK,
 *                          IWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -32702,7 +32703,7 @@ c
 *       INTEGER            IPIV( * ), IWORK( * )
 *       REAL               A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -32789,10 +32790,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -32919,24 +32920,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLACN2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slacn2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slacn2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slacn2.f"> 
+*> Download SLACN2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slacn2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slacn2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slacn2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLACN2( N, V, X, ISGN, EST, KASE, ISAVE )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            KASE, N
 *       REAL               EST
@@ -32945,7 +32946,7 @@ c
 *       INTEGER            ISGN( * ), ISAVE( 3 )
 *       REAL               V( * ), X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -32992,7 +32993,7 @@ c
 *>          EST is REAL
 *>         On entry with KASE = 1 or 2 and ISAVE(1) = 3, EST should be
 *>         unchanged from the previous call to SLACN2.
-*>         On exit, EST is an estimate (a lower bound) for norm(A). 
+*>         On exit, EST is an estimate (a lower bound) for norm(A).
 *> \endverbatim
 *>
 *> \param[in,out] KASE
@@ -33013,10 +33014,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -33214,24 +33215,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYTRS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytrs.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytrs.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytrs.f"> 
+*> Download SSYTRS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytrs.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytrs.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytrs.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYTRS( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, LDB, N, NRHS
@@ -33240,7 +33241,7 @@ c
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), B( LDB, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -33320,10 +33321,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -33655,29 +33656,29 @@ c
 *     End of SSYTRS
 *
       END
-	  
+
 *> \brief \b SSYTRI
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SSYTRI + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytri.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytri.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytri.f"> 
+*> Download SSYTRI + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssytri.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/ssytri.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssytri.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SSYTRI( UPLO, N, A, LDA, IPIV, WORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -33686,7 +33687,7 @@ c
 *       INTEGER            IPIV( * )
 *       REAL               A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -33760,10 +33761,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -34042,25 +34043,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SPOCON + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spocon.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spocon.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spocon.f"> 
+*> Download SPOCON + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/spocon.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/spocon.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/spocon.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SPOCON( UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK,
 *                          INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
 *       INTEGER            INFO, LDA, N
@@ -34070,14 +34071,14 @@ c
 *       INTEGER            IWORK( * )
 *       REAL               A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
 *>
 *> \verbatim
 *>
-*> SPOCON estimates the reciprocal of the condition number (in the 
+*> SPOCON estimates the reciprocal of the condition number (in the
 *> 1-norm) of a real symmetric positive definite matrix using the
 *> Cholesky factorization A = U**T*U or A = L*L**T computed by SPOTRF.
 *>
@@ -34148,10 +34149,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -34259,6 +34260,7 @@ c
 *           Multiply by inv(L).
 *
             CALL SLATRS( 'Lower', 'No transpose', 'Non-unit', NORMIN, N,
+*        Multiply by 1/SCALE if doing so will not cause overflow.
      $                   A, LDA, WORK, SCALEL, WORK( 2*N+1 ), INFO )
             NORMIN = 'Y'
 *
@@ -34268,7 +34270,6 @@ c
      $                   LDA, WORK, SCALEU, WORK( 2*N+1 ), INFO )
          END IF
 *
-*        Multiply by 1/SCALE if doing so will not cause overflow.
 *
          SCALE = SCALEL*SCALEU
          IF( SCALE.NE.ONE ) THEN
@@ -34295,24 +34296,24 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SRSCL + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/srscl.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/srscl.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/srscl.f"> 
+*> Download SRSCL + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/srscl.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/srscl.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/srscl.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SRSCL( N, SA, SX, INCX )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INCX, N
 *       REAL               SA
@@ -34320,7 +34321,7 @@ c
 *       .. Array Arguments ..
 *       REAL               SX( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -34365,10 +34366,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -34470,25 +34471,25 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLATRS + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slatrs.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slatrs.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slatrs.f"> 
+*> Download SLATRS + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slatrs.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slatrs.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slatrs.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLATRS( UPLO, TRANS, DIAG, NORMIN, N, A, LDA, X, SCALE,
 *                          CNORM, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, NORMIN, TRANS, UPLO
 *       INTEGER            INFO, LDA, N
@@ -34497,7 +34498,7 @@ c
 *       .. Array Arguments ..
 *       REAL               A( LDA, * ), CNORM( * ), X( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -34621,10 +34622,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -35257,28 +35258,28 @@ c
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SLABAD + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slabad.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slabad.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slabad.f"> 
+*> Download SLABAD + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slabad.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/slabad.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slabad.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE SLABAD( SMALL, LARGE )
-* 
+*
 *       .. Scalar Arguments ..
 *       REAL               LARGE, SMALL
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -35317,10 +35318,10 @@ c
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -35719,5 +35720,5 @@ c
 *     End of STRSV .
 *
       END
-	  
+
 #endif

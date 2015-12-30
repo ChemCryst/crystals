@@ -152,7 +152,7 @@ CxWindow * CxWindow::CreateCxWindow( CrWindow * container, void * parentWindow, 
 {
 
   ostringstream strm;
-  strm << "CxWindow created. Parent = " << (long)parentWindow;
+  strm << "CxWindow created. Parent = " << (uintptr_t)parentWindow;
   LOGSTAT ( strm.str() );
 
   CxWindow *theWindow = new CxWindow( container, attributes);

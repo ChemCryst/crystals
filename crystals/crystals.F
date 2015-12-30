@@ -47,6 +47,14 @@ C
 #if defined(CRY_NOGUI)
       PROGRAM CRYSTAL
       use hdf5_dsc
+
+      INTERFACE
+       SUBROUTINE CRYSTL() BIND(C)
+         USE, INTRINSIC :: ISO_C_BINDING
+         IMPLICIT NONE
+       END SUBROUTINE CRYSTL
+      END INTERFACE
+
       character(len=256) :: args_value
       integer :: args_count, i, found
 
@@ -55,15 +63,15 @@ C Look for arguments from the command line
       if(args_count>0) then
         ! Search for hdf5 switch
         do i=1, args_count
-          call get_command_argument(i , args_value) 
-          found = index(args_value, '--hdf5') 
+          call get_command_argument(i , args_value)
+          found = index(args_value, '--hdf5')
           if(found>0) then
             hdf5_in_use = .true.
             print *, 'Experimental use of hdf5 files'
           end if
         end do
       end if
-              
+
       CALL CRYSTL()
       END
 #endif
@@ -118,7 +126,7 @@ C
 C -- DECLARE LIST 11 REFERENCES TO RESERVE EXTENSIBLE COMMON
 C
       EXTERNAL XFAL11,KADD11,XIN11
-#ifdef _DOS_ 
+#ifdef _DOS_
       EXTERNAL MYDRIV
 C
 C -- SET UP AVAILABLE PROGRAM LIST.
@@ -126,7 +134,7 @@ C    NAMES RESTRICTED TO FIRST 16 CHARACTERS OF THOSE IN COMMANDFILE
 C
 #endif
       DATA NPROG / 18 /
-#if !defined(_HOL_) 
+#if !defined(_HOL_)
       DATA PROGLS(1,1)  / 'CRYS' / , PROGLS(2,1)  / 'TALS' /
       DATA PROGLS(3,1)  / 'INPU' / , PROGLS(4,1)  / 'T   ' /
       DATA PROGLS(1,2)  / 'CRYS' / , PROGLS(2,2)  / 'TALS' /
@@ -166,7 +174,7 @@ C
 #else
       DATA PROGLS(1,1)  / 4HCRYS / , PROGLS(2,1)  / 4HTALS /
 #endif
-#ifdef _HOL_ 
+#ifdef _HOL_
       DATA PROGLS(3,1)  / 4HINPU / , PROGLS(4,1)  / 4HT    /
       DATA PROGLS(1,2)  / 4HCRYS / , PROGLS(2,2)  / 4HTALS /
       DATA PROGLS(3,2)  / 4HFIDD / , PROGLS(4,2)  / 4HLE   /
@@ -209,7 +217,7 @@ C Re-initialise system variables in case starting again.
 C
 C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
       CALL FBCINI
-#ifdef _DOS_ 
+#ifdef _DOS_
       call suppress_argument_type_checks@
 #endif
 C
@@ -221,7 +229,7 @@ C----- ALTERNATIVELY, THAY CAN BE SET HERE
 C      CSSCST = '\CRYSTALS\SRT\CRYSTALS.SRT'
 C      LSSCST =  26
 C
-#ifdef _DOS_ 
+#ifdef _DOS_
 C----- HOOK IN THE SALFORD DOS DRIVER TO COUNT LINES
 CWIN_32&DOS      OPEN ( NCVDU, STATUS = 'UNKNOWN', DRIVER = MYDRIV)
 C
