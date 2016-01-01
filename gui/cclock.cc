@@ -9,6 +9,7 @@
 //   Created:   9.5.2001 10:12am
 
 #include    "crystalsinterface.h"
+#include <cstdint>
 #include    "cclock.h"
 #include    <string>
 #include    <sstream>
