@@ -3,12 +3,23 @@
 enable_language(Fortran)
 
 add_definitions(-D_GIL_)
+add_definitions(-DCRY_OSWIN32)
+add_definitions(-DCRY_GNU)
+#add_definitions(-DCRY_OWNLAPACK)
 add_definitions(-D_GNUF77_)
+ADD_DEFINITIONS(-D_NOHDF5_)
+ADD_DEFINITIONS(-fno-sign-zero)
+
+if ( useGUI )
 add_definitions(-D__WXMAC__)
 add_definitions(-D__WXOSX__)
 add_definitions(-D__WXOSX_COCOA__)
 add_definitions(-D__WXUSINGDLL)
-add_definitions(-std=legacy)
+add_definitions(-DCRY_GUI)
+else()
+add_definitions(-DCRY_NOGUI)
+endif()
+#add_definitions(-std=legacy)
 add_definitions(-fno-automatic)
 add_definitions(-fno-inline)
 add_definitions(-fexceptions)
@@ -17,7 +28,17 @@ add_definitions(-D _HOL_)
 #add_definitions(-arch x86_64)
 
 
-add_library(CrystalsFortran STATIC 
+add_library(CrystalsFortran OBJECT
+crystals_hdf5.F90
+xdaval.inc.F90
+xunits.inc.F90
+xssval.inc.F90
+xerval.inc.F90
+xiobuf.inc.F90
+xdisc.inc.F90
+solve_helper.F90
+mrgrnk.F90
+${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.f90
 absorb.F
 accumula.F
 alter5.F
@@ -96,3 +117,5 @@ vcv.F
 weight.F
 lapack.F
 )
+
+SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)

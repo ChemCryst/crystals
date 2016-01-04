@@ -9,6 +9,11 @@
 //   Created:   9.5.2001 10:12am
 
 #include    "crystalsinterface.h"
+
+#ifdef __GIL__
+#include <cstdint>
+#endif 
+
 #include    "cclock.h"
 #include    <string>
 #include    <sstream>
@@ -80,7 +85,7 @@ void CcLock::Enter()
     if (!( m_CSMutex -> Lock() == wxMUTEX_NO_ERROR) )
     {
        ostringstream strm;
-       strm << "----Failed to lock mutex " << (long)this << "\n";
+       strm << "----Failed to lock mutex " << (uintptr_t)this << "\n";
        LOGSTAT (strm.str());
     }
     m_Locked ++;

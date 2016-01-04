@@ -1178,7 +1178,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 CrWindow* mWindowToClose = (CrWindow*)FindObject(tokenList.front()); //Find window by name.
                 tokenList.pop_front();
                 ostringstream strstrm;
-                strstrm << (long) mWindowToClose;
+                strstrm << (uintptr_t) mWindowToClose;
                 LOGSTAT("CcController: Found window " + strstrm.str() );
                 mWindowList.remove(mWindowToClose);
 
@@ -3543,7 +3543,7 @@ extern "C" {
       if ( match != string::npos ) {
          char buf[MAX_PATH];
          tstring tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
+         if ( (uintptr_t)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3580,7 +3580,7 @@ extern "C" {
 
       int err = (int)ShellExecuteExA ( & si );
 
-      if ( (int)si.hInstApp == SE_ERR_NOASSOC )
+      if ( (uintptr_t)si.hInstApp == SE_ERR_NOASSOC )
       {
         (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
         tstring newparam = tstring("shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
@@ -3604,7 +3604,7 @@ extern "C" {
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
         CcController::theController->AddInterfaceCommand( " ");
       }
-      else if ( (int)si.hInstApp <= 32 )
+      else if ( (uintptr_t)si.hInstApp <= 32 )
       {
         (CcController::theController)->AddInterfaceCommand( "Could not launch as Win process. Trying command prompt.");
 
@@ -3623,7 +3623,7 @@ extern "C" {
  
         err = (int)ShellExecuteExA ( & si );
 
-        if ( (int)si.hInstApp > 32 ) {
+        if ( (uintptr_t)si.hInstApp > 32 ) {
           CcController::theController->AddInterfaceCommand( " ");
           stringstream t;
           t << "     {0,2 Waiting for {2,0 " << firstTok.c_str() << " {0,2 to finish... ";
@@ -3826,7 +3826,7 @@ extern "C" {
       if ( match != string::npos ) {
          char buf[MAX_PATH];
          tstring tempfile = firstTok.substr(0,match);
-         if ( (int)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
+         if ( (uintptr_t)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
@@ -3855,7 +3855,7 @@ extern "C" {
                                    NULL,
                                    SW_SHOWNORMAL);
 
-      if ( (int)ex == SE_ERR_NOASSOC )
+      if ( (uintptr_t)ex == SE_ERR_NOASSOC )
       {
         (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
          ShellExecuteA( GetDesktopWindow(),
@@ -3865,7 +3865,7 @@ extern "C" {
                        NULL,
                        SW_SHOWNORMAL);
       }
-      else if ( (int)ex <= 32 )
+      else if ( (uintptr_t)ex <= 32 )
       {
 
         (CcController::theController)->AddInterfaceCommand( "Could not launch Win process. Trying command prompt." );

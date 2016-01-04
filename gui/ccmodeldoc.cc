@@ -325,7 +325,7 @@ void CcModelDoc::Clear()
 void CcModelDoc::AddModelView(CrModel * aView)
 {
         ostringstream strm;
-        strm << attachedViews.size() << " " << (long) aView << " " << (long) this;
+        strm << attachedViews.size() << " " << (uintptr_t) aView << " " << (uintptr_t) this;
 	LOGSTAT ( "Adding CrModel View to list in CcModelDoc. Current list size: " + strm.str() );
     attachedViews.remove(aView);    // Ensure only exists once in list.
     attachedViews.push_back(aView);

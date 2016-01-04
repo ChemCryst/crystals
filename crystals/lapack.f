@@ -2,17 +2,153 @@
 C The functions in this file are only required on Digital compiler builds
 C other platforms use external libraries (MKL or OpenBLAS).
 
-#ifdef CRY_FORTDIGITAL
+#if defined (CRY_FORTDIGITAL) || defined (CRY_OWNLAPACK)
+
+************************************************************************
+*
+      REAL             FUNCTION SLAMC3( A, B )
+*
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     October 31, 1992
+*
+*     .. Scalar Arguments ..
+      REAL               A, B
+      VOLATILE A,B
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAMC3  is intended to force  A  and  B  to be stored prior to doing
+*  the addition of  A  and  B ,  for use in situations where optimizers
+*  might hold one of these in a register.
+*
+*  Arguments
+*  =========
+*
+*  A, B    (input) REAL
+*          The values A and B.
+*
+* =====================================================================
+*
+*     .. Executable Statements ..
+*
+      SLAMC3 = A + B
+*
+      RETURN
+*
+*     End of SLAMC3
+*
+      END
+*
+************************************************************************
+*
+      SUBROUTINE SLAMC4( EMIN, START, BASE )
+*
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     October 31, 1992
+*
+*     .. Scalar Arguments ..
+      INTEGER            BASE, EMIN
+      REAL               START
+      VOLATILE START
+*     ..
+*
+*  Purpose
+*  =======
+*
+*  SLAMC4 is a service routine for SLAMC2.
+*
+*  Arguments
+*  =========
+*
+*  EMIN    (output) EMIN
+*          The minimum exponent before (gradual) underflow, computed by
+*          setting A = START and dividing by BASE until the previous A
+*          can not be recovered.
+*
+*  START   (input) REAL
+*          The starting point for determining EMIN.
+*
+*  BASE    (input) INTEGER
+*          The base of the machine.
+*
+* =====================================================================
+*
+*     .. Local Scalars ..
+      INTEGER            I
+      REAL               A, B1, B2, C1, C2, D1, D2, ONE, RBASE, ZERO
+*     ..
+*     .. External Functions ..
+*      REAL               SLAMC3
+*      EXTERNAL           SLAMC3
+       interface
+        real function slamc3(as3,bs3)
+          real as3,bs3
+          volatile as3
+          volatile bs3
+        end function slamc3
+       end interface
+*     ..
+*     .. Executable Statements ..
+*
+      A = START
+      ONE = 1
+      RBASE = ONE / BASE
+      ZERO = 0
+      EMIN = 1
+      B1 = SLAMC3( A*RBASE, ZERO )
+      C1 = A
+      C2 = A
+      D1 = A
+      D2 = A
+*+    WHILE( ( C1.EQ.A ).AND.( C2.EQ.A ).AND.
+*    $       ( D1.EQ.A ).AND.( D2.EQ.A )      )LOOP
+   10 CONTINUE
+      IF( ( C1.EQ.A ) .AND. ( C2.EQ.A ) .AND. ( D1.EQ.A ) .AND.
+     $    ( D2.EQ.A ) ) THEN
+         EMIN = EMIN - 1
+         A = B1
+         B1 = SLAMC3( A / BASE, ZERO )
+         C1 = SLAMC3( B1*BASE, ZERO )
+         D1 = ZERO
+         DO 20 I = 1, BASE
+            D1 = D1 + B1
+   20    CONTINUE
+         B2 = SLAMC3( A*RBASE, ZERO )
+         C2 = SLAMC3( B2 / RBASE, ZERO )
+         D2 = ZERO
+         DO 30 I = 1, BASE
+            D2 = D2 + B2
+   30    CONTINUE
+         GO TO 10
+      END IF
+*+    END WHILE
+*
+      RETURN
+*
+*     End of SLAMC4
+*
+      END
+*
+************************************************************************
+
 
 C This file must be compiled without optimisations...
 
 
       REAL             FUNCTION SLAMCH( CMACH )
+
+
 *
 *  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992 
+*     October 31, 1992
 *
 *     .. Scalar Arguments ..
       CHARACTER          CMACH
@@ -197,8 +333,15 @@ C This file must be compiled without optimisations...
       REAL               A, B, C, F, ONE, QTR, SAVEC, T1, T2
 *     ..
 *     .. External Functions ..
-      REAL               SLAMC3
-      EXTERNAL           SLAMC3
+*      REAL               SLAMC3
+*      EXTERNAL           SLAMC3
+      interface
+        real function slamc3(as3,bs3)
+        real :: as3,bs3
+        volatile as3
+        volatile bs3
+        end function slamc3
+      end interface
 *     ..
 *     .. Save statement ..
       SAVE               FIRST, LIEEE1, LBETA, LRND, LT
@@ -392,6 +535,8 @@ C This file must be compiled without optimisations...
 *
 * =====================================================================
 *
+*
+*     .. Local Scalars ..
 *     .. Local Scalars ..
       LOGICAL            FIRST, IEEE, IWARN, LIEEE1, LRND
       INTEGER            GNMIN, GPMIN, I, LBETA, LEMAX, LEMIN, LT,
@@ -402,8 +547,15 @@ C This file must be compiled without optimisations...
       VOLATILE SMALL,THIRD,TWO,ZERO
 *     ..
 *     .. External Functions ..
-      REAL               SLAMC3
-      EXTERNAL           SLAMC3
+*      REAL               SLAMC3
+       interface
+        real function slamc3(as3,bs3)
+        real :: as3,bs3
+        volatile as3
+        volatile bs3
+        end function slamc3
+       end interface
+*      EXTERNAL           SLAMC3
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SLAMC1, SLAMC4, SLAMC5
@@ -586,131 +738,6 @@ C This file must be compiled without optimisations...
 *
       END
 *
-************************************************************************
-*
-      REAL             FUNCTION SLAMC3( A, B )
-*
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
-*
-*     .. Scalar Arguments ..
-      REAL               A, B
-      VOLATILE A,B
-*     ..
-*
-*  Purpose
-*  =======
-*
-*  SLAMC3  is intended to force  A  and  B  to be stored prior to doing
-*  the addition of  A  and  B ,  for use in situations where optimizers
-*  might hold one of these in a register.
-*
-*  Arguments
-*  =========
-*
-*  A, B    (input) REAL
-*          The values A and B.
-*
-* =====================================================================
-*
-*     .. Executable Statements ..
-*
-      SLAMC3 = A + B
-*
-      RETURN
-*
-*     End of SLAMC3
-*
-      END
-*
-************************************************************************
-*
-      SUBROUTINE SLAMC4( EMIN, START, BASE )
-*
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
-*
-*     .. Scalar Arguments ..
-      INTEGER            BASE, EMIN
-      REAL               START
-      VOLATILE START
-*     ..
-*
-*  Purpose
-*  =======
-*
-*  SLAMC4 is a service routine for SLAMC2.
-*
-*  Arguments
-*  =========
-*
-*  EMIN    (output) EMIN
-*          The minimum exponent before (gradual) underflow, computed by
-*          setting A = START and dividing by BASE until the previous A
-*          can not be recovered.
-*
-*  START   (input) REAL
-*          The starting point for determining EMIN.
-*
-*  BASE    (input) INTEGER
-*          The base of the machine.
-*
-* =====================================================================
-*
-*     .. Local Scalars ..
-      INTEGER            I
-      REAL               A, B1, B2, C1, C2, D1, D2, ONE, RBASE, ZERO
-*     ..
-*     .. External Functions ..
-      REAL               SLAMC3
-      EXTERNAL           SLAMC3
-*     ..
-*     .. Executable Statements ..
-*
-      A = START
-      ONE = 1
-      RBASE = ONE / BASE
-      ZERO = 0
-      EMIN = 1
-      B1 = SLAMC3( A*RBASE, ZERO )
-      C1 = A
-      C2 = A
-      D1 = A
-      D2 = A
-*+    WHILE( ( C1.EQ.A ).AND.( C2.EQ.A ).AND.
-*    $       ( D1.EQ.A ).AND.( D2.EQ.A )      )LOOP
-   10 CONTINUE
-      IF( ( C1.EQ.A ) .AND. ( C2.EQ.A ) .AND. ( D1.EQ.A ) .AND.
-     $    ( D2.EQ.A ) ) THEN
-         EMIN = EMIN - 1
-         A = B1
-         B1 = SLAMC3( A / BASE, ZERO )
-         C1 = SLAMC3( B1*BASE, ZERO )
-         D1 = ZERO
-         DO 20 I = 1, BASE
-            D1 = D1 + B1
-   20    CONTINUE
-         B2 = SLAMC3( A*RBASE, ZERO )
-         C2 = SLAMC3( B2 / RBASE, ZERO )
-         D2 = ZERO
-         DO 30 I = 1, BASE
-            D2 = D2 + B2
-   30    CONTINUE
-         GO TO 10
-      END IF
-*+    END WHILE
-*
-      RETURN
-*
-*     End of SLAMC4
-*
-      END
-*
-************************************************************************
 *
       SUBROUTINE SLAMC5( BETA, P, EMIN, IEEE, EMAX, RMAX )
 *
@@ -765,14 +792,23 @@ C This file must be compiled without optimisations...
       REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0 )
 *     ..
+*
+      interface
+        real function slamc3(as3,bs3)
+        real :: as3,bs3
+        volatile as3
+        volatile bs3
+        end function slamc3
+      end interface
+*     .. Local Scalars ..
 *     .. Local Scalars ..
       INTEGER            EXBITS, EXPSUM, I, LEXP, NBITS, TRY, UEXP
       REAL               OLDY, RECBAS, Y, Z
       VOLATILE OLDY,RECBAS,Y,Z
 *     ..
 *     .. External Functions ..
-      REAL               SLAMC3
-      EXTERNAL           SLAMC3
+*      REAL               SLAMC3
+*      EXTERNAL           SLAMC3
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MOD
@@ -1572,24 +1608,24 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGETF2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgetf2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgetf2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgetf2.f"> 
+*> Download DGETF2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgetf2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgetf2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgetf2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGETF2( M, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -1597,7 +1633,7 @@ C This file must be compiled without optimisations...
 *       INTEGER            IPIV( * )
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -1666,10 +1702,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -1698,11 +1734,11 @@ C This file must be compiled without optimisations...
       PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      DOUBLE PRECISION   SFMIN 
+      DOUBLE PRECISION   SFMIN
       INTEGER            I, J, JP
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH      
+      DOUBLE PRECISION   DLAMCH
       INTEGER            IDAMAX
       EXTERNAL           DLAMCH, IDAMAX
 *     ..
@@ -1734,9 +1770,9 @@ C This file must be compiled without optimisations...
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *
-*     Compute machine safe minimum 
-* 
-      SFMIN = DLAMCH('S')  
+*     Compute machine safe minimum
+*
+      SFMIN = DLAMCH('S')
 *
       DO 10 J = 1, MIN( M, N )
 *
@@ -1753,15 +1789,15 @@ C This file must be compiled without optimisations...
 *
 *           Compute elements J+1:M of J-th column.
 *
-            IF( J.LT.M ) THEN 
-               IF( ABS(A( J, J )) .GE. SFMIN ) THEN 
-                  CALL DSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 ) 
-               ELSE 
-                 DO 20 I = 1, M-J 
-                    A( J+I, J ) = A( J+I, J ) / A( J, J ) 
-   20            CONTINUE 
-               END IF 
-            END IF 
+            IF( J.LT.M ) THEN
+               IF( ABS(A( J, J )) .GE. SFMIN ) THEN
+                  CALL DSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
+               ELSE
+                 DO 20 I = 1, M-J
+                    A( J+I, J ) = A( J+I, J ) / A( J, J )
+   20            CONTINUE
+               END IF
+            END IF
 *
          ELSE IF( INFO.EQ.0 ) THEN
 *
@@ -1785,24 +1821,24 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGETRF + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgetrf.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgetrf.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgetrf.f"> 
+*> Download DGETRF + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgetrf.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgetrf.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgetrf.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGETRF( M, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -1810,7 +1846,7 @@ C This file must be compiled without optimisations...
 *       INTEGER            IPIV( * )
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -1879,10 +1915,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2015
 *
@@ -2010,14 +2046,14 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *      DOUBLE PRECISION FUNCTION DLAMCH( CMACH )
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -2059,10 +2095,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2015
 *
@@ -2199,24 +2235,24 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DLASWP + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaswp.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaswp.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaswp.f"> 
+*> Download DLASWP + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaswp.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlaswp.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaswp.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DLASWP( N, A, LDA, K1, K2, IPIV, INCX )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INCX, K1, K2, LDA, N
 *       ..
@@ -2224,7 +2260,7 @@ C This file must be compiled without optimisations...
 *       INTEGER            IPIV( * )
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -2290,10 +2326,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -2391,28 +2427,28 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download IPARMQ + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/iparmq.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/iparmq.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/iparmq.f"> 
+*> Download IPARMQ + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/iparmq.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/iparmq.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/iparmq.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            IHI, ILO, ISPEC, LWORK, N
 *       CHARACTER          NAME*( * ), OPTS*( * )
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -2531,10 +2567,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2015
 *
@@ -2787,24 +2823,24 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGETRI + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgetri.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgetri.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgetri.f"> 
+*> Download DGETRI + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgetri.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgetri.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgetri.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DGETRI( N, A, LDA, IPIV, WORK, LWORK, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LWORK, N
 *       ..
@@ -2812,7 +2848,7 @@ C This file must be compiled without optimisations...
 *       INTEGER            IPIV( * )
 *       DOUBLE PRECISION   A( LDA, * ), WORK( * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -2887,10 +2923,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -3048,24 +3084,24 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTRTI2 + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtrti2.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtrti2.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtrti2.f"> 
+*> Download DTRTI2 + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtrti2.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtrti2.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtrti2.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DTRTI2( UPLO, DIAG, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, UPLO
 *       INTEGER            INFO, LDA, N
@@ -3073,7 +3109,7 @@ C This file must be compiled without optimisations...
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -3144,10 +3180,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date September 2012
 *
@@ -3260,24 +3296,24 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTRTRI + dependencies 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtrtri.f"> 
-*> [TGZ]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtrtri.f"> 
-*> [ZIP]</a> 
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtrtri.f"> 
+*> Download DTRTRI + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dtrtri.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dtrtri.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dtrtri.f">
 *> [TXT]</a>
-*> \endhtmlonly 
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DTRTRI( UPLO, DIAG, N, A, LDA, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       CHARACTER          DIAG, UPLO
 *       INTEGER            INFO, LDA, N
@@ -3285,7 +3321,7 @@ C This file must be compiled without optimisations...
 *       .. Array Arguments ..
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -3355,10 +3391,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -3565,14 +3601,14 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       RECURSIVE SUBROUTINE DGETRF2( M, N, A, LDA, IPIV, INFO )
-* 
+*
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, M, N
 *       ..
@@ -3580,7 +3616,7 @@ C This file must be compiled without optimisations...
 *       INTEGER            IPIV( * )
 *       DOUBLE PRECISION   A( LDA, * )
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -3598,11 +3634,11 @@ C This file must be compiled without optimisations...
 *>
 *> This is the recursive version of the algorithm. It divides
 *> the matrix into four submatrices:
-*>            
+*>
 *>        [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
 *>    A = [ -----|----- ]  with n1 = min(m,n)
 *>        [  A21 | A22  ]       n2 = n-n1
-*>            
+*>
 *>                                       [ A11 ]
 *> The subroutine calls itself to factor [ --- ],
 *>                                       [ A12 ]
@@ -3664,10 +3700,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2015
 *
@@ -3802,12 +3838,12 @@ C This file must be compiled without optimisations...
 *
 *        Solve A12
 *
-         CALL DTRSM( 'L', 'L', 'N', 'U', N1, N2, ONE, A, LDA, 
+         CALL DTRSM( 'L', 'L', 'N', 'U', N1, N2, ONE, A, LDA,
      $               A( 1, N1+1 ), LDA )
 *
 *        Update A22
 *
-         CALL DGEMM( 'N', 'N', M-N1, N2, N1, -ONE, A( N1+1, 1 ), LDA, 
+         CALL DGEMM( 'N', 'N', M-N1, N2, N1, -ONE, A( N1+1, 1 ), LDA,
      $               A( 1, N1+1 ), LDA, ONE, A( N1+1, N1+1 ), LDA )
 *
 *        Factor A22
@@ -3838,14 +3874,14 @@ C This file must be compiled without optimisations...
 *
 *  =========== DOCUMENTATION ===========
 *
-* Online html documentation available at 
-*            http://www.netlib.org/lapack/explore-html/ 
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
 *
 *  Definition:
 *  ===========
 *
 *       SUBROUTINE DTRSM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,LDA,B,LDB)
-* 
+*
 *       .. Scalar Arguments ..
 *       DOUBLE PRECISION ALPHA
 *       INTEGER LDA,LDB,M,N
@@ -3854,7 +3890,7 @@ C This file must be compiled without optimisations...
 *       .. Array Arguments ..
 *       DOUBLE PRECISION A(LDA,*),B(LDB,*)
 *       ..
-*  
+*
 *
 *> \par Purpose:
 *  =============
@@ -3948,7 +3984,7 @@ C This file must be compiled without optimisations...
 *> \param[in] A
 *> \verbatim
 *>          A is DOUBLE PRECISION array of DIMENSION ( LDA, k ),
-*>           where k is m when SIDE = 'L' or 'l'  
+*>           where k is m when SIDE = 'L' or 'l'
 *>             and k is n when SIDE = 'R' or 'r'.
 *>           Before entry  with  UPLO = 'U' or 'u',  the  leading  k by k
 *>           upper triangular part of the array  A must contain the upper
@@ -3990,10 +4026,10 @@ C This file must be compiled without optimisations...
 *  Authors:
 *  ========
 *
-*> \author Univ. of Tennessee 
-*> \author Univ. of California Berkeley 
-*> \author Univ. of Colorado Denver 
-*> \author NAG Ltd. 
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
 *
 *> \date November 2011
 *
@@ -4281,11 +4317,11 @@ C This file must be compiled without optimisations...
 
 #else
 
-C Sometimes Intel doesn't like compiling empty files - give it a dummy subroutine to 
+C Sometimes Intel doesn't like compiling empty files - give it a dummy subroutine to
 C keep it occupied.
 
       SUBROUTINE DUMINTEL( I, J, K )
-      
+
       I = J + K
 
       RETURN

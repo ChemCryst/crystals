@@ -1464,6 +1464,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+ Directive   3 DISTANCE    : No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -1841,10 +1842,10 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for   206 least squares parameters, with 12585 degrees of freedom
- Number of observations             12575               216             12791
+ Statistics for   206 least squares parameters, with 12584 degrees of freedom
+ Number of observations             12575               215             12790
 [30]  Minimisation function              0.13 E+06         0.13 E+06         0.26 E+06
-[45]  Hamilton weighted R-value           4.             15.99              6. 
+[45]  Hamilton weighted R-value           4.             16.07              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -2344,7 +2345,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
 [37]      H          1.    1.00    1.00    0.21    0.39    0.37    0.05
                       0.0000           -0.0012   0.0004  -0.0023  -0.0007
-                      0.0000            0.0084   0.0079   0.0068   0.0338
+                      0.0000            0.0084   0.0079   0.0068   0.0339
 [31]                                         0.122    0.123    0.128 
 
 [37]      H        116.    1.00    1.00    0.51    0.41    0.11    0.07
@@ -3934,7 +3935,7 @@ Mean C-C su =   0.0129
 [61]    11.   0.   0.    32.     21.
 [61]    13.   0.   0.    32.     39.
    -2.   1.   0.    37.12    20.32
-   -1.   1.   0.   128.00   110.33
+   -1.   1.   0.   128.00   110.34
 [61]     0.   1.   0.   235.    314.
 [61]     1.   1.   0.   256.    287.
 [61]     2.   1.   0.    14.      8.
@@ -4619,8 +4620,8 @@ Mean C-C su =   0.0121
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      12080 Physical writes      10102 Cache hits     208187
- Cache hit distribution   189038   13263    2087     484     297     540
+ Physical reads      12080 Physical writes      10102 Cache hits     208186
+ Cache hit distribution   189037   13263    2087     484     297     540
  Cache hit distribution      190     116     187     245     236     216
  Cache hit distribution      152     144     199     114     208     126
  Cache hit distribution       92      55      35      43      53      67

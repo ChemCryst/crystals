@@ -46,7 +46,7 @@ int CxMenu::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 #else
       Append( id, text.c_str(), menuToAdd);
       ostringstream strm;
-      strm <<  "cxmenu " << (long)this << " adding submenu called " << 
+      strm <<  "cxmenu " << (uintptr_t)this << " adding submenu called " << 
 text;
       LOGSTAT ( strm.str() );
 #endif
@@ -61,7 +61,7 @@ int CxMenu::AddItem(const string & text, int position)
 #else
       Append( id, wxString(text.c_str()), wxString("") );
       ostringstream strm;
-      strm << "cxmenu " << (long)this << " adding item called " << text ;
+      strm << "cxmenu " << (uintptr_t)this << " adding item called " << text ;
       LOGSTAT (strm.str());
 #endif
     return id;

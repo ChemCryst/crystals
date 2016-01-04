@@ -25,7 +25,7 @@ else
     CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
 
-    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D__$(COMPCODE)__
+    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D__$(COMPCODE)__ -std=gnu++11
     CFLAGS = -s -D__$(COMPCODE)__
 
     CXX = g++51

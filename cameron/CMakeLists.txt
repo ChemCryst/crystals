@@ -2,14 +2,20 @@
 
 enable_language(Fortran)
 
-add_definitions(-D_GIL_)
-add_definitions(-D_GNUF77_)
-add_definitions(-D__WXMAC__)
-add_definitions(-D__WXOSX__)
-add_definitions(-D__WXOSX_COCOA__)
+if ( useGUI )
+#add_definitions(-D_GIL_)
+#add_definitions(-D__WXMAC__)
+#add_definitions(-D__WXOSX__)
+#add_definitions(-D__WXOSX_COCOA__)
 add_definitions(-D__WXUSINGDLL)
+endif()
+
+add_definitions(-D_GNUF77_)
 add_definitions(-std=legacy)
-add_definitions(-I/Users/richard.cooper/crystals/crystals)
+#add_definitions(-I/Users/richard.cooper/crystals/crystals)
+add_definitions(-I${CMAKE_CURRENT_SOURCE_DIR}/../crystals)
+add_definitions(-I${CMAKE_CURRENT_BINARY_DIR}/../crystals)
+
 add_definitions(-fno-automatic)
 add_definitions(-fno-inline)
 add_definitions(-fexceptions)
