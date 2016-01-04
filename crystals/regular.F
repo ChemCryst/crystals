@@ -3573,7 +3573,7 @@ CDJW OCT2010
         CALL XCRAS(COLD,LOS)
         CALL XCRAS(CNEW,LNS)
         IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(A,2X,A,4x,3F8.3)')
+          WRITE(NCWU,'(A,2X,A,4x,3F8.2)')
      1     COLD(1:36), CNEW(1:36), T1,T2,TP
         ENDIF
 
