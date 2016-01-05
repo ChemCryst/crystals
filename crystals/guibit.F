@@ -833,7 +833,7 @@ C Calculate sum of x, y and z as we go.
             DO I = L5, L5+(N5-1)*MD5, MD5
               !CALL XMLTTM(STORE(L1O1),STORE(I+4),STR11(IPLACE),3,3,1)
               STR11(IPLACE:IPLACE+2) = 
-     1           matmul(transpose(unitcells(1)%orthogonalisation()), 
+     1           matmul(unitcells(1)%orthogonalisation(), 
      2           STORE(I+4:I+4+2))
               XMIN = MIN(XMIN,STR11(IPLACE))
               YMIN = MIN(YMIN,STR11(IPLACE+1))
@@ -1234,7 +1234,7 @@ c              CALL XPRVDU(NCVDU,1,0)
 C -- Orthogonalise
                   !CALL XMLTTM(STORE(L1O1),TXYZ(7),TXYZ(1),3,3,1)
                   TXYZ(1:3) = 
-     1               matmul(transpose(unitcells(1)%orthogonalisation()), 
+     1               matmul(unitcells(1)%orthogonalisation(), 
      2               TXYZ(7:9))
 c              WRITE(CMON,'(A,3F9.3)')'ortho:',(TXYZ(L),L=1,3)
 c              CALL XPRVDU(NCVDU,1,0)
@@ -1257,7 +1257,7 @@ C -- Translate
 C -- Orthogonalise
                   !CALL XMLTTM(STORE(L1O1),TXYZ(7),TXYZ(4),3,3,1)
                   TXYZ(4:6) = 
-     1               matmul(transpose(unitcells(1)%orthogonalisation()), 
+     1               matmul(unitcells(1)%orthogonalisation(), 
      2               TXYZ(7:9))
 C -- Centre with the rest of the molecule.
                   TXYZ(4) = TXYZ(4) - GCENTX
@@ -1367,7 +1367,7 @@ c                 CALL XPRVDU(NCVDU,1,0)
 C Transform centroid into orthogonal (gui) coords.
                !CALL XMLTTM(STORE(L1O1),STR11(ICENT),  TXYZ(1),3,3,1)
                TXYZ(1:3) = 
-     1            matmul(transpose(unitcells(1)%orthogonalisation()), 
+     1            matmul(unitcells(1)%orthogonalisation(), 
      2            STR11(ICENT:ICENT+2))
 
 C Work out matrix for best-plane -> crystal fractions (wrt centroid).
@@ -1375,7 +1375,7 @@ C Work out matrix for best-plane -> crystal fractions (wrt centroid).
                STR11(ICSNE:ICSNE+8) = reshape(
      1            matmul(
      2            reshape(STR11(IVECT:IVECT+8), (/3,3/)), 
-     3            transpose(unitcells(1)%orthogonalisation())
+     3            unitcells(1)%orthogonalisation()
      4            ), (/9/) )
                I=KINV2(3,STR11(ICSNE),STR11(KNF11),9,0,
      1                   STR11(IROOT),STR11(IROOT),3)
@@ -1392,7 +1392,7 @@ C Transform {0,0,1} bp coords to crystal fractions.
 C Convert crystal fractions into orthogonal.
                !CALL XMLTTM (STORE(L1O1),STR11(KNF11+12),TXYZ(4),3,3,1)
                TXYZ(4:6) = 
-     1            matmul(transpose(unitcells(1)%orthogonalisation()), 
+     1            matmul(unitcells(1)%orthogonalisation(), 
      2            STR11(KNF11+12:KNF11+12+2))
                TXYZ(1)   = TXYZ(1) - GCENTX
                TXYZ(2)   = TXYZ(2) - GCENTY
