@@ -449,20 +449,20 @@ C
 C
 CODE FOR CRDIST2
       SUBROUTINE CRDIST2
+      use unitcell_mod
 C--SET UP A BPD VALUES
       INCLUDE 'XCONST.INC'
       INCLUDE 'XPDS.INC'
-      INCLUDE 'XGUIOV.INC'
-C--SET UP THE SHIFT DATA
-      DO 1050 I=1,3
-           K=9+I
-         BPD(I)=0.
-         DO 1000 J=1,I
-            BPD(I)=BPD(I)+GUMTRX(K)*GUMTRX(K)
-                  K=K+3
-1000     CONTINUE
-         BPD(I)=1./SQRT(BPD(I))
-1050  CONTINUE
+      
+      real, dimension(3,3) :: ortho
+      
+      ortho=unitcells(1)%rorthogonalisation()
+      
+      BPD(1)=ortho(1,1)**2      
+      BPD(2)=ortho(1,2)**2+ortho(2,2)**2
+      BPD(3)=ortho(1,3)**2+ortho(2,3)**2+ortho(3,3)**2
+      BPD(1:3)=1.0/sqrt(BPD(1:3))
+      
       RETURN
       END
 
@@ -470,6 +470,7 @@ C--SET UP THE SHIFT DATA
 
 CODE FOR XDSTNCR
       FUNCTION XDSTNCR(A,B)
+      use unitcell_mod
 C--COMPUTE THE DISTANCE SQUARED BETWEEN TWO POINTS
 C
 C  A  VECTOR CONTAINING THE COORDINATES OF THE FIRST POINT.
@@ -479,12 +480,12 @@ C--THE RETURN VALUE OF 'XDSTN2' IS THE DISTANCE SQUARED.
 C
       DIMENSION A(3),B(3),C(3),D(3)
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XGUIOV.INC'
 C
 C--SUBTRACT THE VECTORS
       CALL XSUBTR(A(1),B(1),C(1),3)
 C--ORTHOGONALISE THE DIFFERENCE VECTOR
-      CALL XMLTTM(GUMTRX(1),C(1),D(1),3,3,1)
+      !CALL XMLTTM(GUMTRX(1),C(1),D(1),3,3,1)
+      d=matmul(unitcells(1)%orthogonalisation(), c)
 C--COMPUTE THE DISTANCE
       C(1)=D(1)*D(1)+D(2)*D(2)+D(3)*D(3)
 C--CHECK THE VALUE
@@ -1057,8 +1058,11 @@ C Colour info still not found, use and cache default values:
 c                WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
 c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
                      
-                 CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
-                 CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
+                 !CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
+                 tempor=matmul(unitcells(1)%gumtrx_adps(), tensor)
+                 !CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
+                 tensor=matmul(tempor, transpose(
+     1               unitcells(1)%gumtrx_adps()))
 
 C We now have an orthogonal tensor in TENSOR(3,3).
 

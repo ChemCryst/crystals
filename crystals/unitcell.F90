@@ -37,6 +37,7 @@ contains
     procedure, pass(this) :: Rij_linear ! L1S
     procedure, pass(this) :: adp_coefs ! L1A
     procedure, pass(this) :: iso_to_aniso ! L1C
+    procedure, pass(this) :: gumtrx_adps ! GUMTRX(19:27)
 end type
 
 !> Set the direct cell and reciprocal given either cell (generic interface of ::set_cell, ::set_cella)
@@ -341,6 +342,33 @@ function adp_coefs(this)
     adp_coefs(5)=-4.0*pi**2*this%rc*this%ra
     adp_coefs(6)=-4.0*pi**2*this%ra*this%rb
     
+end function
+
+! Return GUMTRX(19:27) originally defined in XFAL01 when loading list 1
+! It is used to draw the adps on screen
+function gumtrx_adps(this)
+    implicit none
+    class(t_unitcell) :: this
+    real, dimension(3,3) :: gumtrx_adps
+
+    real calp, cbet, cgam, rn
+    real, dimension(3) :: d
+    integer i
+    real, dimension(3,3) :: ortho
+    
+    ortho=this%orthogonalisation()
+    calp=cos(this%alpha)
+    cbet=cos(this%beta)
+    cgam=cos(this%gamma)
+    rn=sqrt(1.0+2.0*calp*cbet*cgam-calp**2-cbet**2-cgam**2)
+    d(1)=sin(this%alpha)/(rn*this%a)
+    d(2)=sin(this%beta)/(rn*this%b)
+    d(3)=sin(this%gamma)/(rn*this%c)
+
+    do i=1,3
+        gumtrx_adps(i,:)=ortho(i,:)*d
+    end do
+
 end function
 
 subroutine printall(this)

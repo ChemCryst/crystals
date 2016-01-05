@@ -365,24 +365,7 @@ C--LOAD THE LIST
 C--LOAD THE LIST IN NEW MODULE      
       if(.not. allocated(unitcells)) allocate(unitcells(1))      
       call unitcells(1)%set(store(icom01(1):icom01(1)+5))      
-      
-C----- LOAD THE MATRIX FOR THE GUI
-      CALP=COS(STORE(L1P1+3))
-      CBET=COS(STORE(L1P1+4))
-      CGAM=COS(STORE(L1P1+5))
-      RN=SQRT(1.0+2.0*CALP*CBET*CGAM-CALP**2-CBET**2-CGAM**2)
-      D(1)=SIN(STORE(L1P1+3))/(RN*STORE(L1P1))
-      D(2)=SIN(STORE(L1P1+4))/(RN*STORE(L1P1+1))
-      D(3)=SIN(STORE(L1P1+5))/(RN*STORE(L1P1+2))
-      DO 110 I=1,3
-       DO 120 J=1,3
-        K=J-3+I*3
-        L=I-3+J*3
-        GUMTRX(K) = STORE(L1O1+K-1)
-        GUMTRX(K+9) = STORE(L1O2+K-1)
-        GUMTRX(L+18)= GUMTRX(K)*D(J)
-120    CONTINUE
-110   CONTINUE
+            
       LGUIL1 = .TRUE.
       RETURN
       END
