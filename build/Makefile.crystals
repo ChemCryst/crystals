@@ -19,6 +19,7 @@ FSLEEFFILES = $(notdir $(wildcard $(SLEEFDIR)/*.f90))
 CSLEEFFILES = $(notdir $(wildcard $(SLEEFDIR)/*.c))
 
 FOBJ     =  $(patsubst %.o, obj/%.o, $(notdir $(CAMFILES:.F=.o) $(CRYFILES90:.F90=.o) $(CRYFILES:.F=.o)) )
+FOBJ    := $(filter-out obj/lapack.o,$(FOBJ))
 ifneq ($(COMPCODE),LIN)
  ifneq ($(COMPCODE),DVF)
   COBJ     = $(patsubst %.o, obj/%.o, $(notdir $(GUIFILES:.cc=.o)))
@@ -46,14 +47,6 @@ ifeq ($(COMPCODE),LIN)
   FOBJ := $(patsubst %.o, obj/%.o, $(notdir $(FSLEEFFILES:.f90=.o))) $(FOBJ)
 endif
 
-ifneq ($(COMPCODE),WXS)
-  ifneq ($(COMPCODE),GIL)
-    ifneq ($(COMPCODE),LIN)
-      FOBJ := $(FOBJS) lapack.o
-    endif
-  endif
-endif 
-
 all : obj crystals$(SUFFIX)
 
 crystals$(SUFFIX) : $(FOBJ) $(COBJ)
@@ -63,7 +56,7 @@ crystals$(SUFFIX) : $(FOBJ) $(COBJ)
 obj/resource.o : ../gui/wx.rc
 	windres -o $@ -i $< --include-dir=../gui --include-dir `wx-config --prefix`/include --include-dir /c/Users/Pascal/Downloads/wxWdigets/wxWidgets/include/wx-3.0/
 
-obj/lapack.o : lapack.f
+obj/lapack.o : lapack.F
 	gfortran -c $(F77FLAGS) -x f77-cpp-input -O0 -o $@ $<
 
 obj :
