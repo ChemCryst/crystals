@@ -1,0 +1,1077 @@
+#TITLE TEST LIST INPUT                                                                                                                                                                                                                                          
+# THE \SIMULATE IS TO PERMIT CONTINUATION AFTER ERRORS IN BATCHMODE                                                                                                                                                                                             
+#SIMULATE                                                                                                                                                                                                                                                       
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
+#PRINT 1                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     1     serial number        1     Address     2875     Length     173     Created on                          
+
+
+
+ Record  101    LGRP    7  NGRP      1   REAL UNIT CELL PARAMETERS                                                       
+
+
+             A              B              C              ALPHA          BETA           GAMMA         VOLUME      
+
+[40]            5.78           6.49           7.91             1.31           1.77           1.92
+
+
+ Record  102    LGRP    7  NGRP      1   RECIPROCAL UNIT CELL PARAMETERS                                                 
+
+
+          A*             B*             C*             ALPHA*         BETA*          GAMMA*      RECIP VOLUME
+
+        0.186047       0.168007       0.131749         1.776          1.450          1.249          0.003748
+
+
+ Record  103    LGRP    9  NGRP      2   REAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS                 
+
+
+          33.4200   -13.1569    -9.0873
+         -13.1569    42.1461    13.1946
+          -9.0873    13.1946    62.5839
+
+
+           1.0000    -0.3506    -0.1987
+          -0.3506     1.0000     0.2569
+          -0.1987     0.2569     1.0000
+
+
+
+
+ Record  104    LGRP    9  NGRP      2   RECIPROCAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS           
+
+
+          0.034614    0.009884    0.002942
+          0.009884    0.028226   -0.004516
+          0.002942   -0.004516    0.017358
+
+
+          1.000000    0.316226    0.120026
+          0.316226    1.000000   -0.204012
+          0.120026   -0.204012    1.000000
+
+
+
+
+ Record  105    LGRP    9  NGRP      2   REAL OTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS       
+
+
+           5.3750     0.0000     0.0000
+          -1.7917     6.2741     0.0000
+          -1.1487     1.6679     7.9110
+
+
+           0.9298     0.0000     0.0000
+          -0.3099     0.9664     0.0000
+          -0.1987     0.2569     1.0000
+
+
+
+
+ Record  106    LGRP    9  NGRP      2   RECIPROCAL ORTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+
+
+          0.186047    0.053128    0.015813
+          0.000000    0.159386   -0.033603
+          0.000000    0.000000    0.126406
+
+
+          1.000000    0.316226    0.120026
+          0.000000    0.948684   -0.255056
+          0.000000    0.000000    0.959448
+
+
+
+
+ Record  107    LGRP    6  NGRP      1   THE R(II)'S AND R(IJ)'S USED TO CALCULATE SIN(THETA)/LAMBDA                     
+
+
+          R[11]          R[22]          R[33]          R[23]          R[13]          R[12]       
+
+        0.008653       0.007057       0.004339      -0.002258       0.001471       0.004942
+
+
+ Record  108    LGRP    6  NGRP      1   ANISOTROPIC TEMPERATURE FACTOR COEFFICIENTS                                     
+
+
+            -0.683243      -0.557167      -0.342629      -0.873846      -0.967676      -1.233986
+
+
+ Record  109    LGRP    3  NGRP      1   CONSTANTS TO CONVERT AN ATOM FROM ISO TO ANISO                                  
+
+
+            -0.204012       0.120026       0.316226
+
+
+
+#PRINT 1                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     1     serial number        2     Address     2875     Length     173     Created on                          
+
+
+
+ Record  101    LGRP    7  NGRP      1   REAL UNIT CELL PARAMETERS                                                       
+
+
+             A              B              C              ALPHA          BETA           GAMMA         VOLUME      
+
+[40]            5.78           6.49           7.91             1.31           1.77           1.92
+
+
+ Record  102    LGRP    7  NGRP      1   RECIPROCAL UNIT CELL PARAMETERS                                                 
+
+
+          A*             B*             C*             ALPHA*         BETA*          GAMMA*      RECIP VOLUME
+
+        0.186047       0.168007       0.131749         1.776          1.450          1.249          0.003748
+
+
+ Record  103    LGRP    9  NGRP      2   REAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS                 
+
+
+          33.4202   -13.1572    -9.0878
+         -13.1572    42.1464    13.1952
+          -9.0878    13.1952    62.5843
+
+
+           1.0000    -0.3506    -0.1987
+          -0.3506     1.0000     0.2569
+          -0.1987     0.2569     1.0000
+
+
+
+
+ Record  104    LGRP    9  NGRP      2   RECIPROCAL METRIC TENSOR, INCLUDING AND EXCLUDING THE CELL PARAMETERS           
+
+
+          0.034613    0.009884    0.002942
+          0.009884    0.028226   -0.004516
+          0.002942   -0.004516    0.017358
+
+
+          1.000000    0.316229    0.120033
+          0.316229    1.000000   -0.204018
+          0.120033   -0.204018    1.000000
+
+
+
+
+ Record  105    LGRP    9  NGRP      2   REAL OTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS       
+
+
+           5.3750     0.0000     0.0000
+          -1.7917     6.2741     0.0000
+          -1.1488     1.6679     7.9110
+
+
+           0.9298     0.0000     0.0000
+          -0.3099     0.9664     0.0000
+          -0.1987     0.2569     1.0000
+
+
+
+
+ Record  106    LGRP    9  NGRP      2   RECIPROCAL ORTHOGONALISATION MATRIX, INCLUDING AND EXCLUDING THE CELL PARAMETERS
+
+
+          0.186047    0.053129    0.015814
+          0.000000    0.159385   -0.033605
+          0.000000    0.000000    0.126406
+
+
+          1.000000    0.316229    0.120033
+          0.000000    0.948683   -0.255065
+          0.000000    0.000000    0.959445
+
+
+
+
+ Record  107    LGRP    6  NGRP      1   THE R(II)'S AND R(IJ)'S USED TO CALCULATE SIN(THETA)/LAMBDA                     
+
+
+          R[11]          R[22]          R[33]          R[23]          R[13]          R[12]       
+
+        0.008653       0.007057       0.004339      -0.002258       0.001471       0.004942
+
+
+ Record  108    LGRP    6  NGRP      1   ANISOTROPIC TEMPERATURE FACTOR COEFFICIENTS                                     
+
+
+            -0.683243      -0.557166      -0.342629      -0.873845      -0.967676      -1.233985
+
+
+ Record  109    LGRP    3  NGRP      1   CONSTANTS TO CONVERT AN ATOM FROM ISO TO ANISO                                  
+
+
+            -0.204018       0.120033       0.316229
+
+
+
+ The following character string does not uniquely define one  DIRECTIVE  : 
+RE
+#LIST 1                                                                                                                                                                                                                                                         
+ A directive has been omitted leaving the parameters below undefined
+ Directive : REAL        
+ Parameter   1  has no default value and has been omitted
+ Parameter keyword : A           
+ Parameter   2  has no default value and has been omitted
+ Parameter keyword : B           
+ Parameter   3  has no default value and has been omitted
+ Parameter keyword : C           
+
+#LIST 1                                                                                                                                                                                                                                                         
+ A directive has been omitted leaving the parameters below undefined
+ Directive : REAL        
+ Parameter   1  has no default value and has been omitted
+ Parameter keyword : A           
+ Parameter   2  has no default value and has been omitted
+ Parameter keyword : B           
+ Parameter   3  has no default value and has been omitted
+ Parameter keyword : C           
+
+ The user directive has been omitted or does not begin in column one
+#LIST 1                                                                                                                                                                                                                                                         
+ A directive has been omitted leaving the parameters below undefined
+ Directive : REAL        
+ Parameter   1  has no default value and has been omitted
+ Parameter keyword : A           
+ Parameter   2  has no default value and has been omitted
+ Parameter keyword : B           
+ Parameter   3  has no default value and has been omitted
+ Parameter keyword : C           
+
+ The directive on the last card is illegal with this '#Instruction'
+#LIST 1                                                                                                                                                                                                                                                         
+ A directive has been omitted leaving the parameters below undefined
+ Directive : REAL        
+ Parameter   1  has no default value and has been omitted
+ Parameter keyword : A           
+ Parameter   2  has no default value and has been omitted
+ Parameter keyword : B           
+ Parameter   3  has no default value and has been omitted
+ Parameter keyword : C           
+
+ The directive above may not follow a card containing the directive : 
+REAL        
+#LIST 1                                                                                                                                                                                                                                                         
+ The last directive has appeared too many times,
+ or should not have appeared at all
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1                                                                                                                                                                                                                                                         
+ A directive has been omitted leaving the parameters below undefined
+ Directive : REAL        
+ Parameter   1  has no default value and has been omitted
+ Parameter keyword : A           
+ Parameter   2  has no default value and has been omitted
+ Parameter keyword : B           
+ Parameter   3  has no default value and has been omitted
+ Parameter keyword : C           
+
+ Parameter     1  has appeared too many times
+ Parameter keyword : A           
+#LIST 2                                                                                                                                                                                                                                                         
+#PRINT 2                                                                                                                                                                                                                                                        
+#LIST 2                                                                                                                                                                                                                                                         
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     2     serial number        1     Address     3516     Length     210     Created on                          
+
+
+
+ Record  102    LGRP   12  NGRP      4   SYMMETRY OPERATORS                                                              
+
+
+              1.        0.        0.
+              0.        1.        0.
+              0.        0.        1.
+              0.00000   0.00000   0.00000
+
+             -1.        1.        0.
+             -1.        0.        0.
+              0.        0.        1.
+              0.00000   0.50000   0.50000
+
+              0.       -1.        0.
+              1.       -1.        0.
+              0.        0.       -1.
+              0.00000   0.50000   0.00000
+
+              0.       -1.        0.
+              1.        0.        0.
+              0.        0.       -1.
+              0.00000   0.00000   0.50000
+
+
+
+ Record  103    LGRP   12  NGRP      4   RECIPROCAL SYMMETRY OPERATORS                                                   
+
+
+              1.        0.        0.
+              0.        1.        0.
+             -0.       -0.        1.
+             -0.00000  -0.00000  -0.00000
+
+              0.       -1.        0.
+              1.       -1.        0.
+             -0.        0.        1.
+             -0.00000  -0.50000  -0.50000
+
+             -1.        1.        0.
+             -1.        0.        0.
+             -0.        0.       -1.
+             -0.00000  -0.50000  -0.00000
+
+              0.        1.        0.
+             -1.        0.        0.
+              0.        0.       -1.
+             -0.00000  -0.00000  -0.50000
+
+
+
+ Record  104    LGRP   10  NGRP      4
+
+
+
+ Record  105    LGRP    3  NGRP      2   NON-PRIMITIVE LATTICE TRANSLATIONS                                              
+
+
+          T(X)        T(Y)        T(Z)        
+
+        0.00000     0.00000     0.00000
+        0.00000     0.50000     0.50000
+
+
+ Record  101    LGRP    4  NGRP      1   VARIOUS CONSTANTS REQUIRED WHEN USING LIST 2                                    
+
+
+       CENTRO-FLAG    LATTICE-FLAG   MULTIPLIER 1   MULTIPLIER 2
+
+             0.0            5.0            2.0            8.0
+
+
+ Record  106    LGRP    4  NGRP      1   SPACE GROUP SYMBOL                                                              
+
+
+      NONE                 
+
+
+ Record  107    LGRP    4  NGRP      1   CRYSTAL CLASS                                                                   
+
+
+      NONE            
+
+
+
+             *
+ Symmetry operator format error, marked by an '*'
+                 *
+ Symmetry operator format error, marked by an '*'
+              *
+ Symmetry operator format error, marked by an '*'
+              *
+ Symmetry operator format error, marked by an '*'
+                *
+ Symmetry operator format error, marked by an '*'
+             *
+ Symmetry operator format error, marked by an '*'
+
+ CRYSTALS -- ERROR
+
+#LIST 2                                                                                                                                                                                                                                                         
+#PRINT 2                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     2     serial number        2     Address     3726     Length     479     Created on                          
+
+
+
+ Record  102    LGRP   12  NGRP     12   SYMMETRY OPERATORS                                                              
+
+
+              1.        0.        0.
+              0.        1.        0.
+              0.        0.        1.
+              0.00000   0.00000   0.00000
+
+             -1.        0.        0.
+              0.       -1.        0.
+              0.        0.        1.
+              0.00000   0.00000   0.50000
+
+              0.        1.        0.
+              1.        0.        0.
+              0.        0.       -1.
+              0.00000   0.00000   0.33333
+
+              0.       -1.        0.
+             -1.        0.        0.
+              0.        0.       -1.
+              0.00000   0.00000   0.83333
+
+              0.       -1.        0.
+              1.       -1.        0.
+              0.        0.        1.
+              0.00000   0.00000   0.33333
+
+              0.        1.        0.
+             -1.        1.        0.
+              0.        0.        1.
+              0.00000   0.00000   0.83333
+
+             -1.        0.        0.
+             -1.        1.        0.
+              0.        0.       -1.
+              0.00000   0.00000   0.66667
+
+              1.        0.        0.
+              1.       -1.        0.
+              0.        0.       -1.
+              0.00000   0.00000   0.16667
+
+             -1.        1.        0.
+             -1.        0.        0.
+              0.        0.        1.
+              0.00000   0.00000   0.66667
+
+              1.       -1.        0.
+              1.        0.        0.
+              0.        0.        1.
+              0.00000   0.00000   0.16667
+
+              1.       -1.        0.
+              0.       -1.        0.
+              0.        0.       -1.
+              0.00000   0.00000   0.00000
+
+             -1.        1.        0.
+              0.        1.        0.
+              0.        0.       -1.
+              0.00000   0.00000   0.50000
+
+
+
+ Record  103    LGRP   12  NGRP     12   RECIPROCAL SYMMETRY OPERATORS                                                   
+
+
+              1.        0.        0.
+              0.        1.        0.
+             -0.       -0.        1.
+             -0.00000  -0.00000  -0.00000
+
+             -1.        0.        0.
+              0.       -1.        0.
+              0.        0.        1.
+             -0.00000  -0.00000  -0.50000
+
+              0.        1.        0.
+              1.        0.        0.
+              0.        0.       -1.
+             -0.00000  -0.00000  -0.33333
+
+              0.       -1.        0.
+             -1.        0.        0.
+             -0.       -0.       -1.
+             -0.00000  -0.00000  -0.83333
+
+             -1.        1.        0.
+             -1.        0.        0.
+              0.       -0.        1.
+             -0.00000  -0.00000  -0.33333
+
+              1.       -1.        0.
+              1.        0.        0.
+             -0.        0.        1.
+             -0.00000  -0.00000  -0.83333
+
+             -1.        0.        0.
+             -1.        1.        0.
+             -0.        0.       -1.
+             -0.00000  -0.00000  -0.66667
+
+              1.        0.        0.
+              1.       -1.        0.
+              0.       -0.       -1.
+             -0.00000  -0.00000  -0.16667
+
+              0.       -1.        0.
+              1.       -1.        0.
+             -0.        0.        1.
+             -0.00000  -0.00000  -0.66667
+
+              0.        1.        0.
+             -1.        1.        0.
+             -0.       -0.        1.
+             -0.00000  -0.00000  -0.16667
+
+              1.       -1.        0.
+              0.       -1.        0.
+              0.       -0.       -1.
+             -0.00000  -0.00000  -0.00000
+
+             -1.        1.        0.
+              0.        1.        0.
+              0.        0.       -1.
+             -0.00000  -0.00000  -0.50000
+
+
+
+ Record  104    LGRP   10  NGRP     12
+
+
+
+ Record  105    LGRP    3  NGRP      1   NON-PRIMITIVE LATTICE TRANSLATIONS                                              
+
+
+          T(X)        T(Y)        T(Z)        
+
+        0.00000     0.00000     0.00000
+
+
+ Record  101    LGRP    4  NGRP      1   VARIOUS CONSTANTS REQUIRED WHEN USING LIST 2                                    
+
+
+       CENTRO-FLAG    LATTICE-FLAG   MULTIPLIER 1   MULTIPLIER 2
+
+             0.0            1.0            1.0           12.0
+
+
+ Record  106    LGRP    4  NGRP      1   SPACE GROUP SYMBOL                                                              
+
+
+      NONE                 
+
+
+ Record  107    LGRP    4  NGRP      1   CRYSTAL CLASS                                                                   
+
+
+      NONE            
+
+
+
+#PRINT 4                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     4     serial number        1     Address     4205     Length      49     Created on                          
+
+
+
+ Record  101    LGRP   15  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
+
+
+       P           
+
+    0.000000E+00   0.200000E+01   0.000000E+00   0.000000E+00   0.500000E+01   0.000000E+00   0.000000E+00   0.000000E+00
+    0.000000E+00   0.000000E+00   0.000000E+00   0.120000E+02   0.000000E+00   0.000000E+00   0.000000E+00
+
+
+ Record  102    LGRP    4  NGRP      1   THE INTEGER PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)               
+
+
+    SCHEME         /FO/-TYPE      ROBUST         DUNITZ      
+
+        5              3              0              0
+
+
+ Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
+
+
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
+
+   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
+
+
+
+#PRINT 4                                                                                                                                                                                                                                                        
+#LIST 4                                                                                                                                                                                                                                                         
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     4     serial number        2     Address     4254     Length      37     Created on                          
+
+
+
+ Record  101    LGRP    3  NGRP      1   PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION           
+
+
+       P           
+
+    0.100000E+01   0.200000E+01   0.300000E+01
+
+
+ Record  102    LGRP    4  NGRP      1   THE INTEGER PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)               
+
+
+    SCHEME         /FO/-TYPE      ROBUST         DUNITZ      
+
+        6              3              0              0
+
+
+ Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
+
+
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
+
+   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
+
+
+
+ The last card contains unaccessed parameter(s) beyond column   11
+ The last directive should have appeared before and will be ignored here
+ CRYSTALS command input error 
+
+ CRYSTALS -- ERROR
+
+#LIST 2                                                                                                                                                                                                                                                         
+ A directive has been omitted leaving the parameters below undefined
+ Directive : CELL        
+ Parameter   1  has no default value and has been omitted
+ Parameter keyword : NSYMMETRIES 
+
+ Previous errors prevent processing of the last directive
+ The last directive should have appeared before and will be ignored here
+
+ CRYSTALS -- ERROR
+
+#LIST 3                                                                                                                                                                                                                                                         
+#PRINT 3                                                                                                                                                                                                                                                        
+#LIST 5                                                                                                                                                                                                                                                         
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     3     serial number        1     Address     4291     Length      72     Created on                          
+
+
+
+ Record  101    LGRP   12  NGRP      3   THE ATOMIC SCATTERING FACTORS IN EXPONENTIAL FORMAT                             
+
+
+ TYPE        F'          F''         A(1)        B(1)        A(2)        B(2)        A(3)        B(3)        A(4)        
+                                     B(4)        C           
+
+
+
+ C        0.00000     0.00000       1.00000     2.00000     3.00000     4.00000     5.00000     6.00000     7.00000
+                                    8.00000     9.00000
+
+
+ P        0.12000     0.46000      10.00000    11.00000    12.00000    13.00000    14.00000    15.00000    16.00000
+                                   17.00000    18.00000
+
+
+ MO       3.60000    -4.00000     110.00000   111.00000   112.00000   113.00000   114.00000   115.00000   116.00000
+                                  117.00000   118.00000
+
+
+
+ Record  102    LGRP    2  NGRP      3
+
+
+
+ Record  103    LGRP    2  NGRP      3
+
+
+
+
+ Unknown parameter keyword : 
+ U[ISO]
+#PRINT 5                                                                                                                                                                                                                                                        
+ CRYSTALS command input error 
+
+ CRYSTALS -- ERROR
+
+ No list of type        5 stored
+
+ CRYSTALS -- ERROR
+
+#LIST 5                                                                                                                                                                                                                                                         
+ No list of type        5 stored
+
+ CRYSTALS -- ERROR
+
+ List type     5 is not available for printing
+
+
+
+#PRINT 5                                                                                                                                                                                                                                                        
+#LIST TYPE= 1                                                                                                                                                                                                                                                   
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type     5     serial number        1     Address     4363     Length      83     Created on                          
+
+
+
+ Record  102    LGRP    6  NGRP      1   OVERALL PARAMETERS                                                              
+
+
+      SCALE       DU[ISO]     OU[ISO]     POLARITY    ENANTIO     EXTPARAM    
+
+      1.00000     0.05000     0.05000     1.00000     0.00000        0.00
+
+
+ Record  101    LGRP   18  NGRP      0   ATOMIC PARAMETERS                                                               
+
+
+ TYPE        SERIAL      OCC         FLAG        X           Y           Z           U[11]       U[22]       U[33]       
+                                                                                     U[23]       U[13]       U[12]       SPARE       PART        REF         RESIDUE     NEW         
+
+
+
+ Record  103    LGRP    5  NGRP      1   THE CONSTANTS THAT DEFINE AN INDEX FOR LAYER SCALING                            
+
+
+          P           Q           R           S           ABSOLUTE    
+
+         0.00        0.00        0.00        1.00            1.
+
+
+ Record  104    LGRP    0  NGRP      1   THE LAYER SCALE FACTORS, STARTING WITH THE SCALE FOR AN INDEX OF 1              
+
+
+       SCALE       
+
+
+
+ Record  105    LGRP    0  NGRP      1   THE ELEMENT SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST ELEMENT        
+
+
+       SCALE       
+
+
+
+ Record  106    LGRP    0  NGRP      1   THE BATCH SCALE FACTORS, STARTING WITH THE SCALE FOR THE FIRST BATCH            
+
+
+       SCALE       
+
+
+
+ Record  108    LGRP    0  NGRP      1   REAL CELL  PARAMETERS                                                           
+
+
+      PARAMETER   
+
+
+
+ Record  109    LGRP    0  NGRP      1   PROFILE PARAMETERS                                                              
+
+
+      PARAMETER   
+
+
+
+ Record  110    LGRP    0  NGRP      1   EXTINCTION  PARAMETERS                                                          
+
+
+      PARAMETER   
+
+
+
+
+#LIST 2                                                                                                                                                                                                                                                         
+#LIST 13                                                                                                                                                                                                                                                        
+ Absorption correction -- Internal consistency check failed
+
+ CRYSTALS -- PROGRAMMING ERROR
+
+
+ CRYSTALS -- PROGRAMMING ERROR
+
+ Absorption correction -- Internal consistency check failed
+
+ CRYSTALS -- PROGRAMMING ERROR
+
+
+ CRYSTALS -- PROGRAMMING ERROR
+
+
+
+ Orientation matrix
+
+                        0.0000    0.0000    0.0000
+
+                        0.0000    0.0000    0.0000
+
+                        0.0000    0.0000    0.0000
+#PRINT 13                                                                                                                                                                                                                                                       
+#LIST 14                                                                                                                                                                                                                                                        
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type    13     serial number        1     Address     4785     Length     155     Created on                          
+
+
+
+ Record  101    LGRP    3  NGRP      1   DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)                   
+
+
+    FRIEDELPAIRS   TWINNED        SPREAD      
+
+         -1           -1              1
+
+
+ Record  102    LGRP    3  NGRP      1   DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6         
+
+
+    GEOMETRY       RADIATION      INPUT-TYPE  
+
+          6             -1              2
+
+
+ Record  103    LGRP    7  NGRP      1   EXPERIMENTAL CONSTANTS THAT DEFINE THE DATA COLLECTION PROCESS                  
+
+
+    WAVELENGTH     THETA(1)       THETA(2)       CONSTANT(1)    CONSTANT(2)    CONSTANT(3)    CONSTANT(4) 
+
+      0.71073       6.05000        6.08500         0.58694        0.64270        0.00018       90.00000
+
+
+ Record  105    LGRP    9  NGRP      3   DEFINITION OF THE ORIENTATION MATRIX FROM THREE REFLECTIONS                     
+
+
+    H              K              L              THETA          OMEGA          CHI            PHI            KAPPA       
+                   PSI         
+
+[40]    1.00           1.00           1.00           12.45          12.45          90.00
+                  0.000
+[40]    2.00           3.00           4.00           11.46          11.46           0.01
+                  0.000
+[40]   -6.00           7.00           1.00           19.23          19.23           0.00
+                  0.000
+
+
+ Record  104    LGRP    9  NGRP      2   DEFINITION OF THE ORIENTATION MATRIX FROM TWO REFLECTIONS                       
+
+
+    H              K              L              THETA          OMEGA          CHI            PHI            KAPPA       
+                   PSI         
+
+[40]    0.00           0.00           0.00            0.00           0.00           0.00
+                  0.000
+[40]    0.00           0.00           0.00            0.00           0.00           0.00
+                  0.000
+
+
+ Record  106    LGRP   12  NGRP      1   DEFINITION OF THE ORIENTATION MATRIX FROM THE PHI AXIS AND A GENERAL REFLECTION 
+
+
+    COMPONENT(1)   COMPONENT(2)   COMPONENT(3)   H              K              L              THETA          OMEGA       
+                   CHI            PHI            KAPPA          PSI         
+
+[40]       0.00           0.00           0.00         0.00           0.00           0.00
+[41]                      0.00           0.00         0.00
+
+
+ Record  107    LGRP   12  NGRP      1   DEFINITION OF THE ORIENTATION MATRIX FROM THE EQUATORIAL PLANE AND A REFLECTION 
+
+
+    COMPONENT(1)   COMPONENT(2)   COMPONENT(3)   H              K              L              THETA          OMEGA       
+                   CHI            PHI            KAPPA          PSI         
+
+[40]       0.00           0.00           0.00         0.00           0.00           0.00
+[41]                      0.00           0.00         0.00
+
+
+ Record  109    LGRP    9  NGRP      1   THE ORIENTATION MATRIX                                                          
+
+
+              0.00000   0.00000   0.00000
+              0.00000   0.00000   0.00000
+              0.00000   0.00000   0.00000
+
+
+
+
+#PRINT 14                                                                                                                                                                                                                                                       
+#LIST 23                                                                                                                                                                                                                                                        
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type    14     serial number        1     Address     4940     Length      72     Created on                          
+
+
+
+ Record  102    LGRP    3  NGRP      1   ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING                     
+
+
+    DOWN           ACROSS         THROUGH     
+
+       3              2              1
+
+
+ Record  103    LGRP    1  NGRP      1   THE MAP SCALE FACTOR                                                            
+
+
+    VALUE       
+
+   10.00000
+
+
+ Record  101    LGRP    6  NGRP      3   DIVISIONS INFORMATION FOR EACH OF THE AXES                                      
+
+
+       0.00      0.25      0.50      0.00      0.00      0.00
+       0.00      0.30      1.00      0.00      0.00      0.00
+      -1.00      1.00     25.00     24.00      0.00      0.00
+
+
+ Record  104    LGRP    6  NGRP      3   PATTERSON DIVISIONS FOR EACH OF THE AXES                                        
+
+
+       0.00      0.30      1.00      0.00      0.00      0.00
+       0.00      0.30      1.00      0.00      0.00      0.00
+       0.00      0.30      1.00      0.00      0.00      0.00
+
+
+
+#PRINT 23                                                                                                                                                                                                                                                       
+#LIST 25                                                                                                                                                                                                                                                        
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type    23     serial number        1     Address     5012     Length      76     Created on                          
+
+
+
+ Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+
+
+    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE 
+
+         -1             -1              0             -1             -1             -1             -1
+
+
+ Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
+
+
+    NSINGULARITY   F-SQUARED      RESTRAIN       REFLECTIONS    SPARE          SPARE       
+
+          0             -1              0              0             -1             -1
+
+
+ Record  104    LGRP    9  NGRP      1   CONDITIONS THAT MUST BE MET AFTER EACH CYCLE IF REFINEMENT IS TO CONTINUE       
+
+
+    MIN-R          MAX-R          MIN-WR         MAX-WR         MIN-SUMSQ      MAX-SUMSQ      MIN-MINFUNC    MAX-MINFUNC 
+                   U[MIN]      
+
+   0.000000E+00   0.100000E+03   0.000000E+00   0.100000E+03   0.300000E-01   0.100000E+05   0.000000E+00   0.100000E+16
+                  0.000000E+00
+
+
+ Record  105    LGRP    8  NGRP      1   CONDITIONS THAT MUST BE MET BETWEEN EACH CYCLE IF REFINEMENT IS TO CONTINUE     
+
+
+    MIN-DR         MAX-DR         MIN-DWR        MAX-DWR        MIN-DSUMSQ     MAX-DSUMSQ     MIN-DMINFUNC   MAX-DMINFUNC
+
+  -0.500000E+01   0.100000E+03  -0.500000E+01   0.100000E+03  -0.100000E+02   0.100000E+05   0.000000E+00   0.100000E+16
+
+
+ Record  106    LGRP    6  NGRP      1   SPECIAL REFINEMENT CONDITIONS                                                   
+
+
+    SPECIAL        UPDATE         REWEIGHT       GROUPS         COMPOSITE      TOLERANCE   
+
+          3              1             -1             -1             -1     1058642330
+
+
+
+#PRINT 25                                                                                                                                                                                                                                                       
+#LIST 28                                                                                                                                                                                                                                                        
+
+
+ TEST LIST INPUT                                                                      Date              Time          
+
+
+ Print list type    25     serial number        1     Address     5088     Length      52     Created on                          
+
+
+
+ Record  101    LGRP    9  NGRP      2   THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT              
+
+
+[41]                 1.00      0.00      0.00
+[41]                 0.00      1.00      0.00
+[41]                 0.00      0.00      1.00
+
+[41]                -1.00      0.00      0.00
+[41]                 0.00      1.00      0.00
+[41]                 0.00      0.00      1.00
+
+
+
+ Record  102    LGRP    9  NGRP      2   THE INVERSE MATRICES FOR THE TWIN TRANSFORMATIONS                               
+
+
+[41]                 1.00      0.00      0.00
+[41]                 0.00      1.00      0.00
+[41]                -0.00     -0.00      1.00
+
+[41]                -1.00      0.00      0.00
+[41]                 0.00      1.00      0.00
+[41]                -0.00     -0.00      1.00
+
+
+
+
+ The last directive has appeared too many times,
+ or should not have appeared at all
+ The last directive should have appeared before and will be ignored here
+ CRYSTALS command input error 
+
+ CRYSTALS -- ERROR
+
+ No list of type       28 stored
+
+ CRYSTALS -- ERROR
+
+#PRINT 28                                                                                                                                                                                                                                                       
+ No list of type       28 stored
+
+ CRYSTALS -- ERROR
+
+ List type    28 is not available for printing
+
+
+
+#FINISH                                                                                                                                                                                                                                                         
+
+
+          : Job ends ok       with     0 warnings and     9 errors
