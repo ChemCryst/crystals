@@ -2567,7 +2567,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R  8.42% Rw 12.75% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.42% Rw 12.75% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R  7.44% Rw 10.38% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R  7.47% Rw 10.40% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.69    SumFoFc/SumFc^2=  1.67    SumwFoFc/SumwFc^2=  1.67
 LS-scale=  1.733   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.128    100*(<Fo>-<Fc>)/<Fo> =    -2.09                                                                                                                                                                                                         
@@ -6034,7 +6034,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R  8.42% Rw 12.75% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.42% Rw 12.75% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R  7.43% Rw 10.38% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R  7.46% Rw 10.40% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.69    SumFoFc/SumFc^2=  1.67    SumwFoFc/SumwFc^2=  1.67
 LS-scale=  1.733   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.128    100*(<Fo>-<Fc>)/<Fo> =    -2.09                                                                                                                                                                                                         
@@ -9506,7 +9506,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R  8.85% Rw 23.10% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.85% Rw 23.10% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R  7.86% Rw 20.42% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R  7.88% Rw 20.43% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.67    SumFoFc/SumFc^2=  1.65    SumwFoFc/SumwFc^2=  1.64
 LS-scale=  1.685   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.61                                                                                                                                                                                                         
@@ -12990,7 +12990,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R  8.85% Rw 23.10% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R  8.85% Rw 23.10% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R  7.85% Rw 20.42% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R  7.88% Rw 20.43% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.67    SumFoFc/SumFc^2=  1.65    SumwFoFc/SumwFc^2=  1.64
 LS-scale=  1.685   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.61                                                                                                                                                                                                         

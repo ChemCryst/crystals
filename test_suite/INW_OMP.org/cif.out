@@ -394,7 +394,7 @@ _refine_ls_wR_factor_all          0.2182
  
 # The values computed with a 2 sigma cutoff - a la SHELX 
 _reflns_threshold_expression      I>2.0\s(I)
-_reflns_number_gt                 1015 
+_reflns_number_gt                 1016 
 _refine_ls_R_factor_gt            0.0792 
 _refine_ls_wR_factor_gt           0.1985 
  
