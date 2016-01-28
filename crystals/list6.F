@@ -1399,8 +1399,9 @@ c       Assume users wants all reflections, so set default RATIO to > 3
               store(m6+20) = 3.001
          else
 C NOTE - THIS IS WHERE ONE COULD FILTER ON FC/SIG, BUT ONLY IF SCALE IS SET
-C         WRITE(123,'(2F12.2)') STORE(M6+3), STORE(L5O)*STORE(M6+5)
-              store(m6+20)=min(128., (store(m6+3)/(store(m6+12)*2.)))
+c Oct 2013  Compute RATIO on F^2
+               CALL XSQRF(DJW1,STORE(m6+3),DJW2,DJW3,STORE(M6+12))
+               STORE(M6+20) = MIN(128., (DJW1/DJW3))
          endif
       ENDIF
 c

@@ -1546,7 +1546,6 @@ C---- GET SIGMA THRESHOLD FROM L28
             INDNAM = INDNAM + MD28CN
         END DO
       ENDIF
- 
 1840  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 1850
@@ -1875,7 +1874,7 @@ C--SET UP LIST 6 FOR READING ONLY
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C
       lout = ln6
-      WRITE(123,'(A,I6)') 'LOUT=', LOUT
+c      WRITE(123,'(A,I6)') 'LOUT=', LOUT
       if (iuln .ne. iuln2) then
             if (lout.eq.6) then 
                   lout=7
