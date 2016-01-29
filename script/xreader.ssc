@@ -35,7 +35,7 @@ Using user-specified editor.
 ^^WI        IGNORE DISABLED=YES
 ^^WI   @ 2,4 GRID BTNS NROWS=1 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 BUTTON BOK '&Close' DEFAULT COMMIT
+^^WI     @ 1,1 BUTTON BOK '&Close' DEFAULT COMMIT CANCEL
 ^^WI   }
 ^^WI }
 ^^WI SHOW
