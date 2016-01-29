@@ -371,7 +371,7 @@ c running from the SRQ so has no frame stack to write to.
             if (kexist(39) .gt. 0) call xfal39
       endif
 c
-c send non-convergence message to LIST 39
+c send not yet converged message to LIST 39
 c-----      update list 39 - assumes only one SFLS record
 c            isfls = 'SFLS'
             if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .eq. 0) then

@@ -271,6 +271,7 @@ c- overall parameter refinement status
       INCLUDE 'ICOM12.INC'
       INCLUDE 'ICOM22.INC'
       INCLUDE 'ICOM23.INC'
+      INCLUDE 'ICOM39.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLISTI.INC'
@@ -287,6 +288,7 @@ C
       INCLUDE 'XFRM22.INC'
       INCLUDE 'XLST23.INC'
       INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST39.INC'
       INCLUDE 'XSPECC.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XERVAL.INC'
@@ -299,6 +301,7 @@ C
       INCLUDE 'QLST12.INC'
       INCLUDE 'QLST22.INC'
       INCLUDE 'QLST23.INC'
+      INCLUDE 'QLST39.INC'
 C
 C
 C----- CHARATER DATA FOR SRQ
@@ -313,6 +316,13 @@ C
      1  '"UIS"', 'SIZE ', 'DECLI', 'AZIMU', '*    ', '*    '/
         DATA PRE / '   ', '1/2', ' 2 ' /
         DATA PLM / '-', ' ', ' '/
+C
+#ifdef _HOL_
+      DATA IOVER/4HOVER/
+#else
+      DATA IOVER/'OVER'/
+#endif
+
 C
 C-----INDEX AND  OFF SETS IN LIST23 FOR RESETTABLE FLAGS
 C----- LAYER, (ELEMENTS), BATCH, (CELL, PROFILE, ANISEXT)
@@ -339,6 +349,8 @@ C--ZERO THE LIST 12 CONTROL BLOCK
 C--ZERO THE LIST 22 CONTROL BLOCK
       CALL XZEROF(ICOM22(1),IDIM22)
       INCLUDE 'IDIM23.INC'
+      INCLUDE 'IDIM39.INC'
+C
 C--ZERO THE LIST 23 CONTROL BLOCK
       CALL XZEROF(ICOM23(1),IDIM23)
 C--READ ANY OTHER CARDS FOR THIS '\INSTRUCTION'
@@ -420,6 +432,16 @@ C-----  LOAD LIST 2 AND INITIALISE SPECIAL POSITION CODE
 c
 c----- load list 30 to enable FLACK resetting if required
         call xfal30
+c
+c load list 39 to save the convergence flag and overall parameter status.
+c XREFINE.SCP needs this flag, but cannot use KSCTRN because #SFLS is
+c running from the SRQ so has no frame stack to write to.
+      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            IF (KEXIST(39) .GT. 0) THEN
+                  CALL XFAL39
+            ENDIF
+      ENDIF
+c
 c
 c        NUPDAT = 0
         IF ( KSPINI ( -1, ABTOL) .LE. 0) GOTO 9800
@@ -1108,6 +1130,22 @@ cdjwjun09
           isdopee(ipos) = istore(i)
           ipos = ipos + 1
         enddo
+c
+c send overall parameter status to LIST 39
+c-----      update list 39 - assumes only one SFLS record
+c            isfls = 'OVER'
+            if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .eq. 0) then
+             m39i=l39i
+             do i=1,n39i
+               if (istore(m39i) .eq. iover) then
+                call xmovei (isdopee, istore(m39i+2),6)
+                exit
+               endif
+               m39i = m39i+md39i
+             enddo
+             call xwlstd ( 39, icom39, idim39, -1, -1)
+            endif
+c
 C
 C----- Polarity and Enantiopole
         if((isdopee(4) .ne. 0).and.(isdopee(5).ne.0)) then

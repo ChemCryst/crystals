@@ -11,10 +11,12 @@
 %   END IF                                                                       
 %   IF ( FILEEXISTS ( 'someh.12' ) ) THEN                                    
 %    EVALUATE FD = FILEDELETE ( 'someh.12' )                                 
-%    END IF                                                                       
+%   END IF                                                                       
 %   IF ( FILEEXISTS ( 'l12.scp' ) ) THEN                                    
 %     EVALUATE FD = FILEDELETE ( 'l12.scp' )                                 
 %   END IF                                                                       
+%% make sure OVER record exists in LIST 39
+%    COPY '#SCRIPT SFLS39'
 %  END BLOCK
 %%                                                                              
 %% SECTION 1                                                                    
@@ -140,7 +142,7 @@
 %  IF ICOUNTP .GT. 1 THEN                                                       
 %    EVALUATE ASSEFOUND = TRUE                                                  
 %  END IF                                                                       
-%% If this valie is 1 it usually means that all part numbers are zero.          
+%% If this value is 1 it usually means that all part numbers are zero.          
 %% We have to see if this is enough.                                            
 %%                                                                              
 %%                                                                              
@@ -284,6 +286,11 @@
 ^^CO DISPOSE XRSETUP                                                            
 %    FINISH                                                                     
 %  END BLOCK                                                                    
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
 %  BLOCK                                                                        
 %%                                                                              
 %% Retrieve info from the dialog:                                               
@@ -313,51 +320,51 @@
 %  END IF                                                                       
 %%                                                                              
 %  EVALUATE HMODE = 0                                                           
-% IF ( HFIRST .GE. 0.0 ) THEN                                                   
+%  IF ( HFIRST .GE. 0.0 ) THEN                                                   
 %%                                                                              
 ^^?? HFIX STATE                                                                 
-%  VERIFY ON OFF                                                                
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%   VERIFY ON OFF                                                                
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%   IF ( VALUE .EQ. 1 ) THEN                                                     
 %    EVALUATE HMODE = 0                                                         
-%  END IF                                                                       
+%   END IF                                                                       
 ^^??  HRIDE STATE                                                               
-%  VERIFY ON OFF                                                                
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%   VERIFY ON OFF                                                                
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%   IF ( VALUE .EQ. 1 ) THEN                                                     
 %    EVALUATE HMODE = 10                                                        
-%  END IF                                                                       
+%   END IF                                                                       
 ^^?? HREFN STATE                                                                
-%  VERIFY ON OFF                                                                
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%   VERIFY ON OFF                                                                
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%   IF ( VALUE .EQ. 1 ) THEN                                                     
 %    EVALUATE HMODE = 1                                                         
-%  END IF                                                                       
+%   END IF                                                                       
 ^^?? HREFUI STATE                                                               
-%  VERIFY ON OFF                                                                
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%   VERIFY ON OFF                                                                
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%   IF ( VALUE .EQ. 1 ) THEN                                                     
 %    EVALUATE HMODE = 2                                                         
-%  END IF                                                                       
-%  EVALUATE HREST = FALSE                                                       
-%  EVALUATE HRESTF = 2                                                          
+%   END IF                                                                       
+%   EVALUATE HREST = FALSE                                                       
+%   EVALUATE HRESTF = 2                                                          
 ^^?? HREST STATE                                                                
-%  VERIFY ON OFF                                                                
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%   VERIFY ON OFF                                                                
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%   IF ( VALUE .EQ. 1 ) THEN                                                     
 %    EVALUATE HREST = TRUE                                                      
 %    EVALUATE HRESTF = 1                                                        
-%  END IF                                                                       
+%   END IF                                                                       
 ^^?? DREST STATE                                                                
-%  VERIFY ON OFF                                                                
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  IF ( VALUE .EQ. 1 ) THEN                                                     
+%   VERIFY ON OFF                                                                
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%   IF ( VALUE .EQ. 1 ) THEN                                                     
 %    EVALUATE HREST = TRUE                                                      
 %    EVALUATE DREST = TRUE                                                      
 %    EVALUATE HRESTF = 0                                                        
-%  END IF                                                                       
+%   END IF                                                                       
 %%                                                                              
-% END IF                                                                        
+%  END IF                                                                        
 %%                                                                              
 %  EVALUATE OVERRIDE = FALSE                                                    
 ^^?? OVRD STATE                                                                 
@@ -374,24 +381,39 @@
 %    EVALUATE DOFLACK = TRUE                                                    
 %  ELSE IF ( DOFLACK ) THEN                                                     
 %%                                                                              
-%% Flack was refined but is being removed by user.                              
+%% Flack was being refined but is now being removed by user. 
 %%                                                                              
 %    EVALUATE DOFLACK = FALSE                                                   
 %    EVALUATE WORK1 = 0.0                                                       
+%
+%% Dont reset LIST 30 - may need to know what the values were
 %    COPY '#GENERALEDIT 30'                                                     
-%    COPY 'LOCATE RECORDTYPE = 106'                                             
-%    COPY 'TRANSFER TO OFFSET = 6 FROM WORK1'                                   
-%    COPY 'TRANSFER TO OFFSET = 7 FROM WORK1'                                   
-%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
-%    COPY 'END'                                                                 
-%    COPY "#GENERALEDIT 5"                                                      
-%    COPY 'LOCATE RECORDTYPE=102'                                               
-%    COPY 'TRANSFER TO OFFSET=4 FROM WORK1'                                     
-%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
-%    COPY 'END'                                                                 
+%%    COPY 'LOCATE RECORDTYPE = 106'                                             
+%%    COPY 'TRANSFER TO OFFSET = 6 FROM WORK1'                                   
+%%    COPY 'TRANSFER TO OFFSET = 7 FROM WORK1'                                   
+%%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%%    COPY 'END'                                                                 
+%%
+%     EVALUATE QTITLE = 'Flack Parameter'                                   
+%     EVALUATE QLINE1 = 'Do you wish to reset the Flack parameter to zero'
+%     EVALUATE QLINE2 = ' '      
+%     EVALUATE BUTTOK = '&Yes'                                             
+%     EVALUATE BUTTXX = '&No'                                               
+%     COPY '#SCRIPT XQUESTIO'                                                   
+%     IF ANSWER .EQ. TRUE THEN                                                 
+ {I Flack parameter and su reset to zero                            
+%      COPY "#GENERALEDIT 5"                                                      
+%      COPY 'LOCATE RECORDTYPE=102'                                               
+%      COPY 'TRANSFER TO OFFSET=4 FROM WORK1'                                     
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%      COPY 'END'                                                                 
+%     END IF
 %  ELSE                                                                         
 %    EVALUATE DOFLACK = FALSE                                                   
 %  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%%                                                                              
 %%                                                                              
 ^^?? EXTNC STATE                                                                
 %  VERIFY ON OFF                                                                
@@ -400,31 +422,42 @@
 %    EVALUATE DOEXTNC = TRUE                                                    
 %  ELSE IF ( DOEXTNC ) THEN                                                     
 %%                                                                              
-%% Extinction was refined but is being removed by user.                         
+%% Extinction was being refined but is being removed by user.                         
 %%                                                                              
 %    EVALUATE DOEXTNC = FALSE                                                   
-%    EVALUATE WORK1 = 0.0                                                       
-%    COPY "#GENERALEDIT 5"                                                      
-%    COPY 'LOCATE RECORDTYPE=102'                                               
-%    COPY 'TRANSFER TO OFFSET=5 FROM WORK1'                                     
-%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
-%    COPY 'END'                                                                 
-{R Extinction turned off - setting parameter to zero in List 5.                 
+%    EVALUATE WORK1 = 0.0  
+
+%     EVALUATE QTITLE = 'Extinction Parameter'                                   
+%     EVALUATE QLINE1 = 'Do you wish to reset the '
+%     EVALUATE QLINE2 = 'Extinction parameter to zero '      
+%     EVALUATE BUTTOK = '&Yes'                                             
+%     EVALUATE BUTTXX = '&No'                                               
+%     COPY '#SCRIPT XQUESTIO'                                                   
+%     IF ANSWER .EQ. TRUE THEN                                                      
+{I Extinction turned off - setting parameter to zero in List 5.                 
+%      COPY "#GENERALEDIT 5"                                                      
+%      COPY 'LOCATE RECORDTYPE=102'                                               
+%      COPY 'TRANSFER TO OFFSET=5 FROM WORK1'                                     
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%      COPY 'END'                                                                 
+%%
+%      COPY '#GENERALEDIT 23'                                                     
+%      COPY 'LOCATE RECORDTYPE = 101'                                             
+%      COPY 'TRANSFER FROM OFFSET = 1 TO IEXTIN'                                  
+%      IF ( IEXTIN .EQ. 0 ) THEN                                                  
+{I Extinction correction turned off - turning off calculation using List 23.    
+%       EVALUATE IEXTIN = - 1                                                    
+%       COPY 'TRANSFER TO OFFSET = 1 FROM IEXTIN'                                
+%       COPY 'WRITE OVERWRITE=OVERWRITE'                                         
+%      END IF                                                                     
+%      COPY 'END'
+%     END IF                                                                 
 %  ELSE                                                                         
 %    EVALUATE DOEXTNC = FALSE                                                   
 %  END IF                                                                       
-%  IF ( .NOT. DOEXTNC ) THEN                                                    
-%    COPY '#GENERALEDIT 23'                                                     
-%    COPY 'LOCATE RECORDTYPE = 101'                                             
-%    COPY 'TRANSFER FROM OFFSET = 1 TO IEXTIN'                                  
-%    IF ( IEXTIN .EQ. 0 ) THEN                                                  
-{R Extinction correction turned off - turning off calculation using List 23.    
-%      EVALUATE IEXTIN = - 1                                                    
-%      COPY 'TRANSFER TO OFFSET = 1 FROM IEXTIN'                                
-%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
-%    END IF                                                                     
-%    COPY 'END'                                                                 
-%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%%                                                                              
 %%                                                                              
 ^^?? TWINS STATE                                                                
 %  VERIFY ON OFF                                                                
@@ -459,15 +492,6 @@
 %    EVALUATE XREFINE = TRUE                                                    
 %  END IF                                                                       
 %%                                                                              
-^^?? ALTER STATE                                                                
-%  VERIFY ON OFF                                                                
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  IF ( VALUE .EQ. 1 ) THEN                                                     
-%    EVALUATE XREFINE = FALSE                                                   
-%  ELSE                                                                         
-%    EVALUATE XREFINE = TRUE                                                    
-%  END IF                                                                       
-%%                                                                              
 %  IF ( .NOT. DOREFINE ) THEN                                                   
 ^^?? XR_GO STATE                                                                
 %    VERIFY ON OFF                                                              
@@ -477,7 +501,7 @@
 %    END IF                                                                     
 %  END IF                                                                       
 %%                                                                              
-% IF ( DOREFINE ) THEN                                                          
+%  IF ( DOREFINE ) THEN                                                          
 ^^?? SXFOUR STATE                                                               
 %    VERIFY ON OFF                                                              
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                               
@@ -503,11 +527,16 @@
 %% END IF                                                                       
 %% End edit                                                                     
 %%                                                                              
-%% SECTION 2                                                                    
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%% SECTION 2   Implement the users selections.
 %%                                                                              
 %% Set the refinement flags in L5 for all the non-sticky atoms.                 
-%%                                                                              
-%%                                                                              
 %%                                                                              
 %  EVALUATE STUCK = FALSE                                                       
 %  EVALUATE HRIDE = FALSE                                                       
@@ -657,11 +686,13 @@
 %       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
 %       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
 %       EVALUATE STICKY = FALSE                                                 
+%% REM DJW what are these operations on REFLAG doing?
 %       IF ( REFLAG .LT. 0 ) THEN                                               
 %         EVALUATE STICKY = TRUE                                                
 %         EVALUATE REFLAG = - REFLAG                                            
 %       END IF                                                                  
 %       EVALUATE REFLAG = ( REFLAG IAND 255 )         
+%% REM DJW what are these operations on REFLAG doing?
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( STICKY ) THEN                             
 %         CLEAR                                                                 
 %         INSERT 'CONT H('                                                      
@@ -713,6 +744,8 @@
 %     EVALUATE I5 = 1                                                           
 %     COPY 'LOCATE RECORDTYPE=101'                                              
 %     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                   
+%     variable integer hdjw
+%     evaluate hdjw = 2
 %     LOOP                                                                      
 %       ON ERROR TERMINATE                                                      
 %       ON END TERMINATE                                                        
@@ -731,7 +764,13 @@
 %         COPY 'TRANSFER FROM OFFSET=0 TO CCHK'                                 
 %         COPY 'TRANSFER FROM OFFSET=1 TO RCHK'                                 
 %         IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN   
+%% djw Refine xyz, uiso for restrained H or D atoms for compatibility
+%% with default LIST 16
+%      IF ( ( CTYPE .EQ. 'H' ) .or. ( CTYPE .EQ. 'D' ) ) THEN                   
+%           COPY 'TRANSFER TO OFFSET=15 FROM hdjw'
+%      else
 %           COPY 'TRANSFER TO OFFSET=15 FROM ICHK'                              
+%      end if
 %           EVALUATE STUCK = TRUE                                               
 %           EVALUATE HREST = TRUE                                               
 %           EVALUATE LOOPEND = LOOPCOUNTER                                      

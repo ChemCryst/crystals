@@ -20,7 +20,7 @@
 %  IF EXISTS 39 .LT. 1 THEN
 %%{S * Creating new L39.
 %      COPY '#LIST 39'
-%      COPY 'READ NINT=1'
+%      COPY 'READ NINT=1 '
 %      COPY 'INTEGER INFO 0'
 %      COPY 'END'
 %  END IF
