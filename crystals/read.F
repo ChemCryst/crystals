@@ -729,6 +729,7 @@ C If in script mode, set flag.
           CALL MENUUP
 #endif
 
+	  CALL FLUSH()
           CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
