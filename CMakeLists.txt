@@ -125,7 +125,7 @@ ADD_SUBDIRECTORY(cameron)
 
 add_dependencies(CameronFortran CrystalsFortran) 
 if ( useGUI )
-#ADD_SUBDIRECTORY(bits)
+ADD_SUBDIRECTORY(bits)
 endif()
 ADD_SUBDIRECTORY(datafiles)
 ADD_SUBDIRECTORY(precomp)
