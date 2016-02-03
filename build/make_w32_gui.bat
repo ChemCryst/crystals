@@ -27,7 +27,7 @@ call buildfile.bat lapack
 @goto fini
 
 :debug
-@%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystalsd.exe >link.lis
+@%LD% %LDEBUG% %LDFLAGS% dobj\*.obj %LIBS% %OUT%crystals.exe >link.lis
 
 :fini
 @type link.lis

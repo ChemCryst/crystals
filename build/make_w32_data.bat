@@ -30,8 +30,7 @@ copy ..\datafiles\crysdef.srt dscbuild\crystals.srt
 SETLOCAL
 cd dscbuild
 set CRYSDIR=./
-@if "%CRDEBUG%" == "TRUE"     ..\crystalsd.exe
-@if not "%CRDEBUG%" == "TRUE" ..\crystals.exe
+..\crystals.exe
 cd ..
 ENDLOCAL
 if not exist dscbuild\commands.dsc make_err.bat

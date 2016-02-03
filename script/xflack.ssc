@@ -55,10 +55,11 @@
 ^^WI 'zero and unity. The extreme bins also contain any outliers'  
 ^^WI               }                                                                       
 ^^WI              @ 2,1 PLOTWINDOW _VHIST NROWS=20 NCOLS=64                              
-^^WI              @ 3,1 GRID EXBT NROWS=1 NCOLS=2
+^^WI              @ 3,1 GRID EXBT NROWS=1 NCOLS=4
 ^^WI              {     
 ^^WI               @ 1,1 STRETCH VB HORIZONTAL
 ^^WI               @ 1,2 BUTTON SAVEVHIST 'Save Image'
+^^WI               @ 1,4 BUTTON EXPOVHIST 'Export data'
 ^^WI              }
 ^^WI             }                                                                         
 ^^WI            }
@@ -119,10 +120,11 @@
 ^^WI     'red 2Ao points for a correctly assigned enantiopure sample'  
 ^^WI              }                                                                       
 ^^WI              @ 2,1 PLOTWINDOW _VAO NROWS=20 NCOLS=64
-^^WI              @ 3,1 GRID RB NROWS=1 NCOLS=2
+^^WI              @ 3,1 GRID RB NROWS=1 NCOLS=4
 ^^WI              {
 ^^WI                 @ 1,1 STRETCH VB HORIZONTAL
 ^^WI                 @ 1,2 BUTTON SAVEVAO 'Save Image'
+^^WI                 @ 1,4 BUTTON EXPOVAO 'Export Data'
 ^^WI              }
 ^^WI            }
 ^^WI          }
@@ -235,7 +237,8 @@
 % LOOP
 % EVALUATE JLOOP = LOOPCOUNTER
 %%
-%   VERIFY CALC RF_BXX SAVEVDO SAVEVAO SAVEVNPP SAVEVHIST SAVEVDIST HELP
+%   VERIFY CALC RF_BXX SAVEVDO SAVEVAO SAVEVNPP SAVEVHIST SAVEVDIST -
+             EXPOVHIST EXPOVAO  HELP
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   EVALUATE IDJW = VALUE
 %   CASE VALUE
@@ -368,19 +371,32 @@
 %        FINISH
 %     END BLOCK
 %     BLOCK  %SAVEVDO%
+Saving Signal to noise image
 ^^CO SET _VDO SAVE 800 600 Signal-Noise_
 %     END BLOCK
 %     BLOCK  %SAVEVAO%
+Saving Do-Ao image
 ^^CO SET _VAO SAVE 800 600 Do-Ao_
 %     END BLOCK
 %     BLOCK  %SAVEVNPP%
+Saving NPP image
 ^^CO SET _VNPP SAVE 800 600 enantio-npp_
 %     END BLOCK
 %     BLOCK  %SAVEVHIST%
+Saving histogram image
 ^^CO SET _VHIST SAVE 800 600 histogram_
 %     END BLOCK
 %     BLOCK  %SAVEVDIST%
+Saving distribution image
 ^^CO SET _VDIST SAVE 800 600 distribution_
+%     END BLOCK
+%     BLOCK  %EXPOVHIST%
+Saving histogram data
+^^CO SET _VHIST EXPORT histogram_
+%     END BLOCK
+%     BLOCK  %EXPOVAO%
+Saving histogram data
+^^CO SET _VAO EXPORT DO-AO-
 %     END BLOCK
 %     BLOCK  %HELP%
 %        COPY '#SCRIPT FLACK-HELP'
