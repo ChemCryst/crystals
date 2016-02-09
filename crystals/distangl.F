@@ -7931,7 +7931,7 @@ c
       do j=1,khy
        if (ihy(j) .eq. 1) then        
         write(cline,'(a,f6.3,a, a )')
-     1 'REM REST ', UEQUIV, ', 0.002 = ', cbonda(j)
+     1 'REST ', UEQUIV, ', 0.002 = ', cbonda(j)
         call xcrems( cline, cline, nch)
         cline(nch-1:) = ',u[iso])'
         nch = nch + 7
