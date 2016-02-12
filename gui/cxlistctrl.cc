@@ -20,6 +20,22 @@
 
 int CxListCtrl::mListCtrlCount = kListCtrlBase;
 
+
+#ifdef CRY_USEWX
+int wxCALLBACK MyCxListSorter(long item1, long item2, long sortData)
+{
+    // inverse the order
+    if (item1 < item2)
+        return -1 * sortData;
+    if (item1 > item2)
+        return 1 * sortData;
+    return 0;
+}
+#endif
+
+
+
+
 CxListCtrl *    CxListCtrl::CreateCxListCtrl( CrListCtrl * container, CxGrid * guiParent )
 {
     CxListCtrl  *theListCtrl = new CxListCtrl( container );
@@ -119,6 +135,8 @@ END_MESSAGE_MAP()
 #else
 BEGIN_EVENT_TABLE(CxListCtrl, wxListCtrl)
      EVT_CHAR( CxListCtrl::OnChar )
+     EVT_LIST_COL_CLICK(-1, CxListCtrl::HeaderClicked )
+
 END_EVENT_TABLE()
 #endif
 
@@ -182,8 +200,183 @@ void CxListCtrl::AddRow(string * rowOfStrings)
     }
 }
 
+#ifdef CRY_USEWX
+void CxListCtrl::HeaderClicked( wxListEvent& wxLE )
+{
+
+	if( wxLE.GetColumn() == nSortedCol )
+		bSortAscending = !bSortAscending;
+    else
+        bSortAscending = true;
+
+	nSortedCol = wxLE.GetColumn();
+    CxSortItems( m_colTypes[nSortedCol], nSortedCol, bSortAscending );
+ 
+}
+bool CxListCtrl::CxSortItems( int colType, int nCol, bool bAscending)
+{
 
 
+    int size = GetItemCount();
+	int nColCount = GetColumnCount();
+
+	vector<int> intsToSort;
+    vector<float> floatsToSort;
+    vector<string> stringsToSort;
+	vector<int> index;
+
+
+    for ( int i = 0; i < size; i++ )
+    {
+		index.push_back(i);
+
+		wxListItem info;
+        info.SetMask(wxLIST_MASK_TEXT);
+        info.SetId( i );
+		info.SetColumn ( nCol );
+		GetItem(info);
+		string ss = string(info.GetText().mb_str());
+
+		switch ( colType )
+        {
+        case COL_INT:
+            intsToSort.push_back( atoi(ss.c_str()) );
+            break;
+        case COL_REAL:
+            floatsToSort.push_back( (float)atof(ss.c_str()) );
+            break;
+        case COL_TEXT:
+            stringsToSort.push_back(ss);
+            break;
+        }
+    }
+
+	int tempi;
+	float tempf;
+	string temps;
+
+
+// Sort the items along with the index. This is a stable insertion sort
+// so that previous sorts remain in effect for a given value of this sort.
+    for ( int element = 1; element < size; element++)
+    {
+
+
+// Extract details of this element
+        switch ( colType )
+        {
+        case COL_INT:
+			tempi = intsToSort[element];
+            break;
+        case COL_REAL:
+            tempf = floatsToSort[element];
+            break;
+        case COL_TEXT:
+            temps = stringsToSort[element];
+            break;
+        }
+//        int IDhold = IDlist[element];
+		int indexHold = index[element];
+
+
+// Take out 2nd element, and move it backwards down the list until it is in right 'place'.
+// Take out 3rd element, and move it backwards down the list until it is in right 'place'.
+// usw.
+
+		bool repeat = true;
+        int place;
+
+		//Compare element with position back one place.
+		
+		for ( place = element-1; repeat; place-- )
+        {
+            if (place >= 0)
+            {
+                switch ( colType )
+                {
+                case COL_INT:
+                    if(    (  bAscending && (intsToSort[place] <= tempi))
+                        || ( !bAscending && (intsToSort[place] >= tempi)) )
+                    {
+// insert element here
+						repeat              = false;
+						index[place+1]		= indexHold;
+//                        IDlist[place+1]     = IDhold;
+                        intsToSort[place+1] = tempi;
+                    }
+                    else
+                    {
+// shuffle other elements up to make space.
+						index[place+1]		= index[place];
+//                        IDlist[place+1]     = IDlist[place];
+                        intsToSort[place+1] = intsToSort[place];
+                    }
+                    break;
+                case COL_REAL:
+                    if(    (  bAscending && (floatsToSort[place] <= tempf))
+                        || ( !bAscending && (floatsToSort[place] >= tempf)) )
+                    {
+                        repeat                = false;
+						index[place+1]		= indexHold;
+//                        IDlist[place+1]       = IDhold;
+                        floatsToSort[place+1] = tempf;
+                    }
+                    else
+                    {
+						index[place+1]		= index[place];
+//                        IDlist[place+1]      = IDlist[place];
+                        floatsToSort[place+1] = floatsToSort[place];
+                    }
+                    break;
+                case COL_TEXT:
+                    if(    (  bAscending && (stringsToSort[place] <= temps))
+                        || ( !bAscending && (stringsToSort[place] >= temps)) )
+                    {
+                        repeat                 = false;
+						index[place+1]		= indexHold;
+//                        IDlist[place+1]       = IDhold;
+                        stringsToSort[place+1] = temps;
+                    }
+                    else
+                    {
+						index[place+1]		= index[place];
+//                        IDlist[place+1]      = IDlist[place];
+                        stringsToSort[place+1] = stringsToSort[place];
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                switch ( colType )
+                {
+                case COL_INT:
+                    intsToSort[0] = tempi;
+                    break;
+                case COL_REAL:
+                    floatsToSort[0] = tempf;
+                    break;
+                case COL_TEXT:
+                    stringsToSort[0] = temps;
+                    break;
+                }
+//                IDlist[0]      = IDhold;
+				index[0]	   = indexHold;
+                repeat = false;
+            }
+        }
+    }
+
+
+	for ( int rc = 0; rc < size; rc++ ) {
+		SetItemData(index[rc], rc);
+	}
+
+	SortItems(MyCxListSorter, 1);
+    return true;
+
+}
+#endif
 
 
 //// The following code fragment is from www.codeguru.com and implements full row highlighting:

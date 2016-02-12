@@ -82,6 +82,7 @@ class CxListCtrl : public BASELISTCTRL
 
 #else
     void OnChar(wxKeyEvent & event );
+    void HeaderClicked( wxListEvent & wxle );
     DECLARE_EVENT_TABLE()
 #endif
 
@@ -114,6 +115,7 @@ protected:
     int nSortedCol;
     bool bSortAscending;
     bool SortTextItems( int colType, int nCol, bool bAscending);
+    bool CxSortItems( int colType, int nCol, bool bAscending);
 
 };
 #endif
