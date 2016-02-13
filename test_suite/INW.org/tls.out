@@ -463,7 +463,6 @@ LS-scale=  1.010   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.9       0.0E+00    0.3 E-01         25.5                           SCALE   
 
                                                 for          34 parameters
@@ -689,7 +688,6 @@ LS-scale=  1.255   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.3       0.4E+00    0.2 E-01         14.7                           SCALE   
 
                                                 for          34 parameters
@@ -913,7 +911,6 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          34 parameters
@@ -1151,7 +1148,6 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1             0.039      0.0E+00    0.376E-01          1.05                          SCALE   
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.24 E-02         -6.9         N      6 U[ISO]  
 
@@ -1372,7 +1368,6 @@ LS-scale=  1.415   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          45 parameters
@@ -1596,7 +1591,6 @@ LS-scale=  1.420   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          45 parameters
@@ -2056,7 +2050,6 @@ LS-scale=  1.418   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.5       0.0E+00    0.4 E-01         12.3                           SCALE   
 [13]  LARGE     2           2           563.3       0.0E+00    0.2 E+02         19.7                           EXTPARAM
 [14]  S/ESD     4           4            0.011       0.0E+00    0.44 E-02          2.5         C      1 U[22]   
@@ -2297,7 +2290,6 @@ LS-scale=  1.589   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 [13]  LARGE     1           1             0.3       0.6E+00    0.4 E-01          6.4                           SCALE   
 [43] Resetting shift for Extinction  Shift=     852.   Esd=      7   New shift=     102.68                                                                                                                                                                       
@@ -2952,7 +2944,6 @@ LS-scale=  1.685   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1            -0.3       0.0E+00    0.3 E-01         -9.2                           SCALE   
 [14]  S/ESD    22          22           -0.045       0.0E+00    0.40 E-02        -11.3         C      4 U[ISO]  
 
@@ -3176,7 +3167,6 @@ LS-scale=  1.580   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          55 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -3398,7 +3388,6 @@ LS-scale=  1.585   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          55 parameters
@@ -3636,7 +3625,6 @@ LS-scale=  1.584   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [14]  S/ESD    32          32            0.028       0.0E+00    0.42 E-02          6.8         C      4 U[11]   
 [14]  S/ESD    33          33           -0.017       0.0E+00    0.39 E-02         -4.5         C      4 U[22]   
 [14]  S/ESD    37          37            0.011       0.0E+00    0.41 E-02          2.7         C      4 U[12]   
@@ -3864,7 +3852,6 @@ LS-scale=  1.575   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for         100 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -4085,7 +4072,6 @@ LS-scale=  1.579   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for         100 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -4304,7 +4290,6 @@ LS-scale=  1.578   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for         100 parameters

@@ -364,7 +364,6 @@ LS-scale=  6.428   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.192      0.0E+00    0.182E-01        -10.60                          SCALE   
 [14]  S/ESD    52          52           -0.033       0.0E+00    0.22 E-01         -1.4         C      5 U[33]   
 [14]  S/ESD    54          54           -0.013       0.0E+00    0.12 E-01         -1.1         C      5 U[13]   
@@ -727,7 +726,6 @@ LS-scale=  6.236   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1             0.022     -0.1E+00    0.160E-01          1.36                          SCALE   
  LARGE    77          77            0.0604      0.4E+00    0.109E+00          0.55        C     13 U[11]   
 [14]  S/ESD   230         230            0.011      -0.5E+00    0.97 E-02          1.1         C    120 U[11]   
@@ -1071,7 +1069,6 @@ LS-scale=  6.258   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -1409,7 +1406,6 @@ LS-scale=  6.258   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for         298 parameters
@@ -2407,7 +2403,6 @@ LS-scale=  6.259   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -2742,7 +2737,6 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for         298 parameters
@@ -3084,7 +3078,6 @@ LS-scale=  6.251   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -3422,7 +3415,6 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for         298 parameters
