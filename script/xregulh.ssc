@@ -55,6 +55,7 @@
 %      COPY 'END'                                                               
 %      COPY '#RELEASE PUNCH bfile.pch'                                          
   Restraints saved in {&h-restraints.pch{&                                      
+%      COPY '#CLOSE SCPQ'                                                          
 %      COPY '#LIST 16'                                                          
 %      COPY '#USE h-restraints.pch'                                             
 %      COPY 'END'                                                               
