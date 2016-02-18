@@ -367,7 +367,6 @@ LS-scale=  0.287   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [14]  S/ESD    12          12            0.011       0.0E+00    0.11 E-02          9.6         C      1 Z       
 [14]  S/ESD    42          42            0.011       0.0E+00    0.18 E-02          6.1         C      9 X       
 [14]  S/ESD    47          47           -0.028       0.0E+00    0.12 E-01         -2.3         H     81 U[ISO]  
@@ -633,7 +632,6 @@ LS-scale=  0.289   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           4.
 [64]                               The mean abs(shift/su) =           3.
@@ -895,7 +893,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -1164,7 +1161,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -1422,7 +1418,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -1688,7 +1683,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -1951,7 +1945,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -2232,7 +2225,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1             0.017      0.0E+00    0.201E-02          8.42                          SCALE   
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.20                                                                                                                                                                       
 [13]  LARGE     2           2             0.2       0.0E+00    0.3 E+00         14.4                           EXTPARAM
@@ -2511,7 +2503,6 @@ LS-scale=  0.309   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.24                                                                                                                                                                       
 [13]  LARGE     2           2             0.2       0.3E+02    0.2 E+00         18.3                           EXTPARAM
 
@@ -2779,7 +2770,6 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.29                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.2       0.2E+02    0.3 E+00         18.0                           EXTPARAM
 
                                                 for         144 parameters
@@ -3041,7 +3031,6 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.35                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.3       0.2E+02    0.3 E+00         17.4                           EXTPARAM
 
                                                 for         144 parameters
@@ -4018,7 +4007,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.41                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.0E+00    0.3 E+00         16.7                           EXTPARAM
 
                                                 for         144 parameters
@@ -4280,7 +4268,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.50                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.1E+02    0.3 E+00         15.9                           EXTPARAM
 
                                                 for         144 parameters
@@ -4546,7 +4533,6 @@ LS-scale=  0.313   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.60                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.5       0.1E+02    0.3 E+00         14.9                           EXTPARAM
 
                                                 for         144 parameters
@@ -5090,7 +5076,6 @@ LS-scale=  0.287   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [14]  S/ESD    12          12            0.011       0.0E+00    0.11 E-02          9.6         C      1 Z       
 [14]  S/ESD    42          42            0.011       0.0E+00    0.18 E-02          6.1         C      9 X       
 [14]  S/ESD    47          47           -0.028       0.0E+00    0.12 E-01         -2.3         H     81 U[ISO]  
@@ -5356,7 +5341,6 @@ LS-scale=  0.289   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           4.
 [64]                               The mean abs(shift/su) =           3.
@@ -5618,7 +5602,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -5887,7 +5870,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -6145,7 +6127,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -6411,7 +6392,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -6674,7 +6654,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -6955,7 +6934,6 @@ LS-scale=  0.292   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1             0.017      0.0E+00    0.201E-02          8.42                          SCALE   
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.20                                                                                                                                                                       
 [13]  LARGE     2           2             0.2       0.0E+00    0.3 E+00         14.4                           EXTPARAM
@@ -7234,7 +7212,6 @@ LS-scale=  0.309   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.24                                                                                                                                                                       
 [13]  LARGE     2           2             0.2       0.3E+02    0.2 E+00         18.3                           EXTPARAM
 
@@ -7502,7 +7479,6 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.29                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.2       0.2E+02    0.3 E+00         18.0                           EXTPARAM
 
                                                 for         144 parameters
@@ -7764,7 +7740,6 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.35                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.3       0.2E+02    0.3 E+00         17.4                           EXTPARAM
 
                                                 for         144 parameters
@@ -8739,7 +8714,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.41                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.0E+00    0.3 E+00         16.7                           EXTPARAM
 
                                                 for         144 parameters
@@ -9001,7 +8975,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.50                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.1E+02    0.3 E+00         15.9                           EXTPARAM
 
                                                 for         144 parameters
@@ -9267,7 +9240,6 @@ LS-scale=  0.313   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       5.5   Esd=       0.3   New shift=       0.60                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.5       0.1E+02    0.3 E+00         14.9                           EXTPARAM
 
                                                 for         144 parameters
@@ -9811,7 +9783,6 @@ LS-scale=  0.174   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.0       0.0E+00    0.2 E-02         18.0                           SCALE   
 [14]  S/ESD     3           3           -0.014       0.0E+00    0.16 E-02         -8.7         BR     1 Y       
 [14]  S/ESD     5           5            0.014       0.0E+00    0.42 E-02          3.3         BR     1 U[ISO]  
@@ -10105,7 +10076,6 @@ LS-scale=  0.270   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [14]  S/ESD     5           5           -0.022      -0.2E+01    0.20 E-02        -10.7         BR     1 U[ISO]  
 [14]  S/ESD    12          12           -0.011      -0.4E+00    0.97 E-03        -12.1         C      1 Z       
 [14]  S/ESD    17          17           -0.016      -0.2E+01    0.17 E-02         -9.3         C      2 U[ISO]  
@@ -10386,7 +10356,6 @@ LS-scale=  0.282   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [14]  S/ESD    47          47            0.011       0.8E+00    0.14 E-02          7.7         H     81 U[ISO]  
 [14]  S/ESD    50          50            0.013       0.8E+00    0.14 E-02          9.6         H     91 U[ISO]  
 
@@ -10653,7 +10622,6 @@ LS-scale=  0.288   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -11178,7 +11146,6 @@ LS-scale=  0.290   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -11451,7 +11418,6 @@ LS-scale=  0.290   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.010      0.0E+00    0.105E-02          9.53                          SCALE   
 [44] Resetting shift for Extinction  Shift=       5.1   Esd=       0.3   New shift=       0.20                                                                                                                                                                       
@@ -11735,7 +11701,6 @@ LS-scale=  0.307   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [44] Resetting shift for Extinction  Shift=       4.7   Esd=       0.2   New shift=       0.24                                                                                                                                                                       
 [13]  LARGE     2           2             0.2       0.2E+02    0.2 E+00         22.1                           EXTPARAM
 
@@ -12008,7 +11973,6 @@ LS-scale=  0.309   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.8   Esd=       0.2   New shift=       0.29                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.2       0.2E+02    0.2 E+00         21.8                           EXTPARAM
 
                                                 for         144 parameters
@@ -12275,7 +12239,6 @@ LS-scale=  0.310   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.8   Esd=       0.2   New shift=       0.34                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.3       0.2E+02    0.2 E+00         21.2                           EXTPARAM
 
                                                 for         144 parameters
@@ -13159,7 +13122,6 @@ LS-scale=  0.310   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.9   Esd=       0.2   New shift=       0.41                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.0E+00    0.2 E+00         20.4                           EXTPARAM
 
                                                 for         144 parameters
@@ -13421,7 +13383,6 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.9   Esd=       0.2   New shift=       0.49                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.1E+02    0.2 E+00         19.5                           EXTPARAM
 
                                                 for         144 parameters
@@ -13687,7 +13648,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.9   Esd=       0.2   New shift=       0.59                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.5       0.1E+02    0.2 E+00         18.3                           EXTPARAM
 
                                                 for         144 parameters
@@ -14231,7 +14191,6 @@ LS-scale=  0.174   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.0       0.0E+00    0.2 E-02         18.0                           SCALE   
 [14]  S/ESD     3           3           -0.014       0.0E+00    0.16 E-02         -8.7         BR     1 Y       
 [14]  S/ESD     5           5            0.014       0.0E+00    0.42 E-02          3.3         BR     1 U[ISO]  
@@ -14525,7 +14484,6 @@ LS-scale=  0.270   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [14]  S/ESD     5           5           -0.022      -0.2E+01    0.20 E-02        -10.7         BR     1 U[ISO]  
 [14]  S/ESD    12          12           -0.011      -0.4E+00    0.97 E-03        -12.1         C      1 Z       
 [14]  S/ESD    17          17           -0.016      -0.2E+01    0.17 E-02         -9.3         C      2 U[ISO]  
@@ -14806,7 +14764,6 @@ LS-scale=  0.282   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [14]  S/ESD    47          47            0.011       0.8E+00    0.14 E-02          7.7         H     81 U[ISO]  
 [14]  S/ESD    50          50            0.013       0.8E+00    0.14 E-02          9.6         H     91 U[ISO]  
 
@@ -15073,7 +15030,6 @@ LS-scale=  0.288   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          53 parameters
@@ -15598,7 +15554,6 @@ LS-scale=  0.290   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 
-
                                                 for          53 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
@@ -15871,7 +15826,6 @@ LS-scale=  0.290   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.010      0.0E+00    0.105E-02          9.53                          SCALE   
 [44] Resetting shift for Extinction  Shift=       5.1   Esd=       0.3   New shift=       0.20                                                                                                                                                                       
@@ -16155,7 +16109,6 @@ LS-scale=  0.307   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [44] Resetting shift for Extinction  Shift=       4.7   Esd=       0.2   New shift=       0.24                                                                                                                                                                       
 [13]  LARGE     2           2             0.2       0.2E+02    0.2 E+00         22.1                           EXTPARAM
 
@@ -16428,7 +16381,6 @@ LS-scale=  0.309   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.8   Esd=       0.2   New shift=       0.29                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.2       0.2E+02    0.2 E+00         21.8                           EXTPARAM
 
                                                 for         144 parameters
@@ -16695,7 +16647,6 @@ LS-scale=  0.310   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.8   Esd=       0.2   New shift=       0.34                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.3       0.2E+02    0.2 E+00         21.2                           EXTPARAM
 
                                                 for         144 parameters
@@ -17579,7 +17530,6 @@ LS-scale=  0.310   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.9   Esd=       0.2   New shift=       0.41                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.0E+00    0.2 E+00         20.4                           EXTPARAM
 
                                                 for         144 parameters
@@ -17841,7 +17791,6 @@ LS-scale=  0.311   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.9   Esd=       0.2   New shift=       0.49                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.4       0.1E+02    0.2 E+00         19.5                           EXTPARAM
 
                                                 for         144 parameters
@@ -18107,7 +18056,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [44] Resetting shift for Extinction  Shift=       4.9   Esd=       0.2   New shift=       0.59                                                                                                                                                                       
-
 [13]  LARGE     2           2             0.5       0.1E+02    0.2 E+00         18.3                           EXTPARAM
 
                                                 for         144 parameters
