@@ -22,7 +22,7 @@ int CxListCtrl::mListCtrlCount = kListCtrlBase;
 
 
 #ifdef CRY_USEWX
-int wxCALLBACK MyCxListSorter(long item1, long item2, long sortData)
+int wxCALLBACK MyCxListSorter(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
 {
     // inverse the order
     if (item1 < item2)
