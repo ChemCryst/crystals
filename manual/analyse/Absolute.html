@@ -436,7 +436,7 @@ I represents Fsquared
 rms(deltaI)
 For Io
             1865        71.1810       139.0263         1927       -83.0851      184.3125
-For Ic
+For Is
             1898        67.7912       135.4657         1894       -71.1456      159.6284
 </small>
 
@@ -446,7 +446,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
     ---------------------------|----------------------------
 --    1698   -92.10   -78.06   |+-     235   -15.84    15.76
 
-           Histogram distributions (deciles, octiles, quartiles)
+           Flack(x) distributions (deciles, octiles, quartiles)
       1/10      1/8       1/4       mean     3/4        7/8       9/10
      -0.64     -0.50     -0.21     -0.03      0.15      0.45      0.57
 <font color='blue'>
@@ -475,19 +475,24 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 </code>
 </pre>
         </td>
-        <td width="50%">The statistics for Io and Ic should be roughly similar.
+        <td width="50%">The statistics for Io and Is should be roughly similar.
         <br />
-        <br />The number of reflections for which the residuals for Io and Ic have the
+        <br />The number of reflections for which the residuals for Io and Is have the
         same sign should exceed the number with opposite sign.
         <br />
-        <br />The distribtion for Io should be similar to that for Ic. For a poorly
+        <br />The distribtion for Io should be similar to that for Is. For a poorly
         determined absolute structure, the Io distribution is often much wider than the
-        Ic distribution.<br /><br />
-        The mean Flack(x) parameter is refined by iterative reweighting to try to exclude
-        inaccurate data.  <br />
-         The Lepage analysis gives the number of reflections with the same or opposite signs
+        Is distribution.<br /><br />
+        The Flack(x) parameter can be computed and ranked for each Bijvoet pair. 
+        In this example, 1/10 of the pairs give a Flack(x) of less 
+        than -0.64, 1/8 of less than -0.50 etc. The mid point of the 
+        distribution gives a Flack(x) of -0.03.
+        The mean Flack(x) is refined by iterative reweighting to try to exclude inaccurate data. 
+
+         <br />
+         The Lepage analysis uses the numbers of reflections with the same or opposite signs
          for ranges of increasingly unreliable data. The distribution can be used to 
-         provide a <i>robust</i> estimate of the probability that the structure has been 
+         provide a robust estimate of the probability that the structure has been 
          assigned the correct chirality.<br />
          A Robust Alternative to <i>eta</i> Refinement for Assessing the Hand of Chiral Compounds.
          <br />
