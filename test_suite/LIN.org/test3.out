@@ -5886,7 +5886,6 @@ LS-scale= 12.394   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -1.155      0.0E+00    0.628E+00         -1.84                          SCALE   
  LARGE     2           2           -0.1928      0.0E+00    0.702E-01         -2.75        SI     1 U[11]   
                                                                                                             Composite
@@ -7222,14 +7221,10 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1             0.029      0.0E+00    0.189E-01          1.52                          SCALE   
 [13]  LARGE     2           2             0.0       0.0E+00    0.4 E-02          1.4                           DU[ISO] 
-
  Block   2
-
  Block   3
-
  Block   4
 [14]  S/ESD    11           1           -0.022       0.0E+00    0.36 E-02         -6.3         C      1 X       
 [14]  S/ESD    13           3            0.017       0.0E+00    0.40 E-02          4.2         C      1 Z       
@@ -7401,13 +7396,9 @@ LS-scale=  1.014   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.018     -0.6E+00    0.122E-01         -1.45                          SCALE   
-
  Block   2
-
  Block   3
-
  Block   4
 [14]  S/ESD    14           4           -0.012       0.6E+00    0.70 E-02         -1.7         C      1 U[ISO]  
 
@@ -7757,7 +7748,6 @@ LS-scale=  1.992   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 
                                                 for          37 parameters

@@ -9509,7 +9509,7 @@ c now update LIST 39
        m39f = l39f
        do i=1,n39f
         if (istore(m39f) .eq. iflac) then
-c            store(m39f+2)=store(l30dr+8) !MAIN NPP
+c            store(m39f+2)=store(l30dr+8) !MAIN NPP (now set in summary)
             store(m39f+3)=yslope         !BIJVOET NPP
             store(m39f+4)=tempdjw(3)     !Hin1
             store(m39f+5)=tempdjw(4)     !

@@ -1,0 +1,302 @@
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 2                                                                                                                                                                                                                                                         
+# P222 THIS IS A DUMMY TO PRESERVE 'ABSENCES' SINCE SOME ARE                                                                                                                                                                                                    
+# 'PRESENT' DUE TO THE TWINNING.                                                                                                                                                                                                                                
+#LIST 3                                                                                                                                                                                                                                                         
+# EXPONENTIAL SCATTERING FACTORS FOR CU RADIATION TAKEN FROM                                                                                                                                                                                                    
+# INTERNATIONAL TABLES VOL IV                                                                                                                                                                                                                                   
+#LIST 13                                                                                                                                                                                                                                                        
+# SET TWINNED = NO HERE OR SET THE KEY /FOT/ FO INPUT IN HKLI                                                                                                                                                                                                   
+#LIST 14                                                                                                                                                                                                                                                        
+
+
+ Orientation matrix
+
+                        0.0000    0.0000    0.0000
+
+                        0.0000    0.0000    0.0000
+
+                        0.0000    0.0000    0.0000
+#LIST 25                                                                                                                                                                                                                                                        
+#LIST 5                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
+# NOTE THAT THE DATA REDUCTION PRODUCES A LIST 6 NOT                                                                                                                                                                                                            
+# CONTAINING ANY INFORMATION ABOUT THE TWINNING, SINCE                                                                                                                                                                                                          
+# THIS INFORMATION IS NOT PRESENT IN THE CAD4 OUTPUT                                                                                                                                                                                                            
+# FILE. WE MUST PUNCH OUT LIST 6, AND PERFORM AN OPERATION                                                                                                                                                                                                      
+# ON THE TERM 'ELEMENTS' TO INDICATE WHICH ELEMENTS ACTUALLY                                                                                                                                                                                                    
+# CONTRIBUTE TO THE REFLECTION.                                                                                                                                                                                                                                 
+#                                                                                                                                                                                                                                                               
+# THE LP CORRECTION WAS DONE ELSEWHERE                                                                                                                                                                                                                          
+#HKLI                                                                                                                                                                                                                                                           
+
+ No scales found
+
+ A scale of   1.00000  has been assumed
+
+ The updated reflections are now on UNIT 53
+
+
+
+      29 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+#SYST                                                                                                                                                                                                                                                           
+#LIST 28                                                                                                                                                                                                                                                        
+#SYST                                                                                                                                                                                                                                                           
+#SORT                                                                                                                                                                                                                                                           
+ The updated reflections are now on UNIT 52
+
+
+
+     29 reflections accepted               0 reflections rejected                                                                                                                                                                                               
+#MERGE                                                                                                                                                                                                                                                          
+ After   1 pass      29 reflection(s) have been sorted
+ The updated reflections are now on UNIT 53
+#LIST 2                                                                                                                                                                                                                                                         
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+
+ The updated reflections are now on UNIT 52
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+   0.0 -  0.5     0  0     0    29 -
+   0.5 -  1.0     0  0     0    29 -
+   1.0 -  1.5     0  0     0    29 -
+   1.5 -  2.0     0  0     0    29 -
+   2.0 -  2.5     0  0     0    29 -
+   2.5 -  3.0     0  0     0    29 -
+   3.0 -  3.5     0  0     0    29 -
+   3.5 -  4.0     0  0     0    29 -
+   4.0 -  4.5     0  0     0    29 -
+   4.5 -  5.0     0  0     0    29 -
+   5.0 -  5.5     0  0     0    29 -
+   5.5 -  6.0     0  0     0    29 -
+   6.0 -  6.5     0  0     0    29 -
+   6.5 -  7.0     0  0     0    29 -
+   7.0 -  7.5     0  0     0    29 -
+   7.5 -  8.0     0  0     0    29 -
+   8.0 -  8.5     0  0     0    29 -
+   8.5 -  9.0     0  0     0    29 -
+   9.0 -  9.5     0  0     0    29 -
+   9.5 - 10.0     0  0     0    29 -
+  10.0 - 10.5     0  0     0    29 -
+  10.5 - 11.0     0  0     0    29 -
+  11.0 - 11.5     0  0     0    29 -
+  11.5 - 12.0     0  0     0    29 -
+  12.0 - 12.5     0  0     0    29 -
+  12.5 - 13.0     0  0     0    29 -
+  13.0 - 13.5     0  0     0    29 -
+  13.5 - 14.0     0  0     0    29 -
+  14.0 - 14.5     0  0     0    29 -
+  14.5 - 15.0     0  0     0    29 -
+  15.0 - 15.5     0  0     0    29 -
+  15.5 - 16.0     0  0     0    29 -
+  16.0 - 16.5     0  0     0    29 -
+  16.5 - 17.0     0  0     0    29 -
+  17.0 - 17.5     0  0     0    29 -
+  17.5 - 18.0     0  0     0    29 -
+  18.0 - 18.5     0  0     0    29 -
+  18.5 - 19.0     0  0     0    29 -
+  19.0 - 19.5     0  0     0    29 -
+  19.5 - 20.0     0  0     0    29 -
+  20.0 - 20.5     0  0     0    29 -
+  20.5 - 21.0     0  0     0    29 -
+  21.0 - 21.5     0  0     0    29 -
+  21.5 - 22.0     0  0     0    29 -
+  22.0 - 22.5     0  0     0    29 -
+  22.5 - 23.0     0  0     0    29 -
+  23.0 - 23.5     0  0     0    29 -
+  23.5 - 24.0     0  0     0    29 -
+  24.0 - 24.5     0  0     0    29 -
+  24.5 - 25.0     0  0     0    29 -
+  25.0 - 25.5     0  0     0    29 -
+  25.5 - 26.0     0  0     0    29 -
+  26.0 - 26.5     0  0     0    29 -
+  26.5 - 27.0     0  0     0    29 -
+  27.0 - 27.5     0  0     0    29 -
+  27.5 - 28.0     0  0     0    29 -
+  28.0 - 28.5     0  0     0    29 -
+  28.5 - 29.0     0  0     0    29 -
+  29.0 - 29.5     0  0     0    29 -
+  29.5 - 30.0     0  0     0    29 -
+  30.0 - 30.5     0  0     0    29 -
+  30.5 - 31.0     0  0     0    29 -
+  31.0 - 31.5     0  0     0    29 -
+  31.5 - 32.0     0  0     0    29 -
+  32.0 - 32.5     0  0     0    29 -
+  32.5 - 33.0     0  0     0    29 -
+  33.0 - 33.5     0  0     0    29 -
+  33.5 - 34.0     0  0     0    29 -
+  34.0 - 34.5     0  0     0    29 -
+  34.5 - 35.0     0  0     0    29 -
+  35.0 - 35.5     0  0     0    29 -
+  35.5 - 36.0     0  0     0    29 -
+  36.0 - 36.5     0  0     0    29 -
+  36.5 - 37.0     0  0     0    29 -
+  37.0 - 37.5     0  0     0    29 -
+  37.5 - 38.0     0  0     0    29 -
+  38.0 - 38.5     0  0     0    29 -
+  38.5 - 39.0     0  0     0    29 -
+  39.0 - 39.5     0  0     0    29 -
+  39.5 - 40.0     0  0     0    29 -
+  40.0 - 40.5     0  0     0    29 -
+  40.5 - 41.0     0  0     0    29 -
+  41.0 - 41.5     0  0     0    29 -
+  41.5 - 42.0     0  0     0    29 -
+  42.0 - 42.5     0  0     0    29 -
+  42.5 - 43.0     0  0     0    29 -
+  43.0 - 43.5     0  0     0    29 -
+  43.5 - 44.0     0  0     0    29 -
+  44.0 - 44.5     0  0     0    29 -
+  44.5 - 45.0     0  0     0    29 -
+  45.0 - 45.5     0  0     0    29 -
+  45.5 - 46.0     0  0     0    29 -
+  46.0 - 46.5     0  0     0    29 -
+  46.5 - 47.0     0  0     0    29 -
+  47.0 - 47.5     0  0     0    29 -
+  47.5 - 48.0     0  0     0    29 -
+  48.0 - 48.5     0  0     0    29 -
+  48.5 - 49.0     0  0     0    29 -
+  49.0 - 49.5     0  0     0    29 -
+  49.5 - 50.0    29100    29     0 ---------------------------------------------------------------------------------
+
+
+
+    29 Contributors input            0 Contributors rejected
+    29 Merged reflections output     0 Merged reflections rejected
+     0 Contributors deviating from the average by more than   3.0e.s.ds
+    29 Reflections greater than 3 sigma(i), 100.000 percent of data                                                                                                                                                                                             
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000                                                                                                                                                                                                   
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000                                                                                                                                                                                               
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+[41]                0.00            0.00           0.00
+# PNMA. SINCE WE WONT DO A SYST AGAIN, WE CAN SWITCH TO THE SG                                                                                                                                                                                                  
+# FOR TWIN ELEMENT 1.                                                                                                                                                                                                                                           
+#LIST 6                                                                                                                                                                                                                                                         
+
+
+
+      29 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+#PUNCH 6 C                                                                                                                                                                                                                                                      
+#                                                                                                                                                                                                                                                               
+# THIS PROGRAM, INCLUDED AS CRYSTALS COMMENTS, MAY BE USED AS AN EXAMPLE                                                                                                                                                                                        
+# FOR A MODULE TO GENERATE THE ELEMENT FLAGS GIVEN THE TWIN LAWS. NOTE                                                                                                                                                                                          
+# THAT IN THIS CASE MOST REFLECTIONS OVERLAP EXACTLY (WITH ELEMENT KEY 12)                                                                                                                                                                                      
+# SO THAT THE TWIN RATIO IS DETERMINED BY ONLY A SMALL SUBSET OF THE DATA                                                                                                                                                                                       
+# (WITH ELEMENTS EITHER 1 OR 2). THE INDETERMINANCY IN THE TWIN RATIO MAY                                                                                                                                                                                       
+# HAVE EFFECTS ON OTHER PARAMETERS, PARTICULARLY THE U'S.                                                                                                                                                                                                       
+#                                                                                                                                                                                                                                                               
+# 	PROGRAM TWIN                                                                                                                                                                                                                                                 
+# 	DIMENSION J(3), I(3)                                                                                                                                                                                                                                         
+# C                                                                                                                                                                                                                                                             
+# C	RE-INDEXES TWINNED DATA AND SETS UP THE ELEMENT FLAGS FOR                                                                                                                                                                                                   
+# C	A LIST 6 PUNCHED OUT OF CRYSTALS.                                                                                                                                                                                                                           
+# C                                                                                                                                                                                                                                                             
+# C	THE TWIN LAW FOR ELEMENT 2 IS                                                                                                                                                                                                                               
+# C                                                                                                                                                                                                                                                             
+# C	0 1 0                                                                                                                                                                                                                                                       
+# C	1 0 0                                                                                                                                                                                                                                                       
+# C	0 0 1                                                                                                                                                                                                                                                       
+# C                                                                                                                                                                                                                                                             
+# C   2   0   0     55.12    0.00      0.00 0.00000 0.00000E+00      0.00 12                                                                                                                                                                                    
+# C   4   0   0     41.92    0.00      0.00 0.00000 0.00000E+00      0.00 12                                                                                                                                                                                    
+# C                                                                                                                                                                                                                                                             
+# C                                                                                                                                                                                                                                                             
+# C                                                                                                                                                                                                                                                             
+# 10    CONTINUE                                                                                                                                                                                                                                                
+# 	READ(1,100,END=20)I,FO,SERIAL,FC,PHASE,WEIGHT,FOT,J                                                                                                                                                                                                          
+# 100   FORMAT (3I4,F10.2,F8.2,F10.2,F8.5,E12.5,F10.2,3I1)                                                                                                                                                                                                      
+# C                                                                                                                                                                                                                                                             
+# 	J(1) = 0                                                                                                                                                                                                                                                     
+# 	J(2) = 1                                                                                                                                                                                                                                                     
+# 	J(3) = 2                                                                                                                                                                                                                                                     
+# 	IF (I(3) .EQ. 0) GOTO 200                                                                                                                                                                                                                                    
+# 	IF (I(2) .EQ. 0) GOTO 300                                                                                                                                                                                                                                    
+# 	IF (I(1) .EQ. 0) GOTO 400                                                                                                                                                                                                                                    
+# 	GO TO 500                                                                                                                                                                                                                                                    
+# C                                                                                                                                                                                                                                                             
+# 200	CONTINUE                                                                                                                                                                                                                                                  
+# 	K=I(1)+I(2)                                                                                                                                                                                                                                                  
+# 	IF( MOD(K,2) .EQ. 0) GOTO 500                                                                                                                                                                                                                                
+# 	J(2) = 0                                                                                                                                                                                                                                                     
+# 	IF( MOD(I(1),2) .EQ. 0 ) THEN                                                                                                                                                                                                                                
+# 		J(3) = 1                                                                                                                                                                                                                                                    
+# 	ELSE                                                                                                                                                                                                                                                         
+# 		J(3) = 2                                                                                                                                                                                                                                                    
+# 		K = I(1)                                                                                                                                                                                                                                                    
+# 		I(1) = I(2)                                                                                                                                                                                                                                                 
+# 		I(2) = K                                                                                                                                                                                                                                                    
+# 	ENDIF                                                                                                                                                                                                                                                        
+# 	GOTO 500                                                                                                                                                                                                                                                     
+# C                                                                                                                                                                                                                                                             
+# 300	CONTINUE                                                                                                                                                                                                                                                  
+# 	K=I(1)+I(3)	                                                                                                                                                                                                                                                 
+# 	IF( MOD(K,2) .EQ. 0) GOTO 500                                                                                                                                                                                                                                
+# 	J(2) = 0                                                                                                                                                                                                                                                     
+# 	J(3) = 1                                                                                                                                                                                                                                                     
+# 	GOTO 500                                                                                                                                                                                                                                                     
+# C                                                                                                                                                                                                                                                             
+# 400	CONTINUE                                                                                                                                                                                                                                                  
+# 	K =I(2) + I(3)                                                                                                                                                                                                                                               
+# 	IF( MOD(K,2) .EQ. 0) GOTO 500                                                                                                                                                                                                                                
+# 	J(2) = 0                                                                                                                                                                                                                                                     
+# 	J(3) = 2                                                                                                                                                                                                                                                     
+# 	K = I(1)                                                                                                                                                                                                                                                     
+# 	I(1) = I(2)                                                                                                                                                                                                                                                  
+# 	I(2) = K                                                                                                                                                                                                                                                     
+# C                                                                                                                                                                                                                                                             
+# 500	CONTINUE                                                                                                                                                                                                                                                  
+# 	WRITE(6,100)I,FO,SERIAL,FC,PHASE,WEIGHT,FOT,J                                                                                                                                                                                                                
+# 	GOTO 10                                                                                                                                                                                                                                                      
+# 20	CONTINUE                                                                                                                                                                                                                                                   
+# 	STOP                                                                                                                                                                                                                                                         
+# 	END                                                                                                                                                                                                                                                          
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 30-APR84 AT 15:37:55                                                                                                                                                                                                                               
+# THE LIST AS PUNCHED REFERS TO AN UNTWINNED STRUCTURE.                                                                                                                                                                                                         
+# IT WAS MODIFIED  IN 4 WAYS.                                                                                                                                                                                                                                   
+# 1. THE ITEM OUTPUT ABOVE AS /FO/ IS INFACT THE TOTAL AMPLITUDE, SO WE                                                                                                                                                                                         
+#    MUSTINTERCHANGE THE KEYS /FO/ AND /FOT/ FOR INPUT                                                                                                                                                                                                          
+# 2. SIGMA AND  FO ARE NOW READ AS ZERO, WHICH WOULD CAUSE THE REFLECTION                                                                                                                                                                                       
+#    TO BE REJECTED ON REINPUT. WE MUST INHIBIT CHECKING (WHICH WILL NORMALLY                                                                                                                                                                                   
+#    BE OK SINCE THE DATA COMES FROM A PREVIOUS JOB).                                                                                                                                                                                                           
+# 3. THE VALUE OUTPUT FOR ELEMENTS, (ZERO) WAS MODIFIED (AS ABOVE) TO INDICATE                                                                                                                                                                                  
+#    WHICH TWIN ELEMENTS CONTRIBUTE TO THE REFLECTION. THE FIRST ELEMENT                                                                                                                                                                                        
+#    OF THE KEY INDICATES WHICH ELEMENT OF THE TWIN CORRESPONDS TO THE                                                                                                                                                                                          
+#    NOMINAL INDEX.                                                                                                                                                                                                                                             
+# 4. THE NOMINAL INDICES, HKL, MAY NEED TO BE CHANGED IF THERE IS NO                                                                                                                                                                                            
+#    CONTRIBUTION TO THE TOTAL FROM THE 'MAIN' (I.E. ELEMENT 1) COMPONENT.                                                                                                                                                                                      
+#    IN THAT CASE, HK AND L MUST BE THE INDEX OF THE FIRST COMPONENT IN                                                                                                                                                                                         
+#    ELEMENT. NOTE THAT IF THIS REINDEXING IS DONE ( BY SOME PROCEDURE                                                                                                                                                                                          
+#    EXTERNAL TO CRYSTALS) THE DATA MUST BE RE-SORTED BUT MUST NOT BE                                                                                                                                                                                           
+#    RE-MERGED. USE THE INSTRUCTIONS SORT AND REORDER TO REORDER THE DATA.                                                                                                                                                                                      
+#                                                                                                                                                                                                                                                               
+#LIST 6                                                                                                                                                                                                                                                         
+ The updated reflections are now on UNIT 53
+
+
+
+      46 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+Upating List 13 for twinned data                                                                                                                                                                                                                                
+#SORT                                                                                                                                                                                                                                                           
+#REORDER                                                                                                                                                                                                                                                        
+ After   1 pass      46 reflection(s) have been sorted
+ The updated reflections are now on UNIT 52
+# COMPARE THE NEW LIST 6 WITH THE EARLIER ONE. NOTE THAT THE DATA HAS BEEN                                                                                                                                                                                      
+# MOVED ABOUT.                                                                                                                                                                                                                                                  
+#PUNCH 6 C                                                                                                                                                                                                                                                      
+ The updated reflections are now on UNIT 53
+#FINI                                                                                                                                                                                                                                                           
+
+
+          : Job ends ok       with     0 warnings and     0 errors

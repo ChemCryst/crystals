@@ -14,7 +14,7 @@
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 @goto fini
 :debug
-@%LD% %LDEBUG%  %OUT%crystalsd.exe %LDFLAGS% dobj\*.obj %LIBS%
-mt.exe -manifest crystalsd.exe.manifest -outputresource:crystalsd.exe;1
+@%LD% %LDEBUG%  %OUT%crystals.exe %LDFLAGS% dobj\*.obj %LIBS%
+mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 :fini
 @time /t

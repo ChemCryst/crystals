@@ -85,10 +85,14 @@
 ^^WI             ENDMENU
 ^^WI             ITEM _GDELA 'Dele&te selection' '#SCRIPT DELGRP_N_GEND'
 ^^WI                                             DISABLEIF='IN'
-^^WI             ITEM _RP 'Set &part number of selection' '#SCRIPT XPARTGS' 
+^^WI             ITEM _RPSS 'Spli&t selection' '#SCRIPT XSPLITS_N_GEND' 
 ^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _RP '&Set occupancy of selection' '#SCRIPT XOCCGS' 
+^^WI             ITEM _RPS 'Set &part number of selection' '#SCRIPT XPARTGS' 
+^^WI                    DISABLEIF= 'IN'
+^^WI             ITEM _RPO '&Set occupancy of selection' '#SCRIPT XOCCGS'
 ^^wi                    DISABLEIF= 'IN'
+^^WI             ITEM _DIST 'S&wap labels' '#SCRIPT YCSWAP_N_G'
+^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI             SPLIT
 ^^WI             ITEM _GDELA 'Centroid of &selection'
 ^^WI                         '#SCRIPT XCENTRO_N_GEND' DISABLEIF='IN SEL1'

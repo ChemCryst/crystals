@@ -12,6 +12,20 @@
 %    SHOW READER_FILE
 %    FINISH
 % END IF 
+%%%%
+%%
+%% Check for alternative editor user setting
+%%
+^^CO GETKEY CRYEDITOR
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  IF CVALUE .NE. '1' .AND. FILEEXISTS ( CVALUE ) THEN 
+Using user-specified editor.
+%%    TRANSFER "#SPAWN +'" // CVALUE // "' " // READER_FILE TO DISPLAY
+%    TRANSFER '#SPAWN +"' // CVALUE // '" ' // READER_FILE TO CRYSTALS
+%    EVALUATE READER_OK = TRUE
+%    FINISH
+%  END IF
+%%
 %%
 %TRANSFER "^^WI WINDOW XREADER 'Viewing " // READER_FILE // "'" TO DISPLAY
 ^^WI SIZE MODAL KEEP
@@ -21,7 +35,7 @@
 ^^WI        IGNORE DISABLED=YES
 ^^WI   @ 2,4 GRID BTNS NROWS=1 NCOLS=1
 ^^WI   {
-^^WI     @ 1,1 BUTTON BOK '&Close' DEFAULT COMMIT
+^^WI     @ 1,1 BUTTON BOK '&Close' DEFAULT COMMIT CANCEL
 ^^WI   }
 ^^WI }
 ^^WI SHOW

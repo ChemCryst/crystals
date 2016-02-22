@@ -361,7 +361,8 @@ sub obscureMachinePrecision() {
  	}
         close ($fhi);
         close ($fho); 
-        unlink ($new_file);
+#RIC Feb16 - leave this here so we can inspect the original 
+		#        unlink ($new_file);
 }
 
 

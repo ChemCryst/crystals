@@ -372,7 +372,7 @@ c running from the SRQ so has no frame stack to write to.
             if (kexist(39) .gt. 0) call xfal39
       endif
 c
-c send non-convergence message to LIST 39
+c send not yet converged message to LIST 39
 c-----      update list 39 - assumes only one SFLS record
 c            isfls = 'SFLS'
             if (khuntr (39,0, iaddl,iaddr,iaddd, -1) .eq. 0) then
@@ -2346,7 +2346,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,1950)JZ
       ENDIF
-1950    FORMAT(/' Block',I4/8X,'Param.',4X,'Rel. param.',4X,
+1950    FORMAT(' Block',I4/8X,'Param.',4X,'Rel. param.',4X,
      2  'Calc. shift',4X,'Shift ratio',4X,'E.S.D.',5X,'Shift/E.S.D.',
      3  4X,'Type',3X,'Serial',4X,'Coordinate')
         ICAPT = 1

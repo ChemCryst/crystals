@@ -1993,7 +1993,7 @@ C Close new DA file / copy back from scratch.
           IF ( IOS == 1 ) THEN
             !WRITE(NUOLD,REC = NRECOR, ERR = 2735, IOSTAT = IOS )IRECOR
             IOS = KSTORE ( NUOLD , NRECOR , IRECOR, ISSRLI )
-            print *, NRECOR, ios
+c            print *, NRECOR, ios
             if ( IOS /= 1) goto 2735
           else
             goto 2735

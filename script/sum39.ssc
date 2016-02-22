@@ -24,14 +24,13 @@ Integer parameters:
  
 Real parameters:
  
-   NAME SERI      R1               R2               R3               R4
-                  R5               R6               R7               R8
-                  R9               R10
+   NAME SERI   R1   R2   R3   R4   R5   R6   R7   R8   R9   R10
 %  COPY '#GENERALEDIT 39'
 %  COPY 'LOCATE RECORDTYPE = 102'
 %%  COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'
 %%  GENEDIT wont handle / in FORMAT - to be fixed sometime (DJW 2015)
-%  COPY 'FORMAT RECORD ( 4X,A4,I4,1X,2(4(F15.7,2X),/,13X),2(F15.7,2X) ) '
+%%  COPY 'FORMAT RECORD ( 4X,A4,F5.0,1X,2(4(F15.7,2X),/,13X),2(F15.7,2X) ) '
+%  COPY 'FORMAT RECORD ( 4X,A4,F5.0,1X,10F8.2 ) '
 %  COPY 'DISPLAY RECORD REAL 3'
 %  COPY 'END'
 %END SCRIPT

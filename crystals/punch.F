@@ -1546,7 +1546,6 @@ C---- GET SIGMA THRESHOLD FROM L28
             INDNAM = INDNAM + MD28CN
         END DO
       ENDIF
- 
 1840  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 1850
@@ -1875,7 +1874,7 @@ C--SET UP LIST 6 FOR READING ONLY
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C
       lout = ln6
-      WRITE(123,'(A,I6)') 'LOUT=', LOUT
+c      WRITE(123,'(A,I6)') 'LOUT=', LOUT
       if (iuln .ne. iuln2) then
             if (lout.eq.6) then 
                   lout=7
@@ -3324,13 +3323,13 @@ C
 101   FORMAT('READ NINT=',I6,' NREAL=',I6)
 
       DO I = L39I,L39I+(N39I-1)*MD39I,MD39I
-         WRITE(NCPU,102) (STORE(I+J),J=0,MD39I-1)
+         WRITE(NCPU,102) (ISTORE(I+J),J=0,MD39I-1)
       END DO
       DO I = L39F,L39F+(N39F-1)*MD39F,MD39F
          WRITE(NCPU,103) (STORE(I+J),J=0,MD39F-1)
       END DO
 102   FORMAT('INT  ' ,A4,1X,I7,5I12,/,'CONT  ',11X,5I12)
-103   FORMAT('REAL ',A4,1X,I7,5(F11.6,1X),/,'CONT  ',11X,5(F11.6,1X))
+103   FORMAT('REAL ',A4,1X,F7.0,5(F11.6,1X),/,'CONT  ',11X,5(F11.6,1X))
 C
       WRITE(NCPU,'(A)') 'END'
 C

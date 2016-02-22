@@ -79,11 +79,11 @@
 ^^WI                 NROWS=3 NCOLS=1 ISOLATE                                    
 ^^WI                 {                                                          
 ^^WI                   @ 1,1 TEXTOUT _MT_WGHT ' ' NCOLS=45 NROWS=3 TRANSPARENT  
-^^WI                   @ 3,1 GRID _ABED NROWS=3 NCOLS=1                         
+^^WI                   @ 3,1 GRID _ABED NROWS=1 NCOLS=3                         
 ^^WI                   {                                                        
 ^^WI                    @ 1,1 BUTTON '#SCRIPT XWEIGHTS' 'Optimise weights' SLIM
 ^^WI                      DISABLEIF='IN' ENABLEIF='L6'                          
-^^WI                    @ 3,1 BUTTON '#SCRIPT EDSXWT' 'Input SX weights' SLIM
+^^WI                    @ 1,3 BUTTON '#SCRIPT EDSXWT' 'Input SX weights' SLIM
 ^^WI                      DISABLEIF='IN' ENABLEIF='L6'                          
 ^^WI                   }                                                        
 ^^WI                 }                                                          

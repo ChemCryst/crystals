@@ -562,7 +562,7 @@ C----- SEE ALSO XSMMRY - FOR THE SAME DATA - SHOULD IT BE IN BLOCK DATA?
       DATA ISMTYP /  1 ,  2 ,  3 ,  4 ,  5 ,     6 ,  7 ,  0 ,  9 , 10 ,
      2               0 , 12 , 13 , 14 ,  0 ,    16 , 17 , 18 ,  0 ,  0 ,
      3               0 ,  0 , 23 ,  0 , 25 ,     0 , 27 , 28 , 29 , 30 ,
-     4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 , 40 ,
+     4               0 ,  0 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 , 39 , 40 ,
      5              41 , 42 ,  0 ,  0 ,  0 ,     0 ,  0 ,  0 ,  0 ,  0 /
 C
 C
@@ -575,8 +575,8 @@ C
      6 'S.F. modifications', '*', 'Twin Laws', '*',
      7 'Raw data scale factors',
      8 'Reflection selection conditions', 'Elemental properties',
-     9 'General details', 9*'*','Bonding information', 'Bonds',
-     1 'Fourier mask' /
+     9 'General details', 8*'*','Internal Flags','Bonding information',
+     1 'Bonds','Fourier mask' /
 C
       DATA LLTYPE /
      2 15,  8, 18, 16, 10,
@@ -586,7 +586,7 @@ C
      6  1,  1, 18,  1,  9,
      7  1, 22,
      8 31, 20,
-     9 15,1,1,1,1,1,1,1,1,1,19,5,
+     9 15,1,1,1,1,1,1,1,1,14,19,5,
      1 12 /
 C
 C
@@ -646,6 +646,8 @@ C
       IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL29
         ELSE IF ( LSTYPE .EQ. 30 ) THEN
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+        ELSE IF ( LSTYPE .EQ. 39 ) THEN
+      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL39
         ELSE IF ( LSTYPE .EQ. 40 ) THEN
       IF (KHUNTR (40,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL40
         ELSE IF ( LSTYPE .EQ. 41 ) THEN
@@ -715,6 +717,8 @@ CDJWJAN11
         CALL XSUM29
       ELSE IF ( LSTYPE .EQ. 30 ) THEN
         CALL XSUM30
+      ELSE IF ( LSTYPE .EQ. 39 ) THEN
+        CALL XSUM39
       ELSE IF ( LSTYPE .EQ. 40 ) THEN
         CALL XSUM40
       ELSE IF ( LSTYPE .EQ. 41 ) THEN
@@ -3479,6 +3483,73 @@ C
       END
 
 
+
+CODE FOR XSUM39
+      SUBROUTINE XSUM39 
+C
+C -- ROUTINE TO DISPLAY SUMMARY OF LIST 39
+C
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST39.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+C
+      INCLUDE 'QSTORE.INC'
+C
+      INCLUDE 'ICOM39.INC'
+      INCLUDE 'QLST39.INC'
+c
+      write(cmon,'(a)') 'Contents of LIST 39'
+      call xprvdu(ncvdu,1,0)
+      if (issprt.eq.0) write(cmon,'(a)') 'Contents of LIST 39'
+
+c
+      INCLUDE 'IDIM39.INC'
+      if (n39i.le.0) then
+        write(cmon,'(a)') 'No integer data stored'
+        call xprvdu(ncvdu,1,0)
+        if(issprt.eq.0) write(ncwu,'(a)') 'No integer data stored'
+      else
+        write(cmon,'(a)') 'Integer data'
+        call xprvdu(ncvdu,1,0)
+        if(issprt.eq.0) write(ncwu,'(a)') 'Integer data'
+        m39i=l39i
+        do i = 1,n39i
+         write(cmon,1000) (istore(j),j=m39i,m39i+md39i-1)
+         call xprvdu(ncvdu,1,0)
+         if(issprt.eq.0) 
+     1   write(ncwu,1000) (istore(j),j=m39i,m39i+md39i-1)
+         m39i=m39i+md39i
+        enddo
+1000  format(a6,i6,10i6)
+      endif
+
+      if (n39f.le.0) then
+        write(cmon,'(a)') 'No floating data stored'
+        call xprvdu(ncvdu,1,0)
+        if(issprt.eq.0) write(ncwu,'(a)') 'No floating data stored'
+      else
+        write(cmon,'(a)') 'Floating data'
+        call xprvdu(ncvdu,1,0)
+        if(issprt.eq.0) write(ncwu,'(a)') 'floating data'
+        m39f=l39f
+        do i = 1,n39f
+         write(cmon,1010) (store(j),j=m39f,m39f+md39f-1)
+         call xprvdu(ncvdu,1,0)
+         if(issprt.eq.0) 
+     1   write(ncwu,1010) (store(j),j=m39f,m39f+md39f-1)
+         m39f=m39f+md39f
+        enddo
+1010  format(a6,f6.0,10f8.3)
+      endif
+
+      return
+      end
+c
+c
 CODE FOR XSUM40
       SUBROUTINE XSUM40
 C

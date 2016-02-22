@@ -1051,7 +1051,7 @@ c
 c
       write(cvalue,'(f64.32)') value
       dvalue = value
-      write(*,'(a)') cvalue
+c      write(*,'(a)') cvalue
 c
       do k=1,64
             if(

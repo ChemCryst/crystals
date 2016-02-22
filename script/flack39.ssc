@@ -1,12 +1,11 @@
 %SCRIPT FLACK39
 % VARIABLE CHARACTER CFLACK
 %%
- Store, in LIST 39, information about abs structure
 %%
-%  IF EXISTS 39 .LT. 1 THEN
-%%{S * Creating new L39.
+%  IF EXISTS 39 .NE. 1 THEN
+{S * Creating new L39.
 %      COPY '#LIST 39'
-%      COPY 'READ NINT=1'
+%      COPY 'READ NINT=1 '
 %      COPY 'INTEGER INFO 0'
 %      COPY 'END'
 %  END IF
@@ -21,6 +20,7 @@
 %  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 %%
 %  COPY 'TOP'
+{I Looking for Absolute Structure record in LIST 39
 %  LOOP
 %    ON EDITERROR TERMINATE
 %    COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
@@ -37,11 +37,11 @@
 %    VARIABLE REAL F1 F2 F3 F4 F5 F6 F7 F8 F9 F10
 %    evaluate gname = 'FLAC'
 %    evaluate gseri  = 0
+{I Inserting Absolute Structure record in LIST 39
 %    copy '#script add39f'
 %   END BLOCK
 %  END IF
 %%
-%% Now insert record for Hooft Probabilities
 %%
 %  EVALUATE DOINSERT = TRUE
 %  COPY '#GENERALEDIT 39'
@@ -52,6 +52,7 @@
 %  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 %%
 %  COPY 'TOP'
+{I Looking for Hooft Probability record in LIST 39
 %  LOOP
 %    ON EDITERROR TERMINATE
 %    COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
@@ -68,6 +69,7 @@
 %    VARIABLE REAL F1 F2 F3 F4 F5 F6 F7 F8 F9 F10
 %    evaluate gname = 'HOOF'
 %    evaluate gseri  = 0
+{I Inserting Hooft Probability record in LIST 39
 %    copy '#script add39f'
 %   END BLOCK
 %  END IF

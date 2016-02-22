@@ -406,7 +406,6 @@ LS-scale=  1.456   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.072      0.0E+00    0.196E-01         -3.69                          SCALE   
 [13]  LARGE    35          35             0.0       0.0E+00    0.8 E-02          8.3                           LAYER     1
 [13]  LARGE    35          35             0.0       0.0E+00    0.8 E-02          8.3                           LAYER     7
@@ -644,7 +643,6 @@ LS-scale=  1.384   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.023     -0.3E+00    0.173E-01          1.33                          SCALE   
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.8                           LAYER     1
@@ -890,7 +888,6 @@ LS-scale=  1.407   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.6                           LAYER     1
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.6                           LAYER     7
@@ -1147,7 +1144,6 @@ LS-scale=  1.422   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1             0.087      0.0E+00    0.234E-01          3.70                          SCALE   
 [14]  S/ESD    21          21            0.017       0.0E+00    0.24 E-02          6.9         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.010       0.0E+00    0.37 E-02         -2.8         N      6 U[ISO]  
@@ -1388,7 +1384,6 @@ LS-scale=  1.508   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.054      0.9E+00    0.779E-02          6.92                          LAYER     1
  S/ESD    46          46             0.054      0.9E+00    0.779E-02          6.92                          LAYER     7
@@ -1632,7 +1627,6 @@ LS-scale=  1.514   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD    46          46             0.042      0.8E+00    0.765E-02          5.51                          LAYER     1
  S/ESD    46          46             0.042      0.8E+00    0.765E-02          5.51                          LAYER     7
  S/ESD    48          48            -0.052      0.9E+00    0.822E-02         -6.28                          LAYER     3
@@ -1874,7 +1868,6 @@ LS-scale=  1.508   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.031      0.7E+00    0.752E-02          4.06                          LAYER     1
  S/ESD    46          46             0.031      0.7E+00    0.752E-02          4.06                          LAYER     7
@@ -2133,7 +2126,6 @@ LS-scale=  1.503   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.1       0.0E+00    0.2 E-01          7.4                           SCALE   
 [13]  LARGE     2           2           598.7       0.0E+00    0.4 E+02         13.3                           EXTPARAM
 [14]  S/ESD    15          15            0.024       0.0E+00    0.45 E-02          5.4         O      3 U[11]   
@@ -2391,7 +2383,6 @@ LS-scale=  1.655   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.073      0.5E+00    0.218E-01          3.32                          SCALE   
 [43] Resetting shift for Extinction  Shift=     729.   Esd=     11   New shift=     119.76                                                                                                                                                                       
@@ -2904,7 +2895,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R 12.53% Rw 14.86% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R 12.53% Rw 14.86% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R 11.51% Rw 12.97% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R 11.54% Rw 12.99% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.71    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.727   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.063    100*(<Fo>-<Fc>)/<Fo> =    -1.03                                                                                                                                                                                                         
@@ -3178,7 +3169,6 @@ LS-scale=  1.727   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.062      0.0E+00    0.209E-01         -2.95                          SCALE   
 [43] Resetting shift for Extinction  Shift=     251.   Esd=     12   New shift=     143.71                                                                                                                                                                       
 [13]  LARGE     2           2           143.7       0.0E+00    0.1 E+03          2.0                           EXTPARAM
@@ -3422,7 +3412,6 @@ LS-scale=  1.666   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     2           2           169.0       0.1E+01    0.1 E+03          1.2                           EXTPARAM
  S/ESD    71          71            -0.019      0.7E+00    0.681E-02         -2.75                          LAYER     3
  S/ESD    71          71            -0.019      0.7E+00    0.681E-02         -2.75                          LAYER     7
@@ -3663,7 +3652,6 @@ LS-scale=  1.683   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    71          71            -0.011      0.6E+00    0.669E-02         -1.63                          LAYER     3
  S/ESD    71          71            -0.011      0.6E+00    0.669E-02         -1.63                          LAYER     7
@@ -4227,7 +4215,6 @@ LS-scale=  1.456   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.072      0.0E+00    0.196E-01         -3.69                          SCALE   
 [13]  LARGE    35          35             0.0       0.0E+00    0.8 E-02          8.3                           LAYER     1
 [13]  LARGE    35          35             0.0       0.0E+00    0.8 E-02          8.3                           LAYER     7
@@ -4465,7 +4452,6 @@ LS-scale=  1.384   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.023     -0.3E+00    0.173E-01          1.33                          SCALE   
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.8                           LAYER     1
@@ -4711,7 +4697,6 @@ LS-scale=  1.407   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.6                           LAYER     1
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.6                           LAYER     7
@@ -4968,7 +4953,6 @@ LS-scale=  1.422   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1             0.087      0.0E+00    0.234E-01          3.70                          SCALE   
 [14]  S/ESD    21          21            0.017       0.0E+00    0.24 E-02          6.9         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.010       0.0E+00    0.37 E-02         -2.8         N      6 U[ISO]  
@@ -5209,7 +5193,6 @@ LS-scale=  1.508   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.054      0.9E+00    0.779E-02          6.92                          LAYER     1
  S/ESD    46          46             0.054      0.9E+00    0.779E-02          6.92                          LAYER     7
@@ -5453,7 +5436,6 @@ LS-scale=  1.514   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD    46          46             0.042      0.8E+00    0.765E-02          5.51                          LAYER     1
  S/ESD    46          46             0.042      0.8E+00    0.765E-02          5.51                          LAYER     7
  S/ESD    48          48            -0.052      0.9E+00    0.822E-02         -6.28                          LAYER     3
@@ -5695,7 +5677,6 @@ LS-scale=  1.508   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.031      0.7E+00    0.752E-02          4.06                          LAYER     1
  S/ESD    46          46             0.031      0.7E+00    0.752E-02          4.06                          LAYER     7
@@ -5954,7 +5935,6 @@ LS-scale=  1.503   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.1       0.0E+00    0.2 E-01          7.4                           SCALE   
 [13]  LARGE     2           2           598.7       0.0E+00    0.4 E+02         13.3                           EXTPARAM
 [14]  S/ESD    15          15            0.024       0.0E+00    0.45 E-02          5.4         O      3 U[11]   
@@ -6212,7 +6192,6 @@ LS-scale=  1.655   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.073      0.5E+00    0.218E-01          3.32                          SCALE   
 [43] Resetting shift for Extinction  Shift=     729.   Esd=     11   New shift=     119.76                                                                                                                                                                       
@@ -6725,7 +6704,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R 12.53% Rw 14.86% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R 12.53% Rw 14.86% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R 11.51% Rw 12.97% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R 11.54% Rw 12.99% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.71    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.727   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.063    100*(<Fo>-<Fc>)/<Fo> =    -1.03                                                                                                                                                                                                         
@@ -6997,7 +6976,6 @@ LS-scale=  1.727   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.062      0.0E+00    0.209E-01         -2.95                          SCALE   
 [43] Resetting shift for Extinction  Shift=     251.   Esd=     12   New shift=     143.71                                                                                                                                                                       
 [13]  LARGE     2           2           143.7       0.0E+00    0.1 E+03          2.0                           EXTPARAM
@@ -7241,7 +7219,6 @@ LS-scale=  1.666   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     2           2           171.4       0.1E+01    0.1 E+03          1.2                           EXTPARAM
  S/ESD    71          71            -0.019      0.7E+00    0.681E-02         -2.76                          LAYER     3
  S/ESD    71          71            -0.019      0.7E+00    0.681E-02         -2.76                          LAYER     7
@@ -7483,7 +7460,6 @@ LS-scale=  1.683   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD    71          71            -0.011      0.6E+00    0.669E-02         -1.63                          LAYER     3
  S/ESD    71          71            -0.011      0.6E+00    0.669E-02         -1.63                          LAYER     7
  S/ESD    73          73             0.038      0.8E+00    0.821E-02          4.58                          LAYER     5
@@ -7532,7 +7508,7 @@ All cycle   Min function          0.0           0.44E+04       0.10E+16
 [38]  Mean          -0.61   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
 
-[38]  R.M.S.         1.72   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[38]  R.M.S.         1.73   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
 
 
@@ -8046,7 +8022,6 @@ LS-scale=  1.010   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.3       0.0E+00    0.3 E-01          9.9                           SCALE   
 [14]  S/ESD    20          20            0.010       0.0E+00    0.52 E-02          1.9         C      7 X       
  S/ESD    35          35             0.022      0.0E+00    0.913E-02          2.46                          LAYER     1
@@ -8286,7 +8261,6 @@ LS-scale=  1.179   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.057      0.2E+00    0.352E-01          1.60                          SCALE   
  S/ESD    35          35             0.036      0.2E+01    0.898E-02          4.04                          LAYER     1
@@ -8530,7 +8504,6 @@ LS-scale=  1.203   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.064      0.1E+01    0.345E-01          1.85                          SCALE   
  S/ESD    35          35             0.042      0.1E+01    0.892E-02          4.65                          LAYER     1
@@ -8788,7 +8761,6 @@ LS-scale=  1.229   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.3       0.0E+00    0.5 E-01          6.1                           SCALE   
 [14]  S/ESD    13          13            0.011       0.0E+00    0.30 E-02          3.7         O      3 U[ISO]  
 [14]  S/ESD    17          17            0.011       0.0E+00    0.50 E-02          2.2         C      4 U[ISO]  
@@ -9031,7 +9003,6 @@ LS-scale=  1.362   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.1       0.4E+00    0.5 E-01          2.3                           SCALE   
  S/ESD    46          46             0.053      0.1E+01    0.852E-02          6.26                          LAYER     1
  S/ESD    46          46             0.053      0.1E+01    0.852E-02          6.26                          LAYER     7
@@ -9272,7 +9243,6 @@ LS-scale=  1.411   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.053      0.1E+01    0.829E-02          6.42                          LAYER     1
  S/ESD    46          46             0.053      0.1E+01    0.829E-02          6.42                          LAYER     7
@@ -9515,7 +9485,6 @@ LS-scale=  1.428   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.050      0.9E+00    0.807E-02          6.15                          LAYER     1
  S/ESD    46          46             0.050      0.9E+00    0.807E-02          6.15                          LAYER     7
@@ -9774,7 +9743,6 @@ LS-scale=  1.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.3       0.0E+00    0.6 E-01          6.0                           SCALE   
 [13]  LARGE     2           2           451.2       0.0E+00    0.4 E+02          9.6                           EXTPARAM
 [14]  S/ESD    15          15            0.027       0.0E+00    0.51 E-02          5.3         O      3 U[11]   
@@ -10030,7 +9998,6 @@ LS-scale=  1.559   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 [13]  LARGE     1           1             0.2       0.7E+00    0.6 E-01          4.0                           SCALE   
 [43] Resetting shift for Extinction  Shift=     560.   Esd=     10   New shift=      90.25                                                                                                                                                                       
@@ -10546,7 +10513,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R 14.78% Rw 29.71% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R 14.78% Rw 29.71% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R 13.87% Rw 28.26% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R 13.90% Rw 28.26% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.71    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.643   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     4.
@@ -10818,7 +10785,6 @@ LS-scale=  1.643   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.096      0.0E+00    0.651E-01         -1.48                          SCALE   
 [43] Resetting shift for Extinction  Shift=     245.   Esd=     11   New shift=     108.30                                                                                                                                                                       
 [13]  LARGE     2           2           108.3       0.0E+00    0.1 E+03          2.1                           EXTPARAM
@@ -11061,7 +11027,6 @@ LS-scale=  1.613   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.078     -0.8E+00    0.596E-01          1.31                          SCALE   
 [43] Resetting shift for Extinction  Shift=     290.   Esd=     11   New shift=     129.96                                                                                                                                                                       
@@ -11311,7 +11276,6 @@ LS-scale=  1.637   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [43] Resetting shift for Extinction  Shift=     236.   Esd=     12   New shift=     155.96                                                                                                                                                                       
-
 [13]  LARGE     2           2           155.9       0.2E+01    0.1 E+03          1.9                           EXTPARAM
  S/ESD    71          71            -0.020      0.7E+00    0.676E-02         -2.92                          LAYER     3
  S/ESD    71          71            -0.020      0.7E+00    0.676E-02         -2.92                          LAYER     7
@@ -11874,7 +11838,6 @@ LS-scale=  1.010   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.3       0.0E+00    0.3 E-01          9.9                           SCALE   
 [14]  S/ESD    20          20            0.010       0.0E+00    0.52 E-02          1.9         C      7 X       
  S/ESD    35          35             0.022      0.0E+00    0.913E-02          2.46                          LAYER     1
@@ -12114,7 +12077,6 @@ LS-scale=  1.179   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.057      0.2E+00    0.352E-01          1.60                          SCALE   
  S/ESD    35          35             0.036      0.2E+01    0.899E-02          4.04                          LAYER     1
@@ -12358,7 +12320,6 @@ LS-scale=  1.203   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.064      0.1E+01    0.345E-01          1.85                          SCALE   
  S/ESD    35          35             0.042      0.1E+01    0.892E-02          4.65                          LAYER     1
@@ -12616,7 +12577,6 @@ LS-scale=  1.229   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.3       0.0E+00    0.5 E-01          6.1                           SCALE   
 [14]  S/ESD    13          13            0.011       0.0E+00    0.30 E-02          3.7         O      3 U[ISO]  
 [14]  S/ESD    17          17            0.011       0.0E+00    0.50 E-02          2.2         C      4 U[ISO]  
@@ -12859,7 +12819,6 @@ LS-scale=  1.362   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.1       0.4E+00    0.5 E-01          2.3                           SCALE   
  S/ESD    46          46             0.053      0.1E+01    0.852E-02          6.26                          LAYER     1
  S/ESD    46          46             0.053      0.1E+01    0.852E-02          6.26                          LAYER     7
@@ -13100,7 +13059,6 @@ LS-scale=  1.411   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.053      0.1E+01    0.829E-02          6.42                          LAYER     1
  S/ESD    46          46             0.053      0.1E+01    0.829E-02          6.42                          LAYER     7
@@ -13343,7 +13301,6 @@ LS-scale=  1.428   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD    46          46             0.050      0.9E+00    0.807E-02          6.15                          LAYER     1
  S/ESD    46          46             0.050      0.9E+00    0.807E-02          6.15                          LAYER     7
@@ -13602,7 +13559,6 @@ LS-scale=  1.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
 [13]  LARGE     1           1             0.3       0.0E+00    0.6 E-01          6.0                           SCALE   
 [13]  LARGE     2           2           451.2       0.0E+00    0.4 E+02          9.6                           EXTPARAM
 [14]  S/ESD    15          15            0.027       0.0E+00    0.51 E-02          5.3         O      3 U[11]   
@@ -13858,7 +13814,6 @@ LS-scale=  1.559   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
 [13]  LARGE     1           1             0.2       0.7E+00    0.6 E-01          4.0                           SCALE   
 [43] Resetting shift for Extinction  Shift=     559.   Esd=     10   New shift=      90.25                                                                                                                                                                       
@@ -14374,7 +14329,7 @@ Bonds: Update required - List5 length change
 
      1133 reflections   R 14.79% Rw 29.71% with I/u(I) from List 28                                                                                                                                                                                             
      1133 reflections   R 14.79% Rw 29.71% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1015 reflections   R 13.88% Rw 28.26% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1016 reflections   R 13.90% Rw 28.26% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.71    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.643   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     4.
@@ -14646,7 +14601,6 @@ LS-scale=  1.643   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-
  S/ESD     1           1            -0.096      0.0E+00    0.651E-01         -1.48                          SCALE   
 [43] Resetting shift for Extinction  Shift=     245.   Esd=     11   New shift=     108.30                                                                                                                                                                       
 [13]  LARGE     2           2           108.3       0.0E+00    0.1 E+03          2.1                           EXTPARAM
@@ -14889,7 +14843,6 @@ LS-scale=  1.613   Wilson Scale=  0.000
             and/or the shift-over-esd exceeds  1.00 (S/ESD)
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
-
 
  S/ESD     1           1             0.078     -0.8E+00    0.596E-01          1.31                          SCALE   
 [43] Resetting shift for Extinction  Shift=     290.   Esd=     11   New shift=     129.96                                                                                                                                                                       
@@ -15139,7 +15092,6 @@ LS-scale=  1.637   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [43] Resetting shift for Extinction  Shift=     236.   Esd=     12   New shift=     155.95                                                                                                                                                                       
-
 [13]  LARGE     2           2           155.9       0.2E+01    0.1 E+03          1.9                           EXTPARAM
  S/ESD    71          71            -0.020      0.7E+00    0.676E-02         -2.92                          LAYER     3
  S/ESD    71          71            -0.020      0.7E+00    0.676E-02         -2.92                          LAYER     7

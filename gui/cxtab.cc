@@ -194,7 +194,7 @@ int CxTab::GetTabsExtraVSpace()
   return work.bottom + 10; //Good space at bottom.
 #endif
 #ifdef CRY_USEWX
-  return 30;
+  return 10;
 #endif
 }
 
