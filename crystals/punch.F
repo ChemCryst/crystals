@@ -1441,7 +1441,7 @@ C
             KFR = 3
       ENDIF
 C
-      WRITE(NCFPU1, '(''data_1 '')')
+      WRITE(NCFPU1, '(''data_I '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
       CALL XDATER ( CBUF(1:8))
       WRITE(NCFPU1,'(''_audit_creation_date  '',6X, 
