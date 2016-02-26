@@ -302,7 +302,7 @@
 %        EVALUATE DPV = DPV + 9
 %        CLEAR
 %        INSERT '^^CO SET TLAWS ADDTOLIST '
-%        STORE CHARACTER COMPRESS ( "'Twin law " // CHARACTER N25 // "'" )
+%        STORE CHARACTER COMPRESS ( "'Twin law " // CHARACTER N25 // "' NULL" )
 %        OUTPUT
 %        CLEAR
 %        INSERT '^^CO SET TLAWS SELECTION='

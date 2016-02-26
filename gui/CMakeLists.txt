@@ -28,6 +28,10 @@ ENDIF(APPLE)
 FIND_PACKAGE(wxWidgets REQUIRED html scintilla adv core gl base stc)
 INCLUDE(${wxWidgets_USE_FILE})
 
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
+   add_definitions("-D__CRDEBUG__")
+ENDIF(CMAKE_BUILD_TYPE MATCHES Debug) 
+
 
 #-s -fexceptions -I/usr/local/include `wx-config --cppflags` -D_GNUF77_ 
 # -framework IOKit -framework Carbon -framework Cocoa -framework AudioToolbox -framework
