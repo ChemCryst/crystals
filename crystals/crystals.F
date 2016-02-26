@@ -121,7 +121,7 @@ C
 C
 C -- DECLARE EXTERNAL REFERENCES TO BLOCK DATA SEGMENTS
 C
-      EXTERNAL CRYBLK, SYNBLK, UTIBLK
+      EXTERNAL CRYBLK, SYNBLK, UTIBLK, ZBLOCK
 C
 C -- DECLARE LIST 11 REFERENCES TO RESERVE EXTENSIBLE COMMON
 C
@@ -213,7 +213,9 @@ C
 C
 C Re-initialise system variables in case starting again.
 #endif
-      CALL CRESET
+
+      CALL CRESET   !These routines reinitialise SOME of the COMMON block variables, but
+      CALL CAMSET   !they also ensure those object files (presets and block) are linked.
 C
 C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
       CALL FBCINI

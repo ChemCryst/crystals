@@ -16,6 +16,7 @@ add_definitions(-std=legacy)
 add_definitions(-I\"${CMAKE_CURRENT_SOURCE_DIR}/../crystals\")
 add_definitions(-I\"${CMAKE_CURRENT_BINARY_DIR}/../crystals\")
 
+add_definitions(-std=legacy)
 add_definitions(-fno-automatic)
 add_definitions(-fno-inline)
 add_definitions(-fexceptions)

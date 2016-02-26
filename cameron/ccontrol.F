@@ -3850,10 +3850,10 @@ C THE ELEMENT HAS NOT BEEN FOUND - NEED TO TRUNCATE THE STRING
         IF (I.GT.1) THEN
           CNEW(I:I) = ' '
           I = I - 1
+          GOTO 100
         ELSE
           CNEW(1:1) = 'Q'
         ENDIF
-        GOTO 100
       ENDIF
 C OUTPUT THE RESULT
       IF (ISAV.EQ.0) THEN
