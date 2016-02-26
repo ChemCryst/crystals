@@ -352,7 +352,7 @@ C
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
        IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
-        WRITE(NCWU,1007) IUNIT, filnam
+        WRITE(NCWU,1007) IUNIT
 1007    FORMAT('SPECIFIC  Openinging File    ',8x, ': Unit =',I8,1X,A)
        ENDIF
       ELSE
@@ -394,6 +394,9 @@ C
      1         ACCESS = FLSQDA(ISEQDA) ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        WRITE(NCWU,1007) IUNIT
+       ENDIF
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         OPEN ( UNIT   = IUNIT ,
@@ -404,6 +407,9 @@ C
      1         ACCESS = FLSQDA(ISEQDA) ,
      1         IOSTAT = IOS ,
      1         ERR    = 3000 )
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+        WRITE(NCWU,1007) IUNIT, clcnam(1:namlen)
+       ENDIF
       ENDIF
 C
       IF (IOS .NE. ISSOKF) GOTO 3000
@@ -737,6 +743,7 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       CHARACTER*31 FNAME
+      LOGICAL LNAME
 
       integer error
       type(t_dsc_hdf5), pointer :: crfile
@@ -748,7 +755,8 @@ C
       if(error/=0) then
         CLOSE ( UNIT = IUNIT , ERR = 2000 )
         IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
-          INQUIRE ( UNIT = IUNIT, NAME = FNAME )
+          INQUIRE ( UNIT = IUNIT, NAME = FNAME, NAMED = LNAME)
+          IF (.NOT. LNAME) FNAME = ' '
           WRITE(NCWU,1006) IUNIT, fname
 1006      FORMAT('SPECIFIC  Closing File       ',8x, ': Unit =',I8,1X,A)
         ENDIF

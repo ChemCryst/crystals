@@ -732,6 +732,7 @@ C If in script mode, set flag.
 	  CALL FLUSH(NCWU)
 	  CALL FLUSH(NCPU)
 	  CALL FLUSH(NCAWU)
+          call flush(123)       ! for debugging purposes
           CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
@@ -2631,10 +2632,6 @@ cdjwsep2011
             ENDIF
           ENDIF
         ENDIF
-C
-C
-C
-C
         ISTAT = KFLCLS ( IDEV )
       ELSE
         IF ( IACCSS .EQ. 2 ) THEN
@@ -2706,7 +2703,7 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
         CALL XPRVDU(NCVDU, 1,0)
 cdjwsep2011
-       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .GE. 1)) THEN
         WRITE(NCWU,1006)  (KEYFIL(I,IFIND),I=1,LNAM),
      2    COPER(KFUNC),  idev,NEWFIL(:LENNAM)
 1006    FORMAT('READ      ', 8A1,A,           T38, ': Unit =',I8,1X,A)
