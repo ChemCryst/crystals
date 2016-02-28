@@ -104,8 +104,8 @@ sub obscureMachinePrecision() {
 	  } elsif($line =~ m/^( Reversals).*$/ ) {
               print $fho "[03] $1\n"; 
 # Shift/esd stats unstable for very small shifts
-	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      0.00).*$/ ) {
-              print $fho "[04] $1\n";
+#	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      0.00).*$/ ) {
+#              print $fho "[04] $1\n";
 	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      \d+\.\d)\d(.*)$/ ) {
               print $fho "[05] $1 $2\n";
 # Shift/esd stats unstable 
