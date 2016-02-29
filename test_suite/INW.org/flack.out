@@ -288,7 +288,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -913,7 +913,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -1540,7 +1540,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, POLARITY
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03
@@ -2170,7 +2170,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, ENANTIO
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0           0.49E-01       0.10E+03

@@ -20860,7 +20860,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
@@ -21086,7 +21086,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
@@ -39050,7 +39050,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
@@ -39276,7 +39276,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
@@ -39502,7 +39502,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[04]  The largest (shift/esd) =      0.00
+[05]  The largest (shift/esd) =      0.0 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            3.0           0.10E+03
