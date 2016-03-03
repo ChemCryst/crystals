@@ -1,7 +1,6 @@
  This is the main command definition file
- 18
+ 17
   4 \LIST 4
-  7 \LIST 7
  12 \CLEAR 12
  13 \LIST 13
  14 \LIST 14
@@ -346,8 +345,8 @@ EXTINCTION  PARAMETERS
 INTENSITY  6      17    2
    1    4096 CRYSTALSINPUT6
    13   28
-   1.READ               6    1    0    0
-         1    3    3    2    3    3
+   1.READ               7    1    0    0
+         1    3    3    2    3    3    3
     .NCOEFFICIENT      31    0    1    0    0         5
     .TYPE              45    0    1    5    1 FREE
      COPY           FIXED          FREE           COMPRESSED     TWIN
@@ -357,6 +356,8 @@ INTENSITY  6      17    2
     .UNIT              48    0    1    2   -1 HKLI
      HKLI           DATAFILE
     .CHECK            107    0    1    2   -1 NO
+     NO             YES
+    .L30UP            108    0    1    2   -1 YES
      NO             YES
    2.STORE              3    1    0    0
          1    3    3
@@ -418,16 +419,17 @@ OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
          1    1    0    0    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
 (1H ,8E15.5/(1H ,15X,7E15.5))
-  12.XDATA-BLOCK        4    0    0    0    4    1  106   21    6
+  12.XDATA-BLOCK        5    0    0    0    5    1  106   21    6
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
 (1H ,8(3X,12A1))
 (1H ,8E15.6)
-         3    3    3    3
+         2    2    2    2    1
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
     .WR                 0    0    0    0    0 0.0
     .MINFUNC            0    0    0    0    0 0.0
+    .VERSION            0    0    1    0    0       123
   13.XDETAILS           0    0    0    0    4   -3  107   25    6
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
@@ -470,11 +472,11 @@ THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
     .M33                0    0    1    0    0 1.0
     .TOLERANCE          0    0    1    0    0 0.1
     .TWINTOLER          0    0    1    0    0 0.0001
-LIST 7            17    1
+LIST       7      17    1
    1    4096 CRYSTALSINPUT6
    13   
-   1.READ               6    1    0    0
-         1    3    3    2    3    3
+   1.READ               7    1    0    0
+         1    3    3    2    3    3    3
     .NCOEFFICIENT      31    0    1    0    0         5
     .TYPE              45    0    1    5    1 FIXED
      COPY           FIXED          FREE           COMPRESSED     TWIN
@@ -484,6 +486,8 @@ LIST 7            17    1
     .UNIT              48    0    1    2   -1 HKLI
      HKLI           DATAFILE
     .CHECK            107    0    1    2   -1 NO
+     NO             YES
+    .L30UP            108    0    1    2   -1 YES
      NO             YES
    2.STORE              3    1    0    0
          1    3    3
@@ -545,16 +549,17 @@ OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
          1    1    0    0    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
 (1H ,8E15.6/(1H ,15X,7E15.6))
-  12.XDATA-BLOCK        4    0    0    0    4    1  106   21    7
+  12.XDATA-BLOCK        5    0    0    0    5    1  106   21    7
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
 (1H ,8(3X,12A1))
 (1H ,8E15.6)
-         3    3    3    3
+         2    2    2    2    2
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
     .WR                 0    0    0    0    0 0.0
     .MINFUNC            0    0    0    0    0 0.0
+    .VERSION            0    0    0    0    0 123.
   13.XDETAILS           0    0    0    0    4   -3  107   25    7
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
@@ -3258,8 +3263,8 @@ FOURIER            6    6
 HKLI       6      28    4
    1    4096 CRYSTALSINPUT6
     1    2   13   27
-   1.READ               6    1    0    0
-         1    3    3    2    3    3
+   1.READ               7    1    0    0
+         1    3    3    2    3    3    3
     .NCOEFFICIENT      31    0    1    0    0        12
     .TYPE              45    0    1    3    6 FIXED
      FIXED          FREE           COMPRESSED
@@ -3269,6 +3274,8 @@ HKLI       6      28    4
     .UNIT              48    0    1    2   -1 HKLI
      HKLI           DATAFILE
     .CHECK            107    0    1    2   -1 NO
+     NO             YES
+    .L30UP            108    0    1    2   -1 YES
      NO             YES
    2.STORE              3    1    0    0
          1    3    3
@@ -3315,16 +3322,17 @@ OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
          1    1    0    0    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
 (1H ,8E15.6/(1H ,15X,7E15.6))
-  11.XDATA-BLOCK        4    0    0    0    4    1  106   21    6
+  11.XDATA-BLOCK        5    0    0    0    5    1  106   21    6
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
 (1H ,8(3X,12A1))
 (1H ,8E15.6)
-         3    3    3    3
+         2    2    2    2    2
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
     .WR                 0    0    0    0    0 0.0
     .MINFUNC            0    0    0    0    0 0.0
+    .VERSION            0    0    0    0    0 123.
   12.XDETAILS           0    0    0    0    4   -3  107   25    6
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
@@ -4206,9 +4214,9 @@ ESD                1    2
   10    4096 CRYSTALSINPUT
     5   22
    1.ESD                0    1    0    0
-COPY               1    5
+COPY               1    3
    5    4096 CRYSTALSINPUT6
-    1    6    7   23   28
+    1   23   28
    1.COPY               2    1    0    0
          1    1
     .INPUTLIST          1    0    1    2    1         6

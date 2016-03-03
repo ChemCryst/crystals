@@ -2497,7 +2497,7 @@ CDJWMAR99
 C      PARAMETER ( MAXFNC = 3 )
       PARAMETER ( MAXFNC = 4 )
 C
-      CHARACTER*14 COPER(MAXFNC)
+      CHARACTER*16 COPER(MAXFNC)
       CHARACTER*8 CRESLT(MAXFNC) , CACTN(MAXFNC)
       CHARACTER*7 CINSTR(MAXFNC)
       DIMENSION   IRQARG(MAXFNC)
@@ -2517,10 +2517,10 @@ C
       INCLUDE 'XIOBUF.INC'
       DATA COPER / ' output sent to ', ' connected to ', 'closed', 
      1 ' appended to '/
-      DATA CRESLT / 'released ' , 'opened ' , 'closed '
-     1 , 'appended ' /
-      DATA CACTN  / ' releases ' , ' opens  ' , ' closes ', 
-     1 ' appends ' /
+      DATA CRESLT / 'released' , 'opened  ' , 'closed  '
+     1 , 'appended' /
+      DATA CACTN  / 'releases' , ' opens  ' , ' closes ', 
+     1 'appends ' /
       DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND '/
 C
       DATA IRQARG / 2 , 2 , 1, 2  /

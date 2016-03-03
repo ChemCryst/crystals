@@ -1059,8 +1059,8 @@ C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS
       endif
 C>DJW280896
 C-------      TWINNED
-1000  FORMAT('READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
-     1 ', CHECK=NO' /
+1000  FORMAT('READ NCOEF = 11, TYPE = FIX, UNIT = DATA' ,
+     1 ', CHECK=NO L30 = NO' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
      4 'F10.0, / G12.5, F4.0)'/
      4 'store ncoef=9'/
@@ -1071,8 +1071,8 @@ C-------      TWINNED
      5 'END')
 c
 C------      NOT TWINNED
-1001  FORMAT('READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE' ,
-     1 ', CHECK=NO' /
+1001  FORMAT('READ NCOEF = 9, TYPE = FIX, UNIT = DATA' ,
+     1 ', CHECK=NO L30=NO' /
      2 'INPUT H K L /FO/ SIGMA /FC/ PHASE SQRTW JCODE' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F4.0)'/
      4 'store ncoef=7'/
@@ -1150,13 +1150,13 @@ C--PUNCH THE INITIAL HEADING
       CALL XPCHLH(LN6,NCPU)
 C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS
       WRITE(NCPU,1000)
-1000  FORMAT(53HREAD NCOEFFICIENT = 12, TYPE = FIXED, UNIT = DATAFILE ,
-     1  10H, CHECK=NO/
-     2 41HINPUT H K L /FO/ SIGMA(/FO/) JCODE RATIO ,
-     3 38H BATCH TBAR CORRECTIONS /FOT/ ELEMENTS/
-     4 14HFORMAT (3F4.0,,
-     5 44HF10.2,F8.2,F3.0,F7.1,F3.0,2E12.5,F10.2,F3.0)/
-     6 3HEND)
+1000  FORMAT('READ NCOEF = 12, TYPE = FIX, UNIT = DATA' ,
+     1  ', CHECK=NO L30=NO' /
+     2 'INPUT H K L /FO/ SIGMA(/FO/) JCODE RATIO ',
+     3 ' BATCH TBAR CORRECT /FOT/ ELEMENTS'/ ,
+     4 'FORMAT (3F4.0,',
+     5 ' F10.2,F8.2,F3.0,F7.1,F3.0,2E12.5,F10.2,F3.0)'/
+     6 'END')
 C--FETCH THE NEXT REFLECTION
 1050  CONTINUE
 CDJWMAR99       PUNCH LESS THANS
@@ -1673,12 +1673,16 @@ C sigma's underestimated by a factor of 5.
       END
 C
 CODE FOR XPCH6N
-      SUBROUTINE XPCH6N(IULN,IULN2)
+      SUBROUTINE XPCH6N(IULN,IULN2, IFTYPE)
 C BASED ON XPCH6Z, WHICH SEEMS INCOMPLETE
-C  PUNCH       PUNCH LIST 6/7 WITH ALL SET KEYS
+C  PUNCH I      PUNCH LIST 6/7 WITH ALL SET KEYS
+C  IFTYPE = 1 FOR /FO/ OUTPUT
+C  IFTYPE = 2 FOR FO^2 USING CURRENT ALGORITHM TO COMPUTE SIGMA.
+C  IFTYPE = 3 FOR FO^2 USING OLD ALGORITHM TO COMPUTE SIGMA.
 C--
       DIMENSION JFOT(1), JFOO(1)
       INCLUDE 'ISTORE.INC'
+      INCLUDE 'ICOM06.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -1695,6 +1699,7 @@ C
       CHARACTER*256 CBGFMT     
 C
       INCLUDE 'QSTORE.INC'
+      INCLUDE 'QLST06.INC'
 
       DATA C6KEYS/ 'H', 'K', 'L', '/FO/', 'SQRTW',
      1  '/FC/', 'PHASE', 'A-PART', 'B-PART', 'TBAR',
@@ -1715,9 +1720,9 @@ C6                  /FC/(5)    PHASE    A-PART  B-PART   TBAR
 C11                  /FOT/    ELEMENTS SIGMA(/FO/) BATCH INDICES(14) 
      2             'F10.2',    'F8.0', 'F8.2',    'F4.0', ' F12.0',
 C16                BATCH/PHASE SINTH/L FO/FC   JCODE   SERIAL
-     3             'F8.4',     'F5.3', 'F8.4', 'F4.0', 'F8.0',
+     3             'F8.4',     'F5.3', 'F8.4', 'F4.0', 'F7.0',
 C21                 RATIO      THETA    OMEGA   CHI     PHI
-     4             'F8.4',     'F5.1', 'F5.1', 'F5.1', 'F5.1',
+     4             'F8.2',     'F5.1', 'F5.1', 'F5.1', 'F5.1',
 C26                 KAPPA      PSI     CORRECTIONS FACTOR1 FACTOR2
      5             'F5.1',    'F5.1',   'F7.4',   'F8.4', 'F8.4',
 C31                FACTOR3    RATIO/JCODE NOTHING
@@ -1736,7 +1741,14 @@ C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
       IF ( IERFLG .LT. 0 ) GO TO 9900
-
+      JFTYPE = IFTYPE
+      IF (JFTYPE .GE. 2) THEN
+C FIND OUT IF OLD OR NEW SIGMA CALCULATION
+           IF(MD6P .EQ. 4) THEN
+             JFTYPE = 3
+             write(ncpu,'(A)')'# CONVERTING OLD-STYLE SIGMAS'
+           ENDIF
+      ENDIF
 CDJW mar08
       lout = ln6
       write(ncpu,100) iuln, IULN2 
@@ -1792,8 +1804,15 @@ C      WRITE(123,'(6A11)') (C6KEYS(I6PCH(I)),I=1,M6PCH)
 c      
 c
       WRITE(NCPU,'(A,I3)')'#LIST ', IULN2
-      WRITE(NCPU,101) M6PCH
-101   FORMAT('READ NCOEF = ',I2,' TYPE=FIXED, UNIT=DATAFILE, CHECK=NO')
+      IF (JFTYPE .EQ. 1) THEN
+        WRITE(NCPU,101) M6PCH
+      ELSE
+        WRITE(NCPU,1010) M6PCH
+      ENDIF
+101   FORMAT('READ NCOEF=',I2,' TYPE=FIX, UNIT=DATA, CHECK=NO L30=NO')
+1010  FORMAT
+     1 ('READ NCOEF=',I2,' TYPE=FIX, F''S = FSQ UNIT=DATA, CHECK=NO',
+     2 ' L30=NO')
       WRITE(NCPU,104) MD6DMP
 104   FORMAT('STORE  NCOEF=',I2) 
       WRITE(NCPU,105) (C6KEYS(ISTORE(J)-M6+1),J=L6DMP,L6DMP+MD6DMP-1)
@@ -1804,7 +1823,9 @@ c
 103   FORMAT('FOR ', A)
       WRITE(NCPU,'(A)')'END'
 c
+      nref = 0
       DO WHILE (KLDRNR(IN).GE.0)
+      nref = nref + 1
 C--FIX THE INDICES
 c      J=M6+2
 c      DO 1150 I=M6,J
@@ -1812,11 +1833,37 @@ c      ISTORE(I)=NINT(STORE(I))
 c1150  CONTINUE
 C--FIX THE ELEMENTS
 c      ISTORE(M6+11)=NINT(STORE(M6+11))
+C  COMPUTE F^2
+      IF(JFTYPE.EQ.2) THEN
+        CALL XSQRF (FSQ,STORE(M6+3),FABS,SIGSQ,STORE(M6+12))
+        STORE(M6+3) = FSQ
+        STORE(M6+12) = SIGSQ
+      ELSE IF (JFTYPE.EQ.3) THEN   !old-type list 6
+        FSIGN=STORE(M6+3)
+        SIG = STORE(M6+12)
+        FSQ=FSIGN*ABS(FSIGN)
+        IF (SIG.GT.ZERO) THEN
+C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT
+           IF (ABS(FSIGN).GT. 1.0) THEN
+              SIGSQ=SIG*(2.*ABS(FSIGN))
+           ELSE
+              SIGSQ=SIG
+           END IF
+        ELSE
+           SIGSQ=SIG
+        END IF
+        STORE(M6+3) = FSQ
+        STORE(M6+12) = SIGSQ
+      ENDIF
 C--PUNCH THE REFLECTION
+
       WRITE(NCPU,CBGFMT(1:NBGNXT)) (STORE(M6+i6pch(k)-1),K=1,m6pch)
       END DO
       I = -512
       WRITE(NCPU,'(I4)')I
+      WRITE(NCPU,'(A,I6,A)') '# ', NREF, ' reflections output'
+      WRITE(CMON,'(a,I6,a)') '  ', nref, ' reflections output'
+      CALL XPRVDU(NCVDU, 1,0)
       RETURN
 C
 9900  CONTINUE
@@ -1917,8 +1964,8 @@ C--PUNCH THE 'READ', 'INPUT' AND 'FORMAT' CARDS
       endif
 C>DJW280896
 C-------      TWINNED
-1000  FORMAT('READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
-     1 ', CHECK=NO' /
+1000  FORMAT('READ NCOEF = 11, TYPE = FIX, UNIT = DATA' ,
+     1 ', CHECK=NO L30=NO' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
      4 'F10.0, / G12.5, F4.0)'/
      4 'store ncoef=9'/
@@ -1929,8 +1976,8 @@ C-------      TWINNED
      5 'END')
 c
 C------      NOT TWINNED
-1001  FORMAT('READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE' ,
-     1 ', CHECK=NO' /
+1001  FORMAT('READ NCOEF=9, TYPE = FIXED, UNIT = DATAFILE' ,
+     1 ', CHECK=NO L30=NO' /
      2 'INPUT H K L /FO/ SIGMA /FC/ PHASE SQRTW JCODE' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F4.0)'/
      4 'store ncoef=7'/
@@ -2057,7 +2104,7 @@ CDJW mar08
 
 
       
-101   FORMAT('READ NCOEF = ',I2,' TYPE=FIXED, UNIT=DATAFILE, CHECK=NO')
+101   FORMAT('READ NCOEF=',I2,' TYPE=FIX, UNIT=DATA, CHECK=NO L30=N0')
 102   FORMAT('INPUT ',6(1X,A11),5(/,'CONT  ',6(1X,A11)))
 103   FORMAT('FOR ',A)
 104   FORMAT('STORE NCOEF=',I2) 
@@ -3615,8 +3662,8 @@ C-- SET LIST 5
 C--PUNCH THE INITIAL HEADING
       CALL XPCHLH(6,NCPU)
       WRITE (NCPU,1001)
-1001  FORMAT('READ NCOEFFICIENT = 7, TYPE = FIXED, UNIT = DATAFILE' ,
-     1 ', CHECK=NO' /
+1001  FORMAT('READ NCOEF=7, TYPE = FIX, UNIT = DATA' ,
+     1 ', CHECK=NO L30=N0' /
      2 'INPUT H K L /FO/ SIGMA /FC/ SQRTW ' /
      3 'FORMAT (3F4.0, 4F10.2 )'/
      4 'store ncoef=7'/

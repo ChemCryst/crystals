@@ -29,8 +29,8 @@ c----- convert the PLATON squeezed outout to CRYSTALS format
       enddo 
 c
 1001  FORMAT('#LIST  ', i4/
-     * 'READ NCOEFFICIENT = 11, TYPE = FIXED, UNIT = DATAFILE' ,
-     1 ', CHECK=NO' /
+     * 'READ NCOEF = 11, TYPE = FIX, UNIT = DATA' ,
+     1 ', CHECK=NO L30=NO' /
      2 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE'
      4 ,' SQRTW JCODE A-PART B-PART' /
      3 ,'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5'

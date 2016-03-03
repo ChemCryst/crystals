@@ -18,6 +18,47 @@
 % IF ( XXX ) THEN
 {I To input initial data (cell, space group, etc.) use the X-ray Data menu.
 
+%   FINISH
 % END IF
+%%
+%% The variables needed by XQUESTIO                                             
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
+%  VARIABLE LOGICAL   ANSWER                                                    
+%      BLOCK
+%        VARIABLE INTEGER NKEYS VERSION
+%        EVALUATE NKEYS = 0
+%        ON ERROR TERMINATE
+%        COPY "#GENERALEDIT 6"
+%        COPY 'TRANSHEAD FROM OFFSET=22 TO NKEYS'
+%%   SHOW NKEYS
+%        IF NKEYS .EQ. 5 THEN
+%         COPY "LOCATE RECORDTYPE=106"
+%         COPY "TRANSFER FROM OFFSET=4 TO VERSION"
+%   SHOW VERSION
+%        ELSE
+
+{R You have an old (pre-2016) format LIST 6. 
+
+%%                                                                              
+%         EVALUATE QTITLE = 'Old format LIST 6'                                    
+%         EVALUATE QLINE1 = 'The new format stores sigma to greater precision'
+%         EVALUATE QLINE2 = 'We recommend you update now'           
+%         EVALUATE BUTTOK = '&Convert'                                              
+%         EVALUATE BUTTXX = '&Leave Alone'                                      
+%         COPY '#SCRIPT XQUESTIO'                                                    
+%         IF ANSWER .EQ. TRUE THEN                                                  
+%          COPY '#PURGE PRE-2016-DSC'
+%          COPY 'END'
+%          COPY '#RELEASE PUNCH PRE-2016-HKL.L6'
+%          COPY '#PUNCH 6 J'
+%          COPY 'END'
+%          COPY '#RELE PUNCH BFILE.PCH'
+%          COPY '#USE PRE-2016-HKL.L6'
+
+{R You should re-determine the weights and re-converge the refinement
+
+%         END IF                                                                     
+%        END IF
+%      END BLOCK
 %%
 %END SCRIPT
