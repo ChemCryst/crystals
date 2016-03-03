@@ -1566,7 +1566,7 @@ C--CHECK IF THIS THE FIRST OR SECOND ATOM                               CVC01090
       JX=JV                                                             CVC01130
       DO 1550 J=1,6                                                     CVC01140
 c      A1(J)=-A1(J)                                                      CVC01150
-      a1(j)=a1(j+6)*e *-1.                                                   CVC00920
+      a1(j)=a1(j+6)*e *(-1.)                                                   CVC00920
 1550  CONTINUE                                                          CVC01160
       I=I-1                                                             CVC01170
       GOTO 1350                                                         CVC01180

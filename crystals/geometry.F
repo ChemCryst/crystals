@@ -56,7 +56,7 @@ C--
       INCLUDE 'ISTORE.INC'
 C
 C for aniso
-      CHARACTER*4 CCALC(5)
+      CHARACTER*5 CCALC(5)
 C
       DIMENSION VA(3), EQU(3), RPCA(3,3), RPCF(3,3), ROF(3,3), RCA(3,3)
       DIMENSION RCF(3,3), XCA(3), XCF(3), XCR(3)
@@ -875,9 +875,9 @@ C----- 'SAVE' TLS INSTRUCTION
       IUPDT=1
       WRITE (CMON,3580) CCALC(JTYPE)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(A)') CMON(1)
+c      WRITE (NCAWU,'(A)') CMON(1)
       IF (ISSPRT.EQ.0) WRITE (NCWU,3580) CMON(1)
-3580  FORMAT (' LIST 20 ',A4,' record will be updated ')
+3580  FORMAT (' LIST 20 ',A,' record will be updated ')
       GO TO 20
 C
 C

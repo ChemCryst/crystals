@@ -550,6 +550,15 @@ C--SET THE UPDATE PARTIAL CONTRIBUTIONS FLAG
 C----- SET THE ENANTIOPOLE REFINEMENT FLAG
       ENANTIO = .FALSE.
       IF ( ISTORE(L23M+6) .EQ. 0 ) ENANTIO = .TRUE.
+      if(twinned .and. enantio) then
+      write(cmon,'(A/A)') 
+     1 'You cannot refine Twin components and Flack directly',
+     2 'Include inversion twinning in LIST 25 and LIST 12'
+         CALL OUTCOL(9)
+         CALL XPRVDU(NCVDU, 2,0)
+         CALL OUTCOL(1)
+       goto 9900
+      endif
 C--SET THE FLAG FOR REFINEMENT AGAINST /FO/ OR /FO/ **2
       NV=ISTORE(L23MN+1)
 C----- CHECK IF WE  NEED REFLECTIONS (-1 IF NOT)
