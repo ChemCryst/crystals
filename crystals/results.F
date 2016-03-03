@@ -7619,6 +7619,7 @@ COMPARE PACKED INDICES
         MFRIED=MFRIED+1
         FokD=FOK1-FOK2
         FckD=FCK1-FCK2
+        FckM=preflack*FckD
         foka=0.5*(FOK1+FOK2)
         fcka=0.5*(FCK1+FCK2)
         Qo=FokD/(2.*foka)
@@ -7653,13 +7654,13 @@ C  Accumulate info to RA
         HFLACK(1)=HFLACK(1)+ABS(foka-fcka)
         HFLACK(2)=HFLACK(2)+ABS(foka)
 C  Accumulate info to RD
-        HFLACK(3)=HFLACK(3)+ABS(FokD-FckD)
+        HFLACK(3)=HFLACK(3)+ABS(FokD-FckM)
         HFLACK(4)=HFLACK(4)+ABS(FokD)
 C  Accumulate info to RA2
         HFLACK(5)=HFLACK(5)+(foka-fcka)*(foka-fcka)/vard
         HFLACK(6)=HFLACK(6)+foka*foka/vard
 C  Accumulate info to RD2
-        HFLACK(7)=HFLACK(7)+(FokD-FckD)*(FokD-FckD)/vard
+        HFLACK(7)=HFLACK(7)+(FokD-FckM)*(FokD-FckM)/vard
         HFLACK(8)=HFLACK(8)+FokD*FokD/vard
 C  Do-Dm Rfactor 
         FLRNUM=FLRNUM+ABS(FokD-PREFLACK*FckD)
@@ -8176,26 +8177,28 @@ c               CALL XPRVDU (NCVDU,1,0)
 c
 C       Add a series for unit slope (y=x)
         djwx=z_max
-        WRITE (CMON(1),'(A)')
+        IF (IPLOT.EQ.1) THEN
+         WRITE (CMON(1),'(A)')
      1 '^^PL ADDSERIES ''Unit Slope'' TYPE SCATTER'
-        write(cmon(2),'(a)') '^^PL LABEL ''unit slope'''
-        WRITE (CMON(3),'(2(A,2(1X,F12.3)) )')
+         write(cmon(2),'(a)') '^^PL LABEL ''unit slope'''
+         WRITE (CMON(3),'(2(A,2(1X,F12.3)) )')
      1 '^^PL DATA ', -djwx,-djwx,' DATA ',djwx,djwx
-        CALL XPRVDU (NCVDU,3,0)
+         CALL XPRVDU (NCVDU,3,0)
 c-----  plot side bands
         djwx=z_max
         djwy=yslope*z_max
-        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+         WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
      1 '^^PL ADDSERIES ''+10%'' TYPE LINE',
      2 '^^PL DATA ', -djwx,-djwy+ycut+0.1*z_max,
      3 ' DATA ',djwx,djwy+ycut+0.1*Z_max
-        CALL XPRVDU (NCVDU,2,0)
+         CALL XPRVDU (NCVDU,2,0)
 c
-        WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
+         WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )')
      1 '^^PL ADDSERIES ''-10%'' TYPE LINE',
      2 '^^PL DATA ', -djwx,-djwy+ycut-0.1*z_max,
      3 ' DATA ',djwx,djwy+ycut-0.1*Z_max
-        CALL XPRVDU (NCVDU,2,0)
+         CALL XPRVDU (NCVDU,2,0)
+        END IF
 C 
 C 
        ELSE
@@ -8612,7 +8615,7 @@ c
 C -- FINISH THE GRAPH DEFINITION
          WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
          CALL XPRVDU (NCVDU, 2, 0)
-        ELSE
+        ELSE IF (IPLOT .EQ. 1) THEN
          WRITE(CMON,'(A )') 
      1 '{E Not enough reflections for Signal:noise plot'
          CALL XPRVDU (NCVDU, 1, 0)
@@ -8900,16 +8903,19 @@ c now sort on signal to noise for Le Page algorithm
 c
 c  Lepage totals
 c
+        n6accmedian = n6acc/2
         n10p=0
         n20p=0
         n50p=0
         n100p=0
         n200p=0
+        n6accp=0
         n10n=0
         n20n=0
         n50n=0
         n100n=0
         n200n=0
+        n6accn=0
         m6acc = l6acc
         do i=1,n6acc
          lp = 0
@@ -8919,32 +8925,33 @@ c
          else
             ln = 1
          endif
+c
          if (i .le. 10) then 
             n10p=n10p+lp
             n10n=n10n+ln
             smin10=str11(m6acc+7)
-         endif
-         if(i .le. 20)then
+         else          if(i .le. 20)then
             n20p=n20p+lp
             n20n=n20n+ln
             smin20=str11(m6acc+7)
-         endif
-         if(i .le. 50)then
+         else          if(i .le. 50)then
             n50p=n50p+lp
             n50n=n50n+ln
             smin50=str11(m6acc+7)
-         endif
-         if(i .le. 100)then
+         else          if(i .le. 100)then
             n100p=n100p+lp
             n100n=n100n+ln
             smin100=str11(m6acc+7)
-         endif
-         if(i .le. 200)then
+         else         if(i .le. 200)then
             n200p=n200p+lp
             n200n=n200n+ln
             smin200=str11(m6acc+7)
          endif
-         if(i .gt. 200) then
+         if (i .le. n6accmedian) then
+            n6accp=n6accp+lp
+            n6accn=n6accn+ln
+            sminacc=str11(m6acc+7)
+         else
             exit
          endif
          m6acc = m6acc + md6acc
@@ -9010,7 +9017,7 @@ c
 C
 c
           write(ncwu,'(/10x,a)') 
-     1   ' Histogram distributions (deciles, octiles, quartiles)'
+     1   ' Flack(x) distributions (deciles, octiles, quartiles)'
           write(ncwu,'(6x,a,a)')  
      1    '1/10      1/8       1/4       ',
      2    'mean     3/4        7/8       9/10'
@@ -9035,12 +9042,14 @@ c
           WRITE (NCWU,2050) NPLS,NMIN
 2050      FORMAT (I8,6X,I8)
         ENDIF 
-          write(cmon,'(2x,a)') 
-     1   ' LePage Analysis (Assuming Enantio-purity)'
-          call xprvdu(ncvdu,1,0)
+          write(cmon,'(2x,a/2x,a)') 
+     1   ' LePage Analysis (Assuming Enantio-purity)',
+     3   ' Data are ranked by the Signal:Noise'
+          call xprvdu(ncvdu,2,0)
           if(issprt.eq.0) 
-     1    write(ncwu,'(//2x,a)')
-     2   ' LePage Analysis (Assuming Enantio-purity)'
+     1    write(ncwu,'(//2x,a/a)')
+     2   ' LePage Analysis (Assuming Enantio-purity)',
+     3   ' Data are ranked by the Signal:Noise'
           if(n6acc .le. 0) then
             write(cmon,'(a)') 
      1      ' No suitable reflections for LePage analysis'
@@ -9054,45 +9063,110 @@ c
      1    ' Minimum signal : noise used =', smin200
             WRITE(ncwu,'(A,I5)') ' No. Available', n6acc
             write(ncwu,'(a,2x,a,2x,a,2x,a,2x,a)')
-     1    ' Total','No.Same','No.Opposite', 'Signal:noise'
+     1    '  Range  ','No.Same','No.Opposite', 'Signal:noise'
      1   ,' Prob Wrong Hand'
-            p = 0.5
-            n = n10p+n10n
-            x = n10p
-            call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n10P+n10n, n10p, n10n, smin10,1.-cdf
-            n = n20p+n20n
-            x = n20p
-            call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n20P+n20n, n20p, n20n, smin20,1.-cdf
-            n = n50p+n50n
-            x = n50p
-            call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n50P+n50n, n50p, n50n, smin50,1.-cdf
-            n = n100p+n100n
-            x = n100p
-            call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n100P+n100n, n100p, n100n, smin100,1.-cdf
-            n = n200p+n200n
-            x = n200p
-            call bincdf(x,p,n,cdf)
-            write(ncwu,1720) n200P+n200n, n200p, n200n, smin200,1.-cdf
-1720        format(i5,2x,i7,2x,i5,8x,f8.4,2x, f14.6)
-           endif
            write(cmon,'(a,2x,a,2x,a,2x,a,2x,a)')
-     1   ' Total','No.Same','No.Opposite', 'Signal:noise'
+     1   '  Range  ','No.Same','No.Opposite', 'Signal:noise'
      1   ,' Prob Wrong Hand'
            call xprvdu(ncvdu,1,0)
-            n = n20p+n20n
-            x = n20p
-            call bincdf(x,p,n,cdf)
-           write(cmon,1720) n20P+n20n, n20p, n20n, smin20,1.-cdf
-           call xprvdu(ncvdu,1,0)
-            n = n50p+n50n
-            x = n50p
-            call bincdf(x,p,n,cdf)
-           write(cmon,1720) n50P+n50n, n50p, n50n, smin50,1.-cdf
-           call xprvdu(ncvdu,1,0)
+            nn = 0
+            np = 0
+            q = 0.5
+            nn = nn + n10n
+            np = np + n10p
+            n = np+nn
+            if (n.gt.0)then
+              call bincdf(float(np),q,n,cdf)
+              write(ncwu,1720) 0, n, np, nn, smin10, 1.-cdf
+            endif
+            nn = nn + n20n
+            np = np + n20p
+            n = np+nn
+            if (n.gt.0)then
+              call bincdf(float(np),q,n,cdf)
+              write(ncwu,1720) 0, n, np, nn, smin20, 1.-cdf
+            endif
+            nn = nn + n50n
+            np = np + n50p
+            n = np+nn
+            if (n.gt.0)then
+              call bincdf(float(np),q,n,cdf)
+              write(ncwu,1720) 0, n, np, nn, smin50, 1.-cdf
+              write(cmon,1720) 0, n, np, nn, smin50, 1.-cdf
+              call xprvdu(ncvdu,1,0)
+            endif
+            nn = nn + n100n
+            np = np + n100p
+            n = np+nn
+            if (n.gt.0) then
+              call bincdf(float(np),q,n,cdf)
+              write(ncwu,1720) 0, n, np, nn, smin100, 1.-cdf
+              write(cmon,1720) 0, n, np, nn, smin100, 1.-cdf
+              call xprvdu(ncvdu,1,0)
+            endif
+            nn = nn + n200n
+            np = np + n200p
+            n = np+nn
+            if (n.gt.0) then
+                 call bincdf(float(np),q,n,cdf)
+                 write(ncwu,1720) 0, n, np, nn, smin200, 1.-cdf
+            endif
+c
+            nn = n6accn
+            np = n6accp
+            n = np+nn
+            if (n.gt.0) then
+                 write(ncwu,'(/A)')' Top 50% of data'
+                 Write(cmon,'(2x,a)') ' Top 50% of data'
+                 call xprvdu(ncvdu,1,0)
+                 call bincdf(float(np),q,n,cdf)
+                 write(ncwu,1720) 0, n, np, nn, sminacc, 1.-cdf
+                 write(cmon,1720) 0, n, np, nn, sminacc, 1.-cdf
+                 call xprvdu(ncvdu,1,0)
+            endif
+c
+            write(ncwu,'(/)')
+
+             q = 0.5
+            nn = n10n
+            np = n10p
+            n = np+nn
+            if (n.gt.0) then
+                 call bincdf(float(np),q,n,cdf)
+                 write(ncwu,1720) 0, 10, np, nn, smin10, 1.-cdf
+            endif
+            nn = n20n
+            np = n20p
+            n = np+nn
+            if (n.gt.0) then
+                 call bincdf(float(np),q,n,cdf)
+                 write(ncwu,1720) 10,20, np, nn, smin20, 1.-cdf
+            endif
+            nn = n50n
+            np = n50p
+            n = np+nn
+            if (n.gt.0) then
+                 call bincdf(float(np),q,n,cdf)
+                 write(ncwu,1720) 20,50, np, nn, smin50, 1.-cdf
+            endif
+            nn = n100n
+            np = n100p
+            n = np+nn
+            if (n.gt.0) then
+                 call bincdf(float(np),q,n,cdf)
+                 write(ncwu,1720) 50,100, np, nn, smin100, 1.-cdf
+            endif
+            nn = n200n
+            np = n200p
+            n = np+nn
+            if (n.gt.0) then
+                 call bincdf(float(np),q,n,cdf)
+                 write(ncwu,1720) 100,200, np, nn, smin200, 1.-cdf
+            endif
+           endif
+c
+1720        format(i3,i5,2x,i7,2x,i5,8x,f8.4,2x, f14.3)
+c
           endif
 c
         if (nfried .gt .0) then
@@ -9352,7 +9426,18 @@ c          CALL XPRVDU (NCVDU, 1, 0)
      1    CMON(1)(:nctrim(cmon(1)))
          END IF
       endif
-c
+C
+      IINVERT = 0
+      IF ((XPLL2 .GE. 0.0).AND.(XPLL2.LE.0.66)) THEN
+           IINVERT = 1
+      ENDIF
+      IF((XTWLL.LE.0.33).AND.(XPLLL.LT.0.33))THEN
+           IINVERT = 1
+      ENDIF
+      IF (IINVERT .EQ. 1) THEN
+       WRITE(CMON,'(A)')'{E You may need to invert the structure'
+       CALL XPRVDU (NCVDU,1,0)
+      ENDIF
 C                           ----------- All done.
 2750  CONTINUE
 C
@@ -9493,22 +9578,31 @@ c                                !Filter_1
        itempdjw(17)=ngood         !H-used
        tempdjw(18)=(nle3s*100./n6acc)
        tempdjw(19)=yslope         !npp slope
-       tempdjw(20)=store(l30dr+8) !main npp
+       tempdjw(20)=store(l39f+3)  !main npp
 c                                 !GOF
 c
       if(ipunch.eq.4) then       !Summary for import to spread sheet
-       write(ncpu,9876) cweight(1:3), 
-     1 store(l30rf),store(l30rf+1),friedif,filter(1),
-     2 tempdjw, store(l30rf+4)
-9876   format(a3,x,3f7.2, f8.5, 6(' : ',f5.2,x,f4.2),x, f4.3, 2i6, 
+      if (nfried .gt. 0) then
+          write(ncpu,9876) cweight(1:3), 
+     1    store(l30rf),store(l30rf+1),friedif,filter(1),
+     2    tempdjw, store(l30rf+4)
+9876   format(a3,x,3f7.2, f8.5, 6(' : ',f5.2,x,f4.2),x, f4.2, 2i6, 
      1 f6.1, i6, f6.1, 3f5.2)
+      else
+          write(ncpu,9875) cweight(1:3), 
+     1    store(l30rf),store(l30rf+1),friedif,filter(1), 
+     2    mfried,nfried
+      endif
+9875   format(a3,x,3f7.2, f8.5, 83x, 2i6)
+
+987   format(a3,x,3f7.2, f8.5, 83x, 2i6)
       endif
 c now update LIST 39
       if (n39f.gt.0) then
        m39f = l39f
        do i=1,n39f
         if (istore(m39f) .eq. iflac) then
-c            store(m39f+2)=store(l30dr+8) !MAIN NPP (now set in summary)
+c            store(m39f+2)=store(l30dr+8) !MAIN NPP
             store(m39f+3)=yslope         !BIJVOET NPP
             store(m39f+4)=tempdjw(3)     !Hin1
             store(m39f+5)=tempdjw(4)     !
