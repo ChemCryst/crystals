@@ -70,7 +70,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
- Print list type    22     serial number        1     Address   439956     Length    7131     Created on                          
+ Print list type    22     serial number        1     Address   439959     Length    7131     Created on                          
 
 
             206 parameter(s) in    1 block(s) - as follows:
@@ -2663,7 +2663,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 #LIST 17                                                                                                                                                                                                                                                        
 #PURGE                                                                                                                                                                                                                                                          
 #SFLS                                                                                                                                                                                                                                                           
- List type   11  serial number    4 from   458836 to   480428 will not be copied ( deleted )         
+ List type   11  serial number    4 from   458837 to   480429 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -3287,8 +3287,8 @@ Mean C-C su =   0.0009
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
 #DISK                                                                                                                                                                                                                                                           
- List type   11  serial number    4 from   456552 to   456644 will not be copied ( deleted )         
- List type   22  serial number    2 from   449390 to   453804 will not be copied ( deleted )         
+ List type   11  serial number    4 from   456553 to   456645 will not be copied ( deleted )         
+ List type   22  serial number    2 from   449391 to   453805 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -4520,8 +4520,8 @@ Mean C-C su =   0.0121
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
 #SFLS                                                                                                                                                                                                                                                           
- List type   11  serial number    8 from   452976 to   487493 will not be copied ( deleted )         
- List type   22  serial number    1 from   448990 to   450228 will not be copied ( deleted )         
+ List type   11  serial number    8 from   452977 to   487494 will not be copied ( deleted )         
+ List type   22  serial number    1 from   448991 to   450229 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -4617,11 +4617,11 @@ Mean C-C su =   0.0121
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      12079 Physical writes      10101 Cache hits     208185
- Cache hit distribution   189037   13264    2086     484     297     540
- Cache hit distribution      190     117     187     244     236     216
- Cache hit distribution      152     144     199     114     208     128
- Cache hit distribution       90      55      34      44      53      66
+ Physical reads      12088 Physical writes      10101 Cache hits     208158
+ Cache hit distribution   189039   13276    2034     501     276     564
+ Cache hit distribution      166     139     221     183     264     190
+ Cache hit distribution      158     127     167     179     176     116
+ Cache hit distribution      124      48      41      49      50      70
 
 
           : Job ends ok       with     0 warnings and     0 errors

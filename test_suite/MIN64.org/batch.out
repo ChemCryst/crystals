@@ -3000,7 +3000,7 @@ Mean C-C su =   0.0078
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        3     Address    53964     Length     292     Created on                          
+ Print list type    22     serial number        3     Address    53967     Length     292     Created on                          
 
 
             100 parameter(s) in    1 block(s) - as follows:
@@ -3716,7 +3716,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        4     Address    63883     Length     141     Created on                          
+ Print list type    22     serial number        4     Address    63886     Length     141     Created on                          
 
 
               1 parameter(s) in    1 block(s) - as follows:
@@ -5195,7 +5195,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        5     Address    67482     Length     147     Created on                          
+ Print list type    22     serial number        5     Address    67485     Length     147     Created on                          
 
 
               2 parameter(s) in    1 block(s) - as follows:
@@ -5980,7 +5980,7 @@ Mean C-C su =   0.0048
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        6     Address    69489     Length     235     Created on                          
+ Print list type    22     serial number        6     Address    69492     Length     235     Created on                          
 
 
              35 parameter(s) in    1 block(s) - as follows:
@@ -7011,7 +7011,7 @@ Mean C-C su =   0.0067
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address    73229     Length     246     Created on                          
+ Print list type    22     serial number        7     Address    73232     Length     246     Created on                          
 
 
              46 parameter(s) in    1 block(s) - as follows:
@@ -8050,7 +8050,7 @@ Mean C-C su =   0.0052
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        8     Address    76827     Length     301     Created on                          
+ Print list type    22     serial number        8     Address    76830     Length     301     Created on                          
 
 
             101 parameter(s) in    1 block(s) - as follows:
@@ -11350,7 +11350,7 @@ Mean C-C su =   0.0078
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   129873     Length     292     Created on                          
+ Print list type    22     serial number       11     Address   129879     Length     292     Created on                          
 
 
             100 parameter(s) in    1 block(s) - as follows:
@@ -19711,7 +19711,7 @@ Mean C-C su =   0.0081
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       19     Address   203208     Length     292     Created on                          
+ Print list type    22     serial number       19     Address   203211     Length     292     Created on                          
 
 
             100 parameter(s) in    1 block(s) - as follows:
@@ -20406,7 +20406,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       20     Address   211207     Length     141     Created on                          
+ Print list type    22     serial number       20     Address   211210     Length     141     Created on                          
 
 
               1 parameter(s) in    1 block(s) - as follows:
@@ -22594,7 +22594,7 @@ All cycle   Rw                    0.0            16.           0.10E+03
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
-                                         0.0000  -0.0000  -0.0000
+                                         0.0000   0.0000  -0.0000
 
 [38]  R.M.S.         0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -22656,7 +22656,7 @@ All cycle   Rw                    0.0            16.           0.10E+03
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
-[37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00            -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -27790,7 +27790,7 @@ Mean C-C su =   0.0081
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       27     Address   276282     Length     292     Created on                          
+ Print list type    22     serial number       27     Address   276285     Length     292     Created on                          
 
 
             100 parameter(s) in    1 block(s) - as follows:
@@ -28485,7 +28485,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       28     Address   284281     Length     141     Created on                          
+ Print list type    22     serial number       28     Address   284284     Length     141     Created on                          
 
 
               1 parameter(s) in    1 block(s) - as follows:
@@ -30740,7 +30740,7 @@ All cycle   Rw                    0.0            16.           0.10E+03
 [31]                                         0.004    0.004    0.004 
 
 [37]      C          2.    1.00    0.00    0.76    0.13    0.12    0.04
-[37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 

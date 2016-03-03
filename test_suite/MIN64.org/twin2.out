@@ -438,7 +438,7 @@ Mean C-C su =   0.0000
 
       270 reflections   R  2.74% Rw  2.88% with I/u(I) from List 28                                                                                                                                                                                             
       270 reflections   R  2.74% Rw  2.88% with I/u(I) > -10.0                                                                                                                                                                                                  
-        0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+      270 reflections   R  2.74% Rw  2.88% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  9.88    SumFoFc/SumFc^2=  9.90    SumwFoFc/SumwFc^2=  9.90
 LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27                                                                                                                                                                                                         
@@ -449,7 +449,7 @@ LS-scale=  9.913   Wilson Scale=  0.000
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
- Print list type    17     serial number        2     Address    18668     Length    1156     Created on                          
+ Print list type    17     serial number        2     Address    18677     Length    1156     Created on                          
 
      0 NO 
      1 RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22]) 
@@ -809,7 +809,7 @@ The slope and correlation coefficient should be small
         154.66                                                                                                . 
 [17]                        30       168.76       171.6       0.38 E+02       0.1 E+01     3.     3.            *      
         190.94                                                                                                . 
-[17]                        18       206.63       208.9       0.16 E+02       0.4 E+00     1.     2.           *
+[17]                        18       206.62       208.9       0.16 E+02       0.4 E+00     1.     2.           *
         231.04                                                                                                . 
 [17]                        21       252.41       252.6       0.31 E+02       0.6 E+00     1.     2.            *      
         274.95                                                                                                . 
@@ -996,7 +996,7 @@ The slope and correlation coefficient should be small
         154.66                                                                                                . 
 [17]                        30       168.76       171.6       0.38 E+02       0.1 E+01     3.     3.            *      
         190.94                                                                                                . 
-[17]                        18       206.63       208.9       0.16 E+02       0.4 E+00     1.     2.           *
+[17]                        18       206.62       208.9       0.16 E+02       0.4 E+00     1.     2.           *
         231.04                                                                                                . 
 [17]                        21       252.41       252.6       0.31 E+02       0.7 E+00     1.     2.            *      
         274.95                                                                                                . 
