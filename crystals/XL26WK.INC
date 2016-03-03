@@ -1,0 +1,2 @@
+      COMMON/XL26WK/ NWARN
+
