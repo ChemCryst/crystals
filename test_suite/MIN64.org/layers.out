@@ -10381,7 +10381,7 @@ Mean C-C su =   0.0000
 [58]                                          PARAMETE          0.595    0.404 
 [58]                                          PARAMETE          1.376   -0.376 
 [58]                                          PARAMETE          0.950    0.049 
-[41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.21
+[41]       Mean value =   1.0000  Mean delta =  -0.0000  r.m.s. delta =   0.21
 #PERH                                                                                                                                                                                                                                                           
            Per-hydrogenation of Carbon atoms
 C(1)  sp3 delta   0.03 sp3 delta  0.06 planarity  999.00 angle delta  999.00

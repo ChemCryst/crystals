@@ -73,10 +73,10 @@ Space group symbol is   P    21   21   21
                                H     K     L     I or /FO/     Sigma      JCODE    Serial
 
  Systematic absence            0.    0.    3.         1.9        0.2         0.        0.
- Systematic absence            0.    0.    5.        -0.8        0.4         0.        0.
+ Systematic absence            0.    0.    5.        -0.8        0.3         0.        0.
  Systematic absence            0.    0.    7.         1.0        0.3         0.        0.
- Systematic absence            0.    0.    9.         0.5        0.7         0.        0.
- Systematic absence            0.    0.   11.         0.9        0.4         0.        0.
+ Systematic absence            0.    0.    9.         0.5        0.6         0.        0.
+ Systematic absence            0.    0.   11.         0.9        0.2         0.        0.
  Systematic absence            0.    0.   13.         1.0        0.1         0.        0.
  Systematic absence            0.    0.   15.        -1.5        0.9         0.        0.
  Systematic absence            0.    0.   17.         2.0        0.8         0.        0.
@@ -93,14 +93,14 @@ Space group symbol is   P    21   21   21
 
 
 
-     17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.388
+     17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
                                                                                                                                                                                                                                                                 
 Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
 Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000                                                                                                                                                                                         
 Number                4       2       9       2       0       0       0                                                                                                                                                                                         
                                                                                                                                                                                                                                                                 
 Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
-rms (Fo/sigma)    2.167   0.782   1.690   3.065   5.459  11.667   0.000                                                                                                                                                                                         
+rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000                                                                                                                                                                                         
 Number                4       1       2       5       4       1       0                                                                                                                                                                                         
                                                                                                                                                                                                                                                                 
    1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               

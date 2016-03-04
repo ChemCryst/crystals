@@ -59,7 +59,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    12     serial number        1     Address    27061     Length     420     Created on                          
+ Print list type    12     serial number        1     Address    27064     Length     420     Created on                          
 
      0 FULL 
      1 COMB C(1,X'S) AND C(2,X'S) 
@@ -76,7 +76,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    27557     Length     232     Created on                          
+ Print list type    22     serial number        1     Address    27560     Length     232     Created on                          
 
 
              13 parameter(s) in    1 block(s) - as follows:
@@ -1201,7 +1201,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address    30724     Length     202     Created on                          
+ Print list type    22     serial number        2     Address    30727     Length     202     Created on                          
 
 
              13 parameter(s) in    1 block(s) - as follows:
