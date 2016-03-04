@@ -1494,7 +1494,7 @@ c       Assume users wants all reflections, so set default RATIO to > 3
          else
 C NOTE - THIS IS WHERE ONE COULD FILTER ON FC/SIG, BUT ONLY IF SCALE IS SET
 C -- CALCULATE RATIO OF (FO)**2 AND SIGMA((FO)**2),IF IT HAS NOT BEEN INPUT
-         IF (IRATIO.LE.0) THEN
+c         IF (IRATIO.LE.0) THEN
             IF (STORE(M6+12).LE.ZERO) THEN
                STORE(M6+20)=0.0
             ELSE
@@ -1503,7 +1503,7 @@ c Oct 2013  Compute RATIO on F^2
                STORE(M6+20) = MIN(128., (DJW1/DJW3))
             END IF
          endif
-         ENDIF
+c         ENDIF
 c
       STORE(M6+13) = AMAX1 ( STORE(M6+13) , 1.0 )
 C
