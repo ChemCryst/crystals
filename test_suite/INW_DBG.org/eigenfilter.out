@@ -14420,7 +14420,7 @@ Bonds: Update required - List5 length change
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         2.      1   1    0    0    0
-   2   N         6.      1   1    0    0    0     117.03
+   2   N         6.      1   1    0    0    0     117.05
 [49]    3   C        10.      1   1    0    0    0     117.3   118.7
 [49]    4   C        11.      1   1    0    0    0     116.4   115.8
 
