@@ -375,8 +375,13 @@ c----- check for LIST 1 for Ndave
       if(lstno.eq.1) then
             call xpch1
             return
-      else if(lstno.eq.2) then   !check for LIST 2 
-            call XPCH2
+      else if(lstno.eq.2) then   !check for LIST 2
+            if (iclass+2 .eq. 2) then
+c             just the symbol
+              call XPCH2(2)
+            else 
+              call XPCH2(1)
+            endif
             return
       else if(lstno.eq.3) then   !check for LIST 3
             call XPCH3
