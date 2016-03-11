@@ -1713,46 +1713,46 @@ C
             ELSE
              IF      (NHY .EQ. 1) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 1'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','1 H on sp 1'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL ANG180(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
-                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 2'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','1 H on sp 2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 3) THEN
-                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 3'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','1 H on sp 3'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.98)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                 ELSE
-                  WRITE(NCPU,'(/A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','unattached H'
                 ENDIF
 
              ELSE IF (NHY .EQ. 2) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(/A)') 'REM            2 H on sp 2'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','2 H on sp 2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCC120(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
-                  WRITE(NCPU,'(/A)') 'REM            2 H on sp 3'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','2 H on sp 3'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.97)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(/A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','unattached H'
                 ENDIF
 
              ELSE IF (NHY .EQ. 3) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(/A)') 'REM            3 H on sp 3'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','3 H on sp 3'
                   UEQUIV = UEQUIV * 1.25
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.96)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(/A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','unattached H'
                 ENDIF
              ENDIF        
             ENDIF
