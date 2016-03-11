@@ -13434,7 +13434,7 @@ There are two INTEGER records.
  INFO holds flags indication what steps of the analysis have been completed.
  OVER holds flags indicating which OVERALL parameters are in LIST 12 are 
  being refined, indicated by a non-zero entry.
-OVER 1 Scale Du(iso) Ou(iso) Polariry Enantiopole Extinction 
+OVER 1 Scale Du(iso) Ou(iso) Polarity Enantiopole Extinction 
 #P
 There are three REAL records
 #
