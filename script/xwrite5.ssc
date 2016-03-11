@@ -1,5 +1,5 @@
 %SCRIPT XWRITE5                                                                 
-%%                                                                              
+%%                                                                                
 %  BLOCK
 %% clear out the old ride and restraint files
 %   VARIABLE LOGICAL FD
@@ -31,11 +31,12 @@
 %%   Local variables:                                                           
 %  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI                  
 %  VARIABLE INTEGER HMODE ISER CURMODE                                          
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY                       
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY FLACK                      
 %  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST                           
 %  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK                                     
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5                         
 %  EVALUATE TWINNED = FALSE                                                     
+%  EVALUATE FLACK = FALSE                                                     
 %  EVALUATE DOREFINE = TRUE                                                     
 %  EVALUATE DOFOUR = FALSE                                                      
 %  VARIABLE CHARACTER CCHK CELE                                                 
@@ -45,7 +46,10 @@
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DKEXT DOTWIN                         
 %  VARIABLE INTEGER ADP                                                         
 %%                                                                              
-%%   Variables set by or needed for XGETINFO/XPUTINFO                           
+%%   Variables set by or needed for XGETINFO/XPUTINFO  
+%%    Preferred H treatment       (HRTYP) 0=fix, 1=pos, 2=x&u, 3&10=ride
+%%    Last list 12 written        (L12SER)
+%%    Preferred H restraints      (HRESTF) 2=none, 1=all, 0=N&O
 %  VARIABLE INTEGER HRTYP L12SER HRESTF                                         
 %  VARIABLE LOGICAL HRMASK L12SMASK HRESTM                                      
 %%                                                                              
@@ -136,6 +140,30 @@
 %%                                                                              
 %  COPY '#SCRIPT CHECK3'                                                        
 %%                                                                              
+%%
+%  VARIABLE INTEGER IFLACK IEXTINCT
+%  EVALUATE IFLACK = 0
+%  EVALUATE IEXTINCT = 0
+%  IF EXISTS 39 .GE. 1 THEN                                                     
+%   VARIABLE CHARACTER CKEY
+%   VARIABLE INTEGER IKEY
+%   COPY '#GENERALEDIT 39'                                                      
+%   COPY 'LOCATE RECORDTYPE = 101'                                              
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                     
+%   LOOP                                                                        
+%    ON EDITERROR TERMINATE                                                     
+%    COPY 'TRANSFER FROM OFFSET=0 TO CKEY'                                      
+%    COPY 'TRANSFER FROM OFFSET=2 TO IKEY'                                      
+%    IF CKEY .EQ. 'OVER' .AND. IKEY .EQ. 1  THEN                                                   
+%      COPY 'TRANSFER FROM OFFSET=6 TO IFLACK'                                      
+%      COPY 'TRANSFER FROM OFFSET=7 TO IEXTINCT'                                      
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF                                                                     
+%    COPY 'NEXT'                                                                
+%   END LOOP                                                                    
+%   COPY 'END'                                                                  
+%  END IF                                                                       
+%%
 %%                                                                              
 %  COPY '#SCRIPT A_GETRESIDUESANDPARTS'                                         
 %% TRANSFER "Number of parts: " // CHARACTER ( ICOUNTP ) TO DISPLAY             
@@ -168,46 +196,73 @@
 % IF ( HFIRST .GE. 0.0 ) THEN                                                   
 ^^WI   @ 3,1 GRID HR NROWS=3 NCOLS=1 OUTLINE='Hydrogen restraints'              
 ^^WI   {                                                                        
-^^WI    @ 1,1 RADIOBUTTON DREST '&Restrain H positions for O-H and N-H bonds'   
+^^WI    @ 1,1 RADIOBUTTON DREST "&Restrain H x's,Uiso for O-H and N-H bonds" INFORM  
 % IF HRESTF .EQ. 0 THEN                                                         
 ^^WI           STATE=ON                                                         
 % END IF                                                                        
-^^WI    @ 2,1 RADIOBUTTON HREST '&Restrain H positions for all-H bonds'         
+^^WI    @ 2,1 RADIOBUTTON HREST "&Restrain H x's,Uiso for all-H bonds" INFORM        
 % IF HRESTF .EQ. 1 THEN                                                         
 ^^WI           STATE=ON                                                         
 % END IF                                                                        
-^^WI    @ 3,1 RADIOBUTTON NHREST '&No restraints'                               
+^^WI    @ 3,1 RADIOBUTTON NHREST '&No restraints'  INFORM                             
 % IF HRESTF .EQ. 2 THEN                                                         
 ^^WI           STATE=ON                                                         
 % END IF                                                                        
-^^WI   }                                                                        
+^^WI   }   
+%%                                                                     
 ^^WI   @ 4,1 GRID HR NROWS=4 NCOLS=1 OUTLINE='Remaining hydrogens'              
 ^^WI   {                                                                        
 ^^WI     @ 1,1 RADIOBUTTON HFIX  '&Fix (do not refine)'                         
 % IF HRTYP .LE. 0 THEN                                                          
 ^^WI           STATE=ON                                                         
-% END IF                                                                        
+% END IF 
+% IF HRESTF .EQ. 1 THEN
+^^WI  DISABLED = YES
+% END IF                                                                       
 ^^WI     @ 2,1 RADIOBUTTON HRIDE 'Ri&de'                                        
 % IF HRTYP .EQ. 3 .OR. HRTYP .EQ. 10 THEN                                       
 ^^WI           STATE=ON                                                         
 % END IF                                                                        
+% IF HRESTF .EQ. 1 THEN
+^^WI  DISABLED = YES
+% END IF                                                                       
 ^^WI     @ 3,1 RADIOBUTTON HREFN '&Refine positions'                            
 % IF HRTYP .EQ. 1 THEN                                                          
 ^^WI           STATE=ON                                                         
 % END IF                                                                        
+% IF HRESTF .EQ. 1 THEN
+^^WI  DISABLED = YES
+% END IF                                                                       
 ^^WI     @ 4,1 RADIOBUTTON HREFUI 'Refine positions and &Uiso'                  
 % IF HRTYP .EQ. 2 THEN                                                          
 ^^WI           STATE=ON                                                         
 % END IF                                                                        
+% IF HRESTF .EQ. 1 THEN
+^^WI  DISABLED = YES
+% END IF                                                                       
 ^^WI   }                                                                        
 % END IF                                                                        
 ^^WI   @ 5,1 GRID XP NROWS=3 NCOLS=1 OUTLINE='Other parameters'                 
 ^^WI   {                                                                        
-^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' STATE=OFF                        
+^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter' 
+% IF IFLACK .LE. 0 THEN
+^^WI    STATE=OFF                        
+%       EVALUATE DOFLACK = FALSE
+% ELSE
+^^WI    STATE=ON
+%       EVALUATE DOFLACK = TRUE
+% END IF
 % IF ( CENTRO .GT. 0.9 ) THEN                                                   
 ^^WI           DISABLED=YES                                                     
 % END IF                                                                        
-^^WI    @ 2,1 CHECKBOX EXTNC 'Extinction parameter' STATE=OFF                   
+^^WI    @ 2,1 CHECKBOX EXTNC 'Extinction parameter' 
+% IF IEXTINCT .LE. 0 THEN
+^^WI    STATE=OFF                        
+%       EVALUATE DOEXTNC = FALSE
+% ELSE
+^^WI    STATE=ON
+%       EVALUATE DOEXTNC = TRUE
+% END IF
 ^^WI    @ 3,1 CHECKBOX TWINS 'Twin element scales'                              
 % IF ( DOTWIN ) THEN                                                            
 ^^WI     STATE = ON                                                             
@@ -278,7 +333,7 @@
 %% Get OK and Cancel button press:                                              
 %%                                                                              
 % LOOP                                                                          
-%  VERIFY W5_BXX W5_BOK                                                         
+%  VERIFY W5_BXX  DREST HREST NHREST W5_BOK                                                         
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'W5_BOK'                            
 %%                                                                              
 %  CASE VALUE                                                                   
@@ -287,6 +342,24 @@
 %    FINISH                                                                     
 %  END BLOCK                                                                    
 %%                                                                              
+%  BLOCK
+^^CO SET HFIX DISABLED=NO
+^^CO SET HRIDE DISABLED=NO
+^^CO SET HREFN DISABLED=NO
+^^CO SET HREFUI DISABLED=NO
+%  END BLOCK
+%  BLOCK
+^^CO SET HFIX DISABLED=YES
+^^CO SET HRIDE DISABLED=YES
+^^CO SET HREFN DISABLED=YES
+^^CO SET HREFUI DISABLED=YES
+%  END BLOCK
+%  BLOCK
+^^CO SET HFIX DISABLED=NO
+^^CO SET HRIDE DISABLED=NO
+^^CO SET HREFN DISABLED=NO
+^^CO SET HREFUI DISABLED=NO
+%  END BLOCK
 %%                                                                              
 %%                                                                              
 %%                                                                              
@@ -386,14 +459,6 @@
 %    EVALUATE DOFLACK = FALSE                                                   
 %    EVALUATE WORK1 = 0.0                                                       
 %
-%% Dont reset LIST 30 - may need to know what the values were
-%    COPY '#GENERALEDIT 30'                                                     
-%%    COPY 'LOCATE RECORDTYPE = 106'                                             
-%%    COPY 'TRANSFER TO OFFSET = 6 FROM WORK1'                                   
-%%    COPY 'TRANSFER TO OFFSET = 7 FROM WORK1'                                   
-%%    COPY 'WRITE OVERWRITE=OVERWRITE'                                           
-%%    COPY 'END'                                                                 
-%%
 %     EVALUATE QTITLE = 'Flack Parameter'                                   
 %     EVALUATE QLINE1 = 'Do you wish to reset the Flack parameter to zero'
 %     EVALUATE QLINE2 = ' '      
@@ -408,6 +473,7 @@
 %      COPY 'WRITE OVERWRITE=OVERWRITE'                                           
 %      COPY 'END'                                                                 
 %     END IF
+%% Dont reset LIST 30 - may need to know what the values were
 %  ELSE                                                                         
 %    EVALUATE DOFLACK = FALSE                                                   
 %  END IF                                                                       
