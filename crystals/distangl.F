@@ -2100,6 +2100,20 @@ C Get index of atoms at L and M5P in L5.
                IF ( ISTORE(INHVEC+J52) .LE. 1 ) SDEV = SDEV2
                WRITE (NCPU,'(''U(IJ) .0, '',F7.5,'' = '',A,'' to '',A)')
      1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+              ELSE IF (IPUNCH .EQ. 13) THEN
+C----- WRITE RESTRAINT
+C Get index of atoms at L and M5P in L5.
+               J51 = ( L  - L5) / MD5
+               J52 = (M5P - L5) / MD5
+               SDEV = SDEV1
+c               IF ( ISTORE(INHVEC+J51) .LE. 1 ) SDEV = SDEV2
+c               IF ( ISTORE(INHVEC+J52) .LE. 1 ) SDEV = SDEV2
+             WRITE (NCPU,'(''UXZBAR .0, '',F7.5,'' = '',A,'' to '',A)')
+     1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+             WRITE (NCPU,'(''UYZBAR .0, '',F7.5,'' = '',A,'' to '',A)')
+     1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+             WRITE (NCPU,'(''UZZBAR .0, '',F7.5,'' = '',A,'' to '',A)')
+     1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
               ELSE IF (IPUNCH .EQ. 8) THEN
 C----- WRITE RESTRAINT
                 WRITE (NCPU,
