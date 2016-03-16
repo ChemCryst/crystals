@@ -281,7 +281,7 @@ C   9.FUNCTION      10.U(IJ)'S       11.TERM          12.EQUATE
 C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN
 C
-C----- ISTORE (LCG + 1) OPERATIONS
+C----- ISTORE (LCG+1) OPERATIONS
 C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4
 C      5            6  ANGLE     7           8
 C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
@@ -323,6 +323,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
+      INCLUDE 'XL26WK.INC'
+C
       INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (KF,KF1(1)),(IQ,IQ1(1)),(IB,IB1(1))
@@ -361,6 +363,11 @@ C--WRITE OUT A COUPLE OF CAPTIONS
 1000  FORMAT(26H  Restraints checking  -  ,/,
      2 42H  restraints that produce no contributions,
      3 22H are marked with a '?')
+C
+C---- SET TYPE AND INITIALISE THE NO DERIVATIVES FOUND COUNTER
+      L26TYP = 0       ! 0 = CHECK 
+      L26WRN = 0
+C
 C--CLEAR THE CORE AREA
       CALL XRSL
       CALL XCSAE
@@ -412,6 +419,30 @@ C--COMPUTE THE SQUARE ROOT OF THE WEIGHT
 C--SET THE CONVERSION FACTOR
 1200  CONTINUE
       CONV=1.
+C 1300 DEFINE
+C 1350 RESTRAIN
+C 1550 SINGLE DISTANCE
+C 1750 DIFFERENCE DISTANCE
+C 1850 MEAN DISTANCE
+C 1950 SINGLE ANGLE
+C 2100 DIFFERENCE ANGLE
+C 2150 MEAN ANGLE
+C 2200 VIBRATION
+C 2350 EXECUTION
+C 2400 NO(THING)
+C 2450 U(IJ)
+C 1050 equate
+C 4000 PLANAR
+C 4300 SUM
+C 1050 form
+C 4400 AVERAGE
+C 4370 LIMIT
+C 1710 ENERGY 
+C 5000 ORIGIN
+C 1250
+c
+      write(cmon,'(/)')
+      call xprvdu(ncvdu,1,0)
       GOTO(1300,1350,1550,1750,1850,1950,2100,2150,2200,2350,2400,2450,
      2 1050,4000,4300,1050,4400,4370,1710,5000,5010,5020,5030,5040,5050,
      2 5060,5070,5080,5500,5510,5520,5530,5540,5550,1250) ,I
@@ -432,16 +463,20 @@ C--CHECK IF ANY DERIVATIVES HAVE BEEN PRODUCED
       IF(ISTORE(L22PD)-4)1450,1400,1450
 C--NO DERIVATIVES
 1400  CONTINUE
-      WRITE(CMON,'(A)')'{I General Restraint: No derivatives found'
-      CALL XPRVDU(NCVDU,1,0)
       CALL XMOVE(IQ1(1),KF1(1),1)
-C--CALCULATE THE COMPUTED VALUE AND PRINT THE RESULTS
+       WRITE(CMON,'(A)')'{I  General Restraint: No derivatives found'
+       CALL XPRVDU(NCVDU,1,0)
+       IF(ISSPRT.EQ.0)
+     1 WRITE(NCWU,'(A)')'   General Restraint: No derivatives found'
 1450  CONTINUE
+C--CALCULATE THE COMPUTED VALUE AND PRINT THE RESULTS
       D=B-STORE(L22PD+2)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)A,B,C,KF,D,STORE(L22PD+2)
 1500  FORMAT(//1H ,F4.0,26H  General restraint to be ,E20.10,
-     2 19H  with an E.S.D. of,E20.10//2X,A1,2X,18H  Calculated value,
+     2 19H  with an E.S.D. of,E20.10/3X,A1,1X,18H  Calculated value,
      3 8X,E20.10,19H  giving a delta of,E20.10)
+      WRITE(CMON,1610)NINT(A), '   General restraint', B,C
+      CALL XPRVDU(NCVDU, 1,0)
       GOTO 1050
 C
 C--'SINGLE DISTANCE' RESTRAINTS
@@ -453,10 +488,9 @@ C--'SINGLE DISTANCE' RESTRAINTS
       ENDIF
 1600  FORMAT(/1X,F4.0,' Restrain these ',2A4,A1,' to be',
      2 F9.3,1X,2A4,',',/15X,' with an E.S.D. of',F8.3)
-      WRITE(CMON,1610)NINT(A+1), '      given distance', B,C
+      WRITE(CMON,1610)NINT(A), '      Given distance', B,C
       CALL XPRVDU(NCVDU, 1,0)
 1610  FORMAT(I5, 1X, A, '. ', 'Target ',F7.3, ' esd ', F7.3)
-C
 C
 1650  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
@@ -476,7 +510,7 @@ C--'ENERGY ' RESTRAINTS
       ENDIF
 1720  FORMAT(//1H ,F4.0,16H Restrain these ,2A4,A1,6H to be,
      2 F9.3,1X,2A4,22H, with Power Factor of,F4.1)
-      WRITE(CMON,1610)NINT(A+1), ' non-bonded distance', B,C
+      WRITE(CMON,1610)NINT(A), ' non-bonded distance', B,C
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 1650
 C
@@ -490,7 +524,7 @@ C--'DISTANCE DIFFERENCE' RESTRAINTS
 1800  FORMAT(/1X ,F4.0,
      2 '   Restrain the differences between the following ',2A4,A1,
      3 ' to be' /,F9.3,2X,2A4,',',' with an E.S.D. of ',F8.3)
-      WRITE(CMON,1610)NINT(A+1), ' distance difference', B,C
+      WRITE(CMON,1610)NINT(A), ' distance difference', B,C
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 1650
 C
@@ -503,9 +537,9 @@ C--'MEAN DISTANCE' RESTRAINT
       WRITE(NCWU,1900)A,(DIST(M),M=1,3),B,(STROM(M),M=1,2),C
       ENDIF
 1900  FORMAT(/1H ,F4.0,'   Restrain the following ',2A4,A1,
-     2 ' to their common mean of '/,F9.3,
-     3 2X,2A4,15X,'with an E.S.D. of', F8.3)
-      WRITE(CMON,1610)NINT(A+1), '       mean distance', B,C
+     2 ' to their common mean of ',F9.3,1X,2A4,/
+     3 49X,'with an E.S.D. of', F8.3)
+      WRITE(CMON,1610)NINT(A), '       Mean distance', B,C
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 1650
 C
@@ -517,7 +551,7 @@ C--'SINGLE ANGLE' RESTRAINTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1600)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       ENDIF
-      WRITE(CMON,1960)NINT(A+1), '         given angle', B,C
+      WRITE(CMON,1960)NINT(A), '         Given angle', B,C
       CALL XPRVDU(NCVDU, 1,0)
 1960  FORMAT(I5, 1X, A, '. ', 'Target ',F7.2, ' esd ', F7.2)
 C
@@ -538,7 +572,7 @@ C--'ANGLE DIFFERENCE' RESTRAINTS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1800)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       ENDIF
-      WRITE(CMON,1960)NINT(A+1), '    angle difference', B,C
+      WRITE(CMON,1960)NINT(A), '    angle difference', B,C
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 2000
 C
@@ -552,7 +586,7 @@ C--'MEAN ANGLE' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1900)A,(ANGLE(M),M=1,3),B,(DEG(M),M=1,2),C
       ENDIF
-      WRITE(CMON,1960)NINT(A+1), '          mean angle', B,C
+      WRITE(CMON,1960)NINT(A), '          Mean angle', B,C
       CALL XPRVDU(NCVDU, 1,0)
       GOTO 2000
 C
@@ -565,7 +599,7 @@ C--'VIBRATION' RESTRAINT
 2250  FORMAT(/1X,F4.0,'DELU - Restrain the difference in the',2A4,A1,
      2 ' along a bond to be',/6x,F9.5,
      3 '  angstrom squared, with an E.S.D. of',F9.5)
-      WRITE(CMON,2260)NINT(A+1), 'Vibration difference', B,C
+      WRITE(CMON,2260)NINT(A), 'Vibration difference', B,C
       CALL XPRVDU(NCVDU, 1,0)
 2260  FORMAT(I5, 1X, A, '. ', 'Target ',F7.4, ' esd ', F7.4)
 
@@ -924,7 +958,7 @@ C--'U(IJ)' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2300)(NUMB(N),(UIJ(M),M=1,3),N=2,3),IB
       ENDIF
-      WRITE(CMON,2460)NINT(A+1), '      Uij difference', B,C
+      WRITE(CMON,2460)NINT(A), '      Uij difference', B,C
       CALL XPRVDU(NCVDU, 1,0)
 2460  FORMAT(I5, 1X, A, '. ', 'Target ',F7.4, ' esd ', F7.4)
       N=2
@@ -948,12 +982,21 @@ C--LOOP FOR PRINTING EACH INDIVIDUAL RESTRAINT
       CALL XDOWNF(M22PD,STORE(L22PD),4)
       M22PD=M22PD+KINCRF(ISTORE(L22PD))
 C--CHECK IF THIS RESTRAINT IS USEFUL
-      CALL XMOVE(IB1(1),KF1(1),1)
-      IF(ISTORE(L22PD)-4)2650,2600,2650
-2600  CONTINUE
-      WRITE(CMON,'(A)')'{I Print: No derivatives found'
-      CALL XPRVDU(NCVDU,1,0)
-      CALL XMOVE(IQ1(1),KF1(1),1)
+C Watch out for Uij - this can have up to 6 individual restraints 
+c per atom - dealt with under Uij
+      if(i.ne.12) then
+        CALL XMOVE(IB1(1),KF1(1),1)
+        IF(ISTORE(L22PD).eq.4) THEN
+         WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
+     1   COPERATION(I)(1:NCTRIM(COPERATION(I))),
+     1 ' restraint:', ' No derivatives found'
+         CALL XPRVDU(NCVDU,1,0)
+         IF(ISSPRT.EQ.0)
+     1 WRITE(NCWU,'(2x,A,A,A)')COPERATION(I)(1:nctrim(COPERATION(I))),
+     1 ' restraint: ', ' No derivatives found'
+         CALL XMOVE(IQ1(1),KF1(1),1)
+        ENDIF
+      endif
 2650  CONTINUE
 C--SET UP A FEW CONSTANTS
       JD=JA+7
@@ -988,14 +1031,10 @@ C----- GET THE EQUIVALENT SIGMA FOR A 'ENERGY' CARD
      2 STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),(A1(M),M=1,N)
       ENDIF
 2900  FORMAT(2H  ,A1,2X,2(6X,A4,I5,I6,4I3),F11.3,F10.3)
-      IF ( (IMON .GT. 0 ) .OR. (ABS(A1(2)) .GE. ESIGMA) ) THEN
-c         WRITE(NCAWU,2901)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
-c     2   ISTORE(JB+3),A1(1),A1(2), ESIGMA
-         IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. ESIGMA) ) THEN
+      IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. ESIGMA) ) THEN
          WRITE(CMON ,2901)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
      2   ISTORE(JB+3),A1(1),A1(2)
          CALL XPRVDU(NCVDU, 1,0)
-         ENDIF
       ENDIF
 2901  FORMAT(1X,A1, 12X, 2(2X,A4,I4),F11.3,F10.3,F12.7)
 C--RESET FOR THE NEXT RESTRAINT
@@ -1021,14 +1060,10 @@ C--ANGLES RESTRAINT PRINT
      3 ISTORE(JC+3),(ISTORE(M),M=JL,JM),(A1(M),M=1,N)
       ENDIF
 3100  FORMAT(2H  ,A1,2X,3(6X,A4,I5,I6,4I3),F10.2,F7.2)
-      IF ( (IMON .GT. 0 ) .OR. (ABS(A1(2)) .GE. C) ) THEN
-c         WRITE(NCAWU,3101)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
-c     2   ISTORE(JB+3),STORE(JC+2),ISTORE(JC+3),A1(1),A1(2)
-         IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
+      IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
          WRITE(CMON,3101)KF,STORE(JA+2),ISTORE(JA+3),STORE(JB+2),
      2   ISTORE(JB+3),STORE(JC+2),ISTORE(JC+3),A1(1),A1(2)
          CALL XPRVDU(NCVDU, 1,0)
-         ENDIF
       ENDIF
 3101  FORMAT(1X,A1, 2X, 3(2X,A4,I4),F7.2,F7.2)
       JA=ISTORE(JC)
@@ -1051,21 +1086,16 @@ C--VIBRATION RESTRAINTS PRINT
      2 A1(1),STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),(A1(M),M=2,3)
       ENDIF
 3250  FORMAT(2H  ,A1,2(8X,A4,I5,I6,4I3,F12.5,1X),F9.5,5X,5A4)
-      IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C )) THEN
-c         WRITE(NCAWU,3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
-c     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
-         IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C )) THEN
+      IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C )) THEN
          WRITE(CMON, 3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
      2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
          CALL XPRVDU(NCVDU, 1,0)
-         ENDIF
       ENDIF
 3251  FORMAT(1X,A1,2X,2(2X,A4,I4,F9.5,1X),F9.5,2X,5A4)
 C--CALCULATE THE MEAN
       A1(1)=0.5*(A1(1)+A1(2)+B)
       A1(2)=A1(3)
       GOTO 2950
-
 C--UXZBAR RESTRAINTS PRINT
 3280  CONTINUE
       A1(3)=A1(2)
@@ -1509,7 +1539,6 @@ c	  print *,
       JA = -1000000
 	  GOTO 3550
 C	  	  
-
 C
 C--U(IJ) RESTRAINT
 3300  CONTINUE
@@ -1528,6 +1557,19 @@ c       write(123,'(10f8.5)') (store(idjw),idjw=jt+14,jt+24,2)
        DO 3450 JJ=8,13
        adjw = store(js+jdjw)
        bdjw = store(jt+jdjw)
+C--CHECK IF THIS RESTRAINT IS USEFUL
+      CALL XMOVE(IB1(1),KF1(1),1)
+      IF(ISTORE(L22PD).eq.4) THEN
+         WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
+     1   COPERATION(I)(1:NCTRIM(COPERATION(I))),
+     1 ' restraint:', ' No derivatives found'
+         CALL XPRVDU(NCVDU,1,0)
+         IF(ISSPRT.EQ.0)
+     1 WRITE(NCWU,'(2x,A,A,A)')COPERATION(I)(1:nctrim(COPERATION(I))),
+     1 ' restraint: ', ' No derivatives found'
+         CALL XMOVE(IQ1(1),KF1(1),1)
+      ENDIF
+
        A1(3)=STORE(L22PD+2)
        A1(2)=2.*SQRT(STORE(L22PD+3))
        A1(1)=0.5*(A1(2)-A1(3))
@@ -1596,7 +1638,6 @@ C--CHECK IF WE SHOULD PRINT THE MEAN DELTA AND R.M.S. DEVIATION
       O=O*R
       P=SQRT(P*R)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3700)Q,O,P
-c	  print *, 'q, o, p', q, o, p
       WRITE(CMON,3700) Q, O ,P
       CALL XPRVDU(NCVDU, 1,0)
 3700  FORMAT('      Mean value =',F9.4,'  Mean delta =',F9.4,
@@ -1610,6 +1651,14 @@ c	  print *, 'q, o, p', q, o, p
 C
 C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
 3800  CONTINUE
+      IF(L26WRN.GT.0) THEN
+            WRITE(CMON,'(A,6x,a/A,I6,A,A/6x,A )') 
+     1      '{I ',' Restraint Checking',
+     1      '{I ', L26WRN, ' Restraint warnings:',
+     2      ' For on-screen information',
+     3      '{I  Issue #PRINT 16 and #CHECK HI '
+            CALL XPRVDU(NCVDU,3,0) 
+      ENDIF
       CALL XOPMSG (IOPCHK, IOPEND, IVERSN)
       CALL XTIME2(2)
       RETURN
@@ -1646,12 +1695,9 @@ C--PRINT THE INFORMATION FROM A PLANAR RESTRAINT
      2 A1(2)
       ENDIF
 4200  FORMAT(2H  ,A1,8X,A4,I5,I6,4I3,F10.3)
-      IF ( (IMON .GT. 0 ) .OR. (ABS(A1(2)) .GE. C ) ) THEN
-c        WRITE(NCAWU,4201)KF,STORE(JA+2),ISTORE(JA+3),A1(2)
-         IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C ) ) THEN
+      IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C ) ) THEN
          WRITE(CMON ,4201)KF,STORE(JA+2),ISTORE(JA+3),A1(2)
          CALL XPRVDU(NCVDU, 1,0)
-         ENDIF
       ENDIF
 4201  FORMAT(1X,A1,4X, A4,I4,F7.3)
 C--MOVE ONTO THE NEXT ATOM
@@ -1668,7 +1714,6 @@ C--'SUM' RESTRAINT
       CALL XPRVDU(NCVDU, 1,0)
 4310  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,4350)A,AB,C
-c      WRITE(NCAWU,4350)A,AB,C
 4350  FORMAT(1X ,F4.0,' The sum is restrained to be ',
      2 G12.5,'  with an E.S.D. of ',G12.5)
       GOTO 1050
@@ -1688,7 +1733,6 @@ C----- 'LIMIT' RESTRAINT
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4380) A,C
       ENDIF
-c      WRITE(NCAWU,4380) A,C
 4380  FORMAT ( // , 1X , F4.0 , ' Limit the shifts of the given' ,
      2 ' parameters to 0.0, with an E.S.D. of ',E20.10)
       WRITE(CMON,2460)NINT(A+1), '               Limit', 0.0, C
@@ -1708,7 +1752,6 @@ C--PRINT OUT THE HEADER
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4500)A,AB,C
       ENDIF
-c      WRITE(NCAWU,4501)A,AB,C
 4501  FORMAT(//1H ,F4.0,' Restrain these to their common',
      2 ' mean of ',F10.5,'  with an E.S.D. of', F10.5)
 4500  FORMAT(//1H ,F4.0,39H   Restrain the following parameters to,
@@ -1741,8 +1784,6 @@ C--THIS IS AN ATOMIC PARAMETER
      2 (ICOORD(idjw,JC),idjw=1,2), (A1(M),M=1,MM)
       ENDIF
 4650  FORMAT(2H  ,A1,8X,A4,I5,I6,4I3,6X,2A4,4X,2F10.5)
-c      WRITE(NCAWU,4651)KF,STORE(JA+2),ISTORE(JA+3),
-c     2 (ICOORD(M,JC),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4651)KF,STORE(JA+2),ISTORE(JA+3),
      2 (ICOORD(idjw,JC),idjw=1,2), (A1(M),M=1,MM)
@@ -1756,7 +1797,6 @@ C--THIS IS A SIMPLE OVERALL PARAMETER
       WRITE(NCWU,4750)KF,(KVP(M,JC),M=1,2), (A1(M),M=1,MM)
       ENDIF
 4750  FORMAT(2H  ,A1,41X,2A4,4X,2F10.5)
-c      WRITE(NCAWU,4751)KF,(KVP(M,JC),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4751)KF,(KVP(M,JC),M=1,2), (A1(M),M=1,MM)
        CALL XPRVDU(NCVDU, 1,0)
@@ -1770,7 +1810,6 @@ C--THIS IS AN ELEMENT OR LAYER SCALE FACTOR
       WRITE(NCWU,4850) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
       ENDIF
 4850  FORMAT(2H  ,A1,38X,2A4,4X,3X,2F10.5)
-c      WRITE(NCAWU,4851) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
       IF ((IMON .GE. 1) .AND. (ABS(A1(2)) .GE. C) ) THEN
        WRITE(CMON,4851) KF,(KSCAL(M,JB),M=1,2), (A1(M),M=1,MM)
        CALL XPRVDU(NCVDU, 1,0)
@@ -1811,6 +1850,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
+      INCLUDE 'XL26WK.INC'
+C
       INCLUDE 'QSTORE.INC'
 C
 C
@@ -1840,17 +1881,24 @@ C--LOAD LIST 12
 C--LINK LIST 5 AND LIST 12
       I=KSET52(0,-1)
       IF ( IERFLG .LT. 0 ) GO TO 9900
+C
+C---- SET TYPE AND INITIALISE THE NO DERIVATIVES FOUND COUNTER
+      L26TYP = 1       !APPLY
+      L26WRN = 0
+C
 C--SET UP THE POINTERS FOR THE DERIVATIVE QUEUE ON DISC
       CALL XIPDQF
 C--LOAD THE COMPILED LIST FOR PROCESSING
       IULN=26
       CALL XLCLFP(IULN)
       IF ( IERFLG .LT. 0 ) GO TO 9900
+      idjwtemp=0
 C--BRING DOWN THE NEXT BLOCK OF CODE AND RELOCATE IT
 1000  CONTINUE
       IF(KLOADR(LN))1850,1050,1750
 C--JUMP ON THE FUNCTION
 1050  CONTINUE
+      idjwtemp=idjwtemp+1
       I=ISTORE(LCG+1)
 cdjwsep2011
       if(i .lt. 1) then
@@ -2003,6 +2051,14 @@ C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
       CALL XADCPD
       IF ( IERFLG .LT. 0 ) GO TO 9900
 1770  CONTINUE
+      IF(L26WRN.GT.0) THEN
+            WRITE(CMON,'(A,6x,a/A,I6,A,A/6x,A )') 
+     1      '{I ',' Restraint Application',
+     1      '{I ', L26WRN, ' Restraint warnings:',
+     2      ' For on-screen information',
+     3      '{I  Issue #PRINT 16 and #CHECK HI '
+            CALL XPRVDU(NCVDU,3,0) 
+      ENDIF
       CALL XOPMSG (IOPCPR, IOPEND, IVERSN)
       CALL XTIME2(2)
       RETURN
@@ -2011,7 +2067,6 @@ C--ERRORS
 1850  CONTINUE
       J=16
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1900)IULN
-c      WRITE(NCAWU,1900)IULN
 1900  FORMAT(
      1' List ',I5,' contains errors.',
      2  ' Check the Restraints lists 16 and 17')
@@ -2467,8 +2522,6 @@ cdjwapr99}
       RETURN
       END
 C
-	  
-C
 CODE FOR XCMDC
       SUBROUTINE XCMDC(IASYM)
 C--CALCULATE MEAN DISTANCE RESTRAINTS
@@ -2520,10 +2573,6 @@ C--END OF THE FIRST PASS  -  PASS THROUGH NOW AND ACCUMULATE
       RETURN
       END
 C
-C
-
-
-
 CODE FOR XCVCX
       SUBROUTINE XCVCX(iaxis,iasym)
 C--CALCULATE VIBRATION RESTRAINTS
@@ -5240,7 +5289,6 @@ C--NOT ENOUGH CORE AVAILABLE
 1000  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
-c      WRITE(NCAWU,1050)
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' Insufficient memory for ''PLANAR'' restraint' )
@@ -5274,7 +5322,6 @@ C--NOT ENOUGH ATOMS IN THE GROUP
 1400  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1450)
-c      WRITE(NCAWU,1450)
       WRITE ( CMON ,1450)
       CALL XPRVDU(NCVDU, 1,0)
 1450  FORMAT(' Insufficient atoms to define a plane')
@@ -5372,7 +5419,6 @@ C--NOT ENOUGH CORE AVAILABLE
 1000  CONTINUE
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
-c      WRITE(NCAWU,1050)
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
 1050  FORMAT(' Insufficient core for ''AVERAGE'' restraint ')
@@ -5964,35 +6010,13 @@ C--THE OBSERVED VALUE SQUARED ARE TAKEN FROM THE CONTROL BLOCK AT 'LCG'
 C  THE OTHER ENTRIES FOR THE CALCULATED DELTA AND WEIGHT ARE ASSUMED
 C  TO BE SET ON ENTRY.
 C
-C----- ISTORE (LCG + 1) OPERATIONS
+C----- ISTORE (LCG+1) OPERATIONS
 C      1  DEFINE    2  RESTRAIN  3  DISTANCE 4
 C      5            6  ANGLE     7           8
 C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
 C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
 C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
 C
-      CHARACTER *12 COPERATION(20)
-      DATA 
-     1 coperation(1  ) /'DEFINE'/,
-     1 coperation(2  ) /'RESTRAIN'/,
-     1 coperation(3  ) /'DISTANCE'/,
-     1 coperation(4  ) /'Null'/,
-     1 coperation(5  ) /'Null'/,
-     1 coperation(6  ) /'ANGLE'/,
-     1 coperation(7  ) /'Null'/,
-     1 coperation(8  ) /'Null'/,
-     1 coperation(9  ) /'VIBRATION'/,
-     1 coperation(10 ) /'EXECUTION'/,
-     1 coperation(11 ) /'NOLIST'/,
-     1 coperation(12 ) /'UIJ'/,
-     1 coperation(13 ) /'EQUATE'/,
-     1 coperation(14 ) /'PLANAR'/,
-     1 coperation(15 ) /'SUM'/,
-     1 coperation(16 ) /'FORM'/,
-     1 coperation(17 ) /'AVERAGE'/,
-     1 coperation(18 ) /'LIMIT'/,
-     1 coperation(19 ) /'ENERGY'/,
-     1 coperation(20 ) /'ORIGIN'/
 
 C--
       INCLUDE 'ISTORE.INC'
@@ -6007,7 +6031,11 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+      INCLUDE 'XL26WK.INC'
+C
       INCLUDE 'QSTORE.INC'
+C
+C
 C
 C--SET THE REMAINDER OF THE HEADER BLOCK
       STORE(L22PD+3)=STORE(LCG+4)*STORE(LCG+4)
@@ -6104,14 +6132,18 @@ cdjw2015      IF(ISTAT2)2200,2200,1950
 1950  CONTINUE
 c     skip shift limiting and origin fixing.
        itemp = istore(lcg+1)
+       ioper = iabs(itemp)
       if ((itemp .ne. 18).and.(itemp .ne. 20)) then
-        WRITE(CMON,'(A,I3,1x,A,A)') '{I Directive ', itemp,
-     1  COPERATION(iabs(itemp)),
+        L26WRN=L26WRN+1
+        IF(L26TYP .EQ. 1) THEN
+         WRITE(CMON,'(A,1x,A,A)') '{I Directive ', 
+     1  COPERATION(ioper)(1:nctrim(COPERATION(ioper))),
      1 ': No derivatives found during Evaluation'
-        CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A,A)')
+C         CALL XPRVDU(NCVDU,1,0)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A,A)')
      1  CMON(1)(3:nctrim(cmon(1)))
-       endif
+         endif
+        ENDIF
       GOTO 2200
 C--DERIVATIVES FOUND  -  CHECK IF THEY ARE TO BE PRINTED
 2050  CONTINUE
@@ -6250,8 +6282,6 @@ C--COMPUTE THE ACTUAL WEIGHT TO USE
         C=STORE(L16)*B
         D=STORE(L16+1)
 cdjwmay2000 - note problems with Rfactor when target is zero!
-c      write(ncawu,'(a,3g15.3)')'c&d ', c,d, store(l16+2)
-c      write(ncwu,'(a,3g15.3)')'c&d ', c,d, store(l16+2)
         STORE(L11P+27)=STORE(L11P+27)+1.
         STORE(L11P+28)=STORE(L11P+28)+D*D*C
         STORE(L11P+29)=STORE(L11P+29)+STORE(L16+2)*C

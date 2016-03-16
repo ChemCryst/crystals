@@ -1390,14 +1390,493 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Profile parameters  ( No parameters refined )
 
  Extinction param    ( No parameters refined )
-#SFLS                                                                                                                                                                                                                                                           
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
+# ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)                                                                                                                                                                                                       
+#CHECK                                                                                                                                                                                                                                                          
 #LIST 26                                                                                                                                                                                                                                                        
+#CHECK                                                                                                                                                                                                                                                          
+
+
+ LARGE TEST JOB FOR CYBER                                                             Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+
+   0.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     111     1  1  0  0  0     0.001
+           C     112     1  1  0  0  0    -0.001
+           C     113     1  1  0  0  0    -0.001
+           C     114     1  1  0  0  0     0.002
+           C     115     1  1  0  0  0    -0.002
+           C     116     1  1  0  0  0     0.001
+[41]       Mean value =  -0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+   1. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     111     1  1  0  0  0      C     112     1  1  0  0  0      1.405    -0.010
+           C     112     1  1  0  0  0      C     113     1  1  0  0  0      1.395    -0.000
+           C     113     1  1  0  0  0      C     114     1  1  0  0  0      1.363     0.032
+           C     114     1  1  0  0  0      C     115     1  1  0  0  0      1.372     0.023
+           C     115     1  1  0  0  0      C     116     1  1  0  0  0      1.376     0.019
+           C     116     1  1  0  0  0      C     111     1  1  0  0  0      1.394     0.001
+[41]       Mean value =   1.3843  Mean delta =   0.0107  r.m.s. delta =   0.01
+
+   2. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     116     1  1  0  0  0      C     111     1  1  0  0  0      C     112     1  1  0  0  0    118.52   1.48
+           C     111     1  1  0  0  0      C     112     1  1  0  0  0      C     113     1  1  0  0  0    118.90   1.10
+           C     112     1  1  0  0  0      C     113     1  1  0  0  0      C     114     1  1  0  0  0    121.13  -1.13
+           C     113     1  1  0  0  0      C     114     1  1  0  0  0      C     115     1  1  0  0  0    120.45  -0.45
+           C     114     1  1  0  0  0      C     115     1  1  0  0  0      C     116     1  1  0  0  0    119.72   0.28
+           C     115     1  1  0  0  0      C     116     1  1  0  0  0      C     111     1  1  0  0  0    121.28  -1.28
+[41]       Mean value = 119.9997  Mean delta =   0.0003  r.m.s. delta =   1.04
+
+
+   3.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     121     1  1  0  0  0    -0.005
+           C     122     1  1  0  0  0    -0.000
+           C     123     1  1  0  0  0     0.008
+           C     124     1  1  0  0  0    -0.010
+           C     125     1  1  0  0  0     0.004
+           C     126     1  1  0  0  0     0.003
+[41]       Mean value =   0.0000  Mean delta =  -0.0000  r.m.s. delta =   0.00
+
+   4. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     121     1  1  0  0  0      C     122     1  1  0  0  0      1.387     0.008
+           C     122     1  1  0  0  0      C     123     1  1  0  0  0      1.388     0.007
+           C     123     1  1  0  0  0      C     124     1  1  0  0  0      1.363     0.032
+           C     124     1  1  0  0  0      C     125     1  1  0  0  0      1.397    -0.002
+           C     125     1  1  0  0  0      C     126     1  1  0  0  0      1.384     0.011
+           C     126     1  1  0  0  0      C     121     1  1  0  0  0      1.398    -0.003
+[41]       Mean value =   1.3862  Mean delta =   0.0088  r.m.s. delta =   0.01
+
+   5. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     126     1  1  0  0  0      C     121     1  1  0  0  0      C     122     1  1  0  0  0    118.19   1.81
+           C     121     1  1  0  0  0      C     122     1  1  0  0  0      C     123     1  1  0  0  0    121.04  -1.04
+           C     122     1  1  0  0  0      C     123     1  1  0  0  0      C     124     1  1  0  0  0    120.87  -0.87
+           C     123     1  1  0  0  0      C     124     1  1  0  0  0      C     125     1  1  0  0  0    118.85   1.15
+           C     124     1  1  0  0  0      C     125     1  1  0  0  0      C     126     1  1  0  0  0    120.81  -0.81
+           C     125     1  1  0  0  0      C     126     1  1  0  0  0      C     121     1  1  0  0  0    120.22  -0.22
+[41]       Mean value = 119.9958  Mean delta =   0.0042  r.m.s. delta =   1.09
+
+
+   6.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     131     1  1  0  0  0    -0.008
+           C     132     1  1  0  0  0     0.001
+           C     133     1  1  0  0  0     0.006
+           C     134     1  1  0  0  0    -0.007
+           C     135     1  1  0  0  0     0.001
+           C     136     1  1  0  0  0     0.007
+[41]       Mean value =   0.0000  Mean delta =  -0.0000  r.m.s. delta =   0.00
+
+   7. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     131     1  1  0  0  0      C     132     1  1  0  0  0      1.400    -0.005
+           C     132     1  1  0  0  0      C     133     1  1  0  0  0      1.403    -0.008
+           C     133     1  1  0  0  0      C     134     1  1  0  0  0      1.371     0.024
+           C     134     1  1  0  0  0      C     135     1  1  0  0  0      1.380     0.015
+           C     135     1  1  0  0  0      C     136     1  1  0  0  0      1.407    -0.012
+           C     136     1  1  0  0  0      C     131     1  1  0  0  0      1.397    -0.002
+[41]       Mean value =   1.3930  Mean delta =   0.0020  r.m.s. delta =   0.01
+
+   8. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     136     1  1  0  0  0      C     131     1  1  0  0  0      C     132     1  1  0  0  0    118.90   1.10
+           C     131     1  1  0  0  0      C     132     1  1  0  0  0      C     133     1  1  0  0  0    118.54   1.46
+           C     132     1  1  0  0  0      C     133     1  1  0  0  0      C     134     1  1  0  0  0    122.33  -2.33
+           C     133     1  1  0  0  0      C     134     1  1  0  0  0      C     135     1  1  0  0  0    119.72   0.28
+           C     134     1  1  0  0  0      C     135     1  1  0  0  0      C     136     1  1  0  0  0    119.15   0.85
+           C     135     1  1  0  0  0      C     136     1  1  0  0  0      C     131     1  1  0  0  0    121.34  -1.34
+[41]       Mean value = 119.9964  Mean delta =   0.0036  r.m.s. delta =   1.37
+
+
+   9.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     211     1  1  0  0  0     0.019
+           C     212     1  1  0  0  0     0.002
+           C     213     1  1  0  0  0    -0.019
+           C     214     1  1  0  0  0     0.015
+           C     215     1  1  0  0  0     0.006
+           C     216     1  1  0  0  0    -0.023
+[41]       Mean value =  -0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+  10. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     211     1  1  0  0  0      C     212     1  1  0  0  0      1.395     0.000
+           C     212     1  1  0  0  0      C     213     1  1  0  0  0      1.382     0.013
+           C     213     1  1  0  0  0      C     214     1  1  0  0  0      1.380     0.015
+           C     214     1  1  0  0  0      C     215     1  1  0  0  0      1.361     0.034
+           C     215     1  1  0  0  0      C     216     1  1  0  0  0      1.407    -0.012
+           C     216     1  1  0  0  0      C     211     1  1  0  0  0      1.389     0.006
+[41]       Mean value =   1.3858  Mean delta =   0.0092  r.m.s. delta =   0.01
+
+  11. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     216     1  1  0  0  0      C     211     1  1  0  0  0      C     212     1  1  0  0  0    119.04   0.96
+           C     211     1  1  0  0  0      C     212     1  1  0  0  0      C     213     1  1  0  0  0    120.31  -0.31
+           C     212     1  1  0  0  0      C     213     1  1  0  0  0      C     214     1  1  0  0  0    120.23  -0.23
+           C     213     1  1  0  0  0      C     214     1  1  0  0  0      C     215     1  1  0  0  0    120.36  -0.36
+           C     214     1  1  0  0  0      C     215     1  1  0  0  0      C     216     1  1  0  0  0    120.23  -0.23
+           C     215     1  1  0  0  0      C     216     1  1  0  0  0      C     211     1  1  0  0  0    119.67   0.33
+[41]       Mean value = 119.9731  Mean delta =   0.0269  r.m.s. delta =   0.47
+
+
+  12.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     221     1  1  0  0  0    -0.011
+           C     222     1  1  0  0  0     0.006
+           C     223     1  1  0  0  0    -0.001
+           C     224     1  1  0  0  0     0.002
+           C     225     1  1  0  0  0    -0.007
+           C     226     1  1  0  0  0     0.012
+[41]       Mean value =  -0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+  13. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     221     1  1  0  0  0      C     222     1  1  0  0  0      1.386     0.009
+           C     222     1  1  0  0  0      C     223     1  1  0  0  0      1.383     0.012
+           C     223     1  1  0  0  0      C     224     1  1  0  0  0      1.377     0.018
+           C     224     1  1  0  0  0      C     225     1  1  0  0  0      1.339     0.056
+           C     225     1  1  0  0  0      C     226     1  1  0  0  0      1.379     0.016
+           C     226     1  1  0  0  0      C     221     1  1  0  0  0      1.388     0.007
+[41]       Mean value =   1.3755  Mean delta =   0.0195  r.m.s. delta =   0.02
+
+  14. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     226     1  1  0  0  0      C     221     1  1  0  0  0      C     222     1  1  0  0  0    117.60   2.40
+           C     221     1  1  0  0  0      C     222     1  1  0  0  0      C     223     1  1  0  0  0    121.13  -1.13
+           C     222     1  1  0  0  0      C     223     1  1  0  0  0      C     224     1  1  0  0  0    118.24   1.76
+           C     223     1  1  0  0  0      C     224     1  1  0  0  0      C     225     1  1  0  0  0    122.62  -2.62
+           C     224     1  1  0  0  0      C     225     1  1  0  0  0      C     226     1  1  0  0  0    118.73   1.27
+           C     225     1  1  0  0  0      C     226     1  1  0  0  0      C     221     1  1  0  0  0    121.60  -1.60
+[41]       Mean value = 119.9890  Mean delta =   0.0110  r.m.s. delta =   1.88
+
+
+  15.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     231     1  1  0  0  0    -0.011
+           C     232     1  1  0  0  0     0.028
+           C     233     1  1  0  0  0    -0.025
+           C     234     1  1  0  0  0     0.005
+           C     235     1  1  0  0  0     0.012
+           C     236     1  1  0  0  0    -0.009
+[41]       Mean value =  -0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+  16. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     231     1  1  0  0  0      C     232     1  1  0  0  0      1.395     0.000
+           C     232     1  1  0  0  0      C     233     1  1  0  0  0      1.393     0.002
+           C     233     1  1  0  0  0      C     234     1  1  0  0  0      1.355     0.040
+           C     234     1  1  0  0  0      C     235     1  1  0  0  0      1.399    -0.004
+           C     235     1  1  0  0  0      C     236     1  1  0  0  0      1.391     0.004
+           C     236     1  1  0  0  0      C     231     1  1  0  0  0      1.389     0.006
+[41]       Mean value =   1.3869  Mean delta =   0.0081  r.m.s. delta =   0.01
+
+  17. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     236     1  1  0  0  0      C     231     1  1  0  0  0      C     232     1  1  0  0  0    118.06   1.94
+           C     231     1  1  0  0  0      C     232     1  1  0  0  0      C     233     1  1  0  0  0    121.11  -1.11
+           C     232     1  1  0  0  0      C     233     1  1  0  0  0      C     234     1  1  0  0  0    120.00   0.00
+           C     233     1  1  0  0  0      C     234     1  1  0  0  0      C     235     1  1  0  0  0    120.17  -0.17
+           C     234     1  1  0  0  0      C     235     1  1  0  0  0      C     236     1  1  0  0  0    119.75   0.25
+           C     235     1  1  0  0  0      C     236     1  1  0  0  0      C     231     1  1  0  0  0    120.69  -0.69
+[41]       Mean value = 119.9620  Mean delta =   0.0380  r.m.s. delta =   0.96
+
+
+  18.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     311     1  1  0  0  0    -0.006
+           C     312     1  1  0  0  0     0.006
+           C     313     1  1  0  0  0     0.001
+           C     314     1  1  0  0  0    -0.008
+           C     315     1  1  0  0  0     0.008
+           C     316     1  1  0  0  0    -0.001
+[41]       Mean value =  -0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+  19. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     311     1  1  0  0  0      C     312     1  1  0  0  0      1.386     0.009
+           C     312     1  1  0  0  0      C     313     1  1  0  0  0      1.382     0.013
+           C     313     1  1  0  0  0      C     314     1  1  0  0  0      1.382     0.013
+           C     314     1  1  0  0  0      C     315     1  1  0  0  0      1.379     0.016
+           C     315     1  1  0  0  0      C     316     1  1  0  0  0      1.394     0.001
+           C     316     1  1  0  0  0      C     311     1  1  0  0  0      1.394     0.001
+[41]       Mean value =   1.3860  Mean delta =   0.0090  r.m.s. delta =   0.01
+
+  20. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     316     1  1  0  0  0      C     311     1  1  0  0  0      C     312     1  1  0  0  0    118.64   1.36
+           C     311     1  1  0  0  0      C     312     1  1  0  0  0      C     313     1  1  0  0  0    121.11  -1.11
+           C     312     1  1  0  0  0      C     313     1  1  0  0  0      C     314     1  1  0  0  0    119.53   0.47
+           C     313     1  1  0  0  0      C     314     1  1  0  0  0      C     315     1  1  0  0  0    120.75  -0.75
+           C     314     1  1  0  0  0      C     315     1  1  0  0  0      C     316     1  1  0  0  0    119.36   0.64
+           C     315     1  1  0  0  0      C     316     1  1  0  0  0      C     311     1  1  0  0  0    120.58  -0.58
+[41]       Mean value = 119.9965  Mean delta =   0.0035  r.m.s. delta =   0.87
+
+
+  21.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     321     1  1  0  0  0     0.005
+           C     322     1  1  0  0  0    -0.000
+           C     323     1  1  0  0  0    -0.006
+           C     324     1  1  0  0  0     0.008
+           C     325     1  1  0  0  0    -0.004
+           C     326     1  1  0  0  0    -0.003
+[41]       Mean value =  -0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+  22. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     321     1  1  0  0  0      C     322     1  1  0  0  0      1.400    -0.005
+           C     322     1  1  0  0  0      C     323     1  1  0  0  0      1.390     0.005
+           C     323     1  1  0  0  0      C     324     1  1  0  0  0      1.392     0.003
+           C     324     1  1  0  0  0      C     325     1  1  0  0  0      1.366     0.029
+           C     325     1  1  0  0  0      C     326     1  1  0  0  0      1.400    -0.005
+           C     326     1  1  0  0  0      C     321     1  1  0  0  0      1.397    -0.002
+[41]       Mean value =   1.3908  Mean delta =   0.0042  r.m.s. delta =   0.01
+
+  23. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     326     1  1  0  0  0      C     321     1  1  0  0  0      C     322     1  1  0  0  0    118.30   1.70
+           C     321     1  1  0  0  0      C     322     1  1  0  0  0      C     323     1  1  0  0  0    120.59  -0.59
+           C     322     1  1  0  0  0      C     323     1  1  0  0  0      C     324     1  1  0  0  0    120.10  -0.10
+           C     323     1  1  0  0  0      C     324     1  1  0  0  0      C     325     1  1  0  0  0    120.02  -0.02
+           C     324     1  1  0  0  0      C     325     1  1  0  0  0      C     326     1  1  0  0  0    120.38  -0.38
+           C     325     1  1  0  0  0      C     326     1  1  0  0  0      C     321     1  1  0  0  0    120.59  -0.59
+[41]       Mean value = 119.9973  Mean delta =   0.0027  r.m.s. delta =   0.78
+
+
+  24.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     331     1  1  0  0  0     0.008
+           C     332     1  1  0  0  0    -0.007
+           C     333     1  1  0  0  0    -0.005
+           C     334     1  1  0  0  0     0.017
+           C     335     1  1  0  0  0    -0.015
+           C     336     1  1  0  0  0     0.003
+[41]       Mean value =   0.0000  Mean delta =  -0.0000  r.m.s. delta =   0.01
+
+  25. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     331     1  1  0  0  0      C     332     1  1  0  0  0      1.382     0.013
+           C     332     1  1  0  0  0      C     333     1  1  0  0  0      1.396    -0.001
+           C     333     1  1  0  0  0      C     334     1  1  0  0  0      1.374     0.021
+           C     334     1  1  0  0  0      C     335     1  1  0  0  0      1.374     0.021
+           C     335     1  1  0  0  0      C     336     1  1  0  0  0      1.366     0.029
+           C     336     1  1  0  0  0      C     331     1  1  0  0  0      1.396    -0.001
+[41]       Mean value =   1.3814  Mean delta =   0.0136  r.m.s. delta =   0.01
+
+  26. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     336     1  1  0  0  0      C     331     1  1  0  0  0      C     332     1  1  0  0  0    117.35   2.65
+           C     331     1  1  0  0  0      C     332     1  1  0  0  0      C     333     1  1  0  0  0    121.62  -1.62
+           C     332     1  1  0  0  0      C     333     1  1  0  0  0      C     334     1  1  0  0  0    119.00   1.00
+           C     333     1  1  0  0  0      C     334     1  1  0  0  0      C     335     1  1  0  0  0    120.29  -0.29
+           C     334     1  1  0  0  0      C     335     1  1  0  0  0      C     336     1  1  0  0  0    120.23  -0.23
+           C     335     1  1  0  0  0      C     336     1  1  0  0  0      C     331     1  1  0  0  0    121.42  -1.42
+[41]       Mean value = 119.9862  Mean delta =   0.0138  r.m.s. delta =   1.45
+
+
+  27.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     411     1  1  0  0  0     0.006
+           C     412     1  1  0  0  0    -0.002
+           C     413     1  1  0  0  0     0.004
+           C     414     1  1  0  0  0    -0.003
+           C     415     1  1  0  0  0    -0.001
+           C     416     1  1  0  0  0    -0.004
+[41]       Mean value =   0.0000  Mean delta =  -0.0000  r.m.s. delta =   0.00
+
+  28. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     411     1  1  0  0  0      C     412     1  1  0  0  0      2.398    -1.003
+  DISTANCE restraint:  No derivatives found
+  ?        C     412     1  1  0  0  0      C     413     1  1  0  0  0      1.373     0.022
+           C     413     1  1  0  0  0      C     414     1  1  0  0  0      2.372    -0.977
+           C     414     1  1  0  0  0      C     415     1  1  0  0  0      2.736    -1.341
+           C     415     1  1  0  0  0      C     416     1  1  0  0  0      1.375     0.020
+           C     416     1  1  0  0  0      C     411     1  1  0  0  0      1.402    -0.007
+[41]       Mean value =   1.9428  Mean delta =  -0.5478  r.m.s. delta =   0.79
+
+  29. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     416     1  1  0  0  0      C     411     1  1  0  0  0      C     412     1  1  0  0  0     89.84  30.16
+           C     411     1  1  0  0  0      C     412     1  1  0  0  0      C     413     1  1  0  0  0     89.93  30.07
+           C     412     1  1  0  0  0      C     413     1  1  0  0  0      C     414     1  1  0  0  0     30.52  89.48
+           C     413     1  1  0  0  0      C     414     1  1  0  0  0      C     415     1  1  0  0  0     30.13  89.87
+           C     414     1  1  0  0  0      C     415     1  1  0  0  0      C     416     1  1  0  0  0     60.93  59.07
+           C     415     1  1  0  0  0      C     416     1  1  0  0  0      C     411     1  1  0  0  0    118.90   1.10
+[41]       Mean value =  70.0430  Mean delta =  49.9570  r.m.s. delta =  59.70
+
+
+  30.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     421     1  1  0  0  0    -0.007
+           C     422     1  1  0  0  0     0.002
+           C     423     1  1  0  0  0     0.003
+           C     424     1  1  0  0  0    -0.004
+           C     425     1  1  0  0  0     0.000
+           C     426     1  1  0  0  0     0.005
+[41]       Mean value =   0.0000  Mean delta =  -0.0000  r.m.s. delta =   0.00
+
+  31. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     421     1  1  0  0  0      C     422     1  1  0  0  0      1.388     0.007
+           C     422     1  1  0  0  0      C     423     1  1  0  0  0      1.367     0.028
+           C     423     1  1  0  0  0      C     424     1  1  0  0  0      1.354     0.041
+           C     424     1  1  0  0  0      C     425     1  1  0  0  0      1.367     0.028
+           C     425     1  1  0  0  0      C     426     1  1  0  0  0      1.408    -0.013
+           C     426     1  1  0  0  0      C     421     1  1  0  0  0      1.375     0.020
+[41]       Mean value =   1.3765  Mean delta =   0.0185  r.m.s. delta =   0.02
+
+  32. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     426     1  1  0  0  0      C     421     1  1  0  0  0      C     422     1  1  0  0  0    118.71   1.29
+           C     421     1  1  0  0  0      C     422     1  1  0  0  0      C     423     1  1  0  0  0    121.03  -1.03
+           C     422     1  1  0  0  0      C     423     1  1  0  0  0      C     424     1  1  0  0  0    120.21  -0.21
+           C     423     1  1  0  0  0      C     424     1  1  0  0  0      C     425     1  1  0  0  0    120.77  -0.77
+           C     424     1  1  0  0  0      C     425     1  1  0  0  0      C     426     1  1  0  0  0    119.47   0.53
+           C     425     1  1  0  0  0      C     426     1  1  0  0  0      C     421     1  1  0  0  0    119.80   0.20
+[41]       Mean value = 119.9980  Mean delta =   0.0020  r.m.s. delta =   0.78
+
+
+  33.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
+
+            Atom       S(I) L TX TY TZ     Delta
+  
+           C     431     1  1  0  0  0    -0.023
+           C     432     1  1  0  0  0     0.002
+           C     433     1  1  0  0  0     0.016
+           C     434     1  1  0  0  0    -0.012
+           C     435     1  1  0  0  0    -0.009
+           C     436     1  1  0  0  0     0.027
+[41]       Mean value =  -0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+  34. Restrain these distances to be    1.395 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C     431     1  1  0  0  0      C     432     1  1  0  0  0      1.383     0.012
+           C     432     1  1  0  0  0      C     433     1  1  0  0  0      1.406    -0.011
+           C     433     1  1  0  0  0      C     434     1  1  0  0  0      1.378     0.017
+           C     434     1  1  0  0  0      C     435     1  1  0  0  0      1.365     0.030
+           C     435     1  1  0  0  0      C     436     1  1  0  0  0      1.387     0.008
+           C     436     1  1  0  0  0      C     431     1  1  0  0  0      1.390     0.005
+[41]       Mean value =   1.3847  Mean delta =   0.0103  r.m.s. delta =   0.01
+
+  35. Restrain these  angles   to be  120.000 degrees ,
+                with an E.S.D. of   3.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           C     436     1  1  0  0  0      C     431     1  1  0  0  0      C     432     1  1  0  0  0    118.77   1.23
+           C     431     1  1  0  0  0      C     432     1  1  0  0  0      C     433     1  1  0  0  0    120.93  -0.93
+           C     432     1  1  0  0  0      C     433     1  1  0  0  0      C     434     1  1  0  0  0    118.47   1.53
+           C     433     1  1  0  0  0      C     434     1  1  0  0  0      C     435     1  1  0  0  0    121.25  -1.25
+           C     434     1  1  0  0  0      C     435     1  1  0  0  0      C     436     1  1  0  0  0    120.09  -0.09
+           C     435     1  1  0  0  0      C     436     1  1  0  0  0      C     431     1  1  0  0  0    120.29  -0.29
+[41]       Mean value = 119.9668  Mean delta =   0.0332  r.m.s. delta =   1.02
+#SFLS                                                                                                                                                                                                                                                           
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #SFLS                                                                                                                                                                                                                                                           
@@ -1464,7 +1943,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
- Directive   3 DISTANCE    : No derivatives found during Evaluation
+ Directive  DISTANCE: No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -4617,11 +5096,11 @@ Mean C-C su =   0.0121
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      11973 Physical writes      10101 Cache hits     208134
- Cache hit distribution   189032   13248    2058     389     552     369
- Cache hit distribution      184     214     228     123     257     186
- Cache hit distribution      193     111     200      99     177     121
- Cache hit distribution       77      63      39      52      88      74
+ Physical reads      12157 Physical writes      10102 Cache hits     209418
+ Cache hit distribution   190094   13340    2129     431     555     375
+ Cache hit distribution      184     215     232     123     257     185
+ Cache hit distribution      194     111     200     100     179     122
+ Cache hit distribution       79      63      39      55      82      74
 
 
           : Job ends ok       with     0 warnings and     0 errors

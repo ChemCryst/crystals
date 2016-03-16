@@ -1,6 +1,9 @@
 # This test deck does all sorts of things. It includes some
-# errors, particularly in MOLAX, but I feel they can act as
-# a test of the error handling in CRYSTALS. 
+# errors, particularly in MOLAX. They can act as
+# a test of the error handling in CRYSTALS.
+# In the MOLAX test with just two atoms, 
+# the second two eigenvectors are arbitrary, so the
+# azimuth and declination are not defined.
 \set time slow
 \rele print CROUTPUT:
 
