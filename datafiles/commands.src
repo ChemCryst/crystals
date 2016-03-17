@@ -554,12 +554,12 @@ DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
 (1H ,8(3X,12A1))
 (1H ,8E15.6)
-         2    2    2    2    2
+         2    2    2    2    1
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
     .WR                 0    0    0    0    0 0.0
     .MINFUNC            0    0    0    0    0 0.0
-    .VERSION            0    0    0    0    0 123.
+    .VERSION            0    0    1    0    0       123
   13.XDETAILS           0    0    0    0    4   -3  107   25    7
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
@@ -3355,12 +3355,12 @@ DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
 (1H ,8(3X,12A1))
 (1H ,8E15.6)
-         2    2    2    2    2
+         2    2    2    2    1
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
     .WR                 0    0    0    0    0 0.0
     .MINFUNC            0    0    0    0    0 0.0
-    .VERSION            0    0    0    0    0 123.
+    .VERSION            0    0    1    0    0       123
   12.XDETAILS           0    0    0    0    4   -3  107   25    6
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
