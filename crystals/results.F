@@ -7416,7 +7416,7 @@ C
       else if (ipunch.eq.4) then
          Write(ncpu,'(a,a,a,a)')
      1'         R, wR2, Friedif, Filter_1:   Flack    :   H-in-1   ',
-     1':  hooft     :difference  :re-wt-diff  :histogram scaled, ',
+     1':  hooft     : difference : re-wt-diff : histogram scaled ',
      2'n-pair, n-used, %used, H-used, %good, npp, main_npp, GoF'
       END IF
 c
@@ -9552,11 +9552,21 @@ C
        else
             CWEIGHT='SIG'
        endif
+c
+c  find the FLACK record
+C
+      if (n39f.gt.0) then
+       m39f = l39f
+       do i=1,n39f
+        if (istore(m39f) .eq. iflac) exit
+        m39f=m39f+md39f
+       enddo
+      endif
 c                                !R
 c                                !wR2
 c                                !Friedif
 c                                !Filter_1
-
+c
        tempdjw(1)=xflack         !Flack
        tempdjw(2)=qflack         !sigma
        tempdjw(3)=hin1           !Hole in one
@@ -9577,16 +9587,17 @@ c                                !Filter_1
        itempdjw(17)=ngood         !H-used
        tempdjw(18)=(nle3s*100./n6acc)
        tempdjw(19)=yslope         !npp slope
-       tempdjw(20)=store(l39f+3)  !main npp
+       tempdjw(20)=store(m39f+2)  !main npp
 c                                 !GOF
 c
       if(ipunch.eq.4) then       !Summary for import to spread sheet
       if (nfried .gt. 0) then
           write(ncpu,9876) cweight(1:3), 
      1    store(l30rf),store(l30rf+1),friedif,filter(1),
-     2    tempdjw, store(l30rf+4)
-9876   format(a3,x,3f7.2, f8.5, 6(' : ',f5.2,x,f4.2),x, f4.2, 2i6, 
-     1 f6.1, i6, f6.1, 3f5.2)
+     2    (tempdjw(i),i=1,13), itempdjw(14),itempdjw(15),tempdjw(16),
+     3    itempdjw(17), (tempdjw(i),i=18,20),store(l30rf+4)
+9876   format(a3,x,3f7.2, f8.5, 6(' : ',f5.2,x,f4.2),x, f4.2,i7,i8, 
+     1 f8.1, i6, f8.1, f7.2, 2f7.2 )
       else
           write(ncpu,9875) cweight(1:3), 
      1    store(l30rf),store(l30rf+1),friedif,filter(1), 
