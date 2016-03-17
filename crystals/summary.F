@@ -3451,7 +3451,6 @@ c
       if (issprt.eq.0) write(cmon,'(a)') 'Contents of LIST 39'
 
 c
-      INCLUDE 'IDIM39.INC'
       if (n39i.le.0) then
         write(cmon,'(a)') 'No integer data stored'
         call xprvdu(ncvdu,1,0)
