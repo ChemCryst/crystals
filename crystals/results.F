@@ -7286,7 +7286,6 @@ C
 C      set packing constants for Ton's code
       PARAMETER  (NPAK=256)
       PARAMETER  (NN2=NPAK/2)
-      INCLUDE 'IDIM39.INC'
 C
       CALL XRSL
       CALL XCSAE
