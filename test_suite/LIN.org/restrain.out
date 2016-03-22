@@ -1362,7 +1362,7 @@ Bonds: Update required - There is no list 41
 
 
    1.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
-  ?    Calculated value            0.6000000000E+02  giving a delta of   -0.6000000000E+02
+   ?   Calculated value            0.6000000000E+02  giving a delta of   -0.6000000000E+02
 
 
  Full loader listing, including the coordinates of generated atoms :
