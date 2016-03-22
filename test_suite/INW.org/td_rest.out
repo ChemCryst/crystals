@@ -2380,13 +2380,13 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
- Directive  -9 VIBRATION   : No derivatives found during Evaluation
 
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
+  VIBRATION restraint:  No derivatives found
   ?        C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
 #LIST     16                                                                                                                                                                                                                                                    
