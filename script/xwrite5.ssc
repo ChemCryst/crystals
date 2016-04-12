@@ -1010,7 +1010,7 @@
 %% End edit                                                                     
 %%                                                                              
 %    IF ( HRIDE ) THEN                                                          
-%      QUEUE COPY #USE RIDEDAT.12                                               
+%      QUEUE COPY #USE ridedat.12                                               
 %    END IF                                                                     
 %    QUEUE COPY END                                                             
 %    COPY '#RELEASE SCPQUEUE bfile.spq'                                         
