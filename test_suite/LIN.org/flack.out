@@ -4826,7 +4826,7 @@ Rsigma=  2.79
 #RELEASE PUNCH BFILE.PCH                                                                                                                                                                                                                                        
 #USE LIST7.TMP                                                                                                                                                                                                                                                  
 # PUNCHING LIST  6 AS LIST  7 WITH ALL KEYS SET                                                                                                                                                                                                                 
-# NBGNXT=    52                                                                                                                                                                                                                                                 
+# NBGNXT=    46                                                                                                                                                                                                                                                 
 #LIST   7                                                                                                                                                                                                                                                       
  The updated reflections are now on UNIT 53
 
@@ -5030,6 +5030,10 @@ Dc    29     5     7     7    12    10    11    17    20    25    30    28    20
   -2   8   2    -2.677   -14.275     3.735     4.130     0.395
 
      19 outliers in Normal Probability Plot at delta(Z) >  0.29
+
+
+ Too many outliers (   19/  299) in npp.
+ CRYSTALS suggests you look at the Fo-Fc npp
 
 
 
