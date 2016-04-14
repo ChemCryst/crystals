@@ -1696,7 +1696,8 @@ C
       CHARACTER*9  C6FORM(33)
       INTEGER N6KEYS(33)
       INTEGER N6LEN(33), I6PCH(33)
-      CHARACTER*256 CBGFMT     
+      CHARACTER*256 CBGFMT   
+      character(len=12), dimension(:), allocatable :: CBGFMTa ! CBGFMT as array
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST06.INC'
@@ -1714,7 +1715,7 @@ C length of each item in FORMAT statement
       DATA N6LEN/ 4,4,4,10,11, 10,6,10,10,8, 10,8,5,4,8, 
      1             8,5,8,4,8,   8,5,5,5,5,    5,5,5,8,8, 8,12,8/
 C1                   H           K       L     /FO/(3)   SQRTW(4)
-      DATA C6FORM/ 'F4.0',     'F4.0', 'F4.0', 'F10.2', '1X,G10.3',
+      DATA C6FORM/ 'I4  ',     'I4  ', 'I4  ', 'F10.2', '1X,G10.3',
 C6                  /FC/(5)    PHASE    A-PART  B-PART   TBAR
      1             'F10.2',    'F6.2', 'F10.2','F10.2', 'F8.4',
 C11                  /FOT/    ELEMENTS SIGMA(/FO/) BATCH INDICES(14) 
@@ -1790,10 +1791,12 @@ C      WRITE(123,'(/)')
 C      WRITE(123,'(5I6)') (I6PCH(I),I=1,M6PCH)
 C      WRITE(123,'(6A11)') (C6KEYS(I6PCH(I)),I=1,M6PCH)
 
+      allocate(CBGFMTa(m6pch))
       NBGNXT = 2  !Next free char in CBGFMT
       CBGFMT = '(' !Start with open parenthesis
       DO I = 1,M6PCH
         CBGFMT(NBGNXT:) = C6FORM(I6PCH(I)) 
+        CBGFMTa(i)=C6FORM(I6PCH(I)) 
         CALL XCRAS(CBGFMT,NBGNXT)
         CBGFMT(NBGNXT+1:NBGNXT+1) = ','
         NBGNXT = NBGNXT+2
@@ -1857,7 +1860,17 @@ C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT
       ENDIF
 C--PUNCH THE REFLECTION
 
-      WRITE(NCPU,CBGFMT(1:NBGNXT)) (STORE(M6+i6pch(k)-1),K=1,m6pch)
+      do K=1,m6pch
+          if(CBGFMTa(k)(1:1)=='I') then
+              WRITE(NCPU,'('//CBGFMTa(k)//', A)',advance='no') 
+     1          nint(STORE(M6+i6pch(k)-1))
+          else
+              WRITE(NCPU,'('//CBGFMTa(k)//', A)',advance='no') 
+     1          STORE(M6+i6pch(k)-1)
+          end if
+      end do
+      write(NCPU, *) ''
+
       END DO
       I = -512
       WRITE(NCPU,'(I4)')I
