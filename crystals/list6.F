@@ -1511,7 +1511,6 @@ c         IF (IRATIO.LE.0) THEN
                STORE(M6+20)=0.0
             ELSE
 c Oct 2013  Compute RATIO on F^2
-      write(123,'(i4,2f12.2)')issrat,store(m6+3),store(m6+5)*store(l5o)
              CALL XSQRF(DJW1,DJW4,DJW2,DJW3,STORE(M6+12))
              STORE(M6+20) = MIN(128., (DJW1/DJW3))
             END IF
