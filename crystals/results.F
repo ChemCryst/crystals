@@ -9518,7 +9518,7 @@ c clear NPP
           WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
           CALL XPRVDU (NCVDU, 2, 0)
 c Signal plot
-         WRITE (CMON,'(A/A/A/A/AA/A/A/A)')
+         WRITE (CMON,'(A/A/A/A/A,A/A/A/A)')
      1  '^^PL PLOTDATA _DO SCATTER ATTACH _VDO KEY',
      2  '^^PL XAXIS TITLE ''[Sin(theta)/lambda]**3''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',

@@ -638,8 +638,11 @@ C
 C  SET THE THRESHOLD FOR SIGMA CONVERSION
       CALL ZTHRESH
 C CHECK IF LIST 5 EXISTS, AND HOPE THE SCALE IS MORE OR LESS CORRECT
-      IF (KEXIST(5).LE.0) THEN
+      IF (KEXIST(5).LE.0 .and. (issrat.eq.1)) THEN
 C           OTHERWISE SET RATIO FLAG TO Io
+            write(cmon,'(a)')
+     1      'IRATIO reset to Io because scale is not available'
+             CALL XPRVDU(NCVDU, 1,0)
             ISSRAT = 0
       ENDIF
       IF ( IERFLG .LT. 0 ) GO TO 9900
