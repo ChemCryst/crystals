@@ -611,6 +611,7 @@ C--
       INCLUDE 'ICOM28.INC'
 C
       INCLUDE 'STORE.INC'
+      INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XLST28.INC'
@@ -636,7 +637,11 @@ C--LOAD THE DATA FROM THE DISC
 C
 C  SET THE THRESHOLD FOR SIGMA CONVERSION
       CALL ZTHRESH
-
+C CHECK IF LIST 5 EXISTS, AND HOPE THE SCALE IS MORE OR LESS CORRECT
+      IF (KEXIST(5).LE.0) THEN
+C           OTHERWISE SET RATIO FLAG TO Io
+            ISSRAT = 0
+      ENDIF
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET UP THE PACK COEFFICIENTS FOR THE INDICES
       IPACKR=KCOMP(1,I14,STORE(L6DMP),MD6DMP,N6DMP)
@@ -1407,7 +1412,7 @@ C--
 C
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'STORE.INC'
-c      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XPCK06.INC'
       INCLUDE 'XTAPES.INC'
@@ -1493,14 +1498,22 @@ c       Assume users wants all reflections, so set default RATIO to > 3
               store(m6+20) = 3.001
          else
 C NOTE - THIS IS WHERE ONE COULD FILTER ON FC/SIG, BUT ONLY IF SCALE IS SET
+c    use the global 'ISSRAT' to filter on Fo or Fc.
+c    users responsibility to be sure SCALE and Fc are set if necessary
+          if(issrat.eq.1) then
+            djw4=store(m6+5)*store(l5o)
+          else
+            djw4=store(m6+3)
+          endif
 C -- CALCULATE RATIO OF (FO)**2 AND SIGMA((FO)**2),IF IT HAS NOT BEEN INPUT
 c         IF (IRATIO.LE.0) THEN
             IF (STORE(M6+12).LE.ZERO) THEN
                STORE(M6+20)=0.0
             ELSE
 c Oct 2013  Compute RATIO on F^2
-               CALL XSQRF(DJW1,STORE(m6+3),DJW2,DJW3,STORE(M6+12))
-               STORE(M6+20) = MIN(128., (DJW1/DJW3))
+      write(123,'(i4,2f12.2)')issrat,store(m6+3),store(m6+5)*store(l5o)
+             CALL XSQRF(DJW1,DJW4,DJW2,DJW3,STORE(M6+12))
+             STORE(M6+20) = MIN(128., (DJW1/DJW3))
             END IF
          endif
 c         ENDIF

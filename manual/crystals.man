@@ -492,6 +492,12 @@ If  state = OFF  then subsequent commands are not written
 #PThis command is used to control mirroring of CRYSTALS internal commands.
  The normal state OFF suppresses the mirroring.
 #
+#I\SET RATIO state#
+#PThis command controls whether Io or Ic is compared with Sigma(Io) 
+during filtering. Arguments are Io or Ic, default is Io.
+See "The use of partial observations, partial models and partial residuals
+to improve the least-squares refinement of crystal structures."
+A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165,
 #Q
 #YFiles#
 #PWhen CRYSTALS runs it stores all crystallographic data in a single file,
@@ -4340,17 +4346,18 @@ interpretation of the parameters.
 The following table shows the interpretation of the FLAG parameter.
 #J
 
-FLAG  meaning    parameters
-'old' types of atoms:
+FLAG        meaning          parameters
 
- 0    Aniso ADP  u[11]  u[22] u[33] u[23] u[13] u[12]
- 1    Iso ADP    U[ISO]
+'normal' types of atoms:
+
+ 0          Aniso ADP        u[11]  u[22] u[33] u[23] u[13] u[12]
+ 1          Iso ADP          U[ISO]
 
 New 'special' shapes:
 
- 2    Sphere     U[ISO] SIZE
- 3    Line       U[ISO] SIZE  DECLINAT AZIMUTH
- 4    Ring       U[ISO] SIZE  DECLINAT AZIMUTH
+ 2          Sphere           U[ISO] SIZE
+ 3          Line             U[ISO] SIZE  DECLINAT AZIMUTH
+ 4          Ring             U[ISO] SIZE  DECLINAT AZIMUTH
 
 #
 
