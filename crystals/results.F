@@ -7404,7 +7404,8 @@ C                                              PUNCH HEADERS
 C
       IF (IPUNCH.EQ.1) THEN
         WRITE (NCPU,350)
-350      FORMAT (3X,'H',3X,'K',3X,'L',11X,'Io+',7X,'Sig',7X,'Ic+',7X,
+350      FORMAT (3X,'H',3X,'K',3X,'L',' i',' j', 7X,'Io+',7X,'Sig',
+     1   7X,'Ic+',7X,
      1   'Io-',7X,'Sig',7X,'Ic-',X,'    Do   ',2X,'   Ds    ',4X,
      2   ' Ao ',5X,' As ',5X,'Sig(Do)')
       ELSE IF (IPUNCH.EQ.2) THEN
@@ -7782,7 +7783,7 @@ c
             JTEMP=NINT(FRIED2)
             IF (ITEMP.LT.0) ITEMP=10+ITEMP
             IF (JTEMP.LT.0) JTEMP=10+JTEMP
-            WRITE (NCPU,'(3i4,2i2, 6f10.2,5f10.2,5f10.4)')I1,J1,K1,
+            WRITE (NCPU,'(3i4,2i2,6f10.2,5f10.2,5f10.4)')I1,J1,K1,
      1      ITEMP,JTEMP,FOK1,SIG1,FCK1,FOK2,SIG2,FCK2,
      2      FokD,FckD,foka,fcka,SIGMAD
           END IF
@@ -7866,7 +7867,7 @@ C                                          ----- UNPAIRED REFLECTIONS
 C      CHECK FOR CENTRIC REFLECTIONS
         ITEMP=KTONCENT(I1,J1,K1,NCENTRIC)
         IF (IPUNCH.EQ.1) THEN
-          WRITE (NCPU,'(3i4,I2,2X, 3f10.2)') I1,J1,K1,ITEMP,FOK1,SIG1,
+          WRITE (NCPU,'(3i4,I2," -", 3f10.2)') I1,J1,K1,ITEMP,FOK1,SIG1,
      1     FCK1
         END IF
         IF (itemp.eq.-1) THEN
