@@ -15,7 +15,7 @@
 %  IF VAX .EQ. FALSE THEN
 %% watch out for the VAX VMS name for the physical printer
 %    IF CRFILE2 .EQ. 'SYS$PRINT ' .AND. CRDEVICE2 .EQ. 'PRINTER ' THEN
-%    EVALUATE CRFILE2 = 'PRINTER.LIS '
+%    EVALUATE CRFILE2 = 'printer.lis '
 %    END IF
 %  END IF
 %  EVALUATE CRELEASE = CRDEVICE2 // CRFILE2

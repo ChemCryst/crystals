@@ -52,7 +52,7 @@
 %          COPY '#RELEASE PUNCH PRE-2016-HKL.L6'
 %          COPY '#PUNCH 6 J'
 %          COPY 'END'
-%          COPY '#RELE PUNCH BFILE.PCH'
+%          COPY '#RELE PUNCH bfile.pch'
 %          COPY '#USE PRE-2016-HKL.L6'
 
 {R You should re-determine the weights and re-converge the refinement

@@ -12,7 +12,7 @@
  MODIFY the atom coordinate list (LIST 5) IN ANY WAY at all, otherwise 
  CRYSTALS will detect a mis match with the matrix and abort the        
  calculation.                                                          
- The ASCII data is in the PUBLISH.LIS                                  
+ The ASCII data is in the publish.lis                                  
  A full analysis of residuals may reveal remaining deficiencies in the 
  refinement.                                                           
 % ELSE
@@ -21,7 +21,7 @@ The SCRIPT to help produce tables for publication
 % VARIABLE INTEGER PFLAG
 % EVALUATE PFLAG = 0
 %%
-       The publication tables are in a file 'PUBLISH.LIS'
+       The publication tables are in a file 'publish.lis'
                  The cif file is in  'PUBLISH.CIF'
 %  LOOP
 %    ON ERROR TERMINATE ABANDONED
@@ -30,7 +30,7 @@ The SCRIPT to help produce tables for publication
      RESIDUALS GEOMETRY SAVE
 %    GET NOSTORE FINAL ABBREVIATED 'Next step' 'END'
 %    IF VALUE .GE. 3 .AND. PFLAG .LE. 0 THEN
-%      COPY '#RELEASE PUNCH PUBLISH.LIS'
+%      COPY '#RELEASE PUNCH publish.lis'
 %      EVALUATE PFLAG = 1
 %    END IF
 %    CASE VALUE

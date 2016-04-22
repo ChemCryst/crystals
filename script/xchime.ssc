@@ -1,7 +1,7 @@
 %SCRIPT XPCH5                                                                   
 %% PUNCH ATOM COORDINATES                                                       
-% COPY '#RELE PUNCH PDB.PCH'                                                  
+% COPY '#RELE PUNCH pdb.pch'                                                  
 % COPY '#PUNCH 5 D'                                                             
 % COPY 'END'                                                                    
-% COPY '#RELE PUNCH BFILE.PCH'                                                  
+% COPY '#RELE PUNCH bfile.pch'                                                  
 %END SCRIPT                                                                     
