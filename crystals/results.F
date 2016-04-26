@@ -7407,7 +7407,7 @@ C
 350      FORMAT (3X,'H',3X,'K',3X,'L',' i',' j', 7X,'Io+',7X,'Sig',
      1   7X,'Ic+',7X,
      1   'Io-',7X,'Sig',7X,'Ic-',X,'    Do   ',2X,'   Ds    ',4X,
-     2   ' Ao ',5X,' As ',5X,'Sig(Do)')
+     2   ' Ao ',5X,' As ',5X,'Sig(Do)', '  Leverage')
       ELSE IF (IPUNCH.EQ.2) THEN
         WRITE (NCPU,'(A,F9.4,A,F9.4)') 'REM Flack parameter = ',
      1   xflack,' SU =',qflack
@@ -7783,9 +7783,9 @@ c
             JTEMP=NINT(FRIED2)
             IF (ITEMP.LT.0) ITEMP=10+ITEMP
             IF (JTEMP.LT.0) JTEMP=10+JTEMP
-            WRITE (NCPU,'(3i4,2i2,6f10.2,5f10.2,5f10.4)')I1,J1,K1,
+            WRITE (NCPU,'(3i4,2i2,6f10.2,5f10.2,f8.4)')I1,J1,K1,
      1      ITEMP,JTEMP,FOK1,SIG1,FCK1,FOK2,SIG2,FCK2,
-     2      FokD,FckD,foka,fcka,SIGMAD
+     2      FokD,FckD,foka,fcka,SIGMAD,abs(FckD)/SIGMAD 
           END IF
 C
 C
