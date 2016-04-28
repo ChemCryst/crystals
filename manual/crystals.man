@@ -2717,6 +2717,7 @@ for publication.
       F - Output Fo, sigma information in SHELX format.
       G - SHELX output with statistically generated sigmas
       H - Output the reflections in 'cif' format. F^s, scale of Fc
+      I - Outputs all set items as a LIST 6.
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
