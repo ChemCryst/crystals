@@ -80,6 +80,13 @@
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%%       GET NOPROMPT  INTEGER ' ' '-100'
+%       if value .eq. 1 then
+%       insert ' Retained '
+%       else 
+%       insert '          '
+%       end if
+%       INSERT ':'
 %       GET NOPROMPT TEXT ' ' 'Date'
 %       INSERT !'!
 %       OUTPUT
