@@ -1818,11 +1818,7 @@ C        CALL XPRVDU(NCVDU,1,0)
         ISMFXP = NMANDS
       END IF
 
-
-      NCMATC = 0
-      NCMATR = 0
-      NCMATP = 0 !Must match NCMATC (maybe remove ncols later.)
-      
+    
       IF ( ML .EQ. 4 ) THEN ! GROUP
 
 C GROUP: Quick pre-scan of atoms in group to check for incipient singularities
@@ -1844,15 +1840,6 @@ C
          ENDIF
         
 
-        DO II = 1,9
-          ROTACC(II) = STORE(JBASE+II-1)
-        END DO       
-        DO II = 10,17
-          ROTACC(II) = 0.0
-        END DO       
-        ROTACC(10) = 1.0
-        ROTACC(14) = 1.0
-        ROTACC(18) = 1.0
 
         IRATOM = 0
 
