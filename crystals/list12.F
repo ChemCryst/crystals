@@ -1682,7 +1682,11 @@ C            4 GROUP
 C            5 SUMFIX
 C
       DIMENSION ORIGIN(3),WORK(3)
+      DIMENSION ROTACC(18),ROTSQR(36),ROTTMP(36)
+      DIMENSION EIGVEC(36),EIGVAL(6),EIGWRK(72)
       DIMENSION IDELIM(1)
+      DIMENSION IPERM(5)
+      LOGICAL LROWOK(3)
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'XRGBOD.INC'
@@ -1814,6 +1818,343 @@ C        CALL XPRVDU(NCVDU,1,0)
         ISMFXP = NMANDS
       END IF
 
+
+      NCMATC = 0
+      NCMATR = 0
+      NCMATP = 0 !Must match NCMATC (maybe remove ncols later.)
+      
+      IF ( ML .EQ. 4 ) THEN ! GROUP
+
+C GROUP: Quick pre-scan of atoms in group to check for incipient singularities
+C (e.g. linear group or otherwise not enough atoms).
+C We must make our way to the end of the card now, 
+C then skip back before general processing of atoms
+C
+C GROUP O(1) C(2) C(3)
+C
+         OME = ME                ! SAVE LEXICAL ADDRESSES
+         OMF = MF
+
+         KB=KOVPCH(I)            ! CHECK FOR OVERALL PARAMETER
+         IF ( KB .LT. 0 ) THEN
+           GOTO 2050
+         ELSE IF ( KB .GT. 0 ) THEN
+           NCMATP = NCMATP + N5A
+           GOTO 670
+         ENDIF
+        
+
+        DO II = 1,9
+          ROTACC(II) = STORE(JBASE+II-1)
+        END DO       
+        DO II = 10,17
+          ROTACC(II) = 0.0
+        END DO       
+        ROTACC(10) = 1.0
+        ROTACC(14) = 1.0
+        ROTACC(18) = 1.0
+
+        IRATOM = 0
+
+668     CONTINUE   ! Loop over the atoms on the GROUP directive
+
+           KA=KCORCH(IDWZAP)       ! CHECK FOR IMPLICIT PARAMETERS (not allowed)
+           IF ( KA .NE. 0 ) THEN
+              IF (ISSPRT .EQ. 0) WRITE(NCWU,1311)
+              WRITE( CMON ,1311)
+              CALL XPRVDU(NCVDU, 1,0)
+              GOTO 2050
+           ENDIF
+
+C----- MUST BE AN ATOM WITH PARAMETERS
+           KA=KATOMU(LN)
+           IF ( KA .LE. 0 ) GOTO 2050    
+           IF (N5A .LE. 0) GOTO 1950
+C----- GENERATE GROUP DERIVATIVES FROM COORDINATES
+C----- MAKE FIRST ATOM PIVOT
+           IF (IRATOM .EQ. 0) THEN
+             CALL XMOVE(STORE(M5A+4), ORIGIN(1), 3)
+             DO I=1,36
+               ROTSQR(I)=0.0
+             END DO
+           ENDIF
+           DO M5B = M5A,M5A+((N5A-1)*MD5),MD5
+             IRATOM = IRATOM + 1
+             CALL XSUBTR (STORE(M5B+4), ORIGIN(1), WORK(1), 3)
+C----- DERIV WRT PHI
+             CALL XMLTMM( PHIDRV, WORK(1), ROTACC(1), 3, 3, 1)
+C----- DERIV WRTO CHI
+             CALL XMLTMM( CHIDRV, WORK(1), ROTACC(4), 3, 3, 1)
+C----- DERIV WRTO OMEGA
+             CALL XMLTMM( OMGDRV, WORK(1), ROTACC(7), 3, 3, 1)
+C----- DERIV WRTO CENTROID
+C             WRITE(NCWU,*) 'Rot derivs: ', (STORE(JOBA),JOBA=JBASE,JBASE+8)
+             DO II = 10,17
+               ROTACC(II) = 0.0
+             END DO      
+             ROTACC(10) = 1.0
+             ROTACC(14) = 1.0
+             ROTACC(18) = 1.0
+             
+C- ROTACC now contains derivatives wrt phi, chi, omega, x,y,z.  Accumulate square.
+c             WRITE(NCWU,'(A,/,3(3F11.5,/))')'Rotacc:',(ROTACC(I),I=1,18)
+C- Step1. Square and add normal matrix accumulation. Simulates pre and post multiplication of this matrix onto lsq derivatives. Singularities will remain.
+             CALL XMLTTM(ROTACC,ROTACC,ROTTMP,6,3,6)
+c             WRITE(NCWU,'(A,/,6(6F11.5,/))')'Rottmp:',(ROTTMP(I),I=1,36)
+             DO I=1,36
+               ROTSQR(I) = ROTSQR(I) + ROTTMP(I)
+             END DO      
+c             WRITE(NCWU,'(A,/,6(6F11.5,/))')'Rotsqr:',(ROTSQR(I),I=1,36)
+           END DO
+670        CONTINUE
+C----- CHECK FOR END OF CARD
+           IF(ME.LE.0) GOTO 669
+        GOTO 668
+669     CONTINUE        
+c        WRITE(CMON,'(A,I8)')'GROUP # atoms found: ', IRATOM
+c        CALL XPRVDU(NCVDU,1,0)
+        ME = OME
+        MF = OMF
+c        WRITE(NCWU,'(A,/,6(6F11.5,/))')'End Rotsqr:',(ROTSQR(I),I=1,36)
+
+C--     Check for singularities
+
+        DO I = 1,3
+          LROWOK(I) = .TRUE.
+        END DO
+        NPTORM = 0  !Number of parameters to remove
+
+        IF ( IRATOM .EQ. 1 ) THEN   ! Single atom all rotational derivatives singular
+          DO I = 1,3
+            LROWOK(I) = .FALSE.
+          END DO
+          NPTORM = 3  !Number of parameters to remove
+        ELSE
+C Check eigenvalues of 6x6 ROTSQR matrix; if abs > 'ZERO' then all good.
+          DO II = 1,36
+            ROTTMP(II) = ROTSQR(II)
+          END DO         
+          CALL SSYEV('N','L', 6, ROTTMP, 6, EIGVAL, EIGWRK, 72, INFO)
+c          WRITE(NCWU,*)'Eigv:', (EIGVAL(II),II=1,6)
+          NPTORM = 0  !Number of parameters to remove
+          DO I = 1,3
+             IF (EIGVAL(I).LT.ZERO) NPTORM = NPTORM + 1    !This is a harder tolerance than the subsequent checks
+          END DO
+          IF ( NPTORM .GT. 0 ) THEN
+            WRITE(CMON,'(A,I1,A)') 
+     1      '{I Singularity in a rigid group rotation. Removing ',
+     1       NPTORM,' rotation parameters.'
+             CALL XPRVDU(NCVDU, 1,0)
+            WRITE (NCWU,'(A)')CMON(1)(3:nctrim(cmon(1)))
+          END IF
+          IF ( NPTORM .EQ. 3 ) THEN !Don't include rotations
+             DO I = 1,3
+               LROWOK(I) = .FALSE.
+             END DO
+          ELSE IF ( NPTORM .GT. 0 ) THEN ! Work out best parameter(s) to remove
+            IPERM(1) = 2
+            IPERM(2) = 3
+            IPERM(3) = 4
+            IPERM(4) = 5
+            IPERM(5) = 6
+            DO II = 1,5
+              DO IJ = 1,5
+                ROTTMP(((II-1)*5)+IJ) = 
+     1               ROTSQR(((IPERM(II)-1)*6)+IPERM(IJ))
+              END DO
+            END DO
+c            WRITE(NCWU,'(A,/,5(5F11.5,/))')'R1:',(ROTTMP(I),I=1,25)
+            CALL SSYEV('N','L', 5, ROTTMP, 5, EIGVAL, EIGWRK, 72, INFO)
+c            IF (EIGVAL(1).LT.0.001) LROWOK(1) = .FALSE.
+c            WRITE(NCWU,*)'Eigs1',(EIGVAL(II),II=1,5)
+            EIG1 = EIGVAL(1)
+            IPERM(1) = 1
+            DO II = 1,5
+              DO IJ = 1,5
+                ROTTMP(((II-1)*5)+IJ) = 
+     1               ROTSQR(((IPERM(II)-1)*6)+IPERM(IJ))
+              END DO
+            END DO
+            CALL SSYEV('N','L', 5, ROTTMP, 5, EIGVAL, EIGWRK, 72, INFO)
+c            IF (EIGVAL(1).LT.0.001) LROWOK(2) = .FALSE.
+c            WRITE(NCWU,*)'Eigs2',(EIGVAL(II),II=1,5)
+            EIG2 = EIGVAL(1)
+            IPERM(2) = 2
+            DO II = 1,5
+              DO IJ = 1,5
+                ROTTMP(((II-1)*5)+IJ) = 
+     1               ROTSQR(((IPERM(II)-1)*6)+IPERM(IJ))
+              END DO
+            END DO
+            CALL SSYEV('N','L', 5, ROTTMP, 5, EIGVAL, EIGWRK, 72, INFO)
+c            IF (EIGVAL(1).LT.0.001) LROWOK(3) = .FALSE.
+            WRITE(NCWU,*)'Eigs3',(EIGVAL(II),II=1,5)
+            EIG3 = EIGVAL(1)
+            
+            IF ( ( EIG1 .LT. EIG2 ).AND.( EIG1 .LT. EIG3 )) THEN  ! Remove 1
+			     LROWOK(1) = .FALSE.
+              IF (NPTORM.EQ.2) THEN
+                IF (EIG2.LT.EIG3) THEN
+                  LROWOK(2) = .FALSE.
+                ELSE
+                  LROWOK(3) = .FALSE.
+                ENDIF
+              ENDIF
+             ELSE IF ( EIG2 .LT. EIG3 ) THEN ! Remove 2
+			     LROWOK(2) = .FALSE.
+              IF (NPTORM.EQ.2) THEN
+                IF (EIG1.LT.EIG3) THEN
+                  LROWOK(1) = .FALSE.
+                ELSE
+                  LROWOK(3) = .FALSE.
+                ENDIF
+              ENDIF
+		      ELSE ! Remove 3
+			     LROWOK(3) = .FALSE.
+              IF (NPTORM.EQ.2) THEN
+                IF (EIG1.LT.EIG2) THEN
+                  LROWOK(1) = .FALSE.
+                ELSE
+                  LROWOK(2) = .FALSE.
+                ENDIF
+              ENDIF
+            END IF
+		              
+          END IF
+        END IF
+      END IF
+      
+      NGDERI = 6 - NPTORM
+      
+      NCMATC = 0
+      NCMATR = 0
+      NCMATP = 0 !Must match NCMATC (maybe remove ncols later.)
+      
+      IF ( ML .EQ. 6 ) THEN ! MATRIX
+
+C MATRIX: Need to extract coefficients in advance of
+C processing. We must make our way to the end of the card
+C now, then skip back before processing atoms:
+C
+C MATRIX <nrows> <ncols> <ncols x atomspecs> <nrows*ncols coefficients, row by row>
+C
+C daft e.g.:
+C MATRIX 2 3 O(1,OCC) O(2,OCC) O(3,OCC)
+C CONT           1       -1        0
+C CONT           0        1        1
+
+        OME = ME                ! SAVE LEXICAL ADDRESSES
+        OMF = MF
+
+        NCMATP = 0 !Number of specified params
+
+C--READ THE NEW 'NROWS'
+        IF(KNUMBR(Z).NE.0) THEN
+C--THERE IS  NO NUMBER TO BE USED AS THE NROWS
+           CALL XPCL12
+           IF (ISSPRT .EQ. 0) WRITE(NCWU,855)
+           WRITE ( CMON ,855)
+           CALL XPRVDU(NCVDU, 1,0)
+855        FORMAT(' Missing number of rows on ''MATRIX'' card')
+           LEF=LEF+1
+           Z=1.
+           GOTO 2150
+        END IF
+        NCMATR = Z
+
+C--READ THE NEW 'NCOLS'
+        IF(KNUMBR(Z).NE.0) THEN
+C--THERE IS  NO NUMBER TO BE USED AS THE NROWS
+           CALL XPCL12
+           IF (ISSPRT .EQ. 0) WRITE(NCWU,856)
+           WRITE ( CMON ,856)
+           CALL XPRVDU(NCVDU, 1,0)
+856        FORMAT(' Missing number of columns on ''MATRIX'' card')
+           LEF=LEF+1
+           Z=1.
+           GOTO 2150
+        END IF
+        NCMATC = Z
+
+        OME = ME                ! SAVE LEXICAL ADDRESSES OF POSITION
+        OMF = MF                ! AFTER THE DIMENSIONS
+        
+        WRITE(CMON,'(A,2(I4,1X))')'Matrix dimensions: ', NCMATR, NCMATC
+        CALL XPRVDU(NCVDU,1,0)
+
+        ICMAT = KSTALL(NCMATR * NCMATC)  ! Space for our coefficients
+        
+c850     CONTINUE   ! Parameter loop
+        DO IXPCM = 1, NCMATC
+
+           KB=KOVPCH(I)            ! CHECK FOR OVERALL PARAMETER
+           IF ( KB .LT. 0 ) THEN
+             GOTO 2050
+           ELSE IF ( KB .GT. 0 ) THEN
+             NCMATP = NCMATP + N5A
+             GOTO 896
+           ENDIF
+
+           KA=KCORCH(IDWZAP)       ! CHECK FOR IMPLICIT PARAMETERS
+           IF ( KA .NE. 0 ) THEN
+              IF (ISSPRT .EQ. 0) WRITE(NCWU,1312)
+              WRITE( CMON ,1312)
+              CALL XPRVDU(NCVDU, 1,0)
+              GOTO 2050
+           ENDIF
+
+        
+C----- MUST BE AN ATOM WITH PARAMETERS
+           KA=KATOMU(LN)
+           IF ( KA .LE. 0 ) GOTO 2050
+           NCMATP = NCMATP + N5A * ISTORE(MQ+5)
+           IF(ISTORE(MQ+5) .EQ. 0) THEN
+C----- PARAMETERS SHOULD BE SPECIFIED
+             MF=MF-LK2
+             CALL XPCL12
+             IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)ISTORE(MF+1)
+             WRITE( CMON ,1500) ISTORE(MF+1)
+             CALL XPRVDU(NCVDU, 1,0)
+             LEF=LEF+1
+             GOTO 2050
+           END IF
+C If it is an occupancy parameter, set the spare flag accordingly:
+           IF(ISTORE(ISTORE(MQ+6)+MQ+1).EQ.3)THEN
+              ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(7) )
+           END IF
+896        CONTINUE
+C----- CHECK FOR END OF CARD
+c         IF(ME.GT.0) GOTO 850
+        WRITE(CMON,'(A,I8)')'MATRIX # params found: ', NCMATP
+        CALL XPRVDU(NCVDU,1,0)
+        END DO
+
+        
+        DO IYPCM = 1, NCMATR
+          DO IXPCM = 1, NCMATC
+            IF(KNUMBR(Z).NE.0) THEN
+C--THERE IS  NO NUMBER TO BE USED AS THE COEFF
+              CALL XPCL12
+              IF (ISSPRT .EQ. 0) WRITE(NCWU,857)
+              WRITE ( CMON ,857)
+              CALL XPRVDU(NCVDU, 1,0)
+857           FORMAT(' Missing coefficient on ''MATRIX'' card')
+              LEF=LEF+1
+              Z=1.
+              GOTO 2150
+            END IF
+            WRITE(CMON,'(A,2I4,F10.3)')'Coeff ',IXPCM,IYPCM,Z
+            CALL XPRVDU(NCVDU,1,0)
+            STORE(ICMAT + (IYPCM-1) * NCMATC + IXPCM - 1 ) = Z
+          END DO        
+        END DO      
+        ME = OME
+        MF = OMF
+      END IF
+
+c      WRITE(CMON,'(A)')'Loop ended '
+c      CALL XPRVDU(NCVDU,1,0)
+      
 
 C
 C--ASSIGN THE MAXIMUM ADDRESS AS ZERO INITIALLY
@@ -1978,12 +2319,12 @@ C----- ADDRESS OF PARAMETER DETAILS
 C----- INDICATE FIRST PARAMETER IS 'X'
       L = 5
       DO 1560 I = 1, NPARAM
-      ISTORE(M) = K - MQ
-      M = K
-      ISTORE(K) = NOWT
-      ISTORE(K+1) = L
-      K = K + 3
-      L = L + 1
+        ISTORE(M) = K - MQ
+        M = K
+        ISTORE(K) = NOWT
+        ISTORE(K+1) = L
+        K = K + 3
+        L = L + 1
 1560  CONTINUE
 C----- UPDATE NUMBER OF PARAMTERS
       ISTORE(MQ+5) = ISTORE(MQ+5) + NPARAM
@@ -1993,29 +2334,39 @@ C----- SAVE NEXT FREE LOCATION
 C----- GENERATE GROUP DERIVATIVES FROM COORDINATES
 C----- MAKE FIRST ATOM PIVOT
       IF (IATOM .EQ. 0) THEN
-      CALL XMOVE(STORE(M5A+4), ORIGIN(1), 3)
+        CALL XMOVE(STORE(M5A+4), ORIGIN(1), 3)
       ENDIF
 C----- TEMPORARY STACK FOR DERIVATIVES
-      LBASE = 12
+c      LBASE = 12
+      LBASE = NGDERI * 2
       K = LBASE * N5A
       IBASE = KSTALL( K)
       JBASE = IBASE
       M5B = M5A
       DO 1565 I = 1,N5A
-      IATOM = IATOM + 1
-      CALL XSUBTR (STORE(M5B+4), ORIGIN(1), WORK(1), 3)
-C----- DERIV WRT PHI
-      CALL XMLTMM( PHIDRV, WORK(1), STORE(JBASE), 3, 3, 1)
+        IATOM = IATOM + 1
+        CALL XSUBTR (STORE(M5B+4), ORIGIN(1), WORK(1), 3)
+        IF (LROWOK(1)) THEN
+C-----    DERIV WRT PHI
+          CALL XMLTMM( PHIDRV, WORK(1), STORE(JBASE), 3, 3, 1)
+          JBASE = JBASE + 3
+        END IF
+        IF (LROWOK(2)) THEN
 C----- DERIV WRTO CHI
-      CALL XMLTMM( CHIDRV, WORK(1), STORE(JBASE+3), 3, 3, 1)
+           CALL XMLTMM( CHIDRV, WORK(1), STORE(JBASE), 3, 3, 1)
+           JBASE = JBASE + 3
+        END IF
+        IF (LROWOK(3)) THEN
 C----- DERIV WRTO OMEGA
-      CALL XMLTMM( OMGDRV, WORK(1), STORE(JBASE+6), 3, 3, 1)
+           CALL XMLTMM( OMGDRV, WORK(1), STORE(JBASE), 3, 3, 1)
+           JBASE = JBASE + 3
+        ENDIF
 C----- DERIV WRTO CENTROID
-      STORE(JBASE+9) = 1.
-      STORE(JBASE+10) = 1.
-      STORE(JBASE+11) = 1.
-      JBASE = JBASE + LBASE
-      M5B = M5B + MD5A
+        STORE(JBASE) = 1.
+        STORE(JBASE+1) = 1.
+        STORE(JBASE+2) = 1.
+        JBASE = JBASE + 3
+        M5B = M5B + MD5A
 1565  CONTINUE
 C
 C--SET UP THE INITIAL CONSTANTS
@@ -2031,8 +2382,8 @@ C----- SET THE NUMBER OF PARAMETERS TO BE FOUND
       MS=MQ+6
 C--CHECK THAT ONLY CORRECT VALUES ARE REFINED
       DO 1650 MT=1,MR
-      MS=ISTORE(MS)+MQ
-      IF(ISTORE(MS+1)-3)2350,1650,1650
+        MS=ISTORE(MS)+MQ
+        IF(ISTORE(MS+1)-3)2350,1650,1650
 1650  CONTINUE
 
 C----- SET BASE ADDRESS FOR WEIGHTS
@@ -2168,7 +2519,8 @@ C Set the rigid group flag accordingly.
           ISTORE(M5A+15) = OR ( ISTORE(M5A+15), KBREFB(2) )
 C----- GROUP CARD
 C----- PHI,CHI,OMEGA,X0,Y0,Z0
-            IMR = 6
+C            IMR = 6
+            IMR = NGDERI
       ELSE IF (ML .EQ.5) THEN
 C----- SET INCREMENT FOR SUMFIX CARD
             IMR = IMR + MR
@@ -2428,7 +2780,7 @@ C      NPASS = NO OF 'PARTS' TO BE SET FOR THE FUNCTION
 C
 C--
       INCLUDE 'ISTORE.INC'
-      DIMENSION ICMB(2,2), WEIGHT(2,2), IGRP(4,3)
+      DIMENSION ICMB(2,2), WEIGHT(2,2), IGRP(4,3,4)
 C----- WT = SQRT(2.)/2., IE MATRIX WEIGHT IS ITS OWN INVERSE
       PARAMETER ( WT = 0.707106781, WTN = -0.707106781)
 C
@@ -2448,7 +2800,10 @@ C
 C----- OFFSETS FOR PARAMETERS ON COMBINE CARD
       DATA ICMB/0,1, 1,0/
 C----- OFFSETS FOR PARAMETERS ON GROUP CARDS
-      DATA IGRP/0,1,2,3, 0,1,2,4, 0,1,2,5/
+      DATA IGRP/3,0,0,0, 4,0,0,0, 5,0,0,0,     ! Only 3 group derivs
+     1          0,3,0,0, 0,4,0,0, 0,5,0,0,     ! Only 4 group derivs
+     1          0,1,3,0, 0,1,4,0, 0,1,5,0,     ! Only 5 group derivs
+     1          0,1,2,3, 0,1,2,4, 0,1,2,5/     ! All 6 group derivs
 C----- WEIGHTS FOR PARAMETERS ON COMBINE
       DATA WEIGHT/WT,WT,WT,WTN/
 C
@@ -2479,7 +2834,8 @@ C---------- CHECK THAT THERE ARE TWO 'PARTS'
 C---------- GROUP
             INC = 0
 C---------- CHECK THAT THERE ARE 4 PARTS
-            NPASS = 4
+c            NPASS = 4
+            NPASS = NGDERI - 2
             CALL XCHKPT (NPASS)
       ELSE IF (ML .EQ. 5) THEN
 C---------- SUMFIX
@@ -2580,7 +2936,7 @@ C--INSERT THE BLOCK FOR A COMPLETELY NEW PARAMETER
 C----- ADD IN THE RELATIVE LS PARAMETER NUMBER
 1700  CONTINUE
       IF (ML .EQ. 3) JMP = IMP + ICMB( IPASS, JSET)
-      IF (ML .EQ. 4) JMP = IMP + IGRP( IPASS, MT-3)
+      IF (ML .EQ. 4) JMP = IMP + IGRP( IPASS, MT-3, NPASS)
       IF (ML .EQ. 5) THEN
          IF ( JSET .LT. NSMFXP ) THEN
            JMP = JSET-1
