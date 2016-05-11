@@ -1818,7 +1818,7 @@ C        CALL XPRVDU(NCVDU,1,0)
         ISMFXP = NMANDS
       END IF
 
-    
+      NPTORM = 0
       IF ( ML .EQ. 4 ) THEN ! GROUP
 
 C GROUP: Quick pre-scan of atoms in group to check for incipient singularities
