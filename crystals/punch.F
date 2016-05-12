@@ -1792,6 +1792,7 @@ C      WRITE(123,'(/)')
 C      WRITE(123,'(5I6)') (I6PCH(I),I=1,M6PCH)
 C      WRITE(123,'(6A11)') (C6KEYS(I6PCH(I)),I=1,M6PCH)
 
+ctemp      if(allocated(CBGFMTa)) deallocate(CBGFMTa)
       allocate(CBGFMTa(m6pch))
       NBGNXT = 2  !Next free char in CBGFMT
       CBGFMT = '(' !Start with open parenthesis
@@ -1837,15 +1838,17 @@ c      ISTORE(I)=NINT(STORE(I))
 c1150  CONTINUE
 C--FIX THE ELEMENTS
 c      ISTORE(M6+11)=NINT(STORE(M6+11))
-C  COMPUTE F^2
+C  COMPUTE Fo^2 AND Fc^2
       IF(JFTYPE.EQ.2) THEN
         CALL XSQRF (FSQ,STORE(M6+3),FABS,SIGSQ,STORE(M6+12))
         STORE(M6+3) = FSQ
         STORE(M6+12) = SIGSQ
+        STORE(M6+5) = STORE(M6+5)*STORE(M6+5)
       ELSE IF (JFTYPE.EQ.3) THEN   !old-type list 6
         FSIGN=STORE(M6+3)
         SIG = STORE(M6+12)
         FSQ=FSIGN*ABS(FSIGN)
+        STORE(M6+5) = STORE(M6+5)*STORE(M6+5)
         IF (SIG.GT.ZERO) THEN
 C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT
            IF (ABS(FSIGN).GT. 1.0) THEN
