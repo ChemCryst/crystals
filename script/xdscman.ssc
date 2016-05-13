@@ -59,6 +59,7 @@
 ^^WI SET DS_RES REMOVE 0 ADDTOLIST
 %%
 %  EXTRACT REWIND
+%  VARIABLE INTEGER IDJWTEMP
 %  LOOP
 %    ON ERROR TERMINATE
 %    ON END TERMINATE
@@ -80,11 +81,13 @@
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%%       GET NOPROMPT  INTEGER ' ' '-100'
-%       if value .eq. 1 then
-%       insert ' Retained '
+%       evaluate idjwtemp = value
+%       if idjwtemp .eq. 1 then
+%        insert ' To Retain '
+%       else if idjwtemp .eq. 2 then
+%        insert ' To Delete '
 %       else 
-%       insert '          '
+%        insert '           '
 %       end if
 %       INSERT ':'
 %       GET NOPROMPT TEXT ' ' 'Date'

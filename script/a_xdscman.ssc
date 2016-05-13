@@ -1,4 +1,11 @@
-%SCRIPT XDSCMAN
+%SCRIPT A_XDSCMAN
+
+Warning - there is a bug IN QUIT WITHOUT change.
+It may reset to first version in list.
+Marking a version to be both retained and deleted results
+in 2 entries in the inxed
+Spotted by DJW, April 2016. Not fixed
+
 %%
 %% A script to manage (reset, delete, retain) the List 5's in the DSC file.
 %%
@@ -65,6 +72,7 @@
 %  EVALUATE IMAXSEL = 0
 %%
 %  EXTRACT REWIND
+%  VARIABLE INTEGER IDJWTEMP
 %  LOOP
 %    ON ERROR TERMINATE
 %    ON END TERMINATE
@@ -90,6 +98,15 @@
 %       END IF
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%       evaluate idjwtemp = value
+%       if idjwtemp .eq. 1 then
+%        insert ' To Retain '
+%       else if idjwtemp .eq. 2 then
+%        insert ' To Delete '
+%       else 
+%        insert '           '
+%       end if
+%       INSERT ':'
 %       GET NOPROMPT TEXT ' ' 'Date'
 %       INSERT !'!
 %       OUTPUT
@@ -301,6 +318,10 @@
 %      BLOCK                                                  % BQUIT %
 %        COPY '#DISK'
 %        CLEAR
+%        IF NTSC .LT. 0  THEN
+%          EVALUATE NTSC = - 1 * NTSC
+%        END IF
+% SHOW NTSC 
 %        INSERT 'RESET 5 '
 %        STORE INTEGER NTSC
 %        SEND
