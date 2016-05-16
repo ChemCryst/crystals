@@ -2424,7 +2424,7 @@ c        END IF
 
 c----- checking for extended parameter index
 coct98
-      if (mr .gt. 0) then
+      if ((mr .gt. 0).and.(ml.ne.4)) then  !don't do this check for GROUPS.
 c----- some parameters to process
        iflag = nint(store(m5a+3))
 
