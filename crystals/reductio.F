@@ -965,7 +965,6 @@ C--CHECK IF THESE ARE GOOD TRANSFORMS FOR OUTPUT
       IF(NINT(HG(1)-HMAX(1)))1800,1800,1700
 1700  CONTINUE
 C--THIS SET IS A BETTER SET  -  STORE THEM
-      isav = i
       DO 1750 K=1,3
       HMAX(K)=HG(K)
 1750  CONTINUE
@@ -1023,6 +1022,78 @@ C--THIS IS A REJECTED REFLECTION
       GOTO 2050
 19910 continue
       stop 'panic'
+      END
+C
+CODE FOR KSYSAB
+      FUNCTION fixquadrant(hklin, friedelarg) result(hklout)
+C-- COLLECT CORRECT EQUIVALENTS
+C
+C
+C--THE NEW SET OF INDICES HAS THE MAXIMUM VALUE OF 'L' FROM AMONGST THE
+C  SYMMETRY EQUIVALENT SET. FROM THE REFLECTIONS WITH THIS VALUE OF 'L',
+C  THOSE WITH THE MAXIMUM VALUE OF 'K' ARE CHOSEN. FROM AMONGST THESE
+C  REFLECTIONS, THE ONE WITH THE LARGEST VALUE FOR 'H' IS CHOSEN.
+C
+      implicit none
+      real, dimension(3), intent(in) :: hklin
+      real, dimension(3) :: hklout
+      logical, intent(in), optional :: friedelarg
+      logical friedellaw
+      real a
+      real, dimension(3) :: H,HG,HMAX
+      logical labsent
+      logical found
+      integer i, j
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST02.INC'
+C
+      
+      friedellaw=.False.
+      if(present(friedelarg)) then
+        friedellaw=.True.
+      end if
+      hklout=0.0
+c
+c
+C--SET DEFAULT VALUES FOR THE INDICES AND TRANSFORMED INDICES
+      h=hklin
+      hmax=hklin
+C--PASS THROUGH THE DIFFERENT SYMMETRY POSITIONS
+      DO I=L2I,M2I,MD2I ! 1950
+C--CALCULATE THE TRANFORMED INDICES
+        HG(1)=H(1)*STORE(I)+H(2)*STORE(I+3)+H(3)*STORE(I+6)
+        HG(2)=H(1)*STORE(I+1)+H(2)*STORE(I+4)+H(3)*STORE(I+7)
+        HG(3)=H(1)*STORE(I+2)+H(2)*STORE(I+5)+H(3)*STORE(I+8)
+C--CHECK IF WE SHOULD GENERATE A NEW SET OF INDICES
+C--CHECK IF THESE ARE GOOD TRANSFORMS FOR OUTPUT
+        found=.false.
+        DO J=1,2 ! 1900 
+          if(nint(hg(3))>nint(hmax(3))) then 
+            found=.true. 
+          else
+            if(nint(hg(3))==nint(hmax(3))
+     1        .and. nint(hg(2))>nint(hmax(2))) then
+              found=.true. 
+            else
+              if(nint(hg(3))==nint(hmax(3)) 
+     1          .and. nint(hg(2))==nint(hmax(2)) 
+     1          .and. nint(hg(1))>nint(hmax(1))) then
+                found=.true. 
+              end if
+            end if
+          end if
+          if(found) then
+c--this set is a better set  -  store them
+            hmax=hg
+          end if
+          IF(.not. friedellaw) exit
+C--INVERT THE INDICES FOR THE NEXT POSSIBLE PASS
+          hg=-hg
+        end do !1900  CONTINUE
+      end do
+C--WRITE THE NEW INDICES BACK IN LIST 6
+      hklout=HMAX
       END
 C
 CODE FOR KCENTR
