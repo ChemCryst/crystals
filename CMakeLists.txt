@@ -68,7 +68,7 @@ GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 IF (Fortran_COMPILER_NAME STREQUAL "gfortran")  # gfortran
 
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
+    SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3  -fno-sign-zero")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
 
 ELSEIF (Fortran_COMPILER_NAME STREQUAL "ifort")  # ifort (untested)
