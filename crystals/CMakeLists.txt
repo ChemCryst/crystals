@@ -36,6 +36,7 @@ xssval.inc.F90
 xerval.inc.F90
 xiobuf.inc.F90
 xdisc.inc.F90
+formatnumber.F90
 solve_helper.F90
 mrgrnk.F90
 ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.f90
