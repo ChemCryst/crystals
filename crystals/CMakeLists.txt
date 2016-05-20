@@ -30,16 +30,27 @@ add_definitions(-D _HOL_)
 
 add_library(CrystalsFortran OBJECT
 crystals_hdf5.F90
-xdaval.inc.F90
-xunits.inc.F90
-xssval.inc.F90
-xerval.inc.F90
-xiobuf.inc.F90
-xdisc.inc.F90
+XDAVAL.INC.F90
+XUNITS.INC.F90
+XSSVAL.INC.F90
+XERVAL.INC.F90
+XIOBUF.INC.F90
+XDISC.INC.F90
+XLST01.INC.F90
+XLST05.INC.F90
+XLST06.INC.F90
+XLST13.INC.F90
+XLST23.INC.F90
+XLST28.INC.F90
+XLST30.INC.F90
+XLST39.INC.F90
+XCONST.INC.F90
+XOPVAL.INC.F90
 formatnumber.F90
 solve_helper.F90
 mrgrnk.F90
-${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.f90
+absolut.F90
+${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90
 absorb.F
 accumula.F
 alter5.F
