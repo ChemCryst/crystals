@@ -51,11 +51,24 @@ else
     digit=ceiling(-log10(esd))-1
     if(fixedform) then
         if(abs(num)<1.0) then
+            ! rule of 19
+            !print *, esd, esd*10**(digit+digitesd)
+            if(esd*10**(digit+digitesd)>19.0) then
+                digitesd=digitesd-1
+            end if
             total=digit+digitesd+3
         else
+            ! rule of 19
+            if(esd*10**(digit+digitesd)>19.0) then
+                digitesd=digitesd-1
+            end if
             total=digit+digitesd+2+nint(log10(abs(num)))
         end if
     else
+        ! rule of 19
+        if(esd*10**(digit+digitesd)>19.0) then
+            digitesd=digitesd-1
+        end if
         total=0
     end if
     
@@ -69,7 +82,7 @@ formatted_output=trim(buffer)
 end function
 
 !> Format a number with its esd (double precision)
-function print_value_sp(num, esd, opt_fixedform, opt_precision) result(formatted_output)
+function print_value_dp(num, esd, opt_fixedform, opt_precision) result(formatted_output)
 implicit none
 double precision, intent(in) :: num, esd
 !> flag to outuput fixed format (leading space for minus sign)
@@ -110,11 +123,24 @@ else
     digit=ceiling(-log10(esd))-1
     if(fixedform) then
         if(abs(num)<1.0) then
+            ! rule of 19
+            !print *, esd, esd*10**(digit+digitesd)
+            if(esd*10**(digit+digitesd)>19.0) then
+                digitesd=digitesd-1
+            end if
             total=digit+digitesd+3
         else
+            ! rule of 19
+            if(esd*10**(digit+digitesd)>19.0) then
+                digitesd=digitesd-1
+            end if
             total=digit+digitesd+2+nint(log10(abs(num)))
         end if
     else
+        ! rule of 19
+        if(esd*10**(digit+digitesd)>19.0) then
+            digitesd=digitesd-1
+        end if
         total=0
     end if
     
