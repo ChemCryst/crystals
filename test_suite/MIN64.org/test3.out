@@ -1,4 +1,4 @@
-#LIST 1                                                                                                                                                                                                                                                         
+d#LIST 1                                                                                                                                                                                                                                                         
 #LIST 20                                                                                                                                                                                                                                                        
 #LIST 30                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
@@ -148,7 +148,6 @@ Space group symbol is   P    1
  Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-   CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
     0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
@@ -296,7 +295,6 @@ Space group symbol is   P    1
  Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-   CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
     0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
@@ -491,7 +489,6 @@ Space group symbol is   P    1
  Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-   CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
     0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
@@ -2805,7 +2802,6 @@ Upating List 13 for twinned data
  Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-   CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
     0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
