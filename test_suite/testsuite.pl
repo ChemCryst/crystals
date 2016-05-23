@@ -247,12 +247,12 @@ sub obscureMachinePrecision() {
 # List of C 1. Fx.4 x5 -. Fx.2    " C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0560   0.0981"
 	   } elsif($line =~ m/^(\s+\S+\s+\d+\.\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[37] $1 $2 $3 $4 $5 $6\n";
-# List of Fx.4 x11 following Maximum -> Fx.2, except first -> Fx.0
-	   } elsif($line =~ m/^(.*Maximum\s+-?\d+\.)\d\d\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
-              print $fho "[70] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
-# List of Fx.4 x11 following R.M.S. -> Fx.2, except first -> Fx.0
-	   } elsif($line =~ m/^(.*R\.M\.S\.\s+-?\d+\.\d)\d\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
-              print $fho "[70] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
+# List of Fx.4 x11 following Maximum x.xx -> Fx.2, except first -> Fx.0
+	   } elsif($line =~ m/^(.*Maximum\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
+              print $fho "[70] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12\n";
+# List of Fx.4 x11 following R.M.S. x.xx -> Fx.2, except first -> Fx.0
+	   } elsif($line =~ m/^(.*R\.M\.S\.\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
+              print $fho "[71] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12\n";
 # List of Fx.4 x11 following anything -> Fx.2
 	   } elsif($line =~ m/^(.*\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[38] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
