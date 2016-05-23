@@ -422,8 +422,8 @@ DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
   12.XDATA-BLOCK        5    0    0    0    5    1  106   21    6
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
-(1H ,8(3X,12A1))
-(1H ,8E15.6)
+(1X,8(3X,12A1))
+(1X,8E15.6)
          2    2    2    2    1
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
