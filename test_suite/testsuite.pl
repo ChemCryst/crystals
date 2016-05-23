@@ -147,8 +147,8 @@ sub obscureMachinePrecision() {
 	  } elsif($line =~ m/^(\s+Slope =\s+-?\d+\.\d)\d\d(\s+Intercept =\s+-?\d+).\d\d\d(\s+C-Coef=\s+-?\d+\.\d)\d\d\s*/ ) {
               print $fho "[11] $1 $2"."0 $3\n";
 # Flack table too much precision in Ds "   1   3   4    20.737   130.004    -4.668    -3.755     0.913"
-	  } elsif($line =~ m/^((?:\s+\d){3}\s+\d+\.\d\d)\d(\s+\d+\.\d\d\d(?:\s+-?\d+\.\d\d\d){3}\s*)$/ ) {
-              print $fho "[12] $1 $2\n";
+	  } elsif($line =~ m/^((?:\s+-?\d+){3}\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d((?:\s+-?\d+\.\d\d\d){3}\s*)$/ ) {
+              print $fho "[12] $1 $2 $3\n";
 # Large shift (e.g. extparam need less precision) " LARGE     1           1             1.1      0.2E+01    0.958E+00          1.15 .*"
 	   } elsif($line =~ m/^( LARGE\s+\d+\s+\d+\s+-?\d+.\d)\d\d(\s+-?0\.\dE\S\d\d\s+-?0\.\d)\d\d(E\S\d\d\s+-?\d+\.\d)\d(.*)/ ) {
               print $fho "[13] $1 $2 $3 $4\n";
@@ -190,6 +190,9 @@ sub obscureMachinePrecision() {
 # " C      14.    0.0494    0.1250    0.8787    0.3510    0.1757    2.2240    Might be split"
 	   } elsif($line =~ m/^(.*\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+Might be split)\s*/ ) {
               print $fho "[24] $1 $2 $3 $4 $5 $6 $7\n";
+# "Inter cycle shift/esd* 
+	   } elsif($line =~ m/^(Inter cycle shift\/esd)/ ) {
+              print $fho "[69] $1\n";
 # "Inter cycle R*                   -5.0           0.11E-02       0.10E+03"
 	   } elsif($line =~ m/^(Inter cycle .*\s+-?\d+\.\d*\s+-?0\.)\d\d(E.\d\d\s+0\.\d)\d(E.\d\d\s*)/ ) {
               print $fho "[25] $1 $2 $3\n";
@@ -244,6 +247,12 @@ sub obscureMachinePrecision() {
 # List of C 1. Fx.4 x5 -. Fx.2    " C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0560   0.0981"
 	   } elsif($line =~ m/^(\s+\S+\s+\d+\.\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[37] $1 $2 $3 $4 $5 $6\n";
+# List of Fx.4 x11 following Maximum -> Fx.2, except first -> Fx.0
+	   } elsif($line =~ m/^(.*Maximum\s+-?\d+\.)\d\d\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
+              print $fho "[70] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
+# List of Fx.4 x11 following R.M.S. -> Fx.2, except first -> Fx.0
+	   } elsif($line =~ m/^(.*R\.M\.S\.\s+-?\d+\.\d)\d\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
+              print $fho "[70] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
 # List of Fx.4 x11 following anything -> Fx.2
 	   } elsif($line =~ m/^(.*\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[38] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
