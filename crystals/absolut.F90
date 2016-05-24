@@ -1,32 +1,33 @@
-module absolut
+!> Module dealing with the absolution configuration of the crystal structure
+!! 
+module absolut_mod
 
 ! Constants for the type of data stored
-integer, parameter :: C_H=1
-integer, parameter :: C_K=2
-integer, parameter :: C_L=3
-integer, parameter :: C_ZH=4
-integer, parameter :: C_FCKA=5
-integer, parameter :: C_FOKA=6
-integer, parameter :: C_FCKD=7
-integer, parameter :: C_FOKD=8
-integer, parameter :: C_SIGMAD=9
-integer, parameter :: C_SIGMAQ=10
-integer, parameter :: C_X=11
-integer, parameter :: C_SX=12
-integer, parameter :: C_WX=13
-integer, parameter :: C_DELTAX=14
-integer, parameter :: C_FLXWT=15
-integer, parameter :: C_FAIL=16
-integer, parameter :: C_SIGNOISE=17
-integer, parameter :: C_FRIED1=18
-integer, parameter :: C_FRIED2=19
-integer, parameter :: C_FOK1=20
-integer, parameter :: C_SIG1=21
-integer, parameter :: C_FCK1=22
-integer, parameter :: C_FOK2=23
-integer, parameter :: C_SIG2=24
-integer, parameter :: C_FCK2=25
-integer, parameter :: C_NUMFIELD=25
+integer, parameter :: C_H=1 !< \f$ h \f$ index
+integer, parameter :: C_K=2 !< \f$ k \f$ index
+integer, parameter :: C_L=3 !< \f$ l \f$ index
+integer, parameter :: C_ZH=4 !< \f$ Z_H = \frac{F_{ckD}-F_{okD}}{\sigma_D} \f$
+integer, parameter :: C_FCKA=5 !< \f$ F_{cka} = 0.5 (F_{CK1}+F_{CK2}) \f$
+integer, parameter :: C_FOKA=6 !< \f$ F_{oka} = 0.5 (F_{OK1}+F_{OK2}) \f$
+integer, parameter :: C_FCKD=7 !< \f$ F_{ckd} = F_{CK1}-F_{CK2} \f$
+integer, parameter :: C_FOKD=8 !< \f$ F_{okd} = F_{OK1}-F_{OK2} \f$
+integer, parameter :: C_SIGMAD=9 !< \f$ \sqrt{\sigma_1^2+\sigma_2^2} \f$
+integer, parameter :: C_SIGMAQ=10 !<   \f$ \sigma_Q = 2.0 \frac{\sqrt{(F_{ok1} \sigma_2)^2+(F_{ok2} \sigma_1)^2}}{(2F_{oka})^2} \f$
+integer, parameter :: C_X=11 !< \f$ C_X = \frac{F_{ckd}-F_{okd}}{2 F_{ckd}} \f$
+integer, parameter :: C_SX=12 !< \f$ \sigma_{CX} = \frac{\sigma_D}{|2 F_{ckd}|} \f$
+integer, parameter :: C_DELTAX=13 !< \f$ \Delta_X = C_X - <C_X> \f$
+integer, parameter :: C_FLXWT=14 !< \f$ w = m \frac{1}{\sigma_{C_X}^2} \f$ Blessing type weights
+integer, parameter :: C_FAIL=15 !< 0.0 for valid reflections, 1.0 if ailed any filters, 99999.0 if centric or lone reflection
+integer, parameter :: C_SIGNOISE=16 !< \f$ \frac{|F_{ckd}|}{\sigma_D} \f$
+integer, parameter :: C_FRIED1=17 !< -1 for centric reflections, 0 for lone reflections, 1 for first reflection of friedel pair
+integer, parameter :: C_FRIED2=18 !< 0 for missing friedel pair, 2 for second reflection of friedel pair
+integer, parameter :: C_FOK1=19 !< \f$ F_{ok1} \f$ Observed structure factor for reflection 1
+integer, parameter :: C_SIG1=20 !< \f$ \sigma_1 \f$ Sigma of \f$ F_{ok1} \f$ for reflection 1
+integer, parameter :: C_FCK1=21 !< \f$ F_{ck1} \f$ Calculated structure factor for reflection 1
+integer, parameter :: C_FOK2=22 !< \f$ F_{ok2} \f$ Observed structure factor for reflection 2
+integer, parameter :: C_SIG2=23 !< \f$ \sigma_2 \f$ Sigma of \f$ F_{ok2} \f$ for reflection 2
+integer, parameter :: C_FCK2=24 !< \f$ F_{ck2} \f$ Calculated structure factor for reflection 2
+integer, parameter :: C_NUMFIELD=24
 
 ! COnstants for the filters name
 integer, parameter :: C_DSoSDO=1    ! 1 /Ds/ > filter(1)*sigma(Do)
@@ -46,6 +47,7 @@ integer, parameter :: NSPP_241=NSPT_201+NSP1
 
 contains
 
+!> Calculate the Hooft parameter
 subroutine hooft(reflections_data, filtered_reflections, yslope, tony, tonsy)
 use m_mrgrnk
 use xiobuf_mod, only: cmon
@@ -281,9 +283,9 @@ integer, external :: nctrim
 
 end subroutine
 
+!> slope of the normal probability plot (NPP) 
+!! Calculated between 10th and 90th percentile
 subroutine npp_slope(reflections_data, filtered_reflections, yslope)
-! slope of the normal probability plot (NPP) 
-! Calculated between 10th and 90th percentile
 use m_mrgrnk
 use xiobuf_mod, only: cmon
 use xssval_mod, only: issprt
@@ -364,6 +366,7 @@ end interface
 
 end subroutine
 
+!> Expected value of the normal probability plot (npp)
 function expected_npp(i, isize) result(z)
 implicit none
 integer, intent(in) :: i, isize
@@ -378,6 +381,7 @@ real pc, b, a, c, z
 
 end function
 
+!> Average of the ratios method
 subroutine average_ratios(reflections_data, filtered_reflections, xbar, sbar)
 use xiobuf_mod, only: cmon
 use xssval_mod, only: issprt
@@ -427,6 +431,7 @@ integer, external :: nctrim
 
 end subroutine
 
+!> Filter reflections based on an outlier rejection algorithm
 subroutine filter_four(reflections_data, reflections_filters, filter4, ierror)
 use xiobuf_mod, only: cmon 
 use xssval_mod, only: issprt
@@ -553,16 +558,16 @@ integer, external :: nctrim
     return
 end subroutine
 
-!CODE FOR XWTMOD
+!> This function return a scalar that modifies the weights
 function xwtmod(itype,smean,deltax,width)
-!c itype = 1 = unit modifier
-!c itype = 2 = Blessing modifier
-!c itype = 3 = Tukey modifier
 use xunits_mod, only:
 use xiobuf_mod, only:
 implicit none
 
 real xwtmod
+!> - itype = 1 = unit modifier
+!! - itype = 2 = Blessing modifier
+!! - itype = 3 = Tukey modifier
 integer, intent(in) :: itype
 real, intent(in) :: smean, deltax, width
 real probx, tukey
@@ -587,6 +592,7 @@ real probx, tukey
     return
 END function
 
+!> Lepage statistics
 subroutine lepage(reflections_data, filtered_reflections)
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
@@ -883,22 +889,26 @@ real cdf, q
 
 end subroutine
 
-!CODE FOR LINFIT
+!> least squares best line, based on Bevington, Chapter 6 \n
+!!  see also http://mathworld.wolfram.com/LeastSquaresFitting.html \n
+!!  y = a + bx \n
+!! \n
+!! verified against Watts & Halliwell, Essential Environmental \n
+!! Science, Routledge, 1996. 
 subroutine linearfit(x,y,wt,a,sa,b,sb,t,tsq,r,rsq,tensor)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
-!c     1  root, xcoord, ycoord, grad)
-!c least squares best line, based on Bevington, Chapter 6 
-!c  see also http://mathworld.wolfram.com/LeastSquaresFitting.html
-!c  y = a + bx
-!c
-!c verified against Watts & Halliwell, Essential Environmental
-!c Science, Routledge, 1996.
-!c
 implicit none
-real, dimension(:), intent(in) :: x,y,wt
-real, intent(out) :: a,sa,b,sb,t,tsq,r,rsq
-real, dimension(3), intent(out) :: tensor
+real, dimension(:), intent(in) :: x !< x-values
+real, dimension(:), intent(in) :: y !< y-values
+real, dimension(:), intent(in) :: wt !< weights
+real, intent(out) :: a,sa !< Intercept and su
+real, intent(out) :: b,sb !< slope and its su
+real, intent(out) :: t !< t   = t in Watts & Halliwell page 113
+real, intent(out) :: tsq !c tsq = F-test in Excel
+real, intent(out) :: r !< r   = r in Watts & Halliwell, page 111
+real, intent(out) :: rsq !< rsq = r-sq in Excel,  & W&H, page 112
+real, dimension(3), intent(out) :: tensor !< variance/covariance matrix
 
 real ss,sx,sxx,sy,syy,sxy,sqs,wsa,wsb, denom
 integer mitem
@@ -1005,6 +1015,7 @@ integer mitem
 
 end subroutine
 
+!> Hole in one method
 subroutine hole_in_one(reflections_data, filtered_reflections, hin1, hin1su, weights)
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data
@@ -1066,6 +1077,7 @@ real, dimension(3) :: tensor
 
 end subroutine
 
+!> Flack parameter extracted from refinement plus statistics
 subroutine howard_goodies(reflections_data, xflack, qflack, friedif, distmax)
 use xiobuf_mod, only: cmon
 use xssval_mod, only: issprt
@@ -1184,6 +1196,7 @@ include  'STORE.INC'
     
 end subroutine
 
+!> Different percentiles from a sorted serie
 subroutine percentiles(sortedvalues, f1decile, f1octile, f1quintile, fquart, fmedian, &
 &   f3quart, f4quintile, f7octile, f9decile)
 implicit none
@@ -1204,6 +1217,7 @@ integer nsize
         f9decile=sortedvalues(9*nsize/10)
 end subroutine
 
+!> Get friedif (calculated somewhere else)
 subroutine getfriedif(reflections_data, friedif)
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
@@ -1244,6 +1258,7 @@ integer, external :: kcprop
 
 end subroutine
 
+!> Apply all the filters to the reflection list
 subroutine applyfilters(reflections_data, reflections_filters, filter)
 implicit none
 real, dimension(:,:), intent(inout) :: reflections_data
@@ -1302,7 +1317,7 @@ integer i, ierror
     
 end subroutine
 
-
+!> Absolute configuration using Bijvoet differences
 subroutine bijvoet_differences(reflections_data, filtered_reflections, itype, bijvoet, bijvoetsu, weights)
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data
@@ -1369,6 +1384,7 @@ real, dimension(3) :: tensor
 
 end subroutine
 
+!> Proof of concept for a graph
 subroutine plot_something(reflections_data, filtered_reflections)
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
