@@ -381,19 +381,19 @@ real pc, b, a, c, z
 
 end function
 
-!> Average of the ratios method
+!> @brief Average of the ratios method
+!! @par
+!! compute individual and mean Flack x and sigma, and overall LSQ Flack \n
+!! The mean Flack is an Average of Ratios \n
+!! The LSQ Flack is a Ratio of Averages \n
+!! These will differ if the distribution is far from Normal. \n
+!! The Blessing weigting scheme down-weights outliers, keeping \n
+!! those reflections with a more or less Normal distribution. 
 subroutine average_ratios(reflections_data, filtered_reflections, xbar, sbar)
 use xiobuf_mod, only: cmon
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 use m_mrgrnk
-!c compute individual and mean Flack x and sigma, and overall LSQ Flack
-!c The mean Flack is an Average of Ratios
-!c The LSQ Flack is a Ratio of Averages
-!c These will differ if the distribution is far from Normal.
-!c The Blessing weigting scheme down-weights outliers, keeping
-!c those reflections with a more or less Normal distribution.
-!c
 
 implicit none
 real, dimension(:,:), intent(inout) :: reflections_data
@@ -418,7 +418,7 @@ integer, external :: nctrim
     do i=1,refls_size
         if(.not. filtered_reflections(i)) then
             refls_valid_size=refls_valid_size+1
-            flxwt = 1./(reflections_data(C_X, i)**2)
+            flxwt = 1./reflections_data(C_SX, i)**2
             sumflx=sumflx+reflections_data(C_X, i)*flxwt
             sumwt=sumwt+flxwt
             sumsig = sumsig + reflections_data(C_SX, i)
@@ -1397,6 +1397,8 @@ real, parameter :: distplt = 3.0
 integer i, nfc, nfo, refls_size
 real distmax, stnfc, stnfo
 
+    ifoplt=0
+    ifcplt=0
     refls_size=ubound(reflections_data, 2)
     do i=1, refls_size
         if(.not. filtered_reflections(i)) then
