@@ -94,7 +94,10 @@ sub obscureMachinePrecision() {
         while (<$fhi>) { 
 	   my $line = $_;
            chomp($line);
-# su_max shift often has too much precision to be stable across platforms
+#Catch negative zero formats from MINGW compiler.
+	   $line =~ s/(\s)-(0+\.0*\s)/$1$2/g;
+
+#  su_max shift often has too much precision to be stable across platforms
 	   if($line =~ m/^(_refine_ls_shift\/su_max\s+\d+.\d\d\d\d)\d+.*$/ ) {
               print $fho "[01] $1\n";
 # su_mean shift often has too much precision to be stable across platforms
