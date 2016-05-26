@@ -1880,7 +1880,7 @@ DATA RECORD THAT CONTAINS POINTERS USED TO CONTROL COMMAND ISSUING
          1    1    1    1    1    1    0    0    0    0
 THE DETAILS DETERMINED BY THE CORRESPONDING CYCLE OF S.F.L.S
 (1H ,8(3X,12A1))
-(1H ,I12,3X7E15.6)
+(1H ,F12.0,3X,7E15.6)
          2    2    2    2    2
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
