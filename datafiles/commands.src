@@ -221,8 +221,8 @@ PARAMETERS THAT ARE USED TO COMPUTE THE WEIGHT FOR A GIVEN REFLECTION
    3.INTEGERS           4    0    0    0    4    1  102    9    4
          1    1    1    1    1    1    0    0    0    0
 THE INTEGER PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)
-(1H ,8(3X,12A1))
-(1H ,I8,7I15)
+(1X ,8(3X,12A1))
+(1X ,I8,7I15)
          1    1    1    1
     .SCHEME             0    0    0    0    0         9
     ./FO/-TYPE          0    0    0    0    0         0
@@ -231,8 +231,8 @@ THE INTEGER PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)
    4.REALS              6    0    0    0    6    1  103   13    4
          1    1    1    1    1    1    0    0    0    0
 THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)
-(1H ,8(3X,12A1))
-(1H ,F8.4,7F15.4)
+(1X ,8(3X,12A1))
+(1X ,F8.4,7F15.4)
          2    2    2    2    2    2
     .WEIGHT             0    0    0    0    0        2.
     .MAXIMUM            0    0    0    0    0    10000.
@@ -380,7 +380,7 @@ INTENSITY  6      17    2
    4.OUTPUT            -3    1    0    0  -19    1  105   17    6
          1    1    0    0    1    1    0    0    0    0
 POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
-(1H ,24I5)
+(1X ,24I5)
    5.FORMAT             1    1    2    1    1    1 1008   33  106
          0    0    0    0    0    0    0    0    0    0
          6    7
@@ -418,7 +418,7 @@ OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
   11.XREFLECTIONS       0    0    0    0  -19    0 -104   13    6
          1    1    0    0    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
-(1H ,8E15.5/(1H ,15X,7E15.5))
+(1X ,8E15.5/(1X ,15X,7E15.5))
   12.XDATA-BLOCK        5    0    0    0    5    1  106   21    6
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
@@ -433,7 +433,7 @@ DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
   13.XDETAILS           0    0    0    0    4   -3  107   25    6
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
-(1H ,4E15.5)
+(1X ,4E15.5)
   14.XIN-DEFAULTS       5    0    0    0    5    1 1006   53  106
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1    1
@@ -510,7 +510,7 @@ LIST       7      17    1
    4.OUTPUT            -3    1    0    0  -19    1  105   17    7
          1    1    0    0    1    1    0    0    0    0
 POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
-(1H ,24I5)
+(1X ,24I5)
    5.FORMAT             1    1    2    1    1    1 1008   33  107
          0    0    0    0    0    0    0    0    0    0
          6    7
@@ -548,12 +548,12 @@ OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
   11.XREFLECTIONS       0    0    0    0  -19    0 -104   13    7
          1    1    0    0    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
-(1H ,8E15.6/(1H ,15X,7E15.6))
+(1X ,8E15.6/(1X ,15X,7E15.6))
   12.XDATA-BLOCK        5    0    0    0    5    1  106   21    7
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
-(1H ,8(3X,12A1))
-(1H ,8E15.6)
+(1X ,8(3X,12A1))
+(1X ,8E15.6)
          2    2    2    2    1
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
@@ -563,7 +563,7 @@ DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
   13.XDETAILS           0    0    0    0    4   -3  107   25    7
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
-(1H ,4E15.5)
+(1X ,4E15.5)
   14.XIN-DEFAULTS       5    0    0    0    5    1 1006   53  107
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1    1
@@ -861,8 +861,8 @@ LIST 13            9    0
    1.CRYSTAL            3    0    0    0    3    1  101    1   13
          1    1    1    1    1    1    0    0    0    0
 DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)
-(1H ,8(3X,12A1))
-(1H ,I10,I13,6I15)
+(1X ,8(3X,12A1))
+(1X ,I10,I13,6I15)
          3    3    3
     .FRIEDELPAIRS       0    0    1    2   -1 YES
      NO             YES
@@ -873,8 +873,8 @@ DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)
    2.DIFFRACTION        3    0    0    0    3    1  102    5   13
          1    1    1    1    1    1    0    0    0    0
 DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6
-(1H ,8(3X,12A1))
-(1H ,I10,7I15)
+(1X ,8(3X,12A1))
+(1X ,I10,7I15)
          3    3    1
     .GEOMETRY           0    0    1   10    1 UNKNOWN
      NORMAL         EQUI           ANTI           PRECESSION     UNKNOWN
@@ -885,8 +885,8 @@ DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6
    3.CONDITIONS         7    0    0    0    7    1  103    9   13
          1    1    1    1    1    1    0    0    0    0
 EXPERIMENTAL CONSTANTS THAT DEFINE THE DATA COLLECTION PROCESS
-(1H ,8(3X,12A1))
-(1H ,F12.5,F14.5,F15.5,F16.5,4F15.5)
+(1X ,8(3X,12A1))
+(1X ,F12.5,F14.5,F15.5,F16.5,4F15.5)
          2    2    2    2    2    2    2
     .WAVELENGTH         0    0    1    0    0 .71073
     .THETA(1)           0    0    1    0    0 6.05
@@ -898,8 +898,8 @@ EXPERIMENTAL CONSTANTS THAT DEFINE THE DATA COLLECTION PROCESS
    4.TWO                9    0    4    4    9    2  104   13   13
          1    1    1    1    1    1    0    0    0    0
 DEFINITION OF THE ORIENTATION MATRIX FROM TWO REFLECTIONS
-(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
-(1H ,F7.3,2F15.3,F16.3,3F15.3,F16.3/1H ,7X,2F15.3)
+(1X ,8(3X,12A1)/1X ,15X,7(3X,12A1))
+(1X ,F7.3,2F15.3,F16.3,3F15.3,F16.3/1X ,7X,2F15.3)
          5    6    7    8
          2    1    6    2    1    7    2    1    8    2    1    9
          2    2    2    2    2    2    2    2    2
@@ -915,8 +915,8 @@ DEFINITION OF THE ORIENTATION MATRIX FROM TWO REFLECTIONS
    5.THREE              9    0    4    2    9    3  105   17   13
          1    1    1    1    1    1    0    0    0    0
 DEFINITION OF THE ORIENTATION MATRIX FROM THREE REFLECTIONS
-(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
-(1H ,F7.3,2F15.3,F16.3,3F15.3,F16.3/1H ,7X,2F15.3)
+(1X ,8(3X,12A1)/1X ,15X,7(3X,12A1))
+(1X ,F7.3,2F15.3,F16.3,3F15.3,F16.3/1X ,7X,2F15.3)
          4    6    7    8
          2    1    6    2    1    9
          2    2    2    2    2    2    2    2    2
@@ -932,8 +932,8 @@ DEFINITION OF THE ORIENTATION MATRIX FROM THREE REFLECTIONS
    6.REAL              12    0    4    2   12    1  106   21   13
          1    1    1    1    1    1    0    0    0    0
 DEFINITION OF THE ORIENTATION MATRIX FROM THE PHI AXIS AND A GENERAL REFLECTION
-(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
-(1H ,F10.3,2F15.3,F13.3,4F15.3/1H ,10X,2F15.3,F13.3,4F15.3)
+(1X ,8(3X,12A1)/1X ,15X,7(3X,12A1))
+(1X ,F10.3,2F15.3,F13.3,4F15.3/1X ,10X,2F15.3,F13.3,4F15.3)
          4    5    7    8
          2    1    6    2    1    9
          2    2    2    2    2    2    2    2    2    2    2    2
@@ -952,8 +952,8 @@ DEFINITION OF THE ORIENTATION MATRIX FROM THE PHI AXIS AND A GENERAL REFLECTION
    7.RECIPROCAL        12    0    4    2   12    1  107   25   13
          1    1    1    1    1    1    0    0    0    0
 DEFINITION OF THE ORIENTATION MATRIX FROM THE EQUATORIAL PLANE AND A REFLECTION
-(1H ,8(3X,12A1)/1H ,15X,7(3X,12A1))
-(1H ,F10.3,2F15.3,F13.3,4F15.3/1H ,10X,2F15.3,F13.3,4F15.3)
+(1X ,8(3X,12A1)/1X ,15X,7(3X,12A1))
+(1X ,F10.3,2F15.3,F13.3,4F15.3/1X ,10X,2F15.3,F13.3,4F15.3)
          4    5    6    8
          2    1    6    2    1    9
          2    2    2    2    2    2    2    2    2    2    2    2
@@ -972,7 +972,7 @@ DEFINITION OF THE ORIENTATION MATRIX FROM THE EQUATORIAL PLANE AND A REFLECTION
    8.MATRIX             1    1    4    6    9    1  109   29   13
          1    1    0    0    1    1    0    0    0    0
 THE ORIENTATION MATRIX
-(3(1H ,10X,3F10.5/))
+(3(1X ,10X,3F10.5/))
          4    5    6    7
          2    1    5    2    1    6    2    1    7    2    1    8    2    1    9
          2    1   10
@@ -981,8 +981,8 @@ THE ORIENTATION MATRIX
    9.AXIS               3    1    0    3    3    1  109   33   13
          1    1    1    1    1    1    0    0    0    0
 THE AXIS USED FOR WEISSENBERG DATA COLLECTION
-(1H ,3(3X,12A1))
-(1H ,F6.2,2F15.2)
+(1X ,3(3X,12A1))
+(1X ,F6.2,2F15.2)
          2    1    1    2    1    2    2    1    3
          2    2    2
     .H                  0    0    1    0    0 0.0
@@ -1006,8 +1006,8 @@ LIST 14           10    0
    4.ORIENTATION        3    1    0    0    3    1  102    5   14
          1    1    1    1    1    1    0    0    0    0
 ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING
-(1H ,8(3X,12A1))
-(1H ,I7,7I15)
+(1X ,8(3X,12A1))
+(1X ,I7,7I15)
          3    3    3
     .DOWN               0    0    1    3    1 X
      X              Y              Z
@@ -1018,14 +1018,14 @@ ORIENTATION PARAMETERS FOR THE MAP CALCULATION AND PRINTING
    5.SCALEFACTOR        1    1    0    0    1    1  103    9   14
          1    1    1    1    1    1    0    0    0    0
 THE MAP SCALE FACTOR
-(1H ,8(3X,12A1))
-(1H ,F10.5,7F15.5)
+(1X ,8(3X,12A1))
+(1X ,F10.5,7F15.5)
          2
     .VALUE              0    0    1    0    0 10.0
    6.DIVISIONS          0    0    0    0    6    3  101    1   14
          1    1    0    0    1    1    0    0    0    0
 DIVISIONS INFORMATION FOR EACH OF THE AXES
-(1H ,6F10.2)
+(1X ,6F10.2)
    7.X-PATT            -1    1    0    0    6    1 1004   29  114
          0    0    0    0    0    0    0    0    0    0
    8.Y-PATT            -1    1    0    0    6    1 1005   33  114
@@ -1035,7 +1035,7 @@ DIVISIONS INFORMATION FOR EACH OF THE AXES
   10.PATDIV             0    0    0    0    6    3  104   13   14
          1    1    0    0    1    1    0    0    0    0
 PATTERSON DIVISIONS FOR EACH OF THE AXES
-(1H ,6F10.2)
+(1X ,6F10.2)
 LIST 15            0    0
   15   40960 CRYSTALSINPUT
 LIST 16           40    0
@@ -1174,7 +1174,7 @@ LIST 20            3    1
    1.MATRIX             9   10    0    0    9   10  101    1   20
          1    1    0    0    1    1    0    0    0    0
 MATRICES FOR FOREWARD TRANSFORMATION
-(3(1H ,10X,3F10.3/))
+(3(1X ,10X,3F10.3/))
          2    2    2    2    2    2    2    2    2
     .R(11)              0    0    1    0    0 1.0
     .R(12)              0    0    1    0    0 0.0
@@ -1188,11 +1188,11 @@ MATRICES FOR FOREWARD TRANSFORMATION
    2.INVERSE            0    0    0    0    9   10  102    5   20
          1    1    0    0    1    1    0    0    0    0
 MATRICES FOR THE INVERSE TRANSFORMATIONS
-(3(1H ,10X,3F10.3/))
+(3(1X ,10X,3F10.3/))
    3.VECTOR             3   10    0    0    3   10  103    9   20
          1    1    0    0    1    1    0    0    0    0
 VECTORS FOR FOREWARD TRANSFORMATION
-(1H ,10X,3F10.3/)
+(1X ,10X,3F10.3/)
          2    2    2
     .V(1)               0    0    1    0    0 0.0
     .V(2)               0    0    1    0    0 0.0
@@ -1218,8 +1218,8 @@ LIST 23            5    0
    1.MODIFY             7    1    0    0    7    1  101    1   23
          1    1    1    1    1    1    0    0    0    0
 MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)
-(1H ,8(3X,12A1))
-(1H ,I10,7I15)
+(1X ,8(3X,12A1))
+(1X ,I10,7I15)
          3    3    3    3    3    3    3
     .ANOMALOUS          0    0    1    2   -1 NO
      NO             YES
@@ -1238,8 +1238,8 @@ MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)
    2.MINIMISE           6    1    0    0    6    1  103    9   23
          1    1    1    1    1    1    0    0    0    0
 MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)
-(1H ,8(3X,12A1))
-(1H ,I10,7I15)
+(1X ,8(3X,12A1))
+(1X ,I10,7I15)
          1    3    3    3    3    3
     .NSINGULARITY       0    0    1    0    0         0
     .F-SQUARED          0    0    1    2   -1 NO
@@ -1255,8 +1255,8 @@ MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)
    3.ALLCYCLES          9    1    0    0    9    1  104   13   23
          1    1    1    1    1    1    0    0    0    0
 CONDITIONS THAT MUST BE MET AFTER EACH CYCLE IF REFINEMENT IS TO CONTINUE
-(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
-(1H ,E14.6,7E15.6/(1H ,14X,7E15.6))
+(1X ,8(3X,12A1)/(1X ,15X,7(3X,12A1)))
+(1X ,E14.6,7E15.6/(1X ,14X,7E15.6))
          2    2    2    2    2    2    2    2    2
     .MIN-R              0    0    1    0    0 0.0
     .MAX-R              0    0    1    0    0 100.
@@ -1270,8 +1270,8 @@ CONDITIONS THAT MUST BE MET AFTER EACH CYCLE IF REFINEMENT IS TO CONTINUE
    4.INTERCYCLE         8    1    0    0    8    1  105   17   23
          1    1    1    1    1    1    0    0    0    0
 CONDITIONS THAT MUST BE MET BETWEEN EACH CYCLE IF REFINEMENT IS TO CONTINUE
-(1H ,8(3X,12A1))
-(1H ,E14.6,7E15.6)
+(1X ,8(3X,12A1))
+(1X ,E14.6,7E15.6)
          2    2    2    2    2    2    2    2
     .MIN-DR             0    0    1    0    0 -5.
     .MAX-DR             0    0    1    0    0 100.
@@ -1284,8 +1284,8 @@ CONDITIONS THAT MUST BE MET BETWEEN EACH CYCLE IF REFINEMENT IS TO CONTINUE
    5.REFINE             6    1    0    0    6    1  106   21   23
          1    1    1    1    1    1    0    0    0    0
 SPECIAL REFINEMENT CONDITIONS
-(1H ,8(3X,12A1))
-(1H ,8(I10,5X))
+(1X ,8(3X,12A1))
+(1X ,8(I10,5X))
          3    3    3    3    3    2
     .SPECIAL            0    0    1    5   -1 CONSTRAIN
      NO             TEST           ORIGIN         RESTRAIN       CONSTRAIN
@@ -1306,8 +1306,8 @@ LIST 24            3    0
    2.SHIFTS             2    0    0    0    2   -4  101    1   24
          1    1    1    1    1    1    0    0    0    0
 THE CALCULATED AND APPLIED SHIFT FACTORS
-(1H ,8(3X,12A1))
-(1H ,F10.3,7F15.3)
+(1X ,8(3X,12A1))
+(1X ,F10.3,7F15.3)
          2    2
     .CALCULATED         0    0    1    0    0 0.0
     .APPLIED            0    0    1    0    0 0.0
@@ -1324,7 +1324,7 @@ LIST 25            3    0
    2.MATRIX             9   -4    0    0    9   -4  101    1   25
          1    1    0    0    1    1    0    0    0    0
 THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT
-(3(1H ,10X,3F10.3/))
+(3(1X ,10X,3F10.3/))
          2    2    2    2    2    2    2    2    2
     .R(11)              0    0    1    0    0 1.0
     .R(12)              0    0    1    0    0 0.0
@@ -1338,7 +1338,7 @@ THE MATRICES THAT TRANSFORM THE STANDARD INDICES INTO EACH ELEMENT
    3.INVERSE            0    0    0    0    9   -4  102    5   25
          1    1    0    0    1    1    0    0    0    0
 THE INVERSE MATRICES FOR THE TWIN TRANSFORMATIONS
-(3(1H ,10X,3F10.3/))
+(3(1X ,10X,3F10.3/))
 LIST 26            3    6
    2    4096 CRYSTALSPROCESS
     1    2    5   16   17   41
@@ -1361,8 +1361,8 @@ LIST 27            2    0
    2.SCALE              4    0    0    0    4   -4  101    1   27
          1    1    1    1    1    1    0    0    0    0
 THE SCALE FACTORS DEDUCED FROM THE HILGER WATTS 4-CIRCLE PROGRAM
-(1H ,4(3X,12A1))
-(1H ,F9.0,3X,F13.3,F17.3,F15.0)
+(1X ,4(3X,12A1))
+(1X ,F9.0,3X,F13.3,F17.3,F15.0)
          2    2    2    2
     .SCALENUMBER        0   -1    1    0    0
     .RAWSCALE           0   -1    1    0    0
@@ -1457,18 +1457,18 @@ LIST 28           11    1
    5.MINIMA-NAMES       0    0    0    0    4  -23 1101    5   28
          1    1    0    0    1    1    0    0    0    0
 THE NAMES AND MINIMUM VALUES TO BE CHECKED FOR IN LIST 6
-(1H ,2X,3A4,3X,E15.5)
+(1X ,2X,3A4,3X,E15.5)
    6.USE-MAXIMA         0    0    0    0    2  -27  102    9   28
          0    0    0    0    0    0    0    0    0    0
    7.MAXIMA-NAMES       0    0    0    0    4  -27 1102   13   28
          1    1    0    0    1    1    0    0    0    0
 THE NAMES AND MAXIMUM VALUES TO BE CHECKED FOR IN LIST 6
-(1H ,2X,3A4,3X,E15.5)
+(1X ,2X,3A4,3X,E15.5)
    8.SLICE              6    0    0    0    6  -20  103   17   28
          1    1    1    1    1    1    0    0    0    0
 THE PARAMETERS DEFINING ACCEPTABLE SLICES OF RECIPROCAL SPACE
-(1H ,8(3X,12A1))
-(1H ,F6.2,6F15.2)
+(1X ,8(3X,12A1))
+(1X ,F6.2,6F15.2)
          2    2    2    2    2    3
     .P                  0    0    1    0    0 0.0
     .Q                  0    0    1    0    0 0.0
@@ -1489,8 +1489,8 @@ THE REFLECTION INDICES TO BE OMITTED
   10.CONDITION          6    0    0    0    6  -36  105   33   28
          1    1    1    1    1    1    0    0    0    0
 THE PARAMETERS DEFINING ACCEPTABLE INDEX CONDITIONS
-(1H ,8(3X,12A1))
-(1H ,F6.2,6F15.2)
+(1X ,8(3X,12A1))
+(1X ,F6.2,6F15.2)
          2    2    2    2    2    3
     .P                  0    0    1    0    0 0.0
     .Q                  0    0    1    0    0 0.0
@@ -1502,8 +1502,8 @@ THE PARAMETERS DEFINING ACCEPTABLE INDEX CONDITIONS
   11.SKIP               1    1    0    0    1    1  106   37   28
          1    1    1    1    1    1    0    0    0    0
 THE PARAMETER DEFINING SKIP STEP LENGTH
-(1H ,8(3X,12A1))
-(1H ,F6.2,6F15.2)
+(1X ,8(3X,12A1))
+(1X ,F6.2,6F15.2)
          2
     .STEP               0    0    1    0    0 1.0
 LIST 29            2    0
@@ -1514,8 +1514,8 @@ LIST 29            2    0
    2.ELEMENT            8   -4    0    0    8   -4  101    1   29
          1    1    1    1    1    1    0    0    0    0
 The elements in the asymmetric unit
-(1H ,8(3X,12A1))
-(1H ,3X,A4,6F15.2,11X,A4)
+(1X ,8(3X,12A1))
+(1X ,3X,A4,6F15.2,11X,A4)
          3    2    2    2    2    2    2    3 
     .TYPE               0    0    1    0    0 NULL
     .COVALENT           0    0    1    0    0 0.8
@@ -1737,7 +1737,7 @@ CELL PARAMETER CORRELATION MATRIX
    3.TERMS              0    0    0    0   12    1  103    9   31
          1    1    0    0    1    1
 TERMS FOR DISTANCE/ANGLE CALCULATION
-(4(1H ,6F10.3/))
+(4(1X ,6F10.3/))
 LIST 32            0    0
   32   40960 CRYSTALSINPUT
 SFLS              13   15
@@ -1746,8 +1746,8 @@ SFLS              13   15
    1.REFINE            17    0    0    0   18   11  101    1   33
          1    1    1    1    1    1    0    0    0    0
 INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
-(1H ,8(3X,12A1))
-(1H ,I7,7I15)
+(1X ,8(3X,12A1))
+(1X ,I7,7I15)
          3    3    3    3    3    3    3    3    3    2    2    2    1    3    3
          3    2
     .XXXXXXX            0    0    1    2   -1 NO
@@ -1797,8 +1797,8 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
    6.SHIFT             25    0    0    0   25   11  102    5   33
          1    1    1    1    1    1    0    0    0    0
 INFORMATION ABOUT THE SHIFT FACTORS TO BE USED DURING SFLS
-(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
-(1H ,F10.6,7F15.6/(1H ,10X,7F15.6))
+(1X ,8(3X,12A1)/(1X ,15X,7(3X,12A1)))
+(1X ,F10.6,7F15.6/(1X ,10X,7F15.6))
          2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
          2    2    2    2    2    2    2    2    2    2
     .GENERAL            0    0    1    0    0 1.0
@@ -1831,8 +1831,8 @@ INFORMATION ABOUT THE SHIFT FACTORS TO BE USED DURING SFLS
    9.TYPEOFSHIFT       25    0    0    0   25   11  103    9   33
          1    1    1    1    1    1    0    0    0    0
 INFORMATION ABOUT THE TYPE OF SHIFT FACTOR TO COMPUTE AND USE DURING SFLS
-(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
-(1H ,I5,7I15/(1H ,5X,7I15))
+(1X ,8(3X,12A1)/(1X ,15X,7(3X,12A1)))
+(1X ,I5,7I15/(1X ,5X,7I15))
          1    1    1    1    1    1    1    1    1    1    1    1    1    1    1
          1    1    1    1    1    1    1    1    1    1
     .GENERAL            0    0    1    0    0        -1
@@ -1863,24 +1863,24 @@ INFORMATION ABOUT THE TYPE OF SHIFT FACTOR TO COMPUTE AND USE DURING SFLS
   10.INSTR-BLOCK        2    0    0    0    5  120  104   13   33
          1    1    1    1    1    1    0    0    0    0
 INSTRUCTION TO BE ISSUED TO ENABLE EACH CYCLE OF S.F.L.S TO BE COMPUTED
-(1H ,8(3X,12A1))
-(1H ,I6,12X,A1,20A4)
+(1X ,8(3X,12A1))
+(1X ,I6,12X,A1,20A4)
          1    3
     .LENGTH             0    0    0    0    0         0
     .COMMAND            0    0    0    0    0
   11.CONTROL            2    0    0    0    2    1  105   21   33
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS POINTERS USED TO CONTROL COMMAND ISSUING
-(1H ,8(3X,12A1)/(1H ,15X,7(3X,12A1)))
-(1H ,I7,7I15/(1H ,5X,7I15))
+(1X ,8(3X,12A1)/(1X ,15X,7(3X,12A1)))
+(1X ,I7,7I15/(1X ,5X,7I15))
          1    1
     .OFFSET             0    0    0    0    0         0
     .CYCLE NUMBER       0    0    0    0    0        -1
   12.DATA-VALUES        5    0    0    0    5   11  106   17   33
          1    1    1    1    1    1    0    0    0    0
 THE DETAILS DETERMINED BY THE CORRESPONDING CYCLE OF S.F.L.S
-(1H ,8(3X,12A1))
-(1H ,F12.0,3X,7E15.6)
+(1X ,8(3X,12A1))
+(1X ,F12.0,3X,7E15.6)
          2    2    2    2    2
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
@@ -3326,7 +3326,7 @@ HKLI       6      28    4
    4.OUTPUT            -3    1    0    0  -19    1  105   17    6
          1    1    0    0    1    1    0    0    0    0
 POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
-(1H ,24I5)
+(1X ,24I5)
    5.FORMAT             1    0    0    1    1    1 1008   33  106
          0    0    0    0    0    0    0    0    0    0
          1    2    6
@@ -3349,12 +3349,12 @@ OUTPUT DISK BUFFER, AND POINTERS TO CONTROL WRITING TO THE DISK
   10.XREFLECTIONS       0    0    0    0  -19    0 -104   13    6
          1    1    0    0    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS THE REFLECTION DATA ON THE DISK
-(1H ,8E15.6/(1H ,15X,7E15.6))
+(1X ,8E15.6/(1X ,15X,7E15.6))
   11.XDATA-BLOCK        5    0    0    0    5    1  106   21    6
          1    1    1    1    1    1    0    0    0    0
 DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
-(1H ,8(3X,12A1))
-(1H ,8E15.6)
+(1X ,8(3X,12A1))
+(1X ,8E15.6)
          2    2    2    2    1
     .CYCLE NUMBER       0    0    0    0    0 0.0
     .R                  0    0    0    0    0 0.0
@@ -3364,7 +3364,7 @@ DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
   12.XDETAILS           0    0    0    0    4   -3  107   25    6
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
-(1H ,4E15.5)
+(1X ,4E15.5)
   13.XIN-DEFAULTS      12    0    0    0   12    1 1006   53  106
          0    0    0    0    0    0    0    0    0    0
          1    1    1    1    1    1    1    1    1    1    1    1
