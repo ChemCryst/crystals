@@ -209,7 +209,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d)\d((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d)\d\s*/ ) {
               print $fho "[28] $1 $2\n";
 # Mean shift line
-	   } elsif($line =~ m/^ Mean\s+\d+\.\d\d\s+.*/ ) {
+#	   } elsif($line =~ m/^ Mean\s+\d+\.\d\d\s+.*/ ) {
 #              print $fho "$1 $2\n";
 # RMS sh/esd line
 	   } elsif($line =~ m/^ RMS sh\/esd\s+\d+\.\d\d\s+.*/ ) {
