@@ -95,7 +95,7 @@ sub obscureMachinePrecision() {
 	   my $line = $_;
            chomp($line);
 #Catch negative zero formats from MINGW compiler.
-	   $line =~ s/(\s)-(0+\.0*\s)/$1$2/g;
+	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
 
 #  su_max shift often has too much precision to be stable across platforms
 	   if($line =~ m/^(_refine_ls_shift\/su_max\s+\d+.\d\d\d\d)\d+.*$/ ) {
