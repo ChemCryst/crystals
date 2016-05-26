@@ -30,6 +30,12 @@ integer :: arg_precision
 integer :: arg_length
 integer :: arg_decimal_pos
 
+    if(isnan(num)) then
+        allocate(character(len=3) :: formatted_output)
+        formatted_output='NaN'
+        return
+    end if
+
     if(esd<0.0d0) then
         !print *, 'negative esd'
         call abort()
@@ -93,6 +99,12 @@ logical :: arg_fixedform
 integer :: arg_precision
 integer :: arg_length
 integer :: arg_decimal_pos
+
+    if(isnan(num)) then
+        allocate(character(len=3) :: formatted_output)
+        formatted_output='NaN'
+        return
+    end if
 
     if(esd<0.0d0) then
         !print *, 'negative esd'
