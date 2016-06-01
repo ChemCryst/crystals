@@ -2,7 +2,9 @@
 !! 
 module absolut_mod
 
-! Constants for the type of data stored
+!> @name reflections_data
+!! List of variables stored in reflections_data array
+!> @{
 integer, parameter :: C_H=1 !< \f$ h \f$ index
 integer, parameter :: C_K=2 !< \f$ k \f$ index
 integer, parameter :: C_L=3 !< \f$ l \f$ index
@@ -27,23 +29,30 @@ integer, parameter :: C_FCK1=21 !< \f$ F_{ck1} \f$ Calculated structure factor f
 integer, parameter :: C_FOK2=22 !< \f$ F_{ok2} \f$ Observed structure factor for reflection 2
 integer, parameter :: C_SIG2=23 !< \f$ \sigma_2 \f$ Sigma of \f$ F_{ok2} \f$ for reflection 2
 integer, parameter :: C_FCK2=24 !< \f$ F_{ck2} \f$ Calculated structure factor for reflection 2
-integer, parameter :: C_NUMFIELD=24
+integer, parameter :: C_NUMFIELD=24 !< Number of fields in reflections_data
+!> @}
 
-! COnstants for the filters name
-integer, parameter :: C_DSoSDO=1    ! 1 /Ds/ > filter(1)*sigma(Do)
-integer, parameter :: C_ASoSAO=2    ! 2  As  > filter(2)*sigma(Ao)
-integer, parameter :: C_DOoDSmax=3  ! 3 /Do/ < filter(3)*Ds(max)
-integer, parameter :: C_OUTLIER=4   ! 4 Kflack 
-integer, parameter :: C_AOoAc=5     ! 5 Ratio Ao/Ac >< filter(5) 
-integer, parameter :: C_NUMFILTERS=5
+!> @name List of filters
+!! reflections_filters holds all the filters for every reflection.
+!> @{
+integer, parameter :: C_DSoSDO=1    !< /Ds/ > filter(1)*sigma(Do)
+integer, parameter :: C_ASoSAO=2    !<  As  > filter(2)*sigma(Ao)
+integer, parameter :: C_DOoDSmax=3  !< /Do/ < filter(3)*Ds(max)
+integer, parameter :: C_OUTLIER=4   !< Outlier rejection (was in kflack)
+integer, parameter :: C_AOoAc=5     !< Ratio Ao/Ac >< filter(5) 
+integer, parameter :: C_NUMFILTERS=5!< Number of fields in reflections_filters
+!> @}
 
-! Platon constants
+!> @name Platon constant
+!! Constants taken from platon
+!> @{
 real, parameter :: STEP=0.025
 integer, parameter :: NSP1=NINT(1.0/STEP)
 integer, parameter :: NSTP_401=10*NSP1+1
 integer, parameter :: NSPT_201=5*NSP1+1
 integer, parameter :: NSPM_161=NSPT_201-NSP1
 integer, parameter :: NSPP_241=NSPT_201+NSP1
+!> @}
 
 contains
 
@@ -122,7 +131,6 @@ integer, external :: nctrim
     tonsy=sqrt(xg2/xg0)/2.0
     
     write (cmon,'(a)') ' Hooft Parameter '
-    call xprvdu (ncvdu, 1, 0)
     if (issprt.eq.0) then
         write (ncwu,'(a)') trim(cmon(1))
     end if
@@ -168,106 +176,86 @@ integer, external :: nctrim
         xpll2=-1.0d0
     end if
 
-    write (cmon,'(a)') ' Hooft probability analysis'
-    call xprvdu (ncvdu, 1, 0)
     if (issprt.eq.0) then
-        write (ncwu,'(a)') trim(cmon(1))
-    end if
+        write (ncwu,'(a)') ' Hooft probability analysis'
 !c p2(true)
-    write (CMON,'(a,a)') ' For an enantiopure material,', &
-    &   ' there are 2 choices, P2'    
-    call xprvdu (ncvdu, 1, 0)
-    if (issprt.eq.0) then
-        write (ncwu,'(a)') trim(cmon(1))
-    end if
+        write (ncwu,'(a,a)') ' For an enantiopure material,', &
+        &   ' there are 2 choices, P2' 
 
-    if (xpll2.ge.0.0) then
-        write (form,2150) xpll2,xpll2
-2150      format (x,f9.4,3x,'i.e. ',e12.6)
-    else 
-        write (form,2200)
-2200      format (6x,'does not compute')
-    end if
-    write (line,2250) form
-2250     format (' p2(correct) ',a)
-    write (CMON,2300) LINE
-    call xprvdu (ncvdu, 1, 0)
-    if (issprt.eq.0) write (ncwu,2300) line
-2300     format (a)
+        if (xpll2.ge.0.0) then
+            write (form,2150) xpll2,xpll2
+2150        format (x,f9.4,3x,'i.e. ',e12.6)
+        else 
+            write (form,2200)
+2200        format (6x,'does not compute')
+        end if
+        write (line,2250) form
+2250    format (' p2(correct) ',a)
+        write (ncwu,2300) line
+2300    format (a)
 !c
 !c calculate p3(0),p3(tw),p3(1)
-    write (cmon,'(/a,a)') ' if 50:50 twinning is possible,',' there are 3 choices, p3'
-    call xprvdu (ncvdu, 2, 0)
-    if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:nctrim(cmon(1))),cmon(2)(:nctrim(cmon(2)))
-    xtwll=datc(nspt_201)-datcm
-    xtwll=exp(xtwll)
-    xsmll=xplll+xtwll+xmnll
+        write (ncwu,'(a)')' if 50:50 twinning is possible,',' there are 3 choices, p3'
+        xtwll=datc(nspt_201)-datcm
+        xtwll=exp(xtwll)
+        xsmll=xplll+xtwll+xmnll
 !c       write(123,'(4e16.4)') xtwll,xplll, xmnll, xsmll
-    if (xsmll.gt. 0.0) then
-        xplll=xplll/xsmll
-        xmnll=xmnll/xsmll
-        xtwll=xtwll/xsmll
+        if (xsmll.gt. 0.0) then
+            xplll=xplll/xsmll
+            xmnll=xmnll/xsmll
+            xtwll=xtwll/xsmll
 !c p3(true)
-        if (xplll.gt.0.001) then
-            write (form,2150) xplll,xplll
-        else if (xplll.lt.0.0) then
-            write (form,2200)
-        else
-            write (form,2150) xplll,xplll
-        end if
-        write (line,2350) form
-2350      format (' p3(correct) ',a)
-        write (cmon,2300) line
-        call xprvdu (ncvdu, 1, 0)
-        if (issprt.eq.0) write (ncwu,2300) line
+            if (xplll.gt.0.001) then
+                write (form,2150) xplll,xplll
+            else if (xplll.lt.0.0) then
+                write (form,2200)
+            else
+                write (form,2150) xplll,xplll
+            end if
+            write (line,2350) form
+2350        format (' p3(correct) ',a)
+            write (ncwu,2300) line
 !c p3(twin)
-        if (xtwll.gt.0.001) then
-            write (form,2150) xtwll,xtwll
-        else if (xtwll.lt.0.0) then
-            write (form,2200)
-        else
-            write (form,2150) xtwll,xtwll
-        end if
-        write (line,2400) form
-2400      format (' p3(rac-twin)',a)
-        write (cmon,2300) line
-        call xprvdu (ncvdu, 1, 0)
-        if (issprt.eq.0) write (ncwu,2300) line
+            if (xtwll.gt.0.001) then
+                write (form,2150) xtwll,xtwll
+            else if (xtwll.lt.0.0) then
+                write (form,2200)
+            else
+                write (form,2150) xtwll,xtwll
+            end if
+            write (line,2400) form
+2400        format (' p3(rac-twin)',a)
+            write (ncwu,2300) line
 !c p3(false)
-        if (xmnll.gt.0.001) then
-            write (form,2150) xmnll,xmnll
-        else if (xmnll.lt.0.0) then
-            write (form,2200)
+            if (xmnll.gt.0.001) then
+                write (form,2150) xmnll,xmnll
+            else if (xmnll.lt.0.0) then
+                write (form,2200)
+            else
+                write (form,2150) xmnll,xmnll
+            end if
+            write (line,2450) form
+2450        format (' p3(inverse) ',a)
+            write (ncwu,2300) line
+            write (line,2500) xg
+2500        format (' g           ',f9.4)
+            write (ncwu,2300) line
+            yunk=sqrt(xg2/xg0)
+            if (yunk.gt.0.0001) then
+                write (form,2550) yunk
+2550            format (f9.4)
+            else
+                write (form,2150) yunk,yunk
+            end if
+            write (line,2600) form
+2600        format (' g s.u.      ',a)
+            write (ncwu,2300) line
+            write (ncwu,'(a)') ''
         else
-            write (form,2150) xmnll,xmnll
+            write (cmon,'(a//)') ' data do not resolve the p3 hypothesis'
+            write (ncwu,'(a//)') cmon(1)(:nctrim(cmon(1)))
         end if
-        write (line,2450) form
-2450      format (' p3(inverse) ',a)
-        write (cmon,2300) line
-!c           call xprvdu (ncvdu, 1, 0)
-        if (issprt.eq.0) write (ncwu,2300) line
-        write (line,2500) xg
-2500      format (' g           ',f9.4)
-        if (issprt.eq.0) write (ncwu,2300) line
-        yunk=sqrt(xg2/xg0)
-        if (yunk.gt.0.0001) then
-            write (form,2550) yunk
-2550        format (f9.4)
-        else
-            write (form,2150) yunk,yunk
-        end if
-        write (line,2600) form
-2600      format (' g s.u.      ',a)
-        if (issprt.eq.0) write (ncwu,2300) line
-        write (cmon,'(/)')
-!c          call xprvdu (ncvdu, 1, 0)
-        if (issprt.eq.0) write (ncwu,'(a)')cmon(1)(:nctrim(cmon(1)))
-    else
-        write (cmon,'(a//)') ' data do not resolve the p3 hypothesis'
-        call xprvdu (ncvdu, 2, 0)
-        if (issprt.eq.0) write (ncwu,'(a//)') cmon(1)(:nctrim(cmon(1)))
     end if
-
 
     iinvert = 0
     if ((xpll2 .ge. 0.0).and.(xpll2.le.0.66)) then
@@ -277,8 +265,7 @@ integer, external :: nctrim
         iinvert = 1
     endif
     if (iinvert .eq. 1) then
-        write(cmon,'(a)')'{e you may need to invert the structure'
-        call xprvdu (ncvdu,1,0)
+        write(ncwu,'(a)')'You may need to invert the structure'
     endif
 
 end subroutine
@@ -297,7 +284,7 @@ integer, dimension(:), allocatable :: reflections_rank, valid_reflections_indice
 real, intent(out) :: yslope
 integer iz10, iz90, refls_size, refls_valid_size
 real, dimension(3) :: hkl
-real ss, sx, sxx, sxy, sy, deter
+double precision ss, sx, sxx, sxy, sy, deter
 integer i
 real z, zh
 
@@ -324,7 +311,8 @@ end interface
     refls_valid_size=size(valid_reflections_indices)
 
     if(refls_valid_size<1) then
-        print *, 'Not enough reflections for the normal probability plot'
+        write ( cmon, '(a)') 'Not enough reflections for the normal probability plot'
+        call xprvdu(ncvdu, 1,0)
         return
     end if
     allocate(reflections_rank(refls_valid_size))
@@ -358,11 +346,10 @@ end interface
     IF (DETER.NE.0.) THEN
         YSLOPE=(SS*SXY-SX*SY)/DETER
     ELSE
-        WRITE (*,'(A)') 'NPP Slope cannot be computed'
+        write ( cmon, '(a)') 'NPP Slope cannot be computed'
+        call xprvdu(ncvdu, 1,0)
         yslope=0.0
     END IF
-    
-    print *, ''   
 
 end subroutine
 
@@ -398,10 +385,10 @@ use m_mrgrnk
 implicit none
 real, dimension(:,:), intent(inout) :: reflections_data
 logical, dimension(:), intent(in) :: filtered_reflections
-real sumflx, sumsig, sumwt
+double precision sumflx, sumsig, sumwt
 integer refls_valid_size, refls_size
 integer i
-real flxwt
+double precision flxwt
 real sbar, xbar
 
 
@@ -444,10 +431,10 @@ logical, dimension(:,:), intent(inout) :: reflections_filters
 logical, dimension(:), allocatable :: currentfilter
 real, intent(out) :: filter4
 integer, intent(out) :: ierror
-real change, deltax, do, ds, dwt, flackx, flxwt
-real fmean, sflackx, sigd, sigint
-real smean, sumflx, sumsig, sumwt
-real wtmodifier, xbar
+double precision change, do, ds, dwt, flackx, flxwt
+real smean, fmean, sflackx, sigd, sigint, deltax
+double precision sumflx, sumsig, sumwt
+double precision wtmodifier, xbar
 integer i, iii, refls_size, nbad, ncycle, ngood, noldgood
 integer ntries
 
@@ -461,6 +448,9 @@ integer, external :: nctrim
     ntries=10
     
     !Estimate starting point
+    sumflx=0.0
+    sumwt=0.0
+    sumsig=0.0
     DO i=1,refls_size !1600
         if(reflections_data(C_FRIED2, i)/=2.0) cycle
         flxwt = 1./reflections_data(C_SX, i)**2
@@ -474,9 +464,10 @@ integer, external :: nctrim
     DO iii=1,ntries !1650
         ngood=0
         nbad=0
-        sumflx=0.
-        sumsig=0.
-        sumwt=0.
+        sumflx=0.0
+        sumsig=0.0
+        sumwt=0.0
+        sigint=0.0
         currentfilter=.false.
 
         DO i=1,refls_size !1600
@@ -611,11 +602,11 @@ integer n200n, n200p, n20n, n20p, n50n, n50p
 integer refls_size, refls_valid_size
 integer n6accmedian, n6accn, n6accp
 integer nmin
-real smin10, smin100, smin20, smin50, smin200
-real sminacc, fokd, fckd
+double precision smin10, smin100, smin20, smin50, smin200
+double precision sminacc, fokd, fckd
 integer nmm, nmp, npm, npp
-real ymm, ymp, ypm, ypp, xmm, xmp, xpm, xpp
-real cdf, q
+double precision ymm, ymp, ypm, ypp, xmm, xmp, xpm, xpp
+double precision cdf, q
 
     !c now sort on signal to noise for Le Page algorithm
     refls_size=ubound(reflections_data,2)
@@ -769,33 +760,31 @@ real cdf, q
         endif
 
 
-        WRITE (*,1950) 
-1950    FORMAT (//' No of pairs for which delta(Io)', &
-        &   ' has same sign as delta(Is)')
-        WRITE (*,2000)
-2000    FORMAT (' Same sign',3X,'Opposite sign')
-        WRITE (*,2050) NPLS,NMIN
-2050    FORMAT (I8,6X,I8)
 
-        write(*,'(2x,a/2x,a)') &
-        &   ' LePage Analysis (Assuming Enantio-purity)', &
-        &   ' Data are ranked by the Signal:Noise'
         if(issprt.eq.0) then
-            write(*,'(//2x,a/a)') &
+            WRITE (ncwu,1950) 
+1950        FORMAT (//' No of pairs for which delta(Io)', &
+            &   ' has same sign as delta(Is)')
+            WRITE (ncwu,2000)
+2000        FORMAT (' Same sign',3X,'Opposite sign')
+            WRITE (ncwu,2050) NPLS,NMIN
+2050        FORMAT (I8,6X,I8)
+            write(ncwu,'(//2x,a/a)') &
             &   ' LePage Analysis (Assuming Enantio-purity)', &
             &   ' Data are ranked by the Signal:Noise'
         end if
         if(refls_size .le. 0) then
-            write(*,'(a)') ' No suitable reflections for LePage analysis'
             if(issprt.eq.0) then
                 write(ncwu,'(a///)') ' No suitable reflections for LePage analysis'
             end if
         else
-            write(*,'(a,f8.4)') ' Minimum signal : noise used =', smin200
-            WRITE(*,'(A,I5)') ' No. Available', refls_valid_size
-            write(*,'(a,2x,a,2x,a,2x,a,2x,a)') &
-            &   '  Range  ','No.Same','No.Opposite', 'Signal:noise', &
-            &   ' Prob Wrong Hand'
+            if(issprt.eq.0) then
+                write(ncwu,'(a,f8.4)') ' Minimum signal : noise used =', smin200
+                WRITE(ncwu,'(A,I5)') ' No. Available', refls_valid_size
+                write(ncwu,'(a,2x,a,2x,a,2x,a,2x,a)') &
+                &   '  Range  ','No.Same','No.Opposite', 'Signal:noise', &
+                &   ' Prob Wrong Hand'
+            end if
             nn = 0
             np = 0
             q = 0.5
@@ -804,83 +793,102 @@ real cdf, q
             n = np+nn
             if (n.gt.0)then
                 call bincdf(float(np),q,n,cdf)
-                write(*,1720) 0, n, np, nn, smin10, 1.-cdf
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 0, n, np, nn, smin10, 1.-cdf
+                end if
             endif
             nn = nn + n20n
             np = np + n20p
             n = np+nn
             if (n.gt.0)then
                 call bincdf(float(np),q,n,cdf)
-                write(*,1720) 0, n, np, nn, smin20, 1.-cdf
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 0, n, np, nn, smin20, 1.-cdf
+                end if
             endif
             nn = nn + n50n
             np = np + n50p
             n = np+nn
             if (n.gt.0)then
                 call bincdf(float(np),q,n,cdf)
-                write(*,1720) 0, n, np, nn, smin50, 1.-cdf
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 0, n, np, nn, smin50, 1.-cdf
+                end if
             endif
             nn = nn + n100n
             np = np + n100p
             n = np+nn
             if (n.gt.0) then
                 call bincdf(float(np),q,n,cdf)
-                write(*,1720) 0, n, np, nn, smin100, 1.-cdf
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 0, n, np, nn, smin100, 1.-cdf
+                end if
             endif
             nn = nn + n200n
             np = np + n200p
             n = np+nn
             if (n.gt.0) then
-                 call bincdf(float(np),q,n,cdf)
-                 write(*,1720) 0, n, np, nn, smin200, 1.-cdf
+                call bincdf(float(np),q,n,cdf)
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 0, n, np, nn, smin200, 1.-cdf
+                end if
             endif
 
             nn = n6accn
             np = n6accp
             n = np+nn
             if (n.gt.0) then
-                 print *, ''
-                 Write(*,'(2x,a)') ' Top 50% of data'
-                 write(*,1720) 0, n, np, nn, sminacc, 1.-cdf
+                if(issprt.eq.0) then
+                    Write(ncwu,'(2x,a)') ' Top 50% of data'
+                    write(ncwu,1720) 0, n, np, nn, sminacc, 1.-cdf
+                end if            
             endif
 
              q = 0.5
             nn = n10n
             np = n10p
             n = np+nn
-            print *, ''
-            print *, ''
             if (n.gt.0) then
-                 call bincdf(float(np),q,n,cdf)
-                 write(*,1720) 0, 10, np, nn, smin10, 1.-cdf
+                call bincdf(float(np),q,n,cdf)
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 0, 10, np, nn, smin10, 1.-cdf
+                end if
             endif
             nn = n20n
             np = n20p
             n = np+nn
             if (n.gt.0) then
-                 call bincdf(float(np),q,n,cdf)
-                 write(*,1720) 10,20, np, nn, smin20, 1.-cdf
+                call bincdf(float(np),q,n,cdf)
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 10,20, np, nn, smin20, 1.-cdf
+                end if
             endif
             nn = n50n
             np = n50p
             n = np+nn
             if (n.gt.0) then
-                 call bincdf(float(np),q,n,cdf)
-                 write(*,1720) 20,50, np, nn, smin50, 1.-cdf
+                call bincdf(float(np),q,n,cdf)
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 20,50, np, nn, smin50, 1.-cdf
+                end if
             endif
             nn = n100n
             np = n100p
             n = np+nn
             if (n.gt.0) then
-                 call bincdf(float(np),q,n,cdf)
-                 write(*,1720) 50,100, np, nn, smin100, 1.-cdf
+                call bincdf(float(np),q,n,cdf)
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 50,100, np, nn, smin100, 1.-cdf
+                end if
             endif
             nn = n200n
             np = n200p
             n = np+nn
             if (n.gt.0) then
-                 call bincdf(float(np),q,n,cdf)
-                 write(*,1720) 100,200, np, nn, smin200, 1.-cdf
+                call bincdf(float(np),q,n,cdf)
+                if(issprt.eq.0) then
+                    write(ncwu,1720) 100,200, np, nn, smin200, 1.-cdf
+                end if
             endif
         endif
     end if
@@ -910,7 +918,7 @@ real, intent(out) :: r !< r   = r in Watts & Halliwell, page 111
 real, intent(out) :: rsq !< rsq = r-sq in Excel,  & W&H, page 112
 real, dimension(3), intent(out) :: tensor !< variance/covariance matrix
 
-real ss,sx,sxx,sy,syy,sxy,sqs,wsa,wsb, denom
+double precision ss,sx,sxx,sy,syy,sxy,sqs,wsa,wsb, denom
 integer mitem
 
     mitem=size(x)
@@ -1030,13 +1038,13 @@ real, dimension(3) :: tensor
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
         print *, "Arguments size don't match in subroutine bijvoet_difference"
-        stop
+        call abort
     end if
     
     if(present(weights)) then
         if(size(weights)/=size(filtered_reflections)) then
             print *, "Arguments size don't match in subroutine bijvoet_difference"
-            stop
+            call abort
         end if
     end if
 
@@ -1092,7 +1100,7 @@ real, intent(out) :: xflack, qflack
 real, intent(out) :: distmax
 real,  dimension(8) :: hflack
 integer refls_size, i, kdjw, nfc, nfo
-real flrnum, flrden, preflack, stnfc, stnfcm, stnfo, stnfom
+double precision flrnum, flrden, preflack, stnfc, stnfcm, stnfo, stnfom
 integer, parameter :: nplt=10
 integer ifoplt(2*nplt+1), ifcplt(2*nplt+1)
 real, parameter :: distplt = 3.0
@@ -1109,7 +1117,7 @@ include  'STORE.INC'
     endif
     xflack = store(l5o+4)
     qflack = store(l30ge+7)
-    print *, 'Flack parameter obtained from refinement ', xflack, qflack
+    !print *, 'Flack parameter obtained from refinement ', xflack, qflack
 
 !c-----multiplier to correct fC for flack parameter value
     preflack=1.-2.*xflack
@@ -1146,8 +1154,8 @@ include  'STORE.INC'
 
     if(any(hflack/=0.0)) then  
         if(issprt.eq.0) then
-            write(*,'(a)') '   RA   RD    wRA2  wRD2   Friedif for all data and x=zero'
-            write(*,"(4F6.1,2X, F8.2/)") &
+            write(ncwu,'(a)') '   RA   RD    wRA2  wRD2   Friedif for all data and x=zero'
+            write(ncwu,"(4F6.1,2X, F8.2/)") &
             &   100.*HFLACK(1)/HFLACK(2), &
             &   100.*HFLACK(3)/HFLACK(4), &
             &   100.*SQRT(HFLACK(5)/HFLACK(6)), &
@@ -1156,11 +1164,13 @@ include  'STORE.INC'
     end if
 
 
-    WRITE (*,'(a,f6.2,a,f4.2,a,f7.2,a)') &
-    &   ' Do-Dm R-factor(%) with Flack(x) of ', &
-    &   xflack, '(',qflack,') = ', &
-    &   100.*FLRNUM/FLRDEN,'%'
-
+    if(issprt.eq.0) then
+        WRITE (ncwu,'(a,f6.2,a,f4.2,a,f7.2,a)') &
+        &   ' Do-Dm R-factor(%) with Flack(x) of ', &
+        &   xflack, '(',qflack,') = ', &
+        &   100.*FLRNUM/FLRDEN,'%'
+    end if
+    
 !C SIGNAL:NOISE FOR DELTA FO AND FC
     STNFOM=-huge(1.0)
     STNFCM=-huge(1.0)
@@ -1183,12 +1193,12 @@ include  'STORE.INC'
         end if
     end do
     if(issprt.eq.0)then
-        WRITE (*,'(A/A)')  &
+        WRITE (ncwu,'(A/A)')  &
         &   ' Distribution of NINT(D/sigma) for all data', &
         &   ' Rabinovich & Hope, Acta A36, (1980), 670-674'
-        WRITE (*,'(a,21I6)') 'Do',IFOPLT
-        WRITE (*,'(a,21I6)') 'Dc',IFCPLT
-        WRITE (*,'(a,21F6.2)') &
+        WRITE (ncwu,'(a,21I6)') 'Do',IFOPLT
+        WRITE (ncwu,'(a,21I6)') 'Dc',IFCPLT
+        WRITE (ncwu,'(a,21F6.2)') &
         &   ' n',((KDJW/DISTPLT),KDJW=-NPLT,NPLT,1)
     endif
 
@@ -1238,23 +1248,29 @@ integer, external :: kcprop
         call xprvdu(ncvdu,1,0)
         call outcol(1)
         if(issprt.eq.0) then
-            write(ncwu,'(a)')'  Lists 3,5 and 29 may be incompatible'
+            write(ncwu,'(a)') '  Lists 3,5 and 29 may be incompatible'
         end if
     endif
     FRIEDIF=APROP(11)
 
-    print *, 'Friedif = ', friedif, ' Acta A63, (2007), 257-265'
-    print *, 'Flack & Shmueli (2007) recommend a value >200 for'
-    print *, 'general structures and >80 for enantiopure crystals'   
-    print *, ''   
+    if(issprt.eq.0) then
+        write(ncwu,'(a, F8.2, a)')  'Friedif = ', friedif, ' Acta A63, (2007), 257-265'
+        write(ncwu,'(a)')  'Flack & Shmueli (2007) recommend a value >200 for'
+        write(ncwu,'(a)')  'general structures and >80 for enantiopure crystals'   
+        write(ncwu,'(a)')  ''   
+    end if
 
     obstocal=sqrt(sum(reflections_data(C_FOKD,:)**2)/sum(reflections_data(C_FCKD,:)**2))
-    print *, ' Observed:calculated signal  =', obstocal
-    if(obstocal>3) then
-        print *, ' The observed Bijvoet differences are much', &
-        &   ' greater than the calculated differences'
+    if(issprt.eq.0) then
+        write(ncwu,'(a, f0.1)') ' Observed:calculated signal  =', obstocal
     end if
-    print *, ''
+    if(obstocal>3) then
+        if(issprt.eq.0) then
+            write(ncwu,'(a)') ' The observed Bijvoet differences are much', &
+            &   ' greater than the calculated differences'
+        end if
+    end if
+    write(ncwu,'(a)') ''
 
 end subroutine
 
@@ -1320,7 +1336,7 @@ end subroutine
 !> Absolute configuration using Bijvoet differences
 subroutine bijvoet_differences(reflections_data, filtered_reflections, itype, bijvoet, bijvoetsu, weights)
 implicit none
-real, dimension(:,:), intent(in) :: reflections_data
+real, dimension(:,:), intent(in) :: reflections_data !< List of all reflections including friedel pairs
 logical, dimension(:), intent(in) :: filtered_reflections
 real, dimension(:), optional, intent(in) :: weights
 real, intent(out) :: bijvoet, bijvoetsu
@@ -1333,13 +1349,13 @@ real, dimension(3) :: tensor
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
         print *, "Arguments size don't match in subroutine bijvoet_difference"
-        stop
+        call abort
     end if
     
     if(present(weights)) then
         if(size(weights)/=size(filtered_reflections)) then
             print *, "Arguments size don't match in subroutine bijvoet_difference"
-            stop
+            call abort
         end if
     end if
 
@@ -1380,17 +1396,17 @@ real, dimension(3) :: tensor
         bijvoet = 0.0
         bijvoetsu = 0.0       
     end if    
-    print *, ''  
 
 end subroutine
 
-!> Proof of concept for a graph
-subroutine plot_something(reflections_data, filtered_reflections)
+!> Distribution of NINT(D/sigma) for all data \n
+!! Rabinovich & Hope, Acta A36, (1980), 670-674
+subroutine plot_Dsigma(reflections_data, filtered_reflections)
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 implicit none
-real, dimension(:,:), intent(in) :: reflections_data
-logical, dimension(:), intent(in) :: filtered_reflections
+real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
+logical, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
 integer, parameter :: nplt=10
 integer, dimension(2*nplt+1) :: ifoplt, ifcplt
 real, parameter :: distplt = 3.0
@@ -1444,6 +1460,411 @@ real distmax, stnfc, stnfo
     CALL XPRVDU (NCVDU, 2, 0)
 end subroutine
 
+!> Plot the normal probability plot (npp)
+subroutine plot_npp(reflections_data, filtered_reflections)
+use m_mrgrnk
+use xiobuf_mod, only: cmon
+use xunits_mod, only: ncvdu, ncwu
+implicit none
+real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
+logical, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
+integer i, refls_size, refls_valid_size, iz10, iz90
+double precision deter, ss, sx, sxx, sxy, sy, yslope, ycut
+real z, zh, z_max
+integer, dimension(:), allocatable :: reflections_rank, valid_reflections_indices
+real, dimension(3) :: hkl   
+character(len=2048) :: buffer
+
+interface
+    function fixquadrant(hklin, friedelarg) result(hklout)
+    implicit none
+        real, dimension(3), intent(in) :: hklin
+        real, dimension(3) :: hklout
+        logical, intent(in), optional :: friedelarg
+    end function
+end interface
+
+    ss=0.0
+    sx=0.0
+    sy=0.0
+    sxx=0.0
+    sxy=0.0
+    
+    refls_size=ubound(reflections_data, 2)
+    ! get valid reflections, ie not filtered out
+    valid_reflections_indices=pack( (/ (i,i=1,size(filtered_reflections)) /), .not. filtered_reflections)
+    refls_valid_size=size(valid_reflections_indices)
+
+    if(refls_valid_size<1) then
+        write(cmon,'(a)') 'Not enough reflections for the normal probability plot'
+        call xprvdu(ncvdu,1,0)
+        return
+    end if
+    allocate(reflections_rank(refls_valid_size))
+    ! Sort the (Do-Dc)/sigma into ascending order.
+    call mrgrnk(reflections_data(C_ZH,valid_reflections_indices), reflections_rank)
+    reflections_rank=valid_reflections_indices(reflections_rank)
+
+    iz10=CEILING(refls_valid_size*0.1)
+    iz90=CEILING(refls_valid_size*0.9)
+
+    ! Slope calculated excluding head and tails
+    DO I=iz10,iz90
+!c       this time we will use all reflections
+!C       Generate Friedel opposite for current HKL:
+!C       Work out canonicalized HKL for the Friedel Opposite
+        hkl=fixquadrant(-reflections_data( (/C_H,C_K,C_L/), reflections_rank(i)))
+
+!C       WORK OUT EXPECTED NPP VALUE
+        z=expected_npp(i, refls_valid_size)
+        ZH = reflections_data(C_ZH, reflections_rank(i))
+
+!c       accumulate totals for slope and intercept of NPP
+        SS=SS+1.
+        SX=SX+Z
+        SY=SY+ZH
+        SXX=SXX+Z**2
+        SXY=SXY+ZH*Z
+    ENDDO 
+
+    DETER=SS*SXX-SX*SX
+    IF (DETER.NE.0.) THEN
+        yslope=(ss*sxy-sx*sy)/deter
+        ycut=(sxx*sy-sx*sxy)/deter
+    ELSE
+        WRITE (*,'(A)') 'NPP Slope cannot be computed'
+        yslope=0.0
+        ycut=0.0
+    END IF
+
+    
+    z_max=maxval(reflections_data(C_ZH, :))
+
+    WRITE (CMON,'(A,/,A,/,A)') &
+    &   '^^PL PLOTDATA _NPP SCATTER ATTACH _VNPP KEY', &
+    &   '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000', &
+    &   '^^PL YAXIS TITLE Residual SERIES 1 TYPE SCATTER'
+    CALL XPRVDU (NCVDU, 3, 0)
+
+!   plot data
+    do i=1, refls_valid_size
+        hkl=fixquadrant(-reflections_data( (/C_H,C_K,C_L/), reflections_rank(i)))
+        WRITE (buffer,'(5(I4,A),I4)') nint(reflections_data(C_H, reflections_rank(i))),',',&
+        &   nint(reflections_data(C_K, reflections_rank(i))),',',&
+        &   nint(reflections_data(C_L, reflections_rank(i))),' vs ', &
+        &   nint(hkl(1)),',',nint(hkl(2)),',',nint(hkl(3))
+        buffer=adjustl(buffer)
+        z=expected_npp(i, refls_valid_size)
+        ZH = reflections_data(C_ZH, reflections_rank(i))
+        WRITE (CMON,'(3A,2F11.3)') '^^PL LABEL ''', &
+        &  trim(buffer),''' DATA ',Z,ZH
+        CALL XPRVDU (NCVDU, 1, 0)
+    end do
+
+!   Add a series for unit slope (y=x)
+    WRITE (CMON(1),'(A)') &
+    &   '^^PL ADDSERIES ''Unit Slope'' TYPE SCATTER'
+    write(cmon(2),'(a)') '^^PL LABEL ''unit slope'''
+    WRITE (CMON(3),'(2(A,2(1X,F12.3)) )') &
+    &   '^^PL DATA ', -z_max,-z_max,' DATA ',z_max,z_max
+    CALL XPRVDU (NCVDU,3,0)
+
+!   plot side bands
+    WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )') &
+    &   '^^PL ADDSERIES ''+10%'' TYPE LINE', &
+    &   '^^PL DATA ', -z_max,-yslope*z_max+ycut+0.1*z_max, &
+    &   ' DATA ',z_max,yslope*z_max+ycut+0.1*Z_max
+    CALL XPRVDU (NCVDU,2,0)
+
+    WRITE (CMON,'(A/(2(A,2(1X,F12.3))) )') &
+    &   '^^PL ADDSERIES ''-10%'' TYPE LINE', &
+    &   '^^PL DATA ', -z_max,-yslope*z_max+ycut-0.1*z_max, &
+    &   ' DATA ',z_max,yslope*z_max+ycut-0.1*Z_max
+    CALL XPRVDU (NCVDU,2,0)
+
+!   FINISH THE GRAPH DEFINITION
+    WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+    CALL XPRVDU (NCVDU, 2, 0)
+
+end subroutine
+
+!> Plot signal vs resolution distribution
+subroutine plot_histogram(reflections_data, filtered_reflections)
+use xiobuf_mod, only: cmon
+use xunits_mod, only: ncvdu, ncwu
+use xlst13_mod, only: l13dc
+use xlst30_mod, only: l30ix
+use xlst01_mod, only: l1s
+implicit none
+real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
+logical, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
+integer, parameter :: maxbin=80
+integer, dimension(:), allocatable :: ibin
+real, dimension(:), allocatable :: abin
+real, parameter :: pi = 3.14159265359
+integer refls_size, refls_valid_size, bin, nbin, i
+real abinmax, binscale, mh, mk, ml, range, snthl3, span, wt
+character(len=1024) :: cyaxis
+
+include 'STORE.INC'
+    
+    refls_size=ubound(reflections_data, 2)
+    refls_valid_size=count(.not. filtered_reflections)
+    
+    !store(l13dc) wavelength
+    !store(l30ix+7) theta max
+    span=sin(pi*store(l30ix+7)/180.0)/(store(l13dc))
+    span=span**3
+    nbin=refls_valid_size/100
+    if (nbin .gt. maxbin) then
+        nbin=maxbin
+    endif
+    allocate(ibin(nbin))
+    allocate(abin(nbin))
+    ibin=0
+    abin=0.0
+    range = span/real(nbin)
+
+    do i=1, refls_size
+        if(.not. filtered_reflections(i)) then
+    !       calculate (sin(theta)/lambda)**3
+            mh=reflections_data(C_H, i)
+            mk=reflections_data(C_K, i)
+            ml=reflections_data(C_L, i)
+            snthl3=mh**2*store(l1s)+mk**2*store(l1s+1)+ml**2*store(l1s+2)+ &
+            &   mk*ml*store(l1s+3)+mh*ml*store(l1s+4)+mh*mk*store(l1s+5)
+            snthl3 = sqrt(snthl3)
+            snthl3 = snthl3**3
+            wt=abs(reflections_data(C_FCKD, i)/ &
+            &   reflections_data(C_SIGMAD, i))
+            
+            bin=int(snthl3/range)+1
+            if(bin<=0) bin=1
+            if(bin>nbin) bin=nbin
+            ibin(bin)=ibin(bin)+1
+            abin(bin)=abin(bin)+wt
+        end if
+    end do
+
+    where(ibin/=0)
+        abin=abin/real(ibin)
+    else where
+        abin=0.0
+    end where
+    
+    binscale = log10(100./maxval(abin))
+    binscale = 10**nint(binscale)
+    abinmax = maxval(abin)*binscale
+                    
+    write(cyaxis,'(i0,a)') nint(binscale),'*(Mean(signal:noise))'
+     
+    WRITE (CMON,'(A,/,A,/,A,/,A,f10.2,A,/,A,f10.2,A,A/,A,/,A,/,A)')    &
+    &   '^^PL PLOTDATA _DO SCATTER ATTACH _VDO KEY',                   &
+    &   '^^PL XAXIS TITLE ''[Sin(theta)/lambda]**3''  ',               &
+    &   '^^PL NSERIES=2 LENGTH=100 ',                                  &
+    &   '^^PL YAXIS ZOOM 0. ', real(maxval(ibin)), ' TITLE Frequency ',&
+    &   '^^PL YAXISRIGHT ZOOM 0. ', abinmax,                           &
+    &   ' TITLE ', trim(cyaxis),                                       &
+    &   '^^PL SERIES 1 SERIESNAME ''Frequency'' TYPE LINE',            &
+    &   '^^PL SERIES 2 SERIESNAME ''Signal''    TYPE LINE',            &
+    &   '^^PL USERIGHTAXIS'
+    CALL XPRVDU (NCVDU, 8, 0)
+
+    abin=binscale*abin
+    do i=1,nbin
+        if(ibin(i)>0) then  
+            WRITE (CMON,'(A,4F15.6)') '^^PL DATA ',  &
+            &   range*float(i-1), float(ibin(i)),    &
+            &   range*float(i-1), abin(i)
+            CALL XPRVDU (NCVDU, 1, 0)
+        endif
+    enddo
+
+!   FINISH THE GRAPH DEFINITION
+    WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+    CALL XPRVDU (NCVDU, 2, 0)
+
+end subroutine
+
+!> Plot flack do/2ao scaterplot
+subroutine plot_flackdo2ao(reflections_data, filtered_reflections)
+use xiobuf_mod, only: cmon
+use xunits_mod, only: ncvdu, ncwu
+use xlst13_mod, only: l13dc
+use xlst30_mod, only: l30ix
+use xlst01_mod, only: l1s
+implicit none
+real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
+logical, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
+integer refls_size
+character(len=1024) :: buffer
+real xaxis, yaxis, dmax
+integer mh, mk, ml, i
+
+    refls_size=ubound(reflections_data, 2)
+
+!c----- SET UP FLACK Do/2Ao SCATERPLOT
+!C       Flack As-Ds scatter
+    WRITE (CMON,'(A,/,A,/,A,/A,/A)') &
+    &   '^^PL PLOTDATA _AO SCATTER ATTACH _VAO KEY', &
+    &   '^^PL XAXIS TITLE 2As&Ds NSERIES=1 LENGTH=2000', &
+    &   '^^PL YAXIS TITLE 2Ao&Do', &
+    &   '^^PL SERIES 1 SERIESNAME ''2Ao'' TYPE SCATTER'
+    CALL XPRVDU (NCVDU, 4, 0)
+
+    dmax=max(maxval(abs(reflections_data(C_FCKD, :))), maxval(abs(reflections_data(C_FOKD, :))))
+    do i=1, refls_size
+        if(.not. filtered_reflections(i)) then
+            xaxis=2.*reflections_data(C_FCKA, i)
+            yaxis=2.*reflections_data(C_FOKA, i)
+            if(xaxis<=dmax .and. yaxis<=dmax) then
+                mh=nint(reflections_data(C_H, i))
+                mk=nint(reflections_data(C_K, i))
+                ml=nint(reflections_data(C_L, i))
+                write (buffer,'(2(i0,a),i0)') mh,',',mk,',',ml
+
+                WRITE (cmon,'(3a,2(1x,f12.4))') &
+                &   '^^PL LABEL ''', &
+                &   trim(buffer),''' DATA ',xaxis,yaxis 
+                CALL xprvdu (ncvdu, 1, 0)
+            end if
+        end if
+    end do
+
+    WRITE (CMON,'(A)') '^^PL ADDSERIES  Do TYPE SCATTER'
+    CALL XPRVDU (NCVDU, 1, 0)
+
+    do i=1, refls_size
+        if(.not. filtered_reflections(i)) then
+            mh=nint(reflections_data(C_H, i))
+            mk=nint(reflections_data(C_K, i))
+            ml=nint(reflections_data(C_L, i))
+            write (buffer,'(2(i0,a),i0)') mh,',',mk,',',ml
+            xaxis=2.*reflections_data(C_FCKD, i)
+            yaxis=2.*reflections_data(C_FOKD, i)
+
+            WRITE (cmon,'(3a,2(1x,f12.4))') &
+            &   '^^PL LABEL ''', &
+            &   trim(buffer),''' DATA ',xaxis,yaxis
+            CALL xprvdu (ncvdu, 1, 0)
+        end if
+    end do
+          
+    WRITE (cmon,'(a,/,a)') '^^PL SHOW','^^CR'
+    CALL xprvdu (ncvdu, 2, 0)
+
+end subroutine          
+
+!> Plot Flack(x) frequency distribution
+subroutine plot_flackx(reflections_data, filtered_reflections)
+use m_mrgrnk
+use xiobuf_mod, only: cmon
+use xunits_mod, only: ncvdu, ncwu
+use xlst13_mod, only: l13dc
+use xlst30_mod, only: l30ix
+use xlst01_mod, only: l1s
+implicit none
+real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
+logical, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
+integer refls_size, refls_valid_size
+integer, dimension(:), allocatable :: valid_reflections_indices, reflections_rank
+real, dimension(:), allocatable :: abin
+integer, dimension(:), allocatable :: ibin
+real range, flackx, apoint, span
+integer npoint, bin, i, nbin, nle3s
+real f1decile, f1octile, f1quintile, fquart, fmedian
+real f3quart, f4quintile, f7octile, f9decile
+
+    !c now sort on signal to noise for Le Page algorithm
+    refls_size=ubound(reflections_data,2)
+
+    ! get valid reflections, ie not filtered out
+    valid_reflections_indices=pack( (/ (i,i=1,size(filtered_reflections)) /), .not. filtered_reflections)
+    refls_valid_size=size(valid_reflections_indices)
+    
+    ! Sort valid reflections, on signal to noise in reverse order
+    allocate(reflections_rank(refls_valid_size))
+    call mrgrnk(reflections_data(C_X,valid_reflections_indices), reflections_rank)
+    reflections_rank=valid_reflections_indices(reflections_rank)
+
+    call percentiles(reflections_data(C_X,reflections_rank), &
+    &   f1decile, f1octile, f1quintile, fquart, fmedian, &
+    &   f3quart, f4quintile, f7octile, f9decile)
+
+    !C histogram - max number of bins set to MAXBIN, currently 80
+    span=max(f7octile, -f1octile)
+    if(span.le. 2.) then
+        range = 0.1
+        nbin = 1+int(2.0*3.0/range)
+    else if(span.le. 5.) then
+        range = 0.2
+        nbin = 1+int(2.0*6.0/range)
+    else if(span.le. 10.) then
+        range = 0.5
+        nbin=1+int(2.0*12.0/range)
+    else
+        range = 1.0
+        nbin=1+int(2.0*30.0/range)
+    endif
+    
+    allocate(abin(nbin))
+    allocate(ibin(nbin))
+    abin=0.0
+    ibin=0
+    
+    nle3s=0
+    do i=1, size(reflections_rank)
+        flackx=reflections_data(C_X,reflections_rank(i))
+        if((flackx>=-.5).and.(flackx<=1.5)) then
+            nle3s=nle3s+1
+        endif    
+        bin=int(((flackx+(nbin*range)/2.0)/range))+1
+        if(bin<=0) bin=1
+        if(bin>nbin) bin=nbin
+        ibin(bin)=ibin(bin)+1
+        abin(bin)=abin(bin)+sqrt(reflections_data(C_FLXWT, reflections_rank(i)))
+    end do
+    
+    npoint=sum(ibin)
+    apoint=sum(abin)
+    apoint=100.0/apoint
+    
+    ibin=100*ibin/npoint
+    abin=abin*apoint
+
+    WRITE (CMON,'(A,/,A,/,A,/,A,f7.2,A,/,A,f7.2,A,/,A,/,A,/,A)')            &
+    &   '^^PL PLOTDATA _HIST SCATTER ATTACH _VHIST KEY',                    &
+    &   '^^PL XAXIS TITLE ''Flack(x)''  ',                                  &
+    &   '^^PL NSERIES=2 LENGTH=100 ',                                       &
+    &   '^^PL YAXIS ZOOM 0. ', real(maxval(ibin)), ' TITLE Frequency(%) ',  &
+    &   '^^PL YAXISRIGHT ZOOM 0. ', maxval(abin),                           &
+    &   ' TITLE ''Normalised Weight''  ',                                   &
+    &   '^^PL SERIES 1 SERIESNAME ''Frequency'' TYPE LINE',                 &
+    &   '^^PL SERIES 2 SERIESNAME ''Weighted''    TYPE LINE',               &
+    &   '^^PL USERIGHTAXIS'
+    CALL XPRVDU (NCVDU, 8, 0)
+          
+    do i=1,nbin
+        WRITE (CMON,'(A,4F11.3)') '^^PL DATA ',    &
+        &   range*real(i-1-nbin/2), real(ibin(i)), &
+        &   range*real(i-1-nbin/2), abin(i)  
+        CALL XPRVDU (NCVDU, 1, 0)
+    enddo
+                    
+    !C send the percentage at 3 sigma to screen
+    WRITE(CMON,'(A,F7.1,A)') &
+    &   '^^CO SAFESET [ _HIS_PC TEXT ',(nle3s*100./refls_valid_size),' ]'
+    CALL XPRVDU(NCVDU, 1,0)
+
+    !c send no. good data to screen
+    WRITE(CMON,'(A,I7,A)') &
+    &   '^^CO SAFESET [ _NREF TEXT ',refls_valid_size,' ]'
+    CALL XPRVDU(NCVDU, 1,0)
+    !C -- FINISH THE GRAPH DEFINITION
+    WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
+    CALL XPRVDU (NCVDU, 2, 0)          
+end subroutine
+          
 end module
 
 
