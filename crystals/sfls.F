@@ -1674,6 +1674,8 @@ C
       integer :: designindex, tid
       integer, parameter :: designchunk=512
       character(len=4) :: buffer
+      
+      character(len=56) :: formatstr
 
 c     Working out the number of threadings available
 c     Using at most 6 of them
@@ -1831,6 +1833,8 @@ C--CHECK IF A PRINT IS REQUIRED
       designmatrix=0.0
       allocate(righthandside(n11r))
       righthandside=0.0
+      !open(666, file='design.m')
+      !write(formatstr, '(A,I0,A)') '(A,3F6.0,',JP-JO+1,'(",",E17.8))'
 
 #ifdef CRY_OSLINUX
       call date_and_time(VALUES=measuredtime)
@@ -2401,6 +2405,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                       designmatrix=0.0
                   end if
                   designmatrix(:,designindex) = STORE(JO:JP)
+                  !write(666, formatstr) ' ',STORE(M6:m6+2), STORE(JO:JP)
                   
 c                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
 c     1                 STORE(L12B), N12B*MD12B, MD12B )
@@ -2559,7 +2564,8 @@ c      end do
 #endif
       
       deallocate(designmatrix)
-      deallocate(normalmatrix)      
+      deallocate(normalmatrix)
+      !close(666)      
 
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 

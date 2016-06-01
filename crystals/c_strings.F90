@@ -61,7 +61,7 @@ subroutine c_f_strings ( input_string, regular_string )
     if(lenstr>2048) then
         print *, 'Error: input_string is too long for the harcoded string'
         print *, 'Contact the authors'
-        call exit(1)
+        call abort()
     end if
 #endif
    
