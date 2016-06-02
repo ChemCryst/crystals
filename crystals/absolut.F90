@@ -19,16 +19,16 @@ integer, parameter :: C_X=11 !< \f$ C_X = \frac{F_{ckd}-F_{okd}}{2 F_{ckd}} \f$
 integer, parameter :: C_SX=12 !< \f$ \sigma_{CX} = \frac{\sigma_D}{|2 F_{ckd}|} \f$
 integer, parameter :: C_DELTAX=13 !< \f$ \Delta_X = C_X - <C_X> \f$
 integer, parameter :: C_FLXWT=14 !< \f$ w = m \frac{1}{\sigma_{C_X}^2} \f$ Blessing type weights
-integer, parameter :: C_FAIL=15 !< 0.0 for valid reflections, 1.0 if ailed any filters, 99999.0 if centric or lone reflection
-integer, parameter :: C_SIGNOISE=16 !< \f$ \frac{|F_{ckd}|}{\sigma_D} \f$
-integer, parameter :: C_FRIED1=17 !< -1 for centric reflections, 0 for lone reflections, 1 for first reflection of friedel pair
-integer, parameter :: C_FRIED2=18 !< 0 for missing friedel pair, 2 for second reflection of friedel pair
-integer, parameter :: C_FOK1=19 !< \f$ F_{ok1} \f$ Observed structure factor for reflection 1
-integer, parameter :: C_SIG1=20 !< \f$ \sigma_1 \f$ Sigma of \f$ F_{ok1} \f$ for reflection 1
-integer, parameter :: C_FCK1=21 !< \f$ F_{ck1} \f$ Calculated structure factor for reflection 1
-integer, parameter :: C_FOK2=22 !< \f$ F_{ok2} \f$ Observed structure factor for reflection 2
-integer, parameter :: C_SIG2=23 !< \f$ \sigma_2 \f$ Sigma of \f$ F_{ok2} \f$ for reflection 2
-integer, parameter :: C_FCK2=24 !< \f$ F_{ck2} \f$ Calculated structure factor for reflection 2
+integer, parameter :: C_SIGNOISE=15 !< \f$ \frac{|F_{ckd}|}{\sigma_D} \f$
+integer, parameter :: C_FRIED1=16 !< -1 for centric reflections, 0 for lone reflections, 1 for first reflection of friedel pair
+integer, parameter :: C_FRIED2=17 !< 0 for missing friedel pair, 2 for second reflection of friedel pair
+integer, parameter :: C_FOK1=18 !< \f$ F_{ok1} \f$ Observed structure factor for reflection 1
+integer, parameter :: C_SIG1=19 !< \f$ \sigma_1 \f$ Sigma of \f$ F_{ok1} \f$ for reflection 1
+integer, parameter :: C_FCK1=20 !< \f$ F_{ck1} \f$ Calculated structure factor for reflection 1
+integer, parameter :: C_FOK2=21 !< \f$ F_{ok2} \f$ Observed structure factor for reflection 2
+integer, parameter :: C_SIG2=22 !< \f$ \sigma_2 \f$ Sigma of \f$ F_{ok2} \f$ for reflection 2
+integer, parameter :: C_FCK2=23 !< \f$ F_{ck2} \f$ Calculated structure factor for reflection 2
+integer, parameter :: C_FAIL=24 !< 0.0 for valid reflections, 1.0 if ailed any filters, 99999.0 if centric or lone reflection
 integer, parameter :: C_NUMFIELD=24 !< Number of fields in reflections_data
 !> @}
 
@@ -1864,7 +1864,78 @@ real f3quart, f4quintile, f7octile, f9decile
     WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
     CALL XPRVDU (NCVDU, 2, 0)          
 end subroutine
-          
+
+subroutine punchdata(reflections_data, reflections_filters)
+implicit none
+real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
+logical, dimension(:,:), intent(in) :: reflections_filters !< if True the reflection is not used
+integer i
+
+
+    
+    open(666, file='absolute_configuration.dat')
+
+    ! header
+    write(666, *) '# Punch of data for the determination of the absolute structure configuration'
+    write(666, *) '# Punch on ',mydate()
+    write(666, *) '#'
+    write(666, *) '# Zh = (FCKD-FOKD)/SigmaD'
+    write(666, *) '# FCKA = 0.5(FcK1+FcK2)'
+    write(666, *) '# FOKA = 0.5(FoK1+FoK2)'
+    write(666, *) '# FCKD = FcK1-FcK2'
+    write(666, *) '# FOKD = FoK1-FoK2'
+    write(666, *) '# SigmaD = sqrt(Sig1**2+Sig2**2)'
+    write(666, *) '# SigmaQ = 2.0 (sqrt{(FoK1 Sig2)^2+(FoK2 Sig1)^2})/(2 FOKA)**2'
+    write(666, *) '# Flack(x) = (FCKD-FOKD)/(2FCKD)'
+    write(666, *) '# SigmaX = SigmaD/(|2 FCKD|)'
+    write(666, *) '# DeltaX = Flack(x) - <Flack(x)>'
+    write(666, *) '# Flxwt = m/(SigmaX**2) Blessing type weights'
+    write(666, *) '# SigNoise = |FCKD|/SigmaD'
+    write(666, *) '# Fried1 = -1 for centric reflections, 0 for lone reflections, 1 for first reflection of friedel pair'
+    write(666, *) '# Fried2 = 0 for missing friedel pair, 2 for second reflection of friedel pair'
+    write(666, *) '# FoK1 = Observed structure factor for reflection 1'
+    write(666, *) '# Sig1 = Sigma of FoK1 for reflection 1'
+    write(666, *) '# FcK1 = Calculated structure factor for reflection 1'
+    write(666, *) '# FoK2 = Observed structure factor for reflection 2'
+    write(666, *) '# Sig2 = Sigma of FoK2 for reflection 2'
+    write(666, *) '# FcK2 = Calculated structure factor for reflection 2'
+    write(666, *) '# F1 = Filter 1'
+    write(666, *) '# F2 = Filter 2'
+    write(666, *) '# F3 = Filter 3'
+    write(666, *) '# F4 = Filter 4'
+    write(666, *) '# F5 = Filter 5'
+    write(666, *) ''
+    
+    
+    write(666, '(3(a3, 1x), 20(a12, 1X), 5(a3, 1X))')                             &
+    &   'h', 'k', 'l', 'Zh', 'FCKA', 'FOKA', 'FCKD', 'FOKD', 'SigmaD', 'SigmaQ',  &
+    &   'Flack(x)', 'SigmaX', 'DeltaX', 'Flxwt', 'SigNoise', 'Fried1', 'Fried2',  &
+    &   'FoK1', 'Sig1', 'FcK1', 'FoK2', 'Sig2', 'FcK2', 'F1', 'F2', 'F3', 'F4', 'F5'
+    
+    do i=1, ubound(reflections_data, 2)
+        write(666, '(3(I3, 1x), 20(F12.4, 1X), 5(L3, 1X))') nint(reflections_data(1:3,i)), &
+        &   reflections_data(4:23,i), reflections_filters(:,i)
+    end do
+    
+    close(666)
+
+
+end subroutine
+
+function mydate()
+implicit none
+integer, dimension(8) :: values
+character(len=3), dimension(12), parameter :: months=(/'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'/)
+character(len=1024) :: buffer
+character(len=:), allocatable :: mydate
+
+    call date_and_time(values=values)
+    write(buffer, '(I0,1X,a,1X,I4,1X,"(",I2.2,":",I2.2,":",I2.2,")")') &
+    &   values(3),months(values(2)),values(1),values(5),values(6),values(7)
+    allocate(character(len=len_trim(buffer)) :: mydate)
+    mydate=trim(buffer)
+        
+end function
 end module
 
 
