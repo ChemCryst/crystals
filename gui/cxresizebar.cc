@@ -282,7 +282,7 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
     SetCursor( AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 #endif
 #ifdef CRY_USEWX
-    this->SetCursor( NULL );
+    this->SetCursor( wxNullCursor  );
 #endif
    }
  }

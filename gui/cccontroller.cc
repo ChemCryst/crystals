@@ -3937,7 +3937,8 @@ extern "C" {
 
     wxString fullname(firstTok.c_str());
     wxString path, name, extension, command;
-    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
+//    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
+    wxFileName::SplitPath(firstTok.c_str(),&path,&name,&extension);
     wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 
     if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )
