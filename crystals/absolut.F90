@@ -1870,8 +1870,14 @@ implicit none
 real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
 logical, dimension(:,:), intent(in) :: reflections_filters !< if True the reflection is not used
 integer i
+real, dimension(:), allocatable :: leverage
 
-
+    allocate(leverage(ubound(reflections_data, 2)))
+    where(reflections_data(C_SIGMAD,:)/=0.0)
+        leverage=abs(reflections_data(C_FCKD,:))/reflections_data(C_SIGMAD,:)
+    else where
+        leverage=-1.0
+    end where
     
     open(666, file='absolute_configuration.dat')
 
@@ -1899,6 +1905,7 @@ integer i
     write(666, *) '# FoK2 = Observed structure factor for reflection 2'
     write(666, *) '# Sig2 = Sigma of FoK2 for reflection 2'
     write(666, *) '# FcK2 = Calculated structure factor for reflection 2'
+    write(666, *) '# Leverage = Leverage defined as |FCKD|/SIGMAD'
     write(666, *) '# F1 = Filter 1'
     write(666, *) '# F2 = Filter 2'
     write(666, *) '# F3 = Filter 3'
@@ -1907,14 +1914,18 @@ integer i
     write(666, *) ''
     
     
-    write(666, '(3(a3, 1x), 20(a12, 1X), 5(a3, 1X))')                             &
+    write(666, '(3(a3, 1x), 21(a12, 1X), 5(a3, 1X))')                             &
     &   'h', 'k', 'l', 'Zh', 'FCKA', 'FOKA', 'FCKD', 'FOKD', 'SigmaD', 'SigmaQ',  &
     &   'Flack(x)', 'SigmaX', 'DeltaX', 'Flxwt', 'SigNoise', 'Fried1', 'Fried2',  &
-    &   'FoK1', 'Sig1', 'FcK1', 'FoK2', 'Sig2', 'FcK2', 'F1', 'F2', 'F3', 'F4', 'F5'
+    &   'FoK1', 'Sig1', 'FcK1', 'FoK2', 'Sig2', 'FcK2', 'Leverage',                    &
+    &   'F1', 'F2', 'F3', 'F4', 'F5'
     
     do i=1, ubound(reflections_data, 2)
-        write(666, '(3(I3, 1x), 20(F12.4, 1X), 5(L3, 1X))') nint(reflections_data(1:3,i)), &
-        &   reflections_data(4:23,i), reflections_filters(:,i)
+        write(666, '(3(I3, 1x), 20(F12.4, 1X), (F12.6, 1X), 5(L3, 1X))')  &
+        &   nint(reflections_data(1:3,i)),                                &
+        &   reflections_data(4:23,i),                                     &
+        &   leverage(i), &
+        &   reflections_filters(:,i)
     end do
     
     close(666)
