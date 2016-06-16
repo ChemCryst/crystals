@@ -1,5 +1,5 @@
  This is the main command definition file
- 17
+ 18
   4 \LIST 4
  12 \CLEAR 12
  13 \LIST 13
@@ -15,6 +15,7 @@
  29 \LIST 29
  30 \LIST 30
  31 \LIST 31
+ 39 \LIST 39
  36 \WEIGHT
  41 \BONDCALC
 LIST               1    2

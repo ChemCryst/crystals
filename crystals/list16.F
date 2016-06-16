@@ -444,6 +444,8 @@ c      ICOM05(I)=NOWT
 c1050  CONTINUE
 C Load list 5 into core (allows checking during processing).
        CALL XFAL05
+       IF(IERFLG .LT. 0) GOTO 9900
+       
 C - Clear all the bits that restraints could possibly set.
       IMASK = NOT ( OR ( KBREFB(4), KBREFB(6) ))
       DO I = 0, N5-1
@@ -1669,10 +1671,11 @@ C--END OF THE INPUT LIST  -  CHECK FOR ERRORS
 C--TERMINATE THE COMPILER OUTPUT SEQUENCE
 6000  CONTINUE
       CALL XTCO(KE)
-6020  CONTINUE
 
 CRICJUN03 - store the list 5, with modified Spare values.
       CALL XSTR05 (5,-1,-1)
+6020  CONTINUE
+
 
       CALL XOPMSG (IOPL16, IOPEND, IVERSN)
 C--AND NOW RETURN
