@@ -167,6 +167,12 @@ character(len=buffer_length) :: buffer
 integer digit, total, i
 character(len=buffer_length) :: formatstr
 
+    if(esd==0.0d0) then
+        write(formatted_output, *) num
+        length=len_trim(formatted_output)
+        return
+    end if
+
     if(esd>=10.0d0) then
         if(arg_fixedform .and. nint(num)>=0) then
             write(buffer, "(1X,I0,'(',I0,')')") nint(num), nint(esd)
