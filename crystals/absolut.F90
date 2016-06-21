@@ -429,7 +429,7 @@ implicit none
 real, dimension(:,:), intent(inout) :: reflections_data
 logical, dimension(:,:), intent(inout) :: reflections_filters
 logical, dimension(:), allocatable :: currentfilter
-real, intent(out) :: filter4
+real, intent(in) :: filter4
 integer, intent(out) :: ierror
 double precision change, do, ds, dwt, flackx, flxwt
 real smean, fmean, sflackx, sigd, sigint, deltax
@@ -903,137 +903,164 @@ end subroutine
 !! \n
 !! verified against Watts & Halliwell, Essential Environmental \n
 !! Science, Routledge, 1996. 
-subroutine linearfit(x,y,wt,a,sa,b,sb,t,tsq,r,rsq,tensor)
+subroutine linearfit(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, leverages, tw, dv)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 implicit none
-real, dimension(:), intent(in) :: x !< x-values
-real, dimension(:), intent(in) :: y !< y-values
+real, dimension(:), intent(in) :: xin !< x-values
+real, dimension(:), intent(in) :: yin !< y-values
 real, dimension(:), intent(in) :: wt !< weights
-real, intent(out) :: a,sa !< Intercept and su
-real, intent(out) :: b,sb !< slope and its su
-real, intent(out) :: t !< t   = t in Watts & Halliwell page 113
-real, intent(out) :: tsq !c tsq = F-test in Excel
-real, intent(out) :: r !< r   = r in Watts & Halliwell, page 111
-real, intent(out) :: rsq !< rsq = r-sq in Excel,  & W&H, page 112
-real, dimension(3), intent(out) :: tensor !< variance/covariance matrix
+real, intent(out) :: intercept,interceptsu !< Intercept and su
+real, intent(out) :: slope,slopsu !< slope and its su
+real, intent(out) :: r2 !< correlation coefficient
+real, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
+real, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
+double precision, dimension(:,:), allocatable :: x, xwork !< design matrix
+double precision, dimension(:,:), allocatable :: hw !< Weighted Hat matrix (leverage)
+double precision, dimension(:,:), allocatable :: dw !< Matrix of weights
+double precision, dimension(:), allocatable :: ew !< vector of residuals
+double precision, dimension(:), allocatable :: y !< observations (double precision) 
+double precision, dimension(2,2) :: temp22, tempb22, bsu
+double precision, dimension(2) :: b, tempa, tempb
+real, dimension(:), allocatable, intent(out), optional :: Dv
+double precision :: mse, msei, s2
+integer i, j
 
-double precision ss,sx,sxx,sy,syy,sxy,sqs,wsa,wsb, denom
 integer mitem
 
-    mitem=size(x)
+double precision, external :: ddot
+
+    mitem=size(xin)
+    if(size(yin)/=mitem .or. size(wt)/=mitem) then
+        print *, 'Size does not match'
+        call abort
+    end if
+        
+    ! form design matrix
+    allocate(x(mitem, 2))
+    allocate(xwork(mitem, 2))
+    x(:,1)=1.0d0
+    x(:,2)=xin
     
-    ss=sum(wt)
-    sx=sum(x*wt)
-    sxx=sum(x**2*wt)
-    sy=sum(y*wt)
-    syy=sum(y**2*wt)
-    sxy=sum(x*y*wt)
+    ! increase precision
+    allocate(y(mitem))
+    y=yin
 
-    denom = ss*sxx - sx*sx
-
-    if(abs(denom) > 0.0 ) then
-        a = (sy*sxx - sx*sxy)/denom
-        b = (ss*sxy - sx*sy)/denom
-
-        !c This bit based on Wolfram world but including weights (derived by DJW so 
-        !c beware)
-        !c But see also Analysis of Straight Line Data, F.S. Acton (1966)
-        !c Dover Publications
-        sqs = ((syy*sxx)-(sxy*sxy))/ ((mitem-2)*sxx)
-        sa = (sx*sx)/(mitem*mitem*sxx) +(1./float(mitem))
-        wsa = sa * sqs
-        wsb = (((syy*sxx)-(sxy*sxy))/((mitem-2)*sxx*sxx))
-        !c in the end this was not used, but Bevington's simpler formula chosen.
-        !c  
-        !c Data Reduction and Error Analysis for the Physical Sciences
-        !c PR Bevington, 1969, McGraw-Hill.  Page 118
-        !c
-        sa = sxx/denom
-        sb = ss / denom
-        !c
-        !c      write(123,'(a,4f12.8)')'wsa,wsb,sa,sb',
-        !c     1 sqrt(wsa),sqrt(wsb),sqrt(sa),sqrt(sb)
-        !c
-        if (sa .ge. 0.0) then
-            sa = sqrt(sa)
-        else
-        !c                write(ncwu,*) 'Sa negative', sa
-            sa = -999.
-        endif
-        if (sb .ge. 0.0) then
-            sb = sqrt(sb)
-        else
-        !c                  write(ncwu,*) 'Sb negative', sb
-            sb = -999.
-        endif
-        !c            write(ncwu,'(2(a,4f10.3))') ' Gradient and esd', b, sb
-        !c      1      ' Intercept and su', a, sa
-        !c
-        tensor(1)=sxx
-        tensor(2)=sxy
-        tensor(3)=syy
-    else
-        if (issprt .eq. 0) THEN
-            write(ncwu,*)'Denominator 1 in linfit = ', denom
-        END IF
-    endif
-
-    !c r   = r in Watts & Halliwell, page 111
-    !c rsq = r-sq in Excel,  & W&H, page 112
-    !c t   = t in Watts & Halliwell page 113
-    !c tsq = F-test in Excel
-
-    denom=(ss*sxx-sx*sx)*(ss*syy-sy*sy)
-    if(denom .gt. 0.0) then
-        r    =  (ss*sxy-sx*sy)/sqrt(denom)
-        rsq  = r * r
-        if ((ss .ge. 2.).and.(1. .ge. rsq)) then
-            t   =  r*sqrt(ss-2.)/sqrt(1.-rsq)
-            tsq =  rsq*(ss-2.)/(1.-rsq)
-        else   
-            t = -999.
-            tsq = -999.
-        endif
-    else
-        if (issprt .eq. 0) THEN
-            write(ncwu,*)'Denominator 2 in linfit = ', denom
-        end if
-    endif
+    ! Matrix of weights
+    allocate(dw(mitem, mitem))
+    dw=0.0d0
+    do i=1, mitem
+		dw(i,i)=wt(i)
+	end do
     
-    !500     format (A,t40,2f11.3,4x,i7)
-    !501     format (A,t40,2f11.7,4x,i7)
-    !c        ax = max(xmax,ymax)
-    !c        if (issprt .eq. 0) THEN
-    !c          if (ax .ge. .001) then
-    !c          write(NCWU,500) 
-    !c     1 'Weighted averages of x and y', sx/ss, sy/ss, mitem
-    !c           write(NCWU,500) 'Weighted RMS',
-    !!c     1  sqrt(sxx/mitem), sqrt(syy/mitem)
-    !c           write(NCWU,500) 'Weighted Maxima  ', xmax, ymax
-    !c          else
-    !c           write(NCWU,501) 
-    !c     1 'Weighted averages of x and y', sx/mitem, sy/mitem, mitem
-    !c           write(NCWU,501) 'Weighted RMS',
-    !c     1  sqrt(sxx/mitem), sqrt(syy/mitem)
-    !c           write(NCWU,501) 'Weighted Maxima  ', xmax, ymax
-    !c          endif
-    !c        endif
-    !c
-
+    
+    !temp22=matmul(matmul(transpose(x), dw), x)
+    ! xwork=x^t dw
+    xwork(:,1)=wt
+    xwork(:,2)=x(:,2)*wt
+    call DGEMM('T', 'N', 2, 2, mitem, 1.0d0, xwork, mitem,x, mitem, 0.0d0, temp22, 2 )
+    temp22=invert22(temp22)
+    !b=matmul(temp22, matmul(transpose(x), matmul(dw, y)))
+    !b=matmul(temp22, matmul(transpose(xwork), y))
+    call DGEMV('T', mitem, 2, 1.0d0, xwork, mitem, y, 1, 0.0d0, b, 1)
+    b=matmul(temp22, b)
+    
+    allocate(ew(mitem))
+    !ew=y-matmul(x, b) ! residuals
+    ew=y
+    call DGEMV('N', mitem, 2, -1.0d0, x, mitem, b, 1, 1.0d0, ew, 1)
+    !s2=dot_product(ew, matmul(dw, ew))/(mitem-2)
+    s2=DDOT(size(ew), ew*wt, 1, ew, 1)/(mitem-2)
+    bsu=s2*temp22
+    
+    r2=1 - s2*(mitem-2) / &
+    &   ( DDOT(size(y), y, 1, wt*y, 1) - sum(wt*y)**2/sum(wt) )
+   
+    !leverages
+    allocate(hw(mitem, mitem))
+    !Hw=matmul(matmul(x, temp22), transpose(x))
+    call DGEMM('N', 'N', mitem, 2, 2, 1.0d0, x, mitem,temp22, 2, 0.0d0, xwork, mitem )
+    call DGEMM('N', 'T', mitem, mitem, 2, 1.0d0, xwork, mitem,x, mitem, 0.0d0, hw, mitem )
+    
+    if(present(leverages)) then
+        allocate(leverages(mitem))
+        do i=1, mitem
+            leverages(i)=hw(i,i)
+        end do
+    end if
+    
+    allocate(Dv(mitem))
+    do j=1, mitem
+        tempa=matmul(temp22, x(j,:))*wt(j)
+        tempb=matmul(x(j,:), temp22)
+        do i=1, 2
+            tempb22(:,i)=tempa*tempb(i)
+        end do    
+        Dv(j)=b(2)**2*tempb22(2,2)/(1+hw(j,j))
+    end do
+    
+    ! Calculate Studentized residual
+    ! Detection of outliers in weighted least squares regression
+    ! Bang Yong Sohn, Guk Boh Kim
+    ! Korean Journal of Computational & Applied Mathematics
+    ! August 1997, Volume 4, Issue 2, pp 441-452
+    ! doi: 10.1007/BF03014491
+    if(present(tw)) then
+        allocate(tw(mitem))
+        mse=dot_product(ew, matmul(dw, ew))/(mitem-2)
+        do i=1, mitem
+            msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-wt(i)*hw(i,i)) )/(mitem-2-1)
+            tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-wt(i)*hw(i,i)) )
+        end do
+    end if
+    
+    intercept=b(1)
+    interceptsu=sqrt(bsu(1,1))
+    slope=b(2)
+    slopsu=sqrt(bsu(2,2))
+    !print *, 'b ', b
+    !print *, 'sb ', bsu
+    
+    
 end subroutine
 
 !> Hole in one method
-subroutine hole_in_one(reflections_data, filtered_reflections, hin1, hin1su, weights)
+subroutine hole_in_one(reflections_data, filtered_reflections, hin1, hin1su, weights, outliersarg)
+use xssval_mod, only: issprt
+use xunits_mod, only: ncvdu, ncwu
+use m_mrgrnk
+use formatnumber_mod, only:print_value
 implicit none
-real, dimension(:,:), intent(in) :: reflections_data
-logical, dimension(:), intent(in) :: filtered_reflections
-real, dimension(:), optional, intent(in) :: weights
+real, dimension(:,:), intent(in) :: reflections_data !< reflectiond data 2D array (see top of this file)
+logical, dimension(:) :: filtered_reflections !< True if a reflections needs to be rejected
+real, dimension(:), optional, intent(in) :: weights !< optional weights. If absent, 1/sigma**2 is used.
+logical, dimension(:), allocatable, intent(out), optional :: outliersarg !< If present, use a robust fitting with outlier rejection
 real, intent(out) :: hin1, hin1su
 real, dimension(:,:), allocatable :: buffertemp
-integer i, j, k
-real a,sa,b,sb,t,tsq,r,rsq
+integer, dimension(:,:), allocatable :: selected_reflections
+integer i, j, k, outlierloop, iold
+integer, parameter :: numcolumn=4
+integer, dimension(numcolumn) :: column
+character(len=20*numcolumn+10) :: columnformat
+real a,sa,b,sb,r2
 real, dimension(3) :: tensor
+real, dimension(:), allocatable :: leverages, residuals, dv
+integer, dimension(:), allocatable :: rank
+logical change  
+logical, dimension(:), allocatable :: outliers
+
+integer, parameter :: numbins=21 !< number of bins (centered on zero)
+real, parameter :: step=0.5 !< step between bins
+real, dimension(numbins) :: bins !< list of bins (normalised)
+character(len=50) :: formatstr
+integer, parameter :: hist_x=3, hist_y=10
+character, dimension(numbins*hist_x) :: plotline
+real mean, s2, est
+
+    if(issprt.eq.0) then
+        write(ncwu,'(a)') ' Hole in One subroutine', &
+        &                 ' ----------------------'
+    end if
 
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
@@ -1047,41 +1074,257 @@ real, dimension(3) :: tensor
             call abort
         end if
     end if
+    
+    if(present(outliersarg)) then
+        allocate(outliersarg(size(filtered_reflections)))
+        outliersarg=.True.
+        if(issprt.eq.0) then
+            write(ncwu,'(a)') ' Outliers rejection based on studentized residuals enabled:', &
+            &                 '    Detection of outliers in weighted least squares regression', &
+            &                 '    Bang Yong Sohn, Guk Boh Kim', &
+            &                 '    Korean Journal of Computational & Applied Mathematics', &
+            &                 '    August 1997, Volume 4, Issue 2, pp 441-452', &
+            &                 '    doi: 10.1007/BF03014491', &
+            &                 '    Cut-of value for outliers: 3sigma', &
+            &                 '',''
+        end if
+    end if
+    allocate(outliers(size(filtered_reflections)))
+    outliers=.false.
+    
+    change=.true.
+    outlierloop=0
+    do while(change)
+        change=.false.
+        outlierloop=outlierloop+1
+        if(issprt.eq.0) then
+            if(outlierloop==1) then
+                write(ncwu,'(a, I0)') '------- Linear fit using all suplied data'
+            else
+                write(ncwu,'(a, I0, a, I0, a)') '------- Linear fit iteration number ', &
+                &   outlierloop, ' with ', count(outliers), ' rejected outliers'
+            end if
+        end if
 
-    ! select valid reflections (friedel pairs not filtered out)
-    i=count(.not. filtered_reflections)
-    if(i>1) then
-        allocate(buffertemp(2*i,3))
-        k=-1
-        do j=1, ubound(reflections_data, 2)
-            if(.not. filtered_reflections(j)) then
-                ! x, y, wt
-                k=k+1
-                buffertemp(k*2+1,1)=reflections_data(C_FCK2,j)-reflections_data(C_FCK1,j)
-                buffertemp(k*2+1,2)=reflections_data(C_FOK1,j)-reflections_data(C_FCK1,j)
-                if(present(weights)) then
-                    buffertemp(k*2+1,3)=weights(j)
-                else
-                    buffertemp(k*2+1,3)=1./reflections_data(C_SIG1,j)**2
+        ! select valid reflections (friedel pairs not filtered out)
+        i=count( (filtered_reflections .eqv. .false.) .and. (outliers .eqv. .false.) )
+        if(i>1) then
+            allocate(buffertemp(2*i,3))
+            allocate(residuals(2*i))
+            allocate(selected_reflections(3, 2*i))
+            k=-1
+            do j=1, ubound(reflections_data, 2)
+                if( (filtered_reflections(j) .eqv. .false.) .and. (outliers(j) .eqv. .false.) ) then
+                    ! x, y, wt
+                    k=k+1
+                    buffertemp(k*2+1,1)=reflections_data(C_FCK2,j)-reflections_data(C_FCK1,j)
+                    buffertemp(k*2+1,2)=reflections_data(C_FOK1,j)-reflections_data(C_FCK1,j)
+                    selected_reflections(:,k*2+1)=nint(reflections_data( (/C_H, C_K, C_L/) ,j ))
+                    if(present(weights)) then
+                        buffertemp(k*2+1,3)=weights(j)
+                    else
+                        buffertemp(k*2+1,3)=1./reflections_data(C_SIG1,j)**2
+                    end if
+                    buffertemp(k*2+2,1)=reflections_data(C_FCK1,j)-reflections_data(C_FCK2,j)
+                    buffertemp(k*2+2,2)=reflections_data(C_FOK2,j)-reflections_data(C_FCK2,j)
+                    selected_reflections(:,k*2+2)=nint(reflections_data( (/C_H, C_K, C_L/) ,j ))
+                    if(present(weights)) then
+                        buffertemp(k*2+1,3)=weights(j)
+                    else
+                        buffertemp(k*2+2,3)=1./reflections_data(C_SIG2,j)**2
+                    end if
                 end if
-                buffertemp(k*2+2,1)=reflections_data(C_FCK1,j)-reflections_data(C_FCK2,j)
-                buffertemp(k*2+2,2)=reflections_data(C_FOK2,j)-reflections_data(C_FCK2,j)
-                if(present(weights)) then
-                    buffertemp(k*2+1,3)=weights(j)
-                else
-                    buffertemp(k*2+2,3)=1./reflections_data(C_SIG2,j)**2
+            end do
+            
+            call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
+            &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
+        
+            k=-1
+            do j=1, size(outliers)
+                if( (filtered_reflections(j) .eqv. .false.) .and. (outliers(j) .eqv. .false.) ) then
+                    k=k+1
+                    if(abs(residuals(k*2+1))>3.0d0) then
+                        if(.not. outliers(j)) then
+                            outliers(j)=.true.
+                            change=.true.
+                        end if
+                    end if
+                    if(abs(residuals(k*2+2))>3.0d0) then
+                        if(.not. outliers(j)) then
+                            outliers(j)=.true.
+                            change=.true.
+                        end if
+                    end if
                 end if
+            end do
+
+            if(issprt.eq.0) then
+                !print *, 'Slope:', &
+                !&   b,sb,' intercept:',a,sa
+                write(ncwu,'(a, a, a, a)') 'Slope:', &
+                &   print_value(b,sb),' intercept:',print_value(a,sa)
+                write(ncwu,*) ''
+            end if
+            
+            if(.not. present(outliersarg)) then
+                exit
+            end if
+
+            if(change) then
+                deallocate(buffertemp)
+                deallocate(residuals)
+                deallocate(selected_reflections)    
+            end if
+        else
+            hin1 = 0.0
+            hin1su = 0.0
+            exit
+        end if    
+            
+    end do    
+        
+    if(present(outliersarg)) then
+        columnformat=repeat('3(I3, 1X), 5X, ', numcolumn)
+        columnformat='( '//columnformat(1:len_trim(columnformat)-1-4)//' )'
+
+        outliersarg=outliers
+        if(issprt.eq.0) then
+            write(ncwu,'(a)') '', ' List of outliers (excluded all previously filtered reflections):'
+            k=0
+            do i=1, size(outliers)
+                if(outliers(i)) then
+                    k=k+1
+                    if(k>size(column)) then
+                        ! write line of table
+                        write(ncwu,columnformat) nint(reflections_data( (/C_H,C_K, C_L/), column))
+                        k=0
+                    else
+                        column(k)=i
+                    end if
+                end if
+            end do
+        end if
+    end if
+    
+    ! Print out leverages
+    if(issprt.eq.0) then
+        write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
+        &   ' Determined using leverages: abs(X (X^t Dw X)^-1 X^t)', &
+        &   ' ^t = transpose, Dw = weights, ^-1 = Matrix inverse', &
+        &   ' The result is scaled with the maximum leverage=100.0'
+        
+        allocate(rank(size(leverages)))
+        ! Sort into ascending order.
+        call mrgrnk(abs(leverages), rank)
+        ! Reverse the order
+        rank=rank(size(rank):1:-1)
+        
+        do i=1, numcolumn
+            write(ncwu,'(a12, a8, 3X)', advance='no') 'h k l   ', '(Lev)  '
+        end do
+        write(ncwu, *) ''
+        k=0
+        do i=1, size(leverages)/10, 1
+            write(ncwu,'(3(I3,1X), "(",F6.2,")", 3X)', advance='no') &
+            &   selected_reflections( :, rank(i)), abs(100.0*leverages(rank(i))/leverages(rank(1)))
+            k=k+1
+            if(k==numcolumn) then
+                write(ncwu,*) ''
+                k=0
             end if
         end do
+        write(ncwu, *) ''
+    end if
+    
+    ! Print out Dv
+    if(issprt.eq.0) then
+        write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
+        &   ' Determined using: (V z^t z V)/(1-lev)'
+                
+        !allocate(rank(size(dv)))
+        ! Sort into ascending order.
+        call mrgrnk(dv, rank)
+        ! Reverse the order
+        rank=rank(size(rank):1:-1)
+        
+        do i=1, numcolumn
+            write(ncwu,'(a12, a8, 3X)', advance='no') 'h k l   ', '(Dv)   '
+        end do
+        write(ncwu, *) ''
+        k=0
+        do i=1, size(leverages)/10, 1
+            write(ncwu,'(3(I3,1X), "(",1P E8.2,")", 3X)', advance='no') &
+            &   selected_reflections( :, rank(i)), dv(rank(i))
+            k=k+1
+            if(k==numcolumn) then
+                write(ncwu,*) ''
+                k=0
+            end if
+        end do
+        write(ncwu, *) ''
+    end if
+    
+    
+    ! plotting of residuals
+    !----------------------
+    bins=0.0
+    bins(1)=count(residuals<-1.0*step*(numbins/2.0-1.0))
+    do i=2, numbins-1
+        bins(i)=count( (residuals>=-1.0*step*(numbins/2.0+1.0-i)) .and. (residuals<-1.0*step*(numbins/2.0-i)) )
+    end do
+    bins(numbins)=count(residuals>=step*(numbins/2.0-1.0))
+    !normalise histogram
+    bins=bins/(sum(bins)*step)
+    
+    mean=sum(residuals)/size(residuals)
+    s2=sum((residuals-mean)**2)/(size(residuals)-1.0)
+    if(issprt.eq.0) then
+        write(ncwu,'(a)') ' '
+        write(ncwu,'(a)') 'Frequency distribution of the residuals from the linear fit'
+        write(ncwu,'(10X, a, F6.2, a, F6.2)') 'Mean=', mean, ' Variance=', s2
+        write(ncwu,'(10X, a, a)') '---=Residuals', ' +++=Normal distribution'
+        write(ncwu,'(1X,7X,1X, a)') repeat('___', numbins)
+    end if
+    
+    do i=hist_y, 1, -1
+        plotline=''
+        do j=1, numbins
+            if(bins(j)<=maxval(bins)/real(hist_y)*i .and. bins(j)>maxval(bins)/real(hist_y)*(i-1)) then
+                plotline((j-1)*hist_x+1:j*hist_x)=repeat(char(175), hist_x)
+            end if
+        end do
+        
+        ! Normal distribution
+        do j=1, numbins*hist_x
+            est=1.0/sqrt(2*1.0*3.14159)*exp(-(-1.0*step/hist_x*((hist_x*numbins)/2.0-j)-0.0)**2/(2.0*1.0))
+            if(est<=maxval(bins)/real(hist_y)*i .and. est>maxval(bins)/real(hist_y)*(i-1)) then
+                plotline(j)='+'
+            end if
+        end do        
+        write(formatstr, '("(F7.2, a, ",I0,"a, a)")') numbins*hist_x
+        if(issprt.eq.0) then
+            write(ncwu,formatstr) maxval(bins)/real(hist_y)*i, ' |', plotline, '|'
+        end if
+    end do
+    
+    if(issprt.eq.0) then
+        write(ncwu,'(F7.2,2X, a)') 0.0, repeat(char(175)//'|'//char(175), numbins)
+        write(formatstr, '( "(5X, ",I0,"X,  (" , I0 , "(F4.1,",I0,"X)))" )') hist_x, (numbins/2), hist_x-1
+        write(ncwu, formatstr) (/ ((i-1)*step-5.5, i=2, numbins,2) /)
+        write(ncwu, *) ''
+    end if
+    ! End plotting of residuals
+    !----------------------
+    
+    
+    hin1 = b
+    hin1su = sb
 
-        call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
-        &     a,sa,b,sb,t,tsq,r,rsq,tensor)
-        hin1 = b
-        hin1su = sb
-    else
-        hin1 = 0.0
-        hin1su = 0.0       
-    end if    
+
+    if(issprt.eq.0) then    
+        write(ncwu,'(a)') ' End Hole in One subroutine', &
+        &                 ' --------------------------'
+    end if
 
 end subroutine
 
@@ -1345,6 +1588,7 @@ real, dimension(:,:), allocatable :: buffertemp
 integer i, j, k
 real a,sa,b,sb,t,tsq,r,rsq
 real, dimension(3) :: tensor
+real, dimension(:), allocatable :: leverage, residuals
 
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
@@ -1388,8 +1632,8 @@ real, dimension(3) :: tensor
             end if
         end do
 
-        call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
-        &     a,sa,b,sb,t,tsq,r,rsq,tensor)
+        !call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
+        !&     a,sa,b,sb,t,tsq,r,rsq,tensor, leverage, residuals)
         bijvoet = 0.5*(1.0-b)
         bijvoetsu = 0.5*sb
     else
@@ -1947,6 +2191,24 @@ character(len=:), allocatable :: mydate
     mydate=trim(buffer)
         
 end function
+
+!> Invert a 2x2 matrix
+function invert22(a) result(b)
+implicit none
+double precision, dimension(2,2), intent(in) :: a
+double precision, dimension(2,2) :: b !< inverse of matrix
+double precision det
+
+	det=a(1,1)*a(2,2)-a(1,2)*a(2,1)
+
+	b(1,1)=a(2,2)
+	b(2,1)=-a(2,1)
+	b(1,2)=-a(1,2)
+	b(2,2)=a(1,1)
+
+	b=1/det*b
+end function
+
 end module
 
 
