@@ -40,7 +40,10 @@ integer, parameter :: C_ASoSAO=2    !<  As  > filter(2)*sigma(Ao)
 integer, parameter :: C_DOoDSmax=3  !< /Do/ < filter(3)*Ds(max)
 integer, parameter :: C_OUTLIER=4   !< Outlier rejection (was in kflack)
 integer, parameter :: C_AOoAc=5     !< Ratio Ao/Ac >< filter(5) 
-integer, parameter :: C_NUMFILTERS=5!< Number of fields in reflections_filters
+integer, parameter :: C_HIN1=6      !< Outliers from Hole in one method
+integer, parameter :: C_BIJVOET=7   !< Outliers from Bijvoet differences
+integer, parameter :: C_PARSONS=8   !< Outliers from Parsons quotients
+integer, parameter :: C_NUMFILTERS=8!< Number of fields in reflections_filters
 !> @}
 
 !> @name Platon constant
@@ -1626,8 +1629,13 @@ character, dimension(numbins*hist_x) :: plotline
 real mean, s2, est
 
     if(issprt.eq.0) then
-        write(ncwu,'(a)') '', ' Bijvoet differences subroutine', &
-        &                 ' --------------------------------------------------'
+		if(itype==1) then
+			write(ncwu,'(a)') '', ' Bijvoet differences subroutine', &
+			&                 ' --------------------------------------------------'
+		else
+			write(ncwu,'(a)') '', ' Parsons quotients subroutine', &
+			&                 ' --------------------------------------------------'
+		end if
     end if
 
     !Check input data
@@ -1891,10 +1899,17 @@ real mean, s2, est
     bijvoetsu = 0.5*sb
 
 
-    if(issprt.eq.0) then    
-        write(ncwu,'(a)') '', ' End bijvoet differences subroutine', &
-        &                 ' --------------------------------------------------', &
-        &				  '', ''
+    if(issprt.eq.0) then
+		if(itype==1) then
+			write(ncwu,'(a)') '', ' End Bijvoet differences subroutine', &
+			&                 ' --------------------------------------------------', &
+			&				  '', ''
+			
+		else
+			write(ncwu,'(a)') '', ' End Parsons quotients subroutine', &
+			&                 ' --------------------------------------------------', &
+			&				  '', ''
+		end if
     end if
 
 end subroutine
@@ -2412,17 +2427,20 @@ real, dimension(:), allocatable :: leverage
     write(666, *) '# F3 = Filter 3'
     write(666, *) '# F4 = Filter 4'
     write(666, *) '# F5 = Filter 5'
+    write(666, *) '# F6 = Outliers Hole in one'
+    write(666, *) '# F7 = Outliers Bijvoet pairs'
+    write(666, *) '# F8 = Outliers Parsons quotients'
     write(666, *) ''
     
     
-    write(666, '(3(a3, 1x), 21(a12, 1X), 5(a3, 1X))')                             &
+    write(666, '(3(a3, 1x), 21(a12, 1X), 8(a3, 1X))')                             &
     &   'h', 'k', 'l', 'Zh', 'FCKA', 'FOKA', 'FCKD', 'FOKD', 'SigmaD', 'SigmaQ',  &
     &   'Flack(x)', 'SigmaX', 'DeltaX', 'Flxwt', 'SigNoise', 'Fried1', 'Fried2',  &
     &   'FoK1', 'Sig1', 'FcK1', 'FoK2', 'Sig2', 'FcK2', 'Leverage',                    &
-    &   'F1', 'F2', 'F3', 'F4', 'F5'
+    &   'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8'
     
     do i=1, ubound(reflections_data, 2)
-        write(666, '(3(I3, 1x), 20(F12.4, 1X), (F12.6, 1X), 5(L3, 1X))')  &
+        write(666, '(3(I3, 1x), 20(F12.4, 1X), (F12.6, 1X), 8(L3, 1X))')  &
         &   nint(reflections_data(1:3,i)),                                &
         &   reflections_data(4:23,i),                                     &
         &   leverage(i), &
