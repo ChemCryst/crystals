@@ -36,7 +36,7 @@ integer :: arg_decimal_pos
         return
     end if
 
-    if(esd<0.0d0) then
+    if(esd<1E-12) then
         !print *, 'negative esd'
         call abort()
     end if
@@ -106,7 +106,7 @@ integer :: arg_decimal_pos
         return
     end if
 
-    if(esd<0.0d0) then
+    if(esd<1D-24) then
         !print *, 'negative esd'
         call abort()
     end if
