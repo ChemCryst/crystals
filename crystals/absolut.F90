@@ -915,18 +915,18 @@ real, intent(out) :: slope,slopsu !< slope and its su
 real, intent(out) :: r2 !< correlation coefficient
 real, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
 real, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
-double precision, dimension(:,:), allocatable :: x, xwork !< design matrix
-double precision, dimension(:,:), allocatable :: hw !< Weighted Hat matrix (leverage)
-double precision, dimension(:,:), allocatable :: dw !< Matrix of weights
-double precision, dimension(:), allocatable :: ew !< vector of residuals
-double precision, dimension(:), allocatable :: y !< observations (double precision) 
-double precision, dimension(2,2) :: temp22, tempb22, bsu
-double precision, dimension(2) :: b, tempa, tempb
-real, dimension(:), allocatable, intent(out), optional :: Dv
+real, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
+double precision, dimension(size(xin),2) :: x, xwork, xworkb !< design matrix
+double precision, dimension(size(xin),size(xin)) :: hw !< Weighted Hat matrix (leverage)
+!double precision, dimension(size(xin),size(xin)) :: dw !< Matrix of weights
+double precision, dimension(size(xin)) :: ew !< vector of residuals
+double precision, dimension(size(xin)) :: y !< observations (double precision) 
+double precision, dimension(size(xin)) :: v1 !< work vector
+double precision, dimension(2,2) :: normalinv !< inverse of the normal matrix
+double precision, dimension(2,2) :: bsu !< variance of b
+double precision, dimension(2) :: b !< vector of parameters
 double precision :: mse, msei, s2
-integer i, j
-
-integer mitem
+integer i, j, mitem
 
 double precision, external :: ddot
 
@@ -935,69 +935,84 @@ double precision, external :: ddot
         print *, 'Size does not match'
         call abort
     end if
-        
-    ! form design matrix
-    allocate(x(mitem, 2))
-    allocate(xwork(mitem, 2))
-    x(:,1)=1.0d0
-    x(:,2)=xin
     
+    if(present(tw)) allocate(tw(mitem))
+    if(present(leverages)) allocate(leverages(mitem))
+    if(present(dv)) allocate(dv(mitem))
+            
     ! increase precision
-    allocate(y(mitem))
     y=yin
 
     ! Matrix of weights
-    allocate(dw(mitem, mitem))
-    dw=0.0d0
-    do i=1, mitem
-		dw(i,i)=wt(i)
-	end do
+    !dw=0.0d0
+    !do i=1, mitem
+	!	dw(i,i)=wt(i)
+	!end do
     
-    
-    !temp22=matmul(matmul(transpose(x), dw), x)
+    !normalinv=matmul(matmul(transpose(x), dw), x)
     ! xwork=x^t dw
+    ! design matrix
+    x(:,1)=1.0
+    x(:,2)=xin
     xwork(:,1)=wt
     xwork(:,2)=x(:,2)*wt
-    call DGEMM('T', 'N', 2, 2, mitem, 1.0d0, xwork, mitem,x, mitem, 0.0d0, temp22, 2 )
-    temp22=invert22(temp22)
-    !b=matmul(temp22, matmul(transpose(x), matmul(dw, y)))
-    !b=matmul(temp22, matmul(transpose(xwork), y))
-    call DGEMV('T', mitem, 2, 1.0d0, xwork, mitem, y, 1, 0.0d0, b, 1)
-    b=matmul(temp22, b)
     
-    allocate(ew(mitem))
-    !ew=y-matmul(x, b) ! residuals
+    ! solve normal equations by matrix inversion
+    call DGEMM('T', 'N', 2, 2, mitem, 1.0d0, xwork, mitem,x, mitem, 0.0d0, normalinv, 2 )
+    normalinv=invert22(normalinv)
+    !b=matmul(normalinv, matmul(transpose(x), matmul(dw, y)))
+    !b=matmul(normalinv, matmul(transpose(xwork), y))
+    call DGEMV('T', mitem, 2, 1.0d0, xwork, mitem, y, 1, 0.0d0, b, 1)
+    b=matmul(normalinv, b)
+    
+    ! calculate residuals
+    !ew=y-matmul(x, b) 
     ew=y
     call DGEMV('N', mitem, 2, -1.0d0, x, mitem, b, 1, 1.0d0, ew, 1)
+    
+    ! Calculate variance of parameters b
     !s2=dot_product(ew, matmul(dw, ew))/(mitem-2)
     s2=DDOT(size(ew), ew*wt, 1, ew, 1)/(mitem-2)
-    bsu=s2*temp22
+    bsu=s2*normalinv
     
+    ! Calculate correlation coefficient
+    v1=wt*y
     r2=1 - s2*(mitem-2) / &
-    &   ( DDOT(size(y), y, 1, wt*y, 1) - sum(wt*y)**2/sum(wt) )
+    &   ( DDOT(size(y), y, 1, v1, 1) - sum(v1)**2/sum(wt) )
    
     !leverages
-    allocate(hw(mitem, mitem))
-    !Hw=matmul(matmul(x, temp22), transpose(x))
-    call DGEMM('N', 'N', mitem, 2, 2, 1.0d0, x, mitem,temp22, 2, 0.0d0, xwork, mitem )
+    !Hw=matmul(matmul(x, normalinv), transpose(x))
+    call DGEMM('N', 'N', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xwork, mitem )
     call DGEMM('N', 'T', mitem, mitem, 2, 1.0d0, xwork, mitem,x, mitem, 0.0d0, hw, mitem )
     
     if(present(leverages)) then
-        allocate(leverages(mitem))
         do i=1, mitem
             leverages(i)=hw(i,i)
         end do
     end if
     
-    allocate(Dv(mitem))
-    do j=1, mitem
-        tempa=matmul(temp22, x(j,:))*wt(j)
-        tempb=matmul(x(j,:), temp22)
-        do i=1, 2
-            tempb22(:,i)=tempa*tempb(i)
-        end do    
-        Dv(j)=b(2)**2*tempb22(2,2)/(1+hw(j,j))
-    end do
+    ! Calculate (V xi^t w xi V)/(1+lev) for the slope
+    ! Dv is the improvement on the variance on the parameter if an observation i is remeasured
+    if(present(dv)) then
+		! xwork is (w x V)
+		! xwork(:,1)=xwork(:,1)*wt Not used
+		xwork(:,2)=xwork(:,2)*wt
+		! xworkb^t is (V x^t), xworkb is (x V^t)
+		call DGEMM('N', 'T', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xworkb, mitem )
+		do j=1, mitem
+			!tempa=matmul(normalinv, x(j,:))*wt(j) ! done
+			!tempb=matmul(x(j,:), normalinv) !done
+			!do i=1, 2
+			!    tempb22(:,i)=tempa*tempb(i)
+			!end do    
+
+			! no need for the whole 2x2 matrix, just (2,2): xwork(j,2)*xworkb(j,2)
+			!do i=1, 2
+			!    tempb22(:,2)=xwork(j,:)*xworkb(j,i)
+			!end do
+			Dv(j)=b(2)**2*(xwork(j,2)*xworkb(j,2))/(1+hw(j,j))
+		end do
+	end if
     
     ! Calculate Studentized residual
     ! Detection of outliers in weighted least squares regression
@@ -1006,8 +1021,7 @@ double precision, external :: ddot
     ! August 1997, Volume 4, Issue 2, pp 441-452
     ! doi: 10.1007/BF03014491
     if(present(tw)) then
-        allocate(tw(mitem))
-        mse=dot_product(ew, matmul(dw, ew))/(mitem-2)
+        mse=dot_product(ew, wt*ew)/(mitem-2)
         do i=1, mitem
             msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-wt(i)*hw(i,i)) )/(mitem-2-1)
             tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-wt(i)*hw(i,i)) )
@@ -1058,8 +1072,8 @@ character, dimension(numbins*hist_x) :: plotline
 real mean, s2, est
 
     if(issprt.eq.0) then
-        write(ncwu,'(a)') ' Hole in One subroutine', &
-        &                 ' ----------------------'
+        write(ncwu,'(a)') '', ' Hole in One subroutine', &
+        &                 ' --------------------------------------------------'
     end if
 
     !Check input data
@@ -1322,8 +1336,9 @@ real mean, s2, est
 
 
     if(issprt.eq.0) then    
-        write(ncwu,'(a)') ' End Hole in One subroutine', &
-        &                 ' --------------------------'
+        write(ncwu,'(a)') '', ' End Hole in One subroutine', &
+        &                 ' --------------------------------------------------', &
+        &				  '', ''
     end if
 
 end subroutine
@@ -1611,8 +1626,8 @@ character, dimension(numbins*hist_x) :: plotline
 real mean, s2, est
 
     if(issprt.eq.0) then
-        write(ncwu,'(a)') ' Bijvoet differences subroutine', &
-        &                 ' ------------------------------'
+        write(ncwu,'(a)') '', ' Bijvoet differences subroutine', &
+        &                 ' --------------------------------------------------'
     end if
 
     !Check input data
@@ -1865,7 +1880,7 @@ real mean, s2, est
     if(issprt.eq.0) then
         write(ncwu,'(F7.2,2X, a)') 0.0, repeat(char(175)//'|'//char(175), numbins)
         write(formatstr, '( "(5X, ",I0,"X,  (" , I0 , "(F4.1,",I0,"X)))" )') hist_x, (numbins/2), hist_x-1
-        write(ncwu, formatstr) (/ ((i-1)*step-5.5, i=2, numbins,2) /)
+        write(ncwu, formatstr) (/ ((i-1)*step-5.5, i=2, numbins+1,2) /)
         write(ncwu, *) ''
     end if
     ! End plotting of residuals
@@ -1877,8 +1892,9 @@ real mean, s2, est
 
 
     if(issprt.eq.0) then    
-        write(ncwu,'(a)') ' End bijvoet differences subroutine', &
-        &                 ' ----------------------------------'
+        write(ncwu,'(a)') '', ' End bijvoet differences subroutine', &
+        &                 ' --------------------------------------------------', &
+        &				  '', ''
     end if
 
 end subroutine
