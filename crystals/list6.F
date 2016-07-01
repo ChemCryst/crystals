@@ -541,7 +541,8 @@ C     F^2/SIGMA
 C
       IF (MD6P .EQ. 4) THEN
         XTHRESH=1.0
-        write(cmon,'(A,2x,f6.4)') '{R this is an old-type L6', xthresh
+c        write(cmon,'(A,2x,f6.4)') '{R this is an old-type L6', xthresh
+         write(cmon,'(1x)')         !Dont show anything
       ELSE IF  (MD6P .EQ. 5) THEN
         XTHRESH=ZERO
 c        write(cmon,'(A,2x,f6.4)') '{R this is a new-type L6', xthresh
