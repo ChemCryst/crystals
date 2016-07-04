@@ -849,8 +849,8 @@ C
 C -- ALLOCATE A BUFFER FOR COMMAND PROCESSING
 C -- 'MD' IS BEGINNING AND 'MG' IS THE END
 cdjwoct09 double buffer size
-      MD = KSTALL ( 8000 )
-      MG = MD + 8000
+      MD = KSTALL ( 32000 )
+      MG = MD + 32000
 C -- SET DIRECTIVE TYPE FLAG
       ILAST = -1
 C
