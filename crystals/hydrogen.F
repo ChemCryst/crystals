@@ -2643,7 +2643,13 @@ C--WE USE THE T.F. OF THE BONDED ATOM
 1000  CONTINUE
       CALL XEQUIV(1, JB, MD5A, IEQUIV)
       SV = STORE(JB+2)
+      IF ( STORE(JB+2-MD5A) .LT. SV ) SV = STORE(JB+2-MD5A)
+      IF ( STORE(JB+2-MD5A*2) .LT. SV ) SV = STORE(JB+2-MD5A*2)
+      IF ( STORE(JB+2-MD5A*3) .LT. SV ) SV = STORE(JB+2-MD5A*3)
       KPR = ISTORE(JB+14)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A*2)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A*3)
       SY = STORE(IEQUIV) * STORE(IEQUIV+4)
 1050  CONTINUE
 
@@ -2768,7 +2774,12 @@ C--WE USE THE T.F. OF THE BONDED ATOM
       CALL XEQUIV(1, JB, MD5A, IEQUIV)
       SY = STORE(IEQUIV) * STORE(IEQUIV+4)
       SV = STORE(JB+2)
+      IF ( STORE(JB+2-MD5A) .LT. SV ) SV = STORE(JB+2-MD5A)
+      IF ( STORE(JB+2-MD5A*2) .LT. SV ) SV = STORE(JB+2-MD5A*2)
       KPR = ISTORE(JB+14)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A*2)
+
 1050  CONTINUE
       CALL SDIFV(STORE(JE+3),STORE(JE),STORE(JN))
       EE=SNOR(STORE(JN))
@@ -2821,7 +2832,9 @@ C--WE USE THE T.F. OF THE BONDED ATOM
       CALL XEQUIV(1, JB, MD5A, IEQUIV)
       SY = STORE(IEQUIV) * STORE(IEQUIV+4)
       SV = STORE(JB+2)
+      IF ( STORE(JB+2-MD5A) .LT. SV ) SV = STORE(JB+2-MD5A)
       KPR = ISTORE(JB+14)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A)
 1050  CONTINUE
       CALL SDIFV(STORE(JE+3),STORE(JE),STORE(JN))
       EE=SNOR(STORE(JN))
@@ -2877,7 +2890,11 @@ C--WE USE THE T.F. OF THE BONDED ATOM
       CALL XEQUIV(1, LADDU, MD5A, IEQUIV)
       SY = STORE(IEQUIV) * STORE(IEQUIV+4)
       SV = STORE(JB+2)
+      IF ( STORE(JB+2-MD5A) .LT. SV ) SV = STORE(JB+2-MD5A)
+      IF ( STORE(JB+2-MD5A*2) .LT. SV ) SV = STORE(JB+2-MD5A*2)
       KPR = ISTORE(JB+14)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A)
+      IF ( KPR .EQ. 0 ) KPR = ISTORE(JB+14-MD5A*2)
 1050  CONTINUE
       CALL SDIFV(STORE(JE+3),STORE(JE),STORE(JF))
       CALL SDIFV(STORE(JE+3),STORE(JE+6),STORE(JF+3))
@@ -3101,6 +3118,20 @@ C
       DATA IHH(1)/'H   '/
 #endif
 C
+C Check for clashing serial numebr
+
+      DO ISW = 1,999
+         ICLASH = 0
+         DO K5 = L5,JT,MD5
+           IF ( ( ISTORE(K5)        .EQ. IHH(1) ) .AND.
+     1         ( NINT(STORE(K5+1)) .EQ. SW )     ) THEN
+              SW = SW + 1
+              ICLASH = 1
+           END IF
+         END DO
+         IF ( ICLASH .EQ. 0) EXIT  ! No clash found
+      END DO !Give up after 999 tries - we will have a clash.
+
       CALL XMOVE(IHH(1),STORE(JT),1)
       STORE(JT+1)=SW
       STORE(JT+2)=SV
