@@ -1214,12 +1214,16 @@ real mean, s2, est
                     if(k>size(column)) then
                         ! write line of table
                         write(ncwu,columnformat) nint(reflections_data( (/C_H,C_K, C_L/), column))
-                        k=0
+                        k=1
+                        column(k)=i
                     else
                         column(k)=i
                     end if
                 end if
             end do
+            if(k>0) then
+                write(ncwu,columnformat) nint(reflections_data( (/C_H,C_K, C_L/), column(1:k)))
+            end if
         end if
     end if
     
@@ -1326,7 +1330,7 @@ real mean, s2, est
     
     if(issprt.eq.0) then
         write(ncwu,'(F7.2,2X, a)') 0.0, repeat(char(175)//'|'//char(175), numbins)
-        write(formatstr, '( "(5X, ",I0,"X,  (" , I0 , "(F4.1,",I0,"X)))" )') hist_x, (numbins/2), hist_x-1
+        write(formatstr, '( "(5X, ",I0,"X,  (" , I0 , "(F4.1,",I0,"X)))" )') hist_x, (numbins/2)+1, hist_x-1
         write(ncwu, formatstr) (/ ((i-1)*step-5.5, i=2, numbins,2) /)
         write(ncwu, *) ''
     end if
@@ -1619,6 +1623,7 @@ real, dimension(:), allocatable :: leverages, residuals, dv
 integer, dimension(:), allocatable :: rank
 logical change  
 logical, dimension(:), allocatable :: outliers
+character(len=10) ctime
 
 integer, parameter :: numbins=21 !< number of bins (centered on zero)
 real, parameter :: step=0.5 !< step between bins
@@ -1740,7 +1745,7 @@ real mean, s2, est
                 !print *, 'Slope:', &
                 !&   b,sb,' intercept:',a,sa
                 write(ncwu,'(a, a, a, a)') 'Slope:', &
-                &   print_value(b,sb),' intercept:',print_value(a,sa)
+                &   print_value(b,sb, opt_precision=3),' intercept:',print_value(a,sa, opt_precision=3)
                 write(ncwu,*) ''
             end if
             
@@ -1775,12 +1780,16 @@ real mean, s2, est
                     if(k>size(column)) then
                         ! write line of table
                         write(ncwu,columnformat) nint(reflections_data( (/C_H,C_K, C_L/), column))
-                        k=0
+                        k=1
+                        column(k)=i
                     else
                         column(k)=i
                     end if
                 end if
             end do
+            if(k>0) then
+                write(ncwu,columnformat) nint(reflections_data( (/C_H,C_K, C_L/), column(1:k)))
+            end if            
         end if
     end if
     
@@ -1788,7 +1797,7 @@ real mean, s2, est
     if(issprt.eq.0) then
         write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
         &   ' Determined using leverages: abs(X (X^t Dw X)^-1 X^t)', &
-        &   ' ^t = transpose, Dw = weights, ^-1 = Matrix inverse', &
+        &   ' ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse', &
         &   ' The result is scaled with the maximum leverage=100.0'
         
         allocate(rank(size(leverages)))
@@ -1817,7 +1826,9 @@ real mean, s2, est
     ! Print out Dv
     if(issprt.eq.0) then
         write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
-        &   ' Determined using: (V z^t z V)/(1-lev)'
+        &   ' Determined using: Dv = (V z^t z V)/(1-lev)', &
+        &   ' V = variance of the parameter, ^t = transpose, ', &
+        &   ' z = a row of the design matrix, lev = leverage'
                 
         !allocate(rank(size(dv)))
         ! Sort into ascending order.
@@ -1840,6 +1851,7 @@ real mean, s2, est
             end if
         end do
         write(ncwu, *) ''
+        
     end if
     
     
@@ -1887,7 +1899,7 @@ real mean, s2, est
     
     if(issprt.eq.0) then
         write(ncwu,'(F7.2,2X, a)') 0.0, repeat(char(175)//'|'//char(175), numbins)
-        write(formatstr, '( "(5X, ",I0,"X,  (" , I0 , "(F4.1,",I0,"X)))" )') hist_x, (numbins/2), hist_x-1
+        write(formatstr, '( "(5X, ",I0,"X,  (" , I0 , "(F4.1,",I0,"X)))" )') hist_x, (numbins/2)+1, hist_x-1
         write(ncwu, formatstr) (/ ((i-1)*step-5.5, i=2, numbins+1,2) /)
         write(ncwu, *) ''
     end if
@@ -1898,8 +1910,10 @@ real mean, s2, est
     bijvoet = 0.5*(1.0-b)
     bijvoetsu = 0.5*sb
 
-
     if(issprt.eq.0) then
+        write(ncwu,'(a, a)') 'Bijvoet differences:', &
+        &   print_value(bijvoet,bijvoetsu, opt_precision=4)
+        write(ncwu,*) ''
 		if(itype==1) then
 			write(ncwu,'(a)') '', ' End Bijvoet differences subroutine', &
 			&                 ' --------------------------------------------------', &
@@ -2131,7 +2145,7 @@ include 'STORE.INC'
     !store(l30ix+7) theta max
     span=sin(pi*store(l30ix+7)/180.0)/(store(l13dc))
     span=span**3
-    nbin=refls_valid_size/100
+    nbin=max(1, refls_valid_size/100)
     if (nbin .gt. maxbin) then
         nbin=maxbin
     endif
