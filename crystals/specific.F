@@ -2556,11 +2556,8 @@ CODE FOR GDETCH
 
 CODE FOR GETCWD
       SUBROUTINE GETCWD ( CWORK )
-#if defined(CRY_FORTDIGITAL)  
+#if defined(CRY_FORTDIGITAL)  || defined (CRY_FORTINTEL)
       USE DFLIB
-#endif
-#if defined (CRY_FORTINTEL)
-      use IFPORT
 #endif
       CHARACTER*(*) CWORK
 

@@ -337,8 +337,6 @@ integer, dimension(:), allocatable :: ipiv, iwork
 real rcond
 integer, external :: ILAENV
 
-character(len=58) :: formatstr
-
 #if defined(CRY_OSLINUX)
 integer :: starttime
 integer, dimension(8) :: measuredtime
@@ -443,20 +441,7 @@ do i=1,nmsize
     ! revert preconditioning
     nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
     nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
-    unpacked(i:nmsize,i)=nmatrix(1+j:1+k)
 end do    
-
-!if(ubound(unpacked,1)-1>0) then
-!write(formatstr, '(A,I0,A)') "(E16.8,"","",",ubound(unpacked,1)-1,'(E17.8,","))'
-!         open(666, file="normal0.m")
-!    write(666, '(A,I0)') '%          ', ubound(unpacked,1)
-!         do i=1, ubound(unpacked,2)
-!             
-!             unpacked(i,:)=unpacked(:,i)
-!             write(666, formatstr) unpacked(:,i)
-!         end do
-!         close(666)
-!end if
             
 deallocate(preconditioner)
 deallocate(unpacked)
