@@ -1,0 +1,2 @@
+ADD_TEST_SUITE(test_formatnumber_suite)
+
