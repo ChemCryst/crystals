@@ -299,7 +299,7 @@ enum {
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
  #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #else
-// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
+ #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
 // #define LOGSTATUS    //Log lots of things (LOGSTAT macro)

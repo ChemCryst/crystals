@@ -20,12 +20,12 @@ ifeq ($(COMPCODE),MAC)
 else
  ifeq ($(COMPCODE),GIL)
     GUIFLAGS = -fno-inline -fexceptions -D__BOTHWX__
-    GUILIBRARIES = `wx-config --libs std,stc --gl-libs` 
+    GUILIBRARIES = `wx-config --version=3.0 --libs std,stc --gl-libs` 
     CLFLAGS = 
     CLLIBRARIES = 
     NATIVEXLIBS = -lX11 -L/usr/X11R6/lib 
 
-    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --cppflags` -D__$(COMPCODE)__ -std=gnu++11
+    CPPFLAGS = -s -fexceptions -I/usr/local/include `wx-config --version=3.0 --cppflags` -D__$(COMPCODE)__ -std=gnu++11
     CFLAGS = -s -D__$(COMPCODE)__
 
     CXX = g++51
@@ -33,10 +33,10 @@ else
     LD = gfortran51
     LD77 = gfortran51
     F77 = gfortran51
-    F77FLAGS = -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX -DCRY_OSLINUX  
-    F90FLAGS = -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX -DCRY_OSLINUX 
-    LDFLAGS = -L/files/pparois/root/lib/ -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
-    OPT = -g -gdwarf-3 -O2 -fopenmp -Wfatal-errors 
+    F77FLAGS =  -ffpe-trap=invalid,zero,overflow,underflow -Wrealloc-lhs -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX -DCRY_OSLINUX  
+    F90FLAGS = -ffpe-trap=invalid,zero,overflow,underflow -fcheck=all -Wrealloc-lhs -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_GUI -DCRY_USEWX -DCRY_OSLINUX 
+    LDFLAGS = -L/files/pparois/root/lib/ -lGL -lstdc++ -ldl -lGLU -lblas -llapack -lhdf5_fortran -lhdf5
+    OPT = -g -gdwarf-3 -O2  -Wfatal-errors 
 
     INSTALL=/usr/bin/install
 
@@ -81,10 +81,10 @@ else
     CC = gcc51
     LD = gfortran51
     F77 = gfortran51
-    F77FLAGS = -fcheck=all -std=legacy -ftree-vectorize -msse2 -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX  
-    F90FLAGS = -fcheck=all -fno-sign-zero -ftree-vectorize -msse2             -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX 
-    LDFLAGS = -L/files/pparois/root/lib/ -lGL -lstdc++ -ldl -lGLU -lopenblaso -lhdf5_fortran -lhdf5
-    OPT = -g -O2 -fopenmp -Wfatal-errors 
+    F77FLAGS =  -Wrealloc-lhs -fcheck=all -std=legacy  -fno-sign-zero -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX  
+    F90FLAGS =  -Wrealloc-lhs -fcheck=all -fno-sign-zero     -I /files/pparois/root/include/ -I../crystals/ -D __$(COMPCODE)__ -D _HOL_ -DCRY_NOGUI -DCRY_USEWX -DCRY_OSLINUX 
+    LDFLAGS = -L/files/pparois/root/lib/ -lGL -lstdc++ -ldl -lGLU -lblas -llapack -lhdf5_fortran -lhdf5
+    OPT =  -g -O1 -gdwarf-3 -Wfatal-errors 
 
     INSTALL=/bin/install
 
