@@ -2119,8 +2119,36 @@ CODE FOR GETCOM
           WRITE(CMON,'(A)')  '^^CR '
           CALL XPRVDU (NCVDU,1,0)
       ENDIF
-#else
 
+#elif defined (CRY_PY)
+
+      interface
+!> interface to C function getCommand (iso_c_bindings)
+        integer function getcommand (caline) bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+          character caline
+        end function getcommand
+      end interface
+
+      INTEGER ISTAT
+      CHARACTER*256 CALINE
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      CHARACTER *(*) CLINE
+
+      CALINE=' '
+      ISTAT = 0
+      ISTAT = getcommand(caline)
+
+      READ(CALINE,'(A)') CLINE
+
+
+#else
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'CAMPAR.INC'

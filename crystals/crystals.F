@@ -46,8 +46,9 @@ C
 C
 #if defined(CRY_NOGUI)
       PROGRAM CRYSTAL
+#ifndef _NOHDF5_
       use hdf5_dsc
-
+#endif
       INTERFACE
        SUBROUTINE CRYSTL() BIND(C)
          USE, INTRINSIC :: ISO_C_BINDING
@@ -55,6 +56,8 @@ C
        END SUBROUTINE CRYSTL
       END INTERFACE
 
+ 
+#ifndef _NOHDF5_
       character(len=256) :: args_value
       integer :: args_count, i, found
 
@@ -71,7 +74,7 @@ C Look for arguments from the command line
           end if
         end do
       end if
-
+#endif
       CALL CRYSTL()
       END
 #endif

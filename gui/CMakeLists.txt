@@ -1,12 +1,6 @@
 
 
-add_definitions(-D_GNUF77_)
-#add_definitions(-D__WXMAC__)
-#add_definitions(-D__WXOSX__)
-#add_definitions(-D__WXOSX_COCOA__)
-#add_definitions(-D__WXUSINGDLL)
 add_definitions(-D_FILE_OFFSET_BITS=64)
-add_definitions("-std=gnu++11")
 
 if(APPLE)
 SET(CMAKE_OSX_ARCHITECTURES "x86_64" )

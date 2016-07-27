@@ -5,62 +5,62 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+
+PROJECT(Crystals)
+
+
 ENABLE_LANGUAGE(Fortran)
 INCLUDE (CPack)
+include(CheckFortranCompilerFlag)
 
 option (useGUI "useGUI" ON)
+option (usePY "usePY" OFF)
 
 if ( useGUI )
-add_definitions(-DCRY_GUI)
+	add_definitions(-DCRY_GUI)
+	add_definitions(-D_GIL_)
+	SET(MINGW 1)
+	SET(wxWidgets_ROOT_DIR "c:/wx3")
+	SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
+	set(wxWidgets_CONFIGURATION mswu)
+	FIND_PACKAGE(wxWidgets REQUIRED html stc scintilla adv core gl base )
+	INCLUDE(${wxWidgets_USE_FILE})
 else()
-add_definitions(-DCRY_NOGUI)
+	add_definitions(-DCRY_NOGUI)
+	add_definitions(-D_LIN_)
 endif()
 
-if(APPLE)
-set (CPACK_GENERATOR "DragNDrop")
-set (CPACK_BUNDLE_NAME "Crystals")
-SET(CPACK_INSTALL_CMAKE_PROJECTS  "${CMAKE_BINARY_DIR};Crystals;ALL;/")
-SET(CPACK_PACKAGE_VENDOR "Chem Cryst")
-SET(CPACK_PACKAGE_VERSION "15.0.0")
-SET(CPACK_PACKAGE_VERSION_MAJOR "15")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
+if ( usePY )
+	add_definitions(-DCRY_PY)
 endif()
 
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmakemodules/")
+add_definitions(-DCRY_OSWIN32)
+add_definitions(-DCRY_GNU)
+ADD_DEFINITIONS(-D_NOHDF5_)
+add_definitions(-D _HOL_)
+ADD_DEFINITIONS(-D__MIN__)
+ADD_DEFINITIONS(-D_GNUF77_)
 
-if ( useGUI )
-#SET(wxWidgets_CONFIG_EXECUTABLE /Users/richard.cooper/wxWidgets-2.9.5/b2/wx-config)
-SET(MINGW 1)
-SET(wxWidgets_ROOT_DIR "c:/wx3")
-SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
-set(wxWidgets_CONFIGURATION mswu)
-FIND_PACKAGE(wxWidgets REQUIRED html stc scintilla adv core gl base )
-INCLUDE(${wxWidgets_USE_FILE})
-endif()
+
+
+#SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmakemodules/")
+
 
 string (TIMESTAMP CRYYEAR "%Y")
 string (TIMESTAMP CRYMONTH "%m")
 string (TIMESTAMP CRYDAY "%d")
-
 set (CRYSVNVER "$ENV{CRYSVNVER}")
 IF (NOT CRYSVNVER)  # not set
-SET (CRYSVNVER "0000")
+	SET (CRYSVNVER "0000")
 ENDIF()
 
 
 message(STATUS "Compilation date = ${CRYDAY} / ${CRYMONTH} / ${CRYYEAR}")
-if (APPLE)
-SET(APPS ${CMAKE_BINARY_DIR}/crystals.app)
-endif()
 
-SET(DIRS )
 
 IF (NOT CMAKE_BUILD_TYPE)   # make sure that the default is a RELEASE
-
     SET (CMAKE_BUILD_TYPE RELEASE CACHE STRING
          "Choose the type of build, options are: None Debug Release."  FORCE)
-
 ENDIF()
 
 # FFLAGS depend on the compiler
@@ -93,21 +93,27 @@ ENDIF ()
 
 
 
-IF (APPLE)
-
-  SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
-  SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8")
-  SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
-#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-#  SET(CMAKE_LINKER_EXE_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=c++")
-
-ENDIF ()
 
 
-PROJECT(Crystals)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
-ADD_DEFINITIONS(-D__MIN__)
+
+check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
+check_fortran_compiler_flag("-fexceptions" _f_exceptions)
+check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
+if(_std_legacy_flag)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
+endif()
+if(-fexceptions)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
+endif()
+if(-fno-sign-zero)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
+endif()
+
+
+
+
 
 # Testing related directives for test coverage
 ENABLE_TESTING()
@@ -116,30 +122,37 @@ INCLUDE(CTest)
 # Libraries
 ADD_SUBDIRECTORY(script)
 ADD_SUBDIRECTORY(sleef)
-
-if ( useGUI )
-ADD_SUBDIRECTORY(gui)
-endif()
 ADD_SUBDIRECTORY(crystals)
 ADD_SUBDIRECTORY(cameron)
-
-add_dependencies(CameronFortran CrystalsFortran) 
-if ( useGUI )
-ADD_SUBDIRECTORY(bits)
-endif()
 ADD_SUBDIRECTORY(datafiles)
 ADD_SUBDIRECTORY(precomp)
+if ( useGUI )
+	ADD_SUBDIRECTORY(gui)
+	ADD_SUBDIRECTORY(bits)
+endif()
+
+
+add_dependencies(CameronFortran CrystalsFortran) 
 
 # Executables
+ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
+ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
 
-#ADD_DEFINITIONS(-DCRY_OWNLAPACK)
-ADD_DEFINITIONS(-D_GNUF77_)
-ADD_DEFINITIONS(-std=gnu++11)
+ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
-if(APPLE)
-ADD_DEFINITIONS(-D__WXMAC__)
-ADD_DEFINITIONS(-D__WXOSX__)
+
+if ( useGUI )
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
+	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas ${wxWidgets_LIBRARIES})
+else()
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas)
 endif()
+
+
+
+
 # Script file sources and targets
 
 FILE (GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.ssc")
@@ -151,8 +164,6 @@ FOREACH (_file ${sscfiles})
                         DEPENDS ${_file} )
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
-
-
 
 
 # Data file sources and targets
@@ -177,83 +188,7 @@ FOREACH (_file ${ssrfiles})
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()
 
-if(APPLE)
-SET_SOURCE_FILES_PROPERTIES( ${scpfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/script GENERATED 1  )
-SET_SOURCE_FILES_PROPERTIES( ${datfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/script GENERATED 1  )
-SET_SOURCE_FILES_PROPERTIES( ${srtfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources GENERATED 1  )
-endif()
-
-ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
-ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
-
-SET_SOURCE_FILES_PROPERTIES( commands.dsc PROPERTIES MACOSX_PACKAGE_LOCATION Resources GENERATED 1  )
-
-if (APPLE)
-set( MACOSX_BUNDLE_ICON_FILE crystals.icns )
-endif()
-
-#ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND cp datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
-ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
 
-if (APPLE)
-  ADD_CUSTOM_TARGET ( osx_bundle_dirs
-    COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/ProjectName.app/Contents/Resources
-    COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/ProjectName.app/Contents/MacOS
-    COMMAND cp ${CMAKE_SOURCE_DIR}/precomp/MAC/${MACOSX_BUNDLE_ICON_FILE}
-    ${CMAKE_CURRENT_BINARY_DIR}/crystals.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} )
-
-   ADD_EXECUTABLE (crystals MACOSX_BUNDLE ${scpfiles} ${datfiles} ${srtfiles} gui/gcrystals.cc)
-   add_dependencies(crystals osx_bundle_dirs )
-
-else()
-
-  if ( useGUI )
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} gui/gcrystals.cc)
-  else()
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} )
-    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-  endif()
-endif()
 
 
-if (useGUI)
-add_library(everything $<TARGET_OBJECTS:CrystalsUserInterface> $<TARGET_OBJECTS:CrystalsFortran>)
-else()
-add_library(everything $<TARGET_OBJECTS:CrystalsFortran>)
-endif()
-
-if (useGUI)
-TARGET_LINK_LIBRARIES(crystals everything CrystalsSleef CameronFortran openblas ${wxWidgets_LIBRARIES})
-else()
-#link_directories( ${CMAKE_CURRENT_SOURCE_DIR}/openblas )
-TARGET_LINK_LIBRARIES(crystals everything CrystalsSleef CameronFortran openblas)
-endif()
-
-
-INSTALL(CODE "
-      include(BundleUtilities)
-      fixup_bundle(\"${APPS}\"  \"\"  \"${DIRS}\")
-      " COMPONENT Runtime)
-
-if (APPLE)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/commands.dsc DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/cif2cry/cif2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/shelxs/shelxs DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/shelxs/sxtocry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/convplat/convplat DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/delred/delred DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/foxman/pcf2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/sir92/sir92 DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/csd2cry/csd2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/hklf5/hklf52cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/Diffractometers/diffin DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-
-FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/script" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/demo" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/form.dat" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-
-INSTALL (PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/precomp/MAC/superflip" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-INSTALL (PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/precomp/MAC/EDMA" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-endif()
