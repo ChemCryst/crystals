@@ -135,8 +135,6 @@ endif()
 add_dependencies(CameronFortran CrystalsFortran) 
 
 # Executables
-ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
-ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
 
 ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
@@ -192,3 +190,5 @@ ENDFOREACH()
 
 
 
+ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
+ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
