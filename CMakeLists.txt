@@ -1,13 +1,10 @@
-
 #On MAC OS currently need to use the XCode provided gcc and a compatible
 #gfortran (e.g. v4.2.3). If you have other gcc installed, make sure you
 #set CC=/usr/bin/gcc and CXX=/usr/bin/g++ before running cmake.
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-
 PROJECT(Crystals)
-
 
 ENABLE_LANGUAGE(Fortran)
 INCLUDE (CPack)
@@ -15,6 +12,13 @@ include(CheckFortranCompilerFlag)
 
 option (useGUI "useGUI" ON)
 option (usePY "usePY" OFF)
+option (usePY "use32" OFF)
+
+if ( use32 )
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -m32")
+endif()
 
 if ( useGUI )
 	add_definitions(-DCRY_GUI)
@@ -30,9 +34,9 @@ else()
 	add_definitions(-D_LIN_)
 endif()
 
-if ( usePY )
-	add_definitions(-DCRY_PY)
-endif()
+#if ( usePY )
+#	add_definitions(-DCRY_PY)
+#endif()
 
 add_definitions(-DCRY_OSWIN32)
 add_definitions(-DCRY_GNU)
@@ -42,10 +46,6 @@ ADD_DEFINITIONS(-D__MIN__)
 ADD_DEFINITIONS(-D_GNUF77_)
 
 
-
-#SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmakemodules/")
-
-
 string (TIMESTAMP CRYYEAR "%Y")
 string (TIMESTAMP CRYMONTH "%m")
 string (TIMESTAMP CRYDAY "%d")
@@ -53,10 +53,7 @@ set (CRYSVNVER "$ENV{CRYSVNVER}")
 IF (NOT CRYSVNVER)  # not set
 	SET (CRYSVNVER "0000")
 ENDIF()
-
-
 message(STATUS "Compilation date = ${CRYDAY} / ${CRYMONTH} / ${CRYYEAR}")
-
 
 IF (NOT CMAKE_BUILD_TYPE)   # make sure that the default is a RELEASE
     SET (CMAKE_BUILD_TYPE RELEASE CACHE STRING
@@ -67,36 +64,23 @@ ENDIF()
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 IF (Fortran_COMPILER_NAME STREQUAL "gfortran")  # gfortran
-
     SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3  -fno-sign-zero")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
-
 ELSEIF (Fortran_COMPILER_NAME STREQUAL "ifort")  # ifort (untested)
-
     SET (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
-
 ELSEIF (Fortran_COMPILER_NAME STREQUAL "g77")   # g77
-
     SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
-
 ELSE ()
-
     MESSAGE ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
     MESSAGE ("Fortran compiler: " ${Fortran_COMPILER_NAME})
     MESSAGE ("No optimized Fortran compiler flags are known, we just try -O2...")
     SET (CMAKE_Fortran_FLAGS_RELEASE "-O2")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
-
 ENDIF ()
 
-
-
-
-
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-
 
 check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
 check_fortran_compiler_flag("-fexceptions" _f_exceptions)
@@ -116,8 +100,8 @@ endif()
 
 
 # Testing related directives for test coverage
-ENABLE_TESTING()
-INCLUDE(CTest)
+#ENABLE_TESTING()
+#INCLUDE(CTest)
 
 # Libraries
 ADD_SUBDIRECTORY(script)
@@ -129,6 +113,9 @@ ADD_SUBDIRECTORY(precomp)
 if ( useGUI )
 	ADD_SUBDIRECTORY(gui)
 	ADD_SUBDIRECTORY(bits)
+endif()
+if ( usePY )
+  ADD_SUBDIRECTORY(pyinterface)
 endif()
 
 
@@ -142,6 +129,10 @@ ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafi
 if ( useGUI )
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
 	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas ${wxWidgets_LIBRARIES})
+elseif( usePY )
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas)
 else()
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
@@ -162,6 +153,11 @@ FOREACH (_file ${sscfiles})
                         DEPENDS ${_file} )
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
+
+
+
+
+
 
 
 # Data file sources and targets

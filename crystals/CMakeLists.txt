@@ -14,8 +14,8 @@ endif()
 
 
 add_library(CrystalsShared STATIC
-cinterface.c
-cryspy.F
+#cinterface.c
+#cryspy.F
 crystals_hdf5.F90
 XDAVAL.INC.F90
 XUNITS.INC.F90
@@ -120,15 +120,13 @@ lapack.F
 target_link_libraries(CrystalsShared openblas)
 #set_target_properties(CrystalsShared PROPERTIES PREFIX "" SUFFIX ".so")
 SET_TARGET_PROPERTIES(CrystalsShared PROPERTIES LINKER_LANGUAGE Fortran)
-
-
-
+target_compile_definitions(CrystalsShared PUBLIC -DCRY_PY)
 
 add_library(CrystalsFortran STATIC
-cinterface.c
+#cinterface.c
 #cryspywrap.c
-cryspy-dummy.c
-cryspy.F
+#cryspy-dummy.c
+#cryspy.F
 crystals_hdf5.F90
 XDAVAL.INC.F90
 XUNITS.INC.F90
