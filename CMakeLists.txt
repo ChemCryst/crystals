@@ -126,22 +126,6 @@ add_dependencies(CameronFortran CrystalsFortran)
 ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
 
-if ( useGUI )
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
-	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas ${wxWidgets_LIBRARIES})
-elseif( usePY )
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
-    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas)
-else()
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
-    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas)
-endif()
-
-
-
-
 # Script file sources and targets
 
 FILE (GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.ssc")
@@ -183,6 +167,20 @@ FOREACH (_file ${ssrfiles})
 ENDFOREACH()
 
 
+
+
+if ( useGUI )
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
+	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas ${wxWidgets_LIBRARIES})
+elseif( usePY )
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas)
+else()
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas)
+endif()
 
 
 
