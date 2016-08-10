@@ -34,7 +34,7 @@ integer, parameter :: C_NUMFIELD=24 !< Number of fields in reflections_data
 
 !> @name List of filters
 !! reflections_filters holds all the filters for every reflection.
-!> @{
+!> @{l
 integer, parameter :: C_DSoSDO=1    !< /Ds/ > filter(1)*sigma(Do)
 integer, parameter :: C_ASoSAO=2    !<  As  > filter(2)*sigma(Ao)
 integer, parameter :: C_DOoDSmax=3  !< /Do/ < filter(3)*Ds(max)
@@ -916,9 +916,10 @@ real, dimension(:), intent(in) :: wt !< weights
 real, intent(out) :: intercept,interceptsu !< Intercept and su
 real, intent(out) :: slope,slopsu !< slope and its su
 real, intent(out) :: r2 !< correlation coefficient
-real, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
-real, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
-real, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
+double precision, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
+double precision, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
+double precision, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
+logical, parameter :: debug=.false.
 double precision, dimension(size(xin),2) :: x, xwork, xworkb !< design matrix
 double precision, dimension(size(xin),size(xin)) :: hw !< Weighted Hat matrix (leverage)
 !double precision, dimension(size(xin),size(xin)) :: dw !< Matrix of weights
@@ -942,31 +943,35 @@ double precision, external :: ddot
     if(present(tw)) allocate(tw(mitem))
     if(present(leverages)) allocate(leverages(mitem))
     if(present(dv)) allocate(dv(mitem))
-            
+    
     ! increase precision
     y=yin
 
     ! Matrix of weights
     !dw=0.0d0
     !do i=1, mitem
-	!	dw(i,i)=wt(i)
-	!end do
+    !   dw(i,i)=wt(i)
+    !end do
     
     !normalinv=matmul(matmul(transpose(x), dw), x)
     ! xwork=x^t dw
     ! design matrix
-    x(:,1)=1.0
+    x(:,1)=1.0d0
     x(:,2)=xin
     xwork(:,1)=wt
     xwork(:,2)=x(:,2)*wt
     
     ! solve normal equations by matrix inversion
+    !normalinv=0.0d0
     call DGEMM('T', 'N', 2, 2, mitem, 1.0d0, xwork, mitem,x, mitem, 0.0d0, normalinv, 2 )
+    if(debug) print *, 'normal m ', normalinv
     normalinv=invert22(normalinv)
+    if(debug) print *, 'inverse normal m ', normalinv
     !b=matmul(normalinv, matmul(transpose(x), matmul(dw, y)))
     !b=matmul(normalinv, matmul(transpose(xwork), y))
     call DGEMV('T', mitem, 2, 1.0d0, xwork, mitem, y, 1, 0.0d0, b, 1)
     b=matmul(normalinv, b)
+    if(debug) print *, 'b ', b
     
     ! calculate residuals
     !ew=y-matmul(x, b) 
@@ -997,25 +1002,25 @@ double precision, external :: ddot
     ! Calculate (V xi^t w xi V)/(1+lev) for the slope
     ! Dv is the improvement on the variance on the parameter if an observation i is remeasured
     if(present(dv)) then
-		! xwork is (w x V)
-		! xwork(:,1)=xwork(:,1)*wt Not used
-		xwork(:,2)=xwork(:,2)*wt
-		! xworkb^t is (V x^t), xworkb is (x V^t)
-		call DGEMM('N', 'T', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xworkb, mitem )
-		do j=1, mitem
-			!tempa=matmul(normalinv, x(j,:))*wt(j) ! done
-			!tempb=matmul(x(j,:), normalinv) !done
-			!do i=1, 2
-			!    tempb22(:,i)=tempa*tempb(i)
-			!end do    
+        ! xwork is (w x V)
+        ! xwork(:,1)=xwork(:,1)*wt Not used
+        xwork(:,2)=xwork(:,2)*wt
+        ! xworkb^t is (V x^t), xworkb is (x V^t)
+        call DGEMM('N', 'T', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xworkb, mitem )
+        do j=1, mitem
+            !tempa=matmul(normalinv, x(j,:))*wt(j) ! done
+            !tempb=matmul(x(j,:), normalinv) !done
+            !do i=1, 2
+            !    tempb22(:,i)=tempa*tempb(i)
+            !end do    
 
-			! no need for the whole 2x2 matrix, just (2,2): xwork(j,2)*xworkb(j,2)
-			!do i=1, 2
-			!    tempb22(:,2)=xwork(j,:)*xworkb(j,i)
-			!end do
-			Dv(j)=b(2)**2*(xwork(j,2)*xworkb(j,2))/(1+hw(j,j))
-		end do
-	end if
+            ! no need for the whole 2x2 matrix, just (2,2): xwork(j,2)*xworkb(j,2)
+            !do i=1, 2
+            !    tempb22(:,2)=xwork(j,:)*xworkb(j,i)
+            !end do
+            Dv(j)=b(2)**2*(xwork(j,2)*xworkb(j,2))/(1+hw(j,j))
+        end do
+    end if
     
     ! Calculate Studentized residual
     ! Detection of outliers in weighted least squares regression
@@ -1035,6 +1040,270 @@ double precision, external :: ddot
     interceptsu=sqrt(bsu(1,1))
     slope=b(2)
     slopsu=sqrt(bsu(2,2))
+    !print *, 'b ', b
+    !print *, 'sb ', bsu
+    
+    
+end subroutine
+
+subroutine linearfitref(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, leverages, tw, dv)
+use xssval_mod, only: issprt
+use xunits_mod, only: ncvdu, ncwu
+implicit none
+real, dimension(:), intent(in) :: xin !< x-values
+real, dimension(:), intent(in) :: yin !< y-values
+real, dimension(:), intent(in) :: wt !< weights
+real, intent(out) :: intercept,interceptsu !< Intercept and su
+real, intent(out) :: slope,slopsu !< slope and its su
+real, intent(out) :: r2 !< correlation coefficient
+double precision, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
+double precision, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
+double precision, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
+logical, parameter :: debug=.false.
+double precision, dimension(size(xin),2) :: x, xwork, xworkb !< design matrix
+double precision, dimension(size(xin),size(xin)) :: hw !< Weighted Hat matrix (leverage)
+double precision, dimension(size(xin),size(xin)) :: dw !< Matrix of weights
+double precision, dimension(size(xin)) :: ew !< vector of residuals
+double precision, dimension(size(xin)) :: y !< observations (double precision) 
+double precision, dimension(size(xin)) :: v1 !< work vector
+double precision, dimension(2,2) :: normalinv !< inverse of the normal matrix
+double precision, dimension(2,2) :: bsu !< variance of b
+double precision, dimension(2) :: b !< vector of parameters
+double precision :: mse, msei, s2
+integer i, j, mitem
+
+double precision, external :: ddot
+
+    mitem=size(xin)
+    if(size(yin)/=mitem .or. size(wt)/=mitem) then
+        print *, 'Size does not match'
+        call abort
+    end if
+    
+    if(present(tw)) allocate(tw(mitem))
+    if(present(leverages)) allocate(leverages(mitem))
+    if(present(dv)) allocate(dv(mitem))
+    
+    ! increase precision
+    y=yin
+
+    ! Matrix of weights
+    dw=0.0d0
+    do i=1, mitem
+       dw(i,i)=wt(i)
+    end do
+    
+    
+    ! xwork=x^t dw
+    ! design matrix
+    x(:,1)=1.0d0
+    x(:,2)=xin
+    
+    normalinv=matmul(matmul(transpose(x), dw), x)
+    if(debug) print *, 'normal m ', normalinv
+    
+    ! solve normal equations by matrix inversion
+    normalinv=invert22(normalinv)
+    if(debug) print *, 'inverse normal m ', normalinv
+
+    b=matmul(normalinv, matmul(transpose(x), matmul(dw, y)))
+    
+    ! calculate residuals
+    ew=y-matmul(x, b) 
+    
+    ! Calculate variance of parameters b
+    s2=dot_product(ew, matmul(dw, ew))/(mitem-2)
+    bsu=s2*normalinv
+    
+    ! Calculate correlation coefficient
+    v1=wt*y
+    r2=1 - s2*(mitem-2) / &
+    &   ( DDOT(size(y), y, 1, v1, 1) - sum(v1)**2/sum(wt) )
+   
+    !leverages
+    Hw=matmul(matmul(x, normalinv), transpose(x))
+    
+    if(present(leverages)) then
+        do i=1, mitem
+            leverages(i)=hw(i,i)
+            end do
+    end if
+    
+    ! Calculate (V xi^t w xi V)/(1+lev) for the slope
+    ! Dv is the improvement on the variance on the parameter if an observation i is remeasured
+    if(present(dv)) then
+        ! xwork is (w x V)
+        ! xwork(:,1)=xwork(:,1)*wt Not used
+        xwork(:,2)=xwork(:,2)*wt
+        ! xworkb^t is (V x^t), xworkb is (x V^t)
+        call DGEMM('N', 'T', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xworkb, mitem )
+        do j=1, mitem
+            !tempa=matmul(normalinv, x(j,:))*wt(j) ! done
+            !tempb=matmul(x(j,:), normalinv) !done
+            !do i=1, 2
+            !    tempb22(:,i)=tempa*tempb(i)
+            !end do    
+
+            ! no need for the whole 2x2 matrix, just (2,2): xwork(j,2)*xworkb(j,2)
+            !do i=1, 2
+            !    tempb22(:,2)=xwork(j,:)*xworkb(j,i)
+            !end do
+            Dv(j)=b(2)**2*(xwork(j,2)*xworkb(j,2))/(1+hw(j,j))
+        end do
+    end if
+    
+    ! Calculate Studentized residual
+    ! Detection of outliers in weighted least squares regression
+    ! Bang Yong Sohn, Guk Boh Kim
+    ! Korean Journal of Computational & Applied Mathematics
+    ! August 1997, Volume 4, Issue 2, pp 441-452
+    ! doi: 10.1007/BF03014491
+    if(present(tw)) then
+        mse=dot_product(ew, wt*ew)/(mitem-2)
+        do i=1, mitem
+            msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-wt(i)*hw(i,i)) )/(mitem-2-1)
+            tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-wt(i)*hw(i,i)) )
+        end do
+    end if
+    
+    intercept=b(1)
+    interceptsu=sqrt(bsu(1,1))
+    slope=b(2)
+    slopsu=sqrt(bsu(2,2))
+    !print *, 'b ', b
+    !print *, 'sb ', bsu
+    
+    
+end subroutine
+
+subroutine linearfitfixed(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, leverages, tw, dv)
+use xssval_mod, only: issprt
+use xunits_mod, only: ncvdu, ncwu
+implicit none
+real, dimension(:), intent(in) :: xin !< x-values
+real, dimension(:), intent(in) :: yin !< y-values
+real, dimension(:), intent(in) :: wt !< weights
+real, intent(out) :: intercept,interceptsu !< Intercept and su
+real, intent(out) :: slope,slopsu !< slope and its su
+real, intent(out) :: r2 !< correlation coefficient
+double precision, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
+double precision, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
+double precision, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
+double precision, dimension(size(xin),1) :: x, xwork, xworkb !< design matrix
+double precision, dimension(size(xin),size(xin)) :: hw !< Weighted Hat matrix (leverage)
+!double precision, dimension(size(xin),size(xin)) :: dw !< Matrix of weights
+double precision, dimension(size(xin)) :: ew !< vector of residuals
+double precision, dimension(size(xin)) :: y !< observations (double precision) 
+double precision, dimension(size(xin)) :: v1 !< work vector
+double precision, dimension(1,1) :: normalinv !< inverse of the normal matrix
+double precision, dimension(1,1) :: bsu !< variance of b
+double precision, dimension(1) :: b !< vector of parameters
+double precision :: mse, msei, s2
+integer i, j, mitem
+
+double precision, external :: ddot
+
+    mitem=size(xin)
+    if(size(yin)/=mitem .or. size(wt)/=mitem) then
+        print *, 'Size does not match'
+        call abort
+    end if
+    
+    if(present(tw)) allocate(tw(mitem))
+    if(present(leverages)) allocate(leverages(mitem))
+    if(present(dv)) allocate(dv(mitem))
+            
+    ! increase precision
+    y=yin
+
+    ! Matrix of weights
+    !dw=0.0d0
+    !do i=1, mitem
+    !   dw(i,i)=wt(i)
+    !end do
+    
+    !normalinv=matmul(matmul(transpose(x), dw), x)
+    ! xwork=x^t dw
+    ! design matrix
+    x(:,1)=xin
+    xwork(:,1)=wt
+    xwork(:,1)=x(:,1)*wt
+    
+    ! solve normal equations by matrix inversion
+    call DGEMM('T', 'N', 1, 1, mitem, 1.0d0, xwork, mitem,x, mitem, 0.0d0, normalinv, 1 )
+    normalinv=1.0/normalinv
+    !b=matmul(normalinv, matmul(transpose(x), matmul(dw, y)))
+    !b=matmul(normalinv, matmul(transpose(xwork), y))
+    call DGEMV('T', mitem, 1, 1.0d0, xwork, mitem, y, 1, 0.0d0, b, 1)
+    b=matmul(normalinv, b)
+    
+    ! calculate residuals
+    !ew=y-matmul(x, b) 
+    ew=y
+    call DGEMV('N', mitem, 1, -1.0d0, x, mitem, b, 1, 1.0d0, ew, 1)
+    
+    ! Calculate variance of parameters b
+    !s2=dot_product(ew, matmul(dw, ew))/(mitem-2)
+    s2=DDOT(size(ew), ew*wt, 1, ew, 1)/(mitem-1)
+    bsu=s2*normalinv
+    
+    ! Calculate correlation coefficient
+    v1=wt*y
+    r2=1 - s2*(mitem-1) / &
+    &   ( DDOT(size(y), y, 1, v1, 1) - sum(v1)**2/sum(wt) )
+   
+    !leverages
+    !Hw=matmul(matmul(x, normalinv), transpose(x))
+    call DGEMM('N', 'N', mitem, 1, 1, 1.0d0, x, mitem,normalinv, 1, 0.0d0, xwork, mitem )
+    call DGEMM('N', 'T', mitem, mitem, 1, 1.0d0, xwork, mitem,x, mitem, 0.0d0, hw, mitem )
+    
+    if(present(leverages)) then
+        do i=1, mitem
+            leverages(i)=hw(i,i)
+            end do
+    end if
+    
+    ! Calculate (V xi^t w xi V)/(1+lev) for the slope
+    ! Dv is the improvement on the variance on the parameter if an observation i is remeasured
+    if(present(dv)) then
+        ! xwork is (w x V)
+        ! xwork(:,1)=xwork(:,1)*wt Not used
+        xwork(:,1)=xwork(:,1)*wt
+        ! xworkb^t is (V x^t), xworkb is (x V^t)
+        call DGEMM('N', 'T', mitem, 1, 1, 1.0d0, x, mitem,normalinv, 1, 0.0d0, xworkb, mitem )
+        do j=1, mitem
+            !tempa=matmul(normalinv, x(j,:))*wt(j) ! done
+            !tempb=matmul(x(j,:), normalinv) !done
+            !do i=1, 2
+            !    tempb22(:,i)=tempa*tempb(i)
+            !end do    
+
+            ! no need for the whole 2x2 matrix, just (2,2): xwork(j,2)*xworkb(j,2)
+            !do i=1, 2
+            !    tempb22(:,2)=xwork(j,:)*xworkb(j,i)
+            !end do
+            Dv(j)=b(1)**2*(xwork(j,1)*xworkb(j,1))/(1+hw(j,j))
+        end do
+    end if
+    
+    ! Calculate Studentized residual
+    ! Detection of outliers in weighted least squares regression
+    ! Bang Yong Sohn, Guk Boh Kim
+    ! Korean Journal of Computational & Applied Mathematics
+    ! August 1997, Volume 4, Issue 2, pp 441-452
+    ! doi: 10.1007/BF03014491
+    if(present(tw)) then
+        mse=dot_product(ew, wt*ew)/(mitem-1)
+        do i=1, mitem
+            msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-wt(i)*hw(i,i)) )/(mitem-2-1)
+            tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-wt(i)*hw(i,i)) )
+        end do
+    end if
+    
+    intercept=0.0
+    interceptsu=0.0
+    slope=b(1)
+    slopsu=sqrt(bsu(1,1))
     !print *, 'b ', b
     !print *, 'sb ', bsu
     
@@ -1061,7 +1330,7 @@ integer, dimension(numcolumn) :: column
 character(len=20*numcolumn+10) :: columnformat
 real a,sa,b,sb,r2
 real, dimension(3) :: tensor
-real, dimension(:), allocatable :: leverages, residuals, dv
+double precision, dimension(:), allocatable :: leverages, residuals, dv
 integer, dimension(:), allocatable :: rank
 logical change  
 logical, dimension(:), allocatable :: outliers
@@ -1195,7 +1464,10 @@ real mean, s2, est
         else
             hin1 = 0.0
             hin1su = 0.0
-            exit
+            if(present(outliersarg)) then
+                outliersarg=.true.
+            end if
+            return
         end if    
             
     end do    
@@ -1345,7 +1617,7 @@ real mean, s2, est
     if(issprt.eq.0) then    
         write(ncwu,'(a)') '', ' End Hole in One subroutine', &
         &                 ' --------------------------------------------------', &
-        &				  '', ''
+        &                 '', ''
     end if
 
 end subroutine
@@ -1481,15 +1753,27 @@ real, intent(out) :: f3quart, f4quintile, f7octile, f9decile
 integer nsize
 
         nsize=size(sortedvalues)
-        fmedian=sortedvalues(nsize/2)
-        fquart=sortedvalues(nsize/4)
-        f3quart=sortedvalues(3*nsize/4)
-        f1quintile=sortedvalues(nsize/5)
-        f4quintile=sortedvalues(4*nsize/5)
-        f1octile=sortedvalues(nsize/8)
-        f7octile=sortedvalues(7*nsize/8)
-        f1decile=sortedvalues(nsize/10)
-        f9decile=sortedvalues(9*nsize/10)
+        if(nsize>0) then
+            fmedian=sortedvalues(max(1, nsize/2))
+            fquart=sortedvalues(max(1, nsize/4))
+            f3quart=sortedvalues(max(1, 3*nsize/4))
+            f1quintile=sortedvalues(max(1, nsize/5))
+            f4quintile=sortedvalues(max(1, 4*nsize/5))
+            f1octile=sortedvalues(max(1, nsize/8))
+            f7octile=sortedvalues(max(1, 7*nsize/8))
+            f1decile=sortedvalues(max(1, nsize/10))
+            f9decile=sortedvalues(max(1, 9*nsize/10))
+        else
+            fmedian=0.0
+            fquart=0.0
+            f3quart=0.0
+            f1quintile=0.0
+            f4quintile=0.0
+            f1octile=0.0
+            f7octile=0.0
+            f1decile=0.0
+            f9decile=0.0
+        end if
 end subroutine
 
 !> Get friedif (calculated somewhere else)
@@ -1599,7 +1883,8 @@ integer i, ierror
 end subroutine
 
 !> Absolute configuration using Bijvoet differences
-subroutine bijvoet_differences(reflections_data, filtered_reflections, itype, bijvoet, bijvoetsu, weights, outliersarg)
+subroutine bijvoet_differences(reflections_data, filtered_reflections, itype, bijvoet, &
+&   bijvoetsu, weights, outliersarg)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 use m_mrgrnk
@@ -1619,7 +1904,7 @@ integer, dimension(numcolumn) :: column
 character(len=20*numcolumn+10) :: columnformat
 real a,sa,b,sb,r2
 real, dimension(3) :: tensor
-real, dimension(:), allocatable :: leverages, residuals, dv
+double precision, dimension(:), allocatable :: leverages, residuals, dv
 integer, dimension(:), allocatable :: rank
 logical change  
 logical, dimension(:), allocatable :: outliers
@@ -1633,14 +1918,58 @@ integer, parameter :: hist_x=3, hist_y=10
 character, dimension(numbins*hist_x) :: plotline
 real mean, s2, est
 
+
+!    allocate(buffertemp(30,3))
+!    buffertemp(:,1)=(/ -2.96325795E-03 ,   4.22769692E-03 , -3.26357316E-04 , -4.10577189E-03 ,&
+!    &     1.74660864E-03 , -7.80505827E-03 ,  8.28319974E-03 ,  1.17715623E-04 ,&
+!    &     1.46294959E-04 , -5.04205888E-03 ,  1.46929029E-04 ,  5.05466200E-03 ,&
+!    &     3.82924243E-03 ,  2.25143880E-03 ,  3.41397717E-05 , -2.59588808E-02 ,&
+!    &    -1.74503439E-04 ,  1.83691434E-03 ,  6.12097385E-04 , -2.54134857E-03 ,&
+!    &    -1.10457456E-02 , -4.87566367E-03 , -4.54523979E-04 , -2.59778136E-03 ,&
+!    &     3.65315867E-03 ,  7.89600052E-03 ,  3.71816946E-04 , -2.72457162E-03 ,&
+!    &     2.22928845E-03 , -1.78307324E-04 /)
+  
+!    buffertemp(:,2)=(/ -1.19565091E-04 ,  4.86158347E-03 , -3.06141260E-03 , -1.02000590E-02 ,&
+!    &    -8.47499352E-03 ,  2.18827138E-03 ,  9.07030795E-03 , -1.67446816E-03 ,&
+!    &    -1.37340243E-03 , -2.86707282E-03 , -8.21015891E-03 ,  1.71646662E-02 ,&
+!    &     1.63962878E-02 ,  3.12459935E-03 , -4.23981389E-03 , -6.52822386E-03 ,&
+!    &    -4.54047322E-03 , -9.21579357E-03 , -1.68131420E-03 , -2.56431545E-03 ,&
+!    &    -4.29594368E-02 , -1.94208007E-02 , -1.21495752E-02 , -9.58717056E-03 ,&
+!    &    -2.74356571E-03 ,  1.21693173E-02 , -6.05943031E-04 , -1.10480711E-02 ,&
+!    &     3.37410904E-02 ,  3.57936090E-03 /)
+    
+!    buffertemp(:,3)=(/  1345577.25 , 84467.2109 , 6067479.00 , 6549917.00 ,&
+!    &   385373.500 , 247433.562 , 380191.500 , 4463873.00 ,&
+!    &   5288955.00 , 105046.039 , 2008450.25 , 64137.2930 ,&
+!    &   188759.266 , 1078906.25 , 5495990.50 , 23915.8027 ,&
+!    &   2148457.00 , 1186790.88 , 992606.625 , 1046353.12 ,&
+!    &   6520.84277 , 184100.719 , 54156.8984 , 220499.234 ,&
+!    &   228024.531 , 115514.805 , 902935.000 , 470980.000 ,&
+!    &   13788.8105 , 510616.438 /)            
+
+!    !! Reference from http://www.xuru.org/rt/WLR.asp
+!    !! y = 1.215554364 x - 3.16903396·10-3
+!    !! Correlation Coefficient: r = 6.056639106·10-1
+!    !! Residual Sum of Squares: rss = 533.6861911
+!    !! Coefficient of Determination: R2 = 3.668287726·10-1
+            
+!    call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
+!    &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
+!    print *, '++++1 ', a, sa, b, sb, r2
+    
+!    call linearfitref(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
+!    &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
+!    print *, '++++2 ', a, sa, b, sb, r2
+!    stop
+    
     if(issprt.eq.0) then
-		if(itype==1) then
-			write(ncwu,'(a)') '', ' Bijvoet differences subroutine', &
-			&                 ' --------------------------------------------------'
-		else
-			write(ncwu,'(a)') '', ' Parsons quotients subroutine', &
-			&                 ' --------------------------------------------------'
-		end if
+        if(itype==1) then
+            write(ncwu,'(a)') '', ' Bijvoet differences subroutine', &
+            &                 ' --------------------------------------------------'
+        else
+            write(ncwu,'(a)') '', ' Parsons quotients subroutine', &
+            &                 ' --------------------------------------------------'
+        end if
     end if
 
     !Check input data
@@ -1658,7 +1987,6 @@ real mean, s2, est
     
     if(present(outliersarg)) then
         allocate(outliersarg(size(filtered_reflections)))
-        outliersarg=.True.
         if(issprt.eq.0) then
             write(ncwu,'(a)') ' Outliers rejection based on studentized residuals enabled:', &
             &                 '    Detection of outliers in weighted least squares regression', &
@@ -1693,12 +2021,13 @@ real mean, s2, est
             allocate(buffertemp(i,3))
             allocate(residuals(i))
             allocate(selected_reflections(3, i))
+            selected_reflections=0
             k=0
             do j=1, ubound(reflections_data, 2)
                 if( (filtered_reflections(j) .eqv. .false.) .and. (outliers(j) .eqv. .false.) ) then
                     ! x, y, wt
-                    k=k+1
                     if(itype==1) then
+                        k=k+1
                         buffertemp(k,1)=reflections_data(C_FCKD,j)
                         buffertemp(k,2)=reflections_data(C_FOKD,j)
                         if(present(weights)) then
@@ -1706,16 +2035,21 @@ real mean, s2, est
                         else
                             buffertemp(k,3)=1./reflections_data(C_SIGMAD,j)**2
                         end if
+                        selected_reflections(:,k)=nint(reflections_data( (/C_H, C_K, C_L/) ,j ))                    
                     else
-                        buffertemp(k,1)=reflections_data(C_FCKD,j)/(2.0*reflections_data(C_FCKA,j))
-                        buffertemp(k,2)=reflections_data(C_FOKD,j)/(2.0*reflections_data(C_FOKA,j))
-                        if(present(weights)) then
-                            buffertemp(k,3)=weights(j)
-                        else
-                            buffertemp(k,3)=1./reflections_data(C_SIGMAQ,j)**2
+                        if(abs(reflections_data(C_FCKA,j))>tiny(1.0) .and. &
+                        &   abs(reflections_data(C_FOKA,j))>tiny(1.0)) then
+                            k=k+1
+                            buffertemp(k,1)=reflections_data(C_FCKD,j)/(2.0*reflections_data(C_FCKA,j))
+                            buffertemp(k,2)=reflections_data(C_FOKD,j)/(2.0*reflections_data(C_FOKA,j))
+                            if(present(weights)) then
+                                buffertemp(k,3)=weights(j)
+                            else
+                                buffertemp(k,3)=1./reflections_data(C_SIGMAQ,j)**2
+                            end if
+                            selected_reflections(:,k)=nint(reflections_data( (/C_H, C_K, C_L/) ,j ))                    
                         end if
                     end if
-                    selected_reflections(:,k)=nint(reflections_data( (/C_H, C_K, C_L/) ,j ))                    
                 end if
             end do
             
@@ -1761,7 +2095,10 @@ real mean, s2, est
         else
             bijvoet = 0.0
             bijvoetsu = 0.0
-            exit
+            if(present(outliersarg)) then
+                outliersarg=.true.
+            end if
+            return
         end if    
             
     end do    
@@ -1793,8 +2130,14 @@ real mean, s2, est
         end if
     end if
     
+    open(487, file='xyw.dat')
+    do i=1, ubound(buffertemp, 1)
+        write(487,*) selected_reflections(:,i), buffertemp(i,:), residuals(i)
+    end do
+    close(487)
+    
     ! Print out leverages
-    if(issprt.eq.0) then
+    if(issprt.eq.0 .and. size(leverages)>0) then
         write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
         &   ' Determined using leverages: abs(X (X^t Dw X)^-1 X^t)', &
         &   ' ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse', &
@@ -1824,7 +2167,7 @@ real mean, s2, est
     end if
     
     ! Print out Dv
-    if(issprt.eq.0) then
+    if(issprt.eq.0 .and. size(dv)>0) then
         write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
         &   ' Determined using: Dv = (V z^t z V)/(1-lev)', &
         &   ' V = variance of the parameter, ^t = transpose, ', &
@@ -1851,6 +2194,13 @@ real mean, s2, est
             end if
         end do
         write(ncwu, *) ''
+        
+        !open(358, file='Dvout')
+        !do i=1, size(dv)
+        !    write(358,*) selected_reflections( :, rank(i)), dv(rank(i))
+        !end do
+        !close(358)
+        !stop
         
     end if
     
@@ -1914,16 +2264,16 @@ real mean, s2, est
         write(ncwu,'(a, a)') 'Bijvoet differences:', &
         &   print_value(bijvoet,bijvoetsu, opt_precision=4)
         write(ncwu,*) ''
-		if(itype==1) then
-			write(ncwu,'(a)') '', ' End Bijvoet differences subroutine', &
-			&                 ' --------------------------------------------------', &
-			&				  '', ''
-			
-		else
-			write(ncwu,'(a)') '', ' End Parsons quotients subroutine', &
-			&                 ' --------------------------------------------------', &
-			&				  '', ''
-		end if
+        if(itype==1) then
+            write(ncwu,'(a)') '', ' End Bijvoet differences subroutine', &
+            &                 ' --------------------------------------------------', &
+            &                 '', ''
+            
+        else
+            write(ncwu,'(a)') '', ' End Parsons quotients subroutine', &
+            &                 ' --------------------------------------------------', &
+            &                 '', ''
+        end if
     end if
 
 end subroutine
@@ -2311,6 +2661,7 @@ real f3quart, f4quintile, f7octile, f9decile
     ! get valid reflections, ie not filtered out
     valid_reflections_indices=pack( (/ (i,i=1,size(filtered_reflections)) /), .not. filtered_reflections)
     refls_valid_size=size(valid_reflections_indices)
+    if(refls_valid_size==0) return
     
     ! Sort valid reflections, on signal to noise in reverse order
     allocate(reflections_rank(refls_valid_size))
@@ -2355,9 +2706,9 @@ real f3quart, f4quintile, f7octile, f9decile
         abin(bin)=abin(bin)+sqrt(reflections_data(C_FLXWT, reflections_rank(i)))
     end do
     
-    npoint=sum(ibin)
+    npoint=max(1, sum(ibin))
     apoint=sum(abin)
-    apoint=100.0/apoint
+    apoint=100.0/max(1.0, apoint)
     
     ibin=100*ibin/npoint
     abin=abin*apoint
@@ -2488,14 +2839,14 @@ double precision, dimension(2,2), intent(in) :: a
 double precision, dimension(2,2) :: b !< inverse of matrix
 double precision det
 
-	det=a(1,1)*a(2,2)-a(1,2)*a(2,1)
+    det=a(1,1)*a(2,2)-a(1,2)*a(2,1)
 
-	b(1,1)=a(2,2)
-	b(2,1)=-a(2,1)
-	b(1,2)=-a(1,2)
-	b(2,2)=a(1,1)
+    b(1,1)=a(2,2)
+    b(2,1)=-a(2,1)
+    b(1,2)=-a(1,2)
+    b(2,2)=a(1,1)
 
-	b=1/det*b
+    b=1/det*b
 end function
 
 end module
