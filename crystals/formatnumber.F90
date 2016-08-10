@@ -1,9 +1,9 @@
 !> The module formatnumbers_mod contains subroutine to handle number formating as xxx(yy)
 module formatnumber_mod
-integer, parameter :: default_esd=2 !< Default number of digit for esd
-integer, parameter :: buffer_length=1024 !< length of the character buffer to construct the formatted number
+integer, parameter, private :: default_esd=2 !< Default number of digit for esd
+integer, parameter, private :: buffer_length=1024 !< length of the character buffer to construct the formatted number
 
-private print_value_sp, print_value_dp, default_esd, print_value_core
+private print_value_sp, print_value_dp, print_value_core
 
 !> general interface for real and double precision
 interface print_value
@@ -36,9 +36,12 @@ integer :: arg_decimal_pos
         return
     end if
 
-    if(esd<1E-12) then
+    if(esd<tiny(1.0)) then
         !print *, 'negative esd'
-        call abort()
+        allocate(character(len=20) :: formatted_output)
+        write(formatted_output, '(a, F10.6)') 'Neg esd: ', esd
+        return
+        !call abort()
     end if
 
     arg_length=-1
@@ -106,9 +109,11 @@ integer :: arg_decimal_pos
         return
     end if
 
-    if(esd<1D-24) then
+    if(esd<tiny(1.0d0)) then
         !print *, 'negative esd'
-        call abort()
+        allocate(character(len=20) :: formatted_output)
+        write(formatted_output, '(a, F10.6)') 'Neg esd: ', esd
+        return
     end if
 
     arg_length=-1
@@ -214,7 +219,7 @@ character(len=buffer_length) :: formatstr
                 total=digit+arg_precision+3+nint(log10(abs(num)))
             end if
         else
-            total=0
+            total=digit+arg_precision+3+nint(log10(abs(num)))
         end if
         write(formatstr, "(a,I0,a,I0,a)") '(F',total,'.',digit+arg_precision, ',"(",I0,")")'
         write(buffer, formatstr) num, nint(esd*10**(digit+arg_precision))
