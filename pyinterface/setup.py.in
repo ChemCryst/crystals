@@ -1,0 +1,31 @@
+
+"""
+setup.py file for CrysPy 
+"""
+
+from distutils.core import setup, Extension
+
+
+cryspy_module = Extension('_crystals',
+                           sources=['cinterface.i'],
+			   swig_opts=['-c++'],
+		 	   extra_link_args=['-static','-static-libgcc','-static-libstdc++','-static-libgfortran','-lquadmath'],
+#		 	   extra_link_args=['-static'],
+                           library_dirs=['../crystals','.'], 
+						   libraries=['CrystalsPyInterface', 'CrystalsFortran','PySpecific','gfortran','openblas'],
+                           )
+	   
+
+setup (name = 'crystals',
+       version = '0.4',
+       description = """Level 0 CRYSTALS Python API from SWIG""",
+       ext_modules = [cryspy_module],
+       url='http://www.xtl.ox.ac.uk/',
+       author='Richard Cooper',
+       author_email='richard.cooper@chem.ox.ac.uk',
+       packages=['crysdata'],
+       package_dir={'crysdata': '..'},
+       package_data={'crysdata': ['commands.dsc','crystals.srt','superflip.exe']},
+       py_modules = ["crystals"],
+       )
+     

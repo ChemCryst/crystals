@@ -1880,8 +1880,9 @@ C The intel environment does not pick up changes made by _putenv in C++ code
 C Therefore use this interface to the C++ to get values.
           CALL CGETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #else 
-          call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
-     &      LIST(LEVEL))
+          call GETVAR(NAME(LEVEL)(1:COLPOS(LEVEL)-1), LIST(LEVEL))
+c          call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
+c    &      LIST(LEVEL))
 #endif
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
         IF (LIST(LEVEL) .EQ. ' ') THEN
@@ -2093,128 +2094,7 @@ c      ENDIF
       END
       
       
-CODE FOR GETCOM
-      SUBROUTINE GETCOM(CLINE)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: cinextcommand
-      INTEGER ISTAT
-      CHARACTER*256 CALINE
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'UFILE.INC'
-      INCLUDE 'CAMPAR.INC'
-      INCLUDE 'CAMBLK.INC'
-      INCLUDE 'XIOBUF.INC'
-      INCLUDE 'XUNITS.INC'
-      CHARACTER *(*) CLINE
 
-      CALINE=' '
-      ISTAT = 0
-      CALL cinextcommand(ISTAT,CALINE)
-      READ(CALINE,'(A)') CLINE
-      IF ( LCLOSE ) THEN
-          WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
-          CALL XPRVDU (NCVDU,1,0)
-          WRITE(CMON,'(A)') '^^WI ''Working. Please Wait.'''
-          CALL XPRVDU (NCVDU,1,0)
-          WRITE(CMON,'(A)')  '^^CR '
-          CALL XPRVDU (NCVDU,1,0)
-      ENDIF
-
-#elif defined (CRY_PY)
-
-      interface
-!> interface to C function getCommand (iso_c_bindings)
-        integer function getcommand (caline) bind(c)
-          use, intrinsic :: ISO_C_BINDING
-          implicit none
-          character caline
-        end function getcommand
-      end interface
-
-      INTEGER ISTAT
-      CHARACTER*256 CALINE
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'UFILE.INC'
-      INCLUDE 'CAMPAR.INC'
-      INCLUDE 'CAMBLK.INC'
-      INCLUDE 'XIOBUF.INC'
-      INCLUDE 'XUNITS.INC'
-      CHARACTER *(*) CLINE
-
-      CALINE=' '
-      ISTAT = 0
-      ISTAT = getcommand(caline)
-
-      READ(CALINE,'(A)') CLINE
-
-
-#else
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'UFILE.INC'
-      INCLUDE 'CAMPAR.INC'
-      INCLUDE 'CAMBLK.INC'
-      INCLUDE 'XIOBUF.INC'
-      INCLUDE 'XUNITS.INC'
-      CHARACTER *(*) CLINE
-
-      READ( NCUFU(1), '(A)') CLINE
-
-#endif
-      END SUBROUTINE
-
-CODE FOR GUEXIT
-      SUBROUTINE GUEXIT(IVAR)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: ciendthread
-#endif
-      INTEGER IVAR
-      INCLUDE 'UFILE.INC'
-C Meanings of IVAR.
-C 0    Ok
-C 1    Error
-C 2    Serious error
-C 3-1999 unspecified.
-C 2001 Zero length vector
-C 2002 SPECLIB - XDEPAC
-C 2003 ERROR OPENING STARTUP FILE
-C 2004 CRYSTALS START ERROR
-C 2005 CANNOT CREATE FILE
-C 2006 WRITE ERROR
-C 2007 XFETCH
-C 2008 XSTORE
-C 2009 INPUT
-C 2010 LABEL NOT IMPLEMENTED
-C 2011 XFINDE
-C 2012 XLDCBL
-C 2013 XFCFI
-C 2014 XDSMSG
-C 2015 XLINES
-c 2016 KCHNCB
-c 2017 XINERT
-c 2018 PO1AAF (NAG)
-c 2019 LIST 6 ERROR
-c 2020 ERROR HANDLING
-c 2021 SPYERROR
-c 2022 KEQUAT
-c 2023 KFORM
-c 2024 KFUNCT
-c 2025 XABS
-c 2026 XCONOP ERROR
-c 2027 ROUTINE NOT IMPLEMENTED
-cdjwapr99 moved from out of XFINAL to prevent error messages in FTN77 
-c version
-C----- CLOSE ALL THE FILES
-      DO 2001 I = 1,NFLUSD
-            J = KFLCLS(IFLUNI(I))
-2001  CONTINUE
-#ifdef CRY_NOGUI
-      CALL EXIT(IVAR)
-      RETURN
-#else
-      CALL CIENDTHREAD(IVAR)
-      RETURN
-#endif
-      END
 
 ccode for dumio (keep the program going while we test it)
 c      subroutine dumio(cline)

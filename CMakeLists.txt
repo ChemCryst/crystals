@@ -34,9 +34,9 @@ else()
 	add_definitions(-D_LIN_)
 endif()
 
-#if ( usePY )
-#	add_definitions(-DCRY_PY)
-#endif()
+if ( usePY )
+	add_definitions(-DCRY_PY)
+endif()
 
 add_definitions(-DCRY_OSWIN32)
 add_definitions(-DCRY_GNU)
