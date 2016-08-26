@@ -11,9 +11,9 @@ add_definitions(-DCRY_NOGUI)
 endif()
 
 
-add_library(PySpecific STATIC
-pyspecific.F
-)
+#add_library(PySpecific STATIC
+#pyspecific.F
+#)
 
 add_library(CrystalsFortran STATIC
 crystals_hdf5.F90
