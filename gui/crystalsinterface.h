@@ -180,7 +180,10 @@ typedef std::string tstring;
  #define CRY_GUI
 #endif
   #define CRY_USEWX
-  #define CRY_OSWIN32
+// This next is also defined by CMake scripts for MinGW build - avoiding redefinition warning:
+  #ifndef CRY_OSWIN32
+     #define CRY_OSWIN32
+  #endif
   #define CRY_TARGET MIN
 #endif	
 	

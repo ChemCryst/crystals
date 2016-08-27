@@ -119,3 +119,13 @@ lapack.F
 target_link_libraries(CrystalsFortran openblas)
 SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
+
+# These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.
+# Without these lines modules may be built in the wrong order causing a compilation failure in parallel builds.
+if ( useGUI )
+SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
+else()
+SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
+endif()
+
+

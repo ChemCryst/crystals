@@ -170,8 +170,11 @@ ENDFOREACH()
 
 
 if ( useGUI )
+# For the fwrapper module
+	INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crystals)
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
 	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas ${wxWidgets_LIBRARIES})
+	SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
 elseif( usePY )
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
@@ -180,6 +183,7 @@ else()
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
 	TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran openblas)
+	SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
 
 
