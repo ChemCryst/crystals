@@ -269,7 +269,7 @@ c     get the name of the input file
       write(6,'(a/a)') 'Loading the ciftbx database.',
      1 ' This may take a while if there are a lot of reflections'
       write(6,'(//)')
-      IF (.NOT.(OPEN_(NAME))) THEN
+      IF (.NOT.(OPEN_(NAME(1:LEN_TRIM(NAME))))) THEN
          WRITE (6,'(A,A,A///)') 'File ', Name, ' does not exist'
          WRITE (NTEXT,'(A,A,A///)') 'File ', Name, ' does not exist'
          write(6,'(a)') 'Name of input cif file?'
