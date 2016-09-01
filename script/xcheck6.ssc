@@ -696,9 +696,9 @@
 %  IF ( SIG .AND. LMAONCE ) THEN  
 %    COPY '#OPEN SCPDATA sigmas.dat' 
 %    BLOCK
+^^CO SET PROGOUTPUT TEXT 'Reading variances from sigmas.dat'             
 %     VARIABLE INTEGER NSIGMAS
 %     EVALUATE NSIGMAS = 1
-^^CO SET PROGOUTPUT TEXT 'Reading variances from sigmas.dat'             
 %     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT
 %     EXTRACT REWIND
 %%   Skip first line:                                                      
@@ -723,7 +723,7 @@
 %      EVALUATE SXY = SXY + EXTERNAL * INTERNAL
 %      EVALUATE NSIGMAS = NSIGMAS + 1
 %     END LOOP
-%     IF NSIGMAS .GT. 1 THEN
+%     IF ( NSIGMAS .GT. 1 ) THEN
 %      EVALUATE GRADIENT = SXY / SXX    
 %      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     END IF
