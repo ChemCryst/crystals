@@ -7025,9 +7025,15 @@ C - NOW LIST THE REFERENCES
          CALL XPCIF (';')
          CALL XREFPR (ISTORE(LREFS),NREFS,MDREFS)
          CALL XPCIF (';')
+C        CLOSE THE REFERENCES FILE
+#ifdef CRY_OSWIN32
+         CALL XRDOPN(7,JDEV,'CRYSDIR:script\reftab.dat', 25)
+#else
+         CALL XRDOPN(7,JDEV,'CRYSDIR:script/reftab.dat', 25)
+#endif
       END IF
- 
- 
+c 
+c 
 2550  CONTINUE
 
       IF ( IPUNCH .EQ. 1 ) THEN
@@ -7046,6 +7052,10 @@ C      WRITE LIST 30 BACK TO DISK (after THLIM calc)
       IF (JLOAD(9).GE.1) CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
 
       GO TO 2650
+C
+C
+C
+C
 C----- ERROR EXIT
 2600  CONTINUE
 C 
@@ -7058,6 +7068,8 @@ C
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,A)') 
      1   CMON(1)(:nctrim(cmon(1))),CMON(2)(:nctrim(cmon(2)))
       END IF
+c
+c-- all done
 C----- CLOSE THE 'CIF' OUTPUT FILE
       IF ( IPUNCH .EQ. 0 ) THEN
         CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
@@ -7071,6 +7083,77 @@ C      CLOSE THE REFERENCES FILE
       RETURN
       END
 
+CODE FOR CIFARCHIVE
+      SUBROUTINE CIFARCHIVE
+C
+c      copy ARCHIVE-HKL.CIF to cif file
+C
+c
+      DIMENSION JDEV(4), KDEV(4)
+      CHARACTER *80 CLINE
+
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XIOBUF.INC'
+
+C
+      CALL XCSAE
+      I = KRDDPV ( IPUNCH , 1 )
+      IF (I.LT.0) THEN
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, 51)
+         WRITE ( CMON ,51)
+         CALL XPRVDU(NCVDU, 1,0)
+51       FORMAT(' Error in #ADDARCHIVE directives. ')
+         RETURN
+      END IF
+      IF ( IPUNCH .EQ. 0 ) THEN
+C      - OPEN CIF OUTPUT ON FRN1
+        CALL XMOVEI (KEYFIL(1,23),KDEV,4)
+        CALL XRDOPN (8,KDEV,CSSCIF,LSSCIF)
+        CALL XPCIF ('# looking for ARCHIVE-HKL.CIF ')
+        CALL XPCIF (' ')
+C-----  OPEN ARCHIVE INFORMATION ON HKLI
+        CALL XMOVEI (KEYFIL(1,2),JDEV,4)
+        CALL XRDOPN(6,JDEV,'ARCHIVE-HKL.CIF',15)
+        IF (IERFLG.GE.0) THEN
+          write(cmon,'(a)')'{I Copying Reflections to cif'
+          call xprvdu(ncvdu,1,0)
+          CLINE=' '
+101       CONTINUE
+          READ (NCARU,'(A)',ERR=101,END=151) CLINE
+          CALL XCTRIM (CLINE, NCHAR)
+          WRITE(NCFPU1, '(A)') CLINE(1:NCHAR)
+          GO TO 101
+151       CONTINUE
+C----- CLOSE THE FILE
+          CALL XPCIF ('# end of ARCHIVE-HKL.CIF ')
+          CALL XRDOPN(7,JDEV,'ARCHIVE-HKL.CIF',15)
+        ELSE
+          WRITE (CMON,'(''# HKL archive file not found'')')
+          CALL XPRVDU (NCVDU,1,0)
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') 
+     1    CMON(1)(:nctrim(cmon(1)))
+          call xpcif(cmon(1)(:nctrim(cmon(1))))
+          IERFLG=0
+        END IF
+      END IF
+
+c-- all done
+C----- CLOSE THE 'CIF' OUTPUT FILE
+      IF ( IPUNCH .EQ. 0 ) THEN
+        CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
+      END IF
+1234  CONTINUE
+      RETURN
+      END
+c
 CODE FOR XPCIF
       SUBROUTINE XPCIF(CLINE)
 C----- COMPRESS AND PUNCH THE STRING CLINE
@@ -8526,6 +8609,7 @@ C
          xmax = 0.
          ymax = 0.
 c
+c      write(123,'(a)') 'h,k,l,res, fokd,fckd,sigmad'
          m6acc=l6acc
          DORESLOOP: DO i=1,n6acc
           ifail=istr11(m6acc+8)
@@ -8552,6 +8636,7 @@ c
            foka=str11(m6acc+5)
            fcka=str11(m6acc+6)
            sigmaq=str11(m6acc+7)
+c      write(123,'(3i5,4f12.4)') mh,mk,ml,res, fokd,fckd,sigmad
 C
            if (itype.eq.1) then
 C           totals for Fo/Fc plot
@@ -8591,7 +8676,7 @@ c        find the biggest bin
      1   '*(Mean(signal:noise))'
          call xcras (cyaxis,len)
 
-C                                     Histogram plot graph definition
+C                                     Signal plot graph definition
 c
          WRITE 
      1  (CMON,'(A,/,A,/,A,/,A,f10.2,A,/,A,f10.2,A,A/,A,/,A,/,A)')

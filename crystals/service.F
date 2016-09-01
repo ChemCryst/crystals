@@ -2279,6 +2279,22 @@ C      endif
 C      write(ncwu, '(i4,3x,a)') ippack, croman
 C      return
 C      end
+CODE FOR REFOUT
+      SUBROUTINE REFOUT(IDEV, I,J,K,F,S)
+C TRY TO PRESERVE SIGNIFICANCE IN HKLI FORMAT FILES
+      BIGGEST=MAX(F,S)
+      IF (BIGGEST.LE.9999.) THEN
+       WRITE(IDEV, '(3I4, 2F8.2)') I, J, K, F, S
+      ELSE IF (BIGGEST.LE.99999.) THEN
+       WRITE(IDEV, '(3I4, 2F8.1)') I, J, K, F, S
+      ELSE IF (BIGGEST.LE.999999.) THEN
+       WRITE(IDEV, '(3I4, 2F8.0)') I, J, K, F, S
+      ELSE
+       WRITE(IDEV, '(3I4, 2F10.0, A)') I, J, K, F, S, ' *'
+      END IF
+      RETURN
+      END
+C
 CRYSTALS CODE FOR ZROMAN
       SUBROUTINE ZROMAN(ARB, ROM)
 !***********************************************************************************************************************************

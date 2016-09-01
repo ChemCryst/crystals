@@ -346,8 +346,8 @@ EXTINCTION  PARAMETERS
 INTENSITY  6      17    2
    1    4096 CRYSTALSINPUT6
    13   28
-   1.READ               7    1    0    0
-         1    3    3    2    3    3    3
+   1.READ               8    1    0    0
+         1    3    3    2    3    3    3    3
     .NCOEFFICIENT      31    0    1    0    0         5
     .TYPE              45    0    1    5    1 FREE
      COPY           FIXED          FREE           COMPRESSED     TWIN
@@ -359,6 +359,8 @@ INTENSITY  6      17    2
     .CHECK            107    0    1    2   -1 NO
      NO             YES
     .L30UP            108    0    1    2   -1 YES
+     NO             YES
+    .ARCHIVE          113    0    1    2   -1 YES
      NO             YES
    2.STORE              3    1    0    0
          1    3    3
@@ -476,8 +478,8 @@ THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
 LIST       7      17    1
    1    4096 CRYSTALSINPUT6
    13   
-   1.READ               7    1    0    0
-         1    3    3    2    3    3    3
+   1.READ               8    1    0    0
+         1    3    3    2    3    3    3    3
     .NCOEFFICIENT      31    0    1    0    0         5
     .TYPE              45    0    1    5    1 FIXED
      COPY           FIXED          FREE           COMPRESSED     TWIN
@@ -489,6 +491,8 @@ LIST       7      17    1
     .CHECK            107    0    1    2   -1 NO
      NO             YES
     .L30UP            108    0    1    2   -1 YES
+     NO             YES
+    .ARCHIVE          113    0    1    2   -1 NO
      NO             YES
    2.STORE              3    1    0    0
          1    3    3
@@ -3292,8 +3296,8 @@ FOURIER            6    6
 HKLI       6      28    4
    1    4096 CRYSTALSINPUT6
     1    2   13   27
-   1.READ               7    1    0    0
-         1    3    3    2    3    3    3
+   1.READ               8    1    0    0
+         1    3    3    2    3    3    3    3
     .NCOEFFICIENT      31    0    1    0    0        12
     .TYPE              45    0    1    3    6 FIXED
      FIXED          FREE           COMPRESSED
@@ -3305,6 +3309,8 @@ HKLI       6      28    4
     .CHECK            107    0    1    2   -1 NO
      NO             YES
     .L30UP            108    0    1    2   -1 YES
+     NO             YES
+    .ARCHIVE          113    0    1    2   -1 YES
      NO             YES
    2.STORE              3    1    0    0
          1    3    3
@@ -3865,6 +3871,12 @@ CIFOUT             1    0
 QCKCIF             1    0    
    9    4096 CRYSTALSPUBLISH
    1.QCKCIF             1    1    0    0
+         3
+    .FORMAT             1    0    1    1    0 CIF
+     CIF     
+ADDARC             1    0    
+  11    4096 CRYSTALSPUBLISH
+   1.ADDARC             1    1    0    0
          3
     .FORMAT             1    0    1    1    0 CIF
      CIF     

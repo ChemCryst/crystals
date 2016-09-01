@@ -117,7 +117,7 @@
 %          COPY 'END'                                                           
 
 %          IF INST .EQ. 1 .OR. INST .EQ. 2 THEN
-%% CAR4/MACH3 DATA - NEED TO DO DATAREDUCTION ETC
+%% CAD4/MACH3 DATA - NEED TO DO DATAREDUCTION ETC
 %           VERIFY YES NO                                                        
 %           GET FINAL YESNO -                                                      
 ' Do you want to reinput the file of basic data?' 'YES'                         
@@ -138,7 +138,9 @@
 %            GET FINAL FILENAME -                                               
       'Name of file containing reflections (HKLI file) '                        
 %            SEND                                                               
-%           END BLOCK                                                            
+%           END BLOCK 
+%%                                                           
+%%     Dont COPY to ARCHIVE-HKL.CIF since this is just a re-input
 %%                                                                              
 %           CLEAR                                                                
 %           VERIFY YES NO                                                        

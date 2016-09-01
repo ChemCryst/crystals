@@ -422,6 +422,6 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 #	print("Doing diff!\n");
 #        print `diff $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.d.diff`;
     }
-#    print `compare.bat`
+    print `compare.bat`
 }
 

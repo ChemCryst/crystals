@@ -65,14 +65,14 @@
 %      INSERT " F'S=FSQ"
 %    END IF
 %    IF NCOEF .EQ. 4 THEN
-%      INSERT ' NCOEF = 4'
+%      INSERT ' NCOEF=4'
 %    ELSE
-%      INSERT ' NCOEF = 5'
+%      INSERT ' NCOEF=5'
 %    END IF
 %    IF FMT .EQ. 1 THEN
-%      INSERT ' TYPE = FREE CHECK = YES'
+%      INSERT ' TYPE=FREE CHECK=YES ARCH=YES'
 %    ELSE
-%      INSERT ' TYPE = FIXED CHECK = NO'
+%      INSERT ' TYPE=FIXED CHECK=NO ARCH=YES'
 %    END IF
 %    QUEUE SEND
 %%
@@ -103,9 +103,11 @@
 %      QUEUE SEND
 %      CLEAR
 %  END BLOCK
+%  COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %  COPY '#HKLI'
 %  QUEUE PROCESS
 %  COPY 'END'
+%  COPY '#CLOSE FRN2 '
 %  COPY '#CLOSE HKLI'
 %%
 %  IF FS .EQ. 3 THEN

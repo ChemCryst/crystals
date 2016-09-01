@@ -195,14 +195,15 @@
 %             INSERT " F'S=FSQ"                                                 
 %           END IF                                                              
 %           IF NCOEF .EQ. 4 THEN                                                
-%             INSERT ' NCOEF = 4'                                               
+%             INSERT ' NCOEF=4'                                               
 %           ELSE                                                                
-%             INSERT ' NCOEF = 5'                                               
-%           END IF                                                              
+%             INSERT ' NCOEF=5'                                               
+%           END IF  
+%% don't archive since this is a re-input of data                                                            
 %           IF FMT .EQ. 1 THEN                                                  
-%             INSERT ' TYPE = FREE CHECK = NO'                                  
+%             INSERT ' TYPE=FREE CHECK=NO ARCH=NO'                                  
 %           ELSE                                                                
-%             INSERT ' TYPE = FIXED CHECK = NO'                                 
+%             INSERT ' TYPE=FIXED CHECK=NO ARCH=NO'                                 
 %           END IF                                                              
 %           QUEUE SEND                                                          
 %%                                                                              

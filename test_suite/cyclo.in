@@ -65,7 +65,7 @@ END
 \ HOOK UP THE REFLECTION FILE
 #OPEN HKLI  "cyclo.hkl"                                                         
 #HKLI                                                                           
-READ   F'S=FSQ  NCOEF = 5  TYPE = FIXED CHECK = NO
+READ   F'S=FSQ  NCOEF = 5  TYPE = FIXED CHECK = NO arch=no
 INPUT H K L /FO/ SIGMA(/FO/)
 FORMAT (3F4.0, 2F8.0)
 STORE NCOEF=6

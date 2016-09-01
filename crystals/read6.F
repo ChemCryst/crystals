@@ -572,6 +572,9 @@ C----- save the matrix and tolerance
 csquare it for later use (sint/lam)sq
       TWIND=STORE(L6MR+10) * STORE(L6MR+10)
 Cdjw dec97
+C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
+      N6DEAD=0
+      N6NEG=0
 C ITYPE COPY FIXED FREE COMPRESSED TWIN (HKLI) FIXED FREE COMP
 C        1     2    3       4        5           6    7    8
       IF (ITYPE6.GT.8) THEN
@@ -587,9 +590,6 @@ C     L6BMP ETC (TWINNED DEFAULTS) MOVED TO LODFK
          CALL XMOVE (ICOM6A(9),ICOM6A(29),4)
       END IF
 Cdjw dec97
-C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
-      N6DEAD=0
-      N6NEG=0
 C----- load list 25 to find number of twin elements
       ELEM=1.
       N25=1
@@ -913,7 +913,7 @@ C--END OF THE REFLECTIONS  -  RESTORE THE COMMON BLOCK COMPLETELY
       CALL XZEROF (STORE(M6),MD6)
       GO TO 2450
 C
-C--INITIALISE THE OUTPUT OF THE REFLECTIONS TO M/T
+C--INITIALISE THE OUTPUT OF THE REFLECTIONS
 2400  CONTINUE
       CALL XSTR06 (IULN,-1,-1,1,0)
 C--RESET THE CURRENT LIST TYPE
@@ -924,6 +924,21 @@ C----- INITIALISE THE ABSORPTION CORRECTION
       I=MABS(-1)
       IF (IERFLG.LT.0) GO TO 5450
       LN=IULN
+      if((itype6.ne.1).and.(itype6.ne.5)) then
+c     only if not 'COPY' operation
+      if(larch.eq.0) then
+        write(ncfpu2,'(a/a/A)')
+     1  '_iucr_refine_reflections_details',';',
+     1  '# An asterisk in column 34 indicates a format overflow'
+        if(isq.eq.-1) then
+          write(ncfpu2,'(a,2i4)')'# Data was input as F-squared',
+     1    larch,isq
+        else
+          write(ncfpu2,'(a2,i4)')'# Data was input as F',
+     1    larch,isq
+        endif
+      endif
+      endif
 C--BRANCH ON THE TYPE OF OUTPUT
       GO TO (5000,2550,3250,3450,5000,4050,4050,4050,2500),ITYPE6
 C3600  STOP 'LIST 6 ERROR'
@@ -975,6 +990,10 @@ CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
          CALL XPRVDU (NCVDU,1,0)
          GO TO 5200
       END IF
+c
+c
+c
+c
 C--READ THE NEXT REFLECTION
 2950  CONTINUE
       CALL XZEROF (STORE(L6IB),M6IB)
@@ -1223,18 +1242,24 @@ C--BRANCH ON THE INPUT TYPE
          GO TO (4600,4600,4600,4600,4600,4500,4500,4500,2500),ITYPE6
 C6400  STOP 323
          CALL GUEXIT (323)
-C--REFLECTION INPUT  -  APPLY ANY SCALES AND COEFFICIENTS
+c
 4500     CONTINUE
+C--REFLECTION INPUT  -  APPLY ANY SCALES AND COEFFICIENTS
          IF (MSCALE(0)) 4850,4550,4550
 C--AND NOW APPLY ANY ABSORPTION CORRECTION THAT IS REQUIRED
 4550     CONTINUE
          IF (MABS(0)) 4850,4600,4600
-C--CHECK IF WE SHOULD TAKE THE SQUARE ROOT
 4600     CONTINUE
          JFO=M6+IFO
+c----- output archive material for PUNCH unit
+         if(larch.eq.0) then
+          call refout(ncfpu2, nint(store(m6)),nint(store(m6+1)),
+     1      nint(store(m6+2)), store(jfo), store(m6+12))
+         endif
 C--ARE WE INPUTTING /FO/ **2 ?
          IF (ISQ) 4650,4700,4700
 4650     CONTINUE
+C--CHECK IF WE SHOULD TAKE THE SQUARE ROOT
 Cdjwmap99[
          CALL XSQRT (STORE(JFO),FSIGN,FABS,STORE(M6+12),SIG)
          STORE(JFO)=FSIGN
@@ -1295,7 +1320,7 @@ C--ACCUMULATE THE REFLECTION TOTALS
 4800     CONTINUE
 4850  CONTINUE
 C--BRANCH ON THE TYPE OF INPUT
-      GO TO (2950,2950,3300,3750,2950,2950,3300,3750,4900),ITYPE6
+      GO TO (2950,2950,3300,3750,2950, 2950,3300,3750,4900),ITYPE6
 4900  CONTINUE
       WRITE (CMON,4950)
       CALL XPRVDU (NCVDU,1,0)
@@ -1306,6 +1331,8 @@ C--BRANCH ON THE TYPE OF INPUT
 C
 C--END OF THE REFLECTION INPUT  -  STORE THEM ON THE DISC
 5000  CONTINUE
+      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) 
+     1 write(ncfpu2,'(a)')';'
       N6D=N6W
 C--NO ERRORS  -  CALCULATE THE REFLECTION DETAILS
       DO 5050 I=1,MD6
