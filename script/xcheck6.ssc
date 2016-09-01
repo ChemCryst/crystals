@@ -1,13 +1,14 @@
 %SCRIPT XCHECK6                                                                 
 % VARIABLE REAL WORK1 WORK2 WORK3                                               
 % VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE          
-% VARIABLE LOGICAL WILFIL HIST                                                      
+% VARIABLE LOGICAL WILFIL HIST  SIG                                                      
 % VARIABLE REAL NEWRHO NEWRAT THFULL MRGR NMBR                                      
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP      
 % VARIABLE INTEGER ABSPRINT ABSTOTAL                                            
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'                                   
 % EVALUATE ABSENT = FILEEXISTS 'absences.dat'                                   
 % EVALUATE HIST = FILEEXISTS 'histogram.dat'                                   
+% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
 %%                                                                              
@@ -31,12 +32,15 @@
 ^^WI  {                                                                         
 ^^WI   @ 2,2 TABCTRL _MAINTABS                                                  
 ^^WI   {                                                                        
+%%                                                                       
+%%                                                                       
+%%Completeness                                                                       
 ^^WI    TAB _MAINTAB2a 'Completeness' GRID _MAINTG2 NROWS=5 NCOLS=3             
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=2 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
 ^^WI      @ 1,1 ICON IM INFO  
-
+%%
 ^^WI      @ 2,3 GRID OUT1 NROWS=3 NCOLS=12
 ^^WI      {
 ^^WI        @ 3,1 STATIC M1 'Expected'
@@ -46,7 +50,7 @@
 ^^WI        @ 3,9 STATIC M1 'Missing'
 ^^WI        @ 3,11 STATIC _TH_M '0.00000'
 ^^WI      }
-                                                  
+%%                                                  
 ^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW11                                                    
@@ -78,6 +82,10 @@
 ^^WI      }                                                                     
 ^^WI     }                                                                      
 ^^WI    }                                                                       
+%%end-Completeness                                                                       
+%%
+%%
+%%sig-vs-freq
 ^^WI    TAB _MAINTAB2 'Sigma freq' GRID _MAINTG2 NROWS=5 NCOLS=3                
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
@@ -97,7 +105,11 @@
 ^^WI        ITEM _SDELA '&Reject data: I/sigma(I) < _X' 'SIGCUT_N_X'            
 ^^WI      ENDDEFINEMENU                                                         
 ^^WI    }                                                                       
-^^WI    TAB _MAINTAB2 'Sigma vs Res' GRID _MAINTG2 NROWS=5 NCOLS=3              
+%%end-sig-vs-freq
+%%                                                                       
+%%                                                                       
+%%sig-vs-res                                                                       
+^^WI    TAB _MAINTAB2b 'Sigma vs Res' GRID _MAINTG2 NROWS=5 NCOLS=3              
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
@@ -115,7 +127,48 @@
 ^^WI      DEFINEPOPUPMENU POPUP 'Selection'                                     
 ^^WI        ITEM _SDELA '&Reject data: rho > _L' 'RHOMIT1_N_L'                  
 ^^WI      ENDDEFINEMENU                                                         
+^^WI    }
+%%end-sig-vs-res                                                                       
+%%    
+%%Variances
+^^WI    TAB _MAINTAB7 'Variances' GRID _MAINTG7 NROWS=7 NCOLS=3                  
+^^WI    {                                                                       
+% IF ( SIG ) THEN                                                            
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1                                                    
+^^WI 'The Internal Variance is a measure of self-consistency of equivalents'
+^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI 'The External Variance is the instrument makers estimate'         
+^^WI       @ 3,1 STATIC XFW3                                                    
+^^WI 'The internal is generally greater than the external'      
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI     }                                                                      
+^^WI     @ 4,2 PLOTWINDOW _VSIGMA NROWS=20 NCOLS=64 
+^^WI     @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 5
+^^WI      {   
+^^WI       @ 1,1 STATIC XFS 'Internal ='                        
+^^WI       @ 1,3 STATIC _MW_GRAD '000.000'                                  
+^^WI       @ 1,5 STATIC XFS2 ' x External'
+^^WI      }
+% ELSE                                                                          
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     {                                                                      
+^^WI      @ 1,3 GRID EXP2 NROWS=1 NCOLS=1                                       
+^^WI      {                                                                     
+^^WI       @ 1,1 STATIC XFW1 'The sigmas.dat file not found'
+^^WI      }                                                                     
+^^WI      @ 1,1 ICON IM ERROR                                                   
+^^WI     }                                                                      
+% END IF                                                                        
 ^^WI    }                                                                       
+%%end_Variances
+%%                                                                       
+%%                                                                       
+%%Merging-R                                                                       
 ^^WI    TAB _MAINTAB3 'Merging R' GRID _MAINTG3 NROWS=5 NCOLS=3                 
 ^^WI    {                                                                       
 % IF ( MERGER ) THEN                                                            
@@ -147,7 +200,10 @@
 ^^WI      @ 1,1 ICON IM ERROR                                                   
 ^^WI     }                                                                      
 % END IF                                                                        
-^^WI    }                                                                       
+^^WI    }
+%%end_Merging-R                                                                       
+%%                                                                       
+%%Absences                                                                       
 ^^WI    TAB _MAINTAB1 'Absences' GRID _MAINTG1 NROWS=5 NCOLS=3                  
 ^^WI    {                                                                       
 % IF ( ABSENT ) THEN                                                            
@@ -178,6 +234,9 @@
 ^^WI     }                                                                      
 % END IF                                                                        
 ^^WI    }                                                                       
+%%end_absences                                                                       
+%%                                                                       
+%%                                                                       
 %%Histogram
 ^^WI    TAB _MAINTAB5 'Histogram' GRID _MAINTG5 NROWS=5 NCOLS=3                  
 ^^WI    {                                                                       
@@ -218,8 +277,11 @@
 ^^WI      @ 1,1 ICON IM ERROR                                                   
 ^^WI     }                                                                      
 % END IF                                                                        
-^^WI    }                                                                       
-%%Histogram
+^^WI    }
+%%end_Histogram                                                                       
+%%                                                                       
+%%                                                                       
+%%Wilson
 ^^WI    TAB _MAINTAB0 'Wilson' GRID _MAINTG0 NROWS=9 NCOLS=3                   
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
@@ -256,6 +318,9 @@
 ^^WI     @ 1,11 STATIC _MW_E2MIN1 '000000.000'                                  
 ^^WI     }                                                                      
 ^^WI    }                                                                       
+%%end_Wilson                                                                       
+%%                                                                       
+%%N(z)                                                                       
 ^^WI    TAB _MAINTAB4 'N(Z) distribution' GRID _MAINTG0 NROWS=8 NCOLS=3         
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
@@ -281,7 +346,10 @@
 ^^WI       @ 1,3 STATIC _MW_E2MIN2 '000000.000'                                 
 ^^WI     }                                                                      
 ^^WI    }                                                                       
-^^WI    TAB _MAINTAB5 'Cell content' GRID _MAINTG0 NROWS=7 NCOLS=3              
+%%end N(z)                                                                       
+%%                                                                       
+%%                                                                       
+^^WI    TAB _MAINTAB6 'Cell content' GRID _MAINTG0 NROWS=7 NCOLS=3              
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID CGRID NROWS=3 NCOLS=1 OUTLINE='Cell contents'               
 ^^WI     {                                                                      
@@ -493,6 +561,9 @@
 %    END IF                                                                     
 %    COPY 'END'                                                                 
 %  END IF
+%%                                                                       
+%%                                                                       
+%%                                                                       
 %%Histogram
 ^^CO SET PROGOUTPUT TEXT 'Reading histogram from histogram.dat'             
 %    VARIABLE INTEGER NREF MREF
@@ -616,9 +687,75 @@
 %%
 %    COPY '#CLOSE SCPDATA'                                                      
 %  END IF                                                                       
-%%  EVALUATE LMAONCE = FALSE                                                     
-%%                                                                              
-%%Histogram
+%%end-Histogram
+%%                                                                       
+%%                                                                       
+%%                                                                       
+%%Variances
+^^CO SET PROGOUTPUT TEXT 'Reading variances from sigmas.dat'             
+%  IF ( SIG .AND. LMAONCE ) THEN  
+%    COPY '#OPEN SCPDATA sigmas.dat' 
+%    BLOCK
+%     VARIABLE INTEGER NSIGMAS
+%     EVALUATE NSIGMAS = 1
+^^CO SET PROGOUTPUT TEXT 'Reading variances from sigmas.dat'             
+%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT
+%     EXTRACT REWIND
+%%   Skip first line:                                                      
+%     EXTRACT NEXT
+%     LOOP
+%      ON ERROR TERMINATE                                                           
+%      ON END TERMINATE
+%      EXTRACT NEXT                                                             
+%      CLEAR                                                                        
+%      EXTRACT TRANSFER INPUT                                                       
+%      CLEAR
+%%    get fourth and fifth items
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%      EVALUATE EXTERNAL = VALUE                                        
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%      EVALUATE INTERNAL = VALUE                                        
+%      EVALUATE SXX = SXX + EXTERNAL * EXTERNAL
+%      EVALUATE SXY = SXY + EXTERNAL * INTERNAL
+%      EVALUATE NSIGMAS = NSIGMAS + 1
+%     END LOOP
+%     IF NSIGMAS .GT. 1 THEN
+%      EVALUATE GRADIENT = SXY / SXX    
+%      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
+%     END IF
+%%
+%     EXTRACT REWIND
+%% Skip first line:                                                             
+%     EXTRACT NEXT                                                               
+%% 
+^^CR                                                                            
+^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA                                  
+^^PL XAXIS TITLE 'External (Mean variance)'                                           
+^^PL NSERIES=1 LENGTH=40 
+^^PL YAXIS TITLE 'Internal (rms deviation)'                                    
+%% 
+%     IF NSIGMAS .GT. 1 THEN                                                                             
+%      COPY '#SCRIPT YGETSIG'                                                     
+%      COPY '#CLOSE SCPDATA'  
+%     ELSE
+
+{E    Insufficient equivalent reflections in sigmas.dat 
+%     TRANSFER '{E     Nsigmas = ' // CHARACTER NSIGMAS TO DISPLAY                                                         
+
+%     END IF                                                                          
+^^PL  SHOW                                                                       
+^^CR  
+%%
+%    END BLOCK
+%  END IF
+%%end-variances
+%%                                                                       
+%%                                                                       
+%%                                                                       
 ^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'             
 %  IF ( MERGER .AND. LMAONCE ) THEN                                             
 %    COPY '#OPEN SCPDATA mergingr.dat'                                          
