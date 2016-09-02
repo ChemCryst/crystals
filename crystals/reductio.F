@@ -1815,7 +1815,6 @@ cdjwfeb12 save initial Fc and phase
       fc = store(iref+5)
       phase = store(iref+6)
 c      
-      IDWZAP = IN
 C--CHECK FOR ONLY ONE REFLECTION
       IF(NREF-1)1000,1000,1050
 C--ONLY ONE CONTRIBUTOR
