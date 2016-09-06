@@ -14,7 +14,7 @@ add_definitions(-D_GNUF77_)
 add_definitions(-std=legacy)
 #add_definitions(-I/Users/richard.cooper/crystals/crystals)
 add_definitions(-I\"${CMAKE_CURRENT_SOURCE_DIR}/../crystals\")
-add_definitions(-I\"${CMAKE_CURRENT_BINARY_DIR}/../crystals\")
+add_definitions(-I\"${CMAKE_CURRENT_BINARY_DIR}/../crys_fortran\")
 
 add_definitions(-std=legacy)
 add_definitions(-fno-automatic)

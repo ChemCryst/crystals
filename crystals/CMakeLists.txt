@@ -116,7 +116,7 @@ weight.F
 lapack.F
 )
 
-target_link_libraries(CrystalsFortran openblas)
+#target_link_libraries(CrystalsFortran openblas)
 SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
 

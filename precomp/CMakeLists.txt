@@ -12,7 +12,7 @@ file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/all/" "al
 foreach( precomp_file ${precomp_files} )
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
-    COMMAND cmake -E copy
+    COMMAND ${CMAKE_COMMAND} -E copy
 "${CMAKE_CURRENT_SOURCE_DIR}/all/${precomp_file}"
 "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/all/${precomp_file}"
@@ -25,7 +25,7 @@ file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/MIN/" "MI
 foreach( precomp_file ${precomp_files} )
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
-    COMMAND cmake -E copy
+    COMMAND ${CMAKE_COMMAND} -E copy
 "${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
 "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
@@ -37,7 +37,7 @@ file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/" "
 foreach( precomp_file ${precomp_files} )
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
-    COMMAND cmake -E copy
+    COMMAND ${CMAKE_COMMAND} -E copy
 "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/${precomp_file}"
 "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/${precomp_file}"
