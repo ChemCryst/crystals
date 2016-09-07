@@ -114,7 +114,8 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
@@ -42062,7 +42063,7 @@ Mean C-C su =   0.0000
  
     4 *  81  76  81  80  82  69  31  27  24 -18 -34 -21 -20 -39 -54 -69 -93 -88 -75 -77 -75 *   4
  
-    5 * 114 100 114 115 105  86  43  37  40   1 -25 -23 -20 -24 -29 -51 -89 -89 -68 -65 -68 *   5
+    5 * 114 100 114 115 105  86  43  37  40   1 -25 -23 -20 -24 -29 -51 -89 -89 -68 -66 -68 *   5
  
     6 * 113 100 113  97  67  71  65  53  28  -3  -2   3 -11 -37 -51 -52 -71 -84 -94-106 -94 *   6
  

@@ -150,7 +150,8 @@ Number               12       6      11      10      11       5       3
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
@@ -1864,7 +1865,8 @@ Number               12       6      11      10      11       5       3
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
@@ -3577,7 +3579,8 @@ Number               12       6      11      10      11       5       3
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
@@ -5279,7 +5282,8 @@ Number               12       6      11      10      11       5       3
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 

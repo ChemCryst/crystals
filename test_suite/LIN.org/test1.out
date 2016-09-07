@@ -113,7 +113,8 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
@@ -3628,7 +3629,8 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
@@ -7085,7 +7087,8 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
@@ -10562,7 +10565,8 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 

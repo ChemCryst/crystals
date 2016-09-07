@@ -209,7 +209,8 @@ Number               29      14      14       9      11       7      35
  Keen in P21/c                                                                        Date              Time          
 
 
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
 
  The updated reflections are now on UNIT 52
 
