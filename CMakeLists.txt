@@ -20,6 +20,31 @@ if ( use32 )
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -m32")
 endif()
 
+find_package(BLAS)
+find_package(LAPACK)
+
+if(BLAS_LIBRARIES_DIR)
+   link_directories( ${BLAS_LIBRARIES_DIR} )
+endif()
+if ( BLAS_LIBRARIES )
+   link_libraries ( ${BLAS_LIBRARIES} )
+endif()
+if ( BLAS_LINKER_FLAGS )
+   uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
+endif()
+
+if(LAPACK_LIBRARIES_DIR)
+   link_directories( ${LAPACK_LIBRARIES_DIR} )
+endif()
+if ( LAPACK_LIBRARIES )
+   link_libraries ( ${LAPACK_LIBRARIES} )
+endif()
+if ( LAPACK_LINKER_FLAGS )
+   uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
+endif()
+
+
+
 if ( useGUI )
 	add_definitions(-DCRY_GUI)
 	add_definitions(-D_GIL_)
@@ -168,18 +193,6 @@ FOREACH (_file ${ssrfiles})
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()
 
-
-find_package(BLAS)
-
-if(BLAS_LIBRARIES_DIR)
-   link_directories( ${BLAS_LIBRARIES_DIR} )
-endif()
-if ( BLAS_LIBRARIES )
-   link_libraries ( ${BLAS_LIBRARIES} )
-endif()
-if ( BLAS_LINKER_FLAGS )
-   uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
-endif()
 
 if ( useGUI )
 # For the fwrapper module
