@@ -576,9 +576,15 @@ C----- SAVE SOME SPACE FOR THE U AXES
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
-      IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-      RALL(1)=STORE(M33CD+5)
-      END IF
+!----      
+!      M33CD+5 is the address of the flag for punch
+!      It does not make sense when use for rall
+!      Plus rall(1) is initialised again later
+!      The following block is therefore useless
+!      IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
+!      RALL(1)=STORE(M33CD+5)
+!      END IF
+!----
 c
 C If outputting design matrix and deltaF's then open files now.
        IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
