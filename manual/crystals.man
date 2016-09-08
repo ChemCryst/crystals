@@ -2600,11 +2600,13 @@ these to the same values as in REFINEMENT above.
       Fourier Maps
       Slant Fourier Maps
       Superflip Structure Solution
-      The Hooft/Straver/Spek configuration parameter
+      Absolute Structure Determination
 #
 # The experienced or adventurous user can of course use 
  LIST 6 and LIST 7 quite independently for different purposes.
-
+#
+In LIST 7 the ARCHIVE keyword is set to NO, to prevent the original 
+archived data from being over-written
 #
 #
 #XLIST 6#
@@ -2736,7 +2738,7 @@ for publication.
 #N  10#
 #J
  \LIST 6
- READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=
+ READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=
  INPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .
  STORE NCOEFFICIENT= MEDIUM= APPEND=
  OUTPUT COEFFICIENT(1)= COEFFICIENT(2)=  .  .
@@ -2759,7 +2761,7 @@ for publication.
  \CLOSE HKLI
 #
 #Q
-#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=#
+#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=#
 #
 #KNCOEFFICIENT= #
  Specifies the number of coefficients to be input per reflection. A list
@@ -2833,6 +2835,17 @@ for publication.
 #
  By default checking is disabled so that negative reflections are
  accepted on input.
+#
+#KARCHIVE#
+This parameter controls the creation of a file ARCHIVE-HKL.CIF, an  
+image of the data in 3i4,2f8.2 (SHELX) format. 
+#N   2#
+#J
+      YES -  Default value.
+      NO 
+#
+The default value is YES except when a COPY is being performed. The 
+ARCHIVE-HKL.CIF can be embedded in the final publish.cif file.
 #
 #Q
 #DINPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .#
@@ -3113,7 +3126,7 @@ edges.
 #N  18#
 #J
  \HKLI
- READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=
+ READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=
  INPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .
  STORE NCOEFFICIENT= MEDIUM= APPEND=
  OUTPUT COEFFICIENT(1)= COEFFICIENT(2)=  .  .
@@ -3182,7 +3195,7 @@ For example
 #Q
 #I\HKLI#
 #Q
-#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=#
+#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=#
  This directive is the same as the READ directive in \LIST 6 above, 
  except that the following parameters have
  different default values:
@@ -3194,6 +3207,7 @@ For example
  NGROUP= default value is 1
  UNIT= default value is HKLI
 #
+
 #Q
 #DINPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .#
 #PThis directive defines the coefficients that are to be read in.
