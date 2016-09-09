@@ -35,6 +35,7 @@ XCONST.INC.F90
 XOPVAL.INC.F90
 formatnumber.F90
 solve_helper.F90
+sfls_punch.F90
 mrgrnk.F90
 absolut.F90
 ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90
