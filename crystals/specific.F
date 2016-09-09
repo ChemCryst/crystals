@@ -2381,7 +2381,8 @@ C- PRINT A WARNING SOMEWHERE
                N = MAX(1,N)         ! SET N TO LAST NON-BLANK
                CFIRST = CBUF(J)(1:1)
                CLAST = CBUF(J)(N:N)
-#if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)
+c         if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)
+#ifdef CRY_GUI
                N = MIN(N,256)         ! SET N TO LAST NON-BLANK
                CBUF(J)(N+1:N+1) = CHAR(0) ! Make into a c string.
 			   N = N + 1
