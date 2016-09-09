@@ -6166,6 +6166,7 @@ C--OUTPUT THE QUEUE TO THE DISC
 C
 CODE FOR XADCPD
       SUBROUTINE XADCPD
+      use sfls_punch_mod
 C--THIS ROUTNE TAKES THE PARTIAL DERIVATIVE QUEUE ON THE DISC
 C  AND ADDS IT TO THE NORMAL MATRIX.
 C
@@ -6187,10 +6188,12 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XMTLAB.INC'
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
+      
+      double precision, dimension(:,:), allocatable :: designline
+      integer sfls_punch_flag
 C
 C--SET THE LENGTH OF EACH ENTRY
       MD16Q=MD22PD
@@ -6201,6 +6204,7 @@ C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
       CALL XFAL33
       IF ( IERFLG .LT. 0 ) GO TO 9900
       JK=ISTORE(M33CD+6)
+      sfls_punch_flag=ISTORE(M33CD+5)
 C--RESET THE CORE LIMITS
       CALL XRSL
       CALL XCSAE
@@ -6286,24 +6290,37 @@ cdjwmay2000 - note problems with Rfactor when target is zero!
         STORE(L11P+28)=STORE(L11P+28)+D*D*C
         STORE(L11P+29)=STORE(L11P+29)+STORE(L16+2)*C
 
-        IF (MATLAB.GT.0) WRITE(NCFPU2,'(G16.8)') D
+        !IF (MATLAB.GT.0) WRITE(NCFPU2,'(G16.8)') D
+        if(sfls_punch_flag>0) then
+            call sfls_punch_addtowdf(D)
+        end if
+
 c		IF (MATLAB.GT.0) WRITE(NCWU,'(A,G16.8)')'Hello ',store(l11P+27)
 		
 C--PASS THROUGH THE MATRIX
         M11=L11
+        if(sfls_punch_flag>0) then
+            ! Get block size. The output only works for 1 block
+            ! If several blocks are present, output is cancalled in sfls.F
+            blocksize=ISTORE(L12B)+ISTORE(L12B+1)-1
+            allocate(designline(blocksize,1))
+            designline=0.0d0
+            blockindex=0
+        end if
         DO I=L12B,M12B,MD12B                 !PROCESS BLOCK BY BLOCK
            M=ISTORE(I)
            N=ISTORE(I+1)
-           L=M+N-1
+           L=M+N-1           
 
            DO J=M,L  !PASS THROUGH THE PARAMETERS IN THIS BLOCK
-
+              blockindex=blockindex+1
               IF(ISTORE(M16) .NE. J) THEN             !Not this one.
-                 IF (MATLAB.GT.0) WRITE(NCFPU1,'(''0.0 ...'')')
+                 !IF (MATLAB.GT.0) WRITE(NCFPU1,'(''0.0 ...'')')
               ELSE                                    !Parameter is in queue
                  A=STORE(M16+1)*C
-                 IF (MATLAB.GT.0) WRITE(NCFPU1,'(G16.8,'' ...'')')
-     1                SQRT(ABS(C))*STORE(M16+1)
+                 if(sfls_punch_flag>0) then
+                    designline(blockindex,1)=SQRT(ABS(C))*STORE(M16+1)
+                end if
 C--ADD INTO THE R.H.S.
                  M11R=L11R+J-1
                  STR11(M11R)=STR11(M11R)+A*D
@@ -6322,11 +6339,11 @@ c                 CALL XPRVDU(NCVDU,1,0)
 
                  N16=N16-MD16Q
                  IF(N16.LE.0)THEN                 !No more derivatives.
-                    IF ( MATLAB .GT. 0 ) THEN         !Finish this line.
-                        DO JJ = J+1,L
-                           WRITE(NCFPU1,'(''0.0 ...'')')
-                        END DO
-                     END IF
+                    !IF ( MATLAB .GT. 0 ) THEN         !Finish this line.
+                    !    DO JJ = J+1,L
+                    !       WRITE(NCFPU1,'(''0.0 ...'')')
+                    !    END DO
+                    ! END IF
                     GOTO 1800
                  ENDIF
                  M16=M16+MD16Q
@@ -6337,13 +6354,15 @@ c                 CALL XPRVDU(NCVDU,1,0)
         END DO
 
 1800    CONTINUE
+        if(sfls_punch_flag>0 .and. allocated(designline)) then
+            call sfls_punch_addtodesign(designline, 
+     1          reshape( (/0,0,0/), (/3,1/) ) )
+            deallocate(designline)
+        end if        
 C--FIND THE ADDRESS OF THE LENGTH OF THE NEXT ENTRY
         M16Q=M16Q+MD16Q
 C--FIND THE LENGTH OF THE NEXT ENTRY
         N16=ISTORE(M16Q)
-        IF (MATLAB.GT.0) THEN
-          WRITE(NCFPU1,'('' '')')
-        END IF
 
       GOTO 1200
 
@@ -6356,13 +6375,11 @@ C--OUTPUT THE NEW MATRIX
       CALL XMKOWF(11,0)
       CALL XALTES(11,1)
 
-      IF (MATLAB.GT.0) THEN
-        WRITE (NCFPU1, '(''];'')')
-        I = KFLCLS(NCFPU1)
-        WRITE (NCFPU2, '(''];'')')
-        I = KFLCLS(NCFPU2)
-        MATLAB = 0
-      END IF
+      if(sfls_punch_flag>0) then
+        call sfls_punch_addtodesign(designline, 
+     1    reshape( (/0,0,0/), (/3,1/) ), punch=.true.)
+        call sfls_punch_addtowdf(D, punch=.true.)
+      end if       
 
       RETURN
 C

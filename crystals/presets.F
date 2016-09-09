@@ -325,7 +325,6 @@ C
 C
       INCLUDE 'XL26WK.INC'
       INCLUDE 'OUTCOL.INC'
-      INCLUDE 'XMTLAB.INC'
       INCLUDE 'XFLAGS.INC'
       DIMENSION VCVVEC(8192)
       REAL VCVVSZ
@@ -1980,7 +1979,6 @@ C
       DATA IOLDC / 0 /
       DATA IOFORE / -1 /
       DATA IOBACK / -1 /
-      DATA MATLAB / 0 /
 
 C Bits set in the REF parameter of list 5 depending on refinement.
 C Will be used to set the _atom_site_refinement_flags CIF item.

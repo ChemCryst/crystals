@@ -369,6 +369,7 @@ C
 C
 CODE FOR XSFLSB
       SUBROUTINE XSFLSB (MODE, ITYP06)
+      use sfls_punch_mod
 C--MAIN CONTROL ROUTINE FOR THE S.F.L.S. ROUTINES
 C
 C--
@@ -419,7 +420,6 @@ C
 C
 C
       INCLUDE 'XSFWK.INC'
-      INCLUDE 'XMTLAB.INC'
       INCLUDE 'XWORKB.INC'
       INCLUDE 'XSFLSW.INC'
       INCLUDE 'XIOBUF.INC'
@@ -441,6 +441,7 @@ C----- V 810 INCLUDES THE SPECIAL SHAPES
 #endif
 	 DATA IVERSN /811/
       INTEGER PARAM_LIST_MAKE
+      integer sfls_punch_flag
 
 C----- ACCEPT -VE FLACK PARAMETER
 C----- USES DIFABS CORRECTION TO FC
@@ -575,6 +576,7 @@ C----- SAVE SOME SPACE FOR THE U AXES
       IADDU = KCHLFL (4)
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
+      sfls_punch_flag=ISTORE(M33CD+5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
 !----      
 !      M33CD+5 is the address of the flag for punch
@@ -588,13 +590,8 @@ C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
 c
 C If outputting design matrix and deltaF's then open files now.
        IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
-       MATLAB = 0
-       IF (ISTORE(M33CD+5).EQ.1) THEN
-        MATLAB = 1
-        CALL XRDOPN (5,JFRN(1,1),'design.m',8)
-        WRITE (NCFPU1, '(''A=['')')
-        CALL XRDOPN (5,JFRN(1,2),'wdf.m',5)
-        WRITE (NCFPU2, '(''DF=['')')
+       IF (sfls_punch_flag>0) THEN
+        call sfls_punch_init_design(sfls_punch_flag)
        END IF
 
        ILEV = ISTORE(M33CD+12)
@@ -1355,6 +1352,7 @@ C
 CODE FOR XSFLSC
       SUBROUTINE XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS)
 !$    use OMP_LIB
+      use sfls_punch_mod
       DIMENSION DERIVS(NDERIV)
       DIMENSION IRESULTS(NRESULTS)  !Parameter list if there is one
 C--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
@@ -1676,8 +1674,10 @@ C
       ! right hand side temporary storage in double precision to fix error accumulation
       ! this storage in put back in str11 in the end
       double precision, dimension(:), allocatable :: righthandside
+      ! reflections indices in designmatrix
+      integer, dimension(:,:), allocatable :: hkllist
       ! tid is the number of threads
-      integer :: designindex, tid
+      integer :: designindex, tid, sfls_punch_flag
       integer, parameter :: designchunk=512
       character(len=4) :: buffer
 
@@ -1718,7 +1718,8 @@ C----- INITIALISE THE SORT BUFFER
       CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
       JSORT = 5
 
-
+      sfls_punch_flag=ISTORE(M33CD+5)
+      
       IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage calc.
 C----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
         LTEMPL = NFL
@@ -1834,9 +1835,11 @@ C--CHECK IF A PRINT IS REQUIRED
       designindex=0
       ! size of the design matrix chunk to be tuned (PP)
       allocate(designmatrix(JP-JO+1,designchunk*tid))
-      designmatrix=0.0
+      designmatrix=0.0d0
+      allocate(hkllist(3,designchunk*tid))
+      hkllist=0
       allocate(righthandside(n11r))
-      righthandside=0.0
+      righthandside=0.0d0
 
 #ifdef CRY_OSLINUX
       call date_and_time(VALUES=measuredtime)
@@ -2361,17 +2364,8 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           END IF
 
-          IF (ISTORE(M33CD+5).EQ.1) THEN   ! Check if we should output matrix in MATLAB format.
-            WRITE(NCFPU1,'(A,3(1X,F5.0))')'%',
-     1       STORE(M6),STORE(M6+1),STORE(M6+2)
-            DO I = JO,JP-MOD(JP-JO,5)-1,5
-              WRITE(NCFPU1,'(5G16.8,'' ...'')') (STORE(I+J),J=0,4)
-            END DO
-            WRITE(NCFPU1,'(5G16.8)') (STORE(JP+J),J=0-MOD(JP-JO,5),0)
-            WRITE(NCFPU2,'(F16.8)') WDF
-          END IF
-
           CALL XADRHS(WDF,STORE(JO),righthandside,JP-JO+1)  ! ACCUMULATE THE RIGHT HAND SIDES
+          call sfls_punch_addtowdf(wdf)
 
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
@@ -2385,8 +2379,13 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                   ! When the chunk is full, accumulate the normal matrix
                   designindex=designindex+1
                   if(designindex>ubound(designmatrix,2)) then
+                      ! Output design matrix to disk
+                      if(sfls_punch_flag>0) then
+                          call sfls_punch_addtodesign(designmatrix, 
+     1                        hkllist)
+                      end if
+                  
                       ! accumulate normal matrix
-
 !$OMP PARALLEL default(none) 
 !$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
 
@@ -2404,9 +2403,13 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
                       ! reset index for the chunk array
                       designindex=1
-                      designmatrix=0.0
+                      designmatrix=0.0d0
+                      hkllist=0
                   end if
                   designmatrix(:,designindex) = STORE(JO:JP)
+                  if(sfls_punch_flag>0) then
+                      hkllist(:, designindex)=nint(STORE(M6:M6+2))
+                  end if
                   
 c                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
 c     1                 STORE(L12B), N12B*MD12B, MD12B )
@@ -2484,6 +2487,13 @@ C----    H,K,L,SNTHL,LEV,
               if (ISTORE(M33CD+13).NE.0) THEN
                  ! process the remaining chunk of design matrix
                  if(designindex>0) then
+                   ! Output design matrix to disk
+                   if(sfls_punch_flag>0) then
+                       call sfls_punch_addtodesign(
+     1                    designmatrix(:,1:designindex), 
+     2                    hkllist(:,1:designindex))
+                   end if
+
                    ! Accumulate the normal matrix
 !$OMP PARALLEL default(none) 
 !$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 

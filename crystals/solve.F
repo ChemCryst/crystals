@@ -215,6 +215,7 @@ C
 CODE FOR XSFLSE
       SUBROUTINE XSFLSE
       use solve_helper
+      use sfls_punch_mod
 C--GENERAL MATRIX INVERSION AND CALCULATION OF SHIFT ROUTINES.
 C
 C  THESE ROUTINES INVERT THE NORMAL MATRIX AND OUTPUT
@@ -334,6 +335,7 @@ C
       
       real, dimension(:), allocatable :: ref
       real, dimension(:,:), allocatable :: check, unpacked
+      integer sfls_punch_flag
 c
 #ifdef _HOL_
       DATA ISFLS/4HSFLS/
@@ -355,6 +357,7 @@ C--LOAD THE CONTROL LISTS
       CALL XFAL23
       INCLUDE 'IDIM33.INC'
       CALL XFAL33
+      sfls_punch_flag=ISTORE(M33CD+5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
 cdjwdec06 - save the sparsity flag. 0=sparse
       ispar = istore(m33cd+13)
@@ -579,20 +582,13 @@ C----- WE ARE GOING TO START UPDATING LIST 11
       CALL XLSALT ( IULN , 0 , 0 , ILSOWF , ILSUPD )
 C--BEGIN THE INVERSION  -  A BLOCK AT A TIME
 C----- SET THE RUNNING ADDRESS FOR STEPPING THROUGH THE MATRIX
+        
       M11DB = M11S
       M11RDB = M11RS
 C
-      if (ISTORE(M33CD+5) .eq. 1) then
-            call open_normalfile(73)
-            write(73, '(A,I12)') '% ', ISTORE(M12B+1)
-            write(73, '(''N={};'')')
-            if (ISTORE(M33CD+15) .eq. 1 ) then
-                  write(73, '(''NNorm={};'')')
-                  write(73, '(''VCNorm={};'')')
-            end if
-            write(73, '(''VC={};'')')
-            write(73, '(''NormVect={};'')')
-            write(73, '(''NBackNorm={};'')')
+      if (sfls_punch_flag>0) then
+            call sfls_punch_init_normalfile(sfls_punch_flag, 
+     1          ISTORE(L12B+1), ISTORE(M33CD+15) )
       end if
       DO 3500 JZ=1,N12B
 C---- RESET MATRIX AREA
@@ -635,10 +631,10 @@ C     If we are going to threshhold the normal matrix then we do it here
             ZEROED_COUNT =  tri_matrix_apply_threshhold(STR11(L11C),
      1       JY*(JY+1)/2, JY, store(M33CD+16))
       end if
-C --- If we are doing matlab punching then do it here.      
-      IF ( ISTORE(M33CD+5) .Eq. 1 ) THEN
-          call matlab_add_matrix_to_cell(73, STR11(L11C), JY*(JY+1)/2, 
-     1      JY, 'N')
+C --- If we are doing punching then do it here.      
+      IF ( sfls_punch_flag>0 ) THEN
+          call sfls_punch_normal(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
+     1        sfls_punch_flag)
       END IF
 Cc ---If we want to normalise the normal matrix do so...      
 C      if (ISTORE(M33CD+15) .eq. 1) then
@@ -818,13 +814,12 @@ C               call tri_matrix_normalise_with(str11(L11C),
 C     1           JY*(JY+1)/2, JY, STR11(ivector))
 C         end if 
          
-C-- If we are doing matlab punching then do it here.      
-         if ( ISTORE(M33CD+5) .Eq. 1 ) then
-            call matlab_add_matrix_to_cell(73, STR11(L11C), 
-     1            JY*(JY+1)/2, JY, 'VC')
-         end if
-
-                 
+C-- If we are doing matlab punching then do it here.   
+         IF ( sfls_punch_flag>0 ) THEN
+            call sfls_punch_variance(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
+     1          sfls_punch_flag)
+         END IF
+                    
 2050     CONTINUE
          L11RC = KADD11(-102,MD11R, JY)
          M11R=L11RC
@@ -1002,14 +997,9 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
          M11RDB = M11RDB+ISTORE(M12B+1)
          M12B=M12B+MD12B
 3500  CONTINUE
-      if (ISTORE(M33CD+5) .eq. 1) then
-            write(73, '(''N=collectBlocks(N)'')')
-            if (ISTORE(M33CD+15) .eq. 1 ) then
-                  write(73, '(''NNorm=collectBlocks(NNorm);'')')
-                  write(73, '(''VCNorm=collectBlocks(VCNorm);'')')
-            end if
-            write(73, '(''VC=collectBlocks(VC);'')')
-            CLOSE(73)
+      if (sfls_punch_flag>0) then
+            call sfls_punch_close_normalfile(sfls_punch_flag, 
+     1          ISTORE(M33CD+15))
       end if
 C--PRINT THE OVERALL STATISTICS
       ICONVG = 0
