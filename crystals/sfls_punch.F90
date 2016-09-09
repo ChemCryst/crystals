@@ -93,8 +93,6 @@ logical fileopened
 end subroutine
 
 subroutine sfls_punch_init_design(sfls_punch_flag)
-use xlst12_mod, only: L12B
-use xlst33_mod, only: M33CD
 implicit none
 integer, intent(in) :: sfls_punch_flag
 integer filecount
