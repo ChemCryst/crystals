@@ -576,6 +576,19 @@ C----- SAVE SOME SPACE FOR THE U AXES
       IADDU = KCHLFL (4)
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
+C Check the number of blocks, if more than one block
+C punch matrices cannot be written
+      if(MD12B>0 .and. ISTORE(M33CD+5)>0) then
+        IF (ISSPRT .EQ. 0) then 
+          WRITE ( NCWU , '(a)' ) 
+     1      ' More than one block, cannot punch matrices'
+        end if
+        WRITE ( CMON, '(a)') 
+     1    ' More than one block, cannot punch matrices'
+        CALL XPRVDU(NCVDU, 1,0)
+        ISTORE(M33CD+5)=0
+      end if
+
       sfls_punch_flag=ISTORE(M33CD+5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
 !----      
