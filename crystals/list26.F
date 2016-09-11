@@ -6193,7 +6193,7 @@ C
       INCLUDE 'QSTR11.INC'
       
       double precision, dimension(:,:), allocatable :: designline
-      integer sfls_punch_flag
+      integer sfls_punch_flag, iblocksize
 C
 C--SET THE LENGTH OF EACH ENTRY
       MD16Q=MD22PD
@@ -6302,8 +6302,8 @@ C--PASS THROUGH THE MATRIX
         if(sfls_punch_flag>0) then
             ! Get block size. The output only works for 1 block
             ! If several blocks are present, output is cancalled in sfls.F
-            blocksize=ISTORE(L12B)+ISTORE(L12B+1)-1
-            allocate(designline(blocksize,1))
+            iblocksize=ISTORE(L12B)+ISTORE(L12B+1)-1
+            allocate(designline(iblocksize,1))
             designline=0.0d0
             blockindex=0
         end if
