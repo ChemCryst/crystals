@@ -6193,7 +6193,7 @@ C
       INCLUDE 'QSTR11.INC'
       
       double precision, dimension(:,:), allocatable :: designline
-      integer sfls_punch_flag, iblocksize
+      integer sfls_punch_flag, iblocksize, iblockindex
 C
 C--SET THE LENGTH OF EACH ENTRY
       MD16Q=MD22PD
@@ -6305,21 +6305,21 @@ C--PASS THROUGH THE MATRIX
             iblocksize=ISTORE(L12B)+ISTORE(L12B+1)-1
             allocate(designline(iblocksize,1))
             designline=0.0d0
-            blockindex=0
         end if
+        iblockindex=0
         DO I=L12B,M12B,MD12B                 !PROCESS BLOCK BY BLOCK
            M=ISTORE(I)
            N=ISTORE(I+1)
            L=M+N-1           
 
            DO J=M,L  !PASS THROUGH THE PARAMETERS IN THIS BLOCK
-              blockindex=blockindex+1
+              iblockindex=iblockindex+1
               IF(ISTORE(M16) .NE. J) THEN             !Not this one.
                  !IF (MATLAB.GT.0) WRITE(NCFPU1,'(''0.0 ...'')')
               ELSE                                    !Parameter is in queue
                  A=STORE(M16+1)*C
                  if(sfls_punch_flag>0) then
-                    designline(blockindex,1)=SQRT(ABS(C))*STORE(M16+1)
+                    designline(iblockindex,1)=SQRT(ABS(C))*STORE(M16+1)
                 end if
 C--ADD INTO THE R.H.S.
                  M11R=L11R+J-1
