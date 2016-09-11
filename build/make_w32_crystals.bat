@@ -12,7 +12,7 @@
 @set ALLOWF2003=TRUE
 @if "%COMPCODE%" == "DVF" set ALLOWF2003=FALSE
 @if "%COMPCODE%" == "GID" set ALLOWF2003=FALSE
-@set F90FILES=..\crystals\XDAVAL.INC.F90 ..\crystals\XDISC.INC.F90 ..\crystals\XERVAL.INC.F90 ..\crystals\XIOBUF.INC.F90 ..\crystals\XSSVAL.INC.F90 ..\crystals\XUNITS.INC.F90 ..\crystals\crystals_hdf5.F90 ..\crystals\c_strings.F90 ..\crystals\globalvars.F90 ..\crystals\mrgrnk.f90 ..\crystals\solve_helper.F90 
+@set F90FILES=..\crystals\XDAVAL.INC.F90 ..\crystals\XDISC.INC.F90 ..\crystals\XERVAL.INC.F90 ..\crystals\XIOBUF.INC.F90 ..\crystals\XSSVAL.INC.F90 ..\crystals\XUNITS.INC.F90 ..\crystals\crystals_hdf5.F90 ..\crystals\c_strings.F90 ..\crystals\globalvars.F90 ..\crystals\mrgrnk.f90 ..\crystals\solve_helper.F90 ..\crystals\sfls_punch.F90
 @if "%ALLOWF2003%"=="TRUE" set F90FILES=%F90FILES% ..\crystals\unitcell.F90
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @set COPTIONS=%CDEF% %COPTS%
