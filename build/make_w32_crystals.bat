@@ -52,12 +52,12 @@ REM @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buil
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
-%LD% %OPT% %OUT%crystals.exe %LDFLAGS% obj\*.obj %LIBS%  || ( make_err.bat  )
+%LD% %OPT% %OUT%crystals.exe %LDFLAGS% obj\*.obj %LIBS%  || ( make_err.bat )
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 @goto fini
 
 :debug
-@%LD% %LDEBUG% %OUT%crystals.exe %LDFLAGS% dobj\*.obj %LIBS% 
+@%LD% %LDEBUG% %OUT%crystals.exe %LDFLAGS% dobj\*.obj %LIBS%  || ( make_err.bat )
 @if "%COMPCODE%" == "INW" mt.exe -manifest crystals.exe.manifest -outputresource:crystals.exe;1
 
 :fini
