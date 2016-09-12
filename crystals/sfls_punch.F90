@@ -1,4 +1,26 @@
-! The module sfls_punch_mod deals with the export of different matrices during refinement
+!> The module sfls_punch_mod deals with the export of different matrices during refinement
+!!
+!! \detaileddescription
+!!
+!! 2 Outputs are available: Matlab(1) and plain text(2)
+!!
+!! (1) **Matlab output (PUNCH=MATLAB)**
+!!
+!! - design*.m stores the design matrix. The h,k,l index is written as a comment before the row of the design matrix.
+!!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
+!! - normal*.m stores the normal matrix and the variance/covariance matrix as a n*n matrix
+!! - wdf*.m stores the weights
+!!
+!! (2) **Plain ascii output (PUNCH=TEXT)**
+!!
+!! - design*.dat stores the design matrix. Each row starts with the h,k,l index followed by the derivatives
+!!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
+!! - normal*.dat stores the normal matrix as a n*n matrix
+!! - variance*.dat stores the variance/covariance matrix as a n*n matrix
+!! - wdf*.dat stores the weights
+!!
+!! The file naming is kept consistent. The same index is used for files written is the same cycle. See sfls_punch_get_newfileindex().
+!!
 module sfls_punch_mod
 implicit none
 integer, private :: normal_unit=0 !< unit number for the file
@@ -14,7 +36,7 @@ character(len=24), dimension(4), parameter, private :: filelist=(/ &
 !> list of extension used. This list is used to find a new index for the filenames.
 character(len=4), dimension(2), parameter, private :: extlist=(/ '.m  ', '.dat' /)
 
-private get_newfilename
+private sfls_punch_get_newfileindex
   
 contains
 
@@ -35,7 +57,7 @@ character(len=255) :: file_name
         end if
 
         ! search for new file to open
-        filecount = get_newfilename()
+        filecount = sfls_punch_get_newfileindex()
         write(file_name, '(a,i0,a)'), 'normal', filecount, '.m'
 
         normal_unit=785
@@ -106,7 +128,7 @@ character(len=255) :: file_name
     end if
 
     ! search for new file to open
-    filecount = get_newfilename()
+    filecount = sfls_punch_get_newfileindex()
 
     ! Write header
     select case(sfls_punch_flag)
@@ -172,7 +194,7 @@ integer filecount
     case(2) ! plain text
 
         ! search for new file to open
-        filecount = get_newfilename()
+        filecount = sfls_punch_get_newfileindex()
         write(file_name, '(a,i0,a)'), 'normal', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
@@ -230,7 +252,7 @@ integer filecount
     case(2) ! plain text
 
         ! search for new file to open
-        filecount = get_newfilename()
+        filecount = sfls_punch_get_newfileindex()
         write(file_name, '(a,i0,a)'), 'variance', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
@@ -339,7 +361,7 @@ if(present(punch)) then
     case(1) ! matlab
 
         ! search for new file to open
-        filecount = get_newfilename()
+        filecount = sfls_punch_get_newfileindex()
         write(file_name, '(a,i0,a)'), 'wdf', filecount, '.m'
         wdf_unit=785
         open(wdf_unit, file=file_name, status='new')
@@ -354,7 +376,7 @@ if(present(punch)) then
     case(2) ! plain text
 
         ! search for new file to open
-        filecount = get_newfilename()
+        filecount = sfls_punch_get_newfileindex()
         write(file_name, '(a,i0,a)'), 'wdf', filecount, '.dat'
         wdf_unit=785
         open(wdf_unit, file=file_name, status='new')
@@ -392,8 +414,11 @@ wdflist(wdfindex)=wdf
 
 end subroutine
 
-!> Search for the next available index for the file name
-integer function get_newfilename() result(filecount)
+!> Search for the next available index for the file name.
+!!
+!! The index is not independent between files. The index is determined for a group of files using \p filelist and \p extlist.
+!! Therefore, files with the same index belongs together.
+integer function sfls_punch_get_newfileindex() result(filecount)
 implicit none
 logical file_exists
 character(len=255) :: tempstr
