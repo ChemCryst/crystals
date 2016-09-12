@@ -8,7 +8,9 @@ PROJECT(Crystals)
 
 ENABLE_LANGUAGE(Fortran)
 INCLUDE (CPack)
-include(CheckFortranCompilerFlag)
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+    include(CheckFortranCompilerFlag)
+Endif()
 
 option (useGUI "useGUI" ON)
 option (usePY "usePY" OFF)
@@ -109,18 +111,28 @@ ENDIF ()
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
-check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
-check_fortran_compiler_flag("-fexceptions" _f_exceptions)
-check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
-if(_std_legacy_flag)
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
-endif()
-if(-fexceptions)
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
-endif()
-if(-fno-sign-zero)
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
-endif()
+
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
+    check_fortran_compiler_flag("-fexceptions" _f_exceptions)
+    check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
+
+    if(_std_legacy_flag)
+      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
+    endif()
+    if(-fexceptions)
+      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fexceptions")
+    endif()
+    if(-fno-sign-zero)
+      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-sign-zero")
+    endif()
+ELSE ()
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fexceptions")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-sign-zero")
+ENDIF ()
+
+
 
 
 
