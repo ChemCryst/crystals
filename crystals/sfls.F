@@ -578,7 +578,7 @@ C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
 C Check the number of blocks, if more than one block
 C punch matrices cannot be written
-      if(MD12B>0 .and. ISTORE(M33CD+5)>0) then
+      if(N12B>1 .and. ISTORE(M33CD+5)>0) then
         IF (ISSPRT .EQ. 0) then 
           WRITE ( NCWU , '(a)' ) 
      1      ' More than one block, cannot punch matrices'
