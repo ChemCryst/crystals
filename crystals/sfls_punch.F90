@@ -1,16 +1,28 @@
-!> Module dealing with the absolution configuration of the crystal structure
-!! 
+! The module sfls_punch_mod deals with the export of different matrices during refinement
 module sfls_punch_mod
 implicit none
-integer, private :: normal_unit=0
-integer, private :: design_unit=0
-integer, private :: wdf_unit=0
+integer, private :: normal_unit=0 !< unit number for the file
+integer, private :: design_unit=0 !< unit number for the file
+integer, private :: wdf_unit=0 !< unit number for the file
+integer, private :: fileindex=-1 !< index used in the different filenames
+!> List of filename used. This list is used to find a new index for the filenames.
+character(len=24), dimension(4), parameter, private :: filelist=(/ &
+&  'normal  ', &
+&  'design  ', &
+&  'wdf     ', &
+&  'variance' /)
+!> list of extension used. This list is used to find a new index for the filenames.
+character(len=4), dimension(2), parameter, private :: extlist=(/ '.m  ', '.dat' /)
 
+private get_newfilename
+  
 contains
 
-subroutine sfls_punch_init_normalfile(sfls_punch_flag, l12b1, M33CD15)
+!> Open and initialise normal[0-9].* file
+subroutine sfls_punch_init_normalfile(sfls_punch_flag, l12b1)
 implicit none
-integer, intent(in) :: sfls_punch_flag, l12b1, M33CD15
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
+integer, intent(in) :: l12b1 !< Number of parameters from the least squares
 integer filecount
 character(len=255) :: file_name
 
@@ -23,21 +35,14 @@ character(len=255) :: file_name
         end if
 
         ! search for new file to open
-        filecount = get_newfilename('normal', '.m')
+        filecount = get_newfilename()
         write(file_name, '(a,i0,a)'), 'normal', filecount, '.m'
-        print *, trim(file_name)
 
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
         write(normal_unit, '(A,I12)') '% ', L12B1
         write(normal_unit, '(''N={};'')')
-        if (M33CD15 .eq. 1 ) then
-            write(normal_unit, '(''NNorm={};'')')
-            write(normal_unit, '(''VCNorm={};'')')
-        end if
         write(normal_unit, '(''VC={};'')')
-        write(normal_unit, '(''NormVect={};'')')
-        write(normal_unit, '(''NBackNorm={};'')')    
         
     case(2) ! plain text
     ! Nothing needed here
@@ -49,10 +54,10 @@ character(len=255) :: file_name
 
 end subroutine
     
-subroutine sfls_punch_close_normalfile(sfls_punch_flag, m33cd15)
+!> Close normal[0-9].* file
+subroutine sfls_punch_close_normalfile(sfls_punch_flag)
 implicit none
-integer, intent(in) :: sfls_punch_flag
-integer, intent(in) :: m33cd15
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
 integer filecount
 logical file_exists
 character(len=255) :: file_name
@@ -74,10 +79,6 @@ logical fileopened
         end if        
 
         write(normal_unit, '(''N=collectBlocks(N)'')')
-        if (m33cd15 .eq. 1 ) then
-            write(normal_unit, '(''NNorm=collectBlocks(NNorm);'')')
-            write(normal_unit, '(''VCNorm=collectBlocks(VCNorm);'')')
-        end if
         write(normal_unit, '(''VC=collectBlocks(VC);'')')        
         close(normal_unit)
         normal_unit=0
@@ -92,9 +93,10 @@ logical fileopened
 
 end subroutine
 
+!> Initialisation of design[0-9].m file
 subroutine sfls_punch_init_design(sfls_punch_flag)
 implicit none
-integer, intent(in) :: sfls_punch_flag
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
 integer filecount
 character(len=255) :: file_name
 
@@ -103,12 +105,12 @@ character(len=255) :: file_name
         call abort()
     end if
 
+    ! search for new file to open
+    filecount = get_newfilename()
+
     ! Write header
     select case(sfls_punch_flag)
     case(1) ! matlab
-
-        ! search for new file to open
-        filecount = max(get_newfilename('design', '.m'), get_newfilename('wdf', '.m'))
 
         design_unit=786
         write(file_name, '(a,i0,a)'), 'design', filecount, '.m'
@@ -116,9 +118,6 @@ character(len=255) :: file_name
         write (design_unit, '(''a=['')')
         
     case(2) ! plain text
-
-        ! search for new file to open
-        filecount = max(get_newfilename('design', '.dat'), get_newfilename('wdf', '.dat'))
 
         design_unit=786
         write(file_name, '(a,i0,a)'), 'design', filecount, '.dat'
@@ -131,11 +130,12 @@ character(len=255) :: file_name
 
 end subroutine
 
+!> Writting the normal matrix to the file (before conditioning)
 subroutine sfls_punch_normal(nmatrix, nmsize, sfls_punch_flag)
 implicit none
-real, dimension(:), intent(in) :: nmatrix
-integer, intent(in) :: nmsize
-integer, intent(in) :: sfls_punch_flag
+real, dimension(:), intent(in) :: nmatrix !< Normal matrix (packed upper triangular)
+integer, intent(in) :: nmsize !< size of the matrix
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
 real, dimension(:,:), allocatable :: unpacked
 integer i,j,k, xpos, ypos
 character(len=255) :: file_name
@@ -172,7 +172,7 @@ integer filecount
     case(2) ! plain text
 
         ! search for new file to open
-        filecount = get_newfilename('normal', '.dat')
+        filecount = get_newfilename()
         write(file_name, '(a,i0,a)'), 'normal', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
@@ -188,11 +188,12 @@ integer filecount
     end select
 end subroutine
 
+!> Writting of the variance/covariance matrix to the file
 subroutine sfls_punch_variance(nmatrix, nmsize, sfls_punch_flag)
 implicit none
-real, dimension(:), intent(in) :: nmatrix
-integer, intent(in) :: nmsize
-integer, intent(in) :: sfls_punch_flag
+real, dimension(:), intent(in) :: nmatrix !< Variance/covariance matrix (packed upper triangular)
+integer, intent(in) :: nmsize !< size of the matrix
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
 real, dimension(:,:), allocatable :: unpacked
 integer i,j,k, xpos, ypos
 character(len=255) :: file_name
@@ -229,7 +230,7 @@ integer filecount
     case(2) ! plain text
 
         ! search for new file to open
-        filecount = get_newfilename('variance', '.dat')
+        filecount = get_newfilename()
         write(file_name, '(a,i0,a)'), 'variance', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
@@ -245,48 +246,81 @@ integer filecount
     end select
 end subroutine
 
-subroutine sfls_punch_addtodesign(designmatrix, hkllist, punch)
+!> Write a part of the design matrix to the file
+subroutine sfls_punch_addtodesign(designmatrix, hkllist, sfls_punch_flag, punch)
 implicit none
-double precision, dimension(:,:), intent(in) :: designmatrix
-integer, dimension(:,:), intent(in) :: hkllist
-logical, optional, intent(in) :: punch
+double precision, dimension(:,:), intent(in) :: designmatrix !< Block of the design matrix
+integer, dimension(:,:), intent(in) :: hkllist !< List of corresponding hkl indices
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
+logical, optional, intent(in) :: punch !< Flag to close the file when done
 integer i
 logical fileopened
 
-    if(present(punch)) then
-        write (design_unit, '(''];'')')
-        close(design_unit)
-        design_unit=0
-        return
-    end if
+    select case(sfls_punch_flag)
+    case(1) ! matlab
 
-    print *, 'Punching...'
-    if(design_unit==0) then
-        print *, 'design matrix file not opened yet'
-        call abort()
-    end if
+        if(present(punch)) then
+            write (design_unit, '(''];'')')
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+
+        if(design_unit==0) then
+            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+            print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit, '(a, 3I4)') ' % ', hkllist(:,i)
+            write(design_unit, '(5G16.8,: ," ...")') designmatrix(:,i)
+        end do
+
+    case(2) ! plain text
     
-    inquire(design_unit, opened=fileopened)
-    if(.not. fileopened) then
-        print *, 'design matrix file not opened but unit set'
+        if(present(punch)) then
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+
+        if(design_unit==0) then
+            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+            print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit, *) hkllist(:,i), designmatrix(:,i)
+        end do
+
+    case default
+        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
-    end if
-    
-    do i=1, ubound(designmatrix, 2)
-        write(design_unit, '(a, 3I4)') ' % ', hkllist(:,i)
-        write(design_unit, '(5G16.8,: ," ...")') designmatrix(:,i)
-    end do
+    end select
 
 end subroutine
 
-
-subroutine sfls_punch_addtowdf(wdf, punch)
+!> add a value to wdf in memory. When punch is set, the content is written to a file
+subroutine sfls_punch_addtowdf(wdf, sfls_punch_flag, punch)
 implicit none
-real, intent(in) :: wdf
-logical, optional, intent(in) :: punch
-real, dimension(:), allocatable, save :: wdflist
+real, intent(in) :: wdf !< wdf value
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
+logical, optional, intent(in) :: punch !< Flag to write and close the file
+real, dimension(:), allocatable, save :: wdflist !< Array holding the wdf values
 real, dimension(:), allocatable :: wdftemp
-integer, save :: wdfindex=0
+integer, save :: wdfindex=0 !< current index in wdflist
 character(len=255) :: file_name
 integer filecount
 
@@ -301,18 +335,39 @@ if(present(punch)) then
         call abort()
     end if
     
-    ! search for new file to open
-    filecount = get_newfilename('wdf', '.m')
-    write(file_name, '(a,i0,a)'), 'wdf', filecount, '.m'
-    wdf_unit=785
-    open(wdf_unit, file=file_name, status='new')
-    write (wdf_unit, '(''DF=['')')
-    write(wdf_unit, '(5G16.8,: ," ...")') wdflist(1:wdfindex)
-    write (wdf_unit, '(''];'')')
-    close(wdf_unit)
-    wdf_unit=0
-    deallocate(wdflist)
-    wdfindex=0
+    select case(sfls_punch_flag)
+    case(1) ! matlab
+
+        ! search for new file to open
+        filecount = get_newfilename()
+        write(file_name, '(a,i0,a)'), 'wdf', filecount, '.m'
+        wdf_unit=785
+        open(wdf_unit, file=file_name, status='new')
+        write (wdf_unit, '(''DF=['')')
+        write(wdf_unit, '(5G16.8,: ," ...")') wdflist(1:wdfindex)
+        write (wdf_unit, '(''];'')')
+        close(wdf_unit)
+        wdf_unit=0
+        deallocate(wdflist)
+        wdfindex=0
+
+    case(2) ! plain text
+
+        ! search for new file to open
+        filecount = get_newfilename()
+        write(file_name, '(a,i0,a)'), 'wdf', filecount, '.dat'
+        wdf_unit=785
+        open(wdf_unit, file=file_name, status='new')
+        write(wdf_unit, *) wdflist(1:wdfindex)
+        close(wdf_unit)
+        wdf_unit=0
+        deallocate(wdflist)
+        wdfindex=0
+
+    case default
+        print *, 'Punch flag not recognised ', sfls_punch_flag
+        call abort()
+    end select
     
     return
     
@@ -337,23 +392,40 @@ wdflist(wdfindex)=wdf
 
 end subroutine
 
-integer function get_newfilename(file_name, file_ext) result(filecount)
+!> Search for the next available index for the file name
+integer function get_newfilename() result(filecount)
 implicit none
 logical file_exists
-character(len=*), intent(in) :: file_name, file_ext
 character(len=255) :: tempstr
+integer i, j
 
-    ! search for new file to open
-    filecount = 0
-    file_exists = .true.
-    do while (file_exists)
-        write(tempstr, '(a,i0,a)'), file_name, filecount, file_ext
-        inquire(FILE=trim(tempstr), EXIST=file_exists)
-        filecount = filecount + 1
-    end do
-    filecount=filecount-1
+    if(fileindex>=0) then
+        filecount=fileindex
+        return
+    end if
     
+    filecount=-1
+    dofind:do
+        file_exists=.false.
+        filecount=filecount+1
+        do i=1,size(extlist)
+            do j=1,size(filelist)
+                write(tempstr, '(a,i0,a)'), trim(filelist(j)), filecount, trim(extlist(i))                
+                inquire(FILE=trim(tempstr), EXIST=file_exists)
+                if(file_exists) cycle dofind
+            end do
+        end do
+        exit dofind
+    end do dofind
+    
+    fileindex=filecount
 end function
+
+!> Reset the counter for the filename
+subroutine sfls_punch_reset_filename()
+implicit none
+    fileindex=-1
+end subroutine
 
 end module
 

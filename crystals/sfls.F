@@ -576,6 +576,23 @@ C----- SAVE SOME SPACE FOR THE U AXES
       IADDU = KCHLFL (4)
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
       CALL XFAL33
+      
+c Check if the flag normalise is used (m33cd+15). 
+c Normalisation of the normal matrix for inversion is done automatically
+c see solve_helper.F90
+      if(istore(M33CD+15)/=0) then
+        IF (ISSPRT .EQ. 0) then 
+          WRITE ( NCWU , '(a)' ) 
+     1     ' Normalise option is deprecated (option has been ignored).',
+     2     ' Normal matrix is always nomalised for inversion'
+        end if
+        WRITE ( CMON, '(a)') 
+     1     ' Normalise option is deprecated (option has been ignored).',
+     2     ' Normal matrix is always nomalised for inversion'
+        CALL XPRVDU(NCVDU, 2,0)
+        ISTORE(M33CD+15)=0
+      end if
+      
 C Check the number of blocks, if more than one block
 C punch matrices cannot be written
       if(N12B>1 .and. ISTORE(M33CD+5)>0) then
@@ -588,8 +605,8 @@ C punch matrices cannot be written
         CALL XPRVDU(NCVDU, 1,0)
         ISTORE(M33CD+5)=0
       end if
-
       sfls_punch_flag=ISTORE(M33CD+5)
+      
       IF ( IERFLG .LT. 0 ) GO TO 9900
 !----      
 !      M33CD+5 is the address of the flag for punch
@@ -605,6 +622,7 @@ C If outputting design matrix and deltaF's then open files now.
        IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
        IF (sfls_punch_flag>0) THEN
         call sfls_punch_init_design(sfls_punch_flag)
+        call sfls_punch_reset_filename()
        END IF
 
        ILEV = ISTORE(M33CD+12)
@@ -2378,7 +2396,9 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
           END IF
 
           CALL XADRHS(WDF,STORE(JO),righthandside,JP-JO+1)  ! ACCUMULATE THE RIGHT HAND SIDES
-          call sfls_punch_addtowdf(wdf)
+          if(sfls_punch_flag>0) then
+              call sfls_punch_addtowdf(wdf, sfls_punch_flag)
+          end if
 
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
@@ -2395,7 +2415,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                       ! Output design matrix to disk
                       if(sfls_punch_flag>0) then
                           call sfls_punch_addtodesign(designmatrix, 
-     1                        hkllist)
+     1                        hkllist, sfls_punch_flag)
                       end if
                   
                       ! accumulate normal matrix
@@ -2504,7 +2524,7 @@ C----    H,K,L,SNTHL,LEV,
                    if(sfls_punch_flag>0) then
                        call sfls_punch_addtodesign(
      1                    designmatrix(:,1:designindex), 
-     2                    hkllist(:,1:designindex))
+     2                    hkllist(:,1:designindex), sfls_punch_flag)
                    end if
 
                    ! Accumulate the normal matrix

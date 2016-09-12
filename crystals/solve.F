@@ -588,7 +588,7 @@ C----- SET THE RUNNING ADDRESS FOR STEPPING THROUGH THE MATRIX
 C
       if (sfls_punch_flag>0) then
             call sfls_punch_init_normalfile(sfls_punch_flag, 
-     1          ISTORE(L12B+1), ISTORE(M33CD+15) )
+     1          ISTORE(L12B+1) )
       end if
       DO 3500 JZ=1,N12B
 C---- RESET MATRIX AREA
@@ -636,30 +636,6 @@ C --- If we are doing punching then do it here.
           call sfls_punch_normal(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1        sfls_punch_flag)
       END IF
-Cc ---If we want to normalise the normal matrix do so...      
-C      if (ISTORE(M33CD+15) .eq. 1) then
-CC --- Allocate space for the normalisation vector
-C            ivector = KADD11( 1016, MD11, JY*2)   
-C            IF ( IERFLG .LT. 0 ) GO TO 9900 ! If there is an error do what david seems to do.
-C            call tri_matrix_normalise(str11(L11C), 
-C     1        JY*(JY+1)/2, JY, STR11(ivector))
-C            call matlab_add_vector_to_cell(73, STR11(ivector), JY,
-C     1            'NormVect')  
-CC-- If we are doing matlab punching then do it here.      
-C            if ( ISTORE(M33CD+5) .Eq. 1 ) then
-C                call matlab_add_matrix_to_cell(73, STR11(L11C), 
-C     1           JY*(JY+1)/2, JY, 'NNorm')
-C            end if
-C            call create_param_list_from_mat(str11(L11C), JY*(JY+1)/2,
-C     1       JY, 1, 0.0026D0)     ! The last but one parameter needs to be corrected as currently this will not handle multiple blocks
-C            call tri_matrix_normalise_with(str11(L11C), 
-C     1           JY*(JY+1)/2, JY, STR11(ivector))
-C            if ( ISTORE(M33CD+5) .Eq. 1 ) then
-C                call matlab_add_matrix_to_cell(73, STR11(L11C), 
-C     1           JY*(JY+1)/2, JY, 'NBackNorm')
-C            end if
-C      end if
-      
 
 CDJW-OCT-05
 c      write(ncwu,'(a)') 'The scaling vector'
@@ -798,22 +774,7 @@ C----- COMPRESS INVERTED MATRIX
 c               CALL XMTCVT (INM, JY, 2, MD11)
             ENDIF
          ENDIF
-         
-c --- If we normalised the matrix then denormalise it      
-C         if (ISTORE(M33CD+15) .eq. 1 ) then
-CC               if ( ISTORE(M33CD+5) .Eq. 1 ) then
-C                   call matlab_add_matrix_to_cell(73, STR11(L11C), 
-C     1               JY*(JY+1)/2, JY, 'VCNorm')
-C               end if
-C               call matlab_add_vector_to_cell(73, STR11(ivector), JY,
-C     1            'NormVect')
-CC               call inv_diag(STR11(ivector), JY)
-C               call matlab_add_vector_to_cell(73, STR11(ivector), JY,
-C     1            'NormVect')
-C               call tri_matrix_normalise_with(str11(L11C), 
-C     1           JY*(JY+1)/2, JY, STR11(ivector))
-C         end if 
-         
+                 
 C-- If we are doing matlab punching then do it here.   
          IF ( sfls_punch_flag>0 ) THEN
             call sfls_punch_variance(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
@@ -998,8 +959,7 @@ C--CHANGE TO THE NEXT BLOCK - UPDATE DISK ADDRESSES
          M12B=M12B+MD12B
 3500  CONTINUE
       if (sfls_punch_flag>0) then
-            call sfls_punch_close_normalfile(sfls_punch_flag, 
-     1          ISTORE(M33CD+15))
+            call sfls_punch_close_normalfile(sfls_punch_flag)
       end if
 C--PRINT THE OVERALL STATISTICS
       ICONVG = 0

@@ -6292,7 +6292,7 @@ cdjwmay2000 - note problems with Rfactor when target is zero!
 
         !IF (MATLAB.GT.0) WRITE(NCFPU2,'(G16.8)') D
         if(sfls_punch_flag>0) then
-            call sfls_punch_addtowdf(D)
+            call sfls_punch_addtowdf(D, sfls_punch_flag)
         end if
 
 c		IF (MATLAB.GT.0) WRITE(NCWU,'(A,G16.8)')'Hello ',store(l11P+27)
@@ -6356,7 +6356,7 @@ c                 CALL XPRVDU(NCVDU,1,0)
 1800    CONTINUE
         if(sfls_punch_flag>0 .and. allocated(designline)) then
             call sfls_punch_addtodesign(designline, 
-     1          reshape( (/0,0,0/), (/3,1/) ) )
+     1          reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag )
             deallocate(designline)
         end if        
 C--FIND THE ADDRESS OF THE LENGTH OF THE NEXT ENTRY
@@ -6377,8 +6377,8 @@ C--OUTPUT THE NEW MATRIX
 
       if(sfls_punch_flag>0) then
         call sfls_punch_addtodesign(designline, 
-     1    reshape( (/0,0,0/), (/3,1/) ), punch=.true.)
-        call sfls_punch_addtowdf(D, punch=.true.)
+     1    reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag, punch=.true.)
+        call sfls_punch_addtowdf(D, sfls_punch_flag, punch=.true.)
       end if       
 
       RETURN
