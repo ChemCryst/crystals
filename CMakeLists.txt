@@ -48,14 +48,16 @@ endif()
 
 
 if ( useGUI )
+        message("Using gui")
 	add_definitions(-DCRY_GUI)
 	add_definitions(-D_GIL_)
 	SET(MINGW 1)
 	SET(wxWidgets_ROOT_DIR "c:/wx3")
 	SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
 	set(wxWidgets_CONFIGURATION mswu)
-	FIND_PACKAGE(wxWidgets REQUIRED html stc scintilla adv core gl base )
+	FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base )
 	INCLUDE(${wxWidgets_USE_FILE})
+		
 else()
 	add_definitions(-DCRY_NOGUI)
 	add_definitions(-D_LIN_)
@@ -93,8 +95,13 @@ ENDIF()
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 IF (Fortran_COMPILER_NAME STREQUAL "gfortran")  # gfortran
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3  -fno-sign-zero")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
+    SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -fno-sign-zero -ftree-vectorize -msse2")
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O1 -g -Wall -Wextra")
+    if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
+        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all")
+    else ()
+        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fbounds-check")
+    endif()
 ELSEIF (Fortran_COMPILER_NAME STREQUAL "ifort")  # ifort (untested)
     SET (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
@@ -131,6 +138,9 @@ ELSE ()
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fexceptions")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-sign-zero")
 ENDIF ()
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fabi-version=9")
+
 
 
 
@@ -223,6 +233,10 @@ else()
 	SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
 
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
+target_link_libraries(crystals ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
 
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
