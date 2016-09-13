@@ -95,8 +95,8 @@ ENDIF()
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 IF (Fortran_COMPILER_NAME STREQUAL "gfortran")  # gfortran
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -fno-sign-zero -ftree-vectorize -msse2")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O1 -g -Wall -Wextra")
+    SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -fno-sign-zero -ftree-vectorize -msse2")
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O1 -g -Wfatal-errors -Wall -Wextra")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
         SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all")
     else ()
