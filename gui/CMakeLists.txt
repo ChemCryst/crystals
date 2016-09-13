@@ -19,7 +19,7 @@ SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacO
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 ENDIF(APPLE)
 
-FIND_PACKAGE(wxWidgets REQUIRED html scintilla adv core gl base stc)
+FIND_PACKAGE(wxWidgets REQUIRED html scintilla stc adv core gl base)
 INCLUDE(${wxWidgets_USE_FILE})
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)

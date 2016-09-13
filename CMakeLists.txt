@@ -55,7 +55,7 @@ if ( useGUI )
 	SET(wxWidgets_ROOT_DIR "c:/wx3")
 	SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
 	set(wxWidgets_CONFIGURATION mswu)
-	FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base )
+	FIND_PACKAGE(wxWidgets REQUIRED html stc scintilla adv core gl base )
 	INCLUDE(${wxWidgets_USE_FILE})
 		
 else()
