@@ -6,6 +6,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(Crystals)
 
+set( CMAKE_VERBOSE_MAKEFILE "YES" )
+
 ENABLE_LANGUAGE(Fortran)
 INCLUDE (CPack)
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
@@ -22,40 +24,56 @@ if ( use32 )
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -m32")
 endif()
 
-find_package(BLAS)
-find_package(LAPACK)
+find_package(OpenBLAS)
+if(NOT OpenBLAS_FOUND )
+    find_package(BLAS REQUIRED)
+    find_package(LAPACK REQUIRED)
 
-if(BLAS_LIBRARIES_DIR)
-   link_directories( ${BLAS_LIBRARIES_DIR} )
-endif()
-if ( BLAS_LIBRARIES )
-   link_libraries ( ${BLAS_LIBRARIES} )
-endif()
-if ( BLAS_LINKER_FLAGS )
-   uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
-endif()
+    if(BLAS_LIBRARIES_DIR)
+       link_directories( ${BLAS_LIBRARIES_DIR} )
+    endif()
+    if ( BLAS_LIBRARIES )
+       link_libraries ( ${BLAS_LIBRARIES} )
+    endif()
+    if ( BLAS_LINKER_FLAGS )
+       uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
+    endif()
 
-if(LAPACK_LIBRARIES_DIR)
-   link_directories( ${LAPACK_LIBRARIES_DIR} )
-endif()
-if ( LAPACK_LIBRARIES )
-   link_libraries ( ${LAPACK_LIBRARIES} )
-endif()
-if ( LAPACK_LINKER_FLAGS )
-   uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
-endif()
+    if(LAPACK_LIBRARIES_DIR)
+       link_directories( ${LAPACK_LIBRARIES_DIR} )
+    endif()
+    if ( LAPACK_LIBRARIES )
+       link_libraries ( ${LAPACK_LIBRARIES} )
+    endif()
+    if ( LAPACK_LINKER_FLAGS )
+       uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
+    endif()
+
+else ()
+    if( OpenBLAS_INCLUDE_DIRS )
+       link_directories( ${OpenBLAS_INCLUDE_DIRS} )
+    endif()
+    if ( OpenBLAS_LIBRARIES )
+       link_libraries ( ${OpenBLAS_LIBRARIES} )
+    endif()
+   message("## Openblas has been found and will be used for BLAS")
+endif ()
+
 
 
 
 if ( useGUI )
-        message("Using gui")
+    message("## Crystals compiled with graphical interface")
 	add_definitions(-DCRY_GUI)
 	add_definitions(-D_GIL_)
 	SET(MINGW 1)
 	SET(wxWidgets_ROOT_DIR "c:/wx3")
 	SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
 	set(wxWidgets_CONFIGURATION mswu)
-	FIND_PACKAGE(wxWidgets REQUIRED html stc scintilla adv core gl base )
+	FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base )
+    if ( WIN32 )
+        FIND_PACKAGE(wxWidgets REQUIRED scintilla)
+    endif()
 	INCLUDE(${wxWidgets_USE_FILE})
 		
 else()
@@ -64,6 +82,7 @@ else()
 endif()
 
 if ( usePY )
+    message("## Building the python crystals interface")
 	add_definitions(-DCRY_PY)
 endif()
 
@@ -94,18 +113,20 @@ ENDIF()
 # FFLAGS depend on the compiler
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
-IF (Fortran_COMPILER_NAME STREQUAL "gfortran")  # gfortran
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -fno-sign-zero -ftree-vectorize -msse2")
+IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
+    SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O1 -g -Wfatal-errors -Wall -Wextra")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
         SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all")
     else ()
         SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fbounds-check")
     endif()
-ELSEIF (Fortran_COMPILER_NAME STREQUAL "ifort")  # ifort (untested)
+    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -std=gnu++11 -O3 -g -ftree-vectorize -msse2")
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -std=gnu++11 -O1 -g")
+ELSEIF (Fortran_COMPILER_NAME MATCHES "ifort")  # ifort (untested)
     SET (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
-ELSEIF (Fortran_COMPILER_NAME STREQUAL "g77")   # g77
+ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
     SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
 ELSE ()
@@ -116,7 +137,6 @@ ELSE ()
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
 ENDIF ()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
 
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
@@ -127,10 +147,10 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
     if(_std_legacy_flag)
       set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
     endif()
-    if(-fexceptions)
+    if(_f_exceptions)
       set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fexceptions")
     endif()
-    if(-fno-sign-zero)
+    if(_f_no_signzero)
       set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-sign-zero")
     endif()
 ELSE ()
@@ -138,12 +158,6 @@ ELSE ()
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fexceptions")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-sign-zero")
 ENDIF ()
-
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fabi-version=9")
-
-
-
-
 
 
 
@@ -166,7 +180,6 @@ endif()
 if ( usePY )
   ADD_SUBDIRECTORY(pyinterface)
 endif()
-
 
 add_dependencies(CameronFortran CrystalsFortran) 
 
