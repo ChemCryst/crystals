@@ -10,6 +10,7 @@ project(Precompiled)
 
 file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/all/" "all/*" )
 foreach( precomp_file ${precomp_files} )
+  if ( NOT ${precomp_file} MATCHES ".svn" ) 
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
     COMMAND ${CMAKE_COMMAND} -E copy
@@ -19,6 +20,7 @@ foreach( precomp_file ${precomp_files} )
   )
 #  message ("${CMAKE_CURRENT_SOURCE_DIR}/all/${precomp_file} ${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}")
   list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
+  endif()
 endforeach( precomp_file )
 
 file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/MIN/" "MIN/*" )
