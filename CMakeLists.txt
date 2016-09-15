@@ -187,15 +187,19 @@ add_dependencies(CameronFortran CrystalsFortran)
 
 ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
+MESSAGE (STATUS "  Searching for Perl..." )
+FIND_PACKAGE ( Perl REQUIRED)
+IF ( PERL_FOUND )
+    MESSAGE ( STATUS "  PERL_EXECUTABLE: " ${PERL_EXECUTABLE} )
+ENDIF ( PERL_FOUND )
 
 # Script file sources and targets
-
 FILE (GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.ssc")
 SET  (scpfiles)
 FOREACH (_file ${sscfiles})
     STRING(REPLACE ".ssc" ".scp" file_scp ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_scp}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
                         DEPENDS ${_file} )
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
