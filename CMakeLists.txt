@@ -24,11 +24,12 @@ if ( use32 )
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -m32")
 endif()
 
-find_package(OpenBLAS)
-if(NOT OpenBLAS_FOUND )
-    find_package(BLAS REQUIRED)
-    find_package(LAPACK REQUIRED)
+#find_package(OpenBLAS) # Reversed this search logic as Win32 finds OpenBLAS, but it does it no good.
 
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
+
+if(BLAS_FOUND )
     if(BLAS_LIBRARIES_DIR)
        link_directories( ${BLAS_LIBRARIES_DIR} )
     endif()
@@ -48,8 +49,8 @@ if(NOT OpenBLAS_FOUND )
     if ( LAPACK_LINKER_FLAGS )
        uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
     endif()
-
 else ()
+    find_package(OpenBLAS)
     if( OpenBLAS_INCLUDE_DIRS )
        link_directories( ${OpenBLAS_INCLUDE_DIRS} )
     endif()
@@ -72,7 +73,7 @@ if ( useGUI )
 	set(wxWidgets_CONFIGURATION mswu)
 	FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base )
     if ( WIN32 )
-        FIND_PACKAGE(wxWidgets REQUIRED scintilla)
+        FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
     endif()
 	INCLUDE(${wxWidgets_USE_FILE})
 		
@@ -251,9 +252,8 @@ else()
 endif()
 
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
-include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
-target_link_libraries(crystals ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+include_directories( ${OPENGL_INCLUDE_DIRS}  )
+target_link_libraries(crystals ${OPENGL_LIBRARIES} )
 
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
