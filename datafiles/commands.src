@@ -3633,14 +3633,16 @@ ROTAX              3    4
 WILSON             3    2
    6    4096 CRYSTALSPROCESS6
     1    6
-   1.OUTPUT             3    1    0    0
-         3    3    3
+   1.OUTPUT             4    1    0    0
+         3    3    3    3
     .PLOT               1    0    1    2    0 NO
      NO             YES
     .NZ                 2    0    1    2    0 NO
      NO             YES
     .STATS              3    0    1    2    0 NO
      NO             YES
+    .EVALS              6    0    1    3    0 NO
+     NO             YES            PUNCH
    2.FILTER             1    1    0    0
          3
     .LIST28             4    0    1    2    0 NO

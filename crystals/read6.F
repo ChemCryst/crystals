@@ -383,7 +383,8 @@ c123      DIMENSION AA(10), YCARD1(82), YCARD2(82), IFORM(40)
       DIMENSION IPARTS(4), ICAD4(11), ISLX(4), JSIGMA(1), JRATIO(1)
       DIMENSION JFOT(1), JFOO(1)
       DIMENSION TRANSH(12)
-      dimension htemp(3),htemp1(3)
+      DIMENSION HTEMP(3),HTEMP1(3)
+      DIMENSION KDEV(4) 
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -571,6 +572,14 @@ C----- save the matrix and tolerance
       TOLER=STORE(L6MR+9)
 csquare it for later use (sint/lam)sq
       TWIND=STORE(L6MR+10) * STORE(L6MR+10)
+c2016 open an archive file on FRN2 if required
+c     not for copy
+      if((itype6.ne.1).and.(itype6.ne.5)) then
+       if(larch.eq.0)  then
+        CALL XMOVEI (KEYFIL(1,24),KDEV,4)
+        CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
+       endif
+      endif
 Cdjw dec97
 C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
       N6DEAD=0
@@ -931,11 +940,9 @@ c     only if not 'COPY' operation
      1  '_iucr_refine_reflections_details',';',
      1  '# An asterisk in column 34 indicates a format overflow'
         if(isq.eq.-1) then
-          write(ncfpu2,'(a,2i4)')'# Data was input as F-squared',
-     1    larch,isq
+          write(ncfpu2,'(a)')'# Data was input as F-squared'
         else
-          write(ncfpu2,'(a2,i4)')'# Data was input as F',
-     1    larch,isq
+          write(ncfpu2,'(a)')'# Data was input as F'
         endif
       endif
       endif
@@ -1331,8 +1338,11 @@ C--BRANCH ON THE TYPE OF INPUT
 C
 C--END OF THE REFLECTION INPUT  -  STORE THEM ON THE DISC
 5000  CONTINUE
-      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) 
-     1 write(ncfpu2,'(a)')';'
+      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
+        write(ncfpu2,'(a)')';'
+c     close archive file if necessary
+        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
+      endif
       N6D=N6W
 C--NO ERRORS  -  CALCULATE THE REFLECTION DETAILS
       DO 5050 I=1,MD6
@@ -1424,8 +1434,8 @@ C--INPUT FROM THE MAIN CHANNEL  -  ALTER THE COUNTERS
 5350  CONTINUE
       NI=NI+NCARDS
       MON=NI
-C--AND NOW RETURN
 5400  CONTINUE
+C--AND NOW RETURN
       CALL XOPMSG (IOPLSI,IOPLSE,IULN)
       CALL XTIME2 (2)
       RETURN
@@ -1792,4 +1802,3 @@ C--AND NOW RETURN
 800   CONTINUE
       RETURN
       END
-

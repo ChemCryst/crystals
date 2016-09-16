@@ -143,7 +143,7 @@
 ^^WI       @ 2,1 STATIC XFW2                                                    
 ^^WI 'The External Variance is the instrument makers estimate'         
 ^^WI       @ 3,1 STATIC XFW3                                                    
-^^WI 'The internal is generally greater than the external'      
+^^WI 'Only reflections with 3 or more contribuitors are plotted'      
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -289,15 +289,17 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=6 NCOLS=1                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'You are looking at a Wilson Plot; (Sin(theta)/lambda)^2 (rho) runs down'   
+^^WI 'The data should lie on a straight line rising from left to right'   
 ^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'the vertical axis. Log of actual scattering over expected scattering'     
+^^WI 'Wiggles at top right are due to heavy atoms or repeated motifs'     
 ^^WI       @ 3,1 STATIC XFW2                                                    
-^^WI 'is plotted at each angle. Slope is due to fall off of actual scattering'  
+^^WI 'Up-turn bottom left may indicate there is mainly noise at this resolution'  
 ^^WI       @ 4,1 STATIC XFW2                                                    
-^^WI 'with angle, intercept is due to arbitrary scaling of intensity data.'     
-^^WI       @ 5,1 STATIC XFW3 'Right-click a point for data cut-off options.'
-^^WI       @ 6,1 STATIC XFW4 '<|E^2-1|> less than 0.736 may indicate twinning'   
+^^WI 'Right click on a GREEN point to set a resolution limit'     
+^^WI       @ 5,1 STATIC XFW3 
+^^WI 'Avoid setting LIST 28 filters to eliminate too many reflections'
+^^WI       @ 6,1 STATIC XFW4 
+^^WI '<|E^2-1|> less than 0.736 may indicate twinning'   
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -710,7 +712,7 @@
 %      CLEAR                                                                        
 %      EXTRACT TRANSFER INPUT                                                       
 %      CLEAR
-%%    get fourth and fifth items
+%%    get  fifth and sixth items
 %      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
 %      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
 %      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         

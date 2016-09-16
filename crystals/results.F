@@ -7490,7 +7490,7 @@ C
 350      FORMAT (3X,'H',3X,'K',3X,'L',' i',' j', 7X,'Io+',7X,'Sig',
      1   7X,'Ic+',7X,
      1   'Io-',7X,'Sig',7X,'Ic-',X,'    Do   ',2X,'   Ds    ',4X,
-     2   ' Ao ',5X,' As ',5X,'Sig(Do)', '  Leverage')
+     2   ' Ao ',5X,' As ',5X,'Sig(Do)', ' Leverage rho^3')
       ELSE IF (IPUNCH.EQ.2) THEN
         WRITE (NCPU,'(A,F9.4,A,F9.4)') 'REM Flack parameter = ',
      1   xflack,' SU =',qflack
@@ -7862,13 +7862,21 @@ c
 c                                               Table of everything
 c
           IF (IPUNCH.EQ.1) THEN
+c--calculate (sin(theta)/lambda)**3
+           snthl2=i1*i1*store(l1s)+j1*j1
+     2     *store(l1s+1)+k1*k1*store(l1s+2)+j1
+     3     *k1*store(l1s+3)+i1*k1*store(l1s+4)
+     4     +i1*j1*store(l1s+5)
+           snthl1 = sqrt(snthl2)
+           snthl3 = snthl1*snthl1*snthl1
+
             ITEMP=NINT(FRIED1)
             JTEMP=NINT(FRIED2)
             IF (ITEMP.LT.0) ITEMP=10+ITEMP
             IF (JTEMP.LT.0) JTEMP=10+JTEMP
-            WRITE (NCPU,'(3i4,2i2,6f10.2,5f10.2,f8.4)')I1,J1,K1,
+            WRITE (NCPU,'(3i4,2i2,6f10.2,5f10.2,2f8.4)')I1,J1,K1,
      1      ITEMP,JTEMP,FOK1,SIG1,FCK1,FOK2,SIG2,FCK2,
-     2      FokD,FckD,foka,fcka,SIGMAD,abs(FckD)/SIGMAD 
+     2      FokD,FckD,foka,fcka,SIGMAD,abs(FckD)/SIGMAD,snthl3
           END IF
 C
 C
@@ -8521,7 +8529,6 @@ c
 c
         IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,
      1  COOD,NFOFC,tensor)
-c      write(123,'(4f12.3)') tensor, sqrt(tensor(3)/tensor(1))
 C
         IF (IDJW.GE.0) THEN
           call getroot(tensor,xcoord,ycoord,root,grad)
@@ -8609,7 +8616,6 @@ C
          xmax = 0.
          ymax = 0.
 c
-c      write(123,'(a)') 'h,k,l,res, fokd,fckd,sigmad'
          m6acc=l6acc
          DORESLOOP: DO i=1,n6acc
           ifail=istr11(m6acc+8)
@@ -9448,7 +9454,6 @@ C CALCULATE P3(0),P3(TW),P3(1)
          XTWLL=DATC(NSPT_201)-DATCM
          XTWLL=EXP(XTWLL)
          XSMLL=XPLLL+XTWLL+XMNLL
-c       write(123,'(4e16.4)') xtwll,xplll, xmnll, xsmll
          IF (XSMLL.GT. 0.0) THEN
           XPLLL=XPLLL/XSMLL
           XMNLL=XMNLL/XSMLL
@@ -10485,8 +10490,6 @@ c
             sa = sxx/denom
             sb = ss / denom
 c
-c      write(123,'(a,4f12.8)')'wsa,wsb,sa,sb',
-c     1 sqrt(wsa),sqrt(wsb),sqrt(sa),sqrt(sb)
 c
             if (sa .ge. 0.0) then
                   sa = sqrt(sa)
@@ -10879,10 +10882,6 @@ c       full LSQ, with intercept a
              x_full=(1.-b)/2.
              s_full=sqrt(sigb)/2.
 c
-c      write(123,*)iii,ngood,nbad
-c      write(123,'(6f10.4)')x_simple,s_simple,xbar,sbar,x_full,s_full
-c      write(123,'(6f10.4)')sigint,sigext,sigxbar
-
 c            re-initialise for next round
              fmean=xbar
              smean=sigint
@@ -10901,8 +10900,6 @@ c            re-initialise for next round
            endif
           endif
 1650    CONTINUE
-c      write(123,1651)xbar,sbar,sigint,x_simple,s_simple, x_full,s_full
-1651   format(3f6.3, 3x,2f6.3,3x,2f6.3)
 c
         call outcol(9)
         if(ncycle.ge.ntries) then
@@ -10944,7 +10941,6 @@ c     Tukey weight, Prince page 82
       else
         xwtmod=tukey
       endif
-c      write(123,'(3f12.4 )') probx,tukey, smean
       return
       END
 c

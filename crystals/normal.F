@@ -1,4 +1,4 @@
-C $Log: normal.F,v $
+C $Log: normal.F,v $ 
 C Revision 1.26  2012/08/30 09:38:52  djw
 C Use SAFESET for _MW_E2MIN* for passing values to gui
 C
@@ -17,9 +17,12 @@ C Calls to Kallow now return a key to the test which failed and a value to indic
 C
 C LOGGING STARTED APRIL 2011
 C
+CODE FOR MLTNRM
       SUBROUTINE MLTNRM
 C VERSION    JAN    1980          UNIVERSITY OF YORK
 C HACKED TO BITS 22 YEARS LATER  by  RICHARD COOPER
+C FIDDLED TO HANDLE HIGH RESOLUTION DATA AND FILTERED
+C DATA BY DJW 2016
 C
 C      IWEIGT 0 = NOTHING
 C             1 = UPDATE WEIGHTS 
@@ -42,7 +45,7 @@ C             1 = UPDATE WEIGHTS
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
 
-      DATA ICOMSZ / 5 /
+      DATA ICOMSZ / 6 /
       DATA IVERSN /100/
 
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -80,19 +83,25 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       END IF
 
 
-C Store tolerance (only show fom's below this limit)
       IPLOTW = ISTORE(ICOMBF)
       IPLOTN = ISTORE(ICOMBF+1)
       ISTATP = ISTORE(ICOMBF+2)
       IL28FL = ISTORE(ICOMBF+3)
       IWEIGT = ISTORE(ICOMBF+4)
-
-
+      EVALS=.FALSE.
+      EPUNCH=.FALSE.
+      IF(ISTORE(ICOMBF+5).EQ.1) EVALS=.TRUE.
+      IF(ISTORE(ICOMBF+5).EQ.2) THEN
+            EPUNCH=.TRUE.
+            EVALS=.TRUE.
+      ENDIF
+C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(IULN6,0)
 
       NREF=0                                                            
       RHOMAX=0.0                                                        
+      RHOMIN=100000.
       TH=1.0                                                            
       EN=1.2                                                            
       ER=0.3                                                            
@@ -107,13 +116,11 @@ C Store tolerance (only show fom's below this limit)
 
       IND=1                                                             
 
-CDJW      CALL XFAL01
       CALL XMULTR ( STORE(L1P1+3) , RTD , STORE(L1P1+3) , 3 ) !Angles to Degr.
       DO J=1,6
         CX(J)=STORE(L1P1+J-1)
       END DO
       CALL INCELL                                          
-
       CALL XFAL02
       ICENT = 0
       IF (STORE(L2C) .GT. 0.5 ) ICENT = 1
@@ -144,8 +151,8 @@ C Into L3, put number of atoms in cell.
          END DO
       END DO
 
-
-      WRITE(NCWU,2820) (ISTORE(M3),STORE(M3+1),STORE(M3+2),
+      IF(EVALS)
+     1 WRITE(NCWU,2820) (ISTORE(M3),STORE(M3+1),STORE(M3+2),
      1                  (STORE(M3+J),J=3,11),M3=L3,L3+(N3-1)*MD3,MD3)
  2820   FORMAT(//1H ,51X,18HUNIT CELL CONTENTS//                          
      1 1H ,4HATOM,4X,14HNUMBER IN CELL,4X,13HATOMIC NUMBER,4X,          
@@ -184,7 +191,8 @@ C CALCULATE NUMBER OF REFLEXIONS TO PASS TO MULTAN
       MM=MN+MIN0(500-MN,100)/2                                          
 
 400   IF(MM.GT.0) then
-       WRITE(NCWU,380) MM,MZ
+       IF(EVALS)
+     1  WRITE(NCWU,380) MM,MZ
       endif
 
 380   FORMAT(1H ,27X,22HOUTPUT FOR MULTAN  -  ,I5,13H  LARGEST E'S,3X,
@@ -195,7 +203,12 @@ C READ REFLEXION DATA FROM A CRYSTALS SHELX FORMAT FILE
 
       NB=8.0*ALOG10(0.05*FLOAT(MAX0(NREF,100))+0.5)
 C MAXIMUM OF 30 POINTS ON WILSON PLOT
-      IF(NB.GT.30) NB=30                                                
+      IF(NB.GT.30) NB=30                                            
+      IF(NREF.LT.100) THEN
+       write(cmon,'(a,i5,a)') '{I',NREF,
+     1 ' reflections is too few for a reliable Wilson Plot'
+         call xprvdu(ncvdu,1,0)
+      ENDIF    
       WRITE(NCWU,440) NREF,RHOMAX,NB                                      
 440   FORMAT(23H NUMBER OF REFLEXIONS =,I6,8X,                          
      1 32HMAXIMUM (SIN(THETA)/LAMBDA)**2 =,F7.4,8X,                     
@@ -244,7 +257,10 @@ C INPUT UNIT CELL PARAMETERS AND CALCULATE RECIPROCAL PARAMETERS
       INCLUDE 'XCONST.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XWMISC.INC'
-      WRITE(NCWU,20) (CX(I),I=1,6)                                        
+      INCLUDE 'XWILSO.INC'
+C
+      IF(EVALS)
+     1 WRITE(NCWU,20) (CX(I),I=1,6)                                        
    20 FORMAT(1H ,11HDIRECT CELL,9X,3HA =,F8.3,4X,3HB =,F8.3,4X,         
      1 3HC =,F8.3,4X,7HALPHA =,F7.2,4X,6HBETA =,F7.2,4X,7HGAMMA =,F7.2) 
       CALL VOL(CX,V)                                                    
@@ -260,7 +276,8 @@ C     VOLUME AND RECIPROCAL CELL FUNCTIONS
       P(I)=0.25*P(I)*P(I)                                               
       CX(I+3)=180.0*ATAN2(CX(I+6),CX(I+3))/PI                           
    40 CONTINUE                                                          
-      WRITE(NCWU,50) P                                                    
+      IF(EVALS)
+     1 WRITE(NCWU,50) P                                                    
    50 FORMAT(6H RHO =,F9.6,9H * H**2 +,F9.6,9H * K**2 +,F9.6,9H * L**2 +
      1 ,F9.6,10H * H * K +,F9.6,10H * H * L +,F9.6,8H * K * L)          
       RETURN                                                            
@@ -287,6 +304,7 @@ CODE FOR INSYM
 C READ GENERAL EQUIVALENT POSITIONS AS IN INTERNATIONAL TABLES AND  
 C DETERMINE LATTICE MULTIPLICITY (PTS) AND CRYSTAL SYSTEM (KSYS)    
       INCLUDE 'XWISYM.INC'
+      INCLUDE 'XWILSO.INC'
       DIMENSION KX(15),LTC(7),ICAP(2),LINE(21)
       INCLUDE 'STORE.INC'
       INCLUDE 'ISTORE.INC'
@@ -297,9 +315,8 @@ C DETERMINE LATTICE MULTIPLICITY (PTS) AND CRYSTAL SYSTEM (KSYS)
       DATA KX/1H1,1H2,1H3,1H4,1H5,1H6,1HX,1HY,1HZ,1H ,1H,,1H+,1H-,1H/,
      1 1H*/                                                             
       DATA LTC/1HP,1HA,1HB,1HC,1HI,1HF,1HR/,ICAP/3HNON,3H   /           
-
-
-      WRITE(NCWU,104) ICAP(ICENT+1),N2,LATT
+      IF(EVALS)
+     1 WRITE(NCWU,104) ICAP(ICENT+1),N2,LATT
   104 FORMAT(/1H ,17HTHE STRUCTURE IS ,A3,15HCENTROSYMMETRIC,8X,I3,3X,  
      1 28HGENERAL EQUIVALENT POSITIONS,10X,18HLATTICE IS OF TYPE,3X,A1/)
 
@@ -354,7 +371,8 @@ C CUBIC
 C PRIMITIVE RHOMBOHEDRAL                                            
       IF(LATT.EQ.7) KSYS=7                                              
       IF(KSYS.EQ.7) LATT=1                                              
-  500 RETURN                                                            
+  500 continue
+      RETURN                                                            
       END                                                               
 C
 CODE FOR CARDIN
@@ -378,6 +396,7 @@ C
         RHO   =P(1)*FLOAT(IH*IH)+P(2)*FLOAT(IK*IK)+P(3)*FLOAT(IL*IL)
      3        +P(4)*FLOAT(IH*IK)+P(5)*FLOAT(IH*IL)+P(6)*FLOAT(IK*IL)
         RHOMAX=AMAX1(RHOMAX,RHO)
+        RHOMIN=AMIN1(RHOMIN,RHO)
        END IF
       END DO
       RETURN                                                            
@@ -509,7 +528,6 @@ C
       LOGICAL E5B      
       DIMENSION SW(30),SR(30),SI(30),NSUM(30), MHKL(3),
      1          SWC(30),SIC(30)
-
       WRITE(NCWU,40)                                                      
    40 FORMAT(//1H ,20X,18HLEAST SQUARES PLOT//6H RANGE,6X,              
      1 18HRHO=(SINTH/LAM)**2,6X,6HNUMBER,6X,8HMEAN RHO,7X,6HMEAN I,     
@@ -534,8 +552,8 @@ C     SET INITIAL VALUES
         NSUM(I)=0                                                         
    50 CONTINUE                                                          
       SCALE = 1.0
-      E5 = .TRUE.
-      E5B = .FALSE.
+      E5 = .TRUE.         !true if LIST 5 exists
+      E5B = .FALSE.       !true if Fcal data exists
       IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0)  THEN
        IF (KEXIST(5) .GT. 0) THEN
           CALL XFAL05
@@ -591,6 +609,8 @@ C  INTENSITY
        ENDIF
       END DO
 
+
+
   250 DO I=1,NB
 C SMOOTH CURVE BY ADDING ADJACENT RANGES                            
         NUMBER=NUMBER+NSUM(I)
@@ -598,7 +618,7 @@ C SMOOTH CURVE BY ADDING ADJACENT RANGES
         SW(I)=SW(I)+SW(I+1)
         SR(I)=SR(I)+SR(I+1)
         SI(I)=SI(I)+SI(I+1)
-        IF ( E5 ) THEN
+        IF ( E5B ) THEN
           SWC(I)=SWC(I)+SWC(I+1)
           SIC(I)=SIC(I)+SIC(I+1)
         END IF
@@ -613,7 +633,6 @@ C CALCULATE WEIGHTED AVERAGES AND LOGS
 CDJWFEB2012        IF ( E5) FLGWC(I)=ALOG(MAX(SWC(I)*DIV,0.00000000001))
         IF ( E5B) FLGWC(I)=ALOG(MAX(SWC(I)*DIV,0.00000000001))
 
-c        WRITE(95,'(2F15.8)')FLGW(I), FLGWC(I)
 
         START=START+ADD
         END=AMIN1(END+ADD,RHOMAX)                                         
@@ -655,7 +674,6 @@ C     LEAST SQUARES
          STORE(L30DR+6) = BT
          STORE(L30DR+7) = SC
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
-
       RETURN                                                            
       END                                                               
 C
@@ -667,6 +685,7 @@ C     LINE PRINTER PLOT AT 50 VALUES OF RHO
       INCLUDE 'XWILSO.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XUNITS.INC'
+
       DIMENSION FH(6),RH(6),M(117),R(4),AD(4),AW(4),AWC(4)                     
       DATA IST,ISP,ICW,ICD/1H*,1H ,1HW,1HD/                             
 C     DETERMINE RANGES OF LOGS                                          
@@ -714,6 +733,10 @@ C TOP FRAME
       XMIN = +1000.
       XMAX = -1000.
 
+C NOTE. FOR THE PRINTER, EACH LINE IS FILLED WITH SPACES
+C AND THEN TEXT ADDED. THE FORMAT DESCRIPTOR $ INHIBITS
+C LINE FEEDS
+
       DO I=1,50                                                     
         DCV(I)=-1000000.0                                                 
 C SIDE FRAME                                                        
@@ -741,32 +764,42 @@ C INTERPOLATION
             R(K)=AVR(ITEMP)
           END DO
 
-          CALL NSOLVE(R,FLGW(J-1),FLGW(J),FLGW(J+1),FLGW(J+2),AW)
-C WILSON PLOT INTERPOLATION
-  130     WVAL = AW(4)+ Q * ( AW(3) + Q * ( AW(2) + Q * AW(1) ) )
-          IL=100.0*(WVAL-FN)/FD+16.5
-          IF(IL.GT.117) IL=117                                              
-          IF(IL.LT.1) IL=1                                                  
-          M(IL)=ICW
-C STORE K-CURVE                                                     
-          DCV(I)=EXP(AW(4)+Q*(AW(3)+Q*(AW(2)+Q*AW(1))))
 
+C  TRY SOLVING FOR THE QUARTIC. IF FAILS, FILL OUTPUT WITH ZERO
+           K=NSOLVE(R,FLGW(J-1),FLGW(J),FLGW(J+1),FLGW(J+2),AW)
+           IF (K.LE.0) CALL XFILL(0.0,AW,4)
+           IF ( E5 ) THEN
+           K=NSOLVE(R,FLGWC(J-1),FLGWC(J),FLGWC(J+1),FLGWC(J+2),AWC)
+           IF (K.LE.0) CALL XFILL(0.0,AWC,4)
+           END IF
+
+
+C WILSON PLOT INTERPOLATION
+  130     CONTINUE
+
+          WVAL = AW(4)+ Q * ( AW(3) + Q * ( AW(2) + Q * AW(1) ) )
           IF ( E5 ) THEN
-            CALL NSOLVE(R,FLGWC(J-1),FLGWC(J),FLGWC(J+1),FLGWC(J+2),AWC)
             WCVAL = AWC(4) + Q * ( AWC(3) + Q * (AWC(2) + Q * AWC(1)) )
           ELSE
             WCVAL = 0.0
           END IF
-
+          IL=100.0*(WVAL-FN)/FD+16.5
+          IF(IL.GT.117) IL=117                                              
+          IF(IL.LT.1) IL=1 
+          IF(WVAL.NE. ZERO) M(IL)=ICW
+C STORE K-CURVE                                                     
+          DCV(I)=EXP(AW(4)+Q*(AW(3)+Q*(AW(2)+Q*AW(1))))
           IF ( IPLOTW .EQ. 1 ) THEN
             WRITE(CMON,'(A,6F10.5)')
      1      '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX, WVAL,
      2      0.02*FLOAT(I-1)*RX, WCVAL , 0.02*FLOAT(I-1)*RX
             CALL XPRVDU(NCVDU, 1,0)
+          END IF
 cdjwfeb08
             write(ncpu,'(i4,4f12.4)') i, 0.02*FLOAT(I-1)*RX, sval,
      1      wval,wcval
-          END IF
+
+
 
           XMIN = MIN(XMIN, SVAL,WVAL)
           XMAX = MAX(XMAX, SVAL,WVAL)
@@ -838,9 +871,21 @@ C     CROSSES IT.
 C
 C
 CODE FOR NSOLVE
-      SUBROUTINE NSOLVE(R,Y1,Y2,Y3,Y4,A)                                 
+      FUNCTION NSOLVE(R,Y1,Y2,Y3,Y4,A)                                 
 C FIT CURVE TO Y = A(1) * RHO**3 + A(2) * RHO**2 + A(3) * RHO + A(4)
-      DIMENSION R(4),A(4)                                               
+C  RETURNS -1 IF ANY DENOMINATIOR LE ZEROSQ
+C  (SOME TERMS ARE LESS THAN ZERO - POTENTIAL INSTABILITY?)
+      INCLUDE 'XCONST.INC'
+      DIMENSION R(4),A(4)  ,D(6)
+      NSOLVE = -1 
+      D(1)=ABS(R(2)-R(1))
+      D(2)=ABS(R(3)-R(1))
+      D(3)=ABS(R(4)-R(1))
+      D(4)=ABS(R(2)-R(4))
+      IF(D(1).LE. ZEROSQ) GOTO 100                                     
+      IF(D(2).LE. ZEROSQ) GOTO 100                                     
+      IF(D(3).LE. ZEROSQ) GOTO 100                                     
+      IF(D(4).LE. ZEROSQ) GOTO 100                                     
       B2=R(4)*(R(4)+R(1))                                               
       B1=(Y4-Y1)/(R(4)-R(1))                                            
       C31=(Y2-Y1)/(R(2)-R(1))-B1                                        
@@ -848,12 +893,19 @@ C FIT CURVE TO Y = A(1) * RHO**3 + A(2) * RHO**2 + A(3) * RHO + A(4)
       C11=R(2)*(R(2)+R(1))-B2                                           
       C12=R(3)*(R(3)+R(1))-B2                                           
       C21=R(2)-R(4)                                                     
-      C22=R(3)-R(4)                                                     
-      A(1)=(C31*C22-C32*C21)/(C22*C11-C12*C21)                          
+      C22=R(3)-R(4)  
+      D(5)=(C22*C11-C12*C21)
+      D(6)=C21
+      IF(ABS(D(5)).LE. ZEROSQ) GOTO 100                                     
+      IF(ABS(D(6)).LE. ZEROSQ) GOTO 100
+      A(1)=(C31*C22-C32*C21)/D(5)                          
       A(2)=(C31-C11*A(1))/C21                                           
       A(3)=B1-(R(4)*R(4)+R(1)*R(1)+R(4)*R(1))*A(1)-(R(4)+R(1))*A(2)     
       A(4)=Y1-R(1)*(A(3)+R(1)*(A(2)+R(1)*A(1)))                         
-      RETURN                                                            
+      NSOLVE = 1
+      RETURN 
+100   CONTINUE
+      RETURN                                                           
       END                                                               
 C
 C
@@ -974,7 +1026,11 @@ C ------------------------------------------------------------------
 C CALCULATE FINAL E-VALUES AND RESCALED F'S                         
 C CREATE NEW IF REQUIRED                                      
 C OUTPUT REFLEXIONS FOR MULTAN                                      
-C PREPARE TABLES OF STATISTICS                                      
+C PREPARE TABLES OF STATISTICS  
+
+      DIMENSION  KDEV(4) 
+                                    
+      INCLUDE 'UFILE.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'XWMISC.INC'
       INCLUDE 'XWILSO.INC'
@@ -1002,6 +1058,12 @@ C TABLES OF THEORETICAL DISTRIBUTIONS
       DATA IOBS,IUNOBS/1H ,1HU/                                         
       CALL XRSL
       CALL XCSAE
+      IF(EPUNCH) THEN
+C      - OPEN E-VALUE OUTPUT ON FRN1
+        CALL XMOVEI (KEYFIL(1,23),KDEV,4)
+        CALL XRDOPN (6,KDEV,'E-VALUES.HKL',12)
+        WRITE(NCFPU1,'(A)') ' h,k,l,  Scaled Fobs, E-value, Rho-sq'
+      ENDIF
 C SET INITIAL VALUES                                                
       DO 20 I=1,10                                                      
       RHR(I)=0.0                                                        
@@ -1059,6 +1121,8 @@ C CALCULATE E
         EWS=E    
 C CALCULATE RESCALED F 
         FOB = FOB*SCF
+        IF(EPUNCH)
+     1  WRITE(NCFPU1,'(3I4,3F8.3)') MHKL, FOB, E, rhos
 C PACK INDICES FOR TAPE ISTAN
         INP = 65536*MHKL(1)+256*(MHKL(2)+128)+MHKL(3)+128
 C SET OBS/UNOBS FLAG
@@ -1171,33 +1235,34 @@ C OUTPUT STATISTICS
       DO 310 J=1,5                                                      
       IF(NST(J).GT.0) VST(I,J)=VST(I,J)/FLOAT(NST(J))                   
   310 CONTINUE                                                          
-  320 CONTINUE                                                          
-      WRITE(NCWU,330) STL,RHR,NHR                                         
+  320 CONTINUE             
+c      IF(EVALS) then                                             
+        WRITE(NCWU,330) STL,RHR,NHR                                         
   330 FORMAT(///1H ,52X,16HFINAL STATISTICS//1H ,38X,                   
      1 43HDISTRIBUTION OF E**2 WITH SIN(THETA)/LAMBDA/10H SINTH/LAM,    
      2 10F10.4/1H ,3X,4HE**2,2X,10F10.4/1H ,2X,6HNUMBER,10I10)          
-      WRITE(NCWU,340)                                                     
+        WRITE(NCWU,340)                                                     
   340 FORMAT(//1H ,53X,14HAVERAGE VALUES)                               
-      WRITE(NCWU,350)                                                     
+        WRITE(NCWU,350)                                                     
   350 FORMAT(1H ,45X,12HEXPERIMENTAL,39X,11HTHEORETICAL/1H ,23X,        
      1 8HALL DATA,7X,3HHKL,44X,8HACENTRIC,5X,7HCENTRIC,                 
      2 2X,12HHYPERCENTRIC)                                              
-      WRITE(NCWU,360)                                                     
+        WRITE(NCWU,360)                                                     
   360 FORMAT(1H+,4X,7HAVERAGE)                                          
 C     CAPTION ACCORDING TO CRYSTAL SYSTEM                               
-      IF(KSYS.NE.7) WRITE(NCWU,370)                                       
+        IF(KSYS.NE.7) WRITE(NCWU,370)                                       
   370 FORMAT(1H+,50X,3H0KL)                                             
-      IF(KSYS.EQ.7) WRITE(NCWU,380)                                       
+        IF(KSYS.EQ.7) WRITE(NCWU,380)                                       
   380 FORMAT(1H+,47X,8HH,K,2K-H)                                        
-      IF(KSYS.LE.3) WRITE(NCWU,390)                                       
+        IF(KSYS.LE.3) WRITE(NCWU,390)                                       
   390 FORMAT(1H+,62X,3HH0L)                                             
-      IF(KSYS.GE.4) WRITE(NCWU,400)                                       
+        IF(KSYS.GE.4) WRITE(NCWU,400)                                       
   400 FORMAT(1H+,62X,3HHHL)                                             
-      IF(KSYS.LE.6) WRITE(NCWU,410)                                       
+        IF(KSYS.LE.6) WRITE(NCWU,410)                                       
   410 FORMAT(1H+,74X,3HHK0)                                             
-      IF(KSYS.GE.7) WRITE(NCWU,420)                                       
+        IF(KSYS.GE.7) WRITE(NCWU,420)                                       
   420 FORMAT(1H+,71X,8HH,K,-H-K)                                        
-      WRITE(NCWU,430) ((VST(I,J),J=1,5),AVA(I),AVC(I),AVH(I),I=1,10)      
+        WRITE(NCWU,430) ((VST(I,J),J=1,5),AVA(I),AVC(I),AVH(I),I=1,10)      
   430 FORMAT(1H ,5X,6HMOD(E),7X,5F12.3,2X,3F12.3/                       
      1 1H ,6X,4HE**2,8X,5F12.3,2X,3F12.3/                               
      2 1H ,6X,4HE**3,8X,5F12.3,2X,3F12.3/                               
@@ -1208,7 +1273,7 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
      7 1H ,2X,11H(E**2-1)**2,5X,5F12.3,2X,3F12.3/                       
      8 1H ,2X,11H(E**2-1)**3,5X,5F12.3,2X,3F12.3/                       
      9 1H ,16H(MOD(E**2-1))**3,2X,5F12.3,2X,3F12.3)
-
+c      endif
       IF ( ISTATP .EQ. 1 ) THEN
         WRITE(CMON,'(A,F12.3,A)')
      1  '^^CO SAFESET [ _MW_E2MIN1 TEXT ',VST(7,1), ' ]'
@@ -1218,7 +1283,7 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
         CALL XPRVDU(NCVDU, 1,0)
       END IF
 
-
+c      if(evals) then
       WRITE(NCWU,440) NST                                                 
   440 FORMAT(21H WEIGHTED SAMPLE SIZE,I10,4I12)                         
       WRITE(NCWU,450)                                                     
@@ -1233,7 +1298,7 @@ C     CAPTION ACCORDING TO CRYSTAL SYSTEM
       IF(KSYS.GE.4) WRITE(NCWU,400)                                       
       IF(KSYS.LE.6) WRITE(NCWU,410)                                       
       IF(KSYS.GE.7) WRITE(NCWU,420)
-
+c      endif
       IF ( IPLOTN .EQ. 1 ) THEN
         WRITE(CMON,'(A/A/A/A/3A/3A/3A/A/A/A)')
      1  '^^PL PLOTDATA _NZDIST SCATTER ATTACH _VNZDIST KEY',
@@ -1267,6 +1332,7 @@ C     CENTRIC
       XX=SQRT(0.5*ZZ)                                                   
       T=1.0/(1.0+0.47047*XX)                                            
       CPC=1.0-((0.74786*T-0.09588)*T+0.34802)*T*EXP(-0.5*ZZ)            
+c      if(evals)
       WRITE(NCWU,480) ZZ,(ZT(I,J),J=1,5),CPA,CPC,CPH(I)                   
   480 FORMAT(1H ,F7.1,11X,5F12.3,2X,3F12.3)
 
@@ -1300,15 +1366,20 @@ C     OUTPUT REFLEXIONS FOR MULTAN
       IF(LIM.EQ.1000) MR=NC                                             
       CALL SORT(EX,FX,IX,MR)                                            
       MM=MIN0(MM,NL)                                                    
-      WRITE(NCWU,580) MM                                                  
+      IF(EVALS)
+     1 WRITE(NCWU,580) MM                                                  
   580 FORMAT(///1H ,I6,41H  LARGEST E-VALUES WRITTEN TO OUTPUT FILE)    
       CALL OUTPUT(EX,FX,IX,0,MM)                                        
       MZ=MIN0(MZ,NS)                                                    
       MS=MR-MZ                                                          
-      WRITE(NCWU,600) MZ                                                  
+      IF(EVALS)
+     1 WRITE(NCWU,600) MZ                                                  
   600 FORMAT(1H ,I6,42H  SMALLEST E-VALUES WRITTEN TO OUTPUT FILE)      
       CALL OUTPUT(EX,FX,IX,MS,MR)                                       
-  630 RETURN                                                            
+  630 CONTINUE
+C     CLOSE THE OUTPUT FILE
+      IF(EPUNCH) CALL XRDOPN (7,KDEV,'E-VALUES.HKL',12)
+      RETURN                                                            
       END                                                               
 C 
 C
@@ -1369,11 +1440,13 @@ C
 CODE FOR OUTPUT
       SUBROUTINE OUTPUT(EX,FX,IX,N,M)                                   
 C     PRINT AND OUTPUT TO FILE FOR REFLEXIONS TO BE USED IN MULTAN      
+      INCLUDE 'XWILSO.INC'
       INCLUDE 'XUNITS.INC'
       DIMENSION EX(1000),FX(1000),IX(1000)                              
       DIMENSION J(6),K(6),L(6),E(6),KODE(6)                             
       IF(N.EQ.M) GO TO 60                                               
-      WRITE(NCWU,10)                                                      
+      IF(EVALS)
+     1 WRITE(NCWU,10)                                                      
    10 FORMAT(6(1X,4HCODE,9H  H  K  L,3X,1HE,2X))                        
       NA=N+1                                                            
       KK=0                                                              
@@ -1391,12 +1464,14 @@ C     PRINT AND OUTPUT TO FILE FOR REFLEXIONS TO BE USED IN MULTAN
       E(KK)=EX(I)                                                       
       KODE(KK)=JJ-N                                                     
       IF(KK.NE.6) GO TO 50                                              
-      WRITE(NCWU,30) (KODE(II),J(II),K(II),L(II),E(II),II=1,6)            
+      IF(EVALS)
+     1 WRITE(NCWU,30) (KODE(II),J(II),K(II),L(II),E(II),II=1,6)
    30 FORMAT(6(I5,3I3,F6.3))                                            
       KK=0                                                              
    50 CONTINUE                                                          
       IF(KK.EQ.0) GO TO 60                                              
-      WRITE(NCWU,30) (KODE(II),J(II),K(II),L(II),E(II),II=1,KK)           
+      IF(EVALS)
+     1 WRITE(NCWU,30) (KODE(II),J(II),K(II),L(II),E(II),II=1,KK)
    60 KK=0                                                              
       D=-1.0                                                            
       RETURN                                                            

@@ -2502,7 +2502,7 @@ these to the same values as in REFINEMENT above.
 #HSscope#
 #
 #PThe areas covered are:
-#N  12#
+#N  15#
 #J
  Reflection Data
  Simple input of F or Fsq data               - \LIST 6
@@ -2517,6 +2517,7 @@ these to the same values as in REFINEMENT above.
  Sorting data                                - \SORT
  Merging equivalent reflections              - \MERGE
  Theta-dependent absorption correction       - \THETABS
+ Analysis of data                            - \THLIM, WILSON, SIGMADIST
 #
 #Q
 #XReflection data format#
@@ -3977,7 +3978,74 @@ For example
  The Nthetavalue values of the correction factor profile.
 #Q
 #
+#Q
+#XwILSON PLOT#
+#XWILSON#
+#YWILSON PLOT  -  \WILSON#
+#HSwilson#
+#N   6#
+#J
+ \WILSON
+ OUTPUT PLOT= NZ= STATS= EVALS=
+ FILTER LIST28=
+ WEIGHT UPDATE=
+ END
 #
+#
+PLOT, NZ and STATS take values of YES and NO, controlling whether output
+is sent to the GUI.
+EVALS takes the values NO/YES/PUNCH.
+#
+ NO/YES  controls whether E-values are computed.
+#
+ PUNCH enables E-values to be computed and output to a text file.
+#
+#
+#
+#Q
+#XTHLIM#
+#XTHLIM#
+#YTHLIM  -  \THLIM#
+#Hthetalim#
+#N   4#
+#J
+ \THLIM  INPUTLIST=
+ OUTPUT PLOT= GLIST=
+ END
+#
+ This command is only used in SCRIPTS to send information to the GUI
+#
+INPUTLIST IS EITHER 6 or 7
+#
+PLOT=YES sends plotting data to the GUI
+#
+GLIST=YES sends a list of missing reflections to the GUI
+#
+#
+#
+#Q
+#SIGMADIST#
+#XSIGMADIST#
+#YSIGMADIST  -  \SIGMADIST#
+#Hsigmadist#
+#N   6#
+#J
+ \SIGMADIST  INPUTLIST=
+ OUTPUT PLOT= RESOLUTIO= PHASE= FILTER=
+ END
+#
+ This command is only used in SCRIPTS to send information to the GUI
+#
+PLOT=YES sends completeness data to GUI
+#
+RESOLUTIO=YES sends distribution as function of resolution to GUI
+#
+PHASE=YES   sends phase angle distribution to GUI
+#
+FILTER=YES enable LIST 28 to be used.
+#
+#
+#Q
 #ZATOMIC AND STRUCTURAL PARAMETERS#
 #HCatomic#
 #Aatomparams#

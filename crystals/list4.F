@@ -2990,7 +2990,9 @@ C--PRINT THE LAST CAPTION FOR THIS GROUP
       ENDIF
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
-        WRITE(CMON,4921)N,(APD(N2),N2=1,6), (apd(1)-apd(2))/float(n)
+        djwtemp=0.0
+        if(n.gt.0) djwtemp=(apd(1)-apd(2))/float(n)
+        WRITE(CMON,4921)N,(APD(N2),N2=1,6), djwtemp
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
       IF ( PWDSQ .EQ. 1 ) THEN
@@ -3180,9 +3182,10 @@ C--COMPUTE THE TOTALS FOR ALL THE REFLECTIONS
         APD(5) = 0.
         APD(6) = 0.
       ENDIF
-      R=1./FLOAT(N)
-      RW=SQRT(APD(5)/APD(4))*100.
-      SS=APD(3)/APD(12)*100.
+      r=0.
+      if(n.gt.0)   R=1./FLOAT(N)
+      if(apd(4).gt.zerosq)     RW=SQRT(APD(5)/APD(4))*100.
+      if(apd(12).gt.zerosq)    SS=APD(3)/APD(12)*100.
       APD(3)=APD(7)*R
       APD(4)=APD(5)*R
       APD(5)=SS
@@ -3235,7 +3238,8 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
-      R=1./FLOAT(ISTORE(L+1))
+      R = 0.
+      IF(ISTORE(l+1).GT.0)     R=1./FLOAT(ISTORE(L+1))
       SS=0.
       RW=0.
 C----- CHECK IF W* /FO/ NOT TO SMALL
@@ -3257,7 +3261,8 @@ C--SET UP THE PLOT ARRAY
 6300  CONTINUE
       IOUT(ICENT)=ICE
 C--COMPUTE THE POSITION OF THIS ENTRY
-      SS=STORE(L+5)/APD(4)
+      ss=0.
+      if(apd(4).ge.zerosq) SS=STORE(L+5)/APD(4)
 C--CHECK FOR A ZERO VALUE
       IF(SS)6350,6600,6350
 C--CHECK IF THE NUMBER IS TOO LARGE
@@ -3639,6 +3644,11 @@ C--FETCH THE NEXT REFLECTION
 C
 C--EXIT
 2150  CONTINUE
+      if(n.le.0) then
+            write(cmon,'(A)')
+     1 '{E There are no reflections for the Agreement Analysis'
+            call xprvdu(ncvdu, 1,0)
+      endif
 C COMPUTE CORRELLATION COEFFICIENT
       imode = 2
       write(cmon,2151)

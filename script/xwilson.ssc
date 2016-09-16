@@ -37,16 +37,17 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=6 NCOLS=1                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'Wilson Plot: (Sin(theta)/lambda)^2 (or rho) runs down'
+^^WI 'The data should lie on a straight line rising from left to right'   
 ^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'the vertical axis. Log of actual scattering over expected scattering'     
+^^WI 'Wiggles at top right are due to heavy atoms or repeated motifs'     
 ^^WI       @ 3,1 STATIC XFW2                                                    
-^^WI 'is plotted at each angle. Slope is due to fall off of actual scattering'  
+^^WI 'Up-turn bottom left may indicate there is mainly noise at this resolution'  
 ^^WI       @ 4,1 STATIC XFW2                                                    
-^^WI 'with angle, intercept is due to arbitrary scaling of intensity data.'     
+^^WI 'Right click on a GREEN point to set a resolution limit'     
 ^^WI       @ 5,1 STATIC XFW3 
-^^WI 'Right-click a GREEN (observed) point for cut-off options.' 
-^^WI       @ 6,1 STATIC XFW4 '<|E^2-1|>  less than 0.736 may indicate twinning'
+^^WI 'Avoid setting LIST 28 filters to eliminate too many reflections'
+^^WI       @ 6,1 STATIC XFW4 
+^^WI '<|E^2-1|> less than 0.736 may indicate twinning'   
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
