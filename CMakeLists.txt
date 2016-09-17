@@ -9,11 +9,28 @@ PROJECT(Crystals)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
+option (useGUI "useGUI" ON)
+option (usePY "usePY" OFF)
+option (use32 "use32" OFF)
+option (useSTATIC "useSTATIC" OFF)
+
+if(useSTATIC)
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    SET(BUILD_SHARED_LIBRARIES OFF)
+    SET(CMAKE_EXE_LINKER_FLAGS "-static")
+    SET(wxWidgets_USE_STATIC ON)
+endif ()
+
 ENABLE_LANGUAGE(Fortran)
 INCLUDE (CPack)
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
     include(CheckFortranCompilerFlag)
 Endif()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "MINGW64_NT") 
+    message(STATUS "Building using MSYS2, Mingw64 toolchain")
+    SET(MSYS ON)
+endif ()
 
 # check gcc suite version
 if(CMAKE_COMPILER_IS_GNUCC)
@@ -129,11 +146,6 @@ else ()
     endif()
 endif ()
 
-
-option (useGUI "useGUI" ON)
-option (usePY "usePY" OFF)
-option (usePY "use32" OFF)
-
 # Reset fortran flags
 set(CMAKE_Fortran_FLAGS "")
 set(CMAKE_C_FLAGS "")
@@ -174,13 +186,16 @@ if ( usePY )
 endif()
 
 if ( WIN32 )
-add_definitions(-DCRY_OSWIN32)
-ADD_DEFINITIONS(-D__MIN__)
+    add_definitions(-DCRY_OSWIN32)
+    add_definitions(-D__MIN__)
+endif()
+if ( MSYS )
+    add_definitions(-DCRY_OSWIN32)
 endif()
 add_definitions(-DCRY_GNU)
-ADD_DEFINITIONS(-D_NOHDF5_)
+add_definitions(-D_NOHDF5_)
 add_definitions(-D _HOL_)
-ADD_DEFINITIONS(-D_GNUF77_)
+add_definitions(-D_GNUF77_)
 
 
 string (TIMESTAMP CRYYEAR "%Y")
@@ -280,7 +295,7 @@ if ( useGUI )
     ADD_SUBDIRECTORY(bits)
 endif()
 if ( usePY )
-  ADD_SUBDIRECTORY(pyinterface)
+    ADD_SUBDIRECTORY(pyinterface)
 endif()
 
 add_dependencies(CameronFortran CrystalsFortran) 
@@ -330,10 +345,22 @@ ENDFOREACH()
 
 
 if ( useGUI )
-# For the fwrapper module
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
-    TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES})
+
+    if(MSYS)
+        SET(OPENGL_INCLUDE_DIR "/mingw64/x86_64-w64-mingw32/include/")
+        SET(OPENGL_gl_LIBRARY "/mingw64/bin/")
+        SET(MSYS2LIBS  "-lstdc++ -lopengl32  -lglu32 -llzma" )
+    else ()
+        SET(MSYS2LIBS  "" )
+    endif()
+    find_package(OpenGL REQUIRED)
+    message(STATUS "Using OpenGL libraries: ${OPENGL_LIBRARIES}")
+    include_directories( ${OPENGL_INCLUDE_DIRS}  )
+    target_link_libraries(crystals ${OPENGL_LIBRARIES} )
+
+    TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
 elseif( usePY )
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
@@ -345,12 +372,6 @@ else()
     TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
-
-find_package(OpenGL REQUIRED)
-message(STATUS "Using OpenGL libraries: ${OPENGL_LIBRARIES}")
-include_directories( ${OPENGL_INCLUDE_DIRS}  )
-target_link_libraries(crystals ${OPENGL_LIBRARIES} )
-
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
 ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
