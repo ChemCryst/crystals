@@ -13,6 +13,7 @@ option (useGUI "useGUI" ON)
 option (usePY "usePY" OFF)
 option (use32 "use32" OFF)
 option (useSTATIC "useSTATIC" OFF)
+option (useOPENMP "useOPENMP" ON)
 
 if(useSTATIC)
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
@@ -145,6 +146,15 @@ endif ()
 set(CMAKE_Fortran_FLAGS "")
 set(CMAKE_C_FLAGS "")
 set(CMAKE_CXX_FLAGS "")
+
+if(useOPENMP)
+	find_package(OpenMP)
+	if (OPENMP_FOUND)
+		set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+		set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+	endif()
+endif ()
 
 if ( use32 )
     message(STATUS "Building 32bit")
@@ -374,3 +384,4 @@ endif ()
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
 ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
+
