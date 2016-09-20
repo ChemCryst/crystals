@@ -26,7 +26,7 @@ implicit none
 integer, private :: normal_unit=0 !< unit number for the file
 integer, private :: design_unit=0 !< unit number for the file
 integer, private :: wdf_unit=0 !< unit number for the file
-integer, private :: fileindex=-1 !< index used in the different filenames
+integer, private, save :: fileindex=-1 !< index used in the different filenames
 !> List of filename used. This list is used to find a new index for the filenames.
 character(len=24), dimension(4), parameter, private :: filelist=(/ &
 &  'normal  ', &
@@ -449,6 +449,18 @@ end function
 !> Reset the counter for the filename
 subroutine sfls_punch_reset_filename()
 implicit none
+    if(normal_unit/=0) then
+        print *, 'normal file still open'
+        call abort()
+    end if
+    if(design_unit/=0) then
+        print *, 'design file still open'
+        call abort()
+    end if
+    if(wdf_unit/=0) then
+        print *, 'wdf file still open'
+        call abort()
+    end if
     fileindex=-1
 end subroutine
 
