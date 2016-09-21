@@ -13,7 +13,6 @@ set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # Executables
 
-add_definitions(-D_GNUF77_)
 add_definitions(-D _HOL_)
 
 SET (CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy -fno-automatic -fno-inline")

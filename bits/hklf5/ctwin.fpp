@@ -1,5 +1,22 @@
       program ctwin
 
+#if defined(CRY_FORTDIGITAL)
+      use dflib
+      interface
+        subroutine no_stdout_buffer
+        !dec$ attributes c :: no_stdout_buffer
+        end subroutine
+      end interface
+#else
+      interface
+        subroutine no_stdout_buffer() bind(c)
+          use, intrinsic :: ISO_C_BINDING
+          implicit none
+        end subroutine
+      end interface
+#endif
+
+	  
 !writes a crystals instruction file given an hklf5 format file from saint.
 
       implicit none
@@ -9,9 +26,8 @@
       character*(9) crystals_element
       character*20 ctrim,cnew
    
-#if defined(_GNUF77_)
-      call no_stdout_buffer_()
-#endif
+      call no_stdout_buffer()
+
       write(6,*) 
      1 '  CTWIN - read HKLF5 and write List 6. Simon Parsons 2003. '
       write(6,*) ' '

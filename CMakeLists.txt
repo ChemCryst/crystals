@@ -166,7 +166,6 @@ endif()
 if ( useGUI )
     message(STATUS "Building gui")
     add_definitions(-DCRY_GUI)
-    add_definitions(-D_GIL_)
     add_definitions(-DCRY_USEWX)
     if ( WIN32 )
         SET(MINGW 1)
@@ -178,11 +177,17 @@ if ( useGUI )
     if ( WIN32 )
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
     endif()
-    INCLUDE(${wxWidgets_USE_FILE})
-        
+	INCLUDE(${wxWidgets_USE_FILE})
+    
+	if(UNIX)
+    	add_definitions(-D__GIL__)
+	endif()
+	
 else()
-    add_definitions(-DCRY_NOGUI)
-    add_definitions(-D_LIN_)
+	add_definitions(-DCRY_NOGUI)
+	if(UNIX)
+		add_definitions(-D__LIN__)
+	endif()
 endif()
 
 if ( usePY )
@@ -199,8 +204,9 @@ if ( MSYS )
 endif()
 add_definitions(-DCRY_GNU)
 add_definitions(-D_NOHDF5_)
+
+# Required to assign hollerith data in a legacy manner to integers
 add_definitions(-D _HOL_)
-add_definitions(-D_GNUF77_)
 
 
 string (TIMESTAMP CRYYEAR "%Y")
