@@ -313,6 +313,18 @@ add_dependencies(CameronFortran CrystalsFortran)
 
 # Executables
 
+
+get_property(value DIRECTORY PROPERTY COMPILE_DEFINITIONS)
+if (value)
+   foreach(item ${value})
+       list(APPEND flags "-D${item}")
+   endforeach()
+endif()
+
+message( STATUS "Defines: ${value}" )
+message( STATUS "Flags: ${flags}" )
+
+
 ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
 # Script file sources and targets
@@ -321,7 +333,7 @@ SET  (scpfiles)
 FOREACH (_file ${sscfiles})
     STRING(REPLACE ".ssc" ".scp" file_scp ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_scp}
-                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
                         DEPENDS ${_file} )
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
@@ -339,7 +351,7 @@ SET  (datfiles)
 FOREACH (_file ${sdafiles})
     STRING(REPLACE ".sda" ".dat" file_dat ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_dat}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
     DEPENDS ${_file} )
     LIST(APPEND datfiles ${file_dat})
 ENDFOREACH()
@@ -349,7 +361,7 @@ SET  (srtfiles)
 FOREACH (_file ${ssrfiles})
     STRING(REPLACE ".ssr" ".srt" file_srt ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_srt}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
                         DEPENDS datafiles/${_file} )
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()
