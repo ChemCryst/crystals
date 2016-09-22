@@ -116,7 +116,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3908E-03          On scale of /FO/
+       237.           237.              0.               0.3907E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -745,7 +745,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3908E-03          On scale of /FO/
+       237.           237.              0.               0.3907E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1375,7 +1375,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3908E-03          On scale of /FO/
+       237.           237.              0.               0.3907E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2007,7 +2007,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3908E-03          On scale of /FO/
+       237.           237.              0.               0.3907E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2157,7 +2157,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3884E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3089,7 +3089,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7120E-03          On scale of /FO/
+       237.           237.              0.               0.7119E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -4826,7 +4826,7 @@ Mean C-C su =   0.0062
 [09]       Fc           0.175 E+00   0.925 E+02
  List   6 contains    904 reflections of which    904 are accepted by LIST 28
  After     6 structure factor/refinement calculations 
-  R =    3.64     Weighted R =   7.15     Minimisation function =    0.589012E+03
+  R =    3.64     Weighted R =   7.15     Minimisation function =    0.589013E+03
 Rsigma=  2.79
 
  Slope, intercept and Cc of Normal Probability Plot =  0.797      0.08   0.99098                                                                                                                                                                                
@@ -5115,7 +5115,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1941
+ Minimum signal : noise used =  1.1942
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
   0   10       10      0          7.2238           0.000
