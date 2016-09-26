@@ -1,0 +1,72 @@
+@test
+subroutine test_linearfit()
+    use pFUnit_mod
+    use absolut_mod
+    implicit none
+    real, dimension(:,:), allocatable :: buffertemp
+    real a,sa,b,sb,r2,goof
+    real aref,saref,bref,sbref,r2ref,goofref
+    double precision, dimension(:), allocatable :: leverages, residuals, dv    
+
+    allocate(buffertemp(30,3))
+    buffertemp(:,1)=(/ -2.96325795E-03 ,   4.22769692E-03 , -3.26357316E-04 , -4.10577189E-03 ,&
+    &     1.74660864E-03 , -7.80505827E-03 ,  8.28319974E-03 ,  1.17715623E-04 ,&
+    &     1.46294959E-04 , -5.04205888E-03 ,  1.46929029E-04 ,  5.05466200E-03 ,&
+    &     3.82924243E-03 ,  2.25143880E-03 ,  3.41397717E-05 , -2.59588808E-02 ,&
+    &    -1.74503439E-04 ,  1.83691434E-03 ,  6.12097385E-04 , -2.54134857E-03 ,&
+    &    -1.10457456E-02 , -4.87566367E-03 , -4.54523979E-04 , -2.59778136E-03 ,&
+    &     3.65315867E-03 ,  7.89600052E-03 ,  3.71816946E-04 , -2.72457162E-03 ,&
+    &     2.22928845E-03 , -1.78307324E-04 /)
+  
+    buffertemp(:,2)=(/ -1.19565091E-04 ,  4.86158347E-03 , -3.06141260E-03 , -1.02000590E-02 ,&
+    &    -8.47499352E-03 ,  2.18827138E-03 ,  9.07030795E-03 , -1.67446816E-03 ,&
+    &    -1.37340243E-03 , -2.86707282E-03 , -8.21015891E-03 ,  1.71646662E-02 ,&
+    &     1.63962878E-02 ,  3.12459935E-03 , -4.23981389E-03 , -6.52822386E-03 ,&
+    &    -4.54047322E-03 , -9.21579357E-03 , -1.68131420E-03 , -2.56431545E-03 ,&
+    &    -4.29594368E-02 , -1.94208007E-02 , -1.21495752E-02 , -9.58717056E-03 ,&
+    &    -2.74356571E-03 ,  1.21693173E-02 , -6.05943031E-04 , -1.10480711E-02 ,&
+    &     3.37410904E-02 ,  3.57936090E-03 /)
+    
+    buffertemp(:,3)=(/  1345577.25 , 84467.2109 , 6067479.00 , 6549917.00 ,&
+    &   385373.500 , 247433.562 , 380191.500 , 4463873.00 ,&
+    &   5288955.00 , 105046.039 , 2008450.25 , 64137.2930 ,&
+    &   188759.266 , 1078906.25 , 5495990.50 , 23915.8027 ,&
+    &   2148457.00 , 1186790.88 , 992606.625 , 1046353.12 ,&
+    &   6520.84277 , 184100.719 , 54156.8984 , 220499.234 ,&
+    &   228024.531 , 115514.805 , 902935.000 , 470980.000 ,&
+    &   13788.8105 , 510616.438 /)            
+    
+    !! Reference from http://www.xuru.org/rt/WLR.asp
+    !! Also checked with R
+    !! y = 1.215554364 x - 3.16903396·10-3
+    !! Correlation Coefficient: r = 6.056639106·10-1
+    !! Residual Sum of Squares: rss = 533.6861911
+    !! Coefficient of Determination: R2 = 3.668287726·10-1
+    aref=-3.16903396E-3
+    saref=0.0007035
+    bref=1.215554364
+    sbref=0.3018035
+    r2ref=3.668287726E-1
+            
+    print *, ''
+    print *, 'Test linear fit'
+
+    call linearfitref(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
+    &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
+
+    @assertEqual(  aref, a, 1e-6, "intercept" )
+    @assertEqual(  saref, sa, 1e-6, "sigma intercept" )
+    @assertEqual(  bref, b, 1e-6, "Slope" )
+    @assertEqual(  sbref, sb, 1e-6, "sigma slope" )
+    @assertEqual(  r2ref, r2, 1e-6, "r2" )
+    
+    call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
+    &   a,sa,b,sb,r2,goof, leverages=leverages, tw=residuals, dv=dv)
+
+    @assertEqual(  aref, a, 1e-6, "intercept" )
+    @assertEqual(  saref, sa, 1e-6, "sigma intercept" )
+    @assertEqual(  bref, b, 1e-6, "Slope" )
+    @assertEqual(  sbref, sb, 1e-6, "sigma slope" )
+    @assertEqual(  r2ref, r2, 1e-6, "r2" )
+
+end subroutine

@@ -8,6 +8,10 @@ endif()
 
 project(pfunit-crystals)
 
+set(CMAKE_Fortran_FLAGS "")
+set(CMAKE_C_FLAGS "")
+set(CMAKE_CXX_FLAGS "")
+
 if(NOT usepFUnit)
     return ()
 endif ()
@@ -46,31 +50,36 @@ include_directories(
     )
 
 set(_test_sources)
-foreach(_test
-    test_formatnumber
-    )
-    set(test_dependency ${PROJECT_SOURCE_DIR}/${_test}.pf)
+FILE(GLOB testslist "${PROJECT_SOURCE_DIR}/*.pf")
+
+FOREACH(_test ${testslist})
+    get_filename_component(test_basename ${_test} NAME_WE)
+    MESSAGE(STATUS "Building test file: ${test_basename}")
+    set(test_dependency ${_test})
     add_custom_command(
-        OUTPUT ${PROJECT_BINARY_DIR}/generated/${_test}.F90
-        COMMAND python ${PFUNIT_PARSER} ${PROJECT_SOURCE_DIR}/${_test}.pf ${PROJECT_BINARY_DIR}/generated/${_test}.F90
+        OUTPUT ${PROJECT_BINARY_DIR}/generated/${test_basename}.F90
+        COMMAND python ${PFUNIT_PARSER} ${_test} ${PROJECT_BINARY_DIR}/generated/${test_basename}.F90
         DEPENDS ${test_dependency}
         )
-    set(_test_sources ${_test_sources} ${PROJECT_BINARY_DIR}/generated/${_test}.F90)
-    file(APPEND ${PROJECT_BINARY_DIR}/generated/testSuites.inc "ADD_TEST_SUITE(${_test}_suite)\n")
+    set(_test_sources ${_test_sources} ${PROJECT_BINARY_DIR}/generated/${test_basename}.F90)
+    file(APPEND ${PROJECT_BINARY_DIR}/generated/testSuites.inc "ADD_TEST_SUITE(${test_basename}_suite)\n")
 endforeach()
 
 set_source_files_properties(${PFUNIT_DRIVER} PROPERTIES GENERATED 1)
 
 add_executable(
     pftest_alltests
+    ${CMAKE_SOURCE_DIR}/pFunit/dummymodule.f90
     ${PFUNIT_DRIVER}
     ${_test_sources}
     )
 
+get_target_property(linkflags crystals LINK_LIBRARIES)
 target_link_libraries(
     pftest_alltests
     ${PFUNIT_LIBRARY}
     ${CRYSLIB}
+    ${linkflags}
     )
 
 enable_testing()
