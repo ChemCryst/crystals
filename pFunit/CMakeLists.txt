@@ -8,7 +8,7 @@ endif()
 
 project(pfunit-crystals)
 
-if(NOT pFUnit)
+if(NOT usepFUnit)
     return ()
 endif ()
 message("")
