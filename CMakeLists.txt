@@ -17,7 +17,8 @@ option (useOPENMP "useOPENMP" ON)
 option (useHDF5 "useHDF5" OFF)
 option (useGGDB3 "useGGDB3" OFF) # used for orion (old dgb)
 
-SET( Fortran_MODULE_DIRECTORY "${CMAKE_SOURCE_DIR}/FortranModules" )
+SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
+message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
 INCLUDE_DIRECTORIES(${Fortran_MODULE_DIRECTORY})
 
 if(useSTATIC)
