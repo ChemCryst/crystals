@@ -16,6 +16,7 @@ option (useSTATIC "useSTATIC" OFF)
 option (useOPENMP "useOPENMP" ON)
 option (useHDF5 "useHDF5" OFF)
 option (useGGDB3 "useGGDB3" OFF) # used for orion (old dgb)
+option (usepFUnit "usepFUnit" OFF)  
 
 SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
 message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
@@ -423,4 +424,8 @@ endif ()
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
 ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
+
+# Unit testing
+ADD_SUBDIRECTORY(pFunit)
+
 
