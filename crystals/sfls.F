@@ -621,8 +621,8 @@ c
 C If outputting design matrix and deltaF's then open files now.
        IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
        IF (sfls_punch_flag>0) THEN
-        call sfls_punch_init_design(sfls_punch_flag)
         call sfls_punch_reset_filename()
+        call sfls_punch_init_design(sfls_punch_flag)
        END IF
 
        ILEV = ISTORE(M33CD+12)
