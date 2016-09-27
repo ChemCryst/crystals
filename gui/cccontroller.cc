@@ -1712,11 +1712,13 @@ void    CcController::Tokenize( const string & cText )
         }
         else if ( selector.compare(kSControlSelector) == 0 )
         {
-            while ( ParseInput( *mCurTokenList ) );
+            while ( ParseInput( *mCurTokenList ) )
+		;
         }
         else if ( selector.compare(kSWaitControlSelector) == 0 )
         {
-            while ( ParseInput( *mCurTokenList ) );
+            while ( ParseInput( *mCurTokenList ) )
+		;
 //We must now signal the waiting Crystals thread that we're complete.
             LOGSTAT ( "CW complete, unlocking output queue.");
             m_Complete_Signal.Signal();

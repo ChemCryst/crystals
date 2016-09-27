@@ -186,7 +186,11 @@ if ( useGUI )
     endif()
 	INCLUDE(${wxWidgets_USE_FILE})
     
-	if(UNIX)
+
+
+	if(APPLE)
+    	add_definitions(-D__MAC__)
+	elseif(UNIX)
     	add_definitions(-D__GIL__)
 	endif()
 	
@@ -206,6 +210,11 @@ if ( WIN32 )
     add_definitions(-DCRY_OSWIN32)
     add_definitions(-D__MIN__)
 endif()
+
+if ( APPLE )
+    add_definitions(-DCRY_OSMAC)
+endif()
+
 if ( MSYS )
     add_definitions(-DCRY_OSWIN32)
 endif()

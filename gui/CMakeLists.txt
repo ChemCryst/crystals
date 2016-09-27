@@ -10,7 +10,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug) 
 
 #SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.7") 
-SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
+#SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
 
 #add_definitions("-DMACOSX_DEPLOYMENT_TARGET=10.7")
 #add_definitions("-std=gnu++11")
