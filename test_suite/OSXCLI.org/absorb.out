@@ -1,0 +1,365 @@
+#TITLE ABSTEST                                                                                                                                                                                                                                                  
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 2                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+# CAD4 KAPPA GEOMETRY - THIS IS THE 'REAL' TEST                                                                                                                                                                                                                 
+#LIST 13                                                                                                                                                                                                                                                        
+
+ Initial azimuth =   0.00
+
+
+ Orientation matrix
+
+                        0.0057   -0.0795   -0.0932
+
+                       -0.0987    0.0287   -0.1015
+
+                        0.0247    0.1329   -0.0339
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
+
+
+
+   An absorption correction may be computed
+
+
+  28 Phi values
+       0.00     10.00     15.00     20.00     25.00     30.00     35.00     40.00     50.00     60.00
+      70.00     80.00     90.00     95.00    100.00    105.00    110.00    115.00    120.00    130.00
+     140.00    150.00    160.00    170.00    180.00    190.00    195.00    200.00
+
+  2.  2. -1.       Imax      213.000    2Sin(Theta) 0.2526
+        70.       63.       60.       58.       55.       58.       63.       70.      100.      136.
+       167.      192.      200.      207.      210.      213.      208.      180.      148.      123.
+       105.       91.       80.       75.       70.       63.       60.       58.
+
+  1.  1. -1.       Imax       78.000    2Sin(Theta) 0.1386
+        23.       20.       19.       18.       18.       18.       18.       19.       25.       35.
+        46.       61.       70.       75.       77.       76.       74.       68.       59.       48.
+        41.       35.       29.       24.       23.       20.       19.       18.
+
+ No scales found
+
+ A scale of   1.00000  has been assumed
+
+[35]      -4.00     -2.00     -1.0  11217.00    100.00      0.21      0.21      3.73     -0.48
+[35]       2.40      0.00      0.0      0.00      0.00      0.00      0.00      0.17     78.69
+[35]       1.00      3.00      2.0  11999.00    100.00      0.21      0.21      2.49      2.04
+[35]       1.31      0.00      0.0      0.00      0.00      0.00      0.00      0.17    130.00
+[35]       1.00      1.00     -1.0  13356.00    100.00      0.06      0.06      1.76     -0.55
+[35]       2.15      0.00      0.0      0.00      0.00      0.00      0.00      0.01     35.70
+[35]       1.00      1.00     -1.0  23639.00    100.00      0.06      0.19      1.71     -1.26
+[35]       1.03      0.00      0.0      0.00      0.00      0.00      0.00      0.01     75.22
+[35]       1.00      1.00     -1.0   5331.00    100.00      0.06      0.55      1.47     -2.64
+[35]       4.33      0.00      0.0      0.00      0.00      0.00      0.00      0.00     18.00
+ The updated reflections are now on UNIT 53
+
+
+
+       5 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ Maximum correction to I is    4.33                                                                                                                                                                                                                             
+ Minimum correction to I is    1.03                                                                                                                                                                                                                             
+ The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+# USE Y290  EULARIAN ANGLES - THE ANGLES DO NOT COME FROM THE DATA                                                                                                                                                                                              
+#LIST 13                                                                                                                                                                                                                                                        
+ Rotation matrix
+
+                       -0.9783    0.1757   -0.1097
+
+                       -0.2006   -0.6719    0.7130
+
+                        0.0516    0.7195    0.6925
+
+
+ Orientation matrix
+
+                       -0.0997    0.0277   -0.0955
+
+                       -0.0204   -0.1058    0.0641
+
+                        0.0053    0.1133    0.0832
+#HKLI                                                                                                                                                                                                                                                           
+# CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS                                                                                                                                                                                                  
+
+
+
+   An absorption correction may be computed
+
+
+  28 Phi values
+       0.00     10.00     15.00     20.00     25.00     30.00     35.00     40.00     50.00     60.00
+      70.00     80.00     90.00     95.00    100.00    105.00    110.00    115.00    120.00    130.00
+     140.00    150.00    160.00    170.00    180.00    190.00    195.00    200.00
+
+  2.  2. -1.       Imax      213.000    2Sin(Theta) 0.2526
+        70.       63.       60.       58.       55.       58.       63.       70.      100.      136.
+       167.      192.      200.      207.      210.      213.      208.      180.      148.      123.
+       105.       91.       80.       75.       70.       63.       60.       58.
+
+  1.  1. -1.       Imax       78.000    2Sin(Theta) 0.1386
+        23.       20.       19.       18.       18.       18.       18.       19.       25.       35.
+        46.       61.       70.       75.       77.       76.       74.       68.       59.       48.
+        41.       35.       29.       24.       23.       20.       19.       18.
+
+ No scales found
+
+ A scale of   1.00000  has been assumed
+
+[35]      -4.00     -2.00     -1.0  11217.00    100.00      0.21      0.21     -0.58     -0.48
+[35]       2.40      0.00      0.0      0.00      0.00      0.00      0.00      0.17     78.68
+[35]       1.00      3.00      2.0  11999.00    100.00      0.21      0.21      1.04      2.35
+[35]       1.87      0.00      0.0      0.00      0.00      0.00      0.00      0.10    103.68
+[35]       1.00      1.00     -1.0  13356.00    100.00      0.06      0.06      0.18      1.44
+[35]       1.23      0.00      0.0      0.00      0.00      0.00      0.00      0.06     67.05
+[35]       1.00      1.00     -1.0  23639.00    100.00      0.06      0.06      0.18      1.44
+[35]       1.23      0.00      0.0      0.00      0.00      0.00      0.00      0.06     67.05
+[35]       1.00      1.00     -1.0   5331.00    100.00      0.06      0.06      0.18      1.44
+[35]       1.23      0.00      0.0      0.00      0.00      0.00      0.00      0.06     67.05
+ The updated reflections are now on UNIT 52
+
+
+
+       5 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ Maximum correction to I is    2.40                                                                                                                                                                                                                             
+ Minimum correction to I is    1.23                                                                                                                                                                                                                             
+ The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST 13                                                                                                                                                                                                                                                        
+# CAD4 EULARIAN ANGLES - REFLECTION 1 1 1 WILL HAVE INCORRECT RESULTS                                                                                                                                                                                           
+
+ Initial azimuth =   0.00
+
+
+ Orientation matrix
+
+                        0.0057   -0.0794   -0.0933
+
+                       -0.0987    0.0287   -0.1015
+
+                        0.0247    0.1329   -0.0339
+#HKLI                                                                                                                                                                                                                                                           
+# CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS                                                                                                                                                                                                  
+
+
+
+   An absorption correction may be computed
+
+
+  28 Phi values
+       0.00     10.00     15.00     20.00     25.00     30.00     35.00     40.00     50.00     60.00
+      70.00     80.00     90.00     95.00    100.00    105.00    110.00    115.00    120.00    130.00
+     140.00    150.00    160.00    170.00    180.00    190.00    195.00    200.00
+
+  2.  2. -1.       Imax      213.000    2Sin(Theta) 0.2526
+        70.       63.       60.       58.       55.       58.       63.       70.      100.      136.
+       167.      192.      200.      207.      210.      213.      208.      180.      148.      123.
+       105.       91.       80.       75.       70.       63.       60.       58.
+
+  1.  1. -1.       Imax       78.000    2Sin(Theta) 0.1386
+        23.       20.       19.       18.       18.       18.       18.       19.       25.       35.
+        46.       61.       70.       75.       77.       76.       74.       68.       59.       48.
+        41.       35.       29.       24.       23.       20.       19.       18.
+
+ No scales found
+
+ A scale of   1.00000  has been assumed
+
+[35]      -4.00     -2.00     -1.0  11217.00    100.00      0.21      0.21      3.73     -0.48
+[35]       2.40      0.00      0.0      0.00      0.00      0.00      0.00      0.17     78.69
+[35]       1.00      3.00      2.0  11999.00    100.00      0.21      0.21      2.49      2.04
+[35]       1.31      0.00      0.0      0.00      0.00      0.00      0.00      0.17    129.91
+[35]       1.00      1.00     -1.0  13356.00    100.00      0.06      0.06      1.76     -0.55
+[35]       2.16      0.00      0.0      0.00      0.00      0.00      0.00      0.01     35.65
+[35]       1.00      1.00     -1.0  23639.00    100.00      0.06      0.06      1.76     -0.55
+[35]       2.16      0.00      0.0      0.00      0.00      0.00      0.00      0.01     35.65
+[35]       1.00      1.00     -1.0   5331.00    100.00      0.06      0.06      1.76     -0.55
+[35]       2.16      0.00      0.0      0.00      0.00      0.00      0.00      0.01     35.65
+ The updated reflections are now on UNIT 53
+
+
+
+       5 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ Maximum correction to I is    2.40                                                                                                                                                                                                                             
+ Minimum correction to I is    1.32                                                                                                                                                                                                                             
+ The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+# TEST ROD   CORRECTION                                                                                                                                                                                                                                         
+#LIST 13                                                                                                                                                                                                                                                        
+
+ Initial azimuth =   0.00
+
+
+ Orientation matrix
+
+                        0.0057   -0.0795   -0.0932
+
+                       -0.0987    0.0287   -0.1015
+
+                        0.0247    0.1329   -0.0339
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
+
+
+
+   An absorption correction may be computed
+
+
+
+ Specimen shape correction
+ Components of specimen axis    0.00   0.00   1.00
+ Limiting inclination   4.918,    MU*T   0.130
+ Maximum permitted correction   4.000
+
+
+
+ No scales found
+
+ A scale of   1.00000  has been assumed
+
+[35]      -4.00     -2.00     -1.0  11217.00    100.00      0.21      0.21      3.73     -0.48
+[35]       0.00      0.00      1.2      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      3.00      2.0  11999.00    100.00      0.21      0.21      2.49      2.04
+[35]       0.00      0.00      1.3      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      1.00     -1.0  13356.00    100.00      0.06      0.06      1.76     -0.55
+[35]       0.00      0.00      1.2      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      1.00     -1.0  23639.00    100.00      0.06      0.19      1.71     -1.26
+[35]       0.00      0.00      1.3      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      1.00     -1.0   5331.00    100.00      0.06      0.55      1.47     -2.64
+[35]       0.00      0.00      1.3      0.00      0.00      0.00      0.00      0.00      0.00
+ The updated reflections are now on UNIT 52
+
+
+
+       5 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ Maximum correction to I is    1.34                                                                                                                                                                                                                             
+ Minimum correction to I is    1.30                                                                                                                                                                                                                             
+ The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#LIST 13                                                                                                                                                                                                                                                        
+# TEST PLATE CORRECTION                                                                                                                                                                                                                                         
+
+ Initial azimuth =   0.00
+
+
+ Orientation matrix
+
+                        0.0057   -0.0795   -0.0932
+
+                       -0.0987    0.0287   -0.1015
+
+                        0.0247    0.1329   -0.0339
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
+
+
+
+   An absorption correction may be computed
+
+
+
+ Specimen shape correction
+ Components of specimen axis   -0.91   0.42   0.00
+ Limiting inclination  87.433,    MU*T   0.065
+ Maximum permitted correction   4.000
+
+
+
+ No scales found
+
+ A scale of   1.00000  has been assumed
+
+  -4. -2. -1. Excessive shape correction                                                                                                                                                                                                                        
+ Inclinations   0.045  0.388  0.040  Correction        5.088                                                                                                                                                                                                    
+[35]      -4.00     -2.00     -1.0  11217.00    100.00      0.21      0.21      3.73     -0.48
+[35]       0.00      0.00      4.0      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      3.00      2.0  11999.00    100.00      0.21      0.21      2.49      2.04
+[35]       0.00      0.00      3.8      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      1.00     -1.0  13356.00    100.00      0.06      0.06      1.76     -0.55
+[35]       0.00      0.00      1.4      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      1.00     -1.0  23639.00    100.00      0.06      0.19      1.71     -1.26
+[35]       0.00      0.00      1.6      0.00      0.00      0.00      0.00      0.00      0.00
+[35]       1.00      1.00     -1.0   5331.00    100.00      0.06      0.55      1.47     -2.64
+[35]       0.00      0.00      2.4      0.00      0.00      0.00      0.00      0.00      0.00
+ The updated reflections are now on UNIT 53
+
+
+
+       5 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ Maximum correction to I is    4.00                                                                                                                                                                                                                             
+ Minimum correction to I is    1.44                                                                                                                                                                                                                             
+ The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#LIST 13                                                                                                                                                                                                                                                        
+
+
+ Orientation matrix
+
+                        0.0057   -0.0795   -0.0932
+
+                       -0.0987    0.0287   -0.1015
+
+                        0.0247    0.1329   -0.0339
+#HKLI                                                                                                                                                                                                                                                           
+# READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS                                                                                                                                                                                              
+
+
+
+   An absorption correction may be computed
+
+
+  28 Phi values
+       0.00     10.00     15.00     20.00     25.00     30.00     35.00     40.00     50.00     60.00
+      70.00     80.00     90.00     95.00    100.00    105.00    110.00    115.00    120.00    130.00
+     140.00    150.00    160.00    170.00    180.00    190.00    195.00    200.00
+
+  2.  2. -1.       Imax      213.000    2Sin(Theta) 0.2526
+        70.       63.       60.       58.       55.       58.       63.       70.      100.      136.
+       167.      192.      200.      207.      210.      213.      208.      180.      148.      123.
+       105.       91.       80.       75.       70.       63.       60.       58.
+
+  1.  1. -1.       Imax       78.000    2Sin(Theta) 0.1386
+        23.       20.       19.       18.       18.       18.       18.       19.       25.       35.
+        46.       61.       70.       75.       77.       76.       74.       68.       59.       48.
+        41.       35.       29.       24.       23.       20.       19.       18.
+
+ No scales found
+
+ A scale of   1.00000  has been assumed
+
+[35]      -4.00     -2.00     -1.0  11217.00    100.00      0.21      0.21      3.73     -0.48
+[35]       2.40      0.00      0.0      0.00      0.00      0.00      0.00      0.17     78.69
+[35]       1.00      3.00      2.0  11999.00    100.00      0.21      0.21      2.49      2.04
+[35]       1.31      0.00      0.0      0.00      0.00      0.00      0.00      0.17    130.00
+[35]       1.00      1.00     -1.0  13356.00    100.00      0.06      0.06      1.76     -0.55
+[35]       2.15      0.00      0.0      0.00      0.00      0.00      0.00      0.01     35.70
+[35]       1.00      1.00     -1.0  23639.00    100.00      0.06      0.19      1.71     -1.26
+[35]       1.03      0.00      0.0      0.00      0.00      0.00      0.00      0.01     75.22
+[35]       1.00      1.00     -1.0   5331.00    100.00      0.06      0.55      1.47     -2.64
+[35]       4.33      0.00      0.0      0.00      0.00      0.00      0.00      0.00     18.00
+ The updated reflections are now on UNIT 52
+
+
+
+       5 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+ Maximum correction to I is    4.33                                                                                                                                                                                                                             
+ Minimum correction to I is    1.03                                                                                                                                                                                                                             
+ The setting angles stored in list 6 are now for a  'Rollett' machine.                                                                                                                                                                                          
+#FINISH                                                                                                                                                                                                                                                         
+
+
+          : Job ends ok       with     0 warnings and     0 errors
