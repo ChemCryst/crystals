@@ -906,7 +906,7 @@ end subroutine
 !! \n
 !! verified against Watts & Halliwell, Essential Environmental \n
 !! Science, Routledge, 1996. 
-subroutine linearfit(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, leverages, tw, dv)
+subroutine linearfit(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, goof, leverages, tw, dv)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 implicit none
@@ -916,6 +916,7 @@ real, dimension(:), intent(in) :: wt !< weights
 real, intent(out) :: intercept,interceptsu !< Intercept and su
 real, intent(out) :: slope,slopsu !< slope and its su
 real, intent(out) :: r2 !< correlation coefficient
+real, intent(out) :: goof !< Goodness of fit Chi^2
 double precision, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
 double precision, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
 double precision, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
@@ -987,6 +988,9 @@ double precision, external :: ddot
     v1=wt*y
     r2=1 - s2*(mitem-2) / &
     &   ( DDOT(size(y), y, 1, v1, 1) - sum(v1)**2/sum(wt) )
+    
+    ! calculate goodness of fit
+    goof=sum(ew**2*wt)/(mitem-2)
    
     !leverages
     !Hw=matmul(matmul(x, normalinv), transpose(x))
@@ -1341,7 +1345,7 @@ real, dimension(numbins) :: bins !< list of bins (normalised)
 character(len=50) :: formatstr
 integer, parameter :: hist_x=3, hist_y=10
 character, dimension(numbins*hist_x) :: plotline
-real mean, s2, est
+real mean, s2, est, goof
 
     if(issprt.eq.0) then
         write(ncwu,'(a)') '', ' Hole in One subroutine', &
@@ -1423,7 +1427,7 @@ real mean, s2, est
             end do
             
             call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
-            &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
+            &   a,sa,b,sb,r2,goof, leverages=leverages, tw=residuals, dv=dv)
         
             k=-1
             do j=1, size(outliers)
@@ -1884,7 +1888,7 @@ end subroutine
 
 !> Absolute configuration using Bijvoet differences
 subroutine bijvoet_differences(reflections_data, filtered_reflections, itype, bijvoet, &
-&   bijvoetsu, weights, outliersarg)
+&   bijvoetsu, weights, outliersarg, punch_arg)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 use m_mrgrnk
@@ -1894,6 +1898,7 @@ real, dimension(:,:), intent(in) :: reflections_data !< reflectiond data 2D arra
 logical, dimension(:) :: filtered_reflections !< True if a reflections needs to be rejected
 real, dimension(:), optional, intent(in) :: weights !< optional weights. If absent, 1/sigma**2 is used.
 logical, dimension(:), allocatable, intent(out), optional :: outliersarg !< If present, use a robust fitting with outlier rejection
+logical, intent(in), optional :: punch_arg !< Write ouput to a file
 integer, intent(in) :: itype
 real, intent(out) :: bijvoet, bijvoetsu
 real, dimension(:,:), allocatable :: buffertemp
@@ -1906,7 +1911,7 @@ real a,sa,b,sb,r2
 real, dimension(3) :: tensor
 double precision, dimension(:), allocatable :: leverages, residuals, dv
 integer, dimension(:), allocatable :: rank
-logical change  
+logical change , punch
 logical, dimension(:), allocatable :: outliers
 character(len=10) ctime
 
@@ -1916,7 +1921,7 @@ real, dimension(numbins) :: bins !< list of bins (normalised)
 character(len=50) :: formatstr
 integer, parameter :: hist_x=3, hist_y=10
 character, dimension(numbins*hist_x) :: plotline
-real mean, s2, est
+real mean, s2, est, goof
 
 
 !    allocate(buffertemp(30,3))
@@ -1961,6 +1966,17 @@ real mean, s2, est
 !    &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
 !    print *, '++++2 ', a, sa, b, sb, r2
 !    stop
+
+    punch=.false.
+    if(present(punch_arg)) then
+        if(punch_arg) then
+            punch=.true.
+        end if
+    end if
+
+    if(punch) then
+        open(145, file='bijvoet_fit')
+    end if
     
     if(issprt.eq.0) then
         if(itype==1) then
@@ -1997,6 +2013,16 @@ real mean, s2, est
             &                 '    Cut-of value for outliers: 3sigma', &
             &                 '',''
         end if
+        if(punch) then
+            write(145, '(a)') ' Outliers rejection based on studentized residuals enabled:', &
+                &                 '    Detection of outliers in weighted least squares regression', &
+                &                 '    Bang Yong Sohn, Guk Boh Kim', &
+                &                 '    Korean Journal of Computational & Applied Mathematics', &
+                &                 '    August 1997, Volume 4, Issue 2, pp 441-452', &
+                &                 '    doi: 10.1007/BF03014491', &
+                &                 '    Cut-of value for outliers: 3sigma', &
+                &                 '',''
+        end if
     end if
     allocate(outliers(size(filtered_reflections)))
     outliers=.false.
@@ -2009,9 +2035,14 @@ real mean, s2, est
         if(issprt.eq.0) then
             if(outlierloop==1) then
                 write(ncwu,'(a, I0)') '------- Linear fit using all suplied data'
+                if(punch) write(145,'(a, I0)') '------- Linear fit using all suplied data'
             else
                 write(ncwu,'(a, I0, a, I0, a)') '------- Linear fit iteration number ', &
                 &   outlierloop, ' with ', count(outliers), ' rejected outliers'
+                if(punch) then
+                    write(145,'(a, I0, a, I0, a)') '------- Linear fit iteration number ', &
+                    &   outlierloop, ' with ', count(outliers), ' rejected outliers'
+                end if
             end if
         end if
 
@@ -2054,18 +2085,12 @@ real mean, s2, est
             end do
             
             call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
-            &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
+            &   a,sa,b,sb,r2,goof, leverages=leverages, tw=residuals, dv=dv)
         
             k=0
             do j=1, size(outliers)
                 if( (filtered_reflections(j) .eqv. .false.) .and. (outliers(j) .eqv. .false.) ) then
                     k=k+1
-                    if(abs(residuals(k))>3.0d0) then
-                        if(.not. outliers(j)) then
-                            outliers(j)=.true.
-                            change=.true.
-                        end if
-                    end if
                     if(abs(residuals(k))>3.0d0) then
                         if(.not. outliers(j)) then
                             outliers(j)=.true.
@@ -2080,6 +2105,10 @@ real mean, s2, est
                 !&   b,sb,' intercept:',a,sa
                 write(ncwu,'(a, a, a, a)') 'Slope:', &
                 &   print_value(b,sb, opt_precision=3),' intercept:',print_value(a,sa, opt_precision=3)
+                if(punch) then
+                    write(145,'(a, a, a, a)') 'Slope:', &
+                    &   print_value(b,sb, opt_precision=3),' intercept:',print_value(a,sa, opt_precision=3)
+                end if
                 write(ncwu,*) ''
             end if
             
@@ -2110,9 +2139,15 @@ real mean, s2, est
         outliersarg=outliers
         if(issprt.eq.0) then
             write(ncwu,'(a)') '', ' List of outliers (excluded all previously filtered reflections):'
+            if(punch) then
+                write(145,'(a)') '', ' List of outliers (excluded all previously filtered reflections):'
+            end if
             k=0
             do i=1, size(outliers)
                 if(outliers(i)) then
+                    if(punch) then
+                        write(145,*) nint(reflections_data( (/C_H,C_K, C_L/), i))
+                    end if
                     k=k+1
                     if(k>size(column)) then
                         ! write line of table
@@ -2130,25 +2165,37 @@ real mean, s2, est
         end if
     end if
     
-    open(487, file='xyw.dat')
-    do i=1, ubound(buffertemp, 1)
-        write(487,*) selected_reflections(:,i), buffertemp(i,:), residuals(i)
-    end do
-    close(487)
+    if(punch) then
+        write(145, '(a)') 'Reflection x, y, w, residuals'
+        do i=1, ubound(buffertemp, 1)
+            write(145,*) selected_reflections(:,i), buffertemp(i,:), residuals(i)
+        end do
+        write(145, '(a)') ''
+    end if
     
     ! Print out leverages
     if(issprt.eq.0 .and. size(leverages)>0) then
-        write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
-        &   ' Determined using leverages: abs(X (X^t Dw X)^-1 X^t)', &
-        &   ' ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse', &
-        &   ' The result is scaled with the maximum leverage=100.0'
-        
         allocate(rank(size(leverages)))
         ! Sort into ascending order.
         call mrgrnk(abs(leverages), rank)
         ! Reverse the order
         rank=rank(size(rank):1:-1)
-        
+
+        write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
+        &   ' Determined using leverages: abs(X (X^t Dw X)^-1 X^t)', &
+        &   ' ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse', &
+        &   ' The result is scaled with the maximum leverage=100.0'
+        if(punch) then
+            write(145,'(a)') '', ' Influential reflections:', &
+            &   ' Determined using leverages: abs(X (X^t Dw X)^-1 X^t)', &
+            &   ' ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse', &
+            &   ' The result is scaled with the maximum leverage=100.0'
+            do i=1, size(leverages)
+                write(145, *) selected_reflections( :, rank(i)), abs(100.0*leverages(rank(i))/leverages(rank(1)))
+            end do
+            write(145, *) ''
+        end if
+                        
         do i=1, numcolumn
             write(ncwu,'(a12, a8, 3X)', advance='no') 'h k l   ', '(Lev)  '
         end do
@@ -2168,16 +2215,26 @@ real mean, s2, est
     
     ! Print out Dv
     if(issprt.eq.0 .and. size(dv)>0) then
-        write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
-        &   ' Determined using: Dv = (V z^t z V)/(1-lev)', &
-        &   ' V = variance of the parameter, ^t = transpose, ', &
-        &   ' z = a row of the design matrix, lev = leverage'
-                
         !allocate(rank(size(dv)))
         ! Sort into ascending order.
         call mrgrnk(dv, rank)
         ! Reverse the order
         rank=rank(size(rank):1:-1)
+
+        write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
+        &   ' Determined using: Dv = (V z^t z V)/(1-lev)', &
+        &   ' V = variance of the parameter, ^t = transpose, ', &
+        &   ' z = a row of the design matrix, lev = leverage'
+        if(punch) then
+            write(145,'(a)') '', ' Influential reflections:', &
+            &   ' Determined using: Dv = (V z^t z V)/(1-lev)', &
+            &   ' V = variance of the parameter, ^t = transpose, ', &
+            &   ' z = a row of the design matrix, lev = leverage'
+            do i=1, size(leverages)
+                write(145, *) selected_reflections( :, rank(i)), dv(rank(i))
+            end do
+            write(145, *) ''
+        end if
         
         do i=1, numcolumn
             write(ncwu,'(a12, a10, 3X)', advance='no') 'h k l   ', '(Dv)   '
@@ -2261,8 +2318,11 @@ real mean, s2, est
     bijvoetsu = 0.5*sb
 
     if(issprt.eq.0) then
-        write(ncwu,'(a, a)') 'Bijvoet differences:', &
-        &   print_value(bijvoet,bijvoetsu, opt_precision=4)
+        write(ncwu,'(a, a, a, F0.3, a, F0.3)') 'Bijvoet differences:', &
+        &   print_value(bijvoet,bijvoetsu, opt_precision=4), ' r^2:', r2, &
+        &   ' Reduced Chi2:', goof
+        write(ncwu,'(a, a, a)') 'Corrected Bijvoet differences:', &
+        &   print_value(bijvoet,bijvoetsu*goof, opt_precision=4)
         write(ncwu,*) ''
         if(itype==1) then
             write(ncwu,'(a)') '', ' End Bijvoet differences subroutine', &
@@ -2274,6 +2334,10 @@ real mean, s2, est
             &                 ' --------------------------------------------------', &
             &                 '', ''
         end if
+    end if
+    
+    if(punch) then
+        close(145)
     end if
 
 end subroutine
