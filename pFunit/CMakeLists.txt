@@ -28,6 +28,7 @@ endif()
 
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR};${CMAKE_MODULE_PATH}")
+set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR};${CMAKE_PREFIX_PATH}")
 if(DEFINED ENV{PFUNIT})
     message(STATUS "pFUnit search location: $ENV{PFUNIT}")
 else ()
