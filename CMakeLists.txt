@@ -149,7 +149,7 @@ else ()
     endif()
 endif ()
 
-# Reset fortran flags
+# Reset flags
 set(CMAKE_Fortran_FLAGS "")
 set(CMAKE_C_FLAGS "")
 set(CMAKE_CXX_FLAGS "")

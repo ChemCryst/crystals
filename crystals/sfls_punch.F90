@@ -144,6 +144,7 @@ character(len=255) :: file_name
         design_unit=786
         write(file_name, '(a,i0,a)'), 'design', filecount, '.dat'
         open(design_unit, file=file_name, status='new')
+        call print_design_header()
         
     case default
         print *, 'Punch flag not recognised ', sfls_punch_flag
@@ -277,6 +278,7 @@ integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
 logical, optional, intent(in) :: punch !< Flag to close the file when done
 integer i
 logical fileopened
+character(len=256) :: lineformat
 
     select case(sfls_punch_flag)
     case(1) ! matlab
@@ -323,8 +325,9 @@ logical fileopened
             call abort()
         end if
         
+        write(lineformat, '("(3I5, 3X, ",I0,"E25.16)")') ubound(designmatrix, 1)
         do i=1, ubound(designmatrix, 2)
-            write(design_unit, *) hkllist(:,i), designmatrix(:,i)
+            write(design_unit, lineformat) hkllist(:,i), designmatrix(:,i)
         end do
 
     case default
@@ -463,6 +466,207 @@ implicit none
     end if
     fileindex=-1
 end subroutine
+
+subroutine print_design_header()
+use xunits_mod, only: ierflg
+use xssval_mod, only: issprt
+use xlst05_mod, only: l5, m5, md5, n5
+use xlst12_mod, only: l12a, l12b, l12o, m12, m12a, m12b, md12a, md12b, n12, n12b
+use xerval_mod, only:
+use xopval_mod, only: iopabn, iopcmi, iopend, iopp22
+use xiobuf_mod, only: cmon
+implicit none
+
+integer, parameter :: nameln = 18 
+integer, parameter :: lover = 10 , nover = 6 
+integer, parameter :: latomp = 8 , natomp = 13 
+character(len=132) :: cline1 , cline2
+
+integer i, j, k, l, icombf, iend, ipos, istat
+integer length, natom, nbatch, ncell, nelem, nexti, nlayer
+integer nprof, nunref
+
+real weight
+
+include 'ISTORE.INC'
+include 'STORE.INC'
+include 'QSTORE.INC'
+
+character(len=lover), dimension(nover), parameter :: cover= &
+& (/ '   scale' , ' du[iso]' , ' ou[iso]', 'polarity' , ' enantio' , 'extparam' /)
+character(len=latomp), dimension(natomp), parameter :: catomp= &
+& (/ '        ' , '        ' , '   occ  ' , ' (flag) ', &
+&    '    x   ' , '    y   ' , '    z   ' , &
+&    '  u[11] ' , '  u[22] ' , '  u[33] ' , &
+&    '  u[23] ' , '  u[13] ' , '  u[12] ' /)
+character(len=latomp), dimension(natomp), parameter :: catomps= &
+& (/ '        ' , '        ' , '        ' , '        ' , &
+&    '        ' , '        ' , '        ' , &
+&    '  u[iso]' , '  size  ' , '   dec  ' , &
+&    '   azi  ' , '        ' , '        ' /)
+
+integer, parameter :: iversn=210, icomsz=512
+
+integer, external :: kstall, krddpv, kprtln
+
+    icombf = kstall (icomsz)
+    call xzerof (store(icombf), icomsz)
+
+    istat = krddpv ( istore(icombf) , icomsz )
+    if ( istat .lt. 0 ) then
+        print *, "error allocating space in store"
+        call abort()
+    end if !go to 9910
+
+    !c -- check if list 22 is available for printing
+    istat = kprtln ( 22 , i )
+    if ( istat .lt. 0 ) then !
+        print *, "error list 22 not available"
+        call abort()
+    end if !go to 9900
+
+    !c -- load lists 5 and 22
+    call xfal05
+    call xfal12 ( 0 , 0 , i , j )
+    if ( ierflg .lt. 0 ) then
+        print *, "error when loading list 5 or 22"
+        call abort()
+    end if !go to 9900
+
+    if(n12b>1) then
+        print *, "error more than 1 bloc"
+        call abort()
+    end if
+    
+    write ( design_unit , 1205 )
+    1205  format ('# Matrix relating least-squares parameters ' , &
+    & 'to ''physical'' parameters' , /,'#' , /, &
+    & '# format of entry describing relation of each physical ' , &
+    & 'parameter that contributes to a least-squares parameter : ', /, &
+    & '#', 10x , 'least-squares parameter number' , /, & 
+    & '#', 10x , 'weight of the contribution' , /, '#' )
+
+    m12=l12o
+    m5 = l5
+    j = 0
+
+    natom = n5 + 1
+    nlayer = natom + 1
+    nelem = nlayer + 1
+    nbatch = nelem + 1
+    ncell = nbatch + 1
+    nprof = ncell + 1
+    nexti = nprof + 1
+
+    !c -- pass through the groups
+    do while(m12>0) !1250  continue
+        l12a = istore(m12+1)
+
+        cline1 = ' '
+        cline2 = ' '
+
+        j = j + 1
+
+        !c -- write column headings
+        if ( j .eq. 1 ) then
+            write ( design_unit , 1255 ) cover
+            1255    format ( '#', /  , '#', 19x , 13a )
+            length = lover
+        else if ( j .eq. 2 ) then
+            write ( design_unit , 1256 ) catomp
+            write ( design_unit , 1257 ) catomps
+            1256    format ( '#', /  , '#', 3x , 13a )
+            1257    format ( '#', 3x , 13a , / , '#')
+            length = latomp
+        endif
+
+        !c -- write blank line separating atoms
+        !write ( design_unit , '("#pp", 1X)' )
+
+        !c -- assign a name to this group
+        if ( j .eq. 1 ) then
+            cline1(1:nameln) = 'overall parameters'
+        else if ( j .le. natom ) then
+            write ( cline1(1:nameln) , '(a4,f8.0)' ) istore(m5),store(m5+1)
+            !c-c-c-write flag value into outputline
+            write ( cline1((nameln+length+1):(nameln+2*length)) , &
+            &         '(3x,a1,i1,a1,2x)' ) '(' , nint(store(m5+3)) , ')'
+            m5 = m5 + md5
+        else if ( j .eq. nlayer ) then
+            cline1(1:nameln)  = 'layer scales'
+        else if ( j .eq. nbatch ) then
+            cline1(1:nameln) = 'batch scales'
+        else if ( j .eq. nelem ) then
+            cline1(1:nameln) = 'element scales'
+        else if ( j .eq. ncell ) then
+            cline1(1:nameln) = 'cell parameters'
+        else if ( j .eq. nprof ) then
+            cline1(1:nameln) = 'profile parameters'
+        else if ( j .eq. nexti ) then
+            cline1(1:nameln) = 'extinction param'
+        endif
+
+        ipos = nameln + 1
+
+        !c -- pass through the individual parts for each group
+        do while(l12a>0) !1350  continue
+
+            md12a=istore(l12a+1)
+            m12a=istore(l12a+2)
+            l=istore(l12a+3)
+            nunref = istore(l12a+4)
+            !c
+            !c-c-c-following (outer) if-block only reasonable for nunref < 0,
+            !-c-c-but when could this happen ?????
+            if ( nunref .le. 0 ) then
+            else
+                if ( (j .ge. 2) .and. (j .le. natom) ) then
+                    !c-c-c-atomic parameters
+                    ipos = ipos + (nunref-2) * length
+                else
+                    !c-c-c-overall and other parameters
+                    ipos = ipos + nunref * length
+                endif
+            endif
+
+            do i = m12a , l , md12a ! 1400
+                iend = ipos + length - 1
+                if ( md12a .gt. 1 ) then
+                    weight = store(i+1)
+                else
+                    weight = 1.
+                endif
+                if ( istore(i) .gt. 0 ) then
+                    write ( cline1(ipos:iend) , '(i5,3x)' ) istore(i)
+                    write ( cline2(ipos:iend) , '(f8.4)' ) weight
+                end if
+                ipos = iend + 1
+            end do !1400  continue
+            
+            write ( design_unit , "('#', 1X, A)" ) cline1
+            write ( design_unit , "('#', 1X, A)" ) cline2
+            ipos = nameln + 1
+            cline1 = ' '
+            cline2 = ' '
+
+            !c -- increment to the next part
+            l12a = istore(l12a)
+
+            !c -- check if there is another part
+        end do !if ( l12a .gt. 0 ) go to 1350
+
+        !c -- increment to the next atom
+        !2050  continue
+        m12=istore(m12)
+    end do !if ( m12 .gt. 0 ) go to 1250
+    
+    write(design_unit, '(A)') '#', '#'
+    write(cline1, '("(A, A4, 2A5, 3X, ",I0,"I25)")') N12
+    write(design_unit, cline1) '#', 'h', 'k', 'l', (/ (i, i=1, n12) /)
+
+end subroutine
+
+
 
 end module
 
