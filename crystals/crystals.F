@@ -46,8 +46,9 @@ C
 C
 #if defined(CRY_NOGUI)
       PROGRAM CRYSTAL
+#ifndef _NOHDF5_
       use hdf5_dsc
-
+#endif
       INTERFACE
        SUBROUTINE CRYSTL() BIND(C)
          USE, INTRINSIC :: ISO_C_BINDING
@@ -55,6 +56,8 @@ C
        END SUBROUTINE CRYSTL
       END INTERFACE
 
+ 
+#ifndef _NOHDF5_
       character(len=256) :: args_value
       integer :: args_count, i, found
 
@@ -71,7 +74,7 @@ C Look for arguments from the command line
           end if
         end do
       end if
-
+#endif
       CALL CRYSTL()
       END
 #endif
@@ -121,7 +124,7 @@ C
 C
 C -- DECLARE EXTERNAL REFERENCES TO BLOCK DATA SEGMENTS
 C
-      EXTERNAL CRYBLK, SYNBLK, UTIBLK
+      EXTERNAL CRYBLK, SYNBLK, UTIBLK, ZBLOCK
 C
 C -- DECLARE LIST 11 REFERENCES TO RESERVE EXTENSIBLE COMMON
 C
@@ -213,7 +216,9 @@ C
 C
 C Re-initialise system variables in case starting again.
 #endif
-      CALL CRESET
+
+      CALL CRESET   !These routines reinitialise SOME of the COMMON block variables, but
+      CALL CAMSET   !they also ensure those object files (presets and block) are linked.
 C
 C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
       CALL FBCINI
@@ -332,3 +337,104 @@ C
 C      STOP 'CRYSTALS START ERROR'
       CALL GUEXIT (2004)
       END
+
+CODE FOR GETCOM
+      SUBROUTINE GETCOM(CLINE)
+#ifdef CRY_GUI
+      use fwrappergui_mod, only: cinextcommand
+      INTEGER ISTAT
+      CHARACTER*256 CALINE
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      CHARACTER *(*) CLINE
+
+      CALINE=' '
+      ISTAT = 0
+      CALL cinextcommand(ISTAT,CALINE)
+      READ(CALINE,'(A)') CLINE
+      IF ( LCLOSE ) THEN
+          WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
+          CALL XPRVDU (NCVDU,1,0)
+          WRITE(CMON,'(A)') '^^WI ''Working. Please Wait.'''
+          CALL XPRVDU (NCVDU,1,0)
+          WRITE(CMON,'(A)')  '^^CR '
+          CALL XPRVDU (NCVDU,1,0)
+      ENDIF
+
+
+#else
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'CAMPAR.INC'
+      INCLUDE 'CAMBLK.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+      CHARACTER *(*) CLINE
+
+      READ( NCUFU(1), '(A)') CLINE
+
+#endif
+      END SUBROUTINE
+
+CODE FOR GUEXIT
+      SUBROUTINE GUEXIT(IVAR)
+#ifdef CRY_GUI
+      use fwrappergui_mod, only: ciendthread
+#endif
+      INTEGER IVAR
+      INCLUDE 'UFILE.INC'
+C Meanings of IVAR.
+C 0    Ok
+C 1    Error
+C 2    Serious error
+C 3-1999 unspecified.
+C 2001 Zero length vector
+C 2002 SPECLIB - XDEPAC
+C 2003 ERROR OPENING STARTUP FILE
+C 2004 CRYSTALS START ERROR
+C 2005 CANNOT CREATE FILE
+C 2006 WRITE ERROR
+C 2007 XFETCH
+C 2008 XSTORE
+C 2009 INPUT
+C 2010 LABEL NOT IMPLEMENTED
+C 2011 XFINDE
+C 2012 XLDCBL
+C 2013 XFCFI
+C 2014 XDSMSG
+C 2015 XLINES
+c 2016 KCHNCB
+c 2017 XINERT
+c 2018 PO1AAF (NAG)
+c 2019 LIST 6 ERROR
+c 2020 ERROR HANDLING
+c 2021 SPYERROR
+c 2022 KEQUAT
+c 2023 KFORM
+c 2024 KFUNCT
+c 2025 XABS
+c 2026 XCONOP ERROR
+c 2027 ROUTINE NOT IMPLEMENTED
+cdjwapr99 moved from out of XFINAL to prevent error messages in FTN77 
+c version
+C----- CLOSE ALL THE FILES
+      DO 2001 I = 1,NFLUSD
+            J = KFLCLS(IFLUNI(I))
+2001  CONTINUE
+#ifdef CRY_NOGUI
+      CALL EXIT(IVAR)
+      RETURN
+#else
+      CALL CIENDTHREAD(IVAR)
+      RETURN
+#endif
+      END
+      
+      SUBROUTINE GETVAR(CKEY, CVAL)
+      CHARACTER*(*) CKEY, CVAL
+      call GET_ENVIRONMENT_VARIABLE(CKEY,CVAL)
+      end            

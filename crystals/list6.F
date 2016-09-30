@@ -1,3 +1,67 @@
+C LIST 6/7 Handling  February 2016
+C 
+C Problem:
+C For historical reasons, CRYSTALS stores F and sigma(F) in list 6.
+C   If the users presents F^2 data, sigma(F) is computed from 
+C sig(F)=Sig(F^2)/2F, with F^2 usually large integer counts. 
+C To avoid overflow, sig(F) was set equal to sig(F^2) if SQRT(ABF(F^2)) 
+C was less than unity.  In addition, RATIO = F/sig(F) was packed with 
+C JCODE to 2 sig fig only.  
+C Modern fcf files on the scale of original observations  often contain 
+C very small values of F^2, so that re-inputting an fcf file could give 
+C a different number of 'less-thans' to the original hkl file, leading 
+C to conflict with the corresponding cif file.
+C 
+C Fix:
+C Sigma(F) is now computed from sigma(F^2) by shecking F with CRYSTALS 
+C ZERO rather than unity.  This new algorithm is not backwards compatible.
+C The L6P data record has been extended to include a 5th item (L6P+4) set 
+C to an integer VERSION number, currently set to 123.  
+C 
+C When CRYSTALS opens a .dsc file, it checks MD6P. If this is 4, the 
+C data is taken to be comouted with the old algorithm, otherwise the new 
+C is used.  Since the only difference between the two algorithms is the 
+C threshold for avoiding division by zero, this threshold can be set when 
+C the LIST 6 header is loaded from disk.
+C 
+C At start up, the user is warned if the dsc is old format and offered the 
+C chance to convert.  This is done by outputting a LIST 6 with F^2 values 
+C and the sigma computed with the old algorithm.  This is then re-input 
+C and F and Sig(F) computed with the new algorithm.  This new list may 
+C have less reflections in it than the original hkli file, so the index 
+C limits etc in LIST 30 must be left unaltered. TO achieve this, a new 
+C flag has been added to the LIST 6 input control block. If L30UP (list 30 
+C undate) is set to NO, list 30 is not updated.  The default is YES, so 
+C LIST 30 is filled in when reflections are first input. In all the PUNCH 6/7 
+C routines set it to NO to conserve the original values.  The LIST 6 
+C created by convpat (converts PLATON SQUEEZE output) also sets L30UP to 
+C NO. 
+C 
+C Consequences:
+C Opening old dsc with new program:
+C       The less than flag (<) in PUNCH 6 H is now correct. Numerical data
+C       remains correct
+C Opening new dsc with old program:
+C       The esd of reflections with original input intensity less than unity
+C       becomes inflated.  
+C 
+C 
+C The version set in L6P+4 could be used in the future to indicate other 
+C changes to the .dsc file.  This is an integer variable in an otherwise
+C real record, so is not displayed correctly in PRINT 6 C.
+C 
+C Files Involved:
+C 
+C 
+C XLST6A.INC      XLST6B.INC      XLST06.INC
+C 
+C punch.F         input6.F        read.F        list6.F    read6.F
+C 
+C commands.src    l6check.ssc     copy67.ssc    convplat.F
+C 
+C
+C
+C
 C $Log: list6.F,v $
 C Revision 1.24  2013/12/06 12:51:31  djw
 C Oops.
@@ -84,6 +148,7 @@ C     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
 C     RATIO          THETA          OMEGA          CHI            PHI
 C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
 C     FACTOR3        RATIO/JCODE    NOTHING
+C
 C
 C
 CODE FOR XPRT6C
@@ -309,7 +374,7 @@ C--END OF A PAGE WITH THREE COLUMNS ON IT  -  PRINT THEM
      2 STORE(NX+3),STORE(NX+4),STORE(NX+5),NX=JA,L,NW)
       ENDIF
 2550  FORMAT((3(4X,3I4,3F8.1)))
-      GOTONRET,(2050,2700,3400,3050)
+      GOTO NRET,(2050,2700,3400,3050)
 C
 C--LAST REFLECTION MARKER FOUND
 2600  CONTINUE
@@ -329,7 +394,7 @@ C--CHECK IF THERE ARE ANY ROWS WITH TWO COLUMNS TO PRINT
       IF(I)2800,2800,2850
 C--END OF 2 COLUMN PRINT - EXIT FOR 2 AND 3 COLUMNS, PRINT 1 FOR 1 AND 2
 2800  CONTINUE
-      GOTONRET,(2050,2700,3400,3050)
+      GOTO NRET,(2050,2700,3400,3050)
 C--PRINT THE NEXT LINE OF TWO COLUMNS
 2850  CONTINUE
       M=L+NW
@@ -379,7 +444,7 @@ C--CHECK FOR THE END OF THE PAGE
       IF(J)3300,3300,3350
 C--END OF THE PAGE  -  EXIT NOW
 3300  CONTINUE
-      GOTONRET,(2050,2700,3400,3050)
+      GOTO NRET,(2050,2700,3400,3050)
 C--PRINT THE NEXT LINE WITH ONE COLUMN ON IT
 3350  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
@@ -459,6 +524,36 @@ C -- NORMAL AND ERROR RETURN
       RETURN
       END
 C
+CODE FOR ZTHRESH     
+      SUBROUTINE ZTHRESH
+C     DJW 2016
+C     IF LIST 6 XDATA-BLOCK (RECORD 106) CONTAINS 5 ITEMS, WE HAVE A NEW
+C     FORMAT LIST 6. 
+C     ITEM 5 IS A VERSION NUMBER, WHICH MAY HAVE FUTURE USES
+C     PRE-2016 DSC FILES CONVERT BETWWEEN F AND F^2 USING A THRESHOLD OF
+C     UNITY.  THIS HAS BEEN REDUCED TO 'ZERO' TO BETTER-PRESERVE THE RATIO
+C     F^2/SIGMA
+      INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST6B.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+C
+      IF (MD6P .EQ. 4) THEN
+        XTHRESH=1.0
+c        write(cmon,'(A,2x,f6.4)') '{R this is an old-type L6', xthresh
+         write(cmon,'(1x)')         !Dont show anything
+      ELSE IF  (MD6P .EQ. 5) THEN
+        XTHRESH=ZERO
+c        write(cmon,'(A,2x,f6.4)') '{R this is a new-type L6', xthresh
+         write(cmon,'(1x)')         !Dont show anything
+      ELSE
+        write(cmon,'(A,2x,f6.4)') '{R this is an  unknown type L6'
+      ENDIF
+      call xprvdu(ncvdu, 1,0)
+      RETURN
+      END
+C
 CODE FOR XFAL06
       SUBROUTINE XFAL06(IULN, IOWF)
 C--SET UP LIST 6 FOR READING FROM THE DISC, AND POSSIBLY FOR REWRITING
@@ -476,7 +571,6 @@ C
 C--CALL THE MAIN LOADING ROUTINE
       CALL XFLT06(IULN,IOWF)
       IF ( IERFLG .LT. 0 ) RETURN
-C
 C--INITIALISE LIST 28 IF POSSIBLE
       CALL XFAL28
       RETURN
@@ -518,6 +612,7 @@ C--
       INCLUDE 'ICOM28.INC'
 C
       INCLUDE 'STORE.INC'
+      INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XLST28.INC'
@@ -540,6 +635,17 @@ C--ZERO THE COMMON BLOCK FOR LIST 28
       LN6=IULN
 C--LOAD THE DATA FROM THE DISC
       CALL XLDLST(IULN,ICOM06,IDIM06,IOWF)
+C
+C  SET THE THRESHOLD FOR SIGMA CONVERSION
+      CALL ZTHRESH
+C CHECK IF LIST 5 EXISTS, AND HOPE THE SCALE IS MORE OR LESS CORRECT
+      IF (KEXIST(5).LE.0 .and. (issrat.eq.1)) THEN
+C           OTHERWISE SET RATIO FLAG TO Io
+            write(cmon,'(a)')
+     1      'IRATIO reset to Io because scale is not available'
+             CALL XPRVDU(NCVDU, 1,0)
+            ISSRAT = 0
+      ENDIF
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET UP THE PACK COEFFICIENTS FOR THE INDICES
       IPACKR=KCOMP(1,I14,STORE(L6DMP),MD6DMP,N6DMP)
@@ -839,17 +945,18 @@ C--PACK THE PHASE AND BATCH NUMBER
 C -- CHECK IF WE MUST PACK UP THE RATIO AND JCODE
 1150  CONTINUE
       IF ( JCDRAW .GE. 0 ) THEN
+c
 c this algorithm is better for -ve values, and is  
 c backwards compatible with old dsc files
 c changing the scale, sdjw, to 100 would be better still, but is
 c not backwards compatible
+c note SDJW is a PARAMETER()
         adjw=sign(1.,store(m6+20))
         bdjw=min(1000000.,abs(store(m6+20)))  ! limit maximum I/sigma
         cdjw = adjw*((anint(STORE(M6+18)) + 10.*nint(sdjw*bdjw)))
         STORE(M6+31) = cdjw
-c
-c        STORE(M6+31) = STORE(M6+18) + 10.* ANINT ( 10. * STORE(M6+20) )
       ENDIF
+c
 C--MOVE THE DATA TO THE OUTPUT BUFFER
       J=M6W
 C--CHECK FOR OUTPUT TO M/T
@@ -1302,14 +1409,14 @@ C                    -1      NO DISPLAY
 C                    +1      DISPLAY
 C
       LOGICAL DISPL6
-      PARAMETER (SDJW=0.1)
+      PARAMETER (SDJW=0.1) 
       PARAMETER (NINTER = 20)
 C--
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'STORE.INC'
-c      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XPCK06.INC'
       INCLUDE 'XTAPES.INC'
@@ -1379,19 +1486,15 @@ c this algorithm is better for -ve values, and is
 c backwards compatible with old dsc files
 c changing the scale, sdjw, to 0.01 would be better still, but is
 c not backwards compatible
+c note SDJW is a PARAMETER()
  
         adjw = sign(1.,store(m6+31))
         bdjw = abs(store(m6+31))
         cdjw = int(0.1*bdjw)
         ddjw = bdjw-10.*cdjw
-c        edjw = adjw*sdjw*cdjw
-
         store(m6+18) = ddjw
-c        store(m6+20) = edjw
-c
-c        STORE(M6+20) = AINT(STORE(M6+31)*0.1+0.005) * 0.1
-c        STORE(M6+18) = ANINT(STORE(M6+31) - (100.*STORE(M6+20)))
-c
+      ENDIF
+C
 c        recompute RATIO because value is only stored to 2sig fig
 c        esd was set to ZERO elsewhere if none was input. 
 c       Assume users wants all reflections, so set default RATIO to > 3
@@ -1399,11 +1502,24 @@ c       Assume users wants all reflections, so set default RATIO to > 3
               store(m6+20) = 3.001
          else
 C NOTE - THIS IS WHERE ONE COULD FILTER ON FC/SIG, BUT ONLY IF SCALE IS SET
+c    use the global 'ISSRAT' to filter on Fo or Fc.
+c    users responsibility to be sure SCALE and Fc are set if necessary
+          if(issrat.eq.1) then
+            djw4=store(m6+5)*store(l5o)
+          else
+            djw4=store(m6+3)
+          endif
+C -- CALCULATE RATIO OF (FO)**2 AND SIGMA((FO)**2),IF IT HAS NOT BEEN INPUT
+c         IF (IRATIO.LE.0) THEN
+            IF (STORE(M6+12).LE.ZERO) THEN
+               STORE(M6+20)=0.0
+            ELSE
 c Oct 2013  Compute RATIO on F^2
-               CALL XSQRF(DJW1,STORE(m6+3),DJW2,DJW3,STORE(M6+12))
-               STORE(M6+20) = MIN(128., (DJW1/DJW3))
+             CALL XSQRF(DJW1,DJW4,DJW2,DJW3,STORE(M6+12))
+             STORE(M6+20) = MIN(128., (DJW1/DJW3))
+            END IF
          endif
-      ENDIF
+c         ENDIF
 c
       STORE(M6+13) = AMAX1 ( STORE(M6+13) , 1.0 )
 C

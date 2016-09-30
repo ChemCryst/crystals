@@ -2079,11 +2079,11 @@ C
 70    CONTINUE
 C
 C
-C Write coefficient shifts
+C Write coefficient shifts (inhibited djw May 2016)
 C
-      WRITE(LP,1040)
+c      WRITE(LP,1040)
 1040  FORMAT(/,' Coefficient shifts')
-      WRITE(LP,1050)(ATB(I),I=1,NSHAPE)
+c      WRITE(LP,1050)(ATB(I),I=1,NSHAPE)
 cRIC13:1050  FORMAT(1X,10F8.5)
 1050  FORMAT(8(1X,G9.2))
 C

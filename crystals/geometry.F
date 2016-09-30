@@ -121,7 +121,7 @@ C
       integer, parameter :: IDIMBF=50
       integer, parameter :: IMDINP=35
 C for aniso
-      character(len=4), dimension(5), parameter :: 
+      character(len=5), dimension(5), parameter :: 
      1    CCALC=(/ ' Non',' Lin','Plan',' TLS','Axis' /)
       real, parameter :: eigmin=0.000001, eigrat=0.01
 C
@@ -899,9 +899,9 @@ C----- 'SAVE' TLS INSTRUCTION
       IUPDT=1
       WRITE (CMON,3580) CCALC(JTYPE)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(A)') CMON(1)
+c      WRITE (NCAWU,'(A)') CMON(1)
       IF (ISSPRT.EQ.0) WRITE (NCWU,3580) CMON(1)
-3580  FORMAT (' LIST 20 ',A4,' record will be updated ')
+3580  FORMAT (' LIST 20 ',A,' record will be updated ')
       GO TO 20
 C
 C

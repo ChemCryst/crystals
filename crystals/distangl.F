@@ -1713,46 +1713,46 @@ C
             ELSE
              IF      (NHY .EQ. 1) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 1'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','1 H on sp 1'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL ANG180(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
-                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 2'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','1 H on sp 2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 3) THEN
-                  WRITE(NCPU,'(/A)') 'REM            1 H on sp 3'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','1 H on sp 3'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.98)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                 ELSE
-                  WRITE(NCPU,'(/A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','unattached H'
                 ENDIF
 
              ELSE IF (NHY .EQ. 2) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(/A)') 'REM            2 H on sp 2'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','2 H on sp 2'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.93)
                   CALL HCC120(KHY, IHY, CATOM1, CBONDA)
                   CALL PLANH(KHY, IHY, CATOM1, CBONDA)
                 ELSE IF (NNHY .EQ. 2) THEN
-                  WRITE(NCPU,'(/A)') 'REM            2 H on sp 3'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','2 H on sp 3'
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.97)
                   CALL HCCAV(KHY, IHY, CATOM1, CBONDA)
                   CALL HCH109(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(/A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','unattached H'
                 ENDIF
 
              ELSE IF (NHY .EQ. 3) THEN
                 IF       (NNHY .EQ. 1) THEN
-                  WRITE(NCPU,'(/A)') 'REM            3 H on sp 3'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','3 H on sp 3'
                   UEQUIV = UEQUIV * 1.25
                   CALL DIS11(KHY, IHY, CATOM1, CBONDA, UEQUIV, 0.96)
                   CALL HCC109(KHY, IHY, CATOM1, CBONDA)
                   CALL HCHAV(KHY, IHY, CATOM1, CBONDA, IPARTH)
                 ELSE
-                  WRITE(NCPU,'(/A)') 'REM            unattached H'
+                  WRITE(NCPU,'(/A,30X,A)') 'REM','unattached H'
                 ENDIF
              ENDIF        
             ENDIF
@@ -2099,6 +2099,20 @@ C Get index of atoms at L and M5P in L5.
                IF ( ISTORE(INHVEC+J51) .LE. 1 ) SDEV = SDEV2
                IF ( ISTORE(INHVEC+J52) .LE. 1 ) SDEV = SDEV2
                WRITE (NCPU,'(''U(IJ) .0, '',F7.5,'' = '',A,'' to '',A)')
+     1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+              ELSE IF (IPUNCH .EQ. 13) THEN
+C----- WRITE RESTRAINT
+C Get index of atoms at L and M5P in L5.
+               J51 = ( L  - L5) / MD5
+               J52 = (M5P - L5) / MD5
+               SDEV = SDEV1
+c               IF ( ISTORE(INHVEC+J51) .LE. 1 ) SDEV = SDEV2
+c               IF ( ISTORE(INHVEC+J52) .LE. 1 ) SDEV = SDEV2
+             WRITE (NCPU,'(''UXZBAR .0, '',F7.5,'' = '',A,'' to '',A)')
+     1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+             WRITE (NCPU,'(''UYZBAR .0, '',F7.5,'' = '',A,'' to '',A)')
+     1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
+             WRITE (NCPU,'(''UZZBAR .0, '',F7.5,'' = '',A,'' to '',A)')
      1         SDEV, CATOM1(1:LATOM1), CATOM2(1:LATOM2)
               ELSE IF (IPUNCH .EQ. 8) THEN
 C----- WRITE RESTRAINT

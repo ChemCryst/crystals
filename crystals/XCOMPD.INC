@@ -1,4 +1,3 @@
-      integer, dimension(20) :: ktitl
-      
-      COMMON/XCOMPD/KTITL
+      INTEGER KTITL(20) 
+      COMMON/XCOMPD/KTITL 
 

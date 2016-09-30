@@ -3872,7 +3872,7 @@ C
         WRITE ( CMON ,2005) COORD1,COORD2,COORD3
         CALL XPRVDU(NCVDU, 1,0)
        ENDIF
-2005   FORMAT(1X,'Malformed peak at ', 3F10.4)
+2005   FORMAT(1X,'Malformed peak at ', 3F10.3)
       ENDIF
 C
 C

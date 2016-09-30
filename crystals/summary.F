@@ -2044,7 +2044,6 @@ c      DIMENSION Y(N6D)
 
       real, dimension(2) :: TEMP
 CDJW08
-      INCLUDE 'IDIM39.INC'
       
       integer, external :: khuntr, kfnr, kallow, kldrnr
       
@@ -3502,7 +3501,6 @@ C
       INCLUDE 'ICOM39.INC'
       INCLUDE 'QLST39.INC'
 c
-      INCLUDE 'IDIM39.INC'
 c
       write(cmon,'(a)') 'Contents of LIST 39'
       call xprvdu(ncvdu,1,0)

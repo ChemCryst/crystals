@@ -141,15 +141,14 @@ C--FIND THE TYPE OF LISTS   IULN1 IS USUALY 6
       IULN2=KTYP06(LSTT2)
       IF (IULN1 .EQ. IULN2) THEN
             WRITE(CMON,'(A)')
-     1    ' Input and Output lists cannot be the same'
+     1    '{E Input and Output lists cannot be the same'
             CALL XPRVDU(NCVDU,1,0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
             GOTO 9910
       ENDIF
-      WRITE(NCWU,'(A,2I6)') 'List types', iuln1, iuln2
 C---- NOTHING TO DO IF NO LIST 6
-      IF (KEXIST(6) .LE. 0) THEN
-        WRITE (CMON,'(A)') ' No LIST 6'
+      IF (KEXIST(IULN1) .LE. 0) THEN
+        WRITE (CMON,'(A,I3)') '{E No LIST 6', IULN1
         CALL XPRVDU(NCVDU,1,0)
         WRITE (NCAWU,'(a)') CMON(1)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
@@ -159,10 +158,8 @@ C--CLEAR THE STORE
       CALL XRSL
       CALL XCSAE
 C
-C DO SOMETHING
-c123      call xpch6s(iuln1,iuln2)
-c123 causing problem with large data sets(may 15)
-      CALL XPCH6N(IULN1,IULN2)
+C     PUNCH ALL SET KEYS, ON SCALE OF /Fo/
+      CALL XPCH6N(IULN1,IULN2,1)
 C
 1810  CONTINUE
       CALL XOPMSG ( IOPREF , IOPEND , 200 )
@@ -386,7 +383,8 @@ c123      DIMENSION AA(10), YCARD1(82), YCARD2(82), IFORM(40)
       DIMENSION IPARTS(4), ICAD4(11), ISLX(4), JSIGMA(1), JRATIO(1)
       DIMENSION JFOT(1), JFOO(1)
       DIMENSION TRANSH(12)
-      dimension htemp(3),htemp1(3)
+      DIMENSION HTEMP(3),HTEMP1(3)
+      DIMENSION KDEV(4) 
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -561,6 +559,10 @@ C--SET THE POINTERS READY FOR INPUT
       NC=LASTCH
 C--STORE THE LIST 6 PART OF THE COMMON BLOCK
       CALL XMOVEI (ISTORE(KX),ICOM06(1),IDIM06)
+c      write(123,'(a/(4i6,6x,4i6))') 'ICOM06',
+c     1 L6,M6,MD6,N6,L6R,M6R,MD6R,N6R,L6W,M6W,MD6W,N6W, 
+c     2 L6D,M6D,MD6D,N6D,L6DMP,M6DMP,MD6DMP,N6DMP, 
+c     3 L6P,M6P,MD6P,N6P,L6DTL,M6DTL,MD6DTL,N6DTL 
 C--STORE THE TEMPORARY PART OF THE COMMON BLOCK
       I=KX+IDIM06
       CALL XMOVE (ISTORE(I),ICOM6A(1),IDIM6A)
@@ -570,7 +572,18 @@ C----- save the matrix and tolerance
       TOLER=STORE(L6MR+9)
 csquare it for later use (sint/lam)sq
       TWIND=STORE(L6MR+10) * STORE(L6MR+10)
+c2016 open an archive file on FRN2 if required
+c     not for copy
+      if((itype6.ne.1).and.(itype6.ne.5)) then
+       if(larch.eq.0)  then
+        CALL XMOVEI (KEYFIL(1,24),KDEV,4)
+        CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
+       endif
+      endif
 Cdjw dec97
+C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
+      N6DEAD=0
+      N6NEG=0
 C ITYPE COPY FIXED FREE COMPRESSED TWIN (HKLI) FIXED FREE COMP
 C        1     2    3       4        5           6    7    8
       IF (ITYPE6.GT.8) THEN
@@ -586,9 +599,6 @@ C     L6BMP ETC (TWINNED DEFAULTS) MOVED TO LODFK
          CALL XMOVE (ICOM6A(9),ICOM6A(29),4)
       END IF
 Cdjw dec97
-C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
-      N6DEAD=0
-      N6NEG=0
 C----- load list 25 to find number of twin elements
       ELEM=1.
       N25=1
@@ -616,8 +626,11 @@ Cdjwoct2000 < moved from lower down
 C--ZERO THE CORE BUFFER
       M6=L6
       CALL XZEROF (STORE(M6),MD6)
-C--BLANK OUT THE CONTROL BLOCK
-      CALL XZEROF (STORE(L6P),MD6P*N6P)
+C--BLANK OUT THE REFINEMENT DETAILS.
+
+C  NOTE THE -1. WE WISH TO RETAIN THE VERSION NUMBER FROM THE DSC FILE
+      CALL XZEROF (STORE(L6P),MD6P*N6P-1)
+      CALL ZTHRESH
 C--CHECK IF THE READ KEYS HAVE BEEN INPUT
       IF (ISTORE(KZ+2)) 750,750,850
 C--NO KEYS HAVE BEEN INPUT  -  SET UP THE DEFAULTS
@@ -909,7 +922,7 @@ C--END OF THE REFLECTIONS  -  RESTORE THE COMMON BLOCK COMPLETELY
       CALL XZEROF (STORE(M6),MD6)
       GO TO 2450
 C
-C--INITIALISE THE OUTPUT OF THE REFLECTIONS TO M/T
+C--INITIALISE THE OUTPUT OF THE REFLECTIONS
 2400  CONTINUE
       CALL XSTR06 (IULN,-1,-1,1,0)
 C--RESET THE CURRENT LIST TYPE
@@ -920,6 +933,19 @@ C----- INITIALISE THE ABSORPTION CORRECTION
       I=MABS(-1)
       IF (IERFLG.LT.0) GO TO 5450
       LN=IULN
+      if((itype6.ne.1).and.(itype6.ne.5)) then
+c     only if not 'COPY' operation
+      if(larch.eq.0) then
+        write(ncfpu2,'(a/a/A)')
+     1  '_iucr_refine_reflections_details',';',
+     1  '# An asterisk in column 34 indicates a format overflow'
+        if(isq.eq.-1) then
+          write(ncfpu2,'(a)')'# Data was input as F-squared'
+        else
+          write(ncfpu2,'(a)')'# Data was input as F'
+        endif
+      endif
+      endif
 C--BRANCH ON THE TYPE OF OUTPUT
       GO TO (5000,2550,3250,3450,5000,4050,4050,4050,2500),ITYPE6
 C3600  STOP 'LIST 6 ERROR'
@@ -971,6 +997,10 @@ CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
          CALL XPRVDU (NCVDU,1,0)
          GO TO 5200
       END IF
+c
+c
+c
+c
 C--READ THE NEXT REFLECTION
 2950  CONTINUE
       CALL XZEROF (STORE(L6IB),M6IB)
@@ -1219,18 +1249,24 @@ C--BRANCH ON THE INPUT TYPE
          GO TO (4600,4600,4600,4600,4600,4500,4500,4500,2500),ITYPE6
 C6400  STOP 323
          CALL GUEXIT (323)
-C--REFLECTION INPUT  -  APPLY ANY SCALES AND COEFFICIENTS
+c
 4500     CONTINUE
+C--REFLECTION INPUT  -  APPLY ANY SCALES AND COEFFICIENTS
          IF (MSCALE(0)) 4850,4550,4550
 C--AND NOW APPLY ANY ABSORPTION CORRECTION THAT IS REQUIRED
 4550     CONTINUE
          IF (MABS(0)) 4850,4600,4600
-C--CHECK IF WE SHOULD TAKE THE SQUARE ROOT
 4600     CONTINUE
          JFO=M6+IFO
+c----- output archive material for PUNCH unit
+         if(larch.eq.0) then
+          call refout(ncfpu2, nint(store(m6)),nint(store(m6+1)),
+     1      nint(store(m6+2)), store(jfo), store(m6+12))
+         endif
 C--ARE WE INPUTTING /FO/ **2 ?
          IF (ISQ) 4650,4700,4700
 4650     CONTINUE
+C--CHECK IF WE SHOULD TAKE THE SQUARE ROOT
 Cdjwmap99[
          CALL XSQRT (STORE(JFO),FSIGN,FABS,STORE(M6+12),SIG)
          STORE(JFO)=FSIGN
@@ -1291,7 +1327,7 @@ C--ACCUMULATE THE REFLECTION TOTALS
 4800     CONTINUE
 4850  CONTINUE
 C--BRANCH ON THE TYPE OF INPUT
-      GO TO (2950,2950,3300,3750,2950,2950,3300,3750,4900),ITYPE6
+      GO TO (2950,2950,3300,3750,2950, 2950,3300,3750,4900),ITYPE6
 4900  CONTINUE
       WRITE (CMON,4950)
       CALL XPRVDU (NCVDU,1,0)
@@ -1302,6 +1338,11 @@ C--BRANCH ON THE TYPE OF INPUT
 C
 C--END OF THE REFLECTION INPUT  -  STORE THEM ON THE DISC
 5000  CONTINUE
+      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
+        write(ncfpu2,'(a)')';'
+c     close archive file if necessary
+        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
+      endif
       N6D=N6W
 C--NO ERRORS  -  CALCULATE THE REFLECTION DETAILS
       DO 5050 I=1,MD6
@@ -1323,11 +1364,9 @@ cdjw Sept 2012.  Twinned data is probably merged by instrument software,
 c   but we dont know what was done with FRIEDEL pairs.
 c   Hence, we dont know whather to update DR+2 or DR+4
        IF ((ITYPE6.NE.1).AND.(ITYPE6.NE.5)) THEN
+       IF (L30UP .GE. 0) THEN
          IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL30
-C         IF (STORE(L30DR).LE.ZERO) STORE(L30DR)=FLOAT(N6W)
-C         IF (STORE(L30DR+2).LE.ZERO) STORE(L30DR+2)=FLOAT(N6W)
          STORE(L30DR)=FLOAT(N6W)
-cdjwdec08         STORE(L30DR+2)=FLOAT(N6W)
 C----- MIN AND MAX INDICES, FROM L6 DETAILS
          LIX=L6DTL
          STORE(L30IX)=STORE(LIX)
@@ -1343,6 +1382,7 @@ C        LIX = L6DTL + 16*MD6DTL
 C        STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
 C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
          CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
+       ENDIF
        ENDIF
       ENDIF
 C----- WRITE LIST 13 TO DISK IF TYPE IS TWIN
@@ -1394,8 +1434,8 @@ C--INPUT FROM THE MAIN CHANNEL  -  ALTER THE COUNTERS
 5350  CONTINUE
       NI=NI+NCARDS
       MON=NI
-C--AND NOW RETURN
 5400  CONTINUE
+C--AND NOW RETURN
       CALL XOPMSG (IOPLSI,IOPLSE,IULN)
       CALL XTIME2 (2)
       RETURN
@@ -1416,12 +1456,13 @@ C      FABS  OUTPUT ABSOLUTE MAGNITUDE
 C      INPUT SIGMA SQ
 C      OUTPUT SIGMA
       INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST6B.INC'
       FABS=SQRT(ABS(FSQ))
       FSIGN=SIGN(1.,FSQ)*FABS
 Cdjwmar99[ compute sigma(f) from sigma(F**2)
-      IF (SIGSQ.GT.ZERO) THEN
+      IF (SIGSQ.GT. ZERO) THEN
 C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT
-         IF (FABS.GT.1.0) THEN
+         IF (FABS.GT.XTHRESH) THEN
             SIG=SIGSQ/(2.*FABS)
          ELSE
             SIG=SIGSQ
@@ -1442,10 +1483,11 @@ C      FABS  DUMMY
 C      SIGSQ OUTPUT SIGMA SQ
 C      INPUT SIGMA
       INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST6B.INC'
       FSQ=FSIGN*ABS(FSIGN)
       IF (SIG.GT.ZERO) THEN
 C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT
-         IF (ABS(FSIGN).GT.1.) THEN
+         IF (ABS(FSIGN).GT. XTHRESH) THEN
             SIGSQ=SIG*(2.*ABS(FSIGN))
          ELSE
             SIGSQ=SIG
@@ -1545,16 +1587,18 @@ C--CALCULATE A FEW CONSTANTS
 C----- LOAD DATA IF LIST 30 NOT ALREADY IN CORE
       IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL30
       IF (IERFLG.LT.0) GO TO 550
-      ATMP=-1000000.
-      BTMP=1000000.
-      M27TMP=L27+NSCALE
-      DO 500 I=1,N27
+      IF(L30UP.GE.0) THEN
+       ATMP=-1000000.
+       BTMP=1000000.
+       M27TMP=L27+NSCALE
+       DO 500 I=1,N27
          ATMP=MAX(ATMP,STORE(M27TMP))
          BTMP=MIN(BTMP,STORE(M27TMP))
          M27TMP=M27TMP+MD27
-500   CONTINUE
-      STORE(L30CD+8)=100.*(ATMP-BTMP)/ATMP
-      CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
+500    CONTINUE
+       STORE(L30CD+8)=100.*(ATMP-BTMP)/ATMP
+       CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
+      ENDIF
 550   CONTINUE
 C
       JA=NINT(STORE(L27+3))
@@ -1758,4 +1802,3 @@ C--AND NOW RETURN
 800   CONTINUE
       RETURN
       END
-

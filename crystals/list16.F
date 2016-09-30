@@ -352,7 +352,10 @@ C   9.FUNCTION      10.U(IJ)'S       11.TERM          12.EQUATE
 C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU          24.A-VIB
-C  25.A-U(IJ)'S     26. A-DIST
+C  25.A-U(IJ)'S     26. A-DIST       27.UXZBAR        28.UYZBAR
+C  29.UZZBAR        30. UXPERP       31.UYPERP        32.UXPARA
+C  33.UYPARA        34. UZPARA       35.UXXQIV        36.UXYQIV
+C  37.UXZQIV        38. UYYQIV       39.UYZQIV        40.UZZQIV
 C
 C----- ISTORE (LCG+1) OPERATIONS 
 c      Note that some correspond to several MG values.
@@ -361,7 +364,12 @@ C      5  diff D    6  ANGLE     7  mean A   8  diff D
 C      9  VIBRATION 10 EXECUTION 11 NOLIST   12 UIJ
 C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
 C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
+C Hmmm.
 C      21 REM       22 SAME      23 DELU     24 SIMU 
+C      21 UXZBAR    22 UYZBAR    23 UZZBAR   24 UXPERP
+C      25 UYPERP    26 UXPARA    27 UYPARA   28 UZPARA
+C      29 UXXQIV    30 UXYQIV    31 UXZQIV   32 UYYQIV
+C      33 UYZQIV    34 UZZQIV
 C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM12.INC'
@@ -437,6 +445,8 @@ c      ICOM05(I)=NOWT
 c1050  CONTINUE
 C Load list 5 into core (allows checking during processing).
        CALL XFAL05
+       IF(IERFLG .LT. 0) GOTO 9900
+       
 C - Clear all the bits that restraints could possibly set.
       IMASK = NOT ( OR ( KBREFB(4), KBREFB(6) ))
       DO I = 0, N5-1
@@ -483,7 +493,8 @@ c----- indicate a normal directive
 C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
-     3     1810,1810,1810,1851,2251,1510, 1250)MG
+     3     1810,1810,1810,1851,2251,1510,2258,2259,2257,2255,2256,
+     4     2260,2261,2262,2263,2264,2265,2266,2267,2268,1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -1191,6 +1202,116 @@ C--'A-U(IJ)' RESTRAINT
       L=6
       M=8
       GOTO 1900
+
+C--'UXZBAR' RESTRAINT
+2258  CONTINUE
+      ISTORE(LCG+1)=21
+      K=1    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+C--'UYZBAR' RESTRAINT
+2259  CONTINUE
+      ISTORE(LCG+1)=22
+      K=1    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+C--'UZZBAR' RESTRAINT
+2257  CONTINUE
+      ISTORE(LCG+1)=23
+      K=1    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UXPERP' RESTRAINT
+2255  CONTINUE
+      ISTORE(LCG+1)=24
+      K=1    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UYPERP' RESTRAINT
+2256  CONTINUE
+      ISTORE(LCG+1)=25
+      K=1    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+	  
+C--'UXPARA' RESTRAINT
+2260  CONTINUE
+      ISTORE(LCG+1)=26
+      K=2    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900	  
+
+C--'UYPARA' RESTRAINT
+2261  CONTINUE
+      ISTORE(LCG+1)=27
+      K=2    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900	  
+
+C--'UZPARA' RESTRAINT
+2262  CONTINUE
+      ISTORE(LCG+1)=28
+      K=2    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900	  
+
+C--'UXXQIV' RESTRAINT
+2263  CONTINUE
+      ISTORE(LCG+1)=29
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UXYQIV' RESTRAINT
+2264  CONTINUE
+      ISTORE(LCG+1)=30
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900	  
+
+C--'UXZQIV' RESTRAINT
+2265  CONTINUE
+      ISTORE(LCG+1)=31
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UYYQIV' RESTRAINT
+2266  CONTINUE
+      ISTORE(LCG+1)=32
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+	  
+C--'UYZQIV' RESTRAINT
+2267  CONTINUE
+      ISTORE(LCG+1)=33
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+	  
+C--'UZZQIV' RESTRAINT
+2268  CONTINUE
+      ISTORE(LCG+1)=34
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
 C
 C--'ABORT' CARD  -  RESET THE ABORTION LIMIT FOR 'EQUATE'
 2300  CONTINUE
@@ -1369,39 +1490,18 @@ C--READ THE ATOMS ON THE CARD
 4500  CONTINUE
       IF(KGCAS(0,3,5,0))5850,5850,5700
 C
-C
-C--'AVERAGE' DIRECTIVE  -  RESTRAIN THE PARAMETERS TO THEIR MEAN
-5650  CONTINUE
-      ISTORE(LCG+1)=17
-      ESD=0.01
-      GOTO 4600
-C
-C--'ORIGIN' CARD
-7200  CONTINUE
-      ISTORE(LCG+1) = 20
-c See table at end of file.
-c 0.01 may be too harsh for some refinements
-      ESD=0.01
-      GOTO 4600
-C
 C--'SUM' DIRECTIVE FOR FLOATING ORIGINS
 4550  CONTINUE
       ISTORE(LCG+1)=15
-      ESD=0.01
-      GOTO 4600
-c
-C----- 'LIMIT'  -  RESTRAIN PARAMETER SHIFTS
-5660  CONTINUE
-      ISTORE(LCG+1) = 18
-      ESD=0.001
-      GOTO 4610
-c
 C--SET UP THE DEFAULT VALUES FOR THIS RESTRAINT
 4600  CONTINUE
+c      STORE(LCG+3)=1 00 00 00 00.
+      STORE(LCG+3)=1 00 00.
 4610  CONTINUE
-      J=LCG+3
-      STORE(J) = 1./(ESD*ESD)  
       STORE(LCG+4) = 0.
+      J=LCG+3
+c      ESD=0.00 00 01
+      ESD=0.00 01
 C--CHECK FOR SOME ARGUMENTS
       IF(ME)2550,2550,4650
 C--CHECK THE TYPE OF THE FIRST ARGUMENT  -  IT MAY NOT BE AN OPERATOR
@@ -1504,6 +1604,18 @@ C--STORE THE GROUP NAME IN THE SECOND AND THIRD WORDS OF THE BLOCK
 C--CHECK FOR THE OPTIONAL COMMA
       IF(KOP(8))2550,4100,4100
 C
+C--'AVERAGE' DIRECTIVE  -  RESTRAIN THE PARAMETERS TO THEIR MEAN
+5650  CONTINUE
+      ISTORE(LCG+1)=17
+      GOTO 4600
+C
+C
+C----- 'LIMIT'  -  RESTRAIN PARAMETER SHIFTS
+5660  CONTINUE
+      ISTORE(LCG+1) = 18
+C----- SET ESD TO .001
+      STORE(LCG+3) = 1 00 00 00.
+      GOTO 4610
 C
 C--'ENERGY' CARD
 7000  CONTINUE
@@ -1515,6 +1627,11 @@ C----- SET POWER FACTOR TO UNITY
       M=5
       I=KRCI(LN)
       IF(I)5850,1700,5850
+C
+C--'ORIGIN' CARD
+7200  CONTINUE
+      ISTORE(LCG+1) = 20
+      GOTO 4600
 
 
 C--SUNDRY TERMINATION OPERATIONS FOR EACH CARD
@@ -1555,10 +1672,11 @@ C--END OF THE INPUT LIST  -  CHECK FOR ERRORS
 C--TERMINATE THE COMPILER OUTPUT SEQUENCE
 6000  CONTINUE
       CALL XTCO(KE)
-6020  CONTINUE
 
 CRICJUN03 - store the list 5, with modified Spare values.
       CALL XSTR05 (5,-1,-1)
+6020  CONTINUE
+
 
       CALL XOPMSG (IOPL16, IOPEND, IVERSN)
 C--AND NOW RETURN

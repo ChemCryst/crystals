@@ -1,4 +1,4 @@
-C $Log: presets.F,v $
+C $Log: presets.F,v $ 
 C Revision 1.66  2012/03/23 13:54:08  rich
 C Changed some common block variables into constants.
 C
@@ -323,8 +323,8 @@ C
 C
       INCLUDE 'XDRIVE.INC'
 C
+      INCLUDE 'XL26WK.INC'
       INCLUDE 'OUTCOL.INC'
-      INCLUDE 'XMTLAB.INC'
       INCLUDE 'XFLAGS.INC'
       DIMENSION VCVVEC(8192)
       REAL VCVVSZ
@@ -380,7 +380,7 @@ C----- INITIALISE THE VMS SCREEN MANAGER
 C
       DATA IACC/-1/,MLSS/15/
 C
-      DATA ISIZST / 16777216 /, ISIZ11 / 16777216 /
+      DATA ISIZST / 16777216 /, ISIZ11 / 33554432 /
 C
 #ifdef __VAX__
 C      INITIALISE THE ENVIRONMENT TO BATCH
@@ -1979,7 +1979,6 @@ C
       DATA IOLDC / 0 /
       DATA IOFORE / -1 /
       DATA IOBACK / -1 /
-      DATA MATLAB / 0 /
 
 C Bits set in the REF parameter of list 5 depending on refinement.
 C Will be used to set the _atom_site_refinement_flags CIF item.
@@ -2002,6 +2001,32 @@ C     Thermal displacement restraints (SIMU, DELU etc.)
 C     Non-distance or angle restraints
 C Implemented so far: G,R,D,U,P   To do: S,T
 C
+C
+C      THE NAMES OF THE VARIOUS RESTRAINTS
+      DATA 
+     1 coperation(1  ) /'DEFINE'/,
+     1 coperation(2  ) /'RESTRAIN'/,
+     1 coperation(3  ) /'DISTANCE'/,
+     1 coperation(4  ) /'DIFFERENCE DIST'/,
+     1 coperation(5  ) /'MEAN DIST'/,
+     1 coperation(6  ) /'ANGLE'/,
+     1 coperation(7  ) /'DIFFERENCE ANGLE'/,
+     1 coperation(8  ) /'MEAN ANGLE'/,
+     1 coperation(9  ) /'VIBRATION'/,
+     1 coperation(10 ) /'EXECUTION'/,
+     1 coperation(11 ) /'NOLIST'/,
+     1 coperation(12 ) /'UIJ'/,
+     1 coperation(13 ) /'EQUATE'/,
+     1 coperation(14 ) /'PLANAR'/,
+     1 coperation(15 ) /'SUM'/,
+     1 coperation(16 ) /'FORM'/,
+     1 coperation(17 ) /'AVERAGE'/,
+     1 coperation(18 ) /'LIMIT'/,
+     1 coperation(19 ) /'ENERGY'/,
+     1 coperation(20 ) /'ORIGIN'/
+C
+C
+
       END
 C
 C

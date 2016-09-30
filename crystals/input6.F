@@ -82,21 +82,8 @@ C--MAIN ROUTINE TO CONTROL THE INPUT OF LIST 6 AND LIST 7
 
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)
-
-
-
-
 c      WRITE ( CMON, '(A,6I6)')'List input', NUM,LSTOP,LSTNO,ICLASS
 c      CALL XPRVDU(NCVDU, 1,0)
-
-
-
-
-
-
-
-
-
 C--CHECK IF WE SHOULD RETURN
       IF(NUM.LE.0) RETURN
 
@@ -186,7 +173,11 @@ C      G     SHELX HKL OUTPUT of FC with made up sigmas.
 C                  XPCH6X(LSTNO,1)
 C      H     CIF OUTPUT F^2's  on scale of Fc
 C                  XPCH6C(LSTNO,2)
-C      J     SIM WEIGHT TEST
+C      I     ALL Keys set
+C                  XPCH6N(LSTNO,LSTNO,1)
+C                            J     (removed CARMELO'S SIM WEIGHT TEST)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales
+C                  XPCH6N(LSTNO,LSTNO,2 OR 3)
 7000  CONTINUE
       ITEMP1=NR60
       ITEMP2=NR61
@@ -256,10 +247,11 @@ C----- CIF OUTPUT F^2's  on scale of Fc- H
       RETURN
 C----- All set keys
 7390  CONTINUE
-      CALL XPCH6N(LSTNO,LSTNO)
+      CALL XPCH6N(LSTNO,LSTNO,1)
       RETURN
 7400  CONTINUE
-      CALL SIMTEST(LSTNO)
+C      CALL SIMTEST(LSTNO) ! WAS CARMELO'S IDEA - NOT SUCCESSFUL
+      CALL XPCH6N(LSTNO,LSTNO,2)
       RETURN
       END
 

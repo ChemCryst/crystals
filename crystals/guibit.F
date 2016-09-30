@@ -1646,8 +1646,8 @@ c             CALL XPRVDU(NCVDU, 1,0)
               IF (STORE(L30RF+3).GT.-9.9)
      1            WRITE(CCOL,'(F6.2)')STORE(L30RF+3)
 
-246           FORMAT ('^^WI SAFESET [ _MT_REF_R TEXT ',F8.5,' ]',
-     1                    ' SAFESET [ _MT_REF_RW TEXT ',F8.5,' ]',/,
+246           FORMAT ('^^WI SAFESET [ _MT_REF_R TEXT ',F8.2,' ]',
+     1                    ' SAFESET [ _MT_REF_RW TEXT ',F8.2,' ]',/,
      1                '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F5.0,' ]',
      1                    ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
      1                  '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F6.3,' ]',

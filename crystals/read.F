@@ -251,7 +251,7 @@ C     if there is no model, XGDBUP will simply return without doing anything
 C     anyway.
 C
 CODE FOR KRDREC
-      FUNCTION KRDREC(IN)
+      RECURSIVE FUNCTION KRDREC(IN)
 C--READ THE NEXT RECORD, EITHER FROM THE INPUT STREAM OR FROM THE
 C  SYSTEM REQUEST QUEUE, WHICHEVER IS APPROPIATE.
 C
@@ -732,6 +732,7 @@ C If in script mode, set flag.
 	  CALL FLUSH(NCWU)
 	  CALL FLUSH(NCPU)
 	  CALL FLUSH(NCAWU)
+          call flush(123)       ! for debugging purposes
           CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
@@ -866,7 +867,7 @@ C
 C
 C
 CODE FOR KRDSYS
-      FUNCTION KRDSYS ( IN )
+      RECURSIVE FUNCTION KRDSYS ( IN )
 C -- CHECK IF THE CURRENT CARD CONTAINS A SYSTEM INSTRUCTION. IF IT
 C    DOES, EXECUTE THE INSTRUCTION.
 C
@@ -2496,7 +2497,7 @@ CDJWMAR99
 C      PARAMETER ( MAXFNC = 3 )
       PARAMETER ( MAXFNC = 4 )
 C
-      CHARACTER*14 COPER(MAXFNC)
+      CHARACTER*16 COPER(MAXFNC)
       CHARACTER*8 CRESLT(MAXFNC) , CACTN(MAXFNC)
       CHARACTER*7 CINSTR(MAXFNC)
       DIMENSION   IRQARG(MAXFNC)
@@ -2516,10 +2517,10 @@ C
       INCLUDE 'XIOBUF.INC'
       DATA COPER / ' output sent to ', ' connected to ', 'closed', 
      1 ' appended to '/
-      DATA CRESLT / 'released ' , 'opened ' , 'closed '
-     1 , 'appended ' /
-      DATA CACTN  / ' releases ' , ' opens  ' , ' closes ', 
-     1 ' appends ' /
+      DATA CRESLT / 'released' , 'opened  ' , 'closed  '
+     1 , 'appended' /
+      DATA CACTN  / 'releases' , ' opens  ' , ' closes ', 
+     1 'appends ' /
       DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND '/
 C
       DATA IRQARG / 2 , 2 , 1, 2  /
@@ -2631,10 +2632,6 @@ cdjwsep2011
             ENDIF
           ENDIF
         ENDIF
-C
-C
-C
-C
         ISTAT = KFLCLS ( IDEV )
       ELSE
         IF ( IACCSS .EQ. 2 ) THEN
@@ -2706,7 +2703,7 @@ C----- WRITE A SINGLE SPACE FOR NULL FILE NAMES
 2345    FORMAT ( 1X , 8A1 , 1X , A , 1X , A )
         CALL XPRVDU(NCVDU, 1,0)
 cdjwsep2011
-       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
+       IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .GE. 1)) THEN
         WRITE(NCWU,1006)  (KEYFIL(I,IFIND),I=1,LNAM),
      2    COPER(KFUNC),  idev,NEWFIL(:LENNAM)
 1006    FORMAT('READ      ', 8A1,A,           T38, ': Unit =',I8,1X,A)

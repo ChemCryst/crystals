@@ -2,43 +2,47 @@
 
 enable_language(Fortran)
 
-add_definitions(-D_GIL_)
-add_definitions(-DCRY_OSWIN32)
-add_definitions(-DCRY_GNU)
-#add_definitions(-DCRY_OWNLAPACK)
-add_definitions(-D_GNUF77_)
-ADD_DEFINITIONS(-D_NOHDF5_)
-ADD_DEFINITIONS(-fno-sign-zero)
 
 if ( useGUI )
-add_definitions(-D__WXMAC__)
-add_definitions(-D__WXOSX__)
-add_definitions(-D__WXOSX_COCOA__)
 add_definitions(-D__WXUSINGDLL)
 add_definitions(-DCRY_GUI)
 else()
 add_definitions(-DCRY_NOGUI)
 endif()
-#add_definitions(-std=legacy)
-add_definitions(-fno-automatic)
-add_definitions(-fno-inline)
-add_definitions(-fexceptions)
-add_definitions(-D _HOL_)
-#add_definitions(-mmacosx-version-min=10.7)
-#add_definitions(-arch x86_64)
 
 
-add_library(CrystalsFortran OBJECT
+#add_library(PySpecific STATIC
+#pyspecific.F
+#)
+
+add_library(CrystalsFortran STATIC
 crystals_hdf5.F90
-xdaval.inc.F90
-xunits.inc.F90
-xssval.inc.F90
-xerval.inc.F90
-xiobuf.inc.F90
-xdisc.inc.F90
+unitcell.F90
+math.F90
+XDAVAL.INC.F90
+XUNITS.INC.F90
+XSSVAL.INC.F90
+XERVAL.INC.F90
+XIOBUF.INC.F90
+XDISC.INC.F90
+XLST01.INC.F90
+XLST05.INC.F90
+XLST06.INC.F90
+XLST12.INC.F90
+XLST13.INC.F90
+XLST23.INC.F90
+XLST28.INC.F90
+XLST30.INC.F90
+XLST39.INC.F90
+XCONST.INC.F90
+XOPVAL.INC.F90
+XPARSE.INC.F90
+formatnumber.F90
 solve_helper.F90
+sfls_punch.F90
 mrgrnk.F90
-${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.f90
+absolut.F90
+${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90
 absorb.F
 accumula.F
 alter5.F
@@ -47,7 +51,6 @@ anisotfs.F
 calcul.F
 characte.F
 control.F
-crystals.F
 csdcode.F
 difabs.F
 disc.F
@@ -118,4 +121,16 @@ weight.F
 lapack.F
 )
 
+#target_link_libraries(CrystalsFortran openblas)
+SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
+
+# These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.
+# Without these lines modules may be built in the wrong order causing a compilation failure in parallel builds.
+if ( useGUI )
+SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
+else()
+SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
+endif()
+
+

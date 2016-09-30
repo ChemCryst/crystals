@@ -1,9 +1,3 @@
-! module version on the INC file with common blocks
-! The common blocks are kept inside the module untile all the common blocks
-! are converted to modules
-! This file must be kept in sync with the corresponding INC file
-
-!> module version of XSSVAL INC file
 module xssval_mod
 
 INTEGER ISSISS , ISSVER , ISSMAC(2) , ISSOPS(2)
