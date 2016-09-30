@@ -1712,11 +1712,13 @@ void    CcController::Tokenize( const string & cText )
         }
         else if ( selector.compare(kSControlSelector) == 0 )
         {
-            while ( ParseInput( *mCurTokenList ) );
+            while ( ParseInput( *mCurTokenList ) )
+		;
         }
         else if ( selector.compare(kSWaitControlSelector) == 0 )
         {
-            while ( ParseInput( *mCurTokenList ) );
+            while ( ParseInput( *mCurTokenList ) )
+		;
 //We must now signal the waiting Crystals thread that we're complete.
             LOGSTAT ( "CW complete, unlocking output queue.");
             m_Complete_Signal.Signal();
@@ -3937,7 +3939,8 @@ extern "C" {
 
     wxString fullname(firstTok.c_str());
     wxString path, name, extension, command;
-    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
+//    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
+    wxFileName::SplitPath(firstTok.c_str(),&path,&name,&extension);
     wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 
     if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )

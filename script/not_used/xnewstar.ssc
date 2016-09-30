@@ -75,7 +75,7 @@ Script for starting on a new structure
 %       COPY 'EXTEND SIZE=10 TRIES=1000'
 %       COPY 'END'
 Files INITIAL.* will be created in your directory. They may be important.
-%       COPY '#RELEASE PRINT INITIAL.LIS'
+%       COPY '#RELEASE PRINT initial.lis'
 %       COPY '#RELEASE LOG INITIAL.DAT'
 %       COPY '#LIST 28'
 %       COPY 'END'

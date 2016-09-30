@@ -58,7 +58,7 @@
 %    END IF
 %%
 %    BLOCK
-%      COPY '#RELEASE PRINT DIFABS.LIS'
+%      COPY '#RELEASE PRINT difabs.lis'
 %      ON ERROR TERMINATE
   You now have choice of using the existing LIST 6, or re-inputting the data.
 %      VERIFY YES NO

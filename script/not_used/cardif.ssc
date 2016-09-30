@@ -99,7 +99,7 @@
 %    END BLOCK
 %%
 %    BLOCK
-%      COPY '#RELEASE PRINT DIFABS.LIS'
+%      COPY '#RELEASE PRINT difabs.lis'
 %      ON ERROR TERMINATE
   
   You now have choice of using the existing LIST 6, or re-inputting the data.
@@ -151,7 +151,7 @@
 %      COPY '#RELE PUNCH DIFABS.L6'
 %      COPY '#PUNCH 6'
 %      COPY 'END'
-%      COPY '#RELE PUNCH CRFILE.PCH' 
+%      COPY '#RELE PUNCH crfile.pch' 
 %%
 %      COPY '#SCRIPT INLIST28'
 %%
@@ -178,7 +178,7 @@
 	We cannot proceed with inputting a new List 6
 	The only alternative left is to abandon DIFABS
 
-%          COPY '#RELEASE PRINT CRFILE.LIS'
+%          COPY '#RELEASE PRINT crfile.lis'
 %            IF RECOMPUTE .EQ. TRUE THEN
 %              COPY '#DISK'
 %              COPY 'RESET 5 0 -1'
@@ -350,7 +350,7 @@
 %      COPY '#RELE PUNCH DIFABS.L6'
 %      COPY '#PUNCH 6'
 %      COPY 'END'
-%      COPY '#RELE PUNCH CRFILE.PCH' 
+%      COPY '#RELE PUNCH crfile.pch' 
 %      COPY '#SCRIPT INLIST28'
 %%
 %      ELSE
@@ -358,7 +358,7 @@
     You have chosen not to use your existing LIST 6, nor to input
     a new one. The only alternative left is to abandon DIFABS
 
-%          COPY '#RELEASE PRINT CRFILE.LIS'
+%          COPY '#RELEASE PRINT crfile.lis'
 %          IF RECOMPUTE .EQ. TRUE THEN
 %            COPY '#DISK'
 %            COPY 'RESET 5 0 -1'
@@ -394,6 +394,6 @@
 %         COPY 'CALCULATE'
 %         COPY 'END'
 %    END IF
-%    COPY '#RELEASE PRINT CRFILE.LIS'
+%    COPY '#RELEASE PRINT crfile.lis'
 %    END BLOCK
 %  END SCRIPT

@@ -438,35 +438,55 @@
 %   END BLOCK                                                                   
 %   BLOCK                      %BHH                                             
 %    COPY '#SCRIPT XHELP1'                                                      
+This dialog allows unreliable or unwanted data to be excluded from 
+calculations 
+ 
+
+CRYSTALS does not throw away the reflections that you reject, merely 
+ignores them during calculations. You may return to this dialog at any 
+time and change the rejection limits to include/exclude data. 
+
+ 
+
+To remove all rejection criteria type: 
+
+#LIST 28 
+END 
+or uncheck all the boxes in the dialog. 
+
+ 
+
+Commonly used filters are: 
+
+I/sig(I) 
+ Historically set to 3, now more commonly set to a negative value 
+(typically -3) so that only improbably negative intensities are rejected. 
+For the initial refinement of very large structure, using 3 speeds 
+initial convergence. 
+
+ 
+[Sin theta/lambda]**2 
+ Resolution, in reciprocal Angstrom. A minimum value of about 
+0.01 will remove low angle data if it is suspected that the beamstop mask 
+was incorrectly set. If data was measured to a resolution where there was 
+little signal, an upper limit may be useful to exclude the noise. Use the 
+Wilson Plot analysis to choose an upper limit. 
+ 
+
+Fobs 
+ Exclude weak or strong observations. Take values from the 
+agreement analysis table in the GUI window. 
+ 
+
+Fcalc 
+ Exclude weak or strong calculated structure factors. A value 
+chosen from the agreement analysis must be divided by the Overall Scale 
+Factor. 
+
+ 
+Do not forget to recalculate structure factors if filters are changed so 
+as to include more reflections, otherwise the Fc are undefined. 
                                                                                 
-This dialog allows unreliable or unwanted data to                               
-be removed from the refinement.                                                 
-One of the most commonly used measures of reliability                           
-is the ratio of F (intensity of a reflection) to sigma(F)                       
-(the estimated standard deviation of that reflection).                          
-                                                                                
-When initial data is merged before refinement, reflections                      
-with a low F/s(F) are usually in very bad agreement (due to                     
-the fact that they are imprecisely measured). The level at                      
-which you choose to cut your data may be determined by a plot                   
-of merging R at various F/s(F) levels.                                          
-                                                                                
-Recommended levels are up to about 4.0                                          
-                                                                                
-Increasing the rejection limit will reduce the number of data,                  
-therefore decreasing the reflection:parameter ratio. Also because               
-you are rejecting data that is inconsistent *with itself*, the                  
-R-factor will drop.                                                             
-                                                                                
-CRYSTALS does not throw away the reflections that you reject, merely            
-ignores them in the refinement. You may return to this dialog at                
-any time and change the rejection limit.                                        
-                                                                                
-Setting the rejection limit to zero will reject reflections                     
-with a negative intensity. To remove all rejection criteria type:               
-#LIST 28                                                                        
-END                                                                             
-or uncheck all the boxes in the dialog.                                         
                                                                                 
 %    COPY '#SCRIPT XHELP2'                                                      
 %   END BLOCK                                                                   

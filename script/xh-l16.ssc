@@ -1,5 +1,5 @@
 %SCRIPT XH-L16
-
+%%
 %%   Local variables:
 %  VARIABLE CHARACTER CTYPE
 %  VARIABLE REAL SERIAL
@@ -7,49 +7,33 @@
 %% Initialise to no hydrogen, but if any found, refine them.
 %% see also XWRITE5.SSC, which tests REFLAG for each atom
 %  EVALUATE HRIDE = FALSE
-
+%%
 %  IF EXISTS 5 .LE. 0 THEN
 
-You have no atom for this structure
+You have no atoms for this structure
 
 %   FINISH
 %  END IF
-%     QUEUE REWIND
 %     COPY '#GENERALEDIT 5'
 %     COPY 'LOCATE RECORDTYPE=101'
 %     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 %     LOOP
 %       ON EDITERROR TERMINATE
 %       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
 %       IF ( CTYPE .EQ. 'H' )  THEN
 %         EVALUATE HRIDE = TRUE
-%         CLEAR
-%         INSERT 'CONT H('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         INSERT ')'
-%%         OUTPUT
-%         QUEUE SEND
 %       ELSE IF ( CTYPE .EQ. 'D' )  THEN
 %         EVALUATE HRIDE = TRUE
-%         CLEAR
-%         INSERT 'CONT D('
-%         STORE FORMAT /(I5)/ LENGTH 5 INTEGER INTEGER SERIAL
-%         INSERT ')'
-%%         OUTPUT
-%         QUEUE SEND
 %       END IF
 %       COPY 'NEXT'
 %     END LOOP
 %     COPY 'END'
+%%
 %% If HRIDE is set, we found some atoms to ride.
 %%
 %  IF ( HRIDE ) THEN
 
 %      COPY '#RELEASE PUNCH h-restraints.dat'                                        
-%      COPY '#CLOSE SCPQ'                                                        
-%      COPY '#CLOSE SCPDATA'                                                     
-%      COPY '#OPEN SCPQ restdat.12'                                              
 %      COPY '#DISTANCES'                                                         
 %      COPY 'OUTPUT MON=OFF PUNCH=H-REST'                                        
 %      COPY 'SELECT SYMMETRY=NONE RANGE=L41'

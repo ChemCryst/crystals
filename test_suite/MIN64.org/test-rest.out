@@ -1,0 +1,1183 @@
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+#SPACE                                                                                                                                                                                                                                                          
+#LIST 14                                                                                                                                                                                                                                                        
+#SPACE                                                                                                                                                                                                                                                          
+  Space Group P21 21 21 
+  The Space Group is ACentric  Primitive Orthorhombic  Laue Symmetry mmm     
+  Multiplicity of a General Site is   4  Laue-no is   3
+  The Equivalent Positions are:
+
+       x      y      z    1/2+x  1/2-y     -z 
+      -x  1/2+y  1/2-z    1/2-x     -y  1/2+z 
+ 
+Space group symbol is   P    21   21   21  
+
+    Fourier limits are :-
+                              X axis from  0.000 to  1.000
+                              Y axis from  0.000 to  1.000
+                              Z axis from  0.000 to  0.250
+
+   Patterson limits are :-
+                              X axis from  0.000 to  0.500
+                              Y axis from  0.000 to  0.500
+                              Z axis from  0.000 to  0.500
+#LIST 3                                                                                                                                                                                                                                                         
+#LIST 4                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 11/03/16 AT 11:20:13                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      5                                                                                                                                                                                                                                                    
+#LIST 13                                                                                                                                                                                                                                                        
+#LIST 23                                                                                                                                                                                                                                                        
+#LIST 28                                                                                                                                                                                                                                                        
+#LIST 39                                                                                                                                                                                                                                                        
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 11/03/16 AT 11:22:47                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST     40                                                                                                                                                                                                                                                    
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 11/03/16 AT 11:23:09                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      6                                                                                                                                                                                                                                                    
+ The updated reflections are now on UNIT 53
+
+
+
+    1849 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+# PUNCHED ON 11/03/16 AT 11:20:23                                                                                                                                                                                                                               
+#LIST     16                                                                                                                                                                                                                                                    
+#                                                                                                                                                                                                                                                               
+#LIST     12                                                                                                                                                                                                                                                    
+#                                                                                                                                                                                                                                                               
+#CHECK                                                                                                                                                                                                                                                          
+#CLEAR 17                                                                                                                                                                                                                                                       
+#LIST  17                                                                                                                                                                                                                                                       
+#LIST 22                                                                                                                                                                                                                                                        
+ Initialising Special positions
+Refining   131 parameters in    1 block :     8924 elements in the LS matrix.
+ Space required on DISK is   18 records,    70  Blocks,    36 Kbytes. 
+#LIST 17                                                                                                                                                                                                                                                        
+#LIST 26                                                                                                                                                                                                                                                        
+#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 29                                                                                                                                                                                                                                                        
+Bonds: Update required - There is no list 41
+#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 26                                                                                                                                                                                                                                                        
+#CHECK                                                                                                                                                                                                                                                          
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+   1. Restrain these distances to be    0.860 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           N       3     1  1  0  0  0      H      31     1  1  0  0  0      0.860    -0.000
+[41]       Mean value =   0.8602  Mean delta =  -0.0002  r.m.s. delta =   0.00
+
+
+   2.  General restraint to be     0.3700000048E-01  with an E.S.D. of    0.2000000095E-02
+       Calculated value            0.3764899820E-01  giving a delta of   -0.6489977241E-03
+
+   3.   Restrain the following  angles   to their common mean of   119.199 degrees 
+                                                 with an E.S.D. of   2.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       2     1  1  0  0  0    119.99  -0.80
+           H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       4     1  1  0  0  0    118.40   0.80
+[41]       Mean value = 119.1990  Mean delta =   0.0000  r.m.s. delta =   0.79
+
+   4. Restrain these distances to be    0.960 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+  DISTANCE restraint:  No derivatives found
+  ?        C       7     1  1  0  0  0      H      73     1  1  0  0  0      1.045    -0.085
+  DISTANCE restraint:  No derivatives found
+  ?        C       7     1  1  0  0  0      H      72     1  1  0  0  0      0.926     0.034
+           C       7     1  1  0  0  0      H      71     1  1  0  0  0      0.961    -0.001
+[41]       Mean value =   0.9771  Mean delta =  -0.0171  r.m.s. delta =   0.05
+   General Restraint: No derivatives found
+
+
+   5.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
+   ?   Calculated value            0.7076000422E-01  giving a delta of    0.1224000007E-01
+   General Restraint: No derivatives found
+
+
+   6.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
+   ?   Calculated value            0.7153201103E-01  giving a delta of    0.1146799326E-01
+
+
+   7.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
+       Calculated value            0.8240700513E-01  giving a delta of    0.5929991603E-03
+
+   8. Restrain these  angles   to be  109.540 degrees ,
+                with an E.S.D. of   2.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      73     1  1  0  0  0    104.15   5.39
+           O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      72     1  1  0  0  0    103.78   5.76
+           O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    112.43  -2.89
+[41]       Mean value = 106.7882  Mean delta =   2.7518  r.m.s. delta =   4.84
+
+   9.   Restrain the following  angles   to their common mean of   111.712 degrees 
+                                                 with an E.S.D. of   2.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+  MEAN ANGLE restraint:  No derivatives found
+  ?        H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      72     1  1  0  0  0    104.43   7.29
+           H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    117.16  -5.45
+           H      72     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    113.55  -1.83
+[41]       Mean value = 111.7120  Mean delta =   0.0000  r.m.s. delta =   5.36
+
+     10.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+        0.00000  angstrom squared, with an E.S.D. of  0.00100
+
+            Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
+  
+           O       1     1  1  0  0  0     0.02317         C       2     1  1  0  0  0     0.03111   0.00795     U[11]   
+  UIJ restraint:  No derivatives found
+  ?        O       1     1  1  0  0  0     0.04898         C       2     1  1  0  0  0     0.02477  -0.02421     U[22]   
+           O       1     1  1  0  0  0     0.05075         C       2     1  1  0  0  0     0.03216  -0.01859     U[33]   
+           O       1     1  1  0  0  0     0.00261         C       2     1  1  0  0  0    -0.00319  -0.00580     U[23]   
+           O       1     1  1  0  0  0     0.00071         C       2     1  1  0  0  0    -0.00034  -0.00105     U[13]   
+           O       1     1  1  0  0  0     0.00169         C       2     1  1  0  0  0     0.00152  -0.00018     U[12]   
+[41]       Mean value =   0.0179  Mean delta =  -0.0070  r.m.s. delta =   0.01
+
+  11.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+        0.00000  angstrom squared, with an E.S.D. of  0.00100
+
+            Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
+  
+           O       1     1  1  0  0  0     0.02470         C       2     1  1  0  0  0     0.03086   0.00616
+[41]       Mean value =   0.0278  Mean delta =   0.0062  r.m.s. delta =   0.00
+#SFLS                                                                                                                                                                                                                                                           
+#WEIGHT                                                                                                                                                                                                                                                         
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Enantiopole parameter out of range. (-0.272 )                                                                                                                                                                                                                  
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Structure factor least squares      calculation number     1
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+[61]     4.   0.   0.     5.      5.
+[61]     6.   0.   0.     1.      1.
+[61]     2.   1.   0.     0.      1.
+[61]     3.   1.   0.    -0.      0.
+[61]     4.   1.   0.     0.      1.
+[61]     5.   1.   0.     6.      6.
+[61]     6.   1.   0.     1.      0.
+[61]     1.   2.   0.     4.      6.
+[61]     2.   2.   0.    25.     25.
+[61]     3.   2.   0.     4.      5.
+[61]     4.   2.   0.     8.      8.
+[61]     5.   2.   0.     3.      3.
+[61]     6.   2.   0.    -1.      0.
+[61]     1.   3.   0.    33.     33.
+[61]     2.   3.   0.     3.      3.
+[61]     3.   3.   0.     6.      5.
+[61]     4.   3.   0.    12.     12.
+[61]     5.   3.   0.     4.      4.
+[61]     6.   3.   0.     1.      0.
+[61]     1.   4.   0.    18.     18.
+[61]     2.   4.   0.     1.      1.
+[61]     3.   4.   0.    14.     13.
+[61]     4.   4.   0.     8.      8.
+[61]     5.   4.   0.     1.      1.
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+[62]    4.         8.          ************              
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+[33]      11000          12040             500                                    On scale of /FC/
+
+[32]      19150          19240             810                0.69 E+03          On scale of /FO/
+
+ New scale factor (G) is      1.598,    1846 reflections used in refinement
+
+ Structure factor least squares calculation    1  ends  2
+[29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
+LS-scale=  1.598   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45                                                                                                                                                                                                         
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     1
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+
+                                                for         131 parameters
+[64]                                  The rms (shift/su)  =           1.
+[64]                               The mean abs(shift/su) =           0.
+[05]  The largest (shift/esd) =      8.2 , for Parameter   14, C2U[33]
+
+                                Min          Actual           Max
+All cycle   R-factor              0.0            4.2           0.10E+03
+All cycle   Rw                    0.0            8.6           0.10E+03
+[06] All cycle   shift/esd
+All cycle   Min function          0.0           0.69E+03       0.10E+16
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for   131 least squares parameters, with  1732 degrees of freedom
+ Number of observations              1846                17              1863
+[30]  Minimisation function              0.69 E+03         0.20 E+03         0.89 E+03
+[45]  Hamilton weighted R-value           8.             12.64              9. 
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+[38]  Mean           0.00   0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00
+                                         0.0003  -0.0016   0.0013
+
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.013    0.006    0.007 
+
+
+
+[70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.035    0.016    0.015 
+
+[03]  Reversals
+
+
+[03]  Reversals
+
+
+ Shift
+[39]  factors     0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
+             0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+[41]       1.59     0.05     0.05
+[41]       0.00     0.00     0.00
+[41]       0.00     0.00     0.00
+
+
+
+    22  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+[37]      O          1.    1.00    0.00    0.02    0.39    0.81    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          2.    1.00    0.00    0.26    0.38    0.83    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.001    0.001 
+
+[37]      N          3.    1.00    0.00    0.45    0.40    0.77    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          4.    1.00    0.00    0.39    0.45    0.69    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C          5.    1.00    0.00    0.26    0.36    0.62    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.001    0.002 
+
+[37]      O          6.    1.00    0.00    0.27    0.25    0.65    0.06
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          7.    1.00    0.00    0.14    0.16    0.59    0.08
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.000    0.000    0.000 
+
+[37]      O          8.    1.00    0.00    0.16    0.40    0.56    0.07
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          9.    1.00    0.00    0.33    0.58    0.68    0.04
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C         10.    1.00    0.00    0.60    0.54    0.65    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C         11.    1.00    0.00    0.36    0.34    0.92    0.04
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      H         71.    1.00    1.00    0.23    0.16    0.54    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0047   0.0020   0.0012   0.0022
+[31]                                         0.022    0.022    0.019 
+
+[37]      H         91.    1.00    1.00    0.29    0.63    0.73    0.05
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0055   0.0023   0.0017   0.0076
+[31]                                         0.026    0.025    0.025 
+
+[37]      H         92.    1.00    1.00    0.18    0.60    0.63    0.04
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0052   0.0023   0.0016   0.0069
+[31]                                         0.025    0.024    0.024 
+
+[37]      H        101.    1.00    1.00    0.80    0.55    0.68    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0069   0.0030   0.0022   0.0111
+[31]                                         0.034    0.033    0.033 
+
+[37]      H        102.    1.00    1.00    0.62    0.53    0.58    0.04
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0050   0.0023   0.0018   0.0071
+[31]                                         0.024    0.024    0.027 
+
+[37]      H        113.    1.00    1.00    0.54    0.32    0.92    0.06
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0067   0.0027   0.0021   0.0089
+[31]                                         0.032    0.029    0.031 
+
+[37]      H        112.    1.00    1.00    0.32    0.41    0.96    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0073   0.0033   0.0021   0.0111
+[31]                                         0.035    0.036    0.032 
+
+[37]      H        111.    1.00    1.00    0.22    0.27    0.93    0.09
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0074   0.0032   0.0022   0.0111
+[31]                                         0.036    0.035    0.033 
+
+[37]      H         31.    1.00    1.00    0.62    0.39    0.78    0.03
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0034   0.0021   0.0012   0.0021
+[31]                                         0.016    0.023    0.017 
+Mean C-C su =   0.0019                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#                                                                                                                                                                                                                                                               
+#LIST     12                                                                                                                                                                                                                                                    
+#                                                                                                                                                                                                                                                               
+#CHECK                                                                                                                                                                                                                                                          
+#LIST 22                                                                                                                                                                                                                                                        
+ Initialising Special positions
+Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
+ Space required on DISK is   15 records,    60  Blocks,    31 Kbytes. 
+#LIST 17                                                                                                                                                                                                                                                        
+#CHECK                                                                                                                                                                                                                                                          
+#LIST 26                                                                                                                                                                                                                                                        
+#CHECK                                                                                                                                                                                                                                                          
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+   1. Restrain these distances to be    0.860 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           N       3     1  1  0  0  0      H      31     1  1  0  0  0      0.860    -0.000
+[41]       Mean value =   0.8602  Mean delta =  -0.0002  r.m.s. delta =   0.00
+
+
+   2.  General restraint to be     0.3700000048E-01  with an E.S.D. of    0.2000000095E-02
+       Calculated value            0.3764899820E-01  giving a delta of   -0.6489977241E-03
+
+   3.   Restrain the following  angles   to their common mean of   119.199 degrees 
+                                                 with an E.S.D. of   2.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       2     1  1  0  0  0    119.99  -0.80
+           H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       4     1  1  0  0  0    118.40   0.80
+[41]       Mean value = 119.1990  Mean delta =   0.0000  r.m.s. delta =   0.79
+
+   4. Restrain these distances to be    0.960 Angstrom,
+                with an E.S.D. of   0.020
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+  DISTANCE restraint:  No derivatives found
+  ?        C       7     1  1  0  0  0      H      73     1  1  0  0  0      1.045    -0.085
+  DISTANCE restraint:  No derivatives found
+  ?        C       7     1  1  0  0  0      H      72     1  1  0  0  0      0.926     0.034
+           C       7     1  1  0  0  0      H      71     1  1  0  0  0      0.961    -0.001
+[41]       Mean value =   0.9771  Mean delta =  -0.0171  r.m.s. delta =   0.05
+   General Restraint: No derivatives found
+
+
+   5.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
+   ?   Calculated value            0.7076000422E-01  giving a delta of    0.1224000007E-01
+   General Restraint: No derivatives found
+
+
+   6.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
+   ?   Calculated value            0.7153201103E-01  giving a delta of    0.1146799326E-01
+
+
+   7.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
+       Calculated value            0.8240700513E-01  giving a delta of    0.5929991603E-03
+
+   8. Restrain these  angles   to be  109.540 degrees ,
+                with an E.S.D. of   2.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      73     1  1  0  0  0    104.15   5.39
+           O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      72     1  1  0  0  0    103.78   5.76
+           O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    112.43  -2.89
+[41]       Mean value = 106.7882  Mean delta =   2.7518  r.m.s. delta =   4.84
+
+   9.   Restrain the following  angles   to their common mean of   111.712 degrees 
+                                                 with an E.S.D. of   2.000
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+  MEAN ANGLE restraint:  No derivatives found
+  ?        H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      72     1  1  0  0  0    104.43   7.29
+           H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    117.16  -5.45
+           H      72     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    113.55  -1.83
+[41]       Mean value = 111.7120  Mean delta =   0.0000  r.m.s. delta =   5.36
+
+     10.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+        0.00000  angstrom squared, with an E.S.D. of  0.00100
+
+            Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
+  
+  UIJ restraint:  No derivatives found
+  ?        O       1     1  1  0  0  0     0.02317         C       2     1  1  0  0  0     0.03111   0.00795     U[11]   
+  UIJ restraint:  No derivatives found
+  ?        O       1     1  1  0  0  0     0.04898         C       2     1  1  0  0  0     0.02477  -0.02421     U[22]   
+  UIJ restraint:  No derivatives found
+  ?        O       1     1  1  0  0  0     0.05075         C       2     1  1  0  0  0     0.03216  -0.01859     U[33]   
+  UIJ restraint:  No derivatives found
+  ?        O       1     1  1  0  0  0     0.00261         C       2     1  1  0  0  0    -0.00319  -0.00580     U[23]   
+  UIJ restraint:  No derivatives found
+  ?        O       1     1  1  0  0  0     0.00071         C       2     1  1  0  0  0    -0.00034  -0.00105     U[13]   
+  UIJ restraint:  No derivatives found
+  ?        O       1     1  1  0  0  0     0.00169         C       2     1  1  0  0  0     0.00152  -0.00018     U[12]   
+[41]       Mean value =   0.0179  Mean delta =  -0.0070  r.m.s. delta =   0.01
+
+  11.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+        0.00000  angstrom squared, with an E.S.D. of  0.00100
+
+            Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
+  
+           O       1     1  1  0  0  0     0.02470         C       2     1  1  0  0  0     0.03086   0.00616
+[41]       Mean value =   0.0278  Mean delta =   0.0062  r.m.s. delta =   0.00
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Enantiopole parameter out of range. (-0.272 )                                                                                                                                                                                                                  
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Structure factor least squares      calculation number     2
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+[61]     4.   1.   0.     0.      1.
+[61]     6.   1.   0.     1.      0.
+[61]     1.   2.   0.     4.      6.
+[61]     6.   2.   0.    -1.      0.
+[61]     6.   3.   0.     1.      0.
+[61]     5.   6.   0.    -0.      0.
+[61]     1.   7.   0.     1.      2.
+[61]     4.   7.   0.     2.      2.
+[61]     0.  10.   0.     0.      0.
+[61]     2.  11.   0.     0.      1.
+[61]     4.  11.   0.     2.      1.
+[61]     1.  13.   0.     0.      1.
+[61]     1.   0.   1.    28.     33.
+[61]     6.   1.   1.     1.      2.
+   -6.   3.   1.     1.10     0.18
+[61]     6.   3.   1.     0.      0.
+   -6.   4.   1.     1.71     1.21
+[61]     6.   4.   1.     0.      1.
+   -5.   5.   1.     1.76     1.99
+   -4.   5.   1.     1.86     1.61
+   -2.   5.   1.     4.87     4.07
+[61]     2.   5.   1.     4.      4.
+[61]     5.   6.   1.     1.      1.
+[61]     0.   9.   1.     1.      1.
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+[62]    4.         8.          ************              
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+[33]      11000          12040             500                                    On scale of /FC/
+
+[32]      19150          19240             810                0.69 E+03          On scale of /FO/
+
+ New scale factor (G) is      1.598,    1846 reflections used in refinement
+
+ Structure factor least squares calculation    2  ends  2
+[29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
+LS-scale=  1.598   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45                                                                                                                                                                                                         
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+#NEWSHIFTS                                                                                                                                                                                                                                                      
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     2
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+
+                                                for         121 parameters
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
+[05]  The largest (shift/esd) =      1.7 , for Parameter   65, C9U[23]
+
+                                Min          Actual           Max
+All cycle   R-factor              0.0            4.2           0.10E+03
+All cycle   Rw                    0.0            8.6           0.10E+03
+[06] All cycle   shift/esd
+All cycle   Min function          0.0           0.69E+03       0.10E+16
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for   121 least squares parameters, with  1737 degrees of freedom
+ Number of observations              1846                12              1858
+[30]  Minimisation function              0.69 E+03         0.25 E+02         0.71 E+03
+[45]  Hamilton weighted R-value           8.              4.68              8. 
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+[38]  Mean           0.00   0.00    0.00   -0.00   -0.00    0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
+                                        -0.0009  -0.0010  -0.0003
+
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.013    0.007    0.006 
+
+
+
+[70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.037    0.016    0.013 
+
+[03]  Reversals
+
+
+[03]  Reversals
+
+
+ Shift
+[39]  factors     0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
+             0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+[41]       1.59     0.05     0.05
+[41]       0.00     0.00     0.00
+[41]       0.00     0.00     0.00
+
+
+
+    22  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+[37]      O          1.    1.00    0.00    0.02    0.39    0.81    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          2.    1.00    0.00    0.26    0.38    0.83    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      N          3.    1.00    0.00    0.45    0.40    0.77    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          4.    1.00    0.00    0.39    0.45    0.69    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          5.    1.00    0.00    0.26    0.36    0.62    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.001    0.001 
+
+[37]      O          6.    1.00    0.00    0.27    0.25    0.65    0.06
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          7.    1.00    0.00    0.14    0.16    0.59    0.08
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.000    0.000    0.000 
+
+[37]      O          8.    1.00    0.00    0.16    0.40    0.56    0.07
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          9.    1.00    0.00    0.33    0.58    0.68    0.04
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.001    0.002 
+
+[37]      C         10.    1.00    0.00    0.60    0.54    0.65    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C         11.    1.00    0.00    0.36    0.34    0.92    0.04
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      H         71.    1.00    1.00    0.23    0.16    0.54    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0042   0.0018   0.0011   0.0020
+[31]                                         0.020    0.020    0.017 
+
+[37]      H         91.    1.00    1.00    0.29    0.63    0.73    0.05
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0049   0.0021   0.0015   0.0068
+[31]                                         0.024    0.022    0.022 
+
+[37]      H         92.    1.00    1.00    0.18    0.60    0.63    0.04
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0047   0.0020   0.0014   0.0061
+[31]                                         0.023    0.022    0.022 
+
+[37]      H        101.    1.00    1.00    0.80    0.55    0.68    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0062   0.0027   0.0019   0.0099
+[31]                                         0.030    0.029    0.029 
+
+[37]      H        102.    1.00    1.00    0.62    0.53    0.58    0.04
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0045   0.0020   0.0016   0.0063
+[31]                                         0.022    0.022    0.024 
+
+[37]      H        113.    1.00    1.00    0.54    0.32    0.92    0.06
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0059   0.0024   0.0019   0.0080
+[31]                                         0.029    0.026    0.028 
+
+[37]      H        112.    1.00    1.00    0.32    0.41    0.96    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0065   0.0030   0.0019   0.0099
+[31]                                         0.031    0.032    0.028 
+
+[37]      H        111.    1.00    1.00    0.22    0.27    0.93    0.09
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0066   0.0029   0.0020   0.0099
+[31]                                         0.032    0.031    0.030 
+
+[37]      H         31.    1.00    1.00    0.62    0.39    0.78    0.03
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0030   0.0019   0.0010   0.0019
+[31]                                         0.015    0.020    0.015 
+Mean C-C su =   0.0017                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#                                                                                                                                                                                                                                                               
+#LIST     16                                                                                                                                                                                                                                                    
+#                                                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#CHECK                                                                                                                                                                                                                                                          
+#LIST 26                                                                                                                                                                                                                                                        
+#CHECK                                                                                                                                                                                                                                                          
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+   0.   Restrain the following distances to their common mean of     0.995 Angstrom
+                                                 with an E.S.D. of   0.010
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+  MEAN DIST restraint:  No derivatives found
+  ?        C       7     1  1  0  0  0      H      73     1  1  0  0  0      1.045    -0.050
+           C      11     1  1  0  0  0      H     113     1  1  0  0  0      0.945     0.050
+[41]       Mean value =   0.9952  Mean delta =   0.0000  r.m.s. delta =   0.04
+
+   1.   Restrain the following  angles   to their common mean of   107.240 degrees 
+                                                 with an E.S.D. of   0.100
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+  MEAN ANGLE restraint:  No derivatives found
+  ?        H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      72     1  1  0  0  0    104.43   2.81
+           H     113     1  1  0  0  0      C      11     1  1  0  0  0      H     112     1  1  0  0  0    110.05  -2.81
+[41]       Mean value = 107.2400  Mean delta =   0.0000  r.m.s. delta =   2.81
+
+   2.   Restrain the following  angles   to their common mean of   117.020 degrees 
+                                                 with an E.S.D. of   0.100
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    117.16  -0.14
+           H     113     1  1  0  0  0      C      11     1  1  0  0  0      H     111     1  1  0  0  0    116.88   0.14
+[41]       Mean value = 117.0200  Mean delta =   0.0000  r.m.s. delta =   0.14
+
+   3.   Restrain the following distances to their common mean of     0.936 Angstrom
+                                                 with an E.S.D. of   0.010
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+  MEAN DIST restraint:  No derivatives found
+  ?        C       7     1  1  0  0  0      H      72     1  1  0  0  0      0.926     0.010
+           C      11     1  1  0  0  0      H     112     1  1  0  0  0      0.946    -0.010
+[41]       Mean value =   0.9359  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+   4.   Restrain the following  angles   to their common mean of   110.310 degrees 
+                                                 with an E.S.D. of   0.100
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
+  
+           H      72     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    113.55  -3.24
+           H     112     1  1  0  0  0      C      11     1  1  0  0  0      H     111     1  1  0  0  0    107.07   3.24
+[41]       Mean value = 110.3102  Mean delta =   0.0000  r.m.s. delta =   3.23
+
+   5.   Restrain the following distances to their common mean of     1.027 Angstrom
+                                                 with an E.S.D. of   0.010
+
+            Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
+  
+           C       7     1  1  0  0  0      H      71     1  1  0  0  0      0.961     0.067
+           C      11     1  1  0  0  0      H     111     1  1  0  0  0      1.094    -0.067
+[41]       Mean value =   1.0275  Mean delta =   0.0000  r.m.s. delta =   0.06
+#SFLS                                                                                                                                                                                                                                                           
+#SPEC LIS  NO                                                                                                                                                                                                                                                   
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
+#REFINE     1                                                                                                                                                                                                                                                   
+#DORESTRAIN                                                                                                                                                                                                                                                     
+ Enantiopole parameter out of range. (-0.272 )                                                                                                                                                                                                                  
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Structure factor least squares      calculation number     3
+           Bad agreements 
+
+    h    k    l      Fo        Fc 
+
+[61]     4.   1.   0.     0.      1.
+[61]     6.   1.   0.     1.      0.
+[61]     1.   2.   0.     4.      6.
+[61]     6.   2.   0.    -1.      0.
+[61]     6.   3.   0.     1.      0.
+[61]     5.   6.   0.    -0.      0.
+[61]     1.   7.   0.     1.      2.
+[61]     4.   7.   0.     2.      2.
+[61]     0.  10.   0.     0.      0.
+[61]     2.  11.   0.     0.      1.
+[61]     4.  11.   0.     2.      1.
+[61]     1.  13.   0.     0.      1.
+[61]     1.   0.   1.    28.     33.
+[61]     6.   1.   1.     1.      2.
+   -6.   3.   1.     1.10     0.18
+[61]     6.   3.   1.     0.      0.
+   -6.   4.   1.     1.71     1.21
+[61]     6.   4.   1.     0.      1.
+   -5.   5.   1.     1.76     1.99
+   -4.   5.   1.     1.86     1.61
+   -2.   5.   1.     4.87     4.07
+[61]     2.   5.   1.     4.      4.
+[61]     5.   6.   1.     1.      1.
+[61]     0.   9.   1.     1.      1.
+
+ And so on ------------
+
+
+                              ***
+                             ***
+ R-value    Weighted R      ************              ************
+                           *************  HERE IT IS  ************
+[62]    4.         8.          ************              
+                             ***
+                              ***
+
+ Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
+
+[33]      11000          12040             500                                    On scale of /FC/
+
+[32]      19150          19240             810                0.69 E+03          On scale of /FO/
+
+ New scale factor (G) is      1.598,    1846 reflections used in refinement
+
+ Structure factor least squares calculation    3  ends  2
+[29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
+LS-scale=  1.598   Wilson Scale=  0.000                                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45                                                                                                                                                                                                         
+ Directive  MEAN DIST: No derivatives found during Evaluation
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+ Directive  MEAN DIST: No derivatives found during Evaluation
+#INVERT  CHOL                                                                                                                                                                                                                                                   
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Matrix inversion and calculation of the shifts for S.F.L.S. cycle number     3
+
+ The SHIFT RATIO is the shift calculated for this cycle
+ divided by the corresponding shift for the last cycle.
+ Parameters for which the shift ratio exceeds  3.00 (SRATIO)
+            and/or the shift-over-esd exceeds  1.00 (S/ESD)
+            and/or there is a relatively large shift.
+ Parameters marked COMPOSITE contain derivatives from other physical parameters
+
+[14]  S/ESD    98          98           -0.010       0.1E+01    0.10 E-01         -1.0         H    101 X       
+
+                                                for         121 parameters
+[64]                                  The rms (shift/su)  =           0.
+[64]                               The mean abs(shift/su) =           0.
+[05]  The largest (shift/esd) =      6.1 , for Parameter   87, H71Y
+
+                                Min          Actual           Max
+All cycle   R-factor              0.0            4.2           0.10E+03
+All cycle   Rw                    0.0            8.6           0.10E+03
+[06] All cycle   shift/esd
+All cycle   Min function          0.0           0.69E+03       0.10E+16
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+ Statistics for   121 least squares parameters, with  1734 degrees of freedom
+ Number of observations              1846                 9              1855
+[30]  Minimisation function              0.69 E+03         0.12 E+04         0.18 E+04
+[45]  Hamilton weighted R-value           8.              2.17              2. 
+
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+ Calculated shifts
+
+             Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
+
+
+[38]  Mean           0.00   0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00
+                                         0.0045   0.0012  -0.0078
+
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.022    0.013    0.021 
+
+
+
+[70]  Maximum        0.    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                          0.050    0.043    0.081 
+
+[03]  Reversals
+
+
+[03]  Reversals
+
+
+ Shift
+[39]  factors     0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
+             0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+#SOLVE                                                                                                                                                                                                                                                          
+ Initialising Special positions
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+ Generation and output of the new parameter list
+
+ Format :      New coordinate  
+               Applied shift
+               Calculated E.S.D.
+               E.S.D. in angstrom
+
+
+
+  6  Overall parameter(s)
+
+    SCALE    DU[ISO]  OU[ISO]  POLARITY ENANTIO      EXTPARAM
+
+[41]       1.59     0.05     0.05
+[41]       0.00     0.00     0.00
+[41]       0.00     0.00     0.00
+
+
+
+    22  atom(s)
+
+    TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
+
+[37]      O          1.    1.00    0.00    0.02    0.39    0.81    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C          2.    1.00    0.00    0.26    0.38    0.83    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.003    0.002    0.002 
+
+[37]      N          3.    1.00    0.00    0.45    0.40    0.77    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C          4.    1.00    0.00    0.39    0.45    0.69    0.02
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.003    0.003 
+
+[37]      C          5.    1.00    0.00    0.26    0.36    0.62    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.003    0.002    0.002 
+
+[37]      O          6.    1.00    0.00    0.27    0.25    0.65    0.06
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C          7.    1.00    0.00    0.14    0.16    0.59    0.08
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.000    0.000    0.000 
+
+[37]      O          8.    1.00    0.00    0.16    0.40    0.56    0.07
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.002    0.002    0.002 
+
+[37]      C          9.    1.00    0.00    0.33    0.58    0.68    0.04
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.003    0.003    0.003 
+
+[37]      C         10.    1.00    0.00    0.60    0.54    0.65    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.003    0.003    0.004 
+
+[37]      C         11.    1.00    0.00    0.36    0.34    0.92    0.04
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.003    0.003    0.003 
+
+[37]      H         71.    1.00    1.00    0.23    0.16    0.54    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0015   0.0003   0.0009   0.0153
+[31]                                         0.007    0.003    0.013 
+
+[37]      H         91.    1.00    1.00    0.29    0.63    0.73    0.05
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0078   0.0033   0.0024   0.0110
+[31]                                         0.038    0.036    0.037 
+
+[37]      H         92.    1.00    1.00    0.18    0.60    0.63    0.04
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0076   0.0033   0.0023   0.0100
+[31]                                         0.037    0.036    0.035 
+
+[37]      H        101.    1.00    1.00    0.80    0.55    0.68    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0101   0.0043   0.0032   0.0160
+[31]                                         0.049    0.047    0.048 
+
+[37]      H        102.    1.00    1.00    0.62    0.53    0.58    0.04
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0073   0.0033   0.0026   0.0102
+[31]                                         0.035    0.036    0.039 
+
+[37]      H        113.    1.00    1.00    0.54    0.32    0.92    0.06
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0035   0.0025   0.0024   0.0129
+[31]                                         0.017    0.027    0.036 
+
+[37]      H        112.    1.00    1.00    0.32    0.41    0.96    0.08
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0063   0.0023   0.0020   0.0161
+[31]                                         0.031    0.025    0.030 
+
+[37]      H        111.    1.00    1.00    0.22    0.27    0.93    0.09
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0058   0.0023   0.0026   0.0161
+[31]                                         0.028    0.025    0.039 
+
+[37]      H         31.    1.00    1.00    0.62    0.39    0.78    0.03
+                      0.0000            0.0000   0.0000   0.0000   0.0000
+                      0.0000            0.0071   0.0031   0.0022   0.0092
+[31]                                         0.034    0.034    0.034 
+Mean C-C su =   0.0028                                                                                                                                                                                                                                          
+#CYCLENDS                                                                                                                                                                                                                                                       
+#END                                                                                                                                                                                                                                                            
+
+
+          : Job ends ok       with     0 warnings and     0 errors

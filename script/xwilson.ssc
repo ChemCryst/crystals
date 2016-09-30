@@ -37,15 +37,17 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=6 NCOLS=1                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'Wilson Plot: (Sin(theta)/lambda)^2 (or rho) runs down'
+^^WI 'The data should lie on a straight line rising from left to right'   
 ^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'the vertical axis. Log of actual scattering over expected scattering'     
+^^WI 'Wiggles at top right are due to heavy atoms or repeated motifs'     
 ^^WI       @ 3,1 STATIC XFW2                                                    
-^^WI 'is plotted at each angle. Slope is due to fall off of actual scattering'  
+^^WI 'Up-turn bottom left may indicate there is mainly noise at this resolution'  
 ^^WI       @ 4,1 STATIC XFW2                                                    
-^^WI 'with angle, intercept is due to arbitrary scaling of intensity data.'     
-^^WI       @ 5,1 STATIC XFW3 'Right-click a point for data cut-off options.' 
-^^WI       @ 6,1 STATIC XFW4 '<|E^2-1|>  less than 0.736 may indicate twinning'
+^^WI 'Right click on a GREEN point to set a resolution limit'     
+^^WI       @ 5,1 STATIC XFW3 
+^^WI 'Avoid setting LIST 28 filters to eliminate too many reflections'
+^^WI       @ 6,1 STATIC XFW4 
+^^WI '<|E^2-1|> less than 0.736 may indicate twinning'   
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -68,11 +70,12 @@
 ^^WI    }                                                                       
 ^^WI   }                                                                        
 ^^WI  }                                                                         
-^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=5                                           
+^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=7                                           
 ^^WI  {                                                                         
 ^^WI   @ 1,1 STRETCH RS HORIZONTAL                                              
-^^WI   @ 1,2 BUTTON XC_REF 'Refresh'                                            
-^^WI   @ 1,4 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL                        
+^^WI   @ 1,2 BUTTON XC_HELP 'Help'
+^^WI   @ 1,4 BUTTON XC_REF 'Refresh'                                            
+^^WI   @ 1,6 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL                        
 ^^WI  }                                                                         
 ^^WI  @ 3,1 PROGRESS _CHECKPR 'Please wait'                                     
 ^^WI }                                                                          
@@ -98,7 +101,7 @@
 %%                                                                              
 %  LOOP                                                                         
 %    VERIFY XC_BOK XC_REF  RHOMIT2 SIGCUT ED28 ED02 ED29 SIGFULL -       
- WILFILT1                                                               
+ WILFILT1   XC_HELP                                                            
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
 %    CASE VALUE                                                                 
 %      BLOCK    %XC_BOK                                                         
@@ -164,16 +167,24 @@
 %          BLOCK                                                                
 %            EVALUATE WILFIL = TRUE                                             
 %            COPY 'FILTER LIST28 = YES'                                         
-                                              
 %          END BLOCK                                                            
 %          BLOCK                                                                
 %            EVALUATE WILFIL = FALSE                                            
 %            COPY 'FILTER LIST28 = NO'                                          
-                                             
 %          END BLOCK                                                            
 %        END CASE                                                               
 %        COPY 'END'                                                             
-%      END BLOCK                                                                
+%      END BLOCK    
+%      BLOCK    %HELP
+  The calculated points (BLUE) depend upon the current values
+  for the Debye (B) and scale factors.  Clicking on a GREEN
+  data point to select a maximum value of Rho will change the
+  B and scale, and hence the calculated plot values.
+
+  For consistency, it is recommended that you clear the check
+  box and select the maximum observed Rho value before selecting
+  a new Rho value.
+%      END BLOCK                                                            
                                                                 
 %    END CASE                                                                   
 %  END LOOP                                                                     

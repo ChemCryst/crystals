@@ -174,16 +174,16 @@ LS-scale= 10.008   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -270,12 +270,12 @@ All cycle   Min function          0.0           0.14E+05       0.10E+16
 [38]  Mean          -0.06   0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00   -0.00   -0.00   -0.00    0.00
                                         -0.0038  -0.0052   0.0045
 
-[38]  R.M.S.         0.07   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.012    0.006    0.009 
 
 
 
-[38]  Maximum        0.09   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.018    0.009    0.017 
 
 [03]  Reversals
@@ -438,7 +438,7 @@ Mean C-C su =   0.0000
 
       270 reflections   R  2.74% Rw  2.88% with I/u(I) from List 28                                                                                                                                                                                             
       270 reflections   R  2.74% Rw  2.88% with I/u(I) > -10.0                                                                                                                                                                                                  
-        0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+      270 reflections   R  2.74% Rw  2.88% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  9.88    SumFoFc/SumFc^2=  9.90    SumwFoFc/SumwFc^2=  9.90
 LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27                                                                                                                                                                                                         
@@ -449,7 +449,7 @@ LS-scale=  9.913   Wilson Scale=  0.000
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
- Print list type    17     serial number        2     Address    18668     Length    1156     Created on                          
+ Print list type    17     serial number        2     Address    18677     Length    1156     Created on                          
 
      0 NO 
      1 RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22]) 
@@ -465,6 +465,67 @@ LS-scale=  9.913   Wilson Scale=  0.000
 
 
 
+# ADD #CHECK TO LOCATE FAIING RESTRAINTS.                                                                                                                                                                                                                       
+# BEING AN OLD TESTDECK, THE SPECIAL POSITIONS CONSTRAINTS HAD BEEN                                                                                                                                                                                             
+# SET MANUALLY IN LIST 12, SO CANNOT ALSO BE SET IN LIST 17                                                                                                                                                                                                     
+#CHECK                                                                                                                                                                                                                                                          
+
+
+ SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+   General Restraint: No derivatives found
+
+
+   2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+   3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+   4.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+   5.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+   6.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+   7.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+   8.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+   9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+  10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+   General Restraint: No derivatives found
+
+
+  11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 #DISTANCES                                                                                                                                                                                                                                                      
 #LIST 31                                                                                                                                                                                                                                                        
 #DISTANCES                                                                                                                                                                                                                                                      
@@ -1114,16 +1175,16 @@ The slope and correlation coefficient should be small
 [29] SumFo/SumFc=  9.88    SumFoFc/SumFc^2=  9.90    SumwFoFc/SumwFc^2=  9.88
 LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
 <Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27                                                                                                                                                                                                         
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1186,12 +1247,12 @@ All cycle   Min function          0.0           0.29E+03       0.10E+16
 [38]  Mean          -0.03   0.00    0.00   -0.00   -0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00
                                         -0.0012  -0.0019   0.0003
 
-[38]  R.M.S.         0.05   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.004    0.004    0.001 
 
 
 
-[38]  Maximum        0.07   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.009    0.006    0.002 
 
 [03]  Reversals
@@ -1341,16 +1402,16 @@ Mean C-C su =   0.0000
 [29] SumFo/SumFc=  9.85    SumFoFc/SumFc^2=  9.88    SumwFoFc/SumwFc^2=  9.86
 LS-scale=  9.844   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -1379,7 +1440,7 @@ All cycle   Rw                    0.0            3.6           0.10E+03
 All cycle   Min function          0.0           0.27E+03       0.10E+16
 [25] Inter cycle R-factor             -5.0          -0. E-01       0.1 E+03
 [26] Inter cycle Rw                   -5.0           0.1            0.1 E+03
-[26] Inter cycle shift/esd            -10.           0.5            0.1 E+05
+[69] Inter cycle shift/esd
 [07] Inter cycle Min function          0.0
 
 
@@ -1405,14 +1466,15 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
+[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
                                          0.0002   0.0000  -0.0001
 
-[38]  R.M.S.         0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
 
 
 
-[38]  Maximum        0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
 
 [03]  Reversals

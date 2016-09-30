@@ -270,8 +270,9 @@ void CcPlotScatter::DrawView(bool print)
         // if y axis has a title make the lhs gap bigger
         if(!(m_Axes.m_AxisData[Axis_YL].m_Title == ""))
             m_XGapLeft = 300;
-//        if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
-//            m_XGapRight = 200;
+// re-introduced by DJW - see also ccplotbar, ccplotscatter, ccplotdata
+        if(!(m_Axes.m_AxisData[Axis_YR].m_Title == ""))
+            m_XGapRight = 300;
 
         // used in loops
         int i=0;

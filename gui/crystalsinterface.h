@@ -141,37 +141,65 @@
 typedef std::string tstring;
 
 #ifdef __GID__
-  #define CRY_GUI
+  #ifndef CRY_GUI
+    #define CRY_GUI
+  #endif
   #define CRY_USEMFC
-  #define CRY_OSWIN32
+  #ifndef CRY_OSWIN32
+    #define CRY_OSWIN32
+  #endif
   #define CRY_TARGET GID
 #endif
   
 #ifdef __GIL__
-  #define CRY_GUI
-  #define CRY_USEWX
-  #define CRY_OSLINUX
+  #ifndef CRY_GUI
+    #define CRY_GUI
+  #endif
+  #ifndef CRY_USEWX
+    #define CRY_USEWX
+  #endif
+  #ifndef CRY_OSLINUX
+    #define CRY_OSLINUX
+  #endif
   #define CRY_TARGET GIL
 #endif	
 
 #ifdef __WXS__
-  #define CRY_GUI
-  #define CRY_USEWX
-  #define CRY_OSWIN32
+  #ifndef CRY_GUI
+    #define CRY_GUI
+  #endif
+  #ifndef CRY_USEWX
+    #define CRY_USEWX
+  #endif
+  #ifndef CRY_OSWIN32
+    #define CRY_OSWIN32
+  #endif
   #define CRY_TARGET WXS
 #endif	
 
 #ifdef __INW__
-  #define CRY_GUI
-  #define CRY_USEWX
-  #define CRY_OSWIN32
+  #ifndef CRY_GUI
+    #define CRY_GUI
+  #endif
+  #ifndef CRY_USEWX
+    #define CRY_USEWX
+  #endif
+  #ifndef CRY_OSWIN32
+    #define CRY_OSWIN32
+  #endif
   #define CRY_TARGET INW
 #endif	
 
 #ifdef __MAC__
-  #define CRY_GUI
-  #define CRY_USEWX
-  #define CRY_OSMAC
+  #ifndef CRY_GUI
+    #define CRY_GUI
+  #endif
+  #ifndef CRY_USEWX
+    #define CRY_USEWX
+  #endif
+  #ifndef CRY_OSMAC
+    #define CRY_OSMAC
+  #endif
   #define CRY_TARGET MAC
 #endif	
 
@@ -180,7 +208,10 @@ typedef std::string tstring;
  #define CRY_GUI
 #endif
   #define CRY_USEWX
-  #define CRY_OSWIN32
+// This next is also defined by CMake scripts for MinGW build - avoiding redefinition warning:
+  #ifndef CRY_OSWIN32
+     #define CRY_OSWIN32
+  #endif
   #define CRY_TARGET MIN
 #endif	
 	

@@ -172,7 +172,8 @@ CcParse CrListBox::ParseInput(deque<string> &  tokenList )
                 bool stop = false;
                 while ( ! stop )
                 {
-                    if (    ( strcmp( kSNull, tokenList.front().c_str() ) == 0 )
+                    if (  ( tokenList.empty() )
+						 || ( strcmp( kSNull, tokenList.front().c_str() ) == 0 )
                          || ( tokenList.front().length() == 0 ) )
                                                                       stop = true;
                     else
@@ -180,7 +181,7 @@ CcParse CrListBox::ParseInput(deque<string> &  tokenList )
                         SetText( tokenList.front() );
                         LOGSTAT("Adding ListBox text '" + tokenList.front() + "'");
                     }
-                    tokenList.pop_front(); // Remove token
+                    if ( ! tokenList.empty() ) tokenList.pop_front(); // Remove token
                 }
                 break;
             }

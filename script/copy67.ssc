@@ -1,9 +1,13 @@
 %SCRIPT COPY67
+%   IF FILEEXISTS ( 'LIST7.TMP' ) THEN 
+%     VARIABLE LOGICAL T
+%     EVALUATE T = FILEDELETE ( 'LIST7.TMP' )                                             
+%   END IF                                                                        
  PUNCH OUT A LIST 6 AS A LIST 7 AND RE-INPUT IT
-% COPY '#RELEASE PUNCH list7.tmp'
+% COPY '#RELEASE PUNCH LIST7.TMP'
 % COPY '#COPY 6 7'
 % COPY 'END'
 % COPY '#RELEASE PUNCH bfile.pch'
-% COPY '#USE list7.tmp'
+% COPY '#USE LIST7.TMP'
 % END SCRIPT
 

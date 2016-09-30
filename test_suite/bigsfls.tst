@@ -2237,6 +2237,10 @@ END
 END
 \PRINT 22
 \PURGE
+end
+\ add CHECK to locate failing restraint (Restraint no 28)
+\check
+end
 \SFLS
 REFINE
 END

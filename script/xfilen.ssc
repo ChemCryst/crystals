@@ -31,7 +31,7 @@
 %       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
 %     END IF
 #ifdef CRY_OSWIN32
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d N -o from-cif.cry " ' - 
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d N -o from-cif.cry "' - 
       // C_FILE //   '" ' TO CRYSTALS
 #else
 %  TRANSFER '#SPAWN % "CRYSDIR:diffin" -f -d N -o from-cif.cry ' - 

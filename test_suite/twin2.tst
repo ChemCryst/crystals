@@ -364,6 +364,11 @@ CALC
 END
 \sum l 17
 end
+\ Add #CHECK to locate faiing restraints.
+\ Being an old testdeck, the special positions constraints had been
+\ set manually in LIST 12, so cannot also be set in LIST 17
+\check
+end
 \DISTANCES
 E.S.D.S COMPUTE= YES
 END

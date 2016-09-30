@@ -225,7 +225,7 @@ END
 # Punched on 04/12/15 at 09:26:28
 #
 #LIST      6                                                                    
-READ NCOEFFICIENT =     5, TYPE = COMPRESSED, UNIT = DATAFILE
+READ NCOEFFICIENT =5, TYPE=COMPRESSED, UNIT=DATAFILE arch=no
 INPUT  H  K  L  /FO/  RATIO
 MULTIPLIERS  1.0  1.0  1.0       12.465121269     16.281721115
 END                                                                             

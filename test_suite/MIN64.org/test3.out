@@ -29,7 +29,6 @@ Space group symbol is   P    1
 #LIST 28                                                                                                                                                                                                                                                        
 #LIST 29                                                                                                                                                                                                                                                        
 #PRINT 28                                                                                                                                                                                                                                                       
-#LIST 6                                                                                                                                                                                                                                                         
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -87,6 +86,7 @@ Space group symbol is   P    1
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 53
 
 
@@ -94,13 +94,12 @@ Space group symbol is   P    1
        3 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 # COMMENT                                                                                                                                                                                                                                                       
 #PRINT 6 C                                                                                                                                                                                                                                                      
-#LIST 6                                                                                                                                                                                                                                                         
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        4     Address     4314     Length     423     Created on                          
+ Print list type     6     serial number        4     Address     4316     Length     424     Created on                          
 
 
 
@@ -146,12 +145,12 @@ Space group symbol is   P    1
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
- Record  106    LGRP    4  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
+ Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-    CYCLE NUMBER   R              WR             MINFUNC     
+    CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
 
  Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
@@ -193,19 +192,19 @@ Space group symbol is   P    1
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 52
 
 
 
        6 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #PRINT 6                                                                                                                                                                                                                                                        
-#PRINT 6 C                                                                                                                                                                                                                                                      
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        6     Address     4983     Length     246     Created on                          
+ Print list type     6     serial number        6     Address     4987     Length     247     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -229,7 +228,7 @@ Space group symbol is   P    1
   FO/FC           No details available
   JCODE           No details available
   SERIAL          No details available
-  RATIO           No details available
+  RATIO            0.000000E+00   0.466667E+00   0.219444E+00   0.310987E+00
   THETA           No details available
   OMEGA           No details available
   CHI             No details available
@@ -257,13 +256,13 @@ Space group symbol is   P    1
 
 
 
-#LIST 6                                                                                                                                                                                                                                                         
+#PRINT 6 C                                                                                                                                                                                                                                                      
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        6     Address     4983     Length     246     Created on                          
+ Print list type     6     serial number        6     Address     4987     Length     247     Created on                          
 
 
 
@@ -294,12 +293,12 @@ Space group symbol is   P    1
  Data is not on disc
 
 
- Record  106    LGRP    4  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
+ Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-    CYCLE NUMBER   R              WR             MINFUNC     
+    CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
 
  Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
@@ -325,7 +324,7 @@ Space group symbol is   P    1
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.46667E+00    0.21944E+00    0.31099E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
@@ -341,19 +340,19 @@ Space group symbol is   P    1
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 53
 
 
 
        9 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #PRINT 6                                                                                                                                                                                                                                                        
-#PRINT 6 C                                                                                                                                                                                                                                                      
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       10     Address     5827     Length     596     Created on                          
+ Print list type     6     serial number       10     Address     5834     Length     597     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -377,7 +376,7 @@ Space group symbol is   P    1
   FO/FC           No details available
   JCODE           No details available
   SERIAL          No details available
-  RATIO            0.000000E+00   0.480519E+00   0.159091E+00   0.275558E+00
+  RATIO            0.400000E+00   0.300100E+01   0.130572E+01   0.177268E+01
   THETA           No details available
   OMEGA           No details available
   CHI             No details available
@@ -388,7 +387,7 @@ Space group symbol is   P    1
   FACTOR1         No details available
   FACTOR2         No details available
   FACTOR3         No details available
-  RATIO/JCODE      0.000000E+00   0.500000E+02   0.166667E+02   0.288675E+02
+  RATIO/JCODE      0.400000E+02   0.300000E+03   0.132222E+03   0.177670E+03
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -408,13 +407,13 @@ Space group symbol is   P    1
 
 
 
-#LIST 6                                                                                                                                                                                                                                                         
+#PRINT 6 C                                                                                                                                                                                                                                                      
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       10     Address     5827     Length     596     Created on                          
+ Print list type     6     serial number       10     Address     5834     Length     597     Created on                          
 
 
 
@@ -489,12 +488,12 @@ Space group symbol is   P    1
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
- Record  106    LGRP    4  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
+ Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-    CYCLE NUMBER   R              WR             MINFUNC     
+    CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
 
  Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
@@ -520,7 +519,7 @@ Space group symbol is   P    1
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.00000E+00    0.48052E+00    0.15909E+00    0.27556E+00
+     0.40000E+00    0.30010E+01    0.13057E+01    0.17727E+01
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
@@ -531,11 +530,12 @@ Space group symbol is   P    1
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
-     0.00000E+00    0.50000E+02    0.16667E+02    0.28868E+02
+     0.40000E+02    0.30000E+03    0.13222E+03    0.17767E+03
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 52
 
 
@@ -548,13 +548,12 @@ Space group symbol is   P    1
 
       96 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #PRINT 6                                                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       18     Address     8092     Length    3467     Created on                          
+ Print list type     6     serial number       18     Address     8105     Length    3468     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -679,6 +678,7 @@ Space group symbol is   P    1
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
 
 Bad index near reflection        278       512         0         0                                                                                                                                                                                              
  Error during reading reflections
@@ -691,13 +691,12 @@ Bad index near reflection        278       512         0         0
 
      278 reflections accepted           1 reflections rejected                                                                                                                                                                                                  
 #PRINT 6                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    12157     Length    9473     Created on                          
+ Print list type     6     serial number       22     Address    12173     Length    9474     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -866,14 +865,14 @@ Bad index near reflection        278       512         0         0
 
 
 
+#LIST 28                                                                                                                                                                                                                                                        
 #PRINT 28                                                                                                                                                                                                                                                       
-#PRINT 6                                                                                                                                                                                                                                                        
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        2     Address    21630     Length      95     Created on                          
+ Print list type    28     serial number        2     Address    21647     Length      95     Created on                          
 
 
 
@@ -930,13 +929,13 @@ Bad index near reflection        278       512         0         0
 
 
 
-#LIST 28                                                                                                                                                                                                                                                        
+#PRINT 6                                                                                                                                                                                                                                                        
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    12157     Length    9473     Created on                          
+ Print list type     6     serial number       22     Address    12173     Length    9474     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -1061,6 +1060,7 @@ Bad index near reflection        278       512         0         0
 
 
 
+#LIST 28                                                                                                                                                                                                                                                        
 #LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 53
 
@@ -1068,13 +1068,12 @@ Bad index near reflection        278       512         0         0
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #PRINT 6                                                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       26     Address    22252     Length     771     Created on                          
+ Print list type     6     serial number       26     Address    22271     Length     772     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -1235,19 +1234,19 @@ Bad index near reflection        278       512         0         0
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 52
 
 
 
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #PRINT 6                                                                                                                                                                                                                                                        
-#LIST 13                                                                                                                                                                                                                                                        
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       30     Address    23497     Length    1317     Created on                          
+ Print list type     6     serial number       30     Address    23519     Length    1318     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -1408,6 +1407,7 @@ Bad index near reflection        278       512         0         0
 
 
 
+#LIST 13                                                                                                                                                                                                                                                        
 #LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 53
 
@@ -1416,13 +1416,12 @@ Bad index near reflection        278       512         0         0
      270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 Upating List 13 for twinned data                                                                                                                                                                                                                                
 #PRINT 6 C                                                                                                                                                                                                                                                      
-#LIST 28                                                                                                                                                                                                                                                        
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25462     Length    9234     Created on                          
+ Print list type     6     serial number       34     Address    25487     Length    9235     Created on                          
 
 
 
@@ -2803,12 +2802,12 @@ Upating List 13 for twinned data
                     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
- Record  106    LGRP    4  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
+ Record  106    LGRP    5  NGRP      1   DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS                   
 
 
-    CYCLE NUMBER   R              WR             MINFUNC     
+    CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
 
 
  Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
@@ -2850,14 +2849,14 @@ Upating List 13 for twinned data
 
 
 
-#PRINT 28                                                                                                                                                                                                                                                       
 #LIST 28                                                                                                                                                                                                                                                        
+#PRINT 28                                                                                                                                                                                                                                                       
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        4     Address    34696     Length      89     Created on                          
+ Print list type    28     serial number        4     Address    34722     Length      89     Created on                          
 
 
 
@@ -2913,14 +2912,14 @@ Upating List 13 for twinned data
 
 
 
+#LIST 28                                                                                                                                                                                                                                                        
 #PRINT 6                                                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25462     Length    9234     Created on                          
+ Print list type     6     serial number       34     Address    25487     Length    9235     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -3081,6 +3080,7 @@ Upating List 13 for twinned data
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 52
 
 
@@ -3091,13 +3091,12 @@ Upating List 13 for twinned data
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST 27                                                                                                                                                                                                                                                        
 #PRINT 27                                                                                                                                                                                                                                                       
-#LIST 28                                                                                                                                                                                                                                                        
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    27     serial number        1     Address    36601     Length      72     Created on                          
+ Print list type    27     serial number        1     Address    36630     Length      72     Created on                          
 
 
 
@@ -3125,6 +3124,7 @@ Upating List 13 for twinned data
 
 
 
+#LIST 28                                                                                                                                                                                                                                                        
 #LIST 13                                                                                                                                                                                                                                                        
 
 
@@ -3136,13 +3136,12 @@ Upating List 13 for twinned data
 
                         0.0000    0.0000    1.0000
 #PRINT 13                                                                                                                                                                                                                                                       
-#HKLI                                                                                                                                                                                                                                                           
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        5     Address    36673     Length      80     Created on                          
+ Print list type    13     serial number        5     Address    36702     Length      80     Created on                          
 
 
 
@@ -3192,139 +3191,30 @@ Upating List 13 for twinned data
 
 
 
- The updated reflections are now on UNIT 53
-
-
-
-       0 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#PRINT 6                                                                                                                                                                                                                                                        
-#SYST                                                                                                                                                                                                                                                           
-
-
- THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
-
-
- Print list type     6     serial number       40     Address    37004     Length     251     Created on                          
-
- Quantity            Minimum        Maximum       Mean value    R.M.S. value
-
-  H               No details available
-  K               No details available
-  L               No details available
-  /FO/            No details available
-  SQRTW           No details available
-  /FC/            No details available
-  PHASE           No details available
-  A-PART          No details available
-  B-PART          No details available
-  TBAR            No details available
-  /FOT/           No details available
-  ELEMENTS        No details available
-  SIGMA(/FO/)     No details available
-  BATCH           No details available
-  INDICES         No details available
-  BATCH/PHASE     No details available
-  SINTH/L**2      No details available
-  FO/FC           No details available
-  JCODE           No details available
-  SERIAL          No details available
-  RATIO           No details available
-  THETA           No details available
-  OMEGA           No details available
-  CHI             No details available
-  PHI             No details available
-  KAPPA           No details available
-  PSI             No details available
-  CORRECTIONS     No details available
-  FACTOR1         No details available
-  FACTOR2         No details available
-  FACTOR3         No details available
-  RATIO/JCODE     No details available
-
- After     0  Structure factor/refinement calculation(s)
-
- R =   0.00     Weighted R =   0.00     Minimisation function =    0.000000E+00
-
-
-
-#SORT                                                                                                                                                                                                                                                           
- The updated reflections are now on UNIT 52
-
-
-
-      0 reflections accepted               0 reflections rejected                                                                                                                                                                                               
-#MERGE                                                                                                                                                                                                                                                          
- After   1 pass       0 reflection(s) have been sorted
- The updated reflections are now on UNIT 53
-
-
- THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
-
-
-    H   K   L  F-squared    rmsdev    <sigma>       F-squared     Sigma     Delta   E-param    Weight   JCODE    Serial
-
- The updated reflections are now on UNIT 52
-
-
-
-     0 Contributors input            0 Contributors rejected
-     0 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
-     0 Reflections greater than 3 sigma(i),   0.000 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
-[41]                0.00            0.00           0.00
-#PRINT 6                                                                                                                                                                                                                                                        
+#  HKLI TEST COMMENTED OUT BECAUSE REFLECTION FILE MISSING.                                                                                                                                                                                                     
+# HKLI                                                                                                                                                                                                                                                          
+# READ NCOEFF= 11                                                                                                                                                                                                                                               
+# INPUT H K L /FO/ SIGMA JCODE SERIAL BATCH FACTOR1 FACTOR2 FACTOR3                                                                                                                                                                                             
+# CORRECT NFACT= 3                                                                                                                                                                                                                                              
+# FACTORS FACTOR1 FACTOR2 FACTOR3                                                                                                                                                                                                                               
+# END                                                                                                                                                                                                                                                           
+# PRINT 6                                                                                                                                                                                                                                                       
+# END                                                                                                                                                                                                                                                           
+# SYST                                                                                                                                                                                                                                                          
+# END                                                                                                                                                                                                                                                           
+# SORT                                                                                                                                                                                                                                                          
+# END                                                                                                                                                                                                                                                           
+# MERGE                                                                                                                                                                                                                                                         
+# WEIGHT SCHEME= 2, NPARAM= 6, NCYC= 3                                                                                                                                                                                                                          
+# PARAM .5 3 1 2 .01 .00001                                                                                                                                                                                                                                     
+# REJECT 3 2                                                                                                                                                                                                                                                    
+# REFLECTIONS NJCODE= 2, LIST= HIGH                                                                                                                                                                                                                             
+# JCODE 6 .0037                                                                                                                                                                                                                                                 
+# JCODE 9 .0042                                                                                                                                                                                                                                                 
+# END                                                                                                                                                                                                                                                           
+# PRINT 6                                                                                                                                                                                                                                                       
+# END                                                                                                                                                                                                                                                           
 #LIST 6                                                                                                                                                                                                                                                         
-
-
- THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
-
-
- Print list type     6     serial number       48     Address    38761     Length     251     Created on                          
-
- Quantity            Minimum        Maximum       Mean value    R.M.S. value
-
-  H               No details available
-  K               No details available
-  L               No details available
-  /FO/            No details available
-  SQRTW           No details available
-  /FC/            No details available
-  PHASE           No details available
-  A-PART          No details available
-  B-PART          No details available
-  TBAR            No details available
-  /FOT/           No details available
-  ELEMENTS        No details available
-  SIGMA(/FO/)     No details available
-  BATCH           No details available
-  INDICES         No details available
-  BATCH/PHASE     No details available
-  SINTH/L**2      No details available
-  FO/FC           No details available
-  JCODE           No details available
-  SERIAL          No details available
-  RATIO           No details available
-  THETA           No details available
-  OMEGA           No details available
-  CHI             No details available
-  PHI             No details available
-  KAPPA           No details available
-  PSI             No details available
-  CORRECTIONS     No details available
-  FACTOR1         No details available
-  FACTOR2         No details available
-  FACTOR3         No details available
-  RATIO/JCODE     No details available
-
- After     0  Structure factor/refinement calculation(s)
-
- R =   0.00     Weighted R =   0.00     Minimisation function =    0.000000E+00
-
-
-
  The updated reflections are now on UNIT 53
 
 
@@ -3333,13 +3223,12 @@ Upating List 13 for twinned data
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 13                                                                                                                                                                                                                                                        
 #PRINT 13                                                                                                                                                                                                                                                       
-#LP                                                                                                                                                                                                                                                             
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        6     Address    40440     Length      48     Created on                          
+ Print list type    13     serial number        6     Address    38213     Length      48     Created on                          
 
 
 
@@ -3363,7 +3252,7 @@ Upating List 13 for twinned data
 
 
               1.00000   0.00000   0.00000
- 
+
 
 
  Record  101    LGRP    3  NGRP      1   DATA PERTAINING TO THE CRYSTALS ITSELF (-1 FOR NO, 0 FOR YES)                   
@@ -3375,16 +3264,16 @@ Upating List 13 for twinned data
 
 
 
+#LP                                                                                                                                                                                                                                                             
  The updated reflections are now on UNIT 52
       9 reflections accepted               0 reflections rejected                                                                                                                                                                                               
 #PRINT 6                                                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       56     Address    41086     Length     596     Created on                          
+ Print list type     6     serial number       46     Address    38861     Length     597     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -3439,6 +3328,7 @@ Upating List 13 for twinned data
 
 
 
+#LIST 6                                                                                                                                                                                                                                                         
  The updated reflections are now on UNIT 53
 
 
@@ -3459,13 +3349,12 @@ Upating List 13 for twinned data
  The updated reflections are now on UNIT 52
      92 reflections accepted               0 reflections rejected                                                                                                                                                                                               
 #PRINT 6                                                                                                                                                                                                                                                        
-#LIST 12                                                                                                                                                                                                                                                        
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       64     Address    46527     Length    3335     Created on                          
+ Print list type     6     serial number       54     Address    44308     Length    3336     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -3590,18 +3479,18 @@ Upating List 13 for twinned data
 
 
 
+#LIST 12                                                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST      5                                                                                                                                                                                                                                                    
 Bonds: Update required - There is no list 41
 #PRINT 5                                                                                                                                                                                                                                                        
-#TITLE TEST THE LIST MODIFICATION ROUTINES                                                                                                                                                                                                                      
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     5     serial number        1     Address    51183     Length     677     Created on                          
+ Print list type     5     serial number        1     Address    48965     Length     677     Created on                          
 
 
 
@@ -3738,6 +3627,7 @@ Bonds: Update required - There is no list 41
 
 
 
+#TITLE TEST THE LIST MODIFICATION ROUTINES                                                                                                                                                                                                                      
 #EDIT 5 5                                                                                                                                                                                                                                                       
  The following atom(s) will be arithmetically modified                                                                                                                                                                                                          
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
@@ -3889,13 +3779,12 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  List   5 now contains     37 atom(s)
 Bonds: Update required - List5 length change
 #PRINT 5                                                                                                                                                                                                                                                        
-#EDIT 5 10                                                                                                                                                                                                                                                      
 
 
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type     5     serial number        2     Address    52544     Length     749     Created on                          
+ Print list type     5     serial number        2     Address    50326     Length     749     Created on                          
 
 
 
@@ -4040,6 +3929,7 @@ Bonds: Update required - List5 length change
 
 
 
+#EDIT 5 10                                                                                                                                                                                                                                                      
  The following atom(s) will be kept                                                                                                                                                                                                                             
     I   1     SA   2      I   3      I   4     FE   5      O   6      N   7
     N   8      N   9      N  10      N  11      N  12      N  13      N  14
@@ -4070,13 +3960,12 @@ Bonds: Update required - List5 length change
     C 101      C 110
  List  10 now contains     28 atom(s)
 #PRINT 10                                                                                                                                                                                                                                                       
-#TITLE BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                                                                                                                                                                                                
 
 
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    54574     Length     587     Created on                          
+ Print list type    10     serial number        1     Address    52356     Length     587     Created on                          
 
 
 
@@ -4232,11 +4121,12 @@ Bonds: Update required - List5 length change
 
 
 
+#TITLE BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                                                                                                                                                                                                
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST 5                                                                                                                                                                                                                                                         
-#HYDROGEN                                                                                                                                                                                                                                                       
 Bonds: Update required - List5 length change
+#HYDROGEN                                                                                                                                                                                                                                                       
 
 
  Hydrogen atom(s) calculated for the phenyl   group :
@@ -4315,16 +4205,12 @@ Bonds: Update required - List5 length change
  List now contains    39 atoms
 Bonds: Update required - List5 length change
 #PRINT 5                                                                                                                                                                                                                                                        
-#                                                                                                                                                                                                                                                               
-# INPUT THE CELL PARAMETERS                                                                                                                                                                                                                                     
-#                                                                                                                                                                                                                                                               
-#LIST 1                                                                                                                                                                                                                                                         
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        4     Address    56291     Length     785     Created on                          
+ Print list type     5     serial number        4     Address    54073     Length     785     Created on                          
 
 
 
@@ -4474,19 +4360,22 @@ Bonds: Update required - List5 length change
 
 
 #                                                                                                                                                                                                                                                               
+# INPUT THE CELL PARAMETERS                                                                                                                                                                                                                                     
+#                                                                                                                                                                                                                                                               
+#LIST 1                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
 # INPUT THE UNIT CELL SYMMETRY  -  P21/A WITH C UNIQUE                                                                                                                                                                                                          
 #                                                                                                                                                                                                                                                               
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST      5                                                                                                                                                                                                                                                    
 Bonds: Update required - List5 length change
 #PRINT 5                                                                                                                                                                                                                                                        
-#AXES                                                                                                                                                                                                                                                           
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        5     Address    58302     Length     677     Created on                          
+ Print list type     5     serial number        5     Address    56084     Length     677     Created on                          
 
 
 
@@ -4623,6 +4512,7 @@ Bonds: Update required - List5 length change
 
 
 
+#AXES                                                                                                                                                                                                                                                           
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -4715,55 +4605,55 @@ Bonds: Update required - List5 length change
 
  H        1.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        2.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        3.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        4.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        5.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        6.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        7.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        8.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H        9.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H       10.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H       11.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H       12.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
 
  H       13.    0.00000    1.00000   0.00000   0.00000    0.87589   0.00000   0.00000
                 0.00000    0.00000   1.00000   0.00000   -0.48252   1.00000   0.00000
-                0.00000    0.00000   0.00000   1.00000   -0.00000  -0.00000   1.00000   0.00000   0.00000       NaN                        
+                0.00000    0.00000   0.00000   1.00000    0.00000   0.00000   1.00000   0.00000   0.00000       NaN                        
  Average radius of     33 atoms =  0.0334 rmsd   0.0279                                                                                                                                                                                                         
  Maximum radius of     33 atoms =  0.0656                                                                                                                                                                                                                       
    Maximum axis of     33 atoms =  0.1050                                                                                                                                                                                                                       
@@ -4819,9 +4709,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
                L                           T                          S
 
-[35]    -1.76     0.00    -0.0       0.03     0.00    -0.00       0.03     0.03     0.02
-[35]     0.00     2.08    -0.0       0.00     0.06     0.00       0.00     0.01    -0.03
-[35]     0.00    -0.00    12.9      -0.00     0.00     0.05      -0.07    -0.06    -0.05
+[35]    -1.76     0.00     0.0       0.03     0.00    -0.00       0.03     0.03     0.02
+[35]     0.00     2.08     0.0       0.00     0.06     0.00       0.00     0.01    -0.03
+[35]     0.00     0.00    12.9      -0.00     0.00     0.05      -0.07    -0.06    -0.05
 
 
 
@@ -4840,9 +4730,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
                L                           T                          S
 
-[35]    -1.76     0.00    -0.0       0.03     0.00    -0.00       0.03     0.00     0.00
-[35]     0.00     2.08    -0.0       0.00     0.06     0.00       0.00     0.01     0.00
-[35]     0.00    -0.00    12.9      -0.00     0.00     0.05       0.00     0.00    -0.05
+[35]    -1.76     0.00     0.0       0.03     0.00    -0.00       0.03     0.00     0.00
+[35]     0.00     2.08     0.0       0.00     0.06     0.00       0.00     0.01     0.00
+[35]     0.00     0.00    12.9      -0.00     0.00     0.05       0.00     0.00    -0.05
 
 
 
@@ -4869,7 +4759,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 [40]                                                                 0.06    0.05    0.05   -0.01   -0.00    0.02
 
         6      C        8.       0.2825  -0.8715   0.1461       0.043   0.038   0.054  -0.003  -0.001   0.017
-[40]                                                                 0.05    0.05    0.05   -0.00   -0.00    0.02
+[40]                                                                 0.05    0.05    0.05   -0.00    0.00    0.02
 
         7      O        7.       0.1083   0.0227   0.1659       0.046   0.058   0.068   0.020  -0.002   0.020
 [40]                                                                 0.04    0.04    0.05    0.00    0.00    0.01
@@ -4980,9 +4870,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
                L                           T                          S
 
-[35]    15.65     0.00    -0.0       0.02    -0.00     0.00      -0.07     0.25    -0.15
-[35]     0.00    46.32    -0.0      -0.00     0.04    -0.00      -0.29     0.15    -0.19
-[35]    -0.00    -0.00    90.4       0.00    -0.00     0.04      -0.28     0.24    -0.08
+[35]    15.65     0.00     0.0       0.02    -0.00     0.00      -0.07     0.25    -0.15
+[35]     0.00    46.32     0.0      -0.00     0.04    -0.00      -0.29     0.15    -0.19
+[35]     0.00     0.00    90.4       0.00    -0.00     0.04      -0.28     0.24    -0.08
 
 
 
@@ -4994,20 +4884,20 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
                  Axis 1                0.01      0.01
 
-                 Axis 2     -0.00               -0.00
+                 Axis 2      0.00               -0.00
 
                  Axis 3      0.00     -0.00
  Final reduced tensors
 
                L                           T                          S
 
-[35]    15.65     0.00    -0.0       0.02    -0.00     0.00      -0.07     0.00     0.00
-[35]     0.00    46.32    -0.0      -0.00     0.04    -0.00       0.00     0.15     0.00
-[35]    -0.00    -0.00    90.4       0.00    -0.00     0.04       0.00     0.00    -0.08
+[35]    15.65     0.00     0.0       0.02    -0.00     0.00      -0.07     0.00     0.00
+[35]     0.00    46.32     0.0      -0.00     0.04    -0.00       0.00     0.15     0.00
+[35]     0.00     0.00    90.4       0.00    -0.00     0.04       0.00     0.00    -0.08
 
 
 
- Screw pitches (angstrom/degree) :              -0.00   0.00  -0.00
+ Screw pitches (angstrom/degree) :               0.00   0.00  -0.00
  Observed and calculated temperature factors   (Crystal axes)
 
 
@@ -5026,11 +4916,11 @@ for Uprime see Acta Cryst (2000). B56, 747-749
         4      C       16.       0.1236   0.6741   0.1238       0.070   0.045   0.078   0.003  -0.002   0.031
 [40]                                                                 0.07    0.04    0.07    0.00   -0.00    0.02
 
-        5      C       15.       0.1456   0.5658   0.0836       0.052   0.038   0.058   0.007  -0.000   0.017
+        5      C       15.       0.1456   0.5658   0.0836       0.052   0.038   0.058   0.007   0.000   0.017
 [40]                                                                 0.05    0.04    0.05    0.00    0.00    0.01
 
         6      C       14.       0.1363   0.4277   0.1115       0.044   0.041   0.049   0.004  -0.001   0.022
-[40]                                                                 0.04    0.04    0.04    0.00   -0.00    0.02
+[40]                                                                 0.04    0.04    0.04    0.00    0.00    0.02
 
 
                 R1-Factor for U'S =    3.94
@@ -5046,13 +4936,12 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST      5                                                                                                                                                                                                                                                    
 #PRINT 5                                                                                                                                                                                                                                                        
-#MOLAX                                                                                                                                                                                                                                                          
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        6     Address    59873     Length     677     Created on                          
+ Print list type     5     serial number        6     Address    57655     Length     677     Created on                          
 
 
 
@@ -5189,6 +5078,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
 
 
+#MOLAX                                                                                                                                                                                                                                                          
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -5467,8 +5357,8 @@ AZIMUTH  =   -52.09     AZIMUTH /100 =  -0.5209
 
     Type     Serial       Weight       XP        YP        ZP            
 
-     P          1.         1.000      0.908    -0.000    -0.000
-     C          1.         1.000     -0.908    -0.000     0.000
+     P          1.         1.000      0.908     0.000    -0.000
+     C          1.         1.000     -0.908     0.000     0.000
 
  Spherical index =   0.00 cylindrical index =   1.00 Discoidal index =   1.00
  Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
@@ -5696,7 +5586,7 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
  An atom has appeared more than once in the list                                                                                                                                                                                                                
  Processing of the card above has been abandoned
                                                       Torsion angle & su
-      P(1) to       C(1) to       C(2) to       P(1)          -0.0    0.0
+      P(1) to       C(1) to       C(2) to       P(1)           0.0    0.0
 #TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                                                                                                                                                                                      
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
@@ -5862,16 +5752,16 @@ LS-scale= 12.394   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
 #LIST 26                                                                                                                                                                                                                                                        
 #DORESTRAIN                                                                                                                                                                                                                                                     
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
- Directive   2 RESTRAIN    : No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 #NEWSHIFTS                                                                                                                                                                                                                                                      
 #INVERT  CHOL                                                                                                                                                                                                                                                   
@@ -5965,12 +5855,12 @@ All cycle   Min function          0.0           0.14E+07       0.10E+16
 [38]  Mean          -0.60   0.00    0.00    0.00    0.00    0.00   -0.04   -0.02   -0.07   -0.00   -0.00   -0.02
 [31]                                          0.053    0.014    0.027 
 
-[38]  R.M.S.         0.82   0.00    0.00    0.00    0.00    0.00    0.08    0.02    0.11    0.00    0.01    0.03
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.08    0.02    0.11    0.00    0.01    0.03
 [31]                                          0.067    0.019    0.046 
 
 
 
-[38]  Maximum        1.15   0.00    0.00    0.01    0.00    0.01    0.19    0.03    0.26    0.01    0.01    0.06
+[70]  Maximum        1.    0.00    0.00    0.01    0.00    0.01    0.19    0.03    0.26    0.01    0.01    0.06
 [31]                                          0.126    0.025    0.085 
 
 [03]  Reversals
@@ -6045,7 +5935,7 @@ All cycle   Min function          0.0           0.14E+07       0.10E+16
 [31]                                         0.071    0.071    0.000 
 
 [37]      F          1.    1.00    0.00    0.09   -0.09    0.80    0.05
-[37]                       0.00             0.00   -0.00   -0.00    0.01   -0.01    0.01    0.00   -0.00   -0.00
+[37]                       0.00             0.00   -0.00    0.00    0.01   -0.01    0.01    0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.02    0.02    0.01    0.03    0.03    0.01
 [31]                                         0.069    0.068    0.040 
 
@@ -6138,7 +6028,7 @@ Mean C-C su =   0.0000
 
       270 reflections   R 27.04% Rw 32.02% with I/u(I) from List 28                                                                                                                                                                                             
       270 reflections   R 27.04% Rw 32.02% with I/u(I) > -10.0                                                                                                                                                                                                  
-        0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+      270 reflections   R 27.04% Rw 32.02% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc= 12.67    SumFoFc/SumFc^2= 12.13    SumwFoFc/SumwFc^2= 12.13
 LS-scale= 11.239   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    1.4     100*(<Fo>-<Fc>)/<Fo> =    11.
@@ -6588,16 +6478,15 @@ Bonds: Update required - List5 length change
 
      220 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
 #SORT                                                                                                                                                                                                                                                           
-#PRINT 6                                                                                                                                                                                                                                                        
  After   1 pass     220 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#REORDER                                                                                                                                                                                                                                                        
+#PRINT 6                                                                                                                                                                                                                                                        
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    89720     Length    7559     Created on                          
+ Print list type     6     serial number       86     Address    87516     Length    7560     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6722,15 +6611,15 @@ Bonds: Update required - List5 length change
 
 
 
-#PRINT 6                                                                                                                                                                                                                                                        
+#REORDER                                                                                                                                                                                                                                                        
  The updated reflections are now on UNIT 52
-#LIST 12                                                                                                                                                                                                                                                        
+#PRINT 6                                                                                                                                                                                                                                                        
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      100     Address    97877     Length    7559     Created on                          
+ Print list type     6     serial number       90     Address    95676     Length    7560     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6855,15 +6744,15 @@ Bonds: Update required - List5 length change
 
 
 
+#LIST 12                                                                                                                                                                                                                                                        
 #CONVERT                                                                                                                                                                                                                                                        
 #PRINT 5                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address   105436     Length     137     Created on                          
+ Print list type     5     serial number       14     Address   103236     Length     137     Created on                          
 
 
 
@@ -6940,6 +6829,7 @@ Bonds: Update required - List5 length change
 
 
 
+#LIST 23                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -6971,12 +6861,12 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
       -2.   -3.   -3.     18.2     19.4      5.7  -0.1177E+01  -0.1177E+01    19.3     1.9      0.0       0.0   0.35181
        2.    3.    3.     20.2     19.4      5.7   0.8511E+00   0.8511E+00    19.3     1.9      0.0       0.0   0.35181
       -2.    3.   -3.     19.2     19.4      5.7  -0.1379E+00  -0.1379E+00    19.3     1.9      0.0       0.0   0.35181
-       0.   -3.   -3.     30.6     31.0   -176.1  -0.3264E+00  -0.3264E+00    30.9     2.1     -0.0      -0.0   0.31559
-       0.    3.    3.     37.6     31.0   -176.1   0.6640E+01   0.6640E+01    30.9     2.1     -0.0      -0.0   0.31559
-       0.    3.   -3.     37.0     31.0   -176.1   0.6062E+01   0.6062E+01    30.9     2.1     -0.0      -0.0   0.31559
-      -3.   -2.   -3.      7.0      8.4   -178.0  -0.1453E+01  -0.1453E+01     8.4     0.3     -0.0      -0.0   0.35593
-       3.    2.    3.      8.3      8.4   -178.0  -0.1247E+00  -0.1247E+00     8.4     0.3     -0.0      -0.0   0.35593
-      -3.    2.   -3.      8.1      8.4   -358.0  -0.3413E+00  -0.3413E+00     8.4     0.3     -0.0      -0.0   0.35593
+       0.   -3.   -3.     30.6     31.0   -176.1  -0.3264E+00  -0.3264E+00    30.9     2.1      0.0       0.0   0.31559
+       0.    3.    3.     37.6     31.0   -176.1   0.6640E+01   0.6640E+01    30.9     2.1      0.0       0.0   0.31559
+       0.    3.   -3.     37.0     31.0   -176.1   0.6062E+01   0.6062E+01    30.9     2.1      0.0       0.0   0.31559
+      -3.   -2.   -3.      7.0      8.4   -178.0  -0.1453E+01  -0.1453E+01     8.4     0.3      0.0       0.0   0.35593
+       3.    2.    3.      8.3      8.4   -178.0  -0.1247E+00  -0.1247E+00     8.4     0.3      0.0       0.0   0.35593
+      -3.    2.   -3.      8.1      8.4   -358.0  -0.3413E+00  -0.3413E+00     8.4     0.3      0.0       0.0   0.35593
       -2.   -2.   -3.      8.9      6.8      3.0   0.2136E+01   0.2136E+01     6.8     0.4      0.0       0.0   0.32287
        2.    2.    3.      6.2      6.8      3.0  -0.6068E+00  -0.6068E+00     6.8     0.4      0.0       0.0   0.32287
       -2.    2.   -3.      7.7      6.8   -177.0   0.8947E+00   0.8947E+00     6.8     0.4      0.0       0.0   0.32287
@@ -6989,22 +6879,22 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
       -2.   -1.   -3.     27.7     28.0      4.6  -0.2721E+00  -0.2721E+00    27.9     2.3      0.0       0.0   0.30418
        2.    1.    3.     27.5     28.0      4.6  -0.4742E+00  -0.4742E+00    27.9     2.3      0.0       0.0   0.30418
       -2.    1.   -3.     28.0     28.0   -355.4  -0.5553E-01  -0.5553E-01    27.9     2.3      0.0       0.0   0.30418
-      -1.   -1.   -3.      3.7      1.7   -178.2   0.2063E+01   0.2063E+01     1.7     0.1     -0.0      -0.0   0.27746
-       1.    1.    3.      3.3      1.7   -178.2   0.1637E+01   0.1637E+01     1.7     0.1     -0.0      -0.0   0.27746
-       0.   -1.   -3.     31.5     30.5   -175.4   0.9885E+00   0.9885E+00    30.4     2.5     -0.0      -0.0   0.26144
-       0.    1.    3.     33.1     30.5   -175.4   0.2569E+01   0.2569E+01    30.4     2.5     -0.0      -0.0   0.26144
-       0.    1.   -3.     33.0     30.5   -175.4   0.2447E+01   0.2447E+01    30.4     2.5     -0.0      -0.0   0.26144
-       1.    1.   -3.     31.2     28.5   -175.0   0.2674E+01   0.2674E+01    28.4     2.5     -0.0      -0.0   0.25811
-      -1.   -1.    3.     23.6     28.5   -175.0  -0.4884E+01  -0.4884E+01    28.4     2.5     -0.0      -0.0   0.25811
-      -1.    1.    3.     25.1     28.5    185.0  -0.3412E+01  -0.3412E+01    28.4     2.5     -0.0      -0.0   0.25811
+      -1.   -1.   -3.      3.7      1.7   -178.2   0.2063E+01   0.2063E+01     1.7     0.1      0.0       0.0   0.27746
+       1.    1.    3.      3.3      1.7   -178.2   0.1637E+01   0.1637E+01     1.7     0.1      0.0       0.0   0.27746
+       0.   -1.   -3.     31.5     30.5   -175.4   0.9885E+00   0.9885E+00    30.4     2.5      0.0       0.0   0.26144
+       0.    1.    3.     33.1     30.5   -175.4   0.2569E+01   0.2569E+01    30.4     2.5      0.0       0.0   0.26144
+       0.    1.   -3.     33.0     30.5   -175.4   0.2447E+01   0.2447E+01    30.4     2.5      0.0       0.0   0.26144
+       1.    1.   -3.     31.2     28.5   -175.0   0.2674E+01   0.2674E+01    28.4     2.5      0.0       0.0   0.25811
+      -1.   -1.    3.     23.6     28.5   -175.0  -0.4884E+01  -0.4884E+01    28.4     2.5      0.0       0.0   0.25811
+      -1.    1.    3.     25.1     28.5    185.0  -0.3412E+01  -0.3412E+01    28.4     2.5      0.0       0.0   0.25811
        2.    1.   -3.     12.1      2.7     -0.7   0.9375E+01   0.9375E+01     2.7     0.0      0.0       0.0   0.26796
       -2.   -1.    3.     16.0      2.7     -0.7   0.1329E+02   0.1329E+02     2.7     0.0      0.0       0.0   0.26796
       -2.    1.    3.     12.4      2.7    359.3   0.9649E+01   0.9649E+01     2.7     0.0      0.0       0.0   0.26796
        3.    1.   -3.     19.8     21.3      6.3  -0.1541E+01  -0.1541E+01    21.2     2.3      0.0       0.0   0.28963
       -3.   -1.    3.     20.1     21.3      6.3  -0.1252E+01  -0.1252E+01    21.2     2.3      0.0       0.0   0.28963
       -3.    1.    3.     20.0     21.3      6.3  -0.1346E+01  -0.1346E+01    21.2     2.3      0.0       0.0   0.28963
-      -1.    2.   -3.      6.9      7.3   -174.5  -0.4626E+00  -0.4626E+00     7.3     0.7     -0.0      -0.0   0.29783
-       1.    2.    3.      7.3      7.3      5.5   0.2107E-01   0.2107E-01     7.3     0.7     -0.0      -0.0   0.29783
+      -1.    2.   -3.      6.9      7.3   -174.5  -0.4626E+00  -0.4626E+00     7.3     0.7      0.0       0.0   0.29783
+       1.    2.    3.      7.3      7.3      5.5   0.2107E-01   0.2107E-01     7.3     0.7      0.0       0.0   0.29783
        1.    2.   -3.      9.2      5.2      4.0   0.3953E+01   0.3953E+01     5.2     0.4      0.0       0.0   0.27989
       -1.   -2.    3.     10.9      5.2      4.0   0.5707E+01   0.5707E+01     5.2     0.4      0.0       0.0   0.27989
       -1.    2.    3.      8.3      5.2    184.0   0.3137E+01   0.3137E+01     5.2     0.4      0.0       0.0   0.27989
@@ -7014,12 +6904,12 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
        3.    2.   -3.      6.1      1.1    161.4   0.4928E+01   0.4928E+01     1.1     0.4      0.0       0.0   0.30920
       -3.   -2.    3.      5.7      1.1    161.4   0.4538E+01   0.4538E+01     1.1     0.4      0.0       0.0   0.30920
       -3.    2.    3.      4.9      1.1    341.4   0.3766E+01   0.3766E+01     1.1     0.4      0.0       0.0   0.30920
-       1.    3.   -3.     11.0     14.3   -171.5  -0.3267E+01  -0.3267E+01    14.1     2.1     -0.0      -0.0   0.31284
-      -1.   -3.    3.      9.1     14.3   -171.5  -0.5173E+01  -0.5173E+01    14.1     2.1     -0.0      -0.0   0.31284
-      -1.    3.    3.      8.5     14.3    188.5  -0.5794E+01  -0.5794E+01    14.1     2.1     -0.0      -0.0   0.31284
-       2.    3.   -3.      2.0      5.4   -179.7  -0.3353E+01  -0.3353E+01     5.4     0.0     -0.0      -0.0   0.32101
-      -2.   -3.    3.      2.1      5.4   -179.7  -0.3309E+01  -0.3309E+01     5.4     0.0     -0.0      -0.0   0.32101
-      -2.    3.    3.      2.6      5.4    180.3  -0.2804E+01  -0.2804E+01     5.4     0.0     -0.0      -0.0   0.32101
+       1.    3.   -3.     11.0     14.3   -171.5  -0.3267E+01  -0.3267E+01    14.1     2.1      0.0       0.0   0.31284
+      -1.   -3.    3.      9.1     14.3   -171.5  -0.5173E+01  -0.5173E+01    14.1     2.1      0.0       0.0   0.31284
+      -1.    3.    3.      8.5     14.3    188.5  -0.5794E+01  -0.5794E+01    14.1     2.1      0.0       0.0   0.31284
+       2.    3.   -3.      2.0      5.4   -179.7  -0.3353E+01  -0.3353E+01     5.4     0.0      0.0       0.0   0.32101
+      -2.   -3.    3.      2.1      5.4   -179.7  -0.3309E+01  -0.3309E+01     5.4     0.0      0.0       0.0   0.32101
+      -2.    3.    3.      2.6      5.4    180.3  -0.2804E+01  -0.2804E+01     5.4     0.0      0.0       0.0   0.32101
        3.    3.   -3.     21.4     20.2      5.7   0.1208E+01   0.1208E+01    20.1     2.0      0.0       0.0   0.33932
       -3.   -3.    3.     16.3     20.2      5.7  -0.3867E+01  -0.3867E+01    20.1     2.0      0.0       0.0   0.33932
       -3.    3.    3.     22.6     20.2      5.7   0.2457E+01   0.2457E+01    20.1     2.0      0.0       0.0   0.33932
@@ -7032,18 +6922,18 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
       -1.   -3.   -2.     12.2     12.0      1.7   0.2248E+00   0.2248E+00    12.0     0.4      0.0       0.0   0.26590
        1.    3.    2.     11.3     12.0      1.7  -0.6631E+00  -0.6631E+00    12.0     0.4      0.0       0.0   0.26590
       -1.    3.   -2.      9.6     12.0    181.7  -0.2374E+01  -0.2374E+01    12.0     0.4      0.0       0.0   0.26590
-       0.   -3.   -2.     26.4     22.6   -178.2   0.3807E+01   0.3807E+01    22.5     0.7     -0.0      -0.0   0.25258
-       0.    3.    2.     23.8     22.6   -178.2   0.1259E+01   0.1259E+01    22.5     0.7     -0.0      -0.0   0.25258
-       0.    3.   -2.     27.8     22.6      1.8   0.5265E+01   0.5265E+01    22.5     0.7     -0.0      -0.0   0.25258
+       0.   -3.   -2.     26.4     22.6   -178.2   0.3807E+01   0.3807E+01    22.5     0.7      0.0       0.0   0.25258
+       0.    3.    2.     23.8     22.6   -178.2   0.1259E+01   0.1259E+01    22.5     0.7      0.0       0.0   0.25258
+       0.    3.   -2.     27.8     22.6      1.8   0.5265E+01   0.5265E+01    22.5     0.7      0.0       0.0   0.25258
       -3.   -2.   -2.     17.2     17.1      6.6   0.1086E+00   0.1086E+00    17.0     2.0      0.0       0.0   0.29276
        3.    2.    2.     19.3     17.1      6.6   0.2231E+01   0.2231E+01    17.0     2.0      0.0       0.0   0.29276
       -3.    2.   -2.     19.8     17.1      6.6   0.2729E+01   0.2729E+01    17.0     2.0      0.0       0.0   0.29276
-      -1.   -2.   -2.     42.2     49.6   -176.8  -0.7420E+01  -0.7420E+01    49.5     2.7     -0.0      -0.0   0.22622
-       1.    2.    2.     49.3     49.6   -176.8  -0.2658E+00  -0.2658E+00    49.5     2.7     -0.0      -0.0   0.22622
-      -1.    2.   -2.     48.4     49.6   -176.8  -0.1183E+01  -0.1183E+01    49.5     2.7     -0.0      -0.0   0.22622
-       0.   -2.   -2.     22.5     21.1   -173.9   0.1366E+01   0.1366E+01    21.0     2.2     -0.0      -0.0   0.21040
-       0.    2.    2.     15.5     21.1   -173.9  -0.5622E+01  -0.5622E+01    21.0     2.2     -0.0      -0.0   0.21040
-       0.    2.   -2.     17.7     21.1   -173.9  -0.3471E+01  -0.3471E+01    21.0     2.2     -0.0      -0.0   0.21040
+      -1.   -2.   -2.     42.2     49.6   -176.8  -0.7420E+01  -0.7420E+01    49.5     2.7      0.0       0.0   0.22622
+       1.    2.    2.     49.3     49.6   -176.8  -0.2658E+00  -0.2658E+00    49.5     2.7      0.0       0.0   0.22622
+      -1.    2.   -2.     48.4     49.6   -176.8  -0.1183E+01  -0.1183E+01    49.5     2.7      0.0       0.0   0.22622
+       0.   -2.   -2.     22.5     21.1   -173.9   0.1366E+01   0.1366E+01    21.0     2.2      0.0       0.0   0.21040
+       0.    2.    2.     15.5     21.1   -173.9  -0.5622E+01  -0.5622E+01    21.0     2.2      0.0       0.0   0.21040
+       0.    2.   -2.     17.7     21.1   -173.9  -0.3471E+01  -0.3471E+01    21.0     2.2      0.0       0.0   0.21040
       -3.   -1.   -2.      9.6     11.4      1.3  -0.1720E+01  -0.1720E+01    11.3     0.2      0.0       0.0   0.27201
        3.    1.    2.     14.2     11.4      1.3   0.2813E+01   0.2813E+01    11.3     0.2      0.0       0.0   0.27201
       -3.    1.   -2.     10.6     11.4   -178.7  -0.7893E+00  -0.7893E+00    11.3     0.2      0.0       0.0   0.27201
@@ -7056,12 +6946,12 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
        0.    1.    2.      2.6      3.9     -4.0  -0.1300E+01  -0.1300E+01     3.8     0.3      0.0       0.0   0.18041
       -3.    0.   -2.     25.7     25.4      4.8   0.2673E+00   0.2673E+00    25.3     2.1      0.0       0.0   0.26473
        3.    0.    2.     23.5     25.4      4.8  -0.1913E+01  -0.1913E+01    25.3     2.1      0.0       0.0   0.26473
-      -2.    0.   -2.     10.4     12.4   -177.2  -0.1987E+01  -0.1987E+01    12.4     0.6     -0.0      -0.0   0.22217
-       2.    0.    2.     10.5     12.4   -177.2  -0.1871E+01  -0.1871E+01    12.4     0.6     -0.0      -0.0   0.22217
-      -1.    0.   -2.     33.2     27.8   -173.9   0.5404E+01   0.5404E+01    27.7     3.0     -0.0      -0.0   0.18854
-       1.    0.    2.     26.6     27.8   -173.9  -0.1259E+01  -0.1259E+01    27.7     3.0     -0.0      -0.0   0.18854
-       0.    0.   -2.     59.0     54.4   -177.4   0.4537E+01   0.4537E+01    54.4     2.4     -0.0      -0.0   0.16924
-       0.    0.    2.     52.7     54.4   -177.4  -0.1779E+01  -0.1779E+01    54.4     2.4     -0.0      -0.0   0.16924
+      -2.    0.   -2.     10.4     12.4   -177.2  -0.1987E+01  -0.1987E+01    12.4     0.6      0.0       0.0   0.22217
+       2.    0.    2.     10.5     12.4   -177.2  -0.1871E+01  -0.1871E+01    12.4     0.6      0.0       0.0   0.22217
+      -1.    0.   -2.     33.2     27.8   -173.9   0.5404E+01   0.5404E+01    27.7     3.0      0.0       0.0   0.18854
+       1.    0.    2.     26.6     27.8   -173.9  -0.1259E+01  -0.1259E+01    27.7     3.0      0.0       0.0   0.18854
+       0.    0.   -2.     59.0     54.4   -177.4   0.4537E+01   0.4537E+01    54.4     2.4      0.0       0.0   0.16924
+       0.    0.    2.     52.7     54.4   -177.4  -0.1779E+01  -0.1779E+01    54.4     2.4      0.0       0.0   0.16924
        1.    0.   -2.     31.9     22.5      1.4   0.9442E+01   0.9442E+01    22.5     0.5      0.0       0.0   0.16924
       -1.    0.    2.     30.7     22.5      1.4   0.8258E+01   0.8258E+01    22.5     0.5      0.0       0.0   0.16924
        2.    0.   -2.     41.5     43.0      3.9  -0.1454E+01  -0.1454E+01    42.9     2.9      0.0       0.0   0.18854
@@ -7091,12 +6981,12 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
       -2.   -3.    2.      1.9      4.1      5.5  -0.2232E+01  -0.2232E+01     4.1     0.4      0.0       0.0   0.26590
       -3.   -3.   -1.      5.1      1.4    -43.4   0.3679E+01   0.3679E+01     1.0     1.0      0.0       0.0   0.28031
        3.    3.    1.      3.1      1.4    -43.4   0.1665E+01   0.1665E+01     1.0     1.0      0.0       0.0   0.28031
-      -2.   -3.   -1.     43.0     46.5   -176.7  -0.3429E+01  -0.3429E+01    46.4     2.7     -0.0      -0.0   0.24410
-       2.    3.    1.     46.7     46.5   -176.7   0.2380E+00   0.2380E+00    46.4     2.7     -0.0      -0.0   0.24410
-      -2.    3.   -1.     45.6     46.5    183.3  -0.8521E+00  -0.8521E+00    46.4     2.7     -0.0      -0.0   0.24410
-      -1.   -3.   -1.     13.9     14.6   -173.1  -0.7802E+00  -0.7802E+00    14.5     1.8     -0.0      -0.0   0.21794
-       1.    3.    1.     12.7     14.6   -173.1  -0.1935E+01  -0.1935E+01    14.5     1.8     -0.0      -0.0   0.21794
-      -1.    3.   -1.     11.8     14.6    186.9  -0.2895E+01  -0.2895E+01    14.5     1.8     -0.0      -0.0   0.21794
+      -2.   -3.   -1.     43.0     46.5   -176.7  -0.3429E+01  -0.3429E+01    46.4     2.7      0.0       0.0   0.24410
+       2.    3.    1.     46.7     46.5   -176.7   0.2380E+00   0.2380E+00    46.4     2.7      0.0       0.0   0.24410
+      -2.    3.   -1.     45.6     46.5    183.3  -0.8521E+00  -0.8521E+00    46.4     2.7      0.0       0.0   0.24410
+      -1.   -3.   -1.     13.9     14.6   -173.1  -0.7802E+00  -0.7802E+00    14.5     1.8      0.0       0.0   0.21794
+       1.    3.    1.     12.7     14.6   -173.1  -0.1935E+01  -0.1935E+01    14.5     1.8      0.0       0.0   0.21794
+      -1.    3.   -1.     11.8     14.6    186.9  -0.2895E+01  -0.2895E+01    14.5     1.8      0.0       0.0   0.21794
        0.   -3.   -1.     20.5     18.1      3.1   0.2437E+01   0.2437E+01    18.0     1.0      0.0       0.0   0.20571
        0.    3.    1.     17.2     18.1      3.1  -0.8254E+00  -0.8254E+00    18.0     1.0      0.0       0.0   0.20571
        0.    3.   -1.     23.5     18.1      3.1   0.5448E+01   0.5448E+01    18.0     1.0      0.0       0.0   0.20571
@@ -7104,18 +6994,18 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
       -2.   -2.   -1.      6.1      3.8      1.8   0.2279E+01   0.2279E+01     3.8     0.1      0.0       0.0   0.20013
        2.    2.    1.      4.6      3.8      1.8   0.7701E+00   0.7701E+00     3.8     0.1      0.0       0.0   0.20013
       -2.    2.   -1.      6.1      3.8    181.8   0.2329E+01   0.2329E+01     3.8     0.1      0.0       0.0   0.20013
-       0.   -2.   -1.     39.9     39.5   -178.8   0.4816E+00   0.4816E+00    39.4     0.8     -0.0      -0.0   0.15095
-       0.    2.    1.     37.8     39.5   -178.8  -0.1626E+01  -0.1626E+01    39.4     0.8     -0.0      -0.0   0.15095
-       0.    2.   -1.     41.3     39.5      1.2   0.1832E+01   0.1832E+01    39.4     0.8     -0.0      -0.0   0.15095
-      -3.   -1.   -1.     17.7     17.5   -176.3   0.2665E+00   0.2665E+00    17.4     1.1     -0.0      -0.0   0.21754
-       3.    1.    1.     14.0     17.5   -176.3  -0.3466E+01  -0.3466E+01    17.4     1.1     -0.0      -0.0   0.21754
-      -3.    1.   -1.     11.9     17.5   -176.3  -0.5595E+01  -0.5595E+01    17.4     1.1     -0.0      -0.0   0.21754
-      -2.   -1.   -1.     29.6     31.8   -174.4  -0.2229E+01  -0.2229E+01    31.7     3.1     -0.0      -0.0   0.16832
-       2.    1.    1.     32.4     31.8   -174.4   0.6151E+00   0.6151E+00    31.7     3.1     -0.0      -0.0   0.16832
-      -2.    1.   -1.     30.9     31.8   -174.4  -0.9370E+00  -0.9370E+00    31.7     3.1     -0.0      -0.0   0.16832
-      -1.   -1.   -1.     49.5     49.8   -177.6  -0.2321E+00  -0.2321E+00    49.7     2.1     -0.0      -0.0   0.12746
-       1.    1.    1.     52.7     49.8   -177.6   0.2915E+01   0.2915E+01    49.7     2.1     -0.0      -0.0   0.12746
-      -1.    1.   -1.     49.1     49.8   -177.6  -0.6653E+00  -0.6653E+00    49.7     2.1     -0.0      -0.0   0.12746
+       0.   -2.   -1.     39.9     39.5   -178.8   0.4816E+00   0.4816E+00    39.4     0.8      0.0       0.0   0.15095
+       0.    2.    1.     37.8     39.5   -178.8  -0.1626E+01  -0.1626E+01    39.4     0.8      0.0       0.0   0.15095
+       0.    2.   -1.     41.3     39.5      1.2   0.1832E+01   0.1832E+01    39.4     0.8      0.0       0.0   0.15095
+      -3.   -1.   -1.     17.7     17.5   -176.3   0.2665E+00   0.2665E+00    17.4     1.1      0.0       0.0   0.21754
+       3.    1.    1.     14.0     17.5   -176.3  -0.3466E+01  -0.3466E+01    17.4     1.1      0.0       0.0   0.21754
+      -3.    1.   -1.     11.9     17.5   -176.3  -0.5595E+01  -0.5595E+01    17.4     1.1      0.0       0.0   0.21754
+      -2.   -1.   -1.     29.6     31.8   -174.4  -0.2229E+01  -0.2229E+01    31.7     3.1      0.0       0.0   0.16832
+       2.    1.    1.     32.4     31.8   -174.4   0.6151E+00   0.6151E+00    31.7     3.1      0.0       0.0   0.16832
+      -2.    1.   -1.     30.9     31.8   -174.4  -0.9370E+00  -0.9370E+00    31.7     3.1      0.0       0.0   0.16832
+      -1.   -1.   -1.     49.5     49.8   -177.6  -0.2321E+00  -0.2321E+00    49.7     2.1      0.0       0.0   0.12746
+       1.    1.    1.     52.7     49.8   -177.6   0.2915E+01   0.2915E+01    49.7     2.1      0.0       0.0   0.12746
+      -1.    1.   -1.     49.1     49.8   -177.6  -0.6653E+00  -0.6653E+00    49.7     2.1      0.0       0.0   0.12746
        0.   -1.   -1.     25.9     24.1      2.7   0.1810E+01   0.1810E+01    24.1     1.1      0.0       0.0   0.10520
        0.    1.    1.     25.5     24.1      2.7   0.1399E+01   0.1399E+01    24.1     1.1      0.0       0.0   0.10520
        0.    1.   -1.     25.5     24.1      2.7   0.1399E+01   0.1399E+01    24.1     1.1      0.0       0.0   0.10520
@@ -7124,17 +7014,17 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
       -1.    1.    1.     70.5     67.6      2.7   0.2955E+01   0.2955E+01    67.5     3.2      0.0       0.0   0.11311
        2.    1.   -1.      3.3     10.5     11.6  -0.7145E+01  -0.7145E+01    10.3     2.1      0.0       0.0   0.14637
       -2.   -1.    1.      4.5     10.5     11.6  -0.5954E+01  -0.5954E+01    10.3     2.1      0.0       0.0   0.14637
-       3.    1.   -1.      9.8      1.2   -126.1   0.8572E+01   0.8572E+01     0.7     1.0     -0.0      -0.0   0.19226
-      -3.   -1.    1.      5.5      1.2   -126.1   0.4327E+01   0.4327E+01     0.7     1.0     -0.0      -0.0   0.19226
-      -3.    1.    1.      6.1      1.2    233.9   0.4941E+01   0.4941E+01     0.7     1.0     -0.0      -0.0   0.19226
+       3.    1.   -1.      9.8      1.2   -126.1   0.8572E+01   0.8572E+01     0.7     1.0      0.0       0.0   0.19226
+      -3.   -1.    1.      5.5      1.2   -126.1   0.4327E+01   0.4327E+01     0.7     1.0      0.0       0.0   0.19226
+      -3.    1.    1.      6.1      1.2    233.9   0.4941E+01   0.4941E+01     0.7     1.0      0.0       0.0   0.19226
       -1.    2.   -1.      5.5      5.5    173.2   0.9218E-01   0.9218E-01     5.4     0.6      0.0       0.0   0.16723
        1.    2.    1.      5.7      5.5    353.2   0.2799E+00   0.2799E+00     5.4     0.6      0.0       0.0   0.16723
        1.    2.   -1.     17.2     18.9    179.5  -0.1684E+01  -0.1684E+01    18.9     0.2      0.0       0.0   0.15656
       -1.   -2.    1.     17.7     18.9    179.5  -0.1179E+01  -0.1179E+01    18.9     0.2      0.0       0.0   0.15656
       -1.    2.    1.     16.7     18.9    359.5  -0.2218E+01  -0.2218E+01    18.9     0.2      0.0       0.0   0.15656
-       2.    2.   -1.     16.9      9.0   -176.1   0.7835E+01   0.7835E+01     9.0     0.6     -0.0      -0.0   0.18205
-      -2.   -2.    1.     15.8      9.0   -176.1   0.6796E+01   0.6796E+01     9.0     0.6     -0.0      -0.0   0.18205
-      -2.    2.    1.     16.7      9.0      3.9   0.7691E+01   0.7691E+01     9.0     0.6     -0.0      -0.0   0.18205
+       2.    2.   -1.     16.9      9.0   -176.1   0.7835E+01   0.7835E+01     9.0     0.6      0.0       0.0   0.18205
+      -2.   -2.    1.     15.8      9.0   -176.1   0.6796E+01   0.6796E+01     9.0     0.6      0.0       0.0   0.18205
+      -2.    2.    1.     16.7      9.0      3.9   0.7691E+01   0.7691E+01     9.0     0.6      0.0       0.0   0.18205
        3.    2.   -1.     10.8      8.1     -5.3   0.2726E+01   0.2726E+01     8.1     0.7      0.0       0.0   0.22064
       -3.   -2.    1.      6.6      8.1     -5.3  -0.1476E+01  -0.1476E+01     8.1     0.7      0.0       0.0   0.22064
       -3.    2.    1.      9.9      8.1    174.7   0.1780E+01   0.1780E+01     8.1     0.7      0.0       0.0   0.22064
@@ -7144,45 +7034,45 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
        2.    3.   -1.     42.1     41.6      2.5   0.4673E+00   0.4673E+00    41.6     1.8      0.0       0.0   0.22951
       -2.   -3.    1.     42.2     41.6      2.5   0.5973E+00   0.5973E+00    41.6     1.8      0.0       0.0   0.22951
       -2.    3.    1.     40.5     41.6      2.5  -0.1092E+01  -0.1092E+01    41.6     1.8      0.0       0.0   0.22951
-       3.    3.   -1.     24.9     20.3   -177.7   0.4602E+01   0.4602E+01    20.3     0.8     -0.0      -0.0   0.26118
-      -3.   -3.    1.     22.0     20.3   -177.7   0.1707E+01   0.1707E+01    20.3     0.8     -0.0      -0.0   0.26118
-      -3.    3.    1.     20.9     20.3    182.3   0.5956E+00   0.5956E+00    20.3     0.8     -0.0      -0.0   0.26118
+       3.    3.   -1.     24.9     20.3   -177.7   0.4602E+01   0.4602E+01    20.3     0.8      0.0       0.0   0.26118
+      -3.   -3.    1.     22.0     20.3   -177.7   0.1707E+01   0.1707E+01    20.3     0.8      0.0       0.0   0.26118
+      -3.    3.    1.     20.9     20.3    182.3   0.5956E+00   0.5956E+00    20.3     0.8      0.0       0.0   0.26118
       -3.   -3.    0.      5.5      3.7     -0.5   0.1776E+01   0.1776E+01     3.7     0.0      0.0       0.0   0.25736
        3.    3.    0.      5.0      3.7     -0.5   0.1314E+01   0.1314E+01     3.7     0.0      0.0       0.0   0.25736
       -3.    3.    0.      5.2      3.7    179.5   0.1444E+01   0.1444E+01     3.7     0.0      0.0       0.0   0.25736
-      -2.   -3.    0.      8.5     10.8   -174.6  -0.2241E+01  -0.2241E+01    10.7     1.0     -0.0      -0.0   0.22129
-       2.    3.    0.      8.6     10.8   -174.6  -0.2125E+01  -0.2125E+01    10.7     1.0     -0.0      -0.0   0.22129
-      -2.    3.    0.      7.7     10.8      5.4  -0.3021E+01  -0.3021E+01    10.7     1.0     -0.0      -0.0   0.22129
-      -1.   -3.    0.     24.4     18.4   -176.8   0.5974E+01   0.5974E+01    18.4     1.0     -0.0      -0.0   0.19649
-       1.    3.    0.     21.4     18.4   -176.8   0.2993E+01   0.2993E+01    18.4     1.0     -0.0      -0.0   0.19649
-      -1.    3.    0.     21.9     18.4      3.2   0.3433E+01   0.3433E+01    18.4     1.0     -0.0      -0.0   0.19649
-      -3.   -2.    0.     44.6     40.8   -175.9   0.3760E+01   0.3760E+01    40.7     2.9     -0.0      -0.0   0.21611
-       3.    2.    0.     37.8     40.8   -175.9  -0.3012E+01  -0.3012E+01    40.7     2.9     -0.0      -0.0   0.21611
-      -3.    2.    0.     39.3     40.8    184.1  -0.1517E+01  -0.1517E+01    40.7     2.9     -0.0      -0.0   0.21611
-      -2.   -2.    0.     27.2     25.9   -176.7   0.1288E+01   0.1288E+01    25.9     1.5     -0.0      -0.0   0.17157
-       2.    2.    0.     31.4     25.9   -176.7   0.5533E+01   0.5533E+01    25.9     1.5     -0.0      -0.0   0.17157
-      -2.    2.    0.     24.3     25.9    183.3  -0.1585E+01  -0.1585E+01    25.9     1.5     -0.0      -0.0   0.17157
+      -2.   -3.    0.      8.5     10.8   -174.6  -0.2241E+01  -0.2241E+01    10.7     1.0      0.0       0.0   0.22129
+       2.    3.    0.      8.6     10.8   -174.6  -0.2125E+01  -0.2125E+01    10.7     1.0      0.0       0.0   0.22129
+      -2.    3.    0.      7.7     10.8      5.4  -0.3021E+01  -0.3021E+01    10.7     1.0      0.0       0.0   0.22129
+      -1.   -3.    0.     24.4     18.4   -176.8   0.5974E+01   0.5974E+01    18.4     1.0      0.0       0.0   0.19649
+       1.    3.    0.     21.4     18.4   -176.8   0.2993E+01   0.2993E+01    18.4     1.0      0.0       0.0   0.19649
+      -1.    3.    0.     21.9     18.4      3.2   0.3433E+01   0.3433E+01    18.4     1.0      0.0       0.0   0.19649
+      -3.   -2.    0.     44.6     40.8   -175.9   0.3760E+01   0.3760E+01    40.7     2.9      0.0       0.0   0.21611
+       3.    2.    0.     37.8     40.8   -175.9  -0.3012E+01  -0.3012E+01    40.7     2.9      0.0       0.0   0.21611
+      -3.    2.    0.     39.3     40.8    184.1  -0.1517E+01  -0.1517E+01    40.7     2.9      0.0       0.0   0.21611
+      -2.   -2.    0.     27.2     25.9   -176.7   0.1288E+01   0.1288E+01    25.9     1.5      0.0       0.0   0.17157
+       2.    2.    0.     31.4     25.9   -176.7   0.5533E+01   0.5533E+01    25.9     1.5      0.0       0.0   0.17157
+      -2.    2.    0.     24.3     25.9    183.3  -0.1585E+01  -0.1585E+01    25.9     1.5      0.0       0.0   0.17157
       -1.   -2.    0.     33.2     36.2      2.5  -0.3027E+01  -0.3027E+01    36.2     1.6      0.0       0.0   0.13812
        1.    2.    0.     34.8     36.2      2.5  -0.1410E+01  -0.1410E+01    36.2     1.6      0.0       0.0   0.13812
       -1.    2.    0.     32.0     36.2      2.5  -0.4197E+01  -0.4197E+01    36.2     1.6      0.0       0.0   0.13812
        0.   -2.    0.     44.2     37.2      4.9   0.6938E+01   0.6938E+01    37.1     3.2      0.0       0.0   0.12500
        0.    2.    0.     33.6     37.2      4.9  -0.3602E+01  -0.3602E+01    37.1     3.2      0.0       0.0   0.12500
-      -3.   -1.    0.     13.8     19.2   -180.0  -0.5409E+01  -0.5409E+01    19.2     0.0     -0.0      -0.0   0.18704
-       3.    1.    0.     17.2     19.2   -180.0  -0.2052E+01  -0.2052E+01    19.2     0.0     -0.0      -0.0   0.18704
-      -3.    1.    0.     17.1     19.2      0.0  -0.2110E+01  -0.2110E+01    19.2     0.0     -0.0      -0.0   0.18704
+      -3.   -1.    0.     13.8     19.2   -180.0  -0.5409E+01  -0.5409E+01    19.2     0.0      0.0       0.0   0.18704
+       3.    1.    0.     17.2     19.2   -180.0  -0.2052E+01  -0.2052E+01    19.2     0.0      0.0       0.0   0.18704
+      -3.    1.    0.     17.1     19.2      0.0  -0.2110E+01  -0.2110E+01    19.2     0.0      0.0       0.0   0.18704
       -2.   -1.    0.     27.6     27.1     -0.8   0.4422E+00   0.4422E+00    27.1     0.4      0.0       0.0   0.13311
        2.    1.    0.     28.2     27.1     -0.8   0.1049E+01   0.1049E+01    27.1     0.4      0.0       0.0   0.13311
       -2.    1.    0.     24.4     27.1    179.2  -0.2756E+01  -0.2756E+01    27.1     0.4      0.0       0.0   0.13311
-      -1.   -1.    0.     34.2     34.1   -179.4   0.6641E-01   0.6641E-01    34.1     0.4     -0.0      -0.0   0.08579
-       1.    1.    0.     32.4     34.1   -179.4  -0.1659E+01  -0.1659E+01    34.1     0.4     -0.0      -0.0   0.08579
-      -1.    1.    0.     35.2     34.1      0.6   0.1070E+01   0.1070E+01    34.1     0.4     -0.0      -0.0   0.08579
-      -3.    0.    0.     15.3     20.1   -170.9  -0.4790E+01  -0.4790E+01    19.8     3.2     -0.0      -0.0   0.17629
-       3.    0.    0.     15.3     20.1   -170.9  -0.4775E+01  -0.4775E+01    19.8     3.2     -0.0      -0.0   0.17629
-      -2.    0.    0.     35.3     28.0   -176.7   0.7304E+01   0.7304E+01    27.9     1.6     -0.0      -0.0   0.11753
-       2.    0.    0.     35.8     28.0   -176.7   0.7802E+01   0.7802E+01    27.9     1.6     -0.0      -0.0   0.11753
+      -1.   -1.    0.     34.2     34.1   -179.4   0.6641E-01   0.6641E-01    34.1     0.4      0.0       0.0   0.08579
+       1.    1.    0.     32.4     34.1   -179.4  -0.1659E+01  -0.1659E+01    34.1     0.4      0.0       0.0   0.08579
+      -1.    1.    0.     35.2     34.1      0.6   0.1070E+01   0.1070E+01    34.1     0.4      0.0       0.0   0.08579
+      -3.    0.    0.     15.3     20.1   -170.9  -0.4790E+01  -0.4790E+01    19.8     3.2      0.0       0.0   0.17629
+       3.    0.    0.     15.3     20.1   -170.9  -0.4775E+01  -0.4775E+01    19.8     3.2      0.0       0.0   0.17629
+      -2.    0.    0.     35.3     28.0   -176.7   0.7304E+01   0.7304E+01    27.9     1.6      0.0       0.0   0.11753
+       2.    0.    0.     35.8     28.0   -176.7   0.7802E+01   0.7802E+01    27.9     1.6      0.0       0.0   0.11753
       -1.    0.    0.      2.5      4.8    159.0  -0.2295E+01  -0.2295E+01     4.5     1.7      0.0       0.0   0.05876
-      -3.   -3.    2.      3.1      1.2   -146.0   0.1973E+01   0.1973E+01     1.0     0.7     -0.0      -0.0   0.29071
-      -3.    3.    2.      2.3      1.2     34.0   0.1107E+01   0.1107E+01     1.0     0.7     -0.0      -0.0   0.29071
+      -3.   -3.    2.      3.1      1.2   -146.0   0.1973E+01   0.1973E+01     1.0     0.7      0.0       0.0   0.29071
+      -3.    3.    2.      2.3      1.2     34.0   0.1107E+01   0.1107E+01     1.0     0.7      0.0       0.0   0.29071
       -3.    0.    2.      0.7     10.7     12.8  -0.1000E+02  -0.1000E+02    10.4     2.4      0.0       0.0   0.22217
        1.    3.    3.      1.9      4.7     -0.5  -0.2801E+01  -0.2801E+01     4.7     0.0      0.0       0.0   0.32899
 
@@ -7268,14 +7158,15 @@ All cycle   Min function          0.0           0.28E+04       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
+[38]  Mean           0.02   0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
                                         -0.0590  -0.0335   0.0088
 
-[38]  R.M.S.         0.02   0.00    0.01    0.01    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00
+[71]  R.M.S.         0.    0.00    0.01    0.01    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.123    0.052    0.067 
 
 
 
-[38]  Maximum        0.03   0.00    0.02    0.02    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00
+[70]  Maximum        0.    0.00    0.02    0.02    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.197    0.071    0.103 
 
 [03]  Reversals
@@ -7384,7 +7275,7 @@ Mean C-C su =   0.0282
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.01    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.014   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.00                                                                                                                                                                                                         
+<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =     0.00                                                                                                                                                                                                         
 #INVERT  CHOL                                                                                                                                                                                                                                                   
 
 
@@ -7418,7 +7309,7 @@ All cycle   Rw                    0.0            9.5           0.10E+03
 All cycle   Min function          0.0           0.12E+04       0.10E+16
 Inter cycle R-factor             -5.0            4.7           0.10E+03
 Inter cycle Rw                   -5.0            5.2           0.10E+03
-Inter cycle shift/esd            -10.            1.9           0.10E+05
+[69] Inter cycle shift/esd
 [07] Inter cycle Min function          0.0
 
 
@@ -7447,12 +7338,12 @@ Inter cycle shift/esd            -10.            1.9           0.10E+05
 [38]  Mean          -0.01   0.00   -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
                                         -0.0088  -0.0094  -0.0088
 
-[38]  R.M.S.         0.01   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.019    0.014    0.015 
 
 
 
-[38]  Maximum        0.02   0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[70]  Maximum        0.    0.00    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.030    0.021    0.019 
 
 [03]  Reversals
@@ -7514,13 +7405,12 @@ Inter cycle shift/esd            -10.            1.9           0.10E+05
 Mean C-C su =   0.0182                                                                                                                                                                                                                                          
 #CYCLENDS                                                                                                                                                                                                                                                       
 #PRINT 6                                                                                                                                                                                                                                                        
-#TITLE HEXACHLOROBORAZINE  -  LIST INPUT                                                                                                                                                                                                                        
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number      106     Address    97877     Length    7559     Created on                          
+ Print list type     6     serial number       96     Address    95676     Length    7560     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -7645,6 +7535,7 @@ Mean C-C su =   0.0182
 
 
 
+#TITLE HEXACHLOROBORAZINE  -  LIST INPUT                                                                                                                                                                                                                        
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST 3                                                                                                                                                                                                                                                         
@@ -7789,14 +7680,15 @@ All cycle   Min function          0.0           0.67E+03       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
+[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00
 [31]                                          0.001    0.003    0.000 
 
-[38]  R.M.S.         0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.004    0.000 
 
 
 
-[38]  Maximum        0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.002    0.007    0.001 
 
 [03]  Reversals
@@ -7840,7 +7732,7 @@ All cycle   Min function          0.0           0.67E+03       0.10E+16
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      N          1.    1.00    0.00    0.18    0.11   -0.00    0.04
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00   -0.00   -0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.005 
 
@@ -7850,12 +7742,12 @@ All cycle   Min function          0.0           0.67E+03       0.10E+16
 [31]                                         0.003    0.004    0.005 
 
 [37]      CL         3.    1.00    0.00    0.40    0.26   -0.00    0.03
-[37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00   -0.00   -0.00   -0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.002 
 
-[37]      CL         4.    1.00    0.00   -0.40   -0.26   -0.00    0.03
-[37]                       0.00            -0.00   -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00
+[37]      CL         4.    1.00    0.00   -0.40   -0.26    0.00    0.03
+[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.002 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
@@ -8011,14 +7903,15 @@ All cycle   Min function          0.0           0.67E+03       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
+[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00
 [31]                                          0.001    0.000    0.000 
 
-[38]  R.M.S.         0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.002    0.001    0.000 
 
 
 
-[38]  Maximum        0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.003    0.002    0.001 
 
 [03]  Reversals
@@ -8072,12 +7965,12 @@ All cycle   Min function          0.0           0.67E+03       0.10E+16
 [31]                                         0.003    0.002    0.005 
 
 [37]      CL         3.    1.00    0.00    0.40    0.26   -0.00    0.03
-[37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.002 
 
-[37]      CL         4.    1.00    0.00   -0.40   -0.26   -0.00    0.03
-[37]                       0.00            -0.00   -0.00   -0.00    0.00   -0.00   -0.00    0.00    0.00    0.00
+[37]      CL         4.    1.00    0.00   -0.40   -0.26    0.00    0.03
+[37]                       0.00             0.00   -0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.002 
 Mean C-C su =   0.0000                                                                                                                                                                                                                                          
@@ -8102,13 +7995,12 @@ Mean C-C su =   0.0000
            N       1     1  1  0  0  0      B       2     3  1  0  0  0      1.423
       Mean value =   1.4245  Mean delta =
    3. The sum is restrained to be -0.12047      with an E.S.D. of  0.10000E-01
-#PRINT 11 B                                                                                                                                                                                                                                                     
 
 
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   133731     Length     806     Created on                          
+ Print list type    11     serial number       20     Address   130620     Length     806     Created on                          
 
  Inverse matrix
 
@@ -8153,13 +8045,13 @@ Mean C-C su =   0.0000
     5   14  -0.873  N 1 U[11]        B 2 U[11]      
     9   18  -0.872  N 1 U[13]        B 2 U[13]      
    10   19  -0.869  N 1 U[12]        B 2 U[12]      
-#PRINT 11 C                                                                                                                                                                                                                                                     
+#PRINT 11 B                                                                                                                                                                                                                                                     
 
 
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   133731     Length     806     Created on                          
+ Print list type    11     serial number       20     Address   130620     Length     806     Created on                          
 
 
  Print List 11 as correlation matrix
@@ -8190,7 +8082,7 @@ Mean C-C su =   0.0000
     22    0.027  0.021  0.016 -0.153  0.001  0.026 -0.005 -0.108 -0.202  0.010  0.006  0.009 -0.161  0.001 -0.014  0.012
     23    0.018 -0.079 -0.066  0.111  0.065 -0.122 -0.032 -0.004 -0.006 -0.100 -0.068 -0.025  0.097 -0.016  0.112 -0.032
     24    0.381  0.197  0.152 -0.028  0.294  0.279 -0.056 -0.015 -0.066  0.379  0.301  0.301 -0.006 -0.270 -0.226  0.053
-    25    0.109 -0.017 -0.033 -0.042  0.001  0.007 -0.016 -0.092  0.026  0.037 -0.009 -0.018 -0.032 -0.000 -0.027  0.104
+    25    0.109 -0.017 -0.033 -0.042  0.001  0.007 -0.016 -0.092  0.026  0.037 -0.009 -0.018 -0.032  0.000 -0.027  0.104
     26   -0.028  0.003 -0.009 -0.442  0.105  0.055 -0.084 -0.046 -0.123  0.029 -0.019 -0.010 -0.410 -0.080 -0.051  0.066
     27   -0.046 -0.024 -0.023 -0.296  0.094 -0.001 -0.095  0.021  0.080  0.054 -0.042 -0.070 -0.288 -0.069 -0.022  0.081
     28   -0.094  0.081  0.012 -0.025  0.103  0.243 -0.031  0.088  0.051  0.077  0.045  0.036 -0.019 -0.050 -0.230 -0.019
@@ -8244,13 +8136,13 @@ Mean C-C su =   0.0000
 
 
 
-#TITLE P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                                                                                                                                                                                               
+#PRINT 11 C                                                                                                                                                                                                                                                     
 
 
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   133731     Length     806     Created on                          
+ Print list type    11     serial number       20     Address   130620     Length     806     Created on                          
 
  Inverse matrix
 
@@ -8415,6 +8307,7 @@ Mean C-C su =   0.0000
 
 
 
+#TITLE P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                                                                                                                                                                                               
 #LIST 1                                                                                                                                                                                                                                                         
 #LIST 2                                                                                                                                                                                                                                                         
 #LIST 3                                                                                                                                                                                                                                                         
@@ -8434,13 +8327,12 @@ Bonds: Update required - List5 length change
 #WEIGHT                                                                                                                                                                                                                                                         
                      LIST 4 weighting type is NORMAL
 #PRINT 5                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
 
 
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     5     serial number       30     Address   138151     Length     150     Created on                          
+ Print list type     5     serial number       30     Address   135523     Length     150     Created on                          
 
 
 
@@ -8519,6 +8411,7 @@ Bonds: Update required - List5 length change
 
 
 
+#LIST 23                                                                                                                                                                                                                                                        
 #SFLS                                                                                                                                                                                                                                                           
 #LIST 26                                                                                                                                                                                                                                                        
 #WEIGHT                                                                                                                                                                                                                                                         
@@ -8608,18 +8501,17 @@ Bonds: Update required - List5 length change
 
        92 reflections   R 47.68% Rw 47.80% with I/u(I) from List 28                                                                                                                                                                                             
        92 reflections   R 47.68% Rw 47.80% with I/u(I) > -10.0                                                                                                                                                                                                  
-        0 reflections   R  0.00% Rw  0.00% with I/u(I) >   2.0                                                                                                                                                                                                  
+       92 reflections   R 47.68% Rw 47.80% with I/u(I) >   2.0                                                                                                                                                                                                  
 [29] SumFo/SumFc=  1.88    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.000   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =   12.2     100*(<Fo>-<Fc>)/<Fo> =    46.
 #PRINT 6                                                                                                                                                                                                                                                        
-#TITLE SLANT FOURIER TESTS IN P6122                                                                                                                                                                                                                             
 
 
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     6     serial number      128     Address   137451     Length     700     Created on                          
+ Print list type     6     serial number      118     Address   134822     Length     701     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -8744,7 +8636,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 
 
-#SLANT                                                                                                                                                                                                                                                          
+#TITLE SLANT FOURIER TESTS IN P6122                                                                                                                                                                                                                             
 #SLANT                                                                                                                                                                                                                                                          
 
 
@@ -8811,7 +8703,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
    14 *   -3  -1   0  -2  -4  -5  -6 -10 -13 -10   0  11  16  12
 
    15 *   -3  -3  -3  -3  -2  -1  -3  -8 -10  -3  12  27  32  24
-#TRIAL                                                                                                                                                                                                                                                          
+#SLANT                                                                                                                                                                                                                                                          
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -8834,6 +8726,8 @@ LS-scale=  1.000   Wilson Scale=  0.000
     4 *   -4  -8  -9  -7  -4  -1
 
     5 *   -9  -7  -1   4   5   3
+# TRIAL  ALMOST CERTAINLY DOES NOT WORK                                                                                                                                                                                                                         
+#TRIAL                                                                                                                                                                                                                                                          
 
 
 

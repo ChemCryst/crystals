@@ -21,7 +21,7 @@ Script for starting on a new structure
 %  COPY 'END'
 %  END BLOCK
 Files INITIAL.* will be created in your directory. They may be important.
-%  COPY '#RELEASE PRINT INITIAL.LIS'
+%  COPY '#RELEASE PRINT initial.lis'
 %  COPY '#RELEASE LOG INITIAL.DAT'
 %  IF ( EXISTS 28 .NE. 1 ) THEN
 %   COPY '#SCRIPT XLIST28'

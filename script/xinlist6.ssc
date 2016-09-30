@@ -445,14 +445,14 @@
 %             INSERT " F'S=FSQ"                                                 
 %           END IF                                                              
 %           IF NCOEF .EQ. 4 THEN                                                
-%             INSERT ' NCOEF = 4'                                               
+%             INSERT ' NCOEF=4'                                               
 %           ELSE                                                                
-%             INSERT ' NCOEF = 5'                                               
+%             INSERT ' NCOEF=5'                                               
 %           END IF                                                              
 %           IF FMT .EQ. 1 THEN                                                  
-%             INSERT ' TYPE = FREE CHECK = NO'                                  
+%             INSERT ' TYPE=FREE CHECK=NO ARCH=YES'                                  
 %           ELSE                                                                
-%             INSERT ' TYPE = FIXED CHECK = NO'                                 
+%             INSERT ' TYPE=FIXED CHECK=NO ARCH=YES'                                 
 %           END IF                                                              
 %           QUEUE SEND                                                          
 %%                                                                              
@@ -531,10 +531,12 @@
 %         COPY 'END'                                                                
 
 ^^WI      DISPOSE XINLIST6                                                      
-^^CR                                                                            
+^^CR             
+%         COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %         COPY '#HKLI'                                                          
 %         QUEUE PROCESS                                                         
 %         COPY 'END'                                                            
+%         COPY '#CLOSE FRN2'
 %         COPY '#CLOSE HKLI'                                                    
 %%                                                                              
 %         IF FS .EQ. 3 THEN                                                     
@@ -573,7 +575,7 @@
 {R * Done. Reflection data input complete.                                      
                                                                                 
 
-%% Actual inoput complete. XFRESH6 sorts out lists 4, 23, 28 etc
+%% Actual input complete. XFRESH6 sorts out lists 4, 23, 28 etc
 %% djw dec 2011
 %         COPY '#SCRIPT XFRESH6' 
 %         FINISH                                                                

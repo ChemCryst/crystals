@@ -165,7 +165,7 @@
 %  COPY '#RELEASE PUNCH LIST6.DAT'
 %  COPY '#PUNCH 6'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH CRFILE.PCH'
+%  COPY '#RELEASE PUNCH crfile.pch'
 
 %  COPY '#LIST 4'
 %  COPY 'END'
@@ -176,11 +176,11 @@
 %  COPY '#PAUSE 1'
 %  COPY '#SUMMARY EVERYTHING'
 %  COPY 'END'
-%  COPY '#RELEASE PRINTER CRFILE.LIS'
+%  COPY '#RELEASE PRINTER crfile.lis'
 %  COPY '#RELEASE LOG CRFILE.LOG'
 %%
    
-   The output from data reduction has been saved as INITIAL.LIS 
+   The output from data reduction has been saved as initial.lis 
    The condensed instruction set  has been saved as INITIAL.DAT
 
 %  COPY '#PAUSE 3'

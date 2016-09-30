@@ -8,7 +8,7 @@
 % IF ( EXISTS 6 .NE. 1 ) THEN
 {I Creating a dummy list 6 (reflections) to keep the CIF routines happy.
 %  COPY '#LIST 6'
-%  COPY 'READ NCOEFFICIENT = 9, TYPE = FIXED, UNIT = DATAFILE, CHECK=NO'
+%  COPY 'READ NCOEF=9 TYPE=FIXED UNIT=DATA CHECK=NO ARCH=NO'
 %  COPY 'INPUT H K L /FO/ SIGMA(/FO/) /FC/ PHASE SQRTW CORRECT'
 %  COPY 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F10.5)'
 %  COPY 'END'

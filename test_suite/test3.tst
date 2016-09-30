@@ -1,6 +1,9 @@
 # This test deck does all sorts of things. It includes some
-# errors, particularly in MOLAX, but I feel they can act as
-# a test of the error handling in CRYSTALS. 
+# errors, particularly in MOLAX. They can act as
+# a test of the error handling in CRYSTALS.
+# In the MOLAX test with just two atoms, 
+# the second two eigenvectors are arbitrary, so the
+# azimuth and declination are not defined.
 \set time slow
 \rele print CROUTPUT:
 
@@ -17,6 +20,7 @@ END
 \LIST 29
 END
 \PRINT 28                                                                       
+END
 \LIST 6                                                                         
 READ NCOEF=5 UNIT=DATAFILE                                                              
 OUTPUT H K L /FO/ SIGMA                                                         
@@ -28,6 +32,7 @@ END
 \ COMMENT
 
 \PRINT 6 C
+END
 \LIST 6
 READ NCOEFF= 6, UNIT= DATAFILE                                                  
 STORE NCOEFF= 7, APPEND= YES, MEDIUM= file
@@ -38,7 +43,9 @@ END
 41 42 43 44 45 46                                                               
 -512                                                                             
 \PRINT 6                                                                        
+END
 \PRINT 6 C                                                                      
+END
 \LIST 6                                                                         
 READ NCOEFF= 7, UNIT= DATAFILE                                                  
 STORE APPEND= YES                                                               
@@ -48,7 +55,9 @@ END
 71 72 73 74 75 76 77                                                            
 -512                                                                             
 \PRINT 6                                                                        
+END
 \PRINT 6 C                                                                      
+END
 \LIST 6                                                                         
 READ UNIT= DATAFILE                                                             
 OUTPUT H K L /FO/ SIGMA                                                         
@@ -158,6 +167,7 @@ HKL    P6122  25  3  4     1  116.92
 HKL    P6122  26  3  4     1  116.92             -.91000                        
 HKL    P6122-512 49 49     1  116.92             1.91000                        
 \PRINT 6                                                                        
+END
 \LIST 6                                                                         
 READ NCOEFF= 7, TYPE= FIXED, UNIT= DATAFILE, CHECK= NO                          
 INPUT H K L /FO/ NOTHING /FC/ PHASE                                             
@@ -443,6 +453,7 @@ END
 -127-127-127 108.                                                               
  512                                                                            
 \PRINT 6                                                                        
+END
 \LIST 28                                                                        
 READ NCOND= 2                                                                   
 MINIMA /FO/= 50.                                                                
@@ -452,7 +463,9 @@ COND .5 1 0 0 300
 COND .5 0 0 1 300                                                               
 END                                                                             
 \PRINT 28                                                                       
+END
 \PRINT 6                                                                        
+END
 \LIST 28                                                                        
 END                                                                             
 \LIST 6                                                                         
@@ -493,6 +506,7 @@ END
 722 512 2 5 0 1780 1 733 2 694 3 1629 512 3 5 0 745 1 692 2 1596 512 4 5 0 771 1
 855 512 5 5 0 1309 -512                                                         
 \PRINT 6                                                                        
+END
 \LIST 6                                                                         
 READ NCOEFF= 4, TYPE=COMP, UNIT= DATAFILE                                       
 STORE NCOEFF= 4                                                                 
@@ -531,6 +545,7 @@ END
 722 512 2 5 0 1780 1 733 2 694 3 1629 512 3 5 0 745 1 692 2 1596 512 4 5 0 771 1
 855 512 5 5 0 1309 -512                                                         
 \PRINT 6                                                                        
+END
 \LIST 13                                                                        
 CRYSTAL TWINNED= YES                                                            
 END                                                                             
@@ -583,6 +598,7 @@ END
 12 512 3 5 0 745 12 1 692 12 2 1596 12 512 4 5 0 771 12 1 855 12 512 5 5 0 1309 
 12 -512                                                                         
 \PRINT 6 C                                                                      
+END
 \LIST 28                                                                        
 READ NCOND= 2                                                                   
 MINIMA /FOT/= 100.                                                              
@@ -591,9 +607,11 @@ COND 0 0 1 0 9
 COND 1 1 0 0 20                                                                 
 END                                                                             
 \PRINT 28                                                                       
+END
 \LIST 28                                                                        
 END                                                                             
 \PRINT 6                                                                        
+END
 \LIST 6                                                                         
 READ NCOEF=5, TYPE= COMP, UNIT= DATAFILE                                                 
 INPUT H K L /FOT/ ELEMENTS                                                      
@@ -631,6 +649,7 @@ SCALE   13        1.003  1.003  564
 SCALE   14        0.370  0.370  564                                             
 SCALE   15        0.372  0.371  617                                             
 \PRINT 27                                                                       
+END
 \LIST 28                                                                        
 END                                                                             
 \LIST 13                                                                        
@@ -639,24 +658,30 @@ COND WAVE= .7107
 MATRIX R(1)=1., R(5)=1., R(9)=1.                                                
 END                                                                             
 \PRINT 13                                                                       
-\HKLI                                                                           
-READ NCOEFF= 11                                                                 
-INPUT H K L /FO/ SIGMA JCODE SERIAL BATCH FACTOR1 FACTOR2 FACTOR3
-CORRECT NFACT= 3
-FACTORS FACTOR1 FACTOR2 FACTOR3               
-END                                                                             
-\PRINT 6                                                                        
-\SYST                                                                           
-\SORT                                                                           
-\MERGE                                                                          
-WEIGHT SCHEME= 2, NPARAM= 6, NCYC= 3                                            
-PARAM .5 3 1 2 .01 .00001                                                       
-REJECT 3 2                                                                      
-REFLECTIONS NJCODE= 2, LIST= HIGH                                               
-JCODE 6 .0037                                                                   
-JCODE 9 .0042                                                                   
-END                                                                             
-\PRINT 6                                                                        
+END
+#  hkli test commented out because reflection file missing.
+\ HKLI                                                                           
+\ READ NCOEFF= 11                                                                 
+\ INPUT H K L /FO/ SIGMA JCODE SERIAL BATCH FACTOR1 FACTOR2 FACTOR3
+\ CORRECT NFACT= 3
+\ FACTORS FACTOR1 FACTOR2 FACTOR3               
+\ END                                                                             
+\ PRINT 6                                                                        
+\ END
+\ SYST                                                                           
+\ END
+\ SORT                                                                           
+\ END
+\ MERGE                                                                          
+\ WEIGHT SCHEME= 2, NPARAM= 6, NCYC= 3                                            
+\ PARAM .5 3 1 2 .01 .00001                                                       
+\ REJECT 3 2                                                                      
+\ REFLECTIONS NJCODE= 2, LIST= HIGH                                               
+\ JCODE 6 .0037                                                                   
+\ JCODE 9 .0042                                                                   
+\ END                                                                             
+\ PRINT 6                                                                        
+\ END
 \LIST 6                                                                         
 READ NCOEFF= 5, UNIT= DATAFILE, TYPE= FREE                                      
 INPUT H K L /FO/ FACTOR1                                                             
@@ -679,10 +704,12 @@ COND WAVE= .7107
 AXIS 1 0 0                                                                      
 END                                                                             
 \PRINT 13                                                                       
+END
 \LP                                                                             
 STORE F'S=FSQ
 END                                                                             
 \PRINT 6                                                                        
+END
 \LIST 6                                                                         
 READ NCOEFF= 4, TYPE= FIXED, UNIT= DATAFILE                                     
 INPUT H K L /FO/                                                                
@@ -792,6 +819,7 @@ END
 STORE F'S= FSQ
 END                                                                             
 \PRINT 6                                                                        
+END
 \LIST 12                                                                        
 DIAG X Y Z                                                                      
 END                                                                             
@@ -876,8 +904,8 @@ ATOM C   28.000000    1.000000    0.000000    1.001327    0.342520    0.741151
 CONT      0.045171    0.101098    0.029187   -0.019358    0.005733    0.017753  
 END                                                                             
 \PRINT 5                                                                        
+END
 \TITLE TEST THE LIST MODIFICATION ROUTINES                                      
-END                                                                             
 \EDIT 5 5                                                                     
 ADD 50. X 
 ADD 42 C(13,U[ISO])
@@ -893,6 +921,7 @@ ATOM SB 1 X= 0.5 0.6 .7 U[11]= 0.0751
 ATOM SB 2 X= 0.8 0.9 .4 U[11]= 0.0658 
 END                                                                             
 \PRINT 5                                                                        
+END                                                                             
 \EDIT 5 10                                                                    
 KEEP 1. FIRST UNTIL N(25)                                                       
 SELECT TYPE NE SA, U[ISO] LT 24, X GT .4                                        
@@ -902,6 +931,7 @@ AFTER C(106)
 MOVE C(101) C(110)                                                              
 END                                                                             
 \PRINT 10                                                                       
+END                                                                             
 \TITLE BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                
 \LIST 1                                                                         
 REAL 9.668 9.156 9.749 0.37268 0.43707 0.49209                                  
@@ -965,6 +995,7 @@ CONT U[23]= -0.01334
 ATOM C 14   X= -0.27187 0.89631 0.48482     OCC=  1.00 0                        
 CONT U[11]= 0.05007  0.09032  0.09550  U[12]= -0.01325  U[13]= -0.01007         
 CONT U[23]= -0.01713                                                            
+END                                                                             
 \HYDROGEN                                                                       
 PHENYL C(6) C(7) C(2) UNTIL C(5)                                                
 AFTER C(7)                                                                      
@@ -987,6 +1018,7 @@ H11 N(1) S(1)
 AFTER N(1)                                                                      
 END                                                                             
 \PRINT 5                                                                        
+END                                                                             
 \                                                                               
 \ INPUT THE CELL PARAMETERS                                                     
 \                                                                               
@@ -1073,6 +1105,7 @@ ATOM H   13.000000    1.000000    0.032446    0.539610    0.438590    0.049075
 CONT      0.000000    0.000000    0.000000    0.000000    0.000000    0.000000  
 END                                                                             
 \PRINT 5                                                                        
+END                                                                             
 \AXES                                                                           
 END                                                                             
 \GEOM                                                                            
@@ -1174,6 +1207,7 @@ ATOM H   13.000000    1.000000    0.032446    0.539610    0.438590    0.049075
 CONT      0.000000    0.000000    0.000000    0.000000    0.000000    0.000000  
 END                                                                             
 \PRINT 5                                                                        
+END                                                                             
 \MOLAX                                                                          
 ATOMS P(1) UNTIL O(7) C(8,,,,-1) UNTIL C(13)                                    
 CONT H(6) UNTIL H(13)                                                          
@@ -1748,14 +1782,20 @@ END
 -3 2 -3 436 512 3 2 -3 316 512 0 2 -3 92 512                                    
 3 3 1 263 -512                                                                  
 \SORT                                                                           
+END                                                                             
 \PRINT 6                                                                        
+END                                                                             
 \REORDER                                                                        
+END                                                                             
 \PRINT 6                                                                        
+END                                                                             
 \LIST 12                                                                        
 DIAG X Y Z U[ISO]                                                               
 END                                                                             
 \CONVERT                                                                        
+END                                                                             
 \PRINT 5                                                                        
+END                                                                             
 \LIST 23                                                                        
 MODIFY ANOM= YES                                                                
 END                                                                             
@@ -1766,6 +1806,7 @@ REFINE MATRIX= OLD
 SHIFT GENERAL= .5                                                               
 END                                                                             
 \PRINT 6                                                                        
+END                                                                             
 \TITLE HEXACHLOROBORAZINE  -  LIST INPUT                                        
 \LIST 1                                                                         
 REAL 8.847 8.847 10.321 90 90 120                                               
@@ -2445,8 +2486,11 @@ REFINE
 END                                                                             
 \CHECK                                                                          
 \PRINT 11 A                                                                     
+END                                                                             
 \PRINT 11 B                                                                     
+END                                                                             
 \PRINT 11 C                                                                     
+END                                                                             
 \TITLE P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS               
 \LIST 1                                                                         
 REAL 8.53    8.53    20.37         0.0 0.0 -0.5                                 
@@ -2605,6 +2649,7 @@ END
 \WEIGHT
 END
 \PRINT 5                                                                        
+END                                                                             
 \LIST 23                                                                        
 MODIFY ANOM= YES                                                                
 END                                                                             
@@ -2612,6 +2657,7 @@ END
 CALC                                                                            
 END                                                                             
 \PRINT 6                                                                        
+END                                                                             
 \TITLE SLANT FOURIER TESTS IN P6122                                             
 \SLANT                                                                          
 MAP TYPE=FO-PATTERSON
@@ -2621,6 +2667,7 @@ CONT 10 0 0
 CENTROID 2000 100 0                                                             
 DOWN -40 6 40                                                                   
 ACROSS -3 6 3                                                                   
+END                                                                             
 \SLANT                                                                          
 MAP TYPE= F-OBS, MIN-RHO= -10000
 MATRIX 0 0 1                                                                    
@@ -2629,6 +2676,7 @@ CONT 1 0 0
 CENTROID 0 0 0                                                                  
 DOWN 0 16 0.02                                                                  
 ACROSS 0 14 0.04                                                                
+END                                                                             
 \SLANT                                                                          
 MAP TYPE= F-CALC, MIN-RHO= -10000, SCALE= 44.613                                
 MATRIX 0 0 1                                                                    
@@ -2637,6 +2685,8 @@ CONT 1 0 0
 CENTROID 0 0 0                                                                  
 DOWN 0 6 0.04                                                                   
 ACROSS 0 6 0.04                                                                 
+END                                                                             
+\ TRIAL  almost certainly does not work
 \TRIAL                                                                          
 MAP /FO/-MIN= 45                                                                
 DISPLACEMENT .1 -.2 .3                                                          

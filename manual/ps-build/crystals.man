@@ -1,5 +1,5 @@
 US 10  0  0  8
-   1.00   0.70   1.00   0.70   0.15   0.15   0.50
+   1.50   0.70   1.00   0.70   0.15   0.15   0.50
 #TCrystals Manual#
 #Ccrystalsmanual#
 #ZINTRODUCTION TO THE SYSTEM#
@@ -492,6 +492,12 @@ If  state = OFF  then subsequent commands are not written
 #PThis command is used to control mirroring of CRYSTALS internal commands.
  The normal state OFF suppresses the mirroring.
 #
+#I\SET RATIO state#
+#PThis command controls whether Io or Ic is compared with Sigma(Io) 
+during filtering. Arguments are Io or Ic, default is Io.
+See "The use of partial observations, partial models and partial residuals
+to improve the least-squares refinement of crystal structures."
+A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165,
 #Q
 #YFiles#
 #PWhen CRYSTALS runs it stores all crystallographic data in a single file,
@@ -2496,7 +2502,7 @@ these to the same values as in REFINEMENT above.
 #HSscope#
 #
 #PThe areas covered are:
-#N  12#
+#N  15#
 #J
  Reflection Data
  Simple input of F or Fsq data               - \LIST 6
@@ -2511,6 +2517,7 @@ these to the same values as in REFINEMENT above.
  Sorting data                                - \SORT
  Merging equivalent reflections              - \MERGE
  Theta-dependent absorption correction       - \THETABS
+ Analysis of data                            - \THLIM, WILSON, SIGMADIST
 #
 #Q
 #XReflection data format#
@@ -2594,11 +2601,13 @@ these to the same values as in REFINEMENT above.
       Fourier Maps
       Slant Fourier Maps
       Superflip Structure Solution
-      The Hooft/Straver/Spek configuration parameter
+      Absolute Structure Determination
 #
 # The experienced or adventurous user can of course use 
  LIST 6 and LIST 7 quite independently for different purposes.
-
+#
+In LIST 7 the ARCHIVE keyword is set to NO, to prevent the original 
+archived data from being over-written
 #
 #
 #XLIST 6#
@@ -2711,6 +2720,7 @@ for publication.
       F - Output Fo, sigma information in SHELX format.
       G - SHELX output with statistically generated sigmas
       H - Output the reflections in 'cif' format. F^s, scale of Fc
+      I - Outputs all set items as a LIST 6.
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -2729,7 +2739,7 @@ for publication.
 #N  10#
 #J
  \LIST 6
- READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=
+ READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=
  INPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .
  STORE NCOEFFICIENT= MEDIUM= APPEND=
  OUTPUT COEFFICIENT(1)= COEFFICIENT(2)=  .  .
@@ -2752,7 +2762,7 @@ for publication.
  \CLOSE HKLI
 #
 #Q
-#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=#
+#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=#
 #
 #KNCOEFFICIENT= #
  Specifies the number of coefficients to be input per reflection. A list
@@ -2826,6 +2836,17 @@ for publication.
 #
  By default checking is disabled so that negative reflections are
  accepted on input.
+#
+#KARCHIVE#
+This parameter controls the creation of a file ARCHIVE-HKL.CIF, an  
+image of the data in 3i4,2f8.2 (SHELX) format. 
+#N   2#
+#J
+      YES -  Default value.
+      NO 
+#
+The default value is YES except when a COPY is being performed. The 
+ARCHIVE-HKL.CIF can be embedded in the final publish.cif file.
 #
 #Q
 #DINPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .#
@@ -3106,7 +3127,7 @@ edges.
 #N  18#
 #J
  \HKLI
- READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=
+ READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=
  INPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .
  STORE NCOEFFICIENT= MEDIUM= APPEND=
  OUTPUT COEFFICIENT(1)= COEFFICIENT(2)=  .  .
@@ -3175,7 +3196,7 @@ For example
 #Q
 #I\HKLI#
 #Q
-#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=#
+#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=#
  This directive is the same as the READ directive in \LIST 6 above, 
  except that the following parameters have
  different default values:
@@ -3187,6 +3208,7 @@ For example
  NGROUP= default value is 1
  UNIT= default value is HKLI
 #
+
 #Q
 #DINPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .#
 #PThis directive defines the coefficients that are to be read in.
@@ -3777,11 +3799,11 @@ For example:
  are computed and can be output :
 #N   9#
 #J
- SIGMA1 = Sqrt (sum [ w(i)*q(i)**2 ] / sum [ w(i) ])
+ SIGMA1 = Sqrt (sum [ w(i)*q(i)**2 ] / n * sum [ w(i) ])
              that is, the weighted r.m.s. deviation.
 
- SIGMA2 = Sqrt (sum [ w(i)*s(i)**2 ] / sum [ w(i) ])
-             that is, the weighted standard deviation.
+ SIGMA2 = Sqrt (sum [ w(i)*s(i)**2 ] / n * sum [ w(i) ])
+             that is, the weighted average standard deviation.
 #
  Either of these two standard deviations can be selected as an estimate
  of Sigma(Fsq), and perhaps be converted to a Least Squares weight. If a
@@ -3956,7 +3978,71 @@ For example
  The Nthetavalue values of the correction factor profile.
 #Q
 #
+#Q
+#XwILSON PLOT#
+#XWILSON#
+#YWILSON PLOT  -  \WILSON#
+#HSwilson#
+#N   6#
+#J
+ \WILSON
+ OUTPUT PLOT= NZ= STATS= EVALS=
+ FILTER LIST28=
+ WEIGHT UPDATE=
+ END
 #
+#
+PLOT, NZ and STATS take values of YES and NO, controlling whether output
+is sent to the GUI.
+EVALS takes the values NO/YES/PUNCH.
+#
+ NO/YES  controls whether E-values are computed.
+#
+ PUNCH enables E-values to be computed and output to a text file.
+#
+#
+#
+#Q
+#XTHLIM#
+#XTHLIM#
+#YTHLIM  -  \THLIM#
+#Hthetalim#
+#N   4#
+#J
+ \THLIM  INPUTLIST=
+ OUTPUT PLOT= GLIST=
+ END
+#
+#
+INPUTLIST IS EITHER 6 or 7
+#
+PLOT=YES sends plotting data to the GUI
+#
+GLIST=YES sends a list of missing reflections to the GUI
+#
+#
+#
+#Q
+#SIGMADIST#
+#XSIGMADIST#
+#YSIGMADIST  -  \SIGMADIST#
+#Hsigmadist#
+#N   6#
+#J
+ \SIGMADIST  INPUTLIST=
+ OUTPUT PLOT= RESOLUTIO= PHASE= FILTER=
+ END
+#
+PLOT=YES sends completeness data to GUI
+#
+RESOLUTIO=YES sends distribution as function of resolution to GUI
+#
+PHASE=YES   sends phase angle distribution to GUI
+#
+FILTER=YES enable LIST 28 to be used.
+#
+#
+#Q
 #ZATOMIC AND STRUCTURAL PARAMETERS#
 #HCatomic#
 #Aatomparams#
@@ -4340,17 +4426,18 @@ interpretation of the parameters.
 The following table shows the interpretation of the FLAG parameter.
 #J
 
-FLAG  meaning    parameters
-'old' types of atoms:
+FLAG        meaning          parameters
 
- 0    Aniso ADP  u[11]  u[22] u[33] u[23] u[13] u[12]
- 1    Iso ADP    U[ISO]
+'normal' types of atoms:
+
+ 0          Aniso ADP        u[11]  u[22] u[33] u[23] u[13] u[12]
+ 1          Iso ADP          U[ISO]
 
 New 'special' shapes:
 
- 2    Sphere     U[ISO] SIZE
- 3    Line       U[ISO] SIZE  DECLINAT AZIMUTH
- 4    Ring       U[ISO] SIZE  DECLINAT AZIMUTH
+ 2          Sphere           U[ISO] SIZE
+ 3          Line             U[ISO] SIZE  DECLINAT AZIMUTH
+ 4          Ring             U[ISO] SIZE  DECLINAT AZIMUTH
 
 #
 
@@ -8171,13 +8258,15 @@ are only going to be calculated.
 #HSgenrestrain#
 #PThere are two directives.
 #DDEFINE NAME = TEXT#
- This may be used to set up a user defined variable,
- which may be referred to later on by 'NAME'.
+ This may be used to set up a user-defined constant which is evaluated
+ at run time, and  which may be referred to later on by 'NAME'.
  The text comprises  a series of variables and
  numeric constants interspersed with operators.
  The 'NAME' must not be one of the standard functions or
  variables, and may be overwritten several times  -  i.e.
- its value may be redefined.
+ its value may be redefined. Derivatives of a DEFINEd constant are not
+ evaluated as part of the restraint, though its numerical value will
+ change in successive cycles of refinement.
 #DRESTRAIN VALUE, E.S.D. = TEXT#
  The physical or chemical quantity defined by the
  'TEXT' is restrained to be 'VALUE', with
@@ -8469,7 +8558,7 @@ factor control, see section #RLIST23#).
  to define the weighting scheme, P(1) is the first such
  parameter and P(NP) the last parameter.
 #PThe available weighting schemes are :
-#N  32#
+#N  36#
 #J
  1.     sqrt(W) = Fo/P(1), Fo < P(1) OR Fo = P(1)
         sqrt(W) = P(1)/Fo, Fo > P(1)
@@ -8521,6 +8610,9 @@ factor control, see section #RLIST23#).
                    refined automatically. Fo and Fc replace Fosq and
                    Fcsq for Fo refinement.
                    Use 0.1 0 0 0 0 .333 to get Sheldrick defaults.
+
+ 17.    Automatically determine the parameters for 16
+
 #
 #YDunitz Seiler weighting - scheme 13#
 #HSdunitz#
@@ -9223,36 +9315,6 @@ default value is 4.0
                   Allocate space for list 24.
  8.   \CYCLENDS
 #
-#Ke.s.d.s#
- Most publication listings require e.s.ds. These are computed
- from the normal matrix. If LIST 5 (the model parameters) has been 
- modified in _b{ANY _B{WAY
- (including simply renaming or ordering atoms) since the last
- refinement cycle, the matrix will be invalid.
-#PCRYSTALS will warn you that LIST 11, the normal matrix, cannot be
- loaded.  To create a valid matrix
- without changing the parameter values, compute a refinement cycle but set
- all the shifts to zero.
-#N   4#
-#J
-      \SFLS
-      REFINE
-      SHIFT GENERAL = 0.0
-      END
-#
-#XESD#
-#XCreate esd list, LIST 9#
-#YCreate esd list - \ESD#
-#HSesd#
-#J
-
- \ESD
- END
- 
-#
-#PThe current LIST 5 must belong to the current VcV matrix (See
- the warning above).
-#Q
 #
 #XANALYSE#
 #XResidual analysis#
@@ -9409,6 +9471,8 @@ Indicates which reflection list to use.
 #PA low order term Fourier series is used to model an absorption surface for
  differences between the observed structure factors and those obtained from a
  structure factor calculation after isotropic least squares refinement.
+
+ For SERIAL diffractometrs (e.g. CAD4)
  Spherical polar angles are used to define the incident and diffracted
  beam path
  directions so that each reflection is characterised by four angles - viz.
@@ -9418,8 +9482,15 @@ Indicates which reflection list to use.
  angles.  A low order term Fourier series is used in Bragg angle THETA,
  but is highly correlated with the temperature factors, and not normally
  recommended.
-  This version is general for any 4-circle diffractometer data collection
+  This version is general for any SERIAL diffractometer data collection
  geometry.
+#PFor AREA detector diffractometers equivalent reflections are usually 
+ measured at different setting angles and then averaged.   
+ The concept of incident and emergent beams has no meaning for merged 
+ data, so instead DIFABS computes the azimuth and declination of the
+ scattering vector.  This cannot be reliably used as the basis for a 
+ correction, but the "absorption" surface is a measure of the mis-match
+ between Fo and Fc.
 #PThe quantity minimised is the sum of the squares of the residuals, Rj, where
 #
 #J
@@ -9498,6 +9569,7 @@ has three values:
 #PIf UPDATE is specified, the stored values of Fo are over written. If
  NEW is specified, a new LIST 6 is written to disc. The
  disc will be extended sufficiently to accommodate the new list.
+
 #KMODE=#
  Controls the mode of application of the correction, and
  has three values:
@@ -9520,13 +9592,14 @@ has three values:
 # Controls the geometry used for data collection to be input.
 #KGEOMETRY=#
  The type of diffractometer used is specified:
-#N   5#
+#N   6#
 #J
       CAD4          - Default value
       SYNTEX-P1
       SYNTEX-P21
       PICKER        - Picker FACS-I
       PW1100        - Philips PW1100
+      AREA          - Any Area detector instrument
 #
 #KMODE=#
  The mode of data collection is given:
@@ -10610,6 +10683,7 @@ section #RLIST20#).
 #N   8#
 #J
  Analysis of residuals                          ANALYSE
+ Output of atom esds                            ESD
  Distance and angles calculations               DISTANCES
  Void search                                    VOIDS
  Global Geometry (planes,lines & libration)     GEOMETRY
@@ -10631,6 +10705,50 @@ section #RLIST20#).
  scheme. It is described in the chapter Structure Factors and Least
  Squares.
 #
+#Q
+#Ke.s.d.s#
+ Most publication listings require e.s.ds. These are computed
+ from the normal matrix. If LIST 5 (the model parameters) has been 
+ modified in _b{ANY _B{WAY
+ (including simply renaming or ordering atoms) since the last
+ refinement cycle, the matrix will be invalid.
+#PCRYSTALS will warn you that LIST 11, the normal matrix, cannot be
+ loaded.  To create a valid matrix
+ without changing the parameter values, compute a refinement cycle but set
+ all the shifts to zero.
+#N   4#
+#J
+      \SFLS
+      REFINE
+      SHIFT GENERAL = 0.0
+      END
+#
+#XESD#
+#XCreate esd list, LIST 9#
+#YCreate esd list - \ESD#
+#HSesd#
+#J
+
+ \ESD
+ END
+ 
+#
+#PThe current LIST 5 must belong to the current VcV matrix (See
+ the warning above).
+#Q
+#XVCV#
+#XOutput VcV matrix of selected atoms#
+#YOutput VcV matrix of selected atoms#
+#HVcV#
+#J
+ \VCV
+ ATOM C(1) C(2) C(3)
+ ACTION
+ END
+
+#
+#q
+
 #Q
 #XDISTANCES#
 #XDistance calculations#
@@ -13398,30 +13516,32 @@ to another.
 #ALIST39#
 #HSmisc#
 #P
-The INTEGER record stores flags indication what steps of the analysis 
-have been completed.
+There are two INTEGER records.
+#J
+ INFO holds flags indication what steps of the analysis have been completed.
+ OVER holds flags indicating which OVERALL parameters are in LIST 12 are 
+ being refined, indicated by a non-zero entry.
+OVER 1 Scale Du(iso) Ou(iso) Polarity Enantiopole Extinction 
 #P
-There are two REAL records
+There are three REAL records
 #
 FLAC holds information about the Absolute Structure
 #J
 Slope of the npp for the refinement
 Slope of the npp for the Bijvoet pairs
 Hole-in-one value and su
-Parsons D or Q value and su
+Difference or Quotient value and su
 Hooft y value and su
 Histogram value and su
 #
-
 HOOF holds the Hooft probabilities
 #J
-P2 true
-P2 false
-P3 true
-P3 twin
-P3 false
-#
+Hooft(y)    P2_true P2_false    P3_true P3_twin P3_false
 
+#
+SFLS holfd info about the refinement process.
+#J
+SFLS 0  1or2.  2 indicates CRYSTALS thinks refinement has converged.
 
 
 #

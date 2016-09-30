@@ -1008,8 +1008,10 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
         // if y axis has a title make the lhs gap bigger
         if(!(m_AxisData[Axis_YL].m_Title == ""))
             xgapleft = 300;
-//        if(!(m_AxisData[Axis_YR].m_Title == ""))
-//            xgapright = 300;
+// next two lines commented out by someone. If re-introduced, plot area overflows the right labels
+// re-introduced by DJW - see also ccplotbar, ccplotscatter, ccplotdata
+        if(!(m_AxisData[Axis_YR].m_Title == ""))
+            xgapright = 300;
 
         // variables used for loops
         int i=0;
@@ -1068,7 +1070,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 				attachedPlot->DrawLine(3, 2400-xgapright, 2400-ygapbottom-axisheight, 2400-xgapright, 2400-ygapbottom);
 		}
         // the following tries to find an optimal font size
-        int fontsize = 12;          // 14 is the max 
+        int fontsize = 16;          // 14 is the max Note by DJW. 16 seems to work OK
         int largest_label_index = -1;
         CcPoint maxangletextextent;
         CcPoint maxhorizontaltextextent;
@@ -1104,17 +1106,17 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
         
         // write the labels for each axis, and the graph title
         attachedPlot->FlipGraph(false);
-        attachedPlot->DrawText(1200, ygaptop/2, m_PlotTitle.c_str(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 20);
+        attachedPlot->DrawText(1200, ygaptop/2, m_PlotTitle.c_str(), TEXT_VCENTRE|TEXT_HCENTRE|TEXT_BOLD, 40);
         attachedPlot->FlipGraph(m_Flipped);
 
         if(!m_Flipped)
-            attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_BOTTOM, 16);
+            attachedPlot->DrawText(1200, 2300-ygapbottom/150, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_BOTTOM, 30);
         else
-            attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_TOP, 16);
+            attachedPlot->DrawText(1200, 2400-ygapbottom/5, m_AxisData[Axis_X].m_Title.c_str(), TEXT_HCENTRE|TEXT_TOP, 30);
 
-        attachedPlot->DrawText(xgapleft/5, 1200, m_AxisData[Axis_YL].m_Title.c_str(), TEXT_VERTICAL, 16);
+        attachedPlot->DrawText(xgapleft/5, 1200, m_AxisData[Axis_YL].m_Title.c_str(), TEXT_VERTICAL, 30);
         if(m_NumberOfYAxes == 2)
-            attachedPlot->DrawText(2400-xgapright/5, 1200, m_AxisData[Axis_YR].m_Title.c_str(), TEXT_VERTICALDOWN, 16);
+            attachedPlot->DrawText(2400-xgapright/5, 1200, m_AxisData[Axis_YR].m_Title.c_str(), TEXT_VERTICALDOWN, 30);
 
 
 
@@ -1157,7 +1159,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
             if ( --fontsize <= 8)  // if the text didn't fit, try again with smaller font
             {
               smalltext = true;
-              fontsize = 12;
+              fontsize = 16;
             }
           }
       
@@ -1203,7 +1205,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
               {
                 step++;
                 largest_label_index = -1;
-                fontsize = 12;
+                fontsize = 16;
               }
               if(step >= 9) smalltext = true;
             }
@@ -1268,7 +1270,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
             if (fontsize <= 8) 
             {
                 smalltext = true;
-                fontsize = 12;
+                fontsize = 16;
             }
           }
       
@@ -1320,7 +1322,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
               if (fontsize <= 8)            // try skipping labels
               {
                 step++ ; 
-                fontsize = 12;
+                fontsize = 16;
               }
               if(step >= 9)  smalltext = true;
             }
@@ -1345,7 +1347,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 
 
 
-        fontsize = 12;
+        fontsize = 16;
 
         // now draw the y axis labels, again without worrying about overlap
         for(i=0; i<m_AxisData[Axis_YL].m_NumDiv+1; i++)

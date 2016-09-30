@@ -8,7 +8,8 @@
 ^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
 ^^WI   ITEM SUMM 'Output &other tables' '#SCRIPT XPUBLISH'                      
 ^^WI   ITEM PUSU '&CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'         
-^^WI                                ENABLEIF='L1 L2 L3 L5'                      
+^^WI                                ENABLEIF='L1 L2 L3 L5' 
+^^WI   ITEM PEXP 'Export archive LISTS' '#SCRIPT EXPORT' DISABLEIF='IN QS'                     
 
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ED30 'Edit CIF &goodies' '#SCRIPT ED30' DISABLEIF='IN'              

@@ -45,9 +45,6 @@
 %      COPY 'END'                                                               
 %%                                                                              
 %      COPY '#RELEASE PUNCH h-restraints.pch'                                   
-%      COPY '#CLOSE SCPQ'                                                       
-%      COPY '#CLOSE SCPDATA'                                                    
-%      COPY '#OPEN SCPQ restdat.12'                                             
 %      COPY '#DISTANCES'                                                        
 %      COPY 'OUTPUT MON=OFF PUNCH=H-REST'                                       
 %      COPY 'SELECT SYMMETRY=NONE RANGE=L41'                                    
@@ -55,7 +52,6 @@
 %      COPY 'END'                                                               
 %      COPY '#RELEASE PUNCH bfile.pch'                                          
   Restraints saved in {&h-restraints.pch{&                                      
-%      COPY '#CLOSE SCPQ'                                                          
 %      COPY '#LIST 16'                                                          
 %      COPY '#USE h-restraints.pch'                                             
 %      COPY 'END'                                                               

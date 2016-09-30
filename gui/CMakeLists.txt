@@ -1,12 +1,6 @@
 
 
-add_definitions(-D_GNUF77_)
-#add_definitions(-D__WXMAC__)
-#add_definitions(-D__WXOSX__)
-#add_definitions(-D__WXOSX_COCOA__)
-#add_definitions(-D__WXUSINGDLL)
 add_definitions(-D_FILE_OFFSET_BITS=64)
-add_definitions("-std=gnu++11")
 
 if(APPLE)
 SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
@@ -16,7 +10,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug) 
 
 #SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.7") 
-SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
+#SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
 
 #add_definitions("-DMACOSX_DEPLOYMENT_TARGET=10.7")
 #add_definitions("-std=gnu++11")
@@ -25,8 +19,12 @@ SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacO
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 ENDIF(APPLE)
 
-FIND_PACKAGE(wxWidgets REQUIRED html scintilla adv core gl base stc)
+FIND_PACKAGE(wxWidgets REQUIRED html scintilla stc adv core gl base)
 INCLUDE(${wxWidgets_USE_FILE})
+
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
+   add_definitions("-D__CRDEBUG__")
+ENDIF(CMAKE_BUILD_TYPE MATCHES Debug) 
 
 
 #-s -fexceptions -I/usr/local/include `wx-config --cppflags` -D_GNUF77_ 

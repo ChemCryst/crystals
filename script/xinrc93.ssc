@@ -93,7 +93,7 @@
 %    COPY 'EXTEND SIZE = 10 TRIES  = 1000'
 %    COPY 'END'
 Files INITIAL.* will be created in your directory. They may be important.
-%    COPY '#RELEASE PRINT INITIAL.LIS'
+%    COPY '#RELEASE PRINT initial.lis'
 %    COPY '#RELEASE LOG INITIAL.DAT'
 %  END BLOCK
 %%
@@ -109,7 +109,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    EVALUATE ABSNAME = FILENAME // '.ABS'
 %    TRANSFER '#USE "' //  SCFNAME // '" ' TO CRYSTALS
 %    TRANSFER '#OPEN HKLI "' //  HKLNAME // '" ' TO CRYSTALS
+%     COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %    TRANSFER '#USE "' //  ABSNAME // '" ' TO CRYSTALS
+%     COPY '#CLOSE FRN2'
 %    BLOCK
 %      ON ERROR REPEAT
 %%     CHECK THAT THE BASIC DATA IS READ IN OK
@@ -171,7 +173,7 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    COPY 'READ TYPE = COPY'
 %    COPY 'END'
 %    COPY '#SCRIPT XFRESH6'
-%    COPY '#RELEASE PRINT BFILE.LIS'
+%    COPY '#RELEASE PRINT bfile.lis'
 %    IF FILEEXISTS ( 'rc93.err' ) THEN
 %       COPY '#TYPE RC93.ERR'
 

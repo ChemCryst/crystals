@@ -41,7 +41,10 @@ body { background-color:white; color:black;
     material can be assigned if the absolute structure determination was successful.
     <br />For a quick overview of absolute structurures and configuration, see: 
     <i>X-ray crystallography and chirality: understanding the limitations. Amber L.
-    Thompson, David John Watkin, Tetrahedron: Asymmetry 20 (2009) 712&ndash;717</i></p>
+    Thompson, David John Watkin, Tetrahedron: Asymmetry 20 (2009) 712&ndash;717</i>.
+    The term <i>Enantiopole</i>, used in CRYSTALS since 1984, occurs in <i>Gerhard Muller,
+    Acta Cryst. (1988). B44, 315-318, Enantiomorph-Polarity Estimation by Means of 
+    Flack's x Refinement: Practical Experiences. </i> </p>
     <table width="100%" border="1" cellspacing="0" cellpadding="10">
       <tr>
         <td width="50%">
@@ -77,7 +80,7 @@ body { background-color:white; color:black;
           absolute configuration cannot be assigned by X-ray means. The value of x can be
           set to zero and not refined. (It may be appropriate to report x and its s.u. to
           demonstrate that the calculation was actually performed).
-          <br />If the s.u. is small enough (&amp;lt0.04), then the parameter itself can
+          <br />If the s.u. is small enough (&lt; 0.04), then the parameter itself can
           be evaluated. If it falls close to zero or unity, then the absolute
           configuration has been determined. If it falls within this range, but is
           significantly distant from the bounds, the material is probably twinned by
@@ -109,12 +112,12 @@ body { background-color:white; color:black;
             <td width="50%">
               <small>Ao = (Io
               <sup>+</sup> + Io
-              <sup>-</sup>)</small>
+              <sup>-</sup>)&divide;2</small>
             </td>
             <td width="50%">
               <small>As = (Is
               <sup>+</sup> + Is
-              <sup>-</sup>)</small>
+              <sup>-</sup>)&divide;2</small>
             </td>
           </tr>
           <tr>
@@ -152,13 +155,12 @@ body { background-color:white; color:black;
         <br />
         <br />
         <b>Output</b>
-        <br />Table: A table of the Bijvoet pairs, including the intensities,
+        <br /><b>Table:</b> A table of the Bijvoet pairs, including the intensities,
         differences, averages and standard uncertainties. Could be pulled into a spread
         sheet.
-        <br />Restraint: The post-refinement estimate of the absolute structure parameter
+        <br /><b>Restrain:</b> The post-refinement estimate of the absolute structure parameter
         and its su are set up as a restraint  (LIST 16)
-        <br />Graph: The values used increating graphs for re-plotting elsewhere.
-        Summary: A summary of the important absolute structure parameters.
+        <br /><b>Summary:</b> A summary of the important absolute structure parameters.
         <br />
         <br />
         <b>Type</b> Selects whether simple Bijvoet differences or Parson's Quotients will
@@ -167,6 +169,15 @@ body { background-color:white; color:black;
         <br />
         <b>Weight</b> Selects whether the weights will be computed from the expereimental
         variances or be derived from the least squares weights.</td>
+      </tr>
+
+      <tr>
+        <td width="100%" colspan="2">
+        <center><h2>Plots</h2></center>Every plot has a button for saving the image as a 
+        .png file.  
+        <br />The data for the plot can be exported as a tab-delimited text file 
+        for importation into a graphing package. Each row of the file contains the x and 
+        y coordinates of each point, and the series identifier.
       </tr>
       <tr>
         <td width="50%">
@@ -186,7 +197,9 @@ body { background-color:white; color:black;
         <img id="ac14" src="./bad-npp.png" align="right" alt="Not Available"
         name="ac14" />
         <br />A plot deviating greatly from a unit straight line usually indicated
-        problems with the data.</td>
+        problems with the data. 
+        <br />The gradient is computed using data between the first
+        and ninth decile.</td>
       </tr>
       <tr>
         <td width="50%">
@@ -254,10 +267,10 @@ body { background-color:white; color:black;
         <a href="flack-help.html">bins containing approximately</a> the same number of
         lattice points.
         <br />The red line is the number of reflections actually used from each bin.
-        <br />The green line is the mean ratio of calculated bijvoet differences to the
+        <br />The green line is the mean ratio of calculated Bijvoet differences to the
         observed standard uncertainty for each bin.
         <br />
-        <br />Both plots are for data collected to high theta.
+        <br />Both examples are for data collected to high theta.
         <br />The right hand plot corresponds to the same exposure time being used
         throughout the experiment
         <br />In the left hand plot the exposure time was increased for the high angle
@@ -386,16 +399,16 @@ R = 100 * |Do - Dc| / |Do|
         <br />Normal Probability Plot<br />
         The normal probability plot should have unit gradient and zero intercept.
         <br />Values far from
-        unity may mean that the weights for the main Least Squares have not been properly
-        determined, or that there is a defect in the model. A few outliers can be
+        unity may mean that there are serious errors in the data,
+        or that there is a defect in the model. A few outliers can be
         expected. Right clicking on them causes them to be excluded from (filtered out
         of) the main refinement. They can be re-instated from the Filter menu. 
         Because 
         there are usually outliers at the ends of the graph, only  points between the first
-        and ninth decile are used in computing the gradient. Observed
-        
+        and ninth decile are used in computing the gradient.
+        <br />        
         <br />
-        Principal Component Analysis of the Do Dc scatterplot<br />
+        Principal Component Analysis of the Do Dc scatterplot.<br />
         If the weighted averages of x and y (the plot axes) are far from zero,
         there may be a systematic error in the data or the model
         <br />The larger the rms values, the greater the dispersion of the data. This
@@ -403,9 +416,9 @@ R = 100 * |Do - Dc| / |Do|
         should make the choice evident.
         <br />The Roots are the eigenvalues of the scatterplot (Prinicipal Component
         Analysis). For a Do/Dc or Qo/Qc plot them largest root should have an angle (with
-        the x-axis) of 45 degrees. The minor root is a measure of the noise. You want a
-        big major and a small minor axis. For a Ro/Dc plot the major axis should make a
-        small angle with the x-axis. The minor root measures the noise.
+        the x-axis) of 45 degrees, in which case the minor root is a measure of the noise. 
+        If the major root has an angle of about 90 degrees, then the 
+        data is mainly noise.
         <br />
         <br />For the Do/Dc and Qo/Qc plots the correltaion coefficient and the
         coefficient of determination (R
@@ -414,7 +427,8 @@ R = 100 * |Do - Dc| / |Do|
         <br />The slope of the plot should be close to unity, and the intercept close to
         zero.
         <br />
-        The Histogram calculation computes a distribution of the Flack(x) for every Bijvoet pair.
+        The Histogram calculation computes a distribution of the Flack(x) for every 
+        accepted Bijvoet pair.
         
 </td>
       </tr>
@@ -607,8 +621,7 @@ $  Hooft et al, 2008, J Appl Cryst, 41, 96-103
           <pre>
 <code>
   <small>
-     H   K   L           Fo+       Sig       Fc+       Fo-       Sig       Fc-     Do    
-     Dc         Ao       Ac      Sig(Do)
+     H   K   L           Fo+       Sig       Fc+       Fo-       Sig       Fc-     Do          Dc         Ao       Ac      Sig(Do)
     -4   5   0 1 2  28762.53    706.45  29264.90  35556.04    701.30  35820.63  -6793.51   -6555.73  32159.28  32542.77    995.44
     -1   5   0-1    16160.01    302.59  16617.79
     -3   6   0 1 2  11109.57    313.61  11413.68  10339.38    196.65  10643.96    770.19     769.71  10724.47  11028.82    370.17
@@ -621,8 +634,7 @@ $  Hooft et al, 2008, J Appl Cryst, 41, 96-103
         <td width="50%">Choosing the button Punch causes information about the reflection
         data to be output to the 
         <i>bfile.pch</i> file. The values for Friedel pairs and derived values are output
-        on each line. As usual, Fo implies F
-        <sup>2</sup>o</td>
+        on each line. As usual, Fo implies F<sup>2</sup>o</td>
       </tr>
       <tr>
         <td width="50%">
@@ -643,6 +655,25 @@ RESTRAIN   -0.0309,   0.0024= ENANTIO
         <br />To make use of this file, include
         <br />
         <i>#USE FLACK.L16</i> in your LIST 16.
+        <br /></td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <h2>Summary</h2>
+          <pre>
+<code>
+
+         R, wR2, Friedif, Filter_1:   Flack    :   H-in-1   :  hooft     : difference :
+SIG    2.09   4.39 497.51 0.00100 : -0.03 0.01 : -0.03 0.00 : -0.03 0.00 : -0.02 0.00 :
+
+ re-wt-diff : histogram scaled n-pair, n-used, %used, H-used, %good, npp, main_npp, GoF
+ -0.03 0.00 : -0.03 0.00 0.00   3831    3804    99.5  3055    83.1   0.98  19.74   1.23
+
+</code>
+</pre>
+        </td>
+        <td width="50%">Choosing the button Summary outputs the various 
+        extimates of Flack and their su. 
         <br /></td>
       </tr>
     </table>

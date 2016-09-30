@@ -10,28 +10,43 @@ project(Precompiled)
 
 file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/all/" "all/*" )
 foreach( precomp_file ${precomp_files} )
+  if ( NOT ${precomp_file} MATCHES ".svn" ) 
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
-    COMMAND cmake -E copy
+    COMMAND ${CMAKE_COMMAND} -E copy
 "${CMAKE_CURRENT_SOURCE_DIR}/all/${precomp_file}"
 "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/all/${precomp_file}"
   )
 #  message ("${CMAKE_CURRENT_SOURCE_DIR}/all/${precomp_file} ${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}")
   list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
+  endif()
 endforeach( precomp_file )
 
 file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/MIN/" "MIN/*" )
 foreach( precomp_file ${precomp_files} )
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
-    COMMAND cmake -E copy
+    COMMAND ${CMAKE_COMMAND} -E copy
 "${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
 "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
 	)
   list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
 endforeach( precomp_file )
+
+file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/" "WIN32/*" )
+foreach( precomp_file ${precomp_files} )
+  add_custom_command(
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+    COMMAND ${CMAKE_COMMAND} -E copy
+"${CMAKE_CURRENT_SOURCE_DIR}/WIN32/${precomp_file}"
+"${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/${precomp_file}"
+	)
+  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
+endforeach( precomp_file )
+
 
 
 add_custom_target( CopyPrecomp ALL DEPENDS ${precomp_files_dest} ) 

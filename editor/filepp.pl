@@ -2066,7 +2066,8 @@ sub Include
 	Parse($fullname);
     }
     else {
-	Warning("Include file \"".$filename."\" not found", 1);
+#	Warning("Include file \"".$filename."\" not found", 1);
+	Debug("Include file \"".$filename."\" not found", 1);
     }
 }
 

@@ -1,156 +1,375 @@
-
 #On MAC OS currently need to use the XCode provided gcc and a compatible
 #gfortran (e.g. v4.2.3). If you have other gcc installed, make sure you
 #set CC=/usr/bin/gcc and CXX=/usr/bin/g++ before running cmake.
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-ENABLE_LANGUAGE(Fortran)
-INCLUDE (CPack)
+PROJECT(Crystals)
+
+SET(CMAKE_VERBOSE_MAKEFILE ON)
+SET(CMAKE_COLOR_MAKEFILE ON)
 
 option (useGUI "useGUI" ON)
+option (usePY "usePY" OFF)
+option (use32 "use32" OFF)
+option (useSTATIC "useSTATIC" OFF)
+option (useOPENMP "useOPENMP" ON)
+option (useHDF5 "useHDF5" OFF)
+option (useGGDB3 "useGGDB3" OFF) # used for orion (old dgb)
+option (usepFUnit "usepFUnit" OFF)  
+
+SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
+message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
+INCLUDE_DIRECTORIES(${Fortran_MODULE_DIRECTORY})
+
+if(useSTATIC)
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    SET(BUILD_SHARED_LIBRARIES OFF)
+    SET(CMAKE_EXE_LINKER_FLAGS "-static")
+    SET(wxWidgets_USE_STATIC ON)
+    message(STATUS "Building static version")
+endif ()
+
+ENABLE_LANGUAGE(Fortran)
+INCLUDE (CPack)
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+    include(CheckFortranCompilerFlag)
+Endif()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "MINGW64_NT") 
+    message(STATUS "Building using MSYS2, Mingw64 toolchain")
+    SET(MSYS ON)
+endif ()
+
+# check gcc suite version
+if(CMAKE_COMPILER_IS_GNUCC)
+  exec_program(
+      ${CMAKE_C_COMPILER}
+      ARGS                    --version
+      OUTPUT_VARIABLE _compiler_output)
+  string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
+  message(STATUS "C compiler version: ${gcc_compiler_version} [${CMAKE_C_COMPILER}]")
+  
+  if(gcc_compiler_version VERSION_LESS "4.6")
+      message(FATAL_ERROR "Your C compiler is too old")
+  elseif(gcc_compiler_version VERSION_LESS "4.6")
+      message(WARNING "Your C compiler might be too old")  
+  endif ()
+
+  exec_program(
+      ${CMAKE_CXX_COMPILER}
+      ARGS                    --version
+      OUTPUT_VARIABLE _compiler_output)
+  string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
+  message(STATUS "C++ compiler version: ${gcc_compiler_version} [${CMAKE_CXX_COMPILER}]")
+  
+  if(gcc_compiler_version VERSION_LESS "4.6")
+      message(FATAL_ERROR "Your C compiler is too old")
+  elseif(gcc_compiler_version VERSION_LESS "4.6")
+      message(WARNING "Your C compiler might be too old")  
+  endif ()
+
+  exec_program(
+      ${CMAKE_Fortran_COMPILER}
+      ARGS                    --version
+      OUTPUT_VARIABLE _compiler_output)
+  string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
+  message(STATUS "Fortran compiler version: ${gcc_compiler_version} [${CMAKE_Fortran_COMPILER}]")
+  
+  if(gcc_compiler_version VERSION_LESS "4.6")
+      message(FATAL_ERROR "Your C compiler is too old")
+  elseif(gcc_compiler_version VERSION_LESS "4.6")
+      message(WARNING "Your C compiler might be too old")  
+  endif ()
+endif ()
+
+FIND_PACKAGE ( Perl REQUIRED)
+IF ( PERL_FOUND )
+    MESSAGE ( STATUS "Perl executable: [${PERL_EXECUTABLE}]")
+ENDIF ( PERL_FOUND )
+
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.6)
+    find_package(BLAS REQUIRED)
+    find_package(LAPACK REQUIRED)
+
+    if(BLAS_FOUND )
+        if(BLAS_LIBRARIES_DIR)
+           link_directories( ${BLAS_LIBRARIES_DIR} )
+        endif()
+        if ( BLAS_LIBRARIES )
+           link_libraries ( ${BLAS_LIBRARIES} )
+        endif()
+        if ( BLAS_LINKER_FLAGS )
+           uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
+        endif()
+
+        if(LAPACK_LIBRARIES_DIR)
+           link_directories( ${LAPACK_LIBRARIES_DIR} )
+        endif()
+        if ( LAPACK_LIBRARIES )
+           link_libraries ( ${LAPACK_LIBRARIES} )
+        endif()
+        if ( LAPACK_LINKER_FLAGS )
+           uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
+        endif()
+        get_filename_component(BLAS_LIBNAME ${BLAS_LIBRARIES} NAME)
+        message(STATUS "Using BLAS library: ${BLAS_LIBNAME}")
+    endif ()
+else ()
+    find_library(OpenBLAS_LIBRARY openblas)
+    if(OpenBLAS_LIBRARY)
+        message(STATUS "Using OpenBLAS [${OpenBLAS_LIBRARY}]")
+    else ()
+        find_package(BLAS REQUIRED)
+        find_package(LAPACK REQUIRED)
+
+        if(BLAS_FOUND )
+            if(BLAS_LIBRARIES_DIR)
+               link_directories( ${BLAS_LIBRARIES_DIR} )
+            endif()
+            if ( BLAS_LIBRARIES )
+               link_libraries ( ${BLAS_LIBRARIES} )
+            endif()
+            if ( BLAS_LINKER_FLAGS )
+               uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
+            endif()
+
+            if(LAPACK_LIBRARIES_DIR)
+               link_directories( ${LAPACK_LIBRARIES_DIR} )
+            endif()
+            if ( LAPACK_LIBRARIES )
+               link_libraries ( ${LAPACK_LIBRARIES} )
+            endif()
+            if ( LAPACK_LINKER_FLAGS )
+               uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
+            endif()
+            get_filename_component(BLAS_LIBNAME ${BLAS_LIBRARIES} NAME)
+            message(STATUS "Using BLAS library: ${BLAS_LIBNAME}")
+        endif ()    
+    endif()
+endif ()
+
+# Reset flags
+set(CMAKE_Fortran_FLAGS "")
+set(CMAKE_C_FLAGS "")
+set(CMAKE_CXX_FLAGS "")
+
+if(useOPENMP)
+	find_package(OpenMP)
+	if (OPENMP_FOUND)
+		set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+		set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+	endif()
+endif ()
+
+if ( use32 )
+    message(STATUS "Building 32bit")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -m32")
+endif()
 
 if ( useGUI )
-add_definitions(-DCRY_GUI)
+    message(STATUS "Building gui")
+    add_definitions(-DCRY_GUI)
+    add_definitions(-DCRY_USEWX)
+    if ( WIN32 )
+        SET(MINGW 1)
+    endif ()
+    SET(wxWidgets_ROOT_DIR "c:/wx3")
+    SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
+    set(wxWidgets_CONFIGURATION mswu)
+    FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base )
+    if ( WIN32 )
+        FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
+    endif()
+	INCLUDE(${wxWidgets_USE_FILE})
+    
+
+
+	if(APPLE)
+    	add_definitions(-D__MAC__)
+	elseif(UNIX)
+    	add_definitions(-D__GIL__)
+	endif()
+	
 else()
-add_definitions(-DCRY_NOGUI)
+	add_definitions(-DCRY_NOGUI)
+	if(UNIX)
+		add_definitions(-D__LIN__)
+	endif()
 endif()
 
-if(APPLE)
-set (CPACK_GENERATOR "DragNDrop")
-set (CPACK_BUNDLE_NAME "Crystals")
-SET(CPACK_INSTALL_CMAKE_PROJECTS  "${CMAKE_BINARY_DIR};Crystals;ALL;/")
-SET(CPACK_PACKAGE_VENDOR "Chem Cryst")
-SET(CPACK_PACKAGE_VERSION "15.0.0")
-SET(CPACK_PACKAGE_VERSION_MAJOR "15")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
+if ( usePY )
+    message(STATUS "Building the python crystals interface")
+    add_definitions(-DCRY_PY)
 endif()
 
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmakemodules/")
-
-if ( useGUI )
-#SET(wxWidgets_CONFIG_EXECUTABLE /Users/richard.cooper/wxWidgets-2.9.5/b2/wx-config)
-SET(MINGW 1)
-SET(wxWidgets_ROOT_DIR "c:/wx3")
-SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
-set(wxWidgets_CONFIGURATION mswu)
-FIND_PACKAGE(wxWidgets REQUIRED html stc scintilla adv core gl base )
-INCLUDE(${wxWidgets_USE_FILE})
+if ( WIN32 )
+    add_definitions(-DCRY_OSWIN32)
+    add_definitions(-D__MIN__)
 endif()
+
+if ( APPLE )
+    add_definitions(-DCRY_OSMAC)
+endif()
+
+if ( MSYS )
+    add_definitions(-DCRY_OSWIN32)
+endif()
+add_definitions(-DCRY_GNU)
+if(NOT useHDF5)
+    add_definitions(-D_NOHDF5_)
+else ()
+    find_package( HDF5 COMPONENTS Fortran REQUIRED )
+    include_directories(${HDF5_INCLUDE_DIRS})
+    link_libraries( ${HDF5_LIBRARIES} )
+    message(STATUS "Using hdf5 libraries [${HDF5_LIBRARIES}]")
+    message(STATUS "Using hdf5 include dir [${HDF5_INCLUDE_DIRS}]")
+endif ()
+
+# Required to assign hollerith data in a legacy manner to integers
+add_definitions(-D _HOL_)
+
 
 string (TIMESTAMP CRYYEAR "%Y")
 string (TIMESTAMP CRYMONTH "%m")
 string (TIMESTAMP CRYDAY "%d")
-
 set (CRYSVNVER "$ENV{CRYSVNVER}")
 IF (NOT CRYSVNVER)  # not set
-SET (CRYSVNVER "0000")
+    SET (CRYSVNVER "0000")
 ENDIF()
-
-
 message(STATUS "Compilation date = ${CRYDAY} / ${CRYMONTH} / ${CRYYEAR}")
-if (APPLE)
-SET(APPS ${CMAKE_BINARY_DIR}/crystals.app)
-endif()
-
-SET(DIRS )
 
 IF (NOT CMAKE_BUILD_TYPE)   # make sure that the default is a RELEASE
-
     SET (CMAKE_BUILD_TYPE RELEASE CACHE STRING
          "Choose the type of build, options are: None Debug Release."  FORCE)
-
 ENDIF()
+string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
 
 # FFLAGS depend on the compiler
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
-IF (Fortran_COMPILER_NAME STREQUAL "gfortran")  # gfortran
-
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
-
-ELSEIF (Fortran_COMPILER_NAME STREQUAL "ifort")  # ifort (untested)
-
+IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
+    SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2")
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O1 -g -Wfatal-errors -Wall -Wextra")
+    if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
+        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all")
+    else ()
+        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fbounds-check")
+    endif()
+    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=gnu++11 -O3 -g -ftree-vectorize -msse2")
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11 -O1 -g")
+    SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -g -ftree-vectorize -msse2")
+    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O1 -g")
+ELSEIF (Fortran_COMPILER_NAME MATCHES "ifort")  # ifort (untested)
     SET (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
-
-ELSEIF (Fortran_COMPILER_NAME STREQUAL "g77")   # g77
-
+ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
     SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
-
 ELSE ()
-
     MESSAGE ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
     MESSAGE ("Fortran compiler: " ${Fortran_COMPILER_NAME})
     MESSAGE ("No optimized Fortran compiler flags are known, we just try -O2...")
     SET (CMAKE_Fortran_FLAGS_RELEASE "-O2")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
-
 ENDIF ()
 
 
 
-IF (APPLE)
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
+    check_fortran_compiler_flag("-fexceptions" _f_exceptions)
+    check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
 
-  SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
-  SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.8")
-  SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
-#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-#  SET(CMAKE_LINKER_EXE_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=c++")
-
+    if(_std_legacy_flag)
+      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
+    endif()
+    if(_f_exceptions)
+      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
+    endif()
+    if(_f_no_signzero)
+      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-sign-zero")
+    endif()
+ELSE ()
+    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
+    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
+    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-sign-zero")
 ENDIF ()
 
+if( useGGDB3 )
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -gdwarf-3")
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -gdwarf-3")
+    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -gdwarf-3")
+endif ()
 
-PROJECT(Crystals)
-
-ADD_DEFINITIONS(-D__MIN__)
-
+if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+    message("")
+    message(STATUS "Compiling optimised version")
+    message(STATUS "Fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
+    message(STATUS "C flags: ${CMAKE_C_FLAGS_RELEASE}")
+    message(STATUS "C++ flags: ${CMAKE_CXX_FLAGS_RELEASE}")
+elseif(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    message("")
+    message(STATUS "Compiling debugging version")
+    message(STATUS "Fortran flags: ${CMAKE_Fortran_FLAGS_DEBUG}")
+    message(STATUS "C flags: ${CMAKE_C_FLAGS_DEBUG}")
+    message(STATUS "C++ flags: ${CMAKE_CXX_FLAGS_DEBUG}")
+else ()
+    message(FATAL_ERROR "Unknown build type ${CMAKE_BUILD_TYPE}")
+endif ()
 # Testing related directives for test coverage
-ENABLE_TESTING()
-INCLUDE(CTest)
+#ENABLE_TESTING()
+#INCLUDE(CTest)
 
 # Libraries
 ADD_SUBDIRECTORY(script)
 ADD_SUBDIRECTORY(sleef)
-
-if ( useGUI )
-ADD_SUBDIRECTORY(gui)
-endif()
-ADD_SUBDIRECTORY(crystals)
+ADD_SUBDIRECTORY(crystals crys_fortran)
 ADD_SUBDIRECTORY(cameron)
-
-add_dependencies(CameronFortran CrystalsFortran) 
-if ( useGUI )
-ADD_SUBDIRECTORY(bits)
-endif()
 ADD_SUBDIRECTORY(datafiles)
 ADD_SUBDIRECTORY(precomp)
+if ( useGUI )
+    ADD_SUBDIRECTORY(gui)
+    ADD_SUBDIRECTORY(bits)
+endif()
+if ( usePY )
+    ADD_SUBDIRECTORY(pyinterface)
+endif()
+
+add_dependencies(CameronFortran CrystalsFortran) 
 
 # Executables
 
-#ADD_DEFINITIONS(-DCRY_OWNLAPACK)
-ADD_DEFINITIONS(-D_GNUF77_)
-ADD_DEFINITIONS(-std=gnu++11)
 
-if(APPLE)
-ADD_DEFINITIONS(-D__WXMAC__)
-ADD_DEFINITIONS(-D__WXOSX__)
+get_property(value DIRECTORY PROPERTY COMPILE_DEFINITIONS)
+if (value)
+   foreach(item ${value})
+       list(APPEND flags "-D${item}")
+   endforeach()
 endif()
-# Script file sources and targets
 
+message( STATUS "Defines: ${value}" )
+message( STATUS "Flags: ${flags}" )
+
+
+ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
+
+# Script file sources and targets
 FILE (GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.ssc")
 SET  (scpfiles)
 FOREACH (_file ${sscfiles})
     STRING(REPLACE ".ssc" ".scp" file_scp ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_scp}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
                         DEPENDS ${_file} )
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
+
+
+
 
 
 
@@ -162,8 +381,8 @@ SET  (datfiles)
 FOREACH (_file ${sdafiles})
     STRING(REPLACE ".sda" ".dat" file_dat ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_dat}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
-	DEPENDS ${_file} )
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+    DEPENDS ${_file} )
     LIST(APPEND datfiles ${file_dat})
 ENDFOREACH()
 
@@ -172,88 +391,50 @@ SET  (srtfiles)
 FOREACH (_file ${ssrfiles})
     STRING(REPLACE ".ssr" ".srt" file_srt ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_srt}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} -D__INW__ -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
                         DEPENDS datafiles/${_file} )
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()
 
-if(APPLE)
-SET_SOURCE_FILES_PROPERTIES( ${scpfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/script GENERATED 1  )
-SET_SOURCE_FILES_PROPERTIES( ${datfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/script GENERATED 1  )
-SET_SOURCE_FILES_PROPERTIES( ${srtfiles} PROPERTIES MACOSX_PACKAGE_LOCATION Resources GENERATED 1  )
+
+if ( useGUI )
+    INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
+
+    if(MSYS)
+        SET(OPENGL_INCLUDE_DIR "/mingw64/x86_64-w64-mingw32/include/")
+        SET(OPENGL_gl_LIBRARY "/mingw64/bin/")
+        SET(MSYS2LIBS  "-lstdc++ -lopengl32  -lglu32 -llzma" )
+    else ()
+        SET(MSYS2LIBS  "" )
+    endif()
+    find_package(OpenGL REQUIRED)
+    message(STATUS "Using OpenGL libraries: ${OPENGL_LIBRARIES}")
+    include_directories( ${OPENGL_INCLUDE_DIRS}  )
+    target_link_libraries(crystals ${OPENGL_LIBRARIES} )
+
+    TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS})
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
+elseif( usePY )
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+    TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran )
+else()
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+    TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran)
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
+
+if(OpenBLAS_LIBRARY)
+    TARGET_LINK_LIBRARIES(crystals ${OpenBLAS_LIBRARY})
+endif ()
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
 ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
 
-SET_SOURCE_FILES_PROPERTIES( commands.dsc PROPERTIES MACOSX_PACKAGE_LOCATION Resources GENERATED 1  )
-
-if (APPLE)
-set( MACOSX_BUNDLE_ICON_FILE crystals.icns )
-endif()
-
-#ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND cp datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
-ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
+# Unit testing
+ADD_SUBDIRECTORY(pFunit)
 
 
-if (APPLE)
-  ADD_CUSTOM_TARGET ( osx_bundle_dirs
-    COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/ProjectName.app/Contents/Resources
-    COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/ProjectName.app/Contents/MacOS
-    COMMAND cp ${CMAKE_SOURCE_DIR}/precomp/MAC/${MACOSX_BUNDLE_ICON_FILE}
-    ${CMAKE_CURRENT_BINARY_DIR}/crystals.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} )
-
-   ADD_EXECUTABLE (crystals MACOSX_BUNDLE ${scpfiles} ${datfiles} ${srtfiles} gui/gcrystals.cc)
-   add_dependencies(crystals osx_bundle_dirs )
-
-else()
-
-  if ( useGUI )
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} gui/gcrystals.cc)
-  else()
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} )
-    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-  endif()
-endif()
-
-
-if (useGUI)
-add_library(everything $<TARGET_OBJECTS:CrystalsUserInterface> $<TARGET_OBJECTS:CrystalsFortran>)
-else()
-add_library(everything $<TARGET_OBJECTS:CrystalsFortran>)
-endif()
-
-if (useGUI)
-TARGET_LINK_LIBRARIES(crystals everything CrystalsSleef CameronFortran openblas ${wxWidgets_LIBRARIES})
-else()
-#link_directories( ${CMAKE_CURRENT_SOURCE_DIR}/openblas )
-TARGET_LINK_LIBRARIES(crystals everything CrystalsSleef CameronFortran openblas)
-endif()
-
-
-INSTALL(CODE "
-      include(BundleUtilities)
-      fixup_bundle(\"${APPS}\"  \"\"  \"${DIRS}\")
-      " COMPONENT Runtime)
-
-if (APPLE)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/commands.dsc DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/cif2cry/cif2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/shelxs/shelxs DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/shelxs/sxtocry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/convplat/convplat DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/delred/delred DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/foxman/pcf2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/sir92/sir92 DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/csd2cry/csd2cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/hklf5/hklf52cry DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/bits/Diffractometers/diffin DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources )
-
-FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/script" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/demo" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-FILE (COPY "${CMAKE_CURRENT_SOURCE_DIR}/precomp/all/form.dat" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-
-INSTALL (PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/precomp/MAC/superflip" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-INSTALL (PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/precomp/MAC/EDMA" DESTINATION ${CMAKE_BINARY_DIR}/crystals.app/Contents/Resources)
-endif()

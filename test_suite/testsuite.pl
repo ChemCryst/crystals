@@ -94,7 +94,10 @@ sub obscureMachinePrecision() {
         while (<$fhi>) { 
 	   my $line = $_;
            chomp($line);
-# su_max shift often has too much precision to be stable across platforms
+#Catch negative zero formats from MINGW compiler.
+	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+
+#  su_max shift often has too much precision to be stable across platforms
 	   if($line =~ m/^(_refine_ls_shift\/su_max\s+\d+.\d\d\d\d)\d+.*$/ ) {
               print $fho "[01] $1\n";
 # su_mean shift often has too much precision to be stable across platforms
@@ -104,8 +107,8 @@ sub obscureMachinePrecision() {
 	  } elsif($line =~ m/^( Reversals).*$/ ) {
               print $fho "[03] $1\n"; 
 # Shift/esd stats unstable for very small shifts
-	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      0.00).*$/ ) {
-              print $fho "[04] $1\n";
+#	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      0.00).*$/ ) {
+#              print $fho "[04] $1\n";
 	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      \d+\.\d)\d(.*)$/ ) {
               print $fho "[05] $1 $2\n";
 # Shift/esd stats unstable 
@@ -147,8 +150,8 @@ sub obscureMachinePrecision() {
 	  } elsif($line =~ m/^(\s+Slope =\s+-?\d+\.\d)\d\d(\s+Intercept =\s+-?\d+).\d\d\d(\s+C-Coef=\s+-?\d+\.\d)\d\d\s*/ ) {
               print $fho "[11] $1 $2"."0 $3\n";
 # Flack table too much precision in Ds "   1   3   4    20.737   130.004    -4.668    -3.755     0.913"
-	  } elsif($line =~ m/^((?:\s+\d){3}\s+\d+\.\d\d)\d(\s+\d+\.\d\d\d(?:\s+-?\d+\.\d\d\d){3}\s*)$/ ) {
-              print $fho "[12] $1 $2\n";
+	  } elsif($line =~ m/^((?:\s+-?\d+){3}\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d((?:\s+-?\d+\.\d\d\d){3}\s*)$/ ) {
+              print $fho "[12] $1 $2 $3\n";
 # Large shift (e.g. extparam need less precision) " LARGE     1           1             1.1      0.2E+01    0.958E+00          1.15 .*"
 	   } elsif($line =~ m/^( LARGE\s+\d+\s+\d+\s+-?\d+.\d)\d\d(\s+-?0\.\dE\S\d\d\s+-?0\.\d)\d\d(E\S\d\d\s+-?\d+\.\d)\d(.*)/ ) {
               print $fho "[13] $1 $2 $3 $4\n";
@@ -190,6 +193,9 @@ sub obscureMachinePrecision() {
 # " C      14.    0.0494    0.1250    0.8787    0.3510    0.1757    2.2240    Might be split"
 	   } elsif($line =~ m/^(.*\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+Might be split)\s*/ ) {
               print $fho "[24] $1 $2 $3 $4 $5 $6 $7\n";
+# "Inter cycle shift/esd* 
+	   } elsif($line =~ m/^(Inter cycle shift\/esd)/ ) {
+              print $fho "[69] $1\n";
 # "Inter cycle R*                   -5.0           0.11E-02       0.10E+03"
 	   } elsif($line =~ m/^(Inter cycle .*\s+-?\d+\.\d*\s+-?0\.)\d\d(E.\d\d\s+0\.\d)\d(E.\d\d\s*)/ ) {
               print $fho "[25] $1 $2 $3\n";
@@ -203,7 +209,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d)\d((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d)\d\s*/ ) {
               print $fho "[28] $1 $2\n";
 # Mean shift line
-	   } elsif($line =~ m/^ Mean\s+\d+\.\d\d\s+.*/ ) {
+#	   } elsif($line =~ m/^ Mean\s+\d+\.\d\d\s+.*/ ) {
 #              print $fho "$1 $2\n";
 # RMS sh/esd line
 	   } elsif($line =~ m/^ RMS sh\/esd\s+\d+\.\d\d\s+.*/ ) {
@@ -244,6 +250,12 @@ sub obscureMachinePrecision() {
 # List of C 1. Fx.4 x5 -. Fx.2    " C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0560   0.0981"
 	   } elsif($line =~ m/^(\s+\S+\s+\d+\.\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[37] $1 $2 $3 $4 $5 $6\n";
+# List of Fx.4 x11 following Maximum x.xx -> Fx.2, except first -> Fx.0
+	   } elsif($line =~ m/^(.*Maximum\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
+              print $fho "[70] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12\n";
+# List of Fx.4 x11 following R.M.S. x.xx -> Fx.2, except first -> Fx.0
+	   } elsif($line =~ m/^(.*R\.M\.S\.\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
+              print $fho "[71] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12\n";
 # List of Fx.4 x11 following anything -> Fx.2
 	   } elsif($line =~ m/^(.*\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[38] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
@@ -410,6 +422,6 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 #	print("Doing diff!\n");
 #        print `diff $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.d.diff`;
     }
-#    print `compare.bat`
+    print `compare.bat`
 }
 

@@ -35,7 +35,7 @@
 ^^WI                 TAB _MAINTAB0 'Cell/Sym' GRID _MAINTG0                     
 ^^WI                                         NROWS=2 NCOLS=1                    
 ^^WI                 {                                                          
-^^WI                   @ 1,1 GRID _MAINTG01 NROWS=4 NCOLS=5                     
+^^WI                   @ 1,1 GRID _MAINTG01 NROWS=5 NCOLS=5                     
 ^^WI                   {                                                        
 ^^WI                     @ 1,1 GRID _ABC NROWS=3 NCOLS=3                        
 ^^WI                     {                                                      
@@ -72,7 +72,9 @@
 ^^WI                     @ 4,1 STATIC MTWAVELEN 'Wavelength'                    
 ^^WI                     @ 4,3 STATIC _MT_WAVE '000.00000 Angstroms (X-rays)'   
 ^^WI                     @ 4,5 BUTTON '#SCRIPT XINLIST3' 'Set formula'          
-^^WI                        SLIM   DISABLEIF='IN'                               
+^^WI                        SLIM   DISABLEIF='IN' 
+^^WI                     @ 5,5 BUTTON '#SCRIPT EDLIST3' 'Set Anomalous'
+^^WI                        SLIM   DISABLEIF='IN'                              
 ^^WI                   }                                                        
 ^^WI                 }                                                          
 ^^WI                 TAB _MAINTAB0 'Weights' GRID _MAINTG0                      

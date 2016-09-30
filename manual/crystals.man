@@ -492,6 +492,12 @@ If  state = OFF  then subsequent commands are not written
 #PThis command is used to control mirroring of CRYSTALS internal commands.
  The normal state OFF suppresses the mirroring.
 #
+#I\SET RATIO state#
+#PThis command controls whether Io or Ic is compared with Sigma(Io) 
+during filtering. Arguments are Io or Ic, default is Io.
+See "The use of partial observations, partial models and partial residuals
+to improve the least-squares refinement of crystal structures."
+A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165,
 #Q
 #YFiles#
 #PWhen CRYSTALS runs it stores all crystallographic data in a single file,
@@ -2496,7 +2502,7 @@ these to the same values as in REFINEMENT above.
 #HSscope#
 #
 #PThe areas covered are:
-#N  12#
+#N  15#
 #J
  Reflection Data
  Simple input of F or Fsq data               - \LIST 6
@@ -2511,6 +2517,7 @@ these to the same values as in REFINEMENT above.
  Sorting data                                - \SORT
  Merging equivalent reflections              - \MERGE
  Theta-dependent absorption correction       - \THETABS
+ Analysis of data                            - \THLIM, WILSON, SIGMADIST
 #
 #Q
 #XReflection data format#
@@ -2594,11 +2601,13 @@ these to the same values as in REFINEMENT above.
       Fourier Maps
       Slant Fourier Maps
       Superflip Structure Solution
-      The Hooft/Straver/Spek configuration parameter
+      Absolute Structure Determination
 #
 # The experienced or adventurous user can of course use 
  LIST 6 and LIST 7 quite independently for different purposes.
-
+#
+In LIST 7 the ARCHIVE keyword is set to NO, to prevent the original 
+archived data from being over-written
 #
 #
 #XLIST 6#
@@ -2711,6 +2720,7 @@ for publication.
       F - Output Fo, sigma information in SHELX format.
       G - SHELX output with statistically generated sigmas
       H - Output the reflections in 'cif' format. F^s, scale of Fc
+      I - Outputs all set items as a LIST 6.
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -2729,7 +2739,7 @@ for publication.
 #N  10#
 #J
  \LIST 6
- READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=
+ READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=
  INPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .
  STORE NCOEFFICIENT= MEDIUM= APPEND=
  OUTPUT COEFFICIENT(1)= COEFFICIENT(2)=  .  .
@@ -2752,7 +2762,7 @@ for publication.
  \CLOSE HKLI
 #
 #Q
-#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=#
+#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=#
 #
 #KNCOEFFICIENT= #
  Specifies the number of coefficients to be input per reflection. A list
@@ -2826,6 +2836,17 @@ for publication.
 #
  By default checking is disabled so that negative reflections are
  accepted on input.
+#
+#KARCHIVE#
+This parameter controls the creation of a file ARCHIVE-HKL.CIF, an  
+image of the data in 3i4,2f8.2 (SHELX) format. 
+#N   2#
+#J
+      YES -  Default value.
+      NO 
+#
+The default value is YES except when a COPY is being performed. The 
+ARCHIVE-HKL.CIF can be embedded in the final publish.cif file.
 #
 #Q
 #DINPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .#
@@ -3106,7 +3127,7 @@ edges.
 #N  18#
 #J
  \HKLI
- READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=
+ READ NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=
  INPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .
  STORE NCOEFFICIENT= MEDIUM= APPEND=
  OUTPUT COEFFICIENT(1)= COEFFICIENT(2)=  .  .
@@ -3175,7 +3196,7 @@ For example
 #Q
 #I\HKLI#
 #Q
-#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK=#
+#DREAD NCOEFFICIENT= TYPE= F'S= NGROUP= UNIT= CHECK= ARCHIVE=#
  This directive is the same as the READ directive in \LIST 6 above, 
  except that the following parameters have
  different default values:
@@ -3187,6 +3208,7 @@ For example
  NGROUP= default value is 1
  UNIT= default value is HKLI
 #
+
 #Q
 #DINPUT COEFFICIENT(1)= COEFFICIENT(2)= .  .#
 #PThis directive defines the coefficients that are to be read in.
@@ -3956,7 +3978,74 @@ For example
  The Nthetavalue values of the correction factor profile.
 #Q
 #
+#Q
+#XwILSON PLOT#
+#XWILSON#
+#YWILSON PLOT  -  \WILSON#
+#HSwilson#
+#N   6#
+#J
+ \WILSON
+ OUTPUT PLOT= NZ= STATS= EVALS=
+ FILTER LIST28=
+ WEIGHT UPDATE=
+ END
 #
+#
+PLOT, NZ and STATS take values of YES and NO, controlling whether output
+is sent to the GUI.
+EVALS takes the values NO/YES/PUNCH.
+#
+ NO/YES  controls whether E-values are computed.
+#
+ PUNCH enables E-values to be computed and output to a text file.
+#
+#
+#
+#Q
+#XTHLIM#
+#XTHLIM#
+#YTHLIM  -  \THLIM#
+#Hthetalim#
+#N   4#
+#J
+ \THLIM  INPUTLIST=
+ OUTPUT PLOT= GLIST=
+ END
+#
+ This command is only used in SCRIPTS to send information to the GUI
+#
+INPUTLIST IS EITHER 6 or 7
+#
+PLOT=YES sends plotting data to the GUI
+#
+GLIST=YES sends a list of missing reflections to the GUI
+#
+#
+#
+#Q
+#SIGMADIST#
+#XSIGMADIST#
+#YSIGMADIST  -  \SIGMADIST#
+#Hsigmadist#
+#N   6#
+#J
+ \SIGMADIST  INPUTLIST=
+ OUTPUT PLOT= RESOLUTIO= PHASE= FILTER=
+ END
+#
+ This command is only used in SCRIPTS to send information to the GUI
+#
+PLOT=YES sends completeness data to GUI
+#
+RESOLUTIO=YES sends distribution as function of resolution to GUI
+#
+PHASE=YES   sends phase angle distribution to GUI
+#
+FILTER=YES enable LIST 28 to be used.
+#
+#
+#Q
 #ZATOMIC AND STRUCTURAL PARAMETERS#
 #HCatomic#
 #Aatomparams#
@@ -4340,17 +4429,18 @@ interpretation of the parameters.
 The following table shows the interpretation of the FLAG parameter.
 #J
 
-FLAG  meaning    parameters
-'old' types of atoms:
+FLAG        meaning          parameters
 
- 0    Aniso ADP  u[11]  u[22] u[33] u[23] u[13] u[12]
- 1    Iso ADP    U[ISO]
+'normal' types of atoms:
+
+ 0          Aniso ADP        u[11]  u[22] u[33] u[23] u[13] u[12]
+ 1          Iso ADP          U[ISO]
 
 New 'special' shapes:
 
- 2    Sphere     U[ISO] SIZE
- 3    Line       U[ISO] SIZE  DECLINAT AZIMUTH
- 4    Ring       U[ISO] SIZE  DECLINAT AZIMUTH
+ 2          Sphere           U[ISO] SIZE
+ 3          Line             U[ISO] SIZE  DECLINAT AZIMUTH
+ 4          Ring             U[ISO] SIZE  DECLINAT AZIMUTH
 
 #
 
@@ -13434,7 +13524,7 @@ There are two INTEGER records.
  INFO holds flags indication what steps of the analysis have been completed.
  OVER holds flags indicating which OVERALL parameters are in LIST 12 are 
  being refined, indicated by a non-zero entry.
-OVER 1 Scale Du(iso) Ou(iso) Polariry Enantiopole Extinction 
+OVER 1 Scale Du(iso) Ou(iso) Polarity Enantiopole Extinction 
 #P
 There are three REAL records
 #

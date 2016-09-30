@@ -1,0 +1,79 @@
+%SCRIPT YHVIB
+%%
+% VARIABLE CHARACTER KEYBREAK
+^^WI WINDOW YHVIB 'Restrain adp vibration' MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI {
+^^WI   @ 2,2 GRID LT NROWS=5 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 STATIC T0 'Restrain all bonded atoms to have similar Uij components'
+^^WI     @ 2,1 STATIC T1 'along interatomic vectors and perpendicular to bond.'
+^^WI     @ 4,1 GRID LEFT NROWS=3 NCOLS=5
+^^WI     {
+^^WI       @ 1,1 STATIC T3 'E.s.d for restraint:'
+^^WI       @ 1,3 EDITBOX E12 '0.002' CHARS=9 REAL
+^^WI       @ 1,5 STATIC T3 'angstroms squared.'
+^^WI     }
+^^WI     @ 5,1 CHECKBOX EDIT16 'Edit/view new restraints.' STATE=ON
+^^WI   }
+^^WI   @ 2,4 GRID RIGHT NROWS=5 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON BOK '&OK' COMMIT DEFAULT
+^^WI     @ 3,1 BUTTON BXX '&Cancel' CANCEL
+^^WI     @ 5,1 BUTTON BHH '&Help'
+^^WI   }
+^^WI }
+^^WI  SHOW
+^^CR
+% LOOP
+%  VERIFY BXX BHH BOK
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  CASE VALUE
+%   BLOCK                      %BXX
+^^CO DISPOSE YHVIB
+%    FINISH
+%   END BLOCK
+%   BLOCK                      %BHH
+%    COPY '#SCRIPT XHELP1'
+Vibration restraints can be used to control refinements
+where there is not enough information to satisfactorily refine
+all the thermal parameters independently.
+The assumption to be made is that atoms which are either bonded
+or 1-3 contacts should have equal adp components along their
+interatomic vectors.
+Note that the e.s.d. on the resulting adps will depend upon the
+e.s.d. given to this restraint.
+If the e.s.d given is too small, the refinement may become
+unstable.
+%    COPY '#SCRIPT XHELP2'
+%   END BLOCK
+%   BLOCK                      %BOK
+%     COPY '#RELEASE PUNCH new16bit.pch'
+%     COPY '#DIST'
+%     COPY 'SEL RAN=L41'
+%     CLEAR
+%     INSERT 'OUT MON=DIST PUNC=HVIB D1DEV='
+^^??  E12 TEXT
+%     GET SILENT REAL 'Esd 1' '0.002'
+%     SEND
+%     COPY 'EXCLUDE H'
+%     COPY 'END'
+%     COPY '#RELEASE PUNCH bfile.pch'
+%%
+%     EVALUATE KEYBREAK = 'DELU'
+%     COPY '#SCRIPT ZADDLI16'
+%%
+ * Done. Vibrational restraints added.
+^^??  EDIT16 STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%     IF VALUE .EQ. 1 THEN
+%       COPY '#SCRIPT EDLIST16'
+%     END IF
+^^CO DISPOSE YHVIB
+%    FINISH
+%   END BLOCK
+%  END CASE
+% END LOOP
+%END SCRIPT

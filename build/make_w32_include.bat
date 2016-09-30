@@ -25,12 +25,13 @@ FOR /F "skip=1 tokens=1-6" %%A IN ('WMIC Path Win32_LocalTime Get Day^,Hour^,Min
         set CRYYEAR=!SortDate:~0,4!
         set CRYMON=!SortDate:~4,2!
         set CRYDAY=!SortDate:~6,2!
+        set CRYMN=%%D
     )
 )
 @echo on
 @set months=January February March April May June^
-@ July August September October November December
-@for /f "tokens=%crymon%" %%a in ("%months%") do @set "CRYMONTH=%%a"
+ July August September October November December
+@for /f "tokens=%crymn%" %%a in ("%months%") do @set CRYMONTH=%%a
 @echo YR=!CRYYEAR! MON=!CRYMON! DAY=!CRYDAY! MONTH=!CRYMONTH!
 
 :SDATE

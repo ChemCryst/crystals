@@ -36,6 +36,7 @@
 ^^CR
 ^^CO SENDPROGRESSTO _FOFCPR
 %  LOOP
+%    ON ERROR CONTINUE
 %    COPY '#sum list 6 level=plot'
 %    COPY 'END'
 %    VERIFY EXT_BOK EXT_EXP OMIT
@@ -75,5 +76,7 @@
 %    END BLOCK
 %    END CASE
 %  END LOOP
+%% Should not get here unless #SUM L 6 failed 
+^^CO    DISPOSE xfovsfc
 %END SCRIPT
 

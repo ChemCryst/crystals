@@ -1210,6 +1210,7 @@ Cc #LIST 6
       if ( nref .gt. 0 ) then
         write(NOUTF,'(a)')'# read in reflections'
         write(NOUTF,'(a)')'#CLOSE HKLI'
+        write(noutf,'(a)')'#OPEN FRN2 ARCHIVE-HKL.CIF'
         write(NOUTF,'(3a)')'#OPEN HKLI  "'//
      *                      chkl(1:len_trim(chkl))//'"'
         write(NOUTF,'(a)')'#HKLI'
@@ -1224,6 +1225,7 @@ Cc #LIST 6
         write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
         write(NOUTF,'(a)')'END'
         write(NOUTF,'(a)')'#CLOSE HKLI'
+        write(noutf,'(a)')'#CLOSE FRN2 '
         write(noutf,'(a)')'#LIST 6'
         write(noutf,'(a)')'READ TYPE=COPY'
         write(noutf,'(a)')'END'

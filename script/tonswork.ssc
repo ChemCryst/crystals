@@ -58,7 +58,7 @@
 %%
 %% Create special LIST 7 with F+ and F- in adjacent slots                       
 %%
-%COPY '#SCRIPT copy67'                                                          
+%COPY '#SCRIPT COPY67'                                                          
 %  BLOCK                                                                        
 %    IF ( EXISTS 7 .NE. 1 ) THEN                                                
 {E **** FATAL: The reflection convertion failed                                 

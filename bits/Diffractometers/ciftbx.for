@@ -370,7 +370,14 @@ C....... Make sure the CIF is available to open
 C
 cdjw may2011 filenames left at 80 characters for the moment
 cric oct2011 filenames set to 256 chars
-100      file_=fname
+100      continue
+c    remove any leading spaces
+         do 121 i=1,len(fname)
+            if(fname(i:i).ne.' ')goto 122
+121      continue
+         i = 1
+122      continue
+         file_=fname(i:)
          do 120 i=len(file_),1,-1
            if(file_(i:i).ne.' ') goto 140
 120      continue
@@ -378,18 +385,18 @@ cric oct2011 filenames set to 256 chars
 140      longf_=i
 
          write(*,*) "File: "
-         write(*,*) file_(1:longf_)
-         write(*,*) file_
          write(*,*) fname
+         write(*,*) file_(1:longf_),longf_
 
          inquire(file=file_(1:longf_),exist=test)
+         write(*,*)'File ',file_(1:longf_),' inquires ',test
          open_=test
          if(.not.open_)         goto 200
 C
 C....... Open up the CIF and a direct access formatted file as scratch
 C
-         open(unit=cifdev,file=fname,status='OLD',access='SEQUENTIAL',
-     *                    form='FORMATTED')
+         open(unit=cifdev,file=file_(1:longf_),status='OLD',
+     *        access='SEQUENTIAL', form='FORMATTED')
          open(unit=dirdev,status='SCRATCH',access='DIRECT',
      *                    form='FORMATTED',recl=(linlen))
 C
