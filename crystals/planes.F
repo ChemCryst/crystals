@@ -346,7 +346,7 @@ C--ATOMS DO NOT DEFINE A PLANE/LINE
 C--CALCULATE THE ROTATION MATRICES FROM 'CRYSTAL ANGSTROM'
 2450  CONTINUE
       !CALL XMLTMT(ROF,STORE(L1O1+9),RCF,3,3,3)
-      RCF=matmul(unitcells(1)%orthogonalisation_exclcell(), ROF)
+      RCF=matmul(ROF, unitcells(1)%orthogonalisation_exclcell())
 C--CALCULATE THE EQUATION OF THE PLANE/LINE
       CALL XMOLEQ(XCF,ROF,EQU,F,RCA )
 C-C-C-CALCULATION OF POLAR COORDINATES OF ORIENTATION VECTOR
@@ -901,7 +901,7 @@ C--
       double precision, dimension(10) :: dwork
       double precision dpoint
 C
-      INCLUDE 'STORE.INC'
+      !INCLUDE 'STORE.INC'
       !INCLUDE 'XLST01.INC'
       
       real a
@@ -1010,7 +1010,7 @@ C
 C
 C--COMPUTE THE ROTATION MSTRIX
       !CALL XMLTMT(VECTOR,STORE(L1O1),RCP,3,3,3)
-      RCP=matmul(VECTOR, transpose(unitcells(1)%orthogonalisation()))
+      RCP=matmul(vector, unitcells(1)%orthogonalisation())
 C--SET THE EQUATION TERMS
       EQU(1)=RCP(3,1)
       EQU(2)=RCP(3,2)
