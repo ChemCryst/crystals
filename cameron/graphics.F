@@ -1082,7 +1082,7 @@ C SCALE COORDINATES
       IRAD = INT(R*SCALE)
       IF (IFILL.GE.1)  THEN
 cdjw040804
-       if ((itype .ne. 2) .and. (irad .ge. 20))then
+       if ((itype .ne. 2) .and. (irad .ge. 5))then
          CALL ZDRELL(3,IX,IY,IRAD,IRAD,IDEVCL(ICOL+1),ITYPE,I)
        else
          CALL ZDRELL(2,IX,IY,IRAD,IRAD,IDEVCL(ICOL+1),ITYPE,I)
