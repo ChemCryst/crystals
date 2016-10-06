@@ -25,6 +25,8 @@ C
 C
 CODE FOR SMOLAX
       SUBROUTINE SMOLAX
+      use unitcell_mod
+      implicit none
 C--SUBROUTINE TO CALCULATE GENERALISED PLANES/LINES  IN A
 C  STRUCTURE AND TO CALCULATE ANGLES BETWEEN PERPENDICULARS
 C  TO THESE PLANES/LINES
@@ -64,26 +66,20 @@ C      JTYPE       INDICAES PLANE OR LINE
 C                     1      LINE
 C                     2      PLANE
 C
-      CHARACTER *5 CTYPE(2), CDEL(2), CQUAL(2), CDEV(2)
-C
-C
-C
 C--
       INCLUDE 'ICOM12.INC'
       INCLUDE 'IDIM12.INC'
       INCLUDE 'ISTORE.INC'
 C
-      DIMENSION VA(3),EQU(3),RPCA(3,3),RPCF(3,3),ROF(3,3),RCA(3,3)
-      DIMENSION RCF(3,3),XCA(3),XCF(3),XCR(3)
+      real, dimension(3) :: VA, EQU, XCA, XCF, XCR
+      real, dimension(3,3) :: RPCA, RPCF, ROF, RCA, RCF
 c      DIMENSION DCOSA(3)
 c      DIMENSION DCOSB(3)
 cdjwdec09
-      DOUBLE PRECISION DCOSA(3), DCOSB(3), DACCUM, DACCA, DACCB
-      INTEGER BTARG, CTARG
-      DIMENSION BTARG(1)
-      DIMENSION CTARG(1)
-      DIMENSION XWORKS(4)
-      DIMENSION PAXIS(3)
+      double precision, dimension(3) :: DCOSA, DCOSB
+      double precision DACCUM, DACCA, DACCB
+      real, dimension(4) :: XWORKS
+      real, dimension(3) :: PAXIS
 C-C-C-DECL. OF VARIABLES TO CALC. POLAR COORD. OF SPECIAL FIGURES
       REAL VECPD, VECPA
 C
@@ -93,7 +89,7 @@ C
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCNTRL.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
@@ -106,19 +102,30 @@ C
 C
       INCLUDE 'QLST12.INC'
       INCLUDE 'QSTORE.INC'
+      
+      real del, dum, f, sigdev, sumdev, sumdsq
+      integer i, ibase, ichng, icombf, idimbf, idirnm, ii, imdinp, imod5
+      integer inextd, irpl, istat, iuln5, iupdt, iwork, j, ja, jbase, jg
+      integer jh, jj, jk, jl, jn, jo, jpunch, jtype, jwork, k, kk, lef1
+      integer lef2, m, meand, n, nitem, np
+      
+      integer, parameter :: iversn=210
 C
-C
-      DATA IVERSN /210/
-C
-#ifdef _HOL_
-      DATA BTARG(1) /4HAND /, CTARG(1) /4HALL /
-#else
-      DATA BTARG(1) /'AND '/, CTARG(1) /'ALL '/
-#endif
-          DATA CTYPE(2) /'plane'/, CTYPE(1) /'line '/
-          DATA CQUAL(2) /'best '/, CQUAL(1) /'worst'/
-          DATA CDEL(2)  /'     '/, CDEL(1)  /'delta'/
-          DATA CDEV(2)  /' Zp  '/, CDEV(1)  /'delta'/
+      character(len=4), dimension(1), parameter :: BTARG=(/'AND '/) 
+      character(len=4), dimension(1), parameter :: CTARG=(/'ALL '/)
+      
+      character(len=5), dimension(2), parameter :: ctype=
+     1    (/'line ', 'plane'/)
+      character(len=5), dimension(2), parameter :: cqual=
+     1    (/'worst', 'best '/)
+      character(len=5), dimension(2), parameter :: cdel=
+     1    (/'delta', '     '/)
+      character(len=5), dimension(2), parameter :: cdev=
+     1    (/'delta', ' Zp  '/)
+     
+      integer, external :: kstall, klxsng, ktyp05, kfdarg, kop, ksynum
+      integer, external :: katomu, katoms, kmolax, kinv2, kchnfl, kcomp
+
 C
 C
 C----- DISABLE 'PUNCHING'
@@ -338,7 +345,8 @@ C--ATOMS DO NOT DEFINE A PLANE/LINE
       GOTO 3000
 C--CALCULATE THE ROTATION MATRICES FROM 'CRYSTAL ANGSTROM'
 2450  CONTINUE
-      CALL XMLTMT(ROF,STORE(L1O1+9),RCF,3,3,3)
+      !CALL XMLTMT(ROF,STORE(L1O1+9),RCF,3,3,3)
+      RCF=matmul(unitcells(1)%orthogonalisation_exclcell(), ROF)
 C--CALCULATE THE EQUATION OF THE PLANE/LINE
       CALL XMOLEQ(XCF,ROF,EQU,F,RCA )
 C-C-C-CALCULATION OF POLAR COORDINATES OF ORIENTATION VECTOR
@@ -359,7 +367,8 @@ C-C-C-AZIMUTH
        VECPA = (ATAN(ROF(3,2)/ROF(3,1)))*360.0/TWOPI
       ENDIF
 C--COMPUTE THE ORTHOGONAL COORDINATES OF THE CENTROID AND PRINT THEM
-      CALL XMLTTM(STORE(L1O1),XCF,XCA,3,3,1)
+      !CALL XMLTTM(STORE(L1O1),XCF,XCA,3,3,1)
+      xca=matmul(unitcells(1)%orthogonalisation(), xcf)
       IF (JJ .NE. 1) THEN
       WRITE(CMON,2499) (XCF(I),I=1,3)
 2499  FORMAT('Centroid, fractions',3X,4F10.3)
@@ -847,6 +856,16 @@ C
 CODE FOR KMOLAX
       FUNCTION KMOLAX(POINTS,NPOINT,ISTEP,CENT,ROOTS,VECTOR,COSINE,
      2 WORK)
+      use unitcell_mod
+      implicit none
+      integer, intent(in) :: npoint, istep
+      real, dimension(istep, npoint), intent(in) :: points
+      real, dimension(3,3), intent(out) :: vector
+      real, dimension(3,3), intent(out) :: cosine
+      real, dimension(3), intent(out) :: cent !< Centroid
+      real, dimension(3), intent(out) :: roots
+      real, dimension(4) :: work
+      integer kmolax
 C--COMPUTE THE MEAN PLANE THROUGH A SET OF POINTS.
 C
 C  POINTS  THE ARRAY CONTAINING THE POINTS TO BE FITTED. THE FIRST FOUR
@@ -877,14 +896,18 @@ C  -1  NOT ENOUGH POINTS TO DEFINE A PLANE.
 C   0  OKAY.
 C
 C--
-      DOUBLE PRECISION DVECTR,DROOTS,DCOSIN,DWORK,DPOINT
-C
-      DIMENSION POINTS(ISTEP,NPOINT),CENT(3),ROOTS(3),VECTOR(3,3),
-     2 COSINE(3,3),WORK(4)
-      DIMENSION DVECTR(3,3),DROOTS(3),DCOSIN(3,3),DWORK(10)
+      double precision, dimension(3,3) :: dvectr,dcosin
+      double precision, dimension(3) :: droots
+      double precision, dimension(10) :: dwork
+      double precision dpoint
 C
       INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
+      
+      real a
+      integer i, info, j, k
+      
+      real, external :: xdetr3
 C
 C--CHECK THAT THERE ARE AT LEAST 2 POINTS
       IF(NPOINT-2)1000,1100,1100
@@ -895,31 +918,19 @@ C--NOT ENOUGH POINTS
       RETURN
 C--ZERO SOME ARRAYS
 1100  CONTINUE
-      CALL XZEROF(CENT(1),3)
-      DO 1120 I=1,3
-      DO 1110 J=1,3
-      DVECTR(J,I)=0.0D0
-1110  CONTINUE
-1120  CONTINUE
-C--COMPUTE THE CENTROID
-      A=0.
-      DO 1200 I=1,NPOINT
-      A=A+POINTS(4,I)
-      DO 1150 J=1,3
-      CENT(J)=CENT(J)+POINTS(J,I)*POINTS(4,I)
-1150  CONTINUE
-1200  CONTINUE
-C--COMPUTE THE WEIGHTED CENTROID VALUES
-      DO 1250 I=1,3
-      CENT(I)=CENT(I)/A
-1250  CONTINUE
+      DVECTR=0.0d0
+C--COMPUTE THE CENTROID (weighted)
+      A=sum(points(4,:))
+      DO I=1,NPOINT
+        CENT=POINTS(1:3,I)*POINTS(4,I)
+      end do
+      CENT=CENT/A
 C--ACCUMULATE THE NORMAL EQUATIONS
       DO 1450 I=1,NPOINT
-      DO 1300 J=1,3
-      WORK(J)=POINTS(J,I)-CENT(J)
-1300  CONTINUE
+      WORK(1:3)=POINTS(1:3,I)-CENT
 C--ORTHOGONALISE THE RESULT
-      CALL XMLTTM(STORE(L1O1),WORK(1),ROOTS(1),3,3,1)
+      !CALL XMLTTM(STORE(L1O1),WORK(1),ROOTS(1),3,3,1)
+      roots=matmul(unitcells(1)%orthogonalisation(), work(1:3))
 C--CONVERT THE RESULTS TO DOUBLE PRECISION
       DO 1310 J=1,3
       DROOTS(J)=DBLE(ROOTS(J))
@@ -973,6 +984,8 @@ C--NORMALISE THE LATENT VECTORS
 C
 CODE FOR XMOLEQ
       SUBROUTINE XMOLEQ(CENT,VECTOR,EQU,D,RCP)
+      use unitcell_mod
+      implicit none
 C--COMPUTE THE EQUATION OF A MEAN PLANE
 C
 C  CENT    THE CENTROID IN CRYSTALS FRACTIONS.
@@ -985,13 +998,18 @@ C          BEST PLANE COORDINATES IN ANGSTROM.
 C
 C--
 C
-      DIMENSION CENT(3),VECTOR(3,3),EQU(3),RCP(3,3)
+      real, dimension(3), intent(in) :: CENT
+      real, dimension(3,3), intent(in) :: VECTOR
+      real, dimension(3,3), intent(out) :: RCP
+      real, dimension(3), intent(out) :: EQU
+      real, intent(out) :: d
 C
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'STORE.INC'
+      !INCLUDE 'XLST01.INC'
 C
 C--COMPUTE THE ROTATION MSTRIX
-      CALL XMLTMT(VECTOR,STORE(L1O1),RCP,3,3,3)
+      !CALL XMLTMT(VECTOR,STORE(L1O1),RCP,3,3,3)
+      RCP=matmul(unitcells(1)%orthogonalisation(), VECTOR)
 C--SET THE EQUATION TERMS
       EQU(1)=RCP(3,1)
       EQU(2)=RCP(3,2)
