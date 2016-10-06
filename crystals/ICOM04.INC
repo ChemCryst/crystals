@@ -1,2 +1,2 @@
-      DIMENSION ICOM04(24) 
+      integer, dimension(24) :: ICOM04
 

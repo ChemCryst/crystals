@@ -236,6 +236,8 @@ C RIC: Added changelog to top of file
 C
 CODE FOR XAPP04
       SUBROUTINE XAPP04(IPROC4,NPROC4)
+      use unitcell_mod
+      implicit none
 C--CALCULATE THE WEIGHTS AND STORE THEM
 C
 C--VARIABLES USED :
@@ -295,12 +297,9 @@ C--
       INCLUDE 'ICOM04.INC'
       INCLUDE 'ICOM30.INC'
 C
-      DIMENSION NPARAM(18)
-      CHARACTER*16 IFMT1
-      CHARACTER*12 IFMT2
-      CHARACTER*4 ITL,  CSQUAR, IBL
-      DIMENSION IPROC4(NPROC4)
-      DIMENSION IGUI4(2)
+      CHARACTER*4 ITL
+      integer, dimension(NPROC4) :: IPROC4
+      integer, dimension(2) :: IGUI4
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XSTR11.INC'
@@ -309,7 +308,7 @@ C
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST04.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
@@ -321,6 +320,7 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'IDIM04.INC'
 
 C RIC & SH 2002 F90 feature widely supported in F77 - dynamic arrays. These
 C               arrays will hold the whole of L6, and could be used by
@@ -329,8 +329,40 @@ C               looping around down there:
 
 c      DIMENSION SHFO(N6D), SHFC(N6D), SIG(N6D)
 C Space for automatic determination of Scheme 16 parameters.
-      DIMENSION WD(-4:4,-4:4,20), SGF(-4:4,-4:4)
-      DIMENSION RWD(20), BMEAN(20)
+      real, dimension(-4:4,-4:4,20) ::  WD
+      real, dimension(-4:4,-4:4) :: SGF(-4:4,-4:4)
+      real, dimension(20) :: RWD, BMEAN
+      
+      real fobs, fcalc, sigs, fp, sxa, sxb, a, adw, am, ap, app, aw
+      real awd, awi, b, bdw, c, cdw, cs, d, dd, djwaw, e, edw, ew, f
+      real fabs, factor, fc, fcav, fcmax, fcprime, fo, foav, fos, fracc
+      real fsq, fsqtemp, g, goofit, h
+      integer nproc4, i, iallow, ifsq, iftype, imxwid, iold, irczap
+      integer isave4, istat, itwin, itypeo, iuln, iuln06, ixap, j, jdw
+      integer jenan, jj, jprint, jsort, jtype, jxap, k, kbesa, kbesb
+      integer kdiv, l, lenan, level, lsort, ltempe, ltempr, m, mdenan
+      integer mdsort, menan, msort, n6acc, ndw, nenan, nmx, ngw, noutl
+      integer np, nq, nr, ns, nsort, nt, ntempe, ntempr, nu, nv, nw, nx
+      real p, q, raw, rfo, rpars, sfcfc, sfcfo, sfcsig, sgof, shfc, shfo
+      real sig, sigmas, sth, sthols, sumgf, sxag, sxbg, w, wdto, wdw
+      real wmx, wmxinv, wwt, xvalue, xvalur, delsq, fpsx, wght
+      
+      character(len=4), parameter :: CSQUAR='**2 ', IBL='    '
+      real, parameter :: small=0.01
+      
+C----- NO OF PARAMETERS EXPECTED FOR EACH SCHEME. 0 = UNDEFINED
+      integer, dimension(18), parameter :: NPARAM=(/ 
+     &              1, 1, 2, 1, 0, 0, 0, 0, 0, 0,
+     &              0, 1, 3, 0, 0, 6, 0, 0 /)
+
+      character(len=16), parameter :: IFMT1='(I6,2X,20F7.3)  '
+      character(len=12), parameter :: IFMT2='(/7X,20I7)  '
+      integer, parameter :: MINSCM=1, MAXSCM=17, IVERSN=530
+      
+      integer, external :: ktyp06, kchnfl, kexist, kfnr, kchlfl
+      integer, external :: kadd11, kallow, kldrnr, ksctrn
+      real, external :: snthl2
+          
 c function statements
       FPSX(FOBS,FCALC)      = AMAX1(0.,0.333*FOBS)+0.667*FCALC
       DELSQ(FOBS,FCALC)     = (FOBS-FCALC)**2
@@ -342,18 +374,7 @@ c
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST30.INC'
 
-      DATA CSQUAR / '**2 ' /, IBL / '    ' /
-      DATA SMALL / .01 /
 
-C----- NO OF PARAMETERS EXPECTED FOR EACH SCHEME. 0 = UNDEFINED
-      DATA NPARAM / 1, 1, 2, 1, 0, 0, 0, 0, 0, 0,
-     1              0, 1, 3, 0, 0, 6, 0, 0 /
-
-      DATA IFMT1 / '(I6,2X,20F7.3)  '/
-      DATA IFMT2 / '(/7X,20I7)  '/
-      DATA MINSCM /1/, MAXSCM /17/
-
-      DATA IVERSN / 530 /
 
       JPRINT = 0                           ! ENABLE PRINTING OF OUTLIERS
       CALL XTIME1(2)                       ! CLEAR THE TIME
@@ -691,7 +712,6 @@ c
 c
           CALL XCSAE                     ! CLEAR THE LIST ENTRIES
           IRCZAP = 0
-      INCLUDE 'IDIM04.INC'
 C          CALL XFILL (IRCZAP, ICOM04, IDIM04)
           N4 = 6
           N4C = 4
@@ -1291,7 +1311,6 @@ C-- RESTORE 'E' (AS F!)
 6100      FORMAT(//,' Correlation matrix')
           CALL XPRTNM ( 16 , IFMT1 , IFMT2 )
           ISTORE(L4C)=ITYPE4 ! SET THE NEW WEIGHTING SCHEME TYPE
-      INCLUDE 'IDIM04.INC'
           CALL XWLSTD(IULN,ICOM04,IDIM04,-1,-1) ! WRITE NEW LIST OUT TO DISC
 C--PRINT THE PLOT OF PREDICTED W*DELTA**2 AGAINST /FO/
           CALL XPRTCN
@@ -1410,7 +1429,6 @@ C--PRINT THE LINE FOR THIS /FO/
 
         IF (ITYPE4 .EQ. 5) ITYPE4 = 6 ! HAVING TAKEN ROOT W ONCE, NOW KEEP W
         IF (ITYPE4 .NE. ITYPEO) THEN  ! CHANGES FROM 5, 10, 14- REWRITE LIST 4
-      INCLUDE 'IDIM04.INC'
           CALL XWLSTD(4, ICOM04, IDIM04,-1,-1) ! WRITE THE NEW LIST OUT TO DISC
       ENDIF
 
@@ -1810,6 +1828,7 @@ C
       END
 CODE FOR XANAL
       SUBROUTINE XANAL
+      implicit none
 C--AGREEMENT ANALYSIS AND LAYER SCALING SUBROUTINE
 C
 C--ALLOCATION OF THE CORE :
@@ -1951,23 +1970,94 @@ C  ICE     CENTRAL LINE CHARACTER
 C  ICENT   POSITION OF THE CENTRAL LINE IN 'IOUT'
 C
 C--
-      CHARACTER *12 CTEMP
-      CHARACTER *16 CNNN, COUT
-      CHARACTER *4  CSHK(2)
+      character(len=12) :: CTEMP
+      character(len=16) :: CNNN, COUT
       INCLUDE 'ICOM30.INC'
       INCLUDE 'ISTORE.INC'
-      DIMENSION NOPE(4,30),KN(5),KM(5)
+C--DATA FOR THE VARIOUS CLASSES OF REFLECTION GROUPS
+      character(len=4), dimension(4,30), parameter :: NOPE=
+     & transpose(reshape( (/
+! row 1      
+     1 '    ', '  SI', '    ', '  PA', '    ', '    ', '    ', '    ', 
+     1 '    ', '    ', '    ', '   K', '   K', '   H', '   H', '   H', 
+     1 '   H', '  H+', '  H+', ' -H+', ' -H+', '    ', '    ', '    ', 
+     1 '    ', '    ', '    ', '    ', '    ', '    ',
+! row 2            
+     2 ' /FO', 'NTH/', '   L', 'RITY', ' TOT', 'H   ', 'H   ', 'K   ', 
+     2 'K   ', 'L   ', 'L   ', '+L  ', '+L  ', '+L  ', '+L  ', '+K  ', 
+     2 '+K  ', 'K+L ', 'K+L ', 'K+L ', 'K+L ', '   G', '   U', '   G', 
+     2 '   U', '   G', '   U', '   G', '   U', '  CL',
+! row 3
+     3 '/ RA', 'L RA', 'AYER', ' GRO', 'ALS ', '= 2N', '= 2N', '= 2N', 
+     3 '= 2N', '= 2N', '= 2N', '= 2N', '= 2N', '= 2N', '= 2N', '= 2N', 
+     3 '= 2N', '= 2N', '= 2N', '= 3N', '# 3N', 'GG  ', 'GG  ', 'UG  ', 
+     3 'UG  ', 'GU  ', 'GU  ', 'UU  ', 'UU  ', 'ASS ',
+! row 4            
+     4 'NGE ', 'NGE ', '    ', 'UP  ', '    ', '    ', '+1  ', '    ', 
+     4 '+1  ', '    ', '+1  ', '    ', '+1  ', '    ', '+1  ', '    ', 
+     4 '+1  ', '    ', '+1  ', '    ', '    ', '    ', '    ', '    ', 
+     4 '    ', '    ', '    ', '    ', '    ', '    ' /), (/30,4/) ))
+
+      character(len=4), dimension(5), parameter :: kn=
+     & (/ '  SC', 'ALE ', '    ', '    ', '    ' /)
+      
+      character(len=4), dimension(5), parameter :: km=
+C--HEADING FOR THE NORMAL PLOT TYPE ENTRIES
+     & (/ 'LOG(', '<W*D', 'ELTA', '**2>', ')   ' /)
+                 
 C----- FOR LIST 30 UPDATING
-      DIMENSION TEMP30(6)
-      CHARACTER *4 CFY(16),CFYY(16),CFN(16),CFH(6),CFC(6),CFO(6),CFS(6)
-      CHARACTER *1 CH(3)
+      real, dimension(6) :: TEMP30
+      
+C--VARIABLE USED TO CONTROL THE KEY DRAWING
+      character(len=4), dimension(2), parameter :: CSHK=
+     & (/ '    ',' KEY' /)
+C--FORMAT WHEN THERE ARE SOME REFLECTIONS
+      character(len=4), dimension(16) :: CFY=
+     & (/ '    ','    ','    ','    ','    ','    ','I9,F','13.2',
+     1    ',F12','.1,2','E16.','3,F9','.2,F','8.2,','5X,1','3A1)' /)
+C--FORMAT FOR THE LAYER SCALING ENTRIES
+      character(len=4), dimension(16) :: CFYY=
+     & (/'    ','    ','    ','    ','    ','    ','    ','    ',
+     1   '    ','    ','    ','    ','    ','    ','F10.','5)  '/)
+C--FORMAT WHEN THERE ARE NO REFLECTIONS
+      character(len=4), dimension(16) :: CFN=
+     & (/ '    ','    ','    ','    ','    ','    ','I9, ','85X,',
+     1    'A1) ','    ','    ','    ','    ','    ','    ','    '/)
+C--INITIAL FORMAT FOR INDEX GROUPS
+      character(len=4), dimension(6), parameter :: CFH=
+     & (/ '(1X ', ',I9,', '6X, ', '    ', '    ', '    ' /)
+C--INITIAL FORMAT FOR THE REFLECTION CLASSES
+      character(len=4), dimension(6), parameter :: CFC=
+     & (/ '(4A4', ',   ', '    ', '    ', '    ', '    ' /)
+C--INITIAL FORMAT FOR THE /FO/ RANGES
+      character(len=4), dimension(6), parameter :: CFO=
+     & (/ '(1X ', ',F13', '.2, ', '96X,', '2A1/', '16X,' /)
+C--INITIAL FORMAT FOR THE SIN(THETA)/LAMBDA RANGES
+      character(len=4), dimension(6), parameter :: CFS=
+     & (/ '(1X ', ',F12', '.5, ', '97X,', '2A1/', '16X,' /)
+C----- THE AXIS NAMES
+      character, dimension(3), parameter :: CH=(/'h','k','l'/)
 C
       INCLUDE 'STORE.INC'
+      
+      real ac, aci, act, adiv, ap, at, bc, bci, bct, bmax, bmin, bp, bt
+      real correl, df, dft, djwtemp, dvf, dvs, e, f, fc, fct, fo, fot
+      real fovsfc, fr, hklmx, pkcls, pkext, pkfor, pkhkl, pkpar, pkthe
+      real plcls, plext, plfor, plhkl, plpar, plthe, pwdsq, r, rw, s, ss
+      real scalc, scalf, slope, t, tc, tfocc, vv, wdf, wdft, ww
+      real, dimension(3) :: h, hmax, hmin
+      integer, dimension(3) :: ibase, indexa
+      integer, dimension(13) :: iout
+      integer i, ice, icee, icent, icls, igen, ihklmx, ii, indnam, ipar
+      integer istat, istep, ityp06, itype, iuln06, j, ja, jaa, k, k1
+      integer k1t, k2, k2t, k3, l, level, lnnn, m, maxadd, mm1, mm2, mm3
+      integer mm4, mm5, monit, n, n1, n2, nc, nchar, nct, ndiv, nocc, nr
+      integer nw, nx, ny, nz
 C
       COMMON /XWTWK/SCALF,R,RW,FOT,FCT,DFT,WDFT,E,F,AP,BP,AT,BT,AC,BC,
-     2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H(3),
-     3 INDEXA(3),MAXADD
-      COMMON /XWTWKA/SCALC,IBASE(3),NW,ISTEP,NR,HMIN(3),HMAX(3),ITYPE,
+     2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H,
+     3 INDEXA,MAXADD
+      COMMON /XWTWKA/SCALC,IBASE,NW,ISTEP,NR,HMIN,HMAX,ITYPE,
      2 IPAR,IGEN,ICLS,JA,I,J,K,L,M,N,NX,NY,NZ,K1,K2,K3,NC,N1,JAA
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
@@ -1975,7 +2065,7 @@ C
       INCLUDE 'XCONST.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XPDS.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST04.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
@@ -1984,172 +2074,22 @@ C
 C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
-      COMMON/EXPLOT/NCHAR,ICE,ICENT,BMIN,BMAX,ADIV,IOUT(13)
+      COMMON/EXPLOT/NCHAR,ICE,ICENT,BMIN,BMAX,ADIV,IOUT
       INCLUDE 'QLST30.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
+      
+      integer, external :: krddpv, ktyp06, ksctrn
+      
+      interface
+      function array_concatenate(array_input) result(strout)
+          implicit none
+          character(len=*), dimension(:), intent(in) :: array_input
+          character(len=:), allocatable :: strout
+      end function
+      end interface
+      
 C
-C--HEADING FOR THE LAYER SCALING PART
-C
-#if !defined(_HOL_) 
-      DATA KN(1)/'  SC'/,KN(2)/'ALE '/,KN(3)/'    '/,KN(4)/'    '/
-      DATA KN(5)/'    '/
-C--HEADING FOR THE NORMAL PLOT TYPE ENTRIES
-      DATA KM(1)/'LOG('/,KM(2)/'<W*D'/,KM(3)/'ELTA'/,KM(4)/'**2>'/
-      DATA KM(5)/')   '/
-C--DATA FOR THE VAIOUS CLASSES OF REFLECTION GROUPS
-      DATA NOPE(1,1)/'    '/,NOPE(2,1)/' /FO'/,NOPE(3,1)/'/ RA'/
-      DATA NOPE(4,1)/'NGE '/
-      DATA NOPE(1,2)/'  SI'/,NOPE(2,2)/'NTH/'/,NOPE(3,2)/'L RA'/
-      DATA NOPE(4,2)/'NGE '/
-      DATA NOPE(1,3)/'    '/,NOPE(2,3)/'   L'/,NOPE(3,3)/'AYER'/
-      DATA NOPE(4,3)/'    '/
-      DATA NOPE(1,4)/'  PA'/,NOPE(2,4)/'RITY'/,NOPE(3,4)/' GRO'/
-      DATA NOPE(4,4)/'UP  '/
-      DATA NOPE(1,5)/'    '/,NOPE(2,5)/' TOT'/,NOPE(3,5)/'ALS '/
-      DATA NOPE(4,5)/'    '/
-      DATA NOPE(1,6)/'    '/,NOPE(2,6)/'H   '/,NOPE(3,6)/'= 2N'/
-      DATA NOPE(4,6)/'    '/
-      DATA NOPE(1,7)/'    '/,NOPE(2,7)/'H   '/,NOPE(3,7)/'= 2N'/
-      DATA NOPE(4,7)/'+1  '/
-      DATA NOPE(1,8)/'    '/,NOPE(2,8)/'K   '/,NOPE(3,8)/'= 2N'/
-      DATA NOPE(4,8)/'    '/
-      DATA NOPE(1,9)/'    '/,NOPE(2,9)/'K   '/,NOPE(3,9)/'= 2N'/
-      DATA NOPE(4,9)/'+1  '/
-      DATA NOPE(1,10)/'    '/,NOPE(2,10)/'L   '/,NOPE(3,10)/'= 2N'/
-      DATA NOPE(4,10)/'    '/
-      DATA NOPE(1,11)/'    '/,NOPE(2,11)/'L   '/,NOPE(3,11)/'= 2N'/
-      DATA NOPE(4,11)/'+1  '/
-      DATA NOPE(1,12)/'   K'/,NOPE(2,12)/'+L  '/,NOPE(3,12)/'= 2N'/
-      DATA NOPE(4,12)/'    '/
-      DATA NOPE(1,13)/'   K'/,NOPE(2,13)/'+L  '/,NOPE(3,13)/'= 2N'/
-      DATA NOPE(4,13)/'+1  '/
-      DATA NOPE(1,14)/'   H'/,NOPE(2,14)/'+L  '/,NOPE(3,14)/'= 2N'/
-      DATA NOPE(4,14)/'    '/
-      DATA NOPE(1,15)/'   H'/,NOPE(2,15)/'+L  '/,NOPE(3,15)/'= 2N'/
-      DATA NOPE(4,15)/'+1  '/
-      DATA NOPE(1,16)/'   H'/,NOPE(2,16)/'+K  '/,NOPE(3,16)/'= 2N'/
-      DATA NOPE(4,16)/'    '/
-      DATA NOPE(1,17)/'   H'/,NOPE(2,17)/'+K  '/,NOPE(3,17)/'= 2N'/
-      DATA NOPE(4,17)/'+1  '/
-      DATA NOPE(1,18)/'  H+'/,NOPE(2,18)/'K+L '/,NOPE(3,18)/'= 2N'/
-      DATA NOPE(4,18)/'    '/
-      DATA NOPE(1,19)/'  H+'/,NOPE(2,19)/'K+L '/,NOPE(3,19)/'= 2N'/
-      DATA NOPE(4,19)/'+1  '/
-      DATA NOPE(1,20)/' -H+'/,NOPE(2,20)/'K+L '/,NOPE(3,20)/'= 3N'/
-      DATA NOPE(4,20)/'    '/
-      DATA NOPE(1,21)/' -H+'/,NOPE(2,21)/'K+L '/,NOPE(3,21)/'# 3N'/
-      DATA NOPE(4,21)/'    '/
-      DATA NOPE(1,22)/'    '/,NOPE(2,22)/'   G'/,NOPE(3,22)/'GG  '/
-      DATA NOPE(4,22)/'    '/
-      DATA NOPE(1,23)/'    '/,NOPE(2,23)/'   U'/,NOPE(3,23)/'GG  '/
-      DATA NOPE(4,23)/'    '/
-      DATA NOPE(1,24)/'    '/,NOPE(2,24)/'   G'/,NOPE(3,24)/'UG  '/
-      DATA NOPE(4,24)/'    '/
-      DATA NOPE(1,25)/'    '/,NOPE(2,25)/'   U'/,NOPE(3,25)/'UG  '/
-      DATA NOPE(4,25)/'    '/
-      DATA NOPE(1,26)/'    '/,NOPE(2,26)/'   G'/,NOPE(3,26)/'GU  '/
-      DATA NOPE(4,26)/'    '/
-      DATA NOPE(1,27)/'    '/,NOPE(2,27)/'   U'/,NOPE(3,27)/'GU  '/
-      DATA NOPE(4,27)/'    '/
-      DATA NOPE(1,28)/'    '/,NOPE(2,28)/'   G'/,NOPE(3,28)/'UU  '/
-      DATA NOPE(4,28)/'    '/
-      DATA NOPE(1,29)/'    '/,NOPE(2,29)/'   U'/,NOPE(3,29)/'UU  '/
-      DATA NOPE(4,29)/'    '/
-      DATA NOPE(1,30)/'    '/,NOPE(2,30)/'  CL'/,NOPE(3,30)/'ASS '/
-      DATA NOPE(4,30)/'    '/
-#else
-      DATA KN(1)/4H  SC/,KN(2)/4HALE /,KN(3)/4H    /,KN(4)/4H    /
-      DATA KN(5)/4H    /
-C--HEADING FOR THE NORMAL PLOT TYPE ENTRIES
-      DATA KM(1)/4HLOG(/,KM(2)/4H<W*D/,KM(3)/4HELTA/,KM(4)/4H**2>/
-      DATA KM(5)/4H)   /
-C--DATA FOR THE VAIOUS CLASSES OF REFLECTION GROUPS
-      DATA NOPE(1,1)/4H    /,NOPE(2,1)/4H /FO/,NOPE(3,1)/4H/ RA/
-      DATA NOPE(4,1)/4HNGE /
-      DATA NOPE(1,2)/4H  SI/,NOPE(2,2)/4HNTH//,NOPE(3,2)/4HL RA/
-      DATA NOPE(4,2)/4HNGE /
-      DATA NOPE(1,3)/4H    /,NOPE(2,3)/4H   L/,NOPE(3,3)/4HAYER/
-      DATA NOPE(4,3)/4H    /
-      DATA NOPE(1,4)/4H  PA/,NOPE(2,4)/4HRITY/,NOPE(3,4)/4H GRO/
-      DATA NOPE(4,4)/4HUP  /
-      DATA NOPE(1,5)/4H    /,NOPE(2,5)/4H TOT/,NOPE(3,5)/4HALS /
-      DATA NOPE(4,5)/4H    /
-      DATA NOPE(1,6)/4H    /,NOPE(2,6)/4HH   /,NOPE(3,6)/4H= 2N/
-      DATA NOPE(4,6)/4H    /
-      DATA NOPE(1,7)/4H    /,NOPE(2,7)/4HH   /,NOPE(3,7)/4H= 2N/
-      DATA NOPE(4,7)/4H+1  /
-      DATA NOPE(1,8)/4H    /,NOPE(2,8)/4HK   /,NOPE(3,8)/4H= 2N/
-      DATA NOPE(4,8)/4H    /
-      DATA NOPE(1,9)/4H    /,NOPE(2,9)/4HK   /,NOPE(3,9)/4H= 2N/
-      DATA NOPE(4,9)/4H+1  /
-      DATA NOPE(1,10)/4H    /,NOPE(2,10)/4HL   /,NOPE(3,10)/4H= 2N/
-      DATA NOPE(4,10)/4H    /
-      DATA NOPE(1,11)/4H    /,NOPE(2,11)/4HL   /,NOPE(3,11)/4H= 2N/
-      DATA NOPE(4,11)/4H+1  /
-      DATA NOPE(1,12)/4H   K/,NOPE(2,12)/4H+L  /,NOPE(3,12)/4H= 2N/
-      DATA NOPE(4,12)/4H    /
-      DATA NOPE(1,13)/4H   K/,NOPE(2,13)/4H+L  /,NOPE(3,13)/4H= 2N/
-      DATA NOPE(4,13)/4H+1  /
-      DATA NOPE(1,14)/4H   H/,NOPE(2,14)/4H+L  /,NOPE(3,14)/4H= 2N/
-      DATA NOPE(4,14)/4H    /
-      DATA NOPE(1,15)/4H   H/,NOPE(2,15)/4H+L  /,NOPE(3,15)/4H= 2N/
-      DATA NOPE(4,15)/4H+1  /
-      DATA NOPE(1,16)/4H   H/,NOPE(2,16)/4H+K  /,NOPE(3,16)/4H= 2N/
-      DATA NOPE(4,16)/4H    /
-      DATA NOPE(1,17)/4H   H/,NOPE(2,17)/4H+K  /,NOPE(3,17)/4H= 2N/
-      DATA NOPE(4,17)/4H+1  /
-      DATA NOPE(1,18)/4H  H+/,NOPE(2,18)/4HK+L /,NOPE(3,18)/4H= 2N/
-      DATA NOPE(4,18)/4H    /
-      DATA NOPE(1,19)/4H  H+/,NOPE(2,19)/4HK+L /,NOPE(3,19)/4H= 2N/
-      DATA NOPE(4,19)/4H+1  /
-      DATA NOPE(1,20)/4H -H+/,NOPE(2,20)/4HK+L /,NOPE(3,20)/4H= 3N/
-      DATA NOPE(4,20)/4H    /
-      DATA NOPE(1,21)/4H -H+/,NOPE(2,21)/4HK+L /,NOPE(3,21)/4H# 3N/
-      DATA NOPE(4,21)/4H    /
-      DATA NOPE(1,22)/4H    /,NOPE(2,22)/4H   G/,NOPE(3,22)/4HGG  /
-      DATA NOPE(4,22)/4H    /
-      DATA NOPE(1,23)/4H    /,NOPE(2,23)/4H   U/,NOPE(3,23)/4HGG  /
-      DATA NOPE(4,23)/4H    /
-      DATA NOPE(1,24)/4H    /,NOPE(2,24)/4H   G/,NOPE(3,24)/4HUG  /
-      DATA NOPE(4,24)/4H    /
-      DATA NOPE(1,25)/4H    /,NOPE(2,25)/4H   U/,NOPE(3,25)/4HUG  /
-      DATA NOPE(4,25)/4H    /
-      DATA NOPE(1,26)/4H    /,NOPE(2,26)/4H   G/,NOPE(3,26)/4HGU  /
-      DATA NOPE(4,26)/4H    /
-      DATA NOPE(1,27)/4H    /,NOPE(2,27)/4H   U/,NOPE(3,27)/4HGU  /
-      DATA NOPE(4,27)/4H    /
-      DATA NOPE(1,28)/4H    /,NOPE(2,28)/4H   G/,NOPE(3,28)/4HUU  /
-      DATA NOPE(4,28)/4H    /
-      DATA NOPE(1,29)/4H    /,NOPE(2,29)/4H   U/,NOPE(3,29)/4HUU  /
-      DATA NOPE(4,29)/4H    /
-      DATA NOPE(1,30)/4H    /,NOPE(2,30)/4H  CL/,NOPE(3,30)/4HASS /
-      DATA NOPE(4,30)/4H    /
-#endif
-C
-C----- THE AXIS NAMES
-      DATA CH /'h','k','l'/
-C--FORMAT WHEN THERE ARE SOME REFLECTIONS
-      DATA CFY /6*'    ','I9,F','13.2',',F12',
-     2'.1,2','E16.','3,F9','.2,F','8.2,','5X,1','3A1)'/
-C--FORMAT WHEN THERE ARE NO REFLECTIONS
-      DATA CFN/6*'    ','I9, ','85X,','A1) ',7*'    '/
-C--FORMAT FOR THE LAYER SCALING ENTRIES
-      DATA CFYY/14*'    ','F10.','5)  '/
-C--INITIAL FORMAT FOR INDEX GROUPS
-      DATA CFH(1)/'(1X' /,CFH(2)/',I9,'/,CFH(3)/'6X, '/
-      DATA CFH(4)/'    '/,CFH(5)/'    '/,CFH(6)/'    '/
-C--INITIAL FORMAT FOR THE REFLECTION CLASSES
-      DATA CFC(1)/'(4A4'/,CFC(2)/',   '/,CFC(3)/'    '/
-      DATA CFC(4)/'    '/,CFC(5)/'    '/,CFC(6)/'    '/
-C--INITIAL FORMAT FOR THE /FO/ RANGES
-      DATA CFO(1)/'(1X' /,CFO(2)/',F13'/,CFO(3)/'.2, '/
-      DATA CFO(4)/'96X,'/,CFO(5)/'2A1/'/,CFO(6)/'16X,'/
-C--INITIAL FORMAT FOR THE SIN(THETA)/LAMBDA RANGES
-      DATA CFS(1)/'(1X'/, CFS(2)/',F12'/,CFS(3)/'.5, '/
-      DATA CFS(4)/'97X,'/,CFS(5)/'2A1/'/,CFS(6)/'16X,'/
-C--VARIABLE USED TO CONTROL THE KEY DRAWING
-      DATA CSHK /'    ',' KEY'/
 C
 C--A FEW COMMONLY USED FORMAT STATEMENTS
 1000  FORMAT(//4A4,1X,'No. of data',3X,'  </Fo/>',4X,'  </Fc/>',5X,
@@ -2157,6 +2097,7 @@ C--A FEW COMMONLY USED FORMAT STATEMENTS
      3 A1/)
 1050  FORMAT(103X,'-2 -1  0  1  2')
 1100  FORMAT(110X,A1)
+
 C
 C--CLEAR THE CLOCK CONTROL AND FETCH THE INPUT PARAMETERS
       CALL XTIME1(2)
@@ -2295,7 +2236,7 @@ C--CHECK THE NUMBER OF REFLS. IN THIS GROUP AND CALC. THE TOTALS IF NECE
 C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 2050  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFN)I,ISTORE(L+1)
+      WRITE(NCWU,array_concatenate(CFN))I,ISTORE(L+1)
       ENDIF
       GOTO 2200
 C--COMPUTE THE NEW SCALE FACTOR FOR THIS INDEX VALUE
@@ -2308,7 +2249,8 @@ CNEW      GOTO 6150
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 2150  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFYY)I,ISTORE(L+1),(STORE(I+2),I=L,M),STORE(L)
+      WRITE(NCWU,array_concatenate(CFYY))I,ISTORE(L+1),
+     1    (STORE(I+2),I=L,M),STORE(L)
       ENDIF
 2200  CONTINUE
       L=L+ISTEP
@@ -2383,13 +2325,14 @@ CNEW                           6150
 C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 2750  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFN)I,ISTORE(L+1)
+      WRITE(NCWU,array_concatenate(CFN))I,ISTORE(L+1)
       ENDIF
       GOTO 2850
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 2800  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFYY)I,ISTORE(L+1),(STORE(I+2),I=L,M),STORE(L)
+      WRITE(NCWU,array_concatenate(CFYY))I,ISTORE(L+1),
+     1    (STORE(I+2),I=L,M),STORE(L)
       ENDIF
 2850  CONTINUE
       L=L+ISTEP
@@ -2556,7 +2499,7 @@ CNEW                           6150
 C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 4050  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFN)NX,ISTORE(L+1),ICE
+      WRITE(NCWU,array_concatenate(CFN))NX,ISTORE(L+1),ICE
       ENDIF
 
       IF ( PLHKL .EQ. 1 ) THEN
@@ -2573,7 +2516,8 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 4100  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)NX,ISTORE(L+1),(STORE(K+2),K=L,M),IOUT
+      WRITE(NCWU,array_concatenate(CFY))NX,ISTORE(L+1),
+     1    (STORE(K+2),K=L,M),IOUT
       ENDIF
 
       IF ( PLHKL .EQ. 1 ) THEN
@@ -2608,7 +2552,8 @@ C--SET UP THE FORMATS
 C--WRITE OUT THE BLANK LINE
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,1100)ICEE
-        WRITE(NCWU,CFY)(NOPE(N2,5),N2=1,4),N,(APD(N2),N2=1,6),IOUT
+        WRITE(NCWU,array_concatenate(CFY))(NOPE(N2,5),N2=1,4),N,
+     1    (APD(N2),N2=1,6),IOUT
       ENDIF
       ENDIF
 C
@@ -2681,13 +2626,14 @@ CNEW                           6150
 C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 4350  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFN)(NOPE(J,I+5),J=1,4),ISTORE(L+1),ICE
+      WRITE(NCWU,array_concatenate(CFN))(NOPE(J,I+5),J=1,4),
+     1    ISTORE(L+1),ICE
       ENDIF
       GOTO 4450
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 4400  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)(NOPE(J,I+5),J=1,4),ISTORE(L+1),
+      WRITE(NCWU,array_concatenate(CFY))(NOPE(J,I+5),J=1,4),ISTORE(L+1),
      2 (STORE(K+2),K=L,M),IOUT
       ENDIF
 
@@ -2765,14 +2711,15 @@ CNEW                           6150
 C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 4650  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFN)(NOPE(J,I+21),J=1,4),ISTORE(L+1),ICE
+      WRITE(NCWU,array_concatenate(CFN))(NOPE(J,I+21),J=1,4),
+     1    ISTORE(L+1),ICE
       ENDIF
       GOTO 4750
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 4700  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)(NOPE(J,I+21),J=1,4),ISTORE(L+1),(STORE(K+2),K=L,
-     2 M),IOUT
+      WRITE(NCWU,array_concatenate(CFY))(NOPE(J,I+21),J=1,4),
+     1    ISTORE(L+1),(STORE(K+2),K=L,M),IOUT
       ENDIF
 
       WRITE(CNNN,'(4A4)') (NOPE(J,I+21),J=1,4)
@@ -2893,7 +2840,7 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 5150  CONTINUE
       NZ=1
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFN)ACI,ICE,IB,ISTORE(L+1),ICE
+      WRITE(NCWU,array_concatenate(CFN))ACI,ICE,IB,ISTORE(L+1),ICE
       ENDIF
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
@@ -2919,7 +2866,8 @@ C--- OUTPUT TO SCREEN
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 5200  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)ACI,ICE,IB,ISTORE(L+1),(STORE(K+2),K=L,M),IOUT
+      WRITE(NCWU,array_concatenate(CFY))ACI,ICE,IB,ISTORE(L+1),
+     1    (STORE(K+2),K=L,M),IOUT
       ENDIF
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
@@ -2963,7 +2911,7 @@ cdjwjul09
 C--PRINT THE FINAL VALUE
 5350  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)ACI,ICE
+      WRITE(NCWU,array_concatenate(CFY))ACI,ICE
       ENDIF
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
@@ -3071,7 +3019,7 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 5600  CONTINUE
       NZ=1
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFN)AC,ICE,IB,ISTORE(L+1),ICE
+      WRITE(NCWU,array_concatenate(CFN))AC,ICE,IB,ISTORE(L+1),ICE
       ENDIF
       IF ( PLTHE .EQ. 1 ) THEN
         WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,' DATA 1.0 1.0'
@@ -3090,7 +3038,8 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
 C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
 5650  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)AC,ICE,IB,ISTORE(L+1),(STORE(K+2),K=L,M),IOUT
+      WRITE(NCWU,array_concatenate(CFY))AC,ICE,IB,ISTORE(L+1),
+     1    (STORE(K+2),K=L,M),IOUT
       ENDIF
 cdjwjul09
       if (store(l+2) .ge. 10.*store(l+3)) then
@@ -3125,7 +3074,7 @@ C--- OUTPUT TO SCREEN
 C--PRINT THE FINAL VALUE
 5800  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)AC,ICE
+      WRITE(NCWU,array_concatenate(CFY))AC,ICE
       ENDIF
       IF ( PLTHE .GT. 0 ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
@@ -3167,7 +3116,8 @@ C--WRITE OUT THE BLANK LINE
       WRITE(NCWU,1100)ICEE
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,CFY)(NOPE(N2,5),N2=1,4),N,(APD(N2),N2=1,6),IOUT
+      WRITE(NCWU,array_concatenate(CFY))(NOPE(N2,5),N2=1,4),N,
+     1    (APD(N2),N2=1,6),IOUT
       ENDIF
       GOTO K1T,(2350,3000,4550,4850,5400,5850)
 C
@@ -3323,7 +3273,7 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XPDS.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST04.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
@@ -3393,6 +3343,8 @@ C -- NORMAL AND ERROR RETURN
 C
 CODE FOR XSCAN
       SUBROUTINE XSCAN(MM2, SLOPE, CORREL)
+      use unitcell_mod
+      implicit none
 C--SCANS THE REFLECTIONS AND ACCUMMULATES THE NECESSARY TOTALS
 C
 C  MM2  THIS CONTROLS THE OUTPUT OF REFLECTIONS TO THE DISC AND THE
@@ -3407,28 +3359,43 @@ C  SLOPE   THE GRADIENT OF THE RESIDUAL
 C  CORREL  THE CORRELATION COEFICIENT
 C
 C--
+      integer, intent(in) :: mm2
+      real, intent(in) :: slope, correl
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
 C----- CORRELATION COEFFICIENT ACCUMULATOR
-      DIMENSION ACOEF(6)
+      real, dimension(6) :: ACOEF
 C
+      real SCALF,R,RW,FOT,FCT,DFT,WDFT,E,F,AP,BP,AT,BT,AC,BC,
+     2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H(3)
+      integer INDEXA(3),MAXADD
       COMMON /XWTWK/SCALF,R,RW,FOT,FCT,DFT,WDFT,E,F,AP,BP,AT,BT,AC,BC,
-     2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H(3),
-     3 INDEXA(3),MAXADD
-      COMMON /XWTWKA/SCALC,IBASE(3),NW,ISTEP,NR,HMIN(3),HMAX(3),ITYPE,
+     2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H,
+     3 INDEXA,MAXADD
+      real SCALC,HMIN(3),HMAX(3)
+      integer ITYPE, IPAR,IGEN,ICLS,JA,I,J,K,L,M,N,NX,NY,NZ
+      integer K1,K2,K3,NC,N1,JAA,NR,NW,ISTEP,IBASE(3)
+      COMMON /XWTWKA/SCALC,IBASE,NW,ISTEP,NR,HMIN,HMAX,ITYPE,
      2 IPAR,IGEN,ICLS,JA,I,J,K,L,M,N,NX,NY,NZ,K1,K2,K3,NC,N1,JAA
+     
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XPDS.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      real fff, rinter, x, y
+      integer imode, irwf, ncoef
+      
+      real, external :: xweigh
+      integer, external :: kposn, kfnr
 C
       NX=NW+NW
 C----- READ/WRITE FLAG FOR KFNR
@@ -3574,9 +3541,7 @@ C--COMPUTE THE MAX. /FO/ VALUE
       F=AMAX1(F,BP)
       CALL XSUM(L)
 C--SIN(THETA)/LAMBDA RANGES  -  COMPUTE SIN(THETA)/LAMBDA
-      SS=H(1)*H(1)*STORE(L1S)+H(2)*H(2)*STORE(L1S+1)+H(3)*H(3)
-     2 *STORE(L1S+2)+H(2)*H(3)*STORE(L1S+3)+H(1)*H(3)*STORE(L1S+4)+H(1)
-     3 *H(2)*STORE(L1S+5)
+      SS=dot_product(h, matmul(unitcells(1)%Rij(), h))
       L=IGEN+NW+IFIX(SS/WW)*ISTEP
 C--COMPUTE THE MAX. VALUE OF SIN(THETA)/LAMBDA
       E=AMAX1(E,SS)
@@ -3906,3 +3871,20 @@ C -- INPUT ERROR
       GO TO 9900
       END
 C
+      function array_concatenate(array_input) result(strout)
+          implicit none
+          character(len=*), dimension(:), intent(in) :: array_input
+          character(len=:), allocatable :: strout
+          integer strlength, i
+          
+          strlength=size(array_input)*len(array_input(1))
+          allocate(character(len=strlength) :: strout)
+          strout=''
+          do i=1, size(array_input)
+              strout=trim(strout)//array_input(i)
+          end do
+      end function
+      
+      
+      
+      

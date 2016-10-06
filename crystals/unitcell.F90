@@ -280,38 +280,26 @@ function Rij_linear(this)
     implicit none
     class(t_unitcell) :: this
     real, dimension(6) :: Rij_linear
-    real, dimension(3,3) :: Rij
+    real, dimension(3,3) :: rmetric
     integer i
     
-    Rij=this%Rij()
-    
+    rmetric=this%rmetric()
+   
     do i=1, 3
-        Rij_linear(i)=Rij(i,i)
+        Rij_linear(i)=0.25*rmetric(i,i)
     end do
-    Rij_linear(4)=Rij(2,3)
-    Rij_linear(5)=Rij(1,3)
-    Rij_linear(6)=Rij(1,2)
+    Rij_linear(4)=0.5*rmetric(2,3)
+    Rij_linear(5)=0.5*rmetric(1,3)
+    Rij_linear(6)=0.5*rmetric(1,2)
 end function
 
 !> Return the R(ii) and R(ij) used to calculate sin(theta)/lambda
 function Rij(this)
     implicit none
     class(t_unitcell) :: this
-    real, dimension(3,3) :: Rij, rmetric
+    real, dimension(3,3) :: Rij
     
-    rmetric=this%rmetric()
-    
-    Rij(1,1)=0.25*rmetric(1,1)
-    Rij(2,1)=0.5* rmetric(2,1)
-    Rij(3,1)=0.5* rmetric(3,1)
-    
-    Rij(1,2)=0.5* rmetric(1,2)
-    Rij(2,2)=0.25*rmetric(2,2)
-    Rij(3,2)=0.5* rmetric(3,2)
-
-    Rij(1,3)=0.5* rmetric(1,3)
-    Rij(2,3)=0.5* rmetric(2,3)
-    Rij(3,3)=0.25*rmetric(3,3)
+    Rij=0.25*this%rmetric()
     
 end function
 
