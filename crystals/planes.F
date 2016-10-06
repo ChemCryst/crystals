@@ -316,7 +316,6 @@ C--PRINT THE AXIS CARD AND ITS NUMBER
 2300  FORMAT(' Results for axis number ',I4)
 C--COMPUTE THE PRINCIPAL AXES
       ISTAT = KMOLAX (STORE(JBASE+4), N, MD5A, XCF, VA, ROF,RCA,XWORKS)
-      print *, XCF, VA, ROF,RCA
       CALL XMOVE(VA, PAXIS, 3)
       IF (JTYPE .EQ. 1) THEN
 C----- REVERSE ORDER TO GET BEST LINE SYSTEM
@@ -1011,7 +1010,7 @@ C
 C
 C--COMPUTE THE ROTATION MSTRIX
       !CALL XMLTMT(VECTOR,STORE(L1O1),RCP,3,3,3)
-      RCP=matmul(unitcells(1)%orthogonalisation(), VECTOR)
+      RCP=matmul(VECTOR, transpose(unitcells(1)%orthogonalisation()))
 C--SET THE EQUATION TERMS
       EQU(1)=RCP(3,1)
       EQU(2)=RCP(3,2)
