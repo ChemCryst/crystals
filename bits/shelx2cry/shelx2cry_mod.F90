@@ -16,6 +16,8 @@ character(len=512), dimension(512) :: list1
 integer :: list1index=0
 character(len=512), dimension(512) :: list13
 integer :: list13index=0
+character(len=512), dimension(512) :: list12
+integer :: list12index=0
 character(len=512), dimension(5) :: composition
 
 character(len=3), dimension(128) :: sfac
@@ -45,6 +47,13 @@ type spacegroup_t
 end type
 type(spacegroup_t) :: spacegroup 
 
+type shelx_serial_t
+    character(len=6) :: shelx_label
+    character(len=3) :: atom
+    integer :: crystals_serial
+end type
+type(shelx_serial_t), dimension(:), allocatable :: shelx2crystals_serial
+
 contains
 
 subroutine readline(shelxf_id, line, current_line, iostatus)
@@ -55,9 +64,10 @@ integer, intent(inout) :: current_line
 integer, intent(out) :: iostatus
 character(len=1024) :: buffer
 character(len=:), allocatable :: linetemp
+integer first
 
 current_line=line_number
-
+first=0
 do
     read(shelxf_id, '(a)', iostat=iostatus) buffer
     if(iostatus/=0) then
@@ -65,7 +75,11 @@ do
         return
     end if
     line_number=line_number+1
-    if(trim(buffer)=='') cycle
+    first=first+1
+    if(first==1 .and. buffer(1:1)==' ') then ! cycle except if continuation line
+        first=0
+        cycle 
+    end if
     if(allocated(line)) then
         ! appending new text
         allocate(character(len=len_trim(line)) :: linetemp)
@@ -428,7 +442,7 @@ end subroutine
 
 subroutine write_crystalfile()
 implicit none
-integer i, j, k
+integer i, j
 real occ
 character lattice
 character(len=3) :: centric
@@ -436,13 +450,15 @@ character(len=3) :: centric
 character, dimension(7), parameter :: latticeletters=(/'P', 'I', 'R', 'F', 'A', 'B', 'C'/)
 real, dimension(3,3) :: matrix
 real, dimension(3) :: translation
-character(len=128) :: buffer, buffer2
-character, dimension(3), parameter :: axis=(/'X', 'Y', 'Z'/)
+!character, dimension(3), parameter :: axis=(/'X', 'Y', 'Z'/)
 integer flag
 character, dimension(12), parameter :: letters=&
 &   (/'a', 'b', 'c', 'd', 'n', 'm', 'A', 'B', 'C', 'D', 'N', 'M'/)
 
 open(123, file='crystalsinput.dat')
+
+! process serial numbers 
+call getshelx2crystals_serial
 
 ! process list1
 !\LIST 1
@@ -687,16 +703,30 @@ if(atomslist_index>0) then
     &   '", NELEMENT = ",I0,", NBATCH = ",I0)') &
     &   atomslist_index, 0, 0, 0
     do i=1, atomslist_index
-        occ=abs(atomslist(i)%sof)
-        if(occ>10) occ=occ-10.0
+        ! extracting occupancy from sof
+        if(atomslist(i)%sof>=10.0 .and. atomslist(i)%sof<20.0) then
+            ! fixed occupancy
+            occ=atomslist(i)%sof-10.0
+            list12index=list12index+1
+            write(list12(list12index), '("FIX ",a,"(",I0,", occ)")') &
+            &   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
+        else if(abs(atomslist(i)%sof)>=20.0) then
+            occ=abs(atomslist(i)%sof)-int(abs(atomslist(i)%sof)/10.0)*10.0
+            ! restraints done later
+        else if(atomslist(i)%sof<0.0) then
+            print *, "don't know what to do with negative soc"
+            stop
+        else            
+            occ=atomslist(i)%sof
+        end if
         if(atomslist(i)%iso/=0.0) then
             flag=1
         else
             flag=0
         end if
-        !write(123, '(a,1X,a)') '#', trim(atomslist(i)%shelxline)
+        write(123, '(a,1X,a)') '# ', trim(atomslist(i)%shelxline)
         write(123, '("ATOM TYPE=", a, ", SERIAL=",I0, ", OCC=",F0.5, ", FLAG=", I0)')  &
-        &   trim(sfac(atomslist(i)%sfac)), i, occ, flag
+        &   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial, occ, flag
         if(any(atomslist(i)%aniso/=0.0)) then
             write(123, '("CONT X=",F0.5, ", Y=",F0.5, ", Z=", F0.5)') &
             &   atomslist(i)%coordinates
@@ -712,7 +742,7 @@ if(atomslist_index>0) then
             write(123, '("CONT RESIDUE=",I0)') atomslist(i)%resi
         end if
         if(atomslist(i)%part>0) then
-            write(123, '("CONT PART=",I0)') atomslist(i)%part
+            write(123, '("CONT PART=",I0)') atomslist(i)%part+1000
         end if
     end do
     write(123, '(a)') 'END'
@@ -881,6 +911,96 @@ implicit none
 character(len=*) :: line
 
 the_end=.true.
+
+end subroutine
+
+subroutine getshelx2crystals_serial()
+implicit none
+integer i, j, k, start
+character(len=6) :: label, buffer
+logical found, foundresidue
+
+allocate(shelx2crystals_serial(atomslist_index))
+
+! shelx allows the same label in different residues. It's messing up the numerotation for crystals
+! in this case, we will prefix the serial in crystals with the residue
+foundresidue=.false.
+do i=1, atomslist_index
+    if(atomslist(i)%resi/=0) then
+        foundresidue=.true.
+        exit
+    end if
+end do        
+
+do i=1, atomslist_index
+    label=atomslist(i)%label
+    shelx2crystals_serial(i)%shelx_label=label
+    shelx2crystals_serial(i)%atom=sfac(atomslist(i)%sfac)
+    ! fetch first number
+    start=0
+    do j=1, len_trim(label)
+        if(iachar(label(j:j))>=48 .and. iachar(label(j:j))<=57) then ! [0-9]
+            start=j
+            exit
+        end if
+    end do
+    if(start/=0) then
+        ! fetch the serial number
+        buffer=''
+        k=0
+        ! Now check if labels are duplicated
+        if(foundresidue) then
+            do j=1, atomslist_index 
+                if(i/=j) then
+                    if(atomslist(i)%label==atomslist(j)%label) then !found a duplicate
+                        ! now prefix serial with residue
+                        write(buffer, '(I0)') atomslist(i)%resi
+                        k=len_trim(buffer)
+                        exit
+                    end if
+                end if
+            end do
+        end if
+        do j=start, len_trim(label)
+            if(iachar(label(j:j))>=48 .and. iachar(label(j:j))<=57) then ! [0-9]
+                k=k+1
+                buffer(k:k)=label(j:j)
+            else
+                ! no more number but a suffix not supported by crystals
+                ! if it is a symbol ignore it and hope for something after
+                if(iachar(label(j:j))<48 .or. iachar(label(j:j))>122) cycle
+                if(iachar(label(j:j))>57 .and. iachar(label(j:j))<65) cycle
+                if(iachar(label(j:j))>90 .and. iachar(label(j:j))<97) cycle
+                ! if a letter, append its number in alphabet instead
+                if(iachar(label(j:j))>=65 .and. iachar(label(j:j))<=90) then ! [A-Z]
+                    k=k+1
+                    write(buffer(k:), '(I0)') iachar(label(j:j))-64
+                    if(iachar(label(j:j))-64>10) k=k+1
+                end if
+            end if
+        end do
+        read(buffer, *) shelx2crystals_serial(i)%crystals_serial
+    end if    
+end do
+
+! Most likely we have duplicates, lets fix that
+found=.true.
+duplicates:do while(found)
+    found=.false.
+    do i=1, atomslist_index
+        do j=i+1, atomslist_index
+            if(shelx2crystals_serial(i)%crystals_serial==shelx2crystals_serial(j)%crystals_serial) then
+                if(shelx2crystals_serial(i)%atom==shelx2crystals_serial(j)%atom) then
+                    ! identical serial, incrementing and starting search again
+                    shelx2crystals_serial(i)%crystals_serial=shelx2crystals_serial(i)%crystals_serial+1
+                    found=.true.
+                    cycle duplicates
+                end if
+            end if
+        end do
+    end do
+end do duplicates
+
 
 end subroutine
  
