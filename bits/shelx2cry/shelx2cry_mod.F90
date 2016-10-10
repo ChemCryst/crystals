@@ -1,7 +1,10 @@
+!> This module holds the different subroutines for shel2cry
+!! 
 module shelx2cry_mod
-integer, private, save :: line_number=1
+integer, private, save :: line_number=1 !< Hold the line number from the shelx file
 
-character(len=4), dimension(77), parameter :: shelx_keywords=(/ &
+!> List of shelx keywords
+character(len=4), dimension(77), parameter , private:: shelx_keywords=(/ &
 &   'ABIN', 'ACTA', 'AFIX', 'ANIS', 'ANSC', 'ANSR', 'BASF', 'BIND', 'BLOC', &
 &   'BOND', 'BUMP', 'CELL', 'CGLS', 'CHIV', 'CONF', 'CONN', 'DAMP', 'DANG', &
 &   'DEFS', 'DELU', 'DFIX', 'DISP', 'EADP', 'END ', 'EQIV', 'EXTI', 'EXYZ', &
@@ -10,58 +13,66 @@ character(len=4), dimension(77), parameter :: shelx_keywords=(/ &
 &   'MPLA', 'NCSY', 'NEUT', 'OMIT', 'PART', 'PLAN', 'PRIG', 'REM ', 'RESI', &
 &   'RIGU', 'RTAB', 'SADI', 'SAME', 'SFAC', 'SHEL', 'SIMU', 'SIZE', 'SPEC', &
 &   'STIR', 'SUMP', 'SWAT', 'SYMM', 'TEMP', 'TITL', 'TWIN', 'TWST', 'UNIT', &
-&   'WGHT', 'WIGL', 'WPDB', 'XNPD', 'ZERR' /)
+&   'WGHT', 'WIGL', 'WPDB', 'XNPD', 'ZERR' /) 
 
-character(len=512), dimension(512) :: list1
-integer :: list1index=0
-character(len=512), dimension(512) :: list13
-integer :: list13index=0
-character(len=512), dimension(512) :: list12
-integer :: list12index=0
-character(len=512), dimension(5) :: composition
 
-character(len=3), dimension(128) :: sfac
-integer :: residue=0
-integer :: part=0
-logical :: the_end=.false.
+character(len=512), dimension(512) :: list1 !< Array holding list1 instructions
+integer :: list1index=0 !< index in list1
+character(len=512), dimension(512) :: list13 !< Array holding list13 instructions
+integer :: list13index=0 !< index in list13
+character(len=512), dimension(512) :: list12 !< Array holding list12 instructions
+integer :: list12index=0  !< index in list12
+character(len=512), dimension(4) :: list31=''  !< Array holding list31 instructions
+character(len=512), dimension(5) :: composition=''  !< Array holding composition instructions
 
+character(len=3), dimension(128) :: sfac='' !< List of atom types (sfac from shelx)
+real, dimension(:), allocatable :: fvar !< list of free variables (sfac from shelx)
+real, dimension(6) :: unitcell=0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
+integer :: residue=0 !< Current residue
+integer :: part=0 !< current part
+logical :: the_end=.false. !< has the keyword END been reached
+
+!> Atom type. It holds hold the information about an atom in the structure
 type atom_t
-    character(len=6) :: label
-    integer :: sfac
-    real, dimension(3) :: coordinates
-    real, dimension(6) :: aniso !< U11 U22 U33 U23 U13 U12
-    real :: iso
-    real :: sof !< Site occupation factor
-    integer resi !< residue
-    integer part !< group
-    character(len=512) :: shelxline
+    character(len=6) :: label !< label from shelx
+    integer :: sfac !< sfac from shelx
+    real, dimension(3) :: coordinates !< x,y,z fractional coordinates from shelx
+    real, dimension(6) :: aniso !< Anistropic displacement parameters U11 U22 U33 U23 U13 U12 from shelx
+    real :: iso !< isotropic temperature factor from shelx
+    real :: sof !< Site occupation factor from shelx
+    integer resi !< residue from shelx
+    integer part !< group from shelx
+    character(len=512) :: shelxline !< raw line from res/ins file
 end type
-type(atom_t), dimension(:), allocatable :: atomslist
-integer atomslist_index
+type(atom_t), dimension(:), allocatable :: atomslist !< list of atoms in the res/ins file
+integer atomslist_index !< Current index in the list of atoms list (atomslist)
 
+!> Space group type. All the lements describing the space group.
 type spacegroup_t
-    integer :: latt
-    character(len=128), dimension(32) :: symm
-    integer :: symmindex=0
-    character(len=128) :: symbol
+    integer :: latt !< lattice type from shelx (1=P, 2=I, 3=rhombohedral obverse on hexagonal axes, 4=F, 5=A, 6=B, 7=C)
+    character(len=128), dimension(32) :: symm !< list of symmetry element as seen in res/ins file
+    integer :: symmindex=0 !< current index in symm
+    character(len=128) :: symbol !< Space group symbol
 end type
-type(spacegroup_t) :: spacegroup 
+type(spacegroup_t) :: spacegroup !< Hold the spagroup information
 
+!> Translates shelx label to crystals serial code
 type shelx_serial_t
-    character(len=6) :: shelx_label
-    character(len=3) :: atom
-    integer :: crystals_serial
+    character(len=6) :: shelx_label !< shelx label
+    character(len=3) :: atom !< atom type (derived from sfac not from the label)
+    integer :: crystals_serial !< crystals serial code
 end type
-type(shelx_serial_t), dimension(:), allocatable :: shelx2crystals_serial
+type(shelx_serial_t), dimension(:), allocatable :: shelx2crystals_serial !< Array used to translates shelx labels into crystals serial code
 
 contains
 
+!> Read a line of the res/inf file. If line is split using `=`, reconstruct the full line.
 subroutine readline(shelxf_id, line, current_line, iostatus)
 implicit none
-integer, intent(in) :: shelxf_id
-character(len=:), allocatable, intent(out) :: line
-integer, intent(inout) :: current_line
-integer, intent(out) :: iostatus
+integer, intent(in) :: shelxf_id !< res/ins file unit number
+character(len=:), allocatable, intent(out) :: line !< Line read from res/ins file
+integer, intent(out) :: current_line !< Line number of the line just read in res/ins file
+integer, intent(out) :: iostatus !< status of the read
 character(len=1024) :: buffer
 character(len=:), allocatable :: linetemp
 integer first
@@ -110,9 +121,11 @@ end do
 
 end subroutine
 
+!> Process a line from the res/ins file. 
+!! The subroutine is looking for shelx keywords and calling the adhoc subroutine.
 subroutine call_shelxprocess(line)
 implicit none
-character(len=*), intent(in) :: line
+character(len=*), intent(in) :: line !< line from res/ins file
 character(len=4) :: keyword
 logical found
 
@@ -143,8 +156,16 @@ if(len_trim(line)>3) then
         call shelx_cell(line)
         found=.true.
 
+        case ('ZERR')
+        call shelx_zerr(line)
+        found=.true.
+
         case ('SFAC')
         call shelx_sfac(line)
+        found=.true.
+
+        case ('FVAR')
+        call shelx_fvar(line)
         found=.true.
 
         case ('UNIT')
@@ -213,6 +234,7 @@ end if
 
 end subroutine
 
+!> Parse the TITL keyword. Extract the space group name
 subroutine shelx_titl(line)
 implicit none
 character(len=*), intent(in) :: line
@@ -225,6 +247,7 @@ spacegroup%symbol=line(start+3:)
 !print *, line_number, ' Processing TITL' 
 end subroutine
 
+!> Parse the REM keryword. Do nothing
 subroutine shelx_rem(line)
 implicit none
 character(len=*), intent(in) :: line
@@ -232,22 +255,61 @@ character(len=*), intent(in) :: line
 !print *, line_number, ' Processing REM' 
 end subroutine
 
-!CELL 1.54187 14.8113 13.1910 14.8119 90 98.158 90
+!> Pars the CELL keyword. Extract the unit cell parameter and wavelength
 subroutine shelx_cell(line)
 implicit none
 character(len=*), intent(in) :: line
-real, dimension(7) :: cell
+real :: wave
 character dummy
 
-read(line, *) dummy, cell
+!CELL 1.54187 14.8113 13.1910 14.8119 90 98.158 90
+read(line, *) dummy, wave, unitcell
 list1index=list1index+1
-write(list1(list1index), '(a5,1X,6(F0.5,1X))') 'REAL ', cell(2:7)
+write(list1(list1index), '(a5,1X,6(F0.5,1X))') 'REAL ', unitcell
 list13index=list13index+1
-write(list13(list13index), '(a,F0.5)') 'COND WAVE= ', cell(1)
+write(list13(list13index), '(a,F0.5)') 'COND WAVE= ', wave
 
 !print *, line_number, ' Processing CELL' 
 end subroutine
 
+!> Parse the ZERR keyword. Extract the esds on the unit cell parameters
+subroutine shelx_zerr(line)
+implicit none
+character(len=*), intent(in) :: line
+real, dimension(7) :: esds
+
+read(line(5:), *) esds
+write(list31(1), '(a)') '\LIST 31'
+write(list31(2), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') esds(2:4)
+write(list31(3), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') esds(5:7)
+write(list31(4), '(a)') 'END'
+
+!print *, line_number, ' Processing CELL' 
+end subroutine
+
+!> Parse the FVAR keyword. Extract the overall scale parameter and free variable
+subroutine shelx_fvar(line)
+implicit none
+character(len=*), intent(in) :: line
+real, dimension(1024) :: temp ! should be more than enough
+integer iostatus, i
+
+temp=0.0
+read(line(5:), *, iostat=iostatus) temp(1:3)
+if(temp(1024)/=0.0) then
+    print *, 'More than 1024 free variable?!?!'
+    call abort()
+end if
+do i=1024,1,-1
+    if(temp(i)/=0.0) exit
+end do
+allocate(fvar(i))
+fvar=temp(1:i)
+
+!print *, line_number, ' Processing CELL' 
+end subroutine
+
+!> Parse the SFAC keyword. Extract the atoms type use in the file.
 subroutine shelx_sfac(line)
 implicit none
 character(len=*), intent(in) :: line
@@ -284,6 +346,14 @@ end do
 !print *, line_number, ' Processing SFAC' 
 end subroutine
 
+!> Parse the UNIT keyword. Extract the number of each atomic elements.
+!! Write the corresponding `composition` command for crystals
+subroutine shelx_unit(line)
+implicit none
+character(len=*), intent(in) :: line
+integer i, j, k, code, iostatus
+character(len=3) :: buffer
+real, dimension(128) :: units
 !SFAC C H N O
 !UNIT 116 184 8 8
 !
@@ -292,12 +362,6 @@ end subroutine
 ! SCATTERING CRSCP:SCATT.DAT
 ! PROPERTIES CRSCP:PROPERTIES.DAT
 ! END
-subroutine shelx_unit(line)
-implicit none
-character(len=*), intent(in) :: line
-integer i, j, k, code, iostatus
-character(len=3) :: buffer
-real, dimension(128) :: units
 
 units=0
 k=0
@@ -347,6 +411,7 @@ composition(5)='END'
 !print *, line_number, ' Processing UNITS' 
 end subroutine
  
+!> Parse the LATT keyword. Extract the lattice type.
 subroutine shelx_latt(line)
 implicit none
 character(len=*) :: line
@@ -355,6 +420,7 @@ read(line(5:), *) spacegroup%latt
 
 end subroutine
 
+!> Parse the SYMM keyword. Extract the symmetry operators as text.
 subroutine shelx_symm(line)
 implicit none
 character(len=*) :: line
@@ -364,13 +430,14 @@ read(line(5:), '(a)') spacegroup%symm(spacegroup%symmindex)
 
 end subroutine
 
+!> Parse the atom parameters when adps are present.
 subroutine shelxl_atomaniso(label, atomtype, coordinates, sof, aniso, line)
 implicit none
-character(len=*), intent(in) :: label
-integer, intent(in) :: atomtype 
-real, dimension(:), intent(in) :: coordinates
-real, intent(in) :: sof
-real, dimension(6), intent(in) :: aniso
+character(len=*), intent(in) :: label !< shelxl label
+integer, intent(in) :: atomtype !< atom type as integer (position in sfac)
+real, dimension(:), intent(in) :: coordinates !< atomic coordinates
+real, intent(in) :: sof !< site occupation factor (sof) from shelx
+real, dimension(6), intent(in) :: aniso !< adps U11 U22 U33 U23 U13 U12
 character(len=*) :: line
 integer i
  
@@ -401,16 +468,37 @@ atomslist(atomslist_index)%part=part
 atomslist(atomslist_index)%shelxline=line
 end subroutine
 
-
+!> Parse the atom parameters when adps are not present but isotropic temperature factor.
 subroutine shelxl_atomiso(label, atomtype, coordinates, sof, iso, line)
 implicit none
-character(len=*), intent(in) :: label
-integer, intent(in) :: atomtype 
-real, dimension(:), intent(in) :: coordinates
-real, intent(in) :: sof
-real, intent(in) :: iso
-integer i 
+character(len=*), intent(in) :: label!< shelxl label
+integer, intent(in) :: atomtype !< atom type as integer (position in sfac)
+real, dimension(:), intent(in) :: coordinates !< atomic coordinates
+real, intent(in) :: sof !< site occupation factor (sof) from shelx
+real, intent(in) :: iso !< isotropic temperature factor
+integer i, j, k
 character(len=*) :: line
+real, dimension(3,3) :: orthogonalisation, uij, metric, rmetric
+double precision, dimension(3,3) :: temp
+double precision, dimension(3) :: eigv
+real, dimension(6) :: unitcellradian
+real rgamma
+logical ok_flag
+
+unitcellradian(1:3)=unitcell(1:3)
+unitcellradian(4:6)=unitcell(4:6)*2.0*3.14159/360.0
+
+rgamma=acos((cos(unitcellradian(4))*cos(unitcellradian(5))-cos(unitcellradian(6)))/&
+&   (sin(unitcellradian(4))*sin(unitcellradian(5))))
+orthogonalisation=0.0
+orthogonalisation(1,1) = unitcellradian(1)*sin(unitcellradian(5))*sin(rgamma)
+orthogonalisation(2,1) = -unitcellradian(1)*sin(unitcellradian(5))*cos(rgamma)
+orthogonalisation(2,2) = unitcellradian(2)*sin(unitcellradian(4))
+orthogonalisation(3,1) = unitcellradian(1)*cos(unitcellradian(5))
+orthogonalisation(3,2) = unitcellradian(2)*cos(unitcellradian(4))
+orthogonalisation(3,3) = unitcellradian(3)
+metric = matmul(transpose(orthogonalisation), orthogonalisation)
+call m33inv(metric, rmetric, ok_flag)
  
 if(.not. allocated(atomslist)) then
     allocate(atomslist(1024))
@@ -432,7 +520,39 @@ atomslist_index=atomslist_index+1
 atomslist(atomslist_index)%label=label
 atomslist(atomslist_index)%sfac=atomtype
 atomslist(atomslist_index)%coordinates=coordinates
-atomslist(atomslist_index)%iso=abs(iso)
+if(iso<0.0) then
+    ! If an isotropic U is given as -T, where T is in the range 
+    ! 0.5 < T < 5, it is fixed at T times the Ueq of the previous 
+    ! atom not constrained in this way
+    do i=atomslist_index-1, 1, -1
+        if(atomslist(i)%iso>0.0) then
+            atomslist(atomslist_index)%iso=atomslist(i)%iso*iso
+            exit
+        else if(any(atomslist(i)%aniso/=0.0)) then
+            ! anisotropic displacements, need to calculate Ueq first
+            uij(1,1)=atomslist(i)%aniso(1)
+            uij(2,2)=atomslist(i)%aniso(2)
+            uij(3,3)=atomslist(i)%aniso(3)
+            uij(2,3)=atomslist(i)%aniso(4)
+            uij(3,2)=atomslist(i)%aniso(4)
+            uij(1,3)=atomslist(i)%aniso(5)
+            uij(3,1)=atomslist(i)%aniso(5)
+            uij(1,2)=atomslist(i)%aniso(6)
+            uij(2,1)=atomslist(i)%aniso(6)
+            do j=1, 3
+                do k=1, 3
+                    uij(k,j)=uij(k,j)*sqrt(rmetric(j,j)*rmetric(k,k))
+                end do
+            end do
+            temp=matmul(orthogonalisation, matmul(uij, transpose(orthogonalisation)))
+            call DSYEVC3(temp, eigv)
+            atomslist(atomslist_index)%iso=1.0/3.0*sum(eigv)*iso
+            exit
+        end if
+    end do
+else
+    atomslist(atomslist_index)%iso=iso
+end if  
 atomslist(atomslist_index)%sof=sof
 atomslist(atomslist_index)%resi=residue
 atomslist(atomslist_index)%part=part
@@ -440,9 +560,10 @@ atomslist(atomslist_index)%shelxline=line
 
 end subroutine
 
+!> Write the crystals file
 subroutine write_crystalfile()
 implicit none
-integer i, j
+integer i, j, k
 real occ
 character lattice
 character(len=3) :: centric
@@ -454,6 +575,7 @@ real, dimension(3) :: translation
 integer flag
 character, dimension(12), parameter :: letters=&
 &   (/'a', 'b', 'c', 'd', 'n', 'm', 'A', 'B', 'C', 'D', 'N', 'M'/)
+character(len=1024) :: buffer, buffer2
 
 open(123, file='crystalsinput.dat')
 
@@ -470,6 +592,13 @@ if(list1index>0) then
         write(123, '(a)') list1(i)
     end do
     write(123, '(a)') 'END'
+end if
+
+if(trim(list31(1))/='') then
+    do i=1, size(list31)
+        if(trim(list31(i))=='') exit
+        write(123, '(a)') trim(list31(i))
+    end do
 end if
 
 ! process list2
@@ -712,6 +841,11 @@ if(atomslist_index>0) then
             &   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
         else if(abs(atomslist(i)%sof)>=20.0) then
             occ=abs(atomslist(i)%sof)-int(abs(atomslist(i)%sof)/10.0)*10.0
+            if(atomslist(i)%sof>0) then
+                occ=occ*fvar(int(abs(atomslist(i)%sof)/10.0))
+            else
+                occ=occ*(1.0-fvar(int(abs(atomslist(i)%sof)/10.0)))
+            end if
             ! restraints done later
         else if(atomslist(i)%sof<0.0) then
             print *, "don't know what to do with negative soc"
@@ -736,7 +870,7 @@ if(atomslist_index>0) then
             &   atomslist(i)%aniso(4:6)
         else
             write(123, '("CONT U[11]=",F0.5, ", X=",F0.5, ", Y=",F0.5, ", Z=", F0.5)') &
-            &   atomslist(i)%iso, atomslist(i)%coordinates        
+            &   abs(atomslist(i)%iso), atomslist(i)%coordinates        
         end if
         if(atomslist(i)%resi>0) then
             write(123, '("CONT RESIDUE=",I0)') atomslist(i)%resi
@@ -748,16 +882,17 @@ if(atomslist_index>0) then
     write(123, '(a)') 'END'
 end if
 
+
 close(123)
 end subroutine
 
+!> Parse symmetry operator as text into a 3x3 matrix plus a translational vector
 subroutine readsymm(symmtext,symmatrix, translation)
-! convert a text symmetry operation into a 3*3 matrix plus a vector
 implicit none
-character(len=*), intent(in) :: symmtext
+character(len=*), intent(in) :: symmtext !< Raw symmetry operator as text
 character(len=10) numberstring
-real, dimension(3,3), intent(out) :: symmatrix
-real, dimension(3), intent(out) :: translation
+real, dimension(3,3), intent(out) :: symmatrix !< 3x3 rotation matrix
+real, dimension(3), intent(out) :: translation !< translational vector
 logical fractionbool, numberfound
 
 integer length, coma, i, numberinteger,j
@@ -892,6 +1027,7 @@ contains
     end subroutine
 end subroutine
 
+!> Parse RESI keyword. Change the current residue to the new value found.
 subroutine shelx_resi(line)
 implicit none
 character(len=*) :: line
@@ -899,6 +1035,7 @@ character(len=*) :: line
 read(line(5:), *) residue
 end subroutine
 
+!> Parse PART keyword. Change the current part to the new value found.
 subroutine shelx_part(line)
 implicit none
 character(len=*) :: line
@@ -906,6 +1043,7 @@ character(len=*) :: line
 read(line(5:), *) part
 end subroutine
 
+!> Parse the END keyword. Set the_end to true.
 subroutine shelx_end(line)
 implicit none
 character(len=*) :: line
@@ -914,6 +1052,7 @@ the_end=.true.
 
 end subroutine
 
+!> Algorithm to translate shelx labels into crystals serial code.
 subroutine getshelx2crystals_serial()
 implicit none
 integer i, j, k, start
@@ -1003,25 +1142,139 @@ end do duplicates
 
 
 end subroutine
+
+!***********************************************************************************************************************************
+!  M33INV  -  Compute the inverse of a 3x3 matrix.
+!
+!  A       = input 3x3 matrix to be inverted
+!  AINV    = output 3x3 inverse of matrix A
+!  OK_FLAG = (output) .TRUE. if the input matrix could be inverted, and .FALSE. if the input matrix is singular.
+!***********************************************************************************************************************************
+!> Compute the inverse of a 3x3 matrix.
+SUBROUTINE M33INV (A, AINV, OK_FLAG)
+
+IMPLICIT NONE
+
+real, DIMENSION(3,3), INTENT(IN)  :: A
+real, DIMENSION(3,3), INTENT(OUT) :: AINV
+LOGICAL, INTENT(OUT) :: OK_FLAG
+
+real, PARAMETER :: EPS = 1.0E-10
+real :: DET
+real, DIMENSION(3,3) :: COFACTOR
+
+
+DET =   A(1,1)*A(2,2)*A(3,3)  &
+&    - A(1,1)*A(2,3)*A(3,2)  &
+&    - A(1,2)*A(2,1)*A(3,3)  &
+&    + A(1,2)*A(2,3)*A(3,1)  &
+&    + A(1,3)*A(2,1)*A(3,2)  &
+&    - A(1,3)*A(2,2)*A(3,1)
+
+IF (ABS(DET) .LE. EPS) THEN
+ AINV = 0.0D0
+ OK_FLAG = .FALSE.
+ RETURN
+END IF
+
+COFACTOR(1,1) = +(A(2,2)*A(3,3)-A(2,3)*A(3,2))
+COFACTOR(1,2) = -(A(2,1)*A(3,3)-A(2,3)*A(3,1))
+COFACTOR(1,3) = +(A(2,1)*A(3,2)-A(2,2)*A(3,1))
+COFACTOR(2,1) = -(A(1,2)*A(3,3)-A(1,3)*A(3,2))
+COFACTOR(2,2) = +(A(1,1)*A(3,3)-A(1,3)*A(3,1))
+COFACTOR(2,3) = -(A(1,1)*A(3,2)-A(1,2)*A(3,1))
+COFACTOR(3,1) = +(A(1,2)*A(2,3)-A(1,3)*A(2,2))
+COFACTOR(3,2) = -(A(1,1)*A(2,3)-A(1,3)*A(2,1))
+COFACTOR(3,3) = +(A(1,1)*A(2,2)-A(1,2)*A(2,1))
+
+AINV = TRANSPOSE(COFACTOR) / DET
+
+OK_FLAG = .TRUE.
+
+RETURN
+
+END SUBROUTINE M33INV
+
+
+!https://www.mpi-hd.mpg.de/personalhomes/globes/3x3/
+!Joachim Kopp
+!Efficient numerical diagonalization of hermitian 3x3 matrices
+!Int. J. Mod. Phys. C 19 (2008) 523-548
+!arXiv.org: physics/0610206
+!* ----------------------------------------------------------------------------
+!* Numerical diagonalization of 3x3 matrcies
+!* Copyright (C) 2006  Joachim Kopp
+!* ----------------------------------------------------------------------------
+!* This library is free software; you can redistribute it and/or
+!* modify it under the terms of the GNU Lesser General Public
+!* License as published by the Free Software Foundation; either
+!* version 2.1 of the License, or (at your option) any later version.
+!*
+!* This library is distributed in the hope that it will be useful,
+!* but WITHOUT ANY WARRANTY; without even the implied warranty of
+!* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+!* Lesser General Public License for more details.
+!*
+!* You should have received a copy of the GNU Lesser General Public
+!* License along with this library; if not, write to the Free Software
+!* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+!* ----------------------------------------------------------------------------
+
+!> Calculates the eigenvalues of a symmetric 3x3 matrix A using Cardano's analytical algorithm.
+!* ----------------------------------------------------------------------------
+      SUBROUTINE DSYEVC3(A, W)
+!* ----------------------------------------------------------------------------
+!* Calculates the eigenvalues of a symmetric 3x3 matrix A using Cardano's
+!* analytical algorithm.
+!* Only the diagonal and upper triangular parts of A are accessed. The access
+!* is read-only.
+!* ----------------------------------------------------------------------------
+!* Parameters:
+!*   A: The symmetric input matrix
+!*   W: Storage buffer for eigenvalues
+!* ----------------------------------------------------------------------------
+!*     .. Arguments ..
+      DOUBLE PRECISION A(3,3)
+      DOUBLE PRECISION W(3)
+
+!*     .. Parameters ..
+      DOUBLE PRECISION SQRT3
+      PARAMETER        ( SQRT3 = 1.73205080756887729352744634151D0 )
+
+!*     .. Local Variables ..
+      DOUBLE PRECISION M, C1, C0
+      DOUBLE PRECISION DE, DD, EE, FF
+      DOUBLE PRECISION P, SQRTP, Q, C, S, PHI
+  
+!*     Determine coefficients of characteristic poynomial. We write
+!*           | A   D   F  |
+!*      A =  | D*  B   E  |
+!*           | F*  E*  C  |
+      DE    = A(1,2) * A(2,3)
+      DD    = A(1,2)**2
+      EE    = A(2,3)**2
+      FF    = A(1,3)**2
+      M     = A(1,1) + A(2,2) + A(3,3)
+      C1    = ( A(1,1)*A(2,2) + A(1,1)*A(3,3) + A(2,2)*A(3,3) ) - (DD + EE + FF)
+      C0    = A(3,3)*DD + A(1,1)*EE + A(2,2)*FF - A(1,1)*A(2,2)*A(3,3) - 2.0D0 * A(1,3)*DE
+
+      P     = M**2 - 3.0D0 * C1
+      Q     = M*(P - (3.0D0/2.0D0)*C1) - (27.0D0/2.0D0)*C0
+      SQRTP = SQRT(ABS(P))
+
+      PHI   = 27.0D0 * ( 0.25D0 * C1**2 * (P - C1) + C0 * (Q + (27.0D0/4.0D0)*C0) )
+      PHI   = (1.0D0/3.0D0) * ATAN2(SQRT(ABS(PHI)), Q)
+
+      C     = SQRTP * COS(PHI)
+      S     = (1.0D0/SQRT3) * SQRTP * SIN(PHI)
+
+      W(2) = (1.0D0/3.0D0) * (M - C)
+      W(3) = W(2) + S
+      W(1) = W(2) + C
+      W(2) = W(2) - S
+
+      END SUBROUTINE
+!* End of subroutine DSYEVC3
+
  
 end module
-
-
-
-
-
-!#LIST	   5
-!READ NATOM =     24, NLAYER =    0, NELEMENT =    0, NBATCH =    0
-!OVERALL   10.013602  0.050000  0.050000  1.000000  0.000000	  156.0803375
-!
-!ATOM CU            1.   1.000000         0.   0.500000  -0.297919   0.250000
-!CON U[11]=   0.052972   0.024222   0.052116   0.000000  -0.004649   0.000000
-!CON SPARE=	 0.50          0   26279939          1                     0
-!
-!ATOM H            81.   1.000000         1.   0.465536   0.338532   0.388114
-!CON U[11]=   0.050000   0.000000   0.000000   0.000000   0.000000   0.000000
-!CON SPARE=	 1.00          0    8388609          1                     0
-!
-! ATOM TYPE=C,SERIAL=4,OCC=1,U[ISO]=0,X=0.027,Y=0.384,Z=0.725,
-! CONT U[11]=0.075,U[22]=0.048,U[33]=.069
-! CONT U[23]=-.007,U[13]=.043,U[12]=-.001

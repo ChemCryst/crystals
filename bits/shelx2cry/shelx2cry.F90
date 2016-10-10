@@ -1,7 +1,13 @@
+!> This program convert a shelxl ins or res file to a crystals file
+!! 
+!! Usage: shel2cry filename
 program shelx2cry
 use shelx2cry_mod
 implicit none
-integer arg_cpt, iostatus, arg_length, shelxf_id, line_number
+
+integer arg_cpt, iostatus, arg_length
+integer line_number !< Hold the line number from the shelx file
+integer shelxf_id !< unit id of the shelx file
 character(len=:), allocatable :: shelx_filepath, line
 logical file_exists
 
@@ -60,9 +66,6 @@ do while(iostatus==0)
 end do
 
 call write_crystalfile()
-
-
-
 
 
 end program
