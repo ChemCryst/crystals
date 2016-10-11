@@ -9,7 +9,7 @@ integer arg_cpt, iostatus, arg_length
 integer line_number !< Hold the line number from the shelx file
 integer shelxf_id !< unit id of the shelx file
 character(len=:), allocatable :: shelx_filepath, line
-logical file_exists
+logical file_exists, foundres
 
 ! Default length
 allocate(character(len=1) :: shelx_filepath)
@@ -44,16 +44,35 @@ if(.not. file_exists) then
     if(.not. file_exists) then
         inquire(file=trim(shelx_filepath)//'.res', exist=file_exists)
         if(.not. file_exists) then
-            print *, 'Cannot find `', trim(shelx_filepath), '`, `', &
-            &   trim(shelx_filepath)//'.ins`', ' or `', &
-            &   trim(shelx_filepath)//'.res`' 
-            stop            
+            inquire(file=trim(shelx_filepath)//'.cif', exist=file_exists)
+            if(.not. file_exists) then
+                print *, 'Cannot find `', trim(shelx_filepath), '`, `', &
+                &   trim(shelx_filepath)//'.ins`', ' or `', &
+                &   trim(shelx_filepath)//'.res`' 
+                stop            
+            else
+                call extract_res_from_cif(trim(shelx_filepath)//'.cif', foundres)
+                if(.not. foundres) then
+                    print *, 'Error: No res file included in cif file'
+                    stop
+                end if
+                shelx_filepath=trim(shelx_filepath)//'.res'
+            end if
         else
             shelx_filepath=trim(shelx_filepath)//'.res'
         end if
     else
         shelx_filepath=trim(shelx_filepath)//'.ins'
     end if
+end if
+
+if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
+    call extract_res_from_cif(trim(shelx_filepath), foundres)
+    if(.not. foundres) then
+        print *, 'Error: No res file included in cif file'
+        stop
+    end if
+    shelx_filepath(len_trim(shelx_filepath)-2:)='res'
 end if
 
 open(newunit=shelxf_id,file=trim(shelx_filepath), status='old')

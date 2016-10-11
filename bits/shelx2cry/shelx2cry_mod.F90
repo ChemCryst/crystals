@@ -64,6 +64,14 @@ type shelx_serial_t
 end type
 type(shelx_serial_t), dimension(:), allocatable :: shelx2crystals_serial !< Array used to translates shelx labels into crystals serial code
 
+!> type DFIX
+type dfix_t
+	real :: distance, esd
+	character(len=6) :: atom1, atom2
+end type
+type(dfix_t), dimension(1024) :: dfix_table
+integer :: dfix_table_index=0
+
 contains
 
 !> Read a line of the res/inf file. If line is split using `=`, reconstruct the full line.
@@ -111,7 +119,7 @@ do
 
     if(line(len_trim(line):len_trim(line))/='=') then
         ! end of line
-        exit
+        return
     else
         ! Continuation line present, appending next line...
         ! removing continuation symbol
@@ -140,7 +148,6 @@ integer i
 found=.false.
 
 if(len_trim(line)<3) then
-    print *, 'Blank line'
     return
 end if
 
@@ -187,6 +194,10 @@ if(len_trim(line)>3) then
         case ('PART')
         call shelx_part(line)
         found=.true.
+
+        case ('DFIX')
+        call shelx_dfix(line)
+        found=.true.
     end select 
 end if
 
@@ -202,15 +213,28 @@ select case (keyword)
     found=.true.
 
 end select 
+! deprecated keywords
+if(line(1:4)=='TIME' .or. line(1:4)=='HOPE' .or. line(1:4)=='MOLE') then
+	write(*, '(a)') 'Keywords `TIME`, `TIME` and `MOLE` are deprecated and therefore ignored'
+	write(*, '(a,I0,a, a)') 'Line ', line_number,': ', trim(line)
+	return
+end if
 
 if(found) return
 
 ! Check for any valid keyword that we do not handle yet
 do i=1, size(shelx_keywords)
     if(len_trim(line)>3) then
-        if(line(1:4)==shelx_keywords(i)) return
+        if(line(1:4)==shelx_keywords(i)) then
+			write(*, '(a,a,a)') 'Found `', trim(shelx_keywords(i)), '` keyword which is not supported by crystals: '
+			write(*, '(a,I0,a, a)') 'Line ', line_number,': ', trim(line)
+			return
+		end if
     end if
 end do
+
+! there is something but it is not a keyword.
+! Check for atoms:
 
 ! No keyword found, probably an atom list
 ! O1    4    0.560776    0.256941    0.101770    11.00000    0.07401    0.12846 0.04453   -0.00865    0.01598   -0.01300
@@ -225,6 +249,15 @@ if(iostatus/=0) then
     read(line, *, iostat=iostatus) label, atomtype, coordinates, occupancy, iso 
     if(iostatus==0) then
        call shelxl_atomiso(label, atomtype, coordinates, occupancy, iso, line)
+    end if
+end if
+
+! try with just the coordinates
+if(iostatus/=0) then
+    !H1N   2    0.426149    0.251251    0.038448    11.00000   -1.20000
+    read(line, *, iostat=iostatus) label, atomtype, coordinates
+    if(iostatus==0) then
+       call shelxl_atomiso(label, atomtype, coordinates, 1.0, 0.05, line)
     end if
 end if
 
@@ -245,6 +278,149 @@ start=index(line, 'in ')
 spacegroup%symbol=line(start+3:)
 
 !print *, line_number, ' Processing TITL' 
+end subroutine
+
+!> Parse the DFIX keyword. Restrain bond distances
+subroutine shelx_dfix(line)
+implicit none
+character(len=*), intent(in) :: line
+integer linepos, i, j
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+logical found
+character(len=128) :: buffer, buffer2
+real distance, esd
+
+!print *, line
+
+! parsing more complicated on this one as we don't know the number of parameters
+linepos=4 ! First 4 is DFIX
+
+! check for `_*̀
+if(line(5:5)=='_') then
+	write(*,*) '_* or residue selection not supported on DFIX'
+	write(*,*) line
+	write(*,*) repeat(' ', 4), '^^'
+	linepos=6
+end if
+
+do while(linepos<=len(line))
+	linepos=linepos+1
+	if(line(linepos:linepos)/=' ') exit
+end do
+if(linepos>len(line)) then
+	write(*,*) ' I have not found anything after DFIX'
+	write(*,*) line
+	stop
+end if
+
+! we have something, must be the distance
+buffer=''
+do while(line(linepos:linepos)/=' ')
+	found=.false.
+	do i=1, size(numbers)
+		if(line(linepos:linepos)==numbers(i)) then
+			found=.true.
+			exit
+		end if
+	end do
+	if(.not. found) then
+		! no number.
+		write(*,*) 'Expected a number but got ', line(linepos:linepos)
+		write(*,*) line
+		write(*,*) repeat(' ', linepos-1), '^'
+		stop
+	end if
+	buffer=trim(buffer)//line(linepos:linepos)
+	linepos=linepos+1
+end do
+! number read, lets convert it to a proper one
+read(buffer, *) distance
+
+! skip spaces again
+do while(linepos<=len(line))
+	if(line(linepos:linepos)/=' ') exit
+	linepos=linepos+1
+end do
+if(linepos>len(line)) then
+	write(*,*) ' I have not found the esd or atom definition'
+	write(*,*) line
+	stop
+end if
+	
+! we have something, must be esd or atom
+found=.false.
+do i=1, size(numbers)
+	if(line(linepos:linepos)==numbers(i)) then
+		found=.true.
+		exit
+	end if
+end do
+if(found) then
+	! it's a number!
+	buffer=''
+	do while(line(linepos:linepos)/=' ')
+		found=.false.
+		do i=1, size(numbers)
+			if(line(linepos:linepos)==numbers(i)) then
+				found=.true.
+				exit
+			end if
+		end do
+		if(.not. found) then
+			write(*,*) 'Expected a number but got ', line(linepos:linepos)
+			write(*,*) line
+			write(*,*) repeat(' ', linepos-1), '^'
+			stop
+		end if
+		buffer=trim(buffer)//line(linepos:linepos)
+		linepos=linepos+1
+	end do
+	! number read, lets convert it to a proper one
+	read(buffer, *) esd
+else
+	esd=0.02
+end if	
+
+! fetch now the list of atoms
+do
+	!print *, trim(line(linepos:))
+	! skip spaces again
+	do while(linepos<=len(line))
+		if(line(linepos:linepos)/=' ') exit
+		linepos=linepos+1
+	end do
+	if(linepos>len(line)) exit
+	! get atom
+	buffer=''
+	do while(line(linepos:linepos)/=' ')
+		buffer=trim(buffer)//line(linepos:linepos)
+		linepos=linepos+1
+		if(linepos>len(line)) exit
+	end do
+
+	! get second atom
+	do while(linepos<=len(line))
+		linepos=linepos+1
+		if(line(linepos:linepos)/=' ') exit
+	end do
+	if(linepos>len(line)) exit
+	buffer2=''
+	do while(line(linepos:linepos)/=' ')
+		buffer2=trim(buffer2)//line(linepos:linepos)
+		linepos=linepos+1
+		if(linepos>len(line)) exit		
+	end do
+	
+	!print *, trim(buffer), '++', trim(buffer2)
+	!print *, linepos, len(line)
+	dfix_table_index=dfix_table_index+1
+	dfix_table(dfix_table_index)%distance=distance
+	dfix_table(dfix_table_index)%esd=esd
+	dfix_table(dfix_table_index)%atom1=trim(buffer)
+	dfix_table(dfix_table_index)%atom2=trim(buffer2)
+
+end do
+
 end subroutine
 
 !> Parse the REM keryword. Do nothing
@@ -576,6 +752,7 @@ integer flag
 character, dimension(12), parameter :: letters=&
 &   (/'a', 'b', 'c', 'd', 'n', 'm', 'A', 'B', 'C', 'D', 'N', 'M'/)
 character(len=1024) :: buffer, buffer2
+integer serial1, serial2
 
 open(123, file='crystalsinput.dat')
 
@@ -836,9 +1013,9 @@ if(atomslist_index>0) then
         if(atomslist(i)%sof>=10.0 .and. atomslist(i)%sof<20.0) then
             ! fixed occupancy
             occ=atomslist(i)%sof-10.0
-            list12index=list12index+1
-            write(list12(list12index), '("FIX ",a,"(",I0,", occ)")') &
-            &   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
+            !list12index=list12index+1
+            !write(list12(list12index), '("FIX ",a,"(",I0,", occ)")') &
+            !&   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
         else if(abs(atomslist(i)%sof)>=20.0) then
             occ=abs(atomslist(i)%sof)-int(abs(atomslist(i)%sof)/10.0)*10.0
             if(atomslist(i)%sof>0) then
@@ -881,6 +1058,48 @@ if(atomslist_index>0) then
     end do
     write(123, '(a)') 'END'
 end if
+
+if(list12index>0) then
+    write(123, '(a)') '\LIST 12'
+    do i=1, list12index
+        write(123, '(a)') list12(i)
+    end do
+    write(123, '(a)') 'END'
+end if
+
+! Restraints
+write(123, '(a)') '\LIST 16'
+write(123, '(a)') 'NO'
+write(123, '(a)') 'REM   HREST   START (DO NOT REMOVE THIS LINE)' 
+write(123, '(a)') 'REM   HREST   END (DO NOT REMOVE THIS LINE) '
+! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
+do i=1, dfix_table_index
+	! get serial for atom 1
+	serial1=0
+	do j=1, atomslist_index
+		if(trim(dfix_table(i)%atom1)==shelx2crystals_serial(j)%shelx_label) then
+			serial1=j
+			exit
+		end if
+	end do
+	! get serial for atom 2
+	serial2=0
+	do j=1, atomslist_index
+		if(trim(dfix_table(i)%atom2)==shelx2crystals_serial(j)%shelx_label) then
+			serial2=j
+			exit
+		end if
+	end do
+	
+	write(123, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+	&	'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+	&	trim(shelx2crystals_serial(serial1)%atom), shelx2crystals_serial(serial1)%crystals_serial, &
+	&	trim(shelx2crystals_serial(serial2)%atom), shelx2crystals_serial(serial2)%crystals_serial
+	
+end do
+write(123, '(a)') 'END'
+!write(123, '(a)') '# Remove space after hash to activate next line'
+!write(123, '(a)') '# USE LAST'
 
 
 close(123)
@@ -1275,6 +1494,73 @@ END SUBROUTINE M33INV
 
       END SUBROUTINE
 !* End of subroutine DSYEVC3
+
+subroutine extract_res_from_cif(shelx_filepath, found)
+implicit  none
+character(len=*), intent(in) :: shelx_filepath
+logical, intent(out) :: found
+character(len=len(shelx_filepath)) :: res_filepath
+integer resid, cifid, iostatus
+character(len=2048) :: buffer
+
+found=.false.
+open(newunit=cifid,file=shelx_filepath, status='old')
+do
+    read(cifid, '(a)', iostat=iostatus) buffer
+    if(iostatus/=0) then
+        return
+    end if
+    if(index(buffer, '_shelx_res_file')>0) then
+		! found a res file!
+		found=.true.
+		read(cifid, '(a)', iostat=iostatus) buffer
+		if(trim(buffer)/=';') then
+			print *, 'unexpected line: ', trim(buffer)
+			print *, 'I was expecting `;`'
+			call abort()
+		end if
+		
+		res_filepath=shelx_filepath
+		res_filepath(len_trim(res_filepath)-2:)='res'
+		open(newunit=resid,file=res_filepath)		
+		do
+			read(cifid, '(a)', iostat=iostatus) buffer
+			if(iostatus/=0 .or. trim(buffer)==';') then
+				close(resid)
+				return
+			end if
+			write(resid, '(a)') trim(buffer)
+		end do
+	end if
+
+    if(index(buffer, '_shelx_hkl_file')>0) then
+		! found a hkl file!
+		read(cifid, '(a)', iostat=iostatus) buffer
+		if(trim(buffer)/=';') then
+			print *, 'unexpected line: ', trim(buffer)
+			print *, 'I was expecting `;`'
+			call abort()
+		end if
+		
+		res_filepath=shelx_filepath
+		res_filepath(len_trim(res_filepath)-2:)='hkl'
+		open(newunit=resid,file=res_filepath)		
+		do
+			read(cifid, '(a)', iostat=iostatus) buffer
+			if(iostatus/=0 .or. trim(buffer)==';') then
+				close(resid)
+				return
+			end if
+			write(resid, '(a)') trim(buffer)
+		end do
+	end if
+	
+end do
+
+
+end subroutine
+
+
 
  
 end module
