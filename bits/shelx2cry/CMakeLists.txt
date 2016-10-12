@@ -12,6 +12,10 @@ ENDIF(APPLE)
 
 cmake_minimum_required(VERSION 2.8)
 
+SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
+message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
+INCLUDE_DIRECTORIES(${Fortran_MODULE_DIRECTORY})
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules")
 
 set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
@@ -26,7 +30,14 @@ SET (CMAKE_Fortran_FLAGS_RELEASE "-O2")
 message(STATUS "shelx2cry fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
 add_executable (shelx2cry shelx2cry_mod.F90  shelx2cry.F90)
+SET_TARGET_PROPERTIES(shelx2cry PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
+
+add_library(shelx2crymod STATIC shelx2cry_mod.F90)
 message(STATUS "End building shelx2cry")
+
+# Unit testing
+ADD_SUBDIRECTORY(pFunit)
+
 message("")
 
 
