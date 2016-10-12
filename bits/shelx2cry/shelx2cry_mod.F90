@@ -43,6 +43,8 @@ type atom_t
     integer resi !< residue from shelx
     integer part !< group from shelx
     character(len=512) :: shelxline !< raw line from res/ins file
+    integer :: line_number !< line number of shelxline from res/ins file
+    integer :: crystals_serial !< crystals serial code
 end type
 type(atom_t), dimension(:), allocatable :: atomslist !< list of atoms in the res/ins file
 integer atomslist_index !< Current index in the list of atoms list (atomslist)
@@ -56,18 +58,13 @@ type spacegroup_t
 end type
 type(spacegroup_t) :: spacegroup !< Hold the spagroup information
 
-!> Translates shelx label to crystals serial code
-type shelx_serial_t
-    character(len=6) :: shelx_label !< shelx label
-    character(len=3) :: atom !< atom type (derived from sfac not from the label)
-    integer :: crystals_serial !< crystals serial code
-end type
-type(shelx_serial_t), dimension(:), allocatable :: shelx2crystals_serial !< Array used to translates shelx labels into crystals serial code
-
 !> type DFIX
 type dfix_t
 	real :: distance, esd
 	character(len=6) :: atom1, atom2
+	integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+	character(len=1024) :: shelxline !< raw instruction line from res file
+	integer :: line_number !< Line number form res file
 end type
 type(dfix_t), dimension(1024) :: dfix_table
 integer :: dfix_table_index=0
@@ -289,6 +286,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
 logical found
 character(len=128) :: buffer, buffer2
 real distance, esd
+integer :: residue
 
 !print *, line
 
@@ -296,10 +294,20 @@ real distance, esd
 linepos=4 ! First 4 is DFIX
 
 ! check for `_*̀
+residue=-99
 if(line(5:5)=='_') then
-	write(*,*) '_* or residue selection not supported on DFIX'
-	write(*,*) line
-	write(*,*) repeat(' ', 4), '^^'
+	if(line(6:6)=='*') then
+		residue=-1
+	else
+		found=.false.
+		do i=1, 10
+			if(line(6:6)==numbers(i)) then
+				found=.true.
+				read(line(6:6), *) residue
+				exit
+			end if
+		end do
+	end if
 	linepos=6
 end if
 
@@ -418,7 +426,9 @@ do
 	dfix_table(dfix_table_index)%esd=esd
 	dfix_table(dfix_table_index)%atom1=trim(buffer)
 	dfix_table(dfix_table_index)%atom2=trim(buffer2)
-
+	dfix_table(dfix_table_index)%shelxline=trim(line)
+	dfix_table(dfix_table_index)%line_number=line_number
+	dfix_table(dfix_table_index)%residue=residue
 end do
 
 end subroutine
@@ -631,6 +641,7 @@ if(.not. allocated(atomslist)) then
     atomslist%resi=0
     atomslist%part=0
     atomslist%shelxline=''
+    atomslist%crystals_serial=-1
 end if
 
 atomslist_index=atomslist_index+1
@@ -642,6 +653,7 @@ atomslist(atomslist_index)%sof=sof
 atomslist(atomslist_index)%resi=residue
 atomslist(atomslist_index)%part=part
 atomslist(atomslist_index)%shelxline=line
+atomslist(atomslist_index)%line_number=line_number
 end subroutine
 
 !> Parse the atom parameters when adps are not present but isotropic temperature factor.
@@ -733,6 +745,7 @@ atomslist(atomslist_index)%sof=sof
 atomslist(atomslist_index)%resi=residue
 atomslist(atomslist_index)%part=part
 atomslist(atomslist_index)%shelxline=line
+atomslist(atomslist_index)%line_number=line_number
 
 end subroutine
 
@@ -1035,9 +1048,14 @@ if(atomslist_index>0) then
         else
             flag=0
         end if
+        if(atomslist(i)%crystals_serial==-1) then
+			print *, 'Error: crystals serial not defined'
+			call abort()
+		end if
+        
         write(123, '(a,1X,a)') '# ', trim(atomslist(i)%shelxline)
         write(123, '("ATOM TYPE=", a, ", SERIAL=",I0, ", OCC=",F0.5, ", FLAG=", I0)')  &
-        &   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial, occ, flag
+        &   trim(sfac(atomslist(i)%sfac)), atomslist(i)%crystals_serial, occ, flag
         if(any(atomslist(i)%aniso/=0.0)) then
             write(123, '("CONT X=",F0.5, ", Y=",F0.5, ", Z=", F0.5)') &
             &   atomslist(i)%coordinates
@@ -1067,40 +1085,7 @@ if(list12index>0) then
     write(123, '(a)') 'END'
 end if
 
-! Restraints
-write(123, '(a)') '\LIST 16'
-write(123, '(a)') 'NO'
-write(123, '(a)') 'REM   HREST   START (DO NOT REMOVE THIS LINE)' 
-write(123, '(a)') 'REM   HREST   END (DO NOT REMOVE THIS LINE) '
-! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
-do i=1, dfix_table_index
-	! get serial for atom 1
-	serial1=0
-	do j=1, atomslist_index
-		if(trim(dfix_table(i)%atom1)==shelx2crystals_serial(j)%shelx_label) then
-			serial1=j
-			exit
-		end if
-	end do
-	! get serial for atom 2
-	serial2=0
-	do j=1, atomslist_index
-		if(trim(dfix_table(i)%atom2)==shelx2crystals_serial(j)%shelx_label) then
-			serial2=j
-			exit
-		end if
-	end do
-	
-	write(123, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
-	&	'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-	&	trim(shelx2crystals_serial(serial1)%atom), shelx2crystals_serial(serial1)%crystals_serial, &
-	&	trim(shelx2crystals_serial(serial2)%atom), shelx2crystals_serial(serial2)%crystals_serial
-	
-end do
-write(123, '(a)') 'END'
-!write(123, '(a)') '# Remove space after hash to activate next line'
-!write(123, '(a)') '# USE LAST'
-
+call writelist16()
 
 close(123)
 end subroutine
@@ -1278,8 +1263,6 @@ integer i, j, k, start
 character(len=6) :: label, buffer
 logical found, foundresidue
 
-allocate(shelx2crystals_serial(atomslist_index))
-
 ! shelx allows the same label in different residues. It's messing up the numerotation for crystals
 ! in this case, we will prefix the serial in crystals with the residue
 foundresidue=.false.
@@ -1292,8 +1275,6 @@ end do
 
 do i=1, atomslist_index
     label=atomslist(i)%label
-    shelx2crystals_serial(i)%shelx_label=label
-    shelx2crystals_serial(i)%atom=sfac(atomslist(i)%sfac)
     ! fetch first number
     start=0
     do j=1, len_trim(label)
@@ -1337,7 +1318,7 @@ do i=1, atomslist_index
                 end if
             end if
         end do
-        read(buffer, *) shelx2crystals_serial(i)%crystals_serial
+        read(buffer, *) atomslist(i)%crystals_serial
     end if    
 end do
 
@@ -1347,10 +1328,10 @@ duplicates:do while(found)
     found=.false.
     do i=1, atomslist_index
         do j=i+1, atomslist_index
-            if(shelx2crystals_serial(i)%crystals_serial==shelx2crystals_serial(j)%crystals_serial) then
-                if(shelx2crystals_serial(i)%atom==shelx2crystals_serial(j)%atom) then
+            if(atomslist(i)%crystals_serial==atomslist(j)%crystals_serial) then
+                if(atomslist(i)%sfac==atomslist(j)%sfac) then
                     ! identical serial, incrementing and starting search again
-                    shelx2crystals_serial(i)%crystals_serial=shelx2crystals_serial(i)%crystals_serial+1
+                    atomslist(i)%crystals_serial=atomslist(i)%crystals_serial+1
                     found=.true.
                     cycle duplicates
                 end if
@@ -1560,7 +1541,137 @@ end do
 
 end subroutine
 
+subroutine writelist16()
+implicit none
+integer i, j, k, l, k1,k2
+integer, dimension(1024) :: serial1, serial2
+logical found
 
+! Restraints
+write(123, '(a)') '\LIST 16'
+write(123, '(a)') 'NO'
+write(123, '(a)') 'REM   HREST   START (DO NOT REMOVE THIS LINE)' 
+write(123, '(a)') 'REM   HREST   END (DO NOT REMOVE THIS LINE) '
+! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
+do i=1, dfix_table_index
+	write(123, '(a, a)') '# ', dfix_table(i)%shelxline
+	! get serial for atom 1
+	serial1=0
+	k1=0
+	do j=1, atomslist_index
+		if(trim(dfix_table(i)%atom1)==trim(atomslist(j)%label)) then
+			k1=k1+1
+			serial1(k1)=j
+		end if
+	end do
+	! get serial for atom 2
+	serial2=0
+	k2=0
+	do j=1, atomslist_index
+		if(trim(dfix_table(i)%atom2)==trim(atomslist(j)%label)) then
+			k2=k2+1
+			serial2(k2)=j
+		end if
+	end do
+	
+	if(dfix_table(i)%residue==-99) then
+		! No residue used
+		if(k1>1 .or. k2>1) then
+			print *, 'Error: duplicated label found and no residue specified in DFIX'
+			write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, dfix_table(i)%shelxline
+			do j=1, k1
+				write(*, '("Line ", I0, ": ", a)') atomslist(serial1(j))%line_number, trim(atomslist(serial1(j))%shelxline)
+			end do
+			do j=1, k2
+				write(*, '("Line ", I0, ": ", a)') atomslist(serial2(j))%line_number, trim(atomslist(serial2(j))%shelxline)
+			end do
+			call abort()
+		else if(k1==0 .or. k2==0) then
+			print *, 'Cannot find ', dfix_table(i)%atom1, ' or ', dfix_table(i)%atom2, ' in res file'
+			call abort()
+		else
+			! good to go
+			if(atomslist(serial1(1))%crystals_serial==-1 .or. atomslist(serial2(1))%crystals_serial==-1) then
+				print *, 'Error: Crystals serial not defined'
+				call abort()
+			end if
+			write(123, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+			&	'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+			&	trim(sfac(atomslist(serial1(1))%sfac)), atomslist(serial1(1))%crystals_serial, &
+			&	trim(sfac(atomslist(serial2(1))%sfac)), atomslist(serial2(1))%crystals_serial
+		end if
+	else if(dfix_table(i)%residue==-1) then
+		! dfix applied to all residues
+		if(k1/=k2) then
+			print *, 'Error: check your res file. I cannot find all the atom in all the residues'
+			call abort()
+		else
+			do k=1, k1
+				! good to go
+				! looking for matching residue
+				found=.false.
+				do l=1, k1
+					if(atomslist(serial1(k))%resi==atomslist(serial2(l))%resi) then
+						found=.true.
+						exit
+					end if
+				end do
+				if(.not. found) then
+					print *, 'Error: cannot find the corresponding atom in the residue ', atomslist(serial1(k))%resi
+					call abort()
+				end if
+									
+				if(atomslist(serial1(k))%crystals_serial==-1 .or. atomslist(serial2(l))%crystals_serial==-1) then
+					print *, 'Error: Crystals serial not defined'
+					call abort()
+				end if
+				write(123, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+				&	'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+				&	trim(sfac(atomslist(serial1(k))%sfac)), atomslist(serial1(k))%crystals_serial, &
+				&	trim(sfac(atomslist(serial2(l))%sfac)), atomslist(serial2(l))%crystals_serial
+			end do
+		end if
+	else
+		! looking for a specific residue
+		found=.false.
+		do l=1, k1
+			if(dfix_table(i)%residue==atomslist(serial1(l))%resi) then
+				found=.true.
+				exit
+			end if
+		end do
+		k1=l
+		if(.not. found) then
+			print *, 'Error: cannot find the corresponding atom in the residue ', dfix_table(i)%residue
+			write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
+			call abort()
+		end if
+		do l=1, k2
+			if(dfix_table(i)%residue==atomslist(serial2(l))%resi) then
+				found=.true.
+				exit
+			end if
+		end do
+		k2=l
+		if(.not. found) then
+			print *, 'Error: cannot find the corresponding atom in the residue ', dfix_table(i)%residue
+			write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
+			call abort()
+		end if
+
+		write(123, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+		&	'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+		&	trim(sfac(atomslist(serial1(k1))%sfac)), atomslist(serial1(k1))%crystals_serial, &
+		&	trim(sfac(atomslist(serial2(k2))%sfac)), atomslist(serial2(k2))%crystals_serial
+		
+	end if
+				
+end do
+write(123, '(a)') 'END'
+!write(123, '(a)') '# Remove space after hash to activate next line'
+!write(123, '(a)') '# USE LAST'
+
+end subroutine
 
  
 end module
