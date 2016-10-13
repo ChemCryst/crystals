@@ -278,9 +278,10 @@ integer start
     ! extract space group
     start=index(line, 'in ')
     if(start==0) then
-        write(*,*) 'Error: Space group not specified in TITL'
-        write(*, '("Line ", I0, ": ", a)') line_number, trim(line)
-        stop
+        spacegroup%symbol='Unknown'
+        !write(*,*) 'Error: Space group not specified in TITL'
+        !write(*, '("Line ", I0, ": ", a)') line_number, trim(line)
+        !stop
     end if
         
     spacegroup%symbol=line(start+3:)
@@ -773,29 +774,7 @@ implicit none
 
     call write_spacegroup()
 
-    ! process list2
-    ! \LIST 2
-    ! CELL NSYM= 2, LATTICE = B
-    ! SYM X, Y, Z
-    ! SYM X, Y + 1/2,  - Z
-    ! SPACEGROUP B 1 1 2/B
-    ! CLASS MONOCLINIC
-    ! END
-    !write(crystals_fileunit, '(a)') '\LIST 2'
-    !if(centric=='YES') then
-    !    j=(spacegroup%symmindex+1)*2
-    !else
-    !    j=spacegroup%symmindex+1
-    !end if
-    !write(crystals_fileunit, '("CELL NSYM=", I0, ", LATTICE=", A, ", CENTRIC=", A)') &
-    !&   j, lattice, centric
-    !write(crystals_fileunit, '(a)') 'SYM X, Y, Z'
-    !if(centric=='YES') then
-    !    write(crystals_fileunit, '(a)') 'SYM -X, -Y, -Z'
-    !end if
-    !do i=1, spacegroup%symmindex
-    !end do
-    !write(crystals_fileunit, '(a)') 'END'
+    call write_list2()
 
     call write_list13()
 
@@ -898,6 +877,8 @@ logical found, foundresidue
                 end if
             end do
             read(buffer, *) atomslist(i)%crystals_serial
+        else
+            atomslist(i)%crystals_serial=1
         end if    
     end do
 
@@ -1089,7 +1070,7 @@ character(len=2048) :: buffer
                 read(cifid, '(a)', iostat=iostatus) buffer
                 if(iostatus/=0 .or. trim(buffer)==';') then
                     close(resid)
-                    return
+                    exit
                 end if
                 write(resid, '(a)') trim(buffer)
             end do
@@ -1111,7 +1092,7 @@ character(len=2048) :: buffer
                 read(cifid, '(a)', iostat=iostatus) buffer
                 if(iostatus/=0 .or. trim(buffer)==';') then
                     close(resid)
-                    return
+                    exit
                 end if
                 write(resid, '(a)') trim(buffer)
             end do
@@ -1541,6 +1522,238 @@ integer i
         write(crystals_fileunit, '(a)') 'END'
     end if
 
+end subroutine
+
+subroutine write_list2()
+use sginfo_mod
+implicit none
+type(T_sginfo) :: sginfo
+type(T_RTMx) :: NewSMx
+type(T_LatticeInfo), pointer :: LatticeInfo
+type(T_TabSgName), pointer :: TabSgName
+integer error, i, j
+character(len=1024) :: buffer
+real, dimension(3,3) :: symmatrix
+real, dimension(3) :: translation
+
+    call InitSgInfo(SgInfo)
+    error=MemoryInit(SgInfo)
+    if(error/=0) then
+        print *, 'Error Cannot allocate memory'
+        call abort()
+    end if
+    
+    do i=1, spacegroup%symmindex
+        call readsymm(trim(spacegroup%symm(i)) ,symmatrix, translation)
+
+        NewSMx%R=nint(reshape(transpose(symmatrix), (/9/)))
+        NewSMx%T=nint(translation*sginfo_stbf)
+        
+        error=Add2ListSeitzMx(SgInfo, NewSMx)
+        if(error/=0) then
+            print *, 'Error in Add2ListSeitzMx'
+            call abort()
+        end if
+    end do
+    
+    if(spacegroup%latt>0) then
+        error=AddInversion2ListSeitzMx(SgInfo)
+        if(error/=0) then
+            print *, 'Error in AddInversion2ListSeitzMx'
+            call abort()
+        end if
+    end if
+    
+    error=CompleteSgInfo(SgInfo)
+    if(error/=0) then
+        print *, 'Error in CompleteSgInfo'
+        call abort()
+    end if
+
+    print *, 'Hall Symbol ', SgInfo%HallSymbol
+    call C_F_POINTER(SgInfo%LatticeInfo, LatticeInfo)
+
+    print *, 'Lattice code ', LatticeInfo%Code
+
+    print *, 'Crystal system ', XS_name(SgInfo%XtalSystem)
+
+    print *, 'assoc ', C_associated(SgInfo%TabSgName)
+    call C_F_POINTER(SgInfo%TabSgName, TabSgName)
+
+    call C_F_string_ptr(TabSgName%SgLabels, buffer)
+    print *, 'SgLabels ', trim(buffer)
+    call C_F_string_ptr(TabSgName%Extension, buffer)
+    print *, 'Extension ', trim(buffer)
+
+    write(crystals_fileunit, '(a)') '\LIST 2'
+    write(crystals_fileunit, '(a, I0, a, a)') 'CELL NSYM=', spacegroup%symmindex, ', LATTICE=', LatticeInfo%Code
+    
+    ! process list2
+    ! \LIST 2
+    ! CELL NSYM= 2, LATTICE = B
+    ! SYM X, Y, Z
+    ! SYM X, Y + 1/2,  - Z
+    ! SPACEGROUP B 1 1 2/B
+    ! CLASS MONOCLINIC
+    ! END
+    !write(crystals_fileunit, '(a)') '\LIST 2'
+    !if(centric=='YES') then
+    !    j=(spacegroup%symmindex+1)*2
+    !else
+    !    j=spacegroup%symmindex+1
+    !end if
+    !write(crystals_fileunit, '("CELL NSYM=", I0, ", LATTICE=", A, ", CENTRIC=", A)') &
+    !&   j, lattice, centric
+    !write(crystals_fileunit, '(a)') 'SYM X, Y, Z'
+    !if(centric=='YES') then
+    !    write(crystals_fileunit, '(a)') 'SYM -X, -Y, -Z'
+    !end if
+    !do i=1, spacegroup%symmindex
+    !end do
+    !write(crystals_fileunit, '(a)') 'END'
+
+
+end subroutine
+
+!> Parse symmetry operator as text into a 3x3 matrix plus a translational vector
+subroutine readsymm(symmtext,symmatrix, translation)
+implicit none
+character(len=*), intent(in) :: symmtext !< Raw symmetry operator as text
+character(len=10) numberstring
+real, dimension(3,3), intent(out) :: symmatrix !< 3x3 rotation matrix
+real, dimension(3), intent(out) :: translation !< translational vector
+logical fractionbool, numberfound
+
+integer length, coma, i, numberinteger,j
+real signnumber, numerator, denominator
+
+length=len(symmtext)
+signnumber=1.0
+coma=1
+symmatrix=0
+translation=0.0
+numerator=0.0
+denominator=1.0
+fractionbool=.false.
+numberfound=.false.
+numberstring=''
+j=1
+
+!if (verbose==1) then
+!    print *, 'reading symmetry: ',TRIM(ADJUSTL(symmtext))
+!endif
+
+do i=1,length
+    if (symmtext(i:i)==' ') then
+        cycle
+    elseif (symmtext(i:i)=='-') then
+        if (numberfound.eqv..true.) then
+            call storenumber(fractionbool, numerator, denominator,    &
+&                   numberstring, signnumber)
+            translation(coma)=calctranslation(fractionbool,         &
+&                   numerator, denominator)                        
+            numberfound=.false.
+            numerator=0.0
+            denominator=1.0
+        endif
+        signnumber=-1.0
+        cycle
+    elseif (symmtext(i:i)=='+') then
+        if (numberfound.eqv..true.) then
+            call storenumber(fractionbool, numerator, denominator,    &
+&                 numberstring, signnumber)
+            translation(coma)=calctranslation(fractionbool,         &
+&                 numerator, denominator)
+            numberfound=.false.
+            numerator=0.0
+            denominator=1.0
+        endif
+        signnumber=1.0
+        cycle
+    elseif (symmtext(i:i)=='x' .or. symmtext(i:i)=='X') then
+        symmatrix(coma,1)=int(signnumber)
+        signnumber=1.0
+        cycle
+    elseif (symmtext(i:i)=='y' .or. symmtext(i:i)=='Y') then
+        symmatrix(coma,2)=int(signnumber)
+        signnumber=1.0
+        cycle
+    elseif (symmtext(i:i)=='z' .or. symmtext(i:i)=='Z') then
+        symmatrix(coma,3)=int(signnumber)
+        signnumber=1.0
+        cycle
+    elseif (symmtext(i:i)==',') then
+        if (numberfound.eqv..true.) then
+            call storenumber(fractionbool, numerator, denominator,    &
+&                 numberstring, signnumber)
+            translation(coma)=calctranslation(fractionbool,         &
+&                 numerator, denominator)
+            numberfound=.false.
+            numerator=0.0
+            denominator=1.0
+        endif
+        signnumber=1.0
+        numerator=0.0
+        denominator=1.0
+        fractionbool=.false.
+        numberstring=''
+        j=1
+        coma=coma+1
+        cycle
+    elseif (symmtext(i:i)=='/') then         
+        if (numberfound.eqv..true.) then
+            call storenumber(fractionbool, numerator, denominator,    &
+&                   numberstring, signnumber)
+        endif
+        numberstring=''
+        j=1
+        fractionbool=.true.
+        cycle
+    else
+        read(symmtext(i:i),*) numberinteger
+        if (numberinteger/=0) then
+            numberfound=.true.
+            numberstring(j:j)=symmtext(i:i)
+            j=j+1
+        endif
+        cycle
+     endif
+      
+enddo
+
+if (numberfound.eqv..true.) then
+    call storenumber(fractionbool, numerator, denominator,            &
+&           numberstring, signnumber)
+    translation(coma)=calctranslation(fractionbool, numerator,      &
+&            denominator)
+endif
+
+contains
+    PURE function calctranslation(fractionbool, numerator, denominator)
+    logical, intent(in) :: fractionbool
+    real, intent(in) :: numerator, denominator
+    real calctranslation
+  
+        if (fractionbool.eqv..false.) then
+            calctranslation=numerator
+            return
+        else
+            calctranslation=numerator/denominator
+            return
+        endif
+    end function
+    subroutine storenumber(fractionbool, numerator, denominator,      &
+&        numberstring, signnumber)
+    logical fractionbool
+    real numerator, denominator, signnumber, numberreal
+    character(len=10) numberstring
+        read (numberstring, *) numberreal
+        if (fractionbool.eqv..false.) then
+            numerator=signnumber*numberreal
+        else
+            denominator=numberreal
+        endif
+    end subroutine
 end subroutine
  
 end module

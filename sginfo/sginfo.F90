@@ -63,6 +63,16 @@ interface
     end subroutine
 end interface
 
+! const char *RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
+!                     int Decimal, int TrFirst, int Low,
+!                     const char *Seperator,
+!                     char *BufferXYZ, int SizeBufferXYZ)
+!  lsmx = &SgInfo->ListSeitzMx[1]; /* skip first = identity matrix */
+!
+!  for (iList = 1; iList < SgInfo->nList; iList++, lsmx++)
+!  {
+!        xyz = RTMx2XYZ(lsmx, 1, STBF, 1, 1, 0, ", ", NULL, 0);
+        
 contains
 
 ! Copy a C string, passed by pointer, to a Fortran string.

@@ -1,6 +1,14 @@
 module sginfo_type_mod
 use, intrinsic :: iso_c_binding
 
+!#define STBF 12 /* Seitz           Matrix Translation Base Factor */
+!
+!#define CRBF 12 /* Change of Basis Matrix Rotation    Base Factor */
+!#define CTBF 72 /* Change of Basis Matrix Translation Base Factor */
+real, parameter :: sginfo_stbf=12.0
+real, parameter :: sginfo_crbf=12.0
+real, parameter :: sginfo_ctbf=72.0
+
 !   typedef struct
 !  {
 !    int  Code;
