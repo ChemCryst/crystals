@@ -919,6 +919,9 @@ logical found, foundresidue
         end do
     end do duplicates
 
+!do i=1, atomslist_index
+!    print *, atomslist(i)%label, atomslist(i)%sfac, atomslist(i)%crystals_serial
+!end do
 end subroutine
 
 !***********************************************************************************************************************************
