@@ -3878,10 +3878,12 @@ QCKCIF             1    0
      CIF     
 ADDARC             1    0    
   11    4096 CRYSTALSPUBLISH
-   1.ADDARC             1    1    0    0
-         3
-    .FORMAT             1    0    1    1    0 CIF
-     CIF     
+   1.ADDARC             4    1    0    0
+         5    5    5    5
+    .FILE1              1    0    1    0    1 NONE
+    .FILE2              2    0    1    0    1 
+    .FILE3              3    0    1    0    1 
+    .FILE4              4    0    1    0    1 
 THLIM              2    3
    6    4096 CRYSTALSPUBLISH
     1    2   13

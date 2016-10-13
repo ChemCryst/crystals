@@ -88,9 +88,10 @@
 ^^WI    @ 3,1 RADIOBUTTON FCFS 'Reflections with F-squared values'
 ^^WI    @ 4,1 RADIOBUTTON FCFF 'Reflections with F values'
 ^^WI  }
-^^WI  @ 9,2 GRID GRIDHK NROWS=1 NCOLS=1 OUTLINE='Embed HKL file'
+^^WI  @ 9,2 GRID GRIDHK NROWS=1 NCOLS=2 OUTLINE='Embed other files'
 ^^WI  {
 ^^WI    @ 1,1 CHECKBOX XHKL 'Embed HKLI data'   STATE=ON
+^^WI    @ 1,2 CHECKBOX XSQZ 'Embed SQUEEZE data'   STATE=ON
 ^^WI  }
 ^^WI  @ 11,2 GRID GRIDB NROWS=1 NCOLS=5
 ^^WI  {
@@ -228,8 +229,23 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
-%      COPY '#ADDARC'
+%     IF FILEEXISTS ( 'ARCHIVE-HKL.CIF' ) .EQ. TRUE THEN
+%      COPY '#ADDARC ARCHIVE-HKL.CIF'
 %      COPY 'END'
+%     ELSE
+{I Reflection archive ARCHIVE-HKL.CIF no longer exists
+%     END IF
+%    END IF
+^^?? XSQZ STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%     IF FILEEXISTS ( 'platon_sqd.sqf' ) .EQ. TRUE THEN
+%      COPY '#ADDARC platon_sqd.sqf'
+%      COPY 'END'
+%     ELSE
+{I Reflection archive platon_sqd.sqf no longer exists
+%     END IF
 %    END IF
 %%
   Parameters saved in {&publish.cif{&

@@ -2247,7 +2247,8 @@ C--SCAN ALL THE REFLECTIONS
       IF (VV .EQ. 1.) THEN
 C----- RESET INTERVAL TO GIVE 20 VALUES
         VV = SQRT(SCALF*STORE(L6DTL+3*MD6DTL+1)) /20.
-        WRITE(NCAWU,'(''Resetting interval '', 2F10.3)') VV
+        WRITE(cmon,'(''Resetting interval '', 2F10.3)') VV
+        call xprvdu(ncvdu,1,0)
       ENDIF
       CALL XSCAN(-1, SLOPE, CORREL)
 C--SET UP THE RETURN VALUES FOR THE AGREEMENT ANALYSIS PRINT

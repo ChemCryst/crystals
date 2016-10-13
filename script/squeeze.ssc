@@ -3,7 +3,9 @@
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
 %  VARIABLE LOGICAL ANSWER                                                      
 %  VARIABLE CHARACTER CDIR CFILE
-%  VARIABLE LOGICAL T
+%  VARIABLE LOGICAL T T1 T2
+%  EVALUATE T1 = FALSE
+%  EVALUATE T2 = FALSE
 {1,9  Running PLATON/SQUEEZE in CRYSTALS modifies the Fcalc part
 {1,9  of reflections by storing the real and imaginary parts of
 {1,9  the structure factor.
@@ -26,16 +28,34 @@
 {1,8 difference electron density will be the same for
 {1,8 both reflections.  
 {1,8 
+%    EVALUATE T1 = TRUE
+%  END IF                                                            
+%    EVALUATE T2 = FILEEXISTS ( 'LIST6.ABC' )
+%    IF T2 THEN
+
+{1,8 
+{1,8 You have already run SQUEEZE.
+{1,8 Running SQUEEZE again will over-write any
+{1,8 previous void contributions.
+{1,8 
+
+%    END IF
+%  
+%
 %      EVALUATE QTITLE = ' '                              
 %      EVALUATE QLINE1 = 'Do you want to go ahead with'                           
 %      EVALUATE QLINE2 = 'SQUEEZEing?'                         
 %      EVALUATE BUTTOK = '&Yes'                                                 
 %      EVALUATE BUTTXX = '&No'                                                  
 %      COPY '#SCRIPT XQUESTIO'                                                  
-%      IF ANSWER .EQ. FALSE THEN                                                 
+%      IF ANSWER .EQ. FALSE THEN 
+
+{1,8 
+{1,8   Abandoning SQUEEZE
+{1,8 
+                                                
 %        FINISH                                                             
 %      END IF                                                                   
-%  END IF                                                            
 %%
 %      EVALUATE QTITLE = 'Backup before SQUEEZE'                              
 %      EVALUATE QLINE1 = 'Do you want to backup your'                           
@@ -48,6 +68,55 @@
 %        copy 'end'                                                             
 %      END IF                                                                   
 %%                                                                              
+%      EVALUATE QTITLE = 'Remove old SQUEEZE files'                              
+%      EVALUATE QLINE1 = 'Do you want to remove files'                           
+%      EVALUATE QLINE2 = 'from previous runs of SQUEEZE?'                         
+%      EVALUATE BUTTOK = '&Yes'                                                 
+%      EVALUATE BUTTXX = '&No'                                                  
+%      COPY '#SCRIPT XQUESTIO'                                                  
+%      IF ANSWER .EQ. TRUE THEN                                                 
+%  IF ( FILEEXISTS ( 'platon.hkl' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon.hkl' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon.out' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon.out' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon.res' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon.res' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_pl.spf' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_pl.spf' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sq.fab' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sq.fab' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sq.hkl' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sq.hkl' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sq.ins' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sq.ins' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sq.lis' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sq.lis' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sqd.ins' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sqd.ins' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sqd.sqf' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sqd.sqf' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sqd.sqz' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sqd.sqz' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sqd.sqz' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sqd.sqz' )
+%  END IF
+%  IF ( FILEEXISTS ( 'LIST6.ABC' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'LIST6.ABC' )
+%  END IF
+%      END IF                                                                   
+%%                                                                              
+%%
 %  IF EXISTS 6 .LT. 1 THEN                                                      
  You do not have any reflections stored.                                        
  It is impossible to proceed without data.                                      
@@ -116,7 +185,29 @@ Deleted old Squeeze files
 The CONVPLAT.exe process failed to write an output file.
 %    FINISH
 %  END IF
-%  COPY '#USE LIST6.ABC'
+%%
+%  EVALUATE QTITLE = 'Anomalous Modifications '                              
+%  EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
+%  EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
+%  EVALUATE BUTTOK = '&Yes'                                                 
+%  EVALUATE BUTTXX = '&No'                                                  
+%  COPY '#SCRIPT XQUESTIO'                                                  
+%  IF ANSWER .EQ. TRUE THEN 
+%% use the results
+%    IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
+Trying to delete old modified Squeeze files
+%     EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
+Deleted old Squeeze files
+%    END IF
+%    COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
+%    IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
+The PLATANOM.exe process failed to write an output file.
+%      FINISH
+%    END IF
+%    COPY '#USE LIST6.DEF'
+%  ELSE
+%    COPY '#USE LIST6.ABC'
+%  END IF
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit
 them being overwritten
@@ -136,4 +227,20 @@ them being overwritten
 % COPY 'CALC'
 % COPY 'END'
 %%
+{1,8 Removing SHELX-orientated PLATON output
+%  IF ( FILEEXISTS ( 'platon.hkl' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon.hkl' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_pl.spf' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_pl.spf' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sq.fab' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sq.fab' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sq.hkl' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sq.hkl' )
+%  END IF
+%  IF ( FILEEXISTS ( 'platon_sq.ins' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'platon_sq.ins' )
+%  END IF
 %END SCRIPT

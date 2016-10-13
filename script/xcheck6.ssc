@@ -334,7 +334,7 @@
 ^^WI       @ 2,1 STATIC XFW2                                                    
 ^^WI 'These show actual and expected distribution of E values. The "All Data"'  
 ^^WI       @ 3,1 STATIC XFW3                                                    
-^^WI 'points should follow one of the theoretical lines.'                       
+^^WI '(red) curve should follow one of the theoretical lines.'                       
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
