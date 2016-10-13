@@ -1,0 +1,41 @@
+% SCRIPT PLATANOM
+%% variables used by the question box below                                     
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
+%  VARIABLE LOGICAL ANSWER   T                                                   
+%%
+%  IF .not. FILEEXISTS ( 'LIST6.ABC' ) THEN
+{0,4 You must run a normal SQUEEZE job before you can run this utility
+%    FINISH
+%  END IF
+
+{1,8
+{1,8 This utility modifies the conventional output from SQUEEZE
+{1,8 to account for anomalous scattering by atoms assumed to be
+{1,8 somewhere in the void region.
+{1,8 You will have to make an intelligent guess at the formula
+{1,8 of what ever is in the void.
+{1,8 
+
+%%
+%  EVALUATE QTITLE = 'Anomalous Modifications '                              
+%  EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
+%  EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
+%  EVALUATE BUTTOK = '&Yes'                                                 
+%  EVALUATE BUTTXX = '&No'                                                  
+%  COPY '#SCRIPT XQUESTIO'                                                  
+%  IF ANSWER .EQ. TRUE THEN 
+%% use the results
+%    IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
+Trying to delete old modified Squeeze files
+%     EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
+Deleted old Squeeze files
+%    END IF
+%    COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
+%    IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
+The PLATANOM.exe process failed to write an output file.
+%      FINISH
+%    END IF
+%    COPY '#USE LIST6.DEF'
+%  END IF
+%%
+%  END SCRIPT 
