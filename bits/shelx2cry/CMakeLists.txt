@@ -25,11 +25,12 @@ set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_Fortran_FLAGS "")
 set(CMAKE_C_FLAGS "")
 
-set(CMAKE_C_FLAGS_RELEASE "-O1")
-SET (CMAKE_Fortran_FLAGS_RELEASE "-O2")
+set(CMAKE_C_FLAGS_RELEASE "-O2 -g")
+SET (CMAKE_Fortran_FLAGS_RELEASE "-O2 -g -fcheck=all")
 message(STATUS "shelx2cry fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
 add_executable (shelx2cry shelx2cry_mod.F90  shelx2cry.F90)
+TARGET_LINK_LIBRARIES(shelx2cry "${CMAKE_BINARY_DIR}/sginfo/libsginfo.a")
 SET_TARGET_PROPERTIES(shelx2cry PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
 
 add_library(shelx2crymod STATIC shelx2cry_mod.F90)

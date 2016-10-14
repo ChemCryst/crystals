@@ -772,7 +772,7 @@ implicit none
 !    end if
 !    lattice=latticeletters(abs(spacegroup%latt))
 
-    call write_spacegroup()
+    !call write_spacegroup()
 
     call write_list2()
 
@@ -1114,6 +1114,16 @@ logical found
     write(crystals_fileunit, '(a)') 'REM   HREST   END (DO NOT REMOVE THIS LINE) '
     ! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
     do i=1, dfix_table_index
+        if(index(dfix_table(i)%atom1, '_')>0) then
+            print *, 'Warning: ignoring DFIX between ', trim(dfix_table(i)%atom1), ' and ', trim(dfix_table(i)%atom2)
+            print *, '_* syntax not supported'
+            cycle
+        end if
+        if(index(dfix_table(i)%atom2, '_')>0) then
+            print *, 'Warning: ignoring DFIX between ', trim(dfix_table(i)%atom1), ' and ', trim(dfix_table(i)%atom2)
+            print *, '_* syntax not supported'
+            cycle
+        end if
         write(crystals_fileunit, '(a, a)') '# ', dfix_table(i)%shelxline
         ! get serial for atom 1
         serial1=0
@@ -1148,6 +1158,7 @@ logical found
                 call abort()
             else if(k1==0 .or. k2==0) then
                 print *, 'Cannot find ', dfix_table(i)%atom1, ' or ', dfix_table(i)%atom2, ' in res file'
+                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, dfix_table(i)%shelxline
                 call abort()
             else
                 ! good to go
@@ -1263,8 +1274,8 @@ character, dimension(12), parameter :: letters=&
         else
             spacegroup=spacegroup(1:i-1)//spacegroup(i+1:)
         end if
-        i=index(spacegroup, '')
-    end do
+        i=index(spacegroup, ')')
+    end do    
 
     ! (4) There is always a space after a, b, c, d, n or m
     do i=1, size(letters)
@@ -1529,12 +1540,13 @@ use sginfo_mod
 implicit none
 type(T_sginfo) :: sginfo
 type(T_RTMx) :: NewSMx
+type(T_RTMx), dimension(:), pointer :: lsmx
 type(T_LatticeInfo), pointer :: LatticeInfo
 type(T_TabSgName), pointer :: TabSgName
+character(kind=C_char), dimension(:), allocatable :: xyz
 integer error, i, j
-character(len=1024) :: buffer
-real, dimension(3,3) :: symmatrix
-real, dimension(3) :: translation
+character(len=1024) :: buffer, spacegroupsymbol
+type(c_ptr) :: xyzptr
 
     call InitSgInfo(SgInfo)
     error=MemoryInit(SgInfo)
@@ -1544,16 +1556,37 @@ real, dimension(3) :: translation
     end if
     
     do i=1, spacegroup%symmindex
-        call readsymm(trim(spacegroup%symm(i)) ,symmatrix, translation)
-
-        NewSMx%R=nint(reshape(transpose(symmatrix), (/9/)))
-        NewSMx%T=nint(translation*sginfo_stbf)
+        buffer=adjustl(spacegroup%symm(i))
+        allocate(xyz(len_trim(buffer)+1))
+        do j=1, size(xyz)-1
+            xyz(j)=buffer(j:j)
+        end do
+        xyz(size(xyz))=C_NULL_CHAR
+        error=ParseSymXYZ(xyz, NewSMx, nint(sginfo_stbf))
+        deallocate(xyz)
+        if(error/=0) then
+            print *, 'Error: Cannot recognize symmetry operator ', trim(buffer)
+            call abort()
+        end if
         
         error=Add2ListSeitzMx(SgInfo, NewSMx)
         if(error/=0) then
             print *, 'Error in Add2ListSeitzMx'
             call abort()
         end if
+    end do
+    
+    i=T_LatticeTranslation_init()
+    i=LatticeTranslation(abs(spacegroup%latt))%nTrVector
+    NewSMx%R=0
+    NewSMx%R(1)=1
+    NewSMx%R(5)=1
+    NewSMx%R(9)=1
+    print *, 'latt ', spacegroup%latt, i
+    do j=1, i
+        print *, LatticeTranslation(abs(spacegroup%latt))%TrVector(:,j)
+        NewSMx%T=LatticeTranslation(abs(spacegroup%latt))%TrVector(:,j)
+        error=Add2ListSeitzMx(SgInfo, NewSMx)
     end do
     
     if(spacegroup%latt>0) then
@@ -1586,7 +1619,50 @@ real, dimension(3) :: translation
     print *, 'Extension ', trim(buffer)
 
     write(crystals_fileunit, '(a)') '\LIST 2'
-    write(crystals_fileunit, '(a, I0, a, a)') 'CELL NSYM=', spacegroup%symmindex, ', LATTICE=', LatticeInfo%Code
+    write(crystals_fileunit, '(a, I0, a, a)') 'CELL NSYM=', SgInfo%nlist, ', LATTICE=', LatticeInfo%Code
+    if(SgInfo%Centric==0) then
+        write(crystals_fileunit, '(a)') 'CONT CENTRIC=NO'
+    else
+        write(crystals_fileunit, '(a)') 'CONT CENTRIC=YES'
+    end if
+    
+    if(C_associated(SgInfo%ListSeitzMx)) then
+        call C_F_POINTER(SgInfo%ListSeitzMx, lsmx, (/ SgInfo%nlist /) )
+        do i=1, SgInfo%nlist
+            xyzptr=RTMx2XYZ(lsmx(i), 1, nint(sginfo_stbf), 0, 1, 0, ", ")
+            call C_F_string_ptr(xyzptr, buffer)
+            write(crystals_fileunit, '(a, a)') 'SYMM ', trim(buffer)        
+        end do
+    else
+        print *, 'Error: No summetry operators in SgInfo%ListSeitzMx'
+        call abort()
+    end if
+    
+    call C_F_string_ptr(TabSgName%SgLabels, buffer)
+    if(trim(buffer)/='') then
+        i=index(buffer, '=')
+        if(i>0) then
+            spacegroupsymbol=buffer(i+1:)
+            i=index(spacegroupsymbol, '=')
+            if(i>0) then
+                spacegroupsymbol=spacegroupsymbol(:i-1)
+            end if
+        else
+            spacegroupsymbol=buffer
+        end if
+            
+        ! replace `_` with ` `
+        do i=1, len_trim(spacegroupsymbol)
+            if(spacegroupsymbol(i:i)=='_') then
+                spacegroupsymbol(i:i)=' '
+            end if
+        end do
+    write(crystals_fileunit, '(a, a)') 'SPACEGROUP ', trim(spacegroupsymbol)    
+    end if
+   
+    write(crystals_fileunit, '(a, a)') 'CLASS ', trim(XS_name(SgInfo%XtalSystem))  
+    
+    write(crystals_fileunit, '(a)') 'END'
     
     ! process list2
     ! \LIST 2
@@ -1596,164 +1672,7 @@ real, dimension(3) :: translation
     ! SPACEGROUP B 1 1 2/B
     ! CLASS MONOCLINIC
     ! END
-    !write(crystals_fileunit, '(a)') '\LIST 2'
-    !if(centric=='YES') then
-    !    j=(spacegroup%symmindex+1)*2
-    !else
-    !    j=spacegroup%symmindex+1
-    !end if
-    !write(crystals_fileunit, '("CELL NSYM=", I0, ", LATTICE=", A, ", CENTRIC=", A)') &
-    !&   j, lattice, centric
-    !write(crystals_fileunit, '(a)') 'SYM X, Y, Z'
-    !if(centric=='YES') then
-    !    write(crystals_fileunit, '(a)') 'SYM -X, -Y, -Z'
-    !end if
-    !do i=1, spacegroup%symmindex
-    !end do
-    !write(crystals_fileunit, '(a)') 'END'
 
-
-end subroutine
-
-!> Parse symmetry operator as text into a 3x3 matrix plus a translational vector
-subroutine readsymm(symmtext,symmatrix, translation)
-implicit none
-character(len=*), intent(in) :: symmtext !< Raw symmetry operator as text
-character(len=10) numberstring
-real, dimension(3,3), intent(out) :: symmatrix !< 3x3 rotation matrix
-real, dimension(3), intent(out) :: translation !< translational vector
-logical fractionbool, numberfound
-
-integer length, coma, i, numberinteger,j
-real signnumber, numerator, denominator
-
-length=len(symmtext)
-signnumber=1.0
-coma=1
-symmatrix=0
-translation=0.0
-numerator=0.0
-denominator=1.0
-fractionbool=.false.
-numberfound=.false.
-numberstring=''
-j=1
-
-!if (verbose==1) then
-!    print *, 'reading symmetry: ',TRIM(ADJUSTL(symmtext))
-!endif
-
-do i=1,length
-    if (symmtext(i:i)==' ') then
-        cycle
-    elseif (symmtext(i:i)=='-') then
-        if (numberfound.eqv..true.) then
-            call storenumber(fractionbool, numerator, denominator,    &
-&                   numberstring, signnumber)
-            translation(coma)=calctranslation(fractionbool,         &
-&                   numerator, denominator)                        
-            numberfound=.false.
-            numerator=0.0
-            denominator=1.0
-        endif
-        signnumber=-1.0
-        cycle
-    elseif (symmtext(i:i)=='+') then
-        if (numberfound.eqv..true.) then
-            call storenumber(fractionbool, numerator, denominator,    &
-&                 numberstring, signnumber)
-            translation(coma)=calctranslation(fractionbool,         &
-&                 numerator, denominator)
-            numberfound=.false.
-            numerator=0.0
-            denominator=1.0
-        endif
-        signnumber=1.0
-        cycle
-    elseif (symmtext(i:i)=='x' .or. symmtext(i:i)=='X') then
-        symmatrix(coma,1)=int(signnumber)
-        signnumber=1.0
-        cycle
-    elseif (symmtext(i:i)=='y' .or. symmtext(i:i)=='Y') then
-        symmatrix(coma,2)=int(signnumber)
-        signnumber=1.0
-        cycle
-    elseif (symmtext(i:i)=='z' .or. symmtext(i:i)=='Z') then
-        symmatrix(coma,3)=int(signnumber)
-        signnumber=1.0
-        cycle
-    elseif (symmtext(i:i)==',') then
-        if (numberfound.eqv..true.) then
-            call storenumber(fractionbool, numerator, denominator,    &
-&                 numberstring, signnumber)
-            translation(coma)=calctranslation(fractionbool,         &
-&                 numerator, denominator)
-            numberfound=.false.
-            numerator=0.0
-            denominator=1.0
-        endif
-        signnumber=1.0
-        numerator=0.0
-        denominator=1.0
-        fractionbool=.false.
-        numberstring=''
-        j=1
-        coma=coma+1
-        cycle
-    elseif (symmtext(i:i)=='/') then         
-        if (numberfound.eqv..true.) then
-            call storenumber(fractionbool, numerator, denominator,    &
-&                   numberstring, signnumber)
-        endif
-        numberstring=''
-        j=1
-        fractionbool=.true.
-        cycle
-    else
-        read(symmtext(i:i),*) numberinteger
-        if (numberinteger/=0) then
-            numberfound=.true.
-            numberstring(j:j)=symmtext(i:i)
-            j=j+1
-        endif
-        cycle
-     endif
-      
-enddo
-
-if (numberfound.eqv..true.) then
-    call storenumber(fractionbool, numerator, denominator,            &
-&           numberstring, signnumber)
-    translation(coma)=calctranslation(fractionbool, numerator,      &
-&            denominator)
-endif
-
-contains
-    PURE function calctranslation(fractionbool, numerator, denominator)
-    logical, intent(in) :: fractionbool
-    real, intent(in) :: numerator, denominator
-    real calctranslation
-  
-        if (fractionbool.eqv..false.) then
-            calctranslation=numerator
-            return
-        else
-            calctranslation=numerator/denominator
-            return
-        endif
-    end function
-    subroutine storenumber(fractionbool, numerator, denominator,      &
-&        numberstring, signnumber)
-    logical fractionbool
-    real numerator, denominator, signnumber, numberreal
-    character(len=10) numberstring
-        read (numberstring, *) numberreal
-        if (fractionbool.eqv..false.) then
-            numerator=signnumber*numberreal
-        else
-            denominator=numberreal
-        endif
-    end subroutine
 end subroutine
  
 end module
