@@ -338,6 +338,7 @@ endif ()
 # Libraries
 ADD_SUBDIRECTORY(script)
 ADD_SUBDIRECTORY(sleef)
+ADD_SUBDIRECTORY(sginfo)
 ADD_SUBDIRECTORY(crystals crys_fortran)
 ADD_SUBDIRECTORY(cameron)
 ADD_SUBDIRECTORY(datafiles)
