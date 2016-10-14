@@ -637,16 +637,21 @@ C Check for convergence:
              IF ( SXAG .GT. 0.0001 ) CYCLE
              IF ( SXBG .GT. 0.005  ) CYCLE
 C Converged!
-             IF ( SXA .GE. 0.2 ) THEN
-                SXA = 0.2
+c SX2016/5 recommends 0.1 rather than 0.2
+             IF ( SXA .GE. 0.1 ) THEN
+               write(cmon,'(A, 2f10.4)') 
+     1         '{E Forced reset of P1 to 0.1', sxa, sxb
+               call xprvdu(ncvdu,1,0)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
+                SXA = 0.1
                 SXB = 0.0
              END IF
              if (sxa .lt. 0.) then
-               sxa = 0.001
                write(cmon,'(A, 2f10.4)') 
-     1         '{E Forced reset of P1', sxa, sxb
+     1         '{E Forced reset of P1 0.001', sxa, sxb
                call xprvdu(ncvdu,1,0)
                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
+               sxa = 0.001
              endif
              EXIT
            END DO
