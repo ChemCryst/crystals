@@ -39,6 +39,7 @@ sginfo_extra.c
 sginfo_type.F90
 sginfo.F90
 )
+SET_TARGET_PROPERTIES(sginfo PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
 message(STATUS "End building sginfo")
 
 message("")
