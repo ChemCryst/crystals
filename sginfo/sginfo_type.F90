@@ -1,56 +1,63 @@
+!> type ang parameters for the sginfo wrapper around sginfo
 module sginfo_type_mod
 use, intrinsic :: iso_c_binding
 
-!#define STBF 12 /* Seitz           Matrix Translation Base Factor */
-!
-!#define CRBF 12 /* Change of Basis Matrix Rotation    Base Factor */
-!#define CTBF 72 /* Change of Basis Matrix Translation Base Factor */
+
+!> #define STBF 12 /* Seitz           Matrix Translation Base Factor */
 real, parameter :: sginfo_stbf=12.0
+!> #define CRBF 12 /* Change of Basis Matrix Rotation    Base Factor */
 real, parameter :: sginfo_crbf=12.0
+!> #define CTBF 72 /* Change of Basis Matrix Translation Base Factor */
 real, parameter :: sginfo_ctbf=72.0
 
-!   typedef struct
-!  {
-!    int  Code;
-!    int  nTrVector;
-!    int  *TrVector;
-!  }
-!  T_LatticeInfo;
+!> Lattice info
+!!~~~~~~~~~~~~~~~{.c}
+!!     typedef struct
+!!     {
+!!       int  Code;
+!!       int  nTrVector;
+!!       int  *TrVector;
+!!     }
+!!     T_LatticeInfo;
+!!~~~~~~~~~~~~~~~
 type, bind(c) :: T_LatticeInfo
-    character(c_char) :: Code
-    integer(c_int) :: nTrVector
-    type(c_ptr) :: TrVector
+    character(c_char) :: Code !< Lattice type (P, A, B, C, I, R, S, T, F)
+    integer(c_int) :: nTrVector !< Number of translational vectors
+    type(c_ptr) :: TrVector !< Vectors (Always starts with 0,0,0). Values are multiplied by sginfo_stbf and stored as integers.
 end type
 
-!typedef struct
-!  {
-!    int                  GenOption;
-!    int                  Centric;
-!    int                  InversionOffOrigin;
-!    const T_LatticeInfo  *LatticeInfo;
-!    int                  StatusLatticeTr;
-!    int                  OriginShift[3];
-!    int                  nList;
-!    int                  MaxList;
-!    T_RTMx               *ListSeitzMx;
-!    T_RotMxInfo          *ListRotMxInfo;
-!    int                  OrderL;
-!    int                  OrderP;
-!    int                  XtalSystem;
-!    int                  UniqueRefAxis;
-!    int                  UniqueDirCode;
-!    int                  ExtraInfo;
-!    int                  PointGroup;
-!    int                  nGenerator;
-!    int                   Generator_iList[4];
-!    char                 HallSymbol[MaxLenHallSymbol + 1];
-!    const T_TabSgName    *TabSgName;
-!    const int            *CCMx_LP;
-!    int                  n_si_Vector;
-!    int                  si_Vector[9];
-!    int                  si_Modulus[3];
-!  }
-!  T_SgInfo;
+!> Sginfo general object. See (http://cci.lbl.gov/sginfo/sginfo_reference.html#tdef_T_SgInfo) for details.
+!!~~~~~~~~~~~~~~~{.c}
+!!    typedef struct
+!!    {
+!!      int                  GenOption;
+!!      int                  Centric;
+!!      int                  InversionOffOrigin;
+!!      const T_LatticeInfo  *LatticeInfo;
+!!      int                  StatusLatticeTr;
+!!      int                  OriginShift[3];
+!!      int                  nList;
+!!      int                  MaxList;
+!!      T_RTMx               *ListSeitzMx;
+!!      T_RotMxInfo          *ListRotMxInfo;
+!!      int                  OrderL;
+!!      int                  OrderP;
+!!      int                  XtalSystem;
+!!      int                  UniqueRefAxis;
+!!      int                  UniqueDirCode;
+!!      int                  ExtraInfo;
+!!      int                  PointGroup;
+!!      int                  nGenerator;
+!!      int                   Generator_iList[4];
+!!      char                 HallSymbol[MaxLenHallSymbol + 1];
+!!      const T_TabSgName    *TabSgName;
+!!      const int            *CCMx_LP;
+!!      int                  n_si_Vector;
+!!      int                  si_Vector[9];
+!!      int                  si_Modulus[3];
+!!    }
+!!    T_SgInfo;
+!!~~~~~~~~~~~~~~~
 type, bind(c) :: T_sginfo
     integer(c_int) GenOption
     integer(c_int) Centric
@@ -79,33 +86,40 @@ type, bind(c) :: T_sginfo
     integer(c_int), dimension(3) :: si_Modulus
 end type
 
-!typedef union
-!  {
-!    struct { int R[9], T[3]; } s;
-!    int                        a[12];
-!  }
-!  T_RTMx;
+!> Symmetry operation object (rotation + translation)
+!! The union is ignored, data can only be accessed via R and T
+!!~~~~~~~~~~~~~~~{.c}
+!!    typedef union
+!!    {
+!!      struct { int R[9], T[3]; } s;
+!!      int                        a[12];
+!!    }
+!!    T_RTMx;
+!!~~~~~~~~~~~~~~~
 type, bind(c) :: T_RTMx
 	integer(c_int), dimension(9) :: R
 	integer(c_int), dimension(3) :: T
 end type
 
-!typedef struct
-!  {
-!    const char  *HallSymbol;
-!    const int   SgNumber;
-!    const char  *Extension;
-!    const char  *SgLabels;
-!  }
-!  T_TabSgName;
+!> Hall symbol and space group notation
+!!~~~~~~~~~~~~~~~{.c}
+!!    typedef struct
+!!    {
+!!      const char  *HallSymbol;
+!!      const int   SgNumber;
+!!      const char  *Extension;
+!!      const char  *SgLabels;
+!!    }
+!!    T_TabSgName;
+!!~~~~~~~~~~~~~~~
 type, bind(c) :: T_TabSgName
-	type(c_ptr) :: HallSymbol
-	integer(c_int) :: SgNumber
-	type(c_ptr) :: Extension
-	type(c_ptr) :: SgLabels
+	type(c_ptr) :: HallSymbol !< Hall symbol
+	integer(c_int) :: SgNumber !< space group number from the international tables
+	type(c_ptr) :: Extension !< extension from the international table
+	type(c_ptr) :: SgLabels !< space group name
 end type
 
-
+!> List of lattices as text
 character(len=12), dimension(0:7), parameter :: XS_name=(/ &
 &	 "Unknown     ", &
 &    "Triclinic   ", &
@@ -116,17 +130,20 @@ character(len=12), dimension(0:7), parameter :: XS_name=(/ &
 &    "Hexagonal   ", &
 &    "Cubic       " /)
   
-! Lattice type: 1=P, 2=I, 3=rhombohedral obverse on hexagonal axes, 4=F, 5=A, 6=B, 7=C
-!  latt   Code  nTrVector  TrVector
-!   1      'P'      1      0,0,0
-!   5      'A'      2      0,0,0   0 ,1/2,1/2
-!   6      'B'      2      0,0,0  1/2, 0 ,1/2
-!   7      'C'      2      0,0,0  1/2,1/2, 0
-!   2      'I'      2      0,0,0  1/2,1/2,1/2
-!   3      'R'      3      0,0,0  2/3,1/3,1/3  1/3,2/3,2/3
-!   0      'S'      3      0,0,0  1/3,1/3,2/3  2/3,2/3,1/3
-!   0      'T'      3      0,0,0  1/3,2/3,1/3  2/3,1/3,2/3
-!   4      'F'      4      0,0,0   0 ,1/2,1/2  1/2, 0 ,1/2  1/2,1/2, 0  
+!> Type for lattice translations, code and shelx number
+!!~~~~~~~~~~~~~~~
+!! Lattice type: 1=P, 2=I, 3=rhombohedral obverse on hexagonal axes, 4=F, 5=A, 6=B, 7=C
+!!  latt   Code  nTrVector  TrVector
+!!   1      'P'      1      0,0,0
+!!   5      'A'      2      0,0,0   0 ,1/2,1/2
+!!   6      'B'      2      0,0,0  1/2, 0 ,1/2
+!!   7      'C'      2      0,0,0  1/2,1/2, 0
+!!   2      'I'      2      0,0,0  1/2,1/2,1/2
+!!   3      'R'      3      0,0,0  2/3,1/3,1/3  1/3,2/3,2/3
+!!   0      'S'      3      0,0,0  1/3,1/3,2/3  2/3,2/3,1/3
+!!   0      'T'      3      0,0,0  1/3,2/3,1/3  2/3,1/3,2/3
+!!   4      'F'      4      0,0,0   0 ,1/2,1/2  1/2, 0 ,1/2  1/2,1/2, 0  
+!!~~~~~~~~~~~~~~~
 type T_LatticeTranslation
     integer :: latt !< latt code from shelxl
     character :: code !< Character code of lattice
@@ -134,14 +151,17 @@ type T_LatticeTranslation
     integer, dimension(3,4) :: TrVector !< translation vectors
 end type
 
+!> Constructor for LatticeTranslation
 interface T_LatticeTranslation
     module procedure T_LatticeTranslation_init
 end interface
 
+!> lattice translations, code and shelx number
 type(T_LatticeTranslation), dimension(9) :: LatticeTranslation
 
 contains
 
+!> Initialise LatticeTranslation with its data
 function T_LatticeTranslation_init()
 implicit none
 integer i

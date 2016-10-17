@@ -1,8 +1,10 @@
+!> F90 wrapper around sginfo library
+!! See http://cci.lbl.gov/sginfo/sginfo_reference.html for more details
 module sginfo_mod
 use sginfo_type_mod
 use, intrinsic :: iso_c_binding
 
-!void InitSgInfo(T_SgInfo *SgInfo);
+!> void InitSgInfo(T_SgInfo *SgInfo);
 interface
     subroutine InitSgInfo(SgInfo) bind(c, name="InitSgInfo")
     use sginfo_type_mod
@@ -11,7 +13,7 @@ interface
     end subroutine
 end interface
 
-!int Add2ListSeitzMx(T_SgInfo *SgInfo, const T_RTMx *NewSMx);
+!> int Add2ListSeitzMx(T_SgInfo *SgInfo, const T_RTMx *NewSMx);
 interface
     function Add2ListSeitzMx(SgInfo, NewSMx) bind(c, name="Add2ListSeitzMx")
     use sginfo_type_mod
@@ -22,7 +24,7 @@ interface
     end function
 end interface
 
-!int MemoryInit(T_SgInfo *SgInfo) 
+!> int MemoryInit(T_SgInfo *SgInfo) 
 interface
     function MemoryInit(SgInfo) bind(c, name="MemoryInit")
     use sginfo_type_mod
@@ -32,7 +34,7 @@ interface
     end function
 end interface
 
-!int CompleteSgInfo(T_SgInfo *SgInfo)
+!> int CompleteSgInfo(T_SgInfo *SgInfo)
 interface
     function CompleteSgInfo(SgInfo) bind(c, name="CompleteSgInfo")
     use sginfo_type_mod
@@ -42,7 +44,7 @@ interface
     end function
 end interface
 
-!int AddInversion2ListSeitzMx(T_SgInfo *SgInfo)
+!> int AddInversion2ListSeitzMx(T_SgInfo *SgInfo)
 interface
     function AddInversion2ListSeitzMx(SgInfo) bind(c, name="AddInversion2ListSeitzMx")
     use sginfo_type_mod
@@ -52,7 +54,7 @@ interface
     end function
 end interface
 
-!void PrintTabSgNameEntry(const T_TabSgName *tsgn, int Style, int space, FILE *fpout)
+!> void PrintTabSgNameEntry(const T_TabSgName *tsgn, int Style, int space, FILE *fpout)
 interface
     subroutine PrintTabSgNameEntry(tsgn, style, space, fpout) bind(c, name="PrintTabSgNameEntry")
     use sginfo_type_mod
@@ -63,12 +65,10 @@ interface
     end subroutine
 end interface
 
-! const char *RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
-!                     int Decimal, int TrFirst, int Low,
-!                     const char *Seperator,
-!                     char *BufferXYZ, int SizeBufferXYZ)
-!  lsmx = &SgInfo->ListSeitzMx[1]; /* skip first = identity matrix */
-!        xyz = RTMx2XYZ(lsmx, 1, STBF, 1, 1, 0, ", ", NULL, 0);
+!> const char *RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
+!!                     int Decimal, int TrFirst, int Low,
+!!                     const char *Seperator,
+!!                     char *BufferXYZ, int SizeBufferXYZ)
 interface
     function cRTMx2XYZ(RTMx, FacRo, FacTr, DecimalTr, TrFirst, Low, Separator, &
     &   BufferXYZ, SizeBufferXYZ) bind(c, name="RTMx2XYZ")
@@ -83,7 +83,7 @@ interface
     end function
 end interface        
 
-!int ParseSymXYZ(const char *SymXYZ, T_RTMx *SeitzMx, int FacTr)
+!> int ParseSymXYZ(const char *SymXYZ, T_RTMx *SeitzMx, int FacTr)
 interface
     function ParseSymXYZ(SymXYZ, SeitzMx, FacTr) bind(c, name="ParseSymXYZ")
     use sginfo_type_mod
@@ -95,8 +95,8 @@ interface
     end function
 end interface
 
-!int AddLatticeTr2ListSeitzMx(T_SgInfo *SgInfo,
-!                             const T_LatticeInfo *LatticeInfo);
+!> int AddLatticeTr2ListSeitzMx(T_SgInfo *SgInfo,
+!!                             const T_LatticeInfo *LatticeInfo);
 interface
     function AddLatticeTr2ListSeitzMx(SgInfo, LatticeInfo) bind(c, name="AddLatticeTr2ListSeitzMx")
     use sginfo_type_mod
@@ -107,7 +107,7 @@ interface
     end function
 end interface
 
-!int AddLatticeCode(T_SgInfo *SgInfo, char code)
+!> int AddLatticeCode(T_SgInfo *SgInfo, char code)
 interface
     function AddLatticeCode(SgInfo, code) bind(c, name="AddLatticeCode")
     use sginfo_type_mod
@@ -149,11 +149,15 @@ end subroutine C_F_string_ptr
 function RTMx2XYZ(RTMx, FacRo, FacTr, DecimalTr, TrFirst, Low, Separator)
 use sginfo_type_mod
 implicit none
-    type(T_RTMx) :: RTMx
-    integer(c_int), value :: Facro, FacTr, DecimalTr, TrFirst, Low
-    character(len=*) :: Separator
-    character(kind=c_char), dimension(len(Separator)+1) :: cSeparator
-    type(c_ptr) :: RTMx2XYZ
+    type(T_RTMx) :: RTMx !< Symmetry operator
+    integer(c_int), value :: Facro !< constant sginfo_crbf
+    integer(c_int), value :: FacTr !< constant sginfo_stbf
+    integer(c_int), value :: DecimalTr !< ouput as decimal (1) or fractions (0)
+    integer(c_int), value :: TrFirst !< translation first (1) ie: x,1/2+y,-z
+    integer(c_int), value :: Low !< lower case (1)
+    character(len=*) :: Separator !< separator between groups ', ' ie: x, y, z
+    character(kind=c_char), dimension(len(Separator)+1) :: cSeparator !< separator is C format
+    type(c_ptr) :: RTMx2XYZ !< C pointer to resulting string
     integer i
 
     !type(c_ptr) :: BufferXYZ=C_NULL_PTR
