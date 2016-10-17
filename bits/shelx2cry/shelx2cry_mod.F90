@@ -983,6 +983,7 @@ END SUBROUTINE M33INV
 !* ----------------------------------------------------------------------------
 
 !> Calculates the eigenvalues of a symmetric 3x3 matrix A using Cardano's analytical algorithm.
+!! See https://www.mpi-hd.mpg.de/personalhomes/globes/3x3/
 !* ----------------------------------------------------------------------------
       SUBROUTINE DSYEVC3(A, W)
 !* ----------------------------------------------------------------------------
@@ -1038,6 +1039,7 @@ END SUBROUTINE M33INV
       END SUBROUTINE
 !* End of subroutine DSYEVC3
 
+!> Extract a res file from a cif file
 subroutine extract_res_from_cif(shelx_filepath, found)
 implicit  none
 character(len=*), intent(in) :: shelx_filepath
@@ -1101,6 +1103,7 @@ character(len=2048) :: buffer
     end do
 end subroutine
 
+!> Write list16 (restraints)
 subroutine writelist16()
 implicit none
 integer i, j, k, l, k1,k2
@@ -1244,6 +1247,7 @@ logical found
 
 end subroutine
 
+!> Reformat sginfo space group to crystals notation
 function reformat_spacegroup(spacegroup_arg) result(formatted_group)
 implicit none
 character(len=*), intent(in) :: spacegroup_arg
@@ -1387,6 +1391,7 @@ integer i
 
 end subroutine
 
+!> Write space group command
 subroutine write_spacegroup()
 implicit none
 
@@ -1398,6 +1403,7 @@ implicit none
 
 end subroutine
 
+!> write list13 (experiment setup)
 subroutine write_list13()
 implicit none
 integer i
@@ -1423,6 +1429,7 @@ integer i
 
 end subroutine
 
+!> write chemical composition
 subroutine write_composition()
 implicit none
 integer i
@@ -1436,6 +1443,7 @@ integer i
 
 end subroutine
 
+!> Write list5 (atom parameters)
 subroutine write_list5()
 implicit none
 integer i
@@ -1521,6 +1529,7 @@ integer flag
 
 end subroutine
 
+!> Write list12 (constraints)
 subroutine write_list12()
 implicit none
 integer i
@@ -1535,6 +1544,7 @@ integer i
 
 end subroutine
 
+!> write list2 (space group and symmetry)
 subroutine write_list2()
 use sginfo_mod
 implicit none
@@ -1555,6 +1565,7 @@ type(c_ptr) :: xyzptr
         call abort()
     end if
     
+    ! Adding symmetry operators
     do i=1, spacegroup%symmindex
         buffer=adjustl(spacegroup%symm(i))
         allocate(xyz(len_trim(buffer)+1))
@@ -1576,19 +1587,21 @@ type(c_ptr) :: xyzptr
         end if
     end do
     
+    ! Adding lattice symmetry
     i=T_LatticeTranslation_init()
     i=LatticeTranslation(abs(spacegroup%latt))%nTrVector
     NewSMx%R=0
     NewSMx%R(1)=1
     NewSMx%R(5)=1
     NewSMx%R(9)=1
-    print *, 'latt ', spacegroup%latt, i
+    !print *, 'latt ', spacegroup%latt, i
     do j=1, i
         print *, LatticeTranslation(abs(spacegroup%latt))%TrVector(:,j)
         NewSMx%T=LatticeTranslation(abs(spacegroup%latt))%TrVector(:,j)
         error=Add2ListSeitzMx(SgInfo, NewSMx)
     end do
     
+    ! adding inversion centre
     if(spacegroup%latt>0) then
         error=AddInversion2ListSeitzMx(SgInfo)
         if(error/=0) then
@@ -1597,26 +1610,26 @@ type(c_ptr) :: xyzptr
         end if
     end if
     
+    ! All done!
     error=CompleteSgInfo(SgInfo)
     if(error/=0) then
         print *, 'Error in CompleteSgInfo'
         call abort()
     end if
 
-    print *, 'Hall Symbol ', SgInfo%HallSymbol
-    call C_F_POINTER(SgInfo%LatticeInfo, LatticeInfo)
+    !print *, 'Hall Symbol ', SgInfo%HallSymbol
+    !call C_F_POINTER(SgInfo%LatticeInfo, LatticeInfo)
 
-    print *, 'Lattice code ', LatticeInfo%Code
+    !print *, 'Lattice code ', LatticeInfo%Code
 
-    print *, 'Crystal system ', XS_name(SgInfo%XtalSystem)
+    !print *, 'Crystal system ', XS_name(SgInfo%XtalSystem)
 
-    print *, 'assoc ', C_associated(SgInfo%TabSgName)
-    call C_F_POINTER(SgInfo%TabSgName, TabSgName)
-
-    call C_F_string_ptr(TabSgName%SgLabels, buffer)
-    print *, 'SgLabels ', trim(buffer)
-    call C_F_string_ptr(TabSgName%Extension, buffer)
-    print *, 'Extension ', trim(buffer)
+    if(c_associated(SgInfo%LatticeInfo)) then
+        call C_F_POINTER(SgInfo%LatticeInfo, LatticeInfo)
+    else
+        print *, 'Error: LatticeInfo not associated'
+        call abort()
+    end if
 
     write(crystals_fileunit, '(a)') '\LIST 2'
     write(crystals_fileunit, '(a, I0, a, a)') 'CELL NSYM=', SgInfo%nlist, ', LATTICE=', LatticeInfo%Code
@@ -1638,28 +1651,34 @@ type(c_ptr) :: xyzptr
         call abort()
     end if
     
-    call C_F_string_ptr(TabSgName%SgLabels, buffer)
-    if(trim(buffer)/='') then
-        i=index(buffer, '=')
-        if(i>0) then
-            spacegroupsymbol=buffer(i+1:)
-            i=index(spacegroupsymbol, '=')
+    if(C_associated(SgInfo%TabSgName)) then
+        call C_F_POINTER(SgInfo%TabSgName, TabSgName)
+        call C_F_string_ptr(TabSgName%SgLabels, buffer)
+        if(trim(buffer)/='') then
+            i=index(buffer, '=')
             if(i>0) then
-                spacegroupsymbol=spacegroupsymbol(:i-1)
+                spacegroupsymbol=buffer(i+1:)
+                i=index(spacegroupsymbol, '=')
+                if(i>0) then
+                    spacegroupsymbol=spacegroupsymbol(:i-1)
+                end if
+            else
+                spacegroupsymbol=buffer
             end if
-        else
-            spacegroupsymbol=buffer
+                
+            ! replace `_` with ` `
+            do i=1, len_trim(spacegroupsymbol)
+                if(spacegroupsymbol(i:i)=='_') then
+                    spacegroupsymbol(i:i)=' '
+                end if
+            end do
+        write(crystals_fileunit, '(a, a)') 'SPACEGROUP ', trim(spacegroupsymbol)    
         end if
-            
-        ! replace `_` with ` `
-        do i=1, len_trim(spacegroupsymbol)
-            if(spacegroupsymbol(i:i)=='_') then
-                spacegroupsymbol(i:i)=' '
-            end if
-        end do
-    write(crystals_fileunit, '(a, a)') 'SPACEGROUP ', trim(spacegroupsymbol)    
+    else
+        print *, 'Warning: Uknown space group!!'
+        print *, 'Hall Symbol ', SgInfo%HallSymbol
+        print *, 'Resulting input file won''t work'
     end if
-   
     write(crystals_fileunit, '(a, a)') 'CLASS ', trim(XS_name(SgInfo%XtalSystem))  
     
     write(crystals_fileunit, '(a)') 'END'

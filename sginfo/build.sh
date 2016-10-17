@@ -1,7 +1,7 @@
 #!/bin/sh
 set -x
-CC=gcc61
-FC=gfortran61
+CC=gcc
+FC=gfortran
 CFLAGS="-g -gdwarf-3 -O0 -c "
 FFLAGS="-g -gdwarf-3 -O0 -c -fcheck=all "
 $CC $CFLAGS sgclib.c  

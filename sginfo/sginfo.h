@@ -1143,6 +1143,7 @@ const T_TabSgName TabSgName[];
 const T_TabSgName TabSgName[] =
   {
     { " P 1",                1, "",      "P_1" },
+    { " A 1",                1, "",      "P_1 = A_1" },
     { "-P 1",                2, "",      "P_-1" },
     { " P 2y",               3, "b",     "P_2 = P_1_2_1" },
     { " P 2",                3, "c",     "P_2 = P_1_1_2" },
