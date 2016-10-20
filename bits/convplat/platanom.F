@@ -8,7 +8,7 @@ c
       dimension  cx(9), p(6) !unit cell and reciprocal data.
 c
       character *4 catom(10)
-      dimension    matom(10)
+      dimension    atom(10)
       dimension values(12)
       dimension scat(12,10) !f', f", (a-i), natom
 c
@@ -26,13 +26,13 @@ c
       read(*,*)nscat
       write(*,*)' Name & number for each different element'
       write(*,*) 'e.g. C 1 Cl 4'
-      read(*,*,err=400) (catom(i),matom(i),i=1,nscat) ! atoms in solvent
+      read(*,*,err=400) (catom(i),atom(i),i=1,nscat) ! atoms in solvent
       do i=1,nscat
             call xccupc(catom(i),ctemp(1:4))
       write(*,*)i,catom(i),ctemp(1:4)
             catom(i)=ctemp(1:4)
       enddo
-      write(*,'(a4,i6)')(catom(i),matom(i),i=1,nscat)
+      write(*,*)(catom(i),atom(i),i=1,nscat)
 c
       write(*,*) 'D-multiplier (usually 1.0)'
       read(*,*) dmult
@@ -70,7 +70,7 @@ c
           do l=1,11 
             scat(l,lscat)=values(l)
           enddo
-          scat(12,lscat)= matom(j)
+          scat(12,lscat)= atom(j)
          endif
         enddo
       endif
@@ -93,6 +93,7 @@ c
 c total real and imaginary scattering
       frt=0.
       fit=0.
+      write(12,'(a,f5.2)')  '# d-factor=',dmult
       do i=1,8
             read(11,'(a)')ctemp
             write(12,'(a)')ctemp(1:80)
