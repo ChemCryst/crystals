@@ -656,6 +656,7 @@ C
 2000  CONTINUE
 C
 C -- PRODUCE REQUIRED MESSAGES.
+      if (iermsg(icode) .gt. 1) CALL OUTCOL(9)
       GO TO ( 4100 , 4200 , 4300 , 4400 , 4500 ,
      2 4600 , 9920 ) , IERMSG(ICODE)
       GO TO 9920
@@ -677,7 +678,6 @@ C
       ENDIF
       WRITE ( CMON,4305)
       CALL XPRVDU(NCEROR, 3,0)
- 
       WRITE ( NCAWU , 4305 )
 4305  FORMAT ( / , ' CRYSTALS -- ERROR' , / )
       GO TO 6000
@@ -710,6 +710,8 @@ C
       GO TO 6000
 C
 6000  CONTINUE
+c     restore normal colours
+      if (iermsg(icode) .gt. 1) CALL OUTCOL(1)
 C -- DUMP INFORMATION AND DISC BUFFERS IF REQUIRED. THE ROUTINE 'KDUMP'
 C    IS CALLED , SO THAT NO RECURSIVE ERROR CALLS CAN OCCUR
 C
