@@ -3,12 +3,13 @@
 !! Usage: shel2cry filename
 program shelx2cry
 use shelx2cry_mod
+use crystal_data_m
 implicit none
 
 integer arg_cpt, iostatus, arg_length
-integer line_number !< Hold the line number from the shelx file
 integer shelxf_id !< unit id of the shelx file
-character(len=:), allocatable :: shelx_filepath, line
+character(len=:), allocatable :: shelx_filepath
+type(line_t) :: line
 logical file_exists, foundres
 
 ! Default length
@@ -78,7 +79,7 @@ end if
 open(newunit=shelxf_id,file=trim(shelx_filepath), status='old')
 iostatus=0
 do while(iostatus==0)
-    call readline(shelxf_id, line, line_number, iostatus)
+    call readline(shelxf_id, line, iostatus)
     !print *, line_number, iostatus, trim(line)
     call call_shelxprocess(line)
     if(the_end) exit

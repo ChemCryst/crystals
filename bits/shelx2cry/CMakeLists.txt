@@ -29,11 +29,10 @@ set(CMAKE_C_FLAGS_RELEASE "-O2 -g")
 SET (CMAKE_Fortran_FLAGS_RELEASE "-O2 -g -fcheck=all")
 message(STATUS "shelx2cry fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
-add_executable (shelx2cry shelx2cry_mod.F90  shelx2cry.F90)
+add_executable (shelx2cry crystal_data.F90 shelx_procedures.F90 shelx2cry_dict.F90 shelx2cry_mod.F90  shelx2cry.F90)
 TARGET_LINK_LIBRARIES(shelx2cry "${CMAKE_BINARY_DIR}/sginfo/libsginfo.a")
 SET_TARGET_PROPERTIES(shelx2cry PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
 
-add_library(shelx2crymod STATIC shelx2cry_mod.F90)
 message(STATUS "End building shelx2cry")
 
 # Unit testing
