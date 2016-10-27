@@ -2925,15 +2925,15 @@ C--CAPTION FOR THE LIST 5 AND PEAK SCAN RESULTS
      2 ' of the new list ',I3//' Map scale factor = ',F10.3,5X,
      3 'Minimum peak height = ',F10.1,5X,
      4 'Maximum number of peaks allowed = ',I5//' Type',3X,'Serial',
-     5 4X,'X',9X,'Y',9X,'Z',11X, 'Height (x10'/)
+     5 4X,'X',9X,'Y',9X,'Z',11X, 'Height'/)
 C----- NEED A PRINT?
       IF (IPKMON .GE. 0) THEN
       WRITE ( CMON , 1305 ) LNOUT
       CALL XPRVDU(NCVDU, 2,0)
 1305  FORMAT ( 'Results of the peak search and contents ' ,
      2 'of the new list ' , I3 , / ,
-     3 8X , 'Atom' , 7X , 'Height (x10)' ,
-     4 6X , 'x' , 9X , 'y' , 9X , 'z' , 4X , 'Fit' )
+     3 8X , 'Atom' , 10X , 'Height' ,
+     4 9X , 'x' , 9X , 'y' , 9X , 'z' , 4X , 'Fit' )
       ENDIF
 C--CHECK IF WE SHOULD PRINT DETAILS OF THE ORIGINAL ATOMS
       IF(N10A)1750,1750,1350
