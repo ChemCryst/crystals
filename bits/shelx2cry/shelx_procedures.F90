@@ -10,7 +10,7 @@ implicit none
 type(line_t), intent(in) :: shelxline
 
     print *, 'Warning: Not supported '
-    print *, shelxline%line_number, trim(shelxline%line)
+    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
 
 end subroutine
 

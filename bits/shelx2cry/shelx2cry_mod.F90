@@ -520,7 +520,7 @@ logical found
             ! No residue used
             if(k1>1 .or. k2>1) then
                 print *, 'Error: duplicated label found and no residue specified in DFIX'
-                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, dfix_table(i)%shelxline
+                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
                 do j=1, k1
                     write(*, '("Line ", I0, ": ", a)') atomslist(serial1(j))%line_number, trim(atomslist(serial1(j))%shelxline)
                 end do
@@ -535,7 +535,7 @@ logical found
                 if(k2==0) then
                     print *, 'Error: cannot find ', trim(dfix_table(i)%atom2), ' in res file'
                 end if
-                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, dfix_table(i)%shelxline
+                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
                 do j=1, atomslist_index
                     print *, j, trim(atomslist(j)%label)
                 end do
@@ -1177,6 +1177,9 @@ logical ok_flag
         ! If an isotropic U is given as -T, where T is in the range 
         ! 0.5 < T < 5, it is fixed at T times the Ueq of the previous 
         ! atom not constrained in this way
+        print *, 'Warning: isotropic thermal parameter depends on previous atom'
+        print *, '         Thermal parameter will be fixed at current value'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         do i=atomslist_index-1, 1, -1
             if(atomslist(i)%iso>0.0) then
                 atomslist(atomslist_index)%iso=atomslist(i)%iso*iso
