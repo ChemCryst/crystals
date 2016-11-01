@@ -62,4 +62,25 @@ end type
 type(dfix_t), dimension(1024) :: dfix_table
 integer :: dfix_table_index=0
 
+contains
+
+!> Transform a string to upper case
+function to_upper(strIn) result(strOut)
+ implicit none
+
+ character(len=*), intent(in) :: strIn !< mixed case input
+ character(len=len(strIn)) :: strOut !< upper case output
+ integer :: i,j
+
+     do i = 1, len(strIn)
+          j = iachar(strIn(i:i))
+          if (j>= iachar("a") .and. j<=iachar("z") ) then
+               strOut(i:i) = achar(iachar(strIn(i:i))-32)
+          else
+               strOut(i:i) = strIn(i:i)
+          end if
+     end do
+
+end function to_upper
+
 end module

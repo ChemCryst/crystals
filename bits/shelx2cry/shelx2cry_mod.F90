@@ -489,6 +489,13 @@ logical found
             print *, '_* syntax not supported'
             cycle
         end if
+
+        if(dfix_table(i)%distance<0.0) then
+            print *, 'Warning: Anti bumping in DFIX not supported '
+            write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
+            cycle
+        end if
+        
         write(crystals_fileunit, '(a, a)') '# ', dfix_table(i)%shelxline
         ! get serial for atom 1
         serial1=0
@@ -522,8 +529,16 @@ logical found
                 end do
                 call abort()
             else if(k1==0 .or. k2==0) then
-                print *, 'Cannot find ', dfix_table(i)%atom1, ' or ', dfix_table(i)%atom2, ' in res file'
+                if(k1==0) then
+                    print *, 'Error: cannot find ', trim(dfix_table(i)%atom1), ' in res file'
+                end if
+                if(k2==0) then
+                    print *, 'Error: cannot find ', trim(dfix_table(i)%atom2), ' in res file'
+                end if
                 write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, dfix_table(i)%shelxline
+                do j=1, atomslist_index
+                    print *, j, trim(atomslist(j)%label)
+                end do
                 call abort()
             else
                 ! good to go
@@ -599,7 +614,6 @@ logical found
             &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
             &   trim(sfac(atomslist(serial1(k1))%sfac)), atomslist(serial1(k1))%crystals_serial, &
             &   trim(sfac(atomslist(serial2(k2))%sfac)), atomslist(serial2(k2))%crystals_serial
-            
         end if
                     
     end do
@@ -967,7 +981,6 @@ type(c_ptr) :: xyzptr
         NewSMx%R(9)=1
         !print *, 'latt ', spacegroup%latt, i
         do j=1, i
-            print *, LatticeTranslation(abs(spacegroup%latt))%TrVector(:,j)
             NewSMx%T=LatticeTranslation(abs(spacegroup%latt))%TrVector(:,j)
             error=Add2ListSeitzMx(SgInfo, NewSMx)
         end do
@@ -1096,7 +1109,7 @@ integer i
     end if
 
     atomslist_index=atomslist_index+1
-    atomslist(atomslist_index)%label=label
+    atomslist(atomslist_index)%label=to_upper(label)
     atomslist(atomslist_index)%sfac=atomtype
     atomslist(atomslist_index)%coordinates=coordinates
     atomslist(atomslist_index)%aniso=aniso
@@ -1157,7 +1170,7 @@ logical ok_flag
     end if
 
     atomslist_index=atomslist_index+1
-    atomslist(atomslist_index)%label=label
+    atomslist(atomslist_index)%label=to_upper(label)
     atomslist(atomslist_index)%sfac=atomtype
     atomslist(atomslist_index)%coordinates=coordinates
     if(iso<0.0) then
@@ -1200,6 +1213,5 @@ logical ok_flag
     atomslist(atomslist_index)%line_number=shelxline%line_number
 
 end subroutine
-
  
 end module

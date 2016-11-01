@@ -205,8 +205,8 @@ integer :: dfixresidue
         dfix_table_index=dfix_table_index+1
         dfix_table(dfix_table_index)%distance=distance
         dfix_table(dfix_table_index)%esd=esd
-        dfix_table(dfix_table_index)%atom1=trim(buffer)
-        dfix_table(dfix_table_index)%atom2=trim(buffer2)
+        dfix_table(dfix_table_index)%atom1=to_upper(trim(buffer))
+        dfix_table(dfix_table_index)%atom2=to_upper(trim(buffer2))
         dfix_table(dfix_table_index)%shelxline=trim(shelxline%line)
         dfix_table(dfix_table_index)%line_number=shelxline%line_number
         dfix_table(dfix_table_index)%residue=dfixresidue
