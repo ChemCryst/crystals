@@ -38,7 +38,7 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
     include(CheckFortranCompilerFlag)
 Endif()
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "MINGW64_NT") 
+if (${CMAKE_SYSTEM_NAME} MATCHES "MINGW64_NT" OR ${CMAKE_SYSTEM_NAME} MATCHES "MINGW32_NT") 
     message(STATUS "Building using MSYS2, Mingw64 toolchain")
     SET(MSYS ON)
 endif ()

@@ -57,7 +57,7 @@ type(dict_t) :: this
         tuples(9)%key='BLOC'
         tuples(9)%func => shelx_unsupported    
         tuples(10)%key='BOND'
-        tuples(10)%func => shelx_unsupported    
+        tuples(10)%func => shelx_ignored    
         tuples(11)%key='BUMP'
         tuples(11)%func => shelx_unsupported    
         tuples(12)%key='CELL'
@@ -67,7 +67,7 @@ type(dict_t) :: this
         tuples(14)%key='CHIV'
         tuples(14)%func => shelx_unsupported    
         tuples(15)%key='CONF'
-        tuples(15)%func => shelx_unsupported    
+        tuples(15)%func => shelx_ignored    
         tuples(16)%key='CONN'
         tuples(16)%func => shelx_unsupported    
         tuples(17)%key='DAMP'
@@ -97,7 +97,7 @@ type(dict_t) :: this
         tuples(29)%key='FLAT'
         tuples(29)%func => shelx_unsupported    
         tuples(30)%key='FMAP'
-        tuples(30)%func => shelx_unsupported    
+        tuples(30)%func => shelx_ignored    
         tuples(31)%key='FRAG'
         tuples(31)%func => shelx_unsupported    
         tuples(32)%key='FREE'
@@ -109,9 +109,9 @@ type(dict_t) :: this
         tuples(35)%key='HFIX'
         tuples(35)%func => shelx_unsupported    
         tuples(36)%key='HKLF'
-        tuples(36)%func => shelx_unsupported    
+        tuples(36)%func => shelx_ignored    
         tuples(37)%key='HTAB'
-        tuples(37)%func => shelx_unsupported    
+        tuples(37)%func => shelx_ignored    
         tuples(38)%key='ISOR'
         tuples(38)%func => shelx_unsupported    
         tuples(39)%key='LATT'
@@ -123,7 +123,7 @@ type(dict_t) :: this
         tuples(42)%key='L.S.'
         tuples(42)%func => shelx_ignored    
         tuples(43)%key='MERG'
-        tuples(43)%func => shelx_unsupported    
+        tuples(43)%func => shelx_ignored    
         tuples(44)%key='MORE'
         tuples(44)%func => shelx_ignored    
         tuples(45)%key='MOVE'

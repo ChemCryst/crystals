@@ -24,6 +24,7 @@ real, dimension(:), allocatable :: fvar !< list of free variables (sfac from she
 real, dimension(6) :: unitcell=0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
 integer :: residue=0 !< Current residue
 integer :: part=0 !< current part
+real :: part_sof=-1.0 !< Overriding subsequent site occupation factor
 
 !> Atom type. It holds hold the information about an atom in the structure
 type atom_t

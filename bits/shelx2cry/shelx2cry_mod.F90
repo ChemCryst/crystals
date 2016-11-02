@@ -85,7 +85,7 @@ procedure(shelx_dummy), pointer :: proc
     
     ! 4 letters keywords first
     if(len_trim(shelxline%line)>3) then
-        keyword=shelxline%line(1:4)
+        keyword=to_upper(shelxline%line(1:4))
         proc => keywords2functions%getvalue( keyword )
         if ( associated(proc) ) then
             call proc(shelxline)
@@ -94,7 +94,7 @@ procedure(shelx_dummy), pointer :: proc
     end if
     
     ! 3 letters keywords 
-    keyword=shelxline%line(1:3)
+    keyword=to_upper(shelxline%line(1:3))
     proc => keywords2functions%getvalue( keyword )
     if ( associated(proc) ) then
         call proc(shelxline)
@@ -1209,7 +1209,11 @@ logical ok_flag
     else
         atomslist(atomslist_index)%iso=iso
     end if  
-    atomslist(atomslist_index)%sof=sof
+    if(part>0 .and. part_sof/=-1.0) then
+        atomslist(atomslist_index)%sof=part_sof
+    else
+        atomslist(atomslist_index)%sof=sof
+    end if
     atomslist(atomslist_index)%resi=residue
     atomslist(atomslist_index)%part=part
     atomslist(atomslist_index)%shelxline=shelxline%line

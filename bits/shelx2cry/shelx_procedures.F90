@@ -9,7 +9,7 @@ use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
 
-    print *, 'Warning: Not supported '
+    print *, 'Warning: `',trim(shelxline%line(1:4)),'` Not supported '
     write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
 
 end subroutine
@@ -221,9 +221,15 @@ implicit none
 type(line_t), intent(in) :: shelxline
 real :: wave
 character dummy
+integer iostatus
 
     !CELL 1.54187 14.8113 13.1910 14.8119 90 98.158 90
-    read(shelxline%line, *) dummy, wave, unitcell
+    read(shelxline%line, *, iostat=iostatus) dummy, wave, unitcell
+    if(iostatus/=0) then
+        print *, 'Error: Syntax error'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        call abort()
+    end if
     list1index=list1index+1
     write(list1(list1index), '(a5,1X,6(F0.5,1X))') 'REAL ', unitcell
     list13index=list13index+1
@@ -237,8 +243,14 @@ use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
 real, dimension(7) :: esds
+integer iostatus
 
-    read(shelxline%line(5:), *) esds
+    read(shelxline%line(5:), *, iostat=iostatus) esds
+    if(iostatus/=0) then
+        print *, 'Error: Syntax error'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        call abort()
+    end if
     write(list31(1), '(a)') '\LIST 31'
     write(list31(2), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') esds(2:4)
     write(list31(3), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') esds(5:7)
@@ -255,7 +267,7 @@ real, dimension(1024) :: temp ! should be more than enough
 integer iostatus, i
 
     temp=0.0
-    read(shelxline%line(5:), *, iostat=iostatus) temp(1:3)
+    read(shelxline%line(5:), *, iostat=iostatus) temp
     if(temp(1024)/=0.0) then
         print *, 'More than 1024 free variable?!?!'
         call abort()
@@ -405,8 +417,25 @@ subroutine shelx_part(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
+integer iostatus
 
-    read(shelxline%line(5:), *) part
+    read(shelxline%line(5:), *, iostat=iostatus) part, part_sof
+    if(iostatus/=0) then
+        read(shelxline%line(5:), *, iostat=iostatus) part
+        part_sof=-1.0
+        if(iostatus/=0) then
+            part=0
+            print *, 'Error: syntax error in PART instruction'
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        end if
+    end if
+    
+    if(part<0) then
+        part=-part
+        print *, 'Error: Suppression of special position constraints not supported'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+    end if
+    
 end subroutine
 
 !> Parse the END keyword. Set the_end to true.
@@ -416,6 +445,11 @@ implicit none
 type(line_t), intent(in) :: shelxline
 
     the_end=.true.
+    
+    ! check if part left unclosed
+    if(part>0) then
+        print *, 'Error: `Part 0` is missing somewhere'
+    end if
 
 end subroutine
 
