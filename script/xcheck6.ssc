@@ -11,6 +11,8 @@
 % EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
+% VARIABLE INTEGER NSIGMAS
+% EVALUATE NSIGMAS = 1
 %%                                                                              
 % IF ( EXISTS 6 .NE. 1 ) THEN                                                   
                                                                                 
@@ -699,8 +701,6 @@
 %    COPY '#OPEN SCPDATA sigmas.dat' 
 %    BLOCK
 ^^CO SET PROGOUTPUT TEXT 'Reading variances from sigmas.dat'             
-%     VARIABLE INTEGER NSIGMAS
-%     EVALUATE NSIGMAS = 1
 %     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT
 %     EXTRACT REWIND
 %%   Skip first line:                                                      
