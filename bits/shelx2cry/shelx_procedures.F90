@@ -412,7 +412,8 @@ type(line_t), intent(in) :: shelxline
     read(shelxline%line(5:), *) residue
 end subroutine
 
-!> Parse PART keyword. Change the current part to the new value found.
+!> Parse PART keyword. Change the current part to the new value found.<br />
+!! This instruction is not used in crystals, parts are recovered from the use of free variables in occupancy.
 subroutine shelx_part(shelxline)
 use crystal_data_m
 implicit none
@@ -446,11 +447,6 @@ type(line_t), intent(in) :: shelxline
 
     the_end=.true.
     
-    ! check if part left unclosed
-    if(part>0) then
-        print *, 'Error: `Part 0` is missing somewhere'
-    end if
-
 end subroutine
 
 end module

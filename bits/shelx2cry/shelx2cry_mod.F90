@@ -830,7 +830,7 @@ use crystal_data_m
 implicit none
 integer i
 real occ
-integer flag
+integer flag, atompart
 
     ! atom list
     !#LIST     5
@@ -862,15 +862,16 @@ integer flag
                 !write(list12(list12index), '("FIX ",a,"(",I0,", occ)")') &
                 !&   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
             else if(abs(atomslist(i)%sof)>=20.0) then
+                ! occupancy depends on a free variable
                 occ=abs(atomslist(i)%sof)-int(abs(atomslist(i)%sof)/10.0)*10.0
                 if(atomslist(i)%sof>0) then
                     occ=occ*fvar(int(abs(atomslist(i)%sof)/10.0))
                 else
                     occ=occ*(1.0-fvar(int(abs(atomslist(i)%sof)/10.0)))
                 end if
-                ! restraints done later
+                ! restraints done automatically using parts later
             else if(atomslist(i)%sof<0.0) then
-                print *, "don't know what to do with negative soc"
+                print *, "don't know what to do with a sof between -20.0 < sof < 0.0"
                 stop
             else            
                 occ=atomslist(i)%sof
@@ -902,8 +903,20 @@ integer flag
             if(atomslist(i)%resi>0) then
                 write(crystals_fileunit, '("CONT RESIDUE=",I0)') atomslist(i)%resi
             end if
-            if(atomslist(i)%part>0) then
-                write(crystals_fileunit, '("CONT PART=",I0)') atomslist(i)%part+1000
+            ! We are not using shelx part instruction, part is constructed from the free variable
+            ! In shelx part is only used for connectivity
+            !if(atomslist(i)%part>0) then
+            !    write(crystals_fileunit, '("CONT PART=",I0)') atomslist(i)%part+1000
+            !end if
+            ! if using free variable, setting parts:
+            if(abs(atomslist(i)%sof)>=20.0) then
+                if(atomslist(i)%sof>0.0) then
+                    flag=1
+                else
+                    flag=2
+                end if
+                atompart=(int(abs(atomslist(i)%sof)/10.0)-1)*1000+flag
+                write(crystals_fileunit, '("CONT PART=",I0)') atompart
             end if
         end do
         write(crystals_fileunit, '(a)') 'END'
@@ -1113,6 +1126,14 @@ integer i
     atomslist(atomslist_index)%sfac=atomtype
     atomslist(atomslist_index)%coordinates=coordinates
     atomslist(atomslist_index)%aniso=aniso
+    if(part>0 .and. part_sof/=-1.0) then
+        ! We are working on a res file, this values should be the same as the one reported on each atom
+        if(abs(sof-part_sof)>0.01) then
+            print *, 'Error: res file not consistent'
+            print *, '       sof from part should be the same of the atom one'
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        end if
+    end if
     atomslist(atomslist_index)%sof=sof
     atomslist(atomslist_index)%resi=residue
     atomslist(atomslist_index)%part=part
@@ -1210,10 +1231,14 @@ logical ok_flag
         atomslist(atomslist_index)%iso=iso
     end if  
     if(part>0 .and. part_sof/=-1.0) then
-        atomslist(atomslist_index)%sof=part_sof
-    else
-        atomslist(atomslist_index)%sof=sof
+        ! We are working on a res file, this values should be the same as the one reported on each atom
+        if(abs(sof-part_sof)>0.01) then
+            print *, 'Error: res file not consistent'
+            print *, '       sof from part should be the same of the atom one'
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        end if
     end if
+    atomslist(atomslist_index)%sof=sof
     atomslist(atomslist_index)%resi=residue
     atomslist(atomslist_index)%part=part
     atomslist(atomslist_index)%shelxline=shelxline%line
