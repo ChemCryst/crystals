@@ -2614,7 +2614,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
 
  Map scale factor =     10.000     Minimum peak height =        3.0     Maximum number of peaks allowed =    21
 
- Type   Serial    X         Y         Z           Height
+ Type   Serial    X         Y         Z           Height(x  10.0)
 
  C         1.     0.8963    0.0455    0.1912       -1.8   
  C         2.     0.7629    0.1320    0.1278       -2.1   
@@ -6528,7 +6528,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
 
  Map scale factor =     10.000     Minimum peak height =        3.0     Maximum number of peaks allowed =    21
 
- Type   Serial    X         Y         Z           Height
+ Type   Serial    X         Y         Z           Height(x  10.0)
 
  C         1.     0.8963    0.0455    0.1912       -1.6   
  C         2.     0.7629    0.1320    0.1278       -2.0   
@@ -10449,7 +10449,7 @@ LS-scale=  1.685   Wilson Scale=  0.000
 
  Map scale factor =     10.000     Minimum peak height =        3.0     Maximum number of peaks allowed =    21
 
- Type   Serial    X         Y         Z           Height
+ Type   Serial    X         Y         Z           Height(x  10.0)
 
  C         1.     0.8962    0.0448    0.1912       -0.2   
  C         2.     0.7619    0.1324    0.1275       -1.2   
@@ -14381,7 +14381,7 @@ LS-scale=  1.685   Wilson Scale=  0.000
 
  Map scale factor =     10.000     Minimum peak height =        3.0     Maximum number of peaks allowed =    21
 
- Type   Serial    X         Y         Z           Height
+ Type   Serial    X         Y         Z           Height(x  10.0)
 
  C         1.     0.8962    0.0448    0.1912       -0.2   
  C         2.     0.7619    0.1324    0.1275       -1.2   
