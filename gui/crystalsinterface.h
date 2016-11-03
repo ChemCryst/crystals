@@ -207,7 +207,9 @@ typedef std::string tstring;
 #ifndef CRY_GUI 
  #define CRY_GUI
 #endif
-  #define CRY_USEWX
+  #ifndef CRY_USEWX
+    #define CRY_USEWX
+  #endif
 // This next is also defined by CMake scripts for MinGW build - avoiding redefinition warning:
   #ifndef CRY_OSWIN32
      #define CRY_OSWIN32
