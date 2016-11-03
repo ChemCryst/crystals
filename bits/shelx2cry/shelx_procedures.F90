@@ -64,30 +64,65 @@ subroutine shelx_dfix(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, linepos
+integer i, j, linepos
 character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
 logical found
-character(len=128) :: buffer, buffer2
+character(len=128) :: buffer, buffer2, buffernum
 real distance, esd
 integer :: dfixresidue
 
     ! parsing more complicated on this one as we don't know the number of parameters
     linepos=4 ! First 4 is DFIX
+    
+    if(len_trim(shelxline%line)<5) then
+        write(*,*) 'Error: Empty DFIX'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
 
-    ! check for `_*̀
     dfixresidue=-99
+    buffernum=''
+    ! check for subscripts on dfix
     if(shelxline%line(5:5)=='_') then
+        ! check for `_*̀
         if(shelxline%line(6:6)=='*') then
             dfixresidue=-1
         else
-            found=.false.
-            do i=1, 10
-                if(shelxline%line(6:6)==numbers(i)) then
-                    found=.true.
-                    read(shelxline%line(6:6), *) dfixresidue
-                    exit
-                end if
+            ! check for a residue number
+            found=.true.
+            j=0
+            do while(found)
+                found=.false.
+                do i=1, 10
+                    if(shelxline%line(6+j:6+j)==numbers(i)) then
+                        found=.true.
+                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
+                        j=j+1
+                        exit
+                    end if
+                end do
             end do
+            if(len_trim(buffernum)>0) then
+                read(buffernum, *) dfixresidue
+            end if
+            
+            ! check for a residue name
+            if(dfixresidue==-99) then
+                if(shelxline%line(6:6)/=' ') then
+                    ! DFIX applied to named residue
+                    ! it is not supported
+                    write(*,*) 'Error: Not a number '
+                    write(*,*) '       Named residue not supported '
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    return
+                else
+                    write(*,*) 'Error: Cannot have a space after `_` '
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    return
+                end if
+            end if
         end if
         linepos=6
     end if
@@ -96,11 +131,6 @@ integer :: dfixresidue
         linepos=linepos+1
         if(shelxline%line(linepos:linepos)/=' ') exit
     end do
-    if(linepos>len(shelxline%line)) then
-        write(*,*) ' I have not found anything after DFIX'
-        write(*,*) shelxline%line_number, trim(shelxline%line)
-        stop
-    end if
 
     ! we have something, must be the distance
     buffer=''
@@ -114,10 +144,10 @@ integer :: dfixresidue
         end do
         if(.not. found) then
             ! no number.
-            write(*,*) 'Expected a number but got ', shelxline%line(linepos:linepos)
-            write(*,*) shelxline%line
-            write(*,*) repeat(' ', linepos-1), '^'
-            stop
+            write(*,*) 'Error: Expected a number but got ', shelxline%line(linepos:linepos)
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            write(*,*) repeat(' ', linepos-1+5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+            return
         end if
         buffer=trim(buffer)//shelxline%line(linepos:linepos)
         linepos=linepos+1
@@ -131,9 +161,9 @@ integer :: dfixresidue
         linepos=linepos+1
     end do
     if(linepos>len(shelxline%line)) then
-        write(*,*) ' I have not found the esd or atom definition'
-        write(*,*) shelxline%line
-        stop
+        write(*,*) 'Error: I have not found the esd or atom definition'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
     end if
         
     ! we have something, must be esd or atom
@@ -156,10 +186,10 @@ integer :: dfixresidue
                 end if
             end do
             if(.not. found) then
-                write(*,*) 'Expected a number but got ', shelxline%line(linepos:linepos)
-                write(*,*) shelxline%line
-                write(*,*) repeat(' ', linepos-1), '^'
-                stop
+                write(*,*) 'Error: Expected a number but got ', shelxline%line(linepos:linepos)
+                write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                write(*,*) repeat(' ', linepos-1+5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                return
             end if
             buffer=trim(buffer)//shelxline%line(linepos:linepos)
             linepos=linepos+1
