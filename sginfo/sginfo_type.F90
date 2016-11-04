@@ -21,7 +21,7 @@ real, parameter :: sginfo_ctbf=72.0
 !!     T_LatticeInfo;
 !!~~~~~~~~~~~~~~~
 type, bind(c) :: T_LatticeInfo
-    character(c_char) :: Code !< Lattice type (P, A, B, C, I, R, S, T, F)
+    character(kind=c_char) :: Code !< Lattice type (P, A, B, C, I, R, S, T, F)
     integer(c_int) :: nTrVector !< Number of translational vectors
     type(c_ptr) :: TrVector !< Vectors (Always starts with 0,0,0). Values are multiplied by sginfo_stbf and stored as integers.
 end type
