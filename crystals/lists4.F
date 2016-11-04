@@ -1095,9 +1095,21 @@ C--AND NOW RETURN
 C
 CODE FOR XFAL05
       SUBROUTINE XFAL05
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST05.INC'
+
 C--ROUTINE TO LOAD LIST 5 FROM THE DISC
-C
       CALL XLDR05(5)
+
+C - Sanity check atom parameters & scales for NaN     
+      DO MF05 = L5,L5+(N5-1)*MD5,MD5
+        DO MG05 = 1, 13 ! Serial -> Spare
+          IF (ISNAN(STORE(MF05+MG05))) STORE(MF05+MG05) = 0.0
+        END DO
+      END DO
+      DO MH05 = L5O,L5O+5
+          IF (ISNAN(STORE(MH05))) STORE(MH05) = 1.0
+      END DO
       RETURN
       END
 C
