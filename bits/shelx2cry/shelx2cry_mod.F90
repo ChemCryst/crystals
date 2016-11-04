@@ -747,7 +747,7 @@ integer i
     if(list1index>0) then
         write(crystals_fileunit, '(a)') '\LIST 1'
         do i=1, list1index
-            write(crystals_fileunit, '(a)') list1(i)
+            write(crystals_fileunit, '(a)') trim(list1(i))
         end do
         write(crystals_fileunit, '(a)') 'END'
     end if
@@ -802,7 +802,7 @@ integer i
     if(list13index>0) then
         write(crystals_fileunit, '(a)') '\LIST 13'
         do i=1, list13index
-            write(crystals_fileunit, '(a)') list13(i)
+            write(crystals_fileunit, '(a)') trim(list13(i))
         end do
         write(crystals_fileunit, '(a)') 'END'
     end if
@@ -818,7 +818,7 @@ integer i
     ! composition
     if(trim(composition(1))/='') then
         do i=1, 5
-            write(crystals_fileunit, '(a)') composition(i)
+            write(crystals_fileunit, '(a)') trim(composition(i))
         end do
     end if
 
@@ -830,7 +830,7 @@ use crystal_data_m
 implicit none
 integer i
 real occ
-integer flag, atompart
+integer flag, atompart, fvar_index
 
     ! atom list
     !#LIST     5
@@ -863,13 +863,20 @@ integer flag, atompart
                 !&   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
             else if(abs(atomslist(i)%sof)>=20.0) then
                 ! occupancy depends on a free variable
-                occ=abs(atomslist(i)%sof)-int(abs(atomslist(i)%sof)/10.0)*10.0
-                if(atomslist(i)%sof>0) then
-                    occ=occ*fvar(int(abs(atomslist(i)%sof)/10.0))
-                else
-                    occ=occ*(1.0-fvar(int(abs(atomslist(i)%sof)/10.0)))
+                fvar_index=int(abs(atomslist(i)%sof)/10.0)
+                if(fvar_index>size(fvar) .or. fvar_index<=0) then
+                    print *, 'Error: Free variable missing for sof=', atomslist(i)%sof
+                    write(*, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+                    occ=1.0
+                else                               
+                    occ=abs(atomslist(i)%sof)-fvar_index*10.0
+                    if(atomslist(i)%sof>0) then
+                        occ=occ*fvar(fvar_index)
+                    else
+                        occ=occ*(1.0-fvar(fvar_index))
+                    end if
+                    ! restraints done automatically using parts later. See below
                 end if
-                ! restraints done automatically using parts later
             else if(atomslist(i)%sof<0.0) then
                 print *, "don't know what to do with a sof between -20.0 < sof < 0.0"
                 stop
