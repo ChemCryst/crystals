@@ -3096,9 +3096,11 @@ cfeb08        WRITE (NCAWU,250) LB
       IF (ISSPRT.EQ.0) WRITE (NCWU,350) LA
 cfeb08      WRITE (NCAWU,350) LA
       WRITE (CMON,350) LA
+      call outcol(7)
       CALL XPRVDU (NCVDU,1,0)
+      call outcol(1)
 350   FORMAT (1X,'List ',I3,' has not been changed ')
-      GO TO 200
+      GO TO 150
 400   CONTINUE
       IF (ISSPRT.EQ.0) WRITE (NCWU,450) LA
 cfeb08      WRITE (NCAWU,450) LA

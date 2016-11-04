@@ -16,16 +16,9 @@
 {1,11  This script allows the user to define the initial mapping of
 {1,11  the fragments
 {1,11  
-{1,11  Since CRYSTALS becomes confused if there are two or more atoms
-{1,11  of the same type with the same serial number, the best strategy
-{1,11  is as follows:
-{1,11  Quit this SCRIPT  
-{1,11  Number the atoms sequentially from 1
-{1,11  Convert all the atoms to type C
-{1,11  Use the graphics window to change required element types in one
-{1,11  fragment
-{1,11  Restart this SCRIPT to number and type the remaining motifs.
-{1,11
+{1,11  You must be sure that there are not two or more atoms
+{1,11  of the same type with the same serial number.
+{1,11  
 {1,0
 %  VARIABLE LOGICAL ABORT
 %  EVALUATE CTEXT1 = 'Continue or Abort?'

@@ -383,6 +383,7 @@ C---- SORT OUT THE INPUT
      1 '{I Rescaling weights by a factor of',factor, store(l30rf+4)
          call xprvdu(ncvdu,1,0)
          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
+         call xpause(3000)
       endif
 C
       IF (ISTORE(L13CD+1) .LE. -1) THEN    ! F = FO
@@ -638,20 +639,27 @@ C Check for convergence:
              IF ( SXBG .GT. 0.005  ) CYCLE
 C Converged!
 c SX2016/5 recommends 0.1 rather than 0.2
-             IF ( SXA .GE. 0.1 ) THEN
-               write(cmon,'(A, 2f10.4)') 
-     1         '{E Forced reset of P1 to 0.1', sxa, sxb
-               call xprvdu(ncvdu,1,0)
-               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
-                SXA = 0.1
+c Nov 2016. We get better results with 0.2 (DJW)
+             IF ( SXA .GE. 0.2 ) THEN
+               write(cmon,'(A, 2f10.4/A)') 
+     1         '{E SHELX-type parameters:', sxa, sxb,
+     1         '{E Forced reset of P1 to 0.2'
+               call xprvdu(ncvdu,2,0)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
+     1         cmon(1)(3:),cmon(2)(3:)
+                SXA = 0.2
                 SXB = 0.0
+                call xpause(2000)
              END IF
              if (sxa .lt. 0.) then
-               write(cmon,'(A, 2f10.4)') 
-     1         '{E Forced reset of P1 0.001', sxa, sxb
+               write(cmon,'(A, 2f10.4/A)') 
+     1         '{E SHELX-type parameters:', sxa, sxb,
+     1         '{E Forced reset of P1 0.001'
                call xprvdu(ncvdu,1,0)
-               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
+     1         cmon(1)(3:),cmon(2)(3:)
                sxa = 0.001
+               call xpause(2000)
              endif
              EXIT
            END DO
