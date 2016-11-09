@@ -132,7 +132,11 @@ void    CxProgress::SetText( const string & text )
 #else
         m_TextOverlay = new wxStaticText();
 //        cerr << "Creating new static text overlay for the Progress Bar.\n";
+#ifdef CRY_OSLINUX
         m_TextOverlay->Create( (wxWindow*)this->GetParent(), -1, text.c_str(), wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
+#else
+        m_TextOverlay->Create( (wxWindow*)this, -1, text.c_str(), wxPoint(0,0), GetSize(), wxST_NO_AUTORESIZE );
+#endif
     }
     else
         m_TextOverlay->SetLabel(text.c_str());

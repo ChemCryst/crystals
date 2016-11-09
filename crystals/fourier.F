@@ -879,13 +879,15 @@ C----- NEGATED MAP
       ELSE
             CRADTP = '    barns '
       ENDIF
-      WRITE ( CMON ,2610) DENMIN,DENMAX, CRADTP,
+      if(n10a.gt.0) then
+       WRITE ( CMON ,2610) DENMIN,DENMAX, CRADTP,
      1 FXMIN,FYMIN,FZMIN
-      CALL XPRVDU(NCVDU, 2,0)
+       CALL XPRVDU(NCVDU, 2,0)
 2610  FORMAT(' The minimum and maximum',
      1' map densities are ',2G10.3,A,'/A^3',
      2 / 17X,' The deepest hole is at ', 3F8.3)
-      IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
+       IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
+      endif
 C----- STORE IN LIST30 IF DIFFERENCE MAP
       IF (NTYP .EQ. 3) THEN
 C--DIFFERENCE MAP  -  PRINT THE AVERAGE ELECTRON DENSITY AT AN ATOMIC SI
@@ -2971,20 +2973,29 @@ C--CREATE THE OUTPUT LIST TYPE
       CALL XCPYL5(5,LNOUT,N10A,NEW)
 C--CAPTION FOR THE LIST 5 AND PEAK SCAN RESULTS
       CALL XPRTCN
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)LNOUT,SS,APEAKH,N10MAX
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)LNOUT,SS,APEAKH,N10MAX,
+     1 SS
 1300  FORMAT(' Results of the peak search and contents',
      2 ' of the new list ',I3//' Map scale factor = ',F10.3,5X,
      3 'Minimum peak height = ',F10.1,5X,
      4 'Maximum number of peaks allowed = ',I5//' Type',3X,'Serial',
-     5 4X,'X',9X,'Y',9X,'Z',11X, 'Height'/)
+     5 4X,'X',9X,'Y',9X,'Z',11X, 'Height(x',f6.1,')'/)
 C----- NEED A PRINT?
       IF (IPKMON .GE. 0) THEN
-      WRITE ( CMON , 1305 ) LNOUT
+       if(ss.le.99.4) then
+         WRITE ( CMON , 1305 ) LNOUT,SS
+       else
+         WRITE ( CMON , 1306 ) LNOUT,nint(SS)
+       endif
       CALL XPRVDU(NCVDU, 2,0)
 1305  FORMAT ( 'Results of the peak search and contents ' ,
      2 'of the new list ' , I3 , / ,
-     3 8X , 'Atom' , 10X , 'Height' ,
-     4 9X , 'x' , 9X , 'y' , 9X , 'z' , 4X , 'Fit' )
+     3 8X , 'Atom' , 6X , 'Height(x',f4.1,')' ,
+     4 6X , 'x' , 9X , 'y' , 9X , 'z' , 4X , 'Fit' )
+1306  FORMAT ( 'Results of the peak search and contents ' ,
+     2 'of the new list ' , I3 , / ,
+     3 8X , 'Atom' , 5X , 'Height(x',i4,')' ,
+     4 6X , 'x' , 9X , 'y' , 9X , 'z' , 4X , 'Fit' )
       ENDIF
 C--CHECK IF WE SHOULD PRINT DETAILS OF THE ORIGINAL ATOMS
       IF(N10A)1750,1750,1350

@@ -44,10 +44,10 @@ C
      9 'VAX Version Changes by T.K. Dickens.')
       GO TO 2
 1      WRITE(LT,'('' Error Please Re:'')')
-2      WRITE(LT,'('' Output file name: '',$)')
+2      WRITE(LT,'('' Output file name: '')')
       READ(LZ,'(A80)',ERR=1,END=99) FILENM
       OPEN(UNIT=LP,ACCESS='SEQUENTIAL',
-     .      FORM='FORMATTED',STATUS='NEW',FILE=FILENM)
+     .      FORM='FORMATTED',STATUS='unknown',FILE=FILENM)
       GO TO 10
     5      GOTO(10,27,10,10,27,10),I
    10      CALL DLPRE
@@ -321,9 +321,9 @@ C       APPLY DELAUNAY REDUCTION TO ARBITRARY PRIMITIVE CELL
      * F8.3,' degrees'//)
 912   FORMAT(' Enter cell dimensions (real or recip., angles in degree',
      * 's or cosines) : ')
-913   FORMAT (' Enter lattice type - one of P,R,A,B,C,I,F :',$)
+913   FORMAT (' Enter lattice type - one of P,R,A,B,C,I,F :')
 914   FORMAT (A1)
-915   FORMAT (' Enter title : ',$)
+915   FORMAT (' Enter title : ')
 916   FORMAT (' Type not recognised'/)
 c end of do loop
 230   CONTINUE
@@ -795,10 +795,9 @@ C       CALCULATE THE BRAVAIS LATTICE PARAMETERS
 908   FORMAT (' Selling parameter indexing fault  - DELTA smaller',
      * ' than available precision')
 909   FORMAT (1H , I4, 2X, 6F9.3, 3(2X, 3I3), 3X, 2A4)
-910   FORMAT (' Enter new DELT1 value : ',$)
+910   FORMAT (' Enter new DELT1 value : ')
 911   FORMAT ('    ******************************',//
-     *' Recycle with a different DELT1 (currently',F7.3,') - Y or N : ',
-     .$)
+     *' Recycle with a different DELT1 (currently',F7.3,') - Y or N : ')
 912   FORMAT (A1)
 913   FORMAT (' Selling parameters after successive cycles of reduct',
      * 'ion.'/'    Quantities greater than',F8.2, ' (DELT1) taken as ',

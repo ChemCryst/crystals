@@ -1,4 +1,4 @@
-C $Log: results.F,v $
+C $Log: results.F,v $ 
 C Revision 1.203  2013/05/25 09:28:06  rich
 C Internal buffer read was one character too long.
 C
@@ -7087,11 +7087,16 @@ C      CLOSE THE REFERENCES FILE
 CODE FOR CIFARCHIVE
       SUBROUTINE CIFARCHIVE
 C
-c      copy ARCHIVE-HKL.CIF to cif file
+c      copy ANY-FILE.CIF to cif file
 C
+c
+      CHARACTER*16  CNEW      !FILENAMES
 c
       DIMENSION JDEV(4), KDEV(4)
       CHARACTER *80 CLINE
+
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
 
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'UFILE.INC'
@@ -7103,10 +7108,16 @@ c
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XSSCHR.INC'
       INCLUDE 'XIOBUF.INC'
-
+c
+      INCLUDE 'QSTORE.INC'
+C
+      DATA ICOMSZ / 4 /
 C
       CALL XCSAE
-      I = KRDDPV ( IPUNCH , 1 )
+C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
+      ICOMBF = KSTALL ( ICOMSZ )
+      CALL XZEROF (STORE(ICOMBF), ICOMSZ)
+      I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
       IF (I.LT.0) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 51)
          WRITE ( CMON ,51)
@@ -7114,17 +7125,26 @@ C
 51       FORMAT(' Error in #ADDARCHIVE directives. ')
          RETURN
       END IF
-      IF ( IPUNCH .EQ. 0 ) THEN
+C
+      WRITE (CNEW ,'(4A4)') (ISTORE(ICOMBF+I),I=0,3)
+c
+        LNEW = LEN(CNEW)
+        CALL XCRAS(CNEW(1:LNEW), JLEN)
+        CALL FCASE(CNEW, CNEW, ISSFLC) !0=lower,1=upper,2=conserve
+        WRITE (CMON,'(A,A)') 'Opening file: ', CNEW(1:JLEN)
+        CALL XPRVDU(NCEROR, 1,0)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+c
 C      - OPEN CIF OUTPUT ON FRN1
         CALL XMOVEI (KEYFIL(1,23),KDEV,4)
         CALL XRDOPN (8,KDEV,CSSCIF,LSSCIF)
-        CALL XPCIF ('# looking for ARCHIVE-HKL.CIF ')
+        CALL XPCIF ('# looking for '//cnew(1:jlen))
         CALL XPCIF (' ')
 C-----  OPEN ARCHIVE INFORMATION ON HKLI
         CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-        CALL XRDOPN(6,JDEV,'ARCHIVE-HKL.CIF',15)
+        CALL XRDOPN(6,JDEV,CNEW(1:JLEN),15)
         IF (IERFLG.GE.0) THEN
-          write(cmon,'(a)')'{I Copying Reflections to cif'
+          write(cmon,'(a)')'{I Copying information to cif'
           call xprvdu(ncvdu,1,0)
           CLINE=' '
 101       CONTINUE
@@ -7134,26 +7154,23 @@ C-----  OPEN ARCHIVE INFORMATION ON HKLI
           GO TO 101
 151       CONTINUE
 C----- CLOSE THE FILE
-          CALL XPCIF ('# end of ARCHIVE-HKL.CIF ')
-          CALL XRDOPN(7,JDEV,'ARCHIVE-HKL.CIF',15)
+          CALL XPCIF ('# end of '//cnew(1:jlen))
+          CALL XRDOPN(7,JDEV,cnew(1:jlen),15)
         ELSE
-          WRITE (CMON,'(''# HKL archive file not found'')')
+          WRITE (CMON,'(''# Archive file not found'')')
           CALL XPRVDU (NCVDU,1,0)
           IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') 
      1    CMON(1)(:nctrim(cmon(1)))
           call xpcif(cmon(1)(:nctrim(cmon(1))))
           IERFLG=0
         END IF
-      END IF
 
 c-- all done
 C----- CLOSE THE 'CIF' OUTPUT FILE
-      IF ( IPUNCH .EQ. 0 ) THEN
         CALL XRDOPN (7,KDEV,CSSCIF,LSSCIF)
-      END IF
-1234  CONTINUE
       RETURN
       END
+c
 c
 CODE FOR XPCIF
       SUBROUTINE XPCIF(CLINE)

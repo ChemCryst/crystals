@@ -11,8 +11,10 @@
 ^^WI    {
 ^^WI     @ 1,1 STATIC XFW1
 ^^WI 'You are looking at the frequency of F^2/sigma(F^2).'
-^^WI     @ 2,1 STATIC XFW2 ' '
-^^WI     @ 3,1 STATIC XFW3 ' '
+^^WI     @ 2,1 STATIC XFW2 
+^^WI 'The right hand end of the green line points to the'
+^^WI     @ 3,1 STATIC XFW3 
+^^WI 'percentage of data with I/sig(I) greater than 50 '
 ^^WI    }
 ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }

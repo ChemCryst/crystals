@@ -404,6 +404,7 @@ C---- SORT OUT THE INPUT
      1 '{I Rescaling weights by a factor of',factor, store(l30rf+4)
          call xprvdu(ncvdu,1,0)
          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
+         call xpause(3000)
       endif
 C
       IF (ISTORE(L13CD+1) .LE. -1) THEN    ! F = FO
@@ -658,16 +659,28 @@ C Check for convergence:
              IF ( SXAG .GT. 0.0001 ) CYCLE
              IF ( SXBG .GT. 0.005  ) CYCLE
 C Converged!
+c SX2016/5 recommends 0.1 rather than 0.2
+c Nov 2016. We get better results with 0.2 (DJW)
              IF ( SXA .GE. 0.2 ) THEN
+               write(cmon,'(A, 2f10.4/A)') 
+     1         '{E SHELX-type parameters:', sxa, sxb,
+     1         '{E Forced reset of P1 to 0.2'
+               call xprvdu(ncvdu,2,0)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
+     1         cmon(1)(3:),cmon(2)(3:)
                 SXA = 0.2
                 SXB = 0.0
+                call xpause(2000)
              END IF
              if (sxa .lt. 0.) then
-               sxa = 0.001
-               write(cmon,'(A, 2f10.4)') 
-     1         '{E Forced reset of P1', sxa, sxb
+               write(cmon,'(A, 2f10.4/A)') 
+     1         '{E SHELX-type parameters:', sxa, sxb,
+     1         '{E Forced reset of P1 0.001'
                call xprvdu(ncvdu,1,0)
-               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
+     1         cmon(1)(3:),cmon(2)(3:)
+               sxa = 0.001
+               call xpause(2000)
              endif
              EXIT
            END DO
@@ -2188,7 +2201,8 @@ C--SCAN ALL THE REFLECTIONS
       IF (VV .EQ. 1.) THEN
 C----- RESET INTERVAL TO GIVE 20 VALUES
         VV = SQRT(SCALF*STORE(L6DTL+3*MD6DTL+1)) /20.
-        WRITE(NCAWU,'(''Resetting interval '', 2F10.3)') VV
+        WRITE(cmon,'(''Resetting interval '', 2F10.3)') VV
+        call xprvdu(ncvdu,1,0)
       ENDIF
       CALL XSCAN(-1, SLOPE, CORREL)
 C--SET UP THE RETURN VALUES FOR THE AGREEMENT ANALYSIS PRINT

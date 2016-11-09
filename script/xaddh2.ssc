@@ -58,38 +58,38 @@
 %    CASE HTYPE
 %           BLOCK %1
 ^^WI         @ 5,1 STATIC A3 'R2'
-^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=8
 %           END BLOCK
 %           BLOCK %2
 ^^WI         @ 5,1 STATIC A3 'R2'
-^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=8
 %           END BLOCK
 %           BLOCK %3
 ^^WI         @ 5,1 STATIC A3 'R2' 
-^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=8
 ^^WI         @ 7,1 STATIC A4 'R3'
-^^WI         @ 7,3 EDITBOX E4 '' CHARS=6
+^^WI         @ 7,3 EDITBOX E4 '' CHARS=8
 %           END BLOCK
 %           BLOCK %4
 ^^WI         @ 5,1 STATIC A3 'R2'
-^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=8
 %           END BLOCK
 %           BLOCK %5
 ^^WI         @ 5,1 STATIC A3 'R2'
-^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=8
 %           END BLOCK
 %           BLOCK %6
 ^^WI
 %           END BLOCK
 %           BLOCK %7
 ^^WI         @ 5,1 STATIC A3 'R2' 
-^^WI         @ 5,3 EDITBOX E3 '' CHARS=6
+^^WI         @ 5,3 EDITBOX E3 '' CHARS=8
 ^^WI         @ 7,1 STATIC A4 'R3'
-^^WI         @ 7,3 EDITBOX E4 '' CHARS=6
+^^WI         @ 7,3 EDITBOX E4 '' CHARS=8
 ^^WI         @ 9,1 STATIC A5 'R4'
-^^WI         @ 9,3 EDITBOX E5 '' CHARS=6
+^^WI         @ 9,3 EDITBOX E5 '' CHARS=8
 ^^WI         @ 11,1 STATIC A6 'R5'
-^^WI         @ 11,3 EDITBOX E6 '' CHARS=6
+^^WI         @ 11,3 EDITBOX E6 '' CHARS=8
 %           END BLOCK
 
 %           BLOCK %8
@@ -109,8 +109,8 @@
 ^^WI       @ 7,5 STATIC T4 ''
 ^^WI       @ 9,5 STATIC T5 ''
 ^^WI       @ 11,5 STATIC T6 ''
-^^WI       @ 1,3 EDITBOX E1 '' CHARS=6
-^^WI       @ 3,3 EDITBOX E2 '' CHARS=6 
+^^WI       @ 1,3 EDITBOX E1 '' CHARS=8
+^^WI       @ 3,3 EDITBOX E2 '' CHARS=8 
 ^^WI     }
 ^^WI   }
 ^^WI   @ 6,2 GRID B NROWS=1 NCOLS=7 {

@@ -12209,6 +12209,21 @@ The object of this approach is to provide a more consistent distribution
 of precision across all values. These particular matters are not really
 my responsibility but we try to conform to recommendation of the
 nomenclature people. This is one such occasion.'
+#Q
+#XADDARC#
+#YAdding Archive files - ADDARC#
+#Aaddarc#
+#HSaddarc#
+#Q
+#IADDARC filename#
+ This command is usually called from SCRIPTS and inserts the contents
+ of the file 'filename' into the current cif file, usually 'publish.cif'
+#
+#
+#
+
+
+
 
 #Q
 #XCAMERON#

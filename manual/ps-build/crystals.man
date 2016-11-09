@@ -4013,6 +4013,7 @@ EVALS takes the values NO/YES/PUNCH.
  OUTPUT PLOT= GLIST=
  END
 #
+ This command is only used in SCRIPTS to send information to the GUI
 #
 INPUTLIST IS EITHER 6 or 7
 #
@@ -4032,6 +4033,8 @@ GLIST=YES sends a list of missing reflections to the GUI
  \SIGMADIST  INPUTLIST=
  OUTPUT PLOT= RESOLUTIO= PHASE= FILTER=
  END
+#
+ This command is only used in SCRIPTS to send information to the GUI
 #
 PLOT=YES sends completeness data to GUI
 #
@@ -12206,6 +12209,21 @@ The object of this approach is to provide a more consistent distribution
 of precision across all values. These particular matters are not really
 my responsibility but we try to conform to recommendation of the
 nomenclature people. This is one such occasion.'
+#Q
+#XACCARC#
+#YAdding Archive files - ADDARC#
+#Aaddarc#
+#HSaddarc#
+#Q
+#IADDARC filename#
+ This command is usually called from SCRIPTS and inserts the contents
+ of the file 'filename' into the current cif file, usually 'publish.cif'
+#
+#
+#
+
+
+
 
 #Q
 #XCAMERON#

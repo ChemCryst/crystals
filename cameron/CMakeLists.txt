@@ -1,6 +1,11 @@
-
+PROJECT(cameron)
+message("")
+message(STATUS "Building cameron")
 
 enable_language(Fortran)
+
+# Reset flags
+set(CMAKE_Fortran_FLAGS "")
 
 if ( useGUI )
 #add_definitions(-D_GIL_)
@@ -24,6 +29,7 @@ add_definitions(-D _HOL_)
 #add_definitions(-arch x86_64)
 
 
+message(STATUS "cameron fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 add_library(CameronFortran STATIC 
 altered.F
 block.F
@@ -41,3 +47,6 @@ outer.F
 vander.F
 wincode.F
 )
+
+message(STATUS "End building cameron")
+message("")

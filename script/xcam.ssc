@@ -65,6 +65,7 @@
 ^^WI             @ 3,3 DROPDOWN LCOLOR INFORM=YES ADDTOLIST                     
 ^^WI              'Coloured' 'B&W' 'B&W-2' 'Obey' 'NULL'                                
 ^^WI             @ 5,1 DROPDOWN LFONT INFORM=YES ADDTOLIST                      
+^^WI             'Font 4' 'Font 6'
 ^^WI             'Font 8' 'Font 9' 'Font 10' 'Font 12' 'Font 16'                
 ^^WI             'Font 20' 'Font 24' 'Font 28' 'Font 32'                        
 ^^WI             'Font 48' 'Font 72' 'NULL'                                     

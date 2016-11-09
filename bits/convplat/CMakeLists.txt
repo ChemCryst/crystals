@@ -29,5 +29,6 @@ SET (CMAKE_Fortran_FLAGS_RELEASE "-O1 -std=legacy -fno-automatic -fno-inline")
 message(STATUS "convplat fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
 add_executable (convplat convplat.F ../Common/nobuf.c)
+add_executable (platanom platanom.F ../Common/nobuf.c)
 message(STATUS "End building convplat")
 message("")
