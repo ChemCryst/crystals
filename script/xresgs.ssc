@@ -1,0 +1,32 @@
+%SCRIPT XRESGS                                                                 
+%%Get a RESIDUE number. CMESSAGE is text to be displayed                           
+% VARIABLE CHARACTER CATOM CMESSAGE                                             
+% VARIABLE LOGICAL CALLED                                                       
+% VARIABLE INTEGER IRES NVALUE                                                 
+% EVALUATE CALLED = TRUE                                                        
+% EVALUATE CMESSAGE = 'Example: 2'                                           
+%%                                                                              
+%%                                                                              
+% COPY '#SCRIPT XGETINT'                                                        
+% EVALUATE IRES = NVALUE                                                       
+% EVALUATE CALLED = TRUE                                                        
+%%                                                                              
+%% edit was still activated even if part number selection cancelled
+%  if nvalue .lt. 0 then
+%    finish
+%  end if                                                                             
+%%                                                                              
+% QUEUE REWIND                                                                  
+%%                                                                              
+^^CO GETVALUE MODEL01                                                           
+%%                                                                              
+% LOOP                                                                          
+%   ON END TERMINATE                                                            
+%   GET SILENT NOSTORE FINAL KEYWORD 'Atom?' ' '                                
+%   EVALUATE CATOM = CVALUE                                                     
+%   COPY '#SCRIPT YRERES'                                                      
+% END LOOP                                                                      
+% COPY '#EDIT'                                                                  
+% QUEUE PROCESS                                                                 
+% COPY 'END'                                                                    
+%END SCRIPT                                                                     

@@ -29,6 +29,8 @@
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
 ^^WI             SPLIT
+^^WI             ITEM _SRP 'Set &residue number of _A' '#SCRIPT XRESG_N_A' 
+^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _SRP 'Set &part number of _A' '#SCRIPT XPARTG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RP '&Set occupancy of _A' '#SCRIPT XOCCG_N_A' 
@@ -86,6 +88,8 @@
 ^^WI             ITEM _GDELA 'Dele&te selection' '#SCRIPT DELGRP_N_GEND'
 ^^WI                                             DISABLEIF='IN'
 ^^WI             ITEM _RPSS 'Spli&t selection' '#SCRIPT XSPLITS_N_GEND' 
+^^WI                    DISABLEIF= 'IN'
+^^WI             ITEM _RPS 'Set &residue number of selection' '#SCRIPT XRESGS' 
 ^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RPS 'Set &part number of selection' '#SCRIPT XPARTGS' 
 ^^WI                    DISABLEIF= 'IN'

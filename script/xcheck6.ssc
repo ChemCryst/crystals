@@ -143,7 +143,7 @@
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'The Internal Variance is a measure of self-consistency of equivalents'
 ^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'The External Variance is the instrument makers estimate'         
+^^WI 'The External Variance comes from the instrument makers estimates'         
 ^^WI       @ 3,1 STATIC XFW3                                                    
 ^^WI 'Only reflections with 3 or more contribuitors are plotted'      
 ^^WI      }                                                                     
@@ -696,59 +696,38 @@
 %%                                                                       
 %%                                                                       
 %%Variances
-^^CO SET PROGOUTPUT TEXT 'Reading variances from sigmas.dat'             
+
+^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'             
 %  IF ( SIG .AND. LMAONCE ) THEN  
-%    COPY '#OPEN SCPDATA sigmas.dat' 
 %    BLOCK
-^^CO SET PROGOUTPUT TEXT 'Reading variances from sigmas.dat'             
-%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT
-%     EXTRACT REWIND
-%%   Skip first line:                                                      
-%     EXTRACT NEXT
-%     LOOP
-%      ON ERROR TERMINATE                                                           
-%      ON END TERMINATE
-%      EXTRACT NEXT                                                             
-%      CLEAR                                                                        
-%      EXTRACT TRANSFER INPUT                                                       
-%      CLEAR
-%%    get  fifth and sixth items
-%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
-%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
-%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
-%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
-%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
-%      EVALUATE EXTERNAL = VALUE                                        
-%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
-%      EVALUATE INTERNAL = VALUE                                        
-%      EVALUATE SXX = SXX + EXTERNAL * EXTERNAL
-%      EVALUATE SXY = SXY + EXTERNAL * INTERNAL
-%      EVALUATE NSIGMAS = NSIGMAS + 1
-%     END LOOP
-%     IF ( NSIGMAS .GT. 1 ) THEN
-%      EVALUATE GRADIENT = SXY / SXX    
-%      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
-%     END IF
-%%
-%     EXTRACT REWIND
-%% Skip first line:                                                             
-%     EXTRACT NEXT                                                               
-%% 
+^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'             
 ^^CR                                                                            
 ^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA                                  
 ^^PL XAXIS TITLE 'External (Mean variance)'                                           
 ^^PL NSERIES=1 LENGTH=40 
+^^PL SERIES 1 SERIESNAME 'No of contributors'
 ^^PL YAXIS TITLE 'Internal (rms deviation)'                                    
-%% 
-%     IF NSIGMAS .GT. 1 THEN                                                                             
-%      COPY '#SCRIPT YGETSIG'                                                     
-%      COPY '#CLOSE SCPDATA'  
-%     ELSE
-
-{E    Insufficient equivalent reflections in sigmas.dat 
-%     TRANSFER '{E     Nsigmas = ' // CHARACTER NSIGMAS TO DISPLAY                                                         
-
-%     END IF                                                                          
+%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO NREFMES'
+%    COPY 'END'
+%%
+%%
+%      IF NREFMES .GE. 5000. THEN
+^^WI    WINDOW XINFO 'Warning'  MODAL
+^^WI    GRID MAIN NROWS=2 NCOLS=3                   
+^^WI     { 
+^^WI      @ 1,2 STATIC T1 'You have more than 5000 unmerged reflections'
+^^WI      @ 2,2 STATIC T2 'Plotting them may take some time'
+^^WI     } 
+^^WI    SHOW        
+^^CR 
+^^CR
+%      END IF
+%%
+%     COPY '#SCRIPT YGETSIG'
+%%
 ^^PL  SHOW                                                                       
 ^^CR  
 %%
