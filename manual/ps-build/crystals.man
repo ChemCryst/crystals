@@ -4772,49 +4772,52 @@ done automatically.
 #XEditing structural parameters#
 #YEditing structural parameters -  \EDIT#
 #HSedit5#
-#N  32#
 #J
  \EDIT INPUTLIST= OUTPUTLIST=
+ 
  EXECUTE
  SAVE
  QUIT
- MONITOR LEVEL
  LIST LEVEL
- DELETE  ATOM SPECIFICATIONS  .  .
- ATOM TYPE= SERIAL= OCC= FLAG= X= Y= Z= U11= ..
- CREATE Z ATOM-SPECIFICATION  ...
- SPLIT Z ATOM-SPECIFICATION ...
- CENTROID Z ATOM-SPECIFICATION ...
- KEEP  Z ATOM-SPECIFICATIONS ...
- AFTER  ATOM-SPECIFICATION
- MOVE Z ATOM-SPECIFICATION  ...
- SELECT ATOM-PARAMETER  OPERATOR  VALUE, . .
- SORT TYPE1 TYPE2 ...
- SORT KEYWORD
- DSORT TYPE1 TYPE2 ...
- RENAME ATOM1  ATOM2  (, ATOM1  ATOM2) ...
- TYPECHANGE KEYWORD OPERATOR VALUE NEW-ATOM-TYPE
- RESET PARAMETER-NAME VALUE ATOM-NAMES
- CHANGE  PARAMETER-SPECIFICATION VALUE ...
+ MONITOR LEVEL
+ END
+
  ADD  VALUE PARAMETERS  ...
- SUBTRACT  VALUE  PARAMETERS  ...
- MULTIPLY  VALUE  PARAMETERS  ...
- DIVIDE  VALUE  PARAMETERS  ...
- PERTURB VALUE PARAMETERS ...
- SHIFT  V1, V2, V3   ATOM-SPECIFICATION . .
- TRANSFORM  R11, R21, R31, . . . R33  ATOM-SPECIFICATION . .
- DEORTHOGINAL  ATOM-SPECIFICATION . .
- UEQUIV  ATOM-SPECIFICATIONS  .  .
+ AFTER  ATOM-SPECIFICATION
  ANISO  ATOM-SPECIFICATIONS  .  .
+ ATOM TYPE= SERIAL= OCC= FLAG= X= Y= Z= U11= ..
+ CENTROID Z ATOM-SPECIFICATION ...
+ CHANGE  PARAMETER-SPECIFICATION VALUE ...
+ CREATE Z ATOM-SPECIFICATION  ...
+ DELETE  ATOM SPECIFICATIONS  .  .
+ DEORTHOGINAL  ATOM-SPECIFICATION . .
+ DIVIDE  VALUE  PARAMETERS  ...
+ DSORT TYPE1 TYPE2 ...
  INSERT IDENTIFIER
- SPHERE NEWSERIAL ATOMLIST
- RING NEWSERIAL ATOMLIST
- LINE NEWSERIAL ATOMLIST
+ KEEP  Z ATOM-SPECIFICATIONS ...
+ MOVE Z ATOM-SPECIFICATION  ...
+ MULTIPLY  VALUE  PARAMETERS  ...
+ PERTURB VALUE PARAMETERS ...
  REFORMAT
- ROTATE ANGLE POINT VECTOR ATOM-SPECIFICATION
+ RENAME ATOM1  ATOM2  (, ATOM1  ATOM2) ...
+ RESET PARAMETER-NAME VALUE ATOM-NAMES
  ROTATE ANGLE ATOM VECTOR ATOM-SPECIFICATION
  ROTATE ANGLE ATOM1 ATOM2 ATOM-SPECIFICATION
- END
+ ROTATE ANGLE POINT VECTOR ATOM-SPECIFICATION
+ SELECT ATOM-PARAMETER  OPERATOR  VALUE, . .
+ SHIFT  V1, V2, V3   ATOM-SPECIFICATION . .
+ SORT KEYWORD
+ SORT TYPE1 TYPE2 ...
+  SPLIT Z ATOM-SPECIFICATION ...
+ SUBTRACT  VALUE  PARAMETERS  ...
+ SWAP ATOM-PAIRS
+ TRANSFORM  R11, R21, R31, . . . R33  ATOM-SPECIFICATION . .
+ TYPECHANGE KEYWORD OPERATOR VALUE NEW-ATOM-TYPE
+ UEQUIV  ATOM-SPECIFICATIONS  .  .
+
+ LINE NEWSERIAL ATOMLIST
+ RING NEWSERIAL ATOMLIST
+SPHERE NEWSERIAL ATOMLIST
 #
 #N  10#
 #J
@@ -4882,8 +4885,6 @@ done automatically.
       10                    the Fourier peaks search
 #
 #P
-#DEND#
- This should be the last directive in the set of modification directives.
 #DEXECUTE#
  This directive which has no parameters does nothing to the edited list. It
  is provided to allow the user to see the results of one operation (
@@ -4896,6 +4897,19 @@ done automatically.
  of a new list if it is followed by
  END . If it is followed by any other directive it is ignored.
 #P
+#DLIST LEVEL#
+ This directive produces a list of the current edited list in the monitor
+ output stream and in the listing file. If KEEP has been used, the atoms
+ which will be kept are indicated.
+ The possible values for 'level' are :-
+#N   7#
+#J
+      OFF               No listing produced
+      LOW               Type and serial listed
+      MEDIUM            Type , serial , occ , u[iso] ,
+                        x , y , z listed
+      HIGH              All atomic parameters listed
+#
 #DMONITOR LEVEL#
  This directive controls the level of monitoring of editing operations. When
  each operation is performed, the results can be monitored in the monitor
@@ -4914,92 +4928,16 @@ done automatically.
  amount of relevant information for the particular directive. Thus for
  DELETE only 'type' and 'serial' need be displayed whereas for CHANGE
  all parameter values are displayed.
-#DLIST LEVEL#
- This directive produces a list of the current edited list in the monitor
- output stream and in the listing file. If KEEP has been used, the atoms
- which will be kept are indicated.
- The possible values for 'level' are :-
-#N   7#
-#J
-      OFF               No listing produced
-      LOW               Type and serial listed
-      MEDIUM            Type , serial , occ , u[iso] ,
-                        x , y , z listed
-      HIGH              All atomic parameters listed
+#DEND#
+ This must be the last directive in the set of modification directives, 
+ and writed the list to disk.
 #
-#DDELETE  ATOM SPECIFICATIONS  .  .#
- All the specified atoms are removed
- from the current atomic parameter list.
- Deleted atoms should not be referenced by subsequent directives.
-#DATOM TYPE SERIAL OCC FLAG X Y Z U11 ..#
- This directive causes the system to add an atom to the
- end of the edited list. The format is the same as that used in \LIST 5 (see
-section #RLIST05#).
- Values must be provided for 'type' , 'serial' , 'x' , 'y' , and 'z' .
- Default values are provided for the other parameters as in \LIST 5.
- Example :
-#J
- ATOM O 1 X = 0.3427 .89004 .09181
 #
-#DCREATE Z ATOM-SPECIFICATION  ...#
- This directive applies the symmetry operators given or assumed by default
- in the atom specification, and creates a set of new atoms from those given.
- The new atoms are added at the end of the current list. The serial numbers
- of the new atoms are given by:
-#J
-      NEWSERIAL = Z + OLDSERIAL
 #
- The sequence Z ATOM-SPECIFICATIONS can be repeated.
- When moving from a centrosymmetric to a non-centrosymmetric space group,
- for example, atoms formerly related by the centre of symmetry can be
- generated :
-#J
-      CREATE 30 MO(1,-1) UNTIL C(15)
-
-      Creates atoms MO(31) until C(45)
 #
-#DSPLIT Z ATOM-SPECIFICATION ...#
- Two new isotropic atoms are added to the end of the atom list for every
- atom referenced in the atom-specification. These atoms lie on
- of the principal axis of the original atoms anisotropic adp ellipsoid 
- and U[iso] set to U[meadian] of the original adp.
-#PThe original atoms are not deleted.
- The sequence Z ATOM-SPECIFICATIONS can be repeated.
- The new serial numbers are given by
-#J
-      NEWSERIAL(1) = Z* OLDSERIAL and
-      NEWSERIAL(2) = Z* OLDSERIAL +1
 #
-#DCENTROID Z ATOM-SPECIFICATION ...#
- A new atom is created at the centroid of the specified atoms, and with
- a pseudo adp representing the inertial tensor (ie the 'shape' of the
- group). The atom TYPE is QC, and its serial Z.
- The sequence Z ATOM-SPECIFICATIONS can be repeated.
+#DADD  VALUE  PARAMETERS  ...#
 #
-#DKEEP  Z ATOM-SPECIFICATIONS ...#
-#POnly the atoms referenced in this directive will be kept in the list,
- all the others will be lost, even though they can be referenced
- right up until the final END.
- The sequence Z ATOM-SPECIFICATIONS can be repeated.
-#
- Atoms that are  KEPT  are moved to the top of the list, and stored in the
- order in which they are specified on  the KEEP  directive. Only one KEEP
- directive may be given. Use CONTINUE if one line isn't long enough for the
- atom sequence.
-#PThe atom specifications may contain symmetry operators, which are used
- to generate the coordinates of the atoms that are to be retained.
-  'Z' Is an optional parameter which defines the serial number
- of the first atom in the specification immediately following it.
- For each atom thereafter in the current atom specification, the serial
- number is incremented by one to generate the output
- serial number.
- Atoms whose serial numbers are changed in this way must be referred to
- in subsequent directives by their new serial numbers.
- If 'Z' is not given, the atoms retain
- their old serial numbers.
-#PIf an  UNTIL  sequence is used after a  KEEP  directive has
- been given, it should be used with care, since the order of the new
- parameter list is different from the input list.
 #DAFTER  ATOM-SPECIFICATION  ...#
 #PThis defines the atom in the list after which atoms
  that are  MOVEd  should be placed.
@@ -5010,111 +4948,35 @@ section #RLIST05#).
  given atom in the order in which they are presented on  MOVE  directives.
  If no atom specification is given on this directive, subsequent MOVEs will move
  the atoms  to the  head of the list.
-#DMOVE Z ATOM-SPECIFICATION  ...#
-#PThis directive moves atoms about in the list and places them
- in the position defined by the latest  AFTER  directive.
- (See the previous directive).
- This directive does not remove atoms from the list, but simply
- reorders the list.
+#
+#DANISO  ATOM SPECIFICATIONS  .  .#
+ This directive causes all the specified atoms to be converted so that they
+ have anisotropic temperature factors.
+ If an atom is already anisotropic, no action is taken, and any symmetry
+ operators given are ignored.
+ If this directive is given with no arguments, all the atoms in the current
+ atomic parameter list are converted to anisotropic temperature factors.
+#PNote that   the anisotropic temperature factor produced by this operation
+ is in fact still spherically symmetrical, and
+ that the s.f.l.s.
+ routines automatically ensure that when the temperature factor of an atom
+ is to be  refined, it is in the correct form.
+#
+#DATOM TYPE SERIAL OCC FLAG X Y Z U11 ..#
+ This directive causes the system to add an atom to the
+ end of the edited list. The format is the same as that used in \LIST 5 (see
+section #RLIST05#).
+ Values must be provided for 'type' , 'serial' , 'x' , 'y' , and 'z' .
+ Default values are provided for the other parameters as in \LIST 5.
+ Example :
+#J
+ ATOM O 1 X = 0.3427 .89004 .09181
+#
+#DCENTROID Z ATOM-SPECIFICATION ...#
+ A new atom is created at the centroid of the specified atoms, and with
+ a pseudo adp representing the inertial tensor (ie the 'shape' of the
+ group). The atom TYPE is QC, and its serial Z.
  The sequence Z ATOM-SPECIFICATIONS can be repeated.
-#PThe atom specifications may contain symmetry operators, which are used
- to generate the coordinates of the atoms that are to be moved.
-  'Z'  is an optional parameter which defines the serial number
- of the first atom in the specification immediately following it.
- For each atom thereafter in the current atom specification, the serial
- number is incremented by one to generate the output
- serial number.
- Atoms whose serial numbers are changed in this way must be referred to
- in subsequent directives by their new serial numbers.
- If no  'Z' is given, the atoms retain
- their old serial numbers.
-#PIf an  UNTIL  sequence is used after one or more  MOVE  directives have
- been given, it should be used with care, since the order of the new
- parameter list is different from the input list.
-#DSELECT ATOM-PARAMETER  OPERATOR  VALUE, . .#
-#PThis directive selects and retains atoms with parameters satisfying
- the specified conditions.
- Only atoms that satisfy ALL the selection criteria, whether these
- are in the same or different directives, will be kept.
- All other atoms will be deleted from the list.
-#PThe operators allowed are :
-#N   8#
-#J
-            EQ            equal
-            NE            not equal
-            GT            greater than
-            GE            greater than or equal to
-            LT            less than
-            LE            less than or equal to
-#
- Examples of the  SELECT  directive are :
-#N   6#
-#J
-      SELECT SERIAL LT 50
-      SELECT OCC GT 0.5, OCC LT 1.5
-      SELECT C(1,X) LT 1., C(1,X) GT 0.
-      SELECT TYPE NE Q
-#
- This example will only retain atoms with serial numbers less than 50
- and occupancies between 0.5 and 1.5.
- The  'X'  parameter of atom c(1) must also lie between 0.0 and
- 1.0 oterwise it will be rejected, and any atoms of type Q  will be deleted.
-#DSORT TYPE1 TYPE2 ...#
-#DSORT KEYWORD#
- This directive has two formats, and is used to sort the atoms stored in
- LIST 5 into a user-defined order.
- The default action sorts the atoms  on their types and serial numbers.
- The types are taken in the order found in LIST 5, and atoms of each
- type are grouped together. In each group the atoms are
- arranged by ascending serial number.
- The order of the types of atoms may also be determined
- by specifying them explicitly on the SORT directive,  or by a mixture of
- these methods.
-#
-#PIn the second format, a keyword corresponding to an atom parameter
- name (as defined in LIST 5, see
- section #RLIST05#) is given, and the whole list sorted on
- increasing value of the specified parameter. Note that sorting on TYPE
- will give results depending on the 'collating sequence' of the computer.
- Fortunately, this generally leads to alphabetic sorting.
-#PSORT sorts the whole list 5, and cancels any existing KEEP
- directives.
-#
-#DDSORT TYPE1 TYPE2 ...#
-#DDSORT KEYWORD#
- This directive is exactly analagous to SORT, above, except that it sorts
- into descending order.
-#
-#DRENAME ATOM1  ATOM2  (, ATOM1  ATOM2) ...#
- This directive requires pairs of atom specifications (optionally separated
- by a comma). The TYPE and SERIAL of 'atom1' are changed to those of 'atom2'.
- Atom1 must exist in LIST 5, atom2 must NOT exist in LIST 5. An atom can be
- renamed repeatedly. If atom1 contains symmetry operators, these are applied
- to the coordinates of the renamed atom. An atom cannot be renamed to itself
- in a single step.
-#
-#DTYPECHANGE KEYWORD OPERATOR VALUE NEW-ATOM-TYPE#
-#PThis directive conditionally changes the TYPES of atoms. If an atomic
- parameter selected by the keyword (see sort above) satisfies the
- conditions defined by the 'operator' and 'value' (see SELECT above),
- then the TYPE of the atom is changed to 'new-atom-type'.
-#N   4#
-#J
-      TYPECHANGE OCC GT 1.2 O
-                              If Occ large, convert to oxygen
-      TYPECHANGE U[ISO] LE 0.03 N
-                              If Uiso small, convert to nitrogen
-      TYPECHANGE TYPE EQ Q C
-                              Convert peaks (type Q) to carbon
-#
-#DRESET PARAMETER-NAME  VALUE ATOM LIST#
-#PThis directive assigns the given value to the named parameter
- for all the atoms in the atom list
-#N   4#
-#J
-      RESET OCC 1.0 ALL
-      RESET OCC .5 O(1) O(2) O(3)
-      RESET U[11] .05 C(27) UNTIL C(50)
 #
 #DCHANGE  ARG(1)  ARG(2)  ARG(3)  .#
  There are two possible formats for each 'ARG(i)' on this directive.
@@ -5146,9 +5008,35 @@ section #RLIST05#).
       CONT    C(1,-2,1) UNTIL C(12)
       CONT    C(13,X) .0179
 #
-#DADD  VALUE  PARAMETERS  ...#
-#DSUBTRACT  VALUE  PARAMETERS  ...#
-#DMULTIPLY  VALUE  PARAMETERS  ...#
+#DCREATE Z ATOM-SPECIFICATION  ...#
+ This directive applies the symmetry operators given or assumed by default
+ in the atom specification, and creates a set of new atoms from those given.
+ The new atoms are added at the end of the current list. The serial numbers
+ of the new atoms are given by:
+#J
+      NEWSERIAL = Z + OLDSERIAL
+#
+ The sequence Z ATOM-SPECIFICATIONS can be repeated.
+ When moving from a centrosymmetric to a non-centrosymmetric space group,
+ for example, atoms formerly related by the centre of symmetry can be
+ generated :
+#J
+      CREATE 30 MO(1,-1) UNTIL C(15)
+
+      Creates atoms MO(31) until C(45)
+#
+#DDELETE  ATOM SPECIFICATIONS  .  .#
+ All the specified atoms are removed
+ from the current atomic parameter list.
+ Deleted atoms should not be referenced by subsequent directives.
+#
+#DDEORTHOGINAL  ATOM SPECIFICATION . .#
+ This directive applies the matrix vector saved by a previous MOLAX SAVE
+ directive to the atoms given  in the atom specification. THEIR ORIGINAL
+ COORDIANATES x,y,z MUST be in the MOLAX coordinate (Angstrom) system
+ This directive does not create new atoms, but simply modifies
+ those already present. Symmetry operators are not permitted.
+#
 #DDIVIDE  VALUE  PARAMETERS  ...#
  These directives causes the 'value' to be applied to the parameter.
  'PARAMETER(I)' may be an overall parameter, or a single atomic
@@ -5156,57 +5044,15 @@ section #RLIST05#).
  Any symmetry operators given with this directive will be ignored.
  Note that the parameter SERIAL is numeric, and so can be arithmetically
  modified.
-#DPERTURB VALUE PARAMETERS ...#
-  This directive perturbs the specified parameters using a rnadom
- number generator. The VALUE is the requested rms perturbation, in the
- natural units of the parameters. The mean deviation applied should be
- approximately zero, and the rms deviation applied should be
- approximately that requested.
-#DSHIFT  V1, V2, V3   ATOM-SPECIFICATION . .#
- This directive reads the three numbers of a shift vector, which must
- be in the same coodrinate system as the atomic parameters,
- and applies it to the parameters in the atom specification.
- This directive does not create new atoms, but simply modifies
- those already present.
- Any symmetry operators given are applied before the translation.
 #
-#DTRANSFORM  R11, R21, R31, . . . R33  ATOM SPECIFICATION . .#
- This directive reads the nine numbers of a transformation matrix, which must
- be separated by commas or spaces, and applies the matrix to the atoms given
- in the atom specification.
- This directive does not create new atoms, but simply modifies
- those already present.
- Any symmetry operators given are applied before the rotation.
-#DDEORTHOGINAL  ATOM SPECIFICATION . .#
- This directive applies the matrix vector saved by a previous MOLAX SAVE
- directive to the atoms given  in the atom specification. THEIR ORIGINAL
- COORDIANATES x,y,z MUST be in the MOLAX coordinate (Angstrom) system
- This directive does not create new atoms, but simply modifies
- those already present. Symmetry operators are not permitted.
-#DUEQUIV  ATOM SPECIFICATIONS  .  .#
- The specified atoms to be converted so that they
- have isotropic temperature factors,
- U(equiv), defined by the SET UEQUIV command.
- IT IS NOT simply related to the
- diagonal elements of U(aniso).
- If an atom is already isotropic, no action is taken.
- If this directive is given with no arguments, all the atoms in the current
- atomic parameter list are converted to isotropic temperature factors.
- Physically impossible values are not rejected.
- Symmetry operators are ignored.
-#DANISO  ATOM SPECIFICATIONS  .  .#
- This directive causes all the specified atoms to be converted so that they
- have anisotropic temperature factors.
- If an atom is already anisotropic, no action is taken, and any symmetry
- operators given are ignored.
- If this directive is given with no arguments, all the atoms in the current
- atomic parameter list are converted to anisotropic temperature factors.
-#PNote that   the anisotropic temperature factor produced by this operation
- is in fact still spherically symmetrical, and
- that the s.f.l.s.
- routines automatically ensure that when the temperature factor of an atom
- is to be  refined, it is in the correct form.
-
+#DDRENAME ATOM1 ATOM2 #
+ Used by SCRIPTS to avoid name clashes.
+#
+#DDSORT TYPE1 TYPE2 ...#
+#DDSORT KEYWORD#
+ This directive is exactly analagous to SORT, below, except that it sorts
+ into descending order.
+#
 #DINSERT IDENTIFIER=NAME#
  This directive inserts the value of the named identifier into the
  parameter 'SPARE' in the atom list, replacing any previous value
@@ -5220,54 +5066,90 @@ from the form factor
 # WEIGHT - This inserts the atomic weight from LIST 29 (see section #RLIST29#).
 # RESIDUE - This inserts a residue number into the 'RESIDUE' slot
  of list 5 replacing any previous value, such that all connected atoms
-have the same residue number and each molecule has a different residue number.
+ have the same residue number and each molecule has a different residue number.
 # NCONN - This inserts the number of atoms connected to an atom, using
  the list of bonds.
 # RELAX - This inserts an ID, based upon the bonding topology and atomic
  types of the atoms. Atoms at topologically identical positions will be given
  the same ID. (e.g. the terminal F's in a CF3 group).
-#DSPHERE NEWSERIAL ATOMLIST#
-This creates a 'shell' shape from the specified atom list. The centre of
-the shell is at the centre of gravity, the size is the mean distance of
-the given atoms from the centre, and the occupancy is equal to  the sum of
-the occupancies
-of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
-listed atoms.
- The atom TYPE is QS, with the given serial number. The
-original atoms are not deleted, though they should be or their occupancy
-set to zero. The atom type, QS, should be changed to something
-appropriate.
 #
-#DRING NEWSERIAL ATOMLIST#
-This creates an 'annulus' shape from the specified atom list. The centre of
-the ring is at the centre of gravity, the size is the mean distance of
-the given atoms from the centre, and the occupancy is equal to the sum of
-the occupancies
-of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
-listed atoms.
-The atom TYPE is QR, with the given serial number. The
-original atoms are not deleted, though they should be or their occupancy
-set to zero. The atom type, QS, should be changed to something
-appropriate. The DECLINATION and AZIMUTH are computed from the
-constituent atoms.
+#DKEEP  Z ATOM-SPECIFICATIONS ...#
+#POnly the atoms referenced in this directive will be kept in the list,
+ all the others will be lost, even though they can be referenced
+ right up until the final END.
+ The sequence Z ATOM-SPECIFICATIONS can be repeated.
 #
-#DLINE NEWSERIAL ATOMLIST#
-This creates an 'line' shape from the specified atom list. The centre of
-the line is at the centre of gravity, the size is twice the mean distance of
-the given atoms from the centre, and the occupancy is equal to the sum of
-the occupancies
-of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
-listed atoms.
-The atom TYPE is QL, with the given serial number. The
-original atoms are not deleted, though they should be or their occupancy
-set to zero. The atom type, QS, should be changed to something
-appropriate. The DECLINATION and AZIMUTH are computed from the
-constituent atoms.
+ Atoms that are  KEPT  are moved to the top of the list, and stored in the
+ order in which they are specified on  the KEEP  directive. Only one KEEP
+ directive may be given. Use CONTINUE if one line isn't long enough for the
+ atom sequence.
+#PThe atom specifications may contain symmetry operators, which are used
+ to generate the coordinates of the atoms that are to be retained.
+  'Z' Is an optional parameter which defines the serial number
+ of the first atom in the specification immediately following it.
+ For each atom thereafter in the current atom specification, the serial
+ number is incremented by one to generate the output
+ serial number.
+ Atoms whose serial numbers are changed in this way must be referred to
+ in subsequent directives by their new serial numbers.
+ If 'Z' is not given, the atoms retain
+ their old serial numbers.
+#PIf an  UNTIL  sequence is used after a  KEEP  directive has
+ been given, it should be used with care, since the order of the new
+ parameter list is different from the input list.
+#
+#DMOVE Z ATOM-SPECIFICATION  ...#
+#PThis directive moves atoms about in the list and places them
+ in the position defined by the latest  AFTER  directive.
+ (See the previous directive).
+ This directive does not remove atoms from the list, but simply
+ reorders the list.
+ The sequence Z ATOM-SPECIFICATIONS can be repeated.
+#PThe atom specifications may contain symmetry operators, which are used
+ to generate the coordinates of the atoms that are to be moved.
+  'Z'  is an optional parameter which defines the serial number
+ of the first atom in the specification immediately following it.
+ For each atom thereafter in the current atom specification, the serial
+ number is incremented by one to generate the output
+ serial number.
+ Atoms whose serial numbers are changed in this way must be referred to
+ in subsequent directives by their new serial numbers.
+ If no  'Z' is given, the atoms retain
+ their old serial numbers.
+#PIf an  UNTIL  sequence is used after one or more  MOVE  directives have
+ been given, it should be used with care, since the order of the new
+ parameter list is different from the input list.
+#
+#DMULTIPLY  VALUE  PARAMETERS  ...#
+#
+#DPERTURB VALUE PARAMETERS ...#
+  This directive perturbs the specified parameters using a rnadom
+ number generator. The VALUE is the requested rms perturbation, in the
+ natural units of the parameters. The mean deviation applied should be
+ approximately zero, and the rms deviation applied should be
+ approximately that requested.
 #
 #DREFORMAT#
 This directive converts an old (non-FLAG) version of LIST 5 (see
 section #RLIST05#) to the new format (extra parameters, old U[iso] 
 slot now used as a flag and u[11] used for u[iso]).
+#
+#DRENAME ATOM1  ATOM2  (, ATOM1  ATOM2) ...#
+ This directive requires pairs of atom specifications (optionally separated
+ by a comma). The TYPE and SERIAL of 'atom1' are changed to those of 'atom2'.
+ Atom1 must exist in LIST 5, atom2 must NOT exist in LIST 5. An atom can be
+ renamed repeatedly. If atom1 contains symmetry operators, these are applied
+ to the coordinates of the renamed atom. An atom cannot be renamed to itself
+ in a single step.
+#
+#DRESET PARAMETER-NAME  VALUE ATOM LIST#
+#PThis directive assigns the given value to the named parameter
+ for all the atoms in the atom list
+#N   4#
+#J
+      RESET OCC 1.0 ALL
+      RESET OCC .5 O(1) O(2) O(3)
+      RESET U[11] .05 C(27) UNTIL C(50)
 #
 #DROTATE#
 This directive rotates a group of atoms a certain number of degrees
@@ -5278,7 +5160,7 @@ There are three options available:
 ROTATE D X Y Z VX VY VZ atom-specification  #
 ROTATE D ATOM1 VX VY VZ atom-specification  #
 ROTATE D ATOM1 ATOMS2   atom-specification  #
-
+#
 The first rotates the specified atoms, D degrees around the vector
 VX,VY,VZ keeping point X,Y,Z fixed. (X,Y,Z and VX,VY,VZ are given in
 crystal fractions).
@@ -5312,6 +5194,165 @@ bond, c(1) to c(20).
  CENTROID 1 RESIDUE(1)
  ROTATE 90 QC(1) 1 0 0 RESIDUE(1)
  END
+#
+#DSELECT ATOM-PARAMETER  OPERATOR  VALUE, . .#
+#PThis directive selects and retains atoms with parameters satisfying
+ the specified conditions.
+ Only atoms that satisfy ALL the selection criteria, whether these
+ are in the same or different directives, will be kept.
+ All other atoms will be deleted from the list.
+#PThe operators allowed are :
+#N   8#
+#J
+            EQ            equal
+            NE            not equal
+            GT            greater than
+            GE            greater than or equal to
+            LT            less than
+            LE            less than or equal to
+#
+ Examples of the  SELECT  directive are :
+#N   6#
+#J
+      SELECT SERIAL LT 50
+      SELECT OCC GT 0.5, OCC LT 1.5
+      SELECT C(1,X) LT 1., C(1,X) GT 0.
+      SELECT TYPE NE Q
+#
+ This example will only retain atoms with serial numbers less than 50
+ and occupancies between 0.5 and 1.5.
+ The  'X'  parameter of atom c(1) must also lie between 0.0 and
+ 1.0 oterwise it will be rejected, and any atoms of type Q  will be deleted.
+#
+#DSHIFT  V1, V2, V3   ATOM-SPECIFICATION . .#
+ This directive reads the three numbers of a shift vector, which must
+ be in the same coodrinate system as the atomic parameters,
+ and applies it to the parameters in the atom specification.
+ This directive does not create new atoms, but simply modifies
+ those already present.
+ Any symmetry operators given are applied before the translation.
+#
+#DSORT TYPE1 TYPE2 ...#
+#DSORT KEYWORD#
+ This directive has two formats, and is used to sort the atoms stored in
+ LIST 5 into a user-defined order.
+ The default action sorts the atoms  on their types and serial numbers.
+ The types are taken in the order found in LIST 5, and atoms of each
+ type are grouped together. In each group the atoms are
+ arranged by ascending serial number.
+ The order of the types of atoms may also be determined
+ by specifying them explicitly on the SORT directive,  or by a mixture of
+ these methods.
+#
+#PIn the second format, a keyword corresponding to an atom parameter
+ name (as defined in LIST 5, see
+ section #RLIST05#) is given, and the whole list sorted on
+ increasing value of the specified parameter. Note that sorting on TYPE
+ will give results depending on the 'collating sequence' of the computer.
+ Fortunately, this generally leads to alphabetic sorting.
+#PSORT sorts the whole list 5, and cancels any existing KEEP
+ directives.
+#
+#DSPLIT Z ATOM-SPECIFICATION ...#
+ Two new isotropic atoms are added to the end of the atom list for every
+ atom referenced in the atom-specification. These atoms lie on
+ of the principal axis of the original atoms anisotropic adp ellipsoid 
+ and U[iso] set to U[meadian] of the original adp.
+#PThe original atoms are not deleted.
+ The sequence Z ATOM-SPECIFICATIONS can be repeated.
+ The new serial numbers are given by
+#J
+      NEWSERIAL(1) = Z* OLDSERIAL and
+      NEWSERIAL(2) = Z* OLDSERIAL +1
+#
+#DSUBTRACT  VALUE  PARAMETERS  ...#
+#
+#DSWAP  ATOM-PAIRS  ...#
+ This directive swaps the atomic coordinates (x's and U's) for the two 
+ named atoms.  The occupation numbers, Residue and Parts are left 
+ unchanged.  
+#
+#DTRANSFORM  R11, R21, R31, . . . R33  ATOM SPECIFICATION . .#
+ This directive reads the nine numbers of a transformation matrix, which must
+ be separated by commas or spaces, and applies the matrix to the atoms given
+ in the atom specification.
+ This directive does not create new atoms, but simply modifies
+ those already present.
+ Any symmetry operators given are applied before the rotation.
+#
+#DTYPECHANGE KEYWORD OPERATOR VALUE NEW-ATOM-TYPE#
+#PThis directive conditionally changes the TYPES of atoms. If an atomic
+ parameter selected by the keyword (see sort above) satisfies the
+ conditions defined by the 'operator' and 'value' (see SELECT above),
+ then the TYPE of the atom is changed to 'new-atom-type'.
+#N   4#
+#J
+      TYPECHANGE OCC GT 1.2 O
+                              If Occ large, convert to oxygen
+      TYPECHANGE U[ISO] LE 0.03 N
+                              If Uiso small, convert to nitrogen
+      TYPECHANGE TYPE EQ Q C                              Convert peaks (type Q) to carbon
+#
+#DUEQUIV  ATOM SPECIFICATIONS  .  .#
+ The specified atoms to be converted so that they
+ have isotropic temperature factors,
+ U(equiv), defined by the SET UEQUIV command.
+ IT IS NOT simply related to the
+ diagonal elements of U(aniso).
+ If an atom is already isotropic, no action is taken.
+ If this directive is given with no arguments, all the atoms in the current
+ atomic parameter list are converted to isotropic temperature factors.
+ Physically impossible values are not rejected.
+ Symmetry operators are ignored.
+
+#
+#
+#
+#PThe following directives are used to convert atomic parameters into 
+ the special shape parameters
+#
+#
+
+#DSPHERE NEWSERIAL ATOMLIST#
+This creates a 'shell' shape from the specified atom list. The centre of
+the shell is at the centre of gravity, the size is the mean distance of
+the given atoms from the centre, and the occupancy is equal to  the sum of
+the occupancies
+of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
+listed atoms.
+ The atom TYPE is QS, with the given serial number. The
+original atoms are not deleted, though they should be or their occupancy
+set to zero. The atom type, QS, should be changed to something
+appropriate.
+#
+
+#DRING NEWSERIAL ATOMLIST#
+This creates an 'annulus' shape from the specified atom list. The centre of
+the ring is at the centre of gravity, the size is the mean distance of
+the given atoms from the centre, and the occupancy is equal to the sum of
+the occupancies
+of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
+listed atoms.
+The atom TYPE is QR, with the given serial number. The
+original atoms are not deleted, though they should be or their occupancy
+set to zero. The atom type, QS, should be changed to something
+appropriate. The DECLINATION and AZIMUTH are computed from the
+constituent atoms.
+#
+#DLINE NEWSERIAL ATOMLIST#
+This creates an 'line' shape from the specified atom list. The centre of
+the line is at the centre of gravity, the size is twice the mean distance of
+the given atoms from the centre, and the occupancy is equal to the sum of
+the occupancies
+of the atoms listed. U[iso] is the mean of the U[iso] or Ueqiv of the
+listed atoms.
+The atom TYPE is QL, with the given serial number. The
+original atoms are not deleted, though they should be or their occupancy
+set to zero. The atom type, QS, should be changed to something
+appropriate. The DECLINATION and AZIMUTH are computed from the
+constituent atoms.
+#
+
 #
 #XREGROUP#
 #XReorganising atoms and peaks#
@@ -12210,7 +12251,7 @@ of precision across all values. These particular matters are not really
 my responsibility but we try to conform to recommendation of the
 nomenclature people. This is one such occasion.'
 #Q
-#XACCARC#
+#XADDARC#
 #YAdding Archive files - ADDARC#
 #Aaddarc#
 #HSaddarc#
