@@ -93,6 +93,8 @@
 ^^wi                    DISABLEIF= 'IN'
 ^^WI             ITEM _DIST 'S&wap labels' '#SCRIPT YCSWAP_N_G'
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
+^^WI             ITEM _DIST 'Swap &coordinates' '#SCRIPT YASWAP_N_G'
+^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI             SPLIT
 ^^WI             ITEM _GDELA 'Centroid of &selection'
 ^^WI                         '#SCRIPT XCENTRO_N_GEND' DISABLEIF='IN SEL1'

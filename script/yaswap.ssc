@@ -1,0 +1,20 @@
+%SCRIPT YASWAP
+%%
+%%    Interchanges the atomic parameters of the two named atoms
+%%
+%     VARIABLE CHARACTER CATOM1 CATOM2
+%     GET SILENT NOSTORE TEXT 'Atom1 ?' ' '
+%     EVALUATE CATOM1 = CVALUE
+%     GET SILENT NOSTORE TEXT 'Atom2 ?' ' '
+%     EVALUATE CATOM2 = CVALUE
+%%
+%     COPY '#EDIT'
+%%
+%     CLEAR
+%     INSERT 'SWAP '
+%     STORE CHARACTER CATOM1
+%     INSERT ' '
+%     STORE CHARACTER CATOM2
+%     SEND
+%     COPY 'END'
+%END SCRIPT
