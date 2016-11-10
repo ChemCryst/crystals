@@ -6,11 +6,11 @@
 ^^WI                    ITEM _UNSEL '&Unselect All'
 ^^WI                               '^^CO SET MODEL01 SELECT ALL=NO'
 ^^WI                               ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'
-^^WI                    MENU STYLE    'Model &Style'
-^^WI                      ITEM FILL  '&Fill' '^^CO SET MODEL01 STYLE=SMOOTH'
-^^WI                      ITEM LINES '&Line' '^^CO SET MODEL01 STYLE=LINE'
-^^WI                      ITEM POINT '&Point' '^^CO SET MODEL01 STYLE=POINT'
-^^WI                    ENDMENU
+%% ^^WI                    MENU STYLE    'Model &Style'
+%% ^^WI                      ITEM FILL  '&Fill' '^^CO SET MODEL01 STYLE=SMOOTH'
+%% ^^WI                      ITEM LINES '&Line' '^^CO SET MODEL01 STYLE=LINE'
+%% ^^WI                      ITEM POINT '&Point' '^^CO SET MODEL01 STYLE=POINT'
+%% ^^WI                    ENDMENU
 ^^WI                    MENU SCALE '&Atom Radii'
 ^^WI                      ITEM SCNORM '&Quarter (default)'
 ^^WI                        '^^CO SET MODEL01 RADSCALE=250'
@@ -25,9 +25,10 @@
 ^^WI                      '^^CO SET MODEL01 RADTYPE=THERMAL RADSCALE=250'
 ^^WI                    ENDMENU
 ^^WI               ITEM SIZEAUT '&Auto scale' '^^CO SET MODEL01 AUTOSIZE=YES'
-^^WI                    ITEM ZOOMOUT '&Un-zoom'
-^^WI                    '^^CO SET MODEL01 AUTOSIZE=YES ZOOMATOMS=NO'
-^^WI                    ENABLEIF='ZOOMED'
+^^WI               ITEM ZOOMSEL 'Zoom to selected atoms'
+^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES SELECT ALL=NO' DISABLEIF='SEL0'
+^^WI               ITEM ZOOMOUT '&Un-zoom'
+^^WI                 '^^CO SET MODEL01 AUTOSIZE=YES ZOOMATOMS=NO' ENABLEIF='ZOOMED'
 ^^WI                    SPLIT
 ^^WI               ITEM _LIST5 '&List atoms' '#SUM L 5_NEND'  DISABLEIF='IN'
 ^^WI                      ENABLEIF='L1 L2 L5'

@@ -91,6 +91,8 @@
 ^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RPO '&Set occupancy of selection' '#SCRIPT XOCCGS'
 ^^wi                    DISABLEIF= 'IN'
+^^WI               ITEM ZOOMSEL 'Zoom to selection'
+^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES SELECT ALL=NO' DISABLEIF='SEL0'
 ^^WI             ITEM _DIST 'S&wap labels' '#SCRIPT YCSWAP_N_G'
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI             ITEM _DIST 'Swap &coordinates' '#SCRIPT YASWAP_N_G'

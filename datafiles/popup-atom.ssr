@@ -55,7 +55,7 @@
 ^^WI             ITEM _SLFRG '&Select fragment containing _A'
 ^^WI                    '^^CO SET MODEL01 SELFRAG _A YES' DISABLEIF='IN'
 ^^WI             ITEM _ZMFRG '&Zoom fragment containing _A'
-^^WI                    '^^CO SET MODEL01 SELFRAG _A YES ZOOMATOMS YES'
+^^WI              '^^CO SET MODEL01 SELFRAG _A YES ZOOMATOMS YES SELECT ALL=NO'
 ^^WI                    DISABLEIF='IN'
 ^^WI             ITEM _GDELA 'Dele&te fragment containing _A'
 ^^WI                    '#SCRIPT DELGRP_N_FEND'  DISABLEIF='IN'

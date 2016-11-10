@@ -3,31 +3,31 @@
 %                                                                               
 ^^WI               @ 1,1 TOOLBAR _MODBAR                                        
 ^^WI               {                                                            
-^^WI                 TOOL _MROT tool_rot.bmp 'Rotate'                           
+^^WI                 TOOL _MROT tool_rot.bmp 'Rotate structure'                           
 ^^WI                 '#SCRIPT XMODVIEW_NROT' TOGGLE DISABLEIF='IN'                     
 ^^WI                 ITEM _MROT STATE=ON                                        
-^^WI                 TOOL _MRECT tool_rect.bmp 'Select'                         
+^^WI                 TOOL _MRECT tool_rect.bmp 'Drag to select atoms'                         
 ^^WI                 '#SCRIPT XMODVIEW_NSEL' TOGGLE DISABLEIF='IN'                     
-^^WI                 TOOL _MPOLY tool_poly.bmp 'Polygon'                        
+^^WI                 TOOL _MPOLY tool_poly.bmp 'Draw polygon to select atoms'                        
 ^^WI                 '#SCRIPT XMODVIEW_NPOLY' TOGGLE DISABLEIF='IN'                    
-^^WI                 TOOL _UNSEL tool_unsl.bmp 'UnSelect'                       
+^^WI                 TOOL _UNSEL tool_unsl.bmp 'Unselect all atoms'                       
 ^^WI                 '^^CO SET MODEL01 SELECT ALL=NO'                           
 ^^WI                 ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'                       
 ^^WI                 SPLIT                                                      
-^^WI                 TOOL _MZOOM tool_zoom.bmp 'Zoom'                           
-^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES' DISABLEIF='SEL0'          
-^^WI                 TOOL _MZOOM tool_norm.bmp 'UnZoom'                         
+^^WI                 TOOL _MZOOM tool_zoom.bmp 'Zoom to selected atoms'                           
+^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES SELECT ALL=NO' DISABLEIF='SEL0'
+^^WI                 TOOL _MZOOM tool_norm.bmp 'Unzoom'                         
 ^^WI                 '^^CO SET MODEL01 AUTOSIZE=YES ZOOMATOMS=NO'               
 ^^WI                 ENABLEIF='ZOOMED'                                          
 ^^WI                 SPLIT                                                      
-^^WI                 TOOL _MBALL tool_ball.bmp 'Ball'                           
+^^WI                 TOOL _MBALL tool_ball.bmp 'Ball and stick view'                           
 ^^WI                 '#SCRIPT XMODVIEW_NCOV' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ITEM _MBALL STATE=ON                                       
-^^WI                 TOOL _MADP tool_adp.bmp 'Ellipse'                          
+^^WI                 TOOL _MADP tool_adp.bmp 'Show displacement parameters'             
 ^^WI                 '#SCRIPT XMODVIEW_NTHERM' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
-^^WI                 TOOL _MOPT tool_opt.bmp 'Options'                           
+^^WI                 TOOL _MOPT tool_opt.bmp 'Atom and bond display options'                           
 ^^WI                 '#SCRIPT XVIEWOPT' TOGGLE DISABLEIF='IN'
 ^^WI                 SPLIT                                                      
 ^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show H'           
