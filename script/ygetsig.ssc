@@ -48,19 +48,5 @@
 %      TRANSFER '{E     Nsigmas = ' // CHARACTER NSIGMAS TO DISPLAY                                                         
 %     END IF                                                                          
 %%
-%      IF NREFMES .GE. 5000. THEN
-^^WI    DISPOSE XINFO
-^^WI    WINDOW XINFO 'Warning'  MODAL
-^^WI    GRID MAIN NROWS=2 NCOLS=3                   
-^^WI     { 
-^^WI      @ 1,2 STATIC T1 'All reflection processed'
-^^WI      @ 2,2 STATIC T2 ' '
-^^WI     } 
-^^WI    SHOW        
-^^CR 
-% copy '#pause 2'
-^^WI    DISPOSE XINFO
-^^CR
-%      END IF
 %     COPY '#CLOSE SCPDATA'
 %END SCRIPT

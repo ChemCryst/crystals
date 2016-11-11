@@ -697,37 +697,41 @@
 %%                                                                       
 %%Variances
 
-^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'             
+^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'  
+%  VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES
 %  IF ( SIG .AND. LMAONCE ) THEN  
 %    BLOCK
 ^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'             
-^^CR                                                                            
 ^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA                                  
 ^^PL XAXIS TITLE 'External (Mean variance)'                                           
 ^^PL NSERIES=1 LENGTH=40 
 ^^PL SERIES 1 SERIESNAME 'No of contributors'
 ^^PL YAXIS TITLE 'Internal (rms deviation)'                                    
-%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES
+%    EVALUATE SXX = 0.
+%    EVALUATE SXY = 0.
 %    COPY '#GENERALEDIT 30'
 %    COPY 'LOCATE RECORDTYPE = 101'
-%    COPY 'TRANSFER FROM OFFSET = 0 TO NREFMES'
+%    COPY 'TRANSFER FROM OFFSET = 2 TO NREFMES'
 %    COPY 'END'
 %%
 %%
-%      IF NREFMES .GE. 5000. THEN
+%      IF ( NREFMES .GE. 5000. ) THEN
 ^^WI    WINDOW XINFO 'Warning'  MODAL
 ^^WI    GRID MAIN NROWS=2 NCOLS=3                   
 ^^WI     { 
-^^WI      @ 1,2 STATIC T1 'You have more than 5000 unmerged reflections'
+^^WI      @ 1,2 STATIC T1 'You have more than 5000 merged reflections'
 ^^WI      @ 2,2 STATIC T2 'Plotting them may take some time'
 ^^WI     } 
 ^^WI    SHOW        
 ^^CR 
-^^CR
 %      END IF
 %%
 %     COPY '#SCRIPT YGETSIG'
 %%
+%      IF ( NREFMES .GE. 5000. ) THEN
+^^WI   DISPOSE XINFO
+^^CR
+%      END IF
 ^^PL  SHOW                                                                       
 ^^CR  
 %%
