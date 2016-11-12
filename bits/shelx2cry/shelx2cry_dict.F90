@@ -153,7 +153,7 @@ type(dict_t) :: this
         tuples(57)%key='SADI'
         tuples(57)%func => shelx_unsupported    
         tuples(58)%key='SAME'
-        tuples(58)%func => shelx_unsupported    
+        tuples(58)%func => shelx_same    
         tuples(59)%key='SFAC'
         tuples(59)%func => shelx_sfac
         tuples(60)%key='SHEL'
