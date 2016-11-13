@@ -4,7 +4,8 @@
 % VARIABLE LOGICAL CALLED                                                       
 % VARIABLE INTEGER IPART NVALUE                                                 
 % EVALUATE CALLED = TRUE                                                        
-% EVALUATE CMESSAGE = 'Example: 1001'                                           
+% EVALUATE CMESSAGE = 'Part = (1000 x assembly) + group'
+% EVALUATE NVALUE = 1001
 %%                                                                              
 %%                                                                              
 % COPY '#SCRIPT XGETINT'                                                        

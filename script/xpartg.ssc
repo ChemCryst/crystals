@@ -3,7 +3,8 @@
 % VARIABLE CHARACTER CATOM CMESSAGE                                             
 % VARIABLE INTEGER IPART NVALUE                                                 
 % VARIABLE LOGICAL CALLED                                                       
-% EVALUATE CMESSAGE = 'Example: 1002'                                           
+% EVALUATE CMESSAGE = 'Part = (1000 x assembly) + group'
+% EVALUATE NVALUE = 1001
 %%                                                                              
 % GET SILENT NOSTORE TEXT 'Get atom name' ' '                                   
 % EVALUATE CATOM = CVALUE                                                       

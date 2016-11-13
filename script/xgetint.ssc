@@ -3,7 +3,6 @@
 %%                                                                              
 %  VARIABLE CHARACTER CMESSAGE                                                  
 %  VARIABLE INTEGER NVALUE                                                      
-%  EVALUATE NVALUE = 0                                                          
 %%                                                                              
 %%                                                                              
 %%                                                                              
