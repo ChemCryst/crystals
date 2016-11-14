@@ -169,8 +169,8 @@ implicit none
 
     call write_list12()
 
-    call writelist16()
-
+    call write_list16()
+    
     close(crystals_fileunit)
 end subroutine
 
@@ -465,18 +465,24 @@ character(len=2048) :: buffer
 end subroutine
 
 !> Write list16 (restraints)
-subroutine writelist16()
+subroutine write_list16()
 use crystal_data_m
 implicit none
 integer i, j, k, l, k1,k2
 integer, dimension(1024) :: serial1, serial2
 logical found
+character(len=1024) :: buffer1, buffer2, buffertemp
 
     ! Restraints
     write(crystals_fileunit, '(a)') '\LIST 16'
     write(crystals_fileunit, '(a)') 'NO'
     write(crystals_fileunit, '(a)') 'REM   HREST   START (DO NOT REMOVE THIS LINE)' 
     write(crystals_fileunit, '(a)') 'REM   HREST   END (DO NOT REMOVE THIS LINE) '
+
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   DFIX
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+
     ! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
     do i=1, dfix_table_index
         if(index(dfix_table(i)%atom1, '_')>0) then
@@ -617,9 +623,51 @@ logical found
         end if
                     
     end do
+    
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   SAME
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    if(same_processing/=-1) then
+        print *, 'Error: Something went seriously wrong. A SAME instruction is on going ', same_processing
+    end if
+
+    do i=1, same_table_index
+        buffer1=''
+        buffer2=''
+        ! get crystals serial for list of atoms
+        serial1=0
+        do j=1, size(same_table(i)%list1)
+            do k=1, atomslist_index
+                if(trim(same_table(i)%list1(j))==trim(atomslist(k)%label)) then
+                    write(buffertemp, '(a, "(",I0,")")') trim(sfac(atomslist(k)%sfac)), atomslist(k)%crystals_serial
+                    buffer1=trim(buffer1)//' '//trim(buffertemp)
+                end if
+                if(trim(same_table(i)%list2(j))==trim(atomslist(k)%label)) then
+                    write(buffertemp, '(a, "(",I0,")")') trim(sfac(atomslist(k)%sfac)), atomslist(k)%crystals_serial
+                    buffer2=trim(buffer2)//' '//trim(buffertemp)
+                end if
+            end do
+        end do
+        
+        write(crystals_fileunit, '(a,a)') '# ', same_table(i)%shelxline
+        write(buffertemp, '("(a, ",I0,a,")")') size(same_table(i)%list1), 'a'
+        write(crystals_fileunit, trim(buffertemp)) '# ', same_table(i)%list1
+        write(crystals_fileunit, trim(buffertemp)) '# ', same_table(i)%list2
+        write(crystals_fileunit, '(a)') 'SAME '
+        write(crystals_fileunit, '(a,a,a)') 'CONT ',trim(buffer1), ' AND'
+        write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2)
+        !print *, trim(same_table(i)%shelxline)
+        !print *, size(same_table(i)%list1), same_table(i)%list1
+        !print *, trim(buffer1)
+        !print *, size(same_table(i)%list2), same_table(i)%list2
+        !print *, trim(buffer2)
+    end do
+
+!        write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+    
     write(crystals_fileunit, '(a)') 'END'
-    !write(crystals_fileunit, '(a)') '# Remove space after hash to activate next line'
-    !write(crystals_fileunit, '(a)') '# USE LAST'
+    write(crystals_fileunit, '(a)') '# Remove space after hash to activate next line'
+    write(crystals_fileunit, '(a)') '# USE LAST'
 
 end subroutine
 
@@ -1146,6 +1194,23 @@ integer i
     atomslist(atomslist_index)%part=part
     atomslist(atomslist_index)%shelxline=shelxline%line
     atomslist(atomslist_index)%line_number=shelxline%line_number
+    
+    if(same_processing>=0) then
+        ! same instruction found before, adding this atom to the list
+        if(same_processing<size(same_table(same_table_index)%list2)) then
+            if(trim(sfac(atomslist(atomslist_index)%sfac))/='H' .and. &
+            &   trim(sfac(atomslist(atomslist_index)%sfac))/='D') then
+                same_processing=same_processing+1
+                same_table(same_table_index)%list2(same_processing)=atomslist(atomslist_index)%label
+            end if
+            
+            if(same_processing==size(same_table(same_table_index)%list2)) then
+                ! all done
+                same_processing=-1
+            end if
+        end if
+    end if
+    
 end subroutine
 
 !> Parse the atom parameters when adps are not present but isotropic temperature factor.

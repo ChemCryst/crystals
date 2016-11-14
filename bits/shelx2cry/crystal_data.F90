@@ -63,6 +63,16 @@ end type
 type(dfix_t), dimension(1024) :: dfix_table
 integer :: dfix_table_index=0
 
+!> type SAME
+type same_t
+    character(len=1024) :: shelxline
+    character(len=6), dimension(:), allocatable :: list1
+    character(len=6), dimension(:), allocatable :: list2
+end type
+type(same_t), dimension(1024) :: same_table
+integer :: same_table_index=0
+integer :: same_processing=-1 !< flag if we are currently processing a same instruction. -1: nothing to do. >=0: working on it
+
 contains
 
 !> Transform a string to upper case
@@ -83,5 +93,101 @@ function to_upper(strIn) result(strOut)
      end do
 
 end function to_upper
+
+!> Remove repeated separators. Default separator is space
+function deduplicates(line, sep_arg) result(strip)
+implicit none
+character(len=*), intent(in) :: line !< text to process
+character, intent(in), optional :: sep_arg !< Separator to deduplicate
+character(len=:), allocatable :: strip
+character(len=4096) :: buffer
+integer i,k, sepfound
+character sep
+
+    if(present(sep_arg)) then
+        sep=sep_arg
+    else
+        sep=' '
+    end if
+
+    buffer=''
+    k=0
+    sepfound=1
+    do i=1, len_trim(line)
+        if(line(i:i)/=sep) then
+            sepfound=0
+            k=k+1
+            buffer(k:k)=line(i:i)
+        else
+            if(sepfound==0) then
+                k=k+1
+                buffer(k:k)=line(i:i)                
+                sepfound=sepfound+1
+            end if
+        end if
+    end do
+
+    buffer=adjustl(buffer)    
+    allocate(character(len=len_trim(buffer)) :: strip)
+    strip=buffer(1:len_trim(buffer))
+
+end function
+
+!> Split a string into different pieces given a separator. Defaul separator is space.
+!! Len of pieces must be passed to the function
+function explode(line, lenstring, sep_arg) result(elements)
+implicit none
+character(len=*), intent(in) :: line !< text to process
+integer lenstring !< length of each individual elements
+character, intent(in), optional :: sep_arg !< Separator 
+character(len=lenstring), dimension(:), allocatable :: elements
+character(len=lenstring) :: bufferlabel
+integer i, j, k
+character sep
+
+    if(present(sep_arg)) then
+        sep=sep_arg
+    else
+        sep=' '
+    end if
+    
+    allocate(elements(count_char(line, ' ')+1))
+
+    k=1
+    j=0
+    bufferlabel=''
+    do i=1, len_trim(line)
+        if(line(i:i)==sep) then
+            elements(k)=bufferlabel
+            k=k+1
+            j=0
+            bufferlabel=''
+            cycle
+        end if
+        j=j+1
+        if(j>lenstring) cycle
+        bufferlabel(j:j)=line(i:i)
+    end do
+    if(j>0) then
+        elements(k)=bufferlabel
+    end if
+    
+end function
+
+function count_char(line, c) result(cpt)
+implicit none
+character(len=*), intent(in) :: line !< text to process
+character, intent(in) :: c !< character to search
+integer cpt !< Number of character found
+integer i
+
+    cpt=0
+    do i=1, len_trim(line)
+        if(line(i:i)==c) then
+            cpt=cpt+1
+        end if
+    end do
+end function
+
 
 end module

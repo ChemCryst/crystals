@@ -64,22 +64,24 @@ subroutine shelx_dfix(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos
+integer i, j, linepos, start, iostatus
 character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
 logical found
-character(len=128) :: buffer, buffer2, buffernum
+character(len=128) :: buffernum
 real distance, esd
 integer :: dfixresidue
+character(len=64), dimension(:), allocatable :: splitbuffer
+character(len=:), allocatable :: stripline
 
     ! parsing more complicated on this one as we don't know the number of parameters
-    linepos=4 ! First 4 is DFIX
+    linepos=5 ! First 4 is DFIX
     
     if(len_trim(shelxline%line)<5) then
         write(*,*) 'Error: Empty DFIX'
         write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         return
     end if
-
+    
     dfixresidue=-99
     buffernum=''
     ! check for subscripts on dfix
@@ -87,6 +89,7 @@ integer :: dfixresidue
         ! check for `_*̀
         if(shelxline%line(6:6)=='*') then
             dfixresidue=-1
+            linepos=7
         else
             ! check for a residue number
             found=.true.
@@ -104,6 +107,7 @@ integer :: dfixresidue
             end do
             if(len_trim(buffernum)>0) then
                 read(buffernum, *) dfixresidue
+                linepos=6+j
             end if
             
             ! check for a residue name
@@ -124,119 +128,44 @@ integer :: dfixresidue
                 end if
             end if
         end if
-        linepos=6
     end if
+    
+    stripline=deduplicates(shelxline%line(linepos:))
+    stripline=to_upper(stripline)    
 
-    do while(linepos<=len(shelxline%line))
-        linepos=linepos+1
-        if(shelxline%line(linepos:linepos)/=' ') exit
-    end do
-
-    ! we have something, must be the distance
-    buffer=''
-    do while(shelxline%line(linepos:linepos)/=' ')
-        found=.false.
-        do i=1, size(numbers)
-            if(shelxline%line(linepos:linepos)==numbers(i)) then
-                found=.true.
-                exit
-            end if
-        end do
-        if(.not. found) then
-            ! no number.
-            write(*,*) 'Error: Expected a number but got ', shelxline%line(linepos:linepos)
-            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-            write(*,*) repeat(' ', linepos-1+5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-            return
-        end if
-        buffer=trim(buffer)//shelxline%line(linepos:linepos)
-        linepos=linepos+1
-    end do
-    ! number read, lets convert it to a proper one
-    read(buffer, *) distance
-
-    ! skip spaces again
-    do while(linepos<=len(shelxline%line))
-        if(shelxline%line(linepos:linepos)/=' ') exit
-        linepos=linepos+1
-    end do
-    if(linepos>len(shelxline%line)) then
-        write(*,*) 'Error: I have not found the esd or atom definition'
+    splitbuffer=explode(stripline, 64)    
+    
+    ! first element is the distance
+    read(splitbuffer(1), *, iostat=iostatus) distance
+    if(iostatus/=0) then
+        write(*,*) 'Error: Expected a number but got ', trim(splitbuffer(1))
         write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         return
     end if
-        
-    ! we have something, must be esd or atom
-    found=.false.
-    do i=1, size(numbers)
-        if(shelxline%line(linepos:linepos)==numbers(i)) then
-            found=.true.
-            exit
-        end if
-    end do
-    if(found) then
-        ! it's a number!
-        buffer=''
-        do while(shelxline%line(linepos:linepos)/=' ')
-            found=.false.
-            do i=1, size(numbers)
-                if(shelxline%line(linepos:linepos)==numbers(i)) then
-                    found=.true.
-                    exit
-                end if
-            end do
-            if(.not. found) then
-                write(*,*) 'Error: Expected a number but got ', shelxline%line(linepos:linepos)
-                write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                write(*,*) repeat(' ', linepos-1+5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                return
-            end if
-            buffer=trim(buffer)//shelxline%line(linepos:linepos)
-            linepos=linepos+1
-        end do
-        ! number read, lets convert it to a proper one
-        read(buffer, *) esd
-    else
+
+    ! Second element could be the esd
+    read(splitbuffer(2), *, iostat=iostatus) esd
+    if(iostatus/=0) then
+        ! no esd, use default
         esd=0.02
-    end if  
-
-    ! fetch now the list of atoms
-    do
-        !print *, trim(shelxline(linepos:))
-        ! skip spaces again
-        do while(linepos<=len(shelxline%line))
-            if(shelxline%line(linepos:linepos)/=' ') exit
-            linepos=linepos+1
-        end do
-        if(linepos>len(shelxline%line)) exit
-        ! get atom
-        buffer=''
-        do while(shelxline%line(linepos:linepos)/=' ')
-            buffer=trim(buffer)//shelxline%line(linepos:linepos)
-            linepos=linepos+1
-            if(linepos>len(shelxline%line)) exit
-        end do
-
-        ! get second atom
-        do while(linepos<=len(shelxline%line))
-            linepos=linepos+1
-            if(shelxline%line(linepos:linepos)/=' ') exit
-        end do
-        if(linepos>len(shelxline%line)) exit
-        buffer2=''
-        do while(shelxline%line(linepos:linepos)/=' ')
-            buffer2=trim(buffer2)//shelxline%line(linepos:linepos)
-            linepos=linepos+1
-            if(linepos>len(shelxline%line)) exit      
-        end do
-        
-        !print *, trim(buffer), '++', trim(buffer2)
-        !print *, linepos, len(shelxline)
+        start=2
+    else
+        start=3
+    end if
+    
+    do i=start, size(splitbuffer),2
+        if( (i+1)>size(splitbuffer) ) then
+            print *, 'Error: Missing a label in DFIX'
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            write(*,*) repeat(' ', 5+4+len_trim(shelxline%line)), '^'
+            return
+        end if
+            
         dfix_table_index=dfix_table_index+1
         dfix_table(dfix_table_index)%distance=distance
         dfix_table(dfix_table_index)%esd=esd
-        dfix_table(dfix_table_index)%atom1=to_upper(trim(buffer))
-        dfix_table(dfix_table_index)%atom2=to_upper(trim(buffer2))
+        dfix_table(dfix_table_index)%atom1=to_upper(trim(splitbuffer(i)))
+        dfix_table(dfix_table_index)%atom2=to_upper(trim(splitbuffer(i+1)))
         dfix_table(dfix_table_index)%shelxline=trim(shelxline%line)
         dfix_table(dfix_table_index)%line_number=shelxline%line_number
         dfix_table(dfix_table_index)%residue=dfixresidue
@@ -342,7 +271,7 @@ character(len=3) :: buffer
             if(i>len_trim(shelxline%line)) exit
         end do
         k=k+1
-        sfac(k)=buffer
+        sfac(k)=to_upper(buffer)
     end do   
 
 end subroutine
@@ -468,6 +397,144 @@ integer iostatus
     end if
     
 end subroutine
+
+!> Parse SAME keyword. 
+subroutine shelx_same(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+integer cont, i, j
+character(len=2048) :: bufferline
+character(len=:), allocatable :: stripline
+character(len=6) :: startlabel, endlabel
+logical collect, reverse
+   
+    ! extracting list of atoms, first removing duplicates spaces and keyword
+    stripline=deduplicates(shelxline%line(5:))
+    stripline=to_upper(stripline)
+    
+    ! looking for <,> shortcut
+    cont=max(index(stripline, '<'), index(stripline, '>'))
+    !print *, '*************** ', cont
+    do while(cont>0)
+        if(index(stripline, '<')==cont) then    
+            reverse=.true.
+        else
+            reverse=.false.
+        end if
+    
+        ! found < or >, expliciting atom list
+        bufferline=stripline(1:cont-1)
+        
+        ! first searching for label on the right
+        if(stripline(cont+1:cont+1)==' ') cont=cont+1        
+        j=0
+        endlabel=''
+        do i=cont+1, len_trim(stripline)
+            if(stripline(i:i)==' ' .or. stripline(i:i)=='<' .or. stripline(i:i)=='>') then
+                exit
+            end if
+            j=j+1
+            endlabel(j:j)=stripline(i:i)
+        end do  
+        
+        ! then looking for label on the left
+        cont=max(index(stripline, '<'), index(stripline, '>'))
+        if(stripline(cont-1:cont-1)==' ') cont=cont-1        
+        j=7
+        startlabel=''
+        do i=cont-1, 1, -1
+            if(stripline(i:i)==' ' .or. stripline(i:i)=='<' .or. stripline(i:i)=='>') then
+                exit
+            end if
+            j=j-1
+            startlabel(j:j)=stripline(i:i)
+        end do  
+        startlabel=adjustl(startlabel)
+
+        ! scanning atom list to find the implicit atoms
+        if(reverse) then
+            i=atomslist_index
+        else
+            i=1
+        end if
+        collect=.false.
+        do 
+            if(trim(atomslist(i)%label)==trim(startlabel)) then
+                !found the first atom
+                !print *, trim(shelxline%line)
+                !print *, 'Found start: ', trim(startlabel)
+                collect=.true.
+            end if
+            if(reverse) then
+                i=i-1
+                if(i<1) then
+                    if(collect) then
+                        print *, 'Error: Cannot find end atom ', trim(endlabel)
+                        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    else
+                        print *, 'Error: Cannot find first atom ', trim(startlabel)
+                        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    end if
+                    same_processing=-1
+                    return
+                end if
+            else
+                i=i+1
+                if(i>atomslist_index) then
+                    if(collect) then
+                        print *, 'Error: Cannot find end atom ', trim(endlabel)
+                        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    else
+                        print *, 'Error: Cannot find first atom ', trim(startlabel)
+                        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    end if
+                    same_processing=-1
+                    return
+                end if
+            end if
+            if(collect) then
+                if(trim(atomslist(i)%label)==trim(endlabel)) then
+                    !print *, 'Found end: ', trim(endlabel)
+                    !print *, 'Done!!!!!'
+                    ! job done
+                    exit
+                end if
+                
+                if(trim(sfac(atomslist(i)%sfac))/='H' .and. &
+                &   trim(sfac(atomslist(i)%sfac))/='D') then
+                    ! adding the atom to the list
+                    bufferline=trim(bufferline)//' '//trim(atomslist(i)%label)
+                end if
+            end if
+        end do
+        ! concatenating the remaining
+        bufferline=trim(bufferline)//' '//&
+        &   trim(adjustl(stripline(max(index(stripline, '<'), index(stripline, '>'))+1:)))
+
+        !print *, trim(stripline)
+        !print *, trim(bufferline)
+        stripline=bufferline
+        cont=max(index(stripline, '<'), index(stripline, '>'))
+    end do
+    
+    ! set the flag
+    ! It is necessary as further information needs to be collected after this keyword.
+    same_processing=0
+    
+    same_table_index=same_table_index+1
+    ! allocate and split line into all the individual labels
+    same_table(same_table_index)%list1=explode(stripline, 6)
+    allocate(same_table(same_table_index)%list2(size(same_table(same_table_index)%list1)))
+    same_table(same_table_index)%list2=''
+    same_table(same_table_index)%shelxline=shelxline%line
+    
+    !print *, trim(shelxline%line)
+    !print *, stripline
+    !print *, same_table(same_table_index)%list1
+    
+end subroutine
+
 
 !> Parse the END keyword. Set the_end to true.
 subroutine shelx_end(shelxline)

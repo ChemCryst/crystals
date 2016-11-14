@@ -27,6 +27,8 @@
 ^^WI                 ITEM _X 'Oth&er' '#SCRIPT XOTHER_N_A'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
+^^WI             ITEM _RP 'Set &residue number of _A' '#SCRIPT XRESG_N_A' 
+^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RP 'Set &part number of _A' '#SCRIPT XPARTG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RP '&Set occupancy of _A' '#SCRIPT XOCCG_N_A' 
@@ -55,7 +57,7 @@
 ^^WI             ITEM _SLFRG '&Select fragment containing _A'
 ^^WI                    '^^CO SET MODEL01 SELFRAG _A YES' DISABLEIF='IN'
 ^^WI             ITEM _ZMFRG '&Zoom fragment containing _A'
-^^WI                    '^^CO SET MODEL01 SELFRAG _A YES ZOOMATOMS YES'
+^^WI              '^^CO SET MODEL01 SELFRAG _A YES ZOOMATOMS YES SELECT ALL=NO'
 ^^WI                    DISABLEIF='IN'
 ^^WI             ITEM _GDELA 'Dele&te fragment containing _A'
 ^^WI                    '#SCRIPT DELGRP_N_FEND'  DISABLEIF='IN'

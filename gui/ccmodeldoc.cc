@@ -603,16 +603,27 @@ bool CcModelDoc::RenderModel( CcModelStyle * style )
 
 CcRect CcModelDoc::FindModel2DExtent(float * mat, CcModelStyle * style) {
 	CcRect extent(0,0,0,0);
+	bool extentinit = false;
 	for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
 	{
+
+
 //not excluded
 		if ( !((*atom).m_excluded) ) {
 			CcPoint c = (*atom).GetAtom2DCoord(mat);
 			int extra = (*atom).Radius(style);
-			if ( c.X() + extra > extent.Right() ) extent.mRight = c.X() + extra;
-			if ( c.X() - extra < extent.Left() ) extent.mLeft = c.X() - extra;
-			if ( c.Y() + extra > extent.Bottom() ) extent.mBottom = c.Y() + extra;
-			if ( c.Y() - extra < extent.Top() ) extent.mTop = c.Y() - extra;
+			if ( !extentinit ){
+				extentinit = true;
+				extent.mRight = c.X() + extra;
+				extent.mLeft = c.X() - extra;
+				extent.mTop = c.Y() - extra;
+				extent.mBottom = c.Y() + extra;
+			} else {
+				if ( c.X() + extra > extent.Right() ) extent.mRight = c.X() + extra;
+				if ( c.X() - extra < extent.Left() ) extent.mLeft = c.X() - extra;
+				if ( c.Y() + extra > extent.Bottom() ) extent.mBottom = c.Y() + extra;
+				if ( c.Y() - extra < extent.Top() ) extent.mTop = c.Y() - extra;
+			}
 		}
 	}
 	return extent;
@@ -692,12 +703,12 @@ bool CcModelDoc::RenderExcluded( CcModelStyle * style )
      return false;
    }
        
+   glPolygonMode(GL_FRONT, GL_POINT);
+   glPolygonMode(GL_BACK, GL_POINT);
    for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
    {
      if ( (*atom).m_excluded )
      {
-       glPolygonMode(GL_FRONT, GL_POINT);
-       glPolygonMode(GL_BACK, GL_POINT);
        (*atom).Render(style);
      }
    }
@@ -705,11 +716,11 @@ bool CcModelDoc::RenderExcluded( CcModelStyle * style )
    {
      if ( (*bond).m_excluded )
      {
-       glPolygonMode(GL_FRONT, GL_POINT);
-       glPolygonMode(GL_BACK, GL_POINT);
        (*bond).Render(style);
      }
    }
+   glPolygonMode(GL_FRONT, GL_FILL);
+   glPolygonMode(GL_BACK, GL_FILL);
    m_thread_critical_section.Leave();
    return true;
 }
