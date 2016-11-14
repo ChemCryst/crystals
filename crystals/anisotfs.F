@@ -284,23 +284,16 @@ C--CALCULATE THE COSINES WITH RESPECT TO THE CRYSTALLOGRAPHIC AXES
                ! (i-1)*5+NF      (i-1)*5+NF+1           (i-1)*5+NF+4                     
                K=K+3
 450         CONTINUE
-C---PP20161114
-C   LIST20 used unitialised thus the next section is commented out
-C   Plus list20 is not used anywhere else
-CC----- DATA FOR LIST 20
-C            IF (LIST20.GT.0) THEN
-CC----- CRYSTAL TO AXIAL
-C               ! XMLTTM: C= A^t B
-C               ! Again, STORE(L1O1) is stored row by row so transposed on call 
-C               ! and the result is stored column wise
-C               ! KINV2 later expect a column wise input so it's ok
-C               CALL XMLTTM (STORE(NG),STORE(L1O1),STORE(LIST20+9),3,3,3)
-CC----- INTERCHANGE EIGEN VECTORS
-C               CALL XMTREX (STORE(LIST20+9),STORE(LIST20),3,3)
-C               I=KINV2(3,STORE(LIST20),STORE(LIST20+9),9,0,STORE(LIST20+
-C     1          18),STORE(LIST20+18),3)
-C               CALL XMOVE (STORE(M5B+4),STORE(LIST20+18),3)
-C            END IF
+C----- DATA FOR LIST 20
+            IF (LIST20.GT.0) THEN
+C----- CRYSTAL TO AXIAL
+               CALL XMLTTM (STORE(NG),STORE(L1O1),STORE(LIST20+9),3,3,3)
+C----- INTERCHANGE EIGEN VECTORS
+               CALL XMTREX (STORE(LIST20+9),STORE(LIST20),3,3)
+               I=KINV2(3,STORE(LIST20),STORE(LIST20+9),9,0,STORE(LIST20+
+     1          18),STORE(LIST20+18),3)
+               CALL XMOVE (STORE(M5B+4),STORE(LIST20+18),3)
+            END IF
 cdjwfeb06  add in volume contributions
 cdjwfeb06 compute geometric mean
             UGEOM=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
