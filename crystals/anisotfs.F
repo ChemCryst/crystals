@@ -188,12 +188,21 @@ C--SET UP VARIOUS STORAGE LOCATIONS
       L=NA
       NL=NH
       M=L1O1
+      
 C--REFORM THE REAL SPACE ORTHOGONALIZATION MATRIX
       DO 250 I=1,3
          K=L1P2
          NK=L1P1
+         
          DO 200 J=1,3
+            ! multiply the orthogonalisation matrix O by the reciprocal cell lengths matrix N
+            ! See Grosse-Kunstleve, R.W. & Adams, P. D. (2002). J. Appl. Cryst. 35(4), 477-480.
+            ! U* = (N Ucif N^t)
+            ! Ucart = (O U* O^t) = (O N) Ucif (O N)^t
+            ! Calculating (O N):
             STORE(L)=STORE(M)*STORE(K)
+            ! Scale the orthogonalisation matrix. This is used much later on a single occasion
+            ! Probably to get the eigen basis in units of angstroms
             STORE(NL)=STORE(M)/STORE(NK)
             NK=NK+1
             NL=NL+1
@@ -219,64 +228,79 @@ CDJWJAN2000      IF(ABS(STORE(M5B+3))-UISO)1200,1700,1700
 C-C-C-ANISOTROPIC
 C--PULL OUT THE REQUIRED ELEMENTS
       CALL XPANDU (STORE(M5B+7), STORE(NB))
-C--ORHTOGONALIZE THE THERMAL TENSOR
+C--ORHTOGONALIZE THE THERMAL TENSOR (Ucart = (O N) Ucif (O N)^t)
+            ! NC^t = NB NA^t (store is stored in rows and the array get transposed when passed)
             CALL XMLTTM (STORE(NB),STORE(NA),STORE(NC),3,3,3)
+            ! ND^t = NA NC^t = NA NB NA^t (The resulting matrix is stored columnwise!!!! 
+            ! i.e. transposed as per notation above) 
             CALL XMLTTM (STORE(NA),STORE(NC),STORE(ND),3,3,3)
 C--DIAGONALIZE THE TENSOR
             ITEMP1=ND
-            DO 300 ITEMP2=1,3
-               DO 300 ITEMP3=1,3
-               TENS(ITEMP3,ITEMP2)=DBLE(STORE(ITEMP1))
-               ITEMP1=ITEMP1+1
-300         CONTINUE
+            ! Moving the orthogonalised tensor to a 2D matrix in double precision
+            TENS=real(reshape(STORE(ND:ND+8), (/3,3/)), kind(1.0d0))
+
 C            I=0
 C            CALL F02ABF (TENS,3,3,ROOTS,VECT,3,WORK,I)
             INFO = 0
+C  DSYEV computes all eigenvalues (roots) and eigenvectors (tens) of a
+C  real symmetric matrix.            
             CALL DSYEV('V','L',3,TENS,3,ROOTS,WORK,9,INFO)
-            DO ITEMP2=1,3
-              DO ITEMP3=1,3
-                VECT(ITEMP2,ITEMP3) = TENS(ITEMP2,ITEMP3)
-              END DO
-            END DO
+            ! Copying the eigen vectors to VECT
+            ! Roots contains the eigenvalues
+            vect=tens
 c
-            ITEMP1=NE
-            ITEMP2=NG
-            DO 350 ITEMP3=1,3
-               STORE(ITEMP1)=SNGL(ROOTS(ITEMP3))
-               ITEMP1=ITEMP1+1
-               DO 350 ITEMP4=1,3
-               STORE(ITEMP2)=SNGL(VECT(ITEMP4,ITEMP3))
-               ITEMP2=ITEMP2+1
-350         CONTINUE
+            ! moving the eigenvectors and eigen values back to store (column wise)
+            STORE(NE:NE+2)=real(ROOTS, kind(1.0))
+            STORE(NG:NG+8)=real(reshape(TENS, (/9/)), kind(1.0))
+
             J=NE+2
             IF (IBASE.GT.0) CALL XMOVE (STORE(NE),STORE(JBASE+1),3)
             M=NE
             K=NF
             L=NG
             DO 450 I=1,3
+               ! Moving eigenvalues from NE to NF location
                STORE(K)=STORE(M)
                K=K+1
                M=M+1
 C--MOVE THE COSINES WITH RESPECT TO ORTHOGONAL AXES
                DO 400 J=1,3
+                  ! Moving eigen vector column next to its eigenvalue
                   STORE(K)=STORE(L)
                   K=K+1
                   L=L+1
 400            CONTINUE
-C--CALCULATE THE COSINES WITH RESPECT TO THE CRYSTALLOGRAPHIC AXES
+C--CALCULATE THE COSINES WITH RESPECT TO THE CRYSTALLOGRAPHIC AXES 
+               ! XMLTMM: C = A B
+               ! However STORE(NH) is stored in rows so effectively transposing the matrix on call to XMLTMM
+               ! STORE(K) = STORE(NH)^t STORE(K-3)
+               ! NH is the location of the orthogonal matrix
+               ! The following operation tranform the basis form by the eigen vectors from cartesian to crystallographic space
+               ! NH also include the transformation to actual coordinates not fractional
                CALL XMLTMM (STORE(NH),STORE(K-3),STORE(K),3,3,1)
+               ! padding the new transformed eigen vector in store
+               ! We now have:
+               ! eigen value (i) eigen vector cart (i), eigen vector crystal (i)
+               ! (i-1)*5+NF      (i-1)*5+NF+1           (i-1)*5+NF+4                     
                K=K+3
 450         CONTINUE
-C----- DATA FOR LIST 20
-            IF (LIST20.GT.0) THEN
-C----- CRYSTAL TO AXIAL
-               CALL XMLTTM (STORE(NG),STORE(L1O1),STORE(LIST20+9),3,3,3)
-C----- INTERCHANGE EIGEN VECTORS
-               CALL XMTREX (STORE(LIST20+9),STORE(LIST20),3,3)
-               I=KINV2(3,STORE(LIST20),STORE(LIST20+9),9,0,STORE(LIST20+
-     1          18),STORE(LIST20+18),3)
-               CALL XMOVE (STORE(M5B+4),STORE(LIST20+18),3)
-            END IF
+C---PP20161114
+C   LIST20 used unitialised thus the next section is commented out
+C   Plus list20 is not used anywhere else
+CC----- DATA FOR LIST 20
+C            IF (LIST20.GT.0) THEN
+CC----- CRYSTAL TO AXIAL
+C               ! XMLTTM: C= A^t B
+C               ! Again, STORE(L1O1) is stored row by row so transposed on call 
+C               ! and the result is stored column wise
+C               ! KINV2 later expect a column wise input so it's ok
+C               CALL XMLTTM (STORE(NG),STORE(L1O1),STORE(LIST20+9),3,3,3)
+CC----- INTERCHANGE EIGEN VECTORS
+C               CALL XMTREX (STORE(LIST20+9),STORE(LIST20),3,3)
+C               I=KINV2(3,STORE(LIST20),STORE(LIST20+9),9,0,STORE(LIST20+
+C     1          18),STORE(LIST20+18),3)
+C               CALL XMOVE (STORE(M5B+4),STORE(LIST20+18),3)
+C            END IF
 cdjwfeb06  add in volume contributions
 cdjwfeb06 compute geometric mean
             UGEOM=(STORE(NE)*STORE(NE+1)*STORE(NE+2))
