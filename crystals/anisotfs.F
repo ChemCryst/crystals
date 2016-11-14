@@ -82,6 +82,8 @@ C
 CODE FOR XPRAXI
       SUBROUTINE XPRAXI (ILIST1,ILIST5,IBASE,ISTART,ISTEP,NATOM,LIST,
      1LIST20, JPUNCH)
+      use unitcell_mod
+      implicit none
 C--CALCULATE AND PRINT THE PRINCIPAL AXES OF THERMAL ELLIPSOIDS
 C
 C--
@@ -103,10 +105,13 @@ C
 C -- IF 'LIST' IS SET GREATER THAN ZERO, THE RESULTS ARE PRINTED. IF
 C    NOT, NO RESULTS ARE PRINTED.
 C
-      DOUBLE PRECISION TENS(3,3),ROOTS(3),VECT(3,3),WORK(9)
+      DOUBLE PRECISION TENS(3,3)
+      double precision ROOTS(3) !< eigen values
+      double precision VECT(3,3) ! eigen vectors respective to cartesian coordinates
+      double precision WORK(9)
 C
-      CHARACTER*12 CSHAPE
-      CHARACTER*24 CTEXT
+      CHARACTER(len=12) :: CSHAPE
+      CHARACTER(len=24) :: CTEXT
 C
       INCLUDE 'ISTORE.INC'
 C
@@ -121,14 +126,19 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      integer ilist1, ilist5, ibase, istart, istep
+      integer natom, list, list20, jpunch
+      integer i, iflag, iii, info, itemp1, itemp2, itemp3, itemp4, iuln
+      integer j, jbase, k, l, m, m5b, n, na, nb, nc, nd, ne, nf, ng, nh
+      integer nk, nl, nnpd, nvol
+      
+      real Avol, Bvol, Cvol, Dvol, uarith, uequiv, ugeom, uprime
 C
-#ifdef _HOL_ 
-      DATA KHYD /4HH   /
-      DATA KDET /4HD   /
-#else
-      DATA KHYD /'H   '/
-      DATA KDET /'D   '/
-#endif
+      character(len=4), parameter :: KHYD='H   '
+      character(len=4), parameter :: KDET='D   '
+      
+      integer, external :: krddpv, ktyp05, kinv2
 C
 C--SET UP THE TIMING
 C----- SET SWITCH FOR NON-POSITIVE DEFINATE ATOM CAPTION
@@ -353,7 +363,8 @@ C----- SET TO U[ISO]
             END IF
 CFEB00
 C-----      DONT BOTHER WITH H
-            IF ((ISTORE(M5B) .EQ. KHYD).OR.(ISTORE(M5B) .EQ. KDET)) 
+            IF ((ISTORE(M5B) .EQ. transfer(KHYD, ISTORE(M5B))) .OR. 
+     1          (ISTORE(M5B) .EQ. transfer(KDET, ISTORE(M5B)))) 
      1      GOTO 850
 C-----      CHECK FOR SPLITTING
             CSHAPE = ' '
