@@ -1259,15 +1259,20 @@ C
 C
 CODE FOR XFNDESD
       SUBROUTINE XFNDESD(NAME,ASERIAL, ANESD, BNESD)
+      use unitcell_mod
+      implicit none
 C GET THE POSITIONAL ESDS OF AN ATOM IN ANGSTROM
 C
-      DIMENSION ANESD(3), BNESD(3)
-      INCLUDE 'XLST01.INC'
+      real, DIMENSION(3) :: ANESD, BNESD
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST09.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'QSTORE.INC'
+      
+      integer i, name
+      real esd, aserial
 C
       ESD = 0.0
       M9=L9
@@ -1280,9 +1285,9 @@ C           TYPE ALSO FOUND
             ANESD(2) = store(m9+5)
             ANESD(3) = store(m9+6)
 C
-            BNESD(1) = ANESD(1)*store(l1p1)
-            BNESD(2) = ANESD(2)*store(l1p1+1)
-            BNESD(3) = ANESD(3)*store(l1p1+2)
+            BNESD(1) = ANESD(1)*unitcells(1)%a 
+            BNESD(2) = ANESD(2)*unitcells(1)%b
+            BNESD(3) = ANESD(3)*unitcells(1)%c
             EXIT
             ENDIF
         ENDIF
