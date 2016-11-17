@@ -1,7 +1,8 @@
 %SCRIPT YGETSIG
 %%    read internal and external sigmas from the file SIGMAS.DAT 
 %%    called from XCHECK6.SSC
-%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES
+%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES 
+%     VARIABLE INTEGER NSIGMAS
 %     COPY '#OPEN SCPDATA sigmas.dat' 
 %%   Skip first line:                                                      
 %     EXTRACT NEXT
@@ -32,20 +33,19 @@
 %      STORE FORMAT /(F10.2)/ LENGTH 10 REAL INTERNAL
 %      IF NITEMS .GE. 3. THEN
 %        OUTPUT
+%        EVALUATE SXX = SXX + EXTERNAL * EXTERNAL * NITEMS
+%        EVALUATE SXY = SXY + EXTERNAL * INTERNAL * NITEMS
+%        EVALUATE NSIGMAS = NSIGMAS + 1
 %      END IF
-%%                                        
-%      EVALUATE SXX = SXX + EXTERNAL * EXTERNAL * NITEMS
-%      EVALUATE SXY = SXY + EXTERNAL * INTERNAL * NITEMS
-%      EVALUATE NSIGMAS = NSIGMAS + 1
 %     END LOOP
 %%
 %     IF ( NSIGMAS .GT. 1 ) THEN
 %      EVALUATE GRADIENT = SXY / SXX    
 %      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     ELSE
-
 {E    Insufficient equivalent reflections in sigmas.dat 
 %      TRANSFER '{E     Nsigmas = ' // CHARACTER NSIGMAS TO DISPLAY                                                         
+%      transfer '^^CO SET _MW_USED TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     END IF                                                                          
 %%
 %     COPY '#CLOSE SCPDATA'
