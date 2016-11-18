@@ -1009,6 +1009,8 @@ character(kind=C_char), dimension(:), allocatable :: xyz
 integer error, i, j
 character(len=1024) :: buffer, spacegroupsymbol
 type(c_ptr) :: xyzptr
+!> lattice translations, code and shelx number
+type(T_LatticeTranslation), dimension(9) :: LatticeTranslation
 
     call InitSgInfo(SgInfo)
     error=MemoryInit(SgInfo)
@@ -1038,10 +1040,10 @@ type(c_ptr) :: xyzptr
             call abort()
         end if
     end do
-    
+
+     call LatticeTranslation_init(LatticeTranslation)
     ! Adding lattice symmetry
     if(spacegroup%latt/=0) then
-        i=T_LatticeTranslation_init()
         i=LatticeTranslation(abs(spacegroup%latt))%nTrVector
         NewSMx%R=0
         NewSMx%R(1)=1
