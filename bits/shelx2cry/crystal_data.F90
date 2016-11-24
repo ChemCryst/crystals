@@ -50,7 +50,7 @@ type spacegroup_t
     integer :: symmindex=0 !< current index in symm
     character(len=128) :: symbol !< Space group symbol
 end type
-type(spacegroup_t) :: spacegroup !< Hold the spagroup information
+type(spacegroup_t), save :: spacegroup !< Hold the spagroup information
 
 !> type DFIX
 type dfix_t
@@ -60,7 +60,7 @@ type dfix_t
     character(len=1024) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
-type(dfix_t), dimension(1024) :: dfix_table
+type(dfix_t), dimension(1024), save :: dfix_table
 integer :: dfix_table_index=0
 
 !> type SAME

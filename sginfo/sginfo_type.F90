@@ -97,8 +97,8 @@ end type
 !!    T_RTMx;
 !!~~~~~~~~~~~~~~~
 type, bind(c) :: T_RTMx
-	integer(c_int), dimension(9) :: R
-	integer(c_int), dimension(3) :: T
+    integer(c_int), dimension(9) :: R
+    integer(c_int), dimension(3) :: T
 end type
 
 !> Hall symbol and space group notation
@@ -113,15 +113,15 @@ end type
 !!    T_TabSgName;
 !!~~~~~~~~~~~~~~~
 type, bind(c) :: T_TabSgName
-	type(c_ptr) :: HallSymbol !< Hall symbol
-	integer(c_int) :: SgNumber !< space group number from the international tables
-	type(c_ptr) :: Extension !< extension from the international table
-	type(c_ptr) :: SgLabels !< space group name
+    type(c_ptr) :: HallSymbol !< Hall symbol
+    integer(c_int) :: SgNumber !< space group number from the international tables
+    type(c_ptr) :: Extension !< extension from the international table
+    type(c_ptr) :: SgLabels !< space group name
 end type
 
 !> List of lattices as text
 character(len=12), dimension(0:7), parameter :: XS_name=(/ &
-&	 "Unknown     ", &
+&    "Unknown     ", &
 &    "Triclinic   ", &
 &    "Monoclinic  ", &
 &    "Orthorhombic", &

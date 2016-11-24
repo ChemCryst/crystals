@@ -144,11 +144,21 @@ contains
 !> Initialise LatticeTranslation with its data
 subroutine LatticeTranslation_init(LatticeTranslation)
 implicit none
-type(T_LatticeTranslation), dimension(9), intent(inout) :: LatticeTranslation
+type(T_LatticeTranslation), dimension(:), intent(inout), allocatable :: LatticeTranslation
 integer i
 real, parameter :: a13=1.0/3.0
 real, parameter :: a23=2.0/3.0
 
+    if(allocated(LatticeTranslation)) then
+        if(size(LatticeTranslation)==9) then
+            return
+        else
+            deallocate(LatticeTranslation)
+        end if
+    end if
+    
+    allocate(LatticeTranslation(9))
+    
     do i=1, size(LatticeTranslation)
         LatticeTranslation(i)%TrVector=0
         LatticeTranslation(i)%latt=i

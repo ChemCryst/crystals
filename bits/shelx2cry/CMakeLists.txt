@@ -26,7 +26,7 @@ set(CMAKE_Fortran_FLAGS "")
 set(CMAKE_C_FLAGS "")
 
 set(CMAKE_C_FLAGS_RELEASE "-O2 -g")
-SET (CMAKE_Fortran_FLAGS_RELEASE "-O2 -g -fcheck=all")
+SET (CMAKE_Fortran_FLAGS_RELEASE "-O2 -g -fcheck=all -std=f2003 -fall-intrinsics")
 message(STATUS "shelx2cry fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
 add_executable (shelx2cry crystal_data.F90 shelx_procedures.F90 shelx2cry_dict.F90 shelx2cry_mod.F90  shelx2cry.F90)
