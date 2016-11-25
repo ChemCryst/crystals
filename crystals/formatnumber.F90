@@ -198,8 +198,6 @@ integer digit, total, i
 character(len=buffer_length) :: formatstr
 double precision r
 
-    print *, num, esd, arg_fixedform, arg_precision, arg_length, arg_decimal_pos
-
     if(esd==0.0d0) then
         write(formatted_output, *) num
         length=len_trim(formatted_output)
