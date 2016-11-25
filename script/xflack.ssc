@@ -7,7 +7,8 @@
 % EVALUATE SOMEERROR = TRUE
 % EVALUATE SERR = FALSE
 % VARIABLE REAL FILTER1 FILTER2 FILTER3 FILTER4 FILTER5
-% EVALUATE FILTER1 = 0.001                                                      
+%% Dont forget to change COMMANDS.SRC if you change these
+% EVALUATE FILTER1 = 0.0001                                                        
 % EVALUATE FILTER2 = 1.0                                                      
 % EVALUATE FILTER3 = 2.0 
 % EVALUATE FILTER4 = 0.001
@@ -246,7 +247,7 @@
 %     BLOCK  %CALCULATE%
 %% first get updated filters
 ^^??  NF1 TEXT                                                                    
-%     GET NOSTORE SILENT FINAL REAL 'Filter1' '0.001'                          
+%     GET NOSTORE SILENT FINAL REAL 'Filter1' '0.0001'                          
 %     EVALUATE FILTER1 = VALUE                                                    
 ^^??  NF2 TEXT                                                                    
 %     GET NOSTORE SILENT FINAL REAL 'Filter2' '1.0'                          

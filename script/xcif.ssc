@@ -2,7 +2,8 @@
 %% The variables needed by XQUESTIO
 %    VARIABLE CHARACTER CFILE
 %    VARIABLE LOGICAL JUSTRUNIT TWINNED HINCELL VALID11
-%    VARIABLE INTEGER FTYPE
+%    VARIABLE INTEGER FTYPE ISQUEEZE
+%    EVALUATE ISQUEEZE = - 1
 %    VARIABLE REAL SOESD
 %%
 %    EVALUATE TWINNED = FALSE
@@ -34,6 +35,8 @@
 %% Find refinement type
 %      IF ( EXISTS 23 .GT. 0 ) THEN
 %          COPY '#GENERALEDIT 23'
+%          COPY 'LOCATE RECORDTYPE=101'
+%          COPY 'TRANSFER FROM OFFSET =  4 TO ISQUEEZE'
 %          COPY 'LOCATE RECORDTYPE=103'
 %          COPY 'TRANSFER FROM OFFSET =  1 TO FTYPE'
 %          COPY 'END'
@@ -91,7 +94,12 @@
 ^^WI  @ 9,2 GRID GRIDHK NROWS=1 NCOLS=2 OUTLINE='Embed other files'
 ^^WI  {
 ^^WI    @ 1,1 CHECKBOX XHKL 'Embed HKLI data'   STATE=ON
-^^WI    @ 1,2 CHECKBOX XSQZ 'Embed SQUEEZE data'   STATE=ON
+^^WI    @ 1,2 CHECKBOX XSQZ 'Embed SQUEEZE data'   
+%         IF ( ISQUEEZE ) .EQ. 0 THEN
+^^WI          STATE=ON
+%         ELSE
+^^WI          STATE=OFF
+%         END IF
 ^^WI  }
 ^^WI  @ 11,2 GRID GRIDB NROWS=1 NCOLS=5
 ^^WI  {
@@ -240,11 +248,15 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
-%     IF FILEEXISTS ( 'platon_sqd.sqf' ) .EQ. TRUE THEN
-%      COPY '#ADDARC platon_sqd.sqf'
-%      COPY 'END'
-%     ELSE
+%     IF ISQUEEZE .EQ. 0 THEN
+%      IF FILEEXISTS ( 'platon_sqd.sqf' ) .EQ. TRUE THEN
+%       COPY '#ADDARC platon_sqd.sqf'
+%       COPY 'END'
+%      ELSE
 {I Reflection archive platon_sqd.sqf no longer exists
+%      END IF
+%     ELSE
+{I Current DSC file is not SQUEEZED
 %     END IF
 %    END IF
 %%
