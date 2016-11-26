@@ -83,6 +83,8 @@
                                                                                 
 %            COPY '#SCRIPT XCIF'                                                
 %            EVALUATE CIFDONE = TRUE                                            
+^^CO         DISPOSE XPUB                                                           
+%            EVALUATE LOOPEND = LOOPCOUNTER                                         
 %          END BLOCK                                                            
 %%                                                                              
 %          BLOCK                                         %XYZ%                  
