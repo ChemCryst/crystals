@@ -94,12 +94,14 @@
 ^^WI  @ 9,2 GRID GRIDHK NROWS=1 NCOLS=2 OUTLINE='Embed other files'
 ^^WI  {
 ^^WI    @ 1,1 CHECKBOX XHKL 'Embed HKLI data'   STATE=ON
-^^WI    @ 1,2 CHECKBOX XSQZ 'Embed SQUEEZE data'   
-%         IF ( ISQUEEZE ) .EQ. 0 THEN
-^^WI          STATE=ON
-%         ELSE
-^^WI          STATE=OFF
-%         END IF
+%     IF .NOT. FILEEXISTS ( 'ARCHIVE-HKL.CIF' ) THEN
+^^WI    STATE=OFF  DISABLED=YES
+%     END IF
+^^WI    @ 1,2 CHECKBOX XSQZ 'Embed SQUEEZE data'   STATE=ON
+%    IF ( ISQUEEZE .NE. 0 ) .OR.  -
+        ( .NOT. FILEEXISTS ( 'platon_sqd.sqf' ) ) THEN
+^^WI    STATE=OFF  DISABLED=YES
+%    END IF
 ^^WI  }
 ^^WI  @ 11,2 GRID GRIDB NROWS=1 NCOLS=5
 ^^WI  {
@@ -248,16 +250,12 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
-%     IF ISQUEEZE .EQ. 0 THEN
 %      IF FILEEXISTS ( 'platon_sqd.sqf' ) .EQ. TRUE THEN
 %       COPY '#ADDARC platon_sqd.sqf'
 %       COPY 'END'
 %      ELSE
 {I Reflection archive platon_sqd.sqf no longer exists
 %      END IF
-%     ELSE
-{I Current DSC file is not SQUEEZED
-%     END IF
 %    END IF
 %%
   Parameters saved in {&publish.cif{&

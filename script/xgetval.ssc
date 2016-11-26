@@ -3,7 +3,6 @@
 %% CMESSAGE IS TEXT TO BE DISPLAYED
 %  VARIABLE CHARACTER CMESSAGE                                                                             
 %  VARIABLE REAL AVALUE
-%  EVALUATE AVALUE = 0.0
 %%                                                                              
 %%                                                                              
 %%                                                                              
