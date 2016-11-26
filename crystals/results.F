@@ -7141,7 +7141,7 @@ C      - OPEN CIF OUTPUT ON FRN1
         CALL XPCIF (' ')
 C-----  OPEN ARCHIVE INFORMATION ON HKLI
         CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-        CALL XRDOPN(6,JDEV,CNEW(1:JLEN),15)
+        CALL XRDOPN(6,JDEV,CNEW(1:JLEN),jlen)
         IF (IERFLG.GE.0) THEN
           write(cmon,'(a)')'{I Copying information to cif'
           call xprvdu(ncvdu,1,0)
@@ -7154,7 +7154,7 @@ C-----  OPEN ARCHIVE INFORMATION ON HKLI
 151       CONTINUE
 C----- CLOSE THE FILE
           CALL XPCIF ('# end of '//cnew(1:jlen))
-          CALL XRDOPN(7,JDEV,cnew(1:jlen),15)
+          CALL XRDOPN(7,JDEV,cnew(1:jlen),jlen)
         ELSE
           WRITE (CMON,'(''# Archive file not found'')')
           CALL XPRVDU (NCVDU,1,0)
