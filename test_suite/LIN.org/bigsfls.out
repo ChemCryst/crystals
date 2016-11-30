@@ -5102,11 +5102,11 @@ Mean C-C su =   0.0121
 LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #FINISH                                                                                                                                                                                                                                                         
- Physical reads      11201 Physical writes      10072 Cache hits     198303
- Cache hit distribution   180161   12820    2084     515     285     346
- Cache hit distribution      142     126     192     294     254     120
- Cache hit distribution      160     179     213      56      50      86
- Cache hit distribution       43      49      43      36      16      33
+ Physical reads      11204 Physical writes      10072 Cache hits     198295
+ Cache hit distribution   180154   12807    2088     509     282     342
+ Cache hit distribution      147     127     193     293     251     116
+ Cache hit distribution      144     170     238      73      38      90
+ Cache hit distribution       48      51      39      45      17      33
 
 
           : Job ends ok       with     0 warnings and     0 errors

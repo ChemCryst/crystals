@@ -5020,7 +5020,7 @@ Do    43     7     7    11    15    15    14    13    14    20    27    17    14
 Dc    29     5     7     7    12    10    11    17    20    25    30    28    20    21    10    13     5     2     5     6    31
  n -3.33 -3.00 -2.67 -2.33 -2.00 -1.67 -1.33 -1.00 -0.67 -0.33  0.00  0.33  0.67  1.00  1.33  1.67  2.00  2.33  2.67  3.00  3.33
 
- Reflection Filters:  filter_1= 0.0010  filter_2= 1.0000  filter_3= 2.0000  filter_4= 0.0010  filter_5= 2.5000
+ Reflection Filters:  filter_1= 0.0001  filter_2= 1.0000  filter_3= 2.0000  filter_4= 0.0010  filter_5= 2.5000
 
        Continuing Calculations with     300 pairs
          Normal Probability Plot for    241 Bijvoet pairs
