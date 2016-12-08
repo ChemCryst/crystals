@@ -43,9 +43,9 @@
 %      EVALUATE GRADIENT = SXY / SXX    
 %      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     ELSE
- Insufficient equivalent reflections for variance plot in "sigmas.dat" 
-%      TRANSFER '   ' //  CHARACTER NSIGMAS // ' equivalents found' TO DISPLAY
-%      transfer '^^CO SET _MW_USED TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
+{E Insufficient equivalent reflections for variance plot in "sigmas.dat" 
+%      TRANSFER '{E   ' //  CHARACTER NSIGMAS // ' equivalents found' TO DISPLAY
+%      transfer '^^CO SET _MW_USED TEXT ' // CHARACTER NSIGMAS TO DISPLAY                             
 %     END IF                                                                          
 %%
 %     COPY '#CLOSE SCPDATA'
