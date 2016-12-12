@@ -1,6 +1,7 @@
 # Test scale, calc and refine.
 # Test extinction parameter
 # Quick test Fourier. (Peak heights are in BARNS!)
+# Note - 2016.  There is no Fourier test!!!!!
 #
 \SFLS
 SCALE

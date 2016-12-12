@@ -97,8 +97,8 @@ end type
 !!    T_RTMx;
 !!~~~~~~~~~~~~~~~
 type, bind(c) :: T_RTMx
-	integer(c_int), dimension(9) :: R
-	integer(c_int), dimension(3) :: T
+    integer(c_int), dimension(9) :: R
+    integer(c_int), dimension(3) :: T
 end type
 
 !> Hall symbol and space group notation
@@ -113,15 +113,15 @@ end type
 !!    T_TabSgName;
 !!~~~~~~~~~~~~~~~
 type, bind(c) :: T_TabSgName
-	type(c_ptr) :: HallSymbol !< Hall symbol
-	integer(c_int) :: SgNumber !< space group number from the international tables
-	type(c_ptr) :: Extension !< extension from the international table
-	type(c_ptr) :: SgLabels !< space group name
+    type(c_ptr) :: HallSymbol !< Hall symbol
+    integer(c_int) :: SgNumber !< space group number from the international tables
+    type(c_ptr) :: Extension !< extension from the international table
+    type(c_ptr) :: SgLabels !< space group name
 end type
 
 !> List of lattices as text
 character(len=12), dimension(0:7), parameter :: XS_name=(/ &
-&	 "Unknown     ", &
+&    "Unknown     ", &
 &    "Triclinic   ", &
 &    "Monoclinic  ", &
 &    "Orthorhombic", &
@@ -130,95 +130,5 @@ character(len=12), dimension(0:7), parameter :: XS_name=(/ &
 &    "Hexagonal   ", &
 &    "Cubic       " /)
   
-!> Type for lattice translations, code and shelx number
-!!~~~~~~~~~~~~~~~
-!! Lattice type: 1=P, 2=I, 3=rhombohedral obverse on hexagonal axes, 4=F, 5=A, 6=B, 7=C
-!!  latt   Code  nTrVector  TrVector
-!!   1      'P'      1      0,0,0
-!!   5      'A'      2      0,0,0   0 ,1/2,1/2
-!!   6      'B'      2      0,0,0  1/2, 0 ,1/2
-!!   7      'C'      2      0,0,0  1/2,1/2, 0
-!!   2      'I'      2      0,0,0  1/2,1/2,1/2
-!!   3      'R'      3      0,0,0  2/3,1/3,1/3  1/3,2/3,2/3
-!!   0      'S'      3      0,0,0  1/3,1/3,2/3  2/3,2/3,1/3
-!!   0      'T'      3      0,0,0  1/3,2/3,1/3  2/3,1/3,2/3
-!!   4      'F'      4      0,0,0   0 ,1/2,1/2  1/2, 0 ,1/2  1/2,1/2, 0  
-!!~~~~~~~~~~~~~~~
-type T_LatticeTranslation
-    integer :: latt !< latt code from shelxl
-    character :: code !< Character code of lattice
-    integer nTrVector !< number of translation vectors
-    integer, dimension(3,4) :: TrVector !< translation vectors
-end type
-
-!> Constructor for LatticeTranslation
-interface T_LatticeTranslation
-    module procedure T_LatticeTranslation_init
-end interface
-
-!> lattice translations, code and shelx number
-type(T_LatticeTranslation), dimension(9) :: LatticeTranslation
-
-contains
-
-!> Initialise LatticeTranslation with its data
-function T_LatticeTranslation_init()
-implicit none
-integer i
-integer t_latticetranslation_init
-real, parameter :: a13=1.0/3.0
-real, parameter :: a23=2.0/3.0
-
-    t_latticetranslation_init=0
-    
-    do i=1, size(LatticeTranslation)
-        LatticeTranslation(i)%TrVector=0
-        LatticeTranslation(i)%latt=i
-    end do
-    LatticeTranslation(8)%latt=0
-    LatticeTranslation(9)%latt=0
-    
-    LatticeTranslation(1)%code='P'
-    LatticeTranslation(2)%code='I'
-    LatticeTranslation(3)%code='R'
-    LatticeTranslation(4)%code='F'
-    LatticeTranslation(5)%code='A'
-    LatticeTranslation(6)%code='B'
-    LatticeTranslation(7)%code='C'
-    LatticeTranslation(8)%code='S'
-    LatticeTranslation(9)%code='T'
-    
-    LatticeTranslation(1)%nTrVector=1
-    LatticeTranslation(2)%nTrVector=2
-    LatticeTranslation(3)%nTrVector=3
-    LatticeTranslation(4)%nTrVector=4
-    LatticeTranslation(5)%nTrVector=2
-    LatticeTranslation(6)%nTrVector=2
-    LatticeTranslation(7)%nTrVector=2
-    LatticeTranslation(8)%nTrVector=3
-    LatticeTranslation(9)%nTrVector=3
-    
-    LatticeTranslation(2)%TrVector(:,2)=nint(sginfo_stbf*0.5)
-    !0,0,0  2/3,1/3,1/3  1/3,2/3,2/3
-    LatticeTranslation(3)%TrVector(:,2)=nint(sginfo_stbf*(/a23, a13, a13/))
-    LatticeTranslation(3)%TrVector(:,3)=nint(sginfo_stbf*(/a13, a23, a23/))
-    !0,0,0   0 ,1/2,1/2  1/2, 0 ,1/2  1/2,1/2, 0  
-    LatticeTranslation(4)%TrVector(:,2)=nint(sginfo_stbf*(/0.0, 0.5, 0.5/))
-    LatticeTranslation(4)%TrVector(:,3)=nint(sginfo_stbf*(/0.5, 0.0, 0.5/))
-    LatticeTranslation(4)%TrVector(:,4)=nint(sginfo_stbf*(/0.5, 0.5, 0.0/))    
-    !0,0,0   0 ,1/2,1/2
-    LatticeTranslation(5)%TrVector(:,2)=nint(sginfo_stbf*(/0.0, 0.5, 0.5/))
-    !0,0,0  1/2, 0 ,1/2
-    LatticeTranslation(6)%TrVector(:,2)=nint(sginfo_stbf*(/0.5, 0.0, 0.5/))
-    !0,0,0  1/2,1/2, 0
-    LatticeTranslation(7)%TrVector(:,2)=nint(sginfo_stbf*(/0.5, 0.5, 0.0/))
-    !0,0,0  1/3,1/3,2/3  2/3,2/3,1/3
-    LatticeTranslation(8)%TrVector(:,2)=nint(sginfo_stbf*(/a13, a13, a23/))
-    LatticeTranslation(8)%TrVector(:,3)=nint(sginfo_stbf*(/a23, a23, a13/))
-    !0,0,0  1/3,2/3,1/3  2/3,1/3,2/3
-    LatticeTranslation(9)%TrVector(:,2)=nint(sginfo_stbf*(/a13, a23, a13/))
-    LatticeTranslation(9)%TrVector(:,3)=nint(sginfo_stbf*(/a23, a13, a23/))
-
-end function
   
 end module

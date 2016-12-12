@@ -484,6 +484,48 @@ C
 C
       RETURN
       END
+c
+c
+CODE FOR XCREMS1
+      SUBROUTINE XCREMS1( CSOURC,  LENFIL)
+C
+C IN-SITU VERSION
+C----- REMOVE EXTRA SPACES BY LEFT ADJUSTING STRING
+C----- ROUTINE EXITS WHEN OUT STRING FULL
+C      LENFIL      USEFUL LENGTH OF RETURNED STRING
+C
+      CHARACTER *(*) CSOURC
+      CHARACTER *1 CBUF
+C
+      LINEL = LEN (CSOURC)
+      J = 0
+      IFLAG = 0
+      DO 1500 I = 1, LINEL
+      CBUF = CSOURC(I:I)
+      IF (CBUF .EQ. ' ') THEN
+            IF (IFLAG .EQ. 1) THEN
+                  GOTO 1500
+            ELSE
+                  IFLAG = 1
+            ENDIF
+      ELSE
+            IFLAG = 0
+      ENDIF
+      IF (J .LE. LINEL) THEN
+            J = J + 1
+            CSOURC(J:J) = CBUF
+      ELSE
+            GOTO 1600
+      ENDIF
+1500  CONTINUE
+1600  CONTINUE
+      LENFIL = J
+      RETURN
+      END
+c
+c
+c
+
 C
 CODE FOR XCRAS
       SUBROUTINE XCRAS ( CSOURC, LENNAM )

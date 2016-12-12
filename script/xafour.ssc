@@ -6,6 +6,8 @@
 %%                                                                              
 %  VARIABLE REAL R OSCALE RATIO                                                 
 %  VARIABLE CHARACTER MAPTYPE                                                   
+%  VARIABLE CHARACTER CMESSAGE                                                                             
+%  VARIABLE REAL AVALUE
 %  EVALUATE MAPTYPE = 'UNKNOWN'                                                 
 %  VARIABLE REAL RFO R2FO RDIF                                                  
 %  EVALUATE RFO = 25.0                                                          
@@ -96,8 +98,12 @@ and to list the inter atomic distances.
 %          COPY 'EXECUTE'                                                         
 %          CLEAR                                                                
 %          INSERT 'SELECT SPARE GE '                                            
-  Minimun acceptable density, x10.                                              
-%          GET real 'Limiting value ' '30.0'                                    
+  Minimum acceptable density, x10.                                              
+%          EVALUATE CMESSAGE = 'Limiting density x10'
+%          EVALUATE AVALUE = 30.0
+%          COPY '#SCRIPT XGETVAL'
+%          STORE FORMAT /(F9.3)/ LENGTH 9 REAL AVALUE                                    
+%%          GET real 'Limiting value ' '30.0'                                   
 %          SEND                                                                 
 %          COPY 'KEEP 1 ALL'
 %      END IF                                                                   

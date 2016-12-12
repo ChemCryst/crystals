@@ -281,12 +281,22 @@ C--MOVE THE COSINES WITH RESPECT TO ORTHOGONAL AXES
                   L=L+1
 400            CONTINUE
 C--CALCULATE THE COSINES WITH RESPECT TO THE CRYSTALLOGRAPHIC AXES 
+               ! Comments below from Pascal Parois (pascal@parois.net)
                ! XMLTMM: C = A B
-               ! However STORE(NH) is stored in rows so effectively transposing the matrix on call to XMLTMM
+               ! However STORE(NH)=orthogonalisation matrix is stored in rows so effectively transposing the matrix on call to XMLTMM
                ! STORE(K) = STORE(NH)^t STORE(K-3)
                ! NH is the location of the orthogonal matrix
                ! The following operation tranform the basis form by the eigen vectors from cartesian to crystallographic space
                ! NH also include the transformation to actual coordinates not fractional
+               !
+               ! For the reason to use the transpose of the orthogonalisation matrix, see:
+               ! Vectors and tensors in crystallography. Donald E Sands. 1982 Addison-wesley publishing
+               ! 3-14 Principal axes of second-rank tensors (p72)
+               ! In short crystals is solving (U*)^{ij} v_j = \lambda (G*)^(ik) v_k - see eq. 3-117 p72
+               ! U* and G* are doubly contravariant tensors
+               ! v_j and v_k covariant vectors (they define a basis)
+               ! The orthogonalisation matrix (O) is a mixed tensor operating on contravariant coordinates (x): x'^i = O^i_j x^j
+               ! To operate on v_i you need: v'_i = O_i^j v_j where O_i^j is the transpose of O^i_j
                CALL XMLTMM (STORE(NH),STORE(K-3),STORE(K),3,3,1)
                ! padding the new transformed eigen vector in store
                ! We now have:
@@ -297,6 +307,16 @@ C--CALCULATE THE COSINES WITH RESPECT TO THE CRYSTALLOGRAPHIC AXES
 C----- DATA FOR LIST 20
             IF (LIST20.GT.0) THEN
 C----- CRYSTAL TO AXIAL
+               ! Comments below from Pascal Parois (pascal@parois.net)
+               ! XMLTTM: C = A^t B
+               ! L1O1 stored row by row so effectively calculating:
+               ! C = A^t B^t => C = (B A)^t
+               ! LIST20 stores transformation matrices, 
+               ! here from crystal system to the basis of the eigenvector
+               ! So first the orthogonalisation is applied, then rotated by the eigenvectors
+               ! and the combined matrix and its inverse is saved.
+               ! I am not sure why the matrices are transposed.
+               ! The situation is different from above where the eigenvectors themselves are expressed in an other basis.
                CALL XMLTTM (STORE(NG),STORE(L1O1),STORE(LIST20+9),3,3,3)
 C----- INTERCHANGE EIGEN VECTORS
                CALL XMTREX (STORE(LIST20+9),STORE(LIST20),3,3)

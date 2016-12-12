@@ -410,7 +410,8 @@ integer resid, cifid, iostatus
 character(len=2048) :: buffer
 
     found=.false.
-    open(newunit=cifid,file=shelx_filepath, status='old')
+    cifid=815
+    open(unit=cifid,file=shelx_filepath, status='old')
     do
         read(cifid, '(a)', iostat=iostatus) buffer
         if(iostatus/=0) then
@@ -428,7 +429,8 @@ character(len=2048) :: buffer
             
             res_filepath=shelx_filepath
             res_filepath(len_trim(res_filepath)-2:)='res'
-            open(newunit=resid,file=res_filepath)       
+            resid=815
+            open(unit=resid,file=res_filepath)       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
                 if(iostatus/=0 .or. trim(buffer)==';') then
@@ -450,7 +452,8 @@ character(len=2048) :: buffer
             
             res_filepath=shelx_filepath
             res_filepath(len_trim(res_filepath)-2:)='hkl'
-            open(newunit=resid,file=res_filepath)       
+            resid=815
+            open(unit=resid,file=res_filepath)       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
                 if(iostatus/=0 .or. trim(buffer)==';') then
@@ -1009,6 +1012,8 @@ character(kind=C_char), dimension(:), allocatable :: xyz
 integer error, i, j
 character(len=1024) :: buffer, spacegroupsymbol
 type(c_ptr) :: xyzptr
+!> lattice translations, code and shelx number
+type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
 
     call InitSgInfo(SgInfo)
     error=MemoryInit(SgInfo)
@@ -1038,10 +1043,10 @@ type(c_ptr) :: xyzptr
             call abort()
         end if
     end do
-    
+
+     call LatticeTranslation_init(LatticeTranslation)
     ! Adding lattice symmetry
     if(spacegroup%latt/=0) then
-        i=T_LatticeTranslation_init()
         i=LatticeTranslation(abs(spacegroup%latt))%nTrVector
         NewSMx%R=0
         NewSMx%R(1)=1

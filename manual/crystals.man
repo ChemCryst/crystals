@@ -4788,6 +4788,8 @@ done automatically.
  ATOM TYPE= SERIAL= OCC= FLAG= X= Y= Z= U11= ..
  CENTROID Z ATOM-SPECIFICATION ...
  CHANGE  PARAMETER-SPECIFICATION VALUE ...
+ COPYXYZ ATOM-PAIRS
+ COPYUIJ ATOM-PAIRS
  CREATE Z ATOM-SPECIFICATION  ...
  DELETE  ATOM SPECIFICATIONS  .  .
  DEORTHOGINAL  ATOM-SPECIFICATION . .
@@ -5007,6 +5009,17 @@ section #RLIST05#).
       CHANGE  S(1,OCC) UNTIL O(1) .5
       CONT    C(1,-2,1) UNTIL C(12)
       CONT    C(13,X) .0179
+#
+#
+#DCOPYXYZ  ATOM-PAIRS  ...#
+ This directive COPIES the XYZ coordinates of the first atom into
+ the second atom.  The other parameters are left  unchanged.  
+#
+#
+#DCOPYUIJ  ATOM-PAIRS  ...#
+ This directive COPIES the Uij coordinates of the first atom into
+ the second atom.    The other parameters are left  unchanged.
+#
 #
 #DCREATE Z ATOM-SPECIFICATION  ...#
  This directive applies the symmetry operators given or assumed by default

@@ -269,6 +269,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 # 1. THE ITEM OUTPUT ABOVE AS /FO/ IS INFACT THE TOTAL AMPLITUDE, SO WE                                                                                                                                                                                         
 #    MUSTINTERCHANGE THE KEYS /FO/ AND /FOT/ FOR INPUT                                                                                                                                                                                                          
 # 2. SIGMA AND  FO ARE NOW READ AS ZERO, WHICH WOULD CAUSE THE REFLECTION                                                                                                                                                                                       
+#    (SIGMA NOW SET TO 0.01 FOR ALL EXCEPT 2 0 0 BECAUSE OF NEW SIGMA CHECKING)                                                                                                                                                                                 
 #    TO BE REJECTED ON REINPUT. WE MUST INHIBIT CHECKING (WHICH WILL NORMALLY                                                                                                                                                                                   
 #    BE OK SINCE THE DATA COMES FROM A PREVIOUS JOB).                                                                                                                                                                                                           
 # 3. THE VALUE OUTPUT FOR ELEMENTS, (ZERO) WAS MODIFIED (AS ABOVE) TO INDICATE                                                                                                                                                                                  
@@ -283,15 +284,25 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #    RE-MERGED. USE THE INSTRUCTIONS SORT AND REORDER TO REORDER THE DATA.                                                                                                                                                                                      
 #                                                                                                                                                                                                                                                               
 #LIST 6                                                                                                                                                                                                                                                         
+
+
+ THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
+
+
+
+
+                               H     K     L     I or /FO/     Sigma      JCODE    Serial
+
+                 Zero esd      2.    0.    0.        55.1        0.0         0.        0.
  The updated reflections are now on UNIT 53
 
 
 
-      46 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+      45 reflections accepted           1 reflections rejected                                                                                                                                                                                                  
 Upating List 13 for twinned data                                                                                                                                                                                                                                
 #SORT                                                                                                                                                                                                                                                           
 #REORDER                                                                                                                                                                                                                                                        
- After   1 pass      46 reflection(s) have been sorted
+ After   1 pass      45 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
 # COMPARE THE NEW LIST 6 WITH THE EARLIER ONE. NOTE THAT THE DATA HAS BEEN                                                                                                                                                                                      
 # MOVED ABOUT.                                                                                                                                                                                                                                                  

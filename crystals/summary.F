@@ -1726,6 +1726,7 @@ c      DIMENSION IHKLTR ( 3, itrmax )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
       DIMENSION ACTBIN ( 100 )
+      character *80 ctemp
 
       THBEST = 0.0
       THBCMP = 0.0
@@ -1960,9 +1961,15 @@ c     1    ' DATA ', THMAX*(I/100.0),100.0*COMP,
 c     1              THMAX*(I/100.0),100.0*ACTBIN(I)
 cdjwoct2010
           point=stl3max*(I/100.0)
+          point2=exp((2.0*log(point))/3.0)
           point=rtd*asin(store(l13dc)*point**0.333)
-          WRITE(CMON,'(A,F10.3,A,4F10.5)')
-     1    '^^PL LABEL ', point,
+          write(ctemp,'(f10.3,a,f10.3)') point, ':', point2
+c      write(123,*) ctemp
+          call xcras(ctemp,nchar)
+          call xctrim(ctemp,nchar)
+c      write(123,*) ctemp(1:nchar)
+          WRITE(CMON,'(A,A,A,4F10.5)')
+     1    '^^PL LABEL ', ctemp(1:nchar),
      1    ' DATA ', stl3max*(I/100.0),100.0*COMP,
      1              stl3max*(I/100.0),100.0*ACTBIN(I)
 c     1            , stl3max*(I/100.0),point

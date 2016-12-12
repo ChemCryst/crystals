@@ -7,7 +7,7 @@ use Env qw(CRYUSEFILE CRYSDIR COMPCODE CROUTPUT);
 
 my $windows=($^O=~/Win/)?1:0;# Are we running on windows?
 
-my $diff = "diff --ignore-all-space ";
+my $diff = "diff --strip-trailing-cr";
 if ( $windows ) {
    $diff = "fc";
 }

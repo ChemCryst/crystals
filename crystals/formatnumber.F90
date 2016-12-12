@@ -36,12 +36,24 @@ integer :: arg_decimal_pos
         return
     end if
 
-    if(esd<tiny(1.0)) then
-        !print *, 'negative esd'
-        allocate(character(len=20) :: formatted_output)
-        write(formatted_output, '(a, F10.6)') 'Neg esd: ', esd
+    if(isnan(esd)) then
+        allocate(character(len=17) :: formatted_output)
+        write(formatted_output, '(G12.2,"(NaN)")') num
         return
-        !call abort()
+    end if
+
+    if(abs(esd)<1d-15) then
+        !print *, 'negative esd'
+        allocate(character(len=21) :: formatted_output)
+        write(formatted_output, '(a, G12.2)') 'Err esd: ', esd
+        return
+    end if
+
+    if(abs(num)<1d-15) then
+        !print *, 'negative esd'
+        allocate(character(len=21) :: formatted_output)
+        write(formatted_output, '(a, G12.2)') 'Err num: ', num
+        return
     end if
 
     arg_length=-1
@@ -109,10 +121,23 @@ integer :: arg_decimal_pos
         return
     end if
 
-    if(esd<tiny(1.0d0)) then
+    if(isnan(esd)) then
+        allocate(character(len=17) :: formatted_output)
+        write(formatted_output, '(G12.2,"(NaN)")') num
+        return
+    end if    
+
+    if(abs(esd)<1d-15) then
         !print *, 'negative esd'
-        allocate(character(len=20) :: formatted_output)
-        write(formatted_output, '(a, F10.6)') 'Neg esd: ', esd
+        allocate(character(len=21) :: formatted_output)
+        write(formatted_output, '(a, G12.2)') 'Err esd: ', esd
+        return
+    end if
+
+    if(abs(num)<1d-15) then
+        !print *, 'negative esd'
+        allocate(character(len=21) :: formatted_output)
+        write(formatted_output, '(a, G12.2)') 'Err num: ', num
         return
     end if
 
@@ -171,6 +196,7 @@ integer, intent(out) :: length !< length of string
 character(len=buffer_length) :: buffer
 integer digit, total, i
 character(len=buffer_length) :: formatstr
+double precision r
 
     if(esd==0.0d0) then
         write(formatted_output, *) num
@@ -202,7 +228,9 @@ character(len=buffer_length) :: formatstr
     else
         ! number of zeros before any digit
         digit=0
-        do while(10**digit*esd<=1.0d0)
+        r=esd
+        do while(r<=1.0d0)
+            r=r*10
             digit=digit+1
         end do
         digit=digit-1

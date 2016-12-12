@@ -12,7 +12,7 @@
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
 % VARIABLE INTEGER NSIGMAS
-% EVALUATE NSIGMAS = 1
+% EVALUATE NSIGMAS = 0
 %%                                                                              
 % IF ( EXISTS 6 .NE. 1 ) THEN                                                   
                                                                                 
@@ -53,18 +53,20 @@
 ^^WI        @ 3,11 STATIC _TH_M '0.00000'
 ^^WI      }
 %%                                                  
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=4 NCOLS=2                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW11                                                    
-^^WI 'Completeness of the data set out to theta max.'  
+^^WI 'Completeness of the data set out to theta max.  Friedels Law is always'  
 ^^WI       @ 1,2 STATIC XFW12
-^^WI ' Friedels Law is always applied'                         
+^^WI 'applied'                         
 ^^WI       @ 2,1 STATIC XFW21                                                    
-^^WI 'You may manually select "theta full" (the value at which you consider'    
+^^WI 'You may manually select "theta full" (the value at which you consider the'    
 ^^WI       @ 2,2 STATIC XFW22                                                    
-^^WI ' the data complete) by right-clicking on the red line.'  
+^^WI 'data complete) by right-clicking on the red line.'  
 ^^WI       @ 3,1 STATIC XFW31                                                    
 ^^WI ' The intervals in (sin(theta)/lambda)^3 have equal volumes.'  
+^^WI       @ 4,1  STATIC XFW41
+^^WI ' The values under the cursor are Theta, and (sin(theta)/lambda)^2'
 ^^WI      }                                                                     
 ^^WI     }                                                                      
 ^^WI     @ 4,2 RESIZE _COMPRSZ VERTICAL 
@@ -115,12 +117,14 @@
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'You are looking at the distribution of I/sigma(I) against '               
-^^WI       @ 2,1 STATIC XFW2                                                    
+^^WI '         You are looking at the distribution of I/sigma(I) against '               
+^^WI       @ 1,2 STATIC XFW1B                                                    
 ^^WI '(sin(theta)/lambda)**3'                                                   
+^^WI       @ 2,1 STATIC XWF2
+^^WI '         The first value under the pointer is (sin(theta)/lambda)**2'
 ^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
@@ -145,16 +149,24 @@
 ^^WI       @ 2,1 STATIC XFW2                                                    
 ^^WI 'The External Variance comes from the instrument makers estimates'         
 ^^WI       @ 3,1 STATIC XFW3                                                    
-^^WI 'Only reflections with 3 or more contribuitors are plotted'      
+%     if sig then
+^^WI 'Only reflections with 3 or more contributors are plotted'      
+%     else
+^^WI 'THE FILE SIGMAS.DAT DOES NOT EXIST'      
+%     end if
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
 ^^WI     @ 4,2 PLOTWINDOW _VSIGMA NROWS=20 NCOLS=64 
-^^WI     @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 5
+^^WI     @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 8
 ^^WI      {   
-^^WI       @ 1,1 STATIC XFS 'Internal ='                        
-^^WI       @ 1,3 STATIC _MW_GRAD '000.000'                                  
-^^WI       @ 1,5 STATIC XFS2 ' x External'
+^^WI       @ 1,1 STATIC XFS2 ' Number of data used ='
+^^WI       @ 1,3 STATIC _MW_USED '0'                                  
+%%
+^^WI       @ 1,5 STATIC XFS 'Internal ='                        
+^^WI       @ 1,7 STATIC _MW_GRAD '000.00'                                  
+^^WI       @ 1,8 STATIC XFS2 'x External.'
+%%
 ^^WI      }
 % ELSE                                                                          
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             

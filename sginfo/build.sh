@@ -3,7 +3,7 @@ set -x
 CC=gcc
 FC=gfortran
 CFLAGS="-g -gdwarf-3 -O0 -c "
-FFLAGS="-g -gdwarf-3 -O0 -c -fcheck=all "
+FFLAGS="-g -gdwarf-3 -O0 -c -fcheck=all -std=f2003 -fall-intrinsics"
 $CC $CFLAGS sgclib.c  
 $CC $CFLAGS sgfind.c  
 $CC $CFLAGS sghkl.c  

@@ -7142,7 +7142,7 @@ C      - OPEN CIF OUTPUT ON FRN1
         CALL XPCIF (' ')
 C-----  OPEN ARCHIVE INFORMATION ON HKLI
         CALL XMOVEI (KEYFIL(1,2),JDEV,4)
-        CALL XRDOPN(6,JDEV,CNEW(1:JLEN),15)
+        CALL XRDOPN(6,JDEV,CNEW(1:JLEN),jlen)
         IF (IERFLG.GE.0) THEN
           write(cmon,'(a)')'{I Copying information to cif'
           call xprvdu(ncvdu,1,0)
@@ -7155,7 +7155,7 @@ C-----  OPEN ARCHIVE INFORMATION ON HKLI
 151       CONTINUE
 C----- CLOSE THE FILE
           CALL XPCIF ('# end of '//cnew(1:jlen))
-          CALL XRDOPN(7,JDEV,cnew(1:jlen),15)
+          CALL XRDOPN(7,JDEV,cnew(1:jlen),jlen)
         ELSE
           WRITE (CMON,'(''# Archive file not found'')')
           CALL XPRVDU (NCVDU,1,0)
@@ -11262,3 +11262,274 @@ C
       RETURN
 C
       END 
+
+      
+CODE FOR ADD39
+      SUBROUTINE ADD39
+C--INPUT OR EXTEND A LIST 39 (GENERAL DATA STORE)
+
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLEXIC.INC'
+      INCLUDE 'XPDS.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XLST39.INC'
+      INCLUDE 'QLST39.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'ICOM39.INC'
+
+      DIMENSION PROCS(32)
+      DATA IDIMN /32/
+
+C -- Start the clock.
+      CALL XTIME1(2)
+
+C -- Clear something.
+      CALL XCSAE
+
+C -- ALLOCATE A 100 byte BUFFER in store FOR COMMAND PROCESSING.
+C -- MQ is a common block variable used by the lexical routines.
+      MQ = KSTALL ( 100 )
+
+C----- INITIALISE LEXICAL INPUT
+      ICHNG=1                       ! Ensure all directives appear read
+      CALL XLXINI (INEXTD, ICHNG)   ! This also sets INEXTD to -1
+
+
+C---- RESERVE A COMMAND LINE BUFFER OF 8 ELEMENTS
+      JDIMBF = 8
+      IDIMBF = JDIMBF+IDIMN
+      ICOMBF = KSTALL(IDIMBF)
+      JCOMBF = ICOMBF+JDIMBF
+
+C----- ZERO THE BUFFER
+      CALL XZEROF( ISTORE(ICOMBF), IDIMBF)
+
+C----- INSTRUCTION READING LOOP processes one line at a time.
+100   CONTINUE
+
+C----- READ A DIRECTIVE
+      IDIRNM = KLXSNG(ISTORE(ICOMBF),IDIMBF,INEXTD)
+
+      IF (IDIRNM .LT. 0) GOTO 100
+      IF (IDIRNM .EQ. 0) GOTO 1000
+
+C -- Jump depending on the directive given:
+      GOTO( 210, 220, 200, 9910), IDIRNM
+      GOTO 9910
+
+
+200   CONTINUE
+C -- '#VALUE' - extra instruction line parameters:
+
+      IEXTEN = ISTORE(ICOMBF+11)    ! REPLACE or EXTEND current L39?
+      IEXIST = KEXIST(39)           ! Does L39 even exist?
+
+      IF ( ( IEXTEN .EQ. 1 ) .AND. ( IEXIST .GE. 1 ) )THEN
+C -- Load existing list forty (ready for overwriting):
+        CALL XLDLST ( 39, ICOM39, IDIM39, -1 )
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+
+        KCOM39 = KSTALL ( IDIM39 )
+C -- Copy list39 common block for safe keeping:
+        CALL XMOVEI(ICOM39(1),ISTORE(KCOM39),IDIM39)
+
+c        WRITE(CMON,'(/A/)') 'Loaded existing list 39, common block is:'
+c        CALL XPRVDU(NCVDU, 3,0)
+c        DO I = 1, IDIM40, 4
+c          WRITE(CMON,'(4I10)') ( ICOM40(I+J),J=0,3 )
+c          CALL XPRVDU(NCVDU, 1,0)
+c        END DO
+c        WRITE(CMON,'(/A/)') 'Data dump is:'
+c        CALL XPRVDU(NCVDU, 3,0)
+c        K = ICOM40(1)-8
+c        WRITE(CMON,'(I4,A,8I9)') K,':',(ISTORE(K+J),J=0,7)
+c        CALL XPRVDU(NCVDU, 1,0)
+c        DO I = 1, 21, 4
+c          K = ICOM40(I)+(ICOM40(I+3)*ICOM40(I+2))
+c          WRITE(CMON,'(I4,A,8I9)') K,':',(ISTORE(K+J),J=0,7)
+c          CALL XPRVDU(NCVDU, 1,0)
+c        END DO
+
+      ELSE
+        IEXTEN = 0 !Not extending if there was no existing list.
+
+      END IF
+
+C -- Initialise some counters/pointers.
+      LNXTL = 0  !next free store for storing data as it is read in.
+      LFRST = 0  !the beginning of the chain of stored data as read in.
+      KDEFAL = 0 !Flag - whether 'default' card is given.
+C -- The number of each type of card read in:
+      NREAL = 0
+      NINTE = 0
+      GOTO 100
+
+210   CONTINUE
+C -- 'INTEGER' DIRECTIVE
+C INTEGER directive takes up 12 words. Allocate 14 words (to include link to next record and record type flag):
+      I = 12
+      LLSTL = LNXTL
+      LNXTL = KSTALL ( I + 2 )
+      ISTORE(LNXTL+1) = 1    ! Flag for INTEGER data
+      CALL XMOVE(STORE(ICOMBF+20),STORE(LNXTL+2),I)
+      NINTE = NINTE + 1
+      GOTO 300
+
+220   CONTINUE
+
+C -- 'REAL' DIRECTIVE
+C REAL directive takes up 12 words. Allocate 14 words (to include link to next record and record type flag):
+      I = 12
+      LLSTL = LNXTL
+      LNXTL = KSTALL ( I + 2 )
+      ISTORE(LNXTL+1) = 2    ! Flag for REAL data
+      CALL XMOVE(STORE(ICOMBF+20),STORE(LNXTL+2),I)
+      NREAL = NREAL + 1
+      GOTO 300
+
+
+300   CONTINUE
+      IF ( LLSTL.GT.0 ) THEN
+C -- Store pointer to this new record in the last record.
+        ISTORE(LLSTL) = LNXTL
+      ELSE
+C -- This is the first record, keep a pointer.
+        LFRST = LNXTL
+      END IF
+C -- Ensure this pointer is zero. (Marks end of chain).
+      ISTORE(LNXTL) = 0 
+      GO TO 100
+
+1000  CONTINUE
+C
+C -- COMMAND INPUT COMPLETE. CHECK FOR ERRORS
+      IF ( LEF .GT. 0 ) GO TO 9910
+
+      IPLACE = LFRST
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is an element then add into new L39.
+         IF ( ISTORE(IPLACE+1).EQ.1 ) THEN
+            WRITE(CMON,'(A,I7,2A,I5,10I5)')'At ',IPLACE,': ', 
+     1    ISTORE(IPLACE+2),ISTORE(IPLACE+3), (ISTORE(IPLACE+IL),IL=4,14)
+            CALL XPRVDU(NCVDU, 1,0)
+         END IF
+         IF ( ISTORE(IPLACE+1).EQ.2 ) THEN
+            WRITE(CMON,'(A,I7,2A,F5.0,10F8.3)')'At ',IPLACE,': ', 
+     1     ISTORE(IPLACE+2),STORE(IPLACE+3), (STORE(IPLACE+IL),IL=4,14)
+            CALL XPRVDU(NCVDU, 1,0)
+         END IF
+         IPLACE = ISTORE(IPLACE)
+C         IF ( IPLACE .EQ. 0 ) EXIT
+      END DO
+
+
+      IF ( IEXTEN .EQ. 0 ) THEN
+
+C -- C R E A T E   A   N E W   L I S T   3 9 :
+
+         IDWZAP = 0
+         CALL XFILL (IDWZAP, ICOM39, IDIM39)
+         N39O = 0
+         N39I = 0
+         N39F = 0
+         CALL XCELST ( 39, ICOM39, IDIM39 )
+      END IF
+
+
+C -- L39I - the INTEGER cards. 
+      ISTAT = KHUNTR(39,101,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+      LDATA = ISTORE(IADDR+3)
+
+      WRITE(CMON,'(A,2I7)')'N39I ',N39I, LDATA 
+      CALL XPRVDU(NCVDU, 1,0)
+
+  
+C -- Move existing INTEGER data if there is any.
+      NEWDAT = KSTALL ((N39I + NINTE)*MD39I)
+      NMOVE = MD39I * N39I
+      IF ( NMOVE .GT. 0 ) THEN
+        CALL XMOVE( STORE(LDATA), STORE(NEWDAT), NMOVE )
+      END IF
+      ISTORE(IADDR+3) = NEWDAT        ! Change header pointer to data
+
+C -- Then the new INTEGER cards.
+      IPLACE = LFRST
+      I = NEWDAT + NMOVE
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is an ELEMENT then add into new L39.
+         IF ( ISTORE(IPLACE+1).EQ.1 ) THEN
+            CALL XMOVE( STORE(IPLACE+2), STORE(I), MD39I )
+            I = I + MD39I
+            N39I = N39I + 1
+         END IF
+         IPLACE = ISTORE(IPLACE)
+      END DO
+
+
+C -- L39F - the REAL cards. 
+      ISTAT = KHUNTR(39,102,IADDL,IADDR,IADDD,-1)
+      IF ( ISTAT.NE.0 ) GOTO 9900
+      LDATA = ISTORE(IADDR+3)
+
+      WRITE(CMON,'(A,2I7)')'N39F ',N39F, LDATA 
+      CALL XPRVDU(NCVDU, 1,0)
+
+  
+C -- Move existing REAL data if there is any.
+      NEWDAT = KSTALL ((N39F + NREAL)*MD39F)
+      NMOVE = MD39F * N39F
+      IF ( NMOVE .GT. 0 ) THEN
+        CALL XMOVE( STORE(LDATA), STORE(NEWDAT), NMOVE )
+      END IF
+      ISTORE(IADDR+3) = NEWDAT        ! Change header pointer to data
+
+C -- Then the new REAL cards.
+      IPLACE = LFRST
+      I = NEWDAT + NMOVE
+      DO WHILE (IPLACE .NE. 0)
+C Check flag for this link. If it is an ELEMENT then add into new L39.
+         IF ( ISTORE(IPLACE+1).EQ.2 ) THEN
+            CALL XMOVE( STORE(IPLACE+2), STORE(I), MD39F )
+            I = I + MD39F
+            N39F = N39F + 1
+         END IF
+         IPLACE = ISTORE(IPLACE)
+      END DO
+                
+C -- Write new list back to disk.
+
+      CALL XWLSTD (39,ICOM39,IDIM39,0,1)
+
+
+
+
+C--TERMINATION MESSAGES
+6050  CONTINUE
+      CALL XOPMSG ( IOPDIS, IOPEND, IVERSN )
+C -- Stop the clock. Stop the clock!
+      CALL XTIME2(2)
+      RETURN
+C
+9900  CONTINUE
+C -- ERRORS
+      CALL XOPMSG ( IOPDIS , IOPABN , 0 )
+      GO TO 6050
+9910  CONTINUE
+C -- INPUT ERRORS
+      CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
+      GO TO 9900
+
+      END
+      
+      

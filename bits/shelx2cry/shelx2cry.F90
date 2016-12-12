@@ -76,7 +76,8 @@ if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
     shelx_filepath(len_trim(shelx_filepath)-2:)='res'
 end if
 
-open(newunit=shelxf_id,file=trim(shelx_filepath), status='old')
+shelxf_id=816
+open(unit=shelxf_id,file=trim(shelx_filepath), status='old')
 iostatus=0
 do while(iostatus==0)
     call readline(shelxf_id, line, iostatus)
@@ -84,6 +85,7 @@ do while(iostatus==0)
     call call_shelxprocess(line)
     if(the_end) exit
 end do
+close(shelxf_id)
 
 call write_crystalfile()
 
