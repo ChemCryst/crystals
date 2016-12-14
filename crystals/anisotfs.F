@@ -118,7 +118,7 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCONST.INC'
@@ -134,6 +134,8 @@ C
       integer nk, nl, nnpd, nvol
       
       real Avol, Bvol, Cvol, Dvol, uarith, uequiv, ugeom, uprime
+      
+      real, dimension(3,3) :: tensor
 C
       character(len=4), parameter :: KHYD='H   '
       character(len=4), parameter :: KDET='D   '
@@ -197,30 +199,28 @@ C--SET UP VARIOUS STORAGE LOCATIONS
       IF (NFL.GE.LFL) GO TO 1050
       L=NA
       NL=NH
-      M=L1O1
       
-C--REFORM THE REAL SPACE ORTHOGONALIZATION MATRIX
-      DO 250 I=1,3
-         K=L1P2
-         NK=L1P1
-         
-         DO 200 J=1,3
-            ! multiply the orthogonalisation matrix O by the reciprocal cell lengths matrix N
-            ! See Grosse-Kunstleve, R.W. & Adams, P. D. (2002). J. Appl. Cryst. 35(4), 477-480.
-            ! U* = (N Ucif N^t)
-            ! Ucart = (O U* O^t) = (O N) Ucif (O N)^t
-            ! Calculating (O N):
-            STORE(L)=STORE(M)*STORE(K)
-            ! Scale the orthogonalisation matrix. This is used much later on a single occasion
-            ! Probably to get the eigen basis in units of angstroms
-            STORE(NL)=STORE(M)/STORE(NK)
-            NK=NK+1
-            NL=NL+1
-            K=K+1
-            L=L+1
-            M=M+1
-200      CONTINUE
-250   CONTINUE
+      ! multiply the orthogonalisation matrix O by the reciprocal cell lengths matrix N
+      ! See Grosse-Kunstleve, R.W. & Adams, P. D. (2002). J. Appl. Cryst. 35(4), 477-480.
+      ! U* = (N Ucif N^t)
+      ! Ucart = (O U* O^t) = (O N) Ucif (O N)^t
+      ! Calculating (O N):
+      associate(orthomatrix => unitcells(1)%orthogonalisation())
+        tensor(:,1)=unitcells(1)%ra*orthomatrix(:,1)
+        tensor(:,2)=unitcells(1)%rb*orthomatrix(:,2)
+        tensor(:,3)=unitcells(1)%rc*orthomatrix(:,3)
+      end associate
+      STORE(NA:NA+8)=reshape(transpose(tensor), (/9/))
+
+      ! Scale the orthogonalisation matrix. This is used much later on a single occasion
+      ! Probably to get the eigen basis in units of angstroms
+      associate(orthomatrix => unitcells(1)%orthogonalisation())
+        tensor(:,1)=orthomatrix(:,1)/unitcells(1)%a
+        tensor(:,2)=orthomatrix(:,2)/unitcells(1)%b
+        tensor(:,3)=orthomatrix(:,3)/unitcells(1)%c
+      end associate
+      STORE(NH:NH+8)=reshape(transpose(tensor), (/9/))
+      
 C--START TO PASS THROUGH THE ATOMS
       JBASE=IBASE
       M5B=ISTART
@@ -317,7 +317,10 @@ C----- CRYSTAL TO AXIAL
                ! and the combined matrix and its inverse is saved.
                ! I am not sure why the matrices are transposed.
                ! The situation is different from above where the eigenvectors themselves are expressed in an other basis.
-               CALL XMLTTM (STORE(NG),STORE(L1O1),STORE(LIST20+9),3,3,3)
+               !CALL XMLTTM (STORE(NG),STORE(L1O1),STORE(LIST20+9),3,3,3)
+               STORE(LIST20+9:LIST20+9+8)=reshape(transpose(
+     1           matmul(unitcells(1)%orthogonalisation(), TENS)),
+     2           (/9/)) 
 C----- INTERCHANGE EIGEN VECTORS
                CALL XMTREX (STORE(LIST20+9),STORE(LIST20),3,3)
                I=KINV2(3,STORE(LIST20),STORE(LIST20+9),9,0,STORE(LIST20+
@@ -545,23 +548,21 @@ C-C-C-ATOM IS ISOTROPIC ANYWAY (OR SPHERE/LINE/RING)
       END
 CODE FOR RSUB06
       SUBROUTINE RSUB06
+      implicit none
 C--CONTROL ROUTINE OF TLS CALCUATIONS
 C
 C
 C--
-      CHARACTER*4 CCALC(2)
       INCLUDE 'ICOM12.INC'
       INCLUDE 'IDIM12.INC'
       INCLUDE 'ISTORE.INC'
-C
-      DIMENSION ITARG(1)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST12.INC'
@@ -577,14 +578,24 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
-      DATA CCALC/' TLS','AXIS'/
-#ifdef _HOL_ 
-      DATA ITARG(1) / 4HALL /
-#else
-      DATA ITARG(1)/'ALL '/
-#endif
-      DATA EIGMIN/0.000001/,EIGRAT/0.01/
-      DATA IVERSN/201/
+      real a
+      
+      integer i, iall, ibase, ichng, icombf, idimbf, idirnm, ierr
+      integer imdinp, imod5, inextd, iok, irpl, isave, ishift, istart   
+      integer istep, iuln5, iupdt, iwork, j, jbase, jpunch, jwork, kbase
+      integer kwork, lbase, n, natom, nb, ngp, number
+      
+      integer, external :: kstall, klxsng, ktyp05, kfdarg, kop, ksynum
+      integer, external :: katomu, katoms, irtls, kfdnum, kcomp, ktlspt
+
+      character(len=4), dimension(2), parameter :: 
+     1  CCALC=(/' TLS','AXIS'/)
+      character(len=4), dimension(1),parameter :: ctarg='ALL '
+      integer, dimension(1) :: itarg
+      real, parameter :: EIGMIN=0.000001,EIGRAT=0.01
+      integer, parameter :: IVERSN=201
+      
+      itarg=transfer(ctarg, itarg)
 C
 C
 C--SET UP THE TIMING CONTROL
@@ -1240,6 +1251,8 @@ C----- CLOSE THE TLS RESTRAINT FILE
       END
 CODE FOR IRTLS
       FUNCTION IRTLS (JBASE,LBASE,NATOM,ISTEP,KWORK,IMODE)
+      use unitcell_mod
+      implicit none
 C----- CALCULATE T, L, AND S FOR GROUP OF ATOMS
 C
 C      RETURN VALUE .GT. 0 IF OK
@@ -1257,15 +1270,15 @@ C
 C--
       DOUBLE PRECISION DAA,DAR,DAI,DWE,DAS
 C
-      DIMENSION DUMMYA(420), DUMMYB(420)
-      DIMENSION TEMP1(3,3), TEMP2(3,3)
-      dimension djwa(3,3),djwb(3,3)
+      real, dimension(420) :: DUMMYA, DUMMYB
+      real, dimension(3,3) :: TEMP1, TEMP2
+      real, dimension(3,3) :: djwa, djwb
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST01.INC'
+      !INCLUDE 'XLST01.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
 C
@@ -1274,6 +1287,15 @@ C
       INCLUDE 'XIOBUF.INC'
 C
 C
+      integer irtls
+      integer jbase, lbase, natom, istep, kwork, imode, info
+      integer itemp2, itemp3, natom2
+      real anumb, del, dels, delu, rad, rmsu, sfac, sum, sums, sumu
+      real ufac
+      
+      real, external :: norm3, xdetr3
+      integer, external :: kinv2
+
       EQUIVALENCE (DUMMYA(1),AA(1,1)), (DUMMYB(1),DV(1,1))
       EQUIVALENCE (TEMP1(1,1),DUMMYA(1)), (TEMP2(1,1),DUMMYA(10))
 C
@@ -1294,21 +1316,17 @@ C--OUTPUT AN INITIAL CAPTION
      1    3F8.4)
       END IF
 C---SET UP MATRIX TO ORTHOGONALISE COORDINATES
-      K=L1O1
-      DO 150 I=1,3
-         DO 150 J=1,3
-         AO(I,J)=STORE(K)
-         WA(I,J)=0.
-150      K=K+1
+      AO=unitcells(1)%orthogonalisation()
+      wa=0.0
 C---SET UP MATRIX TO ORTHOGONALISE U'S
-      A=COS(STORE(L1P1+3))
-      B=COS(STORE(L1P1+4))
-      C=COS(STORE(L1P1+5))
+      A=COS(unitcells(1)%alpha)
+      B=COS(unitcells(1)%beta)
+      C=COS(unitcells(1)%gamma)
       D=1.+2.*A*B*C-A*A-B*B-C*C
       D=SQRT(D)
-      WA(1,1)=SIN(STORE(L1P1+3))/(D*STORE(L1P1))
-      WA(2,2)=SIN(STORE(L1P1+4))/(D*STORE(L1P1+1))
-      WA(3,3)=SIN(STORE(L1P1+5))/(D*STORE(L1P1+2))
+      WA(1,1)=SIN(unitcells(1)%alpha)/(D*unitcells(1)%a)
+      WA(2,2)=SIN(unitcells(1)%beta)/(D*unitcells(1)%b)
+      WA(3,3)=SIN(unitcells(1)%gamma)/(D*unitcells(1)%c)
       CALL XMLTMM (AO,WA,UO,3,3,3)
 C---ZERO DERIVATIVES AND MATRICES
       CALL XZEROF (DUMMYA(1),420)
@@ -1478,19 +1496,16 @@ C--MAKE SURE THAT THE MATRIX IS RIGHT HANDED
          DO 1450 J=1,3
 1450     WB(I,J)=WB(I,J)*D
 C--PRINT THE LATENT ROOTS OF THE 'L' MATRIX
-      I=L1P1
-      DO 1550 J=1,3
-         K=L1O1+J
-         DO 1500 L=1,3
-            TEMP2(L,J)=STORE(K-1)/STORE(I)
-            K=K+3
-1500     CONTINUE
-         I=I+1
-1550  CONTINUE
+      associate(orthomatrix => unitcells(1)%orthogonalisation())
+        temp2(:,1)=orthomatrix(:,1)/unitcells(1)%a
+        temp2(:,2)=orthomatrix(:,2)/unitcells(1)%b
+        temp2(:,3)=orthomatrix(:,3)/unitcells(1)%c
+      end associate
 C--COMPUTE THE COSINES W.R.T. THE CRYSTALS SYSTEM IN FRACTIONS
       CALL XMLTTM (WB(1,1),TEMP2(1,1),TEMP1(1,1),3,3,3)
 C--COMPUTE THE SAME TRANSFORMATION INTO ANGSTROM
-      CALL XMLTTT (WB(1,1),STORE(L1O1),TEMP2(1,1),3,3,3)
+      CALL XMLTTM(WB(1,1),unitcells(1)%orthogonalisation(),
+     1   TEMP2(1,1),3,3,3)
 C--PRINT THE DATA THUS ACQUIRED
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,1600) (WD(I),(WB(J,I),J=1,3),I=1,3),((TEMP2(I,J),J=
@@ -1505,7 +1520,8 @@ C--PRINT THE DATA THUS ACQUIRED
 C----- COPY MATRICES FOR SAVING IN LIST 20
       CALL XMOVE(WB,STORE(KWORK+21),9)
       CALL XTRANS (WB(1,1),STORE(KWORK+9),3,3)
-      CALL XMLTMT (STORE(KWORK+9),STORE(L1O1),STORE(KWORK),3,3,3)
+      CALL XMLTMM (STORE(KWORK+9),unitcells(1)%orthogonalisation(),
+     1    STORE(KWORK),3,3,3)
       I=KINV2(3,STORE(KWORK),STORE(KWORK+9),9,0,STORE(KWORK+18),
      1STORE(KWORK+18),3)
       CALL XMOVE (CF(1),STORE(KWORK+18),3)
