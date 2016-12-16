@@ -102,7 +102,9 @@ integer, external :: nctrim
         end if
     end do
     
-    datc=datc/yslope**2      
+    if(yslope/=0.0) then
+        datc=datc/yslope**2      
+    end if
 
     !    c determine largest and smallest log-probability for scaling
     datcm=datc(1)
@@ -1975,7 +1977,11 @@ real mean, s2, est, goof
     end if
 
     if(punch) then
-        open(145, file='bijvoet_fit')
+        if(itype==1) then
+            open(145, file='bijvoet_fit')
+        else
+            open(145, file='Parsons_fit')
+        end if
     end if
     
     if(issprt.eq.0) then
@@ -2166,9 +2172,10 @@ real mean, s2, est, goof
     end if
     
     if(punch) then
-        write(145, '(a)') 'Reflection x, y, w, residuals'
+        write(145, '(a)') ''
+        write(145, '(5X, 1A, 5X, 1A, 5X, 1A, 4a16)') 'h', 'k', 'l', 'x(calc diff)', 'y(obs diff)', 'weights', 'residuals'
         do i=1, ubound(buffertemp, 1)
-            write(145,*) selected_reflections(:,i), buffertemp(i,:), residuals(i)
+            write(145,'(3i6, 4(1PE16.8))') selected_reflections(:,i), buffertemp(i,:), residuals(i)
         end do
         write(145, '(a)') ''
     end if
