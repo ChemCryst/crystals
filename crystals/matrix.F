@@ -2204,6 +2204,31 @@ CODE FOR matlab_add_matrix_to_cell
      2 tempstring(1:len(var_name)) // ')+1}')
       end
 
+      subroutine kronecker(k, a, b)
+      ! calculate the kronecker product of a and b
+      ! An explicit interface is needed to use this subroutine!! (I don't know why)
+          implicit none
+          real, dimension(:,:), intent(in)  :: a, b
+          real, dimension(:,:), intent(out) :: k
+          integer :: i, j, ma, na, mb, nb
+          
+          ma = ubound(a, 1)
+          na = ubound(a, 2)
+          mb = ubound(b, 1)
+          nb = ubound(b, 2)
+          if (size(k,1) /= ma*mb .or. size(k,2) /= na*nb) then
+              !write(*,*) 'k has invalid size'
+              k=0
+              !stop
+          else
+              forall(i=1:ma, j=1:na)
+                  k(mb*(i-1)+1:mb*i,nb*(j-1)+1:nb*j) = a(i,j)*b
+              end forall
+          end if
+               
+      end subroutine kronecker
+
+
 C======================================================================C
 C                       Sub block matrix routines                      C
 C======================================================================C

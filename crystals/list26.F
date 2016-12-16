@@ -1152,6 +1152,7 @@ C--CALCULATE THE MEAN
       GOTO 2950
 C--UZZBAR RESTRAINTS PRINT
 3270  CONTINUE
+      print *, 'pp uzzbar'
       A1(3)=A1(2)
       A1(2)=2.*SQRT(STORE(L22PD+3))
       A1(1)=0.5*(A1(2)-A1(3))
@@ -1970,6 +1971,7 @@ C--'UYZBAR' RESTRAINT
       GOTO 1000
 C--'UZZBAR' RESTRAINT
 1580  CONTINUE
+        print *, 'here'
       CALL XCVCX(3,iasym)
       GOTO 1000
 C
@@ -2608,13 +2610,10 @@ C
       DIMENSION U_ASSIGN (9)
       DIMENSION U_M_1(3,3)
       DIMENSION U_M_2(3,3)
-      DIMENSION B_M(3,3)
-      DIMENSION A_M(3,3)	  
-      DIMENSION R_M(3,3)
-      DIMENSION RA(3,3)
+      DIMENSION B_M(3,3) ! Ucif to U* matrix
+      DIMENSION A_M(3,3) ! Orthogonalisation matrix 
+      DIMENSION R_M(3,3) ! rotation matrix (rot1, rot2, rot3)
       DIMENSION RAB(3,3)
-      DIMENSION UBAR_1(3,3)
-      DIMENSION UBAR_2(3,3)
       DIMENSION RABUBAR_1(3,3)
       DIMENSION RABUBAR_2(3,3)
 
@@ -2624,7 +2623,9 @@ C
       REAL CHECK_CAL_2
       REAL DIFF_VAL
       REAL MEAN_VAL
-	  
+      
+      real, dimension(9,6) :: dUcif, dUnew
+      real, dimension(9,9) :: kRab
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
@@ -2638,6 +2639,17 @@ C
       INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
+      
+      ! no idea why it is necessary, maybe because of array shapes
+      interface
+          subroutine kronecker(k, a, b)
+          ! calculate the kronecker product of a and b
+          implicit none
+          real, dimension(:,:), intent(in)  :: a, b
+          real, dimension(:,:), intent(out) :: k
+          end subroutine
+      end interface
+      
 C
 C--SET UP A FEW CONSTANTS                                        
       DUMP=STORE(LCG+4)   ! The 'observed value' of the restraint
@@ -2713,11 +2725,6 @@ c	      print *, "Bond // to x-axis"
 	   
 	   CALL NCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
 	   CALL NCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
-
-
-       AST = STORE(L1P2)
-       BST = STORE(L1P2+1)
-       CST = STORE(L1P2+2)
 	   
 C The orthog matrix. It is an upper triangle assuming fortran column ordering. 
 C (i.e. offsets +1 +2 +5 are zero).
@@ -2727,152 +2734,97 @@ C Derivatives go here. These values (iaxis*n) are currently just used for testin
 C Here, compute
 
 C IF IAXIS = 1, then UXZBAR, =2 for UYZBAR, IAXIS = 3 for UZZBAR
+
           
-	  
+      ! derivatives against each adp variable U11, U12...
+      ! Ucif is what crystals stores for U (same as cif file)
+      ! First Ucif scaled to U* using B (See: Acta Cryst. (2011). A67, 383-390, https://doi.org/10.1107/S0108767311018216)
+      ! Changes U* from crystal coordinate to Cartesian coordinates using A
+      ! Rotate adp align principal axis with choice of axis using R
+      ! ==> R A B Ucif B^t A^t R^t
+      !
+      ! Simplify derivative:
+      ! d(R A B Ucif B^t A^t R^t)/dUxy = R A B d(Ucif)/dUxy B^t A^t R^t
+      !
+      ! d(Ucif)/dU11 = [[1,0,0][0,0,0][0,0,0]]
+      ! d(Ucif)/dU12 = [[0,1,0][1,0,0][0,0,0]]
+      ! ...
+      ! d(Ucif)/dU33 = [[0,0,0][0,0,0][0,0,1]]
+      
+      ! Now let's use fancy math to reduce the use of loops and matrix operations
+      ! see Acta Cryst. (2011). A67, 383-390, https://doi.org/10.1107/S0108767311018216 again for vec operator
+      !
+      ! Let vecU = [ U11, U21, U31, U12, U22, U32, U13, U23, U33 ] (column of U stacked in one vector)
+      ! We can rewrite $R A B Ucif B^t A^t R^t$ to $(R A B) (k) (R A B) vecU$ with (k) the kronecker operator
+      ! similarly for the derivative: 
+      !   R A B d(Ucif)/dUxy B^t A^t R^t  ==>  (RAB) (k) (RAB) vec(d(Ucif)/dUxx)
+      
+      ! Lets stack vec(d(Ucif)/dUxx) in a 2D matrix:
+      ! dU11 dU22 dU33 dU23 dU13 dU12
+      ! 1    0    0    0    0    0  
+      ! 0    0    0    0    0    1
+      ! 0    0    0    0    1    0
+      ! 0    0    0    0    0    1
+      ! 0    1    0    0    0    0
+      ! 0    0    0    1    0    0
+      ! 0    0    0    0    1    0
+      ! 0    0    0    1    0    0
+      ! 0    0    1    0    0    0
+      
+      dUcif=0.0
+      dUcif(1,1)=1.0 ! dU11
+      dUcif(5,2)=1.0 ! dU22
+      dUcif(9,3)=1.0 ! dU33
+      dUcif(6,4)=1.0 ! dU23
+      dUcif(8,4)=1.0 ! dU23
+      dUcif(3,5)=1.0 ! dU13
+      dUcif(7,5)=1.0 ! dU13
+      dUcif(2,6)=1.0 ! dU12
+      dUcif(4,6)=1.0 ! dU12
+            
+      ! Ucif scaled to U*
+      B_M=0.0
+      B_M(1,1)=STORE(L1P2)
+      B_M(2,2)=STORE(L1P2+1)
+      B_M(3,3)=STORE(L1P2+2)
+      
+      ! rotation matrix
+      R_M(1,:)=rot1
+      R_M(2,:)=rot2
+      R_M(3,:)=rot3
+      
+      ! Orthogonalisation matrix (stored by rows, reshape fill column wise, hence the transpose)
+      A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/)))
+      
+      ! Calculation of all derivatives using the vec operator trick      
+      RAB=matmul(matmul(R_M ,A_M), B_M)
+      call kronecker(kRAB, RAB, RAB)
+      
+      dUnew=matmul(kRAB, dUcif)
+      
       IF ( IAXIS .EQ. 1 ) THEN   !UXZBAR
-
 C      #### XZ DERIVS ####
-
-C      dX/dU11
-         A1(7)= (AST*ROT1(1)*STORE(L1O1+0) + AST*ROT1(2)*STORE(L1O1+3) 
-     1         + AST*ROT1(3)*STORE(L1O1+6))*(AST*ROT3(1)*STORE(L1O1+0) 
-     1         + AST*ROT3(2)*STORE(L1O1+3) + AST*ROT3(3)*STORE(L1O1+6))
-C      dX/dU22
-         A1(8)= (BST*ROT1(1)*STORE(L1O1+1) + BST*ROT1(2)*STORE(L1O1+4) 
-     1         + BST*ROT1(3)*STORE(L1O1+7))*(BST*ROT3(1)*STORE(L1O1+1) 
-     1         + BST*ROT3(2)*STORE(L1O1+4) + BST*ROT3(3)*STORE(L1O1+7))
-C      dX/dU33
-         A1(9)= (CST*ROT1(1)*STORE(L1O1+2) + CST*ROT1(2)*STORE(L1O1+5) 
-     1         + CST*ROT1(3)*STORE(L1O1+8))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1         + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8))
-C      dX/dU23
-         A1(10)= (BST*ROT1(1)*STORE(L1O1+1) + BST*ROT1(2)*STORE(L1O1+4) 
-     1         + BST*ROT1(3)*STORE(L1O1+7))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1         + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8)) 
-     1         + (BST*ROT3(1)*STORE(L1O1+1) + BST*ROT3(2)*STORE(L1O1+4) 
-     1         + BST*ROT3(3)*STORE(L1O1+7))*(CST*ROT1(1)*STORE(L1O1+2) 
-     1         + CST*ROT1(2)*STORE(L1O1+5) + CST*ROT1(3)*STORE(L1O1+8))
-C      dX/dU13
-         A1(11)= (AST*ROT1(1)*STORE(L1O1+0) + AST*ROT1(2)*STORE(L1O1+3) 
-     1         + AST*ROT1(3)*STORE(L1O1+6))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1         + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8)) 
-     1         + (AST*ROT3(1)*STORE(L1O1+0) + AST*ROT3(2)*STORE(L1O1+3) 
-     1         + AST*ROT3(3)*STORE(L1O1+6))*(CST*ROT1(1)*STORE(L1O1+2) 
-     1         + CST*ROT1(2)*STORE(L1O1+5) + CST*ROT1(3)*STORE(L1O1+8))
-C      dX/dU12
-         A1(12)= (AST*ROT1(1)*STORE(L1O1+0) + AST*ROT1(2)*STORE(L1O1+3) 
-     1         + AST*ROT1(3)*STORE(L1O1+6))*(BST*ROT3(1)*STORE(L1O1+1) 
-     1         + BST*ROT3(2)*STORE(L1O1+4) + BST*ROT3(3)*STORE(L1O1+7)) 
-     1         + (AST*ROT3(1)*STORE(L1O1+0) + AST*ROT3(2)*STORE(L1O1+3) 
-     1         + AST*ROT3(3)*STORE(L1O1+6))*(BST*ROT1(1)*STORE(L1O1+1) 
-     1         + BST*ROT1(2)*STORE(L1O1+4) + BST*ROT1(3)*STORE(L1O1+7))
-	 
-c	     PRINT *,"Derivatives XZ", (A1(I), I=7,12)
-		
-        ELSE IF ( IAXIS .EQ. 2) THEN  !UYZBAR
-
+          ! (1,3) -> 3
+          a1(7:12)=dUnew(3,:)
+          
+      ELSE IF ( IAXIS .EQ. 2) THEN  !UYZBAR
 C      #### YZ DERIVS ####
-
-C      dX/dU11
-         A1(7)= (AST*ROT2(1)*STORE(L1O1+0) + AST*ROT2(2)*STORE(L1O1+3) 
-     1         + AST*ROT2(3)*STORE(L1O1+6))*(AST*ROT3(1)*STORE(L1O1+0) 
-     1         + AST*ROT3(2)*STORE(L1O1+3) + AST*ROT3(3)*STORE(L1O1+6))
-C      dX/dU22
-         A1(8)= (BST*ROT2(1)*STORE(L1O1+1) + BST*ROT2(2)*STORE(L1O1+4) 
-     1         + BST*ROT2(3)*STORE(L1O1+7))*(BST*ROT3(1)*STORE(L1O1+1) 
-     1         + BST*ROT3(2)*STORE(L1O1+4) + BST*ROT3(3)*STORE(L1O1+7))
-C      dX/dU33
-         A1(9)= (CST*ROT2(1)*STORE(L1O1+2) + CST*ROT2(2)*STORE(L1O1+5) 
-     1         + CST*ROT2(3)*STORE(L1O1+8))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1         + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8))
-C      dX/dU23
-         A1(10)= (BST*ROT2(1)*STORE(L1O1+1) + BST*ROT2(2)*STORE(L1O1+4) 
-     1         + BST*ROT2(3)*STORE(L1O1+7))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1         + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8)) 
-     1         + (BST*ROT3(1)*STORE(L1O1+1) + BST*ROT3(2)*STORE(L1O1+4) 
-     1         + BST*ROT3(3)*STORE(L1O1+7))*(CST*ROT2(1)*STORE(L1O1+2) 
-     1         + CST*ROT2(2)*STORE(L1O1+5) + CST*ROT2(3)*STORE(L1O1+8))
-C      dX/dU13
-         A1(11)= (AST*ROT2(1)*STORE(L1O1+0) + AST*ROT2(2)*STORE(L1O1+3) 
-     1         + AST*ROT2(3)*STORE(L1O1+6))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1         + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8)) 
-     1         + (AST*ROT3(1)*STORE(L1O1+0) + AST*ROT3(2)*STORE(L1O1+3) 
-     1         + AST*ROT3(3)*STORE(L1O1+6))*(CST*ROT2(1)*STORE(L1O1+2) 
-     1         + CST*ROT2(2)*STORE(L1O1+5) + CST*ROT2(3)*STORE(L1O1+8))
-C      dX/dU12
-         A1(12)= (AST*ROT2(1)*STORE(L1O1+0) + AST*ROT2(2)*STORE(L1O1+3) 
-     1         + AST*ROT2(3)*STORE(L1O1+6))*(BST*ROT3(1)*STORE(L1O1+1) 
-     1         + BST*ROT3(2)*STORE(L1O1+4) + BST*ROT3(3)*STORE(L1O1+7)) 
-     1         + (AST*ROT3(1)*STORE(L1O1+0) + AST*ROT3(2)*STORE(L1O1+3) 
-     1         + AST*ROT3(3)*STORE(L1O1+6))*(BST*ROT2(1)*STORE(L1O1+1) 
-     1         + BST*ROT2(2)*STORE(L1O1+4) + BST*ROT2(3)*STORE(L1O1+7))
-	 
-c	     PRINT *,"Derivatives YZ", (A1(I), I=7,12)
-		 
-		
+          ! (2,3) -> 6
+          a1(7:12)=dUnew(6,:)
+     
         ELSE   !UZZBAR
-
 C      ##### ZZ DERIVS ####
-
-C      dX/dU11
-        A1(7)= (AST*ROT3(1)*STORE(L1O1+0) + AST*ROT3(2)*STORE(L1O1+3) 
-     1       + AST*ROT3(3)*STORE(L1O1+6))**2
-C      dX/dU22
-        A1(8)= (BST*ROT3(1)*STORE(L1O1+1) + BST*ROT3(2)*STORE(L1O1+4) 
-     1       + BST*ROT3(3)*STORE(L1O1+7))**2
-C      dX/dU33
-        A1(9)= (CST*ROT3(1)*STORE(L1O1+2) + CST*ROT3(2)*STORE(L1O1+5) 
-     1       + CST*ROT3(3)*STORE(L1O1+8))**2
-C      dX/dU23
-        A1(10)= 2*(BST*ROT3(1)*STORE(L1O1+1) + BST*ROT3(2)*STORE(L1O1+4) 
-     1       + BST*ROT3(3)*STORE(L1O1+7))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1       + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8))
-C      dX/dU13
-        A1(11)= 2*(AST*ROT3(1)*STORE(L1O1+0) + AST*ROT3(2)*STORE(L1O1+3) 
-     1       + AST*ROT3(3)*STORE(L1O1+6))*(CST*ROT3(1)*STORE(L1O1+2) 
-     1       + CST*ROT3(2)*STORE(L1O1+5) + CST*ROT3(3)*STORE(L1O1+8))
-C      dX/dU12
-        A1(12)= 2*(AST*ROT3(1)*STORE(L1O1+0) + AST*ROT3(2)*STORE(L1O1+3) 
-     1       + AST*ROT3(3)*STORE(L1O1+6))*(BST*ROT3(1)*STORE(L1O1+1) 
-     1       + BST*ROT3(2)*STORE(L1O1+4) + BST*ROT3(3)*STORE(L1O1+7))
-	 	    
-c            PRINT *,			
-c            PRINT *,"Derivatives ZZ:"
-c            PRINT *,A1(7)
-c            PRINT *,A1(8)
-c            PRINT *,A1(9)
-c            PRINT *,A1(10)
-c            PRINT *,A1(11)
-c            PRINT *,A1(12)
-c		    PRINT *,
-c            PRINT *,"R Matrix:"
-c            PRINT *,(ROT1(I), I=1,3)
-c            PRINT *,(ROT2(I), I=1,3)
-c            PRINT *,(ROT3(I), I=1,3)
-c            PRINT *,
-c            PRINT *,"A Matrix:"
-c		    PRINT *,(STORE(L1O1+I), I=0,8)
-c            PRINT *, SHAPE(STORE(L1O1))            
-c            PRINT *,
-c            PRINT *,"B Matrix Values:"
-c            PRINT *,AST,BST,CST
-c            PRINT *,			
-			
-			
-			
-			
-			
-			
-		END IF
-
+          ! (3,3) -> 9
+          a1(7:12)=dUnew(9,:)
+      END IF
+                
       DO  J=1,6                                                     
          a1(j)=a1(j+6) 
       END DO
-
+ 
       JO=JA   
       JX=JP   
       I=1     
-
 	  
 1300  CONTINUE                                                          CVC00930
       JO=JA                                                             CVC00940
@@ -2919,7 +2871,7 @@ C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
 1600  CONTINUE
 	  
 	  
-C--DEFINE U, B, A & R Matrices
+C--DEFINE U Matrices (B, A & R are done before)
 
       JC=ISTORE(JA+16)                                                  CVC01210	 
       JD=ISTORE(JB+16)                                                  CVC01220
@@ -2932,96 +2884,45 @@ C--DEFINE U, B, A & R Matrices
 	  	   			 		
       
 C     U Matrices
-      M_COUNT = 1      
       U_ASSIGN = (/ 1, 6, 5, 6, 2, 4, 5, 4, 3 /)
-      DO I=1,3
-	     DO J=1,3
-             U_M_1(J,I) = U_L_1(U_ASSIGN(M_COUNT))
-             U_M_2(J,I) = U_L_2(U_ASSIGN(M_COUNT))
-	         M_COUNT = M_COUNT+1
-	     END DO
-      END DO	
-
-C     B Matrix
-      M_COUNT = 1	  
-      DO I=1,3
-	     DO J=1,3
-		     IF (I .EQ. J) THEN
-			     IF (I .EQ. 1) THEN
-				     B_M(J,I) = AST
-			     ELSE IF (I .EQ. 2) THEN
-				     B_M(J,I) = BST
-			     ELSE
-				     B_M(J,I) = CST
-			     END IF
-             ELSE			 
-                 B_M(I,J) = 0
-	         END IF
-	     END DO
-      END DO			  
-				
-C     A Matrix
-      M_COUNT = 0		
-      DO I=1,3
-	     DO J=1,3
-             A_M(I,J) = STORE(L1O1+M_COUNT)
-	         M_COUNT = M_COUNT+1
-	     END DO
-      END DO		
-
-C     R Matrix		
-      DO I=1,3
-	     DO J=1,3
-		     IF (J .EQ. 1) THEN
-                 R_M(J,I) = ROT1(I)
-             ELSE IF (J .EQ. 2) THEN
-                 R_M(J,I) = ROT2(I)
-             ELSE
-                 R_M(J,I) = ROT3(I)
-             END IF				 
-	     END DO
-      END DO	  
-	  
-c            PRINT *,
-c            PRINT *,"Check U"
-c            PRINT *,
-c            PRINT *,"1: ",U_L_1			
-c            PRINT *,"2: ",U_L_2
-c            PRINT *,
-c            PRINT *,"Matrix Tests"
-c            PRINT *,
-c            PRINT *, "U1"
-c            DO I=1,3
-c			     PRINT *, U_M_1(I,1), U_M_1(I,2), U_M_1(I,3)
-c		    END DO
-c            PRINT *, "U2"
-c            DO I=1,3         
-c		         PRINT *, U_M_2(I,1), U_M_2(I,2), U_M_2(I,3)
-c		    END DO
-c            PRINT *, "B"
-c            DO I=1,3
-c                 PRINT *, B_M(I,1), B_M(I,2), B_M(I,3)
-c		    END DO
-c		    PRINT *, "A"
-c            DO I=1,3
-c                 PRINT *, A_M(I,1), A_M(I,2), A_M(I,3)
-c		    END DO
-c            PRINT *,  "R"
-c            DO I=1,3
-c                 PRINT *, R_M(I,1), R_M(I,2), R_M(I,3)
-c		    END DO
-c            PRINT *,
+      U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/))
+      U_M_2=reshape(U_L_2(U_ASSIGN), (/3,3/))
+					  
+C            PRINT *,
+C            PRINT *,"Check U"
+C            PRINT *,
+C            PRINT *,"1: ",U_L_1			
+C            PRINT *,"2: ",U_L_2
+C            PRINT *,
+C            PRINT *,"Matrix Tests"
+C            PRINT *,
+C            PRINT *, "U1"
+C            DO I=1,3
+C			     PRINT *, U_M_1(I,1), U_M_1(I,2), U_M_1(I,3)
+C		    END DO
+C            PRINT *, "U2"
+C            DO I=1,3         
+C		         PRINT *, U_M_2(I,1), U_M_2(I,2), U_M_2(I,3)
+C		    END DO
+C            PRINT *, "B"
+C            DO I=1,3
+C                 PRINT *, B_M(I,1), B_M(I,2), B_M(I,3)
+C		    END DO
+C		    PRINT *, "A"
+C            DO I=1,3
+C                 PRINT *, A_M(I,1), A_M(I,2), A_M(I,3)
+C		    END DO
+C            PRINT *,  "R"
+C            DO I=1,3
+C                 PRINT *, R_M(I,1), R_M(I,2), R_M(I,3)
+C		    END DO
+C            PRINT *,
 	 
 
 C-- RUN RABUBAR MULTIPLICATION
 
-         CALL XMLTMM(R_M, A_M, RA, 3, 3, 3)
-	     CALL XMLTMT(RA, B_M, RAB, 3, 3, 3)
-	     CALL XMLTMT(U_M_1, RAB, UBAR_1, 3, 3, 3)		 
-         CALL XMLTMM(RAB, UBAR_1, RABUBAR_1, 3, 3, 3)
-	     CALL XMLTMT(U_M_2, RAB, UBAR_2, 3, 3, 3)		 
-         CALL XMLTMM(RAB, UBAR_2, RABUBAR_2, 3, 3, 3)
-
+         RABUBAR_1=matmul(rab, matmul(U_M_1, transpose(rab)))
+         RABUBAR_2=matmul(rab, matmul(U_M_2, transpose(rab)))
 		 
 C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
          
@@ -3039,26 +2940,22 @@ C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
          DIFF_VAL = CHECK_CAL_1 - CHECK_CAL_2		 
 	     MEAN_VAL = (CHECK_CAL_1 + CHECK_CAL_2)/2 
 			 
-c		    PRINT *,
-c            PRINT *, "RA"
-c            DO I=1,3
-c			     PRINT *, RA(I,1), RA(I,2), RA(I,3)			
-c            END DO		    
-c		    PRINT *, "RAB"
-c            DO I=1,3
-c			     PRINT *, RAB(I,1), RAB(I,2), RAB(I,3)			
-c            END DO
-c	    	PRINT *, "RABUBAR_1"
-c            DO I=1,3
-c			     PRINT *, RABUBAR_1(I,1), RABUBAR_1(I,2), RABUBAR_1(I,3)
-c		    END DO
-c            PRINT *, "RABUBAR_2"
-c            DO I=1,3         
-c		         PRINT *, RABUBAR_2(I,1), RABUBAR_2(I,2), RABUBAR_2(I,3)
-c		    END DO	 
-c            PRINT *, 
-c		    PRINT *, 'Delta: ', DIFF_VAL	 
-c		    PRINT *, 'Mean: ', MEAN_VAL	 
+C		    PRINT *,
+C		    PRINT *, "RAB"
+C            DO I=1,3
+C			     PRINT *, RAB(I,1), RAB(I,2), RAB(I,3)			
+C            END DO
+C	    	PRINT *, "RABUBAR_1"
+C            DO I=1,3
+C			     PRINT *, RABUBAR_1(I,1), RABUBAR_1(I,2), RABUBAR_1(I,3)
+C		    END DO
+C            PRINT *, "RABUBAR_2"
+C            DO I=1,3         
+C		         PRINT *, RABUBAR_2(I,1), RABUBAR_2(I,2), RABUBAR_2(I,3)
+C		    END DO	 
+C            PRINT *, 
+C		    PRINT *, 'Delta: ', DIFF_VAL	 
+C		    PRINT *, 'Mean: ', MEAN_VAL	 
 			 
 C Here, you need to set D to be the computed value of the difference in the covariances
 C Note that DUMP is the target difference (and should usually be zero).
