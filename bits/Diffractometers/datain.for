@@ -912,7 +912,6 @@ c        compatibility with SHELX
 c
 C........Check if there are more atoms in the loop to get.
       if(loop_) goto 240
-241   continue
 
 
 
@@ -935,6 +934,7 @@ C....... Read the Uij loop and store in the site list
 300     if(.not.(loop_)) exit
       end do
 c
+241   continue
 c
 700   CONTINUE
       write(6,*) nsite, ' Atoms found'
