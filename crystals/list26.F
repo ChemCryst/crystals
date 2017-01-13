@@ -439,6 +439,20 @@ C 4400 AVERAGE
 C 4370 LIMIT
 C 1710 ENERGY 
 C 5000 ORIGIN
+C 5010 UXZBAR
+C 5020 UYZBAR
+C 5030 UZZBAR
+C 5040 UXPERP
+C 5050 UYPERP
+C 5060 UXPARA
+C 5070 UYPARA
+C 5080 UZPARA
+C 5500 UXXQIV
+C 5510 UXYQIV
+C 5520 UXZQIV
+C 5530 UYYQIV
+C 5540 UYZQIV
+C 5550 UZZQIV
 C 1250
 c
       write(cmon,'(/)')
@@ -2824,6 +2838,7 @@ C You need to set SUM to be the compute
       STORE(LCG+4)=0.5*(DUMP+DIFF_VAL)                                       CVC01320
       STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
       STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
+      MCA=JA                                                            CVC01500
       CALL XFMPDQ                                                       CVC01520
       JA=ISTORE(JB)                                                     CVC01530
 

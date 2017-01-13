@@ -2023,7 +2023,20 @@ C      THE NAMES OF THE VARIOUS RESTRAINTS
      1 coperation(17 ) /'AVERAGE'/,
      1 coperation(18 ) /'LIMIT'/,
      1 coperation(19 ) /'ENERGY'/,
-     1 coperation(20 ) /'ORIGIN'/
+     1 coperation(20 ) /'UXZBAR'/,
+     1 coperation(21 ) /'UYZBAR'/,
+     1 coperation(22 ) /'UZZBAR'/,
+     1 coperation(23 ) /'UXPERP'/,
+     1 coperation(24 ) /'UYPERP'/,
+     1 coperation(25 ) /'UXPARA'/,
+     1 coperation(26 ) /'UYPARA'/,
+     1 coperation(27 ) /'UZPARA'/,
+     1 coperation(28 ) /'UXXQIV'/,
+     1 coperation(29 ) /'UXYQIV'/,
+     1 coperation(30 ) /'UXZQIV'/,
+     1 coperation(31 ) /'UYYQIV'/,
+     1 coperation(32 ) /'UYZQIV'/,
+     1 coperation(33 ) /'UZZQIV'/
 C
 C
 
