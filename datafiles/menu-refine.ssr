@@ -42,8 +42,6 @@
 ^^WI  SPLIT                                                                     
 ^^WI   ITEM _SQUEEZE 'PLATON Squeeze' '#SCRIPT SQUEEZE'                         
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'               
-^^WI   ITEM _SQUEEZE 'Anomalous modified Squeeze' '#SCRIPT PLATANOM'                         
-^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'               
 ^^WI   ITEM INFO 'Information' '#SCRIPT REFINF'                                 
 ^^WI              DISABLEIF='IN'                                                
 ^^WI  ENDMENU                                                                   
