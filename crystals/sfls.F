@@ -618,14 +618,8 @@ C punch matrices cannot be written
 !      END IF
 !----
 c
-C If outputting design matrix and deltaF's then open files now.
-       IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
-       IF (sfls_punch_flag>0) THEN
-        call sfls_punch_reset_filename()
-        call sfls_punch_init_design(sfls_punch_flag)
-       END IF
-
-       ILEV = ISTORE(M33CD+12)
+      IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
+        ILEV = ISTORE(M33CD+12)
       END IF
 
       NF=-1
@@ -976,6 +970,13 @@ c turn off red
         LJS=-1
 
         CALL XFAL12(LJS,JQ,JR,JN)  ! LOAD LIST 12
+
+c---- Opening and initailising file for punching least square data
+        IF (sfls_punch_flag>0) THEN
+          call sfls_punch_reset_filename()
+          call sfls_punch_init_design(sfls_punch_flag)
+        END IF
+        
         IF ( IERFLG .LT. 0 ) GO TO 9900
         ISO_ONLY = .TRUE. ! SET THE INITIAL DETAILS FOR LINKING LISTS 12 AND 5
         IF(KSET52(0,0).GE.0)THEN    ! LINK LIST 12 AND LIST 5

@@ -507,31 +507,31 @@ character(len=latomp), dimension(natomp), parameter :: catomps= &
 
 integer, parameter :: iversn=210, icomsz=512
 
-integer, external :: kstall, krddpv, kprtln
+!integer, external :: kstall, krddpv, kprtln
 
-    icombf = kstall (icomsz)
-    call xzerof (store(icombf), icomsz)
+!    icombf = kstall (icomsz)
+!    call xzerof (store(icombf), icomsz)
 
-    istat = krddpv ( istore(icombf) , icomsz )
-    if ( istat .lt. 0 ) then
-        print *, "error allocating space in store"
-        call abort()
-    end if !go to 9910
+!    istat = krddpv ( istore(icombf) , icomsz )
+!    if ( istat .lt. 0 ) then
+!        print *, "error allocating space in store"
+!        call abort()
+!    end if !go to 9910
 
-    !c -- check if list 22 is available for printing
-    istat = kprtln ( 22 , i )
-    if ( istat .lt. 0 ) then !
-        print *, "error list 22 not available"
-        call abort()
-    end if !go to 9900
+!    !c -- check if list 22 is available for printing
+!    istat = kprtln ( 22 , i )
+!    if ( istat .lt. 0 ) then !
+!        print *, "error list 22 not available"
+!        call abort()
+!    end if !go to 9900
 
-    !c -- load lists 5 and 22
-    call xfal05
-    call xfal12 ( 0 , 0 , i , j )
-    if ( ierflg .lt. 0 ) then
-        print *, "error when loading list 5 or 22"
-        call abort()
-    end if !go to 9900
+!    !c -- load lists 5 and 22
+!    call xfal05
+!    call xfal12 ( 0 , 0 , i , j )
+!    if ( ierflg .lt. 0 ) then
+!        print *, "error when loading list 5 or 22"
+!        call abort()
+!    end if !go to 9900
 
     if(n12b>1) then
         print *, "error more than 1 bloc"
