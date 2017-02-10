@@ -429,7 +429,7 @@ character(len=2048) :: buffer
             
             res_filepath=shelx_filepath
             res_filepath(len_trim(res_filepath)-2:)='res'
-            resid=815
+            resid=816
             open(unit=resid,file=res_filepath)       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
@@ -452,7 +452,7 @@ character(len=2048) :: buffer
             
             res_filepath=shelx_filepath
             res_filepath(len_trim(res_filepath)-2:)='hkl'
-            resid=815
+            resid=816
             open(unit=resid,file=res_filepath)       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
