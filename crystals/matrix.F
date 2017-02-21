@@ -856,10 +856,50 @@ C--ZERO LENGTH VECTOR
       RETURN
       END
 C
+CODE FOR NCROP3
+      FUNCTION DNCROP3(A,B,C)
+C--COMPUTES THE CROSS PRODUCT OF THE VECTORS A AND B AND STORES THE
+C  RESULT IN C.
+C
+C  A  THE FIRST VECTOR.
+C  B  THE SECOND VECTOR.
+C  C  THE CROSS PRODUCT OF A WITH B. (C = A CROSS B).
+C
+C--THE RETURN VALUES OF 'NCROP' ARE :
+C
+C  -1  THE INPUT VECTORS ARE PARALLEL  RESULTANT VECTOR HAS ZERO LENGTH.
+C  >0  THE RESULTANT VECTOR IS NOT ZERO.
+C
+C--THE OUTPUT VECTOR IN 'C' IS NORMALISED BEFORE RETURN.
+C
+C--
+C
+      double precision A(3),B(3),C(3)
+C
+      DNCROP3=1
+      CALL DVMULT(A,B,C)
+      IF(DNORM3(C))1000,1000,1050
+C--ZERO LENGTH VECTOR
+1000  CONTINUE
+      DNCROP3=-1
+1050  CONTINUE
+      RETURN
+      END
+C
 CODE FOR VMULT
       SUBROUTINE VMULT(A,B,C)
 C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
       DIMENSION A(3),B(3),C(3)
+      C(1)=A(2)*B(3)-A(3)*B(2)
+      C(2)=A(3)*B(1)-A(1)*B(3)
+      C(3)=A(1)*B(2)-A(2)*B(1)
+      RETURN
+      END
+C
+CODE FOR VMULT
+      SUBROUTINE DVMULT(A,B,C)
+C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
+      double precision A(3),B(3),C(3)
       C(1)=A(2)*B(3)-A(3)*B(2)
       C(2)=A(3)*B(1)-A(1)*B(3)
       C(3)=A(1)*B(2)-A(2)*B(1)
@@ -918,6 +958,38 @@ C--NORMALISE THE COMPONENTS
       X(2)=X(2)*D
       X(3)=X(3)*D
       NORM3=1
+C--AND NOW RETURN
+1050  CONTINUE
+      RETURN
+      END
+CODE FOR NORM3
+      FUNCTION DNORM3(X)
+C--NORMALISE THE VECTOR 'X' SO THAT THE SUM OF THE SQUARES
+C  OF ITS THREE ELEMENTS IS UNITY.
+C
+C  X  THE VECTOR, CONTAINING THREE ELEMENTS.
+C
+C--THE RETURN VALUES OF 'NORM' ARE :
+C
+C  -1  THE VECTOR HAS ZERO LENGTH  (<0.0001).
+C  >0  ALL OKAY.
+C
+C--
+C
+      double precision X(3)
+      double precision d
+C
+C
+C--SUM THE SQUARES
+      D=sum(X**2)
+C--CHECK THAT THE VECTOR IS NOT OF ZERO LENGTH
+      DNORM3=-1
+      IF(D-ZEROSQ)1050,1050,1000
+C--NORMALISE THE COMPONENTS
+1000  CONTINUE
+      D=1./SQRT(D)
+      X=X*D
+      DNORM3=1
 C--AND NOW RETURN
 1050  CONTINUE
       RETURN
@@ -2208,8 +2280,8 @@ CODE FOR matlab_add_matrix_to_cell
       ! calculate the kronecker product of a and b
       ! An explicit interface is needed to use this subroutine!! (I don't know why)
           implicit none
-          real, dimension(:,:), intent(in)  :: a, b
-          real, dimension(:,:), intent(out) :: k
+          double precision, dimension(:,:), intent(in)  :: a, b
+          double precision, dimension(:,:), intent(out) :: k
           integer :: i, j, ma, na, mb, nb
           
           ma = ubound(a, 1)

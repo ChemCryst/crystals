@@ -2488,22 +2488,22 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION A1(12)
-      DIMENSION ROT3(3)
-      DIMENSION ROT2(3)
-      DIMENSION ROT1(3)
-      DIMENSION ANAXIS(3)
-      DIMENSION DIFF_VEC(3)
+      double precision ROT3(3)
+      double precision ROT2(3)
+      double precision ROT1(3)
+      double precision ANAXIS(3)
+      double precision DIFF_VEC(3)
       
-      DIMENSION U_L_1(6)
-      DIMENSION U_L_2(6)
-      DIMENSION U_ASSIGN (9)
-      DIMENSION U_M_1(3,3)
-      DIMENSION U_M_2(3,3)
-      DIMENSION R_M(3,3) ! rotation matrix (rot1, rot2, rot3)
-      DIMENSION RAB(3,3)
-      DIMENSION A_M(3,3) ! orthogonalisation matrix
-      DIMENSION RABUBAR_1(3,3)
-      DIMENSION RABUBAR_2(3,3)
+      double precision U_L_1(6)
+      double precision U_L_2(6)
+      integer U_ASSIGN (9)
+      double precision U_M_1(3,3)
+      double precision U_M_2(3,3)
+      double precision R_M(3,3) ! rotation matrix (rot1, rot2, rot3)
+      double precision RAB(3,3)
+      double precision A_M(3,3) ! orthogonalisation matrix
+      double precision RABUBAR_1(3,3)
+      double precision RABUBAR_2(3,3)
 
       INTEGER M_COUNT     
 
@@ -2512,7 +2512,7 @@ C
       REAL DIFF_VAL
       REAL MEAN_VAL
       
-      real, dimension(9,6) :: dUcart
+      double precision, dimension(9,6) :: dUcart
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
@@ -2584,7 +2584,7 @@ C Here is the interatomic vector in crystal fractions:
       DIFF_VEC(2)=STORE(JQ+10)-STORE(JU+10)
       DIFF_VEC(3)=STORE(JQ+12)-STORE(JU+12)
 
-      ANAXIS = (/1.0, 0.0, 0.0/)
+      ANAXIS = (/1.0d0, 0.0d0, 0.0d0/)
       
 c      print *, "Pre-Norm Pre-Orth Bond Vec"
 c      print *, A, B, C
@@ -2596,18 +2596,18 @@ c      print *,
 c      print *, "Pre-Norm Orth Bond Vec"
 c      print *, (ROT3(I), I=1,3)
 c      print *,
-      CALL NORM3(ROT3) !Normalise
+      CALL DNORM3(ROT3) !Normalise
 C Take cross product with x axis (unless angle is too close to zero, in which case, use y.
 
       VANGL = dot_product(ROT3, ANAXIS)   ! Dot product to get angle
       IF (ABS(VANGL) .GT. 0.95) THEN  ! Almost parallel, use y-axis instead.
 c         print *, "Bond // to x-axis"
-          ANAXIS = (/0.0, 1.0, 0.0/)
+          ANAXIS = (/0.0d0, 1.0d0, 0.0d0/)
       END IF
        
       ! NCROP3 = normalised cross product
-      CALL NCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
-      CALL NCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+      CALL DNCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+      CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
        
       ! rotation matrix from basis vectors
       R_M(1,:)=rot1
@@ -2773,24 +2773,24 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION A1(12)
-      DIMENSION ROT3(3)
-      DIMENSION ROT2(3)
-      DIMENSION ROT1(3)
-      DIMENSION ANAXIS(3)
-      DIMENSION DIFF_VEC(3)
+      double precision ROT3(3)
+      double precision ROT2(3)
+      double precision ROT1(3)
+      double precision ANAXIS(3)
+      double precision DIFF_VEC(3)
       
-      DIMENSION U_L_1(6)
+      double precision U_L_1(6)
 C      DIMENSION U_L_2(6)
-      DIMENSION U_ASSIGN (9)
-      DIMENSION U_M_1(3,3)
+      integer U_ASSIGN (9)
+      double precision U_M_1(3,3)
 C      DIMENSION U_M_2(3,3)
-      DIMENSION A_M(3,3)      
-      DIMENSION R_M(3,3)
-      DIMENSION RAB(3,3)
+      double precision A_M(3,3)      
+      double precision R_M(3,3)
+      double precision RAB(3,3)
 C      DIMENSION UBAR_2(3,3)
-      DIMENSION RABUBAR_1(3,3)
+      double precision RABUBAR_1(3,3)
 C      DIMENSION RABUBAR_2(3,3)
-      DIMENSION dUcart(9,6) ! dU/dxx matrix where each derivative dxx is a column vector 
+      double precision dUcart(9,6) ! dU/dxx matrix where each derivative dxx is a column vector 
 
       INTEGER M_COUNT     
 
@@ -2865,7 +2865,7 @@ C Here is the interatomic vector in crystal fractions:
       DIFF_VEC(2)=STORE(JQ+10)-STORE(JU+10)
       DIFF_VEC(3)=STORE(JQ+12)-STORE(JU+12)
 
-      ANAXIS = (/1.0, 0.0, 0.0/)
+      ANAXIS = (/1.0d0, 0.0d0, 0.0d0/)
       
 c      print *, "Pre-Norm Pre-Orth Bond Vec"
 c      print *, A, B, C
@@ -2877,17 +2877,17 @@ c      print *,
 c      print *, "Pre-Norm Orth Bond Vec"
 c      print *, (ROT3(I), I=1,3)
 c      print *,
-      CALL NORM3(ROT3) !Normalise
+      CALL DNORM3(ROT3) !Normalise
 C Take cross product with x axis (unless angle is too close to zero, in which case, use y.
 
        VANGL = dot_product(ROT3, ANAXIS)      ! Dot product to get angle
        IF (ABS(VANGL) .GT. 0.95) THEN  ! Almost parallel, use y-axis instead.
 c         print *, "Bond // to x-axis"
-          ANAXIS = (/0.0, 1.0, 0.0/)
+          ANAXIS = (/0.0d0, 1.0d0, 0.0d0/)
        END IF
        
-       CALL NCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
-       CALL NCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+       CALL DNCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+       CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
        
       ! rotation matrix from basis vectors
       R_M(1,:)=rot1
@@ -3033,26 +3033,26 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION A1(12)
-      DIMENSION ROT3(3)
-      DIMENSION ROT2(3)
-      DIMENSION ROT1(3)
-      DIMENSION ANAXIS(3), ANORTH(3)
-      DIMENSION DIFF_VEC(3)
+      double precision ROT3(3)
+      double precision ROT2(3)
+      double precision ROT1(3)
+      double precision ANAXIS(3), ANORTH(3)
+      double precision DIFF_VEC(3)
       
-      DIMENSION U_L(6)
+      double precision U_L(6)
       integer, DIMENSION(9), parameter :: U_ASSIGN = 
      &     (/ 1, 6, 5, 6, 2, 4, 5, 4, 3 /)
-      real, dimension(3,3) :: A_M
+      double precision, dimension(3,3) :: A_M
       
       type adp_t !< object holding all the infos necessary to construct the restraint
         integer atom !< index in store of the atom of the adp to restraint
         integer, dimension(3) :: basis_atoms !< atoms used to defined the basis
         integer :: U_L !< index of adps from store 
-        real, dimension(3,3) :: U_M !< adps in 2D matrix form
-        real, dimension(3,3) :: R_M !< rotation matrix
-        real, dimension(3,3) :: RAB !< transformation matrix from crystal to user defined basis
-        real, dimension(3,3) :: RABUBAR !< adp in the user defined basis
-        real, dimension(9,6) :: dUcart !< dU/dxx matrix where each derivative dxx is a column vector
+        double precision, dimension(3,3) :: U_M !< adps in 2D matrix form
+        double precision, dimension(3,3) :: R_M !< rotation matrix
+        double precision, dimension(3,3) :: RAB !< transformation matrix from crystal to user defined basis
+        double precision, dimension(3,3) :: RABUBAR !< adp in the user defined basis
+        double precision, dimension(9,6) :: dUcart !< dU/dxx matrix where each derivative dxx is a column vector
       end type
       type(adp_t), dimension(2) :: adps
 
@@ -3172,11 +3172,11 @@ C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
 
           ROT3=matmul(A_M, DIFF_VEC)
           ANORTH=matmul(A_M, ANAXIS)
-          CALL NORM3(ROT3) !Normalise
-          CALL NORM3(ANORTH) !Normalise
+          CALL DNORM3(ROT3) !Normalise
+          CALL DNORM3(ANORTH) !Normalise
            
-          CALL NCROP3(ROT3, ANORTH, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
-          CALL NCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+          CALL DNCROP3(ROT3, ANORTH, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+          CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
 
           ! rotation matrix
           adps(jj)%R_M(1,:)=rot1
@@ -3346,7 +3346,7 @@ C
 C
 CODE FOR XCVCW
       SUBROUTINE XCVCW(iaxis,iasym)
-C--CALCULATE PERPENDICULAR RESTRAINTS
+C--CALCULATE PLANAR RESTRAINTS
 C
 C      IAXIS = Not used
 C      IASYM = 1 FOR ASYMMETRIC OTHERWISE 0
@@ -3365,26 +3365,26 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION A1(12)
-      DIMENSION ROT3(3)
-      DIMENSION ROT2(3)
-      DIMENSION ROT1(3)
-      DIMENSION ANAXIS(3), ANORTH(3)
-      DIMENSION DIFF_VEC(3)
+      double precision ROT3(3)
+      double precision ROT2(3)
+      double precision ROT1(3)
+      double precision ANAXIS(3), ANORTH(3)
+      double precision DIFF_VEC(3)
       
-      DIMENSION U_L_1(6)
+      double precision U_L_1(6)
 C      DIMENSION U_L_2(6)
-      DIMENSION U_ASSIGN (9)
-      DIMENSION U_M_1(3,3)
+      integer U_ASSIGN (9)
+      double precision U_M_1(3,3)
 C      DIMENSION U_M_2(3,3)
-      DIMENSION R_M(3,3)
-      DIMENSION RA(3,3)
-      DIMENSION RAB(3,3)
-      DIMENSION UBAR_1(3,3)
+      double precision R_M(3,3)
+      double precision RA(3,3)
+      double precision RAB(3,3)
+      double precision UBAR_1(3,3)
 C      DIMENSION UBAR_2(3,3)
-      DIMENSION RABUBAR_1(3,3)
+      double precision RABUBAR_1(3,3)
 C      DIMENSION RABUBAR_2(3,3)
-      real, dimension(3,3) :: A_M ! orthogonalisation matrix
-      DIMENSION dUcart(9,6) ! dU/dxx matrix where each derivative dxx is a column vector
+      double precision, dimension(3,3) :: A_M ! orthogonalisation matrix
+      double precision dUcart(9,6) ! dU/dxx matrix where each derivative dxx is a column vector
 
       INTEGER M_COUNT     
 
@@ -3533,14 +3533,14 @@ c      print *,
       ROT3=matmul(A_M, DIFF_VEC) ! Multiply diffvec by orthogonalisation matrix
 
       ANORTH=matmul(A_M, ANAXIS)
-      CALL NORM3(ROT3) !Normalise
-      CALL NORM3(ANORTH) !Normalise
+      CALL DNORM3(ROT3) !Normalise
+      CALL DNORM3(ANORTH) !Normalise
 C Take cross product with x axis (unless angle is too close to zero, in which case, use y.
 
        VANGL = dot_product(ROT3, ANORTH)   ! Dot product to get angle
        
-       CALL NCROP3(ROT3, ANORTH, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
-       CALL NCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+       CALL DNCROP3(ROT3, ANORTH, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+       CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
 
 C The orthog matrix. It is an upper triangle assuming fortran column ordering. 
 C (i.e. offsets +1 +2 +5 are zero).
@@ -3556,88 +3556,97 @@ C Here, compute
 
       call rabubar_derivs(R_M, RAB, dUcart)           
                        
-C     #### XY DERIVS ####
-      ! (1,2) -> 2
-      a1(7:12)=dUcart(2,:)
-                     
-      a1(1:6)=a1(7:12)
-
-C-----------------------------------------------
-C--CHECK IF THE ATOM IS ANISO                                           
-      JP=ISTORE(JA+6)
-      JD=ISTORE(JA+16)
-      JX=JP ! JX used in XADUIJ
-      JO=JA ! JO used in XADUIJ
-      IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-         ISTORE(JA+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-         ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-         ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-         JE=JD
-         JF=L1C+2                                                       
-         DO l=L1C,JF                                                  
-            STORE(JE+14)=STORE(JD+14)
-            STORE(JE+20)=STORE(JD+14)*STORE(l)                        
-            JE=JE+2                                                   
-         END DO
-         STORE(JD+6)=0.
-         
-         STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
-     2       A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-      else 
-         if (iasym==1) then
-c           dont restrain first atom
-c            print *, "Asym"
-             a1(1:6) = 0.0
-         endif      
-         CALL XADUIJ  
-      END IF
-     
-C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
-      
-C--DEFINE U, B, A & R Matrices                            
-      
-
-C-- RUN RABUBAR MULTIPLICATION
       RABUBAR_1=matmul(matmul(RAB, U_M_1), transpose(rab))
-C         CALL XMLTMT(U_M_2, RAB, UBAR_2, 3, 3, 3)       
-C         CALL XMLTMM(RAB, UBAR_2, RABUBAR_2, 3, 3, 3)
-
-         
-C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
-         
-            
-      DIFF_VAL = RABUBAR_1(1,2)
-      MEAN_VAL = RABUBAR_1(1,2) / 2
-             
       if(issprt==0) then
           write(ncwu, '(1X, A)') 'RAB rotation matrix'
           do i=1, 3
               write(ncwu, '(3(E10.3, 1X))') rab(i,:)
           end do
-             
-          write(ncwu, '(1X, A, 6(E10.3, 1X))') 'Derivatives: ', a1(7:12)
-
           write(ncwu, '(1X, A)') 'RABUBAR 1'
           do i=1, 3
               write(ncwu, '(3(E10.3,1X))') 
      &            RABUBAR_1(i,:)
           end do
-          write(ncwu, '(A, E10.3)') 'Delta: ', DIFF_VAL  
-          write(ncwu, '(A, E10.3)') 'Mean: ', MEAN_VAL   
-          write(ncwu, *) ''
-      end if 
+      end if
+      do i=1, 2
+          if(i==1) then
+C     #### XY DERIVS ####
+              ! (1,2) -> 2
+              a1(7:12)=dUcart(2,:)
+              a1(1:6)=a1(7:12)
+          else
+C     #### XZ DERIVS ####
+              ! (2,3) -> 6
+              a1(7:12)=dUcart(6,:)
+              a1(1:6)=a1(7:12)
+          end if
+C-----------------------------------------------
+C--CHECK IF THE ATOM IS ANISO                                           
+          JP=ISTORE(JA+6)
+          JD=ISTORE(JA+16)
+          JX=JP ! JX used in XADUIJ
+          JO=JA ! JO used in XADUIJ
+          IF(ABS(STORE(JD+6)) .gt. zero) THEN
+C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
+              ISTORE(JA+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
+              ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
+              ISTORE(JP+1)=8         ! Where they start 
+C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
+              JE=JD
+              JF=L1C+2                                                       
+              DO l=L1C,JF                                                  
+                  STORE(JE+14)=STORE(JD+14)
+                   STORE(JE+20)=STORE(JD+14)*STORE(l)                        
+                  JE=JE+2                                                   
+              END DO
+              STORE(JD+6)=0.
+             
+              STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+
+     2           A1(4)*STORE(L1C)+A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
+          else 
+              if (iasym==1) then
+c           dont restrain first atom
+c            print *, "Asym"
+                 a1(1:6) = 0.0
+             endif      
+             CALL XADUIJ  
+          END IF
+     
+C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
+          
+          if(i==1) then           
+C             #### XY DERIVS ####
+              DIFF_VAL = RABUBAR_1(1,2)
+              MEAN_VAL = RABUBAR_1(1,2) / 2
+          else
+C             #### XZ DERIVS ####
+              DIFF_VAL = RABUBAR_1(2,3)
+              MEAN_VAL = RABUBAR_1(2,3) / 2
+          end if
+          
+          if(issprt==0) then
+              write(ncwu, '(1X,A,I1,1X,6(E10.3, 1X))') 'Derivatives: ', 
+     &            i, a1(7:12)
+
+              write(ncwu, '(A, I1, 1X, E10.3)') 'Delta: ', i, DIFF_VAL  
+              write(ncwu, '(A, I1, 1X, E10.3)') 'Mean: ', i, MEAN_VAL   
+          end if 
              
 C Here, you need to set D to be the computed value of the difference in the covariances
 C Note that DUMP is the target difference (and should usually be zero).
 C You need to set SUM to be the compute
 
-         STORE(LCG+4)=0.5*(DUMP+DIFF_VAL)                                       CVC01320
-         STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
-         MCA=JA                                                            CVC01500
-         STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
-         CALL XFMPDQ                                                       CVC01520
+          STORE(LCG+4)=0.5*(DUMP+DIFF_VAL)                                       CVC01320
+          STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
+          MCA=JA                                                            CVC01500
+          STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
+          CALL XFMPDQ                                                       CVC01520
+      end do
+      if(issprt==0) then
+          write(ncwu, *) ''
+      end if
+      
+            
          JA=ISTORE(JA_ad1)                                                     CVC01530
 c         ja=jb
 
@@ -5191,39 +5200,39 @@ C
 !!
       subroutine rabubar_derivs(R_M, RAB, dUcart)
       implicit none
-      real, dimension(3,3), intent(in) :: R_M !< Rotation matrix orienting the principal axes of the adps
-      real, dimension(9,6), intent(out) :: dUcart !< New derivatives of the adps in the new coordinate system
-      real, dimension(3,3), intent(out) :: RAB !< transformation matrix
+      double precision, dimension(3,3), intent(in) :: R_M !< Rotation matrix orienting the principal axes of the adps
+      double precision, dimension(9,6), intent(out) :: dUcart !< New derivatives of the adps in the new coordinate system
+      double precision, dimension(3,3), intent(out) :: RAB !< transformation matrix
       
       INCLUDE 'XLST01.INC'
       INCLUDE 'STORE.INC'
-      real, dimension(9,6) :: dUcif
-      real, dimension(3,3) :: A_M, B_M
-      real, dimension(9,9) :: kRAB
+      double precision, dimension(9,6) :: dUcif
+      double precision, dimension(3,3) :: A_M, B_M
+      double precision, dimension(9,9) :: kRAB
 
       ! no idea why it is necessary, maybe because of array shapes
       interface
           subroutine kronecker(k, a, b)
           ! calculate the kronecker product of a and b
           implicit none
-          real, dimension(:,:), intent(in)  :: a, b
-          real, dimension(:,:), intent(out) :: k
+          double precision, dimension(:,:), intent(in)  :: a, b
+          double precision, dimension(:,:), intent(out) :: k
           end subroutine
       end interface
                     
-            dUcif=0.0
-            dUcif(1,1)=1.0 ! dU11
-            dUcif(5,2)=1.0 ! dU22
-            dUcif(9,3)=1.0 ! dU33
-            dUcif(6,4)=1.0 ! dU23
-            dUcif(8,4)=1.0 ! dU23
-            dUcif(3,5)=1.0 ! dU13
-            dUcif(7,5)=1.0 ! dU13
-            dUcif(2,6)=1.0 ! dU12
-            dUcif(4,6)=1.0 ! dU12
+            dUcif=0.0d0
+            dUcif(1,1)=1.0d0 ! dU11
+            dUcif(5,2)=1.0d0 ! dU22
+            dUcif(9,3)=1.0d0 ! dU33
+            dUcif(6,4)=1.0d0 ! dU23
+            dUcif(8,4)=1.0d0 ! dU23
+            dUcif(3,5)=1.0d0 ! dU13
+            dUcif(7,5)=1.0d0 ! dU13
+            dUcif(2,6)=1.0d0 ! dU12
+            dUcif(4,6)=1.0d0 ! dU12
                     
             ! Ucif scaled to U*
-            B_M=0.0
+            B_M=0.0d0
             B_M(1,1)=STORE(L1P2)
             B_M(2,2)=STORE(L1P2+1)
             B_M(3,3)=STORE(L1P2+2)
@@ -5238,3 +5247,4 @@ C
             dUcart=matmul(kRAB, dUcif)
 
       end subroutine
+
