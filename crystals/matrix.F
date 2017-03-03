@@ -1050,7 +1050,8 @@ C
       call dgetrf( n, n, ab, n, ipiv, info )
 
       if(info/=0) then
-          KINV2=info
+          kinv2 = info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
           !do i=1, n
           !    print *, real(ab(i, :), 4)
           !end do
@@ -1064,10 +1065,13 @@ C
           return
       end if
 
+           
+      
       call dgetri( n, ab, n, ipiv, work, n*nb, info	)
 
       if(info/=0) then
-          KINV2=-1
+          KINV2=info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
           WRITE(NCAWU,*)' Inverter fails (dgetri) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetri) '
