@@ -353,8 +353,8 @@ C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU          24.A-VIB
 C  25.A-U(IJ)'S     26. A-DIST       27.UXZBAR        28.UYZBAR
-C  29.UZZBAR        30. UXPERP       31.UYPERP        32.UXPARA
-C  33.UYPARA        34. UZPARA       35.UXXQIV        36.UXYQIV
+C  29.UZZBAR        30. UPERP        31.ULIJ          32.URIGID
+C  33.UPLANE        34. UPLANE       35.UXXQIV        36.UXYQIV
 C  37.UXZQIV        38. UYYQIV       39.UYZQIV        40.UZZQIV
 C
 C----- ISTORE (LCG+1) OPERATIONS 
@@ -1224,7 +1224,7 @@ C--'UZZBAR' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 
-C--'UXPERP' RESTRAINT
+C--'UPERP' RESTRAINT
 2255  CONTINUE
       ISTORE(LCG+1)=24
       K=1    ! Allow one 'TO' connector
@@ -1232,23 +1232,23 @@ C--'UXPERP' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 
-C--'UYPERP' RESTRAINT
+C--'ULIJ' RESTRAINT
 2256  CONTINUE
       ISTORE(LCG+1)=25
-      K=1    ! Allow one 'TO' connector
+      K=5    ! Allow five 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 	  
-C--'UXPARA' RESTRAINT
+C--'URIGID' RESTRAINT
 2260  CONTINUE
       ISTORE(LCG+1)=26
-      K=2    ! Allow one 'TO' connector
+      K=1    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
-C--'UYPARA' RESTRAINT
+C--'UPLANE' RESTRAINT
 2261  CONTINUE
       ISTORE(LCG+1)=27
       K=2    ! Allow one 'TO' connector
@@ -1256,7 +1256,7 @@ C--'UYPARA' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
-C--'UZPARA' RESTRAINT
+C--'UPLANE' RESTRAINT
 2262  CONTINUE
       ISTORE(LCG+1)=28
       K=2    ! Allow one 'TO' connector
