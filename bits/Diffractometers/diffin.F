@@ -74,7 +74,8 @@ c
       logical lfirst,namebl,allbl,linfl,loutfl
       character*36  cspace, output_name
       character*36  output_hkl
-      character*32  response,buffer,option
+      character*32  response,buffer
+	  character*256 option
       CHARACTER*12  cdiff, ctemp
       character*132 carg1, carg2
 c
