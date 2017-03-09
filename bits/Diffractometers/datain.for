@@ -138,6 +138,7 @@ C---- INDICATE NO INFO YET FOUD
       F6L = .FALSE.
       FL6 = .FALSE.
       cspace = '?'
+	  ZM = 1.0
 c
 C....... Assign the DATA block to be accessed
 C 
