@@ -2819,9 +2819,11 @@ C       INT = INT IAND INT
 CJUN03  2 NEW UNARY OPS:
 C       CHAR=COMPRESS(CHAR) - removes extra spaces
 C       CHAR=SPGTOCRY(CHAR) - tries to fix up Xprep style space groups
+cdjwMar-2017
+C       CHAR=PACK(CHAR) - REMOVES ALL SPACES AND LEFT-PACKS
 C
 cdjwdec08
-      PARAMETER ( NOPER = 55 , NUBASE = 28 )
+      PARAMETER ( NOPER = 56 , NUBASE = 28 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2866,7 +2868,7 @@ C
 CJAN99  abs dec08
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13,  12 , 12 , 12 ,  4 /
+     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 /
 C
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
@@ -3247,7 +3249,7 @@ CJAN99  abs dec08
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
      4        5190 , 5200,  5210 , 5220 , 5230 ,
-     5        5240 , 5250,  9940 ) , IUOPER
+     5        5240 , 5250,  5260 , 9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3862,9 +3864,19 @@ C Return the absolute of the argument.
 C
         XCODE(JVALUE,IARG(1)) = ABS ( XCODE(JVALUE,IARG(1)) ) 
         ICODE(JVTYPE,IARG(1)) = 2
-C
-C
       GO TO 8000
+C
+5260  CONTINUE
+C
+C -- 'PACK'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      CALL XCRAS( CWORK1, LEN1)
+      LEN1 = MAX ( LEN1, 1 )
+      ISTAT = KSCSCD ( CWORK1(1:LEN1) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
 C
 8000  CONTINUE
 C
@@ -4107,7 +4119,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 26 )
 CJAN99  'ABS' dec08
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 27 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 28 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -4152,7 +4164,7 @@ CJAN99 'ABS' dec08
      1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47
      3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51
-     4                'GETENV','COMPRESS','SPGTOCRY','ABS'/        !52-55
+     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK'/ !52-56
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -4170,7 +4182,8 @@ CJAN99 'ABS' dec08
      1                  180   ,   180   ,   180   ,   180   ,
      2                  180   ,   180   ,   180   ,
      3                  180   ,   180   ,   180   ,   200   ,
-     4                  180   ,   180   ,   180   ,   180 /
+     4                  180   ,   180   ,   180   ,   180   ,
+     5                  180   /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
