@@ -353,9 +353,10 @@ C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU          24.A-VIB
 C  25.A-U(IJ)'S     26. A-DIST       27.UXZBAR        28.UYZBAR
-C  29.UZZBAR        30. UPERP        31.ULIJ          32.URIGID
-C  33.UPLANE        34. UPLANE       35.UXXQIV        36.UXYQIV
-C  37.UXZQIV        38. UYYQIV       39.UYZQIV        40.UZZQIV
+C  29.UZZBAR        30. UPERP        31.UPERP2        32.ULIJ          
+C  33.UALIGN        34.RIGU          35.UPLANE        36.UXXQIV        
+C  37.UXYQIV        38.UXZQIV        39.UYYQIV        40.UYZQIV        
+C  41.UZZQIV
 C
 C----- ISTORE (LCG+1) OPERATIONS 
 c      Note that some correspond to several MG values.
@@ -493,7 +494,7 @@ C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
      3     1810,1810,1810,1851,2251,1510,2258,2259,2257,2255,2256,
-     4     2260,2261,2262,2263,2264,2265,2266,2267,2268,1250)MG
+     4     2260,2261,2262,2263,2264,2265,2266,2267,2268,2269,1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -1232,15 +1233,15 @@ C--'UPERP' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 
-C--'ULIJ' RESTRAINT
+C--'UPERP2' RESTRAINT
 2256  CONTINUE
       ISTORE(LCG+1)=25
-      K=5    ! Allow five 'TO' connector
+      K=2    ! Allow five 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 	  
-C--'URIGID' RESTRAINT
+C--'UALIGN' RESTRAINT
 2260  CONTINUE
       ISTORE(LCG+1)=26
       K=1    ! Allow one 'TO' connector
@@ -1248,55 +1249,55 @@ C--'URIGID' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
-C--'UPLANE' RESTRAINT
+C--'RIGU' RESTRAINT
 2261  CONTINUE
       ISTORE(LCG+1)=27
-      K=2    ! Allow one 'TO' connector
+      K=1    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
-C--'UPLANE' RESTRAINT
+C--'ULIJ' RESTRAINT
 2262  CONTINUE
       ISTORE(LCG+1)=28
+      K=5    ! Allow five 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UPLANE' RESTRAINT
+2263  CONTINUE
+      ISTORE(LCG+1)=29
       K=2    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
 C--'UXXQIV' RESTRAINT
-2263  CONTINUE
-      ISTORE(LCG+1)=29
+2264  CONTINUE
+      ISTORE(LCG+1)=30
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 
 C--'UXYQIV' RESTRAINT
-2264  CONTINUE
-      ISTORE(LCG+1)=30
+2265  CONTINUE
+      ISTORE(LCG+1)=31
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
 C--'UXZQIV' RESTRAINT
-2265  CONTINUE
-      ISTORE(LCG+1)=31
-      K=5    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900
-
-C--'UYYQIV' RESTRAINT
 2266  CONTINUE
       ISTORE(LCG+1)=32
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
-	  
-C--'UYZQIV' RESTRAINT
+
+C--'UYYQIV' RESTRAINT
 2267  CONTINUE
       ISTORE(LCG+1)=33
       K=5    ! Allow one 'TO' connector
@@ -1304,9 +1305,17 @@ C--'UYZQIV' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 	  
-C--'UZZQIV' RESTRAINT
+C--'UYZQIV' RESTRAINT
 2268  CONTINUE
       ISTORE(LCG+1)=34
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+	  
+C--'UZZQIV' RESTRAINT
+2269  CONTINUE
+      ISTORE(LCG+1)=35
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
