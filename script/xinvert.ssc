@@ -1,18 +1,51 @@
-%SCRIPT XINVERT
+% SCRIPT XINVERT
 %%
 %% A script to invert the structure
+%% including the rogues
+%% Makes use of Markus's a_xinvert now living a
+%% paralell life as xspgrpairs
 %%
-%%  
+% VARIABLE CHARACTER L2 A2 B2 C2 
 % VARIABLE REAL CENTRO
 %% The variables needed by XQUESTIO
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
 %%
 %%
-% COPY '#GENERALEDIT 2'
-% COPY 'LOCATE RECORDTYPE=101'
-% COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
-% COPY 'END'
+% IF ( EXISTS 2 .ne. 1 ) THEN
+{E No LIST 2 available
+^^WI    WINDOW XINFO 'Warning'  MODAL
+^^WI    GRID MAIN NROWS=3 NCOLS=3                   
+^^WI     { 
+^^WI      @ 1,2 STATIC T1 'You must have a space group'
+^^WI      @ 2,2 STATIC T2 'Use Cell/Sym on Info-tab to input a SG'
+^^WI      @ 3,3 BUTTON CANCELBUTTON 'Close' CANCEL
+^^WI     } 
+^^WI    SHOW        
+^^CR 
+%       VERIFY  CANCELBUTTON 
+%       GET SILENT NOSTORE ABBREVIATED ' ' ' '
+%       CASE VALUE
+%        BLOCK
+%        END BLOCK
+%       END CASE
+^^WI    DISPOSE XINFO
+^^CR
+%  FINISH
+% ELSE
+%    COPY '#GENERALEDIT 2'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%%
+%    COPY 'LOCATE RECORDTYPE = 106'
+%    COPY 'TOP'
+%    COPY 'TRANSFER FROM OFFSET =  0 TO L2'
+%    COPY 'TRANSFER FROM OFFSET =  1 TO A2'
+%    COPY 'TRANSFER FROM OFFSET =  2 TO B2'
+%    COPY 'TRANSFER FROM OFFSET =  3 TO C2'
+%    COPY 'END'
+%  END IF
+%%
 % IF ( CENTRO .GT. 0.9 ) THEN
 %
 %  EVALUATE QTITLE = 'Centrosymmetric Spacegroup'
@@ -25,8 +58,91 @@
 %   FINISH
 %  END IF
 % END IF
+%% 
+% IF L2 .EQ. 'NONE' THEN
+ No SG name available. Use Cell/Sym to input current SG
+%   FINISH
+% ELSE
+%   EVALUATE L2 = COMPRESS ( L2 // ' ' // A2 // ' ' // B2 // -
+    ' ' // C2 )
+%   evaluate l2 = pack ( l2 )
+%   EVALUATE L2 = UPPERCASE L2
+% END IF
 %%
-% COPY '#EDIT'
-% COPY 'TRANSFORM -1 0 0 0 -1 0 0 0 -1 FIRST UNTIL LAST'
-% COPY 'END'
+% VARIABLE LOGICAL LSG
+% VARIABLE INTEGER ITEM
+% VARIABLE CHARACTER TEMP
+%%
+% verify P41 P4122  P41212 P31 P3112 P3121 P61 -
+         P62 P6122  P6222  P4132
+%%
+%     LOOP 11 TIMES
+%      EVALUATE TEMP = KEYWORD LOOPCOUNTER
+%      EVALUATE TEMP = PACK ( TEMP )
+%      IF ( TEMP .EQ. L2 ) THEN
+%          EVALUATE LSG = TRUE
+%          evaluate item = loopcounter
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END LOOP
+
+% VERIFY P43 P4322 P43212 P32   P3212 P3221 P65 -
+         P64 P6522 P6422  P4332 
+%%
+%  IF LSG .EQ. FALSE THEN
+%     LOOP 11 TIMES
+%      EVALUATE TEMP = KEYWORD LOOPCOUNTER
+%      EVALUATE TEMP = PACK ( TEMP )
+%      IF ( TEMP .EQ. L2 ) THEN
+%          EVALUATE LSG = TRUE
+%          evaluate item = loopcounter + 11
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END LOOP
+%  END IF
+%%
+%% I41   MOVE 1   .5  1   -1 
+%% I-42D MOVE 1   .5 .25  -1
+%% I4122 MOVE 1   .5 .25  -1 
+%% FDD2  MOVE .25 .25 1   -1 
+%% F4132 MOVE .25 .25 .25 -1
+%% I41CD MOVE 1   .5  1   -1
+%% I41MD MOVE 1   .5  1   -1
+%VERIFY I41 I-42D I4122 FDD2 F4132 I41CD I41MD
+%%
+%  IF LSG .EQ. FALSE THEN
+%     LOOP 7 TIMES
+%      EVALUATE TEMP = KEYWORD LOOPCOUNTER
+%      EVALUATE TEMP = PACK ( TEMP )
+%      IF ( TEMP .EQ. L2 ) THEN
+%          EVALUATE LSG = TRUE
+%          evaluate item = loopcounter + 22
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%     END LOOP
+%  END IF
+%%
+% IF LSG .EQ. FALSE THEN
+
+{I Normal inversion is appropriate
+
+%   COPY '#EDIT'
+%   COPY 'MONITOR OFF'
+%   COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%   COPY 'SHIFT 1 1 1 ALL'
+%   COPY 'END'
+%%
+% ELSE IF ITEM .LE. 22 THEN
+%%
+%   COPY '#SCRIPT XSPGRPAIRS' 
+%%
+% ELSE IF ITEM .LE. 29 THEN
+%%
+%   COPY '#SCRIPT XSPGRSHIFT'
+%%
+% ELSE
+
+SOMETHING WRONG
+
+% END IF
 %END SCRIPT
