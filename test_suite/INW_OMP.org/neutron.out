@@ -3759,7 +3759,7 @@ Bonds: Update required - List5 length change
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   Q         2.      1   1    0    0    0      39.78
+   2   Q         2.      1   1    0    0    0      39.79
 [49]    3   Q         4.      1   1    0    0    0      33.2    57.4
 [49]    4   Q        14.      1   1    0    0    0     110.8   120.2
 [49]    5   Q        15.      1   1    0    0    0      65.8   103.3
@@ -8425,7 +8425,7 @@ Bonds: Update required - List5 length change
   KEY  Atom   Serial   S(I)  L  T(X) T(Y) T(Z)
 
    1   C         7.      1   1    0    0    0
-   2   Q         2.      1   1    0    0    0      39.78
+   2   Q         2.      1   1    0    0    0      39.79
 [49]    3   Q         4.      1   1    0    0    0      33.2    57.4
 [49]    4   Q        14.      1   1    0    0    0     110.8   120.2
 [49]    5   Q        15.      1   1    0    0    0      65.8   103.3
