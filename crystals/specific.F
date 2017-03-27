@@ -2346,11 +2346,11 @@ CODE FOR CGETENV
 CODE FOR XPRTDV
       SUBROUTINE XPRTDV(NCDEV, CBUF, LINBUF, NLINES)
 C---- MACHINE SPECIFIC WRITE TO THE SCREEN
-#ifdef CRY_GUI
-C{
-      use fwrappergui_mod, only: CALLCCODE
-C}
-#endif
+c#ifdef CRY_GUI
+cC{
+c      use fwrappergui_mod, only: CALLCCODE
+cC}
+c#endif
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'CAMBLK.INC'
@@ -2409,7 +2409,7 @@ c       WRITE(123,'(A,I5)') 'N: ',N
 
        IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
 #ifdef CRY_GUI
-            CALL CALLCCODE ( CEXTRA(1:N))
+            CALL fcallc ( CEXTRA(1:N))
 #else
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
 #endif
@@ -2422,21 +2422,21 @@ c       WRITE(123,'(A,I5)') 'N: ',N
         ELSEIF (CLAST .EQ. '$') THEN !--- LEAVE CURSOR AT CURRENT POSITION
                 CFRMAT = '(A,A1)'
 #ifdef CRY_GUI
-            CALL CALLCCODE ( CEXTRA(1:N) )
+            CALL fcallc ( CEXTRA(1:N) )
 #endif
                ELSEIF ( CFIRST .EQ. '0' ) THEN
                     CFRMAT = '(/,A)'
 #ifdef CRY_NOGUI
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 #else 
-            CALL CALLCCODE ( CEXTRA(1:N))
+            CALL fcallc ( CEXTRA(1:N))
 #endif
                ELSE
                     CFRMAT = '(A)'
 #ifdef CRY_NOGUI
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 #else
-            CALL CALLCCODE ( CEXTRA(1:N))
+            CALL fcallc ( CEXTRA(1:N))
 #endif
                ENDIF
 C
@@ -2451,12 +2451,12 @@ C
 #ifdef CRY_GUI
 CODE FOR GDETCH
       SUBROUTINE GDETCH(CLINE)
-      use fwrappergui_mod, only: GUEXEC
+c      use fwrappergui_mod, only: GUEXEC
       CHARACTER*(*) CLINE
       CHARACTER*262 CEXTRA
       CEXTRA = ' '
       WRITE(CEXTRA,'(A)')CLINE
-      CALL GUEXEC ( CEXTRA//CHAR(0) )
+      CALL FWEXEC ( CEXTRA//CHAR(0) )
       RETURN
       END
 #endif

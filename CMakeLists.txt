@@ -417,7 +417,8 @@ ENDFOREACH()
 
 if ( useGUI )
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> gui/gcrystals.cc crystals/crystals.F)
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cc crystals/crystals.F)
+    ADD_EXECUTABLE (crystalscl ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
 
     if(MSYS)
         SET(OPENGL_INCLUDE_DIR "/mingw64/x86_64-w64-mingw32/include/")
@@ -434,6 +435,11 @@ if ( useGUI )
     TARGET_LINK_LIBRARIES(crystals CrystalsSleef CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
+	
+#    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
+    TARGET_LINK_LIBRARIES(crystalscl CrystalsSleef CrystalsFortran CameronFortran)
+#    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
+
 elseif( usePY )
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)

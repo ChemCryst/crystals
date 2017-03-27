@@ -578,9 +578,9 @@ C--MOVE BACK ONE MORE UNIT CELL
 
 CODE FOR XGUIUP
       SUBROUTINE XGUIUP ( IULN )
-#if defined(CRY_GUI)      
-      use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
-#endif
+C#if defined(CRY_GUI)      
+C      use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
+C#endif
 C----- UPDATE THE GUI
 C
 C Unlike earlier versions of this subroutine, we can now sometimes claim store

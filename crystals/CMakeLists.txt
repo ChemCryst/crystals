@@ -39,7 +39,6 @@ solve_helper.F90
 sfls_punch.F90
 mrgrnk.F90
 absolut.F90
-${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90
 absorb.F
 accumula.F
 alter5.F
