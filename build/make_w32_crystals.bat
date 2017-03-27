@@ -26,7 +26,7 @@ REM @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buil
 @FOR %%I IN ( ..\gui\fwrapper_gui.F90 ..\gui\fwrapperimp_gui.F90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 
 set FLIST=
-for %%x in (..\crystals\*.F) do if not "%%x" == "crystals-cl.F" set FLIST=!FLIST! %%x
+for %%x in (..\crystals\*.F) do if not "%%x" == "..\crystals\crystals-cl.F" set FLIST=!FLIST! %%x
 set LIST=%LIST:~1%
 
 @FOR %%I IN ( %FLIST% ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
