@@ -23,8 +23,13 @@
 
 @FOR %%I IN ( %F90FILES% ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 REM @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
-@FOR %%I IN ( ..\gui\*.F90 )      DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
-@FOR %%I IN ( ..\crystals\*.F ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
+@FOR %%I IN ( ..\gui\fwrapper_gui.F90 ..\gui\fwrapperimp_gui.F90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
+
+set FLIST=
+for %%x in (..\crystals\*.F) do if not "%%x" == "crystals-cl.F" set FLIST=!FLIST! %%x
+set LIST=%LIST:~1%
+
+@FOR %%I IN ( %FLIST% ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\cameron\*.F ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\gui\*.cc )      DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @if not "%COMPCODE%" == "INW" @call buildfile.bat lapack
