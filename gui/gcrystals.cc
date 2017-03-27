@@ -23,6 +23,7 @@ using namespace std;
   #ifdef CRY_OSWIN32
     #include <wx/msw/regconf.h>
   #endif
+  #include <wx/clipbrd.h>
 #endif
 
 
@@ -530,6 +531,9 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 		bRun= wxApp::OnRun();
 		bExit=1;
 	}
+	
+
+     wxTheClipboard->Flush();
 
 #ifdef __INW__
 	// Uninstall CrashRpt here...
