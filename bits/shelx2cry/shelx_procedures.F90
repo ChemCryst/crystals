@@ -173,6 +173,209 @@ character(len=:), allocatable :: stripline
 
 end subroutine
 
+!> Parse the MPLA keyword. Restrain Plane
+subroutine shelx_mpla(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+integer i, j, linepos, start, iostatus
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+logical found
+character(len=128) :: buffernum
+integer :: mplaresidue, numatom
+character(len=6), dimension(:), allocatable :: splitbuffer
+character(len=:), allocatable :: stripline
+
+    ! parsing more complicated on this one as we don't know the number of parameters
+    linepos=5 ! First 4 is DFIX
+    
+    if(len_trim(shelxline%line)<5) then
+        write(*,*) 'Error: Empty MPLA'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
+    
+    mplaresidue=-99
+    buffernum=''
+    ! check for subscripts on dfix
+    if(shelxline%line(5:5)=='_') then
+        ! check for `_*̀
+        if(shelxline%line(6:6)=='*') then
+            mplaresidue=-1
+            linepos=7
+        else
+            ! check for a residue number
+            found=.true.
+            j=0
+            do while(found)
+                found=.false.
+                do i=1, 10
+                    if(shelxline%line(6+j:6+j)==numbers(i)) then
+                        found=.true.
+                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
+                        j=j+1
+                        exit
+                    end if
+                end do
+            end do
+            if(len_trim(buffernum)>0) then
+                read(buffernum, *) mplaresidue
+                linepos=6+j
+            end if
+            
+            ! check for a residue name
+            if(mplaresidue==-99) then
+                if(shelxline%line(6:6)/=' ') then
+                    ! MPLA applied to named residue
+                    ! it is not supported
+                    write(*,*) 'Error: Not a number '
+                    write(*,*) '       Named residue not supported '
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    return
+                else
+                    write(*,*) 'Error: Cannot have a space after `_` '
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    return
+                end if
+            end if
+        end if
+    end if
+    
+    stripline=deduplicates(shelxline%line(linepos:))
+    stripline=to_upper(stripline)    
+
+    splitbuffer=explode(stripline, 6)    
+    
+    ! first element is the number of atoms (optional)
+    read(splitbuffer(1), *, iostat=iostatus) numatom
+    if(iostatus/=0) then
+        numatom=-1
+        start=0
+    else
+        start=1
+        if( numatom<3 ) then
+            print *, "Error: Can't fit a plane with less than 3 atoms"
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            return
+        end if
+    end if
+        
+    mpla_table_index=mpla_table_index+1
+    allocate(mpla_table(mpla_table_index)%atoms(size(splitbuffer)-start))
+    mpla_table(mpla_table_index)%atoms=to_upper(splitbuffer(start+1:size(splitbuffer)))
+    mpla_table(mpla_table_index)%shelxline=trim(shelxline%line)
+    mpla_table(mpla_table_index)%line_number=shelxline%line_number
+    mpla_table(mpla_table_index)%residue=mplaresidue
+
+end subroutine
+
+!> Parse the SADI keyword. Restrain bond distances to be equal to each others
+subroutine shelx_sadi(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+integer i, j, linepos, start, iostatus
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+logical found
+character(len=128) :: buffernum
+real esd
+integer :: sadiresidue
+character(len=6), dimension(:), allocatable :: splitbuffer
+character(len=:), allocatable :: stripline
+
+    ! parsing more complicated on this one as we don't know the number of parameters
+    linepos=5 ! First 4 is DFIX
+    
+    if(len_trim(shelxline%line)<5) then
+        write(*,*) 'Error: Empty SADI'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
+    
+    sadiresidue=-99
+    buffernum=''
+    ! check for subscripts on sadi
+    if(shelxline%line(5:5)=='_') then
+        ! check for `_*̀
+        if(shelxline%line(6:6)=='*') then
+            sadiresidue=-1
+            linepos=7
+        else
+            ! check for a residue number
+            found=.true.
+            j=0
+            do while(found)
+                found=.false.
+                do i=1, 10
+                    if(shelxline%line(6+j:6+j)==numbers(i)) then
+                        found=.true.
+                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
+                        j=j+1
+                        exit
+                    end if
+                end do
+            end do
+            if(len_trim(buffernum)>0) then
+                read(buffernum, *) sadiresidue
+                linepos=6+j
+            end if
+            
+            ! check for a residue name
+            if(sadiresidue==-99) then
+                if(shelxline%line(6:6)/=' ') then
+                    ! SADI applied to named residue
+                    ! it is not supported
+                    write(*,*) 'Error: Not a number '
+                    write(*,*) '       Named residue not supported '
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    return
+                else
+                    write(*,*) 'Error: Cannot have a space after `_` '
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    return
+                end if
+            end if
+        end if
+    end if
+    
+    stripline=deduplicates(shelxline%line(linepos:))
+    stripline=to_upper(stripline)    
+
+    splitbuffer=explode(stripline, 6)    
+    
+    ! first element is the esd
+    read(splitbuffer(1), *, iostat=iostatus) esd
+    if(iostatus==0) then
+        ! no esd, use default
+        start=2
+    else
+        esd=0.02
+        start=1
+    end if
+    
+    sadi_table_index=sadi_table_index+1
+    sadi_table(sadi_table_index)%esd=esd
+    sadi_table(sadi_table_index)%shelxline=trim(shelxline%line)
+    sadi_table(sadi_table_index)%line_number=shelxline%line_number
+    sadi_table(sadi_table_index)%residue=sadiresidue
+    j=0
+    do i=start, size(splitbuffer),2
+        if( (i+1)>size(splitbuffer) ) then
+            print *, 'Error: Missing a label in SADI'
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            write(*,*) repeat(' ', 5+4+len_trim(shelxline%line)), '^'
+            return
+        end if
+        j=j+1    
+        sadi_table(sadi_table_index)%atom_pairs(:,j)=(/to_upper(splitbuffer(i)), to_upper(splitbuffer(i+1))/)
+    end do
+
+end subroutine
+
 !> Pars the CELL keyword. Extract the unit cell parameter and wavelength
 subroutine shelx_cell(shelxline)
 use crystal_data_m

@@ -66,6 +66,27 @@ end type
 type(dfix_t), dimension(1024), save :: dfix_table
 integer :: dfix_table_index=0
 
+!> type MPLA
+type mpla_t
+    character(len=6), dimension(:), allocatable :: atoms
+    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    character(len=1024) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
+end type
+type(mpla_t), dimension(1024), save :: mpla_table
+integer :: mpla_table_index=0
+
+!> type SADI
+type sadi_t
+    real :: esd
+    character(len=6), dimension(2,1024) :: atom_pairs=''
+    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    character(len=1024) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
+end type
+type(sadi_t), dimension(1024), save :: sadi_table
+integer :: sadi_table_index=0
+
 !> type SAME
 type same_t
     character(len=1024) :: shelxline
@@ -79,7 +100,7 @@ integer :: same_processing=-1 !< flag if we are currently processing a same inst
 contains
 
 !> Transform a string to upper case
-function to_upper(strIn) result(strOut)
+elemental function to_upper(strIn) result(strOut)
  implicit none
 
  character(len=*), intent(in) :: strIn !< mixed case input
