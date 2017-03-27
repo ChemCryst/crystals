@@ -29,8 +29,9 @@ if(iostatus>0) then
 end if
 
 ! allocated path with correct length (+4 for extension of needed)
+! + extra 4 for data number (cif)
 deallocate(shelx_filepath)
-allocate(character(len=arg_length+4) :: shelx_filepath)
+allocate(character(len=arg_length+4+4) :: shelx_filepath)
 call get_command_argument(1, shelx_filepath, arg_length, iostatus)
 if(iostatus/=0) then
     print *, 'Cannot retrieve command line argument again'
@@ -57,13 +58,13 @@ if(.not. file_exists) then
                     print *, 'Error: No res file included in cif file'
                     stop
                 end if
-                shelx_filepath=trim(shelx_filepath)//'.res'
+                shelx_filepath=trim(shelx_filepath)//'1.res'
             end if
         else
-            shelx_filepath=trim(shelx_filepath)//'.res'
+            shelx_filepath=trim(shelx_filepath)//'1.res'
         end if
     else
-        shelx_filepath=trim(shelx_filepath)//'.ins'
+        shelx_filepath=trim(shelx_filepath)//'1.ins'
     end if
 end if
 
@@ -73,7 +74,7 @@ if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
         print *, 'Error: No res file included in cif file'
         stop
     end if
-    shelx_filepath(len_trim(shelx_filepath)-2:)='res'
+    shelx_filepath(len_trim(shelx_filepath)-3:)='1.res'
 end if
 
 shelxf_id=816

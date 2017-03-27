@@ -164,6 +164,10 @@ implicit none
     call write_list13()
 
     call write_composition()
+
+    call write_list3()
+    
+    call write_list29()
     
     call write_list5()
 
@@ -405,12 +409,15 @@ subroutine extract_res_from_cif(shelx_filepath, found)
 implicit  none
 character(len=*), intent(in) :: shelx_filepath
 logical, intent(out) :: found
-character(len=len(shelx_filepath)) :: res_filepath
+character(len=len(shelx_filepath)+4) :: res_filepath
 integer resid, cifid, iostatus
 character(len=2048) :: buffer
+integer :: data_number
+character(len=4) :: data_number_text
 
     found=.false.
     cifid=815
+    data_number=0
     open(unit=cifid,file=shelx_filepath, status='old')
     do
         read(cifid, '(a)', iostat=iostatus) buffer
@@ -420,6 +427,7 @@ character(len=2048) :: buffer
         if(index(buffer, '_shelx_res_file')>0) then
             ! found a res file!
             found=.true.
+            data_number=data_number+1
             read(cifid, '(a)', iostat=iostatus) buffer
             if(trim(buffer)/=';') then
                 print *, 'unexpected line: ', trim(buffer)
@@ -428,7 +436,8 @@ character(len=2048) :: buffer
             end if
             
             res_filepath=shelx_filepath
-            res_filepath(len_trim(res_filepath)-2:)='res'
+            write(data_number_text, '(I0)') data_number
+            res_filepath(len_trim(res_filepath)-3:)=trim(data_number_text)//'.res'
             resid=816
             open(unit=resid,file=res_filepath)       
             do
@@ -451,7 +460,8 @@ character(len=2048) :: buffer
             end if
             
             res_filepath=shelx_filepath
-            res_filepath(len_trim(res_filepath)-2:)='hkl'
+            write(data_number_text, '(I0)') data_number
+            res_filepath(len_trim(res_filepath)-3:)=trim(data_number_text)//'.hkl'
             resid=816
             open(unit=resid,file=res_filepath)       
             do
@@ -1150,6 +1160,79 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     ! CLASS MONOCLINIC
     ! END
 
+end subroutine
+
+!> write list3 (atomic scattering factors)
+subroutine write_list3()
+use crystal_data_m
+implicit none
+integer i
+
+    if(all(sfac_long==0.0)) then
+        return
+    end if
+
+    write(crystals_fileunit, '(a)') '\LIST 3 '
+    write(crystals_fileunit, '(a, 1X, I0)') 'READ', sfac_index
+    
+    do i=1, sfac_index
+        !print *, i, trim(sfac(i))
+        write(crystals_fileunit, '(a, a, 2F12.6)') 'SCATT ', trim(sfac(i)), sfac_long(10,i), sfac_long(11,i)
+        write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(1:4,i)
+        write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(5:8,i)
+        write(crystals_fileunit, '(a, F12.6)') 'CONT ', sfac_long(9,i)
+    end do    
+    write(crystals_fileunit, '(a)') 'END'
+    
+    ! process list3
+    ! \LIST 3
+    ! READ 2
+    ! SCATT C    0    0
+    ! CONT  1.93019  12.7188  1.87812  28.6498  1.57415  0.59645
+    ! CONT  0.37108  65.0337  0.24637
+    ! SCATT S 0.35 0.86  7.18742  1.43280  5.88671  0.02865
+    ! CONT               5.15858  22.1101  1.64403  55.4561
+    ! CONT              -3.87732
+    ! END
+end subroutine
+
+!> write list29 (atomic scattering factors)
+subroutine write_list29()
+use crystal_data_m
+implicit none
+integer i
+
+    if(all(sfac_long==0.0)) then
+        return
+    end if
+    
+    write(crystals_fileunit, '(a)') '\LIST 29 '
+    write(crystals_fileunit, '(a, 1X, I0)') 'READ', sfac_index
+    
+    do i=1, sfac_index
+        ! warning units in shelx file is for the unit cell, crystals wants in the asymetric unit (to be fixed)
+        write(crystals_fileunit, '(a, a, 1X, a, F0.3)') 'ELEMENT ', trim(sfac(i)), 'NUM=', sfac_units(i)
+        if(sfac_long(12,i)/=0.0) then
+            write(crystals_fileunit, '(a, F12.6)') 'CONT MUA=', sfac_long(12,i)
+        end if
+        if(sfac_long(13,i)/=0.0) then
+            write(crystals_fileunit, '(a, F12.6)') 'CONT COVALENT=', sfac_long(13,i)
+        end if
+        if(sfac_long(14,i)/=0.0) then
+            write(crystals_fileunit, '(a, F12.6)') 'CONT WEIGHT=', sfac_long(14,i)
+        end if
+    end do    
+    write(crystals_fileunit, '(a)') 'END'
+    
+    ! process list29
+    !  ELEMENT TYPE= COVALENT= VANDERWAALS= IONIC= NUMBER= MUA= WEIGHT= COLOUR=
+    ! \LIST 29
+    ! READ NELEMENT=4
+    ! ELEMENT MO NUM=0 .5
+    ! ELEMENT S NUM=2
+    ! ELEMENT O NUM=3
+    ! ELEMENT C NUM=10
+    ! END
 end subroutine
 
 !> Parse the atom parameters when adps are present.

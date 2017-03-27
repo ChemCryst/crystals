@@ -20,6 +20,9 @@ character(len=512), dimension(4) :: list31=''  !< Array holding list31 instructi
 character(len=512), dimension(5) :: composition=''  !< Array holding composition instructions
 
 character(len=3), dimension(128) :: sfac='' !< List of atom types (sfac from shelx)
+real, dimension(14, 128) :: sfac_long=0.0 !< a1 b1 a2 b2 a3 b3 a4 b4 c f' f" mu r wt coefficients (sfac from shelx)
+real, dimension(128) :: sfac_units !< number of elements in unit cell
+integer :: sfac_index=0 !< current index in sfac
 real, dimension(:), allocatable :: fvar !< list of free variables (sfac from shelx)
 real, dimension(6) :: unitcell=0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
 integer :: residue=0 !< Current residue

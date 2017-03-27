@@ -241,16 +241,15 @@ end subroutine
 
 !> Parse the SFAC keyword. Extract the atoms type use in the file.
 subroutine shelx_sfac(shelxline)
-use crystal_data_m
+use crystal_data_m, only: sfac, sfac_index, line_t, to_upper, sfac_long
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, k, code
+integer i, j, code, iostatus
 character(len=3) :: buffer
-
-    sfac=''
-    k=0
+real, dimension(14) :: longsfac
 
     i=5
+    !print *, trim(shelxline%line)
     do while(i<=len_trim(shelxline%line))
         if(shelxline%line(i:i)==' ') then
             i=i+1
@@ -261,17 +260,28 @@ character(len=3) :: buffer
         j=0
         do while(shelxline%line(i:i)/=' ')
             code=iachar(shelxline%line(i:i))
-            if( (code<65 .and. code>90) .or. (code<97 .and. code>122) ) then
-                print *, 'Error in SFAC'
-                call abort()
+            if( .not. ((code>=65 .and. code<=90) .or. (code>=97 .and. code<=122)) ) then
+                ! long sfac maybe?
+                ! SFAC E a1 b1 a2 b2 a3 b3 a4 b4 c f' f" mu r wt
+                read(shelxline%line(i:), *, iostat=iostatus) longsfac
+                if(iostatus/=0) then
+                    print *, 'Error: Syntax error'
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    call abort()
+                end if
+                sfac_long(:,sfac_index)=longsfac
+                !write(*, '(I3, 14F6.2)') sfac_index, longsfac
+                return
+            else
+                j=j+1
+                buffer(j:j)=shelxline%line(i:i)
+                i=i+1
+                if(i>len_trim(shelxline%line)) exit
             end if
-            j=j+1
-            buffer(j:j)=shelxline%line(i:i)
-            i=i+1
-            if(i>len_trim(shelxline%line)) exit
         end do
-        k=k+1
-        sfac(k)=to_upper(buffer)
+        sfac_index=sfac_index+1
+        !print *, sfac_index, to_upper(buffer)
+        sfac(sfac_index)=to_upper(buffer)
     end do   
 
 end subroutine
@@ -284,7 +294,6 @@ implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j, k, code, iostatus
 character(len=3) :: buffer
-real, dimension(128) :: units
     !SFAC C H N O
     !UNIT 116 184 8 8
     !
@@ -294,7 +303,6 @@ real, dimension(128) :: units
     ! PROPERTIES CRSCP:PROPERTIES.DAT
     ! END
 
-    units=0
     k=0
 
     i=5
@@ -318,17 +326,17 @@ real, dimension(128) :: units
             if(i>len_trim(shelxline%line)) exit
         end do
         k=k+1
-        read(buffer, *, iostat=iostatus) units(k)
+        read(buffer, *, iostat=iostatus) sfac_units(k)
     end do   
 
     composition(1)='\COMPOSITION'
     !CONTENT C 6 H 5 N O 2.5 CL
     composition(2)='CONTENT '
     do i=1, k
-        if(abs(nint(units(i))-units(i))<0.01) then
-            write(buffer, '(I0)') nint(units(i))
+        if(abs(nint(sfac_units(i))-sfac_units(i))<0.01) then
+            write(buffer, '(I0)') nint(sfac_units(i))
         else
-            write(buffer, '(F0.2)') units(i)
+            write(buffer, '(F0.2)') sfac_units(i)
         end if
         composition(2)=trim(composition(2))//' '//trim(sfac(i))//' '//trim(buffer)
     end do
