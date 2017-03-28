@@ -8,7 +8,9 @@ PROJECT(Data)
 
 ADD_CUSTOM_TARGET(subdscbuild DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/commands.dsc)
 
-ADD_CUSTOM_COMMAND(
+# GUI version uses crystalscl helper to build dsc file as intermediate step...
+if ( useGUI )
+  ADD_CUSTOM_COMMAND(
       OUTPUT commands.dsc
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/crysdef.srt crystals.srt
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
@@ -18,7 +20,18 @@ ADD_CUSTOM_COMMAND(
       DEPENDS commands.src crystalscl
       COMMENT "Processing commands.src into commands.dsc"
 )
-
+else()
+  ADD_CUSTOM_COMMAND(
+      OUTPUT commands.dsc
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/crysdef.srt crystals.srt
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
+      COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.dsc
+      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/dscbuild.cmake
+      COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
+      DEPENDS commands.src crystals
+      COMMENT "Processing commands.src into commands.dsc"
+)
+endif()
 
 
 
