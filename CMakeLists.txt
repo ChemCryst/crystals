@@ -453,6 +453,7 @@ endif()
 
 if(OpenBLAS_LIBRARY)
     TARGET_LINK_LIBRARIES(crystals ${OpenBLAS_LIBRARY})
+    TARGET_LINK_LIBRARIES(crystalscl ${OpenBLAS_LIBRARY})
 endif ()
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )

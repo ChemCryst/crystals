@@ -11,7 +11,7 @@ end subroutine
 subroutine fcallc(cc)
     implicit none
     character*(*) cc
-
+    WRITE(* ,'(1x,a)') cc
 end subroutine
 
 
