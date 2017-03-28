@@ -1,5 +1,4 @@
 !fwrapper pass through functions for the GUI version
-#if defined(CRY_GUI)
 !! subroutines below are wrappers around the c functions call
 
 subroutine fwexec(cc)
@@ -162,4 +161,3 @@ subroutine fstrng(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
     call fastdonut(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
     &   isp,ifl,iso,irad, idec,iaz)
 end subroutine
-#endif

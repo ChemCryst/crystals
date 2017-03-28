@@ -3,14 +3,12 @@
 
 
 subroutine fwexec(cc)
-    use fwrappergui_mod, only: guexec
     implicit none
     character*(*) cc
 
 end subroutine
 
 subroutine fcallc(cc)
-    use fwrappergui_mod, only: guexec
     implicit none
     character*(*) cc
 
