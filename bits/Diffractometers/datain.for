@@ -209,6 +209,14 @@ c
       IF (F1) WRITE (NCIF,1234) '_computing_data_reduction ',
      1 C80(1:NCTRIM(C80))
 C 
+C.....Look for a SHELX scalefactor
+c
+      F1 = NUMB_('_shelx_F_squared_multiplier',adum,DUM)
+      if (f1) then
+       FZ = NUMB_('_cell_formula_units_Z',RSCALE,DUM)
+      endif
+      IF (.NOT. (FZ)) RSCALE=1.
+C 
 c
 C....... Read in Z
 c
@@ -540,6 +548,9 @@ C
          IH=NINT(RH)
          IK=NINT(RK)
          IL=NINT(RL)
+c........ use SHELX scalefactor
+         RF = RF/RSCALE
+         RS = RS/RSCALE
          IF ((ABS(IL).GT.255).OR.(ABS(IK).GT.255).OR.(ABS(IH).GT.255))
      1    THEN
           WRITE(6,'(A,3I10,2F10.2,i10)') 'Index too big for CRYSTALS',
@@ -563,18 +574,18 @@ C
          MAXK=MAX(MAXK,IK)
          MAXL=MAX(MAXL,IL)
 C
-        if (( rf .lt. 99999. ).and.( rc .lt. 99999. )) then
-          write ( noutr, '(3I4,3F8.2)' )ih,ik,il,rf,rs
-     1                                  ,rc
+        if (( rf .lt. 9999. ).and.( rc .lt. 9999. )) then
+          write ( noutr, '(3I4,3F10.3)' )ih,ik,il,rf,rs, rc
+        else if (( rf .lt. 99999. ).and.( rc .lt. 99999. )) then
+          write ( noutr, '(3I4,3F10.2)' )ih,ik,il,rf,rs, rc
         else if (( rf .lt. 999999. ).and.( rc .lt. 999999. )) then
-          write ( noutr, '(3I4,3F8.1)' )ih,ik,il,rf,rs
-     1                                  ,rc
+          write ( noutr, '(3I4,3F10.1)' )ih,ik,il,rf,rs, rc
         else if (( rf .lt. 9999999. ).and.( rc .lt. 9999999. )) then
-          write ( noutr, '(3I4,3F8.0)' )ih,ik,il,rf,rs
-     1                                  ,rc
+          write ( noutr, '(3I4,3F10.0)' )ih,ik,il,rf,rs, rc
         else
-          write ( noutr, '(3I4,3I8)' )ih,ik,il,
-     *                                NINT(rf),NINT(rs),NINT(rc)
+          write ( noutr, '(A)') 
+     1    'F8 format overflow. fcf values too big'
+          write ( noutr, '(3I4,3F12.0)' )ih,ik,il,rf,rs, rc
         end if
 
         if(.not.(loop_)) exit
@@ -623,12 +634,13 @@ C
 C
 C
 C....... Extract space group notation (expected char string)
+C        Note _alt is the old short name
       CSPACE = '?'
-      F1=CHAR_('_symmetry_space_group_name_H-M',c80)
-      if(f1) FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
-      if(.not. f1) then
        F1=CHAR_('_space_group_name_H-M_alt',c80)
        if(f1) FSG=CHAR_('_space_group_name_H-M_alt',NAME)
+      if(.not. f1) then
+      F1=CHAR_('_symmetry_space_group_name_H-M',c80)
+      if(f1) FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
       endif
 c
       IF (.NOT.(FSG)) THEN
@@ -949,9 +961,9 @@ C
       IF (.NOT.(FC)) THEN
          write(6,'(//a)') 'No cell DATA in this block.'
          write(NTEXT,'(a)') 'No cell DATA in this block.'
-         write(6,'(//a)') 'Abandoning  block'
-         write(NTEXT,'(a)') 'Abandoning block'
-         GO TO 1050
+c         write(6,'(//a)') 'Abandoning  block'
+c         write(NTEXT,'(a)') 'Abandoning block'
+c         GO TO 1050
       END IF
 C
 5678  CONTINUE
@@ -1221,7 +1233,7 @@ Cc #LIST 6
           write(NOUTF,'(a)')'READ F''S=FO NCOEF=6 TYPE=FIXED CHECK=NO'
         end if
         write(NOUTF,'(a)')'INPUT H K L /FO/ SIGMA(/FO/) /Fc/'
-        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F8.0)'
+        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F10.0)'
         write(NOUTF,'(a)')'STORE NCOEF=7'
         write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
         write(NOUTF,'(a)')'END'

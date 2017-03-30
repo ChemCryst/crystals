@@ -1,3 +1,18 @@
+C MORE BAD NEWS, MARCH 2017
+c Space group 141 has the old symbol I 41/a m d, which is acceptable
+c to CRYSTALS as  _space_group_name_H-M_alt
+c I 41/a 2/m 2/d is accessible as _symmetry_space_group_name_H-M, but
+c CRYSTALS cannot parse this:
+c symmetry_space_group_name_H-M
+c
+c  0001*  #space 
+c  0002*  sym i 41/a 2/m 2/d 
+c  0003*  end 
+c  Error while processing space group symbol I41/A 2/M 
+c  3 fields are legal only in R lattices and m3 cubic  
+c
+c
+c
 C RIC - added bug message in here for safe-keeping:
 C
 c Dear David,   Hope this finds you all well!
@@ -218,7 +233,7 @@ C
         NC = KNEQUL ( NC , IB )
         IF ( NC .LE. 0 ) GO TO 9810
         IF ( NC .GT. LASTCH ) GO TO 9810
-      ISIZE = MIN0 ( LASTCH - NC + 1 , LEN ( CBUFF1 ) )
+        ISIZE = MIN0 ( LASTCH - NC + 1 , LEN ( CBUFF1 ) )
         WRITE ( CBUFF1 , '(20A1)' ) ( IMAGE(J), J = NC, NC + ISIZE - 1 )
         NC = LASTCH + 1
         GO TO 1000
@@ -240,6 +255,16 @@ C
 C
 C
 C -- INPUT COMPLETED
+c
+c start patching SG which the old code cannot handle
+c
+c sg 141
+      IF ( CBUFF1(1:14) .EQ. 'I 41/A 2/M 2/D' ) THEN
+        CBUFF1 = 'I 41/A M D '
+        WRITE ( CMON, '(A,A)' ) 
+     1 '  Space Group 141 converted to ', cbuff1(1:14)
+        CALL XPRVDU(NCEROR, 1,0)
+      ENDIF
 C
 C -- CHECK FOR ERRORS DURING INPUT
 C
