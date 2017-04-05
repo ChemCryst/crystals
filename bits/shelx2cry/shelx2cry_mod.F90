@@ -557,7 +557,7 @@ character(len=1024) :: buffer1, buffer2, buffertemp
 
                 buffertemp='PLANAR 0.05'
                 do j=1, l
-                     do k=1, size(mpla_table(j)%atoms)
+                     do k=1, size(mpla_table(i)%atoms)
                         write(buffer1, '(a,"(",I0,")")') &
                         &   trim(sfac(atomslist(serial(j,k))%sfac)), atomslist(serial(j,k))%crystals_serial
                         buffertemp=trim(buffertemp)//' '//trim(buffer1)

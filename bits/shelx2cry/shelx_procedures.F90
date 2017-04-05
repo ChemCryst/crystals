@@ -194,6 +194,18 @@ character(len=:), allocatable :: stripline
         write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         return
     end if
+
+    if(index(shelxline%line,'<')>0 .or. index(shelxline%line,'>')>0) then
+        write(*,*) 'Error: < or > is not implemented'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
+    
+    if(index(shelxline%line,'$')>0) then
+        write(*,*) 'Error: symmetry equivalent `_$?` is not implemented'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
     
     mplaresidue=-99
     buffernum=''
@@ -496,7 +508,7 @@ use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j, k, code, iostatus
-character(len=3) :: buffer
+character(len=12) :: buffer
     !SFAC C H N O
     !UNIT 116 184 8 8
     !
