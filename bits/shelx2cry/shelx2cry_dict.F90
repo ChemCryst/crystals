@@ -203,11 +203,11 @@ type(dict_t) :: this
 end function
 
 !> Get the subroutine corresponding to a keyword
-function getvalue(this, key) result(proc)
+subroutine getvalue(this, key, proc)
 implicit none
 class(dict_t) :: this
 character(len=4), intent(in) :: key
-procedure(shelx_dummy), pointer :: proc
+procedure(shelx_dummy), pointer, intent(out) :: proc
 integer i
     
     proc => null()
@@ -224,7 +224,7 @@ integer i
         end do
     end associate
     
-end function
+end subroutine
 
 
 end module

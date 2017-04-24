@@ -82,7 +82,7 @@ open(unit=shelxf_id,file=trim(shelx_filepath), status='old')
 iostatus=0
 do while(iostatus==0)
     call readline(shelxf_id, line, iostatus)
-    !print *, line_number, iostatus, trim(line)
+    !print *, 'reading: ', line%line_number, iostatus, trim(line%line)
     call call_shelxprocess(line)
     if(the_end) exit
 end do

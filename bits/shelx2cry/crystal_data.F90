@@ -26,6 +26,7 @@ integer :: sfac_index=0 !< current index in sfac
 real, dimension(:), allocatable :: fvar !< list of free variables (sfac from shelx)
 real, dimension(6) :: unitcell=0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
 integer :: residue=0 !< Current residue
+character(len=128), dimension(:), allocatable :: residue_names !< Name or class of the residues
 integer :: part=0 !< current part
 real :: part_sof=-1.0 !< Overriding subsequent site occupation factor
 
@@ -60,6 +61,7 @@ type dfix_t
     real :: distance, esd
     character(len=6) :: atom1, atom2
     integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    character(len=128) :: namedresidue !< Residue alias name
     character(len=1024) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
@@ -70,6 +72,7 @@ integer :: dfix_table_index=0
 type mpla_t
     character(len=6), dimension(:), allocatable :: atoms
     integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    character(len=128) :: namedresidue='' !< Residue alias
     character(len=1024) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
@@ -79,8 +82,9 @@ integer :: mpla_table_index=0
 !> type SADI
 type sadi_t
     real :: esd
-    character(len=6), dimension(2,1024) :: atom_pairs=''
-    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    character(len=6), dimension(:,:), allocatable :: atom_pairs !< pairs of atoms 
+    integer :: residue=-99 !< Residue number -99=None, -98=alias residue, -1=all, else is the residue number
+    character(len=128) :: namedresidue='' !< Alias of a residue
     character(len=1024) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type

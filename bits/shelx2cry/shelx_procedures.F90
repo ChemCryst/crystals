@@ -68,6 +68,7 @@ integer i, j, linepos, start, iostatus
 character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
 logical found
 character(len=128) :: buffernum
+character(len=128) :: namedresidue
 real distance, esd
 integer :: dfixresidue
 character(len=64), dimension(:), allocatable :: splitbuffer
@@ -75,6 +76,7 @@ character(len=:), allocatable :: stripline
 
     ! parsing more complicated on this one as we don't know the number of parameters
     linepos=5 ! First 4 is DFIX
+    namedresidue=''
     
     if(len_trim(shelxline%line)<5) then
         write(*,*) 'Error: Empty DFIX'
@@ -114,12 +116,17 @@ character(len=:), allocatable :: stripline
             if(dfixresidue==-99) then
                 if(shelxline%line(6:6)/=' ') then
                     ! DFIX applied to named residue
-                    ! it is not supported
-                    write(*,*) 'Error: Not a number '
-                    write(*,*) '       Named residue not supported '
-                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    return
+                    i=6
+                    j=1
+                    do while(shelxline%line(i:i)/=' ')
+                        namedresidue(j:j)=shelxline%line(i:i)
+                        i=i+1
+                        j=j+1
+                        linepos=linepos+1
+                        if(i>=len(shelxline%line)) exit
+                    end do
+                    dfixresidue=-98
+                    linepos=linepos+1
                 else
                     write(*,*) 'Error: Cannot have a space after `_` '
                     write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -169,6 +176,7 @@ character(len=:), allocatable :: stripline
         dfix_table(dfix_table_index)%shelxline=trim(shelxline%line)
         dfix_table(dfix_table_index)%line_number=shelxline%line_number
         dfix_table(dfix_table_index)%residue=dfixresidue
+        dfix_table(dfix_table_index)%namedresidue=namedresidue
     end do
 
 end subroutine
@@ -182,8 +190,9 @@ integer i, j, linepos, start, iostatus
 character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
 logical found
 character(len=128) :: buffernum
+character(len=128) :: namedresidue
 integer :: mplaresidue, numatom
-character(len=6), dimension(:), allocatable :: splitbuffer
+character(len=128), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
 
     ! parsing more complicated on this one as we don't know the number of parameters
@@ -234,31 +243,36 @@ character(len=:), allocatable :: stripline
                 read(buffernum, *) mplaresidue
                 linepos=6+j
             end if
-            
+
             ! check for a residue name
             if(mplaresidue==-99) then
                 if(shelxline%line(6:6)/=' ') then
                     ! MPLA applied to named residue
-                    ! it is not supported
-                    write(*,*) 'Error: Not a number '
-                    write(*,*) '       Named residue not supported '
-                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    return
+                    i=6
+                    j=1
+                    do while(shelxline%line(i:i)/=' ')
+                        namedresidue(j:j)=shelxline%line(i:i)
+                        i=i+1
+                        j=j+1
+                        linepos=linepos+1
+                        if(i>=len(shelxline%line)) exit
+                    end do
+                    mplaresidue=-98
+                    linepos=linepos+1
                 else
                     write(*,*) 'Error: Cannot have a space after `_` '
                     write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
                     return
                 end if
-            end if
+            end if        
         end if
     end if
     
     stripline=deduplicates(shelxline%line(linepos:))
     stripline=to_upper(stripline)    
 
-    splitbuffer=explode(stripline, 6)    
+    splitbuffer=explode(stripline, 128)    
     
     ! first element is the number of atoms (optional)
     read(splitbuffer(1), *, iostat=iostatus) numatom
@@ -280,6 +294,7 @@ character(len=:), allocatable :: stripline
     mpla_table(mpla_table_index)%shelxline=trim(shelxline%line)
     mpla_table(mpla_table_index)%line_number=shelxline%line_number
     mpla_table(mpla_table_index)%residue=mplaresidue
+    mpla_table(mpla_table_index)%namedresidue=namedresidue
 
 end subroutine
 
@@ -294,8 +309,9 @@ logical found
 character(len=128) :: buffernum
 real esd
 integer :: sadiresidue
-character(len=6), dimension(:), allocatable :: splitbuffer
+character(len=128), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
+character(len=128) :: namedresidue
 
     ! parsing more complicated on this one as we don't know the number of parameters
     linepos=5 ! First 4 is DFIX
@@ -337,13 +353,19 @@ character(len=:), allocatable :: stripline
             ! check for a residue name
             if(sadiresidue==-99) then
                 if(shelxline%line(6:6)/=' ') then
-                    ! SADI applied to named residue
-                    ! it is not supported
-                    write(*,*) 'Error: Not a number '
-                    write(*,*) '       Named residue not supported '
-                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(*,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    return
+                    ! DFIX applied to named residue
+                    namedresidue=''
+                    i=6
+                    j=1
+                    do while(shelxline%line(i:i)/=' ')
+                        namedresidue(j:j)=shelxline%line(i:i)
+                        i=i+1
+                        j=j+1
+                        linepos=linepos+1
+                        if(i>=len(shelxline%line)) exit
+                    end do
+                    sadiresidue=-98
+                    linepos=linepos+1
                 else
                     write(*,*) 'Error: Cannot have a space after `_` '
                     write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -357,14 +379,15 @@ character(len=:), allocatable :: stripline
     stripline=deduplicates(shelxline%line(linepos:))
     stripline=to_upper(stripline)    
 
-    splitbuffer=explode(stripline, 6)    
+    splitbuffer=''
+    splitbuffer=explode(stripline, 128)    
     
     ! first element is the esd
     read(splitbuffer(1), *, iostat=iostatus) esd
     if(iostatus==0) then
-        ! no esd, use default
         start=2
     else
+        ! no esd, use default
         esd=0.02
         start=1
     end if
@@ -374,16 +397,21 @@ character(len=:), allocatable :: stripline
     sadi_table(sadi_table_index)%shelxline=trim(shelxline%line)
     sadi_table(sadi_table_index)%line_number=shelxline%line_number
     sadi_table(sadi_table_index)%residue=sadiresidue
-    j=0
-    do i=start, size(splitbuffer),2
-        if( (i+1)>size(splitbuffer) ) then
-            print *, 'Error: Missing a label in SADI'
-            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-            write(*,*) repeat(' ', 5+4+len_trim(shelxline%line)), '^'
-            return
-        end if
-        j=j+1    
-        sadi_table(sadi_table_index)%atom_pairs(:,j)=(/to_upper(splitbuffer(i)), to_upper(splitbuffer(i+1))/)
+    sadi_table(sadi_table_index)%namedresidue=namedresidue
+    
+    do j=1, size(splitbuffer)
+        if( trim(splitbuffer(j))=='' ) exit
+    end do
+    if(mod(j-start,2)/=0) then
+        ! odd number of atoms
+        print *, 'Error: Missing a label in SADI'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
+    allocate(sadi_table(sadi_table_index)%atom_pairs(2, (j-start)/2))
+    
+    do i=0, (j-start)/2-1
+        sadi_table(sadi_table_index)%atom_pairs(:,i+1)=(/splitbuffer(start+i*2), splitbuffer(start+i*2+1)/)
     end do
 
 end subroutine
@@ -439,6 +467,7 @@ implicit none
 type(line_t), intent(in) :: shelxline
 real, dimension(1024) :: temp ! should be more than enough
 integer iostatus, i
+real, dimension(:), allocatable :: fvartemp
 
     temp=0.0
     read(shelxline%line(5:), *, iostat=iostatus) temp
@@ -449,8 +478,17 @@ integer iostatus, i
     do i=1024,1,-1
         if(temp(i)/=0.0) exit
     end do
-    allocate(fvar(i))
-    fvar=temp(1:i)
+    if(.not. allocated(fvar)) then
+        allocate(fvar(i))
+        fvar=temp(1:i)
+    else
+        allocate(fvartemp(size(fvar)))
+        fvartemp=fvar
+        deallocate(fvar)
+        allocate(fvar(i+size(fvartemp)))
+        fvar(1:size(fvartemp))=fvartemp
+        fvar(size(fvartemp)+1:)=temp(1:i)
+    end if
 
 end subroutine
 
@@ -590,8 +628,75 @@ subroutine shelx_resi(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
+character(len=128) :: aname, buffer
+integer i, j, start
+character(len=128), dimension(:), allocatable :: residue_temp
 
-    read(shelxline%line(5:), *) residue
+    !read(shelxline%line(5:), *) residue
+    
+    ! Read in the number
+    start=5
+    do while(shelxline%line(start:start)==' ')
+        start=start+1
+        if(start>len_trim(shelxline%line)) exit
+    end do
+    j=0
+    buffer=''
+    do i=start, len_trim(shelxline%line)
+        if(shelxline%line(i:i)==' ') then
+            exit
+        end if
+        j=j+1
+        buffer(j:j)=shelxline%line(i:i)
+    end do
+    read(buffer, *) residue
+    !print *, trim(shelxline%line), trim(buffer), residue
+    
+    !if(residue==0) then
+    !    print *, 'Error: residue index is zero'
+    !    call abort()
+    !end if
+
+    ! Read in the residue name
+    start=i
+    if(start<=len_trim(shelxline%line)) then
+        do while(shelxline%line(start:start)==' ')
+            start=start+1
+            if(start>len_trim(shelxline%line)) exit
+        end do
+        j=0
+        buffer=''
+        do i=start, len_trim(shelxline%line)
+            if(shelxline%line(i:i)==' ') then
+                exit
+            end if
+            j=j+1
+            buffer(j:j)=shelxline%line(i:i)
+        end do
+        read(buffer, *) aname
+    else
+        aname=''
+    end if
+    !residue_names
+    if(aname/='') then
+        if(.not. allocated(residue_names)) then
+            allocate(residue_names(max(1024, residue)))
+            residue_names=''
+            residue_names(residue)=trim(aname)
+        else
+            if(residue>size(residue_names)) then
+                allocate(residue_temp(size(residue_names)))
+                residue_temp=residue_names
+                deallocate(residue_names)
+                allocate(residue_names(max(size(residue_temp)+1024, residue)))
+                residue_names=''
+                residue_names(1:size(residue_temp))=residue_temp
+                residue_names(residue)=trim(aname)
+            else
+                residue_names(residue)=trim(aname)
+            end if
+        end if
+    end if
 end subroutine
 
 !> Parse PART keyword. Change the current part to the new value found.<br />
