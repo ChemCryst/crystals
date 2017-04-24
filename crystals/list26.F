@@ -2900,11 +2900,6 @@ C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
              STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
      2          A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
           else 
-             if (iasym==1) then
-c           dont restrain first atom
-c            print *, "Asym"
-                 a1(1:6) = 0.0
-             endif      
              CALL XADUIJ  
           END IF
             

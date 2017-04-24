@@ -7924,8 +7924,8 @@ CODE FOR DIS11
 c----- set c-h distance to dist
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a,f5.2,a )') 'dist ', dist, ', 0.02 = '
@@ -7963,8 +7963,8 @@ c----- set h-c-c angle to 180.0
 c
       INCLUDE 'XUNITS.INC'
       CHARACTER*132 CLINE
-      CHARACTER catom1*(*), cbonda(4)*(*)
       PARAMETER (NBONDA=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
 C
       DO J=1,KHY
@@ -7988,8 +7988,8 @@ c----- set h-c-c angle to mean of group
 c
       INCLUDE 'XUNITS.INC'
       CHARACTER*132 CLINE
-      CHARACTER catom1*(*), cbonda(4)*(*)
       PARAMETER (NBONDA=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
 C
       WRITE(CLINE,'(A )') 'ANGLE 0.0, 2.0 = MEAN'
@@ -8019,8 +8019,8 @@ c----- set c-c-h angle to mean of group of several h's
 c
       INCLUDE 'XUNITS.INC'
       CHARACTER*132 CLINE
-      CHARACTER catom1*(*), cbonda(4)*(*)
       PARAMETER (NBONDA=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
 C
       WRITE(CLINE,'(A )') 'ANGLE 0.0, 2.0 = MEAN'
@@ -8049,8 +8049,8 @@ c--- set h-c-c angle to 109.54
 c
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 109.54, 2.0 = '
@@ -8078,8 +8078,8 @@ c--- set h-c-c angle to 120
 c
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 120.0, 2.0 = '
@@ -8106,8 +8106,8 @@ CODE FOR hch109
       SUBROUTINE hch109(khy, ihy, catom1, cbonda, iparth)
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 109.54, 2.0 = '
@@ -8144,8 +8144,8 @@ CODE FOR hchav
       SUBROUTINE hchav(khy, ihy, catom1, cbonda, iparth)
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 0.0, 2.0 = mean '
@@ -8183,8 +8183,8 @@ CODE FOR PLANH
       SUBROUTINE PLANH(khy, ihy, catom1, cbonda)
       INCLUDE 'XUNITS.INC'
       character*240 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
         write(cline,'(a,a,a,a,a,a )') 
