@@ -3368,6 +3368,7 @@ C Take a perpendiculat vector
       CALL DNORM3(ROT2) !Normalise
 
       CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+      CALL DNORM3(ROT1) !Normalise
        
       ! rotation matrix from basis vectors
       R_M(1,:)=rot1
@@ -3653,7 +3654,9 @@ c         print *, "Bond // to x-axis"
        
       ! NCROP3 = normalised cross product
       CALL DNCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+      CALL DNORM3(ROT2) !Normalise
       CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+      CALL DNORM3(ROT1) !Normalise
        
       ! rotation matrix from basis vectors
       R_M(1,:)=rot1
@@ -3932,7 +3935,9 @@ c         print *, "Bond // to x-axis"
        END IF
        
        CALL DNCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+       CALL DNORM3(ROT2) !Normalise
        CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+       CALL DNORM3(ROT1) !Normalise
        
       ! rotation matrix from basis vectors
       R_M(1,:)=rot1
@@ -4182,7 +4187,9 @@ c         print *, "Bond // to x-axis"
        END IF
        
        CALL DNCROP3(ROT3, ANAXIS, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+       CALL DNORM3(ROT2) !Normalise
        CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+       CALL DNORM3(ROT1) !Normalise
        
       ! rotation matrix from basis vectors
       R_M(1,:)=rot1
@@ -4807,7 +4814,9 @@ c      print *,
       
 C Take cross product with x axis 
        CALL DNCROP3(ROT3, ANORTH, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+       CALL DNORM3(ROT2) !Normalise
        CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+       CALL DNORM3(ROT1) !Normalise
 
 C The orthog matrix. It is an upper triangle assuming fortran column ordering. 
 C (i.e. offsets +1 +2 +5 are zero).
