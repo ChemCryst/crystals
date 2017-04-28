@@ -2000,24 +2000,10 @@ end subroutine
 subroutine write_list3()
 use crystal_data_m
 implicit none
-integer i
+integer i, j
 
-    if(all(sfac_long==0.0)) then
-        return
-    end if
+    if(any(sfac_long/=0.0)) then
 
-    write(crystals_fileunit, '(a)') '\LIST 3 '
-    write(crystals_fileunit, '(a, 1X, I0)') 'READ', sfac_index
-    
-    do i=1, sfac_index
-        !print *, i, trim(sfac(i))
-        write(crystals_fileunit, '(a, a, 2F12.6)') 'SCATT ', trim(sfac(i)), sfac_long(10,i), sfac_long(11,i)
-        write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(1:4,i)
-        write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(5:8,i)
-        write(crystals_fileunit, '(a, F12.6)') 'CONT ', sfac_long(9,i)
-    end do    
-    write(crystals_fileunit, '(a)') 'END'
-    
     ! process list3
     ! \LIST 3
     ! READ 2
@@ -2028,6 +2014,61 @@ integer i
     ! CONT               5.15858  22.1101  1.64403  55.4561
     ! CONT              -3.87732
     ! END
+    
+        write(crystals_fileunit, '(a)') '\LIST 3 '
+        write(crystals_fileunit, '(a, 1X, I0)') 'READ', sfac_index
+        
+        do i=1, sfac_index
+            !print *, i, trim(sfac(i))
+            write(crystals_fileunit, '(a, a, 2F12.6)') 'SCATT ', trim(sfac(i)), sfac_long(10,i), sfac_long(11,i)
+            write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(1:4,i)
+            write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(5:8,i)
+            write(crystals_fileunit, '(a, F12.6)') 'CONT ', sfac_long(9,i)
+        end do    
+        write(crystals_fileunit, '(a)') 'END'
+        
+    end if
+    
+    if(allocated(disp_table)) then
+    
+        !\generaledit 3
+        !LOCATE RECORDTYPE=101
+        !top
+        !next
+        !next
+        !TRANSFER TO OFFSET=1 FROM 1.01
+        !TRANSFER TO OFFSET=2 FROM 2.03
+        !write
+        !end
+        
+        write(crystals_fileunit, '(a)') '\GENERALEDIT 3 '
+        write(crystals_fileunit, '(a)') 'LOCATE RECORDTYPE=101'
+        write(crystals_fileunit, '(a)') 'TOP'
+    
+        do i=1, size(sfac)
+            if(sfac(i)=='') exit
+            if(i/=1) write(crystals_fileunit, '(a)') 'NEXT'
+            
+            do j=1, size(disp_table)
+                if(sfac(i)==disp_table(j)%atom) then
+                    write(crystals_fileunit, '(a,a)') '# ', trim(disp_table(j)%shelxline)
+                    if(disp_table(j)%values(1)/=0.0) then
+                        write(crystals_fileunit, '(a, f15.5)') 'TRANSFER TO OFFSET=1 FROM ', disp_table(j)%values(1)
+                    end if
+                    if(disp_table(j)%values(2)/=0.0) then
+                        write(crystals_fileunit, '(a, f15.5)') 'TRANSFER TO OFFSET=2 FROM ', disp_table(j)%values(2)
+                    end if
+                    exit
+                end if
+            end do
+        end do
+        
+        write(crystals_fileunit, '(a)') 'WRITE'
+        write(crystals_fileunit, '(a)') 'END'
+    end if                   
+            
+    
+    
 end subroutine
 
 !> write list29 (atomic scattering factors)

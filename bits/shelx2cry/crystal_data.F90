@@ -30,6 +30,14 @@ character(len=128), dimension(:), allocatable :: residue_names !< Name or class 
 integer :: part=0 !< current part
 real :: part_sof=-1.0 !< Overriding subsequent site occupation factor
 
+type disp_t
+    character(len=512) :: shelxline !< raw line from res/ins file
+    integer :: line_number !< line number of shelxline from res/ins file
+    character(len=3) :: atom
+    real, dimension(3) :: values
+end type
+type(disp_t), dimension(:), allocatable :: disp_table !< List of disp keywords
+
 !> Atom type. It holds hold the information about an atom in the structure
 type atom_t
     character(len=6) :: label !< label from shelx

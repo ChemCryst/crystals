@@ -81,7 +81,7 @@ type(dict_t) :: this
         tuples(21)%key='DFIX'
         tuples(21)%func => shelx_dfix
         tuples(22)%key='DISP'
-        tuples(22)%func => shelx_unsupported    
+        tuples(22)%func => shelx_disp    
         tuples(23)%key='EADP'
         tuples(23)%func => shelx_unsupported    
         tuples(24)%key='END '

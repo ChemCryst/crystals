@@ -539,6 +539,52 @@ real, dimension(14) :: longsfac
 
 end subroutine
 
+!> Parse the DISP keyword. Extract the atoms type use in the file.
+subroutine shelx_disp(shelxline)
+use crystal_data_m, only: disp_table, line_t, to_upper, deduplicates, explode
+use crystal_data_m, only: sfac_index, sfac
+implicit none
+type(line_t), intent(in) :: shelxline
+integer i, j, code, iostatus
+character(len=3) :: buffer
+character(len=:), allocatable :: stripped
+character(len=len_trim(shelxline%line)), dimension(:), allocatable :: exploded
+
+    if(sfac_index==0) then
+        print *, 'Error: SFAC card missing before DISP'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        call abort()
+    end if
+    
+    if(.not. allocated(disp_table)) then
+        ! DISP always appear after all the SFAC cards, so it is safe to allocate here
+        allocate(disp_table(sfac_index))
+        do i=1, sfac_index
+            disp_table(i)%atom=''
+            disp_table(i)%shelxline=''
+            disp_table(i)%line_number=0
+            disp_table(i)%values=0.0
+        end do
+    end if
+
+    stripped=deduplicates(shelxline%line, ' ')
+    exploded=explode(stripped, len_trim(shelxline%line))
+    
+    do i=1, sfac_index
+        if(trim(sfac(i))==trim(exploded(2))) then
+            disp_table(i)%atom=trim(exploded(2))
+            disp_table(i)%values=0.0
+            disp_table(i)%shelxline=trim(shelxline%line)
+            disp_table(i)%line_number=shelxline%line_number
+            do j=3, size(exploded)
+                read(exploded(j), *) disp_table(i)%values(j-2)
+            end do
+            exit
+        end if
+    end do
+    
+end subroutine
+
 !> Parse the UNIT keyword. Extract the number of each atomic elements.
 !! Write the corresponding `composition` command for crystals
 subroutine shelx_unit(shelxline)
