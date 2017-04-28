@@ -96,6 +96,10 @@ C
       DATA ICOMSZ / 5 /
       DATA LLSTCM / 512 /
       DIMENSION ID(2)
+      
+      character, dimension(14), parameter :: numbers=
+     1     (/'0','1','2','3','4','5','6','7','8','9','+','-','.',' '/)
+      logical found, isanumber
 C
 C
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -450,7 +454,29 @@ C -- 'TRANSFER' DIRECTIVE
 C
       IF ( IRCADR .LE. 0 ) GO TO 8930
 C
-      ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF), ILGTH )
+      ! Checking if the transfer is a variable name or a constant
+      isanumber=.true.
+      do j=1, len_trim(ctvari)
+          found=.false.
+          do i=1, size(numbers)
+              if(ctvari(j:j)==numbers(i)) then  
+                  found=.true.
+                  exit
+              end if
+          end do
+          if(.not. found) then
+              isanumber=.false.
+              exit
+          end if
+      end do
+      
+      if(isanumber .and. idirec==2) then
+          ! A constant, read in the value directly
+          read(ctvari, *) STORE(IRCADR+IOFF)
+      else
+          ! A variable from script, fetching the value
+          ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF), ILGTH)
+      end if
 C
       GO TO 8000
 C
