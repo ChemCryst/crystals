@@ -155,10 +155,10 @@ character(len=:), allocatable :: stripline
     if(iostatus/=0) then
         ! no esd, use default
         if(shelxline%line(1:4)=='DFIX') then
-			esd=0.02
-		else
-			esd=0.04
-		end if
+            esd=0.02
+        else
+            esd=0.04
+        end if
         start=2
     else
         start=3
@@ -927,8 +927,8 @@ integer :: eadpresidue, numatom
 character(len=128), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
 
-	write(*,*) 'Warning: EADP implemented as a restraint'
-	write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)	
+    write(*,*) 'Warning: EADP implemented as a restraint'
+    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)  
 
     ! parsing more complicated on this one as we don't know the number of parameters
     linepos=5 ! First 4 is EADP
@@ -1133,22 +1133,22 @@ real s1, s2
         s1=-1
         start=0
     else
-		! second element is s2 (esd for 1,3 distances)
-		read(splitbuffer(1), *, iostat=iostatus) s2
-		if(iostatus/=0) then
-			s2=-1
-			start=1
-		else
-			start=2
-		end if
+        ! second element is s2 (esd for 1,3 distances)
+        read(splitbuffer(1), *, iostat=iostatus) s2
+        if(iostatus/=0) then
+            s2=-1
+            start=1
+        else
+            start=2
+        end if
     end if
     
     if(start>1) then
-		write(*,*) 'Error: s1, s2 options in RIGU not supported '
-		write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-		return
-	end if
-	
+        write(*,*) 'Error: s1, s2 options in RIGU not supported '
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
+    
     rigu_table_index=rigu_table_index+1
     allocate(rigu_table(rigu_table_index)%atoms(size(splitbuffer)-start))
     rigu_table(rigu_table_index)%atoms=to_upper(splitbuffer(start+1:size(splitbuffer)))

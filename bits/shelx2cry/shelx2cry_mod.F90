@@ -1481,6 +1481,7 @@ character(len=6) :: atom
     
     eadploop:do i=1, eadp_table_index
         print *, trim(eadp_table(i)%shelxline)
+        write(crystals_fileunit, '(a, a)') '# ', eadp_table(i)%shelxline
         serial1=0
         do m=1, atomslist_index
             if(trim(eadp_table(i)%atoms(1))==trim(atomslist(m)%label)) then
@@ -1560,6 +1561,7 @@ character(len=6) :: atom
     
     riguloop:do i=1, rigu_table_index
         print *, trim(rigu_table(i)%shelxline)
+        write(crystals_fileunit, '(a, a)') '# ', rigu_table(i)%shelxline
         serial1=0
         do m=1, atomslist_index
             if(trim(rigu_table(i)%atoms(1))==trim(atomslist(m)%label)) then
@@ -1595,34 +1597,14 @@ character(len=6) :: atom
                 call abort()
             end if
             
-            if(j==size(rigu_table(i)%atoms)) then 
-                linecont=''
-            else
-                linecont=','
-            end if
-            if(j==2) then
-                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
-                &   'RIGU 0.0, 0.001 =  ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
-                &   linecont
-                write(*, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
-                &   'RIGU 0.0, 0.001 =  ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
-                &   linecont
-            else
-                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
-                &   'CONT ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
-                &   linecont
-                write(*, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
-                &   'CONT ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
-                &   linecont
-            end if
+            write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
+            &   'RIGU 0.0, 0.001 =  ', &
+            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
+            write(*, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
+            &   'RIGU 0.0, 0.001 =  ', &
+            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
             
             serial1=l
         end do
