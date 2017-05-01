@@ -97,8 +97,9 @@ C
       DATA LLSTCM / 512 /
       DIMENSION ID(2)
       
-      character, dimension(14), parameter :: numbers=
-     1     (/'0','1','2','3','4','5','6','7','8','9','+','-','.',' '/)
+      character, dimension(18), parameter :: numbers=
+     1     (/'0','1','2','3','4','5','6','7','8','9',
+     2       '+','-','.',' ','e','E','d','D'/)
       logical found, isanumber
 C
 C
@@ -469,10 +470,22 @@ C
               exit
           end if
       end do
+      ! Further check if a number: e or d can't be the first character
+      if(isanumber) then
+          do i=11, size(numbers)
+              if(index(ctvari, numbers(i))==1) then
+                  isanumber=.false.
+                  exit
+              end if
+          end do
+      end if
       
       if(isanumber .and. idirec==2) then
           ! A constant, read in the value directly
-          read(ctvari, *) STORE(IRCADR+IOFF)
+          read(ctvari, *, iostat=ISTAT) STORE(IRCADR+IOFF)
+          if(istat/=0) then
+            istat=-1
+          end if
       else
           ! A variable from script, fetching the value
           ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF), ILGTH)
