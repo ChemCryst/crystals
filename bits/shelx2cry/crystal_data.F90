@@ -87,6 +87,29 @@ end type
 type(mpla_t), dimension(1024), save :: mpla_table
 integer :: mpla_table_index=0
 
+!> type EADP
+type eadp_t
+    character(len=6), dimension(:), allocatable :: atoms
+    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    character(len=128) :: namedresidue='' !< Residue alias
+    character(len=1024) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
+end type
+type(eadp_t), dimension(1024), save :: eadp_table
+integer :: eadp_table_index=0
+
+!> type RIGU
+type rigu_t
+    character(len=6), dimension(:), allocatable :: atoms
+    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    character(len=128) :: namedresidue='' !< Residue alias
+    character(len=1024) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
+    real :: s1, s2
+end type
+type(rigu_t), dimension(1024), save :: rigu_table
+integer :: rigu_table_index=0
+
 !> type SADI
 type sadi_t
     real :: esd

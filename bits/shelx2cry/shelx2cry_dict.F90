@@ -73,7 +73,7 @@ type(dict_t) :: this
         tuples(17)%key='DAMP'
         tuples(17)%func => shelx_unsupported    
         tuples(18)%key='DANG'
-        tuples(18)%func => shelx_unsupported    
+        tuples(18)%func => shelx_dfix    
         tuples(19)%key='DEFS'
         tuples(19)%func => shelx_unsupported    
         tuples(20)%key='DELU'
@@ -83,7 +83,7 @@ type(dict_t) :: this
         tuples(22)%key='DISP'
         tuples(22)%func => shelx_disp    
         tuples(23)%key='EADP'
-        tuples(23)%func => shelx_unsupported    
+        tuples(23)%func => shelx_eadp
         tuples(24)%key='END '
         tuples(24)%func => shelx_end
         tuples(25)%key='EQIV'
@@ -147,7 +147,7 @@ type(dict_t) :: this
         tuples(54)%key='RESI'
         tuples(54)%func => shelx_resi
         tuples(55)%key='RIGU'
-        tuples(55)%func => shelx_unsupported    
+        tuples(55)%func => shelx_rigu
         tuples(56)%key='RTAB'
         tuples(56)%func => shelx_unsupported    
         tuples(57)%key='SADI'

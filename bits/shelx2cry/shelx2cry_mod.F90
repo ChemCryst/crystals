@@ -876,7 +876,7 @@ character(len=6) :: atom
     end do
 
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
-!*   DFIX
+!*   DFIX/DANG
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 
     if(dfix_table_index>0) then
@@ -1469,6 +1469,164 @@ character(len=6) :: atom
             end if
         end do sadipairs
     end do sadiloop
+
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   EADP
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    ! EADP O24 O25 O29 O28 O27 O26
+    if(eadp_table_index>0) then
+        print *, ''
+        print *, 'Processing EADPs...'
+    end if
+    
+    eadploop:do i=1, eadp_table_index
+        print *, trim(eadp_table(i)%shelxline)
+        serial1=0
+        do m=1, atomslist_index
+            if(trim(eadp_table(i)%atoms(1))==trim(atomslist(m)%label)) then
+                serial1=m
+                exit
+            end if
+        end do
+        if(serial1>0) then
+            if(atomslist(serial1)%crystals_serial==-1) then
+                print *, 'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
+                call abort()
+            end if
+        else
+            print *, 'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
+            call abort()
+        end if
+        
+        do j=2, size(eadp_table(i)%atoms)
+            l=0
+            do m=1, atomslist_index
+                if(trim(eadp_table(i)%atoms(j))==trim(atomslist(m)%label)) then
+                    l=m
+                    exit
+                end if
+            end do
+            if(l>0) then
+                if(atomslist(l)%crystals_serial==-1) then
+                    print *, 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
+                    call abort()
+                end if
+            else
+                print *, 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
+                call abort()
+            end if
+            
+            if(j==size(eadp_table(i)%atoms)) then 
+                linecont=''
+            else
+                linecont=','
+            end if
+            if(j==2) then
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'U(IJ) 0.0, 0.001 =  ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+                write(*, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'U(IJ) 0.0, 0.001 =  ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+            else
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+                write(*, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+            end if
+            
+            serial1=l
+        end do
+    end do eadploop
+
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   RIGU
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    ! RIGU N2 C7 C8 C9 C10 C6 C5 C4 C3 C2 C1 N1 C12
+    if(rigu_table_index>0) then
+        print *, ''
+        print *, 'Processing RIGUs...'
+    end if
+    
+    riguloop:do i=1, rigu_table_index
+        print *, trim(rigu_table(i)%shelxline)
+        serial1=0
+        do m=1, atomslist_index
+            if(trim(rigu_table(i)%atoms(1))==trim(atomslist(m)%label)) then
+                serial1=m
+                exit
+            end if
+        end do
+        if(serial1>0) then
+            if(atomslist(serial1)%crystals_serial==-1) then
+                print *, 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
+                call abort()
+            end if
+        else
+            print *, 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
+            call abort()
+        end if
+        
+        do j=2, size(rigu_table(i)%atoms)
+            l=0
+            do m=1, atomslist_index
+                if(trim(rigu_table(i)%atoms(j))==trim(atomslist(m)%label)) then
+                    l=m
+                    exit
+                end if
+            end do
+            if(l>0) then
+                if(atomslist(l)%crystals_serial==-1) then
+                    print *, 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
+                    call abort()
+                end if
+            else
+                print *, 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
+                call abort()
+            end if
+            
+            if(j==size(rigu_table(i)%atoms)) then 
+                linecont=''
+            else
+                linecont=','
+            end if
+            if(j==2) then
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'RIGU 0.0, 0.001 =  ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+                write(*, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'RIGU 0.0, 0.001 =  ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+            else
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+                write(*, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+            end if
+            
+            serial1=l
+        end do
+    end do riguloop
         
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 !*   SAME
