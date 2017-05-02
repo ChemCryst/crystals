@@ -159,7 +159,7 @@ implicit none
 character(len=*), intent(in) :: line !< text to process
 character, intent(in), optional :: sep_arg !< Separator to deduplicate
 character(len=:), allocatable :: strip
-character(len=4096) :: buffer
+character(len=len_trim(line)) :: buffer
 integer i,k, sepfound
 character sep
 

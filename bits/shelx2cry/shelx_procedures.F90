@@ -420,7 +420,8 @@ character(len=128) :: namedresidue
     allocate(sadi_table(sadi_table_index)%atom_pairs(2, (j-start)/2))
     
     do i=0, (j-start)/2-1
-        sadi_table(sadi_table_index)%atom_pairs(:,i+1)=(/splitbuffer(start+i*2), splitbuffer(start+i*2+1)/)
+        sadi_table(sadi_table_index)%atom_pairs(:,i+1)= &
+        &   (/splitbuffer(start+i*2), splitbuffer(start+i*2+1)/)
     end do
 
 end subroutine
@@ -554,8 +555,7 @@ use crystal_data_m, only: disp_table, line_t, to_upper, deduplicates, explode
 use crystal_data_m, only: sfac_index, sfac
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, code, iostatus
-character(len=3) :: buffer
+integer i, j
 character(len=:), allocatable :: stripped
 character(len=len_trim(shelxline%line)), dimension(:), allocatable :: exploded
 
@@ -1048,7 +1048,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
 logical found
 character(len=128) :: buffernum
 character(len=128) :: namedresidue
-integer :: riguresidue, numatom
+integer :: riguresidue
 character(len=128), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
 real s1, s2
