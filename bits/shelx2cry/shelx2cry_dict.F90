@@ -119,7 +119,7 @@ type(dict_t) :: this
         tuples(40)%key='LAUE'
         tuples(40)%func => shelx_unsupported    
         tuples(41)%key='LIST'
-        tuples(41)%func => shelx_unsupported    
+        tuples(41)%func => shelx_ignored    
         tuples(42)%key='L.S.'
         tuples(42)%func => shelx_ignored    
         tuples(43)%key='MERG'
@@ -187,7 +187,7 @@ type(dict_t) :: this
         tuples(74)%key='WIGL'
         tuples(74)%func => shelx_unsupported    
         tuples(75)%key='WPDB'
-        tuples(75)%func => shelx_unsupported    
+        tuples(75)%func => shelx_ignored    
         tuples(76)%key='XNPD'
         tuples(76)%func => shelx_unsupported    
         tuples(77)%key='ZERR'

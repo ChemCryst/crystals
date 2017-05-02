@@ -275,6 +275,12 @@ character(len=:), allocatable :: stripline
     
     stripline=deduplicates(shelxline%line(linepos:))
     stripline=to_upper(stripline)    
+    ! some files use ',' as a separator instead of a space
+    do i=1, len_trim(stripline)
+        if(stripline(i:i)==',') then
+            stripline(i:i)=' '
+        end if
+    end do
 
     splitbuffer=explode(stripline, 128)    
     
@@ -383,7 +389,6 @@ character(len=128) :: namedresidue
     stripline=deduplicates(shelxline%line(linepos:))
     stripline=to_upper(stripline)    
 
-    splitbuffer=''
     splitbuffer=explode(stripline, 128)    
     
     ! first element is the esd
