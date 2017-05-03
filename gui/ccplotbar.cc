@@ -200,10 +200,11 @@ bool CcPlotBar::ParseInput( deque<string> &  tokenList )
                 for(int i=m_CompleteSeries; i < (m_NumberOfSeries); i++)
                 {
                     float tempdata = (float)atof(tokenList.front().c_str());
+					if ( isnan(tempdata) ) tempdata = 0.0;
                     tokenList.pop_front();
 
                     // changes axis range if necessary
-                    m_Axes.CheckData(m_Series[i].m_YAxis, tempdata);           
+                    m_Axes.CheckData(m_Series[i].m_YAxis, tempdata);
                 
                     if(m_Axes.m_AxisData[m_Series[i].m_YAxis].m_AxisLog)
                     {
