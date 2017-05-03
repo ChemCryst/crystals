@@ -200,7 +200,7 @@ bool CcPlotBar::ParseInput( deque<string> &  tokenList )
                 for(int i=m_CompleteSeries; i < (m_NumberOfSeries); i++)
                 {
                     float tempdata = (float)atof(tokenList.front().c_str());
-					if ( isnan(tempdata) ) tempdata = 0.0;
+//					if ( isnan(tempdata) ) tempdata = 0.0;
                     tokenList.pop_front();
 
                     // changes axis range if necessary
