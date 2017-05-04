@@ -1875,7 +1875,7 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
         LIST(LEVEL) = ' '
 #if defined (CRY_FORTDIGITAL)
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#elif defined (CRY_FORTINTEL)
+#elif defined (CRY_FORTINTEL) && defined (CRY_GUI)
 C The intel environment does not pick up changes made by _putenv in C++ code
 C Therefore use this interface to the C++ to get values.
           CALL CGETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
@@ -2323,7 +2323,7 @@ C
       RETURN
       END
 
-#ifdef CRY_FORTINTEL
+#if defined (CRY_FORTINTEL) && defined (CRY_GUI)
 CODE FOR CGETENV
       SUBROUTINE CGETENV(CKEY, CVAL)
       INTERFACE
