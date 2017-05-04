@@ -1,14 +1,13 @@
 %SCRIPT XCHECK6                                                                 
 % VARIABLE REAL WORK1 WORK2 WORK3                                               
 % VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE          
-% VARIABLE LOGICAL WILFIL HIST  SIG                                                      
+% VARIABLE LOGICAL WILFIL HIST  
 % VARIABLE REAL NEWRHO NEWRAT THFULL MRGR NMBR                                      
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP      
 % VARIABLE INTEGER ABSPRINT ABSTOTAL                                            
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'                                   
 % EVALUATE ABSENT = FILEEXISTS 'absences.dat'                                   
 % EVALUATE HIST = FILEEXISTS 'histogram.dat'                                   
-% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
 % VARIABLE INTEGER NSIGMAS
@@ -136,50 +135,6 @@
 ^^WI    }
 %%end-sig-vs-res                                                                       
 %%    
-%%Variances
-^^WI    TAB _MAINTAB7 'Variances' GRID _MAINTG7 NROWS=7 NCOLS=3                  
-^^WI    {                                                                       
-% IF ( SIG ) THEN                                                            
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
-^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
-^^WI      {                                                                     
-^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'The Internal Variance is a measure of self-consistency of equivalents'
-^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'The External Variance comes from the instrument makers estimates'         
-^^WI       @ 3,1 STATIC XFW3                                                    
-%     if sig then
-^^WI 'Only reflections with 3 or more contributors are plotted'      
-%     else
-^^WI 'THE FILE SIGMAS.DAT DOES NOT EXIST'      
-%     end if
-^^WI      }                                                                     
-^^WI      @ 1,1 ICON IM INFO                                                    
-^^WI     }                                                                      
-^^WI     @ 4,2 PLOTWINDOW _VSIGMA NROWS=20 NCOLS=64 
-^^WI     @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 8
-^^WI      {   
-^^WI       @ 1,1 STATIC XFS2 ' Number of data used ='
-^^WI       @ 1,3 STATIC _MW_USED '0'                                  
-%%
-^^WI       @ 1,5 STATIC XFS 'Internal ='                        
-^^WI       @ 1,7 STATIC _MW_GRAD '000.00'                                  
-^^WI       @ 1,8 STATIC XFS2 'x External.'
-%%
-^^WI      }
-% ELSE                                                                          
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
-^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=1 NCOLS=1                                       
-^^WI      {                                                                     
-^^WI       @ 1,1 STATIC XFW1 'The sigmas.dat file not found'
-^^WI      }                                                                     
-^^WI      @ 1,1 ICON IM ERROR                                                   
-^^WI     }                                                                      
-% END IF                                                                        
-^^WI    }                                                                       
-%%end_Variances
 %%                                                                       
 %%                                                                       
 %%Merging-R                                                                       
@@ -705,51 +660,6 @@
 %  END IF                                                                       
 %%end-Histogram
 %%                                                                       
-%%                                                                       
-%%                                                                       
-%%Variances
-
-^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'  
-%  VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES
-%  IF ( SIG .AND. LMAONCE ) THEN  
-%    BLOCK
-^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'             
-^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA                                  
-^^PL XAXIS TITLE 'External (Mean variance)'                                           
-^^PL NSERIES=1 LENGTH=40 
-^^PL SERIES 1 SERIESNAME 'No of contributors'
-^^PL YAXIS TITLE 'Internal (rms deviation)'                                    
-%    EVALUATE SXX = 0.
-%    EVALUATE SXY = 0.
-%    COPY '#GENERALEDIT 30'
-%    COPY 'LOCATE RECORDTYPE = 101'
-%    COPY 'TRANSFER FROM OFFSET = 2 TO NREFMES'
-%    COPY 'END'
-%%
-%%
-%      IF ( NREFMES .GE. 5000. ) THEN
-^^WI    WINDOW XINFO 'Warning'  MODAL
-^^WI    GRID MAIN NROWS=2 NCOLS=3                   
-^^WI     { 
-^^WI      @ 1,2 STATIC T1 'You have more than 5000 merged reflections'
-^^WI      @ 2,2 STATIC T2 'Plotting them may take some time'
-^^WI     } 
-^^WI    SHOW        
-^^CR 
-%      END IF
-%%
-%     COPY '#SCRIPT YGETSIG'
-%%
-%      IF ( NREFMES .GE. 5000. ) THEN
-^^WI   DISPOSE XINFO
-^^CR
-%      END IF
-^^PL  SHOW                                                                       
-^^CR  
-%%
-%    END BLOCK
-%  END IF
-%%end-variances
 %%                                                                       
 %%                                                                       
 %%                                                                       
