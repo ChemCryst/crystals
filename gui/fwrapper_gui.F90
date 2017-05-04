@@ -102,11 +102,11 @@ end interface
 !> interface to C function guexec (digital compiler)
 !! Unkwown function
 interface
-  subroutine guexec (caline)
+   integer function guexec (caline)
     !dec$ attributes c :: guexec
     character*(*) caline
     !dec$ attributes reference :: caline
-  end subroutine guexec
+  end function guexec
 end interface
 
 !> interface to C function callccode (digital compiler)
@@ -384,11 +384,11 @@ end interface
 interface
 !> interface to C function guexec (iso_c_bindings)
 !! Unkwown function
-  subroutine guexec (caline) bind(c)
+  integer function guexec (caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
     character caline
-  end subroutine guexec
+  end function guexec
 end interface
 
 

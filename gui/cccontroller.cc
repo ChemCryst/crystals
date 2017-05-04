@@ -3432,9 +3432,11 @@ extern "C" {
 	  if ( v ) strcpy(value,v);
   }
 
-  void guexec ( char* theLine)
+  int guexec ( char* theLine)
   {
-	// Convert to a wchar_t*
+    int exitcode = -1;
+
+  // Convert to a wchar_t*
 //#ifdef __GID__
 //    char * tempstr = new char[263];
 //    memcpy(tempstr,theLine,262);
@@ -3603,6 +3605,11 @@ extern "C" {
         CcController::theController->AddInterfaceCommand( t.str() );
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
+
+        DWORD dwExitCode = NULL;
+        GetExitCodeProcess( si.hProcess, &dwExitCode );
+        exitcode = (int)dwExitCode;
+
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
         CcController::theController->AddInterfaceCommand( " ");
       }
@@ -3632,6 +3639,10 @@ extern "C" {
           CcController::theController->AddInterfaceCommand( t.str() );
           CcController::theController->AddInterfaceCommand( " ");
           WaitForSingleObject( si.hProcess, INFINITE );
+          DWORD dwExitCode = NULL;
+          GetExitCodeProcess( si.hProcess, &dwExitCode );
+          exitcode = (int)dwExitCode;
+
           CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
           CcController::theController->AddInterfaceCommand( " ");
         }
@@ -3704,6 +3715,9 @@ extern "C" {
         CcController::theController->AddInterfaceCommand( t.str() );
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
+        DWORD dwExitCode = NULL;
+        GetExitCodeProcess( si.hProcess, &dwExitCode );
+        exitcode = (int)dwExitCode;
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
         CcController::theController->AddInterfaceCommand( " ");
       }
@@ -3725,12 +3739,12 @@ extern "C" {
       CcPipe inPipe(sa);
       if ( ! inPipe.CreateOK ) {
         CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
-        return;
+        return -1;
       }
       CcPipe outPipe(sa);
       if ( ! outPipe.CreateOK ) {
         CcController::theController->AddInterfaceCommand( "Error creating out pipe.");
-        return;
+        return -1;
       }
 
       GetStartupInfoA(&si);      //set startupinfo for the spawned process
@@ -3744,7 +3758,7 @@ extern "C" {
       if (!pi.CreateOK)
       {
         CcController::theController->AddInterfaceCommand( "Error creating process.");
-        return;
+        return -1;
       }
 
       unsigned long exit=0;  //process exit code
@@ -3788,8 +3802,11 @@ extern "C" {
         }
 
         GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
-        if (exit != STILL_ACTIVE)  break;
-
+        if (exit != STILL_ACTIVE) {
+			exitcode = exit;
+			break;
+		}
+		
         bool wait = false;
  
         (CcController::theController)->GetCrystalsCommand(*&buf,wait);
@@ -3990,7 +4007,7 @@ extern "C" {
         std::cerr << "GUEXEC: Pipe 1 failed: " << "\n";
         delete [] str;
         delete [] cmd;
-        return;
+        return -1;
       }
       if ( pipe(ftoParent) < 0 ) { 
         std::cerr << "GUEXEC: Pipe 2 failed: " << "\n";
@@ -3998,7 +4015,7 @@ extern "C" {
         close(ftoChild[1]);
         delete [] str;
         delete [] cmd;
-        return;
+        return -1;
       }
       if ( fcntl(ftoParent[0],F_SETFL,O_NONBLOCK) == -1 ) {
         std::cerr << "GUEXEC: Pipe 2 switch to Non-blocking failed: " << "\n";
@@ -4008,7 +4025,7 @@ extern "C" {
         close(ftoChild[1]);
         delete [] str;
         delete [] cmd;
-        return;
+        return -1;
       }
      
       int fd;
@@ -4083,7 +4100,13 @@ extern "C" {
         int status;
         if ( waitpid(pid, &status, WNOHANG) != 0 ) {
           std::cerr << "GUEXEC: Detected child process exited\n" ;
-          (CcController::theController)->AddInterfaceCommand( "     {0,2 Process has exited. ");
+		  if ( WIFEXITED(status) ) {
+			exitcode = WEXITSTATUS(status);
+			(CcController::theController)->AddInterfaceCommand( "     {0,2 Process has exited. ");
+ 		  } else {  //abnormal termination (no exit code)
+			(CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
+			exitcode = -1;  
+		  }
           break;
         }
 
@@ -4132,10 +4155,21 @@ extern "C" {
 
       if ( bWait )
       {
+		  int child_status;
           std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
-          waitpid(pid,NULL,0);
+          waitpid(pid,&child_status,0);
+		  
+		  if ( WIFEXITED(child_status) ) {
 
-          (CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
+			exitcode = WEXITSTATUS(child_status);
+			(CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
+			  
+		  } else {  //abnormal termination (no exit code)
+
+			(CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
+			exitcode = -1;  
+		  }
+			  
 
       }
       std::cerr << "\n\nGUEXEC: Done.\n";
@@ -4144,7 +4178,7 @@ extern "C" {
 
     delete [] str;
     delete [] cmd;
-	    return;
+	return exitcode;
 #endif
   }
 

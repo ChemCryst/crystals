@@ -2454,9 +2454,11 @@ CODE FOR GDETCH
 c      use fwrappergui_mod, only: GUEXEC
       CHARACTER*(*) CLINE
       CHARACTER*262 CEXTRA
+      INTEGER RET
       CEXTRA = ' '
       WRITE(CEXTRA,'(A)')CLINE
-      CALL FWEXEC ( CEXTRA//CHAR(0) )
+      RET = FWEXEC ( CEXTRA//CHAR(0) )
+	  
       RETURN
       END
 #endif

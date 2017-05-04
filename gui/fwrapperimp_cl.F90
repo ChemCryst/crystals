@@ -2,11 +2,11 @@
 !! subroutines below are wrappers around the c functions call
 
 
-subroutine fwexec(cc)
+integer function fwexec(cc)
     implicit none
     character*(*) cc
 
-end subroutine
+end function
 
 subroutine fcallc(cc)
     implicit none

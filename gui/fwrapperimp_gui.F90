@@ -1,13 +1,13 @@
 !fwrapper pass through functions for the GUI version
 !! subroutines below are wrappers around the c functions call
 
-subroutine fwexec(cc)
+integer function fwexec(cc)
     use fwrappergui_mod, only: guexec
     implicit none
     character*(*) cc
-
-    call guexec(cc)
-end subroutine
+ 	fwexec = guexec(cc)
+    return 
+end function
 
 
 subroutine fcallc(cc)
