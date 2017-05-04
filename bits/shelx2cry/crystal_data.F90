@@ -4,6 +4,8 @@ module crystal_data_m
 logical, public :: the_end=.false. !< has the keyword END been reached
 
 integer, parameter :: crystals_fileunit=1234 !< unit number for the crystals file ouput
+integer :: log_unit
+integer, parameter :: lenlabel=12
 
 type line_t
     integer :: line_number=1 !< Hold the line number from the shelx file
@@ -40,7 +42,7 @@ type(disp_t), dimension(:), allocatable :: disp_table !< List of disp keywords
 
 !> Atom type. It holds hold the information about an atom in the structure
 type atom_t
-    character(len=6) :: label !< label from shelx
+    character(len=lenlabel) :: label !< label from shelx
     integer :: sfac !< sfac from shelx
     real, dimension(3) :: coordinates !< x,y,z fractional coordinates from shelx
     real, dimension(6) :: aniso !< Anistropic displacement parameters U11 U22 U33 U23 U13 U12 from shelx
@@ -67,7 +69,7 @@ type(spacegroup_t), save :: spacegroup !< Hold the spagroup information
 !> type DFIX
 type dfix_t
     real :: distance, esd
-    character(len=6) :: atom1, atom2
+    character(len=lenlabel) :: atom1, atom2
     integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
     character(len=128) :: namedresidue !< Residue alias name
     character(len=1024) :: shelxline !< raw instruction line from res file
@@ -78,7 +80,7 @@ integer :: dfix_table_index=0
 
 !> type MPLA
 type mpla_t
-    character(len=6), dimension(:), allocatable :: atoms
+    character(len=lenlabel), dimension(:), allocatable :: atoms
     integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
     character(len=128) :: namedresidue='' !< Residue alias
     character(len=1024) :: shelxline !< raw instruction line from res file
@@ -89,7 +91,7 @@ integer :: mpla_table_index=0
 
 !> type EADP
 type eadp_t
-    character(len=6), dimension(:), allocatable :: atoms
+    character(len=lenlabel), dimension(:), allocatable :: atoms
     integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
     character(len=128) :: namedresidue='' !< Residue alias
     character(len=1024) :: shelxline !< raw instruction line from res file
@@ -100,7 +102,7 @@ integer :: eadp_table_index=0
 
 !> type RIGU
 type rigu_t
-    character(len=6), dimension(:), allocatable :: atoms
+    character(len=lenlabel), dimension(:), allocatable :: atoms
     integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
     character(len=128) :: namedresidue='' !< Residue alias
     character(len=1024) :: shelxline !< raw instruction line from res file
@@ -113,7 +115,7 @@ integer :: rigu_table_index=0
 !> type SADI
 type sadi_t
     real :: esd
-    character(len=6), dimension(:,:), allocatable :: atom_pairs !< pairs of atoms 
+    character(len=lenlabel), dimension(:,:), allocatable :: atom_pairs !< pairs of atoms 
     integer :: residue=-99 !< Residue number -99=None, -98=alias residue, -1=all, else is the residue number
     character(len=128) :: namedresidue='' !< Alias of a residue
     character(len=1024) :: shelxline !< raw instruction line from res file
@@ -125,8 +127,8 @@ integer :: sadi_table_index=0
 !> type SAME
 type same_t
     character(len=1024) :: shelxline
-    character(len=6), dimension(:), allocatable :: list1
-    character(len=6), dimension(:), allocatable :: list2
+    character(len=lenlabel), dimension(:), allocatable :: list1
+    character(len=lenlabel), dimension(:), allocatable :: list2
 end type
 type(same_t), dimension(1024) :: same_table
 integer :: same_table_index=0
@@ -135,30 +137,36 @@ integer :: same_processing=-1 !< flag if we are currently processing a same inst
 contains
 
 !> Transform a string to upper case
-elemental function to_upper(strIn) result(strOut)
+elemental subroutine to_upper(strIn, strOut)
  implicit none
 
- character(len=*), intent(in) :: strIn !< mixed case input
- character(len=len(strIn)) :: strOut !< upper case output
+ character(len=*), intent(inout) :: strIn !< mixed case input
+ character(len=len(strIn)), intent(out), optional :: strOut !< upper case output
  integer :: i,j
 
      do i = 1, len(strIn)
           j = iachar(strIn(i:i))
           if (j>= iachar("a") .and. j<=iachar("z") ) then
-               strOut(i:i) = achar(iachar(strIn(i:i))-32)
+               if(present(strOut)) then
+                   strOut(i:i) = achar(iachar(strIn(i:i))-32)
+               else 
+                   strIn(i:i) = achar(iachar(strIn(i:i))-32)
+               end if
           else
-               strOut(i:i) = strIn(i:i)
+               if(present(strOut)) then
+                   strOut(i:i) = strIn(i:i)
+               end if
           end if
      end do
 
-end function to_upper
+end subroutine to_upper
 
 !> Remove repeated separators. Default separator is space
-function deduplicates(line, sep_arg) result(strip)
+subroutine deduplicates(line, strip, sep_arg)
 implicit none
 character(len=*), intent(in) :: line !< text to process
 character, intent(in), optional :: sep_arg !< Separator to deduplicate
-character(len=:), allocatable :: strip
+character(len=:), allocatable, intent(out) :: strip
 character(len=len_trim(line)) :: buffer
 integer i,k, sepfound
 character sep
@@ -186,20 +194,20 @@ character sep
         end if
     end do
 
-    buffer=adjustl(buffer)    
+    buffer=adjustl(buffer) 
     allocate(character(len=len_trim(buffer)) :: strip)
-    strip=buffer(1:len_trim(buffer))
+    strip=trim(buffer)
 
-end function
+end subroutine
 
 !> Split a string into different pieces given a separator. Defaul separator is space.
 !! Len of pieces must be passed to the function
-function explode(line, lenstring, sep_arg) result(elements)
+pure subroutine explode(line, lenstring, elements, sep_arg)
 implicit none
 character(len=*), intent(in) :: line !< text to process
-integer lenstring !< length of each individual elements
+integer, intent(in) :: lenstring !< length of each individual elements
 character, intent(in), optional :: sep_arg !< Separator 
-character(len=lenstring), dimension(:), allocatable :: elements
+character(len=lenstring), dimension(:), allocatable, intent(out) :: elements
 character(len=lenstring) :: bufferlabel
 integer i, j, k
 character sep
@@ -231,9 +239,9 @@ character sep
         elements(k)=bufferlabel
     end if
     
-end function
+end subroutine
 
-function count_char(line, c) result(cpt)
+pure function count_char(line, c) result(cpt)
 implicit none
 character(len=*), intent(in) :: line !< text to process
 character, intent(in) :: c !< character to search
