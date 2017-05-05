@@ -6,7 +6,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(Crystals)
 
-# SET(CMAKE_VERBOSE_MAKEFILE ON)
+SET(CMAKE_VERBOSE_MAKEFILE ON)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
 option (useGUI "useGUI" ON)
@@ -171,7 +171,6 @@ if ( use32 )
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -m32")
 endif()
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fabi-version=10")
 
 if ( useGUI )
     message(STATUS "Building gui")
