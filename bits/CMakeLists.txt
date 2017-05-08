@@ -14,6 +14,6 @@ add_subdirectory(Diffractometers)
 add_subdirectory(reindex)
 add_subdirectory(shelxs)
 add_subdirectory(shelx2cry)
-#add_subdirectory(sir92)
+add_subdirectory(sir92)
 #add_subdirectory(loader)
 
