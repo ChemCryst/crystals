@@ -4,6 +4,7 @@ This script prepares a SIR92 default data file and submits a SIR batch job.
 If the first task fails to solve the structure, you must edit the SIR92
 input files to set up a non-default (i.e. more comprehensive) task.
 %  VARIABLE LOGICAL VAX
+%  VARIABLE INTEGER EXITSTATUS                                                    
 %%&VAX%  EVALUATE VAX = TRUE
 %  EVALUATE VAX = FALSE
 %  IF EXISTS 6 .LT. 1 THEN
@@ -28,7 +29,8 @@ input files to set up a non-default (i.e. more comprehensive) task.
 %        GET NOSTORE YESNO -
          'Do you want to run SIR92 on - line ' 'NO'
 %        IF ( VALUE .EQ. 1 ) THEN
-%          COPY '#SPAWN  SIR92'
+%          COPY '#SPAWN  sir92'
+%          TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
 %          FINISH
 %        ELSE
 %%         Run a default SIR92 job

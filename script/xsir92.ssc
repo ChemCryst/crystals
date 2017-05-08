@@ -147,10 +147,7 @@
 %      IF ( FILEEXISTS ( 'sir9x.cry' ) ) THEN
 %         EVALUATE T = FILEDELETE ( 'sir9x.cry' )
 %      END IF
-#ifdef CRY_OSWIN32
-%      COPY '#SPAWN + "CRYSDIR:SIR92.EXE" sir92.ini sir92.lis'
-#else
-%      COPY '#SPAWN + "CRYSDIR:sir92" SIR92.INI sir92.lis'                                                      
+%      COPY '#SPAWN + "CRYSDIR:sir92.exe" sir92.ini sir92.lis'
 #endif
 %   END BLOCK
 %%
