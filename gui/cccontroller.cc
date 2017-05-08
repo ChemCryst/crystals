@@ -2861,7 +2861,7 @@ void CcController::CcChooseFont()
 #else
 
   wxFontData data;
-  wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
+  wxFont* pFont = new wxFont(12,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
 
   if ( CcController::mp_inputfont == NULL )
   {
@@ -3958,14 +3958,33 @@ extern "C" {
     wxString path, name, extension, command;
 //    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
     wxFileName::SplitPath(firstTok.c_str(),&path,&name,&extension);
-    wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
-
-    if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )
+    
+    if(extension=="exe")
     {
-        line = string(command.c_str()) + " " + line;
-        std::cerr << "\nGUEXEC: Found handler app: " << line.c_str() << "\n";
+        if(not wxFileName::FileExists(firstTok.c_str()))
+        {
+            // Trying without extension
+            string::size_type match = firstTok.find(".exe");
+            if ( match != string::npos ) 
+            {
+                tstring tempfile = firstTok.substr(0,match) + firstTok.substr(match+4);
+                firstTok = tempfile;
+                std::cerr << "\nGUEXEC: executable not found, trying without extension" << "\n";
+                wxFileName::SplitPath(firstTok.c_str(),&path,&name,&extension);
+            }
+        }        
     }
+    
+    if(not extension.IsEmpty())
+    {
+        wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 
+        if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )
+        {
+            line = string(command.c_str()) + " " + line;
+            std::cerr << "\nGUEXEC: Found handler app: " << line.c_str() << "\n";
+        }
+    }
     if ( bWait )
     {
       (CcController::theController)->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
