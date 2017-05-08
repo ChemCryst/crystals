@@ -2454,10 +2454,15 @@ CODE FOR GDETCH
 c      use fwrappergui_mod, only: GUEXEC
       CHARACTER*(*) CLINE
       CHARACTER*262 CEXTRA
-      INTEGER RET
+      INTEGER RET, ISTAT
+      integer, external :: FWEXEC
+      
       CEXTRA = ' '
       WRITE(CEXTRA,'(A)')CLINE
       RET = FWEXEC ( CEXTRA//CHAR(0) )
+
+C     Move return value into the script value EXITSTATUS
+      ISTAT = KSCTRN ( 1 , "EXITSTATUS" , RET, 1 )
 	  
       RETURN
       END
