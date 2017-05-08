@@ -726,6 +726,61 @@ using namespace std;
 //#include <GraphMol/Depictor/RDDepictor.h>
 //#include <GraphMol/FileParsers/FileParsers.h>
 
+/**
+ * @brief Robust split of a string 
+ *
+ * The function split a string using any white space as a delimiter (isspace).
+ * It also keeps spaces inside quotes.
+ * 
+ */
+size_t split(char *buffer, char *argv[], size_t argv_size)
+{
+    char *p, *start_of_word;
+    int c;
+    enum states { DULL, IN_WORD, IN_STRING } state = DULL;
+    size_t argc = 0;
+
+    for (p = buffer; argc < argv_size && *p != '\0'; p++) {
+        c = (unsigned char) *p;
+        switch (state) {
+        case DULL:
+            if (isspace(c)) {
+                continue;
+            }
+
+            if (c == '"') {
+                state = IN_STRING;
+                start_of_word = p + 1; 
+                continue;
+            }
+            state = IN_WORD;
+            start_of_word = p;
+            continue;
+
+        case IN_STRING:
+            if (c == '"') {
+                *p = 0;
+                argv[argc++] = start_of_word;
+                state = DULL;
+            }
+            continue;
+
+        case IN_WORD:
+            if (isspace(c)) {
+                *p = 0;
+                argv[argc++] = start_of_word;
+                state = DULL;
+            }
+            continue;
+        }
+    }
+
+    if (state != DULL && argc < argv_size)
+        argv[argc++] = start_of_word;
+
+    return argc;
+}
+
                    
 #define BZERO(a) memset(a,0,sizeof(a)) //easier -- shortcut
 
@@ -4000,23 +4055,26 @@ extern "C" {
 
     extern int errno;
     char * cmd = new char[257];
-    char * str = new char[257];
     memcpy(cmd,firstTok.c_str(),256);
-    memcpy(str,restLine.c_str(),256);
-    *(str+256) = '\0';
     *(cmd+256) = '\0';
+    
     char* args[10];       // This allows a maximum of 9 command line arguments
-    char seps[] = " \t";
+    char buf[257];
+    size_t i, argc;
+    char *argv[9];
+
+    strncpy(buf, restLine.c_str(), 256);
+    buf[257]='\0';
+    argc = split(buf, argv, 9);
+    printf("input: '%s'\n", buf);
     args[0] = cmd;
-    char *token = strtok( str, seps );
-    args[1] = token;
-    for ( int i = 2; (( token != NULL ) && ( i < 10 )); i++ )
+    for (i = 0; i < argc; i++)
     {
-      token = strtok( NULL, seps );
-      args[i] = token;
+        args[i+1]=argv[i];
+        printf("[%u] '%s'\n", i, argv[i]);
     }
-
-
+    args[argc+1]=NULL;
+    
     if ( bRedir )
     {
       int ftoChild[2];
@@ -4024,7 +4082,6 @@ extern "C" {
 
       if ( pipe(ftoChild) < 0 ) { 
         std::cerr << "GUEXEC: Pipe 1 failed: " << "\n";
-        delete [] str;
         delete [] cmd;
         return -1;
       }
@@ -4032,7 +4089,6 @@ extern "C" {
         std::cerr << "GUEXEC: Pipe 2 failed: " << "\n";
         close(ftoChild[0]);
         close(ftoChild[1]);
-        delete [] str;
         delete [] cmd;
         return -1;
       }
@@ -4042,7 +4098,6 @@ extern "C" {
         close(ftoParent[1]);
         close(ftoChild[0]);
         close(ftoChild[1]);
-        delete [] str;
         delete [] cmd;
         return -1;
       }
@@ -4195,7 +4250,6 @@ extern "C" {
 
     }
 
-    delete [] str;
     delete [] cmd;
 	return exitcode;
 #endif
