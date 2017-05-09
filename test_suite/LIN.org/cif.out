@@ -515,21 +515,21 @@ C1 . C11 . 1.521(9)    yes
 C2 . O3 . 1.333(7)    yes
 C2 . O5 . 1.207(7)    yes
 O3 . C4 . 1.438(8)    yes
-C4 . H41 . 0.954    no
-C4 . H42 . 0.952    no
-C4 . H43 . 0.961    no
-N6 . H1 3_745 0.939    no
+C4 . H41 . 0.95    no
+C4 . H42 . 0.95    no
+C4 . H43 . 0.96    no
+N6 . H1 3_745 0.94    no
 N6 . C7 . 1.348(8)    yes
 C7 . O8 . 1.224(8)    yes
 C7 . C9 . 1.489(8)    yes
-C9 . H91 . 0.952    no
-C9 . H92 . 0.962    no
-C9 . H93 . 0.960    no
+C9 . H91 . 0.95    no
+C9 . H92 . 0.96    no
+C9 . H93 . 0.96    no
 C10 . C11 . 1.481(10)    yes
-C10 . H101 . 0.971    no
-C10 . H102 . 0.953    no
-C11 . H111 . 0.965    no
-C11 . H112 . 0.956    no
+C10 . H101 . 0.97    no
+C10 . H102 . 0.95    no
+C11 . H111 . 0.96    no
+C11 . H112 . 0.96    no
 loop_
  _geom_angle_atom_site_label_1
  _geom_angle_site_symmetry_1
