@@ -4470,7 +4470,7 @@ cdjwoct05. More fiddles to keep Bill happy
           CALL SNUM ( TERM, 0., -1, 0, 10, IVEC )
         endif
       else
-        CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
+	  CALL SNUM ( TERM, ESD, -2, 0, 10, IVEC )
       endif
       WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
       CALL XCRAS ( CBUF, N)
