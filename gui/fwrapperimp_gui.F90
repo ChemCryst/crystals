@@ -46,7 +46,7 @@ end subroutine
 subroutine fstfpo(nv, ipts)
     use fwrappergui_mod, only: fastfpoly
     implicit none
-    integer nv, ipts(:)
+    integer nv, ipts(nv*2)
 
     call fastfpoly(nv, ipts)
 end subroutine
@@ -55,7 +55,7 @@ subroutine fstepo(nv, ipts)
     use fwrappergui_mod, only: fastepoly
     implicit none
     integer nv
-    integer, dimension(:) :: ipts
+    integer, dimension(nv*2) :: ipts
 
     call fastepoly(nv, ipts)
 end subroutine
