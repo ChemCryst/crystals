@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Bits)
 
+set(SF_MODPATH "${CMAKE_SOURCE_DIR}/cmakemodules/")
+
 add_subdirectory(cif2cry)
 add_subdirectory(convplat)
 add_subdirectory(csd2cry)
@@ -23,6 +25,7 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 message("")
 message(STATUS "Building superflip")
+
 ExternalProject_Add(
     superflip_project
     URL http://superflip.fzu.cz/download/superflip.tar.gz
@@ -30,6 +33,7 @@ ExternalProject_Add(
                           ${CMAKE_SOURCE_DIR}/bits/superflip/CMakeLists.txt
                           ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/CMakeLists.txt
     BUILD_IN_SOURCE 1
+	CMAKE_ARGS -DSF_MODPATH:STRING=${SF_MODPATH}
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/superflip${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
 )
 
