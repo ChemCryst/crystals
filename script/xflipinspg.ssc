@@ -44,7 +44,7 @@
 %%                                                                              
 %% looking for SG symbol on TITLE card
 %   IF ( FILEEXISTS ( 'sflip_sym.ins' ) ) THEN                                  
-%     EVALUATE CFILE = 'SFLIP_SYM.INS'                                          
+%     EVALUATE CFILE = 'sflip_sym.ins'                                          
 %     TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                       
 {I Scanning SUPERFLIP symmetry file for information.                            
 %    EXTRACT REWIND                                                             
