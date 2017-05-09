@@ -800,12 +800,12 @@ int CcController::debugIndent = 0;
 CcController::CcController( const string & directory, const string & dscfile )
 {
 #ifdef CRY_USEMFC
-	CcCrystalsCommandListener tInterfaceCommandListener(AfxGetApp(), WM_CRYSTALS_COMMAND);
+    CcCrystalsCommandListener tInterfaceCommandListener(AfxGetApp(), WM_CRYSTALS_COMMAND);
 #else
-	CcCrystalsCommandListener tInterfaceCommandListener(wxTheApp, ccEVT_COMMAND_ADDED);
+    CcCrystalsCommandListener tInterfaceCommandListener(wxTheApp, ccEVT_COMMAND_ADDED);
 #endif
 
-	mInterfaceCommandDeq.addAddListener(tInterfaceCommandListener);
+    mInterfaceCommandDeq.addAddListener(tInterfaceCommandListener);
 
 #ifdef CRY_OSWIN32
     m_start_ticks = GetTickCount();
@@ -834,7 +834,7 @@ CcController::CcController( const string & directory, const string & dscfile )
     CcController::debugIndent = 0;
 
 #ifdef DEPRECATEDCRY_USEWX
-	CxWeb::InitXULRunner();
+    CxWeb::InitXULRunner();
 #endif
 
 #ifdef CRY_USEMFC
@@ -1109,7 +1109,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
 {
     int i = 0;
     ostringstream aaarg;
-	    list<CcModelDoc*>::iterator moddoc;
+        list<CcModelDoc*>::iterator moddoc;
     while( ! CcModelDoc::sm_ModelDocList.empty() )
     {
         i++;
@@ -1177,7 +1177,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
 
 // If the thread isn't dead yet, then kill it.
     if( mCrystalsThread && m_Crystals_Thread_Alive.IsLocked() )
-		 delete mCrystalsThread;
+         delete mCrystalsThread;
 
 }
 
@@ -1361,10 +1361,10 @@ bool CcController::ParseInput( deque<string> & tokenList )
                         }
                     }
                     if ( rpd != CcPlotData::sm_PlotList.rend())
-					{
-						(*rpd)->ParseInput( tokenList );
+                    {
+                        (*rpd)->ParseInput( tokenList );
                         break;
-					}
+                    }
 // Not found.
                     if ( safeSet )
                     {
@@ -1494,44 +1494,44 @@ bool CcController::ParseInput( deque<string> & tokenList )
             case kTSysOpenFile: //Display OpenFileDialog and send result back to the Script.
             {
                 tokenList.pop_front();    // remove that token
-		string result;  //the answer
-		list<pair<string,string> > extensionsAndDescriptions;
+        string result;  //the answer
+        list<pair<string,string> > extensionsAndDescriptions;
 
 //Updated syntax use SYSOPENFILE [ 'ext' 'desc' 'ext' 'desc' ]
                 if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTOpenGroup) {
-	                tokenList.pop_front();
+                    tokenList.pop_front();
                         while ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kInstructionClass ) != kTCloseGroup) {
-	               		string extension = string(tokenList.front()); // Get the extension
-		                tokenList.pop_front();
-				if ( tokenList.empty() || CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTCloseGroup ) {
-	                           LOGWARN( "CcController:ParseInput:SysOpenFile extension string without description");
-				   break;
-				}
-                		string description = string(tokenList.front());   // Get the extension description
-		                tokenList.pop_front();
-				extensionsAndDescriptions.push_back(make_pair(extension,description));
+                        string extension = string(tokenList.front()); // Get the extension
+                        tokenList.pop_front();
+                if ( tokenList.empty() || CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTCloseGroup ) {
+                               LOGWARN( "CcController:ParseInput:SysOpenFile extension string without description");
+                   break;
+                }
+                        string description = string(tokenList.front());   // Get the extension description
+                        tokenList.pop_front();
+                extensionsAndDescriptions.push_back(make_pair(extension,description));
 
-			}
-	                tokenList.pop_front();
-		} else {
+            }
+                    tokenList.pop_front();
+        } else {
 // old syntax
-	                string result;
-        	        string extension = string(tokenList.front()); // Get the extension
-	                tokenList.pop_front();
-	                string description = string(tokenList.front());   // Get the extension description
-	                tokenList.pop_front();
-			extensionsAndDescriptions.push_back(make_pair(extension,description));
-		}
+                    string result;
+                    string extension = string(tokenList.front()); // Get the extension
+                    tokenList.pop_front();
+                    string description = string(tokenList.front());   // Get the extension description
+                    tokenList.pop_front();
+            extensionsAndDescriptions.push_back(make_pair(extension,description));
+        }
 
-	        if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
-	        {
-	            result = OpenFileDialog(extensionsAndDescriptions, true);
-	            tokenList.pop_front(); //Remove TitleOnly token
-	        }
-	        else
-	        {
-	            result = OpenFileDialog(extensionsAndDescriptions, false);
-        	}
+            if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
+            {
+                result = OpenFileDialog(extensionsAndDescriptions, true);
+                tokenList.pop_front(); //Remove TitleOnly token
+            }
+            else
+            {
+                result = OpenFileDialog(extensionsAndDescriptions, false);
+            }
                 SendCommand(result);
                 break;
             }
@@ -1720,7 +1720,7 @@ void    CcController::Tokenize( const string & cText )
 
 //    LOGWARN(cText);
 
-	int clen = cText.length();
+    int clen = cText.length();
     int chop = 0;
 
 // Look out for lines where the ^^ are misplaced.
@@ -1768,12 +1768,12 @@ void    CcController::Tokenize( const string & cText )
         else if ( selector.compare(kSControlSelector) == 0 )
         {
             while ( ParseInput( *mCurTokenList ) )
-		;
+        ;
         }
         else if ( selector.compare(kSWaitControlSelector) == 0 )
         {
             while ( ParseInput( *mCurTokenList ) )
-		;
+        ;
 //We must now signal the waiting Crystals thread that we're complete.
             LOGSTAT ( "CW complete, unlocking output queue.");
             m_Complete_Signal.Signal();
@@ -1810,12 +1810,12 @@ void    CcController::Tokenize( const string & cText )
 
 string trim(const string& pString)
 {
-	string::size_type start = pString.find_first_not_of(" \t\r\n");
-	string::size_type end = pString.find_last_not_of(" \t\r\n");
-	if (start == string::npos || end == string::npos)
-		return string();
-	else
-		return pString.substr(start, end-(start-1));
+    string::size_type start = pString.find_first_not_of(" \t\r\n");
+    string::size_type end = pString.find_last_not_of(" \t\r\n");
+    if (start == string::npos || end == string::npos)
+        return string();
+    else
+        return pString.substr(start, end-(start-1));
 }
 
 void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
@@ -1844,30 +1844,30 @@ void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
 
 // 3. Everything else.
 //Add this command to the queue to crystals.
-	string temp = trim(line);
-	string::size_type stp;
-	if ( jumpQueue )
-	{
-		 stp = temp.rfind("_N");
-		 if (stp != string::npos)
-		 {
-			mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );   //Add the next command in the list to the command queue
-			AddCrystalsCommand(temp.substr(0,stp), jumpQueue);
-		 }
-		 else
-			mCrystalsCommandDeq.push_front ( temp );	//Add the next command in the list to the command queue
-	}
-	else
-	{
-		 stp = temp.find("_N");
-		 if (stp != string::npos)
-		 {
-			mCrystalsCommandDeq.push_back ( temp.substr(0,stp) );   //Add the next command in the list to the command queue
-			AddCrystalsCommand(temp.substr(stp+2,temp.length()-stp-2), jumpQueue);
-		 }
-		 else
-			mCrystalsCommandDeq.push_back ( temp );	//Add the next command in the list to the command queue
-	}
+    string temp = trim(line);
+    string::size_type stp;
+    if ( jumpQueue )
+    {
+         stp = temp.rfind("_N");
+         if (stp != string::npos)
+         {
+            mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );   //Add the next command in the list to the command queue
+            AddCrystalsCommand(temp.substr(0,stp), jumpQueue);
+         }
+         else
+            mCrystalsCommandDeq.push_front ( temp );    //Add the next command in the list to the command queue
+    }
+    else
+    {
+         stp = temp.find("_N");
+         if (stp != string::npos)
+         {
+            mCrystalsCommandDeq.push_back ( temp.substr(0,stp) );   //Add the next command in the list to the command queue
+            AddCrystalsCommand(temp.substr(stp+2,temp.length()-stp-2), jumpQueue);
+         }
+         else
+            mCrystalsCommandDeq.push_back ( temp ); //Add the next command in the list to the command queue
+    }
 }
 
 void  CcController::AddInterfaceCommand( const string &line, bool internal )
@@ -1918,15 +1918,15 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
   mInterfaceCommandDeq.push_back(line);
   LOGSTAT("-----------CRYSTALS has put: " + line );
 
-	
+    
 #ifdef CRY_USEMFC
       if ( mGUIThread ) PostThreadMessage( mGUIThread->m_nThreadID, WM_STUFFTOPROCESS, NULL, NULL );
 #else
-	//wxCommandEvent tEvent(ccEVT_COMMAND_ADDED);
-	//wxTheApp->AddPendingEvent(tEvent);
+    //wxCommandEvent tEvent(ccEVT_COMMAND_ADDED);
+    //wxTheApp->AddPendingEvent(tEvent);
 #endif
-	  bool comp = false;
-	    if ( lock ) 
+      bool comp = false;
+        if ( lock ) 
   {
        m_Complete_Signal.Wait();
        LOGSTAT ("-----------Queue released");
@@ -1952,12 +1952,12 @@ bool CcController::GetInterfaceCommand( string &line )
         ChangeDir( m_newdir );
         StartCrystalsThread();
         m_restart = false;
-	  } else {
+      } else {
         mThisThreadisDead = true;
         LOGSTAT("Shutting down the main window of this (GUI) thread.");
         line = "^^CO DISPOSE _MAIN ";
         return (true);
-	  }
+      }
     }
   }
   else
@@ -2044,11 +2044,11 @@ CrGUIElement* CcController::FindObject(const string & Name)
 
 bool CcController::InputPlaceIsInTopLevelModalWindow() 
 {
-	if ( CrWindow::mModalWindowStack.empty() ) return true; //shouldn't happen, but maybe top level window isn't in stack
-	if ( GetInputPlace() ) {
-		if ( GetInputPlace()->GetRootWidget() == CrWindow::mModalWindowStack.back() ) return true;
-	}
-	return false;
+    if ( CrWindow::mModalWindowStack.empty() ) return true; //shouldn't happen, but maybe top level window isn't in stack
+    if ( GetInputPlace() ) {
+        if ( GetInputPlace()->GetRootWidget() == CrWindow::mModalWindowStack.back() ) return true;
+    }
+    return false;
 }
 
 void CcController::FocusToInput(char theChar)
@@ -2063,15 +2063,15 @@ void CcController::FocusToInput(char theChar)
     {
         string someText = ((CxEditBox*)(GetInputPlace()->GetWidget()))->GetText();
         someText += theChar;
-		if ( InputPlaceIsInTopLevelModalWindow() ){
-			GetInputPlace()->SetText(someText);
-		    GetInputPlace()->CrFocus();
-		}
+        if ( InputPlaceIsInTopLevelModalWindow() ){
+            GetInputPlace()->SetText(someText);
+            GetInputPlace()->CrFocus();
+        }
     }
-	else if ( InputPlaceIsInTopLevelModalWindow() ) //No input text, but focus anyway.
-	{
+    else if ( InputPlaceIsInTopLevelModalWindow() ) //No input text, but focus anyway.
+    {
         GetInputPlace()->CrFocus();
-	}
+    }
 }
 
 void CcController::SetTextOutputPlace(CrGUIElement * outputPane)
@@ -2469,7 +2469,7 @@ UINT CrystalsThreadProc( void* arg );
 #else
 int CrystalsThreadProc( void* arg );
 #endif
-	
+    
 
 #ifdef CRY_OSWIN32
 UINT CrystalsThreadProc( void * arg )
@@ -2502,8 +2502,8 @@ int CrystalsThreadProc( void * arg )
         LOGSTAT ("Error Exception caught. Thread ends. Releasing mutex. Goodbye. " );
 #if defined (__INW__) 
         m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
-	    (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
-		throw;  //rethrow for the crash handler
+        (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
+        throw;  //rethrow for the crash handler
 #endif
     }
 //    catch ( ... )
@@ -2511,7 +2511,7 @@ int CrystalsThreadProc( void * arg )
  //       LOGERR ("Unhandled exception caught. Thread ends. Releasing mutex. Goodbye. " );
 //    }
     m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
-	(CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
+    (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
     LOGSTAT ("Final word from the CRYSTALS thread: Bye." );
 #if defined (__INW__) 
     //crUninstallFromCurrentThread();    
@@ -2571,8 +2571,8 @@ void CcController::ProcessOutput( const string & line )
 string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDescriptions, 
                                   bool titleOnly)
 {
-	list<pair<string,string> >::iterator i = extensionsAndDescriptions.begin();
-	list<pair<string,string> >::iterator e = extensionsAndDescriptions.end();
+    list<pair<string,string> >::iterator i = extensionsAndDescriptions.begin();
+    list<pair<string,string> >::iterator e = extensionsAndDescriptions.end();
 
 #ifdef CRY_USEMFC
     CString pathname, filename, filetitle;
@@ -2626,10 +2626,10 @@ string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDes
     bool firstt = true;
     while ( i!=e ) {
         if ( ! firstt ) {
-	        extension += "|";
-	} else {
+            extension += "|";
+    } else {
                 firstt = false;
-	}
+    }
         extension += wxString((i->second).c_str()) + "|" + wxString((i->first).c_str());
         ++i;
     }
@@ -2916,7 +2916,7 @@ void CcController::CcChooseFont()
 #else
 
   wxFontData data;
-  wxFont* pFont = new wxFont(12,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+  wxFont* pFont = new wxFont(12,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
 
   if ( CcController::mp_inputfont == NULL )
   {
@@ -3056,25 +3056,25 @@ bool CcController::DoCommandTransferStuff()
   #endif
 
   #ifdef __INW__
-		    CR_EXCEPTION_INFO ei;
-			memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
-			ei.cb = sizeof(CR_EXCEPTION_INFO);
-			ei.exctype = CR_SEH_EXCEPTION;
-			ei.code = 1234;
-			ei.pexcptrs = NULL;
+            CR_EXCEPTION_INFO ei;
+            memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
+            ei.cb = sizeof(CR_EXCEPTION_INFO);
+            ei.exctype = CR_SEH_EXCEPTION;
+            ei.code = 1234;
+            ei.pexcptrs = NULL;
 
-			int result = crGenerateErrorReport(&ei);
+            int result = crGenerateErrorReport(&ei);
 
-			if(result!=0)
-			{
-			  // If goes here, crGenerateErrorReport() has failed
-			  // Get the last error message
-			  TCHAR szErrorMsg[256];
-			  crGetLastErrorMsg(szErrorMsg, 256);
-			}
-  #endif		   
-			// Manually terminate program
-//			ExitProcess(0);
+            if(result!=0)
+            {
+              // If goes here, crGenerateErrorReport() has failed
+              // Get the last error message
+              TCHAR szErrorMsg[256];
+              crGetLastErrorMsg(szErrorMsg, 256);
+            }
+  #endif           
+            // Manually terminate program
+//          ExitProcess(0);
 
 //  #ifdef __BOTHWX__
 //           if ( !CcController::theController->m_BatchMode )
@@ -3084,16 +3084,16 @@ bool CcController::DoCommandTransferStuff()
         }
 
         LOGSTAT ("Really going now. Bye. " );
-		#ifdef CRY_OSMAC
-			m_Crystals_Thread_Alive.Leave();
-			pthread_exit(0);
-		#else
+        #ifdef CRY_OSMAC
+            m_Crystals_Thread_Alive.Leave();
+            pthread_exit(0);
+        #else
         if ( theExitcode != 0 && theExitcode != 1000 )
-			throw CcController::MyBadException();   // Leap right out of the Fortran
-		else
-			throw CcController::MyException();   // Leap right out of the Fortran
-												 // to the top of the call stack. 
-		#endif
+            throw CcController::MyBadException();   // Leap right out of the Fortran
+        else
+            throw CcController::MyException();   // Leap right out of the Fortran
+                                                 // to the top of the call stack. 
+        #endif
         LOGSTAT ("Thread ends. Execution should never get here. Odd. ");
   }
 
@@ -3117,7 +3117,7 @@ void CcController::MakeTokens(const string& str,
      string::size_type pTStart = str.substr(nextTokenStart, nextDelimStart - nextTokenStart).find_first_of(pairopen);
      if ( pTStart != string::npos )
      {
-		 pTStart += nextTokenStart;
+         pTStart += nextTokenStart;
 // Find out what pair closer is
        string::size_type pTCloser = pairclose.find( str[pTStart] );
 // Find closer in the string
@@ -3482,9 +3482,9 @@ extern "C" {
 
   void getcenv ( char* key, char* value)
   {
-	  char* v;
-	  v = getenv(key);
-	  if ( v ) strcpy(value,v);
+      char* v;
+      v = getenv(key);
+      if ( v ) strcpy(value,v);
   }
 
   int guexec ( char* theLine)
@@ -3520,7 +3520,7 @@ extern "C" {
     string line = string(theLine);
 //#endif    
 
-	
+    
 
     tstring::size_type strim = line.find_last_not_of(' '); //Remove trailing spaces
 
@@ -3827,7 +3827,7 @@ extern "C" {
 
       char buf[1024];           //i/o buffer
       BZERO(buf);
-	  string keep = "";
+      string keep = "";
       for(;;)      //main program reading/writing loop
       {
         PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
@@ -3841,7 +3841,7 @@ extern "C" {
             s.erase(i,1);    //Remove \r
           }
 
-		  keep = keep + s;
+          keep = keep + s;
           for(;;) {
             string::size_type strim = keep.find_first_of("\n");
             if ( strim == string::npos )
@@ -3858,10 +3858,10 @@ extern "C" {
 
         GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
         if (exit != STILL_ACTIVE) {
-			exitcode = exit;
-			break;
-		}
-		
+            exitcode = exit;
+            break;
+        }
+        
         bool wait = false;
  
         (CcController::theController)->GetCrystalsCommand(*&buf,wait);
@@ -4001,8 +4001,8 @@ extern "C" {
         }
         delete [] str;
 */ 
-	}
-	    }
+    }
+        }
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMAC__)
@@ -4066,12 +4066,12 @@ extern "C" {
     strncpy(buf, restLine.c_str(), 256);
     buf[257]='\0';
     argc = split(buf, argv, 9);
-    printf("input: '%s'\n", buf);
+    //printf("input: '%s'\n", buf);
     args[0] = cmd;
     for (i = 0; i < argc; i++)
     {
         args[i+1]=argv[i];
-        printf("[%u] '%s'\n", i, argv[i]);
+        //printf("[%u] '%s'\n", i, argv[i]);
     }
     args[argc+1]=NULL;
     
@@ -4146,22 +4146,64 @@ extern "C" {
       for(;;)      //main program loop
       {
         int bread = -1;
+        string partial;
+        partial = "";
         while ( 1 )
         {
           BZERO(buf);
           bread = read(ftoParent[0],buf,1023);  //read the stdout pipe
           if ( bread <= 0 ) break;
           string s(buf);
-          string::size_type i;
-          while ( ( i = s.find_first_of("\r") ) != string::npos ) {
-            s.erase(i,1);    //Remove \r
-          }
+          string::size_type i, j;
 
+          i = s.find_first_of("{");
+          while(i!=string::npos)
+          {
+            s.insert(i, 1, '\\');
+            i = s.find("{", i+2);
+          }
+                              
+          // appending from last partial line
+          s = partial + s;
+          
           for(;;) {
+                          
+            i = s.find_first_of("\r");
+            while(i!=string::npos)
+            {
+              if(i!=string::npos and s.substr(i+1,1)=="\n") // eol is \r\n, changing to \n only
+              {
+                s.erase(i,1);
+              }
+
+              i = s.find_first_of("\r");
+              j = s.find_first_of("\n");
+              if(i!=string::npos and j!=string::npos and i<j)
+              {
+                // found a \r before \n
+                // deleting the content before \r (the following text would be overwritting it on the terminal)
+                s.erase(0,i+1);
+              }
+              if(i!=string::npos and j!=string::npos and j<i)
+              {
+                // There is a \r but on the next line, ignoring
+                break;
+              }               
+              if(i!=string::npos and j==string::npos)
+              {
+                // partial string, no end of line
+                partial=s;
+                break;
+              }
+              i = s.find_first_of("\r");        
+            }                     
+                          
             string::size_type strim = s.find_first_of("\n");
             if ( strim == string::npos )
             {
-              CcController::theController->AddInterfaceCommand("{0,1 " + s);
+              //CcController::theController->AddInterfaceCommand("{0,1 " + s);
+              //no end of line
+              partial=s;
               break;
             }
             CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0,strim));
@@ -4174,13 +4216,13 @@ extern "C" {
         int status;
         if ( waitpid(pid, &status, WNOHANG) != 0 ) {
           std::cerr << "GUEXEC: Detected child process exited\n" ;
-		  if ( WIFEXITED(status) ) {
-			exitcode = WEXITSTATUS(status);
-			(CcController::theController)->AddInterfaceCommand( "     {0,2 Process has exited. ");
- 		  } else {  //abnormal termination (no exit code)
-			(CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
-			exitcode = -1;  
-		  }
+          if ( WIFEXITED(status) ) {
+            exitcode = WEXITSTATUS(status);
+            (CcController::theController)->AddInterfaceCommand( "     {0,2 Process has exited. ");
+          } else {  //abnormal termination (no exit code)
+            (CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
+            exitcode = -1;  
+          }
           break;
         }
 
@@ -4229,21 +4271,21 @@ extern "C" {
 
       if ( bWait )
       {
-		  int child_status;
+          int child_status;
           std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
           waitpid(pid,&child_status,0);
-		  
-		  if ( WIFEXITED(child_status) ) {
+          
+          if ( WIFEXITED(child_status) ) {
 
-			exitcode = WEXITSTATUS(child_status);
-			(CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
-			  
-		  } else {  //abnormal termination (no exit code)
+            exitcode = WEXITSTATUS(child_status);
+            (CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
+              
+          } else {  //abnormal termination (no exit code)
 
-			(CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
-			exitcode = -1;  
-		  }
-			  
+            (CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
+            exitcode = -1;  
+          }
+              
 
       }
       std::cerr << "\n\nGUEXEC: Done.\n";
@@ -4251,7 +4293,7 @@ extern "C" {
     }
 
     delete [] cmd;
-	return exitcode;
+    return exitcode;
 #endif
   }
 
@@ -4307,35 +4349,35 @@ bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
 {
 //This is where the Crystals thread will spend most of its time.
 //Waiting for the user to do somethine.
-	if (mThisThreadisDead) return false;
-		string tNextCommand;
-	
-	strcpy( line, "" );
-	if ( bGuexec ) 
-		try
-		{
-			tNextCommand = mCrystalsCommandDeq.pop_front();		
-		}
-		catch (const exception& e)
-		{
-		
-			std::cerr << "This shouldn't have happened. " << e.what() << endl;
-		}
-	else 
-	{
-		try
-		{
-			tNextCommand = mCrystalsCommandDeq.pop_front(200);
-			bGuexec = true;
-		}
-		catch (const semaphore_timeout& e)
-		{
-			bGuexec = false;
-			return true;
-		}
-	}
-	strcpy( line, tNextCommand.c_str());
-	  LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
+    if (mThisThreadisDead) return false;
+        string tNextCommand;
+    
+    strcpy( line, "" );
+    if ( bGuexec ) 
+        try
+        {
+            tNextCommand = mCrystalsCommandDeq.pop_front();     
+        }
+        catch (const exception& e)
+        {
+        
+            std::cerr << "This shouldn't have happened. " << e.what() << endl;
+        }
+    else 
+    {
+        try
+        {
+            tNextCommand = mCrystalsCommandDeq.pop_front(200);
+            bGuexec = true;
+        }
+        catch (const semaphore_timeout& e)
+        {
+            bGuexec = false;
+            return true;
+        }
+    }
+    strcpy( line, tNextCommand.c_str());
+      LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
   if (mThisThreadisDead) return false;
   return (true);
 }

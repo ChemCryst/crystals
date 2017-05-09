@@ -13,7 +13,7 @@
 %  EVALUATE SGOK = FALSE                                                        
 %  EVALUATE SPGTRIC = FALSE                                                     
 %%                                                                              
-%      COPY '#SPAWN + "CRYSDIR:superflip.exe" sflip.inflip'                     
+%      COPY '#SPAWN % "CRYSDIR:superflip.exe" sflip.inflip'                     
 %  TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
 %%djwapr11      COPY '#TYPE sflip.sflog'                                        
 %% check the Superflip log-file for convergence indications                     
