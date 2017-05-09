@@ -1051,7 +1051,8 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
       {
         nPos = strTemp.find( CONTROL_BYTE );
         // check if the control byte is escaped
-        if(nPos!= string::npos and nPos>1) {
+        if(nPos!= string::npos && nPos>(size_t)1) 
+        {
           if(strTemp.substr(nPos-1, 1)=="\\")
           {
 		    // remove \ and orint { as normal character
