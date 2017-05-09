@@ -37,5 +37,18 @@ ExternalProject_Add(
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/superflip${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
 )
 
-
 message(STATUS "End Building superflip")
+
+message("")
+message(STATUS "Building edma")
+ExternalProject_Add(
+    edma_project
+    URL http://superflip.fzu.cz/download/EDMA.tar.gz
+    UPDATE_COMMAND ${CMAKE_COMMAND} -E copy
+                          ${CMAKE_SOURCE_DIR}/bits/edma/CMakeLists.txt
+                          ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/CMakeLists.txt
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/edma ${CMAKE_BINARY_DIR}/
+)
+
+message(STATUS "End Building edma")
