@@ -19,3 +19,19 @@ if ( NOT WIN32 )
 endif()
 #add_subdirectory(loader)
 
+include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+
+message("")
+message(STATUS "Building superflip")
+ExternalProject_Add(
+    superflip_project
+    URL http://superflip.fzu.cz/download/superflip.tar.gz
+    UPDATE_COMMAND ${CMAKE_COMMAND} -E copy
+                          ${CMAKE_SOURCE_DIR}/bits/superflip/CMakeLists.txt
+                          ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/CMakeLists.txt
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/superflip ${CMAKE_BINARY_DIR}/
+)
+
+
+message(STATUS "End Building superflip")
