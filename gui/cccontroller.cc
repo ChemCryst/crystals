@@ -3661,7 +3661,7 @@ extern "C" {
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
 
-        DWORD dwExitCode = NULL;
+        DWORD dwExitCode = 0;
         GetExitCodeProcess( si.hProcess, &dwExitCode );
         exitcode = (int)dwExitCode;
 
@@ -3694,7 +3694,7 @@ extern "C" {
           CcController::theController->AddInterfaceCommand( t.str() );
           CcController::theController->AddInterfaceCommand( " ");
           WaitForSingleObject( si.hProcess, INFINITE );
-          DWORD dwExitCode = NULL;
+          DWORD dwExitCode = 0;
           GetExitCodeProcess( si.hProcess, &dwExitCode );
           exitcode = (int)dwExitCode;
 
@@ -3770,7 +3770,7 @@ extern "C" {
         CcController::theController->AddInterfaceCommand( t.str() );
         CcController::theController->AddInterfaceCommand( " ");
         WaitForSingleObject( si.hProcess, INFINITE );
-        DWORD dwExitCode = NULL;
+        DWORD dwExitCode = 0;
         GetExitCodeProcess( si.hProcess, &dwExitCode );
         exitcode = (int)dwExitCode;
         CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
@@ -4003,6 +4003,7 @@ extern "C" {
 */ 
     }
         }
+	return exitcode;
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMAC__)
