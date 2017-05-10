@@ -13,8 +13,13 @@
 %  EVALUATE SGOK = FALSE                                                        
 %  EVALUATE SPGTRIC = FALSE                                                     
 %%                                                                              
+%   IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                  
 %      COPY '#SPAWN % "CRYSDIR:superflip.exe" sflip.inflip'                     
-%  TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
+%      TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
+%   ELSE
+{E *** No input file available. Run "Create/Run file" first
+%      FINISH                                                                   
+%   END IF                                                                        
 %%djwapr11      COPY '#TYPE sflip.sflog'                                        
 %% check the Superflip log-file for convergence indications                     
 %  EVALUATE CFILE = 'sflip.sflog'                                               
