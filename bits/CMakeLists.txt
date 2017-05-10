@@ -23,22 +23,25 @@ endif()
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
-message("")
-message(STATUS "Building superflip")
+if(withSUPERFLIP)
+	message("")
+	message(STATUS "Building superflip")
 
-ExternalProject_Add(
-    superflip_project
-    URL http://superflip.fzu.cz/download/superflip.tar.gz
-    UPDATE_COMMAND ${CMAKE_COMMAND} -E copy
-                          ${CMAKE_SOURCE_DIR}/bits/superflip/CMakeLists.txt
-                          ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/CMakeLists.txt
-    BUILD_IN_SOURCE 1
-	CMAKE_ARGS -DSF_MODPATH:STRING=${SF_MODPATH}
-    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/superflip${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
-)
+	ExternalProject_Add(
+		superflip_project
+		URL http://superflip.fzu.cz/download/superflip.tar.gz
+		UPDATE_COMMAND ${CMAKE_COMMAND} -E copy
+							  ${CMAKE_SOURCE_DIR}/bits/superflip/CMakeLists.txt
+							  ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/CMakeLists.txt
+		BUILD_IN_SOURCE 1
+		CMAKE_ARGS -DSF_MODPATH:STRING=${SF_MODPATH}
+		INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/superflip${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
+	)
 
-message(STATUS "End Building superflip")
+	message(STATUS "End Building superflip")
+endif()
 
+if(withEDMA)
 message("")
 message(STATUS "Building edma")
 ExternalProject_Add(
@@ -48,7 +51,9 @@ ExternalProject_Add(
                           ${CMAKE_SOURCE_DIR}/bits/edma/CMakeLists.txt
                           ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/CMakeLists.txt
     BUILD_IN_SOURCE 1
+	CMAKE_ARGS -DSF_MODPATH:STRING=${SF_MODPATH}
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/edma${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
 )
 
 message(STATUS "End Building edma")
+endif()

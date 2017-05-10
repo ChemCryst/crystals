@@ -18,6 +18,8 @@ option (useHDF5 "useHDF5" OFF)
 option (useGGDB3 "useGGDB3" OFF) # used for orion (old dgb)
 option (usepFUnit "usepFUnit" OFF)  
 option (useFAST "useFAST" OFF)  
+option (withSUPERFLIP "withSUPERFLIP" OFF)  
+option (withEDMA "withEDMA" OFF)  
 
 SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
 message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")

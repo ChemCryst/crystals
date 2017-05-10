@@ -1,0 +1,4 @@
+Source code of edma is automatically downloaded by cmake from the author's website: http://superflip.fzu.cz/
+Compilation is done via the CMakelists.txt provided in this folder
+
+
