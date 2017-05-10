@@ -69,7 +69,7 @@ C      call CreateIOWindow(caption,DialogHandle)
 #endif
       LINPMN = .FALSE.     
       ICAMER = ITYPE
-      IF (ICAMER.LT.2) THEN
+c      IF (ICAMER.LT.2) THEN
 C SET UP FLAG POSITIONS FOR LARGE VERSION OF CAMERON
 CDJWSEP2000  SET UP DATA SIZES SO THAT POINTERS CAN BE
 C      MORE EASILY UPDATED.
@@ -101,20 +101,20 @@ C  COMPUTE THE ADDRESSES INSTEAD
         ILAB = IBOND + JBOND
         ISYM = ILAB + JLAB
         IPACKT = ISYM + JSYM
-      ELSE
+c      ELSE
 C SET UP FLAG POSITIONS FOR SMALL VERSION OF CAMERON
 CDJW SEP 2000 NOT YET UPDATED - MAY BE OBSOLETE?
-        IXYZO = 4
-        IPCK = 12
-        IATTYP = 7
-        ILAB = 16
-        IBOND = 14
-        ISYM = 0
-        IPACKT = 19
-      ENDIF
+c        IXYZO = 4
+c        IPCK = 12
+c        IATTYP = 7
+c        ILAB = 16
+c        IBOND = 14
+c        ISYM = 0
+c        IPACKT = 19
+c      ENDIF
       IRLAST = 1
       CALL ZINIT
-      IF (ICAMER.LT.2) THEN
+c      IF (ICAMER.LT.2) THEN
 C        CALL ZMNINI
         IF (IPCX.EQ.1) THEN
           ID = 1
@@ -140,9 +140,9 @@ C CHECK IF THERE IS A CAMERON.INI
           CALL ZMORE1('There is no CAMERON.INI',0)
         ENDIF
         CALL ZCONTR
-      ELSE
-        CALL ZSMALL (RCRYST , NSTORE , IDEVIC)
-      ENDIF
+c      ELSE
+c        CALL ZSMALL (RCRYST , NSTORE , IDEVIC)
+c      ENDIF
       RETURN
       END
 C

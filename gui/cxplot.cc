@@ -497,7 +497,7 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
     brush.DeleteObject();           
 #endif
 #ifdef CRY_USEWX
-      wxPen apen(mfgcolour,1,wxSOLID);
+      wxPen apen(mfgcolour,1,wxPENSTYLE_SOLID);
       m_memDC->SetPen(apen);
       if ( fill )
             m_memDC->SetBrush( *m_brush );
