@@ -248,7 +248,7 @@ CxPlot::CxPlot(CrPlot* container)
 #endif
 #ifdef CRY_USEWX
     mfgcolour = wxColour(0,0,0);
-    m_brush = new wxBrush(mfgcolour,wxSOLID);
+    m_brush = new wxBrush(mfgcolour,wxBRUSHSTYLE_SOLID);
     m_memDC = new wxMemoryDC();
 #endif
 }
@@ -441,7 +441,7 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
     pen.DeleteObject();                                     // added by steve - clean up resources
 #endif
 #ifdef CRY_USEWX
-    wxPen apen(mfgcolour,thickness,wxSOLID);
+    wxPen apen(mfgcolour,thickness,wxPENSTYLE_SOLID);
     m_memDC->SetPen(apen);
     m_memDC->DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
 #endif
@@ -535,7 +535,7 @@ void CxPlot::DrawCross(int x, int y, int w)
     m_memDC->SelectObject(m_oldMemDCBitmap);
     m_memDC->SelectObject(oldpen);
 #else
-	  wxPen apen(mfgcolour,2,wxSOLID);
+	  wxPen apen(mfgcolour,2,wxPENSTYLE_SOLID);
       m_memDC->SetPen(apen);
       m_memDC->DrawLine(topleft.x,topleft.y,bottomright.x,bottomright.y);
 //      wxPen bpen(wxColour(0,0,0),2,wxSOLID);
@@ -656,7 +656,7 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 #ifdef CRY_USEWX
       wxString wtext = wxString(text.c_str());
       m_memDC->SetBrush( *m_brush );
-      wxPen apen(mfgcolour,1,wxSOLID);
+      wxPen apen(mfgcolour,1,wxPENSTYLE_SOLID);
       m_memDC->SetPen(apen);
       m_memDC->SetBackgroundMode( wxTRANSPARENT );
       int tx, ty, mx, my;
@@ -845,7 +845,7 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, bool fill)
     m_memDC->SelectObject(m_oldMemDCBitmap);
 #endif
 #ifdef CRY_USEWX
-    wxPen apen(mfgcolour,1,wxSOLID);
+    wxPen apen(mfgcolour,1,wxPENSTYLE_SOLID);
     m_memDC->SetPen(apen);
 //    m_memDC->SetPen( *m_pen );
     if ( fill )
@@ -1515,8 +1515,8 @@ void CxPlotKey::OnPaint(wxPaintEvent & event)
   for(int i=0; i<m_NumberOfSeries; i++)
   {
       wxColour acolour (m_Colours[0][i], m_Colours[1][i], m_Colours[2][i]);
-      wxPen apen(acolour,1,wxSOLID);
-      wxBrush abrush (acolour,wxSOLID);
+      wxPen apen(acolour,1,wxPENSTYLE_SOLID);
+      wxBrush abrush (acolour,wxBRUSHSTYLE_SOLID);
 
       dc.SetPen(apen);
       dc.SetBrush(abrush);

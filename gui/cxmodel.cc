@@ -21,9 +21,9 @@
 #else
 #include    <GL/glu.h>
 #endif
-#ifdef CRY_USEWX
-  #include "idb_splash.xpm"
-#endif
+//#ifdef CRY_USEWX
+//  #include "idb_splash.xpm"
+//#endif
 
 #ifndef PFD_SUPPORT_COMPOSITION
 #define PFD_SUPPORT_COMPOSITION 0x00008000
