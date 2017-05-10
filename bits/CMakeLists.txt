@@ -23,6 +23,7 @@ endif()
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
+# Because external project call cmake externally too we need to pass the compiler and module path via cmake_args
 if(withSUPERFLIP)
 	message("")
 	message(STATUS "Building superflip")
@@ -34,7 +35,7 @@ if(withSUPERFLIP)
 							  ${CMAKE_SOURCE_DIR}/bits/superflip/CMakeLists.txt
 							  ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/CMakeLists.txt
 		BUILD_IN_SOURCE 1
-		CMAKE_ARGS -DSF_MODPATH:STRING=${SF_MODPATH}
+		CMAKE_ARGS -DSF_MODPATH=${SF_MODPATH} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
 		INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/superflip_project-prefix/src/superflip_project/superflip${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
 	)
 
@@ -51,7 +52,7 @@ ExternalProject_Add(
                           ${CMAKE_SOURCE_DIR}/bits/edma/CMakeLists.txt
                           ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/CMakeLists.txt
     BUILD_IN_SOURCE 1
-	CMAKE_ARGS -DSF_MODPATH:STRING=${SF_MODPATH}
+    CMAKE_ARGS -DSF_MODPATH=${SF_MODPATH} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/edma${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
 )
 
