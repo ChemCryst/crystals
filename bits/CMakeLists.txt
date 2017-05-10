@@ -48,7 +48,7 @@ ExternalProject_Add(
                           ${CMAKE_SOURCE_DIR}/bits/edma/CMakeLists.txt
                           ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/CMakeLists.txt
     BUILD_IN_SOURCE 1
-    INSTALL_COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/edma ${CMAKE_BINARY_DIR}/
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/edma_project-prefix/src/edma_project/edma${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_BINARY_DIR}/
 )
 
 message(STATUS "End Building edma")
