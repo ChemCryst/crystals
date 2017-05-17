@@ -125,6 +125,10 @@ SET_PROPERTY( SOURCE fourie.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
 #target_link_libraries(CrystalsFortran openblas)
 SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
+message( "${SLEEFTARGET}" )
+if(SLEEFTARGET MATCHES "CrystalsSleef")
+    target_link_libraries(CrystalsFortran CrystalsSleef)
+endif ()
 
 # These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.
 # Without these lines modules may be built in the wrong order causing a compilation failure in parallel builds.
