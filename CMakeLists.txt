@@ -6,7 +6,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(Crystals)
 
-SET(CMAKE_VERBOSE_MAKEFILE ON)
+SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
 option (useGUI "useGUI" ON)
@@ -262,9 +262,9 @@ GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 
 IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 	if(useFAST)
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program -ffpe-trap=zero,overflow,underflow")
+        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program")
     else ()
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2 -ffpe-trap=zero,overflow,underflow")
+        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2")
     endif ()
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-omit-frame-pointer -fno-f2c -O1 -g -Wfatal-errors -Wall -Wextra")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
@@ -276,8 +276,8 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
         SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-omit-frame-pointer -std=gnu++11 -O3 -g -march=native -ftree-vectorize -flto -fwhole-program")
         SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-omit-frame-pointer -O3 -g -march=native -ftree-vectorize -flto -fwhole-program")
     else ()
-        SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-omit-frame-pointer -std=gnu++11 -O3 -g -ftree-vectorize -msse2 -ffpe-trap=zero,overflow,underflow")
-        SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-omit-frame-pointer -O3 -g -ftree-vectorize -msse2 -ffpe-trap=zero,overflow,underflow")
+        SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-omit-frame-pointer -std=gnu++11 -O3 -g -ftree-vectorize -msse2")
+        SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-omit-frame-pointer -O3 -g -ftree-vectorize -msse2")
     endif ()
     SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -std=gnu++11 -O1 -g")
     SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer  -O1 -g")
