@@ -186,28 +186,28 @@ The CONVPLAT.exe process failed to write an output file.
 %    FINISH
 %  END IF
 %%
-%  EVALUATE QTITLE = 'Anomalous Modifications '                              
-%  EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
-%  EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
-%  EVALUATE BUTTOK = '&Yes'                                                 
-%  EVALUATE BUTTXX = '&No'                                                  
-%  COPY '#SCRIPT XQUESTIO'                                                  
-%  IF ANSWER .EQ. TRUE THEN 
-%% use the results
-%    IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
-Trying to delete old modified Squeeze files
-%     EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
-Deleted old Squeeze files
-%    END IF
-%    COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
-%    IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
-The PLATANOM.exe process failed to write an output file.
-%      FINISH
-%    END IF
-%    COPY '#USE LIST6.DEF'
-%  ELSE
+%%  EVALUATE QTITLE = 'Anomalous Modifications '                              
+%%  EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
+%%  EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
+%%  EVALUATE BUTTOK = '&Yes'                                                 
+%%  EVALUATE BUTTXX = '&No'                                                  
+%%  COPY '#SCRIPT XQUESTIO'                                                  
+%%  IF ANSWER .EQ. TRUE THEN 
+%%% use the results
+%%    IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
+%Trying to delete old modified Squeeze files
+%%     EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
+%Deleted old Squeeze files
+%%    END IF
+%%    COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
+%%    IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
+%The PLATANOM.exe process failed to write an output file.
+%%      FINISH
+%%    END IF
+%%    COPY '#USE LIST6.DEF'
+%%  ELSE
 %    COPY '#USE LIST6.ABC'
-%  END IF
+%%  END IF
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit
 them being overwritten
