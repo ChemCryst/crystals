@@ -597,11 +597,13 @@ C Check the number of blocks, if more than one block
 C punch matrices cannot be written
       if(N12B>1 .and. ISTORE(M33CD+5)>0) then
         IF (ISSPRT .EQ. 0) then 
-          WRITE ( NCWU , '(a)' ) 
-     1      ' More than one block, cannot punch matrices'
+          WRITE ( NCWU , '(a, I0, a)' ) 
+     1      ' More than one block, cannot punch matrices ', 
+     2      N12B, ' blocks'
         end if
-        WRITE ( CMON, '(a)') 
-     1    ' More than one block, cannot punch matrices'
+        WRITE ( CMON, '(a, I0, a)') 
+     1    ' More than one block, cannot punch matrices ', 
+     2    N12B, ' blocks'
         CALL XPRVDU(NCVDU, 1,0)
         ISTORE(M33CD+5)=0
       end if
