@@ -29,6 +29,7 @@ C Revision 1.4  2011/05/17 16:00:16  djw
 C Enable long lines, up to 512 characters
 C
 	program diffin
+      implicit none
 c---------------------------------------------------------------------
 c General program for reading all cif files
 c
@@ -69,15 +70,20 @@ c
 #include "ciftbx.cmn"
 #include "cifin.cmn"
 c
-      character*256 file_root
-      character*256 prognm,outfil,device,extbl
+      character*4096 file_root
+      character*4096 prognm,outfil,device,extbl
       logical lfirst,namebl,allbl,linfl,loutfl
-      character*36  cspace, output_name
-      character*36  output_hkl
-      character*32  response,buffer
+      character*4096  cspace, output_name
+      character*4096  output_hkl
+      character*32  response
 	  character*256 option
       CHARACTER*12  cdiff, ctemp
-      character*132 carg1, carg2
+      character*132 carg2
+      
+      integer i, ldiff, lfr, n, narg, ndata, nglob
+      logical namdev
+      
+      integer, external :: igdat, nctrim
 c
       data noutf    /10/
       data nhkl     /11/
@@ -516,7 +522,6 @@ C=======================================================================
 #if defined(CRY_FORTDIGITAL)
       USE DFPORT
 #endif
-      CHARACTER*80 CMNAM
       character*(*)  CARG
 C--
       optlen=132
