@@ -3409,7 +3409,7 @@ c       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
 
 CODE FOR XSFLSX
       SUBROUTINE XSFLSX
-#ifdef CRY_OSLINUX 
+#ifdef USE_SLEEF 
       use sleef    
 #endif
 C
@@ -3463,7 +3463,7 @@ C Some constants for chebychev approx.
 
       INTEGER ISTACK
 
-#ifdef CRY_OSLINUX 
+#ifdef USE_SLEEF 
       real, dimension(2) :: scb
 #endif
       ALPD=0.0
@@ -3739,7 +3739,7 @@ c calculate the iso-temperature factor coefficients for this atom
 c TC = -8 Pi^2 [sin(theta)/lambda]^2
 c T = exp(Uiso *TC)
 c
-#ifdef CRY_OSLINUX 
+#ifdef USE_SLEEF 
           T=sleef_expf(STORE(M5A+7)*TC)  
 #else
           T=EXP(STORE(M5A+7)*TC)  
@@ -3771,7 +3771,7 @@ c  T=exp(h*Uij + ...)
 c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
 
 c
-#ifdef CRY_OSLINUX
+#ifdef USE_SLEEF
             T=sleef_expf(STORE(M5A+7)*STORE(M2T+4)
      2       +STORE(M5A+8)*STORE(M2T+5)
      3       +STORE(M5A+9)*STORE(M2T+6)+STORE(M5A+10)*STORE(M2T+7)
@@ -3792,7 +3792,7 @@ c
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             END IF
-#ifdef CRY_OSLINUX 
+#ifdef USE_SLEEF 
             T=sleef_expf(STORE(M5A+7)*TC)
 #else
             T=EXP(STORE(M5A+7)*TC)
@@ -3805,7 +3805,7 @@ C--CALCULATE THE SIN/COS TERMS   (NB This is a Chebychev approximation - v. fast
 c  dd = 1.0/twopi
 c  a = h'.x + h.t
 c
-#ifdef CRY_OSLINUX 
+#ifdef USE_SLEEF 
           c = mod(a,2.0*3.14159265359)
           call sleef_sincosf(c, scb)          
           s=scb(1)
