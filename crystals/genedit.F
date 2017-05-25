@@ -502,8 +502,34 @@ C -- 'TRANSHEAD' DIRECTIVE
 C
       IF ( ILSTCM + IOFF .LE. 0 ) GO TO 8930
       IF ( ILSTCM + IOFF .GT. ISIZST ) GO TO 8930
-C
-      ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1 )
+
+	  
+      ! Checking if the transfer is a variable name or a constant
+      isanumber=.true.
+      do j=1, len_trim(ctvari)
+          found=.false.
+          do i=1, size(numbers)
+              if(ctvari(j:j)==numbers(i)) then  
+                  found=.true.
+                  exit
+              end if
+          end do
+          if(.not. found) then
+              isanumber=.false.
+              exit
+          end if
+      end do
+      
+      if(isanumber .and. idirec==2) then
+          ! A constant, read in the value directly
+          read(ctvari, *) ISTORE(ILSTCM+IOFF)
+          print *,' Read const: ', STORE(ILSTcM+ioff), ILSTCM, IOFF
+      else
+          ! A variable from script, fetching the value
+          ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1)
+      end if
+
+C      ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1 )
 C              
       GO TO 8000
 C
