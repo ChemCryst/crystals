@@ -523,7 +523,7 @@ C
       if(isanumber .and. idirec==2) then
           ! A constant, read in the value directly
           read(ctvari, *) ISTORE(ILSTCM+IOFF)
-          print *,' Read const: ', STORE(ILSTcM+ioff), ILSTCM, IOFF
+c          print *,' Read const: ', STORE(ILSTcM+ioff), ILSTCM, IOFF
       else
           ! A variable from script, fetching the value
           ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1)
