@@ -1080,8 +1080,6 @@ C
 C
 C....... Loop over the string and identify components
 C
-         print *, long_, strg_(1:long_)
-
          do 400 nchar=1,long_
 C
          c=strg_(nchar:nchar)
@@ -1095,11 +1093,9 @@ C
          if(ccnt.eq.2)  ndec=ndec+1
          if(ccnt.gt.2)  goto 220
          mant=mant*10+m-1
-		 print *,'mant,m,ccnt,ndec:', mant, m, ccnt, ndec
          goto 400
 220      if(ccnt.gt.3)  goto 240
          expn=expn*10+m-1
-		 print *,'expn,m:', expn,m
          goto 400
 240      sdev=sdev*10.+float(m-1)
          sdevtb=1.
@@ -1138,8 +1134,6 @@ C
          numbtb=numb*float(mant*msin)
          type_='numb'
 C
-         print *, numbtb, expn, numb, esin, ndec, mant
-
 500      return
          end
 C
