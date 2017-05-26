@@ -1297,9 +1297,9 @@ C DISTRIBUTION OF OBSERVATIONS
        write(ncwu,'(a,f6.2,a,f6.2)')' Mumin ',mumin,' mumax ', mumax
        write(ncwu,'(a,f6.2,a,f6.2)')' Phimin',phimin,' phimax',phimax
        write(ncwu,'(a/)') ' Distribution of Observations'
-       write(ncwu,'(10x,36i3/)') ((i),i=1,36)
+       write(ncwu,'(10x,36i4/)') ((i),i=1,36)
        do i=18,1,-1
-        write(ncwu,'(i6,4x,37i3)') 5*(I),(ndjwmap(j,i),j=1,36)
+        write(ncwu,'(i6,4x,37i4)') 5*(I),(ndjwmap(j,i),j=1,36)
        enddo
       endif
 C
@@ -1652,7 +1652,7 @@ C
 c
       write(cmon,'(a, i3,a, i3, a,i3,a,i4)') 
      1 ' For a contour map we suggest', nstep,
-     2 ' steps of', lstep, ' from', lmin, ' to', lmax
+     2 ' steps of', lstep, ' from', lmin, ' to', lmax-1
       call xprvdu(ncvdu,1,0)
       write(cmon,'(A)') 'e.g. '
       call xprvdu(ncvdu,1,0)
