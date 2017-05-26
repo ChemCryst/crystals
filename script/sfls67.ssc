@@ -1,10 +1,10 @@
 %SCRIPT SFLS67                                                                  
-%%  sET UP THE CORRECT FO AND PHASES IN LIST 7                                  
+%  VARIABLE LOGICAL TWINNED FRIEDELPAIR                                              
+%  VARIABLE INTEGER F67 DOSCALE DOCALC 
+%
+%%  SET UP THE CORRECT FO AND PHASES IN LIST 7                                  
 %%  IF TWINNED OR FRIEDEL PAIRS NEEDING MERGE                                   
 %%                                                                              
-%  VARIABLE LOGICAL TWINNED MERGED                                              
-%  VARIABLE INTEGER F67 DOSCALE DOCALC                                          
-%
 %% Before Feb 2012 this was done later on LIST 7.
 %% That caused problems if SQUEEZE had set A and B parts.
 %% #MERGE now merges Fc with same method as Fo
@@ -23,32 +23,37 @@
 %    IF ( ( EXISTS 13 ) .EQ. 1 ) THEN                                           
 %        COPY '#GENERALEDIT 13'                                                 
 %        COPY 'LOCATE RECORDTYPE=101'                                           
-%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                  
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'        !TWINNED                          
+twinned 
+% show itmp
 %        IF ( ITMP .GE. 0 ) THEN                                                
 %         EVALUATE TWINNED = TRUE                                               
 %        ELSE                                                                   
 %         EVALUATE TWINNED = FALSE                                              
 %        END IF                                                                 
-%        COPY 'TRANSFER FROM OFFSET=0 TO ITMP'                                  
+%        COPY 'TRANSFER FROM OFFSET=0 TO ITMP'        !FRIEDELPAIRS                  
+friedelpair
+% show itmp
 %        IF ( ITMP .GE. 0 ) THEN                                                
-%         EVALUATE MERGED = TRUE                                                
+%         EVALUATE FRIEDELPAIR = TRUE                                                
 %        ELSE                                                                   
-%         EVALUATE MERGED = FALSE                                               
+%         EVALUATE FRIEDELPAIR = FALSE                                               
 %        END IF                                                                 
 %        COPY 'END'                                                             
 %    ELSE                                                                       
 %        COPY '#LIST 13'                                                        
 %        COPY 'END'                                                             
 %         EVALUATE TWINNED = FALSE                                              
-%         EVALUATE MERGED = FALSE                                               
+%         EVALUATE FRIEDELPAIR = FALSE                                               
 %    END IF                                                                     
 %    IF ( EXISTS 5 .LE. 0 ) THEN                                                
-%         EVALUATE DOSCALE = FALSE                                              
-%         EVALUATE DOCALC = FALSE                                               
+%         EVALUATE DOSCALE = 2                                              
+%         EVALUATE DOCALC = 2                                               
 %    END IF                                                                     
-%  END BLOCK                                                                    
+%  END BLOCK 
+% show friedelpair twinned                                                                   
 %                                                                               
-%         EVALUATE F67 = 6                                                      
+%        EVALUATE F67 = 6                                                      
 %        IF ( TWINNED .EQ. TRUE ) THEN                                          
 {I Computing de-twinned Fo values.                                              
 {I This may change the R-value temporarily                                      
@@ -56,19 +61,22 @@
 %         COPY 'CALC  /FO/=SCALED-/FOT/'                                        
 %         COPY 'END'                                                            
 {I Copying reflection list to temporary storage.                                
-%         COPY '#SCRIPT COPY67'                                                 
-%%{I Calculating unique reflections using Friedel's law.                        
-%%         COPY '#SYST 7 FRIEDEL=YES '                                          
-%%         COPY 'END'                                                           
-%%{I Sorting temporary reflection list.                                         
-%%         COPY '#SORT 7'                                                       
-%%         COPY 'END'                                                           
-%%{I Merging temporary reflection list.                                         
-%%         COPY '#MERGE 7 NO'                                                   
-%%         COPY 'END'                                                           
+%         COPY '#SCRIPT COPY67'  
+%% Next section was commented out. Why?   A&B should now be in SCALED-FoT                                          
+{I Calculating unique reflections using Friedel's law.                        
+%         COPY '#SYST 7 FRIEDEL=YES '                                          
+%         COPY 'END'                                                           
+{I Sorting temporary reflection list.                                         
+%         COPY '#SORT 7'                                                       
+%         COPY 'END'   
+{I Merging temporary reflection list as if untwinned.                                         
+%         COPY '#MERGE 7 NO'                                                   
+%         COPY 'END'   
+%         EVALUATE FRIEDELPAIR = FALSE                                                        
 %         EVALUATE F67 = 7                                                      
+%         EVALUATE DOCALC = 1                            
 %%                                                                              
-%        ELSE IF ( MERGED .EQ. FALSE ) THEN                                     
+%        ELSE IF ( FRIEDELPAIR .EQ. FALSE ) THEN                                     
 {I Copying reflection list to temporary storage.                                
 %         COPY '#SCRIPT COPY67'                                                 
 {I Calculating unique reflections using Friedel's law.                          
@@ -78,16 +86,21 @@
 %         COPY '#SORT 7'                                                        
 %         COPY 'END'                                                            
 {I Merging temporary reflection list.                                           
-%         COPY '#MERGE 7 NO'                                                    
+%         COPY '#MERGE 7'                                                    
 %         COPY 'END'                                                            
 %%% Fc is now merged in the same wasy as Fo. Phase is
 %%% not merged - dont yet know how to DJW Feb2012
+%%  MERGING PHASE NOT IMPORTANT - RECOMPUTED IN SFLS
 %%{I Computing Merged Fc.                                                         
-%         EVALUATE F67 = 7                                                      
+%         EVALUATE F67 = 7                          
+%         EVALUATE DOCALC = 1                            
 %%                                                                              
-%        ELSE                                                                   
+%        END IF
+%%
+{I NOW DO SFLS IF REQUIRED
+%SHOW F67
 %         IF ( DOCALC .EQ. 1 ) THEN                                             
-%            COPY '#SFLS'                                                       
+%            COPY '#SFLS' // F67                                                      
 %            COPY 'CALC'                                                        
 %            COPY 'END'                                                         
 %         ELSE IF ( DOSCALE .EQ. 1 ) THEN                                       
@@ -95,7 +108,5 @@
 %            COPY 'SCALE'                                                       
 %            COPY 'END'                                                         
 %         END IF                                                                
-%         EVALUATE F67 = 6                                                      
-%        END IF                                                                 
 %%djw                                                                           
 %END SCRIPT                                                                     
