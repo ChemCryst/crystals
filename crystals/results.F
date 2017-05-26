@@ -4586,6 +4586,7 @@ C
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'ICOM31.INC'
+      INCLUDE 'ICOM39.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XCOMPD.INC'
@@ -4610,12 +4611,14 @@ C
       INCLUDE 'XLST29.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XLST31.INC'
+      INCLUDE 'XLST39.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XFLAGS.INC'
 C
 C
       INCLUDE 'QLST30.INC'
       INCLUDE 'QLST31.INC'
+      INCLUDE 'QLST39.INC'
       INCLUDE 'QSTORE.INC'
 
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
@@ -4641,9 +4644,17 @@ C------ REFERENCE CODES FOR ABSORPTION METHOD
       DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45,36/
 
 C
+#ifdef _HOL_
+      DATA ICFLAC/4HFLAC/
+      DATA ICHOOFT/4HHOOF/
+#else
+      DATA ICFLAC/'FLAC'/
+      DATA ICHOOFT/'HOOF'/
+#endif
+c
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
-C                  1 2 3 4 5 6  7  8  9  10 11 12
+C                  1 2 3 4 5 6  7  8  9  10 11 12 
       DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6,28/
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
@@ -4816,7 +4827,7 @@ C----- CLOSE THE FILE
 
 C################################################################
  
-C                      1 2 3 4 5 6  7  8  9  10 11 12
+C                      1 2 3 4 5 6  7  8  9  10 11 12 
 C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
 
       DO MLST=1,NLST
@@ -4871,11 +4882,17 @@ C----- LOADED BY XFAL06          CALL XFAL28
  
          IF (IERFLG.GE.0) JLOAD(MLST)=1
       END DO
-c we dont need LIST 25, but it it exists, we chould use it
+c we dont need LIST 25, but it it exists, we should use it
         if (kexist(25) .ge. 1)  then
          if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
         else
          n25=0
+        endif
+c LIST 39 may/may not exist. Optional loading:
+        if (kexist(39) .ge. 1)  then
+         if (khuntr (39,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal39
+        else
+         n39f=0
         endif
 c
 C################################################################
@@ -6547,12 +6564,46 @@ C
            WRITE (NCPU,5) '&Delta;/&sigma;<sub>max</sub>',STORE(L30RF+7)
         END IF
 C 
+        ndjw =  l39f+md39f*(n39f-1)
+        if (n39f.gt.0) then
+         m39f = l39f
+         do i=1,n39f
+          if (istore(m39f) .eq. icflac) exit
+           m39f=m39f+md39f
+         enddo
+         if (m39f.le.ndjw) then
+C----- PACK UP THE Bijvoet PARAMETER AND ITS ESD
+          call xfill (ib,ivec,16)
+          call snum (store(m39f+6),store(m39f+7),-0,0,10,ivec)
+          write (ctemp,'(16a1)') (ivec(j),j=1,16)
+          call xcras (ctemp,n)
+          write(cline,'(a,a)')
+     1   '_oxford_Bijvoet_difference ', ctemp(1:n)
+          call xpcif (cline)
+          write(cline,'(a)')'# Similar to the Parsons(q).' 
+          call xpcif (cline)
+          write(cline,'(a,a)')'#  See Cooper & Watkin,' ,
+     2   ' Acta Cryst. (2016). B72, 661–683'
+         call xpcif (cline)
+         endif
+        else
+          write(cmon,'(a)')
+     1   'You should run the menu Analyse/Absolute config'
+          call outcol(3)
+          call xprvdu(ncvdu,1,0)
+          call outcol(1)
+          call xpause(2000)
+        endif
+
         IF (STORE(L30GE+7).GT.ZEROSQ) THEN
             IF (STORE(L30GE+6).GT.0.5+ZERO) THEN
                WRITE (CMON,2400)
-2400           FORMAT ('The Flack parameter is greater than 0.5',
+2400           FORMAT ('The Flack parameter is greater than 0.5',/
      1         'The structure may need inverting')
-               CALL XPRVDU (NCVDU,1,0)
+               call outcol(3)
+               CALL XPRVDU (NCVDU,2,0)
+               call outcol(1)
+               call xpause(2000)
             END IF
 C----- PACK UP THE FLACK PARAMETER AND ITS ESD
             CALL XFILL (IB,IVEC,16)
@@ -9476,16 +9527,16 @@ C CALCULATE P3(0),P3(TW),P3(1)
          XTWLL=EXP(XTWLL)
          XSMLL=XPLLL+XTWLL+XMNLL
          IF (XSMLL.GT. 0.0) THEN
-          XPLLL=XPLLL/XSMLL
-          XMNLL=XMNLL/XSMLL
-          XTWLL=XTWLL/XSMLL
+           XPLLL=XPLLL/XSMLL
+           XMNLL=XMNLL/XSMLL
+           XTWLL=XTWLL/XSMLL
 C P3(True)
            IF (XPLLL.GT.0.001) THEN
-            WRITE (FORM,2150) XPLLL,XPLLL
+              WRITE (FORM,2150) XPLLL,XPLLL
            ELSE IF (XPLLL.LT.0.0) THEN
-            WRITE (FORM,2200)
+              WRITE (FORM,2200)
            ELSE
-            WRITE (FORM,2150) XPLLL,XPLLL
+              WRITE (FORM,2150) XPLLL,XPLLL
            END IF
            WRITE (LINE,2350) FORM
 2350      FORMAT (' P3(correct) ',A)
@@ -9494,11 +9545,11 @@ C P3(True)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
 C P3(Twin)
            IF (XTWLL.GT.0.001) THEN
-            WRITE (FORM,2150) XTWLL,XTWLL
+              WRITE (FORM,2150) XTWLL,XTWLL
            ELSE IF (XTWLL.LT.0.0) THEN
-            WRITE (FORM,2200)
+              WRITE (FORM,2200)
            ELSE
-            WRITE (FORM,2150) XTWLL,XTWLL
+              WRITE (FORM,2150) XTWLL,XTWLL
            END IF
            WRITE (LINE,2400) FORM
 2400      FORMAT (' P3(rac-twin)',A)
@@ -9507,17 +9558,20 @@ C P3(Twin)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
 C P3(False)
            IF (XMNLL.GT.0.001) THEN
-            WRITE (FORM,2150) XMNLL,XMNLL
+              WRITE (FORM,2150) XMNLL,XMNLL
            ELSE IF (XMNLL.LT.0.0) THEN
-            WRITE (FORM,2200)
+              WRITE (FORM,2200)
            ELSE
-            WRITE (FORM,2150) XMNLL,XMNLL
+              WRITE (FORM,2150) XMNLL,XMNLL
            END IF
            WRITE (LINE,2450) FORM
 2450      FORMAT (' P3(inverse) ',A)
            WRITE (CMON,2300) LINE
 c           CALL XPRVDU (NCVDU, 1, 0)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+c
+c
+c
            WRITE (LINE,2500) XG
  2500      FORMAT (' G           ',F9.4)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
@@ -9544,10 +9598,10 @@ c          CALL XPRVDU (NCVDU, 1, 0)
       endif
 C
       IINVERT = 0
-      IF ((XPLL2 .GE. 0.0).AND.(XPLL2.LE.0.66)) THEN
+      IF ((XPLL2 .GE. 0.001).AND.(XPLL2.LE.0.50)) THEN
            IINVERT = 1
       ENDIF
-      IF((XTWLL.LE.0.33).AND.(XPLLL.LT.0.33))THEN
+      IF((xplll.ge.0.001).AND.(XPLLL.LT.0.33))THEN
            IINVERT = 1
       ENDIF
       IF (IINVERT .EQ. 1) THEN
@@ -9691,6 +9745,7 @@ C
 c
 c  find the FLACK record
 C
+       m39f = 0
        if (n39f.gt.0) then
         m39f = l39f
         do i=1,n39f
