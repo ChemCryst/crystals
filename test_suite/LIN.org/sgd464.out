@@ -1,0 +1,100 @@
+#TITLE REAL STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK TO TEST ADPS RESTRAINTS                                                                                                                                                                                  
+#USE SGD464.IN                                                                                                                                                                                                                                                  
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 20                                                                                                                                                                                                                                                        
+#LIST 30                                                                                                                                                                                                                                                        
+#LIST 1                                                                                                                                                                                                                                                         
+#LIST 2                                                                                                                                                                                                                                                         
+#LIST 3                                                                                                                                                                                                                                                         
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 26/05/17 AT 11:46:38                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      5                                                                                                                                                                                                                                                    
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 26/05/17 AT 11:46:41                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST      6                                                                                                                                                                                                                                                    
+#LIST 13                                                                                                                                                                                                                                                        
+#LIST 28                                                                                                                                                                                                                                                        
+#LIST      6                                                                                                                                                                                                                                                    
+ The updated reflections are now on UNIT 53
+
+
+
+    5050 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE                                                                                                                                                                                                                 
+# USE LAST                                                                                                                                                                                                                                                      
+#                                                                                                                                                                                                                                                               
+# PUNCHED ON 26/05/17 AT 11:46:46                                                                                                                                                                                                                               
+#                                                                                                                                                                                                                                                               
+#LIST     12                                                                                                                                                                                                                                                    
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE                                                                                                                                                                                                                 
+# USE LAST                                                                                                                                                                                                                                                      
+#LIST 16                                                                                                                                                                                                                                                        
+#CHECK HI                                                                                                                                                                                                                                                       
+#CLEAR 17                                                                                                                                                                                                                                                       
+#LIST  17                                                                                                                                                                                                                                                       
+#LIST 22                                                                                                                                                                                                                                                        
+#LIST 23                                                                                                                                                                                                                                                        
+#LIST 22                                                                                                                                                                                                                                                        
+ Initialising Special positions
+ Floating origin in  y direction
+ Flack = -.99E-01  Starting FLACK refinement from 0.5
+Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
+ Space required on DISK is   69 records,   276  Blocks,   142 Kbytes. 
+     1 Symmetry restraints written to LIST 17
+ LIST 23 has been modified to match LIST 12
+ New LIST 23 written to disk
+      2 Atoms modified;   New  LIST 5 written to DISK
+#LIST 17                                                                                                                                                                                                                                                        
+#LIST 26                                                                                                                                                                                                                                                        
+#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 29                                                                                                                                                                                                                                                        
+Bonds: Update required - There is no list 41
+#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 26                                                                                                                                                                                                                                                        
+#CHECK HI                                                                                                                                                                                                                                                       
+
+
+ real structure from james.thomson@chem.ox.ac.uk to test adps restraints              Date              Time          
+
+
+  Restraints checking  -  
+  restraints that produce no contributions are marked with a '?'
+
+   0.UPERP from C(20) to C(19)
+      Restrain U[13] and U[23] to .00000 angstrom squared,
+      with an E.S.D. of 1.000E-05
+      Transformation matrix:
+       5.204E-01  7.407E-01  4.175E-01
+       1.243E-02  4.910E-01 -8.712E-01
+      -8.539E-01  4.586E-01  2.585E-01
+      Derivatives:
+      -1.061E-02  2.252E-01 -2.252E-01 -2.726E-01  7.472E-01 -4.136E-01
+
+            Atom       S(I) L TX TY TZ       Value        Delta  Parameter
+  
+           C      20     1  1  0  0  0   0.0093559    9.356E-03      U[13]
+           C      20     1  1  0  0  0   0.0093559    1.733E-02      U[23]
+      Mean value =   0.0133  Mean delta =   0.0133  r.m.s. delta =   0.0139
+
+   1.UPERP2 from C(20) to C(19), 
+      Restrain U[13] and U[23] to .00000 angstrom squared,
+      with an E.S.D. of 1.000E-05
+      Transformation matrix:
+       5.204E-01  7.407E-01  4.175E-01
+       1.243E-02  4.910E-01 -8.712E-01
+      -8.539E-01  4.586E-01  2.585E-01
+      Derivatives:
+       1.201E-03 -1.742E-01  1.743E-01  8.391E-01 -8.669E-02 -4.217E-01
+
+            Atom       S(I) L TX TY TZ       Value        Delta  Parameter
+  
+           C      20     1  1  0  0  0   0.4097770    4.098E-01      U[13]
+           C      20     1  1  0  0  0   0.4097770    1.956E-01      U[23]
+      Mean value =   0.3027  Mean delta =   0.3027  r.m.s. delta =   0.3211
+   3. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
+#FINI                                                                                                                                                                                                                                                           
+
+
+          : Job ends ok       with     0 warnings and     0 errors
