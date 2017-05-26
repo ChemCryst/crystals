@@ -147,7 +147,7 @@ C     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
 C     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
 C     RATIO          THETA          OMEGA          CHI            PHI
 C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
-C     FACTOR3        RATIO/JCODE    NOTHING
+C     FACTOR3        RATIO/JCODE    NOTHING        A-IMAG         B-IMAG
 C
 C
 C
@@ -1393,6 +1393,7 @@ cC--WRITE THE NEW DETAILS TO DISC
 c      CALL XUPF(IBUFF(4),STORE(L6P),IBUFF(3)-MD0)
 c      RETURN
 c      END
+C
 CODE FOR KLDRNR
       FUNCTION KLDRNR(IN)
 C--LOAD THE NEXT REFLECTION FROM THE DISC
