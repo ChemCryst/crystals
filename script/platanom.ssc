@@ -28,7 +28,7 @@
 %    IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
 Trying to delete old modified Squeeze files
 %     EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
-Deleted old Squeeze files
+Deleted old modified Squeeze files
 %    END IF
 %    COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
 %    IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
@@ -36,6 +36,28 @@ The PLATANOM.exe process failed to write an output file.
 %      FINISH
 %    END IF
 %    COPY '#USE LIST6.DEF'
+%  ELSE
+{1,8 Restoring normal SQUEEZE reflections
+%    COPY '#USE LIST6.ABC'
 %  END IF
+Update LIST 23 to show the A & B parts are stored, and inhibit
+them being overwritten
+%    COPY '#GENERALEDIT 23'
+%    COPY 'LOCATE RECORDTYPE=101'
+%%   set modify partial=YES
+%    COPY 'CHANGE OFFSET=4 MODE=INTEGER INTEGER=0'
+%    COPY 'WRITE'
+%%   set modify update=NO
+%    COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=-1'
+%    COPY 'WRITE'
+%    COPY 'END'
 %%
+% COPY '#SFLS'
+% COPY 'CALC'
+% COPY 'END'
+% COPY '#WEIGHT'
+% COPY 'END'
+% COPY '#SFLS'
+% COPY 'CALC'
+% COPY 'END'
 %  END SCRIPT 
