@@ -907,10 +907,12 @@ C
       IF ( ICODE .LE. 0 ) ICODE = 3
       
 #ifdef CRY_OSLINUX
-      write(error_unit, *) ''
-      write(error_unit, *) 'Crystals just crashed, here is a backtrace:'
-      call backtrace
-      write(error_unit, *) ''
+      if(icode/=1) then
+        write(error_unit, *) ''
+        write(error_unit, *) 'Crystals just crashed, here is a backtrace:'
+        call backtrace
+        write(error_unit, *) ''
+      end if
 #endif
 C
 C -- DISPLAY DISC EFFICIENCY STATISTICS
