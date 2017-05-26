@@ -95,8 +95,18 @@ c total real and imaginary scattering
       fit=0.
       write(12,'(a,f5.2)')  '# d-factor=',dmult
       do i=1,8
-            read(11,'(a)')ctemp
-            write(12,'(a)')ctemp(1:80)
+        read(11,'(a)')ctemp
+        if(ctemp(1:2) .eq.'ST') then
+          ctemp(14:14) = '2'
+        else if (ctemp(1:4) .eq. 'READ') then
+          ctemp(15:15) = '3'
+        else if (ctemp(1:3) .eq. 'FOR') then
+          write(12,'(a)') 'CONT A-IMAG B-IMAG'
+          ctemp(55:55) = '4'
+        else if (ctemp(1:3).eq. 'END') then
+          write(12,'(a)') 'CONT A-IMAG B-IMAG'
+        endif
+        write(12,'(a)')ctemp(1:80)
       enddo
 c
       pi=3.14159
@@ -157,10 +167,11 @@ c Get normal, real and imaginary parts
       enddo
       d = fit/(frn+frt)
       d = d*dmult
-      anewa=  apart-d*bpart
-      bnewb=d*apart+  bpart
+c pseudo imaginary parts:
+      aimag=  -d*bpart
+      bimag=  d*apart
       write(12,'(3i4,a)') ih,ik,il,ctemp(1:53)
-      write(12,'(2f8.2)') anewa, bnewb
+      write(12,'(4f8.2)') apart, bpart, aimag, bimag
       goto 300
 400   CONTINUE
       WRITE(*,*) 'Error during input of solvent formula'
