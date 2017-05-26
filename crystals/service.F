@@ -872,6 +872,9 @@ C --
 C
 CODE FOR XFINAL
       SUBROUTINE XFINAL ( ICODE )
+#ifdef CRY_OSLINUX
+      use iso_fortran_env, only: error_unit
+#endif
 C -- THIS IS THE LAST SUBROUTINE TO BE CALLED, FOR ALL CONTROLLED
 C    TERMINATIONS.
 C
@@ -902,6 +905,13 @@ C
 C
       IF ( ICODE .GT. 3 ) ICODE = 3
       IF ( ICODE .LE. 0 ) ICODE = 3
+      
+#ifdef CRY_OSLINUX
+      write(error_unit, *) ''
+      write(error_unit, *) 'Crystals just crashed, here is a backtrace:'
+      call backtrace
+      write(error_unit, *) ''
+#endif
 C
 C -- DISPLAY DISC EFFICIENCY STATISTICS
 C
