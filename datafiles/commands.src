@@ -372,14 +372,14 @@ INTENSITY  6      17    2
    3.INPUT              1    1    0    0  -31    1 1001   29  106
          0    0    0    0    0    0    0    0    0    0
          3
-    .COEFFICIENT        0    0    1   33    0 NOTHING
+    .COEFFICIENT        0    0    1   35    0 NOTHING
      H              K              L              /FO/           SQRTW
      /FC/           PHASE          A-PART         B-PART         TBAR
      /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
      BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
      RATIO          THETA          OMEGA          CHI            PHI
      KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
-     FACTOR3        RATIO/JCODE    NOTHING
+     FACTOR3        RATIO/JCODE    NOTHING        A-IMAG         B-IMAG
    4.OUTPUT            -3    1    0    0  -19    1  105   17    6
          1    1    0    0    1    1    0    0    0    0
 POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
@@ -409,7 +409,7 @@ POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
     .CORRECTIONS        0    0    0    0    0        27
     .ELEMENTS           0    0    0    0    0        11
     ./FOT/              0    0    0    0    0        10
-   8.XCORE-BUFFER       0    0    0    0   33    1  101    1    6
+   8.XCORE-BUFFER       0    0    0    0   35    1  101    1    6
          1    1    0    0    0    0    0    0    0    0
 THE CORE BUFFER
    9.XREAD-FLAGS        0    0    0    0  -19    1  102    5    6
@@ -432,7 +432,7 @@ DATA RECORD THAT CONTAINS DETAILS RELATING TO THE REFLECTIONS
     .R                  0    0    0    0    0 0.0
     .WR                 0    0    0    0    0 0.0
     .MINFUNC            0    0    0    0    0 0.0
-    .VERSION            0    0    1    0    0       123
+    .VERSION            0    0    1    0    0       124
   13.XDETAILS           0    0    0    0    4   -3  107   25    6
          1    1    0    0    1    1    0    0    0    0
 RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
@@ -504,14 +504,14 @@ LIST       7      17    1
    3.INPUT              1    1    0    0  -31    1 1001   29  107
          0    0    0    0    0    0    0    0    0    0
          3
-    .COEFFICIENT        0    0    1   33    0 NOTHING
+    .COEFFICIENT        0    0    1   35    0 NOTHING
      H              K              L              /FO/           SQRTW
      /FC/           PHASE          A-PART         B-PART         TBAR
      /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
      BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
      RATIO          THETA          OMEGA          CHI            PHI
      KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
-     FACTOR3        RATIO/JCODE    NOTHING
+     FACTOR3        RATIO/JCODE    NOTHING        A-IMAG         B-IMAG
    4.OUTPUT            -3    1    0    0  -19    1  105   17    7
          1    1    0    0    1    1    0    0    0    0
 POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
@@ -541,7 +541,7 @@ POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
     .CORRECTIONS        0    0    0    0    0        27
     .ELEMENTS           0    0    0    0    0        11
     ./FOT/              0    0    0    0    0        10
-   8.XCORE-BUFFER       0    0    0    0   33    1  101    1    7
+   8.XCORE-BUFFER       0    0    0    0   35    1  101    1    7
          1    1    0    0    0    0    0    0    0    0
 THE CORE BUFFER
    9.XREAD-FLAGS        0    0    0    0  -19    1  102    5    7
@@ -1383,11 +1383,11 @@ LIST 28           11    1
     .NSLICES           20    0    1    0    0         0
     .NOMISSIONS        32    0    1    0    0         0
     .NCONDITION        36    0    1    0    0         0
-   2.MINIMA            33    1    0    0   33    1 1001   21  128
+   2.MINIMA            35    1    0    0   35    1 1001   21  128
          0    0    0    0    0    0    0    0    0    0
          2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
          2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-         2    2    2
+         2    2    2    2    2
     .H                  0    0    1    0    0 0.0
     .K                  0    0    1    0    0 0.0
     .L                  0    0    1    0    0 0.0
@@ -1421,11 +1421,13 @@ LIST 28           11    1
     .FACTOR3            0    0    1    0    0 0.0
     .RATIO/JCODE        0    0    1    0    0 0.0
     .NOTHING            0    0    1    0    0 0.0
-   3.MAXIMA            33    1    0    0   33    1 1002   25  128
+    .A-IMAG             0    0    1    0    0 0.0
+    .B-IMAG             0    0    1    0    0 0.0
+   3.MAXIMA            35    1    0    0   35    1 1002   25  128
          0    0    0    0    0    0    0    0    0    0
          2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
          2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-         2    2    2
+         2    2    2    2    2
     .H                  0    0    1    0    0 0.0
     .K                  0    0    1    0    0 0.0
     .L                  0    0    1    0    0 0.0
@@ -1459,6 +1461,8 @@ LIST 28           11    1
     .FACTOR3            0    0    1    0    0 0.0
     .RATIO/JCODE        0    0    1    0    0 0.0
     .NOTHING            0    0    1    0    0 0.0
+    .A-IMAG             0    0    1    0    0 0.0
+    .B-IMAG             0    0    1    0    0 0.0
    4.USE-MINIMA         0    0    0    0    2  -23  101    1   28
          0    0    0    0    0    0    0    0    0    0
    5.MINIMA-NAMES       0    0    0    0    4  -23 1101    5   28
@@ -3330,14 +3334,14 @@ HKLI       6      28    4
    3.INPUT              1    1    0    0  -31    1 1001   29  106
          0    0    0    0    0    0    0    0    0    0
          3
-    .COEFFICIENT        0    0    1   33    0 NOTHING
+    .COEFFICIENT        0    0    1   35    0 NOTHING
      H              K              L              /FO/           SQRTW
      /FC/           PHASE          A-PART         B-PART         TBAR
      /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
      BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
      RATIO          THETA          OMEGA          CHI            PHI
      KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
-     FACTOR3        RATIO/JCODE    NOTHING
+     FACTOR3        RATIO/JCODE    NOTHING        A-IMAG         B-IMAG
    4.OUTPUT            -3    1    0    0  -19    1  105   17    6
          1    1    0    0    1    1    0    0    0    0
 POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
@@ -3352,7 +3356,7 @@ POINTERS RELATING DATA IN THE DISK BUFFER TO THAT IN THE CORE BUFFER
          3
     .COEFFICIENT        0    0    1    3   28 FACTOR1
      FACTOR1        FACTOR2        FACTOR3
-   7.XCORE-BUFFER       0    0    0    0   33    1  101    1    6
+   7.XCORE-BUFFER       0    0    0    0   35    1  101    1    6
          1    1    0    0    0    0    0    0    0    0
 THE CORE BUFFER
    8.XREAD-FLAGS        0    0    0    0  -19    1  102    5    6
