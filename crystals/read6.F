@@ -1032,6 +1032,7 @@ C----- ERROR DURING READ -
 3100  CONTINUE
       IF (NCARDS.LE.0) THEN
         if (iuln .ne. 7) then
+         call outcol(3)
          WRITE(CMON,'(A)') 'No reflections found'
          CALL XPRVDU (NCVDU,1,0)
          WRITE (NCAWU,'(A)') CMON(1)
@@ -1040,6 +1041,7 @@ C----- ERROR DURING READ -
          CALL XPRVDU (NCVDU,1,0)
          WRITE (NCAWU,'(A)') CMON(1)
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         call outcol(1)
         end if
 CDJW2003         LEF=-1
       ELSE
