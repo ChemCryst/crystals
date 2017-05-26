@@ -1694,11 +1694,12 @@ C
       INCLUDE 'XLST06.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XCONST.INC'
-
-      CHARACTER*11 C6KEYS(33)
-      CHARACTER*9  C6FORM(33)
-      INTEGER N6KEYS(33)
-      INTEGER N6LEN(33), I6PCH(33)
+c
+      PARAMETER (N6MAX=35)
+      CHARACTER*11 C6KEYS(N6MAX)
+      CHARACTER*9  C6FORM(N6MAX)
+      INTEGER N6KEYS(N6MAX)
+      INTEGER N6LEN(N6MAX), I6PCH(N6MAX)
       CHARACTER*256 CBGFMT   
       character(len=12), dimension(:), allocatable :: CBGFMTa ! CBGFMT as array
 C
@@ -1711,12 +1712,13 @@ C
      3  'BATCH/PHASE','SINTH/L**2','FO/FC','JCODE','SERIAL',
      4  'RATIO', 'THETA', 'OMEGA',    'CHI',      'PHI',
      5   'KAPPA', 'PSI', 'CORRECTIONS', 'FACTOR1', 'FACTOR2',
-     6   'FACTOR3', 'RATIO/JCODE','NOTHING'/
+     6   'FACTOR3', 'RATIO/JCODE','NOTHING', 'A-IMAG','B-IMAG'/
      
 
 C length of each item in FORMAT statement
       DATA N6LEN/ 4,4,4,10,11, 10,6,10,10,8, 10,8,5,4,8, 
-     1             8,5,8,4,8,   8,5,5,5,5,    5,5,5,8,8, 8,12,8/
+     1            8,5,8,4,8,   8,5,5,5,5,    5,5,5,8,8, 
+     2            8,12,8,10,10/
 C1                   H           K       L     /FO/(3)   SQRTW(4)
       DATA C6FORM/ 'I4  ',     'I4  ', 'I4  ', 'F10.2', '1X,G10.3',
 C6                  /FC/(5)    PHASE    A-PART  B-PART   TBAR
@@ -1729,8 +1731,8 @@ C21                 RATIO      THETA    OMEGA   CHI     PHI
      4             'F8.2',     'F5.1', 'F5.1', 'F5.1', 'F5.1',
 C26                 KAPPA      PSI     CORRECTIONS FACTOR1 FACTOR2
      5             'F5.1',    'F5.1',   'F7.4',   'F8.4', 'F8.4',
-C31                FACTOR3    RATIO/JCODE NOTHING
-     6             'F8.4',     'F12.4',    'F8.4'/
+C31                FACTOR3    RATIO/JCODE NOTHING  A-IMAG  B-IMAG
+     6             'F8.4',     'F12.4',    'F8.4', 'F10.2', 'F10.2'/
 C
 C1     H              K              L              /FO/(3)       SQRTW(4)
 C6    /FC/(5)         PHASE          A-PART          B-PART       TBAR
@@ -1738,9 +1740,9 @@ C11    /FOT/          ELEMENTS       SIGMA(/FO/)(12) BATCH        INDICES(14)
 C16    BATCH/PHASE(15)SINTH/L**2     FO/FC          JCODE         SERIAL
 C21    RATIO          THETA          OMEGA          CHI           PHI
 C26    KAPPA          PSI            CORRECTIONS(27)FACTOR1       FACTOR2
-C31    FACTOR3        RATIO/JCODE(31) NOTHING
+C31    FACTOR3        RATIO/JCODE(31) NOTHING      A-IMAG        B-IMAG
 C
-      CALL XZEROF(I6PCH,33)
+      CALL XZEROF(I6PCH,N6MAX)
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1758,13 +1760,6 @@ CDJW mar08
       write(ncpu,100) iuln, IULN2 
 100   format('# punching LIST',I3,' as LIST',i3,' with all keys set')
 c
-C      WRITE(123,'(4I8)') L6R,   M6R,   N6R,   MD6R
-C      WRITE(123,'(4I8)') L6W,   M6W,   N6W,   MD6W
-C      WRITE(123,'(4I8)') L6D,   M6D,   N6D,   MD6D
-C      WRITE(123,'(4I8)') L6DMP, M6DMP, N6DMP, MD6DMP
-C      WRITE(123,'(4I8)') L6P,   M6P,   N6P,   MD6P
-C      WRITE(123,'(4I8)') L6DTL, M6DTL, N6DTL, MD6DTL
-C      WRITE(123,'(/)')
 C  DECOMPOSE PACKED ITEMS
       M6PCH = 0
       do i=l6dmp,m6dmp
@@ -1793,7 +1788,17 @@ C     1 c6keys(istore(i)-l6+1)
 C      WRITE(123,'(/)')
 C      WRITE(123,'(5I6)') (I6PCH(I),I=1,M6PCH)
 C      WRITE(123,'(6A11)') (C6KEYS(I6PCH(I)),I=1,M6PCH)
-
+C
+C
+       IF(M6PCH .GT. N6MAX) THEN
+         WRITE (CMON,270) istore(l6p+4)
+270      FORMAT ('{E LIST 6 keys incompatible with this version (',
+     1   I5, ') of CRYSTALS ')
+         CALL XPRVDU (NCVDU,2,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,A)') 
+     1   CMON(1)(3:nctrim(cmon(1)))
+       ENDIF
+C
 ctemp      if(allocated(CBGFMTa)) deallocate(CBGFMTa)
       allocate(CBGFMTa(m6pch))
       NBGNXT = 2  !Next free char in CBGFMT
