@@ -2289,6 +2289,7 @@ cundo       Write(ncwu,610) c(1), c(2)
      1 '* External Variance'/)
       endif
       return
+
 999   continue
       write(cmon,*)'Error during analysis of variances'
       call xprvdu(ncvdu, 1,0)
