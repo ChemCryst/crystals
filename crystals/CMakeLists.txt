@@ -72,6 +72,7 @@ link.F
 list11.F
 list12.F
 list16.F
+list26_helper.F90
 list26.F
 list4.F
 list50.F
@@ -127,6 +128,7 @@ SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
 if(SLEEFTARGET MATCHES "CrystalsSleef")
     target_link_libraries(CrystalsFortran CrystalsSleef)
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  USE_SLEEF)
 endif ()
 
 # These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.

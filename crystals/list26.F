@@ -294,6 +294,25 @@ C      29 UPLANE    30 UXXQIV    31 UXYQIV   32 UXZQIV
 C      33 UYYQIV    34 UYZQIV    35 UZZQIV 
 C--
 C
+      use list26_mod
+C
+      interface 
+          subroutine XCVCV(iaxis,iasym, results)
+              use list26_mod
+              integer, intent(in) :: iaxis
+              integer, intent(in) :: iasym
+              type(results_t), intent(out), optional :: results
+          end subroutine
+      end interface
+      interface 
+          subroutine XCVCV2(iasym, results)
+              use list26_mod
+              integer, intent(in) :: iasym
+              type(results_t), intent(out), optional :: results
+          end subroutine
+      end interface
+      type(results_t) :: results
+
       CHARACTER *24 CTEXT
       DIMENSION A1(3)
       INTEGER DIST, ANGLE, STROM, DEG
@@ -696,21 +715,38 @@ C To be replaced with JA routine:
 C--'UPERP' RESTRAINT
 5040  CONTINUE
 C To be replaced with JA routine:
-      CALL XCVCV(1,IASYM)
+      CALL XCVCV(1,IASYM, results)
+5041  FORMAT(6x,'Restrain U[13] and U[23] to ',F0.5,
+     2 ' angstrom squared,',
+     3 /6x, 'with an E.S.D. of',1PE10.3)
       IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,5041)A,B,C
+        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")') 
+     1     A,'UPERP from ', trim(results%atoms(1)%atom), 
+     1     results%atoms(1)%serial, trim(results%atoms(2)%atom), 
+     1     results%atoms(2)%serial
+        WRITE(NCWU,5041)B,C
+        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') results%atoms(1)%M(1,:)
+        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') results%atoms(1)%M(2,:)
+        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') results%atoms(1)%M(3,:)
+        WRITE(NCWU,'(6X, A)') 'Derivatives:'
+        WRITE(NCWU,'(6X, 6(1PE10.3,1X))') 
+     1    results%atoms(1)%adps_derivatives
       ENDIF
-5041  FORMAT(/1X,F4.0,
-     1 'UPERP - Restrain the covariance perp. to X,Y and bond to be '
-     2 /6x,F9.5,'  angstrom squared, with an E.S.D. of',F9.5)
-      WRITE(CMON,5042)NINT(A+1), 'Variance difference ZZ ', B,C
+5042  FORMAT(I5, 1X, A, ' from ', A,'(',I0,') to ',A,'(',I0,'). ', 
+     1  'Target ',F7.4,' esd ', 1PE10.3)
+      WRITE(CMON,5042)NINT(A), 'UPERP', trim(results%atoms(1)%atom), 
+     1     results%atoms(1)%serial, trim(results%atoms(2)%atom), 
+     1     results%atoms(2)%serial, B,C
       CALL XPRVDU(NCVDU, 1,0)
-5042  FORMAT(I5, 1X, A, '. ', 'Target ',F7.4, ' esd ', F7.4)
+5044  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+      WRITE(CMON,5044)
+      CALL XPRVDU(NCVDU, 1,0)      
       IF (ISSPRT .EQ. 0) THEN
-         WRITE(NCWU,5043)(NUMB(N),(MSD(M),M=1,3),N=2,3)
+         WRITE(NCWU,5043) 
       ENDIF
-5043  FORMAT(/2X,2(10X,4HAtom,2X,A1,4X,15HS(I) L TX TY TZ,3X,2A4,A1),
-     2 4X,5HDelta,A1,4X,8HCoord.'S)
+5043  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2 8X,'Delta',2X,'Parameter')
       N=2
 c      Print *, 'X End'
       GOTO 2500
@@ -718,21 +754,42 @@ c      Print *, 'X End'
 C--'UPERP2' RESTRAINT
 5050  CONTINUE
 C To be replaced with JA routine:
-      CALL XCVCL(IASYM)
+      CALL XCVCV2(IASYM, results)
+5051  FORMAT(6x,'Restrain U[13] and U[23] to ',F0.5,
+     2 ' angstrom squared,',
+     3 /6x, 'with an E.S.D. of',1PE10.3)
       IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,5051)A,B,C
+        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,"), ", '//
+     1     'A, "(",I0,")")') 
+     2     A,'UPERP2 from ', trim(results%atoms(1)%atom), 
+     2     results%atoms(1)%serial, trim(results%atoms(2)%atom), 
+     2     results%atoms(2)%serial
+        WRITE(NCWU,5051)B,C
+        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') results%atoms(1)%M(1,:)
+        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') results%atoms(1)%M(2,:)
+        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') results%atoms(1)%M(3,:)
+        WRITE(NCWU,'(6X, A)') 'Derivatives:'
+        WRITE(NCWU,'(6X, 6(1PE10.3,1X))') 
+     1    results%atoms(1)%adps_derivatives
       ENDIF
-5051  FORMAT(/1X,F4.0,
-     1 'UPERP2 - Restrain eigenvalues to be equal '
-     2 /6x,F9.5,'  angstrom squared, with an E.S.D. of',F9.5)
-      WRITE(CMON,5052)NINT(A+1), 'Variance difference ZZ ', B,C
+      WRITE(CMON,5055)NINT(A), 'UPERP2',  trim(results%atoms(1)%atom), 
+     1     results%atoms(1)%serial, trim(results%atoms(2)%atom), 
+     1     results%atoms(2)%serial, trim(results%atoms(3)%atom), 
+     1     results%atoms(3)%serial,B,C
       CALL XPRVDU(NCVDU, 1,0)
-5052  FORMAT(I5, 1X, A, '. ', 'Target ',F7.4, ' esd ', F7.4)
+5055  FORMAT(I5, 1X, A, ' from ', A,'(',I0,') to ',
+     1  A,'(',I0,'),', A,'(',I0,'). ', 
+     1  'Target ',F7.4,' esd ', 1PE10.3)
+5054  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+      WRITE(CMON,5054)
+      CALL XPRVDU(NCVDU, 1,0)      
+5052  FORMAT(I5, 1X, A, '. ', 'Target ',F7.4, ' esd ', 1PE10.3)
       IF (ISSPRT .EQ. 0) THEN
-         WRITE(NCWU,5053)(NUMB(N),(MSD(M),M=1,3),N=2,3)
+         WRITE(NCWU,5053) 
       ENDIF
-5053  FORMAT(/2X,2(10X,4HAtom,2X,A1,4X,15HS(I) L TX TY TZ,3X,2A4,A1),
-     2 4X,5HDelta,A1,4X,8HCoord.'S)
+5053  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2 8X,'Delta',2X,'Parameter')
       N=2
       GOTO 2500
 C
@@ -1192,54 +1249,71 @@ C--CALCULATE THE MEAN
       A1(2)=A1(3)
       GOTO 2950
 C
-C--UPERP RESTRAINTS PRINT
+C--UPERP and UPERP2 RESTRAINTS PRINT
 3285  CONTINUE
-      A1(3)=A1(2)
-      A1(2)=2.*SQRT(STORE(L22PD+3))
-      A1(1)=0.5*(A1(2)-A1(3))
-      A1(2)=A1(2)-A1(1)-B
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3250)KF,STORE(JA+2),ISTORE(JA+3),(ISTORE(M),M=JD,JE),
-     2 A1(1),STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),(A1(M),M=2,3)
-      ENDIF
-      IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C )) THEN
-c         WRITE(NCAWU,3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
-c     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
-         IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C )) THEN
-         WRITE(CMON, 3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
-     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
-      CALL XPRVDU(NCVDU, 1,0)
-         ENDIF
-      ENDIF
-C--CALCULATE THE MEAN
-      A1(1)=0.5*(A1(1)+A1(2)+B)
-      A1(2)=A1(3)
-      GOTO 2950
-C
-C--UPERP2 RESTRAINTS PRINT
 3295  CONTINUE
-      A1(3)=A1(2)
-      A1(2)=2.*SQRT(STORE(L22PD+3))
-      A1(1)=0.5*(A1(2)-A1(3))
-      A1(2)=A1(2)-A1(1)-B
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,3250)KF,STORE(JA+2),ISTORE(JA+3),(ISTORE(M),M=JD,JE),
-     2 A1(1),STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),(A1(M),M=2,3)
-      ENDIF
-      IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C )) THEN
-c         WRITE(NCAWU,3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
-c     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
-         IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C )) THEN
-         WRITE(CMON, 3251)KF,STORE(JA+2),ISTORE(JA+3),A1(1),
-     2   STORE(JB+2),ISTORE(JB+3),A1(2),A1(3)
-      CALL XPRVDU(NCVDU, 1,0)
-         ENDIF
-      ENDIF
-C--CALCULATE THE MEAN
-      A1(1)=0.5*(A1(1)+A1(2)+B)
-      A1(2)=A1(3)
-      GOTO 2950
 
+      do jj=1, 2 ! loop over the 2 U(ij) U[13] and U[23]
+C--CHECK IF THIS RESTRAINT IS USEFUL
+        CALL XMOVE(IB1(1),KF1(1),1)
+        IF(ISTORE(L22PD).eq.4) THEN
+          WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
+     1      COPERATION(I)(1:NCTRIM(COPERATION(I))),
+     1      ' restraint:', ' No derivatives found'
+          CALL XPRVDU(NCVDU,1,0)
+          IF(ISSPRT.EQ.0)
+     1      WRITE(NCWU,'(2x,A,A,A)') 
+     2        COPERATION(I)(1:nctrim(COPERATION(I))),
+     1        ' restraint: ', ' No derivatives found'
+            CALL XMOVE(IQ1(1),KF1(1),1)
+        ENDIF
+                   
+        CALL XDOWNF(M22PD,STORE(L22PD),4)
+        if(ISTORE(L22PD)>=0) then
+          M22PD=M22PD+KINCRF(ISTORE(L22PD))
+        else 
+          WRITE(CMON,*)'{E No more derivative to find, programmer error'
+          CALL XPRVDU(NCVDU, 1,0)
+          WRITE(CMON,*)'{E Please seek advice with the authors'
+          CALL XPRVDU(NCVDU, 1,0)
+          exit
+        end if
+      end do
+    
+3296  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A)    
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,3296) KF,
+     1        results%atoms(1)%atom,results%atoms(1)%serial,
+     2        (ISTORE(M),M=JD,JE), results%atoms(1)%adps_cart(1,3),
+     3        results%atoms(1)%adps_cart(1,3)-B, 'U[13]'
+            WRITE(NCWU,3296) KF, 
+     1        results%atoms(1)%atom,results%atoms(1)%serial,
+     2        (ISTORE(M),M=JD,JE), results%atoms(1)%adps_cart(1,3),
+     3        results%atoms(1)%adps_cart(2,3)-B, 'U[23]'
+          ENDIF      
+       
+3297  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
+      WRITE(CMON, 3297)KF,results%atoms(1)%atom,results%atoms(1)%serial,
+     2   results%atoms(1)%adps_cart(1,3),
+     2   results%atoms(1)%adps_cart(1,3)-B ! B is the target
+     3   ,'U[13]'
+      CALL XPRVDU(NCVDU, 1,0)
+       
+      WRITE(CMON, 3297)KF,results%atoms(1)%atom,results%atoms(1)%serial,
+     2   results%atoms(1)%adps_cart(2,3),
+     2   results%atoms(1)%adps_cart(2,3)-B ! B is the target
+     3   ,'U[23]'
+      CALL XPRVDU(NCVDU, 1,0)
+       
+      Q=results%atoms(1)%adps_cart(1,3)+results%atoms(1)%adps_cart(2,3)
+      O=results%atoms(1)%adps_cart(1,3)-B + 
+     1    results%atoms(1)%adps_cart(2,3)-B
+      P=(results%atoms(1)%adps_cart(1,3)-B)**2 + 
+     1  (results%atoms(1)%adps_cart(2,3)-B)**2
+      NCA = 2
+       
+      goto 3600   
+      
 C
 C--UALIGN RESTRAINTS PRINT
 3260  CONTINUE
@@ -1632,14 +1706,14 @@ c
      2 adjw,STORE(JB+2),ISTORE(JB+3),(ISTORE(M),M=JF,JG),bdjw,A1(3)
      3 ,(ICOORD(idjw,JJ),idjw=1,NWKA)
        ENDIF
-       IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C ))  THEN
-         IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C ))THEN
+c       IF ( (IMON .GT. 0 ) .OR. (ABS(A1(3)) .GE. C ))  THEN
+c         IF ((IMON .GE. 1) .AND. (ABS(A1(3)) .GE. C ))THEN
          WRITE(CMON,3251) KF, STORE(JA+2), ISTORE(JA+3), adjw,
      2   STORE(JB+2),ISTORE(JB+3),bdjw,A1(3),
      3   (ICOORD(idjw,JJ),idjw=1,NWKA)
          CALL XPRVDU(NCVDU, 1,0)
-         ENDIF
-       ENDIF
+c         ENDIF
+c       ENDIF
 C--ACCUMUALTE THE MEANS ETC.
        O=O+A1(3)
        P=P+A1(3)*A1(3)
@@ -1899,6 +1973,21 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      interface 
+          subroutine XCVCV(iaxis,iasym, results)
+              use list26_mod
+              integer, intent(in) :: iaxis
+              integer, intent(in) :: iasym
+              type(results_t), intent(out), optional :: results
+          end subroutine
+      end interface
+      interface 
+          subroutine XCVCV2(iasym, results)
+              use list26_mod
+              integer, intent(in) :: iasym
+              type(results_t), intent(out), optional :: results
+          end subroutine
+      end interface
 C
       DATA IVERSN /403/
 C
@@ -3800,7 +3889,8 @@ C You need to set SUM to be the compute
       
 
 CODE FOR XCVCV
-      SUBROUTINE XCVCV(iaxis,iasym)
+      SUBROUTINE XCVCV(iaxis,iasym, results)
+      use list26_mod
 C--CALCULATE PERPENDICULAR RESTRAINTS
 C
 C      IAXIS = Not used
@@ -3820,6 +3910,7 @@ C
 C--
       INCLUDE 'ISTORE.INC'
 C
+      type(results_t), intent(out), optional :: results
       DIMENSION A1(12)
       double precision ROT3(3)
       double precision ROT2(3)
@@ -3872,14 +3963,11 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1                                        
       JV=ISTORE(JB+6)           ! Address of first parameter (U11) for atom 2                                        
 
-      if(issprt==0) then
-          write(ncwu, *) ''
-          write(ncwu, 
-     &       '(A,A,"(",I0,") -- ",A,"(",I0,"), args: ",I0,1X,I0)') 
-     &       "UPERP: XCVCV ",
-     &       trim(transfer(istore(JA+2), 'aaaa')), nint(store(JA+3)), 
-     &       trim(transfer(istore(JB+2), 'aaaa')), nint(store(JB+3)),
-     &       iaxis,iasym
+      if(present(results)) then
+          results%atoms(1)%atom=transfer(istore(JA+2), 'aaaa')
+          results%atoms(1)%serial=nint(store(JA+3))
+          results%atoms(2)%atom=transfer(istore(JB+2), 'aaaa')
+          results%atoms(2)%serial=nint(store(JB+3))
       end if
 C--DEFINE U Matrices 
 
@@ -3888,17 +3976,10 @@ C--DEFINE U Matrices
 C     U Matrices in 3x3 matrix
       U_ASSIGN = (/ 1, 6, 5, 6, 2, 4, 5, 4, 3 /)
       U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
-      
-      if(issprt==0) then
-          write(ncwu, '(1X, A, A,"(",I0,")")')
-     &        'Adp 1:',
-     &        trim(transfer(istore(JA+2), 'aaaa')), nint(store(JA+3))
-          do i=1, 3
-              write(ncwu, '(3(E10.3,1X))') 
-     &            U_M_1(i,:)
-          end do
+      if(present(results)) then
+          results%atoms(1)%adps_crys=U_M_1
       end if
-      
+            
 C-- Set up the new coordinate system for the adp
 C-----------------------------------------------
 
@@ -3949,18 +4030,10 @@ C IF IAXIS = 1, then UXZBAR, =2 for UYZBAR, IAXIS = 3 for UZZBAR
           
       call rabubar_derivs(R_M, RAB, dUcart)
       RABUBAR_1=matmul(rab, matmul(U_M_1, transpose(rab)))
-
-       if(issprt==0) then
-          write(ncwu, '(1X, A)') 'RAB rotation matrix'
-          do i=1, 3
-              write(ncwu, '(3(E10.3, 1X))') rab(i,:)
-          end do
-          write(ncwu, '(1X, A)') 'RABUBAR 1'
-          do i=1, 3
-              write(ncwu, '(3(E10.3,1X))') 
-     &            RABUBAR_1(i,:)
-          end do
-      end if             
+      if(present(results)) then
+          results%atoms(1)%adps_cart=RABUBAR_1
+          results%atoms(1)%M=rab
+      end if
       
       do i=1, 2
       
@@ -4019,12 +4092,8 @@ C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
            MEAN_VAL = RABUBAR_1(2,3) 
        END IF
              
-       if(issprt==0) then             
-          write(ncwu, '(1X, A, 6(E10.3, 1X))') 'Derivatives: ', a1(7:12)
-
-          write(ncwu, '(A, E10.3)') 'Delta: ', DIFF_VAL  
-          write(ncwu, '(A, E10.3)') 'Mean: ', MEAN_VAL / 2.0
-          write(ncwu, *) ''
+      if(present(results)) then
+          results%atoms(1)%adps_derivatives=a1(7:12)
       end if
              
 C Here, you need to set D to be the computed value of the difference in the covariances
@@ -4049,7 +4118,8 @@ C You need to set SUM to be the compute
       END
       
 CODE FOR XCVCV
-      SUBROUTINE XCVCV2(iasym)
+      SUBROUTINE XCVCV2(iasym, results)
+      use list26_mod
 C--CALCULATE PERPENDICULAR RESTRAINTS TO the bissector of 2 vectors
 C
 C      IAXIS = Not used
@@ -4069,6 +4139,7 @@ C
 C--
       INCLUDE 'ISTORE.INC'
 C
+      type(results_t), intent(out), optional :: results
       DIMENSION A1(12)
       double precision ROT3(3)
       double precision ROT2(3)
@@ -4122,33 +4193,23 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1                                        
       JV=ISTORE(JB+6)           ! Address of first parameter (U11) for atom 2                                        
 
-      if(issprt==0) then
-          write(ncwu, *) ''
-          write(ncwu, 
-     &       '(A,A,"(",I0,") -- ",A,"(",I0,") --'// 
-     &           ' ",A,"(",I0,"), args: ",I0,1X,I0)') 
-     &       "UPERP2: XCVCV ",
-     &       trim(transfer(istore(JA+2), 'aaaa')), nint(store(JA+3)), 
-     &       trim(transfer(istore(JB+2), 'aaaa')), nint(store(JB+3)),
-     &       trim(transfer(istore(JC+2), 'aaaa')), nint(store(JC+3)),
-     &       iaxis,iasym
+      if(present(results)) then
+          results%atoms(1)%atom=transfer(istore(JA+2), 'aaaa')
+          results%atoms(1)%serial=nint(store(JA+3))
+          results%atoms(2)%atom=transfer(istore(JB+2), 'aaaa')
+          results%atoms(2)%serial=nint(store(JB+3))
+          results%atoms(3)%atom=transfer(istore(JC+2), 'aaaa')
+          results%atoms(3)%serial=nint(store(JC+3))
       end if
+      
 C--DEFINE U Matrices 
-
       U_L_1=STORE(ISTORE(JA+16)+14:ISTORE(JA+16)+14+11:2)
       
 C     U Matrices in 3x3 matrix
       U_ASSIGN = (/ 1, 6, 5, 6, 2, 4, 5, 4, 3 /)
       U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
-      
-      if(issprt==0) then
-          write(ncwu, '(1X, A, A,"(",I0,")")')
-     &        'Adp 1:',
-     &        trim(transfer(istore(JA+2), 'aaaa')), nint(store(JA+3))
-          do i=1, 3
-              write(ncwu, '(3(E10.3,1X))') 
-     &            U_M_1(i,:)
-          end do
+      if(present(results)) then
+          results%atoms(1)%adps_crys=U_M_1
       end if
       
 C-- Set up the new coordinate system for the adp
@@ -4201,18 +4262,10 @@ C IF IAXIS = 1, then UXZBAR, =2 for UYZBAR, IAXIS = 3 for UZZBAR
           
       call rabubar_derivs(R_M, RAB, dUcart)
       RABUBAR_1=matmul(rab, matmul(U_M_1, transpose(rab)))
-
-       if(issprt==0) then
-          write(ncwu, '(1X, A)') 'RAB rotation matrix'
-          do i=1, 3
-              write(ncwu, '(3(E10.3, 1X))') rab(i,:)
-          end do
-          write(ncwu, '(1X, A)') 'RABUBAR 1'
-          do i=1, 3
-              write(ncwu, '(3(E10.3,1X))') 
-     &            RABUBAR_1(i,:)
-          end do
-      end if             
+      if(present(results)) then
+          results%atoms(1)%adps_cart=RABUBAR_1
+          results%atoms(1)%adps_cart=rab
+      end if
       
       do i=1, 2
       
@@ -4271,12 +4324,8 @@ C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
            MEAN_VAL = RABUBAR_1(2,3) 
        END IF
              
-       if(issprt==0) then             
-          write(ncwu, '(1X, A, 6(E10.3, 1X))') 'Derivatives: ', a1(7:12)
-
-          write(ncwu, '(A, E10.3)') 'Delta: ', DIFF_VAL  
-          write(ncwu, '(A, E10.3)') 'Mean: ', MEAN_VAL / 2.0
-          write(ncwu, *) ''
+      if(present(results)) then
+          results%atoms(1)%adps_derivatives=a1(7:12)
       end if
              
 C Here, you need to set D to be the computed value of the difference in the covariances
