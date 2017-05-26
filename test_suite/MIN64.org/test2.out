@@ -811,7 +811,7 @@ Refining    41 parameters in    1 block :      959 elements in the LS matrix.
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        2     Address    89710     Length      52     Created on                          
+ Print list type    12     serial number        2     Address    89810     Length      52     Created on                          
 
      0 BLOCK SCALE X'S, U[ISO] 
 
@@ -3579,7 +3579,7 @@ LS-scale=  4.747   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        4     Address   168995     Length      84     Created on                          
+ Print list type    12     serial number        4     Address   169105     Length      84     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -4755,7 +4755,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        5     Address   175436     Length     112     Created on                          
+ Print list type    12     serial number        5     Address   175546     Length     112     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -5462,7 +5462,7 @@ Mean C-C su =   0.0061
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        6     Address   178146     Length     148     Created on                          
+ Print list type    12     serial number        6     Address   178256     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -6635,7 +6635,7 @@ Mean C-C su =   0.0049
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        7     Address   178146     Length     148     Created on                          
+ Print list type    12     serial number        7     Address   178256     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -9472,7 +9472,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
- List type   11  serial number  136 from   182027 to   186462 will not be copied ( deleted )         
+ List type   11  serial number  136 from   182137 to   186572 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -12512,7 +12512,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        8     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number        8     Address    72354     Length     148     Created on                          
 
      0 BLOCK SCALE X'S, U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -12526,7 +12526,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    16     serial number        3     Address    70625     Length     576     Created on                          
+ Print list type    16     serial number        3     Address    70635     Length     576     Created on                          
 
      0 LIMIT      0.01000000 ELEMENT SCALES 
      1 LIMIT      0.01000000 SCALE 
@@ -12644,7 +12644,7 @@ LS-scale=  4.746   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        9     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number        9     Address    72354     Length     148     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -13824,7 +13824,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       10     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       10     Address    72354     Length     148     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -14997,7 +14997,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       11     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       11     Address    72354     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -16173,7 +16173,7 @@ Mean C-C su =   0.0051
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       12     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       12     Address    72354     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -18998,7 +18998,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
- List type   11  serial number  144 from    96411 to   100846 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96421 to   100856 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -21644,7 +21644,7 @@ LS-scale=  4.646   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       14     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       14     Address    72354     Length     148     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -22825,7 +22825,7 @@ Mean C-C su =   0.0070
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       15     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       15     Address    72354     Length     148     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -23996,7 +23996,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       16     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       16     Address    72354     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -25169,7 +25169,7 @@ Mean C-C su =   0.0049
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       17     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       17     Address    72354     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -28009,7 +28009,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
- List type   11  serial number  136 from    95413 to    99848 will not be copied ( deleted )         
+ List type   11  serial number  136 from    95423 to    99858 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -31120,7 +31120,7 @@ LS-scale=  4.746   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       19     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       19     Address    72354     Length     148     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -32300,7 +32300,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       20     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       20     Address    72354     Length     148     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -33473,7 +33473,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       21     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       21     Address    72354     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -34649,7 +34649,7 @@ Mean C-C su =   0.0051
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       22     Address    72344     Length     148     Created on                          
+ Print list type    12     serial number       22     Address    72354     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -37474,7 +37474,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE                                                                                                                                                                                                                                                          
- List type   11  serial number  144 from    96411 to   100846 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96421 to   100856 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
