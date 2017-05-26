@@ -531,7 +531,7 @@
 %         COPY 'END'                                                                
 
 ^^WI      DISPOSE XINLIST6                                                      
-^^CR             
+^^CR  
 %         COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %         COPY '#HKLI'                                                          
 %         QUEUE PROCESS                                                         
@@ -539,6 +539,39 @@
 %         COPY '#CLOSE FRN2'
 %         COPY '#CLOSE HKLI'                                                    
 %%                                                                              
+%         BLOCK
+%         IF ( EXISTS 6 .NE. 1 ) THEN 
+{E
+{E  You have not succeeded in reading in any reflections
+
+{E  Check the file format and the file extension.
+{E
+%           COPY "#USE CONTROL"
+%           FINISH
+%         END IF
+%% 
+%           VARIABLE REAL  H K L SUM
+%           ON ERROR TERMINATE
+%           COPY "#GENERALEDIT 6"
+%% get the rms Indices
+%           COPY "LOCATE RECORDTYPE=107"
+%           COPY "TRANSFER FROM OFFSET=3 TO H"
+%           COPY "NEXT"
+%           COPY "TRANSFER FROM OFFSET=3 TO K"
+%           COPY "NEXT"
+%           COPY "TRANSFER FROM OFFSET=3 TO L"
+%           COPY "END"
+%           EVALUATE SUM = H + K + L
+%           IF SUM .LE. 0.0 THEN
+{E
+{E  You have not succeeded in reading in any reflections
+{E  Check the file format and the file extension.
+{E
+%             COPY "#USE CONTROL"
+%             FINISH
+%           END IF  
+%         END BLOCK
+%%
 %         IF FS .EQ. 3 THEN                                                     
 %           COPY '#LP'                                                          
 %           COPY 'END'                                                          
