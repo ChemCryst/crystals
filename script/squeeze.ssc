@@ -15,9 +15,10 @@
 {1,9  running SQUEEZE in case you wish to revert to a normal
 {1,9  refinement
 %%                                                                              
-% VARIABLE INTEGER IFLACK                                         
+% VARIABLE INTEGER IFLACK    IANOM                                     
 % COPY '#GENERALEDIT 23'                                                        
 % COPY 'LOCATE RECORDTYPE = 101'                                                
+% COPY 'TRANSFER FROM OFFSET = 1 TO IANOM'                                     
 % COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'                                     
 %  IF ( IFLACK .EQ. 0 ) THEN                                         
 {1,8 
@@ -28,17 +29,19 @@
 {1,8 difference electron density will be the same for
 {1,8 both reflections.  
 {1,8 
+{1,8 If you run SQUEEZE now, you will be able to modify 
+{1,8 the output for approximate anomalous contributions
+{1,8 usig the HUG procedure
+{1,8 
 %    EVALUATE T1 = TRUE
 %  END IF                                                            
 %    EVALUATE T2 = FILEEXISTS ( 'LIST6.ABC' )
 %    IF T2 THEN
-
 {1,8 
 {1,8 You have already run SQUEEZE.
 {1,8 Running SQUEEZE again will over-write any
 {1,8 previous void contributions.
 {1,8 
-
 %    END IF
 %  
 %
@@ -111,11 +114,12 @@
 %  IF ( FILEEXISTS ( 'platon_sqd.sqz' ) ) THEN
 %    EVALUATE T = FILEDELETE ( 'platon_sqd.sqz' )
 %  END IF
-%  IF ( FILEEXISTS ( 'LIST6.ABC' ) ) THEN
-%    EVALUATE T = FILEDELETE ( 'LIST6.ABC' )
-%  END IF
 %      END IF                                                                   
-%%                                                                              
+%%                                        always remove the old LIST6
+%  IF FILEEXISTS ( 'LIST6.ABC' ) .EQ. TRUE THEN
+Trying to delete old SQUEEZED reflections
+%     EVALUATE T = FILEDELETE ( 'LIST6.ABC' )
+%  END IF
 %%
 %  IF EXISTS 6 .LT. 1 THEN                                                      
  You do not have any reflections stored.                                        
@@ -156,13 +160,24 @@
 %%
 %  TRANSFER '#SPAWN + "' // CFILE // '" -q  platon.res' TO CRYSTALS
 %%
-%  IF .not. ( FILEEXISTS ( 'platon.hkp' ) .OR. - 
-              FILEEXISTS ( 'platon_sqd.hkl' ) .OR. - 
-              FILEEXISTS ( 'platon-sr.hkl' ) ) THEN                                    
+%  IF .not. ( FILEEXISTS ( 'PLATON6' ) ) THEN                                    
 {1,9  PLATON/SQUEEZE has not created a suitable output file.
+{1,9  Look at platon_sqd.hkl, platon-sr.hkl or platon.hkp
 {1,9  There may not be any voids in your structure
 %    FINISH
 %  END IF                                                                       
+%% convert the results
+%  COPY '#SPAWN + "CRYSDIR:CONVPLAT.EXE"'
+%  IF .not. FILEEXISTS ( 'LIST6.ABC' ) THEN
+{1,9 The CONVPLAT.exe process failed to write an output file.
+{1,9 Check that the file PLATON6 exists and contains reflections
+%    FINISH
+%  END IF
+%    EVALUATE T2 = FILEEXISTS ( 'platon_sqd.sqf' )
+%SHOW T2
+%    IF T2 THEN
+%      COPY '#TYPE platon_sqd.sqf'
+%    END IF
 %   BLOCK
 %      EVALUATE QTITLE = 'Squeeze has ended'
 %      EVALUATE QLINE1 = 'Do you want to apply the results'
@@ -174,54 +189,48 @@
 %          FINISH
 %      END IF
 %   END BLOCK
-%% use the results
-%  IF FILEEXISTS ( 'LIST6.ABC' ) .EQ. TRUE THEN
-Trying to delete old Squeeze files
-%     EVALUATE T = FILEDELETE ( 'LIST6.ABC' )
-Deleted old Squeeze files
-%  END IF
-%  COPY '#SPAWN + "CRYSDIR:CONVPLAT.EXE"'
-%  IF .not. FILEEXISTS ( 'LIST6.ABC' ) THEN
-The CONVPLAT.exe process failed to write an output file.
-%    FINISH
-%  END IF
 %%
-%%  EVALUATE QTITLE = 'Anomalous Modifications '                              
-%%  EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
-%%  EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
-%%  EVALUATE BUTTOK = '&Yes'                                                 
-%%  EVALUATE BUTTXX = '&No'                                                  
-%%  COPY '#SCRIPT XQUESTIO'                                                  
-%%  IF ANSWER .EQ. TRUE THEN 
-%%% use the results
-%%    IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
-%Trying to delete old modified Squeeze files
-%%     EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
-%Deleted old Squeeze files
-%%    END IF
-%%    COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
-%%    IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
-%The PLATANOM.exe process failed to write an output file.
-%%      FINISH
-%%    END IF
-%%    COPY '#USE LIST6.DEF'
-%%  ELSE
-%    COPY '#USE LIST6.ABC'
-%%  END IF
+%  IF IANOM .EQ. 1 THEN
+%   EVALUATE QTITLE = 'Anomalous Modifications '                              
+%   EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
+%   EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
+%   EVALUATE BUTTOK = '&Yes'                                                 
+%   EVALUATE BUTTXX = '&No'                                                  
+%   COPY '#SCRIPT XQUESTIO'                                                  
+%   IF ANSWER .EQ. TRUE THEN 
+%%  use the results
+%%  
+%     IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
+%      EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
+%     END IF
+%     COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
+%     IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
+The PLATANOM.exe process failed to write an output file.
+%       FINISH
+%     END IF
+%     COPY '#USE LIST6.DEF'
+%   ELSE
+%     COPY '#USE LIST6.ABC'
+%   END IF
+%  ELSE
+%     COPY '#USE LIST6.ABC'
+%  END IF
 %%
 Update LIST 23 to show the A & B parts are stored, and inhibit
 them being overwritten
 % COPY '#GENERALEDIT 23'
 % COPY 'LOCATE RECORDTYPE=101'
-%% SET MODIFY PARTIAL=NO
+%% set modify partial=YES
 % COPY 'CHANGE OFFSET=4 MODE=INTEGER INTEGER=0'
 % COPY 'WRITE'
-%% SET MODIFY UPDATE=YES
+%% set modify update=NO
 % COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=-1'
 % COPY 'WRITE'
 % COPY 'END'
 % COPY '#SFLS'
-% COPY 'SCALE'
+% COPY 'CALC'
+% COPY 'END'
+% COPY '#WEIGHT'
 % COPY 'END'
 % COPY '#SFLS'
 % COPY 'CALC'
