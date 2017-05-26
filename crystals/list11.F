@@ -983,7 +983,7 @@ C--NOT ENOUGH CORE
       CALL XPRVDU(NCVDU, 2,0)
 1100  FORMAT(2X,
      2 'Insufficient memory allocated for LIST 11, Record number ', I5)
-1101  FORMAT(I10,' words too few for this',
+1101  FORMAT(I10,' words needed.'/, ' Too many for this',
      2 ' compilation of CRYSTALS (max = ', I10,')', /,
      3 ' Define a smaller matrix in LIST 12' )
       CALL XERHND ( IERERR )
