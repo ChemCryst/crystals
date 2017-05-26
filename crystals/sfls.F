@@ -1065,7 +1065,7 @@ C--PREPARE TO INITIALISE THE STACK
         JREF_STACK_PTR = JREF_STACK_START+1
         NI = JREF_STACK_START
         NJ = (N2T-1)*NR
-
+c - there is always at least one twin element: the identity.
         DO I=1,N25      ! SET UP THE STACK
           ISTORE(NI)    = JREF_STACK_PTR   ! Ptr to next block
           NI            = JREF_STACK_PTR   ! Update ptr
@@ -1171,6 +1171,8 @@ C--
         IF(ND.GE.0) THEN   ! CHECK IF WE HAVE UPDATED THE A AND B PARTS
           CALL XCRD(8)
           CALL XCRD(9) ! UPDATE THEIR DETAILS
+          CALL XCRD(33)   
+          CALL XCRD(34)
         END IF
 
         CALL XMONTR(-1)  ! WRITE THE LIST TO THE DISC
@@ -1524,15 +1526,15 @@ C  TO THE NORMAL EQUATIONS.
 C
 C      PARTIAL DERIVATIVE STACK
 C                  FLACK SYMBOL
-C      0   F.COS(HX)      A      AC
-C      1   F.SIN(HX)      B      BC
+C      0   F.COS(HX)      A      ACR
+C      1   F.SIN(HX)      B      BCR
 C      2  -F".SIN(HX)    -D      ACI
 C      3   F".COS(HX)     C      BCI
 C
 C      FC = (A-D) + I.(B+C)
 C
 C
-C--THE FORMAT OF THE LIST 6 BUFFER AT 'M6' IS :
+C--THE FORMAT OF THE LIST 6 BUFFER AT 'M6' IS defined in COMMANDS.SRC:
 C
 C   0  H
 C   1  K
@@ -1553,8 +1555,8 @@ C  TC     COEFFICIENT FOR THE ISO-TEMPERATURE FACTORS
 C  SST    SIN(THETA)/LAMBDA SQUARED
 C  ST     SIN(THETA)/LAMBDA
 C  SMAX, SMIN      MAX AND MIN VALUES OF SINTETA/LAMBDA
-C  AC     TOTAL REAL A PART FOR THE REFLECTION
-C  BC     TOTAL REAL B PART FOR THE REFLECTION
+C  ACR     TOTAL REAL A PART FOR THE REFLECTION
+C  BCR     TOTAL REAL B PART FOR THE REFLECTION
 C  ACI    TOTAL IMAGINARY A PART FOR THE REFLECTION
 C  BCI    TOTAL IMAGINARY B PART FOR THE REFLECTION
 C  ACT    TOTAL A PART FOR THE RELFECTION
@@ -1654,7 +1656,7 @@ C           COSP := Q/FP, SINP := S/FP, COSPN := QN/FN, SINPN := SN/FN
 C
 C            Q = A-D, S = B+C,          QN = A+D, SN = -B+C
 C
-C            AC := A, ACI := -D, BC := B, BCI = C
+C            ACR := A, ACI := -D, BCR := B, BCI = C
 C
 C            ACT := Q, BCT := S,        ACN := QN, BCN := SN
 C
@@ -1946,15 +1948,15 @@ C--CLEAR THE PARTIAL CONTRIBUTION FLAGS FOR THIS REFLECTION
         BCN = 0.
 C--CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
         IF(PARTIALS) THEN
-c       retrieve A' and B' into ACT and BCT slots. 
-c       A' & B'  have the phase shift already applied
-c       for compatibility with PLATON
-c       We cannot recover 'true' ACT and BCT until we know PSHIFT.
-c       This is done in XAB4FC 
-          ACT=STORE(M6+7)
-          BCT=STORE(M6+8)
-ccc          ACN = ACT
-ccc          BCN = -BCT
+C may 2015
+C       retrieve A'&B' into ACT and BCT slots. 
+C       Both real and imaginary parts are required from DSC Version 124
+C       If anomalous contributions were not computed and stored, 
+C       imaginary parts, m6+33/34, should be zero
+          ACT=STORE(M6+7) + STORE(M6+33)
+          BCT=STORE(M6+8) + STORE(M6+34)
+          ACN = STORE(M6+7) - STORE(M6+33)
+          BCN = -STORE(M6+8) + STORE(M6+34)
         END IF
 
         FO=STORE(M6+3)  ! SET UP /FO/ ETC. FOR THIS REFLECTION
@@ -2189,55 +2191,9 @@ c
         ENDIF
         STORE(M6+6)=P
 C
-        IF(ND.GE.0)THEN !  THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
-c       Apply signs to A and B parts for PLATON compatibility
 c
-          pshift=store(jref_stack_ptr+11)
-          ps = amod(pshift+twopi,twopi)  !get into first revolution
-          fp=sqrt(act*act+bct*bct)       !scattering magnitude
-          pp = atan2(bct,act)            !phi
-
-123        format(a, 3i4,3f8.2,4f8.2)
-c          write(123,123) 'Ap',
-c     1    nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
-c     2    act, bct, acn, bcn
-
-          if (ENANTIO) then
-           fn=sqrt(acn*acn+bcn*bcn)
-           pn = atan2(-bcn,acn) 
-c take average to approximate to no imaginary anomalous contribution
-c since we cannot recover imaginary contributions from A&B later
-           fav = 0.5*(fp+fn)
-           pav = 0.5*sign(1.,pp)*(abs(pp)+abs(pn))  
-c           write(123,123) 'Av',
-c     1     nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
-c     2     fp, rtd*pp, fn, rtd*pn, fav, rtd*pav
-           fp = fav
-           pp = pav
-          end if
-c
-c         phi + pshift
-          pprime = pp + ps
-
-          aprime = fp*cos(pprime)
-          bprime = fp*sin(pprime)
-c          write(123,123)'St',
-c     1    nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
-c     2    act, bct, fp, rtd*pp, aprime, bprime, rtd*ps
-c          write(123,'(/)')
-
-
-
-c          STORE(M6+7)=ACT ! STORE THE NEW CONTRIBUTIONS
-c          STORE(M6+8)=BCT
-          STORE(M6+7)=APRIME ! STORE A' and B'for PLATON compatibility
-          STORE(M6+8)=BPRIME
-
-
-          CALL XACRT(8)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
-          CALL XACRT(9)
-        END IF
-
+CJan2017    Storage of A&B parts moved into XAB2FC 
+C           so that real and imaginary parts are available
 c        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
 c Add abs to deniminator
         A=abs(FO)*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
@@ -2291,7 +2247,7 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
           P=P*D             ! PRINT ALL REFLECTIONS
           VJ=WDF*S
           WJ=DF*S
-          !A=SQRT(AC*AC+BC*BC)
+          !A=SQRT(ACR*ACR+BCR*BCR)
           A=SQRT( STORE(JREF_STACK_PTR+13)**2 + 
      1        STORE(JREF_STACK_PTR+15)**2 )
           !S=SQRT(ACI*ACI+BCI*BCI)
@@ -2646,13 +2602,13 @@ C----- PATCH TO AVOID INCIPIENT DIVISION BY ZERO
       ENDIF
 
       IF(SFLS_TYPE .EQ. SFLS_SCALE) THEN  ! WE ARE TO CALCULATE A NEW SCALE FACTOR HERE
-        BC=0.               
-        IF (SFC.GT.ZEROSQ) BC=SFO/SFC
+        BSCR=0.               
+        IF (SFC.GT.ZEROSQ) BSCR=SFO/SFC
 C6100    CONTINUE. Scale factor shift is wrt F**2, change is necessary.
         IF (NV .GE. 0) THEN   ! REMEMBER THE SHIFT IS IN F**2
-            STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O) + BC)
+            STORE(L5O) = SQRT(STORE(L5O)*STORE(L5O) + BSCR)
         ELSE
-            STORE(L5O)=STORE(L5O)+BC
+            STORE(L5O)=STORE(L5O)+BSCR
         ENDIF
       END IF
 
@@ -3421,8 +3377,8 @@ C  FOCC   FORMFACTOR * SITE OCC * CHEMICAL OCC * DIFABS CORECTION
 C  TFOCC  T*FOCC
 C  AP     A PART FOR EACH SYMMETRY POSITION FOR EACH ATOM
 C  BP     B PART FOR EACH SYMMETRY POSITION FOR EACH ATOM
-C  BT     TOTAL B PART FOR EACH ATOM
 C  AT     TOTAL A PART FOR EACH ATOM
+C  BT     TOTAL B PART FOR EACH ATOM
 
 C--
       INCLUDE 'ISTORE.INC'
@@ -3472,12 +3428,13 @@ C Some constants for chebychev approx.
       DD=1.0/TWOPI
 
       ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
-      AC=0.
-      BC=0.
+      ACR=0.
+      BCR=0.
       ACI=0.
       BCI=0.
       ACD=0.
       BCD=0.
+
 C--SEARCH FOR THIS REFLECTION IN THE REFLECTION HOLDING STACK
       JREF_STACK_PTR=JREF_STACK_START
       LJX=NM
@@ -3505,10 +3462,32 @@ c
              FRIED=-1.0
           END IF
 
-c        LOOK FOR REFLECTION IN THE STACK
-cdjwsep2010 IF ((BD.LT.0.5) .OR. (BF.LT.0.5)) THEN ! REFLECTION FOUND IN THE STACK
-      IF ((BD.LT.0.5) .OR. (BF.LT.0.5)) THEN ! REFLECTION FOUND IN THE STACK
-cdjwjan2011          IF (((BD.LT.0.5) .OR. (BF.LT.0.5)).and.(bdf .lt. 0.5))THEN 
+c        LOOK FOR REFLECTION IN THE STACK (only if twinned djw2017)
+c        Use of the stack was fouling up refinement with anomalous
+c        PARTs A&B because the -h reflection was recognised as being
+c        related to the +h reflection and thus taken from the STACK
+c        but with a phase shift.
+c        Someone may be able to fix this one day
+c        Seems to be fixed by correct usage of fried (djw-may 2017)
+c
+c      STACK seems to work like this:
+c      A reflection is processed and ACT, BCT, Pshift, derivs are put on
+c      the stack.
+c      It it is twinned, the corresponding components are also put on the stack
+c      If the next reflection is a symmetry equivalent of something already on the
+c      stack, the info is taken from the stack.
+c      If not, the stack is cleared and the current info put on the stack
+c      if there are 3 adjacent reflections hkl, -hkl, mnp the second on is not 
+c      computed but taken from the stack.
+c      if they are hkl, mnp, -hkl, the third will be computed from scratch.
+c
+c      The utility #REORDER is supposed to maximise the adjacency of equivalents
+c      but may not work (sometimes it just loops forever)
+c
+c
+c         IF (((BD.LT.0.5) .OR. (BF.LT.0.5)) .and. twinned) THEN 
+         IF (((BD.LT.0.5) .OR. (BF.LT.0.5)) ) THEN 
+c        ! REFLECTION FOUND IN THE STACK
             LJY=NI
             IF(LJX.GT.0) THEN  ! CHECK IF WE HAVE USED IT BEFORE
 C--WE NEED THIS REFLECTION TWICE
@@ -3547,7 +3526,7 @@ C--WE NEED THIS REFLECTION TWICE
               END DO
             END IF
             EXIT STACKSEARCH
-          END IF
+         END IF
         END DO 
 
 C--NOT THIS EQUIVALENT
@@ -3672,7 +3651,9 @@ c
       M3TR=L3TR  
       M3TI=L3TI
       DO LJZ=1,N3
-c        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2
+C        M6+13 WAS USED AS THE OFFSET IN LIST 3 FOR THE ALTERNATIVE 
+C        ANOMALOUS SCATTERING FACTORS IN DUAL WAVELENGTH REFINEMENTS
+c        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2   
 c        STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
 c        WRITE(NCWU,'(A,F16.9,1x,Z0)')'M3TR1:',STORE(M3TR),STORE(M3TR)
         STORE(M3TR)=STORE(M3TR)*G2
@@ -3942,8 +3923,8 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
           M2=M2+MD2     ! M2 (ADDR. FOR TRANSF.MAT.) IS INCREASED FOR NEXT SYM.OP.
         END DO    ! LOOP ON EQUIVALENT POSITIONS ENDS  -  COMPUTE THE TOTALS FOR THIS ATO
 
-        AC=AC+AT
-        BC=BC+BT
+        ACR=ACR+AT
+        BCR=BCR+BT
 
         IF (ANOMAL) THEN  ! CHECK IF ANOMALOUS DISPERSION IS BEING CONSIDERED
           AIMAG=ANOM*STORE(M3TI)  ! CALCULATE THE IMAGINARY PARTS
@@ -3953,6 +3934,9 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
             ACD=ACD-BT*STORE(M3TI)   ! DERIVATIVES FOR POLARITY PARAMETER
             BCD=BCD+AT*STORE(M3TI)
           END IF
+        ELSE
+          ACI = 0.
+          BCI = 0.
         END IF
 
 
@@ -4047,21 +4031,16 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
       END DO             ! END OF ATOM CYCLING LOOP
 
       IF(CENTRO) THEN ! CHECK IF THIS STRUCTURE IS CENTRO
-        BC=0.         ! Zero appropriate parts.
+        BCR=0.         ! Zero appropriate parts.
+c -check this        BCI=0.
         ACI=0.
       END IF
 
-      STORE(NI+13)=AC   ! STORE THE RESULTS OF THIS 
+      STORE(NI+13)=ACR   ! STORE THE RESULTS OF THIS 
       STORE(NI+14)=ACI  ! CALCULATION IN THE STACK
-      STORE(NI+15)=BC
+      STORE(NI+15)=BCR
       STORE(NI+16)=BCI
-
-c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'AC: ',AC,AC
-c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'ACI:',ACI,ACI
-c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'BC: ',BC,BC
-c      WRITE(NCWU,'(A,Z0,1X,F15.6)')'BCI:',BCI,BC
-
-	  
+c	  
       M2I=L2I
       LJU=ISTORE(NI+9)  ! STORE THE EQUIVALENT INDICES AND THE PHASE SHIFT
       LJV=ISTORE(NI+10)
@@ -4110,40 +4089,31 @@ C  JREF_STACK_PTR     ADDRESS OF THIS REFLECTION IN THE STACK
       INCLUDE 'QSTORE.INC'
 
 C--FETCH A AND B ETC. FROM THE STACK
-      AC=STORE(JREF_STACK_PTR+13)
+      ACR=STORE(JREF_STACK_PTR+13)
       ACI=STORE(JREF_STACK_PTR+14)
-      BC=STORE(JREF_STACK_PTR+15)
+      BCR=STORE(JREF_STACK_PTR+15)
       BCI=STORE(JREF_STACK_PTR+16)
-      PSHIFT=STORE(JREF_STACK_PTR+11)
+      PSHIFT=STORE(JREF_STACK_PTR+11)   !will cause problems if not set
       FRIED=STORE(JREF_STACK_PTR+12)
-
+      IF ( ABS(FRIED) .LE. ZERO) FRIED = 1. !in case it comes from elsewhere
+c      
 C-- ACT and BCT are in COMMON XSFWK.INC
-c retrieve A' and B' for Platon compatibility and convert to ACT BCT
-C remove phase shift from A and B prime
-      aprime = act
-      bprime = bct
-      fprime = sqrt(aprime*aprime+bprime*bprime)
-      pprime = atan2(bprime,aprime)      !phi prime
-      ps = amod(pshift+twopi,twopi)
-      pp = pprime - ps
-c ACN and BCN  are not stored in LIST 6,
-c so use corresponding positive items.
-c Implication is that partial contributions should be computed 
-c without anomalous scattering. 
-c SQUEEZE uses real electron density so has no anomalous contribution.
-      act = fprime*cos(pp)
-      bct = fprime*sin(pp)
 c
-      acn = act
-      bcn = -bct
-c          write(123,123) 'F1',
-c     1    nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
-c     2    act, bct, fprime, rtd*pp, aprime, bprime, rtd*ps
-123        format(a, 3i4,7f8.2,/14x, 4f8.2)
-
-
-      ACT=AC+ACI*FRIED+ACT
-      BCT=BC*FRIED+BCI+BCT
+        IF(ND.GE.0)THEN !  THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
+c
+          STORE(M6+7)=ACR ! STORE THE NEW CONTRIBUTIONS
+          STORE(M6+8)=BCR*FRIED   ! Do we need FRIED in here?
+          STORE(M6+33)=ACI*FRIED  ! YES
+          STORE(M6+34)=BCI  ! See below. 
+c
+          CALL XACRT(8)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
+          CALL XACRT(9)
+          CALL XACRT(33)
+          CALL XACRT(34)
+        END IF
+c
+      ACT=ACT + ACR       +ACI*FRIED
+      BCT=BCT + BCR*FRIED +BCI
 c
       IF ( ABS(ACT) .LT. 0.001 ) THEN  ! A-PART is 0
         IF ( ABS(BCT) .LT. 0.001) THEN  ! B-PART is 0
@@ -4165,11 +4135,10 @@ C--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
       P=AMOD(ATAN2(BCT,ACT)+PSHIFT,TWOPI)  ! THE PHASE
 
       IF (ENANTIO) THEN
-        ACN = ACN+AC-ACI*FRIED   ! COMPUTE FRIEDEL PAIR
-        BCN = BCN+BCI-BC*FRIED
+        ACN = ACN + ACR       - ACI*FRIED   ! COMPUTE FRIEDEL PAIR
+        BCN = BCN - BCR*FRIED + BCI
         FNSQ = ACN*ACN + BCN*BCN
         FN = SQRT (FNSQ)
-
         FESQ = FCSQ*CENANT + FNSQ*ENANT   ! THE TOTAL EQUIVALENT INTENSITY
         IF (FESQ .LE. 0.0) THEN
           FC = SIGN(1.,FESQ)*SQRT(max(zero,ABS (FESQ)))
