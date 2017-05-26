@@ -3555,9 +3555,10 @@ For example:
  taken when computing Fourier maps. See the sections on Fourier maps, 
  #RFOURIER# and DIFABS #RDIFABS#.  
 #PIf FRIEDEL is set to "YES", Friedel's law is applied whatever the 
- space group.  A flag is set in the 'phase' slot for each reflcetion 
- to indicate if the law was invoked or not.  If the data is then
- sorted byt not merged, Friedel pairs will be adjacent and flagged. Use
+ space group.  A flag is set in the 'JCODE' slot for each reflcetion 
+ to indicate if the law was invoked or not. 
+ DO NOT USE excluded JCODES IN \MERGE. If the data is then
+ sorted but not merged, Friedel pairs will be adjacent and flagged. Used
  by the function "\TON" for evaluating absolute configuration.
 #
 #Q
