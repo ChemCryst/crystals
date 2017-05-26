@@ -909,7 +909,8 @@ C
 #ifdef CRY_OSLINUX
       if(icode/=1) then
         write(error_unit, *) ''
-        write(error_unit, *) 'Crystals just crashed, here is a backtrace:'
+        write(error_unit, *) 
+     1    'Crystals just crashed, here is a backtrace:'
         call backtrace
         write(error_unit, *) ''
       end if
