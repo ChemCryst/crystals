@@ -1,7 +1,6 @@
 %SCRIPT XFOUR                                                                   
 % VARIABLE CHARACTER FNAME CFILE                                                
-% VARIABLE LOGICAL TWINNED NOINI5 MERGED                                        
-% EVALUATE MERGED = FALSE                                                       
+% VARIABLE LOGICAL TWINNED NOINI5 
 % EVALUATE TWINNED = FALSE                                                      
 % EVALUATE NOINI5 = FALSE                                                       
 % VARIABLE LOGICAL SCRIPTEXT                                                    
@@ -269,11 +268,8 @@
 %         COPY '#SCRIPT SFLS67'                                                 
 %%                                                                              
 %       ELSE                                                                    
-{Patterson map - remove all knowlwdge about twinning.                           
-%         IF ( ( EXISTS 25 ) .EQ. 1 ) THEN                                      
-%           COPY '#LIST 25'                                                     
-%           COPY 'END'                                                          
-%         END IF                                                                
+{Patterson map - remove knowledge about twinning.                           
+%% TODO - LIST 13 should be returned to original state later
 %         COPY '#LIST 5'                                                        
 %         COPY 'READ NATOM = 0'                                                 
 %         COPY 'END'                                                            
@@ -281,7 +277,7 @@
 %          COPY '#GENERALEDIT 13'                                               
 %          COPY 'LOCATE RECORDTYPE=101'                                         
 %          IF ( TWINNED .EQ. TRUE ) THEN                                        
-%            EVALUATE ITEMP = 0                                                 
+%            EVALUATE ITMP = -1                                                 
 %            COPY 'TRANSFER TO OFFSET=1 FROM ITMP'                              
 %          END IF                                                               
 %          COPY 'END'                                                           
