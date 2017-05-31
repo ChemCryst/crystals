@@ -195,7 +195,9 @@
 %%
 %      BLOCK                                        % NORMAL (not forced)
 %%
+%  IF XREFINE .EQ. FALSE THEN
 ^^CO     SETKEY XREFINE_CONVERGE 1
+%  END IF
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
@@ -231,7 +233,9 @@
 %%
 %% n forced cycles.
 %%
+%  IF XREFINE .EQ. FALSE THEN
 ^^CO SETKEY XREFINE_CONVERGE 0
+%  END IF 
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
