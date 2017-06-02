@@ -15,6 +15,10 @@
 {1,8 You will have to make an intelligent guess at the formula
 {1,8 of what ever is in the void.
 {1,8 
+{0,4 
+{0,4 If you apply Anomalous Scattering to SQUEEZE, the dsc file
+{0,4 WILL NOT BE COMPATIBLE with previous versions of CRYSTALS
+{0,4 
 
 %%
 %  EVALUATE QTITLE = 'Anomalous Modifications '                              

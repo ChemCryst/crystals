@@ -3,6 +3,7 @@
 %  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
 %  VARIABLE LOGICAL ANSWER                                                      
 %  VARIABLE CHARACTER CDIR CFILE
+%  VARIABLE INTEGER IFLACK    IANOM                                     
 %  VARIABLE LOGICAL T T1 T2
 %  EVALUATE T1 = FALSE
 %  EVALUATE T2 = FALSE
@@ -15,11 +16,11 @@
 {1,9  running SQUEEZE in case you wish to revert to a normal
 {1,9  refinement
 %%                                                                              
-% VARIABLE INTEGER IFLACK    IANOM                                     
 % COPY '#GENERALEDIT 23'                                                        
 % COPY 'LOCATE RECORDTYPE = 101'                                                
-% COPY 'TRANSFER FROM OFFSET = 1 TO IANOM'                                     
+% COPY 'TRANSFER FROM OFFSET = 0 TO IANOM'                                     
 % COPY 'TRANSFER FROM OFFSET = 6 TO IFLACK'                                     
+% COPY 'END'
 %  IF ( IFLACK .EQ. 0 ) THEN                                         
 {1,8 
 {1,8 The Flack parameter is being used.
@@ -31,7 +32,7 @@
 {1,8 
 {1,8 If you run SQUEEZE now, you will be able to modify 
 {1,8 the output for approximate anomalous contributions
-{1,8 usig the HUG procedure
+{1,8 using the HUG procedure
 {1,8 
 %    EVALUATE T1 = TRUE
 %  END IF                                                            
@@ -174,7 +175,6 @@ Trying to delete old SQUEEZED reflections
 %    FINISH
 %  END IF
 %    EVALUATE T2 = FILEEXISTS ( 'platon_sqd.sqf' )
-%SHOW T2
 %    IF T2 THEN
 %      COPY '#TYPE platon_sqd.sqf'
 %    END IF
@@ -190,51 +190,30 @@ Trying to delete old SQUEEZED reflections
 %      END IF
 %   END BLOCK
 %%
-%  IF IANOM .EQ. 1 THEN
-%   EVALUATE QTITLE = 'Anomalous Modifications '                              
-%   EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
-%   EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
-%   EVALUATE BUTTOK = '&Yes'                                                 
-%   EVALUATE BUTTXX = '&No'                                                  
-%   COPY '#SCRIPT XQUESTIO'                                                  
-%   IF ANSWER .EQ. TRUE THEN 
-%%  use the results
-%%  
-%     IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
-%      EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
-%     END IF
-%     COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
-%     IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
-The PLATANOM.exe process failed to write an output file.
-%       FINISH
-%     END IF
-%     COPY '#USE LIST6.DEF'
-%   ELSE
-%     COPY '#USE LIST6.ABC'
-%   END IF
+%  IF IANOM .EQ. 0 THEN
+%     COPY '#SCRIPT PLATANOM'
 %  ELSE
 %     COPY '#USE LIST6.ABC'
-%  END IF
-%%
 Update LIST 23 to show the A & B parts are stored, and inhibit
 them being overwritten
-% COPY '#GENERALEDIT 23'
-% COPY 'LOCATE RECORDTYPE=101'
+%      COPY '#GENERALEDIT 23'
+%      COPY 'LOCATE RECORDTYPE=101'
 %% set modify partial=YES
-% COPY 'CHANGE OFFSET=4 MODE=INTEGER INTEGER=0'
-% COPY 'WRITE'
+%      COPY 'CHANGE OFFSET=4 MODE=INTEGER INTEGER=0'
+%      COPY 'WRITE'
 %% set modify update=NO
-% COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=-1'
-% COPY 'WRITE'
-% COPY 'END'
-% COPY '#SFLS'
-% COPY 'CALC'
-% COPY 'END'
-% COPY '#WEIGHT'
-% COPY 'END'
-% COPY '#SFLS'
-% COPY 'CALC'
-% COPY 'END'
+%      COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=-1'
+%      COPY 'WRITE'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'CALC'
+%      COPY 'END'
+%      COPY '#WEIGHT'
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'CALC'
+%      COPY 'END'
+%  END IF
 %%
 {1,8 Removing SHELX-orientated PLATON output
 %  IF ( FILEEXISTS ( 'platon.hkl' ) ) THEN
