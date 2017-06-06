@@ -815,11 +815,12 @@ LS-MATRIX 11       4    0
          0    0    0    0    0    0    0    0    0    0
    3.PREAMBLE           0    0    0    0   30    1  103    9   11
          0    0    0    0    0    0    0    0    0    0
-   4.DEPENDENCIES       2    0    0    0    2    2    1   13   11
+   4.DEPENDENCIES       3    0    0    0    3    2    1   13   11
          0    0    0    0    0    0    0    0    0    0
-         1    1
+         1    1    1
     .LIST 5             0    0    0    0    0         5
     .LIST 12            0    0    0    0    0        12
+    .LIST 28            0    0    0    0    0        28
 CONSTRAIN 12      13    0
   12   40960 CRYSTALSINPUT
    1.EQUIVALENCE        0 9999    0    3    0    0  101    5   12
