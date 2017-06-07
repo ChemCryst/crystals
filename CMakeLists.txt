@@ -9,6 +9,7 @@ PROJECT(Crystals)
 SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
+option (verbose "verbose" OFF)
 option (useGUI "useGUI" ON)
 option (usePY "usePY" OFF)
 option (use32 "use32" OFF)
@@ -22,6 +23,10 @@ option (useSLEEF "useSLEEF" OFF)
 
 option (withSUPERFLIP "withSUPERFLIP" OFF)  
 option (withEDMA "withEDMA" OFF)  
+
+if(verbose)
+    SET(CMAKE_VERBOSE_MAKEFILE ON)
+endif ()
 
 SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
 message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
