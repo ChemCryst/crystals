@@ -99,7 +99,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        4     Address     4316     Length     424     Created on                          
+ Print list type     6     serial number        4     Address     4336     Length     434     Created on                          
 
 
 
@@ -110,7 +110,7 @@ Space group symbol is   P    1
     32   32   32   32   32   32   32   32   32
 
 
- Record  101    LGRP   33  NGRP      1   THE CORE BUFFER                                                                 
+ Record  101    LGRP   35  NGRP      1   THE CORE BUFFER                                                                 
 
 
 
@@ -150,10 +150,10 @@ Space group symbol is   P    1
 
     CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.173761E-42
 
 
- Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
+ Record  107    LGRP    4  NGRP     35   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
 
 
      0.10000E+01    0.11000E+02    0.60000E+01    0.72572E+01
@@ -189,6 +189,8 @@ Space group symbol is   P    1
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
 
@@ -204,7 +206,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        6     Address     4987     Length     247     Created on                          
+ Print list type     6     serial number        6     Address     5027     Length     257     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -240,6 +242,8 @@ Space group symbol is   P    1
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -262,7 +266,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number        6     Address     4987     Length     247     Created on                          
+ Print list type     6     serial number        6     Address     5027     Length     257     Created on                          
 
 
 
@@ -272,7 +276,7 @@ Space group symbol is   P    1
      0    1    2    3   12    5    6
 
 
- Record  101    LGRP   33  NGRP      1   THE CORE BUFFER                                                                 
+ Record  101    LGRP   35  NGRP      1   THE CORE BUFFER                                                                 
 
 
 
@@ -298,10 +302,10 @@ Space group symbol is   P    1
 
     CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.173761E-42
 
 
- Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
+ Record  107    LGRP    4  NGRP     35   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
 
 
      0.10000E+01    0.41000E+02    0.18500E+02    0.23241E+02
@@ -337,6 +341,8 @@ Space group symbol is   P    1
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
 
@@ -352,7 +358,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       10     Address     5834     Length     597     Created on                          
+ Print list type     6     serial number       10     Address     5904     Length     607     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -388,6 +394,8 @@ Space group symbol is   P    1
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE      0.400000E+02   0.300000E+03   0.132222E+03   0.177670E+03
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -413,7 +421,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       10     Address     5834     Length     597     Created on                          
+ Print list type     6     serial number       10     Address     5904     Length     607     Created on                          
 
 
 
@@ -423,7 +431,7 @@ Space group symbol is   P    1
     14    3    4    5   15   31   12   27
 
 
- Record  101    LGRP   33  NGRP      1   THE CORE BUFFER                                                                 
+ Record  101    LGRP   35  NGRP      1   THE CORE BUFFER                                                                 
 
 
 
@@ -493,10 +501,10 @@ Space group symbol is   P    1
 
     CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.173761E-42
 
 
- Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
+ Record  107    LGRP    4  NGRP     35   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
 
 
      0.10000E+01    0.71000E+02    0.32667E+02    0.40282E+02
@@ -531,6 +539,8 @@ Space group symbol is   P    1
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.40000E+02    0.30000E+03    0.13222E+03    0.17767E+03
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
@@ -574,7 +584,7 @@ Space group symbol is   P    1
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       18     Address     8105     Length    3006     Created on                          
+ Print list type     6     serial number       18     Address     8235     Length    3016     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -610,6 +620,8 @@ Space group symbol is   P    1
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     -0.180000E+03   0.121000E+04   0.518659E+03   0.581955E+03
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -717,7 +729,7 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    11711     Length    9474     Created on                          
+ Print list type     6     serial number       22     Address    11871     Length    9484     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -753,6 +765,8 @@ Bad index near reflection        278       512         0         0
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING          0.000000E+00   0.489690E+00   0.220630E+00   0.235589E+00
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -893,7 +907,7 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        2     Address    21185     Length      95     Created on                          
+ Print list type    28     serial number        2     Address    21355     Length      95     Created on                          
 
 
 
@@ -956,7 +970,7 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       22     Address    11711     Length    9474     Created on                          
+ Print list type     6     serial number       22     Address    11871     Length    9484     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -992,6 +1006,8 @@ Bad index near reflection        278       512         0         0
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING          0.000000E+00   0.489690E+00   0.220630E+00   0.235589E+00
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -1094,7 +1110,7 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       26     Address    21809     Length     772     Created on                          
+ Print list type     6     serial number       26     Address    21999     Length     782     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -1130,6 +1146,8 @@ Bad index near reflection        278       512         0         0
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -1267,7 +1285,7 @@ Bad index near reflection        278       512         0         0
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       30     Address    23057     Length    1318     Created on                          
+ Print list type     6     serial number       30     Address    23277     Length    1328     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -1303,6 +1321,8 @@ Bad index near reflection        278       512         0         0
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -1442,7 +1462,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25025     Length    9235     Created on                          
+ Print list type     6     serial number       34     Address    25275     Length    9245     Created on                          
 
 
 
@@ -1453,7 +1473,7 @@ Upating List 13 for twinned data
     32   32   32   32   32   32   32   32   32
 
 
- Record  101    LGRP   33  NGRP      1   THE CORE BUFFER                                                                 
+ Record  101    LGRP   35  NGRP      1   THE CORE BUFFER                                                                 
 
 
 
@@ -2828,10 +2848,10 @@ Upating List 13 for twinned data
 
     CYCLE NUMBER   R              WR             MINFUNC        VERSION     
 
-    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.172360E-42
+    0.000000E+00   0.000000E+00   0.000000E+00   0.000000E+00   0.173761E-42
 
 
- Record  107    LGRP    4  NGRP     33   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
+ Record  107    LGRP    4  NGRP     35   RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER     
 
 
      0.00000E+00    0.90000E+01    0.28148E+01    0.35963E+01
@@ -2867,6 +2887,8 @@ Upating List 13 for twinned data
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
      0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
+     0.00000E+00    0.00000E+00    0.00000E+00    0.00000E+00
 
 
 
@@ -2877,7 +2899,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    28     serial number        4     Address    34260     Length      89     Created on                          
+ Print list type    28     serial number        4     Address    34520     Length      89     Created on                          
 
 
 
@@ -2940,7 +2962,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       34     Address    25025     Length    9235     Created on                          
+ Print list type     6     serial number       34     Address    25275     Length    9245     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -2976,6 +2998,8 @@ Upating List 13 for twinned data
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -3117,7 +3141,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    27     serial number        1     Address    36168     Length      72     Created on                          
+ Print list type    27     serial number        1     Address    36458     Length      72     Created on                          
 
 
 
@@ -3162,7 +3186,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        5     Address    36240     Length      80     Created on                          
+ Print list type    13     serial number        5     Address    36530     Length      80     Created on                          
 
 
 
@@ -3249,7 +3273,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    13     serial number        6     Address    37751     Length      48     Created on                          
+ Print list type    13     serial number        6     Address    38071     Length      48     Created on                          
 
 
 
@@ -3294,7 +3318,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       46     Address    38399     Length     597     Created on                          
+ Print list type     6     serial number       46     Address    38739     Length     607     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -3330,6 +3354,8 @@ Upating List 13 for twinned data
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE      0.300000E+03   0.300000E+03   0.300000E+03   0.300000E+03
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -3375,7 +3401,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     6     serial number       54     Address    43846     Length    3336     Created on                          
+ Print list type     6     serial number       54     Address    44246     Length    3346     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -3411,6 +3437,8 @@ Upating List 13 for twinned data
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE      0.300000E+03   0.300000E+03   0.300000E+03   0.300000E+03
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -3510,7 +3538,7 @@ Upating List 13 for twinned data
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type     5     serial number        1     Address    48503     Length     677     Created on                          
+ Print list type     5     serial number        1     Address    48913     Length     677     Created on                          
 
 
 
@@ -3806,7 +3834,7 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type     5     serial number        2     Address    49864     Length     749     Created on                          
+ Print list type     5     serial number        2     Address    50274     Length     749     Created on                          
 
 
 
@@ -3987,7 +4015,7 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    50613     Length     587     Created on                          
+ Print list type    10     serial number        1     Address    51023     Length     587     Created on                          
 
 
 
@@ -4230,7 +4258,7 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        4     Address    51946     Length     785     Created on                          
+ Print list type     5     serial number        4     Address    52356     Length     785     Created on                          
 
 
 
@@ -4394,7 +4422,7 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        5     Address    53104     Length     677     Created on                          
+ Print list type     5     serial number        5     Address    53514     Length     677     Created on                          
 
 
 
@@ -4960,7 +4988,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        6     Address    54015     Length     677     Created on                          
+ Print list type     5     serial number        6     Address    54425     Length     677     Created on                          
 
 
 
@@ -6503,7 +6531,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       86     Address    82051     Length    7560     Created on                          
+ Print list type     6     serial number       86     Address    82603     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6539,6 +6567,8 @@ The slope and correlation coefficient should be small
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -6636,7 +6666,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       90     Address    90211     Length    7560     Created on                          
+ Print list type     6     serial number       90     Address    90793     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6672,6 +6702,8 @@ The slope and correlation coefficient should be small
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     0  Structure factor/refinement calculation(s)
 
@@ -6769,7 +6801,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address    97771     Length     137     Created on                          
+ Print list type     5     serial number       14     Address    98363     Length     137     Created on                          
 
 
 
@@ -7427,7 +7459,7 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    90211     Length    7560     Created on                          
+ Print list type     6     serial number       96     Address    90793     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -7463,6 +7495,8 @@ Mean C-C su =   0.0182
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     2  Structure factor/refinement calculation(s)
 
@@ -8016,7 +8050,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125023     Length     806     Created on                          
+ Print list type    11     serial number       20     Address   125647     Length     808     Created on                          
 
  Inverse matrix
 
@@ -8067,7 +8101,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125023     Length     806     Created on                          
+ Print list type    11     serial number       20     Address   125647     Length     808     Created on                          
 
 
  Print List 11 as correlation matrix
@@ -8158,7 +8192,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125023     Length     806     Created on                          
+ Print list type    11     serial number       20     Address   125647     Length     808     Created on                          
 
  Inverse matrix
 
@@ -8347,7 +8381,7 @@ Mean C-C su =   0.0000
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     5     serial number       30     Address   129870     Length     150     Created on                          
+ Print list type     5     serial number       30     Address   130914     Length     150     Created on                          
 
 
 
@@ -8526,7 +8560,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     6     serial number      118     Address   129169     Length     701     Created on                          
+ Print list type     6     serial number      118     Address   130203     Length     711     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -8562,6 +8596,8 @@ LS-scale=  1.000   Wilson Scale=  0.000
   FACTOR2         No details available
   FACTOR3         No details available
   RATIO/JCODE     No details available
+  NOTHING         No details available
+  A-IMAG          No details available
 
  After     1  Structure factor/refinement calculation(s)
 

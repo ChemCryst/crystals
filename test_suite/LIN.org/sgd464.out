@@ -50,8 +50,8 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 #LIST 26                                                                                                                                                                                                                                                        
 #BONDCALC                                                                                                                                                                                                                                                       
 #LIST 29                                                                                                                                                                                                                                                        
-Bonds: Update required - There is no list 41
 #BONDCALC                                                                                                                                                                                                                                                       
+Bonds: Update required - There is no list 41
 #LIST 26                                                                                                                                                                                                                                                        
 #CHECK HI                                                                                                                                                                                                                                                       
 
@@ -76,7 +76,7 @@ Bonds: Update required - There is no list 41
   
            C      20     1  1  0  0  0   0.0093559    9.356E-03      U[13]
            C      20     1  1  0  0  0   0.0093559    1.733E-02      U[23]
-      Mean value =   0.0133  Mean delta =   0.0133  r.m.s. delta =   0.0139
+[41]       Mean value =   0.0133  Mean delta =   0.0133  r.m.s. delta =   0.01
 
    1.UPERP2 from C(20) to C(19), 
       Restrain U[13] and U[23] to .00000 angstrom squared,
@@ -92,7 +92,7 @@ Bonds: Update required - There is no list 41
   
            C      20     1  1  0  0  0   0.4097770    4.098E-01      U[13]
            C      20     1  1  0  0  0   0.4097770    1.956E-01      U[23]
-      Mean value =   0.3027  Mean delta =   0.3027  r.m.s. delta =   0.3211
+[41]       Mean value =   0.3027  Mean delta =   0.3027  r.m.s. delta =   0.32
    3. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
 #FINI                                                                                                                                                                                                                                                           
 

@@ -1,3 +1,4 @@
+#set time slow
 #rele print CROUTPUT:
 #title extended PARTs in LIST 6
 # Punched on 26/01/17 at 13:24:39

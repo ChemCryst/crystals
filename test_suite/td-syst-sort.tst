@@ -1,3 +1,4 @@
+#set time slow
 #rele print CROUTPUT:
 #TITLE Test SYST/SORT/MERGE 
 # Part 1 sets the FREIDEL pairs flag to NO in SYST, thus keeping
