@@ -147,7 +147,7 @@ C--NOT THE CORRECT SERIAL NUMBER
       K=K+1
       CALL OUTCOL(3)
       WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
-     1 CLISTS(IBUFF(1)), IBUFF(2)
+     1 CLISTS(IBUFF(1)), IBUFF(2), IABS(J)
       CALL XPRVDU(NCEROR, 5,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
       WRITE(NCAWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
@@ -156,7 +156,7 @@ C--NOT THE CORRECT SERIAL NUMBER
      1 '              List type ',I5,' (',A,')',/
      1 ' depends upon list type ',I5,' (',A,')',/
      2 ' with original serial no.',I8,
-     3 ', not the current version.'/)
+     3 ', not the current version,',I8/)
       GOTO 1400
 C--ALL INTERDEPENDENCIES PROCESSED
 1750  CONTINUE
