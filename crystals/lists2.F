@@ -209,10 +209,12 @@ C -- LIST CANNOT BE LOADED BECAUSE OF INTERDEPENDCIES
       WRITE ( NCWU , 9935 ) LN
       ENDIF
       WRITE ( NCAWU , 9935 ) LN
-      WRITE ( CMON, 9935 ) LN
-      CALL XPRVDU(NCEROR, 1,0)
-9935  FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
-      CALL XERHND ( IERERR )
+      if(ILSMSG>0) then
+        WRITE ( CMON, 9935 ) LN
+        CALL XPRVDU(NCEROR, 1,0)
+9935    FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
+        CALL XERHND ( IERERR )
+      end if      
       GO TO 9900
       END
 C
