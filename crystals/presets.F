@@ -1866,7 +1866,7 @@ c - now in parameter statement
 c      DATA ILSCLN / 1 / , ILSCLS / 2 / , ILSCLV / 3 /
 c      DATA ILSEXI / 4 / , ILSAVI / 5 / , ILSRFI / 6 /
 cC    REQUEST CODES FOR 'KLSCHK'
-c      DATA ILSMSG / 1 / , ILSNMS / -1 /
+      DATA ILSMSG / 1 / , ILSNMS / -1 /
 cC    FUNCTION CODES FOR 'XLSALT'
 c      DATA ILSERF / 1 / , ILSPUF / 2 / , ILSDLF / 3 /
 c      DATA ILSOWF / 4 / , ILSCUR / 5 / , ILSRTF / 2 /
