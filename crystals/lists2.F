@@ -145,13 +145,15 @@ C--CHECK THE VALUE
 C--NOT THE CORRECT SERIAL NUMBER
 1650  CONTINUE
       K=K+1
-      CALL OUTCOL(3)
-      WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
-     1 CLISTS(IBUFF(1)), IBUFF(2), IABS(J)
-      CALL XPRVDU(NCEROR, 5,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
-      WRITE(NCAWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
-      CALL OUTCOL(1)
+      if(ILSMSG>0) then
+        CALL OUTCOL(3)
+        WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
+     1   CLISTS(IBUFF(1)), IBUFF(2), IABS(J)
+        CALL XPRVDU(NCEROR, 5,0)
+        IF (ISSPRT .EQ. 0)WRITE(NCWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
+        WRITE(NCAWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
+        CALL OUTCOL(1)
+      end if
 1700  FORMAT(/
      1 '              List type ',I5,' (',A,')',/
      1 ' depends upon list type ',I5,' (',A,')',/
@@ -205,11 +207,11 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
       GO TO 9900
 9930  CONTINUE
 C -- LIST CANNOT BE LOADED BECAUSE OF INTERDEPENDCIES
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 ) LN
-      ENDIF
-      WRITE ( NCAWU , 9935 ) LN
       if(ILSMSG>0) then
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE ( NCWU , 9935 ) LN
+        ENDIF
+        WRITE ( NCAWU , 9935 ) LN
         WRITE ( CMON, 9935 ) LN
         CALL XPRVDU(NCEROR, 1,0)
 9935    FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
