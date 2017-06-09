@@ -28,7 +28,7 @@
 %  EVALUATE BUTTOK = '&Yes'                                                 
 %  EVALUATE BUTTXX = '&No'           
 %  EVALUATE BUTINFO = 'Info'
-%  EVALUATE BUTFILE = 'Platanom.dat'                                       
+%  EVALUATE BUTFILE = 'platanom.dat'                                       
 %  COPY '#SCRIPT XHELPQUEST'                                        
 %  IF ANSWER .EQ. TRUE THEN 
 %% use the results

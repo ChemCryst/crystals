@@ -1,10 +1,10 @@
 {1,8 
 {1,8 This procedure will create a DSC file with locations
-{1,8 save for the imaginary parts of the SQUEEZED data.
-{1,8 THIS dsc file will not be compatible with old versions
+{1,8 reserved for the imaginary parts of the SQUEEZED data.
+{1,8 This dsc file will not be compatible with old versions
 {1,8 of CRYSTALS.
-{1,8 If the files LIST6.ABC or PLATON6 exist, the DSC file
-{1,8 can be made re-usable by issuing
+{1,8 You can make the DSC file re-usable by inputting an 
+{1,8 old-format LIST 6, such as LIST6.ABC or PLATON6.
 {1,8 #use LIST6.ABC
 {1,8 or
 {1,8 #use PLATON6

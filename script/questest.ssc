@@ -8,15 +8,19 @@
 %  EVALUATE QTITLE = 'Information'                                
 %  EVALUATE QLINE1 = ' Some information about the choices'     
 %  EVALUATE QLINE2 = 'Choose'        
-%  EVALUATE BUTFILE = 'QUESTEST.DAT'
-%             EVALUATE BUTTOK = 'OK'                             
-%             EVALUATE BUTTXX = 'CLOSE' 
-%             EVALUATE BUTINFO = 'Info'                   
-%             COPY '#SCRIPT XHELPQUEST'                                           
-%             IF ANSWER .EQ. TRUE THEN                                          
+%%  EVALUATE BUTFILE = 'no-questest.dat'
+%  EVALUATE BUTFILE = 'questest.dat'
+%  VARIABLE CHARACTER MYFILE
+%  EVALUATE MYFILE =  'CRYSDIR:script/' // BUTFILE
+
+%  EVALUATE BUTTOK = 'OK'                             
+%  EVALUATE BUTTXX = 'CLOSE' 
+%  EVALUATE BUTINFO = 'Info'                   
+%  COPY '#SCRIPT XHELPQUEST'                                           
+%  IF ANSWER .EQ. TRUE THEN                                          
       TRUE
-%             ELSE                                                                
+%  ELSE                                                                
       FALSE
-%            END IF                                                              
+%  END IF                                                              
 % END IF
 %END SCRIPT
