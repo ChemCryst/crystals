@@ -1,11 +1,11 @@
-#DISK                                                                                                                                                                                                                                                           
+#DISK
  Disc file extended by 100 record(s) (  51200 integer words ) 
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 5                                                                                                                                                                                                                                                         
-#LIST 13                                                                                                                                                                                                                                                        
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 5
+#LIST 13
 
 
  Orientation matrix
@@ -15,17 +15,17 @@
                         0.0238   -0.0889    0.0568
 
                         0.1392   -0.0008   -0.0033
-#LIST 2                                                                                                                                                                                                                                                         
-#LIST 6                                                                                                                                                                                                                                                         
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
+#LIST 2
+#LIST 6
+#LIST 28
+#LIST 6
  The updated reflections are now on UNIT 53
 
 
 
-    2553 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#DIFABS                                                                                                                                                                                                                                                         
- DIFABS Version  9.10 Applied to Fo or Fc                                                                                                                                                                                                                       
+    2553 reflections accepted           0 reflections rejected
+#DIFABS
+ DIFABS Version  9.10 Applied to Fo or Fc
 
  Orientation Matrix:
       -0.032117  0.056039  0.076280
@@ -54,31 +54,31 @@
 
 
  RESIDUALS BEFORE CORRECTION
- For the  2057 reflections                                                                                                                                                                                                                                      
- the relative residual was 0.2476   and the relative rms residual was 0.2553                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                
+ For the  2057 reflections
+ the relative residual was 0.2476   and the relative rms residual was 0.2553
+
 
 
  RESIDUALS AFTER CYCLE 5
- For the  2057 reflections                                                                                                                                                                                                                                      
- the relative residual was 0.0037   and the relative rms residual was 0.0050                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                
-       DIFABS correction applied to Fo                                                                                                                                                                                                                          
+ For the  2057 reflections
+ the relative residual was 0.0037   and the relative rms residual was 0.0050
+
+       DIFABS correction applied to Fo
  Creating new reflection list
 
  Disc file extended by      0 records
 
 
  RESIDUALS AFTER CORRECTION
- For the  2057 reflections                                                                                                                                                                                                                                      
- the relative residual was 0.0037   and the relative rms residual was 0.0050                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                
-  2553 Reflections corrected                                                                                                                                                                                                                                    
- Minimum absorption correction = 0.750     at  PHI(P)= 257.5 MU(P)=  23.0                                                                                                                                                                                       
-                                               PHI(S)=  65.7 MU(S)=  23.0                                                                                                                                                                                       
- Maximum absorption correction = 0.896     at  PHI(P)= 159.1 MU(P)=   0.1                                                                                                                                                                                       
-                                               PHI(S)= 329.9 MU(S)=   0.1                                                                                                                                                                                       
- Average absorption correction = 0.804                                                                                                                                                                                                                          
+ For the  2057 reflections
+ the relative residual was 0.0037   and the relative rms residual was 0.0050
+
+  2553 Reflections corrected
+ Minimum absorption correction = 0.750     at  PHI(P)= 257.5 MU(P)=  23.0
+                                               PHI(S)=  65.7 MU(S)=  23.0
+ Maximum absorption correction = 0.896     at  PHI(P)= 159.1 MU(P)=   0.1
+                                               PHI(S)= 329.9 MU(S)=   0.1
+ Average absorption correction = 0.804
 
  ***VALUES FOR COEFFICIENTS***
 
@@ -143,7 +143,7 @@
  Curve for THETA = 0 ---> 25
          0      5     10     15     20     25
 [40]        0.99   0.99   0.99   0.99   0.98   0.98
-#PRINT 6                                                                                                                                                                                                                                                        
+#PRINT 6
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1096,7 +1096,7 @@
 
 
 
-#FINI                                                                                                                                                                                                                                                           
+#FINI
 
 
           : Job ends ok       with     0 warnings and     0 errors

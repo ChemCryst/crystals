@@ -1,18 +1,18 @@
-#                                                                                                                                                                                                                                                               
-#SET CACH ON                                                                                                                                                                                                                                                    
-# THIS TAKES SEVERAL HOURS ON A VAX 11/750                                                                                                                                                                                                                      
-# IT TAKES SEVERAL SECONDS ON A PENTIUM III                                                                                                                                                                                                                     
-#                                                                                                                                                                                                                                                               
-#TITLE LARGE TEST JOB FOR CYBER                                                                                                                                                                                                                                 
-#SET TIME SLOW                                                                                                                                                                                                                                                  
-#DISK                                                                                                                                                                                                                                                           
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE GROUP                                                                                                                                                                                                                                                    
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE GROUP                                                                                                                                                                                                                                                    
+#
+#SET CACH ON
+# THIS TAKES SEVERAL HOURS ON A VAX 11/750
+# IT TAKES SEVERAL SECONDS ON A PENTIUM III
+#
+#TITLE LARGE TEST JOB FOR CYBER
+#SET TIME SLOW
+#DISK
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE GROUP
+#LIST 14
+#SPACE GROUP
   Space Group P -1      
   The Space Group is  Centric  Primitive Triclinic     Laue Symmetry 1bar    
   Multiplicity of a General Site is   2  Laue-no is   1
@@ -31,39 +31,39 @@ Space group symbol is   P    -1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 4                                                                                                                                                                                                                                                         
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 29                                                                                                                                                                                                                                                        
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 16-JAN87 AT 15:59:05                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 28/01/11 AT 14:14:55                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#DISK                                                                                                                                                                                                                                                           
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 16-JAN87 AT 15:59:13                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      6                                                                                                                                                                                                                                                    
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST      6                                                                                                                                                                                                                                                    
+#LIST 3
+#LIST 4
+#LIST 16
+#LIST 23
+#LIST 29
+#
+# PUNCHED ON 16-JAN87 AT 15:59:05
+#
+# PUNCHED ON 28/01/11 AT 14:14:55
+#
+#LIST      5
+#DISK
+#
+# PUNCHED ON 16-JAN87 AT 15:59:13
+#
+#LIST      6
+#LIST 13
+#LIST 28
+#LIST      6
  The updated reflections are now on UNIT 53
 
 
 
-   12575 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#DISK                                                                                                                                                                                                                                                           
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
+   12575 reflections accepted           0 reflections rejected
+#DISK
+#LIST 12
+#LIST 22
  Initialising Special positions
 Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Space required on DISK is   43 records,   170  Blocks,    87 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#PRINT 22                                                                                                                                                                                                                                                       
-#PURGE                                                                                                                                                                                                                                                          
+#LIST 17
+#PRINT 22
+#PURGE
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -1395,13 +1395,13 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Disc index completely restored
 
  Listing of file index of    Data    file 
-# ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)                                                                                                                                                                                                       
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 26                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
+# ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)
+#CHECK
+#LIST 26
+#BONDCALC
 Bonds: Update required - There is no list 41
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
+#LIST 26
+#CHECK
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -1878,14 +1878,14 @@ Bonds: Update required - There is no list 41
            C     434     1  1  0  0  0      C     435     1  1  0  0  0      C     436     1  1  0  0  0    120.09  -0.09
            C     435     1  1  0  0  0      C     436     1  1  0  0  0      C     431     1  1  0  0  0    120.29  -0.29
 [41]       Mean value = 119.9668  Mean delta =   0.0332  r.m.s. delta =   1.02
-#SFLS                                                                                                                                                                                                                                                           
-#WEIGHT                                                                                                                                                                                                                                                         
+#SFLS
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1943,12 +1943,12 @@ Bonds: Update required - There is no list 41
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
  Directive  DISTANCE: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -2358,7 +2358,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3128,23 +3128,23 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
                       0.0000            0.0000   0.0003   0.0000   0.0003
                       0.0000            0.0009   0.0005   0.0007   0.0015
 [31]                                         0.012    0.008    0.013 
-Mean C-C su =   0.0076                                                                                                                                                                                                                                          
+Mean C-C su =   0.0076
  The following atoms should be carefully examined 
 [24]  F       6.    0.066     0.224     0.384     0.225     0.178     1.306     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DISK                                                                                                                                                                                                                                                           
+#CYCLENDS
+#DISK
  List type  11 with serial number     4 is the current version. 
  You may still save this list with DELETE n ACTION=NO
  List type  22 with serial number     1 is the current version. 
  You may still save this list with DELETE n ACTION=NO
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST 12
+#LIST 22
  Initialising Special positions
 Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#PURGE                                                                                                                                                                                                                                                          
-#SFLS                                                                                                                                                                                                                                                           
+#LIST 17
+#PURGE
+#SFLS
  List type   11  serial number    4 from   458847 to   480441 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
@@ -3152,12 +3152,12 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#LIST 26                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 26
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -3215,11 +3215,11 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -3289,7 +3289,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3759,17 +3759,17 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
                       0.0000            0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0000   0.0000   0.0000   0.0000
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0009                                                                                                                                                                                                                                          
+Mean C-C su =   0.0009
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DISK                                                                                                                                                                                                                                                           
+#CYCLENDS
+#DISK
  List type  22 with serial number     2 is the current version. 
  You may still save this list with DELETE n ACTION=NO
  List type  11 with serial number     4 is the current version. 
  You may still save this list with DELETE n ACTION=NO
-#PURGE                                                                                                                                                                                                                                                          
-#DISK                                                                                                                                                                                                                                                           
+#PURGE
+#DISK
  List type   11  serial number    4 from   456563 to   456657 will not be copied ( deleted )         
  List type   22  serial number    2 from   449401 to   453815 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
@@ -3779,18 +3779,18 @@ Mean C-C su =   0.0009
 
  Listing of file index of    Data    file 
  Disc file extended by 116 record(s) (  59392 integer words ) 
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST 12
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  Space required on DISK is   68 records,   272  Blocks,   139 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -3848,13 +3848,13 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -3926,7 +3926,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -4391,15 +4391,15 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
                       0.0000           -0.0002   0.0005  -0.0013   0.0000
                       0.0000            0.0010   0.0009   0.0007   0.0000
 [31]                                         0.014    0.014    0.013 
-Mean C-C su =   0.0129                                                                                                                                                                                                                                          
+Mean C-C su =   0.0129
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -4457,9 +4457,9 @@ Mean C-C su =   0.0129
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -4529,7 +4529,7 @@ All cycle   Min function          0.0           0.16E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -4994,17 +4994,17 @@ All cycle   Min function          0.0           0.16E+06       0.10E+16
                       0.0000            0.0000   0.0000  -0.0002   0.0000
                       0.0000            0.0010   0.0009   0.0007   0.0000
 [31]                                         0.013    0.013    0.013 
-Mean C-C su =   0.0121                                                                                                                                                                                                                                          
+Mean C-C su =   0.0121
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DISK                                                                                                                                                                                                                                                           
+#CYCLENDS
+#DISK
  List type  22 with serial number     1 is the current version. 
  You may still save this list with DELETE n ACTION=NO
  List type  11 with serial number     8 is the current version. 
  You may still save this list with DELETE n ACTION=NO
-#PURGE                                                                                                                                                                                                                                                          
-#SFLS                                                                                                                                                                                                                                                           
+#PURGE
+#SFLS
  List type   11  serial number    8 from   452987 to   487506 will not be copied ( deleted )         
  List type   22  serial number    1 from   449001 to   450239 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
@@ -5013,9 +5013,9 @@ Mean C-C su =   0.0121
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC  NO  NO
+#CALCULAT   1
+#CYCLENDS
  Initialising Special positions
 
 
@@ -5057,8 +5057,8 @@ Mean C-C su =   0.0121
 
 
 
- Target Weighted Residual =  3.29                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual =  3.29
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
 [28]    0   1   0  235.5  314.9  72.2  0.7      0   1   1  198.0  268.6  64.2  0.7
 [28]    0   0   1  157.0  219.8  57.1  0.7      0   2   0   83.9  143.1  53.8  0.5
 [28]    0   1   2  362.7  308.7  49.2  1.1      0   2   1  303.6  249.5  49.2  1.2
@@ -5095,13 +5095,13 @@ Mean C-C su =   0.0121
 
 
 
-    12575 reflections   R  3.72% Rw  4.96% with I/u(I) from List 28                                                                                                                                                                                             
-    12575 reflections   R  3.72% Rw  4.96% with I/u(I) > -10.0                                                                                                                                                                                                  
-    12575 reflections   R  3.72% Rw  4.96% with I/u(I) >   2.0                                                                                                                                                                                                  
+    12575 reflections   R  3.72% Rw  4.96% with I/u(I) from List 28
+    12575 reflections   R  3.72% Rw  4.96% with I/u(I) > -10.0
+    12575 reflections   R  3.72% Rw  4.96% with I/u(I) >   2.0
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#FINISH                                                                                                                                                                                                                                                         
+#FINISH
  Physical reads      11195 Physical writes      10072 Cache hits     198120
  Cache hit distribution   180092   12778    2068     532     482     164
  Cache hit distribution      149     186     201     293     161     176
