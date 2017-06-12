@@ -231,12 +231,6 @@ Bonds: Update required - There is no list 41
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
- Directive  DISTANCE: No derivatives found during Evaluation
- Directive  DISTANCE: No derivatives found during Evaluation
- Directive  RESTRAIN: No derivatives found during Evaluation
- Directive  RESTRAIN: No derivatives found during Evaluation
- Directive  MEAN ANGLE: No derivatives found during Evaluation
- Directive  UIJ: No derivatives found during Evaluation
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -620,17 +614,6 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
- Directive  DISTANCE: No derivatives found during Evaluation
- Directive  DISTANCE: No derivatives found during Evaluation
- Directive  RESTRAIN: No derivatives found during Evaluation
- Directive  RESTRAIN: No derivatives found during Evaluation
- Directive  MEAN ANGLE: No derivatives found during Evaluation
- Directive  UIJ: No derivatives found during Evaluation
- Directive  UIJ: No derivatives found during Evaluation
- Directive  UIJ: No derivatives found during Evaluation
- Directive  UIJ: No derivatives found during Evaluation
- Directive  UIJ: No derivatives found during Evaluation
- Directive  UIJ: No derivatives found during Evaluation
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -971,9 +954,6 @@ Mean C-C su =   0.0017
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
- Directive  MEAN DIST: No derivatives found during Evaluation
- Directive  MEAN ANGLE: No derivatives found during Evaluation
- Directive  MEAN DIST: No derivatives found during Evaluation
 #INVERT  CHOL
 
 
