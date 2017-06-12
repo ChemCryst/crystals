@@ -7187,7 +7187,7 @@ c
         CALL FCASE(CNEW, CNEW, ISSFLC) !0=lower,1=upper,2=conserve
         WRITE (CMON,'(A,A)') 'Opening file: ', CNEW(1:JLEN)
         CALL XPRVDU(NCEROR, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
 c
 C      - OPEN CIF OUTPUT ON FRN1
         CALL XMOVEI (KEYFIL(1,23),KDEV,4)
@@ -8088,40 +8088,40 @@ c
       WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
      1  NREFIN,'         No of Friedel Pairs =',MFRIED
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') trim(CMON(1))
 C
 C
       WRITE (CMON,'(10(a,2x,i7))') ' No of Friedel Pairs found =',
      1  MFRIED,' No of Friedel Pairs used  =',NFRIED
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       WRITE (CMON,'(10(a,i7))') ' No of Unpaired Reflections  =',
      1  LFRIED
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       WRITE (CMON,'(10(a,i7))') ' No of Centric Reflections   =',
      1  NCENTRIC
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       WRITE (CMON,'(10(a,i6,A))') '     Friedel Coverage        =',
      1  (100*MFRIED)/(MFRIED+LFRIED),' %'
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       obstocal = sqrt(sumbo/sumbc)
       WRITE (CMON,'(10(A,F7.2))')' Observed:calculated signal  =',
      1 obstocal
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
       if(obstocal .gt. 3.) then
         call outcol(9)
         write(cmon,'(a,a)')' The observed Bijvoet differences are much',
      1  ' greater than the calculated differences'
         call xprvdu (ncvdu,1,0)
-        if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:nctrim(cmon(1)))
+        if (issprt.eq.0) write (ncwu,'(a)') trim(CMON(1))
         call outcol(1)
       endif
 C
@@ -8134,7 +8134,7 @@ C
       WRITE (CMON,'(A)')
      1' Flack parameter obtained from original refinement'
 c      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
 c      now Howards goodies
       IF (mfried.gt.0) THEN
@@ -8154,7 +8154,7 @@ C
      2  xflack, '(',qflack,') = ',
      2 100.*FLRNUM/FLRDEN,'%'
         CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') trim(CMON(1))
 C
        if(issprt.eq.0)then
           WRITE (ncwu,'(//A/A)')  
@@ -8301,7 +8301,7 @@ C
      1  nint(ss),' Bijvoet pairs'
        CALL XPRVDU (NCVDU,1,0)
        IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+            WRITE (NCWU,'(a)') trim(CMON(1))
             WRITE(NCWU,'(A,F7.4)')' Reduced Chisq= ',redchi
        ENDIF
 C
@@ -8310,7 +8310,7 @@ C      determinant
        WRITE (CMON,'(a,7x,2f12.3)') ' Gradient for zero intercept = ',
      1    SXY/SXX
 c      CALL XPRVDU (NCVDU,1,0)
-       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
        DETER=SS*SXX-SX*SX
        IF (DETER.NE.0.) THEN
             ycut=(SXX*SY-SX*SXY)/DETER
@@ -8586,7 +8586,7 @@ C                                                WRITE TYPE OF PLOT
         WRITE (cmon,'(7x,a,a,i8,a)') cplot(:nctrim(cplot)),
      1                          ' for',nfofc,' Bijvoet pairs'
         CALL xprvdu (ncvdu, 1, 0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a/)') cmon(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a/)') trim(CMON(1))
 c
         if (nfofc .le. 10) then
               call outcol(9)
@@ -8607,19 +8607,19 @@ C
           WRITE (CMON,800) SLOPE,SIGSLOP
 800       FORMAT (27x,'   Slope, sigma =',F7.3,f7.3)
 c          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           XCUT = YCUT/SLOPE
           WRITE (CMON,805) YCUT,SIGCUT
 805       FORMAT (26X,'Intercept, sigma =',F7.3,F7.3)
 c          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           PSEUDOF=0.5*(1.-SLOPE)
           PSEUDOS=0.5*SIGSLOP
           PSEUDOC = CORREL
           WRITE (CMON,810) PSEUDOF,PSEUDOS
 810       FORMAT (19X,'  Post-Refinement Flack =',2F7.3)
 c          CALL XPRVDU (NCVDU,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           WRITE (CMON,815) CORREL,cood
 815       FORMAT (/'{I Correlation coeff and r^2 of Scatter Plot =',
      1     F7.3,F7.3)
@@ -8638,16 +8638,16 @@ c          CALL XPRVDU (NCVDU,1,0)
           CALL outcol (9)
           WRITE (CMON,*) 'Line fitting failed'
           CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           WRITE (CMON,*) ' Slope and Intercept cannot be computed'
           CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') trim(CMON(1))
         ELSE
 C         LINFIT RETURNS IDJW = -2
           CALL outcol (9)
           WRITE (CMON,*) ' Correlation Coefficient cannot be computed'
           CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') trim(CMON(1))
         END IF
         CALL outcol (1)
 C
@@ -8927,14 +8927,14 @@ c
      1  ' Computing Histogram starting with ',n6acc,
      1  ' Bijvoet pairs'
         call xprvdu (ncvdu,1,0)
-        if (issprt.eq.0) write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+        if (issprt.eq.0) write(ncwu,'(/A)')trim(CMON(1))
         if(n6acc.le.0.1*n6save) then
             call outcol(9)
             write(cmon,'(a)') 
      1      ' Too few pairs for a reliable histogram'
             call xprvdu (ncvdu,1,0)
             call outcol(1)
-           if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+           if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
 c            goto 1730
         endif
 c
@@ -9390,7 +9390,7 @@ c
      1   ngood,' reflections, ', (nle3s*100./n6acc),
      2  '% within -.5 to 1.5'
          CALL XPRVDU (NCVDU, 1, 0)
-         if (issprt.eq.0)write(ncwu,'(/a)')CMON(1)(:nctrim(cmon(1)))
+         if (issprt.eq.0)write(ncwu,'(/a)')trim(CMON(1))
 c
          IF (itype.eq.1) THEN
           WRITE (CMON,'(A,2F7.3)') '      Parsons Quotient & su',
@@ -9437,7 +9437,7 @@ C
 
         WRITE (CMON,'(/)')
 c        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
         IF (qflack.GE.0.3) THEN
           WRITE (CMON,'(a,a/a,a/)')
      1  '{E The absolute configuration has not been reliably',
@@ -9496,12 +9496,12 @@ C CALCULATE P2(0)
 c
          WRITE (cmon,'(a)') ' Hooft probability analysis'
          CALL xprvdu (ncvdu, 1, 0)
-         IF (issprt.eq.0) WRITE (ncwu,'(A)')cmon(1)(:nctrim(cmon(1)))
+         IF (issprt.eq.0) WRITE (ncwu,'(A)')trim(CMON(1))
 C P2(True)
          WRITE (CMON,'(a,a)') ' For an enantiopure material,',
      1  ' there are 2 choices, P2'
          CALL XPRVDU (NCVDU, 1, 0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')CMON(1)(:nctrim(cmon(1)))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')trim(CMON(1))
 C
          IF (XPLL2.GE.0.0) THEN
            WRITE (FORM,2150) XPLL2,XPLL2
@@ -9587,7 +9587,7 @@ c
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
            WRITE (CMON,'(/)')
 c          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
          ELSE
           WRITE (CMON,'(a//)')
      1     ' Data do not resolve the P3 hypothesis'
@@ -9614,16 +9614,16 @@ C
       IF ( MFRIED .LE. 0) THEN
         WRITE (CMON,'(/)')
 c        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
         WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
      1   NREFIN
         CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)')trim(CMON(1))
         call outcol(9)
         WRITE (CMON,'(a)') ' No Friedel Pairs found'
         CALL XPRVDU (NCVDU, 1, 0)
         call outcol(1)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
 c       ERROR EXIT
         GOTO 2850
       END IF
@@ -9639,7 +9639,7 @@ C                  ------PRINT SUMMARY OF EXCLUDED REFLECTIONS
         endif
          write(cmon,'(A)') ' Too few useful Friedel Pairs'
          call xprvdu (ncvdu, 1, 0)
-         if (issprt.eq.0) write (ncwu,'(a)')cmon(1)(:NCTRIM(CMON(1)))
+         if (issprt.eq.0) write (ncwu,'(a)')trim(CMON(1))
          call outcol(1)
          ffz = 0.5
          if(filter(1).lt. .5) ffz=.1
@@ -10016,20 +10016,20 @@ C--TERMINATE THE LIST
 
       write(cmon,'(a,9I6,3x,A)')'Value   ', (i,i=1,9), 'items'
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')trim(CMON(1))
       do i=1,9
             am(i) = (100.*float(mm(i))/float(n))
       enddo
       write(CMON,'(a, 9f6.1,2i6)')'Observed  ',  am, n, nterm
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')trim(CMON(1))
 
       do i=1,9
             am(i) = 100.0*log10((float(i+1))/float(i))
       enddo
       write(CMON,'(a, 9f6.1)')'Calculated',  am
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')trim(CMON(1))
 C
       RETURN
 C
@@ -10037,7 +10037,7 @@ C
       write(cmon,'(a,f6.2)') 
      c 'Items less than unity: Raise the scale factor from', scale
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       RETURN
 9900  CONTINUE
 C -- ERRORS
@@ -10112,19 +10112,19 @@ c      determinant
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             write(cmon,472) slope, rinter 
 472         format(' Slope and intercept of plot =',
      1      3g10.3)
 c            call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
          endif
         else
             mode = 5
             write(cmon,473) 
 473         format ('Slope and Intercept cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
         endif
       ENDIF
       RETURN
@@ -10675,7 +10675,8 @@ c
           endif      
 c        call xprvdu(ncvdu,3,0)
         if (issprt .eq. 0) THEN
-          write(ncwu,'(/a/a/a)')cmon(1)(:),cmon(2)(:),cmon(3)(:)
+          write(ncwu,'(/a/a/a)')trim(CMON(1)),
+     1      trim(CMON(2)),trim(cmon(3))
         endif
 c
 c compute gradient for zero intercept. A non-zero intercept
@@ -10986,7 +10987,7 @@ c
         if(kflack .le. 0) then
             write(cmon,'(a)') ' Too few reflections for histogram'
             call xprvdu (ncvdu,1,0)
-           if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+           if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
         endif
         call outcol(1)
         return

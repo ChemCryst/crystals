@@ -143,15 +143,15 @@ C--FIND THE TYPE OF LISTS   IULN1 IS USUALY 6
             WRITE(CMON,'(A)')
      1    '{E Input and Output lists cannot be the same'
             CALL XPRVDU(NCVDU,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
             GOTO 9910
       ENDIF
 C---- NOTHING TO DO IF NO LIST 6
       IF (KEXIST(IULN1) .LE. 0) THEN
         WRITE (CMON,'(A,I3)') '{E No LIST 6', IULN1
         CALL XPRVDU(NCVDU,1,0)
-        WRITE (NCAWU,'(a)') CMON(1)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+        WRITE (NCAWU,'(a)') trim(CMON(1))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
       RETURN
       ENDIF
 C--CLEAR THE STORE
@@ -227,8 +227,8 @@ C---- NOTHING TO DO IF NO LIST 6
 c      IF (KEXIST(6) .LE. 0) THEN
 c        WRITE (CMON,'(A)') ' No LIST 6'
 c        CALL XPRVDU(NCVDU,1,0)
-c        WRITE (NCAWU,'(a)') CMON(1)
-c        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c        WRITE (NCAWU,'(a)') trim(CMON(1))
+c        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 c      RETURN
 c      ENDIF
 C
@@ -243,7 +243,7 @@ c      IF (IULN1 .EQ. IULN2) THEN
 c            WRITE(CMON,'(A)')
 c     1    ' Input and Output lists cannot be the same'
 c            CALL XPRVDU(NCVDU,1,0)
-c            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+c            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 c            GOTO 9910
 c      ENDIF
 C--CLEAR THE STORE
@@ -291,7 +291,7 @@ cC-----CHECK REFLECTIONS ALREADY ON DISK
 c      IF (L6D .LE. 0) THEN
 c       WRITE(CMON,'(A)')' Reflections not in DSC file'
 c       CALL XPRVDU (NCVDU,1,0)
-c       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 c       GOTO 9910
 c      ENDIF
 cC
@@ -528,8 +528,8 @@ C--FORMAT STATEMNT IS TOO LONG
       CALL XERHDR (0)
       WRITE (CMON,400)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') CMON(1)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+      WRITE (NCAWU,'(a)') trim(CMON(1))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 400   FORMAT (' Format statement is too large')
       GO TO 5250
 C--STORE THE NEW FORMAT OR PART OF FORMAT
@@ -589,8 +589,8 @@ C        1     2    3       4        5           6    7    8
       IF (ITYPE6.GT.8) THEN
          WRITE (CMON,'(a)') 'Invalid READ type'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(a)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') CMON(1)
+         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
          GO TO 5250
       END IF
       IF (ITYPE6.EQ.5) THEN
@@ -664,8 +664,8 @@ C----- set default to untwinned
          IF (N25.LE.1) THEN
             WRITE (CMON,'(a)') 'Warning - You have no twin law'
             CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCAWU,'(a)') CMON(1)
-            IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') CMON(1)
+            WRITE (NCAWU,'(a)') trim(CMON(1))
+            IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
          END IF
       END IF
       IF (ISTORE(KZ+3)) 950,950,1150
@@ -682,8 +682,8 @@ C--NO OUTPUT DATA
       CALL XERHDR (0)
       WRITE (CMON,1050)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') CMON(1)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+      WRITE (NCAWU,'(a)') trim(CMON(1))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 1050  FORMAT (' Insufficient output coefficients per reflection',' have
      1been indicated')
       GO TO 5200
@@ -707,8 +707,8 @@ Cdjwoct200
          call outcol(3)
          CALL XPRVDU (NCVDU,2,0)
          call outcol(1)
-         WRITE (NCAWU,'(a)') CMON(1),CMON(2)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1),CMON(2)
+         WRITE (NCAWU,'(a)') CMON(1),trim(CMON(2))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1)),trim(CMON(2))
          GO TO 5450
       END IF
 Cdjwoct2000
@@ -1035,12 +1035,12 @@ C----- ERROR DURING READ -
          call outcol(3)
          WRITE(CMON,'(A)') 'No reflections found'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         WRITE (NCAWU,'(A)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          WRITE (CMON,'(A)') ' Check the reflection filename, and format'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         WRITE (NCAWU,'(A)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          call outcol(1)
         end if
 CDJW2003         LEF=-1
@@ -1169,7 +1169,7 @@ C----- CHECK INDICES
             write(cmon,'(A,4i10)') 'Bad index near reflection ',n6w,
      1      nint(store(m6)),nint(store(m6+1)),nint(store(m6+2))
             call xprvdu (ncvdu,1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             n6dead = n6dead + 1
             goto 4850
         endif
@@ -1343,8 +1343,8 @@ C--BRANCH ON THE TYPE OF INPUT
 4900  CONTINUE
       WRITE (CMON,4950)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(/A/)') CMON(1)(:)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
+      WRITE (NCAWU,'(/A/)') trim(CMON(1))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') trim(CMON(1))
 4950  FORMAT (' Unsupported input data format')
       GO TO 5200
 C
@@ -1365,8 +1365,8 @@ C--TERMINATE THE OUTPUT OF THE LIST
       CALL XLINES
       WRITE (CMON,5100) N6W,N6DEAD
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-c      WRITE (NCAWU,'(A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+c      WRITE (NCAWU,'(A)') trim(CMON(1))
 5100  FORMAT (1X,I7,' reflections accepted',5X,I7,' reflections rejected
      1')
 C----- ONLY UPDATE LIST 30 FOR LIST 6 TYPE INPUT
@@ -1402,16 +1402,16 @@ cdjwsep08      IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
       IF ((ITYPE6.EQ.5).OR.(IRFT .GE. 0)) THEN
          WRITE (CMON,'(a)') 'Upating List 13 for twinned data'
          CALL XPRVDU (NCVDU,1,0)
-c         WRITE (NCAWU,'(a)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          ISTORE(L13CD+1)=0
          CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
       ELSE
          IF (ISTORE(L13CD+1) .EQ. 0 ) THEN
          WRITE (CMON,'(a)') 'Resetting List 13 for un-twinned data'
          CALL XPRVDU (NCVDU,1,0)
-c         WRITE (NCAWU,'(a)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          ISTORE(L13CD+1)=-1
          CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
          ENDIF

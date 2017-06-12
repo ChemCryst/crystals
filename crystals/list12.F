@@ -1502,7 +1502,7 @@ C (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
      1          THEN
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CRST
-                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 527   FORMAT(' Parameter  ',A4, I4,4X,  A,6X,' to be fixed by ', A)
                 NRESTR = NRESTR + 1
                 CALL XRESTF (KS, XO(KS), M5S )
@@ -1510,7 +1510,7 @@ C (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
 
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CCST
-                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 C SET 'FIX' AND 'EXPLICIT'
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IO(2))
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IE(2))
@@ -1573,14 +1573,18 @@ C INCREMENT THE RELATED PARAMETER COUNT
                         NRELP = NRELP + 1
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
      1                  ,COORD(KS+1), COORD(JS+1), CCST
-                        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                        IF (ISSPRT .EQ. 0) then
+                            WRITE(NCWU,'(A)') trim(CMON(1))
+                        end if
 528                     FORMAT(' Parameters ',A4, I4,4X, A, ' and ', A,
      1                  ' related by ', A)
                       ELSE
 C RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
      1                    ,COORD(KS+1), COORD(JS+1), CRST
-                        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                        IF (ISSPRT .EQ. 0) then
+                            WRITE(NCWU,'(A)') trim(CMON(1))
+                        end if
                         CALL XRESTL (KS, COEF(KS), XO(KS),
      1                   JS, COEF(JS), XO(JS), M5S)
                           NRESTR = NRESTR + 1

@@ -167,7 +167,7 @@ C
 cfeb08         WRITE (NCAWU,150)
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
-            write(ncawu,'(a)') cmon(1),cmon(2)
+            write(ncawu,'(a)') cmon(1),trim(CMON(2))
 150      FORMAT (' Principal axes of the thermal ellipsoids, A**2'/
      1 14x,' Min  ',4x,' Med  ',4x,' Max  ',4x,' Uarith     Ugeom',
      2 4x,'Uprime')
@@ -363,7 +363,7 @@ cfeb08                  WRITE (NCAWU,500)
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
      1          NE,J),UARITH, UGEOM, UPRIME, CTEXT
                CALL XPRVDU (NCVDU,1,0)
-               write(ncawu,'(a)') cmon(1)
+               write(ncawu,'(a)') trim(CMON(1))
 550            FORMAT (1X,A4,F6.0,6F10.4,3X,A24)
                IF (ISSPRT.EQ.0) WRITE (NCWU,600) STORE(M5B),STORE(M5B+1)
      1          ,(STORE(I),I=NF,K),UARITH, UGEOM, UPRIME, CTEXT
@@ -373,8 +373,8 @@ cfeb08                  WRITE (NCAWU,500)
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
      1          NE,J),UARITH,UGEOM,UPRIME, CTEXT
                CALL XPRVDU (NCVDU,1,0)
-               IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-cfeb08               WRITE (NCAWU,'(A)') CMON(1)
+               IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08               WRITE (NCAWU,'(A)') trim(CMON(1))
             END IF
 CDJWSEP08
             IF (JPUNCH .GT. 0) THEN
@@ -435,7 +435,7 @@ C
      1         CSHAPE, CTEXT
 830            FORMAT (1X,A4,F6.0,F10.4,5X,A12,6X,A24)
                CALL XPRVDU (NCVDU,1,0)
-c               WRITE (NCAWU,'(A)') CMON(1)
+c               WRITE (NCAWU,'(A)') trim(CMON(1))
             END IF
 C
          END IF
@@ -452,22 +452,22 @@ cdjwfeb06
      1 ' atoms =',avol/float(nvol), ' rmsd ',
      2   sqrt((nvol*dvol-avol*avol)/(nvol*(nvol-1)))
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c
          write(cmon,'(A,i6,a,f8.4)')' Maximum radius of ',nvol,
      1 ' atoms =',bvol
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c
          write(cmon,'(A,i6,a,f8.4)')'   Maximum axis of ',nvol,
      1 ' atoms =',cvol
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c
          write(cmon,'(a)')
      1   'for Uprime see Acta Cryst (2000). B56, 747-749'
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
        endif
       endif
 950   CONTINUE
@@ -1153,14 +1153,14 @@ C-----    WRITE NEW PARAMETERS
                WRITE(CMON,100)  STORE(ISTART),STORE(ISTART+1),
      1         (STORE(J),J=JJ,JJ+8)
                CALL XPRVDU(NCVDU,1,0)
-               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
-cfeb08               WRITE (NCAWU,'(A)') CMON(1)(1:)
+               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(cmon(1))
+cfeb08               WRITE (NCAWU,'(A)') trim(CMON(1))
 100            FORMAT (1X,A4,F4.0,3F8.4,6F8.3)
                WRITE(CMON,150)  (STORE(J),J=JWORK,JWORK+5)
 150            FORMAT (1X,32X,6F8.3)
                CALL XPRVDU(NCVDU,1,0)
-               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
-cfeb08               WRITE (NCAWU,'(A)') CMON(1)(1:)
+               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(cmon(1))
+cfeb08               WRITE (NCAWU,'(A)') trim(CMON(1))
                IF (IRPL.EQ.1) THEN
 C-----           REPLACE
                  CALL XMOVE (STORE(JWORK),STORE(ISAVE+7),6)
@@ -1523,7 +1523,7 @@ C---SHIFT ORIGIN TO MAKE S SYMMETRIC
          WA(I,I)=0.
 1650  CONTINUE
       WRITE (CMON,1700) CF
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') trim(CMON(1))
       CALL XPRVDU (NCVDU,1,0)
 1700  FORMAT (' Centre for which s is symmetric :             ',4X,3F8.
      14)
@@ -1767,7 +1767,7 @@ C
       DO 100 I=1,3
          WRITE (CMON,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),
      1   J=1,3)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          IF (MON.EQ.2) CALL XPRVDU (NCVDU,1,0)
 100   CONTINUE
 150   FORMAT ((3(3F9.3,2X)))

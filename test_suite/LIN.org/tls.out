@@ -1,19 +1,19 @@
-#USE CYCLO.IN                                                                                                                                                                                                                                                   
-#SET COMMUNIC SLOW                                                                                                                                                                                                                                              
-#SET WATCH 5                                                                                                                                                                                                                                                    
-#CLEAR 12                                                                                                                                                                                                                                                       
-#LIST  12                                                                                                                                                                                                                                                       
-#CLEAR 16                                                                                                                                                                                                                                                       
-#LIST  16                                                                                                                                                                                                                                                       
-#                                                                                                                                                                                                                                                               
-#TITLE CYCLO IN P 21 21 21                                                                                                                                                                                                                                      
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+#USE CYCLO.IN
+#SET COMMUNIC SLOW
+#SET WATCH 5
+#CLEAR 12
+#LIST  12
+#CLEAR 16
+#LIST  16
+#
+#TITLE CYCLO IN P 21 21 21
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE
+#LIST 14
+#SPACE
   Space Group P21 21 21 
   The Space Group is ACentric  Primitive Orthorhombic  Laue Symmetry mmm     
   Multiplicity of a General Site is   4  Laue-no is   3
@@ -33,24 +33,24 @@ Space group symbol is   P    21   21   21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-# WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3                                                                                                                                                                                                          
-#COMPOSIT                                                                                                                                                                                                                                                       
-#LIST 13                                                                                                                                                                                                                                                        
-#COMPOSIT                                                                                                                                                                                                                                                       
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 5                                                                                                                                                                                                                                                         
-#                                                                                                                                                                                                                                                               
-#           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
-#                                                                                                                                                                                                                                                               
-#LIST 4                                                                                                                                                                                                                                                         
-#                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-# HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
-#OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
-#HKLI                                                                                                                                                                                                                                                           
+# WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3
+#COMPOSIT
+#LIST 13
+#COMPOSIT
+#LIST 3
+#LIST 29
+#LIST 29
+#LIST 5
+#
+#           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
+#
+#LIST 4
+#                                         WEISSENBERG DIFFRACTOMETER.
+#LIST 13
+#LIST 28
+# HOOK UP THE REFLECTION FILE
+#OPEN HKLI  "CYCLO.HKL"
+#HKLI
 
  No scales found
 
@@ -60,9 +60,9 @@ Space group symbol is   P    21   21   21
 
 
 
-    1866 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#SYST                                                                                                                                                                                                                                                           
-#SORT                                                                                                                                                                                                                                                           
+    1866 reflections accepted           0 reflections rejected
+#SYST
+#SORT
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -94,20 +94,20 @@ Space group symbol is   P    21   21   21
 
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
-                                                                                                                                                                                                                                                                
-Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
-Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000                                                                                                                                                                                         
-Number                4       2       9       2       0       0       0                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                
-Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
-rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000                                                                                                                                                                                         
-Number                4       1       2       5       4       1       0                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                
-   1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
-#MERGE                                                                                                                                                                                                                                                          
+
+Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
+Number                4       2       9       2       0       0       0
+
+Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
+Number                4       1       2       5       4       1       0
+
+   1849 reflections accepted              17 reflections rejected
+#MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#LIST 6                                                                                                                                                                                                                                                         
+#LIST 6
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -122,7 +122,7 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
    0.0 -  0.5    46  4    46  1087 ----------------------
    0.5 -  1.0    20  2    66  1067 ----------
    1.0 -  1.5    31  3    97  1036 ---------------
@@ -229,18 +229,18 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   1849 Contributors input            0 Contributors rejected
   1133 Merged reflections output     0 Merged reflections rejected
      0 Contributors deviating from the average by more than   3.0e.s.ds
-   965 Reflections greater than 3 sigma(i),  85.172 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+   965 Reflections greater than 3 sigma(i),  85.172 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.01            0.10           0.53
-#                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
+#                           STORE REFLECTIONS ON DISC FOR FUTURE USE
 
 
 
-    1133 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-# DO A PRETTY PICTURE:                                                                                                                                                                                                                                          
-#MOLAX                                                                                                                                                                                                                                                          
+    1133 reflections accepted           0 reflections rejected
+# DO A PRETTY PICTURE:
+#MOLAX
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -293,27 +293,27 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
                      .   .                                                                                             
                      .  C10                                                                                            
                    C11..                                                                                               
-#                                         FSQ, ANOM                                                                                                                                                                                                             
-#LIST 23                                                                                                                                                                                                                                                        
-#USE CYCLOREF.DAT                                                                                                                                                                                                                                               
-# TEST SCALE, CALC AND REFINE.                                                                                                                                                                                                                                  
-# TEST EXTINCTION PARAMETER                                                                                                                                                                                                                                     
-# TEST FOURIER.                                                                                                                                                                                                                                                 
-# TEST MIXED ISO/ANISO REFINEMENT                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#SFLS                                                                                                                                                                                                                                                           
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
+#                                         FSQ, ANOM
+#LIST 23
+#USE CYCLOREF.DAT
+# TEST SCALE, CALC AND REFINE.
+# TEST EXTINCTION PARAMETER
+# TEST FOURIER.
+# TEST MIXED ISO/ANISO REFINEMENT
+#
+#SFLS
+#CLEAR 17
+#LIST  17
+#LIST 26
+#BONDCALC
 Bonds: Update required - There is no list 41
-#LIST 26                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+#LIST 26
+#WEIGHT
                      LIST 4 weighting type is 1/FO
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#SCALE      1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS
+#SPEC  NO  NO
+#SCALE      1
+#CYCLENDS
  Initialising Special positions
 
 
@@ -371,23 +371,23 @@ Bonds: Update required - There is no list 41
 
  Structure factor least squares calculation    1  ends  1
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.32
-LS-scale=  1.010   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.010   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    3.1     100*(<Fo>-<Fc>)/<Fo> =    30.
-#LIST 4                                                                                                                                                                                                                                                         
-#WEIGHT                                                                                                                                                                                                                                                         
+#LIST 4
+#WEIGHT
                      LIST 4 weighting type is 1/FO
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST 12
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -445,13 +445,13 @@ Refining    34 parameters in    1 block :      679 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.39
-LS-scale=  1.010   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.010   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    3.1     100*(<Fo>-<Fc>)/<Fo> =    30.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -524,10 +524,10 @@ All cycle   Min function          0.0           0.21E+05       0.10E+16
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
 
 
-Over-all rescaling factor 0.59                                                                                                                                                                                                                                  
+Over-all rescaling factor 0.59
 
 
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -612,12 +612,12 @@ Over-all rescaling factor 0.59
                       0.0000            0.0006  -0.0044   0.0015   0.0000
                       0.0000            0.0077   0.0034   0.0024   0.0000
 [31]                                         0.038    0.037    0.036 
-Mean C-C su =   0.0337                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0337
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -675,9 +675,9 @@ Mean C-C su =   0.0337
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.38
-LS-scale=  1.255   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.255   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    1.1     100*(<Fo>-<Fc>)/<Fo> =    13.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -752,7 +752,7 @@ Inter cycle Rw                   -5.0            17.           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -837,12 +837,12 @@ Inter cycle Rw                   -5.0            17.           0.10E+03
                       0.0000           -0.0010   0.0024  -0.0005   0.0000
                       0.0000            0.0036   0.0015   0.0011   0.0000
 [31]                                         0.017    0.016    0.016 
-Mean C-C su =   0.0153                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0153
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -900,9 +900,9 @@ Mean C-C su =   0.0153
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.39
-LS-scale=  1.401   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.401   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     3.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -976,7 +976,7 @@ Inter cycle Rw                   -5.0            4.6           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1061,21 +1061,21 @@ Inter cycle Rw                   -5.0            4.6           0.10E+03
                       0.0000            0.0005  -0.0004  -0.0001   0.0000
                       0.0000            0.0025   0.0011   0.0008   0.0000
 [31]                                         0.012    0.012    0.012 
-Mean C-C su =   0.0111                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#LIST 12                                                                                                                                                                                                                                                        
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+Mean C-C su =   0.0111
+#CYCLENDS
+#LIST 12
+#SFLS
+#LIST 12
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1133,13 +1133,13 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.39
-LS-scale=  1.401   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.401   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     3.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1211,7 +1211,7 @@ All cycle   Min function          0.0           0.85E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1296,12 +1296,12 @@ All cycle   Min function          0.0           0.85E+04       0.10E+16
                       0.0000           -0.0005  -0.0002   0.0003   0.0001
                       0.0000            0.0026   0.0011   0.0008   0.0026
 [31]                                         0.012    0.012    0.012 
-Mean C-C su =   0.0111                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0111
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1359,9 +1359,9 @@ Mean C-C su =   0.0111
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  1.44    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.39
-LS-scale=  1.415   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.415   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1435,7 +1435,7 @@ Inter cycle Rw                   -5.0            1.6           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1520,12 +1520,12 @@ Inter cycle Rw                   -5.0            1.6           0.10E+03
                       0.0000           -0.0004   0.0002  -0.0001   0.0013
                       0.0000            0.0024   0.0010   0.0007   0.0024
 [31]                                         0.011    0.011    0.011 
-Mean C-C su =   0.0104                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0104
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1583,9 +1583,9 @@ Mean C-C su =   0.0104
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  1.46    SumFoFc/SumFc^2=  1.47    SumwFoFc/SumwFc^2=  1.41
-LS-scale=  1.420   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.420   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1659,7 +1659,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1744,12 +1744,12 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
                       0.0000            0.0001  -0.0001   0.0000  -0.0002
                       0.0000            0.0025   0.0011   0.0008   0.0025
 [31]                                         0.012    0.011    0.011 
-Mean C-C su =   0.0105                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0105
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1807,9 +1807,9 @@ Mean C-C su =   0.0105
 
  Structure factor least squares calculation    8  ends  2
 [29] SumFo/SumFc=  1.46    SumFoFc/SumFc^2=  1.46    SumwFoFc/SumwFc^2=  1.41
-LS-scale=  1.418   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.418   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1834,7 +1834,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
 All cycle   R-factor              0.0            14.           0.10E+03
 All cycle   Rw                    0.0            35.           0.10E+03
 [06] All cycle   shift/esd
- Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
+ Forced termination after this cycle:  Actual value condition on: shift/esd
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1879,7 +1879,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1964,23 +1964,23 @@ All cycle   Rw                    0.0            35.           0.10E+03
                       0.0000            0.0000   0.0000   0.0000   0.0001
                       0.0000            0.0025   0.0011   0.0008   0.0025
 [31]                                         0.012    0.011    0.011 
-Mean C-C su =   0.0105                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+Mean C-C su =   0.0105
+#CYCLENDS
+#LIST 12
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
  Space required on DISK is    5 records,    20  Blocks,    10 Kbytes. 
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
      11 Atoms modified;   New  LIST 5 written to DISK
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2038,13 +2038,13 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
 
  Structure factor least squares calculation    9  ends  2
 [29] SumFo/SumFc=  1.46    SumFoFc/SumFc^2=  1.46    SumwFoFc/SumwFc^2=  1.41
-LS-scale=  1.418   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.418   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -2133,10 +2133,10 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
 
 
-Over-all rescaling factor 0.91                                                                                                                                                                                                                                  
+Over-all rescaling factor 0.91
 
 
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2221,12 +2221,12 @@ Over-all rescaling factor 0.91
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.01   -0.01    0.00    0.01
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0000
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2284,9 +2284,9 @@ Mean C-C su =   0.0000
 
  Structure factor least squares calculation   10  ends  2
 [29] SumFo/SumFc=  1.60    SumFoFc/SumFc^2=  1.61    SumwFoFc/SumwFc^2=  1.57
-LS-scale=  1.588   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.588   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     1.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -2302,7 +2302,7 @@ LS-scale=  1.588   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 [13]  LARGE     1           1             0.3       0.6E+00    0.4 E-01          6.4                           SCALE   
-[43] Resetting shift for Extinction  Shift=     853.   Esd=      7   New shift=     102.59                                                                                                                                                                       
+[43] Resetting shift for Extinction  Shift=     853.   Esd=      7   New shift=     102.59
 [13]  LARGE     2           2           102.5       0.2E+01    0.7 E+02         11.5                           EXTPARAM
 [14]  S/ESD    21          21            0.013       0.4E+00    0.68 E-02          1.9         C      4 U[11]   
 
@@ -2364,7 +2364,7 @@ Inter cycle Rw                   -5.0            7.9           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2449,18 +2449,18 @@ Inter cycle Rw                   -5.0            7.9           0.10E+03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#PERH                                                                                                                                                                                                                                                           
+Mean C-C su =   0.0000
+#CYCLENDS
+#PERH
            Per-hydrogenation of Carbon atoms
 C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used                                                                                                                                                                                                           
+C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
  Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
 H23 C(11) C(10) C(1) 
-#HYDROGENS  5  5                                                                                                                                                                                                                                                
+#HYDROGENS  5  5
 
 
  Hydrogen atom(s) calculated for the C(sp3)H1 group :
@@ -2496,10 +2496,10 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2600   -0.0670    0.1838    0.0601
            H        112.0    1.00000        1.    1.1433   -0.0424    0.0914    0.0601
  List now contains    21 atoms
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS
+#SPEC  NO  NO
+#CALCULAT   1
+#CYCLENDS
  Initialising Special positions
 
 
@@ -2541,9 +2541,9 @@ H23 C(11) C(10) C(1)
 
 
 
- Target Weighted Residual =  1.73                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
-   0   1   2   -0.3   19.5  25.6 -0.01     0   2   1   35.0   49.6  23.4  0.71                                                                                                                                                                                  
+ Target Weighted Residual =  1.73
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
+   0   1   2   -0.3   19.5  25.6 -0.01     0   2   1   35.0   49.6  23.4  0.71
 [28]    0   2   0    5.2   20.0  22.5  0.2      0   5   2    2.2    5.4   9.4  0.4
 [28]    0   3   2   47.6   42.7   7.8  1.1      1   0   1   26.6   30.9   7.7  0.8
 [28]    1   1   2   19.6   22.9   6.0  0.8      1   4   1   21.1   24.2   5.6  0.8
@@ -2579,13 +2579,13 @@ H23 C(11) C(10) C(1)
 
 
 
-     1133 reflections   R  8.82% Rw 23.10% with I/u(I) from List 28                                                                                                                                                                                             
-     1133 reflections   R  8.82% Rw 23.10% with I/u(I) > -10.0                                                                                                                                                                                                  
-     1016 reflections   R  7.85% Rw 20.40% with I/u(I) >   2.0                                                                                                                                                                                                  
+     1133 reflections   R  8.82% Rw 23.10% with I/u(I) from List 28
+     1133 reflections   R  8.82% Rw 23.10% with I/u(I) > -10.0
+     1016 reflections   R  7.85% Rw 20.40% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.67    SumFoFc/SumFc^2=  1.65    SumwFoFc/SumwFc^2=  1.64
-LS-scale=  1.685   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.61                                                                                                                                                                                                         
-#FOUR                                                                                                                                                                                                                                                           
+LS-scale=  1.685   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.61
+#FOUR
  Initialising Special positions
  Number of new peaks to be retained is :     14
 
@@ -2649,11 +2649,11 @@ LS-scale=  1.685   Wilson Scale=  0.000
 [19]  Q         5. 3.1  Poor Shape  
 [18]  QN  -3.8  Hole        
  The new list  10 contains    27 atoms
- The minimum and maximum map densities are -0.377     0.417    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are -0.377     0.417    electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is    -0.04
                       with an R.M.S. deviation of      0.12
-#PEAKS                                                                                                                                                                                                                                                          
+#PEAKS
 
 
 
@@ -2664,26 +2664,26 @@ LS-scale=  1.685   Wilson Scale=  0.000
 
      C        11.         Q         2.      1   1    1   -1    0    0.348      Deleted    0.086   0.985   0.149      3.8
  List now contains    25 atoms
-#EDIT                                                                                                                                                                                                                                                           
- The following atom(s) will be changed                                                                                                                                                                                                                          
-         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
-                                   Uiso  Size D/100 A/100                                                                                                                                                                                                       
-   H   1 1.00 0.861 0.611 0.207 1 0.050 0.000 0.000 0.00 0.00 0.00     4.207      0                                                                                                                                                                             
- The following atom(s) will be selected                                                                                                                                                                                                                         
+#EDIT
+ The following atom(s) will be changed
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
+                                   Uiso  Size D/100 A/100
+   H   1 1.00 0.861 0.611 0.207 1 0.050 0.000 0.000 0.00 0.00 0.00     4.207      0
+ The following atom(s) will be selected
     C   1      C   2      O   3      C   4      O   5      N   6      C   7
     O   8      C   9      C  10      C  11      H  41      H  42      H  43
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1     QN   6
- The following atom(s) will be selected                                                                                                                                                                                                                         
+ The following atom(s) will be selected
     C   1      C   2      O   3      C   4      O   5      N   6      C   7
     O   8      C   9      C  10      C  11      H  41      H  42      H  43
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-#LIST 12                                                                                                                                                                                                                                                        
-#DISTANCE                                                                                                                                                                                                                                                       
-#LIST 31                                                                                                                                                                                                                                                        
-#DISTANCE                                                                                                                                                                                                                                                       
+#LIST 12
+#DISTANCE
+#LIST 31
+#DISTANCE
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -2862,18 +2862,18 @@ LS-scale=  1.685   Wilson Scale=  0.000
 [49]    4   H       112.      1   1    0    0    0     119.9   119.9
 
   KEY                                                1       2       3
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining    55 parameters in    1 block :     1666 elements in the LS matrix.
  Space required on DISK is    4 records,    14  Blocks,     7 Kbytes. 
       5 Atoms modified;   New  LIST 5 written to DISK
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2931,13 +2931,13 @@ Refining    55 parameters in    1 block :     1666 elements in the LS matrix.
 
  Structure factor least squares calculation   12  ends  2
 [29] SumFo/SumFc=  1.61    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.56
-LS-scale=  1.685   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.267    100*(<Fo>-<Fc>)/<Fo> =    -4.24                                                                                                                                                                                                         
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.685   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.267    100*(<Fo>-<Fc>)/<Fo> =    -4.24
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3009,7 +3009,7 @@ All cycle   Min function          0.0           0.63E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3094,12 +3094,12 @@ All cycle   Min function          0.0           0.63E+04       0.10E+16
 [37]                       0.00            -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.009    0.009    0.009 
-Mean C-C su =   0.0091                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0091
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -3157,9 +3157,9 @@ Mean C-C su =   0.0091
 
  Structure factor least squares calculation   13  ends  2
 [29] SumFo/SumFc=  1.57    SumFoFc/SumFc^2=  1.58    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.580   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.022    100*(<Fo>-<Fc>)/<Fo> =    -0.33                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.580   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.022    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3233,7 +3233,7 @@ Inter cycle Rw                   -5.0            9.2           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3318,12 +3318,12 @@ Inter cycle Rw                   -5.0            9.2           0.10E+03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.007    0.007    0.008 
-Mean C-C su =   0.0065                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0065
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -3381,9 +3381,9 @@ Mean C-C su =   0.0065
 
  Structure factor least squares calculation   14  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.59    SumwFoFc/SumwFc^2=  1.57
-LS-scale=  1.585   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.585   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3457,7 +3457,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3542,21 +3542,21 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [37]                       0.00             0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.007    0.007    0.008 
-Mean C-C su =   0.0066                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+Mean C-C su =   0.0066
+#CYCLENDS
+#LIST 12
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining   100 parameters in    1 block :     5266 elements in the LS matrix.
  Space required on DISK is   11 records,    42  Blocks,    22 Kbytes. 
       5 Atoms modified;   New  LIST 5 written to DISK
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -3614,13 +3614,13 @@ Refining   100 parameters in    1 block :     5266 elements in the LS matrix.
 
  Structure factor least squares calculation   15  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.59    SumwFoFc/SumwFc^2=  1.57
-LS-scale=  1.584   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.584   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3695,7 +3695,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3780,13 +3780,13 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [37]                       0.00             0.00    0.00   -0.00   -0.00   -0.00   -0.01    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.007    0.007    0.008 
-Mean C-C su =   0.0069                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0069
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -3844,9 +3844,9 @@ Mean C-C su =   0.0069
 
  Structure factor least squares calculation   16  ends  2
 [29] SumFo/SumFc=  1.55    SumFoFc/SumFc^2=  1.58    SumwFoFc/SumwFc^2=  1.54
-LS-scale=  1.575   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.073    100*(<Fo>-<Fc>)/<Fo> =    -1.08                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.575   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.073    100*(<Fo>-<Fc>)/<Fo> =    -1.08
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3916,7 +3916,7 @@ All cycle   Min function          0.0           0.25E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -4001,13 +4001,13 @@ All cycle   Min function          0.0           0.25E+04       0.10E+16
 [37]                       0.00            -0.00    0.00   -0.00    0.00    0.00    0.00   -0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.006    0.006 
-Mean C-C su =   0.0060                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0060
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -4065,9 +4065,9 @@ Mean C-C su =   0.0060
 
  Structure factor least squares calculation   17  ends  2
 [29] SumFo/SumFc=  1.57    SumFoFc/SumFc^2=  1.59    SumwFoFc/SumwFc^2=  1.56
-LS-scale=  1.579   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.37                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.579   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.37
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4092,7 +4092,7 @@ LS-scale=  1.579   Wilson Scale=  0.000
 All cycle   R-factor              0.0            6.7           0.10E+03
 All cycle   Rw                    0.0            20.           0.10E+03
 [06] All cycle   shift/esd
- Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
+ Forced termination after this cycle:  Actual value condition on: shift/esd
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4137,7 +4137,7 @@ All cycle   Rw                    0.0            20.           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -4222,13 +4222,13 @@ All cycle   Rw                    0.0            20.           0.10E+03
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00   -0.00    0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.006    0.006 
-Mean C-C su =   0.0061                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0061
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -4286,9 +4286,9 @@ Mean C-C su =   0.0061
 
  Structure factor least squares calculation   18  ends  2
 [29] SumFo/SumFc=  1.57    SumFoFc/SumFc^2=  1.58    SumwFoFc/SumwFc^2=  1.56
-LS-scale=  1.578   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.38                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.578   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.38
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4313,7 +4313,7 @@ LS-scale=  1.578   Wilson Scale=  0.000
 All cycle   R-factor              0.0            6.8           0.10E+03
 All cycle   Rw                    0.0            20.           0.10E+03
 [06] All cycle   shift/esd
- Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
+ Forced termination after this cycle:  Actual value condition on: shift/esd
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4358,7 +4358,7 @@ All cycle   Rw                    0.0            20.           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -4443,9 +4443,9 @@ All cycle   Rw                    0.0            20.           0.10E+03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.006    0.006 
-Mean C-C su =   0.0061                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#ANISO                                                                                                                                                                                                                                                          
+Mean C-C su =   0.0061
+#CYCLENDS
+#ANISO
  Results for group number    1
 
 
@@ -4500,7 +4500,7 @@ Mean C-C su =   0.0061
 
 
 
- Centre for which s is symmetric :                   0.8131  0.0639  0.1643                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.8131  0.0639  0.1643
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -4554,7 +4554,7 @@ Mean C-C su =   0.0061
        R.M.S. discrepancy for U'S =  0.0019
  LIST 20  TLS record will be updated 
  LIST 20 has been updated
-#PRINT 20                                                                                                                                                                                                                                                       
+#PRINT 20
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4680,7 +4680,7 @@ Mean C-C su =   0.0061
 
 
 
-#ANISO                                                                                                                                                                                                                                                          
+#ANISO
  Results for group number    1
 
 
@@ -4735,7 +4735,7 @@ Mean C-C su =   0.0061
 
 
 
- Centre for which s is symmetric :                   0.7056  0.1135  0.2721                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.7056  0.1135  0.2721
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -4786,7 +4786,7 @@ Mean C-C su =   0.0061
        R.M.S. discrepancy for U'S =  0.0013
  LIST 20  TLS record will be updated 
  LIST 20 has been updated
-#PRINT 20                                                                                                                                                                                                                                                       
+#PRINT 20
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4912,7 +4912,7 @@ Mean C-C su =   0.0061
 
 
 
-#ANISO                                                                                                                                                                                                                                                          
+#ANISO
  Results for group number    1
 
 
@@ -4967,7 +4967,7 @@ Mean C-C su =   0.0061
 
 
 
- Centre for which s is symmetric :                   0.7378  0.1407  0.2595                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.7378  0.1407  0.2595
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -5021,7 +5021,7 @@ Mean C-C su =   0.0061
        R.M.S. discrepancy for U'S =  0.0017
  LIST 20  TLS record will be updated 
  LIST 20 has been updated
-#PRINT 20                                                                                                                                                                                                                                                       
+#PRINT 20
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5147,7 +5147,7 @@ Mean C-C su =   0.0061
 
 
 
-#ANISO                                                                                                                                                                                                                                                          
+#ANISO
  Results for group number    1
 
 
@@ -5202,7 +5202,7 @@ Mean C-C su =   0.0061
 
 
 
- Centre for which s is symmetric :                   0.8146  0.0864  0.2651                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.8146  0.0864  0.2651
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -5268,7 +5268,7 @@ Mean C-C su =   0.0061
        R.M.S. discrepancy for U'S =  0.0034
  LIST 20  TLS record will be updated 
  LIST 20 has been updated
-#PRINT 20                                                                                                                                                                                                                                                       
+#PRINT 20
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5394,8 +5394,8 @@ Mean C-C su =   0.0061
 
 
 
-#                                         AND CLOSE THE PROGRAM.                                                                                                                                                                                                
-#FINISH                                                                                                                                                                                                                                                         
+#                                         AND CLOSE THE PROGRAM.
+#FINISH
 
 
           : Job ends ok       with     0 warnings and     0 errors

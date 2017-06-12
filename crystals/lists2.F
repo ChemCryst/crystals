@@ -150,8 +150,10 @@ C--NOT THE CORRECT SERIAL NUMBER
         WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
      1   CLISTS(IBUFF(1)), IBUFF(2), IABS(J)
         CALL XPRVDU(NCEROR, 5,0)
-        IF (ISSPRT .EQ. 0)WRITE(NCWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
-        WRITE(NCAWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)') trim(CMON(2)), 
+     1  trim(CMON(3)), trim(CMON(4))
+        WRITE(NCAWU,'(/A/A/A/)')trim(CMON(2)), 
+     1  trim(CMON(3)), trim(CMON(4))
         CALL OUTCOL(1)
       end if
 1700  FORMAT(/

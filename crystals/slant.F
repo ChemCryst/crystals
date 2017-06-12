@@ -173,7 +173,7 @@ C--CHECK THAT THERE ARE SOME REFLECTIONS
       CALL XERHDR(0)
       WRITE ( CMON , 1450)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') trim(CMON(1))
 1450  FORMAT(/,' No reflections')
       GOTO 1050
 C--SET UP THE MAP AND ACCUMULATION AREAS
@@ -804,7 +804,7 @@ C----- LOOK FOR SOME SORT OF MATRIX
       IF (ABS(XDETR3(PROCS(1))) .LE. ZERO) THEN
        WRITE ( CMON , 1060) (PROCS(I), I = 1,9)
        CALL XPRVDU(NCVDU, 4,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,4)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,4)
 1060   FORMAT (' Your matrix is probably invalid ', 3(/3F9.3))
        GOTO 9900
       ENDIF
@@ -925,7 +925,7 @@ C--INCORRECT INTERVALS
 1400  CONTINUE
       WRITE ( CMON ,1450)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') trim(CMON(1))
 1450  FORMAT(' Illegal x or y divisions')
       GOTO 9910
 C--COMPUTE THE NUMBER OF STEPS AND THE FIRST PONTS
@@ -1292,7 +1292,7 @@ C -- INPUT ERROR
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 9925  FORMAT ( 1X , 'Rotation matrix is singular' )
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -1477,7 +1477,7 @@ C----- LOOK FOR SOME SORT OF MATRIX
       IF (ABS(XDETR3(PROCS(1))) .LE. ZERO) THEN
         WRITE ( CMON , 1060) (PROCS(I), I = 1,9)
         CALL XPRVDU(NCVDU, 4,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,4)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,4)
 1060    FORMAT (' Your matrix is probably invalid ', 3(/3F9.3))
         GOTO 9900
       ENDIF
@@ -1524,7 +1524,7 @@ C--INCORRECT INTERVALS
 1400  CONTINUE
       WRITE ( CMON ,1450)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A)') trim(CMON(1))
 1450  FORMAT(' Illegal x or y divisions')
       GOTO 9910
 
@@ -1773,7 +1773,7 @@ C -- INPUT ERROR
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 9925  FORMAT ( 1X , 'Rotation matrix is singular' )
       CALL XERHND ( IERERR )
       GO TO 9900

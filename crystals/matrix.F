@@ -4939,7 +4939,7 @@ c
 *
       WRITE( CMON, FMT = 9999 )SRNAME, INFO
       CALL XPRVDU(NCVDU,1,0)
-      WRITE(NCWU,'(A)')CMON(1)
+      WRITE(NCWU,'(A)')trim(CMON(1))
 *
       CALL GUEXIT(3001)
 
