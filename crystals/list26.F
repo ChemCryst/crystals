@@ -2061,6 +2061,7 @@ C
       
       logical, optional, intent(in) :: calconlyarg
       logical calconly
+      integer ISTAT2OLD
       
 C
       interface 
@@ -2153,6 +2154,10 @@ C--LOAD THE COMPILED LIST FOR PROCESSING
       
 C--BRING DOWN THE NEXT BLOCK OF CODE AND RELOCATE IT
 1000  CONTINUE
+      ISTAT2OLD=ISTAT2
+      if(calconly) then
+        ISTAT2=0
+      end if
       IF(KLOADR(LN))1850,1050,1750
 C--JUMP ON THE FUNCTION
 1050  CONTINUE
@@ -2365,7 +2370,9 @@ C
 
 C--'EXECUTION LISTING'
 1600  CONTINUE
-      ISTAT2=1
+      if(.not. calconly) then
+        ISTAT2=1
+      end if
       GOTO 1000
 C
 C--'NO LISTING'
@@ -2380,6 +2387,7 @@ C-'U(IJ)' RESTRAINT
 C
 C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
 1750  CONTINUE
+      ISTAT2=ISTAT2OLD
       CALL XTPDQF
       CALL XADCPD(calconly)
       IF ( IERFLG .LT. 0 ) GO TO 9900
