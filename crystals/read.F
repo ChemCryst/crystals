@@ -1194,7 +1194,8 @@ C            close back to top level if a SCRIPT does not exist
      3      '{EProbably a bug.',
      4      '{EPlease send the .log and .lis files to Oxford'
              CALL XPRVDU(NCVDU, 4, 0)
-             write(ncwu,'(a)') trim(CMON(1)), cmon(2), cmon(3), cmon(4)
+             write(ncwu,'(a)') trim(CMON(1)), trim(cmon(2)), 
+     1         trim(cmon(3)), trim(cmon(4))
              CALL XFLUNW ( 1 , 3 )
             ELSE
              CALL XFLUNW ( 2 , 1 )

@@ -3614,7 +3614,9 @@ c
        write(cmon,'(1x,/,a)')
      1 '{I Hand of the second molecule has been inverted'
        call xprvdu(ncvdu,2,0)
-       if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1)),trim(CMON(2))(3:)
+       if (issprt .eq. 0) then
+         write (ncwu,'(a)') trim(CMON(1)), CMON(2)(3:len_trim(cmon(2)))
+       end if
       endif
 c
 c
@@ -4571,7 +4573,7 @@ c
      3 'Journal of Applied Crystallography 2006;39,842-849'
        CALL XPRVDU(NCVDU,3,0)
       if (issprt.eq.0) 
-     1 write(ncwu,'(a/a/a)') trim(CMON(1)),trim(CMON(2)),cmon(3)
+     1 write(ncwu,'(a/a/a)') trim(CMON(1)),trim(CMON(2)),trim(cmon(3))
 C
 c
       METH = 4    !SET DEFAULT TO KABSCH ROTARY/INVERSION

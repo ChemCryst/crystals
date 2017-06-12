@@ -651,7 +651,7 @@ c Nov 2016. We get better results with 0.2 (DJW)
      1         '{E Forced reset of P1 to 0.2'
                call xprvdu(ncvdu,2,0)
                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
-     1         cmon(1)(3:),cmon(2)(3:)
+     1         cmon(1)(3:len_trim(cmon(1))),cmon(2)(3:len_trim(cmon(2)))
                 SXA = 0.2
                 SXB = 0.0
                 call xpause(2000)
@@ -662,7 +662,7 @@ c Nov 2016. We get better results with 0.2 (DJW)
      1         '{E Forced reset of P1 0.001'
                call xprvdu(ncvdu,1,0)
                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
-     1         cmon(1)(3:),cmon(2)(3:)
+     1         cmon(1)(3:len_trim(cmon(1))),cmon(2)(3:len_trim(cmon(2)))
                sxa = 0.001
                call xpause(2000)
              endif
