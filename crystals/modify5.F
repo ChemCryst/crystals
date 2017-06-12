@@ -3536,20 +3536,21 @@ C
          WRITE (CMON,50) ICONTL(IMDNDA),ACTTYP(1:LENGTH)
 50       FORMAT (' The list currently contains ',I5,A)
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-cfeb08         WRITE (NCAWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08         WRITE (NCAWU,'(A)') trim(CMON(1))
 C
 CDJWMAR99[
          IF (ICONTL(IMDLVL).EQ.2) THEN
             WRITE (CMON,100)
             CALL XPRVDU (NCVDU,1,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-cfeb08            WRITE (NCAWU,'(A)') CMON(1)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08            WRITE (NCAWU,'(A)') trim(CMON(1))
          ELSE IF (ICONTL(IMDLVL).EQ.3) THEN
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
-cfeb08            WRITE (NCAWU,'(A)') CMON(1),CMON(2)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1)),
+     1        trim(CMON(2))
+cfeb08            WRITE (NCAWU,'(A)') CMON(1),trim(CMON(2))
          END IF
 100      FORMAT (2(9X,'Occ',4X,'x',5X,'y',5X,'z',7X,'U',3X))
 150      FORMAT (9X,'Occ',4X,'x',5X,'y',5X,'z',6X,'U11',3X,'U22',3X,'U33
@@ -3566,19 +3567,20 @@ C
 C
          WRITE (CMON,200) ACTTYP(1:LENGTH),OPERAT(1:LOPER)
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-cfeb08         WRITE (NCAWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08         WRITE (NCAWU,'(A)') trim(CMON(1))
 C
          IF (ICONTL(IMDLVL).EQ.2) THEN
             WRITE (CMON,100)
             CALL XPRVDU (NCVDU,1,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-cfeb08            WRITE (NCAWU,'(A)') CMON(1)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08            WRITE (NCAWU,'(A)') trim(CMON(1))
          ELSE IF (ICONTL(IMDLVL).EQ.3) THEN
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
-cfeb08            WRITE (NCAWU,'(A)') CMON(1),CMON(2)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1)),
+     1        trim(CMON(2))
+cfeb08            WRITE (NCAWU,'(A)') CMON(1),trim(CMON(2))
          END IF
 CDJWMAR99]
 200      FORMAT (1X,'The following',A,' will be ',A)
@@ -3606,8 +3608,8 @@ Cdjwmar99 print Uiso/Uii - 8 items
       WRITE (CMON,450) (A(I),NINT(A(I+1)),A(I+2),A(I+4),A(I+5),A(I+6),
      1NINT(A(I+3)),A(I+7),I=1,NA,8)
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-cfeb08      WRITE (NCAWU,'(A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08      WRITE (NCAWU,'(A)') trim(CMON(1))
 450   FORMAT (2(A4,I4,F5.2,3F6.3,I2,F6.3,1X))
       GO TO 1000
 C
@@ -3617,8 +3619,8 @@ C -- FULL PRINT
      1NINT(A(I+3)),A(I+7),A(I+8),A(I+9),A(I+10),A(I+11),A(I+12),A(I+13),
      2IB(I+14),I=1,NA,15)
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-cfeb08      WRITE (NCAWU,'(A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08      WRITE (NCAWU,'(A)') trim(CMON(1))
 550   FORMAT (A4,I4,F5.2,3F6.3,I2,3F6.3,3F5.2,F10.3,I7)
       GO TO 1000
 600   CONTINUE
@@ -4575,7 +4577,7 @@ C
       ELSE
             WRITE(CMON,'(A)') ' List 1,2 or 5 missing'
             CALL XPRVDU(NCVDU, 1,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
             GOTO 450
       ENDIF
 C
@@ -4591,7 +4593,7 @@ C---- CHECK CLASS
       ELSE
             WRITE(CMON,'(A)') ' This SG not yet handled'
             CALL XPRVDU(NCVDU, 1,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C----- DISPLAY CRYSTAL CLASS
             CLOW = ' '
             WRITE(CLOW,2200) (ISTORE(I), I = L2CC, L2CC+MD2CC-1)

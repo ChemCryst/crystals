@@ -250,8 +250,8 @@ C
 9910  CONTINUE
       WRITE ( CMON, 9915 ) ITEMP, ISSBFS, ISSNBF
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)
-cjan08      WRITE ( NCAWU , '(A)' ) CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
+cjan08      WRITE ( NCAWU , '(A)' ) trim(CMON(1))
 9915  FORMAT (' Insufficient space allocated for disc buffers',3I6)
       CALL XERHND ( IERPRG )
       RETURN

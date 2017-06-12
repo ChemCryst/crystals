@@ -178,8 +178,8 @@ C
 C   OUTPUT HEADER.
       WRITE(CMON,1200) FLOAT(IVERSN)*.01
       CALL XPRVDU(NCVDU, 1,0)
-c      WRITE(NCAWU, '(A)') CMON(1 )(:)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c      WRITE(NCAWU, '(A)') trim(CMON(1))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1200  FORMAT(' DIFABS Version ', F5.2, ' Applied to Fo or Fc')
 C
 C     *********
@@ -222,8 +222,8 @@ C----- COPY OVER THE ORIENTATION MATRIX
         WRITE(CMON,'(A/A)')' There is no orientation matrix.',
      1  ' DIFABS correction will not be optimal'
       CALL XPRVDU(NCVDU, 2,0)
-c      WRITE(NCAWU, '(A)') (CMON( II)(:),II=1,2)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON( II)(:),II=1,2)
+c      WRITE(NCAWU, '(A)') (trim(CMON( II)),II=1,2)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
 C----- COPY OVER THE ORTHOGONALISATION MATRIX
         CALL XMOVE (STORE(L1O2), ORIENT(1,1), 9)
         CALL MTRANS(ORIENT)
@@ -1160,8 +1160,8 @@ C  NF=1/2       END      REPORT RESULTS
       RMS=SQRT(SUMRSQ/SUMFSQ)
       WRITE(CMON,210) NUMREF, RM , RMS
       IF (NF .EQ.2) CALL XPRVDU(NCVDU, 3,0)
-c      WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,3)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON( II)(:),II=1,3)
+c      WRITE(NCAWU, '(A)') (trim(CMON(II)),II=1,3)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,3)
 210   FORMAT(' For the',I6,
      +' reflections'/' the relative residual was ',F6.4,
      +'   and the relative rms residual was ',F6.4/)
@@ -1472,8 +1472,8 @@ cdjwapr08
             WRITE(CMON,111)
        ENDIF
        CALL XPRVDU(NCVDU, 1,0)
-c       WRITE(NCAWU, '(A)') CMON( 1)(:)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c       WRITE(NCAWU, '(A)') trim(CMON(1))
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 110    FORMAT ('       DIFABS correction applied to ', A)
 111    FORMAT (' Transfering correction from Fc to Fo')
       endif
@@ -1596,24 +1596,24 @@ C   REPORT CORRECTION SUMMARY
       AVER=ATOT/NTOT
       IF (IMODE .LE.1 ) THEN
          WRITE ( CMON,197) NTOT
-c         WRITE(NCAWU, '(A)') CMON(1 )(:)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c         WRITE(NCAWU, '(A)') trim(CMON(1))
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 197   FORMAT(I6,' Reflections corrected')
          WRITE ( CMON,198) AMIN,APHINP,AMUNP
-c         WRITE(NCAWU, '(A)') CMON( 1)(:)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c         WRITE(NCAWU, '(A)') trim(CMON(1))
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
          WRITE ( CMON,199) APHINS,AMUNS
-c         WRITE(NCAWU, '(A)') CMON(1 )(:)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c         WRITE(NCAWU, '(A)') trim(CMON(1))
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 198   FORMAT( ' Minimum absorption correction =',F6.3,
      2        5X,'at  PHI(P)=',F6.1,' MU(P)=',F6.1 )
 199   FORMAT(47X,    'PHI(S)=',F6.1,' MU(S)=',F6.1 )
          WRITE ( CMON,200) AMAX,APHIXP,AMUXP
-c         WRITE(NCAWU, '(A)') CMON(1 )(:)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c         WRITE(NCAWU, '(A)') trim(CMON(1))
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
          WRITE ( CMON,201) APHIXS,AMUXS,AVER
-c         WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,2)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II )(:),II=1,2)
+c         WRITE(NCAWU, '(A)') (trim(CMON(II)),II=1,2)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
 200   FORMAT( ' Maximum absorption correction =',F6.3,
      2        5X,'at  PHI(P)=',F6.1,' MU(P)=',F6.1)
 201   FORMAT(47X,    'PHI(S)=',F6.1,' MU(S)=',F6.1,/
@@ -1745,20 +1745,20 @@ C
       IF (IFAIL .NE. 0) THEN
        WRITE(CMON,202) I
        CALL XPRVDU(NCVDU, 1,0)
-c       WRITE(NCAWU, '(A)') CMON(1 )(:)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c       WRITE(NCAWU, '(A)') trim(CMON(1))
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 202    FORMAT(' WARNING - Cell/orientation matrix mis-match',I2)
        WRITE(CMON,200) (STORE(J),J = L1P1, L1P1+2),
      1 (STORE(J)*RAD,J = L1P1+3, L1P1+5)
 200    FORMAT(' LIST 1  CELL', 6F 8.3)
        CALL XPRVDU(NCVDU, 1,0)
-c       WRITE(NCAWU, '(A)') CMON(1 )(:)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c       WRITE(NCAWU, '(A)') trim(CMON(1))
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
        WRITE(CMON,201) Y,Z
 201    FORMAT(' LIST 13 CELL', 6F8.3)
        CALL XPRVDU(NCVDU, 1,0)
-c       WRITE(NCAWU, '(A)') CMON(1 )(:)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+c       WRITE(NCAWU, '(A)') trim(CMON(1))
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       ENDIF
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,100)((ORIENT(I,J),J=1,3),I=1,3),Y,Z

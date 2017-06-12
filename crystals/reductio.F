@@ -386,7 +386,7 @@ C--SWAP THE OUTPUT
 C -- TERMINATION MESSAGES
       WRITE ( CMON , 2600) N6W, N
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
 2600  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
@@ -406,13 +406,13 @@ C -- INPUT ERROR
 9915  CONTINUE
       WRITE ( CMON ,9916)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
 9916  FORMAT(1X, ' Precession geometry not supported')
 9920  CONTINUE
 C -- ILLEGAL DIFFRACTION GEOMETRY
       WRITE ( CMON, 9925) IT
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
 9925  FORMAT ( 1X , 'Illegal diffraction geometry flag ' , I5 )
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -728,7 +728,7 @@ C
       WRITE(CMON,1760) (RANGE(I),I=2,NTOT1-1),
      1 ATOT1, ITOT1,   (RANGE(I),I=2,NTOT1-1), ATOT2, ITOT2
       CALL XPRVDU(NCVDU, 9,0)
-      IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') (CMON(I)(:),I=1,9)
+      IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') (trim(CMON(I)),I=1,9)
 1760  FORMAT(/
      1'Fo range       ', '     -ve', 5F8.3,  '  Remainder',/
      2'Mean Fo        ', 7F8.3,/
@@ -740,7 +740,7 @@ C
       ENDIF
       WRITE ( CMON , 1800 ) N6W , N
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU ,'(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU ,'(A)') trim(CMON(1))
 1800  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
@@ -1597,7 +1597,7 @@ C--PRINT THE REFLECTION TOTALS
      2 ' merged reflections rejected' )
       WRITE ( CMON , 4048) N3SIG, PC3SIG
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 4048  FORMAT(I6,' Reflections greater than 3 sigma(i),',
      1 F8.3, ' percent of data')
 C
@@ -1616,7 +1616,7 @@ C
 C
       WRITE(CMON,4049) WORK(25),WORK(28)
       CALL XPRVDU(NCVDU, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (CMON(I)(:),I=1,2)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (trim(CMON(I)),I=1,2)
 4049  FORMAT(
      1 ' Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  = '
      1  ,F6.3/
@@ -1628,7 +1628,7 @@ C
 4100  CONTINUE
       WRITE(CMON, 4104) (RINT(I),I=1,3)
       CALL XPRVDU(NCVDU, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (CMON(I)(:),I=1,2)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') (trim(CMON(I)),I=1,2)
 4104  FORMAT(
      1 ' Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma'/
      2 2X,F18.3, F16.3, F15.3)
@@ -1752,7 +1752,7 @@ C--GAUSSIAN WEIGHTING SCHEME
 C -- WRONG NO. OF PARAMS.
       WRITE ( CMON , 9915 ) NCT , NSCH
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 9915  FORMAT ( 1X , I5 , ' is the wrong number of parameters for ' ,
      1 'weighting scheme ' , I4 )
       CALL XERHND ( IERERR )
@@ -2293,7 +2293,7 @@ cundo       Write(ncwu,610) c(1), c(2)
 999   continue
       write(cmon,*)'Error during analysis of variances'
       call xprvdu(ncvdu, 1,0)
-cundo      if (issprt .eq. 0) write(ncwu,'(a)') cmon(1)(:)
+cundo      if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
       return
       end
 C
@@ -2349,7 +2349,7 @@ C--PRINT THE HEADING
       CALL XPRTCN
       WRITE ( CMON ,1000)
       IF ( IPRINT .GE. 0 ) CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1000  FORMAT('Fsq/sigma(Fsq)  No.  %  Total',
      2 ' Remainder         Distribution of sigma levels.',A2)
 C

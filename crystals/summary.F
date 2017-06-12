@@ -1139,11 +1139,13 @@ C>> ALERT C for > 5
           ENDIF
           IF(SXB .GT. 5) THEN
             call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)
+            IF (ISSPRT .EQ. 0) then 
+              WRITE(NCWU,'(/A/)') cmon(1)(3:len_trim(cmon(1)))
+            end if
             WRITE(CMON,'(A)')
      1      'One possible cause is twinning - try ROTAX Analysis'            
             call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') trim(CMON(1))
           ENDIF
 c
 C
@@ -1235,7 +1237,7 @@ C    ARE NONE
      1 .LE. 0 ) THEN
         WRITE ( CMON , 1065 )
         CALL XPRVDU(NCVDU, 2,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,2)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
 1065    FORMAT ( 1X , 'There are no layer, element, or batch scales',/,
      1 1X, 'There are no special overall parameters' )
       ELSE
@@ -1743,7 +1745,7 @@ c        WRITE ( CMON , '(a,2i8)' )
 c     1 'Too many reflections to compute completeness ',itrsz,itrmax
 c        CALL XPRVDU(NCVDU, 2,0)
 c        if (issprt .eq. 0) then
-c            write(ncwu,'(a)') cmon(1)(:)
+c            write(ncwu,'(a)') trim(CMON(1))
 c            return
 c        endif
 c      endif
@@ -2362,25 +2364,31 @@ c      determinant
 470      format(' Slope, intercept and Cc of Normal Probability Plot =',
      1  f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             idjwerr = 0
             if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) ) then
               idjwerr = 1
               write(cmon,'(a)')'{E The slope should be unity'
               call xprvdu(ncvdu, 1,0)
-              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+              if (issprt.eq.0) then
+                write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+              end if
             endif
             if ((cutter .lt. -.05) .or. (cutter .gt. .05) ) then
               idjwerr = 1
               write(cmon,'(a)')'{E The intercept should be zero'
               call xprvdu(ncvdu, 1,0)
-              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+              if (issprt.eq.0) then
+                write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+              end if
             endif
             if(idjwerr .ne .0) then
                 write(cmon,'(a)') 
      1 '{E CRYSTALS suggests that you check your weighting scheme'
                 call xprvdu(ncvdu, 1,0)
-                if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+                if (issprt.eq.0) then 
+                  write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+                end if
             endif
 c-----      update list 39 - assumes only one FLAC record
 c            iflac = 'FLAC'
@@ -2400,25 +2408,25 @@ c
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             write(cmon,460) slope, cutter
 460        format(' Slope and intercept of Normal Probability Plot =',
      1  2f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
      1      (cutter .lt. -.05) .or. (cutter .gt. .05)) then
               WRITE(CMON,'(A)') 
      1 '{E CRYSTALS suggests that you check your weighting scheme'
              call xprvdu(ncvdu, 1,0)
-             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+             if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
                endif
             endif
         else
             write(cmon,472) 
 472         format ('Slope and Intercept cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
         endif
 c
 c recycle looking for outliers
@@ -2586,7 +2594,7 @@ C
         call xcrems(cmon(1), cmon(1), len)
           CALL XPRVDU(NCVDU, 1,0)
 1025      FORMAT ( 1X , A, A )
-          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) cmon(1)
+          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
         IND13 = IND13 + 1
 1100  CONTINUE
 C

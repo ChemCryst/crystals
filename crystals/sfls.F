@@ -674,7 +674,7 @@ C--CHECK THE ISOTROPIC TEMPERATURE FACTOR
 C--THIS U[ISO] VALUE IS OUT OF RANGE
             WRITE ( CMON, 3120)STORE(M5),NINT(STORE(M5+1)),STORE(M5+7)
             CALL XPRVDU(NCVDU, 1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 3120        FORMAT( ' Atom ', A4, I5, ' has U-iso too small, ', F8.4)
             A=AMIN1(A,STORE(M5+7))
             N=N+1
@@ -776,7 +776,7 @@ C -- INVALID TEMPERATURE FACTOR
       IF ((STORE(L5O+4) .GT. 1.) .OR. (STORE(L5O+4) .LT. 0.)) THEN
         WRITE ( CMON, 3320) STORE(L5O+4)
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
+        IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') trim(CMON(1))
 3320    FORMAT(1X,'Enantiopole parameter out of range. (',F6.3,' ) ')
       END IF
 
@@ -785,7 +785,7 @@ C -- INVALID TEMPERATURE FACTOR
         WRITE ( CMON, 3345) STORE(L5O+5)
         CALL OUTCOL(1)
         CALL XPRVDU(NCVDU, 1,0)
-        WRITE(NCWU, '(A)') CMON(1)(:)
+        WRITE(NCWU, '(A)') trim(CMON(1))
 3345    FORMAT(1X,'Extinction parameter negative. (',F12.6,' ) ')
         STORE(L5O+5) = 0.0
       ENDIF
@@ -816,7 +816,7 @@ c     1 .and. (abs(store(l30ge+6)) .le. zero)) then
 c            store(L5O+4) = 0.5
 c            WRITE ( CMON, '(A)')'Starting FLACK refinement from 0.5' 
 c            CALL XPRVDU(NCVDU, 1,0)
-c            IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') CMON(1)(:)
+c            IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') trim(CMON(1))
 c      endif
 c
       SCALE = STORE(L5O) 
@@ -892,7 +892,7 @@ c
      1       'It is unwise to refine extinction for twinned data'
              CALL OUTCOL(9)
              CALL XPRVDU(NCVDU, 1,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
              CALL OUTCOL(1)
 cdjw0302 - allow twin with extparam:  NA=-1
            END IF
@@ -1261,19 +1261,19 @@ cdjwmay07          STORE(L30GE+11 ) = RW
             WRITE ( CMON, 6262) 
      1       NT, MIN(99.99,STORE(L30RF)),MIN(99.99,STORE(L30RF+1))
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 
             WRITE ( CMON, 6261)
      1       NINT(RALL(7)), MIN(99.99,STORE(L30CF+6)),
      2                      MIN(99.99,STORE(L30CF+7)), -10.0
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 
             WRITE ( CMON, 6261)  
      1       NINT(RALL(2)), MIN(99.99,STORE(L30CF+2)),
      2                      MIN(99.99,STORE(L30CF+3)), RALL(1)
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
             CALL OUTCOL(1)
       ENDIF
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
@@ -1321,7 +1321,7 @@ cdjwsep09
           call outcol(9)
         endif
         call xprvdu(NCVDU,2,0)
-        if(issprt.eq.0) write(ncwu, '(a)') cmon(1)(:),cmon(2)(:)
+        if(issprt.eq.0) write(ncwu, '(a)') trim(CMON(1)),trim(CMON(2))
         call outcol(1)
         delfofc = (foav-fcav*scale)
 cRIC13:        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
@@ -1329,7 +1329,7 @@ cRIC13:        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ',
      1  delfofc/scale, 
      2  '100*(<Fo>-<Fc>)/<Fo> = ',100.*delfofc/foav
         call xprvdu(NCVDU,1,0)
-        if(issprt.eq.0) write(ncwu, '(a)') cmon(1)(:)
+        if(issprt.eq.0) write(ncwu, '(a)') trim(CMON(1))
 cdjwjan05
 c
 C--PRINT THE TERMINATION MESSAGES
@@ -2626,7 +2626,7 @@ C--STORE THE SCALE AND PRINT IT
 6112      FORMAT(I6,' low leverage reflections.')
           WRITE ( CMON, 6112) MIN(30,ILEVPR)
           CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
           RLEVNM = 0.0
           RLEVDN = 0.0
           DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, MDLEVE
@@ -2637,12 +2637,12 @@ C--STORE THE SCALE AND PRINT IT
           WRITE(CMON,'(''R(lowleverage) = <Fo-Fc>/<Fo> ='',F9.2,''%'')')
      1     100.*RLEVNM/MAX(.001,RLEVDN)
           CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
 
           WRITE(CMON,6113)
 6113      FORMAT (2('   h   k   l sintl2 Leverage    FO-FC    '))
           CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
 
           DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, 2*MDLEVE
             WRITE (CMON,'(2(3I4,F6.3,X,F7.5,F10.3,5X))')
@@ -2651,7 +2651,7 @@ C--STORE THE SCALE AND PRINT IT
      2       STORE(JXAP+5)-STORE(JXAP+6),
      3       JXAP= MLEVER, MLEVER+MDLEVE, MDLEVE)
             CALL XPRVDU(NCVDU, 1,0)
-            IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
+            IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
           END DO
       ENDIF
 C
@@ -2661,10 +2661,10 @@ C Only print disagreeable reflections during calc.
      1  SQRT(AMINF/FLOAT(NT))
         CALL XPRVDU(NCVDU, 2,0)
         IF(ISSPRT.EQ.0) WRITE(NCWU, '(//)')
-        IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(2)(:)
+        IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(2))
         WRITE ( CMON ,11)
         CALL XPRVDU(NCVDU, 1,0)
-        IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
+        IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
 11      FORMAT(2('   h   k  l     Fo      Fc  wDel Fo/Fc','  '))
         DO MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
           WRITE ( CMON ,
@@ -2674,7 +2674,7 @@ cRIC13:     *     '(3I4, 2F7.1, F7.2, F5.2,2X,3I4, 2F7.1, F7.2, F5.2)')
      2     (STORE(IXAP), IXAP= JXAP+3,JXAP+6),
      3     JXAP= MSORT, MSORT+MDSORT, MDSORT)
           CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
         END DO
       END IF
 C

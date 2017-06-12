@@ -223,7 +223,7 @@ C
 
       WRITE ( CMON,1005) REASON(MSGST:MSGEND)
       CALL XPRVDU(NCEROR, 1, 0)
-      IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) trim(CMON(1))
 C
       RETURN
       END
@@ -585,7 +585,7 @@ cdjwapr08 - autoincrement file root
      1      ' The D/A file ( ', clcnam(1:namlen) ,
      2      ' )already exists'
           call xprvdu(nceror, 1, 0)
-          if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
+          if (issprt .eq. 0) write (ncwu, '(A)' ) trim(CMON(1))
 c
           ierr=.false.
           i =index(clcnam(1:namlen),'.')-1
@@ -595,7 +595,7 @@ c
               write(cmon,'(a)')
      1        ' Only 9 generations permitted'
               call xprvdu(nceror, 1, 0)
-              if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
+              if (issprt .eq. 0) write (ncwu, '(A)' ) trim(CMON(1))
               ierr=.true. !goto 9920
             else            
               if (j .le. 0) then ! no number in name, inserting one
@@ -619,7 +619,7 @@ cdjwjan09 - replace # with -
      1        ' The D/A file ( ', clcnam(1:ILEN) ,
      2        ' )already exists and cannot be overwritten'
             CALL XPRVDU(NCEROR, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+            IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) trim(CMON(1))
 C -- INTERNAL ERROR DETECTED
             CALL XOPMSG ( IOPCRY , IOPcmi , 0 )
             !GO TO 9900
@@ -635,7 +635,7 @@ C -- INTERNAL ERROR DETECTED
      1    ' A new D/A file ( ', clcnam(1:namlen) ,
      2    ' )will be created'
         CALL XPRVDU(NCEROR, 1, 0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) trim(CMON(1))
       endif ! end check for non existent 'new' file
 c
 c
@@ -1618,7 +1618,7 @@ cdjwjun07
       WRITE(CMON(1),'(3A)')'Script: ',
      1  CSCPNM(1:LENNM), ''''
       ENDIF
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
 cdjwjun07
 
 

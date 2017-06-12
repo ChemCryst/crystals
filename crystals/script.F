@@ -5308,7 +5308,7 @@ C
             WRITE(CMON,1000) IDESC, NDESCR
 1000        FORMAT(' Allocating descriptor ',I5,' / ',I5)
             CALL XPRVDU(NCVDU, 1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
       ENDIF
       IF ( IDESC .GT. NDESCR ) GO TO 9910
 C
@@ -5363,7 +5363,7 @@ C
       if (iscver .gt. 0) then
        write(cmon,1000) idesc, ctext(1:len(ctext))
        call xprvdu(ncvdu,1,0)
-       if (issprt .eq. 0) write(ncwu,'(a)') cmon(1)
+       if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
 1000   format(' Descriptor',i4,' = ',A)
       endif
       CDESC(IDESCR(1,IDESC)) = CTEXT
@@ -7799,7 +7799,8 @@ C
         IF (ISCVER .GT. 0)  THEN
          WRITE ( CMON, 9998 ) CVARIB
          CALL XPRVDU(NCVDU, 1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(5:)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
+     1     CMON(1)(5:len_trim(CMON(1)))
 9998     FORMAT ('{9,1 ', A,' Already exists' )
         ENDIF
         IF ( IVTYPE .NE. ITYPE ) GO TO 9920
@@ -7920,7 +7921,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1005 ) ITYPE,IFLIND, ILEVEL(IFLIND)
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1005    FORMAT ( 1X , 'Create stack frame of type : ', I6,' file# ',2I6)
       ENDIF
 C
@@ -7946,7 +7947,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1006 ) ICURLV, ITYPE, IFLIND
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1006    FORMAT ( 1X , 'Old level : ', I6,' type ',I6,' ifl ',i6)
       ENDIF
 C
@@ -7968,7 +7969,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1015 ) ICURLV , INEWLV
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1015    FORMAT ( 1X , 'Current level :  ' , I5 , ' New level : ' , I5 )
       ENDIF
 C
@@ -8218,7 +8219,7 @@ cdjwjun07
      1  CSCPNM(1:LENNM), ''''
       ENDIF
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
 cdjwjun07
 cdjwdec09
 C
@@ -8315,7 +8316,7 @@ C
         LEVEL = ILEVEL(IFLIND)
         WRITE ( CMON, 1005 ) LEVEL , ISTACK(JBTYPE,LEVEL)
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1005    FORMAT ( 1X , 'Delete current stack level ' , I5 ,
      2 ' of type : ' , I5 )
       ENDIF

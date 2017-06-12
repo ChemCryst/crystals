@@ -382,7 +382,8 @@ C---- SORT OUT THE INPUT
          write(cmon,'(A, 2f10.4)') 
      1 '{I Rescaling weights by a factor of',factor, store(l30rf+4)
          call xprvdu(ncvdu,1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1)(3:)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
+     1     cmon(1)(3:len_trim(cmon(1)))
          call xpause(3000)
       endif
 C
@@ -596,7 +597,9 @@ C
              WRITE(CMON,'(/A,2F10.3,A)')' Best fit this cycle: ',
      1       SXA,SXB, ' .0 .0 .0 .333'
              CALL XPRVDU(NCVDU,2,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1),cmon(2)
+             IF (ISSPRT .EQ. 0) then 
+               WRITE(NCWU,'(A)') trim(CMON(1)),trim(CMON(2))
+             end if
              WDTO = 0.0
 
              CALL XFAL06(IULN06, 0)   ! Load READ ONLY
@@ -625,7 +628,9 @@ C
      1        '           <wdelsq> : ', WDTO,
      2        '          S : ', SGOF
              CALL XPRVDU(NCVDU,2,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') cmon(1),cmon(2)
+             IF (ISSPRT .EQ. 0) then
+               WRITE(NCWU,'(A)') trim(CMON(1)),trim(CMON(2))
+             end if
 
 C Best fit at a high edge of the grid: increase spacing.
              IF ( KBESA .EQ. 4 ) SXAG = SXAG * 2.0
@@ -671,12 +676,12 @@ cDJWdec12
            write(cmon,'(a)') 
      1     'No Fcalcs yet - use default SHELX parameters'
             call xprvdu(ncvdu,1,0)
-            if (issprt .eq. 0) write(ncwu,'(a)') CMON(1)
+            if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
           endif
           WRITE ( CMON,'(A,2F10.4,A)') '     Weights applied: ',SXA,SXB,
      1                             ' .0 .0 .0 .333'
           CALL XPRVDU(NCVDU,1,0)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(//A//)') cmon(1)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(//A//)') trim(CMON(1))
 C-Acta/PLATON tests
 C>> ALERT A for > 50
 C>> ALERT B for > 25
@@ -694,11 +699,13 @@ C>> ALERT C for > 5
           ENDIF
           IF(SXB .GT. 5) THEN
             call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)
+            IF (ISSPRT .EQ. 0) then
+              WRITE(NCWU,'(/A/)') cmon(1)(3:len_trim(cmon(1)))
+            end if
             WRITE(CMON,'(A)')
      1      'One possible cause is twinning - try ROTAX Analysis'            
             call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') trim(CMON(1))
           ENDIF
 c
 c
@@ -1503,7 +1510,7 @@ cdjw jan 09 Save info for scripts
       IF(JPRINT .GT. 0) THEN
             WRITE(CMON,5585) JPRINT
             CALL XPRVDU(NCVDU, 2,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU ,'(/A/) ') CMON(1)(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU ,'(/A/) ') trim(CMON(1))
 5585  FORMAT(1X,/, I6, ' Reflections down-weighted as Outliers',/)
       ENDIF
       IF (IGUI4(2) .EQ. 1 ) THEN
@@ -1674,8 +1681,8 @@ c            ibin = nint (scale * sqrt(point-pmin))  +1
 c            if ((ibin .lt. 1) .or. (ibin .gt. line)) then
 c                write ( CMON ,'(A)') ' Out of range'
 c                CALL XPRVDU(NCVDU, 1,0)
-c                IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)
-c                WRITE(NCWU, '(A)') CMON(1)
+c                IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+c                WRITE(NCWU, '(A)') trim(CMON(1))
 c            endif
 c            itot(ibin) = itot(ibin) + 1
 c            sum(ibin) = sum(ibin) + val
@@ -2481,12 +2488,12 @@ C--CHECK IF THIS IS ON THE SCALE OF /FO/ OR /FC/
       ACI=1./SCALF
 3550  CONTINUE
       call xprvdu(ncvdu,2,0)
-      if (issprt .eq. 0) write(ncwu,'(a)') CMON(1),CMON(2)
+      if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1)),trim(CMON(2))
       WRITE(CMON,3600)ACI
 C--PRINT THE CURRENT SCALE FACTOR
 3600  FORMAT(' Scale factor  =',F10.5)
       call xprvdu(ncvdu,1,0)
-      if (issprt .eq. 0) write(ncwu,'(a)') CMON(1)
+      if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
 C--WRITE OUT LIST 4
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3650)ITYPE4
@@ -3850,7 +3857,7 @@ C---- NOTHING TO DO IF NO LIST 6
       IF (KEXIST(6) .LE. 0) THEN
         WRITE (CMON,'(A)') ' No LIST 6'
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
         RETURN
       ENDIF
 C
@@ -3877,7 +3884,7 @@ C-----CHECK REFLECTIONS ALREADY ON DISK
       IF (L6D .LE. 0) THEN
        WRITE(CMON,'(A)')' Reflections not in DSC file'
        CALL XPRVDU (NCVDU,1,0)
-       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
        GOTO 9910
       ENDIF
 C

@@ -687,7 +687,7 @@ c      inhibit geometrical deviations
      1'Distance and torsion deviations are not computed if one',
      2 ' of the fragments is from a different unit cell'
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       GO TO 8000
 c
 2500  CONTINUE
@@ -814,7 +814,7 @@ C -- SET FLAG TO PRODUCE NO NEW LIST
 8100  CONTINUE
       WRITE(CMON,'(A)') 'No Matrix to use for renumbering'
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       IERFLG = -1
       GOTO 9000
 9000  CONTINUE
@@ -832,7 +832,7 @@ C -- CHECK IF A NEW LIST 5 IS TO BE PRODUCED
 C -- NO NEW LIST TO BE PRODUCED
       WRITE ( CMON,9110)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 9110  FORMAT (' No new list 5 will be created ')
       GO TO 9200
 9150  CONTINUE
@@ -852,7 +852,7 @@ C -- STORE LIST 5
 C -- WRITE FINAL MESSAGES
       WRITE ( CMON,9155) N5
       CALL XPRVDU(NCVDU, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,2)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
 9155  FORMAT (' List 5 now contains ',I4,' atoms  ',/,
      2 ' list modification complete  ')
 C -- FINISH ROUTINE
@@ -864,7 +864,7 @@ C -- FINISH ROUTINE
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU, 1,0)
        CALL OUTCOL(1)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A//)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(/A//)') trim(CMON(1))
        write(cmon,'(/)')
        CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -889,7 +889,7 @@ C    SUBROUTINE
 9500  CONTINUE
       WRITE ( CMON,9510)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 9510  FORMAT (' Errors detected by lexical scanner  ')
       CALL XERHND ( IERERR )
 C
@@ -1003,7 +1003,7 @@ C----- CHECK THE NUMBER OF NEW AND OLD ATOMS
         WRITE(CMON,'(A,I4,A,I4)') 'Input: mapping ', NNEW ,
      1 ' atoms onto ', nold 
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
         IF (NOLD.EQ.NNEW) NATMD=NNEW
 C -- IF THERE ARE NO ATOM DEFINITIONS THEN THERE IS NO CALCULATION
       IF (NATMD.EQ.0) RETURN
@@ -1032,7 +1032,7 @@ c
      1 'Matching Permitting Improper Rotation (Method 4, Kabsch)'
       endif
       call xprvdu(ncvdu,1,0)
-      if (issprt .eq. 0) write(ncwu, '(a)') cmon(1)(:)
+      if (issprt .eq. 0) write(ncwu, '(a)') trim(CMON(1))
 c
 c
 c
@@ -1218,7 +1218,7 @@ C -- ERROR
                NUMATM=((J-LNEW)/MDNEW)+1
                WRITE (CMON,600) CAXIS(I),NUMATM
                CALL XPRVDU (NCVDU,1,0)
-               IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+               IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 600            FORMAT (1X,'Rotation of ',A1,' coordinate is undefined ',
      1          ' for atom number ',I5)
                IDEFIN=-1
@@ -1588,7 +1588,7 @@ CDJWNOV07            CALL XPRVDU(NCVDU,4,0)
             IF ( I .GT. 0 ) THEN
               WRITE(CMON,'(/''Singular operator matrix found'')')
               CALL XPRVDU(NCVDU,2,0)
-              IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(2)(:)
+              IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(2))
 
               IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A,A)') 
      1    CHAR(9),'Singular_operator_cannot_be_inverted'
@@ -1641,8 +1641,8 @@ cdjwmay09
           IF ((IFLCMP .EQ. 2).OR.(IFLCMP .EQ. 5).OR.
      1    (IFLCMP .EQ. 6))  THEN
             CALL XPRVDU (NCVDU,5,0)
-            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:),
-     1      CMON(2)(:),CMON(3)(:), CMON(4)(:),CMON(5)(:)
+            IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1)),
+     1      trim(CMON(2)),trim(CMON(3)), trim(CMON(4)),trim(CMON(5))
           ENDIF
          ENDIF
 c
@@ -1691,7 +1691,8 @@ cdjwmay09         IF (ABS(1.-ABS(DET)).LE..05) THEN
              IF ((IFLCMP .EQ. 2).OR.(IFLCMP .EQ. 5).OR.
      1      (IFLCMP .EQ. 6))  THEN
                CALL XPRVDU (NCVDU,2,0)
-               IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(2)(3:)
+               IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') 
+     1            CMON(2)(3:len_trim(CMON(2)))
              ENDIF
             ENDIF
 c
@@ -1738,7 +1739,8 @@ C
               CALL XPRVDU (NCVDU,1,0)
 1250          FORMAT ('{I  Pseudo-symmetry operator of form :-  ',
      1        3(F6.2,A2,2X))
-              IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(3:)
+              IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') 
+     1          CMON(1)(3:len_trim(CMON(1)))
             ENDIF
             IF (IPCHRE.GE.0)THEN
 
@@ -2000,14 +2002,14 @@ C
 1950  CONTINUE
       WRITE (CMON,2000) NOLD
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 2000  FORMAT (' Too few old atom positions have been given -',I5)
       CALL XERHND (4)
       RETURN
 2050  CONTINUE
       WRITE (CMON,2100) NNEW
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 2100  FORMAT (' Too few new atom positions have been given -',I5)
       CALL XERHND (4)
       RETURN
@@ -2018,7 +2020,7 @@ C
       CALL XLINES
       WRITE (CMON,2200) IGRPNO
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 2200  FORMAT (1X,'Calculation abandoned for group number ',I3)
       GO TO 1800
 C 
@@ -2030,7 +2032,7 @@ C
 2300  CONTINUE
       WRITE (CMON,2350)
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 2350  FORMAT (1X,'Attempt to change undefined coordinates')
       CALL XERHND (IERERR)
       GO TO 2150
@@ -2101,7 +2103,7 @@ cdjw-nov05
         write(cmon,'(a,f12.6)') 
      1  ' Excessive contraction. Determinant =', det3
         call xprvdu(ncvdu,1,0)
-        if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+        if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
             djwa(1)=rotdil(1,1)
             djwa(2)=rotdil(1,2)
             djwa(3)=rotdil(1,3)
@@ -2117,13 +2119,13 @@ c
             endif
         write(cmon,'(a,3(/12x,3f12.6))')' Original matrix',rotdil
         call xprvdu(ncvdu,4,0)
-        if (issprt .eq. 0) write (ncwu,'(a)') (cmon(i)(:),i=1,4)
+        if (issprt .eq. 0) write (ncwu,'(a)') (trim(CMON(i)),i=1,4)
             rotdil(3,1)=djwc(1)
             rotdil(3,2)=djwc(2)
             rotdil(3,3)=djwc(3)
         write(cmon,'(a,3(/12x,3f12.6))')' Modified matrix',rotdil
         call xprvdu(ncvdu,4,0)
-        if (issprt .eq. 0) write (ncwu,'(a)') (cmon(i)(:),i=1,4)
+        if (issprt .eq. 0) write (ncwu,'(a)') (trim(CMON(i)),i=1,4)
       endif
       det3 = xdetr3(rotdil)
 c djwdec05 These are not always fixing the problem. Skip round them
@@ -2143,7 +2145,7 @@ c
        write(cmon,'(a,f12.6)') 'Fixing Rotdil(1,1) - old value =',
      1 rotdil(1,1) 
        call xprvdu(ncvdu,1,0)
-       if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+       if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
        ROTDIL(1,1)=
      1 SQRT(1.-ROTDIL(1,2)*ROTDIL(1,2)-ROTDIL(1,3)*ROTDIL(1,3))
       endif
@@ -2151,13 +2153,13 @@ C
       IF (ABS(ROTDIL(2,2)) .LE. 0.0001*NNEW) THEN
         WRITE(CMON,1300) ROTDIL(2,2)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 1300    FORMAT(1X, 'One group is almost colinear - sigma(Y**2) = '
      1  ,F12.8)
        write(cmon,'(a,f12.6)') 'Fixing Rotdil(2,2) - old value =',
      1 rotdil(2,2) 
        call xprvdu(ncvdu,1,0)
-       if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+       if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
 c
 C Sqrt may be negative above, try this instead:
         ROTDIL(2,2)=SIGN( SQRT(ABS(1.-ROTDIL(2,1)*ROTDIL(2,1)-
@@ -2167,13 +2169,13 @@ C
       IF (ABS(ROTDIL(3,3)) .LE. 0.0001*NNEW) THEN
         WRITE(CMON,1200) ROTDIL(3,3)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 1200    FORMAT(1X, 'One group is almost coplanar - sigma(Z**2) = '
      1  ,F12.8)
        write(cmon,'(a,f12.6)') 'Fixing Rotdil(3,3) - old value =',
      1 rotdil(3,3) 
        call xprvdu(ncvdu,1,0)
-       if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+       if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
 c Sqrt may be negative, try this:
         ROTDIL(3,3)= SQRT(ABS(1.-ROTDIL(3,1)*ROTDIL(3,1)-
      1  ROTDIL(3,2)*ROTDIL(3,2)))
@@ -2230,14 +2232,14 @@ c      if(uvec(i) .gt. 1.2)  then
 c         write(cmon,'(a,i2,f12.6,a )') 
 c     1   ' Excessive dilation. Eigenvalue',i,uvec(i),' reset to unity'
 c          call xprvdu(ncvdu,1,0)
-c          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+c          if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
 c         uvec(i)=1.0
 c      elseif (uvec(i) .lt. 0.8) then
 c         write(cmon,'(a,i2,f12.6,a )') 
 c     1   ' Excessive contraction. Eigenvalue',
 c     2     i,uvec(i),' reset to unity'
 c          call xprvdu(ncvdu,1,0)
-c          if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+c          if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
 c         uvec(i)=1.0
 c      endif
 c
@@ -2328,7 +2330,7 @@ C --
 C --
         write(cmon,1500) 
         call xprvdu(ncvdu,1,0)
-        if (issprt .eq. 0) write (ncwu,'(a//)') cmon(1)
+        if (issprt .eq. 0) write (ncwu,'(a//)') trim(CMON(1))
 1500  FORMAT (' Calculation of rotation matrix by Kabsch method  ')
 C --
       DO 1600 I=1,3
@@ -2378,14 +2380,14 @@ c -- check not co-planar
          write(cmon,'(a,f12.6)') 
      1  '{I Best match involves inversion, determinant  =', detb
          call xprvdu(ncvdu,1,0)
-         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+         if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
       endif
       IF ((DETB.LT.0) .AND. (IMETHD .EQ.3)) THEN
          SIG(3)=-1.
          write(cmon,'(a)') 
      1  ' Ensuring pure rotation'
          call xprvdu(ncvdu,1,0)
-         if (issprt .eq. 0) write (ncwu,'(a)') cmon(1)
+         if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1))
          I=NCROP3 (WSPAC3(1,1),WSPAC3(1,2),WSPAC3(1,3))
       ENDIF
 
@@ -2515,7 +2517,7 @@ c
 C -- ERROR
         WRITE(CMON,9510) NNEW
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9510  FORMAT ( ' Too many new atom positions have been given -',I5 )
       CALL XERHND(4)
       RETURN
@@ -2824,14 +2826,14 @@ C
 9800  CONTINUE
         WRITE(CMON,9801)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9801  FORMAT (' Error -- not an valid atom specification')
       CALL XERHND(4)
       RETURN
 9810  CONTINUE
         WRITE(CMON,9811)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9811  FORMAT (' Until specification mixes atoms in and not in list 5')
       CALL XERHND(4)
       RETURN
@@ -2842,28 +2844,28 @@ C
 9830  CONTINUE
         WRITE(CMON,9831)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9831  FORMAT (' Atoms have different types')
       CALL XERHND(4)
       RETURN
 9840  CONTINUE
         WRITE(CMON,9841)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9841  FORMAT (' Atoms appear to be out of sequence')
       CALL XERHND(4)
       RETURN
 9850  CONTINUE
         WRITE(CMON,9851) NOLD
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9851  FORMAT (' Too many old atoms have been given -',I6)
       CALL XERHND(4)
       RETURN
 9860  CONTINUE
         WRITE(CMON,9861)ISTORE(IADATM),NINT(STORE(IADATM+1))
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9861  FORMAT (' An atom with this type and serial already given - ',
      1 A4,I6)
       CALL XERHND(4)
@@ -2871,7 +2873,7 @@ C
 9870  CONTINUE
         WRITE(CMON,9871)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9871  FORMAT (' Error in applying symmetry operation')
       CALL XERHND(4)
       RETURN
@@ -2940,7 +2942,7 @@ C    ONLY PRINT GOODIES IF IMATRIX IS -1
 C -- PRINT HEADER
         WRITE ( CMON , 1305 )
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1305  FORMAT ( 1X , 'Deviations  in best plane system after fitting' ,
      1 ' ( Angstrom )           ' )
 C
@@ -3238,7 +3240,7 @@ c
         IF ( K .LT. 0 ) THEN
            WRITE (CMON,'(A)')'"KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
-           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
            CYCLE
         END IF
 c
@@ -3306,7 +3308,7 @@ C Really check if the bond MNBND - MNPIV is in the bond list.
             END IF
             WRITE (CMON,'(A)')'{E Warning: bond mismatch'
             CALL XPRVDU(NCVDU,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
           END IF
         END DO    DISTLOOP
        END DO  outerloop
@@ -3612,7 +3614,7 @@ c
        write(cmon,'(1x,/,a)')
      1 '{I Hand of the second molecule has been inverted'
        call xprvdu(ncvdu,2,0)
-       if (issprt .eq. 0) write (ncwu,'(a)') CMON(1)(:),CMON(2)(3:)
+       if (issprt .eq. 0) write (ncwu,'(a)') trim(CMON(1)),trim(CMON(2))(3:)
       endif
 c
 c
@@ -3799,14 +3801,14 @@ C --
 9800  CONTINUE
         WRITE(CMON,9810) IVALUE
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9810  FORMAT ( ' Method number',I3,' is not in allowed range ')
 9900  CONTINUE
 C -- SET DEFAULT METHOD NUMBER
       IMETHD = 1
         WRITE(CMON,9910)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
 9910  FORMAT (' Method set to default value, 1')
       RETURN
       END
@@ -3865,24 +3867,24 @@ C
 
       WRITE(CMON,'(A)') 'Renaming atoms'
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 c
       WRITE(CMON,'(A,f6.1)') 'Offset = ', zorig
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
        WRITE(CMON,'(A)') 'WARNING - poor initial fit' 
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU,1,0)
        CALL OUTCOL(1)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       ENDIF
 
       WRITE(CMON,'(1X,A,7X,A,8X,A,6X,A)')
      1 'Mapping','onto','giving', 'distance'
       IF(SUMDEV .GE. 0.1) CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 C 
       IF (NOLD.LE.0) GO TO 200
 
@@ -3927,7 +3929,7 @@ C Only consider atom if it has not been matched already:
      3   STORE(LRENM+(I-1)*MDRENM+4),STORE(LRENM+(I-1)*MDRENM+5),
      4   DISMIN
          CALL XPRVDU(NCVDU,1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 C Indicate atom not to be matched again:
          STORE(LRENM+(J-1)*MDRENM+3) = 0.0 
 150   CONTINUE
@@ -3974,7 +3976,7 @@ C
 c
       WRITE(CMON,'(A)') 'Matching atoms'
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 c
       
       IF(SUMDEV .GE. 0.1)THEN
@@ -3983,7 +3985,7 @@ c
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU,1,0)
        CALL OUTCOL(1)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       ENDIF
 
       LMBUF = KSTALL ( MDATVC )
@@ -3996,7 +3998,7 @@ c
 c
       WRITE(CMON,'(A)') 'Improving match'
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 c
 c      IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,'(A,7x,A,3X,A,5X,A)')
@@ -4367,7 +4369,7 @@ C
 C
        write(cmon,'(a)') 'Writing CAMERON files'
        CALL XPRVDU(NCVDU,1,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 c
       IF(SUMDEV .GE. 0.1)THEN
        NUMDEV =NUMDEV +1
@@ -4375,7 +4377,7 @@ c
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU,1,0)
        CALL OUTCOL(1)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       ENDIF
 
       IF (NOLD.LE.0) GO TO 200
@@ -4569,7 +4571,7 @@ c
      3 'Journal of Applied Crystallography 2006;39,842-849'
        CALL XPRVDU(NCVDU,3,0)
       if (issprt.eq.0) 
-     1 write(ncwu,'(a/a/a)') cmon(1),cmon(2),cmon(3)
+     1 write(ncwu,'(a/a/a)') trim(CMON(1)),trim(CMON(2)),cmon(3)
 C
 c
       METH = 4    !SET DEFAULT TO KABSCH ROTARY/INVERSION
@@ -5484,7 +5486,7 @@ c        END DO
         IF ( IDCOUN*2 .EQ. NATMS ) THEN
           WRITE(CMON,'(A)') 'All pairs unique. Stopping.'
           CALL XPRVDU(NCVDU,1,0)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
           DO I = 0, N5-1       ! Copy SPARE into BEST
             ISTORE(LBEST+I) = NINT( STORE(L5+13+I*MD5) )
           END DO
@@ -5910,7 +5912,7 @@ C     Restore NFL and LFL
        CALL OUTCOL(9)
        CALL XPRVDU(NCVDU, 1,0)
        CALL OUTCOL(1)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       ENDIF
 
 C -- THIS IS THE ONLY WAY OUT OF THE ROUTINE

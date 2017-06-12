@@ -2076,7 +2076,7 @@ c
                 CALL XPRVDU(NCVDU, 1,0)
 c^^djwnov06
                 IF ((ISSPRT .EQ. 0) .and. (level .eq.0) )
-     1          WRITE(NCWU, '(A)') CMON( 1)(:)
+     1          WRITE(NCWU, '(A)') trim(CMON(1))
 2806            FORMAT (A,A,' - ',A, F6.3, F6.3, 1X, 3F6.3)
 2807            FORMAT (A,A,' - ',A, F6.3, 6X,   1X, 3F6.3)
               ENDIF
@@ -6971,7 +6971,7 @@ cdjwnov08 - fix causes=d looping if no list 41 exists
 c      if (n5 .lt. 2) then
 c            write (cmon,'(a,i4,a)') 'Only', n5, ' atoms'
 c            call xprvdu(ncvdu,2,0)
-c            if (issprt .eq. 0) write(ncwu, '(a)') cmon( 1)(:)
+c            if (issprt .eq. 0) write(ncwu, '(a)') trim(CMON(1))
 c            goto 3350
 c      endif
 c
@@ -7298,7 +7298,7 @@ c           CALL XPRVDU(NCVDU, 1,0)
      1    'Making bond from   ',ISTORE(M40M  ),ISTORE(M40M+1),
      1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
 C            CALL XPRVDU(NCVDU, 1,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 
 C -- Add this bond into the L41. Still descending from the top of store.
           NWL41B = KCHLFL(MD41B) !Increase storage for L41B records
@@ -7414,7 +7414,7 @@ C -- Copy data down.
 C            CALL XPRVDU(NCVDU, 1,0)
 C NB - Level not defined here ("3" was "debug" in XDIST analogous routine)
 c             IF ((ISSPRT .EQ. 0) .AND. (LEVEL.EQ.3))
-c     1       WRITE(NCWU, '(A)') CMON( 1)(:)
+c     1       WRITE(NCWU, '(A)') trim(CMON(1))
             IF ( KM41B .NE. M41B ) THEN
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
             END IF
@@ -7517,7 +7517,7 @@ C -- INPUT ERROR
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 9925  FORMAT ( 1X , 'Rotation matrix is singular' )
       CALL XERHND ( IERERR )
       GO TO 9900

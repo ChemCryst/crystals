@@ -256,7 +256,7 @@ integer, external :: nctrim
             write (ncwu,'(a)') ''
         else
             write (cmon,'(a//)') ' data do not resolve the p3 hypothesis'
-            write (ncwu,'(a//)') cmon(1)(:nctrim(cmon(1)))
+            write (ncwu,'(a//)') trim(CMON(1))
         end if
     end if
 
@@ -516,7 +516,7 @@ integer, external :: nctrim
             if(ierror .le. 0) then
                 write(cmon,'(a)') ' Too few reflections for histogram'
                 call xprvdu (ncvdu,1,0)
-                if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+                if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
             endif
             call outcol(1)
             return
@@ -546,7 +546,7 @@ integer, external :: nctrim
     if(ierror .le. 0) then
         write(cmon,'(a)') ' Too few reflections for histogram'
         call xprvdu (ncvdu,1,0)
-        if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+        if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
     endif
     call outcol(1)
     return

@@ -97,7 +97,7 @@ C----- CHECK IF LIST 23 IS TO BE CHECKED
       IF (IUPDAT .GE. 0) IACTN=MAX0(0,IACTN)
       WRITE ( CMON,886) TOLER
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 886   FORMAT(5X,' Checking SPECIAL positions subject to tolerance of ',
      1 G10.5, ' Angstrom')
 C
@@ -241,7 +241,7 @@ c        CALL XPRVDU(NCVDU, 1,0)
       IF (IACTN .GE. 2) THEN
         WRITE ( CMON,120)
 c        CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A/)') CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A/)') trim(CMON(1))
 120     FORMAT(10X,' Restraining atomic parameters')
       ENDIF
 C
@@ -250,7 +250,7 @@ C----- FORCE INITIALISATION OF THE SPECIAL POSITION VARIABLES
       IF (KSPINI (IFORCE, ABTOL ) .LE. 0) THEN
          WRITE ( CMON, '(A)') ' Error initialising special positions'
          CALL XPRVDU(NCVDU, 1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')trim(CMON(1))
          GOTO 9000
       ENDIF
 C
@@ -283,13 +283,13 @@ C
           WRITE ( CMON,522) STORE(M5), NINT(STORE(M5+1)),
      2                        MPOS, NGMULT, 1./FLOAT(MGM)
           CALL XPRVDU(NCVDU, 1,0)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 522       FORMAT(1X,' Atom ', A4, I4, ',  Multiplicity =', I3,
      2    ',  Number of positions =', I3, ' Occ = ', F6.4)
           WRITE ( CMON,523) ( PLM(K1(IK)+2), PRE(K2(IK)+1),
      2                          COORD(KEY(IK)+1) ,IK =1,9    )
           CALL XPRVDU(NCVDU, 1,0)
-          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 523       FORMAT (1X, 3(A1,A3,A2,1X), 6(A1,A3,A5,1X) )
       ENDIF
 C
