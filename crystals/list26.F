@@ -499,16 +499,24 @@ c
       
       ! Write user restraint, first element is index in list 16 from zero
       if(i/=10) then ! skip exec
-        WRITE(CMON,'(1X, "(",I0,")",1X, A)') 
-     1    restraints_list(ircpt)%user_index,
-     2    trim(restraints_list(ircpt)%restraint_text)
-        icptn=0
-        do ii=1, len_trim(trim(restraints_list(ircpt)%restraint_text))
-          if(restraints_list(ircpt)%restraint_text(ii:ii)==char(10))then
-            icptn=icptn+1
-          end if
-        end do
-        CALL XPRVDU(NCVDU, icptn+1,0)      
+        if(ircpt<1 .or. ircpt>size(restraints_list)) then
+          WRITE(CMON,'(1X, "(",I0,")",1X, A)') 
+     1      sign(ircpt,-1), 'Unknown restraint'
+          CALL XPRVDU(NCVDU, 1,0)      
+        else
+          WRITE(CMON,'(1X, "(",I0,")",1X, A)') 
+     1      restraints_list(ircpt)%user_index,
+     2      trim(restraints_list(ircpt)%restraint_text)
+          icptn=0
+          do ii=1, len_trim(
+     1      restraints_list(ircpt)%restraint_text)
+            if(restraints_list(ircpt)%restraint_text(ii:ii)==char(10))
+     1        then
+              icptn=icptn+1
+            end if
+          end do
+          CALL XPRVDU(NCVDU, icptn+1,0)      
+        end if
       end if
       
       GOTO(1300,1350,1550,1750,1850,1950,2100,2150,2200,2350,2400,2450,
@@ -4390,9 +4398,9 @@ C--SET UP THE ADDRESSES OF THE ATOMS
               results%subrestraints(icpt)%atoms(2)%serial=
      &            nint(store(JB+3))
               results%subrestraints(icpt)%atoms(3)%label=
-     &            transfer(istore(JB+2), 'aaaa')
+     &            transfer(istore(JC+2), 'aaaa')
               results%subrestraints(icpt)%atoms(3)%serial=
-     &            nint(store(JB+3))
+     &            nint(store(JC+3))
           end do
       end if
       
