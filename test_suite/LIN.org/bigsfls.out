@@ -1945,6 +1945,7 @@ Bonds: Update required - There is no list 41
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+ Directive  DISTANCE: No derivatives found during Evaluation
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -3144,7 +3145,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 #LIST 17
 #PURGE
 #SFLS
- List type   11  serial number    4 from   458884 to   480478 will not be copied ( deleted )         
+ List type   11  serial number    4 from   458847 to   480441 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -3769,15 +3770,15 @@ Mean C-C su =   0.0009
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #DISK
- List type   11  serial number    4 from   456600 to   456694 will not be copied ( deleted )         
- List type   22  serial number    2 from   449438 to   453852 will not be copied ( deleted )         
+ List type   11  serial number    4 from   456563 to   456657 will not be copied ( deleted )         
+ List type   22  serial number    2 from   449401 to   453815 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
- Disc file extended by 117 record(s) (  59904 integer words ) 
+ Disc file extended by 116 record(s) (  59392 integer words ) 
 #LIST 12
 #SFLS
 #SPEC LIS  NO
@@ -5004,8 +5005,8 @@ Mean C-C su =   0.0121
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #SFLS
- List type   11  serial number    8 from   453024 to   487543 will not be copied ( deleted )         
- List type   22  serial number    1 from   449038 to   450276 will not be copied ( deleted )         
+ List type   11  serial number    8 from   452987 to   487506 will not be copied ( deleted )         
+ List type   22  serial number    1 from   449001 to   450239 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -5101,11 +5102,11 @@ Mean C-C su =   0.0121
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #FINISH
- Physical reads      11371 Physical writes      10078 Cache hits     199512
- Cache hit distribution   181287   12547    2216     736     529     170
- Cache hit distribution      147     198     207     289     144     168
- Cache hit distribution      152     161     147      59      60      46
- Cache hit distribution       81      40      42      37      20      29
+ Physical reads      11195 Physical writes      10072 Cache hits     198120
+ Cache hit distribution   180092   12778    2068     532     482     164
+ Cache hit distribution      149     186     201     293     161     176
+ Cache hit distribution      159     136     142      52      63      45
+ Cache hit distribution       79      42      43      29      18      30
 
 
           : Job ends ok       with     0 warnings and     0 errors

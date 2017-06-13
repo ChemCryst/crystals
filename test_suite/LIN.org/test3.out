@@ -5798,6 +5798,16 @@ LS-scale= 12.394   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
 #LIST 26
 #DORESTRAIN
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -6521,7 +6531,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       86     Address    82617     Length    7570     Created on                          
+ Print list type     6     serial number       86     Address    82603     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6656,7 +6666,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       90     Address    90807     Length    7570     Created on                          
+ Print list type     6     serial number       90     Address    90793     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6791,7 +6801,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address    98377     Length     137     Created on                          
+ Print list type     5     serial number       14     Address    98363     Length     137     Created on                          
 
 
 
@@ -7449,7 +7459,7 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    90807     Length    7570     Created on                          
+ Print list type     6     serial number       96     Address    90793     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -8040,7 +8050,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125661     Length     808     Created on                          
+ Print list type    11     serial number       20     Address   125647     Length     808     Created on                          
 
  Inverse matrix
 
@@ -8091,7 +8101,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125661     Length     808     Created on                          
+ Print list type    11     serial number       20     Address   125647     Length     808     Created on                          
 
 
  Print List 11 as correlation matrix
@@ -8182,7 +8192,7 @@ Mean C-C su =   0.0000
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125661     Length     808     Created on                          
+ Print list type    11     serial number       20     Address   125647     Length     808     Created on                          
 
  Inverse matrix
 

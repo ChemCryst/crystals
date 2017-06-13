@@ -69,6 +69,8 @@ Bonds: Update required - There is no list 41
        5.204E-01  7.407E-01  4.175E-01
        1.243E-02  4.910E-01 -8.712E-01
       -8.539E-01  4.586E-01  2.585E-01
+      Derivatives:
+      -1.061E-02  2.252E-01 -2.252E-01 -2.726E-01  7.472E-01 -4.136E-01
 
             Atom       S(I) L TX TY TZ       Value        Delta  Parameter
   
@@ -76,19 +78,21 @@ Bonds: Update required - There is no list 41
            C      20     1  1  0  0  0   0.0093559    1.733E-02      U[23]
 [41]       Mean value =   0.0133  Mean delta =   0.0133  r.m.s. delta =   0.01
 
-   1.UPERP2 from C(20) to C(19), C(21)
+   1.UPERP2 from C(20) to C(19), 
       Restrain U[13] and U[23] to .00000 angstrom squared,
       with an E.S.D. of 1.000E-05
       Transformation matrix:
-       9.027E-01 -8.170E-02  4.098E-01
-      -2.790E-03  9.807E-01  1.956E-01
-      -4.305E-01 -1.777E-01  8.911E-01
+       5.204E-01  7.407E-01  4.175E-01
+       1.243E-02  4.910E-01 -8.712E-01
+      -8.539E-01  4.586E-01  2.585E-01
+      Derivatives:
+       1.201E-03 -1.742E-01  1.743E-01  8.391E-01 -8.669E-02 -4.217E-01
 
             Atom       S(I) L TX TY TZ       Value        Delta  Parameter
   
-           C      20     1  1  0  0  0   0.0042436    4.244E-03      U[13]
-           C      20     1  1  0  0  0   0.0042436    2.270E-03      U[23]
-[41]       Mean value =   0.0033  Mean delta =   0.0033  r.m.s. delta =   0.00
+           C      20     1  1  0  0  0   0.4097770    4.098E-01      U[13]
+           C      20     1  1  0  0  0   0.4097770    1.956E-01      U[23]
+[41]       Mean value =   0.3027  Mean delta =   0.3027  r.m.s. delta =   0.32
    3. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
 #FINI
 
