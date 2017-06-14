@@ -6181,7 +6181,7 @@ c      WRITE(NCWU,*) 'PDQAddress: ',J,' ',K
 c        WRITE(NCWU,*) 'PD: ',L,' ',K,' ',STORE(K),N22PD
 C--CHECK IF THE CONTRIBUTION FOR THIS PARAMETER IS ZERO
 c        IF(STORE(K))1750,1800,1750
-         IF ( ABS(STORE(K)) .GT. VALUSQ ) THEN
+         IF ( ABS(STORE(K))/=0.0 ) THEN
 C--ADD IT TO THE QUEUE
             ISTORE(J)=L
             STORE(J+1)=STORE(K)
