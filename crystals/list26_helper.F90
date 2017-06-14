@@ -43,7 +43,7 @@ end type
 private extend_restraints, extend_subrestraints, extend_blocks, extend_atoms, extend_parent
 
 interface extend !< generic procedure to extend the several allocatables objects
-    module procedure :: extend_restraints, extend_subrestraints, extend_blocks, extend_atoms, extend_parent
+    module procedure extend_restraints, extend_subrestraints, extend_blocks, extend_atoms, extend_parent
 end interface extend
     
 
