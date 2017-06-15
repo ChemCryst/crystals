@@ -273,7 +273,7 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     else ()
         SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2")
     endif ()
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-omit-frame-pointer -fno-f2c -O1 -g -Wfatal-errors -Wall -Wextra")
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-omit-frame-pointer -fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
         SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all")
     else ()

@@ -2699,7 +2699,15 @@ C
       CHARACTER CEND*3
       INTEGER NBUFF1, LBUFF1, MBUFF1
       INTEGER ISIZE1(19)
-
+C For calculating f' and f'' and mu from tables (if particular wavelength not present in files)
+      LOGICAL LFPCAL
+      INTEGER IZ ! atomic number
+	  REAL*4  AMU, RHO, FP, FPP, RAY, COMP,RENERG
+	  REAL*8  F_TO_MU,ATOEV,MU,ATOMX,VC
+      PARAMETER ( ATOEV = 12398.4244680242D0 )        ! EV = ATOEV / LAMBDA (in A)
+      parameter (F_TO_MU= 4208.031548D0)            ! Mu in microns
+  
+  
 C
 C----- TO HOLD REAL FORMAT EXPRESSION
       CHARACTER *8 CFMTXP
@@ -2736,6 +2744,8 @@ C     NUMBER OF WAVWLENGTHS PRESENT IN PROPERTIES FILE
 C
 C
       CALL XTIME1 ( 2 )
+      LFPCAL = .FALSE.  !FALSE = Default to f' and f'' from scatt file, unless wavelength not present
+
 CMAR98
       ICOMBF = KSTALL ( IDIMBF )
       CALL XZEROF (STORE(ICOMBF), IDIMBF)
@@ -2968,77 +2978,105 @@ C-----  SPOT THE WAVELENGTH
         ENDIF
 5350  CONTINUE
       IF (DELMIN .GE. 0.01) THEN
-        WRITE ( CMON, 9701) WAVUSE, WAVE
+        LFPCAL = .TRUE.
+        RENERG = ATOEV / WAVE   ! Convert A to eV.
+        WRITE ( CMON, 9701) WAVE
         CALL XPRVDU(NCVDU, 2,0)
 9701    FORMAT
-     1 (' System files contain no anomalous entries for required', 
-     2 ' wavelength'/F8.4, ' used in lieu of ',F8.4,
-     3 ' for anomalous scattering')
+     1 (' System files contain no resonant scattering data for '/, 
+     2 ' wavelength',F8.4,' using calculated values instead.')
         IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') trim(CMON(1)),
-     1  trim(CMON(2)), trim(CMON(3))
+     1  trim(CMON(2))
       ENDIF
 C----- BEGIN PROCESSING FORMULA LIST
-      DO 5500 J = IADDF, JADDF, NADDF
+      DO J = IADDF, JADDF, NADDF
 C----- CONVERT BACK TO CHARACTER
-      WRITE(CTMP, 20) ISTORE(J)
-      READ(CTMP, 20) CARG
-      LSTART = KCCNEQ( CARG, 1, ' ')
-      IF (LSTART .EQ. -1) GOTO 9730
-      LSTART = MAX0( 1, LSTART)
-C     LEFT ADJUST STRING
-      CTMP = CARG(LSTART:4)
-      CARG = CTMP
-      LENSER = 4
-      CALL XCCUPC( CARG, CARGU)
-C     READ WHOLE FILE FOR EACH ELEMENT
-      REWIND NCEXTR
-5400  CONTINUE
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5401
-5401  CONTINUE
+        WRITE(CTMP, 20) ISTORE(J)
+        READ(CTMP, 20) CARG
+        LSTART = KCCNEQ( CARG, 1, ' ')
+        IF (LSTART .EQ. -1) GOTO 9730
+        LSTART = MAX0( 1, LSTART)
+C LEFT ADJUST STRING
+        CTMP = CARG(LSTART:4)
+        CARG = CTMP
+        LENSER = 4
+        CALL XCCUPC( CARG, CARGU)
+C       READ WHOLE FILE FOR EACH ELEMENT
+        REWIND NCEXTR
+5400    CONTINUE
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5401
+5401    CONTINUE
 C----- CHECK FIRST FOUR CHARACERS ONLY - REMEMBER CINPBF IS MIXED CASE
-      CALL XCCUPC(CINPBF(1:LENSER),CUPA)
-      IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
-     1 (CUPA(1:4) .NE. CARGU(1:LENSER)) ) THEN
+        CALL XCCUPC(CINPBF(1:LENSER),CUPA)
+        IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
+     1             (CUPA(1:4) .NE. CARGU(1:LENSER)) ) THEN
 C----- NO MATCH SKIP REQUIRED NUMBER OF LINES
-        DO 5420 I = 2,NLINES
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5402
-5402    CONTINUE
-5420    CONTINUE
+          DO I = 2,NLINES
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5402
+5402        CONTINUE
+          END DO
 C----- GO BACK FOR NEXT DATA RECORD
-        GOTO 5400
-      ENDIF
+          GOTO 5400
+        END IF
 C----- MATCH
-      IF (LAM .NE. 1) THEN
+        IF (LAM .NE. 1) THEN
 C----- SKIP UNTIL REQUIRED LINE
-        DO 5430 I = 2,LAM
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5421
-5421    CONTINUE
-5430    CONTINUE
-      END IF
+          DO I = 2,LAM
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5421
+5421        CONTINUE
+          END DO
+        END IF
+
+        IF ( LFPCAL ) THEN   ! Ignore values from file (too far from required wavelength) - calc instead
+C - Find atomic number
+          iz = -1                                ! Set to -1 to get Z from element string
+          call abselement( iz, CARG(1:LENSER))  ! note - will fail for charged element names, e.g. LiP1 etc.
+c          if ( iz .gt. 0 ) then  
+c            call absatomic_data( iz, amu, rho ) !amu not needed for resonant bit
+c          end if
+c          if ( iz .le. 0 .or. amu .le. 0.0 ) then                  ! fail - print message for now and fall back on closest wavelength
+          if ( iz .le. 0 ) then                  ! fail - print message for now and fall back on closest wavelength
+            WRITE ( CMON, 9702) CARG(1:LENSER), WAVUSE
+            CALL XPRVDU(NCVDU, 2,0)
+9702        FORMAT
+     1 ('Cannot calculate resonant scattering contribution for ',
+     2   A4, /, 
+     3 'falling back on data for wavelength = ', F8.5)
+            IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') trim(CMON(1)),
+     1                                                trim(CMON(2))
+          else
+            call abscromer( iz, RENERG, fp, fpp)
+            write ( cinpbf, '(A4,2(1x,F14.8))') CARG(1:LENSER), FP, FPP
+            write(cmon,'(2A,2(a,F8.3))')
+     1      ' Computed dispersion correction for ', CARG(1:LENSER),
+     2      ' f ''= ', fp, ' f" = ', fpp
+            CALL XPRVDU(NCVDU, 1,0)
+          end if
+      ENDIF
+  
 C----- CONVERT WHOLE LINE TO UPPER CASE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
 C----- SAVE ELEMENT NAME LINE
-      READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
-      JADDS = JADDS + 20
-      IF (LAM .LE. NLINES-2) THEN
+        READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
+        JADDS = JADDS + 20
+        IF (LAM .LE. NLINES-2) THEN
 C----- SKIP REMAINING LINES
-        DO 5440 I = LAM, NLINES-2
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5431
-5431    CONTINUE
-5440    CONTINUE
-      END IF
+          DO I = LAM, NLINES-2
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5431
+5431        CONTINUE
+          END DO
+        END IF
 C----- NOW GET THE COMMON PART OF THE DATA
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5441
-5441  CONTINUE
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5441
+5441    CONTINUE
 C----- CONVERT WHOLE LINE TO UPPER CASE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
-      READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
-      II = KSTALL(NADDS)
-      JADDS  = JADDS + 20
-C----- GO BACK FOR NEXT ELEMENT
-5500  CONTINUE
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
+        READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
+        II = KSTALL(NADDS)
+        JADDS  = JADDS + 20
+      END DO   ! GO BACK FOR NEXT ELEMENT
 C
 C----- ALL FINISHED - RESET JADDS TO START OF LAST ITEM
       JADDS = JADDS - NADDS
@@ -3091,67 +3129,114 @@ C----- CURRENTLY ONLY TWO WAVELENGTS ARE KNOWN
         LAM = 2
       END IF
 C----- BEGIN PROCESSING FORMULA LIST
-      DO 6500 J = IADDF, JADDF, NADDF
+      DO J = IADDF, JADDF, NADDF
 C----- CONVERT BACK TO CHARACTER
-      WRITE(CTMP, 20) ISTORE(J)
-      READ(CTMP, 20) CARG
-      LSTART = KCCNEQ( CARG, 1, ' ')
-      IF (LSTART .EQ. -1) GOTO 9730
-      LSTART = MAX0( 1, LSTART)
-C     LEFT ADJUST STRING
-      CTMP = CARG(LSTART:4)
-      CARG = CTMP
-      LENSER = 4
-      CALL XCCUPC( CARG, CARGU)
-C     READ WHOLE FILE FOR EACH ELEMENT
-      REWIND NCEXTR
-6400  CONTINUE
+        WRITE(CTMP, 20) ISTORE(J)
+        READ(CTMP, 20) CARG
+        LSTART = KCCNEQ( CARG, 1, ' ')
+        IF (LSTART .EQ. -1) GOTO 9730
+        LSTART = MAX0( 1, LSTART)
+C LEFT ADJUST STRING
+        CTMP = CARG(LSTART:4)
+        CARG = CTMP
+        LENSER = 4
+        CALL XCCUPC( CARG, CARGU)
+C READ WHOLE FILE FOR EACH ELEMENT
+        REWIND NCEXTR
+6400    CONTINUE
 C----- GET THE COMMON PART OF THE DATA - CONTAINS ELEMENT NAME
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6401
-6401  CONTINUE
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6401
+6401    CONTINUE
 C----- CHECK FIRST FOUR CHARACERS ONLY - REMEMBER CINPBF IS MIXED CASE
-      IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
-     1 (CINPBF(1:LENSER) .NE. CARGU(1:LENSER)) ) THEN
+        IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
+     1       (CINPBF(1:LENSER) .NE. CARGU(1:LENSER)) ) THEN
 C----- NO MATCH SKIP REQUIRED NUMBER OF LINES
-        DO 6420 I = 2,NLINES
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6402
-6402    CONTINUE
-6420    CONTINUE
+          DO I = 2,NLINES
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6402
+6402        CONTINUE
+          END DO
 C----- GO BACK FOR NEXT DATA RECORD
-        GOTO 6400
-      ENDIF
+          GOTO 6400
+        ENDIF
 C----- MATCH
 C----- CONVERT WHOLE LINE TO UPPER CASE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
-      READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
-      JADDS  = JADDS + 20
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
+        READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
+        JADDS  = JADDS + 20
 C----- LOOK FOR SECOND PART
-      IF (LAM .NE. 1) THEN
+        IF (LAM .NE. 1) THEN
 C----- SKIP UNTIL REQUIRED LINE
-        DO 6430 I = 1,LAM-1
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6431
-6431    CONTINUE
-6430    CONTINUE
-      END IF
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6435
+          DO I = 1,LAM-1
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6431
+6431        CONTINUE
+          END DO
+        END IF
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6435
+6435    CONTINUE
+
+        IF ( LFPCAL ) THEN   ! Ignore values from file (too far from required wavelength) - calc instead
+C - Find atomic number
+          iz = -1                                ! Set to -1 to get Z from element string
+          call abselement( iz, CARG(1:LENSER))  ! note - will fail for charged element names, e.g. LiP1 etc.
+          if ( iz .gt. 0 ) then  
+            call absatomic_data( iz, amu, rho ) !amu not needed for resonant bit
+          end if
+c          write(cmon,*)'iz, element, amu, rho = ', iz, carg(1:lenser), amu, rho
+c          CALL XPRVDU(NCVDU, 1,0)
+          if ( iz .le. 0 .or. amu .le. 0.0 ) then                ! fail - print message for now and fall back on closest wavelength
+            WRITE ( CMON, 9703) CARG(1:LENSER), WAVUSE
+            CALL XPRVDU(NCVDU, 2,0)
+9703        FORMAT
+     1 (' Can''t compute interaction cross section for ',
+     2   A4, /, 
+     3 ' falling back on data from closest wavelength = ',F8.5)
+            IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') trim(CMON(1)),
+     1                                                trim(CMON(2))
+          else
+            call abscromer( iz, RENERG, fp, fpp)
+            call absraycomp( iz, RENERG, ray, comp)
+            mu= (F_TO_MU* rho*( fpp+ ray+ comp))/( amu* RENERG)
+c            write(cmon,*)'amu, rho, Fp, Fpp, Mu (microns-1) = ', 
+c     1                    amu, rho, fp, fpp, mu
+c            CALL XPRVDU(NCVDU, 1,0)
+c            write(cmon,*)'Mu (cm-1) = ', mu * 10000.0
+c            CALL XPRVDU(NCVDU, 1,0)
+C Convert mu (in cm-1) to photon interaction cross section (sigma_i). Formula from I.T. is:
+C
+C mu = (1/Vc).sigma_i, where Vc is the volume (in A^3) occupied by one atom (assuming elemental material).
+C We can work this out from the atomic density and mass as follows:
+C
+C Vc = AW x 1E24 / (N.rho), AW = atomic weight, rho = density in gcm-3, N = Avogadro.
+C We can divide top and bottom by 10^24 to keep numbers reasonable.
+            Vc =  amu  / ( 0.6022 * rho )  
+            atomx = mu * 1000.0 * Vc ! NB. CRYSTALS uses mm-1 units (hence 1000 conversion here instead of 10000).
+            write(cmon,'(3A,F14.6)')
+     1      ' Computed photon interaction cross section for ',
+     2      CARG(1:LENSER), ' = ', atomx
+            CALL XPRVDU(NCVDU, 1,0)
+            write ( cinpbf, '(A,F14.6)') 'CONTINUE MU = ', ATOMX
+          end if
+        ENDIF
+
 C----- CONVERT WHOLE LINE TO UPPER CASE
-6435  CONTINUE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
+c        WRITE ( CMON, '(a)') cinpbf
+c        CALL XPRVDU(NCVDU, 1,0)
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
 C----- SAVE ELEMENT NAME LINE
-      READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
+        READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
       JADDS = JADDS + 20
-      IF (LAM .LE. NLINES-2) THEN
+        IF (LAM .LE. NLINES-2) THEN
 C----- SKIP REMAINING LINES
-        DO 6440 I = LAM, NLINES-2
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6439
-6439    CONTINUE
-6440    CONTINUE
-      END IF
-      II = KSTALL(NADDS)
+          DO I = LAM, NLINES-2
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6439
+6439        CONTINUE
+          END DO
+        END IF
+        II = KSTALL(NADDS)
 C----- GO BACK FOR NEXT ELEMENT
-6500  CONTINUE
+      END DO
 C
 C RIC: Close the file!
       CALL XRDOPN (7, IDEV, CLINE(1:ISIZE), ISIZE)
@@ -3266,4 +3351,4 @@ C
       CALL XOPMSG (IOPCMP, IOPCMI, 0)
       GO TO 9900
       END
-
+    

@@ -119,18 +119,18 @@
 %   ELSE
 ^^CO   SET OTH STATE=ON SET WAVEL DISABLED=NO                 
 %% OTHER greyed out inexplicably, sometimes
-%      IF ( .NOT. EDLIST3 ) THEN                                                
-%       EVALUATE QTITLE = 'Warning - non-standard wavelength'                   
-%       EVALUATE QLINE1 = 'Any anomalous scattering values that you have'       
-%       EVALUATE QLINE2 = 'already entered will be overwritten. Continue?'      
-%       EVALUATE BUTTOK = '&Yes'                                                
-%       EVALUATE BUTTXX = '&No'                                                 
-%       COPY '#SCRIPT XQUESTIO'                                                 
-%       IF ANSWER .EQ. FALSE THEN                                               
-^^CO     DISPOSE INLIST3                                                        
-%        FINISH                                                                 
-%       END IF                                                                  
-%      END IF                                                                   
+%%      IF ( .NOT. EDLIST3 ) THEN                                                
+%%       EVALUATE QTITLE = 'Warning - non-standard wavelength'                   
+%%       EVALUATE QLINE1 = 'Any anomalous scattering values that you have'       
+%%       EVALUATE QLINE2 = 'already entered will be overwritten. Continue?'      
+%%       EVALUATE BUTTOK = '&Yes'                                                
+%%       EVALUATE BUTTXX = '&No'                                                 
+%%       COPY '#SCRIPT XQUESTIO'                                                 
+%%       IF ANSWER .EQ. FALSE THEN                                               
+%%^^CO     DISPOSE INLIST3                                                        
+%%        FINISH                                                                 
+%%       END IF                                                                  
+%%      END IF                                                                   
 %   END IF                                                                      
 %%                                                                              
 % IF ( EXISTS 2 .NE. 1 ) THEN                                                   
@@ -316,17 +316,17 @@
 %      COPY 'END'                                                               
 %%                                                                              
 %%                                                                              
-%      IF ( ( RADIATION .EQ. 3 ) .AND. ( .NOT. EDLIST3 ) ) THEN                 
-%         EVALUATE QTITLE = 'Odd wavelength: ' // CTEST                         
-%         EVALUATE QLINE1 = 'Do you want to input anomalous scattering'         
-%         EVALUATE QLINE2 = 'factors for these elements?'                       
-%         EVALUATE BUTTOK = '&Yes'                                              
-%         EVALUATE BUTTXX = '&No'                                               
-%         COPY '#SCRIPT XQUESTIO'                                               
-%         IF ANSWER .EQ. TRUE THEN                                              
-%           COPY '#SCRIPT EDLIST3'                                              
-%         END IF                                                                
-%      END IF                                                                   
+%%      IF ( ( RADIATION .EQ. 3 ) .AND. ( .NOT. EDLIST3 ) ) THEN                 
+%%         EVALUATE QTITLE = 'Odd wavelength: ' // CTEST                         
+%%         EVALUATE QLINE1 = 'Do you want to input anomalous scattering'         
+%%         EVALUATE QLINE2 = 'factors for these elements?'                       
+%%         EVALUATE BUTTOK = '&Yes'                                              
+%%         EVALUATE BUTTXX = '&No'                                               
+%%         COPY '#SCRIPT XQUESTIO'                                               
+%%         IF ANSWER .EQ. TRUE THEN                                              
+%%           COPY '#SCRIPT EDLIST3'                                              
+%%         END IF                                                                
+%%      END IF                                                                   
 %%                                                                              
 %      EVALUATE LXIN3CANCEL = FALSE                                             
 ^^CO   DISPOSE INLIST3                                                          
