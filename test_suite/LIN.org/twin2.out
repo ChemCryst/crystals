@@ -451,7 +451,7 @@ LS-scale=  9.913   Wilson Scale=  0.000
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
- Print list type    17     serial number        2     Address    18767     Length    1156     Created on                          
+ Print list type    17     serial number        2     Address    18769     Length    1156     Created on                          
 
      0 NO 
      1 RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22]) 
@@ -478,51 +478,71 @@ LS-scale=  9.913   Wilson Scale=  0.000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    4.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    5.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    6.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    7.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    8.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
   10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 

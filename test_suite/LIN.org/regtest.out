@@ -25,10 +25,10 @@ Matching by Rotation/inversion (Method 1)
  Original matrix
                -1.000000    0.000004    0.000000
                -0.000007   -0.999997    0.000000
-                0.000000   -0.000003    0.000000
+                0.000000    0.000003    0.000000
  Modified matrix
                -1.000000    0.000004    0.000000
-               -0.000007   -0.999997   -0.000003
+               -0.000007   -0.999997    0.000003
                 0.000000    0.000003    1.000000
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
@@ -331,11 +331,11 @@ Matching by Rotation/inversion (Method 1)
  Original matrix
                 0.999996   -0.000011    0.000000
                 0.000018    1.000001    0.000000
-                0.000002   -0.000002    0.000000                                                                                                                                                                                                                
+                0.000002   -0.000002    0.000000
  Modified matrix
-                0.999996   -0.000011   -0.000002                                                                                                                                                                                                                
-                0.000018    1.000001    0.000002                                                                                                                                                                                                                
-                0.000002   -0.000002    1.000000                                                                                                                                                                                                                
+                0.999996   -0.000011   -0.000002
+                0.000018    1.000001    0.000002
+                0.000002   -0.000002    1.000000
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -638,7 +638,7 @@ Matching by Rotation/inversion (Method 1)
  Original matrix
                -1.000000    0.000004    0.000000
                -0.000007   -0.999997    0.000000
-                0.000000    0.000003    0.000000                                                                                                                                                                                                                
+                0.000000    0.000003    0.000000
  Modified matrix
                -1.000000    0.000004    0.000000
                -0.000007   -0.999997    0.000003
