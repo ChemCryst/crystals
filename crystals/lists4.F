@@ -373,9 +373,9 @@ C
 C--LOAD THE LIST
       CALL XLDLST(1,ICOM01,IDIM01,-1)
 C----- LOAD THE MATRIX FOR THE GUI
-      CALP=COS(real(STORE(L1P1+3),dp)
-      CBET=COS(real(STORE(L1P1+4),dp)
-      CGAM=COS(real(STORE(L1P1+5),dp)
+      CALP=COS(real(STORE(L1P1+3),dp))
+      CBET=COS(real(STORE(L1P1+4),dp))
+      CGAM=COS(real(STORE(L1P1+5),dp))
       RN=SQRT(1.0d0+2.0d0*CALP*CBET*CGAM-CALP**2-CBET**2-CGAM**2)
       D(1)=SIN(real(STORE(L1P1+3),dp))/(RN*STORE(L1P1))
       D(2)=SIN(real(STORE(L1P1+4),dp))/(RN*STORE(L1P1+1))
