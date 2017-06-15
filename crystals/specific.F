@@ -2356,7 +2356,7 @@ c#endif
       INCLUDE 'CAMBLK.INC'
       INCLUDE 'OUTCOL.INC'
       CHARACTER*(*) CBUF(LINBUF)
-      CHARACTER(len=len(cbuf(1))) CEXTRA
+      CHARACTER(len=len(cbuf(1))+6) CEXTRA
       CHARACTER*1 CFIRST, CLAST
       CHARACTER*10 CFRMAT
       DATA CFRMAT /'(1X,A)'/
