@@ -102,13 +102,13 @@ Bonds: Update required - There is no list 41
       1335  :   -998953        14  16777216  16777216  16776315
 [38]  C           1.0000   0.50    0.00   -0.49    0.00    1.00    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  S           1.0000   0.50    0.00   -0.79   -0.59    1.25    0.02    0.02    0.02    0.00    0.00    0.01
- Calculated value    0.6731880665E+01
+ Calculated value    0.6731881142E+01
  Calculated value    0.4820548058E+01
- Calculated value   -0.4842164516E+01
- Calculated value   -0.1540939713E+02
+ Calculated value   -0.4842164993E+01
+ Calculated value   -0.1540939617E+02
  Calculated value   -0.4820548058E+01
- Calculated value    0.4842164516E+01
- Calculated value    0.1540939713E+02
+ Calculated value    0.4842164993E+01
+ Calculated value    0.1540939617E+02
  Derivative(s) :
          8
                     0.1111E+04                   -0.5232E+01                    0.2250E+01
@@ -116,7 +116,7 @@ Bonds: Update required - There is no list 41
 
 
    1.  General restraint to be     0.1500000000E+01  with an E.S.D. of    0.3000000119E-01
-       Calculated value            0.6731880665E+01  giving a delta of   -0.5231880665E+01
+       Calculated value            0.6731881142E+01  giving a delta of   -0.5231881142E+01
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -256,9 +256,9 @@ Bonds: Update required - There is no list 41
 [38]  C           1.0000   0.50    0.00   -0.49    0.00    0.00    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  O           1.0000   1.00    0.00   -0.48   -0.39    0.62    0.03    0.05    0.05   -0.01   -0.02    0.02
  Derivative(s) :
-         6
+         8
                     0.1111E+04                    0.1500E+01                    0.5598E+02
-        17          0.4768E-06
+        12          0.4768E-06        17         -0.4768E-06
  Derivative(s) :
         14
                     0.1111E+04                    0.8015E+01                    0.1153E+03

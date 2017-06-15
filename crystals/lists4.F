@@ -176,6 +176,10 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION AA(26),IADD1(4),IADD2(3)
+      ! doing some calculations in double precision to improve numerical stability
+      double precision, dimension(26) :: aad
+      integer, parameter :: dp=kind(1.0d0)
+      double precision od, hd, dstore
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST01.INC'
@@ -234,34 +238,49 @@ C--CALCULATE THE SINE AND COSINES OF THE INPUT ANGLES
       DO 1350 NY=M,NX
       AA(NW)=COS(STORE(NY+3))
       AA(NW+3)=SIN(STORE(NY+3))
+      AAD(NW)=COS(real(STORE(NY+3),dp))
+      AAD(NW+3)=SIN(real(STORE(NY+3), dp))
       NW=NW+1
 1350  CONTINUE
 C--CALCULATE THE VOLUMES
       O=STORE(M)*STORE(M+1)*STORE(M+2)
-      STORE(M+6)=O*SQRT(1.-A*A-B*B-C*C+2.*A*B*C)
-      STORE(N+6)=1./STORE(M+6)
-      O=O*STORE(N+6)
+      od=real(STORE(M), dp)*real(STORE(M+1), dp)*real(STORE(M+2), dp)
+      ! replaced with double precision calculation
+      !STORE(M+6)=O*SQRT(1.-A*A-B*B-C*C+2.*A*B*C)
+      dstore=Od*SQRT(
+     1  1.d0-aad(1)**2-aad(2)**2-aad(3)**2+2.d0*Aad(1)*aad(2)*aad(3))
+      ! replaced with double precision calculation
+      STORE(M+6)=dstore
+      STORE(N+6)=1.0d0/dstore
+      O=Od*1.0d0/dstore
+      Od=Od*1.0d0/dstore
 C--CALCULATE THE MISSING PARAMETERS
       H=1./(D*E*F)
+      Hd=1.0d0/(aad(4)*aad(5)*aad(6))
       NU=1
       NZ=N
       DO 1400 NY=M,NX
       NV=IADD1(NU)
       NW=IADD1(NU+1)
-      STORE(NZ)=O*AA(NU+3)/STORE(NY)
-      STORE(NZ+3)=ACOS((AA(NV)*AA(NW)-AA(NU))*AA(NU+3)*H)
+      ! replaced with double precision calculation
+      !STORE(NZ)=O*AA(NU+3)/STORE(NY)
+      !STORE(NZ+3)=ACOS((AA(NV)*AA(NW)-AA(NU))*AA(NU+3)*H)
+      STORE(NZ)=Od*AAD(NU+3)/STORE(NY)
+      STORE(NZ+3)=ACOS((AAD(NV)*AAD(NW)-AAD(NU))*AAD(NU+3)*Hd)
       NU=NU+1
       NZ=NZ+1
 1400  CONTINUE
 C--CALCULATE THE ORTHOGONALIZATION MATRICES
-      STORE(L1O1)=STORE(L1P1)*SIN(STORE(L1P1+4))*SIN(STORE(L1P2+5))
+      STORE(L1O1)=STORE(L1P1)*
+     1  SIN(real(STORE(L1P1+4),dp))*SIN(real(STORE(L1P2+5),dp))
       STORE(L1O1+1)=0.
       STORE(L1O1+2)=0.
-      STORE(L1O1+3)=-STORE(L1P1)*SIN(STORE(L1P1+4))*COS(STORE(L1P2+5))
-      STORE(L1O1+4)=STORE(L1P1+1)*SIN(STORE(L1P1+3))
+      STORE(L1O1+3)=-STORE(L1P1)*
+     1  SIN(real(STORE(L1P1+4),dp))*COS(real(STORE(L1P2+5), dp))
+      STORE(L1O1+4)=STORE(L1P1+1)*SIN(real(STORE(L1P1+3), dp))
       STORE(L1O1+5)=0.
-      STORE(L1O1+6)=STORE(L1P1)*COS(STORE(L1P1+4))
-      STORE(L1O1+7)=STORE(L1P1+1)*COS(STORE(L1P1+3))
+      STORE(L1O1+6)=STORE(L1P1)*COS(real(STORE(L1P1+4), dp))
+      STORE(L1O1+7)=STORE(L1P1+1)*COS(real(STORE(L1P1+3), dp))
       STORE(L1O1+8)=STORE(L1P1+2)
 C--CALCULATE THE INVERSE ORTHOGONALISATION MATRIX
       IF(KINV2(3,STORE(L1O1),STORE(L1M2),9,0,STORE(L1M1),STORE(L1M1+9),
@@ -340,7 +359,8 @@ CODE FOR XFAL01
 C--ROUTINE TO LOAD LIST 1 FROM THE DISC
 C
 C--
-      REAL D(3), RN, CALP, CBET, CGAM
+      double precision D(3), RN, CALP, CBET, CGAM
+      integer, parameter :: dp=kind(1.0d0)
       INCLUDE 'ICOM01.INC'
 C
       INCLUDE 'XLST01.INC'
@@ -353,13 +373,13 @@ C
 C--LOAD THE LIST
       CALL XLDLST(1,ICOM01,IDIM01,-1)
 C----- LOAD THE MATRIX FOR THE GUI
-      CALP=COS(STORE(L1P1+3))
-      CBET=COS(STORE(L1P1+4))
-      CGAM=COS(STORE(L1P1+5))
-      RN=SQRT(1.0+2.0*CALP*CBET*CGAM-CALP**2-CBET**2-CGAM**2)
-      D(1)=SIN(STORE(L1P1+3))/(RN*STORE(L1P1))
-      D(2)=SIN(STORE(L1P1+4))/(RN*STORE(L1P1+1))
-      D(3)=SIN(STORE(L1P1+5))/(RN*STORE(L1P1+2))
+      CALP=COS(real(STORE(L1P1+3),dp))
+      CBET=COS(real(STORE(L1P1+4),dp))
+      CGAM=COS(real(STORE(L1P1+5),dp))
+      RN=SQRT(1.0d0+2.0d0*CALP*CBET*CGAM-CALP**2-CBET**2-CGAM**2)
+      D(1)=SIN(real(STORE(L1P1+3),dp))/(RN*STORE(L1P1))
+      D(2)=SIN(real(STORE(L1P1+4),dp))/(RN*STORE(L1P1+1))
+      D(3)=SIN(real(STORE(L1P1+5),dp))/(RN*STORE(L1P1+2))
       DO 110 I=1,3
        DO 120 J=1,3
         K=J-3+I*3

@@ -4449,7 +4449,7 @@ Mean C-C su =   0.0129
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]     767000         763190           32000                                    On scale of /FC/
+[33]     767000         763200           32000                                    On scale of /FC/
 
 [32]     697940         693940           29160                0.15 E+06          On scale of /FO/
 
@@ -5102,8 +5102,8 @@ Mean C-C su =   0.0121
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #FINISH
- Physical reads      11195 Physical writes      10072 Cache hits     198120
- Cache hit distribution   180092   12778    2068     532     482     164
+ Physical reads      11195 Physical writes      10072 Cache hits     198121
+ Cache hit distribution   180093   12778    2068     532     482     164
  Cache hit distribution      149     186     201     293     161     176
  Cache hit distribution      159     136     142      52      63      45
  Cache hit distribution       79      42      43      29      18      30
