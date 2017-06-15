@@ -4342,6 +4342,31 @@ C
       RETURN
       END
 C
+CODE FOR XABSRQ
+      SUBROUTINE XABSRQ
+C--
+C PROBLEM: Label 9900 (return) in SFLSB still leaves CRYSTALS loading
+C LIST 33, which may then generate an error in (say) DORESTRAIN because
+C there is no LIST 11 to load. 
+C ABANDON PROCESSING OF THE srq FOR LIST 33 IF THERE IS AN ERROR
+C CONDITION IN PROCESSING AN SFLS INSTRUCTION
+
+C
+      character*80 csrq
+      INCLUDE 'XCARDS.INC'
+C
+      DO 1100 I=1,nrec
+      READ(NUSRQ,1050,END=99)cline
+1050  FORMAT(20A4)
+1100  CONTINUE
+      NREC = 0
+      IPOSRQ = 1
+      IEOF = 1
+      RETURN
+99    CONTINUE
+      RETURN
+      END
+C
 CODE FOR KCNXTS
       FUNCTION KCNXTS(NWDIR,IDIR,NDIR,LDIR)
 C----- A LINK FROM EXISTING CODE TO A MODIFIED 'XCNXTS',
