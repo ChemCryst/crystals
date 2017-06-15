@@ -2974,8 +2974,8 @@ C-----  SPOT THE WAVELENGTH
      1 (' System files contain no anomalous entries for required', 
      2 ' wavelength'/F8.4, ' used in lieu of ',F8.4,
      3 ' for anomalous scattering')
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') CMON(1),CMON(2),
-     1  CMON(3)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') trim(CMON(1)),
+     1  trim(CMON(2)), trim(CMON(3))
       ENDIF
 C----- BEGIN PROCESSING FORMULA LIST
       DO 5500 J = IADDF, JADDF, NADDF
@@ -3195,14 +3195,14 @@ C
 9710  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9711) CLINE(1:ISIZE), CARG
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') trim(CMON(1))
       CALL XPRVDU(NCVDU, 1,0)
 9711  FORMAT (' End of file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
 9720  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9721) CLINE(1:ISIZE), CARG
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') trim(CMON(1))
       CALL XPRVDU(NCVDU, 1,0)
 9721  FORMAT (' Error in file ', A, ' - item  "',A,'"  not found')
       GOTO 9900

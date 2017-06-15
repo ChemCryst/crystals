@@ -1712,7 +1712,7 @@ C----- REMOVE ANY '.'
         CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
         WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
         CALL XPRVDU(NCEROR, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
       ENDIF
 CDJWAPR99}
 
@@ -2008,11 +2008,11 @@ c            print *, NRECOR, ios
 2735    CONTINUE
         WRITE (CMON,'(A,I4)') 'Error copying scratch back to dsc: ',IOS
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
 2740    CONTINUE
         WRITE (CMON,'(1X,A,I6,A)') 'Copied: ',NRECOR+1,' dsc records.'
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
         ISTAT = KFLCLS(NUNEW)     ! and then close scratch.
       ENDIF
 
@@ -2055,7 +2055,7 @@ C -- INPUT ERRORS
 CDJWAPR99
       WRITE(CMON,'(A)') 'Filename limited to 16 characters'
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
       CALL XOPMSG ( IOPPUR , IOPCMI , 0 )
       GO TO 9900
 C

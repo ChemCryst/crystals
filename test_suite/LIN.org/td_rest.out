@@ -1,12 +1,12 @@
-#                                                                                                                                                                                                                                                               
-#TITLE CYCLO IN P 21 21 21                                                                                                                                                                                                                                      
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+#
+#TITLE CYCLO IN P 21 21 21
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE
+#LIST 14
+#SPACE
   Space Group P21 21 21 
   The Space Group is ACentric  Primitive Orthorhombic  Laue Symmetry mmm     
   Multiplicity of a General Site is   4  Laue-no is   3
@@ -26,19 +26,19 @@ Space group symbol is   P    21   21   21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-# WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3                                                                                                                                                                                                          
-#COMPOSIT                                                                                                                                                                                                                                                       
-#LIST 13                                                                                                                                                                                                                                                        
-#COMPOSIT                                                                                                                                                                                                                                                       
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 4                                                                                                                                                                                                                                                         
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-# HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
-#OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
-#HKLI                                                                                                                                                                                                                                                           
+# WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3
+#COMPOSIT
+#LIST 13
+#COMPOSIT
+#LIST 3
+#LIST 29
+#LIST 29
+#LIST 4
+#LIST 13
+#LIST 28
+# HOOK UP THE REFLECTION FILE
+#OPEN HKLI  "CYCLO.HKL"
+#HKLI
 
  No scales found
 
@@ -48,9 +48,9 @@ Space group symbol is   P    21   21   21
 
 
 
-    1866 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#SYST                                                                                                                                                                                                                                                           
-#SORT                                                                                                                                                                                                                                                           
+    1866 reflections accepted           0 reflections rejected
+#SYST
+#SORT
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -82,20 +82,20 @@ Space group symbol is   P    21   21   21
 
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
-                                                                                                                                                                                                                                                                
-Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
-Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000                                                                                                                                                                                         
-Number                4       2       9       2       0       0       0                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                
-Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
-rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000                                                                                                                                                                                         
-Number                4       1       2       5       4       1       0                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                
-   1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
-#MERGE                                                                                                                                                                                                                                                          
+
+Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
+Number                4       2       9       2       0       0       0
+
+Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
+Number                4       1       2       5       4       1       0
+
+   1849 reflections accepted              17 reflections rejected
+#MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#LIST 6                                                                                                                                                                                                                                                         
+#LIST 6
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -110,7 +110,7 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
    0.0 -  0.5    46  4    46  1087 ----------------------
    0.5 -  1.0    20  2    66  1067 ----------
    1.0 -  1.5    31  3    97  1036 ---------------
@@ -217,36 +217,36 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   1849 Contributors input            0 Contributors rejected
   1133 Merged reflections output     0 Merged reflections rejected
      0 Contributors deviating from the average by more than   3.0e.s.ds
-   965 Reflections greater than 3 sigma(i),  85.172 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+   965 Reflections greater than 3 sigma(i),  85.172 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.01            0.10           0.53
-#                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
+#                           STORE REFLECTIONS ON DISC FOR FUTURE USE
 
 
 
-    1133 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#PURG                                                                                                                                                                                                                                                           
+    1133 reflections accepted           0 reflections rejected
+#PURG
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#LIST 12                                                                                                                                                                                                                                                        
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 12
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CLEAR 17
+#LIST  17
+#BONDCALC
 Bonds: Update required - There is no list 41
-#LIST 26                                                                                                                                                                                                                                                        
+#LIST 26
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -282,16 +282,16 @@ Bonds: Update required - There is no list 41
       1736  :        78        12     U[13]   
       1739  :  -1000000        13     U[12]   
  Function at    1661  :   12   Uij       
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
+#CHECK HI
+#LIST 22
+#LIST 23
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
+#LIST 17
+#CHECK HI
+#LIST 26
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -327,7 +327,7 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
       1736  :        78        12     U[13]   
       1739  :  -1000000        13     U[12]   
  Function at    1661  :   12   Uij       
-#CHECK HI                                                                                                                                                                                                                                                       
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -410,14 +410,14 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
        1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
  Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
  Function at    1185  :   11   Nolist    
-#SFLS                                                                                                                                                                                                                                                           
-#WEIGHT                                                                                                                                                                                                                                                         
+#SFLS
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -475,8 +475,8 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -539,9 +539,9 @@ LS-scale=  1.612   Wilson Scale=  0.000
        1269   -998731      1861        11  -1000592  -1000000  -1000000         0      1274      1870  16776876         0
  Work stack header at    1274  :  -1000000         6      -340         0   -998731         0
  Function at    1269  :   11   Nolist    
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -612,7 +612,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -652,9 +652,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00   -0.01   -0.00   -0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -737,22 +737,22 @@ Mean C-C su =   0.0000
        1185   -998815      1861        11  -1000676  -1000000  -1000000         0      1190      1870  16776876         0
  Work stack header at    1190  :  -1000000         6      -340         0   -998815         0
  Function at    1185  :   11   Nolist    
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#CHECK HI
+#LIST 26
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -773,11 +773,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
 [41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -835,11 +835,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -910,7 +910,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -950,9 +950,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00   -0.01   -0.00   -0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -973,23 +973,23 @@ Mean C-C su =   0.0000
            C       7     1  1  0  0  0    -0.00860         O       6     1  1  0  0  0    -0.00875  -0.00015     U[13]   
            C       7     1  1  0  0  0     0.00344         O       6     1  1  0  0  0     0.00322  -0.00021     U[12]   
 [41]       Mean value =   0.0248  Mean delta =  -0.0004  r.m.s. delta =   0.00
-# -------------------------------------                                                                                                                                                                                                                         
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+# -------------------------------------
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#CHECK HI
+#LIST 26
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1005,11 +1005,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1067,11 +1067,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1141,7 +1141,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1181,9 +1181,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1199,22 +1199,22 @@ Mean C-C su =   0.0000
   
            O       6     1  1  0  0  0     0.03377         C       7     1  1  0  0  0     0.03381   0.00004
 [41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#CHECK HI
+#LIST 26
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1230,11 +1230,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1292,11 +1292,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1366,7 +1366,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1406,9 +1406,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1424,30 +1424,30 @@ Mean C-C su =   0.0000
   
            C       7     1  1  0  0  0     0.03381         O       6     1  1  0  0  0     0.03377  -0.00004
 [41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
-#PURG                                                                                                                                                                                                                                                           
+#PURG
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#TITLE NOW TEST ASYMMETRIC RESTRAINTS                                                                                                                                                                                                                           
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+#TITLE NOW TEST ASYMMETRIC RESTRAINTS
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#CHECK HI
+#LIST 26
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -1468,11 +1468,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            O       6     1  1  0  0  0    -0.00748         C       7     1  1  0  0  0    -0.00674   0.00074     U[13]   
            O       6     1  1  0  0  0     0.00098         C       7     1  1  0  0  0     0.01229   0.01132     U[12]   
 [41]       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.01
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1530,11 +1530,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -1606,7 +1606,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1646,9 +1646,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00   -0.02   -0.00   -0.00   -0.00   -0.00   -0.01
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -1669,22 +1669,22 @@ Mean C-C su =   0.0000
            O       6     1  1  0  0  0    -0.00931         C       7     1  1  0  0  0    -0.00736   0.00195     U[13]   
            O       6     1  1  0  0  0     0.00118         C       7     1  1  0  0  0     0.00124   0.00006     U[12]   
 [41]       Mean value =   0.0234  Mean delta =   0.0007  r.m.s. delta =   0.00
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#CHECK HI
+#LIST 26
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -1705,11 +1705,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
 [41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -1767,11 +1767,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -1843,7 +1843,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1883,9 +1883,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -1906,23 +1906,23 @@ Mean C-C su =   0.0000
            C       7     1  1  0  0  0    -0.00542         O       6     1  1  0  0  0    -0.00732  -0.00191     U[13]   
            C       7     1  1  0  0  0     0.01461         O       6     1  1  0  0  0     0.01127  -0.00334     U[12]   
 [41]       Mean value =   0.0311  Mean delta =  -0.0025  r.m.s. delta =   0.00
-# -------------------------------------                                                                                                                                                                                                                         
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+# -------------------------------------
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#CHECK HI
+#LIST 26
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -1938,11 +1938,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2000,11 +2000,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2074,7 +2074,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2114,9 +2114,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2132,22 +2132,22 @@ Mean C-C su =   0.0000
   
            O       6     1  1  0  0  0     0.03343         C       7     1  1  0  0  0     0.03566   0.00224
 [41]       Mean value =   0.0345  Mean delta =   0.0022  r.m.s. delta =   0.00
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#LIST 16
+#LIST 26
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#CHECK HI
+#LIST 26
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2163,11 +2163,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2225,11 +2225,11 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
  Structure factor least squares calculation    8  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2299,7 +2299,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2339,9 +2339,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2357,32 +2357,32 @@ Mean C-C su =   0.0000
   
            C       7     1  1  0  0  0     0.03501         O       6     1  1  0  0  0     0.03696   0.00195
 [41]       Mean value =   0.0360  Mean delta =   0.0019  r.m.s. delta =   0.00
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST 12
+#LIST 22
  Initialising Special positions
 Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#PURGE                                                                                                                                                                                                                                                          
+#LIST 17
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#PURGE
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#CHECK HI                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+#CHECK HI
+#LIST 22
  Initialising Special positions
 Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK HI                                                                                                                                                                                                                                                       
+#LIST 17
+#LIST 26
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2399,13 +2399,13 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
   VIBRATION restraint:  No derivatives found
   ?        C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
-#LIST     16                                                                                                                                                                                                                                                    
-#LIST 26                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST     16
+#LIST 26
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2463,11 +2463,11 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
  Structure factor least squares calculation    9  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2537,7 +2537,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2577,9 +2577,9 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.124    0.108    0.081 
-Mean C-C su =   0.0984                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0984
+#CYCLENDS
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2595,31 +2595,31 @@ Mean C-C su =   0.0984
   
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
 [41]       Mean value =   1.5500  Mean delta =   0.0000  r.m.s. delta =   0.00
-#USE TD_REST.L5                                                                                                                                                                                                                                                 
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 30/09/11 AT 12:38:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#PURGE                                                                                                                                                                                                                                                          
+#USE TD_REST.L5
+#
+# PUNCHED ON 30/09/11 AT 12:38:09
+#
+#LIST      5
+#PURGE
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#LIST     16                                                                                                                                                                                                                                                    
-#LIST 26                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST     16
+#LIST 26
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2677,13 +2677,13 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
  Structure factor least squares calculation   10  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62                                                                                                                                                                                                         
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2753,7 +2753,7 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2793,13 +2793,13 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.119    0.106    0.047 
-Mean C-C su =   0.0953                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0953
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#DORESTRAIN
  Initialising Special positions
 
 
@@ -2857,9 +2857,9 @@ Mean C-C su =   0.0953
 
  Structure factor least squares calculation   11  ends  2
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
-LS-scale=  1.612   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.113    100*(<Fo>-<Fc>)/<Fo> =    -1.72                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.612   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.113    100*(<Fo>-<Fc>)/<Fo> =    -1.72
+#INVERT  CHOL
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2929,7 +2929,7 @@ All cycle   Min function          0.0           0.55E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2969,9 +2969,9 @@ All cycle   Min function          0.0           0.55E+04       0.10E+16
 [37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.026    0.024    0.010 
-Mean C-C su =   0.0214                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#CHECK HI                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0214
+#CYCLENDS
+#CHECK HI
 
 
  Now test asymmetric restraints                                                       Date              Time          
@@ -2987,7 +2987,7 @@ Mean C-C su =   0.0214
   
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
 [41]       Mean value =   1.5497  Mean delta =   0.0003  r.m.s. delta =   0.00
-#END                                                                                                                                                                                                                                                            
+#END
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -254,6 +254,7 @@ C  2  NOT DEFINED  -  FOR RESTRAINTS MAY BE A WORK STACK ADDRESS REL.
 C                     TO 'LC'..
 C  3  NOT DEFINED  -  FOR RESTRAINTS THE WEIGHT.
 C  4  NOT DEFINED  -  FOR RESTRAINTS THE INPUT OR OBSERVED VALUE.
+C  5  The index of the restraint in the user list `list 16` starting from zero
 C
 C--THE FORMAT OF THE INSTRUCTION BLOCKS ON THE CHAIN IS :
 C
@@ -463,6 +464,7 @@ C--INDICATE THAT LIST 12 IS NOT IN CORE
       DO 1100 I=1,IDIM12
       ICOM12(I)=NOWT
 1100  CONTINUE
+      irestraintcpt=-1
 C--SET THE INPUT LIST TYPE
       KD=16
 C----- INDICATE LIST 17 NOT YET USED
@@ -487,9 +489,11 @@ C--INITIALISE THE CONTROL VARIABLES
       CALL XSETCC
 C--RECORD THE NUMBER OF ERRORS SO FAR
       LSTLEF=LEF
-      MZ=0
+      MZ=0      
 c----- indicate a normal directive
       iasym = 0
+      irestraintcpt=irestraintcpt+1
+      istore(lcg+5)=irestraintcpt ! store the index of the restraint
 C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
@@ -655,7 +659,7 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
           IF ( NGROUP .GT. 1 ) THEN   ! It is not the first group.
             IF ( NATOMS .NE. JATOMS ) THEN  ! Check number atoms matches first group.
               WRITE (CMON,'(A)') 'A group is different size from first'
-              if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+              if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
               CALL XPRVDU(NCVDU,1,0)
               GOTO 5850
             END IF
@@ -671,7 +675,7 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
         IF ( MS .LE. 0 ) THEN
           WRITE (CMON,'(A)') 'Error reading atom from SAME directive.'
           CALL XPRVDU(NCVDU,1,0)
-          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
           GOTO 5850
         END IF
         INDATM = ( M5A - L5 ) / MD5
@@ -700,8 +704,8 @@ C Check types match.
      1         'have different element types: ',CATOM1(1:LATOM1),
      1         ' and ', CATOM2(1:LATOM2)
               CALL OUTCOL(9)
-              if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
-              if (issprt.eq.0) write(ncwu,'(a)') cmon(2)(:)
+              if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+              if (issprt.eq.0) write(ncwu,'(a)') trim(cmon(2))
               CALL XPRVDU(NCVDU,2,0)
               CALL OUTCOL(1)
               GOTO 5850
@@ -723,19 +727,21 @@ c      call xprvdu(ncvdu,1,0)
 
       IF ((MG .EQ.21) .AND. ( NGROUP .LE. 1 )) THEN
         WRITE (CMON,'(A)') 'Only one group given on SAME card.'
-        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+        if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       ELSE IF (((MG .EQ.22) .or.(mg.eq.23))
      1  .AND. ( NGROUP .LE. 0 )) THEN
         WRITE (CMON,'(A)') '{I Not enough atoms for DELU/SIMU'
-        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+        if (issprt.eq.0) write(ncwu,'(a)') 
+     1    cmon(1)(3:len_trim(cmon(1)))
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       END IF
         IF ((ngroup .gt. 1) .and. ( NATOMS .NE. JATOMS )) THEN
          WRITE (CMON,'(A)')'{E Last group different size from first.'
-         if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+         if (issprt.eq.0) write(ncwu,'(a)') 
+     1     cmon(1)(3:len_trim(cmon(1)))
          CALL XPRVDU(NCVDU,1,0)
          GOTO 5850
         END IF
@@ -769,7 +775,9 @@ C Get the distances and angles. One at a time.
         IF ( K .LT. 0 ) THEN
            WRITE (CMON,'(A)')'{E "KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
-           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+           if (issprt.eq.0) then
+             write(ncwu,'(a)') cmon(1)(3:len_trim(cmon(1)))
+           end if
            GOTO 5850
         ELSE IF ( K .EQ. 0 ) THEN
            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
@@ -781,7 +789,9 @@ C Get the distances and angles. One at a time.
            WRITE (CMON,'(3A)')'{E DELU/SIMU restraint warning: Atom ',
      2      CATOM1(1:LATOM1), ' has no bonded contacts.'
            END IF
-           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+           if (issprt.eq.0) then
+             write(ncwu,'(a)') cmon(1)(3:len_trim(cmon(1)))
+          end if
           CALL XPRVDU(NCVDU,1,0)
           CYCLE MAINLOOP
         END IF
@@ -802,7 +812,7 @@ cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND1 .GE. 0 ) .and. (mg .eq. 21))  THEN
           WRITE (CMON,'(A,i5,a)')'Programming error [1]',
      1    mg,' in XPRC16.'
-          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
           CALL XPRVDU(NCVDU,1,0)  
           GOTO 5850
         END IF
@@ -825,8 +835,8 @@ CDJW DEBUGGING
      1       CATOM2(1:25)
              CALL XPRVDU(NCVDU, 1,0)
 2804         FORMAT ( 6x, A,' ',F6.3,'A from ',A)
-             IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(:)
-             WRITE(NCAWU,'(A)') CMON(1)(:)
+             IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(CMON(1))
+             WRITE(NCAWU,'(A)') trim(CMON(1))
            END IF
           endif
 CDJW DEBUGGING
@@ -844,7 +854,7 @@ cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND2 .GE. 0 ) .and. (mg .eq. 21))  THEN
           WRITE (CMON,'(A,i5,a)')'Programming error [2]',
      1    mg,' in XPRC16.'
-            if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
             CALL XPRVDU(NCVDU,1,0)  
             GOTO 5850
           END IF
@@ -915,8 +925,8 @@ CDJW - DEBUGGING
               if(istat2 .eq.1) then
                write(cmon,'(a,i5)') ' Processing group ',K+1
                CALL XPRVDU(NCVDU,1,0)
-               if (issprt.eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
-               WRITE(NCAWU,'(A)') CMON(1)(:)
+               if (issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
+               WRITE(NCAWU,'(A)') trim(CMON(1))
                CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
      1         CATOM1,LATOM1)
                CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
@@ -926,8 +936,8 @@ CDJW - DEBUGGING
                WRITE(CMON,2804)CATOM1(1:LATOM1),STORE(J+10),
      2         CATOM2(1:25)
                CALL XPRVDU(NCVDU,1,0)
-               if (issprt .eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
-               WRITE(NCAWU,'(A)') CMON(1)(:)
+               if (issprt .eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
+               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 CDJW - DEBUGGING
               MQ=MCG ! Next free word (we'll store atom1 header here)
@@ -993,8 +1003,8 @@ cdjwdebugging
      1       CATOM3(1:25)
              CALL XPRVDU(NCVDU, 1,0)
 2805         FORMAT ( 6x, A, ' to ', A, ' to ', A)
-             if(issprt.eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
-             WRITE(NCAWU,'(A)') CMON(1)(:)
+             if(issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
+             WRITE(NCAWU,'(A)') trim(CMON(1))
             endif
 cdjwdebugging
 C Find third atom of angle in the first group of SAME.
@@ -1009,7 +1019,7 @@ C Find third atom of angle in the first group of SAME.
             IF ( IND3 .GE. 0 ) THEN
               WRITE (CMON,'(A)') 'Programming error [3] in XPRC16.'
               CALL XPRVDU(NCVDU,1,0)  
-            if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
               GOTO 5850
             END IF
             IND3 = -IND3 ! Now index into the vector at JATD
@@ -1086,7 +1096,7 @@ cdjwdebugging
                WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
      1         CATOM3(1:25)
                CALL XPRVDU(NCVDU,1,0)
-               WRITE(NCAWU,'(A)') CMON(1)(:)
+               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 cdjwdebugging
 
@@ -1383,7 +1393,7 @@ C--SET UP THE CONTROL BLOCK FOR THIS CONDITION
       MDCG=MCG
       ISTORE(MCG)=NOWT
       ISTORE(MCG+1)=J
-      MCG=MCG+5
+      MCG=MCG+6
       J=MDCG+2
       IF(MCG-LFL)3050,3050,6150
 C--FETCH THE REMAINING THREE NUMBERS FOR THIS RESTRAINT

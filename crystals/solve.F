@@ -1110,7 +1110,7 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
 4350  FORMAT(' Forced termination after this cycle: ',
      3 ' Actual value condition on: ',   A)
        CALL XPRVDU(NCVDU, 1,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 c
 c send convergence status to LIST 39
 c-----      update list 39 - assumes only one SFLS record
@@ -1131,7 +1131,7 @@ c            isfls = 'SFLS'
 4351  FORMAT(' Forced termination after this cycle: ',
      3 ' Relative change condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 c send convergence status to LIST 39
 c-----      update list 39 - assumes only one SFLS record
 c            isfls = 'SFLS'
@@ -1657,7 +1657,7 @@ c
         call outcol(9)
         call xprvdu(ncvdu, 1,0)
         call outcol(1)
-        if (issprt .eq. 0) write(ncwu,'(//a//)') cmon(1)
+        if (issprt .eq. 0) write(ncwu,'(//a//)') trim(CMON(1))
       endif
 c      djwscl =  min(shift, scalsv)
 c ric11 - shift is not initialised.
@@ -2970,7 +2970,7 @@ C----- SAVE THE MEAN C-C ESD
       call outcol(7)
       CALL XPRVDU(NCVDU, 1,0)
       call outcol(1)
-      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')cmon(1)
+      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')trim(CMON(1))
 c
 c
       STORE(L30CF+14) = AESDC/MAX(1.0, FLOAT(NESDC))
@@ -3036,7 +3036,7 @@ c        Overall parameters
       CALL OUTCOL(3)
       CALL XPRVDU(NCVDU, 4,0)
       CALL OUTCOL(1)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
       RETURN
       END
 C

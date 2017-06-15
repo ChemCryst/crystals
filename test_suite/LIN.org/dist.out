@@ -1,22 +1,22 @@
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 2                                                                                                                                                                                                                                                         
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 29                                                                                                                                                                                                                                                        
-# COVALENT,VDW,IONIC,NUMBER,MUA,WEIGHT,COLOUR                                                                                                                                                                                                                   
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 11/07/12 AT 13:24:49                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#DIST                                                                                                                                                                                                                                                           
-#CLEAR 12                                                                                                                                                                                                                                                       
-#LIST  12                                                                                                                                                                                                                                                       
-#LIST 31                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 2
+#LIST 3
+#LIST 29
+# COVALENT,VDW,IONIC,NUMBER,MUA,WEIGHT,COLOUR
+#
+# PUNCHED ON 11/07/12 AT 13:24:49
+#
+#LIST      5
+#DIST
+#CLEAR 12
+#LIST  12
+#LIST 31
+#BONDCALC
 Bonds: Update required - There is no list 41
-#DIST                                                                                                                                                                                                                                                           
+#DIST
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -11835,7 +11835,7 @@ Bonds: Update required - There is no list 41
 [49]   25   H      3492.      1   1    0    0    0     107.0    64.7
 
   KEY                                               19      20      21      22      23      24
-#DIST                                                                                                                                                                                                                                                           
+#DIST
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -16882,7 +16882,7 @@ Bonds: Update required - There is no list 41
 [49]   19   H      3451.      2   1    1    0    0      37.0    56.6
 
   KEY                                               10      11      12      13      14      15      16      17      18
-#DIST                                                                                                                                                                                                                                                           
+#DIST
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -22554,7 +22554,7 @@ Bonds: Update required - There is no list 41
 [49]    6   H      3492.      1   1    0    0    0      71.5    35.2
 
   KEY                                                1       2       3       4       5
-#END                                                                                                                                                                                                                                                            
+#END
 
 
           : Job ends ok       with     0 warnings and     0 errors

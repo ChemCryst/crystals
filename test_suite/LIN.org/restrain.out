@@ -1,31 +1,31 @@
-#TITLE P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                                                                                                                                                                                       
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 2                                                                                                                                                                                                                                                         
-#LIST 5                                                                                                                                                                                                                                                         
-#                                                                                                                                                                                                                                                               
-# THIS VERSION OF THE DECK HAS THE COORDINATES                                                                                                                                                                                                                  
-# OF C AND O INTERCHANGED AND EXPANDED                                                                                                                                                                                                                          
-#                                                                                                                                                                                                                                                               
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 16                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+#TITLE P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 2
+#LIST 5
+#
+# THIS VERSION OF THE DECK HAS THE COORDINATES
+# OF C AND O INTERCHANGED AND EXPANDED
+#
+#LIST 29
+#LIST 12
+#LIST 23
+#LIST 16
+#CHECK
+#CLEAR 17
+#LIST  17
+#LIST 22
  Initialising Special positions
 Refining    21 parameters in    4 block :      148 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
-#LIST 26                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 26
+#BONDCALC
 Bonds: Update required - There is no list 41
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 16                                                                                                                                                                                                                                                        
+#LIST 26
+#CHECK
+#LIST 16
 
 
  P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                   Date              Time          
@@ -1213,8 +1213,8 @@ Bonds: Update required - There is no list 41
        1047   -998953      1592        11  -1000545  -1000000  -1000000         0      1052      1601  16776492         0
  Work stack header at    1052  :  -1000000         6      -724         0   -998953         0
  Function at    1047  :   11   Nolist    
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 26                                                                                                                                                                                                                                                        
+#CHECK
+#LIST 26
 
 
  P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                   Date              Time          
@@ -1322,7 +1322,7 @@ Bonds: Update required - There is no list 41
       1682  :       215         1      -877      -817      -879
       1687  :       220         1      -879      -823      -881
       1692  :  -1000000        14         0         0      -881
-#CHECK                                                                                                                                                                                                                                                          
+#CHECK
 
 
  P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                   Date              Time          
@@ -1511,12 +1511,12 @@ Bonds: Update required - There is no list 41
        1047   -998953      1672        11  -1000625  -1000000  -1000000         0      1052      1681  16776492         0
  Work stack header at    1052  :  -1000000         6      -724         0   -998953         0
  Function at    1047  :   11   Nolist    
-# TEST SPECIAL PARAMETERS                                                                                                                                                                                                                                       
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 23                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+# TEST SPECIAL PARAMETERS
+#LIST 1
+#LIST 23
+#SPACE
+#LIST 14
+#SPACE
  The unique axis has been set to "b" - consistent with the unit cell   
   Space Group P1 21/C 1 
   The Space Group is  Centric  Primitive Monoclinic    Laue Symmetry 2/m     
@@ -1537,16 +1537,16 @@ Space group symbol is   P    1    21/C 1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-#LIST 5                                                                                                                                                                                                                                                         
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 16                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST 5
+#LIST 12
+#LIST 16
+#CHECK
+#LIST 22
  Initialising Special positions
 Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
+#LIST 17
+#LIST 26
 
 
  P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                   Date              Time          
@@ -1654,7 +1654,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Overall parameter header at     916  :  -1000000         7         2            -1000000  -1000000
                                          -1000000  -1000000  -1000000  -1000000  -1000000
  Function at     888  :   15   sum       
-#CHECK                                                                                                                                                                                                                                                          
+#CHECK
 
 
  P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                   Date              Time          
@@ -1826,7 +1826,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
         564   -999436      1088        11  -1000524  -1000000  -1000000         0       569      1097  16776972         0
  Work stack header at     569  :  -1000000         6      -244         0   -999436         0
  Function at     564  :   11   Nolist    
-#FINI                                                                                                                                                                                                                                                           
+#FINI
 
 
           : Job ends ok       with     0 warnings and     0 errors

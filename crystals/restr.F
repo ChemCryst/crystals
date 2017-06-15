@@ -36,6 +36,12 @@ C
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'QSTORE.INC'
+
+      interface 
+          subroutine XAPP16(calconlyarg)
+              logical, optional, intent(in) :: calconlyarg
+          end subroutine
+      end interface
 C
 C--LOAD THE NEXT '#INSTRUCTION'
       NUM=KNXTOP(LSTOP,LSTNO,ICLASS)

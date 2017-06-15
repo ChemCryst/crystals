@@ -583,7 +583,7 @@ cdjwjun07
 cdjwjun09 copy all # lines
 c        if ((issprt .eq. 0) .and. (cmon(1)(2:4) .eq. 'SCR')) then
         if (issprt .eq. 0)  then
-            write(ncwu,'(A)') cmon(1)(:)
+            write(ncwu,'(A)') trim(CMON(1))
         endif
 cdjwjun07
         IHFLAG = 0
@@ -1194,7 +1194,8 @@ C            close back to top level if a SCRIPT does not exist
      3      '{EProbably a bug.',
      4      '{EPlease send the .log and .lis files to Oxford'
              CALL XPRVDU(NCVDU, 4, 0)
-             write(ncwu,'(a)') cmon(1), cmon(2), cmon(3), cmon(4)
+             write(ncwu,'(a)') trim(CMON(1)), trim(cmon(2)), 
+     1         trim(cmon(3)), trim(cmon(4))
              CALL XFLUNW ( 1 , 3 )
             ELSE
              CALL XFLUNW ( 2 , 1 )
@@ -1369,7 +1370,7 @@ C----- CREATE A NEW FILE
       CALL XDAXTN ( NCIFU, -1, 120) ! Extend disk to 120 records.
       WRITE ( CMON, 3191 )
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 3191  FORMAT(' Create command file')
       CALL XSYSDC(-1,-1)
       NU=NCIFU         ! ENSURE ALL TRANSFERS ARE TO THE COMMAND FILE DISC
@@ -4060,7 +4061,7 @@ C
      2          K =NSTART,NEND)
                 CALL XPRVDU(NCVDU, NROW, 0)
                 IF (ISSPRT .EQ. 0) 
-     1          WRITE ( NCWU, '(A)') (CMON(IDJW)(:),IDJW=1,NROW)
+     1          WRITE ( NCWU, '(A)') (trim(CMON(IDJW)),IDJW=1,NROW)
               NSTART = NEND+1
 97531       CONTINUE
 1015        FORMAT ( 4(1X,16A1) )

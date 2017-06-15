@@ -1108,7 +1108,7 @@ cdjwapr06            IF (DELTA.GE..05) THEN
                IF (ISSPRT.EQ.0) THEN
                   WRITE (NCWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,
      1             DELTA2,DEV,DELTAA
-                  WRITE (NCWU,'(A)') CMON(1)(:)
+                  WRITE (NCWU,'(A)') trim(CMON(1))
                END IF
             END IF
 1650        FORMAT (A,1X,' sp',I1,' delta ',F6.2,' sp',I1,' delta',F6.2,

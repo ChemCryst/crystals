@@ -1,6 +1,7 @@
 % SCRIPT PLATANOM
 %% variables used by the question box below                                     
-%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2   
+%  VARIABLE CHARACTER BUTINFO BUTFILE                     
 %  VARIABLE LOGICAL ANSWER   T                                                   
 %%
 %  IF .not. FILEEXISTS ( 'LIST6.ABC' ) THEN
@@ -25,8 +26,10 @@
 %  EVALUATE QLINE1 = 'Do you want to modify the SQUEEZE data to'                           
 %  EVALUATE QLINE2 = 'include anomalous scatering from the void?'                         
 %  EVALUATE BUTTOK = '&Yes'                                                 
-%  EVALUATE BUTTXX = '&No'                                                  
-%  COPY '#SCRIPT XQUESTIO'                                                  
+%  EVALUATE BUTTXX = '&No'           
+%  EVALUATE BUTINFO = 'Info'
+%  EVALUATE BUTFILE = 'platanom.dat'                                       
+%  COPY '#SCRIPT XHELPQUEST'                                        
 %  IF ANSWER .EQ. TRUE THEN 
 %% use the results
 %    IF FILEEXISTS ( 'LIST6.DEF' ) .EQ. TRUE THEN
