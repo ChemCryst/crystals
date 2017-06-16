@@ -2758,9 +2758,14 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) LIMIT  0.01 LAYER SCALES
+
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
 
+___________
+ (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
@@ -2774,6 +2779,9 @@ Mean C-C su =   0.0000
 [58]                                          PARAMETE          1.349   -0.349 
 [58]                                          PARAMETE          0.937    0.062 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.17
+
+___________
+ (2) NO
 #PERH
            Per-hydrogenation of Carbon atoms
 C(1)  sp3 delta   0.02 sp3 delta  0.08 planarity  999.00 angle delta  999.00
@@ -6575,9 +6583,14 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) LIMIT  0.01 LAYER SCALES
+
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
 
+___________
+ (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
@@ -6591,6 +6604,9 @@ Mean C-C su =   0.0000
 [58]                                          PARAMETE          1.349   -0.349 
 [58]                                          PARAMETE          0.937    0.062 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.17
+
+___________
+ (2) NO
 #PERH
            Per-hydrogenation of Carbon atoms
 C(1)  sp3 delta   0.02 sp3 delta  0.08 planarity  999.00 angle delta  999.00
@@ -10393,9 +10409,14 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) LIMIT  0.01 LAYER SCALES
+
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
 
+___________
+ (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
@@ -10409,6 +10430,9 @@ Mean C-C su =   0.0000
 [58]                                          PARAMETE          1.376   -0.376 
 [58]                                          PARAMETE          0.950    0.049 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.21
+
+___________
+ (2) NO
 #PERH
            Per-hydrogenation of Carbon atoms
 C(1)  sp3 delta   0.03 sp3 delta  0.06 planarity  999.00 angle delta  999.00
@@ -14219,9 +14243,14 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) LIMIT  0.01 LAYER SCALES
+
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
 
+___________
+ (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
@@ -14235,6 +14264,9 @@ Mean C-C su =   0.0000
 [58]                                          PARAMETE          1.376   -0.376 
 [58]                                          PARAMETE          0.950    0.049 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.21
+
+___________
+ (2) NO
 #PERH
            Per-hydrogenation of Carbon atoms
 C(1)  sp3 delta   0.03 sp3 delta  0.06 planarity  999.00 angle delta  999.00

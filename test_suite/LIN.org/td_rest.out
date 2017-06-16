@@ -259,7 +259,7 @@ Bonds: Update required - There is no list 41
  Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
           0      1609      1609        12  -1001609  -1000000  -1000000         0         6      1619      -339         0
  Work stack header at    1615  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
+ Function at    1609  :   10   executioN  
      2 U(IJ) 0.0,.001 = O(6) TO C(7) 
 
  Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
@@ -281,7 +281,7 @@ Bonds: Update required - There is no list 41
       1734  :        76        11     U[23]   
       1737  :        79        12     U[13]   
       1740  :  -1000000        13     U[12]   
- Function at    1661  :   12   Uij       
+ Function at    1661  :   12   Uij        
 #CHECK HI
 #LIST 22
 #LIST 23
@@ -304,7 +304,7 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Listing of the code chain.     Chain base =    1609     Data base =16777216     Control block :    16091677687616777216
           0      1609      1609        12  -1001609  -1000000  -1000000         0         6      1619      -339         0
  Work stack header at    1615  :  -1000000         6      -340         0  -1000000         0
- Function at    1609  :   10   executioN 
+ Function at    1609  :   10   executioN  
      2 U(IJ) 0.0,.001 = O(6) TO C(7) 
 
  Listing of the code chain.     Chain base =    1661     Data base =16777216     Control block :    16611677687616777216
@@ -326,7 +326,7 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
       1734  :        76        11     U[23]   
       1737  :        79        12     U[13]   
       1740  :  -1000000        13     U[12]   
- Function at    1661  :   12   Uij       
+ Function at    1661  :   12   Uij        
 #CHECK HI
 
 
@@ -361,9 +361,12 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
       1258  :      1261        11     U[23]   
       1261  :      1264        12     U[13]   
       1264  :   -998815        13     U[12]   
- Function at    1185  :   12   Uij       
+ Function at    1185  :   12   Uij        
 [38]  O           6.0000   1.00    0.00    0.22    0.25    0.34    0.06    0.02    0.03   -0.00   -0.00    0.00
 [38]  C           7.0000   1.00    0.00    0.35    0.16    0.40    0.08    0.03    0.04    0.00   -0.00    0.01
+
+___________
+ (2) U(IJ) 0.0,.001 = O(6) TO C(7)
  Derivative(s) :
          8
                     0.1000E+07                    0.2568E-01                    0.5703E-02
@@ -409,7 +412,10 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11971677687616777216
        1185   -998815      1861        12  -1000676  -1000000  -1000000         0      1191      1871  16776876         0
  Work stack header at    1191  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
+ Function at    1185  :   11   Nolist     
+
+___________
+ (3) NO
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -503,7 +509,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
       1342  :      1345        11     U[23]   
       1345  :      1348        12     U[13]   
       1348  :   -998731        13     U[12]   
- Function at    1269  :   12   Uij       
+ Function at    1269  :   12   Uij        
 [38]  O           6.0000   1.00    0.00    0.22    0.25    0.34    0.06    0.02    0.03   -0.00   -0.00    0.00
 [38]  C           7.0000   1.00    0.00    0.35    0.16    0.40    0.08    0.03    0.04    0.00   -0.00    0.01
  Derivative(s) :
@@ -538,7 +544,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    12811677687616777216
        1269   -998731      1861        12  -1000592  -1000000  -1000000         0      1275      1871  16776876         0
  Work stack header at    1275  :  -1000000         6      -340         0   -998731         0
- Function at    1269  :   11   Nolist    
+ Function at    1269  :   11   Nolist     
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -688,9 +694,12 @@ Mean C-C su =   0.0000
       1258  :      1261        11     U[23]   
       1261  :      1264        12     U[13]   
       1264  :   -998815        13     U[12]   
- Function at    1185  :   12   Uij       
+ Function at    1185  :   12   Uij        
 [38]  O           6.0000   1.00    0.00    0.22    0.25    0.34    0.06    0.02    0.03   -0.00   -0.00    0.00
 [38]  C           7.0000   1.00    0.00    0.35    0.16    0.40    0.06    0.02    0.03   -0.00   -0.00    0.00
+
+___________
+ (2) U(IJ) 0.0,.001 = O(6) TO C(7)
  Derivative(s) :
          8
                     0.1000E+07                    0.4673E-03                    0.4697E-02
@@ -736,7 +745,10 @@ Mean C-C su =   0.0000
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    11971677687616777216
        1185   -998815      1861        12  -1000676  -1000000  -1000000         0      1191      1871  16776876         0
  Work stack header at    1191  :  -1000000         6      -340         0   -998815         0
- Function at    1185  :   11   Nolist    
+ Function at    1185  :   11   Nolist     
+
+___________
+ (3) NO
 #USE TD_REST.L5
 #
 # PUNCHED ON 30/09/11 AT 12:38:09
@@ -761,6 +773,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) U(IJ) 0.0,.001 = C(7) TO O(6)
+
       0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -773,6 +788,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
 [41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
+
+___________
+ (1) NO
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -961,6 +979,9 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) U(IJ) 0.0,.001 = C(7) TO O(6)
+
       0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -973,6 +994,9 @@ Mean C-C su =   0.0000
            C       7     1  1  0  0  0    -0.00860         O       6     1  1  0  0  0    -0.00875  -0.00015     U[13]   
            C       7     1  1  0  0  0     0.00344         O       6     1  1  0  0  0     0.00322  -0.00021     U[12]   
 [41]       Mean value =   0.0248  Mean delta =  -0.0004  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 # -------------------------------------
 #USE TD_REST.L5
 #
@@ -998,6 +1022,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) VIB 0.0,.001 = O(6) TO C(7)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1005,6 +1032,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -1192,6 +1222,9 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) VIB 0.0,.001 = O(6) TO C(7)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1199,6 +1232,9 @@ Mean C-C su =   0.0000
   
            O       6     1  1  0  0  0     0.03377         C       7     1  1  0  0  0     0.03381   0.00004
 [41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #USE TD_REST.L5
 #
 # PUNCHED ON 30/09/11 AT 12:38:09
@@ -1223,6 +1259,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) VIB 0.0,.001 = C(7) TO O(6)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1230,6 +1269,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -1417,6 +1459,9 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) VIB 0.0,.001 = C(7) TO O(6)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1424,6 +1469,9 @@ Mean C-C su =   0.0000
   
            C       7     1  1  0  0  0     0.03381         O       6     1  1  0  0  0     0.03377  -0.00004
 [41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #PURG
  The    Data    file is being rebuilt -
  DO NOT abort the program
@@ -1456,6 +1504,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-U(IJ) 0.0,.001 = O(6) TO C(7)
+
       0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1468,6 +1519,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            O       6     1  1  0  0  0    -0.00748         C       7     1  1  0  0  0    -0.00674   0.00074     U[13]   
            O       6     1  1  0  0  0     0.00098         C       7     1  1  0  0  0     0.01229   0.01132     U[12]   
 [41]       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.01
+
+___________
+ (1) NO
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -1657,6 +1711,9 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-U(IJ) 0.0,.001 = O(6) TO C(7)
+
       0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1669,6 +1726,9 @@ Mean C-C su =   0.0000
            O       6     1  1  0  0  0    -0.00931         C       7     1  1  0  0  0    -0.00736   0.00195     U[13]   
            O       6     1  1  0  0  0     0.00118         C       7     1  1  0  0  0     0.00124   0.00006     U[12]   
 [41]       Mean value =   0.0234  Mean delta =   0.0007  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #USE TD_REST.L5
 #
 # PUNCHED ON 30/09/11 AT 12:38:09
@@ -1693,6 +1753,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-U(IJ) 0.0,.001 = C(7) TO O(6)
+
       0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1705,6 +1768,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
 [41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
+
+___________
+ (1) NO
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -1894,6 +1960,9 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-U(IJ) 0.0,.001 = C(7) TO O(6)
+
       0.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1906,6 +1975,9 @@ Mean C-C su =   0.0000
            C       7     1  1  0  0  0    -0.00542         O       6     1  1  0  0  0    -0.00732  -0.00191     U[13]   
            C       7     1  1  0  0  0     0.01461         O       6     1  1  0  0  0     0.01127  -0.00334     U[12]   
 [41]       Mean value =   0.0311  Mean delta =  -0.0025  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 # -------------------------------------
 #USE TD_REST.L5
 #
@@ -1931,6 +2003,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-VIB 0.0,.001 = O(6) TO C(7)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -1938,6 +2013,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2125,6 +2203,9 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-VIB 0.0,.001 = O(6) TO C(7)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -2132,6 +2213,9 @@ Mean C-C su =   0.0000
   
            O       6     1  1  0  0  0     0.03343         C       7     1  1  0  0  0     0.03566   0.00224
 [41]       Mean value =   0.0345  Mean delta =   0.0022  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #USE TD_REST.L5
 #
 # PUNCHED ON 30/09/11 AT 12:38:09
@@ -2156,6 +2240,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-VIB 0.0,.001 = C(7) TO O(6)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -2163,6 +2250,9 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2350,6 +2440,9 @@ Mean C-C su =   0.0000
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-VIB 0.0,.001 = C(7) TO O(6)
+
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -2357,6 +2450,9 @@ Mean C-C su =   0.0000
   
            C       7     1  1  0  0  0     0.03501         O       6     1  1  0  0  0     0.03696   0.00195
 [41]       Mean value =   0.0360  Mean delta =   0.0019  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #LIST 12
 #LIST 22
  Initialising Special positions
@@ -2391,6 +2487,9 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
  Directive  VIBRATION: No derivatives found during Evaluation
+
+___________
+ (0) A-VIB 0.0,.001 = C(7) TO O(6)
  Directive  VIBRATION: No derivatives found during Evaluation
 
    0.DELU - Restrain the difference in the M.S.D.'s along a bond to be
@@ -2401,6 +2500,9 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
   VIBRATION restraint:  No derivatives found
   ?        C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #LIST     16
 #LIST 26
 #SFLS
@@ -2590,6 +2692,9 @@ Mean C-C su =   0.0984
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) DIST 1.55,.0001 =  C(2) TO C(11)
+
    0. Restrain these distances to be    1.550 Angstrom,
                 with an E.S.D. of   0.000
 
@@ -2597,6 +2702,9 @@ Mean C-C su =   0.0984
   
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
 [41]       Mean value =   1.5500  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #USE TD_REST.L5
 #
 # PUNCHED ON 30/09/11 AT 12:38:09
@@ -2982,6 +3090,9 @@ Mean C-C su =   0.0214
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
 
+___________
+ (0) A-DIST 1.55,.0001 =  C(2) TO C(11)
+
    0. Restrain these distances to be    1.550 Angstrom,
                 with an E.S.D. of   0.000
 
@@ -2989,6 +3100,9 @@ Mean C-C su =   0.0214
   
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
 [41]       Mean value =   1.5497  Mean delta =   0.0003  r.m.s. delta =   0.00
+
+___________
+ (1) NO
 #END
 
 
