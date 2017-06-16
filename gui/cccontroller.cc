@@ -3779,109 +3779,154 @@ extern "C" {
     }
     else if ( bRedir )
     {
-      STARTUPINFOA si;
-      SECURITY_ATTRIBUTES sa;
-      SECURITY_DESCRIPTOR sd;               //security information for pipes
-      if (IsWinNT())        //initialize security descriptor (Windows NT)
-      {
-        InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
-        SetSecurityDescriptorDacl(&sd, true, NULL, false);
-        sa.lpSecurityDescriptor = &sd;
-      }
-      else sa.lpSecurityDescriptor = NULL;
-      sa.nLength = sizeof(SECURITY_ATTRIBUTES);
-      sa.bInheritHandle = true;         //allow inheritable handles
-      CcPipe inPipe(sa);
-      if ( ! inPipe.CreateOK ) {
-        CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
-        return -1;
-      }
-      CcPipe outPipe(sa);
-      if ( ! outPipe.CreateOK ) {
-        CcController::theController->AddInterfaceCommand( "Error creating out pipe.");
-        return -1;
-      }
+		STARTUPINFOA si;
+		SECURITY_ATTRIBUTES sa;
+		SECURITY_DESCRIPTOR sd;               //security information for pipes
+		if (IsWinNT())        //initialize security descriptor (Windows NT)
+		{
+			InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
+			SetSecurityDescriptorDacl(&sd, true, NULL, false);
+			sa.lpSecurityDescriptor = &sd;
+		}
+		else sa.lpSecurityDescriptor = NULL;
+		sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+		sa.bInheritHandle = true;         //allow inheritable handles
+		CcPipe inPipe(sa);
+		if ( ! inPipe.CreateOK ) {
+			CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
+			return -1;
+		}
+		CcPipe outPipe(sa);
+		if ( ! outPipe.CreateOK ) {
+			CcController::theController->AddInterfaceCommand( "Error creating out pipe.");
+			return -1;
+		}
 
-      GetStartupInfoA(&si);      //set startupinfo for the spawned process
-      si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
-      si.wShowWindow = SW_HIDE;
-      si.hStdOutput = outPipe.input;
-      si.hStdError = outPipe.input;     //set the new handles for the child process
-      si.hStdInput = inPipe.output;
-//      #(totalcl);
-      CcProcessInfo pi(firstTok,si,totalcl);
-      if (!pi.CreateOK)
-      {
-        CcController::theController->AddInterfaceCommand( "Error creating process.");
-        return -1;
-      }
+		GetStartupInfoA(&si);      //set startupinfo for the spawned process
+		si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
+		si.wShowWindow = SW_HIDE;
+		si.hStdOutput = outPipe.input;
+		si.hStdError = outPipe.input;     //set the new handles for the child process
+		si.hStdInput = inPipe.output;
+//  	    #(totalcl);
+		CcProcessInfo pi(firstTok,si,totalcl);
+		if (!pi.CreateOK)
+		{
+			CcController::theController->AddInterfaceCommand( "Error creating process.");
+			return -1;
+		}
 
-      unsigned long exit=0;  //process exit code
-      unsigned long bread;   //bytes read
-      unsigned long avail;   //bytes available
+		unsigned long exit=0;  //process exit code
+		unsigned long bread;   //bytes read
+		unsigned long avail;   //bytes available
 
 // Disable all menus etc.
-      CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
-      CcController::theController->AddInterfaceCommand( "^^CR");
-      CcController::theController->m_AllowThreadKill = false;
+		CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
+		CcController::theController->AddInterfaceCommand( "^^CR");
+		CcController::theController->m_AllowThreadKill = false;
 
-      char buf[1024];           //i/o buffer
-      BZERO(buf);
-      string keep = "";
-      for(;;)      //main program reading/writing loop
-      {
-        PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
-        while ( bread != 0 )
-        {
-          BZERO(buf);
-          ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
-          string s(buf);
-          string::size_type i;
-          while ( ( i = s.find_first_of("\r") ) != string::npos ) {
-            s.erase(i,1);    //Remove \r
-          }
+		char buf[1024];           //i/o buffer
+		BZERO(buf);
+		string keep; 
+		for(;;)      //main program reading/writing loop
+		{
+			keep = ""; //output buffer - must contain a newline before we output it to screen.
+			PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
+			
+			while ( bread != 0 )
+			{
 
-          keep = keep + s;
-          for(;;) {
-            string::size_type strim = keep.find_first_of("\n");
-            if ( strim == string::npos )
-            {
-//              CcController::theController->AddInterfaceCommand("{0,1 " + s);
-              break;
-            }
-            CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(0,strim));
-            keep.erase(0,strim+1);
-          }
-          BZERO(buf);
-          PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
-        }
+// READ THE BUFFER; REMOVE UNWANTED CHARS; APPEND TO EXISTING INPUT BUFFER:
 
-        GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
-        if (exit != STILL_ACTIVE) {
-            exitcode = exit;
-            break;
-        }
-        
-        bool wait = false;
- 
-        (CcController::theController)->GetCrystalsCommand(*&buf,wait);
-        if ( wait ) {
-           string s(buf);
-           s.erase(s.find_last_not_of(" ")+1,s.length());
-           if ( s.substr(0,11) == "_MAIN CLOSE" )
-           {
-             UINT uexit=0;
-             TerminateProcess(pi.proc.hProcess, uexit);
-             CloseHandle(pi.proc.hThread);
-             CloseHandle(pi.proc.hProcess);
-             CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
-             break;
-           }
-           CcController::theController->AddInterfaceCommand("{0,1 " + s);
-           WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
-           WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
-        }
-      }
+				string::size_type i,j;
+				BZERO(buf);
+				ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
+				string s(buf);
+				 
+ // Change all \r\n into just \n. Leave \r alone.
+				string::size_type irn = s.find("\r\n");
+				while ( irn != string::npos ) {
+					  s.replace(irn,2,"\n");
+					  irn = s.find("\r\n");
+				}
+				  
+
+// Replace { with \ otherwise will interfere with output colours				  
+				i = s.find_first_of("{");
+				while(i!=string::npos)
+				{
+					s.insert(i, 1, '\\');
+					i = s.find("{", i+2);
+				}
+									  
+// Append to output buffer
+				keep = keep + s;
+
+				  
+
+				  
+				for(;;) 
+				{
+
+// OUTPUT LOOP - consume output buffer. Output any strings upto each newline. For carriage returns, only output from last CR as far as next LF
+
+
+					string::size_type strim = keep.find_first_of("\n");
+					if ( strim == string::npos )
+					{
+   						break;   // No more newlines in buffer. Job done for now.
+					}
+
+					string::size_type strimr = keep.substr(0,strim).find_last_of("\r");   // If carriage returns present, only output from the last one to the end of the line.
+					if ( strimr == string::npos ) {
+						CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(0,strim));
+						keep.erase(0,strim+1);
+					} else {
+						CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(strimr+1,strim - strimr - 1 ));
+						keep.erase(0,strim+1);
+					}
+
+				}  //END oF OUTPUT LOOP.
+				
+
+
+
+				// Keep checking for new output from process
+				BZERO(buf);
+				PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
+			}
+
+// No bytes to read (maybe waiting for input) check the process is still active			
+			
+			GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
+			if (exit != STILL_ACTIVE) {
+				exitcode = exit;
+				break;
+			}
+			
+			bool wait = false;
+
+// Check for input or interupt from main process			
+			(CcController::theController)->GetCrystalsCommand(*&buf,wait);
+			if ( wait ) {
+			   string s(buf);
+			   s.erase(s.find_last_not_of(" ")+1,s.length());
+			   if ( s.substr(0,11) == "_MAIN CLOSE" )
+			   {
+				 UINT uexit=0;
+				 TerminateProcess(pi.proc.hProcess, uexit);
+				 CloseHandle(pi.proc.hThread);
+				 CloseHandle(pi.proc.hProcess);
+				 CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
+				 break;
+			   }
+			   CcController::theController->AddInterfaceCommand("{0,1 " + s);
+			   WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
+			   WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
+			}
+
+
+		}  //end of processing loop (from a break)
 
 // Dregs of output
       CcController::theController->AddInterfaceCommand("{0,2 " + keep);

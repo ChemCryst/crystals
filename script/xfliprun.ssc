@@ -206,7 +206,7 @@
 %  END IF                                                                       
 %      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS             
 %      COPY 'END'                                                               
-%      COPY '#SPAWN + "CRYSDIR:edma.exe" sflip.inflip'                          
+%      COPY '#SPAWN % "CRYSDIR:edma.exe" sflip.inflip'                          
 %      TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
 %%  clear out merged reflection list                                            
 %%                                                                              
