@@ -1,59 +1,59 @@
-# TEST ESD CALCULATIONS FOR COMBINED AND LINKED PARAMETERS                                                                                                                                                                                                      
-#SET MONITOR OFF                                                                                                                                                                                                                                                
-#DISK                                                                                                                                                                                                                                                           
+# TEST ESD CALCULATIONS FOR COMBINED AND LINKED PARAMETERS
+#SET MONITOR OFF
+#DISK
  Disc file extended by  50 record(s) (  25600 integer words ) 
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 2                                                                                                                                                                                                                                                         
-#LIST 3                                                                                                                                                                                                                                                         
-#                                                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      6                                                                                                                                                                                                                                                    
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST      6                                                                                                                                                                                                                                                    
+#LIST 29
+#LIST 28
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 2
+#LIST 3
+#
+#
+#LIST      6
+#LIST 13
+#LIST      6
  The updated reflections are now on UNIT 53
 
 
 
-     631 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 14-MAY81 AT 10:38:11                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
+     631 reflections accepted           0 reflections rejected
+#
+# PUNCHED ON 14-MAY81 AT 10:38:11
+#
+#LIST      5
 Bonds: Update required - There is no list 41
-#SET MONITOR ON                                                                                                                                                                                                                                                 
-#EDIT                                                                                                                                                                                                                                                           
-# PERTURB THE STRUCTURE                                                                                                                                                                                                                                         
- The following atom(s) will be arithmetically modified                                                                                                                                                                                                          
-         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
-                                   Uiso  Size D/100 A/100                                                                                                                                                                                                       
-   C   1 1.00-0.232 0.085 0.066 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   C   2 1.00-0.136 0.147-0.063 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   C   3 1.00 0.036-0.043-0.125 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   C   7 1.00-0.399 0.281 0.127 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  11 1.00-0.330-0.075 0.069 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  21 1.00-0.044 0.303-0.065 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  22 1.00-0.263 0.189-0.105 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  31 1.00-0.057-0.212-0.124 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  32 1.00 0.099 0.001-0.207 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  71 1.00-0.295 0.427 0.129 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  72 1.00-0.532 0.328 0.085 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   H  73 1.00-0.458 0.240 0.206 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
+#SET MONITOR ON
+#EDIT
+# PERTURB THE STRUCTURE
+ The following atom(s) will be arithmetically modified
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
+                                   Uiso  Size D/100 A/100
+   C   1 1.00-0.232 0.085 0.066 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   C   2 1.00-0.136 0.147-0.063 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   C   3 1.00 0.036-0.043-0.125 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   C   7 1.00-0.399 0.281 0.127 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  11 1.00-0.330-0.075 0.069 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  21 1.00-0.044 0.303-0.065 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  22 1.00-0.263 0.189-0.105 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  31 1.00-0.057-0.212-0.124 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  32 1.00 0.099 0.001-0.207 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  71 1.00-0.295 0.427 0.129 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  72 1.00-0.532 0.328 0.085 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+   H  73 1.00-0.458 0.240 0.206 0 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
  List   5 now contains     12 atom(s)
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
-#PRINT 12                                                                                                                                                                                                                                                       
+#LIST 12
+#LIST 22
+#LIST 23
+#LIST 22
+#PRINT 12
  Initialising Special positions
 Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
       7 Atoms modified;   New  LIST 5 written to DISK
-#LIST 17                                                                                                                                                                                                                                                        
+#LIST 17
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -69,8 +69,8 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 
 
 
-#PRINT 22                                                                                                                                                                                                                                                       
-#SFLS                                                                                                                                                                                                                                                           
+#PRINT 22
+#SFLS
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -153,17 +153,16 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  Profile parameters  ( No parameters refined )
 
  Extinction param    ( No parameters refined )
-#LIST 4                                                                                                                                                                                                                                                         
-#CLEAR 16                                                                                                                                                                                                                                                       
-#LIST  16                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+#LIST 4
+#CLEAR 16
+#LIST  16
+#LIST 26
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -823,11 +822,12 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
-LS-scale= 21.615   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale= 21.615   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -926,7 +926,7 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -991,11 +991,11 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
 [31]                                         0.005    0.005    0.005 
-Mean C-C su =   0.0048                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DIST                                                                                                                                                                                                                                                           
-#LIST 31                                                                                                                                                                                                                                                        
-#DIST                                                                                                                                                                                                                                                           
+Mean C-C su =   0.0048
+#CYCLENDS
+#DIST
+#LIST 31
+#DIST
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1188,20 +1188,20 @@ Mean C-C su =   0.0048
 [49]    3   H        72.      1   1    0    0    0      37.4   0.0
 
   KEY                                                 1             2
-#DISK                                                                                                                                                                                                                                                           
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
-#PRINT 22                                                                                                                                                                                                                                                       
+#DISK
+#LIST 12
+#LIST 22
+#PRINT 22
  Initialising Special positions
 Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
+#LIST 17
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address    30757     Length     202     Created on                          
+ Print list type    22     serial number        2     Address    30761     Length     202     Created on                          
 
 
              13 parameter(s) in    1 block(s) - as follows:
@@ -1274,13 +1274,12 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  Profile parameters  ( No parameters refined )
 
  Extinction param    ( No parameters refined )
-#SFLS                                                                                                                                                                                                                                                           
-#LIST 26                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#LIST 26
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -1940,11 +1939,12 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
-LS-scale= 21.615   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale= 21.615   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2035,7 +2035,7 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2100,9 +2100,9 @@ All cycle   Min function          0.0           0.20E+06       0.10E+16
                       0.0000            0.0061   0.0004  -0.0003  -0.0009
                       0.0000            0.0010   0.0010   0.0005   0.0015
 [31]                                         0.005    0.005    0.005 
-Mean C-C su =   0.0048                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DIST                                                                                                                                                                                                                                                           
+Mean C-C su =   0.0048
+#CYCLENDS
+#DIST
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2295,7 +2295,7 @@ Mean C-C su =   0.0048
 [49]    3   H        72.      1   1    0    0    0      37.4   0.0
 
   KEY                                                 1             2
-#FINI                                                                                                                                                                                                                                                           
+#FINI
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -1,18 +1,18 @@
-#                                                                                                                                                                                                                                                               
-#SET CACH ON                                                                                                                                                                                                                                                    
-# THIS TAKES SEVERAL HOURS ON A VAX 11/750                                                                                                                                                                                                                      
-# IT TAKES SEVERAL SECONDS ON A PENTIUM III                                                                                                                                                                                                                     
-#                                                                                                                                                                                                                                                               
-#TITLE LARGE TEST JOB FOR CYBER                                                                                                                                                                                                                                 
-#SET TIME SLOW                                                                                                                                                                                                                                                  
-#DISK                                                                                                                                                                                                                                                           
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE GROUP                                                                                                                                                                                                                                                    
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE GROUP                                                                                                                                                                                                                                                    
+#
+#SET CACH ON
+# THIS TAKES SEVERAL HOURS ON A VAX 11/750
+# IT TAKES SEVERAL SECONDS ON A PENTIUM III
+#
+#TITLE LARGE TEST JOB FOR CYBER
+#SET TIME SLOW
+#DISK
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE GROUP
+#LIST 14
+#SPACE GROUP
   Space Group P -1      
   The Space Group is  Centric  Primitive Triclinic     Laue Symmetry 1bar    
   Multiplicity of a General Site is   2  Laue-no is   1
@@ -31,40 +31,40 @@ Space group symbol is   P    -1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 4                                                                                                                                                                                                                                                         
-#LIST 16                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 29                                                                                                                                                                                                                                                        
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 16-JAN87 AT 15:59:05                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 28/01/11 AT 14:14:55                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
+#LIST 3
+#LIST 4
+#LIST 16
+#LIST 23
+#LIST 29
+#
+# PUNCHED ON 16-JAN87 AT 15:59:05
+#
+# PUNCHED ON 28/01/11 AT 14:14:55
+#
+#LIST      5
 Bonds: Update required - There is no list 41
-#DISK                                                                                                                                                                                                                                                           
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 16-JAN87 AT 15:59:13                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      6                                                                                                                                                                                                                                                    
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST      6                                                                                                                                                                                                                                                    
+#DISK
+#
+# PUNCHED ON 16-JAN87 AT 15:59:13
+#
+#LIST      6
+#LIST 13
+#LIST 28
+#LIST      6
  The updated reflections are now on UNIT 53
 
 
 
-   12575 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#DISK                                                                                                                                                                                                                                                           
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
+   12575 reflections accepted           0 reflections rejected
+#DISK
+#LIST 12
+#LIST 22
  Initialising Special positions
 Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Space required on DISK is   43 records,   170  Blocks,    87 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#PRINT 22                                                                                                                                                                                                                                                       
-#PURGE                                                                                                                                                                                                                                                          
+#LIST 17
+#PRINT 22
+#PURGE
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -1396,10 +1396,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Disc index completely restored
 
  Listing of file index of    Data    file 
-# ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)                                                                                                                                                                                                       
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
+# ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)
+#CHECK
+#LIST 26
+#CHECK
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -1407,7 +1407,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
+ Directive  DISTANCE: No derivatives found during Evaluation
 
+___________
+ (0) PLANAR C(111) UNTIL C(116)
 
    0.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1420,6 +1423,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     115     1  1  0  0  0    -0.002
            C     116     1  1  0  0  0     0.001
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (1) DISTANCES 1.395 , 0.02= C(111) TO C(112) , C(112) TO C(113)
+CONT C(113) TO C(114) , C(114) TO C(115) , C(115) TO C(116) , C(116) TO C(111)
 
    1. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1434,6 +1441,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     116     1  1  0  0  0      C     111     1  1  0  0  0      1.394     0.001
 [41]       Mean value =   1.3843  Mean delta =   0.0107  r.m.s. delta =   0.01
 
+___________
+ (2) ANGLES 120.0 , 3.0= C(116) TO C(111) TO C(112) , C(111) TO C(112) TO C(113)
+CONT C(112) TO C(113) TO C(114) , C(113) TO C(114) TO C(115)
+CONT C(114) TO C(115) TO C(116) , C(115) TO C(116) TO C(111)
+
    2. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1447,6 +1459,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     115     1  1  0  0  0      C     116     1  1  0  0  0      C     111     1  1  0  0  0    121.28  -1.28
 [41]       Mean value = 119.9997  Mean delta =   0.0003  r.m.s. delta =   1.04
 
+___________
+ (3) PLANAR C(121) UNTIL C(126)
 
    3.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1459,6 +1473,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     125     1  1  0  0  0     0.004
            C     126     1  1  0  0  0     0.003
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (4) DISTANCES 1.395 , 0.02= C(121) TO C(122) , C(122) TO C(123)
+CONT C(123) TO C(124) , C(124) TO C(125) , C(125) TO C(126) , C(126) TO C(121)
 
    4. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1473,6 +1491,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     126     1  1  0  0  0      C     121     1  1  0  0  0      1.398    -0.003
 [41]       Mean value =   1.3862  Mean delta =   0.0088  r.m.s. delta =   0.01
 
+___________
+ (5) ANGLES 120.0 , 3.0= C(126) TO C(121) TO C(122) , C(121) TO C(122) TO C(123)
+CONT C(122) TO C(123) TO C(124) , C(123) TO C(124) TO C(125)
+CONT C(124) TO C(125) TO C(126) , C(125) TO C(126) TO C(121)
+
    5. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1486,6 +1509,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     125     1  1  0  0  0      C     126     1  1  0  0  0      C     121     1  1  0  0  0    120.22  -0.22
 [41]       Mean value = 119.9958  Mean delta =   0.0042  r.m.s. delta =   1.09
 
+___________
+ (6) PLANAR C(131) UNTIL C(136)
 
    6.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1498,6 +1523,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     135     1  1  0  0  0     0.001
            C     136     1  1  0  0  0     0.007
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (7) DISTANCES 1.395 , 0.02= C(131) TO C(132) , C(132) TO C(133)
+CONT C(133) TO C(134) , C(134) TO C(135) , C(135) TO C(136) , C(136) TO C(131)
 
    7. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1512,6 +1541,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     136     1  1  0  0  0      C     131     1  1  0  0  0      1.397    -0.002
 [41]       Mean value =   1.3930  Mean delta =   0.0020  r.m.s. delta =   0.01
 
+___________
+ (8) ANGLES 120.0 , 3.0= C(136) TO C(131) TO C(132) , C(131) TO C(132) TO C(133)
+CONT C(132) TO C(133) TO C(134) , C(133) TO C(134) TO C(135)
+CONT C(134) TO C(135) TO C(136) , C(135) TO C(136) TO C(131)
+
    8. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1525,6 +1559,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     135     1  1  0  0  0      C     136     1  1  0  0  0      C     131     1  1  0  0  0    121.34  -1.34
 [41]       Mean value = 119.9964  Mean delta =   0.0036  r.m.s. delta =   1.37
 
+___________
+ (9) PLANAR C(211) UNTIL C(216)
 
    9.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1537,6 +1573,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     215     1  1  0  0  0     0.006
            C     216     1  1  0  0  0    -0.023
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+___________
+ (10) DISTANCES 1.395 , 0.02= C(211) TO C(212) , C(212) TO C(213)
+CONT C(213) TO C(214) , C(214) TO C(215) , C(215) TO C(216) , C(216) TO C(211)
 
   10. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1551,6 +1591,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     216     1  1  0  0  0      C     211     1  1  0  0  0      1.389     0.006
 [41]       Mean value =   1.3858  Mean delta =   0.0092  r.m.s. delta =   0.01
 
+___________
+ (11) ANGLES 120.0 , 3.0= C(216) TO C(211) TO C(212) , C(211) TO C(212) TO C(213)
+CONT C(212) TO C(213) TO C(214) , C(213) TO C(214) TO C(215)
+CONT C(214) TO C(215) TO C(216) , C(215) TO C(216) TO C(211)
+
   11. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1564,6 +1609,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     215     1  1  0  0  0      C     216     1  1  0  0  0      C     211     1  1  0  0  0    119.67   0.33
 [41]       Mean value = 119.9731  Mean delta =   0.0269  r.m.s. delta =   0.47
 
+___________
+ (12) PLANAR C(221) UNTIL C(226)
 
   12.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1576,6 +1623,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     225     1  1  0  0  0    -0.007
            C     226     1  1  0  0  0     0.012
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (13) DISTANCES 1.395 , 0.02= C(221) TO C(222) , C(222) TO C(223)
+CONT C(223) TO C(224) , C(224) TO C(225) , C(225) TO C(226) , C(226) TO C(221)
 
   13. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1590,6 +1641,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     226     1  1  0  0  0      C     221     1  1  0  0  0      1.388     0.007
 [41]       Mean value =   1.3755  Mean delta =   0.0195  r.m.s. delta =   0.02
 
+___________
+ (14) ANGLES 120.0 , 3.0= C(226) TO C(221) TO C(222) , C(221) TO C(222) TO C(223)
+CONT C(222) TO C(223) TO C(224) , C(223) TO C(224) TO C(225)
+CONT C(224) TO C(225) TO C(226) , C(225) TO C(226) TO C(221)
+
   14. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1603,6 +1659,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     225     1  1  0  0  0      C     226     1  1  0  0  0      C     221     1  1  0  0  0    121.60  -1.60
 [41]       Mean value = 119.9890  Mean delta =   0.0110  r.m.s. delta =   1.88
 
+___________
+ (15) PLANAR C(231) UNTIL C(236)
 
   15.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1615,6 +1673,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     235     1  1  0  0  0     0.012
            C     236     1  1  0  0  0    -0.009
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+___________
+ (16) DISTANCES 1.395 , 0.02= C(231) TO C(232) , C(232) TO C(233)
+CONT C(233) TO C(234) , C(234) TO C(235) , C(235) TO C(236) , C(236) TO C(231)
 
   16. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1629,6 +1691,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     236     1  1  0  0  0      C     231     1  1  0  0  0      1.389     0.006
 [41]       Mean value =   1.3869  Mean delta =   0.0081  r.m.s. delta =   0.01
 
+___________
+ (17) ANGLES 120.0 , 3.0= C(236) TO C(231) TO C(232) , C(231) TO C(232) TO C(233)
+CONT C(232) TO C(233) TO C(234) , C(233) TO C(234) TO C(235)
+CONT C(234) TO C(235) TO C(236) , C(235) TO C(236) TO C(231)
+
   17. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1642,6 +1709,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     235     1  1  0  0  0      C     236     1  1  0  0  0      C     231     1  1  0  0  0    120.69  -0.69
 [41]       Mean value = 119.9620  Mean delta =   0.0380  r.m.s. delta =   0.96
 
+___________
+ (18) PLANAR C(311) UNTIL C(316)
 
   18.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1654,6 +1723,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     315     1  1  0  0  0     0.008
            C     316     1  1  0  0  0    -0.001
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (19) DISTANCES 1.395 , 0.02= C(311) TO C(312) , C(312) TO C(313)
+CONT C(313) TO C(314) , C(314) TO C(315) , C(315) TO C(316) , C(316) TO C(311)
 
   19. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1668,6 +1741,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     316     1  1  0  0  0      C     311     1  1  0  0  0      1.394     0.001
 [41]       Mean value =   1.3860  Mean delta =   0.0090  r.m.s. delta =   0.01
 
+___________
+ (20) ANGLES 120.0 , 3.0= C(316) TO C(311) TO C(312) , C(311) TO C(312) TO C(313)
+CONT C(312) TO C(313) TO C(314) , C(313) TO C(314) TO C(315)
+CONT C(314) TO C(315) TO C(316) , C(315) TO C(316) TO C(311)
+
   20. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1681,6 +1759,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     315     1  1  0  0  0      C     316     1  1  0  0  0      C     311     1  1  0  0  0    120.58  -0.58
 [41]       Mean value = 119.9965  Mean delta =   0.0035  r.m.s. delta =   0.87
 
+___________
+ (21) PLANAR C(321) UNTIL C(326)
 
   21.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1693,6 +1773,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     325     1  1  0  0  0    -0.004
            C     326     1  1  0  0  0    -0.003
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (22) DISTANCES 1.395 , 0.02= C(321) TO C(322) , C(322) TO C(323)
+CONT C(323) TO C(324) , C(324) TO C(325) , C(325) TO C(326) , C(326) TO C(321)
 
   22. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1707,6 +1791,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     326     1  1  0  0  0      C     321     1  1  0  0  0      1.397    -0.002
 [41]       Mean value =   1.3908  Mean delta =   0.0042  r.m.s. delta =   0.01
 
+___________
+ (23) ANGLES 120.0 , 3.0= C(326) TO C(321) TO C(322) , C(321) TO C(322) TO C(323)
+CONT C(322) TO C(323) TO C(324) , C(323) TO C(324) TO C(325)
+CONT C(324) TO C(325) TO C(326) , C(325) TO C(326) TO C(321)
+
   23. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1720,6 +1809,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     325     1  1  0  0  0      C     326     1  1  0  0  0      C     321     1  1  0  0  0    120.59  -0.59
 [41]       Mean value = 119.9973  Mean delta =   0.0027  r.m.s. delta =   0.78
 
+___________
+ (24) PLANAR C(331) UNTIL C(336)
 
   24.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1732,6 +1823,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     335     1  1  0  0  0    -0.015
            C     336     1  1  0  0  0     0.003
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+___________
+ (25) DISTANCES 1.395 , 0.02= C(331) TO C(332) , C(332) TO C(333)
+CONT C(333) TO C(334) , C(334) TO C(335) , C(335) TO C(336) , C(336) TO C(331)
 
   25. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1746,6 +1841,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     336     1  1  0  0  0      C     331     1  1  0  0  0      1.396    -0.001
 [41]       Mean value =   1.3814  Mean delta =   0.0136  r.m.s. delta =   0.01
 
+___________
+ (26) ANGLES 120.0 , 3.0= C(336) TO C(331) TO C(332) , C(331) TO C(332) TO C(333)
+CONT C(332) TO C(333) TO C(334) , C(333) TO C(334) TO C(335)
+CONT C(334) TO C(335) TO C(336) , C(335) TO C(336) TO C(331)
+
   26. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1759,6 +1859,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     335     1  1  0  0  0      C     336     1  1  0  0  0      C     331     1  1  0  0  0    121.42  -1.42
 [41]       Mean value = 119.9862  Mean delta =   0.0138  r.m.s. delta =   1.45
 
+___________
+ (27) PLANAR C(411) UNTIL C(416)
 
   27.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1771,6 +1873,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     415     1  1  0  0  0    -0.001
            C     416     1  1  0  0  0    -0.004
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (28) DISTANCES 1.395 , 0.02= C(411) TO C(412) , C(412) TO C(413)
+CONT C(413) TO C(414) , C(414) TO C(415) , C(415) TO C(416) , C(416) TO C(411)
+ Directive  DISTANCE: No derivatives found during Evaluation
 
   28. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1786,6 +1893,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     416     1  1  0  0  0      C     411     1  1  0  0  0      1.402    -0.007
 [41]       Mean value =   1.9428  Mean delta =  -0.5478  r.m.s. delta =   0.79
 
+___________
+ (29) ANGLES 120.0 , 3.0= C(416) TO C(411) TO C(412) , C(411) TO C(412) TO C(413)
+CONT C(412) TO C(413) TO C(414) , C(413) TO C(414) TO C(415)
+CONT C(414) TO C(415) TO C(416) , C(415) TO C(416) TO C(411)
+
   29. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1799,6 +1911,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     415     1  1  0  0  0      C     416     1  1  0  0  0      C     411     1  1  0  0  0    118.90   1.10
 [41]       Mean value =  70.0430  Mean delta =  49.9570  r.m.s. delta =  59.70
 
+___________
+ (30) PLANAR C(421) UNTIL C(426)
 
   30.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1811,6 +1925,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     425     1  1  0  0  0     0.000
            C     426     1  1  0  0  0     0.005
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
+
+___________
+ (31) DISTANCES 1.395 , 0.02= C(421) TO C(422) , C(422) TO C(423)
+CONT C(423) TO C(424) , C(424) TO C(425) , C(425) TO C(426) , C(426) TO C(421)
 
   31. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1825,6 +1943,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     426     1  1  0  0  0      C     421     1  1  0  0  0      1.375     0.020
 [41]       Mean value =   1.3765  Mean delta =   0.0185  r.m.s. delta =   0.02
 
+___________
+ (32) ANGLES 120.0 , 3.0= C(426) TO C(421) TO C(422) , C(421) TO C(422) TO C(423)
+CONT C(422) TO C(423) TO C(424) , C(423) TO C(424) TO C(425)
+CONT C(424) TO C(425) TO C(426) , C(425) TO C(426) TO C(421)
+
   32. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1838,6 +1961,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     425     1  1  0  0  0      C     426     1  1  0  0  0      C     421     1  1  0  0  0    119.80   0.20
 [41]       Mean value = 119.9980  Mean delta =   0.0020  r.m.s. delta =   0.78
 
+___________
+ (33) PLANAR C(431) UNTIL C(436)
 
   33.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1850,6 +1975,10 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     435     1  1  0  0  0    -0.009
            C     436     1  1  0  0  0     0.027
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
+
+___________
+ (34) DISTANCES 1.395 , 0.02= C(431) TO C(432) , C(432) TO C(433)
+CONT C(433) TO C(434) , C(434) TO C(435) , C(435) TO C(436) , C(436) TO C(431)
 
   34. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
@@ -1864,6 +1993,11 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     436     1  1  0  0  0      C     431     1  1  0  0  0      1.390     0.005
 [41]       Mean value =   1.3847  Mean delta =   0.0103  r.m.s. delta =   0.01
 
+___________
+ (35) ANGLES 120.0 , 3.0= C(436) TO C(431) TO C(432) , C(431) TO C(432) TO C(433)
+CONT C(432) TO C(433) TO C(434) , C(433) TO C(434) TO C(435)
+CONT C(434) TO C(435) TO C(436) , C(435) TO C(436) TO C(431)
+
   35. Restrain these  angles   to be  120.000 degrees ,
                 with an E.S.D. of   3.000
 
@@ -1876,14 +2010,16 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
            C     434     1  1  0  0  0      C     435     1  1  0  0  0      C     436     1  1  0  0  0    120.09  -0.09
            C     435     1  1  0  0  0      C     436     1  1  0  0  0      C     431     1  1  0  0  0    120.29  -0.29
 [41]       Mean value = 119.9668  Mean delta =   0.0332  r.m.s. delta =   1.02
-#SFLS                                                                                                                                                                                                                                                           
-#WEIGHT                                                                                                                                                                                                                                                         
+
+___________
+ (36) NO
+#SFLS
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -1941,12 +2077,13 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+#DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -2356,7 +2493,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3126,36 +3263,35 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
                       0.0000            0.0000   0.0003   0.0000   0.0003
                       0.0000            0.0009   0.0005   0.0007   0.0015
 [31]                                         0.012    0.008    0.013 
-Mean C-C su =   0.0076                                                                                                                                                                                                                                          
+Mean C-C su =   0.0076
  The following atoms should be carefully examined 
 [24]  F       6.    0.066     0.224     0.384     0.225     0.178     1.306     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DISK                                                                                                                                                                                                                                                           
+#CYCLENDS
+#DISK
  List type  11 with serial number     4 is the current version. 
  You may still save this list with DELETE n ACTION=NO
  List type  22 with serial number     1 is the current version. 
  You may still save this list with DELETE n ACTION=NO
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST 12
+#LIST 22
  Initialising Special positions
 Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#PURGE                                                                                                                                                                                                                                                          
-#SFLS                                                                                                                                                                                                                                                           
- List type   11  serial number    4 from   458847 to   480439 will not be copied ( deleted )         
+#LIST 17
+#PURGE
+#SFLS
+ List type   11  serial number    4 from   458884 to   480478 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#LIST 26                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 26
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -3213,11 +3349,12 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -3287,7 +3424,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3757,38 +3894,37 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
                       0.0000            0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0000   0.0000   0.0000   0.0000
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0009                                                                                                                                                                                                                                          
+Mean C-C su =   0.0009
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DISK                                                                                                                                                                                                                                                           
+#CYCLENDS
+#DISK
  List type  22 with serial number     2 is the current version. 
  You may still save this list with DELETE n ACTION=NO
  List type  11 with serial number     4 is the current version. 
  You may still save this list with DELETE n ACTION=NO
-#PURGE                                                                                                                                                                                                                                                          
-#DISK                                                                                                                                                                                                                                                           
- List type   11  serial number    4 from   456563 to   456655 will not be copied ( deleted )         
- List type   22  serial number    2 from   449401 to   453815 will not be copied ( deleted )         
+#PURGE
+#DISK
+ List type   11  serial number    4 from   456600 to   456694 will not be copied ( deleted )         
+ List type   22  serial number    2 from   449438 to   453852 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
- Disc file extended by 116 record(s) (  59392 integer words ) 
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+ Disc file extended by 117 record(s) (  59904 integer words ) 
+#LIST 12
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  Space required on DISK is   68 records,   272  Blocks,   139 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
  Initialising Special positions
 
 
@@ -3846,13 +3982,14 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#DORESTRAIN
+#LIST 26
+#DORESTRAIN
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -3924,7 +4061,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -4389,15 +4526,14 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
                       0.0000           -0.0002   0.0005  -0.0013   0.0000
                       0.0000            0.0010   0.0009   0.0007   0.0000
 [31]                                         0.014    0.014    0.013 
-Mean C-C su =   0.0129                                                                                                                                                                                                                                          
+Mean C-C su =   0.0129
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -4455,9 +4591,10 @@ Mean C-C su =   0.0129
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#DORESTRAIN
+#INVERT  CHOL
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -4527,7 +4664,7 @@ All cycle   Min function          0.0           0.16E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -4992,28 +5129,27 @@ All cycle   Min function          0.0           0.16E+06       0.10E+16
                       0.0000            0.0000   0.0000  -0.0002   0.0000
                       0.0000            0.0010   0.0009   0.0007   0.0000
 [31]                                         0.013    0.013    0.013 
-Mean C-C su =   0.0121                                                                                                                                                                                                                                          
+Mean C-C su =   0.0121
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#DISK                                                                                                                                                                                                                                                           
+#CYCLENDS
+#DISK
  List type  22 with serial number     1 is the current version. 
  You may still save this list with DELETE n ACTION=NO
  List type  11 with serial number     8 is the current version. 
  You may still save this list with DELETE n ACTION=NO
-#PURGE                                                                                                                                                                                                                                                          
-#SFLS                                                                                                                                                                                                                                                           
- List type   11  serial number    8 from   452987 to   487504 will not be copied ( deleted )         
- List type   22  serial number    1 from   449001 to   450239 will not be copied ( deleted )         
+#PURGE
+#SFLS
+ List type   11  serial number    8 from   453024 to   487543 will not be copied ( deleted )         
+ List type   22  serial number    1 from   449038 to   450276 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SPEC  NO  NO
+#CALCULAT   1
  Initialising Special positions
 
 
@@ -5055,8 +5191,8 @@ Mean C-C su =   0.0121
 
 
 
- Target Weighted Residual =  3.29                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual =  3.29
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
 [28]    0   1   0  235.5  314.9  72.2  0.7      0   1   1  198.0  268.6  64.2  0.7
 [28]    0   0   1  157.0  219.8  57.1  0.7      0   2   0   83.9  143.1  53.8  0.5
 [28]    0   1   2  362.7  308.7  49.2  1.1      0   2   1  303.6  249.5  49.2  1.2
@@ -5093,18 +5229,19 @@ Mean C-C su =   0.0121
 
 
 
-    12575 reflections   R  3.72% Rw  4.96% with I/u(I) from List 28                                                                                                                                                                                             
-    12575 reflections   R  3.72% Rw  4.96% with I/u(I) > -10.0                                                                                                                                                                                                  
-    12575 reflections   R  3.72% Rw  4.96% with I/u(I) >   2.0                                                                                                                                                                                                  
+    12575 reflections   R  3.72% Rw  4.96% with I/u(I) from List 28
+    12575 reflections   R  3.72% Rw  4.96% with I/u(I) > -10.0
+    12575 reflections   R  3.72% Rw  4.96% with I/u(I) >   2.0
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
-LS-scale=  0.909   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
-#FINISH                                                                                                                                                                                                                                                         
- Physical reads      12168 Physical writes      10109 Cache hits     209356
- Cache hit distribution   190042   13309    2173     520     446     377
- Cache hit distribution      165     222     234     249     175     132
- Cache hit distribution      194     105     213     107     203     145
- Cache hit distribution       63      42      53      44      81      62
+#CYCLENDS
+#FINISH
+ Physical reads      12357 Physical writes      10115 Cache hits     210819
+ Cache hit distribution   191292   13082    2290     742     518     382
+ Cache hit distribution      189     201     210     244     169     154
+ Cache hit distribution      216      91     226     106     192     123
+ Cache hit distribution      103      49      36      63      86      55
 
 
           : Job ends ok       with     0 warnings and     0 errors

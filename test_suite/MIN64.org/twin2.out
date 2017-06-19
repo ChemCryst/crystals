@@ -1,57 +1,56 @@
-#TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                                                                                                                                                                                      
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 2                                                                                                                                                                                                                                                         
-# THE SPACE GROUP IS P321.                                                                                                                                                                                                                                      
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 4                                                                                                                                                                                                                                                         
-#LIST 5                                                                                                                                                                                                                                                         
-#EDIT                                                                                                                                                                                                                                                           
+#TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 29
+#LIST 2
+# THE SPACE GROUP IS P321.
+#LIST 3
+#LIST 4
+#LIST 5
+#EDIT
 Bonds: Update required - There is no list 41
-#LIST 13                                                                                                                                                                                                                                                        
- The following atom(s) will be changed                                                                                                                                                                                                                          
-         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
-                                   Uiso  Size D/100 A/100                                                                                                                                                                                                       
-  SI   1 1.00 0.000 0.000 0.000 0 0.016 0.016 0.024 0.00 0.00 0.01     0.000      0                                                                                                                                                                             
-  SI   2 1.00 0.333 0.667 0.506 0 0.014 0.014 0.016 0.00 0.00 0.01     0.000      0                                                                                                                                                                             
-  NA   1 1.00 0.379 0.379 0.000 0 0.030 0.030 0.016-0.00 0.00 0.01     0.000      0                                                                                                                                                                             
-  NA   2 1.00 0.714 0.714 0.500 0 0.020 0.020 0.032 0.00-0.00 0.01     0.000      0                                                                                                                                                                             
-   F   1 1.00 0.087-0.092 0.810 0 0.046 0.034 0.039-0.01 0.01 0.03     0.000      0                                                                                                                                                                             
-   F   2 1.00 0.444-0.401 0.701 0 0.020 0.024 0.029 0.02 0.01 0.02     0.000      0                                                                                                                                                                             
-   F   3 1.00 0.230-0.260 0.310 0 0.024 0.032 0.029-0.00-0.01 0.02     0.000      0                                                                                                                                                                             
+#LIST 13
+ The following atom(s) will be changed
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
+                                   Uiso  Size D/100 A/100
+  SI   1 1.00 0.000 0.000 0.000 0 0.016 0.016 0.024 0.00 0.00 0.01     0.000      0
+  SI   2 1.00 0.333 0.667 0.506 0 0.014 0.014 0.016 0.00 0.00 0.01     0.000      0
+  NA   1 1.00 0.379 0.379 0.000 0 0.030 0.030 0.016-0.00 0.00 0.01     0.000      0
+  NA   2 1.00 0.714 0.714 0.500 0 0.020 0.020 0.032 0.00-0.00 0.01     0.000      0
+   F   1 1.00 0.087-0.092 0.810 0 0.046 0.034 0.039-0.01 0.01 0.03     0.000      0
+   F   2 1.00 0.444-0.401 0.701 0 0.020 0.024 0.029 0.02 0.01 0.02     0.000      0
+   F   3 1.00 0.230-0.260 0.310 0 0.024 0.032 0.029-0.00-0.01 0.02     0.000      0
  List   5 now contains      7 atom(s)
-#LIST 6                                                                                                                                                                                                                                                         
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
+#LIST 6
+#LIST 28
+#LIST 6
  The updated reflections are now on UNIT 53
 
 
 
-     270 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-Upating List 13 for twinned data                                                                                                                                                                                                                                
-#LIST 25                                                                                                                                                                                                                                                        
-#SORT                                                                                                                                                                                                                                                           
-#REORDER                                                                                                                                                                                                                                                        
+     270 reflections accepted           0 reflections rejected
+Upating List 13 for twinned data
+#LIST 25
+#SORT
+#REORDER
  After   1 pass     270 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
-#LIST 12                                                                                                                                                                                                                                                        
+#LIST 12
  The updated reflections are now on UNIT 53
-#SFLS                                                                                                                                                                                                                                                           
-#CLEAR 16                                                                                                                                                                                                                                                       
-#LIST  16                                                                                                                                                                                                                                                       
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+#SFLS
+#CLEAR 16
+#LIST  16
+#CLEAR 17
+#LIST  17
+#LIST 23
+#LIST 26
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#SCALE      1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS
+#SPEC  NO  NO
+#SCALE      1
  Initialising Special positions
 
 
@@ -109,12 +108,13 @@ Upating List 13 for twinned data
 
  Structure factor least squares calculation    1  ends  5
 [29] SumFo/SumFc= 10.07    SumFoFc/SumFc^2= 10.00    SumwFoFc/SumwFc^2= 10.00
-LS-scale= 10.008   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale= 10.008   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
   Atom SI     1,  Multiplicity =  1,  Number of positions =  6 Occ = 0.1667
      *      *      *      U[11]     U[11]     U[33]     *         *      1/2U[11]
@@ -124,22 +124,21 @@ LS-scale= 10.008   Wilson Scale=  0.000
      x      x      *      U[11]     U[11]     U[33]     U[23] -   U[23]     U[12]
   Atom NA     2,  Multiplicity =  3,  Number of positions =  6 Occ = 0.5000
      x      x      *      U[11]     U[11]     U[33]     U[23] -   U[23]     U[12]
- Parameters SI     1    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
- Parameters SI     1    U[11] and U[12] related by  restraint                                                                                                                                                                                                   
- Parameters SI     2    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
- Parameters SI     2    U[11] and U[12] related by  restraint                                                                                                                                                                                                   
- Parameters NA     1    x     and y     related by  restraint                                                                                                                                                                                                   
- Parameters NA     1    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
- Parameters NA     1    U[23] and U[13] related by  restraint                                                                                                                                                                                                   
- Parameters NA     2    x     and y     related by  restraint                                                                                                                                                                                                   
- Parameters NA     2    U[11] and U[22] related by  restraint                                                                                                                                                                                                   
- Parameters NA     2    U[23] and U[13] related by  restraint                                                                                                                                                                                                   
+ Parameters SI     1    U[11] and U[22] related by  restraint
+ Parameters SI     1    U[11] and U[12] related by  restraint
+ Parameters SI     2    U[11] and U[22] related by  restraint
+ Parameters SI     2    U[11] and U[12] related by  restraint
+ Parameters NA     1    x     and y     related by  restraint
+ Parameters NA     1    U[11] and U[22] related by  restraint
+ Parameters NA     1    U[23] and U[13] related by  restraint
+ Parameters NA     2    x     and y     related by  restraint
+ Parameters NA     2    U[11] and U[22] related by  restraint
+ Parameters NA     2    U[23] and U[13] related by  restraint
 Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
     10 Symmetry restraints written to LIST 17
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
  Initialising Special positions
 
 
@@ -170,10 +169,11 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  6
 [29] SumFo/SumFc= 10.07    SumFoFc/SumFc^2= 10.00    SumwFoFc/SumwFc^2= 10.00
-LS-scale= 10.008   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale= 10.008   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#DORESTRAIN
+#LIST 26
+#DORESTRAIN
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -184,9 +184,9 @@ LS-scale= 10.008   Wilson Scale=  0.000
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -287,7 +287,7 @@ All cycle   Min function          0.0           0.14E+05       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -363,11 +363,10 @@ All cycle   Min function          0.0           0.14E+05       0.10E+16
 [37]                       0.00            -0.00   -0.00    0.00    0.00   -0.00   -0.00   -0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.007    0.007    0.005 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+Mean C-C su =   0.0000
+#CYCLENDS
+#SPEC  NO  NO
+#CALCULAT   1
  Initialising Special positions
 
 
@@ -398,8 +397,8 @@ Mean C-C su =   0.0000
 
 
 
- Target Weighted Residual =  5.39                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual =  5.39
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
 [28]    1   1   0   48.0   45.3  27.3  1.0      0   0   2   10.5    8.6  18.3  1.2
 [28]    0   2   1   36.8   38.6  17.5  0.9      3   0   1   68.5   66.9  15.8  1.0
 [28]    2   3   1   30.9   32.4  14.3  0.9      2   6   2    5.0    6.4  13.6  0.7
@@ -436,20 +435,21 @@ Mean C-C su =   0.0000
 
 
 
-      270 reflections   R  2.74% Rw  2.88% with I/u(I) from List 28                                                                                                                                                                                             
-      270 reflections   R  2.74% Rw  2.88% with I/u(I) > -10.0                                                                                                                                                                                                  
-      270 reflections   R  2.74% Rw  2.88% with I/u(I) >   2.0                                                                                                                                                                                                  
+      270 reflections   R  2.74% Rw  2.88% with I/u(I) from List 28
+      270 reflections   R  2.74% Rw  2.88% with I/u(I) > -10.0
+      270 reflections   R  2.74% Rw  2.88% with I/u(I) >   2.0
 [29] SumFo/SumFc=  9.88    SumFoFc/SumFc^2=  9.90    SumwFoFc/SumwFc^2=  9.90
-LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27                                                                                                                                                                                                         
-#SUM L 17                                                                                                                                                                                                                                                       
+LS-scale=  9.913   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27
+#CYCLENDS
+#SUM L 17
  Summary of contents of list 17 - Special restraints
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
- Print list type    17     serial number        2     Address    18767     Length    1156     Created on                          
+ Print list type    17     serial number        2     Address    18769     Length    1156     Created on                          
 
      0 NO 
      1 RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22]) 
@@ -465,10 +465,10 @@ LS-scale=  9.913   Wilson Scale=  0.000
 
 
 
-# ADD #CHECK TO LOCATE FAIING RESTRAINTS.                                                                                                                                                                                                                       
-# BEING AN OLD TESTDECK, THE SPECIAL POSITIONS CONSTRAINTS HAD BEEN                                                                                                                                                                                             
-# SET MANUALLY IN LIST 12, SO CANNOT ALSO BE SET IN LIST 17                                                                                                                                                                                                     
-#CHECK                                                                                                                                                                                                                                                          
+# ADD #CHECK TO LOCATE FAIING RESTRAINTS.
+# BEING AN OLD TESTDECK, THE SPECIAL POSITIONS CONSTRAINTS HAD BEEN
+# SET MANUALLY IN LIST 12, SO CANNOT ALSO BE SET IN LIST 17
+#CHECK
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -476,59 +476,115 @@ LS-scale=  9.913   Wilson Scale=  0.000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+
+___________
+ (0) NO
+
+___________
+ (1) NO
+
+___________
+ (2) RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (3) RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -2.0 * SI  (   1,U[12])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (4) RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -1.0 * SI  (   2,U[22])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    4.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (5) RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -2.0 * SI  (   2,U[12])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    5.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (6) RESTRAIN  0.0000, .00001 = NA  (   1,X    ) -1.0 * NA  (   1,Y    )
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    6.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (7) RESTRAIN  0.0000, .00001 = NA  (   1,U[11]) -1.0 * NA  (   1,U[22])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    7.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (8) RESTRAIN  0.0000, .00001 = NA  (   1,U[23]) +1.0 * NA  (   1,U[13])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    8.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (9) RESTRAIN  0.0000, .00001 = NA  (   2,X    ) -1.0 * NA  (   2,Y    )
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (10) RESTRAIN  0.0000, .00001 = NA  (   2,U[11]) -1.0 * NA  (   2,U[22])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
   10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
+
+___________
+ (11) RESTRAIN  0.0000, .00001 = NA  (   2,U[23]) +1.0 * NA  (   2,U[13])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
   11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-#DISTANCES                                                                                                                                                                                                                                                      
-#LIST 31                                                                                                                                                                                                                                                        
-#DISTANCES                                                                                                                                                                                                                                                      
+#DISTANCES
+#LIST 31
+#DISTANCES
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -737,11 +793,11 @@ LS-scale=  9.913   Wilson Scale=  0.000
 [49]    7   F         3.      3   1    1    0    0      60.0   0.0
 
   KEY                                                 6
-# SEARCH FOR AN EMPIRICAL WEIGHTING SCHEME USING UNIT WEIGHTS                                                                                                                                                                                                   
-#                                                                                                                                                                                                                                                               
-#LIST 4                                                                                                                                                                                                                                                         
-#ANALYSE                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+# SEARCH FOR AN EMPIRICAL WEIGHTING SCHEME USING UNIT WEIGHTS
+#
+#LIST 4
+#ANALYSE
+#WEIGHT
                      LIST 4 weighting type is NORMAL
 
 
@@ -827,8 +883,8 @@ LS-scale=  9.913   Wilson Scale=  0.000
 
 
 
-#ANALYSE                                                                                                                                                                                                                                                        
-#LIST 4                                                                                                                                                                                                                                                         
+#ANALYSE
+#LIST 4
 
  Analysis of residuals:
 The slope and correlation coefficient should be small
@@ -838,9 +894,9 @@ The slope and correlation coefficient should be small
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
-                                                                                                                                                                                                                                                                
- Agreement analysis on scale of /FO/                                                                                                                                                                                                                            
- Scale factor  =   9.91330                                                                                                                                                                                                                                      
+
+ Agreement analysis on scale of /FO/
+ Scale factor  =   9.91330
 
 
  Weighting scheme type   11
@@ -925,8 +981,8 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      39509.        0.291E+02       0.114E+01     2.74    3.92     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
-#ANALYSE                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+#ANALYSE
+#WEIGHT
                      LIST 4 weighting type is NORMAL
 
 
@@ -1014,8 +1070,8 @@ The slope and correlation coefficient should be small
 
 
 
-#ANALYSE                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
+#ANALYSE
+#SFLS
 
  Analysis of residuals:
 The slope and correlation coefficient should be small
@@ -1025,9 +1081,9 @@ The slope and correlation coefficient should be small
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
-                                                                                                                                                                                                                                                                
- Agreement analysis on scale of /FO/                                                                                                                                                                                                                            
- Scale factor  =   9.91330                                                                                                                                                                                                                                      
+
+ Agreement analysis on scale of /FO/
+ Scale factor  =   9.91330
 
 
  Weighting scheme type   11
@@ -1112,10 +1168,9 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      39509.        0.291E+02       0.107E+01     2.74    3.79     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -1173,8 +1228,9 @@ The slope and correlation coefficient should be small
 
  Structure factor least squares calculation    4  ends  6
 [29] SumFo/SumFc=  9.88    SumFoFc/SumFc^2=  9.90    SumwFoFc/SumwFc^2=  9.88
-LS-scale=  9.913   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27                                                                                                                                                                                                         
+LS-scale=  9.913   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.27
+#DORESTRAIN
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -1185,7 +1241,7 @@ LS-scale=  9.913   Wilson Scale=  0.000
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -1264,7 +1320,7 @@ All cycle   Min function          0.0           0.29E+03       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1340,12 +1396,11 @@ All cycle   Min function          0.0           0.29E+03       0.10E+16
 [37]                       0.00            -0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0000
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -1400,8 +1455,9 @@ Mean C-C su =   0.0000
 
  Structure factor least squares calculation    5  ends  6
 [29] SumFo/SumFc=  9.85    SumFoFc/SumFc^2=  9.88    SumwFoFc/SumwFc^2=  9.86
-LS-scale=  9.844   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  9.844   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+#DORESTRAIN
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -1412,7 +1468,7 @@ LS-scale=  9.844   Wilson Scale=  0.000
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -1486,7 +1542,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1562,9 +1618,9 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#FINI                                                                                                                                                                                                                                                           
+Mean C-C su =   0.0000
+#CYCLENDS
+#FINI
 
 
           : Job ends ok       with     0 warnings and     0 errors
