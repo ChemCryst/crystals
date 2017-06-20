@@ -668,7 +668,11 @@ c stupid compiler has a stack overflow by making a temporary array
                call LDLT_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 #endif
-               if(info>0) then
+               if(info==1111111) then
+                  WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
+                  CALL XPRVDU(NCVDU, 1,0)    
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0           
+               else if(info>0) then
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
      1                ' is singular. Inversion failed.' 
                   CALL XPRVDU(NCVDU, 1,0)

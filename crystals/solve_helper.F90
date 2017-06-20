@@ -318,6 +318,8 @@ end subroutine
 !> code for the inversion of the normal matrix using LDL^t decomposition
 !! of symmetric matrices
 subroutine LDLT_inversion(nmatrix, nmsize, info)
+use xiobuf_mod, only: cmon
+use xunits_mod, only:ncvdu
 implicit none
 !> Leading dimension of the matrix nmatrix
 integer, intent(in) :: nmsize
@@ -334,7 +336,7 @@ real, dimension(:,:), allocatable :: unpacked
 
 real, dimension(:), allocatable :: work
 integer, dimension(:), allocatable :: ipiv, iwork
-real rcond
+real rcond, onenorm
 integer, external :: ILAENV
 
 #if defined(CRY_OSLINUX)
@@ -361,6 +363,7 @@ preconditioner = 1.0/sqrt(preconditioner)
 ! N' = C N C
 ! N: normal matrix
 ! C: diagonal matrix with elements from the N diagonal
+onenorm=0.0
 allocate(unpacked(nmsize, nmsize))
 do i=1, nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
@@ -372,6 +375,8 @@ do i=1, nmsize
     unpacked(i:nmsize, i)=preconditioner(i:nmsize)*unpacked(i:nmsize, i)
     unpacked(i:nmsize, i)=preconditioner(i)*unpacked(i:nmsize, i)
     !unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
+    
+    onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
 end do
 
 !open(666, file='matrix', form="unformatted",access="stream")
@@ -398,7 +403,7 @@ end if
 
 allocate(work(2*nmsize))
 allocate(iwork(nmsize))
-call SSYCON( 'L', nmsize, unpacked, nmsize, ipiv, 1.0, rcond, work, iwork, info )
+call SSYCON( 'L', nmsize, unpacked, nmsize, ipiv, onenorm, rcond, work, iwork, info )
 #if defined(CRY_OSLINUX)
 print *, 'SSYCON info: ', info
 #endif
@@ -408,6 +413,17 @@ deallocate(iwork)
 print *, 'condition number ', 1.0/rcond
 print *, 'relative error ', 1.0/rcond*epsilon(1.0)
 #endif
+
+if(1.0/rcond*epsilon(1.0)>10.0) then
+    info=1111111
+    WRITE ( CMON, '(A, 1PE10.3)') '{I 1-norm ', onenorm
+    CALL XPRVDU(NCVDU, 1,0) 
+    WRITE ( CMON, '(A, 1PE10.3)') '{I condition number ', 1.0/rcond
+    CALL XPRVDU(NCVDU, 1,0) 
+    WRITE ( CMON, '(A, 1PE10.3)') '{I relative error ', 1.0/rcond*epsilon(1.0)
+    CALL XPRVDU(NCVDU, 1,0) 	
+    return
+end if
 
 allocate(work(nmsize))
 call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
