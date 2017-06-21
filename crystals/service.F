@@ -907,6 +907,7 @@ C
       IF ( ICODE .LE. 0 ) ICODE = 3
       
 #ifdef CRY_OSLINUX
+#ifdef __GNUC__
       if(icode/=1) then
         write(error_unit, *) ''
         write(error_unit, *) 
@@ -914,6 +915,7 @@ C
         call backtrace
         write(error_unit, *) ''
       end if
+#endif
 #endif
 C
 C -- DISPLAY DISC EFFICIENCY STATISTICS
