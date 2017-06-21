@@ -452,8 +452,6 @@ C      JX            RELATIVE PARAMETER NO
       L12A = NOWT
       JS = 0
 
-      FLAG = IBLANK
-
       DO WHILE(M12 .GE. 0)   ! More stuff in L12
         IF(ISTORE(M12+1).GT.0) THEN ! Any refined params
 C--COMPUTE THE ADDRESS OF THE FIRST PART FOR THIS GROUP
