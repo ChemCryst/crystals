@@ -73,7 +73,6 @@ Bonds: Update required - There is no list 41
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -159,6 +158,7 @@ Bonds: Update required - There is no list 41
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.01
 LS-scale=  1.023   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+#CYCLENDS
 #LIST 4
 #TITLE GROUP TORSION
 #LIST 12
@@ -268,7 +268,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
 #LIST 17
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -328,6 +327,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.02
 LS-scale=  1.023   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+#DORESTRAIN
 #LIST 26
 #DORESTRAIN
 #INVERT  CHOL
@@ -498,7 +498,6 @@ Refining    52 parameters in    2 block :     1022 elements in the LS matrix.
  Space required on DISK is    2 records,     8  Blocks,     5 Kbytes. 
 #LIST 17
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -558,6 +557,7 @@ Refining    52 parameters in    2 block :     1022 elements in the LS matrix.
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.02
 LS-scale=  1.023   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+#DORESTRAIN
 #LIST 26
 #DORESTRAIN
 #INVERT  CHOL

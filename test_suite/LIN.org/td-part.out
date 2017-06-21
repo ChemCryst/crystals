@@ -115,7 +115,6 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      3 Symmetry restraints written to LIST 17
 #LIST 17
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -175,6 +174,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 [29] SumFo/SumFc=  6.26    SumFoFc/SumFc^2=  6.10    SumwFoFc/SumwFc^2=  6.17
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.040    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+#DORESTRAIN
 #LIST 26
 #DORESTRAIN
 #INVERT  CHOL
@@ -3170,7 +3170,6 @@ Rsigma=  0.91
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -3256,6 +3255,7 @@ Rsigma=  0.91
 [29] SumFo/SumFc=  6.28    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+#CYCLENDS
 # RE-INPUT LIST 5
 #USE TD-PART-5.DAT
 #
@@ -3279,7 +3279,6 @@ LS-scale=  6.285   Wilson Scale=  0.000
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -3365,6 +3364,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 [29] SumFo/SumFc=  6.28    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+#CYCLENDS
 #TITLE A&B KEYS SET, F' & F" SET TO ZERO
 #PUNCH 6 I
 # punching LIST  6 as LIST  6 with all keys set
@@ -6284,7 +6284,6 @@ END
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -6370,6 +6369,7 @@ END
 [29] SumFo/SumFc=  6.59    SumFoFc/SumFc^2=  6.62    SumwFoFc/SumwFc^2=  5.91
 LS-scale=  6.285   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     4.
+#CYCLENDS
 # SET ALL OCCUPANCIES EXCEPT RU TO UNITY, SET RU TO ZERO
 # USE STORED PARTS
 #EDIT
@@ -6481,7 +6481,6 @@ Rsigma=  0.91
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -6540,6 +6539,7 @@ Rsigma=  0.91
 [29] SumFo/SumFc=  6.30    SumFoFc/SumFc^2=  6.19    SumwFoFc/SumwFc^2=  6.27
 LS-scale=  6.285   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+#CYCLENDS
 #SUM L 6
  Summary of contents of list  6 - Reflection data
  Quantity            Minimum        Maximum
@@ -9425,7 +9425,6 @@ Rsigma=  0.91
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -9511,6 +9510,7 @@ Rsigma=  0.91
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+#CYCLENDS
 #TITLE NORMAL LIST 6, F2 & F" SET
 #PUNCH 6 I
 # punching LIST  6 as LIST  6 with all keys set
@@ -12354,7 +12354,6 @@ END
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -12440,6 +12439,7 @@ END
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+#CYCLENDS
 #TITLE A&B KEYS SET, F' & F" SET
 #PUNCH 6 I
 # punching LIST  6 as LIST  6 with all keys set
@@ -15359,7 +15359,6 @@ END
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -15445,6 +15444,7 @@ END
 [29] SumFo/SumFc=  6.52    SumFoFc/SumFc^2=  6.57    SumwFoFc/SumwFc^2=  5.85
 LS-scale=  6.285   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.4     100*(<Fo>-<Fc>)/<Fo> =     3.
+#CYCLENDS
 # SET ALL OCCUPANCIES EXCEPT RU TO UNITY, SET RU TO ZERO
 # USE STORED PARTS
 #EDIT
@@ -15556,7 +15556,6 @@ Rsigma=  0.91
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -15615,6 +15614,7 @@ Rsigma=  0.91
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+#CYCLENDS
 #SUM L 6
  Summary of contents of list  6 - Reflection data
  Quantity            Minimum        Maximum
@@ -18464,7 +18464,6 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      3 Symmetry restraints written to LIST 17
 #LIST 17
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -18524,6 +18523,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+#DORESTRAIN
 #LIST 26
 #DORESTRAIN
 #INVERT  CHOL
@@ -18652,7 +18652,6 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -18712,6 +18711,7 @@ Mean C-C su =   0.0000
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.84
+#DORESTRAIN
 #INVERT  CHOL
 
 
@@ -18834,7 +18834,6 @@ Mean C-C su =   0.0000
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -18894,6 +18893,7 @@ Mean C-C su =   0.0000
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+#DORESTRAIN
 #INVERT  CHOL
 
 

@@ -232,7 +232,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Enantiopole parameter out of range. (-0.272 )
  Initialising Special positions
 
@@ -293,6 +292,7 @@ ___________
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+#DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -693,7 +693,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Enantiopole parameter out of range. (-0.272 )
  Initialising Special positions
 
@@ -754,6 +753,7 @@ ___________
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+#DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -1071,7 +1071,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Enantiopole parameter out of range. (-0.272 )
  Initialising Special positions
 
@@ -1132,6 +1131,7 @@ ___________
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+#DORESTRAIN
  Directive  MEAN DIST: No derivatives found during Evaluation
  Directive  MEAN ANGLE: No derivatives found during Evaluation
  Directive  MEAN DIST: No derivatives found during Evaluation

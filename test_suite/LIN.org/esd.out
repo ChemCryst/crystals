@@ -165,7 +165,6 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -827,6 +826,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 [29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
 LS-scale= 21.615   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -1282,7 +1282,6 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -1944,6 +1943,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
 [29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
 LS-scale= 21.615   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL

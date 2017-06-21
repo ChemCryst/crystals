@@ -423,7 +423,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -483,6 +482,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -795,7 +795,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -855,6 +854,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -1039,7 +1039,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -1099,6 +1098,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -1276,7 +1276,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -1336,6 +1335,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -1526,7 +1526,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -1586,6 +1585,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -1775,7 +1775,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -1835,6 +1834,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -2020,7 +2020,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -2080,6 +2079,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -2257,7 +2257,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -2317,6 +2316,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -2509,7 +2509,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -2569,6 +2568,7 @@ ___________
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -2729,7 +2729,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Space required on DISK is    1 records,     1  Blocks,     1 Kbytes. 
 #LIST 17
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -2789,6 +2788,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.106    100*(<Fo>-<Fc>)/<Fo> =    -1.62
+#DORESTRAIN
 #LIST 26
 #DORESTRAIN
 #INVERT  CHOL
@@ -2909,7 +2909,6 @@ Mean C-C su =   0.0953
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -2969,6 +2968,7 @@ Mean C-C su =   0.0953
 [29] SumFo/SumFc=  1.58    SumFoFc/SumFc^2=  1.55    SumwFoFc/SumwFc^2=  1.55
 LS-scale=  1.612   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.113    100*(<Fo>-<Fc>)/<Fo> =    -1.72
+#DORESTRAIN
 #INVERT  CHOL
 
 

@@ -2022,7 +2022,6 @@ ___________
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -2082,6 +2081,7 @@ ___________
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+#DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
 #INVERT  CHOL
 #NEWSHIFTS
@@ -3294,7 +3294,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -3354,6 +3353,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+#DORESTRAIN
 #INVERT  CHOL
 #NEWSHIFTS
 #INVERT  CHOL
@@ -3927,7 +3927,6 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  Space required on DISK is   68 records,   272  Blocks,   139 Kbytes. 
 #LIST 17
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -3987,6 +3986,7 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+#DORESTRAIN
 #LIST 26
 #DORESTRAIN
 #INVERT  CHOL
@@ -4536,7 +4536,6 @@ Mean C-C su =   0.0129
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
-#DORESTRAIN
  Initialising Special positions
 
 
@@ -4596,6 +4595,7 @@ Mean C-C su =   0.0129
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+#DORESTRAIN
 #INVERT  CHOL
 
 
@@ -5152,7 +5152,6 @@ Mean C-C su =   0.0121
  Listing of file index of    Data    file 
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -5238,12 +5237,13 @@ Mean C-C su =   0.0121
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+#CYCLENDS
 #FINISH
- Physical reads      11370 Physical writes      10078 Cache hits     199570
- Cache hit distribution   181317   12549    2217     734     531     170
- Cache hit distribution      149     200     206     289     144     168
- Cache hit distribution      152     161     148      59      60      48
- Cache hit distribution       81      40      42      41      34      30
+ Physical reads      11391 Physical writes      10078 Cache hits     199734
+ Cache hit distribution   181343   12626    2163     758     347     366
+ Cache hit distribution      130     139     202     218     290     171
+ Cache hit distribution      133     169     233      54      65      61
+ Cache hit distribution       79      37      37      44      35      34
 
 
           : Job ends ok       with     0 warnings and     0 errors

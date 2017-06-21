@@ -38,7 +38,6 @@ Bonds: Update required - There is no list 41
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -124,6 +123,7 @@ Bonds: Update required - There is no list 41
 [29] SumFo/SumFc=  1.88    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =   12.2     100*(<Fo>-<Fc>)/<Fo> =    46.
+#CYCLENDS
 #TITLE SLANT FOURIER TESTS IN P6122
 #SLANT
 # NOTE BIZARE LIMITS = JUST TO TEST IT
@@ -386,7 +386,6 @@ Space group symbol is   P    4
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
-#CYCLENDS
  Initialising Special positions
 
 
@@ -472,6 +471,7 @@ Space group symbol is   P    4
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.000   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.01
+#CYCLENDS
 #EDIT
  The following atom(s) will be created
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
