@@ -2472,8 +2472,11 @@ C     Move return value into the script value EXITSTATUS
 
 CODE FOR GETCWD
       SUBROUTINE GETCWD ( CWORK )
-#if defined(CRY_FORTDIGITAL)  || defined (CRY_FORTINTEL)
-      USE DFLIB
+#ifdef CRY_FORTDIGITAL 
+      USE DFPORT
+#endif
+#ifdef CRY_FORTINTEL 
+      USE IFPORT
 #endif
       CHARACTER*(*) CWORK
 
