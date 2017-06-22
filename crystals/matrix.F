@@ -970,7 +970,7 @@ C  >0  ALL OKAY.
 C
 C--
 C
-      include 'xconst.inc'
+      include 'XCONST.INC'
       double precision X(3)
       double precision d
 C
