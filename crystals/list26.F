@@ -3759,7 +3759,7 @@ C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
       
       if(present(results)) then
           call extend(results%subrestraints, 6, .true.)
-          do icpt=1, 3
+          do icpt=1, size(results%subrestraints)
               call extend(results%subrestraints(icpt)%atoms, 2, .true.)
               results%subrestraints(icpt)%atoms(1)%label=
      &            transfer(istore(JA+2), 'aaaa')
@@ -3819,7 +3819,7 @@ C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
       end do
       
       if(present(results)) then
-        do icpt=1,3
+        do icpt=1,size(results%subrestraints)
           results%subrestraints(icpt)%atoms(1)%adps_crys=adps(1)%U_M
           results%subrestraints(icpt)%atoms(2)%adps_crys=adps(2)%U_M
           results%subrestraints(icpt)%atoms(1)%adps_cart=adps(1)%RABUBAR
@@ -3939,9 +3939,18 @@ C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
          else IF ( ij==2 ) THEN
              DIFF_VAL = adps(1)%rabubar(2,2) - adps(2)%rabubar(2,2)
              MEAN_VAL = adps(1)%rabubar(2,2) + adps(2)%rabubar(2,2)
-         else 
+         else IF ( ij==3 ) THEN
              DIFF_VAL = adps(1)%rabubar(3,3) - adps(2)%rabubar(3,3)
              MEAN_VAL = adps(1)%rabubar(3,3) + adps(2)%rabubar(3,3)
+          else if(ij==4) then
+             DIFF_VAL = adps(1)%rabubar(1,2) - adps(2)%rabubar(1,2)
+             MEAN_VAL = adps(1)%rabubar(1,2) + adps(2)%rabubar(1,2)
+          else if(ij==5) then
+             DIFF_VAL = adps(1)%rabubar(2,3) - adps(2)%rabubar(2,3)
+             MEAN_VAL = adps(1)%rabubar(2,3) + adps(2)%rabubar(2,3)
+          else
+             DIFF_VAL = adps(1)%rabubar(1,3) - adps(2)%rabubar(1,3)
+             MEAN_VAL = adps(1)%rabubar(1,3) + adps(2)%rabubar(1,3)
          END IF
 
          STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
@@ -4141,7 +4150,7 @@ C-- RUN RABUBAR MULTIPLICATION
 
 C First atom of the restraint                
 C-----------------------------------------------
-          a1(1:6)=0.0
+          a1(1:6)=0.0 
 C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(JA+6)
           JD=ISTORE(JA+16)
