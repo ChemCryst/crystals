@@ -14,7 +14,7 @@ if ( useGUI )
       OUTPUT commands.dsc
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/crysdef.srt crystals.srt
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
-      COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.dsc
+      COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.dsc commands.h5
       COMMAND ${CMAKE_COMMAND} -D useGUI=yes -P ${CMAKE_CURRENT_SOURCE_DIR}/dscbuild.cmake
       COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
       DEPENDS commands.src crystalscl
@@ -33,6 +33,32 @@ else()
 )
 endif()
 
+if(useHDF5)
 
+    ADD_CUSTOM_TARGET(subh5build DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/commands.h5)
+	if ( useGUI )
+	  ADD_CUSTOM_COMMAND(
+		  OUTPUT commands.h5
+		  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/crysdef.srt crystals.srt
+		  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
+		  COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.h5 commands.dsc
+		  COMMAND ${CMAKE_COMMAND} -D useGUI=yes -P ${CMAKE_CURRENT_SOURCE_DIR}/h5build.cmake
+		  COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
+		  DEPENDS commands.h5 crystalscl
+		  COMMENT "Processing commands.src into commands.h5"
+	)
+	else()
+	  ADD_CUSTOM_COMMAND(
+		  OUTPUT commands.h5
+		  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/crysdef.srt crystals.srt
+		  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
+		  COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.h5
+		  COMMAND ${CMAKE_COMMAND} -D useGUI=no -P ${CMAKE_CURRENT_SOURCE_DIR}/h5build.cmake
+		  COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
+		  DEPENDS commands.src crystals
+		  COMMENT "Processing commands.src into commands.h5"
+	)
+	endif()
 
+endif ()
 

@@ -15,7 +15,8 @@ option (usePY "usePY" OFF)
 option (use32 "use32" OFF)
 option (useSTATIC "useSTATIC" OFF)
 option (useOPENMP "useOPENMP" ON)
-option (useHDF5 "useHDF5" OFF)
+option (useHDF5 "useHDF5" OFF) # hdf5 storage, use system library
+option (compileHDF5 "compileHDF5" OFF) # hdf5 storage, download and compile hdf5
 option (useGGDB3 "useGGDB3" OFF) # used for orion (old dgb)
 option (usepFUnit "usepFUnit" OFF)  
 option (useFAST "useFAST" OFF)  
@@ -166,12 +167,12 @@ set(CMAKE_C_FLAGS "")
 set(CMAKE_CXX_FLAGS "")
 
 if(useOPENMP)
-	find_package(OpenMP)
-	if (OPENMP_FOUND)
-		set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-		set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
-	endif()
+    find_package(OpenMP)
+    if (OPENMP_FOUND)
+        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+        set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+    endif()
 endif ()
 
 if ( use32 )
@@ -200,21 +201,21 @@ if ( useGUI )
     if ( WIN32 )
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
     endif()
-	INCLUDE(${wxWidgets_USE_FILE})
+    INCLUDE(${wxWidgets_USE_FILE})
     
 
 
-	if(APPLE)
-    	add_definitions(-D__MAC__)
-	elseif(UNIX)
-    	add_definitions(-D__GIL__)
-	endif()
-	
+    if(APPLE)
+        add_definitions(-D__MAC__)
+    elseif(UNIX)
+        add_definitions(-D__GIL__)
+    endif()
+    
 else()
-	add_definitions(-DCRY_NOGUI)
-	if(UNIX)
-		add_definitions(-D__LIN__)
-	endif()
+    add_definitions(-DCRY_NOGUI)
+    if(UNIX)
+        add_definitions(-D__LIN__)
+    endif()
 endif()
 
 if ( usePY )
@@ -235,14 +236,22 @@ if ( MSYS )
     add_definitions(-DCRY_OSWIN32)
 endif()
 add_definitions(-DCRY_GNU)
+
+if( compileHDF5 )
+    SET(useHDF5 ON)
+endif ()
 if(NOT useHDF5)
     add_definitions(-D_NOHDF5_)
 else ()
-    find_package( HDF5 COMPONENTS Fortran REQUIRED )
-    include_directories(${HDF5_INCLUDE_DIRS})
-    link_libraries( ${HDF5_LIBRARIES} )
-    message(STATUS "Using hdf5 libraries [${HDF5_LIBRARIES}]")
-    message(STATUS "Using hdf5 include dir [${HDF5_INCLUDE_DIRS}]")
+    if(NOT compileHDF5 )
+        find_package( HDF5 COMPONENTS Fortran REQUIRED )
+        include_directories(${HDF5_INCLUDE_DIRS})
+        link_libraries( ${HDF5_LIBRARIES} )
+        message(STATUS "Using hdf5 libraries [${HDF5_LIBRARIES}]")
+        message(STATUS "Using hdf5 include dir [${HDF5_INCLUDE_DIRS}]")
+    else ()
+        find_package(ZLIB REQUIRED)
+    endif ()
 endif ()
 
 # Required to assign hollerith data in a legacy manner to integers
@@ -268,7 +277,7 @@ string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 
 IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
-	if(useFAST)
+    if(useFAST)
         SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program")
     else ()
         SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2")
@@ -291,7 +300,7 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 ELSEIF ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
     SET (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -Od -debug")
-	SET (IFORT_COMPILER 1)
+    SET (IFORT_COMPILER 1)
 ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
     SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
@@ -378,11 +387,63 @@ if ( usePY )
     ADD_SUBDIRECTORY(pyinterface)
 endif()
 
+# Because external project call cmake externally too we need to pass the compiler and module path via cmake_args
+if(compileHDF5)
+    include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+    message("")
+    message(STATUS "Building hdf5")
+
+    find_package(ZLIB REQUIRED STATIC)
+
+    set(HDF5_prefix "${CMAKE_BINARY_DIR}/hdf5")
+    file(MAKE_DIRECTORY "${HDF5_prefix}")
+
+    ExternalProject_Add(
+            hdf5_project
+            URL https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4411
+            CMAKE_ARGS -DSF_MODPATH=${SF_MODPATH} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                            -DBUILD_SHARED_LIBS:Bool=OFF
+                            -DBUILD_TESTING:Bool=OFF
+                            -DHDF5_ENABLE_Z_LIB_SUPPORT:Bool=ON
+                            -DHDF5_BUILD_HL_LIB:Bool=ON
+                            -DHDF5_BUILD_TOOLS:Bool=ON
+                            -DCMAKE_INSTALL_PREFIX:PATH=${HDF5_prefix}
+                            -DHDF5_BUILD_FORTRAN:BOOL=ON
+                            -DCMAKE_VERBOSE_MAKEFILE=ON
+             SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
+    )
+    
+    ExternalProject_Add_Step(
+        hdf5_project
+        DEPENDEES DEPENDEES mkdir update patch download configure build install
+        COMMAND ${CMAKE_COMMAND} -E copy_directory  "${HDF5_prefix}/include/static" "${Fortran_MODULE_DIRECTORY}/"        
+    )
+
+
+
+    set(HDF5_LIBRARY_DIR "${HDF5_prefix}/lib")
+    set(HDF5_LIBRARY 
+    "${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_fortran-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_f90cstub-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5-static.a")
+    set(HDF5_HL_LIBRARY 
+    "${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl_fortran-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl_f90cstub-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl-static.a")
+
+    set(HDF5_LIBRARIES "${HDF5_HL_LIBRARY};${HDF5_LIBRARY}")
+    INCLUDE_DIRECTORIES("${HDF5_prefix}/include")
+
+    message(STATUS "Using hdf5 libraries [${HDF5_LIBRARIES}]")
+    
+
+    message(STATUS "End Building hdf5")
+endif()
+
+
+
 add_dependencies(CameronFortran CrystalsFortran) 
+if( compileHDF5 )
+    add_dependencies(CrystalsFortran hdf5_project) 
+endif ()
 
 # Executables
-
-
 get_property(value DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 if (value)
    foreach(item ${value})
@@ -395,6 +456,9 @@ message( STATUS "Flags: ${flags}" )
 
 
 ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild )
+if( useHDF5 )
+    ADD_CUSTOM_COMMAND ( OUTPUT commands.h5 COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.h5 . DEPENDS subh5build )
+endif ()
 #ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
 # Script file sources and targets
@@ -456,7 +520,7 @@ if ( useGUI )
     TARGET_LINK_LIBRARIES(crystals ${SLEEFTARGET} CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
-	
+    
 #    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
     TARGET_LINK_LIBRARIES(crystalscl ${SLEEFTARGET} CrystalsFortran CameronFortran)
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
@@ -482,6 +546,15 @@ if(OpenBLAS_LIBRARY)
   if ( useGUI )
     TARGET_LINK_LIBRARIES(crystalscl ${OpenBLAS_LIBRARY})
   endif ()
+endif ()
+
+if( useHDF5 )
+  TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES};dl")
+  TARGET_LINK_LIBRARIES(crystalscl ${ZLIB_LIBRARIES})
+  TARGET_LINK_LIBRARIES(crystals "${HDF5_LIBRARIES};dl")
+  TARGET_LINK_LIBRARIES(crystals  ${ZLIB_LIBRARIES})
+  ADD_CUSTOM_TARGET ( h5build ALL DEPENDS commands.dsc )
+  ADD_CUSTOM_TARGET ( h5startups ALL DEPENDS h5build ${srtfiles} )
 endif ()
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
