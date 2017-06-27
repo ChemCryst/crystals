@@ -2186,7 +2186,7 @@ C  ================Function calls ================
             end do
       end do
 c      print '(A, F7.5, I10)', 'Threshold is: ', threshhold,
-     1 tri_matrix_apply_threshhold
+c     1 tri_matrix_apply_threshhold
       end
 
 C======================================================================C
