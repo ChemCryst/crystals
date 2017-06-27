@@ -297,36 +297,36 @@ integer i, j, k
 character(len=128) :: buffer
 character(len=1024) :: atomlist
 
-write(*,*) trim(self%restraint_text)
-if(trim(self%restraint_type)/='') then
-    write(*,*) trim(self%restraint_type)
-else
-    write(*,*) '`No description`'
-end if
-if(allocated(self%subrestraints)) then
-    write(*, '(I0, 1X, A)') size(self%subrestraints), ' subrestraints:'
-    do i=1, size(self%subrestraints)
-        write(*, '(4X,A)') trim(self%subrestraints(i)%description)
-        atomlist=''
-        if(allocated(self%subrestraints(i)%atoms)) then
-            do j=1, size(self%subrestraints(i)%atoms)
-                write(buffer, '(A,"(",I0,")")') trim(self%subrestraints(i)%atoms(j)%label), &
-                &   self%subrestraints(i)%atoms(j)%serial
-                atomlist=trim(atomlist)//' '//trim(buffer)
-            end do
-            write(*, '(4X,I0,1X,A)') i, trim(atomlist)
-        end if
+!>nowrite write(*,*) trim(self%restraint_text)
+!>nowrite if(trim(self%restraint_type)/='') then
+!>nowrite    write(*,*) trim(self%restraint_type)
+!>nowrite else
+!>nowrite     write(*,*) '`No description`'
+!>nowrite end if
+!>nowriteif(allocated(self%subrestraints)) then
+!>nowrite    write(*, '(I0, 1X, A)') size(self%subrestraints), ' subrestraints:'
+!>nowrite    do i=1, size(self%subrestraints)
+!>nowrite        write(*, '(4X,A)') trim(self%subrestraints(i)%description)
+!>nowrite        atomlist=''
+!>nowrite        if(allocated(self%subrestraints(i)%atoms)) then
+!>nowrite            do j=1, size(self%subrestraints(i)%atoms)
+!>nowrite                write(buffer, '(A,"(",I0,")")') trim(self%subrestraints(i)%atoms(j)%label), &
+!>nowrite                &   self%subrestraints(i)%atoms(j)%serial
+!>nowrite                atomlist=trim(atomlist)//' '//trim(buffer)
+!>nowrite            end do
+!>nowrite            write(*, '(4X,I0,1X,A)') i, trim(atomlist)
+!>nowrite        end if
         
-        if(allocated(self%subrestraints(i)%blocks)) then
-            write(*, '(4X,I0,A)') ubound(self%subrestraints(i)%blocks, 1), ' block(s):'
-            do j=1, ubound(self%subrestraints(i)%blocks, 1)
-                write(buffer, '("(7X,''('',I0,'')'',",I0,"(1X,1PE9.2))")') size(self%subrestraints(i)%blocks(j)%derivatives)
-                write(*, buffer) size(self%subrestraints(i)%blocks(j)%derivatives), self%subrestraints(i)%blocks(j)%derivatives
-                write(*, '(A, 1PE10.3)') 'Weight: ', self%subrestraints(i)%blocks(j)%weight
-            end do
-        end if
-    end do
-end if
+!>nowrite        if(allocated(self%subrestraints(i)%blocks)) then
+!>nowrite            write(*, '(4X,I0,A)') ubound(self%subrestraints(i)%blocks, 1), ' block(s):'
+!>nowrite            do j=1, ubound(self%subrestraints(i)%blocks, 1)
+!>nowrite                write(buffer, '("(7X,''('',I0,'')'',",I0,"(1X,1PE9.2))")') size(self%subrestraints(i)%blocks(j)%derivatives)
+!>nowrite                write(*, buffer) size(self%subrestraints(i)%blocks(j)%derivatives), self%subrestraints(i)%blocks(j)%derivatives
+!>nowrite                write(*, '(A, 1PE10.3)') 'Weight: ', self%subrestraints(i)%blocks(j)%weight
+!>nowrite            end do
+!>nowrite        end if
+!>nowrite    end do
+!>nowriteend if
     
 end subroutine
 
@@ -338,7 +338,7 @@ integer i, j, k
 character(len=128) :: buffer
 character(len=1024) :: atomlist
 
-write(*,'(I5,1X,A,"(",I0,")",1X,A)') self%index, trim(self%label), self%serial, trim(self%name)
+!>nowrite write(*,'(I5,1X,A,"(",I0,")",1X,A)') self%index, trim(self%label), self%serial, trim(self%name)
 
 end subroutine
 

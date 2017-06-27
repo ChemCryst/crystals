@@ -852,7 +852,7 @@ C--'UXZBAR' RESTRAINT
 5010  CONTINUE
 C To be replaced with JA routine:
       CALL XCVCX(1,IASYM)
-      WRITE(*,*)'Hello UXZBar'
+c      WRITE(*,*)'Hello UXZBar'
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,5011)A,B,C
       ENDIF
@@ -874,7 +874,7 @@ C--'UYZBAR' RESTRAINT
 5020  CONTINUE
 C To be replaced with JA routine:
       CALL XCVCX(2,IASYM)
-      WRITE(*,*)'Hello UYZBar'
+c      WRITE(*,*)'Hello UYZBar'
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,5021)A,B,C
       ENDIF
@@ -897,7 +897,7 @@ C--'UZZBAR' RESTRAINT
 5030  CONTINUE
 C To be replaced with JA routine:
       CALL XCVCX(3,IASYM)
-      WRITE(*,*)'Hello UZZBar'
+c      WRITE(*,*)'Hello UZZBar'
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,5031)A,B,C
       ENDIF
@@ -3980,7 +3980,7 @@ c         print *, 'ISTORE: ',ISTORE(JA_at6_1)                                  
          JA=ISTORE(adps(2)%basis_atoms(3))                                               CVC01530
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -4239,7 +4239,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       END IF
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -4522,7 +4522,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       JA=ISTORE(JB)                                                     CVC01530
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -4733,7 +4733,7 @@ C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
       JA=ISTORE(JA)                                                     CVC01530
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -5018,7 +5018,7 @@ C You need to set SUM to be the compute
       JA=ISTORE(JB)                                                     CVC01530
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -5265,7 +5265,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       JA=ISTORE(JB)                                                     CVC01530
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -5518,7 +5518,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       JA=ISTORE(JC)                                                     CVC01530
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -5860,7 +5860,7 @@ c         print *, 'ISTORE: ',ISTORE(JA_at6_1)                                  
       end if
 
       IF(JA .GT. 0) then
-         print *, 'No more atom expected'
+c         print *, 'No more atom expected'
          call abort()
       end if
 
@@ -8171,7 +8171,7 @@ C
    60   CONTINUE
    40 CONTINUE
 
-      PRINT *, "DSYEVJ3: No convergence."
+c      PRINT *, "DSYEVJ3: No convergence."
             
       END SUBROUTINE
 * End of subroutine DSYEVJ3

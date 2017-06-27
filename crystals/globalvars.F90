@@ -54,8 +54,8 @@ subroutine env_table_add(key, valeur)
         environment_table(error)%valeur=valeur
 #else
         if(len_trim(valeur)>len(environment_table(error)%valeur)) then
-            print *, 'Value too large to be hold in environment_table'
-            print *, 'Contact the authors'
+ !           print *, 'Value too large to be hold in environment_table'
+ !           print *, 'Contact the authors'
             call exit(1)
         else
             environment_table(error)%valeur=valeur

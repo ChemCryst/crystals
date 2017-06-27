@@ -937,7 +937,7 @@ double precision, external :: ddot
 
     mitem=size(xin)
     if(size(yin)/=mitem .or. size(wt)/=mitem) then
-        print *, 'Size does not match'
+!        print *, 'Size does not match'
         call abort
     end if
     
@@ -1080,7 +1080,7 @@ double precision, external :: ddot
 
     mitem=size(xin)
     if(size(yin)/=mitem .or. size(wt)/=mitem) then
-        print *, 'Size does not match'
+!        print *, 'Size does not match'
         call abort
     end if
     
@@ -1209,7 +1209,7 @@ double precision, external :: ddot
 
     mitem=size(xin)
     if(size(yin)/=mitem .or. size(wt)/=mitem) then
-        print *, 'Size does not match'
+!        print *, 'Size does not match'
         call abort
     end if
     
@@ -1354,13 +1354,13 @@ real mean, s2, est, goof
 
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
-        print *, "Arguments size don't match in subroutine hole_in_one"
+!        print *, "Arguments size don't match in subroutine hole_in_one"
         call abort
     end if
     
     if(present(weights)) then
         if(size(weights)/=size(filtered_reflections)) then
-            print *, "Arguments size don't match in subroutine hole_in_one"
+!            print *, "Arguments size don't match in subroutine hole_in_one"
             call abort
         end if
     end if
@@ -1990,13 +1990,13 @@ real mean, s2, est, goof
 
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
-        print *, "Arguments size don't match in subroutine bijvoet_difference"
+!        print *, "Arguments size don't match in subroutine bijvoet_difference"
         call abort
     end if
     
     if(present(weights)) then
         if(size(weights)/=size(filtered_reflections)) then
-            print *, "Arguments size don't match in subroutine bijvoet_difference"
+!            print *, "Arguments size don't match in subroutine bijvoet_difference"
             call abort
         end if
     end if

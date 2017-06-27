@@ -52,7 +52,7 @@ character(len=255) :: file_name
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit/=0) then
-            print *, 'normal matrix file already opened'
+!            print *, 'normal matrix file already opened'
             call abort()
         end if
 
@@ -70,7 +70,7 @@ character(len=255) :: file_name
     ! Nothing needed here
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -90,13 +90,13 @@ logical fileopened
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit==0) then
-            print *, 'normal matrix file not opened yet'
+!            print *, 'normal matrix file not opened yet'
             call abort()
         end if
         
         inquire(normal_unit, opened=fileopened)
         if(.not. fileopened) then
-            print *, 'normal matrix file not opened but unit set'
+!            print *, 'normal matrix file not opened but unit set'
             call abort()
         end if        
 
@@ -109,7 +109,7 @@ logical fileopened
     ! Nothing needed here
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -123,7 +123,7 @@ integer filecount
 character(len=255) :: file_name
 
     if(design_unit/=0) then
-        print *, 'design matrix file already opened'
+!        print *, 'design matrix file already opened'
         call abort()
     end if
 
@@ -147,7 +147,7 @@ character(len=255) :: file_name
         call print_design_header()
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -176,7 +176,7 @@ integer filecount
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit==0) then
-            print *, 'normal matrix file not opened yet'
+!            print *, 'normal matrix file not opened yet'
             call abort()
         end if
 
@@ -206,7 +206,7 @@ integer filecount
         normal_unit=0
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 end subroutine
@@ -234,7 +234,7 @@ integer filecount
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit==0) then
-            print *, 'normal matrix file not opened yet'
+!            print *, 'normal matrix file not opened yet'
             call abort()
         end if
 
@@ -264,7 +264,7 @@ integer filecount
         normal_unit=0
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 end subroutine
@@ -291,13 +291,13 @@ character(len=256) :: lineformat
         end if
 
         if(design_unit==0) then
-            print *, 'design matrix file not opened yet'
+!            print *, 'design matrix file not opened yet'
             call abort()
         end if
         
         inquire(design_unit, opened=fileopened)
         if(.not. fileopened) then
-            print *, 'design matrix file not opened but unit set'
+ !           print *, 'design matrix file not opened but unit set'
             call abort()
         end if
         
@@ -315,13 +315,13 @@ character(len=256) :: lineformat
         end if
 
         if(design_unit==0) then
-            print *, 'design matrix file not opened yet'
+!            print *, 'design matrix file not opened yet'
             call abort()
         end if
         
         inquire(design_unit, opened=fileopened)
         if(.not. fileopened) then
-            print *, 'design matrix file not opened but unit set'
+ !           print *, 'design matrix file not opened but unit set'
             call abort()
         end if
         
@@ -331,7 +331,7 @@ character(len=256) :: lineformat
         end do
 
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -351,12 +351,12 @@ integer filecount
 
 if(present(punch)) then
     if(.not. allocated(wdflist)) then
-        print *, 'Cannot output array, not allocated'
+ !       print *, 'Cannot output array, not allocated'
         call abort()
     end if
     
     if(wdfindex==0) then
-        print *, 'Cannot output array, wdflist is empty'
+!        print *, 'Cannot output array, wdflist is empty'
         call abort()
     end if
     
@@ -390,7 +390,7 @@ if(present(punch)) then
         wdfindex=0
 
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+ !       print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
     
@@ -453,15 +453,15 @@ end function
 subroutine sfls_punch_reset_filename()
 implicit none
     if(normal_unit/=0) then
-        print *, 'normal file still open'
+ !       print *, 'normal file still open'
         call abort()
     end if
     if(design_unit/=0) then
-        print *, 'design file still open'
+ !       print *, 'design file still open'
         call abort()
     end if
     if(wdf_unit/=0) then
-        print *, 'wdf file still open'
+ !       print *, 'wdf file still open'
         call abort()
     end if
     fileindex=-1
@@ -534,7 +534,7 @@ integer, parameter :: iversn=210, icomsz=512
 !    end if !go to 9900
 
     if(n12b>1) then
-        print *, "error more than 1 bloc"
+!        print *, "error more than 1 bloc"
         call abort()
     end if
     

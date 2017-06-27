@@ -236,24 +236,24 @@ C
       integer cur_pos
       integer i, j    
       
-      print *, results ! outputs the raw data
+c      print *, results ! outputs the raw data
       i = 1
       cur_pos = 1
       do while (cur_pos .le. results_size) ! Run through each parameter print
-         print *, 'Parameter ', i, results(cur_pos)
+c         print *, 'Parameter ', i, results(cur_pos)
          if (results(cur_pos) .ge. 0) then
-            print *, (results(j), j=cur_pos+1, ! print the list for the current parameter
+c            print *, (results(j), j=cur_pos+1, ! print the list for the current parameter
      1           cur_pos+results(cur_pos))
             cur_pos = results(cur_pos)+cur_pos+1
          else
-            print *, 'All'
+c            print *, 'All'
             cur_pos = cur_pos+1
          end if
          i = i + 1
       end do
       if (cur_pos .ge. results_size) then
-       print *, 'The param list is actualy longer then we think it is!'
-       print '(A, I5, A)', 'It is ', cur_pos-results_size, ' larger.'
+c       print *, 'The param list is actualy longer then we think it is!'
+c       print '(A, I5, A)', 'It is ', cur_pos-results_size, ' larger.'
       end if
       end
 
