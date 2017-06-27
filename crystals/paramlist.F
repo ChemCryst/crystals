@@ -243,7 +243,7 @@ c      print *, results ! outputs the raw data
 c         print *, 'Parameter ', i, results(cur_pos)
          if (results(cur_pos) .ge. 0) then
 c            print *, (results(j), j=cur_pos+1, ! print the list for the current parameter
-     1           cur_pos+results(cur_pos))
+c     1           cur_pos+results(cur_pos))
             cur_pos = results(cur_pos)+cur_pos+1
          else
 c            print *, 'All'
