@@ -398,12 +398,6 @@ if(compileHDF5)
     set(HDF5_prefix "${CMAKE_BINARY_DIR}/hdf5")
     file(MAKE_DIRECTORY "${HDF5_prefix}")
     
-    if(WIN32)
-        set(buildtypearg "-GMSYS Makefiles")
-    else ()
-        set(buildtypearg "")
-    endif ()
-    
     set(hdf5url "https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4301")
 
     ExternalProject_Add(
@@ -419,7 +413,7 @@ if(compileHDF5)
                             -DCMAKE_INSTALL_PREFIX:PATH=${HDF5_prefix}
                             -DHDF5_BUILD_FORTRAN:BOOL=ON
                             -DCMAKE_VERBOSE_MAKEFILE=ON
-                            ${buildtypearg}
+                            -G${CMAKE_GENERATOR}
              SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
     )
     
