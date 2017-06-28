@@ -25,7 +25,7 @@ else()
       OUTPUT commands.dsc
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/crysdef.srt crystals.srt
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
-      COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.dsc
+      COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.dsc commands.h5
       COMMAND ${CMAKE_COMMAND} -D useGUI=no -P ${CMAKE_CURRENT_SOURCE_DIR}/dscbuild.cmake
       COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
       DEPENDS commands.src crystals
@@ -52,7 +52,7 @@ if(useHDF5)
 		  OUTPUT commands.h5
 		  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/crysdef.srt crystals.srt
 		  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/commands.src commands.src
-		  COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.h5
+		  COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.h5 commands.dsc
 		  COMMAND ${CMAKE_COMMAND} -D useGUI=no -P ${CMAKE_CURRENT_SOURCE_DIR}/h5build.cmake
 		  COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
 		  DEPENDS commands.src crystals
