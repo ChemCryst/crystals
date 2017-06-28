@@ -409,10 +409,12 @@ if(compileHDF5)
                             -DBUILD_TESTING:Bool=OFF
                             -DHDF5_ENABLE_Z_LIB_SUPPORT:Bool=ON
                             -DHDF5_BUILD_HL_LIB:Bool=ON
-                            -DHDF5_BUILD_TOOLS:Bool=ON
+                            -DHDF5_BUILD_TOOLS:Bool=OFF
                             -DCMAKE_INSTALL_PREFIX:PATH=${HDF5_prefix}
                             -DHDF5_BUILD_FORTRAN:BOOL=ON
+                            -DHDF5_ENABLE_F2003:BOOL=ON
                             -DCMAKE_VERBOSE_MAKEFILE=ON
+                            -DCMAKE_Fortran_FLAGS="-cpp"
                             -G${CMAKE_GENERATOR}
              SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
     )
