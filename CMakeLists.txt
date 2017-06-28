@@ -399,7 +399,7 @@ if(compileHDF5)
     file(MAKE_DIRECTORY "${HDF5_prefix}")
     
     if(WIN32)
-        set(buildtypearg "-G\"MSYS Makefiles\"")
+        set(buildtypearg "-GMSYS Makefiles")
     else ()
         set(buildtypearg "")
     endif ()
