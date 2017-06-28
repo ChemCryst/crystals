@@ -398,15 +398,16 @@ if(compileHDF5)
     set(HDF5_prefix "${CMAKE_BINARY_DIR}/hdf5")
     file(MAKE_DIRECTORY "${HDF5_prefix}")
     
-    if(WIN32)
-        set(hdf5url "https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4416")
-    else ()
-        set(hdf5url "https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4411")
-    endif ()
+#    if(WIN32)
+#        set(hdf5url "https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4416")
+#    else ()
+        set(hdf5url "https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4301")
+#    endif ()
 
     ExternalProject_Add(
             hdf5_project
             URL ${hdf5url}
+            DOWNLOAD_NAME "hdf5-1.10.1.tar.gz"
             CMAKE_ARGS -DSF_MODPATH=${SF_MODPATH} -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
                             -DBUILD_SHARED_LIBS:Bool=OFF
                             -DBUILD_TESTING:Bool=OFF
