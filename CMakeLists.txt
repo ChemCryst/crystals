@@ -453,7 +453,7 @@ if(compileHDF5)
         DEPENDERS configure
         ALWAYS 1
         #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h"
-        COMMAND sed -i "s/elif H5_HAVE_RANDOM/elif defined(H5_HAVE_RANDOM)/"  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project/src/H5private.h
+        COMMAND perl -p -i -e "s/elif H5_HAVE_RANDOM/elif defined(H5_HAVE_RANDOM)/"  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project/src/H5private.h
     )
  
 # Not necessary?    
