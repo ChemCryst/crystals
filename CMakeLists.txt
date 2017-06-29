@@ -418,6 +418,10 @@ if(compileHDF5)
                             -DCMAKE_Fortran_FLAGS=-cpp
                             -G${CMAKE_GENERATOR}
              SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
+#             UPDATE_COMMAND ${CMAKE_COMMAND} -E copy
+#                          ${CMAKE_SOURCE_DIR}/bits/fixh5/H5private.h
+#                          ${CMAKE_CURRENT_BINARY_DIR}/H5private.h
+             PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/bits/fixh5/H5private.h ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project/src/H5private.h
     )
     
     # move mod files so that crystals can find them when its been built
@@ -445,17 +449,7 @@ if(compileHDF5)
         #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h"
         COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h
     )
-    
-    #elif H5_HAVE_RANDOM
-    ExternalProject_Add_Step(
-        hdf5_project fixh5sc
-        DEPENDEES patch
-        DEPENDERS configure
-        ALWAYS 1
-        #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h"
-        COMMAND perl -p -i -e "s/elif H5_HAVE_RANDOM/elif defined(H5_HAVE_RANDOM)/"  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project/src/H5private.h
-    )
- 
+     
 # Not necessary?    
 #    add_dependencies(hdf5_project fixh5sa) 
 #    add_dependencies(hdf5_project fixh5sb) 
