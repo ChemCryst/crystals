@@ -400,6 +400,7 @@ if(compileHDF5)
     
     set(hdf5url "https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4301")
 
+    #see http://hdf-forum.184993.n3.nabble.com/Compilation-of-HDF5-1-10-1-with-MSYS-and-MiNGW-td4029696.html
     ExternalProject_Add(
             hdf5_project
             URL ${hdf5url}
@@ -414,7 +415,7 @@ if(compileHDF5)
                             -DHDF5_BUILD_FORTRAN:BOOL=ON
                             -DHDF5_ENABLE_F2003:BOOL=ON
                             -DCMAKE_VERBOSE_MAKEFILE=ON
-                            -DCMAKE_Fortran_FLAGS="-cpp"
+                            -DCMAKE_Fortran_FLAGS=-cpp
                             -G${CMAKE_GENERATOR}
              SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
     )
@@ -430,10 +431,10 @@ if(compileHDF5)
     
     # fix h5Config_f.inc files on windows. Nor harm to do on other platforms
     ExternalProject_Add_Step(
-        hdf5_project fixh5
+        hdf5_project fixh5s
         DEPENDEES configure
         DEPENDERS build
-        DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc"
+        #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc"
         COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc
     )
     
