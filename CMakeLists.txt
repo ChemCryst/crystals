@@ -431,14 +431,23 @@ if(compileHDF5)
     
     # fix h5Config_f.inc files on windows. Nor harm to do on other platforms
     ExternalProject_Add_Step(
-        hdf5_project fixh5s
+        hdf5_project fixh5sa
         DEPENDEES configure
         DEPENDERS build
         #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc"
         COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc
     )
+    # fix H5fort_type_defines.h files on windows. Nor harm to do on other platforms
+    ExternalProject_Add_Step(
+        hdf5_project fixh5sb
+        DEPENDEES configure
+        DEPENDERS build
+        #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h"
+        COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h
+    )
     
-    add_dependencies(hdf5_project fixh5) 
+    add_dependencies(hdf5_project fixh5sa) 
+    add_dependencies(hdf5_project fixh5sb) 
 
 
     set(HDF5_LIBRARY_DIR "${HDF5_prefix}/lib")
