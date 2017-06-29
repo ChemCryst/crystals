@@ -418,10 +418,6 @@ if(compileHDF5)
                             -DCMAKE_Fortran_FLAGS=-cpp
                             -G${CMAKE_GENERATOR}
              SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
-#             UPDATE_COMMAND ${CMAKE_COMMAND} -E copy
-#                          ${CMAKE_SOURCE_DIR}/bits/fixh5/H5private.h
-#                          ${CMAKE_CURRENT_BINARY_DIR}/H5private.h
-             PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/bits/fixh5/H5private.h ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project/src/H5private.h
     )
     
     # move mod files so that crystals can find them when its been built
@@ -433,27 +429,21 @@ if(compileHDF5)
         COMMAND ${CMAKE_COMMAND} -E copy_directory  "${HDF5_prefix}/include/static" "${Fortran_MODULE_DIRECTORY}/"        
     )
     
-    # fix h5Config_f.inc files on windows. Nor harm to do on other platforms
+    # fix h5Config_f.inc files on windows. No harm to do on other platforms
     ExternalProject_Add_Step(
         hdf5_project fixh5sa
         DEPENDEES configure
         DEPENDERS build
-        #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc"
         COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc
     )
-    # fix H5fort_type_defines.h files on windows. Nor harm to do on other platforms
+    # fix H5fort_type_defines.h files on windows. No harm to do on other platforms
     ExternalProject_Add_Step(
         hdf5_project fixh5sb
         DEPENDEES configure
         DEPENDERS build
-        #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h"
         COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h
     )
      
-# Not necessary?    
-#    add_dependencies(hdf5_project fixh5sa) 
-#    add_dependencies(hdf5_project fixh5sb) 
-
 
     set(HDF5_LIBRARY_DIR "${HDF5_prefix}/lib")
     set(HDF5_LIBRARY 
@@ -583,9 +573,14 @@ if(OpenBLAS_LIBRARY)
 endif ()
 
 if( useHDF5 )
-  TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES};dl")
+  if( WIN32 )
+    TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES}")
+    TARGET_LINK_LIBRARIES(crystals "${HDF5_LIBRARIES}")
+  else ()
+    TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES};dl")
+    TARGET_LINK_LIBRARIES(crystals "${HDF5_LIBRARIES};dl")
+  endif ()
   TARGET_LINK_LIBRARIES(crystalscl ${ZLIB_LIBRARIES})
-  TARGET_LINK_LIBRARIES(crystals "${HDF5_LIBRARIES};dl")
   TARGET_LINK_LIBRARIES(crystals  ${ZLIB_LIBRARIES})
   ADD_CUSTOM_TARGET ( h5build ALL DEPENDS commands.dsc )
   ADD_CUSTOM_TARGET ( h5startups ALL DEPENDS h5build ${srtfiles} )
