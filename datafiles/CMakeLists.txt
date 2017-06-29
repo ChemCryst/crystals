@@ -35,7 +35,7 @@ endif()
 
 if(useHDF5)
 
-    ADD_CUSTOM_TARGET(subh5build DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/commands.h5)
+    ADD_CUSTOM_TARGET(subh5build DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/commands.h5 subdscbuild)
 	if ( useGUI )
 	  ADD_CUSTOM_COMMAND(
 		  OUTPUT commands.h5
