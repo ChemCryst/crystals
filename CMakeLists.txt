@@ -446,8 +446,19 @@ if(compileHDF5)
         COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h
     )
     
-    add_dependencies(hdf5_project fixh5sa) 
-    add_dependencies(hdf5_project fixh5sb) 
+    #elif H5_HAVE_RANDOM
+    ExternalProject_Add_Step(
+        hdf5_project fixh5sc
+        DEPENDEES patch
+        DEPENDERS configure
+        ALWAYS 1
+        #DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h"
+        COMMAND sed -i "s/elif H5_HAVE_RANDOM/elif defined(H5_HAVE_RANDOM)/"  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project/src/H5private.h
+    )
+ 
+# Not necessary?    
+#    add_dependencies(hdf5_project fixh5sa) 
+#    add_dependencies(hdf5_project fixh5sb) 
 
 
     set(HDF5_LIBRARY_DIR "${HDF5_prefix}/lib")
