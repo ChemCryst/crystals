@@ -5,7 +5,7 @@
 % VARIABLE CHARACTER CFILE                                                      
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
 %%                                                                              
-% VARIABLE INTEGER F67                                                          
+% VARIABLE INTEGER F67                      
 % VARIABLE LOGICAL TWINNED LMCE LMAPV                                           
 % EVALUATE TWINNED = FALSE                                                      
 %                                                                               
@@ -342,18 +342,24 @@ view the generated sections.
 %         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
 %         QUEUE SEND                                                            
 %       END BLOCK                                                               
-%%                                                                              
-%       IF F67 .EQ. 6 THEN                                                      
+%%                 
+%       IF DOCALC .EQ. 2 THEN     %ERROR CONDITION                                                             
+{I  Slant Fourier abandoned
+
+            FINISH
+%       ELSE 
+%        IF F67 .EQ. 6 THEN                                                      
 %           COPY '#SLANT 6 '                                                    
-%       ELSE                                                                    
+%        ELSE                                                                    
 %           COPY '#SLANT 7 '                                                    
-%       END IF                                                                  
-%       QUEUE PROCESS                                                           
-%       COPY 'END'                                                              
-%       COPY '#PURGE LIST =7'                                                   
-%       COPY 'END'                                                              
+%        END IF                                                                  
+%        QUEUE PROCESS                                                           
+%        COPY 'END'                                                              
+%        COPY '#PURGE LIST =7'                                                   
+%        COPY 'END'                                                              
 {R * Done. Slant fourier complete.                                              
 %%                                                                              
+%       END IF
 %       IF TWINNED .EQ. TRUE THEN                                               
 %           BLOCK                                                               
 %           ON ERROR TERMINATE                                                  

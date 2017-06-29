@@ -263,9 +263,14 @@
 %%djw - check that map is not a Patterson                                       
 %% disable check (was le 5)
 %       IF ( IMAP .LE. 8 ) THEN                                                 
-%        EVALUATE F67 = 6                                                       
 %%                                                                              
 %         COPY '#SCRIPT SFLS67'                                                 
+%         IF DOCALC .EQ. 2 THEN      % Fourier abandoned
+
+{I Fourier abandoned
+
+%            FINISH
+%         END IF
 %%                                                                              
 %       ELSE                                                                    
 {Patterson map - remove knowledge about twinning.                           
@@ -368,7 +373,7 @@
 %       QUEUE SEND                                                              
 %       CLEAR                                                                   
 %       IF ( F67 .EQ. 6 ) THEN                                                  
-%         COPY '#FOURIER'                                                       
+%         COPY '#FOURIER 6'                                                       
 %         QUEUE PROCESS                                                         
 %         COPY 'END'                                                            
 %       ELSE                                                                    
