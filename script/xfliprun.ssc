@@ -156,9 +156,9 @@
 %                                                                               
 %                                                                               
 %  IF ( ( SFLIPSOL .EQ. TRUE ) .AND. ( SFLIPSYM .EQ. TRUE ) ) THEN              
-{E Superflip solved the structure                                               
-{E There is convergence and also good symmetry agreement.                       
-{E Continue analysing the symmetry                                              
+{I Superflip solved the structure                                               
+{I There is convergence and also good symmetry agreement.                       
+{I Continue analysing the symmetry                                              
 %  END IF                                                                       
 %                                                                               
 %                                                                               
@@ -195,9 +195,12 @@
 %      FINISH                                                                   
 %   END IF                                                                      
 %  IF SGOK .EQ. FALSE THEN                                                      
-{E Space Group change recommended                                               
-{E The superflip SCRIPTS will close down to enable you to re-input              
-{E the basic data with the suggested space group                                
+{I
+{I A Space Group change was recommended.
+{I The superflip SCRIPTS will close down to enable you to re-input              
+{I the basic data with the suggested space group since the systematic
+{I absences may now be different.                               
+{I
 %      FINISH                                                                   
 %  END IF                                                                       
 %  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    

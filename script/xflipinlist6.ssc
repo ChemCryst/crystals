@@ -10,11 +10,10 @@
 %  VARIABLE LOGICAL ANSWER
 %
 %        EVALUATE QTITLE = 'Re-import of reflection data'
-%        EVALUATE QLINE1 = 'The space group has changed.'
-% EVALUATE QLINE2 = 'It is strongly advised to re-import the reflection data.'
+% EVALUATE QLINE1 = 'You are strongly advised to re-import the reflection data.'
+%        EVALUATE QLINE2 = 'because the space group/point group has changed.'
 %        EVALUATE BUTTOK = 'OK'
 %        COPY '#SCRIPT XMESSAGE'
-%        COPY 'END'
 %%
 %%
 %% Gather information before acting.
