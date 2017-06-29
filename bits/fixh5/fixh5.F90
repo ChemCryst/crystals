@@ -5,6 +5,7 @@ character :: c
 integer ios, i, j, file_size
 character(len=512) :: buff
 character(len=2), parameter :: pstart='(/', pend='/)'
+character(len=2), parameter :: pstartb='{', pendb='}'
 logical inpattern
 character(len=2048) :: buffer
 
@@ -60,6 +61,14 @@ do
         if(c==pend(2:2)) then
             inpattern=.false.
         end if
+    end if
+
+    if(c==pstartb(1:1)) then
+        inpattern=.true.
+    end if
+
+    if(c==pendb(1:1)) then
+        inpattern=.false.
     end if
     
     if(c==char(10) .or. c==char(13)) then
