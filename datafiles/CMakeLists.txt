@@ -44,7 +44,7 @@ if(useHDF5)
 		  COMMAND ${CMAKE_COMMAND} -E remove deleteme.mon deleteme.spq deleteme.lis fort.14 commands.h5 commands.dsc
 		  COMMAND ${CMAKE_COMMAND} -D useGUI=yes -P ${CMAKE_CURRENT_SOURCE_DIR}/h5build.cmake
 		  COMMAND ${CMAKE_COMMAND} -E remove crystals.srt
-		  DEPENDS commands.h5 crystalscl
+		  DEPENDS commands.src crystalscl
 		  COMMENT "Processing commands.src into commands.h5"
 	)
 	else()

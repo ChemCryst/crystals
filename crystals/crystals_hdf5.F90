@@ -178,6 +178,9 @@ end module
 !> The module hdf5_dsc holds the necessary subroutine to handle the new hdf5 
 !> file format storage.
 !> At present, the dsc file remains in place inside a hdf5 dataspace using an opaque datatype
+!>
+!> The actual dsc is read and write using unformatted direct access, the length of the record in bytes is defined by issdar.
+!> The addressing in hdf5 is in bytes so the record index from the dsc needs to be converted with the byte position using issdar. See recordoffset(1) = (fetch_address-1)*ISSDAR_copy
 module hdf5_dsc
 use hdf5
 
@@ -845,7 +848,8 @@ subroutine xdaini_hdf5(crfile)
     integer(hid_t) :: atype_id      ! Attribute Dataspace identifier 
     integer(size_t) :: attrlen    ! Length of the attribute string   
     integer recordsize
-    character(len=10), dimension(2) :: createdatetime
+    character(len=8) :: sdate
+    character(len=10) :: stime
 
     character*10 newnam
     integer irecno, ireq, n, nsaveu
@@ -876,20 +880,20 @@ subroutine xdaini_hdf5(crfile)
     CALL h5aclose_f(attr_id, error)
 
     ! Create attribute with date and time
-    adims = 2
-    call DATE_AND_TIME(createdatetime(1), createdatetime(2))
+    adims = 1
+    call DATE_AND_TIME(sdate, stime)
     CALL h5tcopy_f(H5T_NATIVE_CHARACTER, atype_id, error)
-    attrlen=len(createdatetime(1))
+    attrlen=len(sdate)+len(stime)+1
     CALL h5tset_size_f(atype_id, attrlen, error)    
     CALL h5screate_simple_f(1, adims, aspace_id, error)
     CALL h5acreate_f(crfile%file_id, "Creation date", atype_id, aspace_id, attr_id, error)
-    CALL h5awrite_f(attr_id, atype_id, createdatetime, adims, error)
+    CALL h5awrite_f(attr_id, atype_id, sdate//' '//stime , adims, error)
     CALL h5aclose_f(attr_id, error)
 
     !
     ! create the dataspace.
     !
-    call h5screate_simple_f(1, adims, crfile%dsc_dspace_id, error, &
+    call h5screate_simple_f(1, (/2_hsize_t/), crfile%dsc_dspace_id, error, &
     &    maxdims=maxdims)
     if(error==-1) then 
         print *, 'Error during initialisation 1'

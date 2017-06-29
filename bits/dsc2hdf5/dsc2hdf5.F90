@@ -18,8 +18,8 @@ integer(hid_t) :: attr_id       ! Attribute identifier
 integer(hsize_t), dimension(1) :: adims  ! Attribute dimension
 integer(hid_t) :: atype_id      ! Attribute Dataspace identifier 
 integer(size_t) :: attrlen    ! Length of the attribute string   
-character(len=10) :: sdate
-character(len=8) :: stime
+character(len=8) :: sdate
+character(len=10) :: stime
 
 integer(hsize_t), dimension(1) :: recordoffset      !hyperslab offset in the file 
 integer(hsize_t), dimension(1) :: slicedimension 
@@ -128,7 +128,7 @@ character(len=2048) :: buffer
     CALL h5aclose_f(attr_id, error)
 
     ! Create attribute with date and time
-    adims = 2
+    adims = 1
     call DATE_AND_TIME(sdate, stime)
     CALL h5tcopy_f(H5T_NATIVE_CHARACTER, atype_id, error)
     attrlen=len(sdate)+len(stime)+1
@@ -141,7 +141,7 @@ character(len=2048) :: buffer
     !
     ! create the dataspace.
     !
-    call h5screate_simple_f(1, adims, crfile%dsc_dspace_id, error, &
+    call h5screate_simple_f(1, (/2_hsize_t/), crfile%dsc_dspace_id, error, &
     &    maxdims=maxdims)
     if(error==-1) then 
         print *, 'Error during initialisation 1'

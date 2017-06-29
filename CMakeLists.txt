@@ -582,7 +582,7 @@ if( useHDF5 )
   endif ()
   TARGET_LINK_LIBRARIES(crystalscl ${ZLIB_LIBRARIES})
   TARGET_LINK_LIBRARIES(crystals  ${ZLIB_LIBRARIES})
-  ADD_CUSTOM_TARGET ( h5build ALL DEPENDS commands.dsc )
+  ADD_CUSTOM_TARGET ( h5build ALL DEPENDS commands.h5 crystals )
   ADD_CUSTOM_TARGET ( h5startups ALL DEPENDS h5build ${srtfiles} )
 endif ()
 
