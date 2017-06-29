@@ -394,7 +394,7 @@ if(compileHDF5)
     message(STATUS "Building hdf5")
 
     find_package(ZLIB REQUIRED STATIC)
-
+    
     set(HDF5_prefix "${CMAKE_BINARY_DIR}/hdf5")
     file(MAKE_DIRECTORY "${HDF5_prefix}")
     
@@ -419,12 +419,25 @@ if(compileHDF5)
              SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
     )
     
+    # move mod files so that crystals can find them when its been built
     ExternalProject_Add_Step(
-        hdf5_project
-        DEPENDEES DEPENDEES mkdir update patch download configure build install
+        hdf5_project mvmod
+        DEPENDEES  install
+        DEPENDERS 
+        ALWAYS 1
         COMMAND ${CMAKE_COMMAND} -E copy_directory  "${HDF5_prefix}/include/static" "${Fortran_MODULE_DIRECTORY}/"        
     )
-
+    
+    # fix h5Config_f.inc files on windows. Nor harm to do on other platforms
+    ExternalProject_Add_Step(
+        hdf5_project fixh5
+        DEPENDEES configure
+        DEPENDERS build
+        DEPENDS "${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc"
+        COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/H5config_f.inc
+    )
+    
+    add_dependencies(hdf5_project fixh5) 
 
 
     set(HDF5_LIBRARY_DIR "${HDF5_prefix}/lib")

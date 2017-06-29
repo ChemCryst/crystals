@@ -20,6 +20,7 @@ if ( NOT WIN32 )
   add_subdirectory(sir92)
 endif()
 #add_subdirectory(loader)
+add_subdirectory(fixh5)
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
