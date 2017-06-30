@@ -36,7 +36,7 @@ do
         call abort()
     end if
     deallocate(arg_val)
-    allocate(character(len=max(6, 20)) :: arg_val)
+    allocate(character(len=max(6, arg_length)) :: arg_val)
     call get_command_argument(i, arg_val, arg_length, iostatus)
     if(iostatus/=0) then
         print *, i, 'Cannot retrieve command line argument again'
