@@ -1,0 +1,45 @@
+%SCRIPT XSX2CRY
+%% 
+%% Read .ins & .res files with  Pascal's new program (2017)
+%%
+%   VARIABLE LOGICAL T
+%   VARIABLE CHARACTER C_FILE CEXTN CARG
+%%
+%%                               
+%   if ( c_file .eq. ' ' ) then
+^^WI SYSOPENFILE 'All files (*.*)|*.*;'
+^^WI             'CIF (*.ins,*.res)|*.ins;*.res;'
+^^CR
+%%
+%    GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
+%    IF CVALUE .EQ. 'CANCEL' THEN
+%      FINISH
+%    END IF
+%    EVALUATE C_FILE = CVALUE
+%   end if
+%%
+%   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
+{E Error: Filename given does not exist.
+%     FINISH
+%   END IF 
+%%   
+%   EVALUATE CEXTN = GETEXTN ( C_FILE )
+%   EVALUATE CEXTN = UPPERCASE ( CEXTN )
+%   IF ( CEXTN .EQ. 'INS' )  .OR. ( CEXTN .EQ. 'RES' ) THEN
+%     IF FILEEXISTS ( 'crystalsinput.dat' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'crystalsinput.dat' )
+%     END IF
+%  TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry ' - 
+   // C_FILE TO CRYSTALS
+%%
+%     IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
+%       COPY '#SCRIPT DIFFEXEC'  % don't just #USE it because we need to check other things
+%     ELSE
+ {E The INS/RES files have not been processed          
+%     END IF
+%     FINISH
+%   END IF
+%%
+%   COPY '#SCRIPT XFILE_ANY'
+%
+%END SCRIPT
