@@ -12,6 +12,8 @@
 %  VARIABLE INTEGER XCHOICE
 %  VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
 %  VARIABLE REAL HKLT31 HKLT32 HKLT33
+%% variables used to check if any reflections were actually read in
+%  VARIABLE REAL  H K L SUM
 %% First check for all zero values
 %  EVALUATE HTRANS = FALSE
 %  IF ABS ( HKLT11 ) .GT. 0.01 THEN
@@ -550,7 +552,6 @@
 %           FINISH
 %         END IF
 %% 
-%           VARIABLE REAL  H K L SUM
 %           ON ERROR TERMINATE
 %           COPY "#GENERALEDIT 6"
 %% get the rms Indices
@@ -617,7 +618,10 @@
 %     END BLOCK                                                                 
 %     BLOCK                         %BXX%                                       
 ^^WI    DISPOSE XINLIST6                                                        
-^^CR                                                                            
+^^CR                                 
+{E
+{E You have aborted reading in reflection data
+{E                                           
 %       FINISH                                                                  
 %     END BLOCK                                                                 
 %     BLOCK                         %BROWSE%                                    
