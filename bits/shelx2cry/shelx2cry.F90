@@ -1,6 +1,6 @@
 !> This program convert a shelxl ins or res file to a crystals file
 !! 
-!! Usage: shel2cry filename
+!! Usage: shelx2cry filename
 program shelx2cry
 use shelx2cry_mod
 use crystal_data_m
@@ -50,7 +50,7 @@ do
         print *, ''
         print *, 'List of options:'
         print *, '--help, -h This help'
-        print *, '-o outpout file for crystals [default: crystalsinput.dat]'
+        print *, '-o output file for crystals [default: crystalsinput.dat]'
         print *, '-l log file [default: stdout]'
         print *, ''
         stop

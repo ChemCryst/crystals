@@ -497,7 +497,11 @@ If  state = OFF  then subsequent commands are not written
 during filtering. Arguments are Io or Ic, default is Io.
 See "The use of partial observations, partial models and partial residuals
 to improve the least-squares refinement of crystal structures."
-A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165,
+A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165.
+#PIo is appropriate during initial stages of an analysis, but once the R factor
+drops below 10-15%, Ic gives an unbiassed filtering of the weak reflections. A
+threshold ratio of 1 or 2 is useful if there are a very large number of very
+weak reflections.
 #Q
 #YFiles#
 #PWhen CRYSTALS runs it stores all crystallographic data in a single file,

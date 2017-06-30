@@ -1,6 +1,6 @@
 PROJECT(shelx2cry)
 message("")
-message(STATUS "Building cif2cry")
+message(STATUS "Building shelx2cry")
 
 enable_language(Fortran)
 #set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmakemodules/")

@@ -20,6 +20,8 @@
 
 ^^WI     ITEM XIN5 'Import Shel&x file (INS or RES)'
 ^^WI              '#SCRIPT XSHELXIN' DISABLEIF='IN'
+^^WI     ITEM XINP    'Experimental Import S&helx files (ins, res)'
+^^WI                '#SCRIPT XPASCAL' DISABLEIF='IN'
 ^^WI     ITEM IN6 'Import HKLF4 data' '#SCRIPT XINLIST6' DISABLEIF='IN'
 ^^WI     ITEM XTWN  'Import hklf5 file'
 ^^WI              '#SCRIPT HKLF52CRY' DISABLEIF='IN'
