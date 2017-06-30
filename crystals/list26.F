@@ -664,18 +664,33 @@ c
      2        trim(restraints_list(ircpt)%restraint_text)
           end if
 
-          WRITE(CMON,'(1X, "(",I0,",",I0,")",1X, A)') 
-     1      restraints_list(ircpt)%user_index, ircpt, 
-     2      trim(restraints_list(ircpt)%restraint_text)          
-          icptn=0
-          do ii=1, len_trim(
-     1      restraints_list(ircpt)%restraint_text)
-            if(restraints_list(ircpt)%restraint_text(ii:ii)==char(10))
-     1        then
-              icptn=icptn+1
-            end if
-          end do
-          CALL XPRVDU(NCVDU, icptn+1,0)      
+          icptn=index(restraints_list(ircpt)%restraint_text, char(10))
+          if(icptn>0) then
+            WRITE(CMON,'(1X, "(",I4,")",1X, A)') 
+     1        restraints_list(ircpt)%user_index, 
+     2        trim(restraints_list(ircpt)%restraint_text(1:icptn))          
+            CALL XPRVDU(NCVDU, 1,0)      
+            
+            icptn=icptn+1
+            do ii=icptn, len_trim(
+     1        restraints_list(ircpt)%restraint_text)
+              if(restraints_list(ircpt)%restraint_text(ii:ii)==char(10))
+     1          then
+                WRITE(CMON,'(1X, 6X,1X, A)') 
+     1            trim(restraints_list(ircpt)%restraint_text(icptn:ii))          
+                CALL XPRVDU(NCVDU, 1,0)      
+                icptn=ii+1
+              end if
+            end do
+                WRITE(CMON,'(1X, 6X,1X, A)') 
+     1            trim(restraints_list(ircpt)%restraint_text(icptn:))          
+                CALL XPRVDU(NCVDU, 1,0)      
+          else
+            WRITE(CMON,'(1X, "(",I4,")",1X, A)') 
+     1        restraints_list(ircpt)%user_index, 
+     2        trim(restraints_list(ircpt)%restraint_text)          
+            CALL XPRVDU(NCVDU, 1,0)                
+          end if
         end if
       end if
       
