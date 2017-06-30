@@ -100,8 +100,8 @@ Files INITIAL.* will be created in your directory. They may be important.
 % VARIABLE LOGICAL ANSWER                                                       
 %%
 %     EVALUATE QTITLE = 'Renumber Atoms?'                              
-%     EVALUATE QLINE1 = 'Do you want to change atom'                  
-%     EVALUATE QLINE2 = 'numbers to CRYSTALS system?'                             
+%     EVALUATE QLINE1 = 'Do you want to change atom numbers to CRYSTALS system?' 
+%     EVALUATE QLINE2 = 'This WILL invalidate restraints translated from SHELXL'
 %     EVALUATE BUTTOK = '&Yes'                                         
 %     EVALUATE BUTTXX = '&No'                                          
 %     COPY '#SCRIPT XQUESTIO'                                          
