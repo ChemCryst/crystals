@@ -934,54 +934,70 @@ C--'UPERP' RESTRAINT
 5040  CONTINUE
       CALL XCVCV(1,IASYM)
       
-      ! lis file output
-5041  FORMAT(6x,'Restrain U[13] and U[23] to ',F0.5,
-     2 ' angstrom squared,',
-     3 /6x, 'with an E.S.D. of',1PE10.3)
-5043  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
-     2 8X,'Delta',2X,'Parameter')
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")') 
-     1    A,'UPERP from ', 
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial
-        WRITE(NCWU,5041)B,C
-        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(1,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(2,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(3,:)
-        if(allocated(restraints_list(ircpt)%subrestraints(1)%blocks)) 
-     1    then
-          WRITE(NCWU,'(6X, A)') 'Derivatives:'
-          do it=1, size(restraints_list(ircpt)%subrestraints)
-            associate(block => 
-     1        restraints_list(ircpt)%subrestraints(it)%blocks(0))
-              WRITE(NCWU,'(6X,A)') block%printp(.true.)
-              WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
-     1        trim(restraints_list(ircpt)%subrestraints(it)%description)
-            end associate
-          end do
-        end if
-        WRITE(NCWU,5043) 
-      ENDIF
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
+        associate(subrestraints => restraints_list(ircpt)%subrestraints)
+          ! lis file output
+5041      FORMAT(6x,'Restrain U[13] and U[23] to ',F0.5,
+     2      ' angstrom squared,',
+     3      /6x, 'with an E.S.D. of',1PE10.3)
+5043      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2      8X,'Delta',2X,'Parameter')
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")') 
+     1        A,'UPERP from ', 
+     1        trim(subrestraints(1)%atoms(1)%label), 
+     1        subrestraints(1)%atoms(1)%serial, 
+     1        trim(subrestraints(1)%atoms(2)%label), 
+     1        subrestraints(1)%atoms(2)%serial
+            WRITE(NCWU,5041)B,C
+            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(3,:)
+            WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            do it=1, size(subrestraints)
+              if(allocated(subrestraints(it)%blocks)) then
+                associate(block => subrestraints(it)%blocks(0))
+                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
+                  WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
+     1              trim(subrestraints(it)%description)
+                end associate
+              end if
+            end do
+            WRITE(NCWU,5043) 
+          ENDIF
       
-      ! screen output
-5042  FORMAT(1X, A, ' from ', A,'(',I0,') to ',A,'(',I0,'). ', 
-     1  'Target ',F7.4,' esd ', 1PE10.3)
-      WRITE(CMON,5042) 'UPERP', 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial, B,C
-      CALL XPRVDU(NCVDU, 1,0)      
-5044  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-      WRITE(CMON,5044)
-      CALL XPRVDU(NCVDU, 1,0)      
+          ! screen output
+5042      FORMAT(1X, A, ' from ', A,'(',I0,') to ',A,'(',I0,'). ', 
+     1      'Target ',F7.4,' esd ', 1PE10.3)
+          WRITE(CMON,5042) 'UPERP', 
+     1      trim(subrestraints(1)%atoms(1)%label), 
+     1      subrestraints(1)%atoms(1)%serial, 
+     1      trim(subrestraints(1)%atoms(2)%label), 
+     1      subrestraints(1)%atoms(2)%serial, B,C
+          CALL XPRVDU(NCVDU, 1,0)      
+5044      FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+          WRITE(CMON,5044)
+          CALL XPRVDU(NCVDU, 1,0)      
+        end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
       
       N=2
 c      Print *, 'X End'
@@ -991,60 +1007,79 @@ C--'UPERP2' RESTRAINT
 5050  CONTINUE
       CALL XCVCV2(IASYM)
 
-      ! lis file output
-5051  FORMAT(6x,'Restrain U[13] and U[23] to ',F0.5,
-     2 ' angstrom squared,',
-     3 /6x, 'with an E.S.D. of',1PE10.3)
-5053  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
-     2 8X,'Delta',2X,'Parameter')
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,"), ", '//
-     1     'A, "(",I0,")")')          
-     1    A,'UPERP2 from ',      
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial,
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(3)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(3)%serial
-        WRITE(NCWU,5051)B,C
-        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(1,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(2,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(3,:)
-        if(allocated(restraints_list(ircpt)%subrestraints(1)%blocks)) 
-     1    then
-          WRITE(NCWU,'(6X, A)') 'Derivatives:'
-          do it=1, size(restraints_list(ircpt)%subrestraints)
-            associate(block => 
-     1        restraints_list(ircpt)%subrestraints(it)%blocks(0))
-              WRITE(NCWU,'(6X,A)') block%printp(.true.)
-              WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
-     1        trim(restraints_list(ircpt)%subrestraints(it)%description)
-            end associate
-          end do
-        end if
-        WRITE(NCWU,5053) 
-      ENDIF
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
+        associate(subrestraints => restraints_list(ircpt)%subrestraints)
+          ! lis file output
+5051      FORMAT(6x,'Restrain U[13] and U[23] to ',F0.5,
+     2      ' angstrom squared,',
+     3      /6x, 'with an E.S.D. of',1PE10.3)
+5053      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2      8X,'Delta',2X,'Parameter')
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,
+     1        '(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,"), "'//
+     2        ', A, "(",I0,")")')          
+     1        A,'UPERP2 from ',      
+     1        trim(subrestraints(1)%atoms(1)%label), 
+     1        subrestraints(1)%atoms(1)%serial, 
+     1        trim(subrestraints(1)%atoms(2)%label), 
+     1        subrestraints(1)%atoms(2)%serial,
+     1        trim(subrestraints(1)%atoms(3)%label), 
+     1        subrestraints(1)%atoms(3)%serial
+              WRITE(NCWU,5051)B,C
+            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(3,:)
+            WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            do it=1, size(subrestraints)
+              if(allocated(subrestraints(1)%blocks)) 
+     1          then
+                associate(block => 
+     1            subrestraints(it)%blocks(0))
+                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
+                  WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
+     1            trim(subrestraints(it)%description)
+                end associate
+              end if
+            end do
+            WRITE(NCWU,5053) 
+          ENDIF
       
-      ! screen output
-5052  FORMAT(1X, A, ' from ', A,'(',I0,') to ',
-     1   A,'(',I0,'), ',A,'(',I0,'). ', 
-     1  'Target ',F7.4,' esd ', 1PE10.3)
-      WRITE(CMON,5052) 'UPERP2', 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(3)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(3)%serial, B,C
-      CALL XPRVDU(NCVDU, 1,0)      
-5054  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-      WRITE(CMON,5054)
-      CALL XPRVDU(NCVDU, 1,0) 
+          ! screen output
+5052      FORMAT(1X, A, ' from ', A,'(',I0,') to ',
+     1       A,'(',I0,'), ',A,'(',I0,'). ', 
+     1       'Target ',F7.4,' esd ', 1PE10.3)
+          WRITE(CMON,5052) 'UPERP2', 
+     1     trim(subrestraints(1)%atoms(1)%label), 
+     1     subrestraints(1)%atoms(1)%serial, 
+     1     trim(subrestraints(1)%atoms(2)%label), 
+     1     subrestraints(1)%atoms(2)%serial, 
+     1     trim(subrestraints(1)%atoms(3)%label), 
+     1     subrestraints(1)%atoms(3)%serial, B,C
+          CALL XPRVDU(NCVDU, 1,0)      
+5054      FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+          WRITE(CMON,5054)
+          CALL XPRVDU(NCVDU, 1,0) 
+        end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
 
       N=2
       GOTO 2500
@@ -1053,59 +1088,75 @@ C--'UALIGN' RESTRAINT
 5060  CONTINUE
       CALL XCVCA(IASYM)
 
-      ! lis file output
-5061  FORMAT(6x,'Restrain Delta eigenvectors ',F0.5,
-     2 ' angstrom squared,',
-     3 /6x, 'with an E.S.D. of',1PE10.3)
-5063  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
-     2 8X,'Delta',2X,'Parameter')
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
-     1    A,'UALIGN from ',      
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial
-        WRITE(NCWU,5061)B,C
-        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(1,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(1,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(2,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(2,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(3,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(3,:)
-        if(allocated(restraints_list(ircpt)%subrestraints(1)%blocks)) 
-     1    then
-          WRITE(NCWU,'(6X, A)') 'Derivatives: '
-          do it=1, size(restraints_list(ircpt)%subrestraints)
-            associate(block => 
-     1        restraints_list(ircpt)%subrestraints(it)%blocks(0))
-              WRITE(NCWU,'(6X,A)') block%printp(.true.)
-              WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
-     1        trim(restraints_list(ircpt)%subrestraints(it)%description)
-            end associate
-          end do
-        end if
-        WRITE(NCWU,5063) 
-      ENDIF
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
+        associate(subrestraints => restraints_list(ircpt)%subrestraints)
+          ! lis file output
+5061      FORMAT(6x,'Restrain Delta eigenvectors ',F0.5,
+     2      ' angstrom squared,',
+     3       /6x, 'with an E.S.D. of',1PE10.3)
+5063      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2      8X,'Delta',2X,'Parameter')
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
+     1        A,'UALIGN from ',      
+     1        trim(subrestraints(1)%atoms(1)%label), 
+     1        subrestraints(1)%atoms(1)%serial, 
+     1        trim(subrestraints(1)%atoms(2)%label), 
+     1        subrestraints(1)%atoms(2)%serial
+            WRITE(NCWU,5061)B,C
+            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(1,:),
+     1        subrestraints(1)%atoms(2)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(2,:),
+     1        subrestraints(1)%atoms(2)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(3,:),
+     1        subrestraints(1)%atoms(2)%M(3,:)
+              WRITE(NCWU,'(6X, A)') 'Derivatives: '
+            do it=1, size(subrestraints)
+              if(allocated(subrestraints(it)%blocks)) then
+                associate(block => subrestraints(it)%blocks(0))
+                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
+                  WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
+     1            trim(subrestraints(it)%description)
+                end associate
+              end if
+            end do
+            WRITE(NCWU,5063) 
+          ENDIF
+       
+          ! screen output
+5062      FORMAT(1X, A, ' from ', A,'(',I0,') to ',
+     1       A,'(',I0,'). ', 
+     1      'Target ',F7.4,' esd ', 1PE10.3)
+          WRITE(CMON,5062) 'UALIGN', 
+     1      trim(subrestraints(1)%atoms(1)%label), 
+     1      subrestraints(1)%atoms(1)%serial, 
+     1      trim(subrestraints(1)%atoms(2)%label), 
+     1      subrestraints(1)%atoms(2)%serial, B,C
+          CALL XPRVDU(NCVDU, 1,0)      
+5064      FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+          WRITE(CMON,5064)
+          CALL XPRVDU(NCVDU, 1,0) 
+        end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
       
-      ! screen output
-5062  FORMAT(1X, A, ' from ', A,'(',I0,') to ',
-     1   A,'(',I0,'). ', 
-     1  'Target ',F7.4,' esd ', 1PE10.3)
-      WRITE(CMON,5062) 'UALIGN', 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial, B,C
-      CALL XPRVDU(NCVDU, 1,0)      
-5064  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-      WRITE(CMON,5064)
-      CALL XPRVDU(NCVDU, 1,0) 
-     
       N=2
       GOTO 2500
 C
@@ -1113,58 +1164,74 @@ C--'RIGU' RESTRAINT
 5070  CONTINUE
       CALL XCVCR(IASYM)
 
-      ! lis file output
-5071  FORMAT(6x,'Enhanced rigid body restraint ',F0.5,
-     2 ' angstrom squared,',
-     3 /6x, 'with an E.S.D. of',1PE10.3)
-5073  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
-     2 8X,'Delta',2X,'Parameter')
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
-     1    A,'RIGU from ',      
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial
-        WRITE(NCWU,5071)B,C
-        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(1,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(1,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(2,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(2,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(3,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(3,:)
-        if(allocated(restraints_list(ircpt)%subrestraints(1)%blocks)) 
-     1    then
-          WRITE(NCWU,'(6X, A)') 'Derivatives: '
-          do it=1, size(restraints_list(ircpt)%subrestraints)
-            associate(block => 
-     1        restraints_list(ircpt)%subrestraints(it)%blocks(0))
-              WRITE(NCWU,'(6X,A)') block%printp(.true.)
-              WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
-     1        trim(restraints_list(ircpt)%subrestraints(it)%description)
-            end associate
-          end do
-        end if
-        WRITE(NCWU,5073) 
-      ENDIF
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
+        associate(subrestraints => restraints_list(ircpt)%subrestraints)
+          ! lis file output
+5071      FORMAT(6x,'Enhanced rigid body restraint ',F0.5,
+     2     ' angstrom squared,',
+     3     /6x, 'with an E.S.D. of',1PE10.3)
+5073      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2     8X,'Delta',2X,'Parameter')
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
+     1        A,'RIGU from ',      
+     1        trim(subrestraints(1)%atoms(1)%label), 
+     1        subrestraints(1)%atoms(1)%serial, 
+     1        trim(subrestraints(1)%atoms(2)%label), 
+     1        subrestraints(1)%atoms(2)%serial
+            WRITE(NCWU,5071)B,C
+            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(1,:),
+     1        subrestraints(1)%atoms(2)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(2,:),
+     1        subrestraints(1)%atoms(2)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(3,:),
+     1        subrestraints(1)%atoms(2)%M(3,:)
+            WRITE(NCWU,'(6X, A)') 'Derivatives: '
+            do it=1, size(subrestraints)
+              if(allocated(subrestraints(it)%blocks)) then
+                associate(block => subrestraints(it)%blocks(0))
+                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
+                  WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
+     1            trim(subrestraints(it)%description)
+                end associate
+              end if
+            end do
+            WRITE(NCWU,5073) 
+          ENDIF
       
-      ! screen output
-5072  FORMAT(1X, A, ' from ', A,'(',I0,') to ',
-     1   A,'(',I0,'). ', 
-     1  'Target ',F7.4,' esd ', 1PE10.3)
-      WRITE(CMON,5072) 'RIGU', 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial, B,C
-      CALL XPRVDU(NCVDU, 1,0)      
-5074  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-      WRITE(CMON,5074)
-      CALL XPRVDU(NCVDU, 1,0) 
+          ! screen output
+5072      FORMAT(1X, A, ' from ', A,'(',I0,') to ',
+     1       A,'(',I0,'). ', 
+     1      'Target ',F7.4,' esd ', 1PE10.3)
+          WRITE(CMON,5072) 'RIGU', 
+     1         trim(subrestraints(1)%atoms(1)%label), 
+     1         subrestraints(1)%atoms(1)%serial, 
+     1         trim(subrestraints(1)%atoms(2)%label), 
+     1         subrestraints(1)%atoms(2)%serial, B,C
+          CALL XPRVDU(NCVDU, 1,0)      
+5074      FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+          WRITE(CMON,5074)
+         CALL XPRVDU(NCVDU, 1,0) 
+        end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
       
       N=2
       GOTO 2500
@@ -1174,58 +1241,74 @@ C--'ULIJ' RESTRAINT
 C To be replaced with JA routine:
       CALL XCVCL(IASYM)
 
-      ! lis file output
-5081  FORMAT(6x,'Restrain local U_1[ij]-U_2[ij] ',F0.5,
-     2 ' angstrom squared,',
-     3 /6x, 'with an E.S.D. of',1PE10.3)
-5083  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
-     2 8X,'Delta',2X,'Parameter')
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
-     1    A,'ULIJ from ',      
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial
-        WRITE(NCWU,5071)B,C
-        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(1,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(1,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(2,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(2,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(3,:),
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(2)%M(3,:)
-        if(allocated(restraints_list(ircpt)%subrestraints(1)%blocks)) 
-     1    then
-          WRITE(NCWU,'(6X, A)') 'Derivatives: '
-          do it=1, size(restraints_list(ircpt)%subrestraints)
-            associate(block => 
-     1        restraints_list(ircpt)%subrestraints(it)%blocks(0))
-              WRITE(NCWU,'(6X,A)') block%printp(.true.)
-              WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
-     1        trim(restraints_list(ircpt)%subrestraints(it)%description)
-            end associate
-          end do
-        end if
-        WRITE(NCWU,5073) 
-      ENDIF
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
+        associate(subrestraints => restraints_list(ircpt)%subrestraints)
+          ! lis file output
+5081      FORMAT(6x,'Restrain local U_1[ij]-U_2[ij] ',F0.5,
+     2      ' angstrom squared,',
+     3      /6x, 'with an E.S.D. of',1PE10.3)
+5083      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2      8X,'Delta',2X,'Parameter')
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
+     1        A,'ULIJ from ',      
+     1        trim(subrestraints(1)%atoms(1)%label), 
+     1        subrestraints(1)%atoms(1)%serial, 
+     1        trim(subrestraints(1)%atoms(2)%label), 
+     1        subrestraints(1)%atoms(2)%serial
+            WRITE(NCWU,5071)B,C
+            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(1,:),
+     1        subrestraints(1)%atoms(2)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(2,:),
+     1        subrestraints(1)%atoms(2)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(3,:),
+     1        subrestraints(1)%atoms(2)%M(3,:)
+            WRITE(NCWU,'(6X, A)') 'Derivatives: '
+            do it=1, size(subrestraints)
+              if(allocated(subrestraints(1)%blocks))  then
+                associate(block => subrestraints(it)%blocks(0))
+                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
+                  WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
+     1            trim(subrestraints(it)%description)
+                end associate
+              end if
+            end do
+            WRITE(NCWU,5073) 
+          ENDIF
       
-      ! screen output
-5082  FORMAT(1X, A, ' from ', A,'(',I0,') to ',
-     1   A,'(',I0,'). ', 
-     1  'Target ',F7.4,' esd ', 1PE10.3)
-      WRITE(CMON,5072) 'RIGU', 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial, B,C
-      CALL XPRVDU(NCVDU, 1,0)      
-5084  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-      WRITE(CMON,5074)
-      CALL XPRVDU(NCVDU, 1,0) 
+          ! screen output
+5082      FORMAT(1X, A, ' from ', A,'(',I0,') to ',
+     1      A,'(',I0,'). ', 
+     1     'Target ',F7.4,' esd ', 1PE10.3)
+          WRITE(CMON,5072) 'RIGU', 
+     1     trim(subrestraints(1)%atoms(1)%label), 
+     1     subrestraints(1)%atoms(1)%serial, 
+     1     trim(subrestraints(1)%atoms(2)%label), 
+     1     subrestraints(1)%atoms(2)%serial, B,C
+         CALL XPRVDU(NCVDU, 1,0)      
+5084     FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+         WRITE(CMON,5074)
+         CALL XPRVDU(NCVDU, 1,0) 
+        end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
       
       N=2
       GOTO 2500
@@ -1234,60 +1317,77 @@ C--'UPLANE' RESTRAINT
 5090  CONTINUE
       CALL XCVCW(0,IASYM)
 
-      ! lis file output
-5091  FORMAT(6x,'Restrain U[12] and U[23] to ',F0.5,
-     2 ' angstrom squared,',
-     3 /6x, 'with an E.S.D. of',1PE10.3)
-5093  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
-     2 8X,'Delta',2X,'Parameter')
-      IF (ISSPRT .EQ. 0) THEN
-        formatstr='(/1X,F4.0,A,A,"(",I0,") to ",'//
-     1    'A, "(",I0,"), ", A, "(",I0,")")'
-        WRITE(NCWU,formatstr) 
-     2    A,'UPLANE from ', 
-     2    trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     2    restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     2    trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     2    restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial,
-     2    trim(restraints_list(ircpt)%subrestraints(1)%atoms(3)%label), 
-     2    restraints_list(ircpt)%subrestraints(1)%atoms(3)%serial
-        WRITE(NCWU,5091)B,C
-        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(1,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(2,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(3,:)
-        if(allocated(restraints_list(ircpt)%subrestraints(1)%blocks)) 
-     1    then
-          WRITE(NCWU,'(6X, A)') 'Derivatives:'
-          do it=1, size(restraints_list(ircpt)%subrestraints)
-            associate(block => 
-     1        restraints_list(ircpt)%subrestraints(it)%blocks(0))
-              WRITE(NCWU,'(6X,A)') block%printp(.true.)
-              WRITE(NCWU,'(6X,A, 3X, A)') block%print(),
-     1        trim(restraints_list(ircpt)%subrestraints(it)%description)
-            end associate
-          end do
-        end if
-        WRITE(NCWU,5093) 
-      ENDIF
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
+        associate(subrestraints => restraints_list(ircpt)%subrestraints)
+          ! lis file output
+5091      FORMAT(6x,'Restrain U[12] and U[23] to ',F0.5,
+     2      ' angstrom squared,',
+     3      /6x, 'with an E.S.D. of',1PE10.3)
+5093      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2      8X,'Delta',2X,'Parameter')
+          IF (ISSPRT .EQ. 0) THEN
+            formatstr='(/1X,F4.0,A,A,"(",I0,") to ",'//
+     1        'A, "(",I0,"), ", A, "(",I0,")")'
+            WRITE(NCWU,formatstr) 
+     2        A,'UPLANE from ', 
+     2        trim(subrestraints(1)%atoms(1)%label), 
+     2        subrestraints(1)%atoms(1)%serial, 
+     2        trim(subrestraints(1)%atoms(2)%label), 
+     2        subrestraints(1)%atoms(2)%serial,
+     2        trim(subrestraints(1)%atoms(3)%label), 
+     2        subrestraints(1)%atoms(3)%serial
+            WRITE(NCWU,5091)B,C
+            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(3,:)
+            WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            do it=1, size(subrestraints)
+              if(allocated(subrestraints(1)%blocks)) then
+                associate(block => subrestraints(it)%blocks(0))
+                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
+                  WRITE(NCWU,'(6X,A, 3X, A)') block%print(),
+     1            trim(subrestraints(it)%description)
+                end associate
+              end if
+            end do
+            WRITE(NCWU,5093) 
+          ENDIF
       
-      ! screen output
-5092  FORMAT(1X, A, ' from ', A,'(',I0,') to ',A,'(',I0,'), ', 
-     1  A,'(',I0,'). Target ',F7.4,' esd ', 1PE10.3)
-      WRITE(CMON,5092) 'UPLANE', 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(2)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(2)%serial, 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(3)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(3)%serial, B,C
-      CALL XPRVDU(NCVDU, 1,0)      
-5094  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-      WRITE(CMON,5094)
-      CALL XPRVDU(NCVDU, 1,0)      
+          ! screen output
+5092      FORMAT(1X, A, ' from ', A,'(',I0,') to ',A,'(',I0,'), ', 
+     1      A,'(',I0,'). Target ',F7.4,' esd ', 1PE10.3)
+          WRITE(CMON,5092) 'UPLANE', 
+     1     trim(subrestraints(1)%atoms(1)%label), 
+     1     subrestraints(1)%atoms(1)%serial, 
+     1     trim(subrestraints(1)%atoms(2)%label), 
+     1     subrestraints(1)%atoms(2)%serial, 
+     1     trim(subrestraints(1)%atoms(3)%label), 
+     1     subrestraints(1)%atoms(3)%serial, B,C
+          CALL XPRVDU(NCVDU, 1,0)      
+5094      FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+          WRITE(CMON,5094)
+          CALL XPRVDU(NCVDU, 1,0)      
+        end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+          
       N=2
       GOTO 2500
 C
@@ -1421,51 +1521,66 @@ C--'eigen value restraint UEIG' RESTRAINT
 5560  CONTINUE
       CALL XCVCE()
       
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
+        associate(subrestraints => restraints_list(ircpt)%subrestraints)
       ! lis file output
-5561  FORMAT(6x,'Restrain eigenvalues to ',F0.5,
-     2 ' angstrom squared,',
-     3 /6x, 'with an E.S.D. of',1PE10.3)
-5563  FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
-     2 8X,'Delta',2X,'Parameter')
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,")")') 
-     1    A,'UEIG from ', 
-     1    trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial
-        WRITE(NCWU,5041)B,C
-        WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(1,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(2,:)
-        WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
-     1    restraints_list(ircpt)%subrestraints(1)%atoms(1)%M(3,:)
-        if(allocated(restraints_list(ircpt)%subrestraints(1)%blocks)) 
-     1    then
-          WRITE(NCWU,'(6X, A)') 'Derivatives:'
-          do itp=1, size(restraints_list(ircpt)%subrestraints)
-            WRITE(NCWU,'(6X,A)') 
-     1        restraints_list(ircpt)%subrestraints(itp)%
-     2          blocks(0)%printp(names=.true.)
-            WRITE(NCWU,'(6X,A,3X,A)') 
-     1        restraints_list(ircpt)%subrestraints(itp)%
-     2          blocks(0)%print(),
-     3      trim(restraints_list(ircpt)%subrestraints(itp)%description)
-          end do
-        end if
-        WRITE(NCWU,5043) 
-      ENDIF
+5561      FORMAT(6x,'Restrain eigenvalues to ',F0.5,
+     2     ' angstrom squared,',
+     3     /6x, 'with an E.S.D. of',1PE10.3)
+5563      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
+     2     8X,'Delta',2X,'Parameter')
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,")")') 
+     1        A,'UEIG from ', 
+     1        trim(subrestraints(1)%atoms(1)%label), 
+     1        subrestraints(1)%atoms(1)%serial
+            WRITE(NCWU,5041)B,C
+            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints(1)%atoms(1)%M(3,:)
+            WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            do itp=1, size(subrestraints)
+              if(allocated(subrestraints(itp)%blocks)) then
+                WRITE(NCWU,'(6X,A)') 
+     1            subrestraints(itp)%blocks(0)%printp(names=.true.)
+                WRITE(NCWU,'(6X,A,3X,A)') 
+     1            subrestraints(itp)%blocks(0)%print(),
+     3          trim(subrestraints(itp)%description)
+              end if
+            end do
+            WRITE(NCWU,5043) 
+          ENDIF
       
-      ! screen output
-5562  FORMAT(1X, A, ' ', A,'(',I0,'). ', 
-     1  'Target ',F7.4,' esd ', 1PE10.3)
-      WRITE(CMON,5562) 'UEIG', 
-     1     trim(restraints_list(ircpt)%subrestraints(1)%atoms(1)%label), 
-     1     restraints_list(ircpt)%subrestraints(1)%atoms(1)%serial, B,C
-      CALL XPRVDU(NCVDU, 1,0)      
-5564  FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-      WRITE(CMON,5564)
-      CALL XPRVDU(NCVDU, 1,0)      
+          ! screen output
+5562      FORMAT(1X, A, ' ', A,'(',I0,'). ', 
+     1      'Target ',F7.4,' esd ', 1PE10.3)
+          WRITE(CMON,5562) 'UEIG', 
+     1       trim(subrestraints(1)%atoms(1)%label), 
+     1       subrestraints(1)%atoms(1)%serial, B,C
+          CALL XPRVDU(NCVDU, 1,0)      
+5564      FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
+          WRITE(CMON,5564)
+          CALL XPRVDU(NCVDU, 1,0)      
+        end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
       
       NN=0
 c      Print *, 'X End'
@@ -1717,288 +1832,261 @@ C
 C--UPERP and UPERP2 RESTRAINTS PRINT
 3285  CONTINUE
 3295  CONTINUE
-
-      do jj=1, 2 ! loop over the 2 U(ij) U[13] and U[23]
-C--CHECK IF THIS RESTRAINT IS USEFUL
-        CALL XMOVE(IB1(1),KF1(1),1)
-        IF(ISTORE(L22PD).eq.4) THEN
-          WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
-     1      COPERATION(I)(1:NCTRIM(COPERATION(I))),
-     1      ' restraint:', ' No derivatives found'
-          CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0)
-     1      WRITE(NCWU,'(2x,A,A,A)') 
-     2        COPERATION(I)(1:nctrim(COPERATION(I))),
-     1        ' restraint: ', ' No derivatives found'
-            CALL XMOVE(IQ1(1),KF1(1),1)
-        ENDIF
-                   
-        CALL XDOWNF(M22PD,STORE(L22PD),4)
-        if(ISTORE(L22PD)>=0) then
-          M22PD=M22PD+KINCRF(ISTORE(L22PD))
-        else 
-          WRITE(CMON,*)'{E No more derivative to find, programmer error'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON,*)'{E Please seek advice with the authors'
-          CALL XPRVDU(NCVDU, 1,0)
-          exit
-        end if
-      end do
     
 3296  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A)    
 
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
-      IF (ISSPRT .EQ. 0) THEN              
-        WRITE(NCWU,3296) KF,
-     1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
-     3    subrestraint%atoms(1)%adps_cart(1,3)-B, 'U[13]'
-        WRITE(NCWU,3296) KF, 
-     1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
-     3    subrestraint%atoms(1)%adps_cart(2,3)-B, 'U[23]'     
-      ENDIF      
+        IF (ISSPRT .EQ. 0) THEN              
+          WRITE(NCWU,3296) 
+     1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
+     2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
+     3      subrestraint%atoms(1)%adps_cart(1,3)-B, 'U[13]'
+          WRITE(NCWU,3296) 
+     1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
+     2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
+     3      subrestraint%atoms(1)%adps_cart(2,3)-B, 'U[23]'     
+        ENDIF      
        
-3297  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
-      WRITE(CMON, 3297) KF,subrestraint%atoms(1)%label,
-     1   subrestraint%atoms(1)%serial,
-     2   subrestraint%atoms(1)%adps_cart(1,3),
-     3   subrestraint%atoms(1)%adps_cart(1,3)-B, ! B is the target
-     4   'U[13]'
-      CALL XPRVDU(NCVDU, 1,0)
+3297    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
+        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+     1     subrestraint%atoms(1)%serial,
+     2     subrestraint%atoms(1)%adps_cart(1,3),
+     3     subrestraint%atoms(1)%adps_cart(1,3)-B, ! B is the target
+     4     'U[13]'
+        CALL XPRVDU(NCVDU, 1,0)
        
-      WRITE(CMON, 3297) KF,subrestraint%atoms(1)%label,
-     1   subrestraint%atoms(1)%serial,
-     2   subrestraint%atoms(1)%adps_cart(2,3),
-     3   subrestraint%atoms(1)%adps_cart(2,3)-B, ! B is the target
-     4   'U[23]'
-      CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+     1     subrestraint%atoms(1)%serial,
+     2     subrestraint%atoms(1)%adps_cart(2,3),
+     3     subrestraint%atoms(1)%adps_cart(2,3)-B, ! B is the target
+     4     'U[23]'
+        CALL XPRVDU(NCVDU, 1,0)
        
-      Q=subrestraint%atoms(1)%adps_cart(1,3)+
-     1  subrestraint%atoms(1)%adps_cart(2,3)
-      O=subrestraint%atoms(1)%adps_cart(1,3)-B + 
-     1  subrestraint%atoms(1)%adps_cart(2,3)-B
-      P=(subrestraint%atoms(1)%adps_cart(1,3)-B)**2 + 
-     1  (subrestraint%atoms(1)%adps_cart(2,3)-B)**2
-      NCA = 2
+        Q=subrestraint%atoms(1)%adps_cart(1,3)+
+     1    subrestraint%atoms(1)%adps_cart(2,3)
+        O=subrestraint%atoms(1)%adps_cart(1,3)-B + 
+     1    subrestraint%atoms(1)%adps_cart(2,3)-B
+        P=(subrestraint%atoms(1)%adps_cart(1,3)-B)**2 + 
+     1    (subrestraint%atoms(1)%adps_cart(2,3)-B)**2
+    
+        NCA = 2
 
       end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      
        
       goto 3600   
       
 C
 C--UALIGN RESTRAINTS PRINT
 3260  CONTINUE
-      do jj=1, 3 ! loop over the U(ij)
-C--CHECK IF THIS RESTRAINT IS USEFUL
-        CALL XMOVE(IB1(1),KF1(1),1)
-        IF(ISTORE(L22PD).eq.4) THEN
-          WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
-     1      COPERATION(I)(1:NCTRIM(COPERATION(I))),
-     1      ' restraint:', ' No derivatives found'
-          CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0)
-     1      WRITE(NCWU,'(2x,A,A,A)') 
-     2        COPERATION(I)(1:nctrim(COPERATION(I))),
-     1        ' restraint: ', ' No derivatives found'
-            CALL XMOVE(IQ1(1),KF1(1),1)
-        ENDIF
-                   
-        CALL XDOWNF(M22PD,STORE(L22PD),4)
-        if(ISTORE(L22PD)>=0) then
-          M22PD=M22PD+KINCRF(ISTORE(L22PD))
-        else 
-          WRITE(CMON,*)'{E No more derivative to find, programmer error'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON,*)'{E Please seek advice with the authors'
-          CALL XPRVDU(NCVDU, 1,0)
-          exit
-        end if
-      end do
     
-3286  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A,I0,I0,A)    
-3288  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),A12,6X,A,I0,I0,A)    
+3286  FORMAT('  ',(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A,I0,I0,A)    
+3288  FORMAT('  ',(8X,A4,I5,I6,4I3,F12.7,1X),A12,6X,A,I0,I0,A)    
 
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
-      IF (ISSPRT .EQ. 0) THEN     
+        IF (ISSPRT .EQ. 0) THEN     
+          allocate(Uij_indices(3,2))
+          Uij_indices(1,:)=(/1,2/)
+          Uij_indices(2,:)=(/1,3/)
+          Uij_indices(3,:)=(/2,3/)
+          do lt=1, ubound(Uij_indices, 1)
+            associate(it=> Uij_indices(lt, 1), jt=> Uij_indices(lt, 2) )
+              WRITE(NCWU,3288) 
+     1         subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
+     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
+     3          'Fixed', 'U[',Uij_indices(it,:),']'
+              WRITE(NCWU,3286)  
+     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
+     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
+     3          subrestraint%atoms(2)%adps_cart(it,jt)-B, 'U[',it,jt,']'
+            end associate
+          end do
+          deallocate(Uij_indices)
+        ENDIF      
+       
+3287    FORMAT(1X,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
+
         allocate(Uij_indices(3,2))
         Uij_indices(1,:)=(/1,2/)
         Uij_indices(2,:)=(/1,3/)
         Uij_indices(3,:)=(/2,3/)
         do lt=1, ubound(Uij_indices, 1)
           associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-            WRITE(NCWU,3288) KF,
-     1        subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
-     3        'Fixed', 'U[',Uij_indices(it,:),']'
-            WRITE(NCWU,3286) KF, 
-     1        subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
-     3        subrestraint%atoms(2)%adps_cart(it,jt)-B, 'U[',it,jt,']'
+            WRITE(CMON, 3287) subrestraint%atoms(1)%label,
+     1        subrestraint%atoms(1)%serial,
+     2        subrestraint%atoms(1)%adps_cart(it,jt),
+     3        subrestraint%atoms(1)%adps_cart(it,jt)-B, ! B is the target
+     4        'U[',it,jt,']'
+            CALL XPRVDU(NCVDU, 1,0)
+            WRITE(CMON, 3287) subrestraint%atoms(2)%label,
+     1        subrestraint%atoms(2)%serial,
+     2        subrestraint%atoms(2)%adps_cart(it,jt),
+     3        subrestraint%atoms(2)%adps_cart(it,jt)-B, ! B is the target
+     4        'U[',it,jt,']'
+            CALL XPRVDU(NCVDU, 1,0)
           end associate
         end do
         deallocate(Uij_indices)
-      ENDIF      
        
-3287  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
-
-      allocate(Uij_indices(3,2))
-      Uij_indices(1,:)=(/1,2/)
-      Uij_indices(2,:)=(/1,3/)
-      Uij_indices(3,:)=(/2,3/)
-      do lt=1, ubound(Uij_indices, 1)
-        associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-          WRITE(CMON, 3287) KF,subrestraint%atoms(1)%label,
-     1      subrestraint%atoms(1)%serial,
-     2      subrestraint%atoms(1)%adps_cart(it,jt),
-     3      subrestraint%atoms(1)%adps_cart(it,jt)-B, ! B is the target
-     4      'U[',it,jt,']'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON, 3287) KF,subrestraint%atoms(2)%label,
-     1      subrestraint%atoms(2)%serial,
-     2      subrestraint%atoms(2)%adps_cart(it,jt),
-     3      subrestraint%atoms(2)%adps_cart(it,jt)-B, ! B is the target
-     4      'U[',it,jt,']'
-          CALL XPRVDU(NCVDU, 1,0)
-        end associate
-      end do
-      deallocate(Uij_indices)
-       
-      Q=sum(subrestraint%atoms(1)%adps_cart)
-      O=sum(subrestraint%atoms(1)%adps_cart-B)
-      P=sum(subrestraint%atoms(1)%adps_cart-B)**2 2
-      NCA = 2
+        Q=sum(subrestraint%atoms(1)%adps_cart)
+        O=sum(subrestraint%atoms(1)%adps_cart-B)
+        P=sum(subrestraint%atoms(1)%adps_cart-B)**2 2
+        NCA = 2
 
       end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
       
       GOTO 3600
 C
 C--RIGU RESTRAINTS PRINT
 3261  CONTINUE
-      do jj=1, 3 ! loop over the U(ij)
-C--CHECK IF THIS RESTRAINT IS USEFUL
-        CALL XMOVE(IB1(1),KF1(1),1)
-        IF(ISTORE(L22PD).eq.4) THEN
-          WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
-     1      COPERATION(I)(1:NCTRIM(COPERATION(I))),
-     1      ' restraint:', ' No derivatives found'
-          CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0)
-     1      WRITE(NCWU,'(2x,A,A,A)') 
-     2        COPERATION(I)(1:nctrim(COPERATION(I))),
-     1        ' restraint: ', ' No derivatives found'
-            CALL XMOVE(IQ1(1),KF1(1),1)
-        ENDIF
-                   
-        CALL XDOWNF(M22PD,STORE(L22PD),4)
-        if(ISTORE(L22PD)>=0) then
-          M22PD=M22PD+KINCRF(ISTORE(L22PD))
-        else 
-          WRITE(CMON,*)'{E No more derivative to find, programmer error'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON,*)'{E Please seek advice with the authors'
-          CALL XPRVDU(NCVDU, 1,0)
-          exit
-        end if
-      end do
     
 !3286  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A,I0,I0,A)    
 !3288  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),A12,6X,A,I0,I0,A)    
 
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
-      IF (ISSPRT .EQ. 0) THEN       
+        IF (ISSPRT .EQ. 0) THEN       
+          allocate(Uij_indices(3,2))
+          Uij_indices(1,:)=(/1,3/)
+          Uij_indices(2,:)=(/2,3/)
+          Uij_indices(3,:)=(/3,3/)
+          do lt=1, ubound(Uij_indices, 1)
+            associate(it=> Uij_indices(lt, 1), jt=> Uij_indices(lt, 2) )
+              WRITE(NCWU,3286) 
+     1         subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
+     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
+     3          subrestraint%atoms(1)%adps_cart(it,jt)-
+     4          subrestraint%atoms(2)%adps_cart(it,jt)+B, 'U[',it,jt,']'
+              WRITE(NCWU,3286)  
+     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
+     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
+     3          subrestraint%atoms(2)%adps_cart(it,jt)-
+     4          subrestraint%atoms(1)%adps_cart(it,jt)+B, 'U[',it,jt,']'
+            end associate
+          end do
+          deallocate(Uij_indices)
+        ENDIF      
+       
+!3287    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
         allocate(Uij_indices(3,2))
         Uij_indices(1,:)=(/1,3/)
         Uij_indices(2,:)=(/2,3/)
         Uij_indices(3,:)=(/3,3/)
         do lt=1, ubound(Uij_indices, 1)
           associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-            WRITE(NCWU,3286) KF,
-     1        subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
+            WRITE(CMON, 3287) subrestraint%atoms(1)%label,
+     1        subrestraint%atoms(1)%serial,
+     2        subrestraint%atoms(1)%adps_cart(it,jt),
      3        subrestraint%atoms(1)%adps_cart(it,jt)-
-     4        subrestraint%atoms(2)%adps_cart(it,jt)+B, 'U[',it,jt,']'
-            WRITE(NCWU,3286) KF, 
-     1        subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
-     3        subrestraint%atoms(2)%adps_cart(it,jt)-
-     4        subrestraint%atoms(1)%adps_cart(it,jt)+B, 'U[',it,jt,']'
+     4        subrestraint%atoms(2)%adps_cart(it,jt)+B, ! B is the target
+     5        'U[',it,jt,']'
+            CALL XPRVDU(NCVDU, 1,0)
+            WRITE(CMON, 3287) subrestraint%atoms(2)%label,
+     1        subrestraint%atoms(2)%serial,
+     2        subrestraint%atoms(2)%adps_cart(it,jt),
+     3        subrestraint%atoms(2)%adps_cart(it,jt)- ! B is the target
+     4        subrestraint%atoms(1)%adps_cart(it,jt)+B, ! B is the target
+     4        'U[',it,jt,']'
+            CALL XPRVDU(NCVDU, 1,0)
           end associate
         end do
         deallocate(Uij_indices)
-      ENDIF      
        
-!3287  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
-      allocate(Uij_indices(3,2))
-      Uij_indices(1,:)=(/1,3/)
-      Uij_indices(2,:)=(/2,3/)
-      Uij_indices(3,:)=(/3,3/)
-      do lt=1, ubound(Uij_indices, 1)
-        associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-          WRITE(CMON, 3287) KF,subrestraint%atoms(1)%label,
-     1      subrestraint%atoms(1)%serial,
-     2      subrestraint%atoms(1)%adps_cart(it,jt),
-     3      subrestraint%atoms(1)%adps_cart(it,jt)-
-     4      subrestraint%atoms(2)%adps_cart(it,jt)+B, ! B is the target
-     5      'U[',it,jt,']'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON, 3287) KF,subrestraint%atoms(2)%label,
-     1      subrestraint%atoms(2)%serial,
-     2      subrestraint%atoms(2)%adps_cart(it,jt),
-     3      subrestraint%atoms(2)%adps_cart(it,jt)- ! B is the target
-     4      subrestraint%atoms(1)%adps_cart(it,jt)+B, ! B is the target
-     4      'U[',it,jt,']'
-          CALL XPRVDU(NCVDU, 1,0)
-        end associate
-      end do
-      deallocate(Uij_indices)
-       
-      Q=sum(subrestraint%atoms(1)%adps_cart)
-      O=sum(subrestraint%atoms(1)%adps_cart-B)
-      P=sum(subrestraint%atoms(1)%adps_cart-B)**2 2
-      NCA = 2
+        Q=sum(subrestraint%atoms(1)%adps_cart)
+        O=sum(subrestraint%atoms(1)%adps_cart-B)
+        P=sum(subrestraint%atoms(1)%adps_cart-B)**2 2
+        NCA = 2
 
       end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+
       goto 3600
       
 C--ULIJ RESTRAINTS PRINT
 3262  CONTINUE
-      do jj=1, 6 ! loop over the U(ij)
-C--CHECK IF THIS RESTRAINT IS USEFUL
-        CALL XMOVE(IB1(1),KF1(1),1)
-        IF(ISTORE(L22PD).eq.4) THEN
-          WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
-     1      COPERATION(I)(1:NCTRIM(COPERATION(I))),
-     1      ' restraint:', ' No derivatives found'
-          CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0)
-     1      WRITE(NCWU,'(2x,A,A,A)') 
-     2        COPERATION(I)(1:nctrim(COPERATION(I))),
-     1        ' restraint: ', ' No derivatives found'
-            CALL XMOVE(IQ1(1),KF1(1),1)
-        ENDIF
-                   
-        CALL XDOWNF(M22PD,STORE(L22PD),4)
-        if(ISTORE(L22PD)>=0) then
-          M22PD=M22PD+KINCRF(ISTORE(L22PD))
-        else 
-          WRITE(CMON,*)'{E No more derivative to find, programmer error'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON,*)'{E Please seek advice with the authors'
-          CALL XPRVDU(NCVDU, 1,0)
-          exit
-        end if
-      end do
     
 !3286  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A,I0,I0,A)    
 !3288  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),A12,6X,A,I0,I0,A)    
 
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
-      IF (ISSPRT .EQ. 0) THEN       
+        IF (ISSPRT .EQ. 0) THEN       
+          allocate(Uij_indices(6,2))
+          Uij_indices(1,:)=(/1,1/)
+          Uij_indices(2,:)=(/2,2/)
+          Uij_indices(3,:)=(/3,3/)
+          Uij_indices(4,:)=(/1,2/)
+          Uij_indices(5,:)=(/2,3/)
+          Uij_indices(6,:)=(/1,3/)
+          do lt=1, ubound(Uij_indices, 1)
+            associate(it=> Uij_indices(lt, 1), jt=> Uij_indices(lt, 2) )
+              WRITE(NCWU,3286) 
+     1         subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
+     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
+     3          subrestraint%atoms(1)%adps_cart(it,jt)-
+     4          subrestraint%atoms(2)%adps_cart(it,jt)+B, 'U[',it,jt,']'
+              WRITE(NCWU,3286)  
+     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
+     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
+     3          subrestraint%atoms(2)%adps_cart(it,jt)-
+     4          subrestraint%atoms(1)%adps_cart(it,jt)+B, 'U[',it,jt,']'
+            end associate
+          end do
+          deallocate(Uij_indices)
+        ENDIF      
+       
+!3287    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
         allocate(Uij_indices(6,2))
         Uij_indices(1,:)=(/1,1/)
         Uij_indices(2,:)=(/2,2/)
@@ -2008,125 +2096,106 @@ C--CHECK IF THIS RESTRAINT IS USEFUL
         Uij_indices(6,:)=(/1,3/)
         do lt=1, ubound(Uij_indices, 1)
           associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-            WRITE(NCWU,3286) KF,
-     1        subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
+            WRITE(CMON, 3287) subrestraint%atoms(1)%label,
+     1        subrestraint%atoms(1)%serial,
+     2        subrestraint%atoms(1)%adps_cart(it,jt),
      3        subrestraint%atoms(1)%adps_cart(it,jt)-
-     4        subrestraint%atoms(2)%adps_cart(it,jt)+B, 'U[',it,jt,']'
-            WRITE(NCWU,3286) KF, 
-     1        subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
-     3        subrestraint%atoms(2)%adps_cart(it,jt)-
-     4        subrestraint%atoms(1)%adps_cart(it,jt)+B, 'U[',it,jt,']'
+     4        subrestraint%atoms(2)%adps_cart(it,jt)+B, ! B is the target
+     5        'U[',it,jt,']'
+            CALL XPRVDU(NCVDU, 1,0)
+            WRITE(CMON, 3287) subrestraint%atoms(2)%label,
+     1        subrestraint%atoms(2)%serial,
+     2        subrestraint%atoms(2)%adps_cart(it,jt),
+     3        subrestraint%atoms(2)%adps_cart(it,jt)- ! B is the target
+     4        subrestraint%atoms(1)%adps_cart(it,jt)+B, ! B is the target
+     4        'U[',it,jt,']'
+            CALL XPRVDU(NCVDU, 1,0)
           end associate
         end do
         deallocate(Uij_indices)
-      ENDIF      
        
-!3287  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
-      allocate(Uij_indices(6,2))
-      Uij_indices(1,:)=(/1,1/)
-      Uij_indices(2,:)=(/2,2/)
-      Uij_indices(3,:)=(/3,3/)
-      Uij_indices(4,:)=(/1,2/)
-      Uij_indices(5,:)=(/2,3/)
-      Uij_indices(6,:)=(/1,3/)
-      do lt=1, ubound(Uij_indices, 1)
-        associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-          WRITE(CMON, 3287) KF,subrestraint%atoms(1)%label,
-     1      subrestraint%atoms(1)%serial,
-     2      subrestraint%atoms(1)%adps_cart(it,jt),
-     3      subrestraint%atoms(1)%adps_cart(it,jt)-
-     4      subrestraint%atoms(2)%adps_cart(it,jt)+B, ! B is the target
-     5      'U[',it,jt,']'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON, 3287) KF,subrestraint%atoms(2)%label,
-     1      subrestraint%atoms(2)%serial,
-     2      subrestraint%atoms(2)%adps_cart(it,jt),
-     3      subrestraint%atoms(2)%adps_cart(it,jt)- ! B is the target
-     4      subrestraint%atoms(1)%adps_cart(it,jt)+B, ! B is the target
-     4      'U[',it,jt,']'
-          CALL XPRVDU(NCVDU, 1,0)
-        end associate
-      end do
-      deallocate(Uij_indices)
-       
-      Q=sum(subrestraint%atoms(1)%adps_cart)
-      O=sum(subrestraint%atoms(1)%adps_cart-B)
-      P=sum(subrestraint%atoms(1)%adps_cart-B)**2 2
-      NCA = 2
+        Q=sum(subrestraint%atoms(1)%adps_cart)
+        O=sum(subrestraint%atoms(1)%adps_cart-B)
+        P=sum(subrestraint%atoms(1)%adps_cart-B)**2 2
+        NCA = 2
 
       end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+            
       goto 3600
       
 C--UPLANE RESTRAINTS PRINT
 3263  CONTINUE
-      do jj=1, 2 ! loop over the 2 U(ij) U[12] and U[23]
-C--CHECK IF THIS RESTRAINT IS USEFUL
-        CALL XMOVE(IB1(1),KF1(1),1)
-        IF(ISTORE(L22PD).eq.4) THEN
-          WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
-     1      COPERATION(I)(1:NCTRIM(COPERATION(I))),
-     1      ' restraint:', ' No derivatives found'
-          CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0)
-     1      WRITE(NCWU,'(2x,A,A,A)') 
-     2        COPERATION(I)(1:nctrim(COPERATION(I))),
-     1        ' restraint: ', ' No derivatives found'
-            CALL XMOVE(IQ1(1),KF1(1),1)
-        ENDIF
-                   
-        CALL XDOWNF(M22PD,STORE(L22PD),4)
-        if(ISTORE(L22PD)>=0) then
-          M22PD=M22PD+KINCRF(ISTORE(L22PD))
-        else 
-          WRITE(CMON,*)'{E No more derivative to find, programmer error'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON,*)'{E Please seek advice with the authors'
-          CALL XPRVDU(NCVDU, 1,0)
-          exit
-        end if
-      end do
     
 !3296  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A)    
 
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
-      IF (ISSPRT .EQ. 0) THEN              
-        WRITE(NCWU,3296) KF,
-     1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,2),
-     3    subrestraint%atoms(1)%adps_cart(1,2)-B, 'U[12]'
-        WRITE(NCWU,3296) KF, 
-     1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
-     3    subrestraint%atoms(1)%adps_cart(2,3)-B, 'U[23]'     
-      ENDIF      
+        IF (ISSPRT .EQ. 0) THEN              
+          WRITE(NCWU,3296)
+     1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
+     2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,2),
+     3      subrestraint%atoms(1)%adps_cart(1,2)-B, 'U[12]'
+          WRITE(NCWU,3296)
+     1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
+     2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
+     3      subrestraint%atoms(1)%adps_cart(2,3)-B, 'U[23]'     
+        ENDIF      
        
-!3297  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
-      WRITE(CMON, 3297) KF,subrestraint%atoms(1)%label,
-     1   subrestraint%atoms(1)%serial,
-     2   subrestraint%atoms(1)%adps_cart(1,2),
-     3   subrestraint%atoms(1)%adps_cart(1,2)-B, ! B is the target
-     4   'U[12]'
-      CALL XPRVDU(NCVDU, 1,0)
+!3297   FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
+        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+     1     subrestraint%atoms(1)%serial,
+     2     subrestraint%atoms(1)%adps_cart(1,2),
+     3     subrestraint%atoms(1)%adps_cart(1,2)-B, ! B is the target
+     4     'U[12]'
+        CALL XPRVDU(NCVDU, 1,0)
        
-      WRITE(CMON, 3297) KF,subrestraint%atoms(1)%label,
-     1   subrestraint%atoms(1)%serial,
-     2   subrestraint%atoms(1)%adps_cart(2,3),
-     3   subrestraint%atoms(1)%adps_cart(2,3)-B, ! B is the target
-     4   'U[23]'
-      CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+     1     subrestraint%atoms(1)%serial,
+     2     subrestraint%atoms(1)%adps_cart(2,3),
+     3     subrestraint%atoms(1)%adps_cart(2,3)-B, ! B is the target
+     4     'U[23]'
+        CALL XPRVDU(NCVDU, 1,0)
        
-      Q=subrestraint%atoms(1)%adps_cart(1,2)+
-     1  subrestraint%atoms(1)%adps_cart(2,3)
-      O=subrestraint%atoms(1)%adps_cart(1,2)-B + 
-     1  subrestraint%atoms(1)%adps_cart(2,3)-B
-      P=(subrestraint%atoms(1)%adps_cart(1,2)-B)**2 + 
-     1  (subrestraint%atoms(1)%adps_cart(2,3)-B)**2
-      NCA = 2
+        Q=subrestraint%atoms(1)%adps_cart(1,2)+
+     1    subrestraint%atoms(1)%adps_cart(2,3)
+        O=subrestraint%atoms(1)%adps_cart(1,2)-B + 
+     1    subrestraint%atoms(1)%adps_cart(2,3)-B
+        P=(subrestraint%atoms(1)%adps_cart(1,2)-B)**2 + 
+     1    (subrestraint%atoms(1)%adps_cart(2,3)-B)**2
+        NCA = 2
 
       end associate
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      else      
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
+        end if        
+        write(cmon, '(A)') 'Restraint not applied'
+        CALL XPRVDU(NCVDU, 1,0)            
+      end if
+      
       GOTO 3600
 C         
 C--UXXQIV RESTRAINTS PRINT
@@ -2366,58 +2435,33 @@ c     print *,
       
 C--UEIG RESTRAINTS PRINT
 3271  CONTINUE
-
-      do jj=1, 1 ! loop over the 2 smallest eigv 
-C--CHECK IF THIS RESTRAINT IS USEFUL
-        CALL XMOVE(IB1(1),KF1(1),1)
-        IF(ISTORE(L22PD).eq.4) THEN
-          WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
-     1      COPERATION(I)(1:NCTRIM(COPERATION(I))),
-     1      ' restraint:', ' No derivatives found'
-          CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0)
-     1      WRITE(NCWU,'(2x,A,A,A)') 
-     2        COPERATION(I)(1:nctrim(COPERATION(I))),
-     1        ' restraint: ', ' No derivatives found'
-            CALL XMOVE(IQ1(1),KF1(1),1)
-        ENDIF
-                   
-        CALL XDOWNF(M22PD,STORE(L22PD),4)
-        if(ISTORE(L22PD)>=0) then
-          M22PD=M22PD+KINCRF(ISTORE(L22PD))
-        else 
-          WRITE(CMON,*)'{E No more derivative to find, programmer error'
-          CALL XPRVDU(NCVDU, 1,0)
-          WRITE(CMON,*)'{E Please seek advice with the authors'
-          CALL XPRVDU(NCVDU, 1,0)
-          exit
-        end if
-      end do
     
-!3296  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A)    
+!3296  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A)  
 
+      if(allocated(restraints_list(ircpt)%subrestraints)) then
+      if(size(restraints_list(ircpt)%subrestraints)>0) then
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
       IF (ISSPRT .EQ. 0) THEN              
-        WRITE(NCWU,3296) KF,
+        WRITE(NCWU,3296) 
      1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,1),
      3    subrestraint%atoms(1)%adps_cart(1,1)-B, 'U[11]'
-        WRITE(NCWU,3296) KF, 
+        WRITE(NCWU,3296)  
      1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(2,2),
      3    subrestraint%atoms(1)%adps_cart(2,2)-B, 'U[22]'     
       ENDIF      
        
 !3297  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
-      WRITE(CMON, 3297) KF,subrestraint%atoms(1)%label,
+      WRITE(CMON, 3297) subrestraint%atoms(1)%label,
      1   subrestraint%atoms(1)%serial,
      2   subrestraint%atoms(1)%adps_cart(1,1),
      3   subrestraint%atoms(1)%adps_cart(1,1)-B, ! B is the target
      4   'U[11]'
       CALL XPRVDU(NCVDU, 1,0)
        
-      WRITE(CMON, 3297) KF,subrestraint%atoms(1)%label,
+      WRITE(CMON, 3297) subrestraint%atoms(1)%label,
      1   subrestraint%atoms(1)%serial,
      2   subrestraint%atoms(1)%adps_cart(2,2),
      3   subrestraint%atoms(1)%adps_cart(2,2)-B, ! B is the target
@@ -2433,6 +2477,20 @@ C--CHECK IF THIS RESTRAINT IS USEFUL
       NCA = 1
 
       end associate
+      else
+        IF (ISSPRT .EQ. 0) THEN              
+          WRITE(NCWU,'(A)') 'No derivatives'
+        end if
+        WRITE(CMON,'(A)') 'No derivatives'
+        CALL XPRVDU(NCVDU, 1,0)
+      end if
+      else
+        IF (ISSPRT .EQ. 0) THEN              
+          WRITE(NCWU,'(A)') 'No derivatives'
+        end if
+        WRITE(CMON,'(A)') 'No derivatives'
+        CALL XPRVDU(NCVDU, 1,0)
+      end if
        
       goto 3600   
       
@@ -2960,7 +3018,7 @@ C--JUMP ON THE FUNCTION
               CALL XPRVDU(NCVDU, 1,0)      
             end if
           end associate            
-        end if             
+        end if         
       end do ! found the user restraint
       
       I=ISTORE(LCG+1)
@@ -3652,6 +3710,7 @@ CODE FOR XCVCL
       SUBROUTINE XCVCL(iasym, results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
+      use xiobuf_mod, only: cmon
       implicit none
 C--CALCULATE LOCAL UIJ RESTRAINTS (ULIJ)
 C
@@ -3739,23 +3798,17 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       adps(1)%U_L=ISTORE(adps(1)%atom+16)+14
       adps(2)%U_L=ISTORE(adps(2)%atom+16)+14
 
-      DO ij=1,2
-         JD=ISTORE(adps(ij)%atom+16)   !Address of atom in L5
-         JX=ISTORE(adps(ij)%atom+6)
-C--CHECK IF THE ATOM IS ANISO                                           
-         IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-            ISTORE(adps(1)%atom+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-            ISTORE(JX)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-            ISTORE(JX+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-            DO i=0,2                                                  
-               STORE(adps(1)%U_L+i*2)=STORE(adps(1)%U_L)
-               STORE(adps(1)%U_L+i*2+6)=STORE(adps(1)%U_L)*STORE(L1C+i)                        
-            END DO
-            STORE(JD+6)=0.
-         END IF
-      end do
+      IF(ABS(STORE(ISTORE(adps(1)%atom+16)+6))/=0.0 .or. 
+     1  ABS(STORE(ISTORE(adps(2)%atom+16)+6))/=0.0 ) THEN ! check if atom is isotropic
+        if(present(results)) then
+          WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') results%user_index,
+     1      trim(results%restraint_text)
+          CALL XPRVDU(NCVDU, 1,0)      
+            WRITE(CMON,'("{E", 4X, A)') 'Error: atom is isotropic'
+          CALL XPRVDU(NCVDU, 1,0)      
+        end if
+        return
+      end if
       
       adps(1)%basis_atoms(1)=adps(1)%atom
       adps(1)%basis_atoms(2)=ISTORE(adps(2)%atom)
@@ -3867,36 +3920,16 @@ C--First atom
               a1(7:12)=adps(1)%dUcart(7,:)
           END IF         
           a1(1:6)=a1(7:12)
-C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(adps(1)%atom+6)
           JD=ISTORE(adps(1)%atom+16)
           JX=ISTORE(adps(1)%atom+6) ! JX used in XADUIJ
           JO=adps(1)%atom ! JO used in XADUIJ
-          IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-             ISTORE(adps(1)%atom+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-             ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-             ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-             JE=JD
-             JF=L1C+2                                                       
-             DO l=L1C,JF                                                  
-                STORE(JE+14)=STORE(JD+14)
-                STORE(JE+20)=STORE(JD+14)*STORE(l)                        
-                JE=JE+2                                                   
-             END DO
-             STORE(JD+6)=0.
-             
-             STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
-     2          A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-          else 
-             if (iasym==1) then
+          if (iasym==1) then
 c           dont restrain first atom
 c            print *, "Asym"
-                 a1(1:6) = 0.0
-             endif      
-             CALL XADUIJ  
-          END IF
+             a1(1:6) = 0.0
+          endif      
+          CALL XADUIJ  
       
 C-----------------------------------------------
 C--Second atom
@@ -3920,32 +3953,11 @@ C--Second atom
               a1(7:12)=adps(2)%dUcart(7,:)
           END IF         
           a1(1:6)=-a1(7:12)
-C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(adps(2)%atom+6)
           JD=ISTORE(adps(2)%atom+16)
           JX=ISTORE(adps(2)%atom+6) ! JX used in XADUIJ
           JO=adps(2)%atom ! JO used in XADUIJ
-          IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-             ISTORE(adps(2)%atom+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-             ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-             ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-             JE=JD
-             JF=L1C+2                                                       
-             DO l=L1C,JF                                                  
-                STORE(JE+14)=STORE(JD+14)
-                STORE(JE+20)=STORE(JD+14)*STORE(l)                        
-                JE=JE+2                                                   
-             END DO
-             STORE(JD+6)=0.
-             
-             STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
-     2          A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-          else 
-             CALL XADUIJ  
-          END IF
-            
+          CALL XADUIJ             
    
 C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190      
          IF ( ij==1 ) THEN
@@ -4005,6 +4017,7 @@ CODE FOR XCVCA
       SUBROUTINE XCVCA(iasym, results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
+      use xiobuf_mod, only: cmon
       implicit none
 C--CALCULATE principal axes restraints. align 2 adps along an eigenvector
 C
@@ -4071,6 +4084,18 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       JB=ISTORE(JA)             ! Address of next parameter block                                        
       JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1                                        
       JV=ISTORE(JB+6)           ! Address of first parameter (U11) for atom 2                                        
+
+      IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 .or. 
+     1  ABS(STORE(ISTORE(JB+16)+6))/=0.0 ) THEN ! check if atom is isotropic
+        if(present(results)) then
+          WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') results%user_index,
+     1      trim(results%restraint_text)
+          CALL XPRVDU(NCVDU, 1,0)      
+            WRITE(CMON,'("{E", 4X, A)') 'Error: atom is isotropic'
+          CALL XPRVDU(NCVDU, 1,0)      
+        end if
+        return
+      end if
 
       if(present(results)) then
           call extend(results%subrestraints, 3, .true.)
@@ -4166,64 +4191,25 @@ C-- RUN RABUBAR MULTIPLICATION
 C First atom of the restraint                
 C-----------------------------------------------
           a1(1:6)=0.0 
-C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(JA+6)
           JD=ISTORE(JA+16)
           JX=JP ! JX used in XADUIJ
           JO=JA ! JO used in XADUIJ
-          IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-              ISTORE(JA+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-              ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-              ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-              JE=JD 
-              JF=L1C+2                                                       
-              DO J=L1C,JF                                                  
-                  STORE(JE+14)=STORE(JD+14)
-                  STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-                  JE=JE+2                                                   
-              END DO
-              STORE(JD+6)=0.         
-              STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+
-     2            A1(4)*STORE(L1C)+A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-          else 
-              if (iasym==1) then
+          if (iasym==1) then
 c           dont restrain first atom
 c            print *, "Asym"
-                  a1(1:6) = 0.0
-              endif      
-              CALL XADUIJ  
-          END IF
+              a1(1:6) = 0.0
+          endif      
+          CALL XADUIJ  
 
 C Second atom of the restraint                
 C-----------------------------------------------
           a1(1:6)=-a1(7:12) 
-C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(JB+6)
           JD=ISTORE(JB+16)
           JX=JP ! JX used in XADUIJ
           JO=JB ! JO used in XADUIJ
-          IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-             ISTORE(JB+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-             ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-             ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-             JE=JD
-             JF=L1C+2                                                       
-             DO J=L1C,JF                                                  
-                STORE(JE+14)=STORE(JD+14)
-                STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-                JE=JE+2                                                   
-             END DO
-             STORE(JD+6)=0.
-             
-             STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
-     2           A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-          else 
-             CALL XADUIJ  
-          end if                          
+          CALL XADUIJ  
                       
 C Here, you need to set D to be the computed value of the difference in the covariances
 C Note that DUMP is the target difference (and should usually be zero).
@@ -4264,6 +4250,7 @@ CODE FOR XCVCR
       SUBROUTINE XCVCR(iasym, results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
+      use xiobuf_mod, only: cmon
       implicit none
 C--CALCULATE RIGID BODY RESTRAINTS (RIGU resraints)
 C
@@ -4331,6 +4318,18 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       JB=ISTORE(JA)             ! Address of next parameter block                                        
       JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1                                        
       JV=ISTORE(JB+6)           ! Address of first parameter (U11) for atom 2                                        
+
+      IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 .or. 
+     1  ABS(STORE(ISTORE(JB+16)+6))/=0.0 ) THEN ! check if atom is isotropic
+        if(present(results)) then
+          WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') results%user_index,
+     1      trim(results%restraint_text)
+          CALL XPRVDU(NCVDU, 1,0)      
+            WRITE(CMON,'("{E", 4X, A)') 'Error: atom is isotropic'
+          CALL XPRVDU(NCVDU, 1,0)      
+        end if
+        return
+      end if
 
       if(present(results)) then
           call extend(results%subrestraints, 3, .true.)
@@ -4453,64 +4452,25 @@ C      ##### ZZ DERIVS ####
 C First atom of the restraint                
 C-----------------------------------------------
           a1(1:6)=a1(7:12) 
-C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(JA+6)
           JD=ISTORE(JA+16)
           JX=JP ! JX used in XADUIJ
           JO=JA ! JO used in XADUIJ
-          IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-              ISTORE(JA+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-              ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-              ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-              JE=JD 
-              JF=L1C+2                                                       
-              DO J=L1C,JF                                                  
-                  STORE(JE+14)=STORE(JD+14)
-                  STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-                  JE=JE+2                                                   
-              END DO
-              STORE(JD+6)=0.         
-              STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+
-     2            A1(4)*STORE(L1C)+A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-          else 
-              if (iasym==1) then
+          if (iasym==1) then
 c           dont restrain first atom
 c            print *, "Asym"
-                  a1(1:6) = 0.0
-              endif      
-              CALL XADUIJ  
-          END IF
+              a1(1:6) = 0.0
+          endif      
+          CALL XADUIJ  
 
 C Second atom of the restraint                
 C-----------------------------------------------
           a1(1:6)=-a1(7:12) 
-C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(JB+6)
           JD=ISTORE(JB+16)
           JX=JP ! JX used in XADUIJ
           JO=JB ! JO used in XADUIJ
-          IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-             ISTORE(JB+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-             ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-             ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-             JE=JD
-             JF=L1C+2                                                       
-             DO J=L1C,JF                                                  
-                STORE(JE+14)=STORE(JD+14)
-                STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-                JE=JE+2                                                   
-             END DO
-             STORE(JD+6)=0.
-             
-             STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
-     2           A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-          else 
-             CALL XADUIJ  
-          end if                          
+          CALL XADUIJ  
                       
 C Here, you need to set D to be the computed value of the difference in the covariances
 C Note that DUMP is the target difference (and should usually be zero).
@@ -4548,6 +4508,7 @@ CODE FOR XCVCE
       SUBROUTINE XCVCE(results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
+      use xiobuf_mod, only:CMON
       implicit none
 C--CALCULATE UEIG eigen values restraints. The 2 smallest eigen values are made equal
 C
@@ -4598,9 +4559,20 @@ C
 C--SET UP A FEW CONSTANTS                                        
       DUMP=STORE(LCG+4)   ! The 'observed value' of the restraint
       JA=LCA              ! Address of first parameter block header                                      
-      NCA=1
+      NCA=1 ! Unknown use, may be the number of atoms
 C--SET UP THE ADDRESSES OF THE ATOMS                                    
       JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1                                        
+
+      IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0) THEN ! check if atom is isotropic
+        if(present(results)) then
+          WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') results%user_index,
+     1      trim(results%restraint_text)
+          CALL XPRVDU(NCVDU, 1,0)      
+            WRITE(CMON,'("{E", 4X, A)') 'Error: atom is isotropic'
+          CALL XPRVDU(NCVDU, 1,0)      
+        end if
+        return
+      end if
 
       if(present(results)) then
           call extend(results%subrestraints, 1, .true.)
@@ -4680,64 +4652,23 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
       DIFF_VAL = W_1(1)-W_1(2)
       MEAN_VAL = W_1(1)+W_1(2)       
                      
-      ! U[11] derivatives
+      ! U[11] derivative
       a1(7:12)=dUcart(1,:)
-
       a1(1:6)=a1(7:12)
-C--CHECK IF THE ATOM IS ANISO                                           
       JP=ISTORE(JA+6)
       JD=ISTORE(JA+16)
       JX=JP ! JX used in XADUIJ
       JO=JA ! JO used in XADUIJ
-      IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-          ISTORE(JA+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-          ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-          ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-          JE=JD 
-          JF=L1C+2                                                       
-          DO J=L1C,JF                                                  
-              STORE(JE+14)=STORE(JD+14)
-              STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-              JE=JE+2                                                   
-          END DO
-          STORE(JD+6)=0.         
-          STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+
-     2        A1(4)*STORE(L1C)+A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-      else 
-          CALL XADUIJ  
-      END IF
+      CALL XADUIJ  
 
       ! derivative U[22]
       a1(7:12)=dUcart(5,:)
-
       a1(1:6)=-a1(7:12)
-C--CHECK IF THE ATOM IS ANISO                                           
       JP=ISTORE(JA+6)
       JD=ISTORE(JA+16)
       JX=JP ! JX used in XADUIJ
       JO=JA ! JO used in XADUIJ
-      IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-         ISTORE(JB+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-         ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-         ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-         JE=JD
-         JF=L1C+2                                                       
-         DO J=L1C,JF                                                  
-            STORE(JE+14)=STORE(JD+14)
-            STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-            JE=JE+2                                                   
-         END DO
-         STORE(JD+6)=0.
-         
-         STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
-     2      A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-      else 
-         CALL XADUIJ  
-      end if                          
+      CALL XADUIJ  
                      
       STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
       STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
@@ -5044,6 +4975,7 @@ c         print *, 'No more atom expected'
 CODE FOR XCVCV
       SUBROUTINE XCVCV(iaxis,iasym, results)
       use list26_mod
+      use xiobuf_mod, only:cmon
 C--CALCULATE PERPENDICULAR RESTRAINTS
 C
 C      IAXIS = Not used
@@ -5116,6 +5048,17 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       JB=ISTORE(JA)             ! Address of next parameter block                                        
       JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1                                        
       JV=ISTORE(JB+6)           ! Address of first parameter (U11) for atom 2                                        
+
+      IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0) THEN ! check if atom is isotropic
+        if(present(results)) then
+          WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') results%user_index,
+     1      trim(results%restraint_text)
+          CALL XPRVDU(NCVDU, 1,0)      
+            WRITE(CMON,'("{E", 4X, A)') 'Error: atom is isotropic'
+          CALL XPRVDU(NCVDU, 1,0)      
+        end if
+        return
+      end if
 
       if(present(results)) then
           call extend(results%subrestraints, 2, .true.)
@@ -5218,36 +5161,16 @@ C      #### YZ DERIVS ####
 C First atom of the restraint        
 C The second atom is just used to define the basis        
 C-----------------------------------------------
-C--CHECK IF THE ATOM IS ANISO                                           
         JP=ISTORE(JA+6)
         JD=ISTORE(JA+16)
         JX=JP ! JX used in XADUIJ
         JO=JA ! JO used in XADUIJ
-        IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-           ISTORE(JA+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-           ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-           ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-           JE=JD
-           JF=L1C+2                                                       
-           DO J=L1C,JF                                                  
-              STORE(JE+14)=STORE(JD+14)
-              STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-              JE=JE+2                                                   
-           END DO
-           STORE(JD+6)=0.
-         
-           STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+A1(4)*STORE(L1C)+
-     2        A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-        else 
-           if (iasym==1) then
+        if (iasym==1) then
 c             dont restrain first atom
 c              print *, "Asym"
-              a1(1:6) = 0.0
-           endif      
-           CALL XADUIJ  
-        END IF
+            a1(1:6) = 0.0
+         endif      
+         CALL XADUIJ  
          
 C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
         IF  ( i==1 ) THEN          
