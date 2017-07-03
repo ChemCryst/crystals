@@ -1,10 +1,10 @@
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE
+#LIST 14
+#SPACE
   Space Group P21 21 21 
   The Space Group is ACentric  Primitive Orthorhombic  Laue Symmetry mmm     
   Multiplicity of a General Site is   4  Laue-no is   3
@@ -24,49 +24,49 @@ Space group symbol is   P    21   21   21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 4                                                                                                                                                                                                                                                         
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 11/03/16 AT 11:20:13                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST 39                                                                                                                                                                                                                                                        
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 11/03/16 AT 11:22:47                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST     40                                                                                                                                                                                                                                                    
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 11/03/16 AT 11:23:09                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      6                                                                                                                                                                                                                                                    
+#LIST 3
+#LIST 4
+#
+# PUNCHED ON 11/03/16 AT 11:20:13
+#
+#LIST      5
+#LIST 13
+#LIST 23
+#LIST 28
+#LIST 39
+#
+# PUNCHED ON 11/03/16 AT 11:22:47
+#
+#LIST     40
+#
+# PUNCHED ON 11/03/16 AT 11:23:09
+#
+#LIST      6
  The updated reflections are now on UNIT 53
 
 
 
-    1849 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-# PUNCHED ON 11/03/16 AT 11:20:23                                                                                                                                                                                                                               
-#LIST     16                                                                                                                                                                                                                                                    
-#                                                                                                                                                                                                                                                               
-#LIST     12                                                                                                                                                                                                                                                    
-#                                                                                                                                                                                                                                                               
-#CHECK                                                                                                                                                                                                                                                          
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#LIST 22                                                                                                                                                                                                                                                        
+    1849 reflections accepted           0 reflections rejected
+# PUNCHED ON 11/03/16 AT 11:20:23
+#LIST     16
+#
+#LIST     12
+#
+#CHECK
+#CLEAR 17
+#LIST  17
+#LIST 22
  Initialising Special positions
 Refining   131 parameters in    1 block :     8924 elements in the LS matrix.
  Space required on DISK is   18 records,    70  Blocks,    36 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#LIST 26                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
-#LIST 29                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
+#LIST 17
+#LIST 26
+#BONDCALC
+#LIST 29
+#BONDCALC
 Bonds: Update required - There is no list 41
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
+#LIST 26
+#CHECK
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -74,6 +74,19 @@ Bonds: Update required - There is no list 41
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+
+___________
+ (0) NO
+
+___________
+ (1) DIST 0.86, 0.02 =
+CONT N ( 3) TO H(31)
 
    1. Restrain these distances to be    0.860 Angstrom,
                 with an E.S.D. of   0.020
@@ -83,9 +96,17 @@ Bonds: Update required - There is no list 41
            N       3     1  1  0  0  0      H      31     1  1  0  0  0      0.860     0.000
 [41]       Mean value =   0.8602  Mean delta =  -0.0002  r.m.s. delta =   0.00
 
+___________
+ (2) REST 0.037, 0.002 = H(31,U[ISO])
+
 
    2.  General restraint to be     0.3700000048E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.3764899820E-01  giving a delta of   -0.6489977241E-03
+
+___________
+ (3) ANGLE 0.0, 2.0 = MEAN
+CONT H(31) TO N ( 3) TO C(2)
+CONT H(31) TO N ( 3) TO C(4)
 
    3.   Restrain the following  angles   to their common mean of   119.199 degrees 
                                                  with an E.S.D. of   2.000
@@ -95,6 +116,14 @@ Bonds: Update required - There is no list 41
            H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       2     1  1  0  0  0    119.99  -0.80
            H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       4     1  1  0  0  0    118.40   0.80
 [41]       Mean value = 119.1990  Mean delta =   0.0000  r.m.s. delta =   0.79
+
+___________
+ (5) DIST 0.96, 0.02 =
+CONT C ( 7) TO H(73)
+CONT C ( 7) TO H(72)
+CONT C ( 7) TO H(71)
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  DISTANCE: No derivatives found during Evaluation
 
    4. Restrain these distances to be    0.960 Angstrom,
                 with an E.S.D. of   0.020
@@ -107,20 +136,37 @@ Bonds: Update required - There is no list 41
   ?        C       7     1  1  0  0  0      H      72     1  1  0  0  0      0.926     0.034
            C       7     1  1  0  0  0      H      71     1  1  0  0  0      0.961    -0.001
 [41]       Mean value =   0.9771  Mean delta =  -0.0171  r.m.s. delta =   0.05
+
+___________
+ (6) REST 0.083, 0.002 = H(73,U[ISO])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    5.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7076000422E-01  giving a delta of    0.1224000007E-01
+
+___________
+ (7) REST 0.083, 0.002 = H(72,U[ISO])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    6.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7153201103E-01  giving a delta of    0.1146799326E-01
 
+___________
+ (8) REST 0.083, 0.002 = H(71,U[ISO])
+
 
    7.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.8240700513E-01  giving a delta of    0.5929991603E-03
+
+___________
+ (9) ANGLE 109.54, 2.0 =
+CONT O(6) TO C ( 7) TO H(73)
+CONT O(6) TO C ( 7) TO H(72)
+CONT O(6) TO C ( 7) TO H(71)
 
    8. Restrain these  angles   to be  109.540 degrees ,
                 with an E.S.D. of   2.000
@@ -132,6 +178,12 @@ Bonds: Update required - There is no list 41
            O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    112.43  -2.89
 [41]       Mean value = 106.7882  Mean delta =   2.7518  r.m.s. delta =   4.84
 
+___________
+ (10) ANGLE 0.0, 2.0 = MEAN H(73) TO C ( 7) TO H(72)
+CONT H(73) TO C ( 7) TO H(71)
+CONT H(72) TO C ( 7) TO H(71)
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+
    9.   Restrain the following  angles   to their common mean of   111.712 degrees 
                                                  with an E.S.D. of   2.000
 
@@ -142,6 +194,10 @@ Bonds: Update required - There is no list 41
            H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    117.16  -5.45
            H      72     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    113.55  -1.83
 [41]       Mean value = 111.7120  Mean delta =   0.0000  r.m.s. delta =   5.36
+
+___________
+ (11) U(IJ) 0.,.001= O(1) TO C(2)
+ Directive  UIJ: No derivatives found during Evaluation
 
      10.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
@@ -157,6 +213,9 @@ Bonds: Update required - There is no list 41
            O       1     1  1  0  0  0     0.00169         C       2     1  1  0  0  0     0.00152  -0.00018     U[12]   
 [41]       Mean value =   0.0179  Mean delta =  -0.0070  r.m.s. delta =   0.01
 
+___________
+ (12) VIB 0.,.001= O(1) TO C(2)
+
   11.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -164,14 +223,16 @@ Bonds: Update required - There is no list 41
   
            O       1     1  1  0  0  0     0.02470         C       2     1  1  0  0  0     0.03086   0.00616
 [41]       Mean value =   0.0278  Mean delta =   0.0062  r.m.s. delta =   0.00
-#SFLS                                                                                                                                                                                                                                                           
-#WEIGHT                                                                                                                                                                                                                                                         
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
- Enantiopole parameter out of range. (-0.272 )                                                                                                                                                                                                                  
+
+___________
+ (13) NO
+#SFLS
+#WEIGHT
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+ Enantiopole parameter out of range. (-0.272 )
  Initialising Special positions
 
 
@@ -229,17 +290,18 @@ Bonds: Update required - There is no list 41
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
-LS-scale=  1.598   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45                                                                                                                                                                                                         
+LS-scale=  1.598   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+#DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  MEAN ANGLE: No derivatives found during Evaluation
  Directive  UIJ: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -309,7 +371,7 @@ All cycle   Min function          0.0           0.69E+03       0.10E+16
  Shift
 [39]  factors     0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
              0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -439,20 +501,20 @@ All cycle   Min function          0.0           0.69E+03       0.10E+16
                       0.0000            0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0034   0.0021   0.0012   0.0021
 [31]                                         0.016    0.023    0.017 
-Mean C-C su =   0.0019                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#                                                                                                                                                                                                                                                               
-#LIST     12                                                                                                                                                                                                                                                    
-#                                                                                                                                                                                                                                                               
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 22                                                                                                                                                                                                                                                        
+Mean C-C su =   0.0019
+#CYCLENDS
+#
+#LIST     12
+#
+#CHECK
+#LIST 22
  Initialising Special positions
 Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
  Space required on DISK is   15 records,    60  Blocks,    31 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
+#LIST 17
+#CHECK
+#LIST 26
+#CHECK
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -460,6 +522,24 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  RESTRAIN: No derivatives found during Evaluation
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+
+___________
+ (0) NO
+
+___________
+ (1) DIST 0.86, 0.02 =
+CONT N ( 3) TO H(31)
 
    1. Restrain these distances to be    0.860 Angstrom,
                 with an E.S.D. of   0.020
@@ -469,9 +549,17 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
            N       3     1  1  0  0  0      H      31     1  1  0  0  0      0.860     0.000
 [41]       Mean value =   0.8602  Mean delta =  -0.0002  r.m.s. delta =   0.00
 
+___________
+ (2) REST 0.037, 0.002 = H(31,U[ISO])
+
 
    2.  General restraint to be     0.3700000048E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.3764899820E-01  giving a delta of   -0.6489977241E-03
+
+___________
+ (3) ANGLE 0.0, 2.0 = MEAN
+CONT H(31) TO N ( 3) TO C(2)
+CONT H(31) TO N ( 3) TO C(4)
 
    3.   Restrain the following  angles   to their common mean of   119.199 degrees 
                                                  with an E.S.D. of   2.000
@@ -481,6 +569,14 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
            H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       2     1  1  0  0  0    119.99  -0.80
            H      31     1  1  0  0  0      N       3     1  1  0  0  0      C       4     1  1  0  0  0    118.40   0.80
 [41]       Mean value = 119.1990  Mean delta =   0.0000  r.m.s. delta =   0.79
+
+___________
+ (5) DIST 0.96, 0.02 =
+CONT C ( 7) TO H(73)
+CONT C ( 7) TO H(72)
+CONT C ( 7) TO H(71)
+ Directive  DISTANCE: No derivatives found during Evaluation
+ Directive  DISTANCE: No derivatives found during Evaluation
 
    4. Restrain these distances to be    0.960 Angstrom,
                 with an E.S.D. of   0.020
@@ -493,20 +589,37 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
   ?        C       7     1  1  0  0  0      H      72     1  1  0  0  0      0.926     0.034
            C       7     1  1  0  0  0      H      71     1  1  0  0  0      0.961    -0.001
 [41]       Mean value =   0.9771  Mean delta =  -0.0171  r.m.s. delta =   0.05
+
+___________
+ (6) REST 0.083, 0.002 = H(73,U[ISO])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    5.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7076000422E-01  giving a delta of    0.1224000007E-01
+
+___________
+ (7) REST 0.083, 0.002 = H(72,U[ISO])
+ Directive  RESTRAIN: No derivatives found during Evaluation
    General Restraint: No derivatives found
 
 
    6.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7153201103E-01  giving a delta of    0.1146799326E-01
 
+___________
+ (8) REST 0.083, 0.002 = H(71,U[ISO])
+
 
    7.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.8240700513E-01  giving a delta of    0.5929991603E-03
+
+___________
+ (9) ANGLE 109.54, 2.0 =
+CONT O(6) TO C ( 7) TO H(73)
+CONT O(6) TO C ( 7) TO H(72)
+CONT O(6) TO C ( 7) TO H(71)
 
    8. Restrain these  angles   to be  109.540 degrees ,
                 with an E.S.D. of   2.000
@@ -518,6 +631,12 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
            O       6     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    112.43  -2.89
 [41]       Mean value = 106.7882  Mean delta =   2.7518  r.m.s. delta =   4.84
 
+___________
+ (10) ANGLE 0.0, 2.0 = MEAN H(73) TO C ( 7) TO H(72)
+CONT H(73) TO C ( 7) TO H(71)
+CONT H(72) TO C ( 7) TO H(71)
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+
    9.   Restrain the following  angles   to their common mean of   111.712 degrees 
                                                  with an E.S.D. of   2.000
 
@@ -528,6 +647,15 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
            H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    117.16  -5.45
            H      72     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    113.55  -1.83
 [41]       Mean value = 111.7120  Mean delta =   0.0000  r.m.s. delta =   5.36
+
+___________
+ (11) U(IJ) 0.,.001= O(1) TO C(2)
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
+ Directive  UIJ: No derivatives found during Evaluation
 
      10.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
@@ -548,6 +676,9 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
   ?        O       1     1  1  0  0  0     0.00169         C       2     1  1  0  0  0     0.00152  -0.00018     U[12]   
 [41]       Mean value =   0.0179  Mean delta =  -0.0070  r.m.s. delta =   0.01
 
+___________
+ (12) VIB 0.,.001= O(1) TO C(2)
+
   11.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
@@ -555,12 +686,14 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
   
            O       1     1  1  0  0  0     0.02470         C       2     1  1  0  0  0     0.03086   0.00616
 [41]       Mean value =   0.0278  Mean delta =   0.0062  r.m.s. delta =   0.00
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
- Enantiopole parameter out of range. (-0.272 )                                                                                                                                                                                                                  
+
+___________
+ (13) NO
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+ Enantiopole parameter out of range. (-0.272 )
  Initialising Special positions
 
 
@@ -618,8 +751,9 @@ Refining   121 parameters in    1 block :     7639 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
-LS-scale=  1.598   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45                                                                                                                                                                                                         
+LS-scale=  1.598   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+#DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -631,9 +765,9 @@ LS-scale=  1.598   Wilson Scale=  0.000
  Directive  UIJ: No derivatives found during Evaluation
  Directive  UIJ: No derivatives found during Evaluation
  Directive  UIJ: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
+#NEWSHIFTS
+#INVERT  CHOL
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -703,7 +837,7 @@ All cycle   Min function          0.0           0.69E+03       0.10E+16
  Shift
 [39]  factors     0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
              0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -833,15 +967,15 @@ All cycle   Min function          0.0           0.69E+03       0.10E+16
                       0.0000            0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0030   0.0019   0.0010   0.0019
 [31]                                         0.015    0.020    0.015 
-Mean C-C su =   0.0017                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#                                                                                                                                                                                                                                                               
-#LIST     16                                                                                                                                                                                                                                                    
-#                                                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#CHECK                                                                                                                                                                                                                                                          
-#LIST 26                                                                                                                                                                                                                                                        
-#CHECK                                                                                                                                                                                                                                                          
+Mean C-C su =   0.0017
+#CYCLENDS
+#
+#LIST     16
+#
+#
+#CHECK
+#LIST 26
+#CHECK
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -849,6 +983,13 @@ Mean C-C su =   0.0017
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
+ Directive  MEAN DIST: No derivatives found during Evaluation
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+ Directive  MEAN DIST: No derivatives found during Evaluation
+
+___________
+ (0) SAME C(7) H(71) H(72) H(73) AND C(11) H(111) H(112) H(113)
+ Directive  MEAN DIST: No derivatives found during Evaluation
 
    0.   Restrain the following distances to their common mean of     0.995 Angstrom
                                                  with an E.S.D. of   0.010
@@ -860,6 +1001,10 @@ Mean C-C su =   0.0017
            C      11     1  1  0  0  0      H     113     1  1  0  0  0      0.945     0.050
 [41]       Mean value =   0.9952  Mean delta =   0.0000  r.m.s. delta =   0.04
 
+___________
+ (-1) 
+ Directive  MEAN ANGLE: No derivatives found during Evaluation
+
    1.   Restrain the following  angles   to their common mean of   107.240 degrees 
                                                  with an E.S.D. of   0.100
 
@@ -870,6 +1015,9 @@ Mean C-C su =   0.0017
            H     113     1  1  0  0  0      C      11     1  1  0  0  0      H     112     1  1  0  0  0    110.05  -2.81
 [41]       Mean value = 107.2400  Mean delta =   0.0000  r.m.s. delta =   2.81
 
+___________
+ (-1) 
+
    2.   Restrain the following  angles   to their common mean of   117.020 degrees 
                                                  with an E.S.D. of   0.100
 
@@ -878,6 +1026,10 @@ Mean C-C su =   0.0017
            H      73     1  1  0  0  0      C       7     1  1  0  0  0      H      71     1  1  0  0  0    117.16  -0.14
            H     113     1  1  0  0  0      C      11     1  1  0  0  0      H     111     1  1  0  0  0    116.88   0.14
 [41]       Mean value = 117.0200  Mean delta =   0.0000  r.m.s. delta =   0.14
+
+___________
+ (-1) 
+ Directive  MEAN DIST: No derivatives found during Evaluation
 
    3.   Restrain the following distances to their common mean of     0.936 Angstrom
                                                  with an E.S.D. of   0.010
@@ -889,6 +1041,9 @@ Mean C-C su =   0.0017
            C      11     1  1  0  0  0      H     112     1  1  0  0  0      0.946    -0.010
 [41]       Mean value =   0.9359  Mean delta =   0.0000  r.m.s. delta =   0.01
 
+___________
+ (-1) 
+
    4.   Restrain the following  angles   to their common mean of   110.310 degrees 
                                                  with an E.S.D. of   0.100
 
@@ -898,6 +1053,9 @@ Mean C-C su =   0.0017
            H     112     1  1  0  0  0      C      11     1  1  0  0  0      H     111     1  1  0  0  0    107.07   3.24
 [41]       Mean value = 110.3101  Mean delta =   0.0000  r.m.s. delta =   3.23
 
+___________
+ (-1) 
+
    5.   Restrain the following distances to their common mean of     1.027 Angstrom
                                                  with an E.S.D. of   0.010
 
@@ -906,12 +1064,14 @@ Mean C-C su =   0.0017
            C       7     1  1  0  0  0      H      71     1  1  0  0  0      0.961     0.067
            C      11     1  1  0  0  0      H     111     1  1  0  0  0      1.094    -0.067
 [41]       Mean value =   1.0275  Mean delta =   0.0000  r.m.s. delta =   0.06
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
- Enantiopole parameter out of range. (-0.272 )                                                                                                                                                                                                                  
+
+___________
+ (1) NO
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+ Enantiopole parameter out of range. (-0.272 )
  Initialising Special positions
 
 
@@ -969,12 +1129,13 @@ Mean C-C su =   0.0017
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
-LS-scale=  1.598   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45                                                                                                                                                                                                         
+LS-scale=  1.598   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+#DORESTRAIN
  Directive  MEAN DIST: No derivatives found during Evaluation
  Directive  MEAN ANGLE: No derivatives found during Evaluation
  Directive  MEAN DIST: No derivatives found during Evaluation
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#INVERT  CHOL
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1045,7 +1206,7 @@ All cycle   Min function          0.0           0.69E+03       0.10E+16
  Shift
 [39]  factors     0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
              0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1175,9 +1336,9 @@ All cycle   Min function          0.0           0.69E+03       0.10E+16
                       0.0000            0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0071   0.0031   0.0022   0.0092
 [31]                                         0.034    0.034    0.034 
-Mean C-C su =   0.0028                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#END                                                                                                                                                                                                                                                            
+Mean C-C su =   0.0028
+#CYCLENDS
+#END
 
 
           : Job ends ok       with     0 warnings and     0 errors

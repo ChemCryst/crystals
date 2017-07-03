@@ -2128,6 +2128,7 @@ Mean C-C su =   0.0136
 #CYCLENDS
 #
 #                      NOW TRY ANISO REFINEMENT
+#LIST     16
 #LIST 12
 #LIST 22
  Initialising Special positions
@@ -2218,18 +2219,18 @@ LS-scale=  4.293   Wilson Scale=  4.723
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-[14]  S/ESD    42          42            0.010       0.0E+00    0.61 E-02          1.7         C      5 U[22]   
-[14]  S/ESD    52          52           -0.010       0.0E+00    0.59 E-02         -1.7         C      6 U[33]   
-[14]  S/ESD    59          59            0.022       0.0E+00    0.67 E-02          3.2         C      7 U[11]   
-[14]  S/ESD    60          60           -0.011       0.0E+00    0.62 E-02         -1.7         C      7 U[22]   
-[14]  S/ESD    64          64            0.018       0.0E+00    0.56 E-02          3.3         C      7 U[12]   
-[14]  S/ESD    69          69            0.010       0.0E+00    0.64 E-02          1.6         C      8 U[22]   
-[14]  S/ESD    70          70           -0.013       0.0E+00    0.64 E-02         -2.0         C      8 U[33]   
-[14]  S/ESD    72          72           -0.013       0.0E+00    0.52 E-02         -2.6         C      8 U[13]   
-[14]  S/ESD    77          77           -0.039       0.0E+00    0.11 E-01         -3.6         C      9 U[11]   
-[14]  S/ESD    78          78            0.037       0.0E+00    0.10 E-01          3.7         C      9 U[22]   
-[14]  S/ESD    80          80           -0.016       0.0E+00    0.90 E-02         -1.8         C      9 U[23]   
-[14]  S/ESD    82          82           -0.015       0.0E+00    0.87 E-02         -1.7         C      9 U[12]   
+[14]  S/ESD    42          42            0.010       0.0E+00    0.60 E-02          1.7         C      5 U[22]   
+[14]  S/ESD    52          52           -0.010       0.0E+00    0.58 E-02         -1.7         C      6 U[33]   
+[14]  S/ESD    59          59            0.022       0.0E+00    0.66 E-02          3.3         C      7 U[11]   
+[14]  S/ESD    60          60           -0.011       0.0E+00    0.61 E-02         -1.8         C      7 U[22]   
+[14]  S/ESD    64          64            0.018       0.0E+00    0.55 E-02          3.3         C      7 U[12]   
+[14]  S/ESD    69          69            0.010       0.0E+00    0.63 E-02          1.6         C      8 U[22]   
+[14]  S/ESD    70          70           -0.013       0.0E+00    0.63 E-02         -2.0         C      8 U[33]   
+[14]  S/ESD    72          72           -0.013       0.0E+00    0.51 E-02         -2.6         C      8 U[13]   
+[14]  S/ESD    77          77           -0.039       0.0E+00    0.10 E-01         -3.6         C      9 U[11]   
+[14]  S/ESD    78          78            0.036       0.0E+00    0.98 E-02          3.7         C      9 U[22]   
+[14]  S/ESD    80          80           -0.016       0.0E+00    0.88 E-02         -1.8         C      9 U[23]   
+[14]  S/ESD    82          82           -0.015       0.0E+00    0.85 E-02         -1.7         C      9 U[12]   
 
                                                 for          91 parameters
 [64]                                  The rms (shift/su)  =           1.
@@ -2249,8 +2250,8 @@ All cycle   Min function          0.0           0.39E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    91 least squares parameters, with  1925 degrees of freedom
- Number of observations              2016                 0              2016
+ Statistics for    91 least squares parameters, with  1985 degrees of freedom
+ Number of observations              2016                60              2076
 [30]  Minimisation function              0.39 E+06         0.00 E+00         0.39 E+06
 [45]  Hamilton weighted R-value          45.              0.00             45. 
 
@@ -2274,7 +2275,7 @@ All cycle   Min function          0.0           0.39E+06       0.10E+16
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.03    0.03    0.01    0.01    0.01    0.01
-[31]                                          0.012    0.005    0.004 
+[31]                                          0.012    0.005    0.003 
 
 [03]  Reversals
 
@@ -2307,7 +2308,7 @@ All cycle   Min function          0.0           0.39E+06       0.10E+16
 
 [41]       4.28     0.05     0.05
 [41]      -0.00     0.00     0.00
-[41]       0.19     0.00     0.00
+[41]       0.18     0.00     0.00
 
 
 
@@ -2324,7 +2325,7 @@ All cycle   Min function          0.0           0.39E+06       0.10E+16
 [37]      N          2.    1.00    0.00    0.29    0.11    0.80    0.02
 [37]                       0.00            -0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.009    0.009    0.009 
+[31]                                         0.009    0.008    0.008 
 
 [37]      C          3.    1.00    0.00    0.21    0.04    0.71    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00   -0.00    0.00   -0.00
@@ -2334,22 +2335,22 @@ All cycle   Min function          0.0           0.39E+06       0.10E+16
 [37]      N          4.    1.00    0.00    0.33    0.01    0.65    0.02
 [37]                       0.00             0.00   -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.010    0.010    0.010 
+[31]                                         0.010    0.009    0.010 
 
 [37]      C          5.    1.00    0.00    0.49    0.08    0.71    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.01   -0.00    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.014    0.012    0.013 
+[31]                                         0.013    0.012    0.012 
 
 [37]      C          6.    1.00    0.00    0.47    0.14    0.80    0.04
 [37]                       0.00            -0.00   -0.00    0.00    0.00   -0.00   -0.01    0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.012    0.012    0.012 
+[31]                                         0.012    0.011    0.012 
 
 [37]      C          7.    1.00    0.00    0.19    0.31    0.87    0.06
 [37]                       0.00            -0.00   -0.00   -0.00    0.02   -0.01   -0.00    0.00    0.00    0.01
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.014    0.013    0.013 
+[31]                                         0.013    0.013    0.013 
 
 [37]      C          8.    1.00    0.00    0.32    0.12    1.01    0.03
 [37]                       0.00             0.00    0.00   -0.00   -0.00    0.01   -0.01    0.00   -0.01    0.00
@@ -2358,14 +2359,14 @@ All cycle   Min function          0.0           0.39E+06       0.10E+16
 
 [37]      C          9.    1.00    0.00    0.01    0.10    0.86    0.02
 [37]                       0.00            -0.00    0.00   -0.00   -0.03    0.03   -0.00   -0.01   -0.00   -0.01
-[37]                       0.00             0.00    0.00    0.00    0.01    0.01    0.01    0.00    0.00    0.00
-[31]                                         0.020    0.019    0.018 
+[37]                       0.00             0.00    0.00    0.00    0.01    0.00    0.01    0.00    0.00    0.00
+[31]                                         0.019    0.018    0.018 
 
 [37]      CL        10.    1.00    0.00   -0.21    0.17    0.54    0.03
 [37]                       0.00            -0.00    0.00   -0.00   -0.00    0.00   -0.00   -0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.003    0.003    0.003 
-Mean C-C su =   0.0140
+Mean C-C su =   0.0138
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2390,7 +2391,7 @@ Mean C-C su =   0.0140
 [61]     4.  10.   0.    -0.      2.
 [61]     6.  10.   0.     1.      2.
 [61]     2.  11.   0.    -1.      1.
-   -7.   1.   1.    19.58     3.69
+   -7.   1.   1.    19.58     3.68
 [61]     6.   1.   1.    15.      0.
 [61]     8.   1.   1.     8.      1.
    -1.   3.   1.    29.54     2.04
@@ -2398,10 +2399,10 @@ Mean C-C su =   0.0140
 [61]     5.   4.   1.     8.      1.
 [61]     3.   5.   1.    19.      3.
    -3.   6.   1.     3.19     0.59
-   -2.   6.   1.     0.76     1.44
+   -2.   6.   1.     0.76     1.43
 [61]     3.   6.   1.    16.      2.
 [61]     8.   6.   1.    -0.      0.
-   -7.   7.   1.     9.44     1.79
+   -7.   7.   1.     9.44     1.80
 [61]     1.   7.   1.    17.      2.
 [61]     3.   7.   1.    21.      1.
    -6.   9.   1.     7.33     0.17
@@ -2421,7 +2422,7 @@ Mean C-C su =   0.0140
 
 [33]      22000          18840            5600                                    On scale of /FC/
 
-[32]      96780          80790           24070                0.36 E+06          On scale of /FO/
+[32]      96780          80780           24070                0.36 E+06          On scale of /FO/
 
  New scale factor (G) is      4.287,    2016 reflections used in refinement
 
@@ -2445,12 +2446,12 @@ LS-scale=  4.287   Wilson Scale=  4.723
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-[14]  S/ESD    78          78            0.019       0.5E+00    0.13 E-01          1.4         C      9 U[22]   
+[14]  S/ESD    78          78            0.019       0.5E+00    0.12 E-01          1.5         C      9 U[22]   
 
                                                 for          91 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[05]  The largest (shift/esd) =      1.4 , for Parameter   78, C9U[22]
+[05]  The largest (shift/esd) =      1.5 , for Parameter   78, C9U[22]
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            25.           0.10E+03
@@ -2469,8 +2470,8 @@ Inter cycle Rw                   -5.0            1.7           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    91 least squares parameters, with  1925 degrees of freedom
- Number of observations              2016                 0              2016
+ Statistics for    91 least squares parameters, with  1985 degrees of freedom
+ Number of observations              2016                60              2076
 [30]  Minimisation function              0.36 E+06         0.00 E+00         0.36 E+06
 [45]  Hamilton weighted R-value          43.              0.00             43. 
 
@@ -2527,7 +2528,7 @@ Inter cycle Rw                   -5.0            1.7           0.10E+03
 
 [41]       4.30     0.05     0.05
 [41]       0.02     0.00     0.00
-[41]       0.18     0.00     0.00
+[41]       0.17     0.00     0.00
 
 
 
@@ -2539,7 +2540,7 @@ Inter cycle Rw                   -5.0            1.7           0.10E+03
 [37]      C          1.    1.00    0.00    0.20    0.16    0.89    0.02
 [37]                       0.00            -0.00   -0.00   -0.00   -0.00   -0.00    0.00    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.011    0.012    0.011 
+[31]                                         0.011    0.012    0.010 
 
 [37]      N          2.    1.00    0.00    0.29    0.11    0.80    0.02
 [37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
@@ -2554,7 +2555,7 @@ Inter cycle Rw                   -5.0            1.7           0.10E+03
 [37]      N          4.    1.00    0.00    0.33    0.01    0.65    0.03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.010    0.010    0.009 
+[31]                                         0.009    0.009    0.009 
 
 [37]      C          5.    1.00    0.00    0.49    0.08    0.71    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00
@@ -2582,10 +2583,10 @@ Inter cycle Rw                   -5.0            1.7           0.10E+03
 [31]                                         0.013    0.020    0.016 
 
 [37]      CL        10.    1.00    0.00   -0.21    0.17    0.54    0.03
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.002    0.003    0.002 
-Mean C-C su =   0.0130
+Mean C-C su =   0.0128
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2619,8 +2620,8 @@ Mean C-C su =   0.0130
 [61]     6.   3.   1.    23.      2.
 [61]     5.   4.   1.     8.      1.
 [61]     3.   5.   1.    19.      4.
-   -3.   6.   1.     3.17     0.10
-   -2.   6.   1.     0.76     1.66
+   -3.   6.   1.     3.17     0.11
+   -2.   6.   1.     0.76     1.65
 [61]     3.   6.   1.    16.      1.
 [61]     5.   6.   1.    11.      2.
 [61]     8.   6.   1.    -0.      0.
@@ -2669,7 +2670,7 @@ LS-scale=  4.308   Wilson Scale=  4.723
                                                 for          91 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[05]  The largest (shift/esd) =      0.4 , for Parameter   78, C9U[22]
+[05]  The largest (shift/esd) =      0.5 , for Parameter   78, C9U[22]
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            25.           0.10E+03
@@ -2688,8 +2689,8 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    91 least squares parameters, with  1925 degrees of freedom
- Number of observations              2016                 0              2016
+ Statistics for    91 least squares parameters, with  1985 degrees of freedom
+ Number of observations              2016                60              2076
 [30]  Minimisation function              0.36 E+06         0.00 E+00         0.36 E+06
 [45]  Hamilton weighted R-value          43.              0.00             43. 
 
@@ -2758,7 +2759,7 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 [37]      C          1.    1.00    0.00    0.20    0.16    0.89    0.02
 [37]                       0.00            -0.00   -0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.011    0.012    0.011 
+[31]                                         0.011    0.012    0.010 
 
 [37]      N          2.    1.00    0.00    0.29    0.11    0.80    0.02
 [37]                       0.00            -0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00
@@ -2768,7 +2769,7 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 [37]      C          3.    1.00    0.00    0.21    0.04    0.71    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.012    0.013    0.011 
+[31]                                         0.011    0.013    0.011 
 
 [37]      N          4.    1.00    0.00    0.33    0.01    0.65    0.03
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
@@ -2783,7 +2784,7 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 [37]      C          6.    1.00    0.00    0.47    0.14    0.80    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.013    0.011    0.010 
+[31]                                         0.012    0.011    0.010 
 
 [37]      C          7.    1.00    0.00    0.19    0.31    0.87    0.06
 [37]                       0.00            -0.00   -0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
@@ -2803,8 +2804,8 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 [37]      CL        10.    1.00    0.00   -0.21    0.17    0.54    0.03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.003    0.003    0.002 
-Mean C-C su =   0.0133
+[31]                                         0.002    0.003    0.002 
+Mean C-C su =   0.0131
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2835,12 +2836,12 @@ Mean C-C su =   0.0133
    -7.   1.   1.    19.47     3.75
 [61]     6.   1.   1.    14.      0.
 [61]     8.   1.   1.     8.      1.
-   -1.   3.   1.    29.37     1.66
+   -1.   3.   1.    29.37     1.67
 [61]     6.   3.   1.    23.      2.
 [61]     5.   4.   1.     8.      0.
 [61]     3.   5.   1.    19.      4.
-   -3.   6.   1.     3.17     0.11
-   -2.   6.   1.     0.76     1.80
+   -3.   6.   1.     3.17     0.10
+   -2.   6.   1.     0.76     1.79
 [61]     3.   6.   1.    16.      1.
 [61]     5.   6.   1.    11.      2.
 [61]     8.   6.   1.    -0.      0.
@@ -2907,8 +2908,8 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    91 least squares parameters, with  1925 degrees of freedom
- Number of observations              2016                 0              2016
+ Statistics for    91 least squares parameters, with  1985 degrees of freedom
+ Number of observations              2016                60              2076
 [30]  Minimisation function              0.36 E+06         0.00 E+00         0.36 E+06
 [45]  Hamilton weighted R-value          43.              0.00             43. 
 
@@ -2987,7 +2988,7 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 [37]      C          3.    1.00    0.00    0.21    0.04    0.71    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.012    0.013    0.011 
+[31]                                         0.011    0.013    0.011 
 
 [37]      N          4.    1.00    0.00    0.33    0.01    0.65    0.03
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
@@ -3002,7 +3003,7 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 [37]      C          6.    1.00    0.00    0.47    0.14    0.80    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.013    0.011    0.010 
+[31]                                         0.012    0.011    0.010 
 
 [37]      C          7.    1.00    0.00    0.19    0.31    0.87    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
@@ -3016,14 +3017,14 @@ All cycle   Min function          0.0           0.36E+06       0.10E+16
 
 [37]      C          9.    1.00    0.00    0.01    0.10    0.86    0.02
 [37]                       0.00             0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00   -0.00
-[37]                       0.00             0.00    0.00    0.00    0.00    0.01    0.00    0.01    0.00    0.00
-[31]                                         0.014    0.023    0.016 
+[37]                       0.00             0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00
+[31]                                         0.014    0.022    0.016 
 
 [37]      CL        10.    1.00    0.00   -0.21    0.17    0.54    0.03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.003    0.003    0.002 
-Mean C-C su =   0.0133
+[31]                                         0.002    0.003    0.002 
+Mean C-C su =   0.0131
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -3058,7 +3059,7 @@ Mean C-C su =   0.0133
 [61]     6.   3.   1.    23.      2.
 [61]     5.   4.   1.     8.      0.
 [61]     3.   5.   1.    19.      4.
-   -3.   6.   1.     3.17     0.20
+   -3.   6.   1.     3.17     0.19
    -2.   6.   1.     0.76     1.83
 [61]     3.   6.   1.    16.      0.
 [61]     5.   6.   1.    11.      2.
@@ -3122,8 +3123,8 @@ All cycle   Rw                    0.0            44.           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    91 least squares parameters, with  1925 degrees of freedom
- Number of observations              2016                 0              2016
+ Statistics for    91 least squares parameters, with  1985 degrees of freedom
+ Number of observations              2016                60              2076
 [30]  Minimisation function              0.36 E+06         0.00 E+00         0.36 E+06
 [45]  Hamilton weighted R-value          43.              0.00             43. 
 
@@ -3202,7 +3203,7 @@ All cycle   Rw                    0.0            44.           0.10E+03
 [37]      C          3.    1.00    0.00    0.21    0.04    0.71    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00   -0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.012    0.013    0.011 
+[31]                                         0.011    0.013    0.011 
 
 [37]      N          4.    1.00    0.00    0.33    0.01    0.65    0.03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
@@ -3217,7 +3218,7 @@ All cycle   Rw                    0.0            44.           0.10E+03
 [37]      C          6.    1.00    0.00    0.47    0.14    0.80    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.013    0.011    0.010 
+[31]                                         0.012    0.011    0.010 
 
 [37]      C          7.    1.00    0.00    0.19    0.31    0.87    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
@@ -3225,20 +3226,20 @@ All cycle   Rw                    0.0            44.           0.10E+03
 [31]                                         0.015    0.012    0.012 
 
 [37]      C          8.    1.00    0.00    0.32    0.12    1.01    0.03
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.013    0.014    0.011 
 
 [37]      C          9.    1.00    0.00    0.01    0.10    0.86    0.02
 [37]                       0.00             0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00   -0.00
-[37]                       0.00             0.00    0.00    0.00    0.00    0.01    0.00    0.01    0.00    0.00
-[31]                                         0.014    0.023    0.016 
+[37]                       0.00             0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00
+[31]                                         0.014    0.022    0.016 
 
 [37]      CL        10.    1.00    0.00   -0.21    0.17    0.54    0.03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.003    0.003    0.002 
-Mean C-C su =   0.0133
+[31]                                         0.002    0.003    0.002 
+Mean C-C su =   0.0131
 #CYCLENDS
 #
 #                      QUICK TEST OF ROTAX
@@ -3256,40 +3257,40 @@ Mean C-C su =   0.0133
  Largest index tested = 12
  List 6 contains  2016 reflections of which  2016 are accepted by LIST 28
  After    13 structure factor/refinement calculations 
- R =  24.78     Weighted R =  43.57     Minimisation function =    0.363478E+06
+ R =  24.78     Weighted R =  43.57     Minimisation function =    0.363479E+06
 
  Reflections with greatest unexpected extra intensity:
    h   k   l (Fo2-Fc2)/s     Fo^2        Fc^2       Sigma
    1   5   2      56.18      2883.1         8.6        51.2
-   2   3   4      54.41      7139.2       294.7       125.8
+   2   3   4      54.41      7139.2       294.5       125.8
    0   1   3      53.85      1068.6         3.4        19.8
-   1   4   0      51.95     14475.9      1211.4       255.3
-   2   2   1      51.47      1019.6       161.6        16.7
-  -1   3   2      49.97     27836.6        20.9       556.6
-   2   1   5      49.85      3549.5       334.2        64.5
+   1   4   0      51.95     14475.9      1210.1       255.3
+   2   2   1      51.48      1019.6       161.4        16.7
+  -1   3   2      49.97     27836.6        21.0       556.6
+   2   1   5      49.85      3549.5       334.5        64.5
    1   1   7      49.63      1803.8        10.7        36.1
-  -1   3   1      48.26     16032.5        49.3       331.2
-   1   2   4      48.04      7929.7       315.5       158.5
+  -1   3   1      48.26     16032.5        49.4       331.2
+   1   2   4      48.04      7929.7       315.3       158.5
    4   2   2      47.95      3638.6        18.8        75.5
-   1   6   0      46.89      1748.1       477.2        27.1
+   1   6   0      46.90      1748.1       476.8        27.1
    1   7   3      46.43      4585.1         7.8        98.6
-  -1   4   4      45.82      2768.0       249.3        55.0
+  -1   4   4      45.81      2768.0       249.6        55.0
    1   4   5      45.35      2854.0         6.5        62.8
-   1   7   1      45.31      5566.9       195.4       118.5
+   1   7   1      45.31      5566.9       195.2       118.5
    1   3   6      45.25     10318.9      1924.0       185.5
-  -1   5   1      45.03      1132.8       177.0        21.2
-   2   1   3      42.94      4017.0      1240.4        64.7
-   3   2   1      42.93     18145.0      5482.0       295.0
-   3   1   1      42.73     10184.8      3721.2       151.3
-  -1   7   3      41.11      3420.5       628.2        67.9
-   1   3   2      40.51     21453.3      8852.1       311.1
-   3   1   7      39.98      2458.5        93.7        59.1
+  -1   5   1      45.05      1132.8       176.7        21.2
+   2   1   3      42.93      4017.0      1240.7        64.7
+   3   2   1      42.93     18145.0      5482.7       295.0
+   3   1   1      42.73     10184.8      3721.1       151.3
+  -1   7   3      41.11      3420.5       628.4        67.9
+   1   3   2      40.51     21453.3      8853.6       311.1
+   3   1   7      39.98      2458.5        93.6        59.1
   -2   1   4      39.49      6914.0        13.8       174.7
    3   3   6      39.35      9058.6       218.3       224.7
-  -1   1   6      39.09     16077.7      3226.7       328.7
-  -1   4   3      39.09     27203.2      6960.7       517.8
+  -1   1   6      39.09     16077.7      3226.8       328.7
+  -1   4   3      39.09     27203.2      6960.6       517.8
    5   1   0      39.07      4400.8       544.0        98.7
-  -2   1   2      38.92      5904.6      1166.8       121.7
+  -2   1   2      38.92      5904.6      1166.6       121.7
 
  Each set of indices above is transformed by the
  printed rotation matrix. How far the transformed indices are
@@ -3579,7 +3580,7 @@ LS-scale=  4.747   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        4     Address   169111     Length      84     Created on                          
+ Print list type    12     serial number        4     Address   170817     Length      84     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -4755,7 +4756,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        5     Address   175568     Length     112     Created on                          
+ Print list type    12     serial number        5     Address   177275     Length     112     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -5462,7 +5463,7 @@ Mean C-C su =   0.0061
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        6     Address   178280     Length     148     Created on                          
+ Print list type    12     serial number        6     Address   179988     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -6635,7 +6636,7 @@ Mean C-C su =   0.0049
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        7     Address   178280     Length     148     Created on                          
+ Print list type    12     serial number        7     Address   179988     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -9472,7 +9473,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from   182163 to   186600 will not be copied ( deleted )         
+ List type   11  serial number  136 from   183872 to   188310 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -12526,7 +12527,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    16     serial number        3     Address    70635     Length     576     Created on                          
+ Print list type    16     serial number        4     Address    70635     Length     576     Created on                          
 
      0 LIMIT      0.01000000 ELEMENT SCALES 
      1 LIMIT      0.01000000 SCALE 
@@ -18998,7 +18999,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96443 to   100880 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96447 to   100885 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -28009,7 +28010,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from    95445 to    99882 will not be copied ( deleted )         
+ List type   11  serial number  136 from    95449 to    99887 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -37474,7 +37475,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96443 to   100880 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96447 to   100885 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 

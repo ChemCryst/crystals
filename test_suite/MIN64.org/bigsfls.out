@@ -3280,7 +3280,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 #LIST 17
 #PURGE
 #SFLS
- List type   11  serial number    4 from   458884 to   480478 will not be copied ( deleted )         
+ List type   11  serial number    4 from   458884 to   480479 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -3905,7 +3905,7 @@ Mean C-C su =   0.0009
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #DISK
- List type   11  serial number    4 from   456600 to   456694 will not be copied ( deleted )         
+ List type   11  serial number    4 from   456600 to   456695 will not be copied ( deleted )         
  List type   22  serial number    2 from   449438 to   453852 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
@@ -5140,7 +5140,7 @@ Mean C-C su =   0.0121
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #SFLS
- List type   11  serial number    8 from   453024 to   487543 will not be copied ( deleted )         
+ List type   11  serial number    8 from   453024 to   487544 will not be copied ( deleted )         
  List type   22  serial number    1 from   449038 to   450276 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
@@ -5237,11 +5237,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      12357 Physical writes      10115 Cache hits     210819
- Cache hit distribution   191292   13082    2290     742     518     382
- Cache hit distribution      189     201     210     244     169     154
- Cache hit distribution      216      91     226     106     192     123
- Cache hit distribution      103      49      36      63      86      55
+ Physical reads      12447 Physical writes      10115 Cache hits     210910
+ Cache hit distribution   191314   13158    2238     767     337     575
+ Cache hit distribution      170     147     231     168     260     212
+ Cache hit distribution      136     147     220     132     204     129
+ Cache hit distribution      102      54      41      55      60      53
 
 
           : Job ends ok       with     0 warnings and     0 errors

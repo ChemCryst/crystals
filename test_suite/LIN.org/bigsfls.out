@@ -3282,7 +3282,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 #LIST 17
 #PURGE
 #SFLS
- List type   11  serial number    4 from   458884 to   480478 will not be copied ( deleted )         
+ List type   11  serial number    4 from   458884 to   480479 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -3907,7 +3907,7 @@ Mean C-C su =   0.0009
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #DISK
- List type   11  serial number    4 from   456600 to   456694 will not be copied ( deleted )         
+ List type   11  serial number    4 from   456600 to   456695 will not be copied ( deleted )         
  List type   22  serial number    2 from   449438 to   453852 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
@@ -5142,7 +5142,7 @@ Mean C-C su =   0.0121
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #SFLS
- List type   11  serial number    8 from   453024 to   487543 will not be copied ( deleted )         
+ List type   11  serial number    8 from   453024 to   487544 will not be copied ( deleted )         
  List type   22  serial number    1 from   449038 to   450276 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
@@ -5239,8 +5239,8 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      11391 Physical writes      10078 Cache hits     199734
- Cache hit distribution   181343   12626    2163     758     347     366
+ Physical reads      11391 Physical writes      10078 Cache hits     199733
+ Cache hit distribution   181339   12626    2165     759     347     366
  Cache hit distribution      130     139     202     218     290     171
  Cache hit distribution      133     169     233      54      65      61
  Cache hit distribution       79      37      37      44      35      34
