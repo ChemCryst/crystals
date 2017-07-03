@@ -336,6 +336,9 @@ C
       real, dimension(:), allocatable :: ref
       real, dimension(:,:), allocatable :: check, unpacked
       integer sfls_punch_flag
+      
+      real eigcutoff, condition, filtered_condition
+      integer nrejected
 c
 #ifdef _HOL_
       DATA ISFLS/4HSFLS/
@@ -668,10 +671,34 @@ c stupid compiler has a stack overflow by making a temporary array
                call LDLT_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 #endif
+               istore(L11P+30)=1
+               
                if(info==1111111) then
                   WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
-                  CALL XPRVDU(NCVDU, 1,0)    
-                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0           
+                  CALL XPRVDU(NCVDU, 1,0)   
+
+c we are now trying to invert using eigen value filtering
+                  WRITE ( CMON, '(A)') 
+     1              '{I trying eigen value filtering inversion.' 
+                  CALL XPRVDU(NCVDU, 1,0)   
+#ifdef CRY_FORTDIGITAL
+c stupid compiler has a stack overflow by making a temporary array 
+                 call eigen_inversion(STR11(L11C), 
+     1               JY, 1e-3, nrejected, condition, 
+     2               filtered_condition, info)
+#else
+                 call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1), 
+     1               JY, 1e-3, nrejected, condition, 
+     2               filtered_condition, info)
+#endif
+                 istore(L11P+30)=-3
+                 if(info/=0) then
+                    WRITE ( CMON, '(A,I8)') '{E Error in ssyevd ', info 
+                    CALL XPRVDU(NCVDU, 1,0)
+                    STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  end if
+c end invert using eigen value filtering
+                                     
                else if(info>0) then
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
      1                ' is singular. Inversion failed.' 
@@ -757,6 +784,7 @@ c
      1              JY, 1e-2, nrej, cond, fcond, info)
 
                if ( nrej .gt. 0 ) THEN
+                  istore(L11P+30)=-3
                   WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 
      1   ' eigenvalues rejected.' 
                   CALL XPRVDU(NCVDU, 1,0)
@@ -765,6 +793,7 @@ c
      1' and after filtering ', fcond
                   CALL XPRVDU(NCVDU, 1,0)
                 else
+                  istore(L11P+30)=3
                   WRITE ( CMON, '(A,G9.2)') 
      1'{I Condition number of normal matrix ', cond
                   CALL XPRVDU(NCVDU, 1,0)
@@ -778,8 +807,8 @@ C----- COMPRESS INVERTED MATRIX
 c               CALL XMTCVT (INM, JY, 2, MD11)
             ENDIF
          ENDIF
-                 
-C-- If we are doing matlab punching then do it here.   
+         
+C-- If we are doing data punching then do it here.   
          IF ( sfls_punch_flag>0 ) THEN
             call sfls_punch_variance(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1          sfls_punch_flag)

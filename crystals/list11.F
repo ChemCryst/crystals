@@ -876,6 +876,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST11.INC'
+      integer newl11p
 C
       CALL XIN11
 C--SET THE LIST TYPE
@@ -913,6 +914,15 @@ C--BRING DOWN THE DATA
       CALL XDOWNF (M11R, XSTR11 (MD11R*L11R-MD11R+1), MD11R*N11R)
 C--AND NOW RETURN
 1250  CONTINUE
+C-- Checking preambule
+      if(MD11P<31) then ! 31 has to match the value in commands.src
+        ! old list 11, extending preambule:
+        newl11p=KCHNFL(31)
+        store(newl11p:newl11p+MD11P-1)=store(l11P:l11P+MD11P-1)
+        store(newl11p+MD11P:newl11p+30)=0.0
+        MD11P=31
+        l11p=newl11p
+      end if
       RETURN
 C
 9900  CONTINUE

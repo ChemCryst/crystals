@@ -6,6 +6,8 @@ contains
 !! Small eigen values are filtered out based on a condition number threshold
 subroutine eigen_inversion(nmatrix, nmsize, eigcutoff, nrejected, condition, filtered_condition, info)
 use m_mrgrnk
+use xiobuf_mod, only: cmon
+use xunits_mod, only: ncvdu
 implicit none
 !> Leading dimension of the matrix nmatrix
 integer, intent(in) :: nmsize
@@ -107,13 +109,16 @@ end if
 truncated=.false.
 i=1
 nrejected = 0
-allocate(iwork(nmsize))
 ! filtering base on relative precision we want to obtain
 do while(eigvalues(nmsize)/max(tiny(1.0),eigvalues(i))*epsilon(1.0)>eigcutoff)
     !call mrgrnk(abs(eigvectors(:,i)), iwork)
 	!print *, i, eigvalues(nmsize), eigvalues(i)
+    WRITE ( CMON, '(A,1PE10.3,A,I0)') '{I Eigenvalue ', eigvalues(i), &
+    &  ' rejected. Hint: look at parameter ', maxloc(abs(eigvectors(:,i)))
+    CALL XPRVDU(NCVDU, 1,0)
 #if defined(CRY_OSLINUX)
     print *, i, eigvalues(i), ' eig value rejected, max eig value: ', eigvalues(nmsize)
+    print *, maxloc(abs(eigvectors(:,i))), maxval(abs(eigvectors(:,i)))
 #endif
     truncated=.true.
     i=i+1
@@ -121,7 +126,6 @@ end do
 nrejected = i - 1
 condition = eigvalues(nmsize)/max(tiny(1.0),eigvalues(1))
 filtered_condition = condition 
-deallocate(iwork)
 
 if(truncated) then
     filtered_condition = eigvalues(nmsize)/max(tiny(1.0),eigvalues(i))
@@ -130,7 +134,6 @@ if(truncated) then
 else
    eigvalues=1.0/sqrt(eigvalues)
 end if
-
 
 ! Inverting (C N C) matrix using eigen decomposition + filtered eigen values
 allocate(invert(nmsize,nmsize))
@@ -145,18 +148,21 @@ call date_and_time(VALUES=measuredtime)
 starttime=((measuredtime(5)*3600+measuredtime(6)*60)+ &
     measuredtime(7))*1000.0+measuredtime(8)
 #endif
+
 do i=1, nmsize
    eigvectors(:,i)=eigvectors(:,i)*eigvalues(i)
 end do
 invert=0.0
 
 call SSYRK('L','N',nmsize,nmsize,1.0,eigvectors,nmsize,1.0,invert,nmsize)
+
 #if defined(CRY_OSLINUX)
 call date_and_time(VALUES=measuredtime)
 print *, 'Formation of the inverse done in (ms): ', &
     ((measuredtime(5)*3600+measuredtime(6)*60)+ &
     measuredtime(7))*1000.0+measuredtime(8)-starttime
 #endif
+
 ! Pack normal matrix back into original crystals storage
 do i=1,nmsize
     j = ((i-1)*(2*nmsize-i+2))/2
@@ -429,6 +435,155 @@ allocate(work(nmsize))
 call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
 #if defined(CRY_OSLINUX)
 print *, 'SSYTRI info: ', info
+#endif
+deallocate(ipiv)
+deallocate(work)
+
+#if defined(CRY_OSLINUX) 
+call date_and_time(VALUES=measuredtime)
+print *, 'invert via LDL^t decomposition', &
+&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000 +&
+&       measuredtime(8)-starttime, 'ms'
+#endif
+
+if(info>0) then 
+	return
+end if
+
+! Pack normal matrix back into original crystals storage
+! revert pre conditioning                   
+! Applying C (C N C)^-1 C to get N^-1
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+do i=1,nmsize
+    j = ((i-1)*(2*nmsize-i+2))/2
+    k = j + nmsize - i
+    ! packing back matrix
+    nmatrix(1+j:1+k)=unpacked(i:nmsize,i)
+    ! revert preconditioning
+    nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
+    nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
+end do    
+            
+deallocate(preconditioner)
+deallocate(unpacked)
+
+end subroutine
+
+!> code for the inversion of the normal matrix using LDL^t decomposition
+!! of symmetric matrices (double precision)
+subroutine LDLT_inversion_dp(nmatrix, nmsize, info)
+use xiobuf_mod, only: cmon
+use xunits_mod, only:ncvdu
+implicit none
+!> Leading dimension of the matrix nmatrix
+integer, intent(in) :: nmsize
+!> On input symmetric real matrix stored in packed format (lower triangle)
+!! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
+!! On output the inverse of the matrix is return
+real, dimension(nmsize*(nmsize+1)/2), intent(inout) :: nmatrix
+!> Status of the calculation. =0 if success
+integer, intent(out) :: info
+
+double precision, dimension(:), allocatable :: preconditioner
+integer i, j, k, lwork 
+double precision, dimension(:,:), allocatable :: unpacked
+
+double precision, dimension(:), allocatable :: work
+integer, dimension(:), allocatable :: ipiv, iwork
+double precision rcond, onenorm
+integer, external :: ILAENV
+
+#if defined(CRY_OSLINUX)
+integer :: starttime
+integer, dimension(8) :: measuredtime
+#endif
+
+info=0
+
+! preconditioning using diagonal terms
+! Allocate diagonal vector
+allocate(preconditioner(nmsize))
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    if(abs(nmatrix(1+j))>epsilon(0.0d0)) then
+        preconditioner(i)=nmatrix(1+j)
+    else
+        preconditioner(i)=1.0d0
+    end if
+end do      
+preconditioner = 1.0d0/sqrt(preconditioner) 
+
+! unpacking lower triangle for memory efficiency and preconditioning:
+! N' = C N C
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+onenorm=0.0d0
+allocate(unpacked(nmsize, nmsize))
+do i=1, nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    ! unpacking
+    ! only lower triangle is referenced
+    unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
+    ! applying preconditioning
+    unpacked(i:nmsize, i)=preconditioner(i:nmsize)*unpacked(i:nmsize, i)
+    unpacked(i:nmsize, i)=preconditioner(i)*unpacked(i:nmsize, i)
+    !unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
+    
+    onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
+end do
+
+!open(666, file='matrix', form="unformatted",access="stream")
+!write(666) unpacked
+!close(666)
+
+#if defined(CRY_OSLINUX) 
+call date_and_time(VALUES=measuredtime)
+starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+#endif
+
+allocate(ipiv(nmsize))
+lwork = ILAENV( 1, 'DSYTRF', 'L', nmsize, nmsize, -1, -1)
+allocate(work(nmsize*lwork))
+call DSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, nmsize*lwork, INFO )
+#if defined(CRY_OSLINUX)
+print *, 'DSYTRF info: ', info
+#endif
+deallocate(work)
+
+if(info>0) then 
+	return
+end if
+
+allocate(work(2*nmsize))
+allocate(iwork(nmsize))
+call DSYCON( 'L', nmsize, unpacked, nmsize, ipiv, onenorm, rcond, work, iwork, info )
+#if defined(CRY_OSLINUX)
+print *, 'DSYCON info: ', info
+#endif
+deallocate(work)
+deallocate(iwork)
+#if defined(CRY_OSLINUX)
+print *, 'condition number ', 1.0d0/rcond
+print *, 'relative error ', 1.0d0/rcond*epsilon(1.0d0)
+#endif
+
+if(1.0d0/rcond*epsilon(1.0d0)>1.0d-5) then
+    info=1111111
+    WRITE ( CMON, '(A, 1PE10.3)') '{I 1-norm ', onenorm
+    CALL XPRVDU(NCVDU, 1,0) 
+    WRITE ( CMON, '(A, 1PE10.3)') '{I condition number ', 1.0d0/rcond
+    CALL XPRVDU(NCVDU, 1,0) 
+    WRITE ( CMON, '(A, 1PE10.3)') '{I relative error ', 1.0d0/rcond*epsilon(1.0d0)
+    CALL XPRVDU(NCVDU, 1,0) 	
+    return
+end if
+
+allocate(work(nmsize))
+call DSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
+#if defined(CRY_OSLINUX)
+print *, 'DSYTRI info: ', info
 #endif
 deallocate(ipiv)
 deallocate(work)
