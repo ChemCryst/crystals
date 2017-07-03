@@ -1581,10 +1581,10 @@ Data collection details
      2THETA/OMEGA   OMEGA          PHI            PHIOMEGA       UNKNOWN
     .INTERVAL           0    0    1    0    1 0.
     .COUNT              0    0    1    0    1 0.
-    .INSTRUMENT         0    0    1   11    0 UNKNOWN
+    .INSTRUMENT         0    0    1   12    0 UNKNOWN
      UNKNOWN        CAD4           MACH3          KAPPACCD       DIP
      SMART          IPDS           XCALIBUR       APEX2          GEMINI
-     SUPERNOVA
+     SUPERNOVA      SYNCHROTRON    SPALLATION     REACTOR 
    3.REFINEMENT        13    1    0    0   13    1  103    9   30
          1    1    1    1    1    1    0    0    0    0
 Refimenent details

@@ -4545,7 +4545,7 @@ C
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=11)
+      PARAMETER (IDIFMX=14)
       PARAMETER (IREDMX=7)
       DIMENSION IREFCD(3,IDIFMX)
       DIMENSION IREDCD(IREDMX)
@@ -4627,12 +4627,12 @@ C
 c
 C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C    1     2       3     4    5     6    7   8        9      10
-c SUPERNOVA
-C   11
+c SUPERNOVA SYNCHROTRON SPALLATION REACTOR
+C   11       12           13        14
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
      1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36,
-     2 48,36,36  /
+     2 48,36,36,  4,5,6,  4,5,6,  4,5,6    /
 C UNKNOWN RC93 DENZO SHELX XRED CRYSALIS SAINT
 C   1       2    3     4     5      6      7
 C------ REFERENCE CODES FOR DATA REDUCTION
@@ -5496,8 +5496,8 @@ c--   Machine type
 c
 C     UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C        1     2       3     4    5     6    7      8      9      10
-c     SUPERNOVA
-C       11
+c     SUPERNOVA SYNCHROTRON SPALLATION REACTOR
+C       11       12           13        14
 C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
         IPARAM=13
         IDIR=2
@@ -5913,6 +5913,15 @@ C- GEMINI
            ELSE IF (IDIFNO .EQ. 11) THEN
 C- SUPERNOVA
              CTEMP='Oxford Diffraction SuperNova'
+           ELSE IF (IDIFNO .EQ. 12) THEN
+C- SYNCHROTRON
+             CTEMP='Synchrotron'
+           ELSE IF (IDIFNO .EQ. 13) THEN
+C- SPALLATION
+             CTEMP='Neutron spallation source'
+           ELSE IF (IDIFNO .EQ. 14) THEN
+C- REACTOR
+             CTEMP='Neutron reactor source'
 C- Unknown
            ELSE IF (IDIFNO .GT. IDIFMX) THEN
              WRITE(CMON,'(A)') 'Unknown Diffractometer type'
@@ -5937,36 +5946,48 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 C
-           WRITE (CLINE,'(A)') 
+           IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
+             WRITE (CLINE,'(A)') 
      1     '_diffrn_radiation_monochromator      ''graphite'''
-           CALL XPCIF (CLINE)
+             CALL XPCIF (CLINE)
+           ELSE IF (IDIFNO .LE. 12) THEN ! Focussing mirrors
+             WRITE (CLINE,'(A)') 
+     1     '_diffrn_radiation_monochromator      ''focussing mirrors'''
+             CALL XPCIF (CLINE)
+           ENDIF  ! NB no mono specified for neutron sources
         END IF
       END IF
 C--- END OF LIST 30
 C
 C    LIST 13
       IF (JLOAD(6).GE.1) THEN
-         CBUF(1:8)='''  ?   '''
-         IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
+         CBUF = ' ? '
+		 IF ( IDIFNO .EQ. 12 ) THEN
+            CBUF = 'synchrotron'
+		 ELSE IF ( IDIFNO .GE. 13 ) THEN
+            CBUF = 'neutrons'
+         ELSE IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
 #ifdef __MAC__
-            CBUF(1:8) = '''Mo K\\a'''
+            CBUF = 'Mo K\\a'
 #else
-            CBUF(1:8) = '''Mo K\a'''
+            CBUF = 'Mo K\a'
 #endif
-         ELSE IF (NINT(10.*STORE(L13DC)).EQ.15) THEN
+         ELSE IF (NINT(100.*STORE(L13DC)).EQ.154) THEN
 #ifdef __MAC__
-            CBUF(1:8) = '''Cu K\\a'''
+            CBUF = 'Cu K\\a'
 #else
-            CBUF(1:8) = '''Cu K\a'''
+            CBUF = 'Cu K\a'
 #endif
          END IF
          IF ( IPUNCH .EQ. 0 ) THEN
-           WRITE (NCFPU1,'(''_diffrn_radiation_type       '', T35, A)')
-     1      CBUF(1:8)
+           WRITE (NCFPU1,'(''_diffrn_radiation_type       '', 
+     1		                 T35, '''''''',A,'''''''')')
+     1      CBUF(1:NCTRIM(CBUF))
            WRITE (NCFPU1,'(''_diffrn_radiation_wavelength '', T35,
      1      F12.5)') STORE(L13DC)
          ELSE  IF ( IPUNCH .EQ. 1 ) THEN
-           WRITE (CPAGE(8,1)(:),'(A,4X,A)') 'Radiation type',CBUF(2:7)
+           WRITE (CPAGE(8,1)(:),'(A,4X,A)') 'Radiation type',
+     1                                    CBUF(1:NCTRIM(CBUF))
            WRITE (CPAGE(8,2)(:),'(A,5X,F10.6)')'Wavelength',STORE(L13DC)
          END IF
       END IF
@@ -10168,42 +10189,28 @@ CODE FOR XCIFQC
 CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO
 C               BE SENT TO THE PUNCH UNIT AS A TABLE
 C
-      PARAMETER (NCOL=2,NROW=49)
-      PARAMETER (IDATA=15,IREF=23)
-      CHARACTER*35 CPAGE(NROW,NCOL)
-      CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=11)
-      PARAMETER (IREDMX=7)
-      DIMENSION IREFCD(3,IDIFMX)
-      DIMENSION IREDCD(IREDMX)
-CAVDL more solution packages in cif-goodies
-      PARAMETER (ISOLMX=10)
-      DIMENSION ISOLCD(ISOLMX)
-      PARAMETER (IABSMX=16)
-      DIMENSION IABSCD(IABSMX)
-
 C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
-      PARAMETER (NTERM=4)
-      PARAMETER (NNAMES=30)
-      DIMENSION A(12), JDEV(4), KDEV(4)
+
+
+      DIMENSION A(12), KDEV(4)
       PARAMETER (NLST=4)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
       CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
-      CHARACTER CBUF*80,CTEMP*80,CLINE*80, CHLINE*380
-      character *80 ctext(4)
-C
-      CHARACTER*4 CTYPE
-      CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF
+      CHARACTER CBUF*80,CTEMP*80,CLINE*80
+
+
+
+
       CHARACTER*26 UPPER,LOWER
       CHARACTER*3 CSSUBS(11)
-      CHARACTER*17 CWT
-      CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
-      CHARACTER*35 CMOD
-      CHARACTER*6 CSOLVE
-cdjwapr09
-      INTEGER  IFARG      ! F OR F^2 WEIGHTING SCHEME
+
+	  
+
+
+
+
 C
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ICOM30.INC'
@@ -11345,7 +11352,6 @@ C--INPUT OR EXTEND A LIST 39 (GENERAL DATA STORE)
       INCLUDE 'XLST50.INC'
       INCLUDE 'ICOM39.INC'
 
-      DIMENSION PROCS(32)
       DATA IDIMN /32/
 
 C -- Start the clock.
