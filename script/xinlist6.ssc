@@ -345,10 +345,18 @@
 %        CLEAR                                                                  
 ^^WI     SET L6FILE TEXT                                                        
 %        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                          
+%        EVALUATE HKLTITLE = CVALUE
 ^^CR                                                                            
 ^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO                              
 %         EVALUATE LOKOK = TRUE                                                 
 %       END IF                                                                  
+% END IF
+% IF ( UPPERCASE GETFILE ( HKLTITLE ) .EQ. 'FROM-CIF.HKL' ) THEN
+^^CO    SET L6FORM DISABLED=NO TEXT='(3F4.0,2F10.0)' 
+^^CO    SET RDF3 STATE=ON
+% ELSE
+^^CO    SET L6FORM DISABLED=YES  
+^^CO    SET RDF2 STATE=ON
 % END IF
 %%                                                                              
 %% Now the window is displayed, we wait for any of the following                
@@ -633,8 +641,16 @@
 ^^WI     SET L6FILE TEXT                                                        
 %        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                          
 ^^CR                                                                            
-^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO                              
-%         EVALUATE LOKOK = TRUE                                                 
+^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO  
+%         EVALUATE LOKOK = TRUE                    
+%% For from-cif.hkl files set correct FORMAT
+%         IF ( UPPERCASE GETFILE ( CVALUE ) .EQ. 'FROM-CIF.HKL' ) THEN
+^^CO        SET L6FORM DISABLED=NO TEXT='(3F4.0,2F10.0)' 
+^^CO        SET RDF3 STATE=ON
+%         ELSE
+^^CO        SET L6FORM DISABLED=YES  
+^^CO        SET RDF2 STATE=ON
+%         END IF
 %       END IF                                                                  
 %     END BLOCK                                                                 
 %     BLOCK                         %HELP1%                                     
