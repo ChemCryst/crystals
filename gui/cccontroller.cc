@@ -2369,19 +2369,55 @@ string CcController::GetRegKey( string key, string name )
  }
 #else
 
- wxString str;
- wxString pkey = wxT("Crystals/");
- pkey += wxString(key.c_str(),wxConvUTF8);
- wxString wstr;
+ bool notfound = true; 
+ wxString wsdata;
 
- wxConfig * config = new wxConfig("Chem Cryst");
- if ( config->Read(pkey, &wstr ) ) {
-   data = str.mb_str();
+ wxRegKey regcu(wxRegKey::HKCU, ""); //first try HKCU
+ if (regcu.HasSubKey(key.c_str()) ) {
+	wxRegKey keycu(wxRegKey::HKCU, key.c_str());
+	if ( keycu.HasValue(name.c_str()) && keycu.QueryValue(name.c_str(), wsdata)) {
+		data = wsdata.mb_str();
+		notfound = false;
+	}
+ } 
+
+ if ( notfound ) { // try 32-bit HKLM registry keys.
+	wxRegKey regcu32(wxRegKey::HKCU, "", wxRegKey::WOW64ViewMode_32); 
+	if (regcu32.HasSubKey(key.c_str()) ) {
+		wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
+		if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
+			data = wsdata.mb_str();
+			notfound = false;
+		}
+	}
+ 
  }
- delete config;
+
+ if ( notfound ) { // try HKLM registry keys.
+	wxRegKey reglm(wxRegKey::HKLM, ""); 
+	if (reglm.HasSubKey(key.c_str()) ) {
+		wxRegKey rkey(wxRegKey::HKLM, key.c_str());
+		if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
+			data = wsdata.mb_str();
+			notfound = false;
+		}
+	}
+ }
+ 
+ if ( notfound ) { // try HKLM 32-bit registry keys.
+	wxRegKey reglm(wxRegKey::HKLM, "", wxRegKey::WOW64ViewMode_32); 
+	if (reglm.HasSubKey(key.c_str()) ) {
+		wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
+		if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
+			data = wsdata.mb_str();
+			notfound = false;
+		}
+	}
+ }
+ 
+ 
+ 
 #endif
-
-
  return data;
 }
 
