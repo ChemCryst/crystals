@@ -1840,25 +1840,25 @@ C--UPERP and UPERP2 RESTRAINTS PRINT
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
         IF (ISSPRT .EQ. 0) THEN              
-          WRITE(NCWU,3296) 
+          WRITE(NCWU,3296) ' ',
      1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
      3      subrestraint%atoms(1)%adps_cart(1,3)-B, 'U[13]'
-          WRITE(NCWU,3296) 
+          WRITE(NCWU,3296) ' ',
      1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
      3      subrestraint%atoms(1)%adps_cart(2,3)-B, 'U[23]'     
         ENDIF      
        
 3297    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
-        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+        WRITE(CMON, 3297) ' ', subrestraint%atoms(1)%label,
      1     subrestraint%atoms(1)%serial,
      2     subrestraint%atoms(1)%adps_cart(1,3),
      3     subrestraint%atoms(1)%adps_cart(1,3)-B, ! B is the target
      4     'U[13]'
         CALL XPRVDU(NCVDU, 1,0)
        
-        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+        WRITE(CMON, 3297) ' ',subrestraint%atoms(1)%label,
      1     subrestraint%atoms(1)%serial,
      2     subrestraint%atoms(1)%adps_cart(2,3),
      3     subrestraint%atoms(1)%adps_cart(2,3)-B, ! B is the target
@@ -2147,25 +2147,25 @@ C--UPLANE RESTRAINTS PRINT
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
         IF (ISSPRT .EQ. 0) THEN              
-          WRITE(NCWU,3296)
+          WRITE(NCWU,3296)' ',
      1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,2),
      3      subrestraint%atoms(1)%adps_cart(1,2)-B, 'U[12]'
-          WRITE(NCWU,3296)
+          WRITE(NCWU,3296)' ',
      1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
      3      subrestraint%atoms(1)%adps_cart(2,3)-B, 'U[23]'     
         ENDIF      
        
 !3297   FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
-        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+        WRITE(CMON, 3297)' ', subrestraint%atoms(1)%label,
      1     subrestraint%atoms(1)%serial,
      2     subrestraint%atoms(1)%adps_cart(1,2),
      3     subrestraint%atoms(1)%adps_cart(1,2)-B, ! B is the target
      4     'U[12]'
         CALL XPRVDU(NCVDU, 1,0)
        
-        WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+        WRITE(CMON, 3297)' ', subrestraint%atoms(1)%label,
      1     subrestraint%atoms(1)%serial,
      2     subrestraint%atoms(1)%adps_cart(2,3),
      3     subrestraint%atoms(1)%adps_cart(2,3)-B, ! B is the target
@@ -2443,25 +2443,25 @@ C--UEIG RESTRAINTS PRINT
       associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
 
       IF (ISSPRT .EQ. 0) THEN              
-        WRITE(NCWU,3296) 
+        WRITE(NCWU,3296) ' ',
      1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,1),
      3    subrestraint%atoms(1)%adps_cart(1,1)-B, 'U[11]'
-        WRITE(NCWU,3296)  
+        WRITE(NCWU,3296)  ' ',
      1    subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2    (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(2,2),
      3    subrestraint%atoms(1)%adps_cart(2,2)-B, 'U[22]'     
       ENDIF      
        
 !3297  FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
-      WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+      WRITE(CMON, 3297) ' ',subrestraint%atoms(1)%label,
      1   subrestraint%atoms(1)%serial,
      2   subrestraint%atoms(1)%adps_cart(1,1),
      3   subrestraint%atoms(1)%adps_cart(1,1)-B, ! B is the target
      4   'U[11]'
       CALL XPRVDU(NCVDU, 1,0)
        
-      WRITE(CMON, 3297) subrestraint%atoms(1)%label,
+      WRITE(CMON, 3297) ' ',subrestraint%atoms(1)%label,
      1   subrestraint%atoms(1)%serial,
      2   subrestraint%atoms(1)%adps_cart(2,2),
      3   subrestraint%atoms(1)%adps_cart(2,2)-B, ! B is the target
