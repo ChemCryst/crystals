@@ -1,0 +1,937 @@
+#TITLE TEST SYST/SORT/MERGE
+# PART 1 SETS THE FREIDEL PAIRS FLAG TO NO IN SYST, THUS KEEPING
+# THE PAIRS SEPARATE INDEPENDENT OF WHAT WAS SET IN LIST 13
+#
+# AFTER SORTING, THE REFLCTIONS ARE FIRST MERGED WITH TWIN SET TO YES,
+# THUS ONLY MERGING FOT FOR REFLECTIONS WITH IDENTICAL ELEMENT FLAGS. THE
+# DATA IS STILL TWINNED AND SO NEEDS A LIST 25 AND A LIST 13 INDICATING TWINNING
+#
+# THE DATA IS THEN FUTHER MERGED WITH TWIN=NO.  THIS SETS THE ELEMENT FLAGS TO U
+# AND MERGES FO, THE DE-TWINNED OBSERVED STRUCTURE FACTORS. FRIEDEL PAIRS ARE ST
+# SEPARATE, SO THAT THERE ARE 2 REFLECTIONS IN THE FINAL LIST 7.
+#
+# PART 2 SETS THE FRIEDEL FLAG TO YES IN SYST, THUS APPLYING FRIEDELS LAW. SORT
+# ARE AS BEFORE, BUT BECAUSE FRIEDEL PAIRS ARE TRANSFORMED, THERE IS ONLY ONE RE
+# IN THE FINAL LSIT 7
+#
+#
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE
+#LIST 14
+#SPACE
+ The unique axis has been set to "b" - consistent with the unit cell   
+  Space Group P1 21/C 1 
+  The Space Group is  Centric  Primitive Monoclinic    Laue Symmetry 2/m     
+  Multiplicity of a General Site is   4  Laue-no is   2
+  The Unique Axis is b
+  The Equivalent Positions are:
+
+       x      y      z       -x  1/2+y  1/2-z 
+ 
+Space group symbol is   P    1    21/C 1   
+
+    Fourier limits are :-
+                              X axis from  0.000 to  1.000
+                              Y axis from  0.000 to  1.000
+                              Z axis from  0.000 to  0.250
+
+   Patterson limits are :-
+                              X axis from  0.000 to  1.000
+                              Y axis from  0.000 to  0.500
+                              Z axis from  0.000 to  0.500
+#LIST 3
+#LIST 4
+#
+# PUNCHED ON 21/04/17 AT 13:26:11
+#
+#LIST      5
+#
+# PUNCHED ON 21/04/17 AT 13:26:26
+#
+#LIST     12
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE
+# USE LAST
+#LIST 13
+#
+# PUNCHED ON 21/04/17 AT 13:26:36
+#
+#LIST     16
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE
+# USE LAST
+#LIST 23
+#LIST 25
+#LIST 28
+#LIST 29
+# COVALENT,VDW,IONIC,NUMBER,MUA,WEIGHT,COLOUR
+#LIST 31
+#LIST 39
+#
+#TITLE PART 1
+#STORE UNIT NCPU 9
+#LIST   7
+ The updated reflections are now on UNIT 53
+
+
+
+      11 reflections accepted           0 reflections rejected
+Upating List 13 for twinned data
+#PURG
+ The    Data    file is being rebuilt -
+ DO NOT abort the program
+ The new disc index has been re-written 
+ Disc index completely restored
+
+ Listing of file index of    Data    file 
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1 -13   0     17.00  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     17.00 
+   1 -13   0     17.21  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.20 
+   1 -13   0     17.42  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     17.40 
+   1 -13   0     17.63  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.60 
+   1  13   0     18.68  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.60 
+   1  13   0     18.80  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     18.80 
+   1  13   0     19.01  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     19.00 
+   1 -13   0     17.84  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     17.80 
+   1  13   0     18.05  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.00 
+   1  13   0     18.26  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     18.20 
+   1  13   0     18.47  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     18.40 
+-512
+#     11 reflections output
+#SYST 7 FRIED=NO
+ The updated reflections are now on UNIT 52
+
+
+
+     11 reflections accepted               0 reflections rejected
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1 -13   0     17.00  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     17.00 
+   1 -13   0     17.21  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.20 
+   1 -13   0     17.42  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     17.40 
+   1 -13   0     17.63  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.60 
+   1  13   0     18.68  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.60 
+   1  13   0     18.80  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     18.80 
+   1  13   0     19.01  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     19.00 
+   1 -13   0     17.84  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     17.80 
+   1  13   0     18.05  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.00 
+   1  13   0     18.26  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     18.20 
+   1  13   0     18.47  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     18.40 
+-512
+#     11 reflections output
+#SORT 7
+ After   1 pass      11 reflection(s) have been sorted
+ The updated reflections are now on UNIT 53
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1 -13   0     17.84  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     17.80 
+   1 -13   0     17.63  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.60 
+   1 -13   0     17.42  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     17.40 
+   1 -13   0     17.21  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.20 
+   1 -13   0     17.00  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     17.00 
+   1  13   0     18.47  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     18.40 
+   1  13   0     18.26  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     18.20 
+   1  13   0     18.05  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.00 
+   1  13   0     19.01  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     19.00 
+   1  13   0     18.80  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     18.80 
+   1  13   0     18.68  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.60 
+-512
+#     11 reflections output
+#MERGE 7 TWIN=YES
+
+
+ PART 1                                                                               Date              Time          
+
+
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
+
+                                                       316.84     13.92     55.89      0.00   0.10E+01     1         0
+                                                       289.00    -13.92     53.38      0.00   0.10E+01     1         0
+
+    1 -13   0     302.92      9.84     38.64               2 $    13.92     54.65
+
+                                                       295.84     -6.96     54.01      0.00   0.10E+01     1         0
+                                                       309.76      6.96     55.26      0.00   0.10E+01     1         0
+
+    1 -13   0     302.80      4.92     38.64               2 $     6.96     54.64
+
+
+    1 -13   0     302.76     54.64     54.64               1 $    54.64     54.64
+
+                                                       338.56    -11.22     57.78      0.00   0.10E+01     1         0
+                                                       361.00     11.22     59.66      0.00   0.10E+01     1         0
+
+    1  13   0     349.78      7.93     41.53               2 $    11.22     58.73
+
+                                                       324.00    -10.98     56.52      0.00   0.10E+01     1         0
+                                                       345.96     10.98     58.40      0.00   0.10E+01     1         0
+
+    1  13   0     334.98      7.76     40.64               2 $    10.98     57.47
+
+                                                       331.24    -11.10     57.15      0.00   0.10E+01     1         0
+                                                       353.44     11.10     59.03      0.00   0.10E+01     1         0
+
+    1  13   0     342.34      7.85     41.08               2 $    11.10     58.10
+
+ The updated reflections are now on UNIT 52
+
+
+ PART 1                                                                               Date              Time          
+
+
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
+   0.0 -  0.5     0  0     0     6 -
+   0.5 -  1.0     0  0     0     6 -
+   1.0 -  1.5     0  0     0     6 -
+   1.5 -  2.0     0  0     0     6 -
+   2.0 -  2.5     0  0     0     6 -
+   2.5 -  3.0     0  0     0     6 -
+   3.0 -  3.5     0  0     0     6 -
+   3.5 -  4.0     0  0     0     6 -
+   4.0 -  4.5     0  0     0     6 -
+   4.5 -  5.0     0  0     0     6 -
+   5.0 -  5.5     0  0     0     6 -
+   5.5 -  6.0     1 17     1     5 ---------------------------
+   6.0 -  6.5     0  0     1     5 -
+   6.5 -  7.0     0  0     1     5 -
+   7.0 -  7.5     0  0     1     5 -
+   7.5 -  8.0     2 33     3     3 ------------------------------------------------------
+   8.0 -  8.5     3 50     6     0 ---------------------------------------------------------------------------------
+   8.5 -  9.0     0  0     6     0 -
+   9.0 -  9.5     0  0     6     0 -
+   9.5 - 10.0     0  0     6     0 -
+  10.0 - 10.5     0  0     6     0 -
+  10.5 - 11.0     0  0     6     0 -
+  11.0 - 11.5     0  0     6     0 -
+  11.5 - 12.0     0  0     6     0 -
+  12.0 - 12.5     0  0     6     0 -
+  12.5 - 13.0     0  0     6     0 -
+  13.0 - 13.5     0  0     6     0 -
+  13.5 - 14.0     0  0     6     0 -
+  14.0 - 14.5     0  0     6     0 -
+  14.5 - 15.0     0  0     6     0 -
+  15.0 - 15.5     0  0     6     0 -
+  15.5 - 16.0     0  0     6     0 -
+  16.0 - 16.5     0  0     6     0 -
+  16.5 - 17.0     0  0     6     0 -
+  17.0 - 17.5     0  0     6     0 -
+  17.5 - 18.0     0  0     6     0 -
+  18.0 - 18.5     0  0     6     0 -
+  18.5 - 19.0     0  0     6     0 -
+  19.0 - 19.5     0  0     6     0 -
+  19.5 - 20.0     0  0     6     0 -
+  20.0 - 20.5     0  0     6     0 -
+  20.5 - 21.0     0  0     6     0 -
+  21.0 - 21.5     0  0     6     0 -
+  21.5 - 22.0     0  0     6     0 -
+  22.0 - 22.5     0  0     6     0 -
+  22.5 - 23.0     0  0     6     0 -
+  23.0 - 23.5     0  0     6     0 -
+  23.5 - 24.0     0  0     6     0 -
+  24.0 - 24.5     0  0     6     0 -
+  24.5 - 25.0     0  0     6     0 -
+  25.0 - 25.5     0  0     6     0 -
+  25.5 - 26.0     0  0     6     0 -
+  26.0 - 26.5     0  0     6     0 -
+  26.5 - 27.0     0  0     6     0 -
+  27.0 - 27.5     0  0     6     0 -
+  27.5 - 28.0     0  0     6     0 -
+  28.0 - 28.5     0  0     6     0 -
+  28.5 - 29.0     0  0     6     0 -
+  29.0 - 29.5     0  0     6     0 -
+  29.5 - 30.0     0  0     6     0 -
+  30.0 - 30.5     0  0     6     0 -
+  30.5 - 31.0     0  0     6     0 -
+  31.0 - 31.5     0  0     6     0 -
+  31.5 - 32.0     0  0     6     0 -
+  32.0 - 32.5     0  0     6     0 -
+  32.5 - 33.0     0  0     6     0 -
+  33.0 - 33.5     0  0     6     0 -
+  33.5 - 34.0     0  0     6     0 -
+  34.0 - 34.5     0  0     6     0 -
+  34.5 - 35.0     0  0     6     0 -
+  35.0 - 35.5     0  0     6     0 -
+  35.5 - 36.0     0  0     6     0 -
+  36.0 - 36.5     0  0     6     0 -
+  36.5 - 37.0     0  0     6     0 -
+  37.0 - 37.5     0  0     6     0 -
+  37.5 - 38.0     0  0     6     0 -
+  38.0 - 38.5     0  0     6     0 -
+  38.5 - 39.0     0  0     6     0 -
+  39.0 - 39.5     0  0     6     0 -
+  39.5 - 40.0     0  0     6     0 -
+  40.0 - 40.5     0  0     6     0 -
+  40.5 - 41.0     0  0     6     0 -
+  41.0 - 41.5     0  0     6     0 -
+  41.5 - 42.0     0  0     6     0 -
+  42.0 - 42.5     0  0     6     0 -
+  42.5 - 43.0     0  0     6     0 -
+  43.0 - 43.5     0  0     6     0 -
+  43.5 - 44.0     0  0     6     0 -
+  44.0 - 44.5     0  0     6     0 -
+  44.5 - 45.0     0  0     6     0 -
+  45.0 - 45.5     0  0     6     0 -
+  45.5 - 46.0     0  0     6     0 -
+  46.0 - 46.5     0  0     6     0 -
+  46.5 - 47.0     0  0     6     0 -
+  47.0 - 47.5     0  0     6     0 -
+  47.5 - 48.0     0  0     6     0 -
+  48.0 - 48.5     0  0     6     0 -
+  48.5 - 49.0     0  0     6     0 -
+  49.0 - 49.5     0  0     6     0 -
+  49.5 - 50.0     0  0     6     0 -
+
+
+
+    11 Contributors input            0 Contributors rejected
+     6 Merged reflections output     0 Merged reflections rejected
+     0 Contributors deviating from the average by more than   3.0e.s.ds
+     6 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.033
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.034
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
+[41]                0.00            0.03           0.00
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1 -13   0     17.43   0.00          3.99  1. -3.10  0.    1.11 1.0000     12.     17.40 
+   1 -13   0     17.42   0.00          3.99  1. -3.10  0.    1.11 1.0000      1.     17.40 
+   1 -13   0     17.42  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     17.40 
+   1  13   0     18.74   0.00          3.23  1. -3.10  0.    1.11 1.0000      2.     18.70 
+   1  13   0     18.37   0.00          3.99  1. -3.10  0.    1.11 1.0000     12.     18.30 
+   1  13   0     18.53   0.00          3.99  1. -3.10  0.    1.11 1.0000      1.     18.50 
+-512
+#      6 reflections output
+#MERGE 7 TWIN=NO
+
+
+ PART 1                                                                               Date              Time          
+
+
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
+
+                                                       303.63      0.10     38.69      0.00   0.10E+01     0         0
+                                                       303.50     -0.03     38.68      0.00   0.10E+01     0         0
+                                                       303.46     -0.07     54.70      0.00   0.10E+01     1         0
+
+    1 -13   0     303.53      0.04     25.79               3 $     0.07     44.67
+
+                                                       351.26      7.24     41.61      0.00   0.10E+01     0         0
+                                                       337.37     -6.65     40.78      0.00   0.10E+01     0         0
+                                                       343.43     -0.59     41.15      0.00   0.10E+01     0         0
+
+    1  13   0     344.02      3.28     23.78               3 $     5.69     41.18
+
+ The updated reflections are now on UNIT 53
+
+
+ PART 1                                                                               Date              Time          
+
+
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
+   0.0 -  0.5     0  0     0     2 -
+   0.5 -  1.0     0  0     0     2 -
+   1.0 -  1.5     0  0     0     2 -
+   1.5 -  2.0     0  0     0     2 -
+   2.0 -  2.5     0  0     0     2 -
+   2.5 -  3.0     0  0     0     2 -
+   3.0 -  3.5     0  0     0     2 -
+   3.5 -  4.0     0  0     0     2 -
+   4.0 -  4.5     0  0     0     2 -
+   4.5 -  5.0     0  0     0     2 -
+   5.0 -  5.5     0  0     0     2 -
+   5.5 -  6.0     0  0     0     2 -
+   6.0 -  6.5     0  0     0     2 -
+   6.5 -  7.0     0  0     0     2 -
+   7.0 -  7.5     0  0     0     2 -
+   7.5 -  8.0     0  0     0     2 -
+   8.0 -  8.5     0  0     0     2 -
+   8.5 -  9.0     0  0     0     2 -
+   9.0 -  9.5     0  0     0     2 -
+   9.5 - 10.0     0  0     0     2 -
+  10.0 - 10.5     0  0     0     2 -
+  10.5 - 11.0     0  0     0     2 -
+  11.0 - 11.5     0  0     0     2 -
+  11.5 - 12.0     1 50     1     1 ---------------------------------------------------------------------------------
+  12.0 - 12.5     0  0     1     1 -
+  12.5 - 13.0     0  0     1     1 -
+  13.0 - 13.5     0  0     1     1 -
+  13.5 - 14.0     0  0     1     1 -
+  14.0 - 14.5     1 50     2     0 ---------------------------------------------------------------------------------
+  14.5 - 15.0     0  0     2     0 -
+  15.0 - 15.5     0  0     2     0 -
+  15.5 - 16.0     0  0     2     0 -
+  16.0 - 16.5     0  0     2     0 -
+  16.5 - 17.0     0  0     2     0 -
+  17.0 - 17.5     0  0     2     0 -
+  17.5 - 18.0     0  0     2     0 -
+  18.0 - 18.5     0  0     2     0 -
+  18.5 - 19.0     0  0     2     0 -
+  19.0 - 19.5     0  0     2     0 -
+  19.5 - 20.0     0  0     2     0 -
+  20.0 - 20.5     0  0     2     0 -
+  20.5 - 21.0     0  0     2     0 -
+  21.0 - 21.5     0  0     2     0 -
+  21.5 - 22.0     0  0     2     0 -
+  22.0 - 22.5     0  0     2     0 -
+  22.5 - 23.0     0  0     2     0 -
+  23.0 - 23.5     0  0     2     0 -
+  23.5 - 24.0     0  0     2     0 -
+  24.0 - 24.5     0  0     2     0 -
+  24.5 - 25.0     0  0     2     0 -
+  25.0 - 25.5     0  0     2     0 -
+  25.5 - 26.0     0  0     2     0 -
+  26.0 - 26.5     0  0     2     0 -
+  26.5 - 27.0     0  0     2     0 -
+  27.0 - 27.5     0  0     2     0 -
+  27.5 - 28.0     0  0     2     0 -
+  28.0 - 28.5     0  0     2     0 -
+  28.5 - 29.0     0  0     2     0 -
+  29.0 - 29.5     0  0     2     0 -
+  29.5 - 30.0     0  0     2     0 -
+  30.0 - 30.5     0  0     2     0 -
+  30.5 - 31.0     0  0     2     0 -
+  31.0 - 31.5     0  0     2     0 -
+  31.5 - 32.0     0  0     2     0 -
+  32.0 - 32.5     0  0     2     0 -
+  32.5 - 33.0     0  0     2     0 -
+  33.0 - 33.5     0  0     2     0 -
+  33.5 - 34.0     0  0     2     0 -
+  34.0 - 34.5     0  0     2     0 -
+  34.5 - 35.0     0  0     2     0 -
+  35.0 - 35.5     0  0     2     0 -
+  35.5 - 36.0     0  0     2     0 -
+  36.0 - 36.5     0  0     2     0 -
+  36.5 - 37.0     0  0     2     0 -
+  37.0 - 37.5     0  0     2     0 -
+  37.5 - 38.0     0  0     2     0 -
+  38.0 - 38.5     0  0     2     0 -
+  38.5 - 39.0     0  0     2     0 -
+  39.0 - 39.5     0  0     2     0 -
+  39.5 - 40.0     0  0     2     0 -
+  40.0 - 40.5     0  0     2     0 -
+  40.5 - 41.0     0  0     2     0 -
+  41.0 - 41.5     0  0     2     0 -
+  41.5 - 42.0     0  0     2     0 -
+  42.0 - 42.5     0  0     2     0 -
+  42.5 - 43.0     0  0     2     0 -
+  43.0 - 43.5     0  0     2     0 -
+  43.5 - 44.0     0  0     2     0 -
+  44.0 - 44.5     0  0     2     0 -
+  44.5 - 45.0     0  0     2     0 -
+  45.0 - 45.5     0  0     2     0 -
+  45.5 - 46.0     0  0     2     0 -
+  46.0 - 46.5     0  0     2     0 -
+  46.5 - 47.0     0  0     2     0 -
+  47.0 - 47.5     0  0     2     0 -
+  47.5 - 48.0     0  0     2     0 -
+  48.0 - 48.5     0  0     2     0 -
+  48.5 - 49.0     0  0     2     0 -
+  49.0 - 49.5     0  0     2     0 -
+  49.5 - 50.0     0  0     2     0 -
+
+
+
+     6 Contributors input            0 Contributors rejected
+     2 Merged reflections output     0 Merged reflections rejected
+     0 Contributors deviating from the average by more than   3.0e.s.ds
+     2 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.008
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.012
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
+[41]                0.00            0.00           0.00
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1 -13   0     17.42   0.00          3.75  1. -3.10  0.    0.74 1.0000      1.     17.40 
+   1  13   0     18.55   0.00          3.75  1. -3.10  0.    0.64 1.0000      1.     18.50 
+-512
+#      2 reflections output
+#TITLE PART 1
+#LIST   7
+ The updated reflections are now on UNIT 52
+
+
+
+      11 reflections accepted           0 reflections rejected
+Upating List 13 for twinned data
+#PURG
+ The    Data    file is being rebuilt -
+ DO NOT abort the program
+ The new disc index has been re-written 
+ Disc index completely restored
+
+ Listing of file index of    Data    file 
+#USE TD-SYST-SORT.L7
+# PUNCHING LIST  7 AS LIST  7 WITH ALL KEYS SET
+# NBGNXT=    67
+#LIST   7
+ The updated reflections are now on UNIT 53
+
+
+
+      11 reflections accepted           0 reflections rejected
+Upating List 13 for twinned data
+#   3796 REFLECTIONS OUTPUT
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1 -13   0     17.24  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+   1 -13   0     17.00  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1 -13   0     19.00  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     19.00 
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     19.00 
+   1 -13   0     17.50  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1 -13   0     17.42  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     19.00 
+-512
+#     11 reflections output
+#SYST 7 FRIED=YES
+ The updated reflections are now on UNIT 52
+
+
+
+     11 reflections accepted               0 reflections rejected
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     19.00 
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.88 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.00 
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     19.00 
+   1  13   0     17.50  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1  13   0     17.42  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.88 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.00 
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     19.00 
+-512
+#     11 reflections output
+#SORT 7
+ After   1 pass      11 reflection(s) have been sorted
+ The updated reflections are now on UNIT 53
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     19.00 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.00 
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.88 
+   1  13   0     17.42  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+   1  13   0     17.50  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     19.00 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000      1.     17.00 
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.88 
+   1  13   0     19.00  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     19.00 
+   1  13   0     17.00  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000      1.     17.00 
+   1  13   0     17.24  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
+-512
+#     11 reflections output
+#MERGE 7 TWIN=YES
+
+
+ PART 1                                                                               Date              Time          
+
+
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
+
+                                                       361.00      0.00     59.66      0.00   0.10E+01     1         0
+                                                       361.00      0.00     59.66      0.00   0.10E+01     1         0
+                                                       361.00      0.00     59.66      0.00   0.10E+01     2         0
+
+    1  13   0     361.00      0.01     34.44               3 $     0.00     59.66
+
+                                                       356.45      0.00     59.28      0.00   0.10E+01     2         0
+                                                       356.45      0.00     59.28      0.00   0.10E+01     1         0
+                                                       356.45      0.00     59.28      0.00   0.10E+01     1         0
+                                                       356.45      0.00     59.28      0.00   0.10E+01     2         0
+
+    1  13   0     356.45      0.01     29.64               4 $     0.00     59.28
+
+                                                       289.00      0.00     53.38      0.00   0.10E+01     2         0
+                                                       289.00      0.00     53.38      0.00   0.10E+01     1         0
+                                                       289.00      0.00     53.38      0.00   0.10E+01     1         0
+                                                       289.00      0.00     53.38      0.00   0.10E+01     2         0
+
+    1  13   0     289.00      0.01     26.69               4 $     0.00     53.38
+
+ The updated reflections are now on UNIT 52
+
+
+ PART 1                                                                               Date              Time          
+
+
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
+   0.0 -  0.5     0  0     0     3 -
+   0.5 -  1.0     0  0     0     3 -
+   1.0 -  1.5     0  0     0     3 -
+   1.5 -  2.0     0  0     0     3 -
+   2.0 -  2.5     0  0     0     3 -
+   2.5 -  3.0     0  0     0     3 -
+   3.0 -  3.5     0  0     0     3 -
+   3.5 -  4.0     0  0     0     3 -
+   4.0 -  4.5     0  0     0     3 -
+   4.5 -  5.0     0  0     0     3 -
+   5.0 -  5.5     0  0     0     3 -
+   5.5 -  6.0     0  0     0     3 -
+   6.0 -  6.5     0  0     0     3 -
+   6.5 -  7.0     0  0     0     3 -
+   7.0 -  7.5     0  0     0     3 -
+   7.5 -  8.0     0  0     0     3 -
+   8.0 -  8.5     0  0     0     3 -
+   8.5 -  9.0     0  0     0     3 -
+   9.0 -  9.5     0  0     0     3 -
+   9.5 - 10.0     0  0     0     3 -
+  10.0 - 10.5     1 33     1     2 ---------------------------------------------------------------------------------
+  10.5 - 11.0     1 33     2     1 ---------------------------------------------------------------------------------
+  11.0 - 11.5     0  0     2     1 -
+  11.5 - 12.0     0  0     2     1 -
+  12.0 - 12.5     1 33     3     0 ---------------------------------------------------------------------------------
+  12.5 - 13.0     0  0     3     0 -
+  13.0 - 13.5     0  0     3     0 -
+  13.5 - 14.0     0  0     3     0 -
+  14.0 - 14.5     0  0     3     0 -
+  14.5 - 15.0     0  0     3     0 -
+  15.0 - 15.5     0  0     3     0 -
+  15.5 - 16.0     0  0     3     0 -
+  16.0 - 16.5     0  0     3     0 -
+  16.5 - 17.0     0  0     3     0 -
+  17.0 - 17.5     0  0     3     0 -
+  17.5 - 18.0     0  0     3     0 -
+  18.0 - 18.5     0  0     3     0 -
+  18.5 - 19.0     0  0     3     0 -
+  19.0 - 19.5     0  0     3     0 -
+  19.5 - 20.0     0  0     3     0 -
+  20.0 - 20.5     0  0     3     0 -
+  20.5 - 21.0     0  0     3     0 -
+  21.0 - 21.5     0  0     3     0 -
+  21.5 - 22.0     0  0     3     0 -
+  22.0 - 22.5     0  0     3     0 -
+  22.5 - 23.0     0  0     3     0 -
+  23.0 - 23.5     0  0     3     0 -
+  23.5 - 24.0     0  0     3     0 -
+  24.0 - 24.5     0  0     3     0 -
+  24.5 - 25.0     0  0     3     0 -
+  25.0 - 25.5     0  0     3     0 -
+  25.5 - 26.0     0  0     3     0 -
+  26.0 - 26.5     0  0     3     0 -
+  26.5 - 27.0     0  0     3     0 -
+  27.0 - 27.5     0  0     3     0 -
+  27.5 - 28.0     0  0     3     0 -
+  28.0 - 28.5     0  0     3     0 -
+  28.5 - 29.0     0  0     3     0 -
+  29.0 - 29.5     0  0     3     0 -
+  29.5 - 30.0     0  0     3     0 -
+  30.0 - 30.5     0  0     3     0 -
+  30.5 - 31.0     0  0     3     0 -
+  31.0 - 31.5     0  0     3     0 -
+  31.5 - 32.0     0  0     3     0 -
+  32.0 - 32.5     0  0     3     0 -
+  32.5 - 33.0     0  0     3     0 -
+  33.0 - 33.5     0  0     3     0 -
+  33.5 - 34.0     0  0     3     0 -
+  34.0 - 34.5     0  0     3     0 -
+  34.5 - 35.0     0  0     3     0 -
+  35.0 - 35.5     0  0     3     0 -
+  35.5 - 36.0     0  0     3     0 -
+  36.0 - 36.5     0  0     3     0 -
+  36.5 - 37.0     0  0     3     0 -
+  37.0 - 37.5     0  0     3     0 -
+  37.5 - 38.0     0  0     3     0 -
+  38.0 - 38.5     0  0     3     0 -
+  38.5 - 39.0     0  0     3     0 -
+  39.0 - 39.5     0  0     3     0 -
+  39.5 - 40.0     0  0     3     0 -
+  40.0 - 40.5     0  0     3     0 -
+  40.5 - 41.0     0  0     3     0 -
+  41.0 - 41.5     0  0     3     0 -
+  41.5 - 42.0     0  0     3     0 -
+  42.0 - 42.5     0  0     3     0 -
+  42.5 - 43.0     0  0     3     0 -
+  43.0 - 43.5     0  0     3     0 -
+  43.5 - 44.0     0  0     3     0 -
+  44.0 - 44.5     0  0     3     0 -
+  44.5 - 45.0     0  0     3     0 -
+  45.0 - 45.5     0  0     3     0 -
+  45.5 - 46.0     0  0     3     0 -
+  46.0 - 46.5     0  0     3     0 -
+  46.5 - 47.0     0  0     3     0 -
+  47.0 - 47.5     0  0     3     0 -
+  47.5 - 48.0     0  0     3     0 -
+  48.0 - 48.5     0  0     3     0 -
+  48.5 - 49.0     0  0     3     0 -
+  49.0 - 49.5     0  0     3     0 -
+  49.5 - 50.0     0  0     3     0 -
+
+
+
+    11 Contributors input            0 Contributors rejected
+     3 Merged reflections output     0 Merged reflections rejected
+     0 Contributors deviating from the average by more than   3.0e.s.ds
+     3 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
+[41]                0.00            0.00           0.00
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1  13   0     19.00   0.00          3.23  1. -3.10  0.    0.91 1.0000      2.     19.00 
+   1  13   0     17.29   0.00          3.99  1. -3.10  0.    0.79 1.0000     12.     18.88 
+   1  13   0     17.13   0.00          3.99  1. -3.10  0.    0.79 1.0000      1.     17.00 
+-512
+#      3 reflections output
+#MERGE 7 TWIN=NO
+
+
+ PART 1                                                                               Date              Time          
+
+
+                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
+
+                                                       361.00     43.30     34.44      0.00   0.10E+01     0         0
+                                                       298.78    -18.92     27.14      0.00   0.10E+01     0         0
+                                                       293.31    -24.38     26.89      0.00   0.10E+01     0         0
+
+    1  13   0     317.70     17.73     17.15               3 $    30.70     29.70
+
+ The updated reflections are now on UNIT 53
+
+
+ PART 1                                                                               Date              Time          
+
+
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
+   0.0 -  0.5     0  0     0     1 -
+   0.5 -  1.0     0  0     0     1 -
+   1.0 -  1.5     0  0     0     1 -
+   1.5 -  2.0     0  0     0     1 -
+   2.0 -  2.5     0  0     0     1 -
+   2.5 -  3.0     0  0     0     1 -
+   3.0 -  3.5     0  0     0     1 -
+   3.5 -  4.0     0  0     0     1 -
+   4.0 -  4.5     0  0     0     1 -
+   4.5 -  5.0     0  0     0     1 -
+   5.0 -  5.5     0  0     0     1 -
+   5.5 -  6.0     0  0     0     1 -
+   6.0 -  6.5     0  0     0     1 -
+   6.5 -  7.0     0  0     0     1 -
+   7.0 -  7.5     0  0     0     1 -
+   7.5 -  8.0     0  0     0     1 -
+   8.0 -  8.5     0  0     0     1 -
+   8.5 -  9.0     0  0     0     1 -
+   9.0 -  9.5     0  0     0     1 -
+   9.5 - 10.0     0  0     0     1 -
+  10.0 - 10.5     0  0     0     1 -
+  10.5 - 11.0     0  0     0     1 -
+  11.0 - 11.5     0  0     0     1 -
+  11.5 - 12.0     0  0     0     1 -
+  12.0 - 12.5     0  0     0     1 -
+  12.5 - 13.0     0  0     0     1 -
+  13.0 - 13.5     0  0     0     1 -
+  13.5 - 14.0     0  0     0     1 -
+  14.0 - 14.5     0  0     0     1 -
+  14.5 - 15.0     0  0     0     1 -
+  15.0 - 15.5     0  0     0     1 -
+  15.5 - 16.0     0  0     0     1 -
+  16.0 - 16.5     0  0     0     1 -
+  16.5 - 17.0     0  0     0     1 -
+  17.0 - 17.5     0  0     0     1 -
+  17.5 - 18.0     0  0     0     1 -
+  18.0 - 18.5     0  0     0     1 -
+  18.5 - 19.0     1100     1     0 ---------------------------------------------------------------------------------
+  19.0 - 19.5     0  0     1     0 -
+  19.5 - 20.0     0  0     1     0 -
+  20.0 - 20.5     0  0     1     0 -
+  20.5 - 21.0     0  0     1     0 -
+  21.0 - 21.5     0  0     1     0 -
+  21.5 - 22.0     0  0     1     0 -
+  22.0 - 22.5     0  0     1     0 -
+  22.5 - 23.0     0  0     1     0 -
+  23.0 - 23.5     0  0     1     0 -
+  23.5 - 24.0     0  0     1     0 -
+  24.0 - 24.5     0  0     1     0 -
+  24.5 - 25.0     0  0     1     0 -
+  25.0 - 25.5     0  0     1     0 -
+  25.5 - 26.0     0  0     1     0 -
+  26.0 - 26.5     0  0     1     0 -
+  26.5 - 27.0     0  0     1     0 -
+  27.0 - 27.5     0  0     1     0 -
+  27.5 - 28.0     0  0     1     0 -
+  28.0 - 28.5     0  0     1     0 -
+  28.5 - 29.0     0  0     1     0 -
+  29.0 - 29.5     0  0     1     0 -
+  29.5 - 30.0     0  0     1     0 -
+  30.0 - 30.5     0  0     1     0 -
+  30.5 - 31.0     0  0     1     0 -
+  31.0 - 31.5     0  0     1     0 -
+  31.5 - 32.0     0  0     1     0 -
+  32.0 - 32.5     0  0     1     0 -
+  32.5 - 33.0     0  0     1     0 -
+  33.0 - 33.5     0  0     1     0 -
+  33.5 - 34.0     0  0     1     0 -
+  34.0 - 34.5     0  0     1     0 -
+  34.5 - 35.0     0  0     1     0 -
+  35.0 - 35.5     0  0     1     0 -
+  35.5 - 36.0     0  0     1     0 -
+  36.0 - 36.5     0  0     1     0 -
+  36.5 - 37.0     0  0     1     0 -
+  37.0 - 37.5     0  0     1     0 -
+  37.5 - 38.0     0  0     1     0 -
+  38.0 - 38.5     0  0     1     0 -
+  38.5 - 39.0     0  0     1     0 -
+  39.0 - 39.5     0  0     1     0 -
+  39.5 - 40.0     0  0     1     0 -
+  40.0 - 40.5     0  0     1     0 -
+  40.5 - 41.0     0  0     1     0 -
+  41.0 - 41.5     0  0     1     0 -
+  41.5 - 42.0     0  0     1     0 -
+  42.0 - 42.5     0  0     1     0 -
+  42.5 - 43.0     0  0     1     0 -
+  43.0 - 43.5     0  0     1     0 -
+  43.5 - 44.0     0  0     1     0 -
+  44.0 - 44.5     0  0     1     0 -
+  44.5 - 45.0     0  0     1     0 -
+  45.0 - 45.5     0  0     1     0 -
+  45.5 - 46.0     0  0     1     0 -
+  46.0 - 46.5     0  0     1     0 -
+  46.5 - 47.0     0  0     1     0 -
+  47.0 - 47.5     0  0     1     0 -
+  47.5 - 48.0     0  0     1     0 -
+  48.0 - 48.5     0  0     1     0 -
+  48.5 - 49.0     0  0     1     0 -
+  49.0 - 49.5     0  0     1     0 -
+  49.5 - 50.0     0  0     1     0 -
+
+
+
+     3 Contributors input            0 Contributors rejected
+     1 Merged reflections output     0 Merged reflections rejected
+     0 Contributors deviating from the average by more than   3.0e.s.ds
+     1 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.091
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.097
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
+[41]                0.09            0.00           0.00
+#PUNCH 7 I
+# punching LIST  7 as LIST  7 with all keys set
+# NBGNXT=    67
+#LIST   7
+READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
+STORE  NCOEF=10
+OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
+CONT   SIGMA(/FO/) CORRECTIONS ELEMENTS    /FOT/      
+INPUT  H           K           L           /FO/        SQRTW       /FC/       
+CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS ELEMENTS   
+CONT   /FOT/      
+FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F8.0,F10.2)
+END
+   1  13   0     17.82   0.00          3.75  1. -3.10  0.    0.48 1.0000      1.     18.32 
+-512
+#      1 reflections output
+#END
+
+
+          : Job ends ok       with     0 warnings and     0 errors
