@@ -672,7 +672,8 @@ c stupid compiler has a stack overflow by making a temporary array
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 #endif
                istore(L11P+30)=1
-               
+        write(NCWU,*)'Debug, info after inversion is: ',INFO, 
+     1 ' L11C: ', L11C, ' JY: ', JY, ' STR11(L11C): ', STR11(L11C)
                if(info==1111111) then
                   WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
                   CALL XPRVDU(NCVDU, 1,0)   
