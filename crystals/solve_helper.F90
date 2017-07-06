@@ -418,7 +418,7 @@ print *, 'SSYTRF info: ', info
 #endif
 deallocate(work)
 
-if(info>0) then 
+if(info/=0) then 
 	return
 end if
 
@@ -430,6 +430,11 @@ print *, 'SSYCON info: ', info
 #endif
 deallocate(work)
 deallocate(iwork)
+
+if(info/=0) then 
+	return
+end if
+
 #if defined(CRY_OSLINUX)
 print *, 'condition number ', 1.0/rcond
 print *, 'relative error ', 1.0/rcond*epsilon(1.0)
@@ -461,7 +466,7 @@ print *, 'invert via LDL^t decomposition', &
 &       measuredtime(8)-starttime, 'ms'
 #endif
 
-if(info>0) then 
+if(info/=0) then 
 	return
 end if
 
