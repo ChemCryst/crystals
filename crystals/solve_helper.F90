@@ -393,6 +393,13 @@ do i=1, nmsize
     onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
 end do
 
+
+
+write(ncwu,*) 'Debug normal m: ' 
+do i = 1,nmsize
+ write(ncwu,*) (unpacked(i,j),j=1,nmsize)
+end do
+
 !open(666, file='matrix', form="unformatted",access="stream")
 !write(666) unpacked
 !close(666)
