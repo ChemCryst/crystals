@@ -875,6 +875,7 @@ C      S             SHIFT/ESD
 C      ILEVEL        MONITORING LEVEL
 C      MW            NO OF ITEMS PER ENTRY IN SHIFT DETAILS
 c
+            write(ncwu,'(a,E10.3)') 'solve.F:878 store(jo) ', store(jo)
             IHIT = KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
      1                   E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
             IF (IHIT .EQ. 0) GOTO  3450
@@ -2169,7 +2170,7 @@ C---------  SAVE THE HIT VALUES
             js2 = 0
 C---------  COMPUTE ESD
             A=STR11(JQ)
-            write(buffer, '(4(A,1X,E10.3))') 'A',A,'E',E,
+            write(buffer, '(4(A,1X,E10.3,1X))') 'A',A,'E',E,
      1        'sqrt(a*e)',SQRT(A*E),'store(jo)',store(jo)
             A=SQRT(A*E)
 C--CHECK IF WE ARE USING AN OLD LIST 24
