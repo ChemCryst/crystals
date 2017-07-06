@@ -7,7 +7,8 @@ contains
 subroutine eigen_inversion(nmatrix, nmsize, eigcutoff, nrejected, condition, filtered_condition, info)
 use m_mrgrnk
 use xiobuf_mod, only: cmon
-use xunits_mod, only: ncvdu
+use xunits_mod, only: ncvdu, ncwu
+use xssval_mod, only: issprt
 implicit none
 !> Leading dimension of the matrix nmatrix
 integer, intent(in) :: nmsize
@@ -116,6 +117,10 @@ do while(eigvalues(nmsize)/max(tiny(1.0),eigvalues(i))*epsilon(1.0)>eigcutoff)
     WRITE ( CMON, '(A,1PE10.3,A,I0)') '{I Eigenvalue ', eigvalues(i), &
     &  ' rejected. Hint: look at parameter ', maxloc(abs(eigvectors(:,i)))
     CALL XPRVDU(NCVDU, 1,0)
+    if(issprt==0) then
+      WRITE ( NCWU, '(A,1PE10.3,A,I0)') ' Eigenvalue ', eigvalues(i), &
+      &  ' rejected. Hint: look at parameter ', maxloc(abs(eigvectors(:,i)))
+    end if
 #if defined(CRY_OSLINUX)
     print *, i, eigvalues(i), ' eig value rejected, max eig value: ', eigvalues(nmsize)
     print *, maxloc(abs(eigvectors(:,i))), maxval(abs(eigvectors(:,i)))

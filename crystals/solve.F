@@ -676,11 +676,16 @@ c stupid compiler has a stack overflow by making a temporary array
                if(info==1111111) then
                   WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
                   CALL XPRVDU(NCVDU, 1,0)   
+                  WRITE ( NCWU, '(A)') '!! Problem ill-conditioned.' 
 
 c we are now trying to invert using eigen value filtering
                   WRITE ( CMON, '(A)') 
      1              '{I trying eigen value filtering inversion.' 
-                  CALL XPRVDU(NCVDU, 1,0)   
+                  CALL XPRVDU(NCVDU, 1,0) 
+                  if(issprt==0) then  
+                    WRITE ( NCWU, '(A)') 
+     1                'Trying eigen value filtering inversion.' 
+                  end if
 #ifdef CRY_FORTDIGITAL
 c stupid compiler has a stack overflow by making a temporary array 
                  call eigen_inversion(STR11(L11C), 
@@ -695,6 +700,10 @@ c stupid compiler has a stack overflow by making a temporary array
                  if(info/=0) then
                     WRITE ( CMON, '(A,I8)') '{E Error in ssyevd ', info 
                     CALL XPRVDU(NCVDU, 1,0)
+                    if(issprt==0) then
+                      WRITE ( NCWU, '(A,I8)') 
+     1                  '{!! Error in ssyevd ', info 
+                    end if
                     STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   end if
 c end invert using eigen value filtering
@@ -703,6 +712,10 @@ c end invert using eigen value filtering
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
      1                ' is singular. Inversion failed.' 
                   CALL XPRVDU(NCVDU, 1,0)
+                  if(issprt==0) then
+                    WRITE ( NCWU, '(A,I8)') '!! Parameter ', info, 
+     1                ' is singular. Inversion failed.'
+                  end if
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 else if(info<0) then
@@ -710,6 +723,11 @@ c end invert using eigen value filtering
      1                ' argument of SSYTRF or SSYTRI ',
      2                'has an illegal value.' 
                   CALL XPRVDU(NCVDU, 1,0)
+                  if(issprt==0) then
+                    WRITE ( NCWU, '(I8,A,A)') '!! ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  end if
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
