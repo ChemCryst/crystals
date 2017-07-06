@@ -50,6 +50,7 @@ do i=1,nmsize
     end if
 end do      
 preconditioner = 1.0/sqrt(preconditioner) 
+write(ncwu,*) 'Debug Precon: ', (preconditioner(i),i=1,nmsize)
        
 ! unpacking normal matrix
 ! not necessary but unpacked data operations are better optimised in lapack
@@ -330,7 +331,7 @@ end subroutine
 !! of symmetric matrices
 subroutine LDLT_inversion(nmatrix, nmsize, info)
 use xiobuf_mod, only: cmon
-use xunits_mod, only:ncvdu
+use xunits_mod, only:ncvdu,ncwu
 implicit none
 !> Leading dimension of the matrix nmatrix
 integer, intent(in) :: nmsize
@@ -370,7 +371,7 @@ do i=1,nmsize
 end do      
 preconditioner = 1.0/sqrt(preconditioner) 
 
-write(
+write(ncwu,*) 'Debug Precon: ', (preconditioner(i),i=1,nmsize)
 
 ! unpacking lower triangle for memory efficiency and preconditioning:
 ! N' = C N C
@@ -456,6 +457,11 @@ print *, 'invert via LDL^t decomposition', &
 if(info>0) then 
 	return
 end if
+
+write(ncwu,*) 'Debug inverted: ' 
+do i = 1,nmsize
+ write(ncwu,*) (unpacked(i,j),j=1,nmsize)
+end do
 
 ! Pack normal matrix back into original crystals storage
 ! revert pre conditioning                   
@@ -608,7 +614,7 @@ if(info>0) then
 	return
 end if
 
-write(ncwu,*) 'Debug inverted: ', 
+write(ncwu,*) 'Debug inverted: '
 do i = 1,nmsize
  write(ncwu,*) (unpacked(i,j),j=1,nmsize)
 end do
