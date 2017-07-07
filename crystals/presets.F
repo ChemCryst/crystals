@@ -2023,23 +2023,28 @@ C      THE NAMES OF THE VARIOUS RESTRAINTS
      1 coperation(17 ) /'AVERAGE'/,
      1 coperation(18 ) /'LIMIT'/,
      1 coperation(19 ) /'ENERGY'/,
-     1 coperation(20 ) /'UXZBAR'/,
-     1 coperation(21 ) /'UYZBAR'/,
-     1 coperation(22 ) /'UZZBAR'/,
-     1 coperation(23 ) /'UXPERP'/,
-     1 coperation(24 ) /'UYPERP'/,
-     1 coperation(25 ) /'UXPARA'/,
-     1 coperation(26 ) /'UYPARA'/,
-     1 coperation(27 ) /'UZPARA'/,
-     1 coperation(28 ) /'UXXQIV'/,
-     1 coperation(29 ) /'UXYQIV'/,
-     1 coperation(30 ) /'UXZQIV'/,
-     1 coperation(31 ) /'UYYQIV'/,
-     1 coperation(32 ) /'UYZQIV'/,
-     1 coperation(33 ) /'UZZQIV'/
-C
-C
+     1 coperation(20 ) /'ORIGIN'/,
+     1 coperation(21 ) /'UXZBAR'/,
+     1 coperation(22 ) /'UYZBAR'/,
+     1 coperation(23 ) /'UZZBAR'/,
+     1 coperation(24 ) /'UPERP'/,
+     1 coperation(25 ) /'UPERP2'/,
+     1 coperation(26 ) /'UALIGN'/,
+     1 coperation(27 ) /'RIGU'/,
+     1 coperation(28 ) /'ULIJ'/,
+     1 coperation(29 ) /'UPLANE'/,
+     1 coperation(30 ) /'UXXQIV'/,
+     1 coperation(31 ) /'UXYQIV'/,
+     1 coperation(32 ) /'UXZQIV'/,
+     1 coperation(33 ) /'UYYQIV'/,
+     1 coperation(34 ) /'UYZQIV'/,
+     1 coperation(35 ) /'UZZQIV'/,
+     1 coperation(36 ) /'UEIG'/,
+     1 coperation(37 ) /'UNISO'/,
+     1 coperation(38 ) /'UVOL'/
 
+C--
+C
       END
 C
 C

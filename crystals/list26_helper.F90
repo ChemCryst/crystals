@@ -19,10 +19,11 @@ type atom_t
     real, dimension(3) :: coordinates_cart !< coordinates in transformed coordinate system
     real, dimension(3,3) :: adps_crys !< adps in crystal system
     real, dimension(3,3) :: adps_cart !< adps in transformed coordinate system
+    real, dimension(3,3) :: adps_target !< target adps 
 end type
 
 type block_t !< blocks used during refinement
-    real, dimension(:), allocatable :: derivatives !< unweighting line of the design matrix in the current block (derivatives)
+    real, dimension(:), allocatable :: derivatives !< unweighted line of the design matrix in the current block (derivatives)
     integer, dimension(:), allocatable :: parameters !< list of the parameters corresponding to the derivatives
     real :: weight !< weight of the restraint
 contains
@@ -38,6 +39,7 @@ end type
 
 type restraints_t !< restraint type
     character(len=4096) :: restraint_text !< Text of the restraint from the user
+    character(len=4096) :: description !< Description
     character(len=128) :: restraint_type !< type of restraint (distance, plane...)
     integer :: user_index !< index of restraint in gui window (list 16)
     type(subrestraint_t), dimension(:), allocatable :: subrestraints !< list of subrestraints generated from the restraint

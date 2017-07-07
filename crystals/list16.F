@@ -357,7 +357,7 @@ C  25.A-U(IJ)'S     26. A-DIST       27.UXZBAR        28.UYZBAR
 C  29.UZZBAR        30. UPERP        31.UPERP2        32.ULIJ          
 C  33.UALIGN        34.RIGU          35.UPLANE        36.UXXQIV        
 C  37.UXYQIV        38.UXZQIV        39.UYYQIV        40.UYZQIV        
-C  41.UZZQIV        42.UEIG
+C  41.UZZQIV        42.UEIG          43.UQISO         44.UVOL
 C
 C----- ISTORE (LCG+1) OPERATIONS 
 c      Note that some correspond to several MG values.
@@ -499,7 +499,7 @@ C--JUMP ON THE FUNCTION OF THE CARD
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
      3     1810,1810,1810,1851,2251,1510,2258,2259,2257,2255,
      4     2256,2260,2261,2262,2263,2264,2265,2266,2267,2268,
-     5     2269,2270,1250)MG
+     5     2269,2270,2271,2272,1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -1336,6 +1336,22 @@ C--'UEIG' RESTRAINT
 2270  CONTINUE
       ISTORE(LCG+1)=36
       K=0    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UQISO' RESTRAINT Near isotropic restraint
+2271  CONTINUE
+      ISTORE(LCG+1)=37
+      K=0    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UVOL' RESTRAINT Restraint the volume to be equal
+2272  CONTINUE
+      ISTORE(LCG+1)=38
+      K=1    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
