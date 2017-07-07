@@ -50,7 +50,6 @@ do i=1,nmsize
     end if
 end do      
 preconditioner = 1.0/sqrt(preconditioner) 
-write(ncwu,*) 'Debug Precon: ', (preconditioner(i),i=1,nmsize)
        
 ! unpacking normal matrix
 ! not necessary but unpacked data operations are better optimised in lapack
@@ -358,12 +357,6 @@ integer, dimension(8) :: measuredtime
 
 info=0
 
-write(ncwu,*) 'original matrix packed: ' 
-do i = 1,size(nmatrix),20
- write(ncwu,*) nmatrix(i:min(i+19, size(nmatrix)))
-end do
-
-
 ! preconditioning using diagonal terms
 ! Allocate diagonal vector
 allocate(preconditioner(nmsize))
@@ -376,8 +369,6 @@ do i=1,nmsize
     end if
 end do      
 preconditioner = 1.0/sqrt(preconditioner) 
-
-write(ncwu,*) 'Debug Precon: ', (preconditioner(i),i=1,nmsize)
 
 ! unpacking lower triangle for memory efficiency and preconditioning:
 ! N' = C N C
@@ -399,13 +390,6 @@ do i=1, nmsize
     onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
 end do
 
-
-! lower triangle only!
-write(ncwu,*) 'Debug normal m: ' 
-do i = 1,nmsize
- write(ncwu,*) (unpacked(i,j),j=1,i)
-end do
-
 !open(666, file='matrix', form="unformatted",access="stream")
 !write(666) unpacked
 !close(666)
@@ -423,13 +407,6 @@ call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, nmsize*lwork, INFO )
 print *, 'SSYTRF info: ', info
 #endif
 deallocate(work)
-
-write(ncwu,*) 'Factorised m: ' 
-do i = 1,nmsize
- write(ncwu,*) (unpacked(i,j),j=1,nmsize)
-end do
-write(ncwu,*) 'piv:', (ipiv(i),i=1,nmsize)
-
 
 if(info/=0) then 
 	return
@@ -483,12 +460,6 @@ if(info/=0) then
 	return
 end if
 
-! Only the lower triangle is referenced.
-write(ncwu,*) 'Debug inverted: ' 
-do i = 1,nmsize
- write(ncwu,*) (unpacked(i,j),j=1,i)
-end do
-
 ! Pack normal matrix back into original crystals storage
 ! revert pre conditioning                   
 ! Applying C (C N C)^-1 C to get N^-1
@@ -504,11 +475,6 @@ do i=1,nmsize
     nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
 end do    
 
-write(ncwu,*) 'Debug inverted packed: ' 
-do i = 1,size(nmatrix),20
-write(ncwu,*) nmatrix(i:min(i+19, size(nmatrix)))
-end do
-            
 deallocate(preconditioner)
 deallocate(unpacked)
 
@@ -557,8 +523,6 @@ do i=1,nmsize
     end if
 end do      
 preconditioner = 1.0d0/sqrt(preconditioner) 
-
-write(ncwu,*) 'Debug Precon: ', (preconditioner(i),i=1,nmsize)
 
 ! unpacking lower triangle for memory efficiency and preconditioning:
 ! N' = C N C
@@ -644,11 +608,6 @@ print *, 'invert via LDL^t decomposition', &
 if(info>0) then 
 	return
 end if
-
-write(ncwu,*) 'Debug inverted: '
-do i = 1,nmsize
- write(ncwu,*) (unpacked(i,j),j=1,nmsize)
-end do
 
 ! Pack normal matrix back into original crystals storage
 ! revert pre conditioning                   
