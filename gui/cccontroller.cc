@@ -2333,6 +2333,8 @@ string CcController::GetRegKey( string key, string name )
 // if not found, then it falls back to HKLM/key. The return value is
 // empty if the key isn't found.
 
+// Non-windows platforms will return an empty string.
+
  string data;
 
 #ifdef CRY_USEMFC
@@ -2367,7 +2369,8 @@ string CcController::GetRegKey( string key, string name )
        RegCloseKey(hkey);
     }
  }
-#else
+ 
+#elif defined(CRY_OSWIN32)   // All other windows library versions
 
  bool notfound = true; 
  wxString wsdata;
@@ -2414,8 +2417,6 @@ string CcController::GetRegKey( string key, string name )
 		}
 	}
  }
- 
- 
  
 #endif
  return data;
