@@ -2116,7 +2116,6 @@ C
       DATA TOOBIG /'LARGE '/
 C----- MAXIMUM SHIFT VALUES
       DATA PARVAL /0.,0.,1.,.05,.25,.25,.25,.05,.05,.05,.05,.05,.05/
-      character(len=2048) :: buffer
 C
       KFLSP = 0
       IHIT = 0
@@ -2168,8 +2167,6 @@ C---------  SAVE THE HIT VALUES
             js2 = 0
 C---------  COMPUTE ESD
             A=STR11(JQ)
-            write(buffer, '(4(A,1X,E10.3,1X))') 'A',A,'E',E,
-     1        'sqrt(a*e)',SQRT(A*E),'store(jo)',store(jo)
             A=SQRT(A*E)
 C--CHECK IF WE ARE USING AN OLD LIST 24
 cdjw0202
@@ -2359,7 +2356,6 @@ C--PRINT FOR OVERALL PARAMETERS
       IF (IHIT .EQ. 1) ISTORE(JO+1) = JC
       WRITE(CTEXT,'(2A4,I1)') (KVP(JRR,JS),JRR=1,2)
       IF ((IPRINT .EQ. 1 ) .AND. (ISSPRT .EQ. 0) ) THEN
-       write(ncwu, '(a)') trim(buffer)
        WRITE(NCWU,2750)FLAG,JT,JX,STORE(JO),C,A,S,(KVP(JRR,JS),JRR=1,2)
       ENDIF
 CRIC13:2750  FORMAT(1X,A6,I5,I12,F18.5,F13.2,F13.5,F14.5,26X,2A4,I3)
