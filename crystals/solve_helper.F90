@@ -358,6 +358,15 @@ integer, dimension(8) :: measuredtime
 
 info=0
 
+write(ncwu,*) 'original matrix packed: ' 
+do i = 1,size(nmatrix),20
+ write(ncwu,*) nmatrix(i:i+19)
+end do
+if(i+20<=size(nmatrix)) then
+ write(ncwu,*) nmatrix(i+20:)
+end if
+
+
 ! preconditioning using diagonal terms
 ! Allocate diagonal vector
 allocate(preconditioner(nmsize))
