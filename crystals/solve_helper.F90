@@ -422,7 +422,7 @@ write(ncwu,*) 'Factorised m: '
 do i = 1,nmsize
  write(ncwu,*) (unpacked(i,j),j=1,nmsize)
 end do
-write(ncwu,*) 'piv:' (ipiv(i),i=1,nmsize)
+write(ncwu,*) 'piv:', (ipiv(i),i=1,nmsize)
 
 
 if(info/=0) then 
