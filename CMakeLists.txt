@@ -22,6 +22,7 @@ option (usepFUnit "usepFUnit" OFF)
 option (useFAST "useFAST" OFF)  
 option (useSLEEF "useSLEEF" OFF)  
 
+
 option (withSUPERFLIP "withSUPERFLIP" OFF)  
 option (withEDMA "withEDMA" OFF)  
 
@@ -101,10 +102,10 @@ IF ( PERL_FOUND )
 ENDIF ( PERL_FOUND )
 
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.6)
-    find_package(BLAS REQUIRED)
-    find_package(LAPACK REQUIRED)
+    find_package(BLAS)
+    find_package(LAPACK)
 
-    if(BLAS_FOUND )
+    if(BLAS_FOUND AND LAPACK_FOUND)
         if(BLAS_LIBRARIES_DIR)
            link_directories( ${BLAS_LIBRARIES_DIR} )
         endif()
@@ -126,6 +127,9 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.6)
         endif()
         get_filename_component(BLAS_LIBNAME "${BLAS_LIBRARIES}" NAME)
         message(STATUS "Using BLAS library: ${BLAS_LIBNAME}")
+    else
+        message(STATUS "Using builtin BLASS library")
+        add_definitions(-DCRY_OWNLAPACK)
     endif ()
 else ()
     find_library(OpenBLAS_LIBRARY openblaso)
