@@ -360,11 +360,8 @@ info=0
 
 write(ncwu,*) 'original matrix packed: ' 
 do i = 1,size(nmatrix),20
- write(ncwu,*) nmatrix(i:i+19)
+ write(ncwu,*) nmatrix(i:min(i+19, size(nmatrix)))
 end do
-if(i+20<=size(nmatrix)) then
- write(ncwu,*) nmatrix(i+20:)
-end if
 
 
 ! preconditioning using diagonal terms
@@ -509,11 +506,8 @@ end do
 
 write(ncwu,*) 'Debug inverted packed: ' 
 do i = 1,size(nmatrix),20
- write(ncwu,*) nmatrix(i:i+19)
+write(ncwu,*) nmatrix(i:min(i+19, size(nmatrix)))
 end do
-if(i+20<=size(nmatrix)) then
- write(ncwu,*) nmatrix(i+20:)
-end if
             
 deallocate(preconditioner)
 deallocate(unpacked)
