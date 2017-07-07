@@ -127,7 +127,7 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.6)
         endif()
         get_filename_component(BLAS_LIBNAME "${BLAS_LIBRARIES}" NAME)
         message(STATUS "Using BLAS library: ${BLAS_LIBNAME}")
-    else
+    else ()
         message(STATUS "Using builtin BLASS library")
         add_definitions(-DCRY_OWNLAPACK)
     endif ()
