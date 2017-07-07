@@ -394,10 +394,10 @@ do i=1, nmsize
 end do
 
 
-
+! lower triangle only!
 write(ncwu,*) 'Debug normal m: ' 
 do i = 1,nmsize
- write(ncwu,*) (unpacked(i,j),j=1,nmsize)
+ write(ncwu,*) (unpacked(i,j),j=1,i)
 end do
 
 !open(666, file='matrix', form="unformatted",access="stream")
@@ -477,9 +477,10 @@ if(info/=0) then
 	return
 end if
 
+! Only the lower triangle is referenced.
 write(ncwu,*) 'Debug inverted: ' 
 do i = 1,nmsize
- write(ncwu,*) (unpacked(i,j),j=1,nmsize)
+ write(ncwu,*) (unpacked(i,j),j=1,i)
 end do
 
 ! Pack normal matrix back into original crystals storage
@@ -496,6 +497,14 @@ do i=1,nmsize
     nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
     nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
 end do    
+
+write(ncwu,*) 'Debug inverted packed: ' 
+do i = 1,size(nmatrix),20
+ write(ncwu,*) nmatrix(i:i+19)
+end do
+if(i+20<=size(nmatrix)) then
+ write(ncwu,*) nmatrix(i+20:)
+end if
             
 deallocate(preconditioner)
 deallocate(unpacked)
