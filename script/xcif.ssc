@@ -170,6 +170,10 @@
  Additional FCF file - Saves an additional file called publish.fcf
  containing the hkl data in either F or F-squared format.
 
+ If either/both files ARCHIVE-HKL.CIF and platon_sqd.sqf exist, you
+ will be able to embed them in the cif.
+
+
 %       COPY '#SCRIPT XHELP2'
 
 %      END BLOCK
