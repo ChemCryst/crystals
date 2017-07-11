@@ -1655,7 +1655,7 @@ C--
       INCLUDE 'ICOM33.INC'
 C
       DIMENSION IRQ(3,8),IRCALC(3,3),IEND(2),INO(1), JRQ(3,2)
-      DIMENSION INVERT(5), JTYP33(2)
+      DIMENSION INVERT(6), JTYP33(2)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -1704,9 +1704,9 @@ C
 
       DATA IEND(1)/4HE   /,IEND(2)/4HND  /
       ! Array invert must match commands.src
-      DATA INVERT(1) /4HLDLT/, INVERT(2) /4HEIGE/
-      DATA INVERT(3) /4HDP_L/, INVERT(4) /4HXCHO/
-      DATA INVERT(5) /4HCHOL/
+      DATA INVERT(1) /4HAUTO/, INVERT(2) /4HLDLT/
+      DATA INVERT(3) /4HEIGE/, INVERT(4) /4HDP_L/
+      DATA INVERT(5) /4HXCHO/, INVERT(6) /4HCHOL/
 #else
       DATA JTYP33(1)/'   1'/, JTYP33(2)/'   2'/
 
@@ -1730,9 +1730,9 @@ C
 
       DATA IEND(1)/'E   '/,IEND(2)/'ND  '/
       ! Array invert must match commands.src
-      DATA INVERT(1) /'LDLT'/, INVERT(2) /'EIGE'/
-      DATA INVERT(3) /'DP_L'/, INVERT(4) /'XCHO'/
-      DATA INVERT(5) /'CHOL'/
+      DATA INVERT(1) /'AUTO'/, INVERT(2) /'LDLT'/
+      DATA INVERT(3) /'EIGE'/, INVERT(4) /'DP_L'/
+      DATA INVERT(5) /'XCHO'/, INVERT(6) /'CHOL'/
 #endif
 C
 C

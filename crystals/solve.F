@@ -339,6 +339,15 @@ C
       
       real eigcutoff, condition, filtered_condition
       integer nrejected
+      
+      character(len=22),dimension(0:5), parameter :: methodtxt=(/
+     &  'Automatic             ',
+     &  'LDLT                  ',
+     &  'Eigen filtering       ',
+     &  'LDLT doublre precision',
+     &  'old crystals Choleski ',
+     &  'modern Choleski       ' /)
+     
 c
 #ifdef _HOL_
       DATA ISFLS/4HSFLS/
@@ -655,7 +664,8 @@ CDJW-OCT-05
    
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
-        WRITE ( CMON, '(A,I0)') 'Inversion method:', method 
+        WRITE ( CMON, '(A,A)') 'Inversion method: ', 
+     &    trim(methodtxt(method))
         CALL XPRVDU(NCVDU, 1,0)
         istore(L11P+30)=method
 
@@ -663,15 +673,15 @@ c        allocate(ref(JY*(JY+1)/2))
 c        ref=STR11(L11C:L11C+JY*(JY+1)/2-1)
 
         select case(method)
-            case(0) ! LDLT
+            case(0) ! LDLT + automatic precision switch
 
 c L D L^t inversion + preconditioning
 #ifdef CRY_FORTDIGITAL
 c stupid compiler has a stack overflow by making a temporary array 
-               call LDLT_inversion(
+               call auto_inversion(
      1             STR11(L11C), JY, info)
 #else
-               call LDLT_inversion(
+               call auto_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 #endif
                if(info==1111111) then
@@ -681,33 +691,12 @@ c stupid compiler has a stack overflow by making a temporary array
 
 c we are now trying to invert using eigen value filtering
                   WRITE ( CMON, '(A)') 
-     1              '{I trying eigen value filtering inversion.' 
+     1              '{I Using approximate inversion.' 
                   CALL XPRVDU(NCVDU, 1,0) 
                   if(issprt==0) then  
                     WRITE ( NCWU, '(A)') 
-     1                'Trying eigen value filtering inversion.' 
+     1                'Using approximate inversion.' 
                   end if
-#ifdef CRY_FORTDIGITAL
-c stupid compiler has a stack overflow by making a temporary array 
-                 call eigen_inversion(STR11(L11C), 
-     1               JY, 1e-3, nrejected, condition, 
-     2               filtered_condition, info)
-#else
-                 call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1), 
-     1               JY, 1e-3, nrejected, condition, 
-     2               filtered_condition, info)
-#endif
-                 istore(L11P+30)=-1
-                 if(info/=0) then
-                    WRITE ( CMON, '(A,I8)') '{E Error in ssyevd ', info 
-                    CALL XPRVDU(NCVDU, 1,0)
-                    if(issprt==0) then
-                      WRITE ( NCWU, '(A,I8)') 
-     1                  '{!! Error in ssyevd ', info 
-                    end if
-                    STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
-                  end if
-c end invert using eigen value filtering
                                      
                else if(info>0) then
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
@@ -729,13 +718,50 @@ c end invert using eigen value filtering
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
 
-            case(1) ! eigen decomposition filtering + inversion
+            case(1) ! LDLT single precision
+
+c L D L^t inversion + preconditioning
+#ifdef CRY_FORTDIGITAL
+c stupid compiler has a stack overflow by making a temporary array 
+               call LDLT_inversion(
+     1             STR11(L11C), JY, info)
+#else
+               call LDLT_inversion(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+#endif
+               if(info==1111111) then
+                  WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
+                  CALL XPRVDU(NCVDU, 1,0)   
+                  WRITE ( NCWU, '(A)') '!! Problem ill-conditioned.' 
+                  istore(L11P+30)=-istore(L11P+30)
+                                     
+               else if(info>0) then
+                  WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
+     1                ' is singular. Inversion failed.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                else if(info<0) then
+                  WRITE ( CMON, '(I8,A,A)') '{E ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  if(issprt==0) then
+                    WRITE ( NCWU, '(I8,A,A)') '!! ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  end if
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                end if
+
+            case(2) ! eigen decomposition filtering + inversion
                
                call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
      1              JY, 1e-2, nrej, cond, fcond, info)
 
                if ( nrej .gt. 0 ) THEN
-                  istore(L11P+30)=-3
+                  istore(L11P+30)=-istore(L11P+30)
                   WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 
      1   ' eigenvalues rejected.' 
                   CALL XPRVDU(NCVDU, 1,0)
@@ -744,7 +770,6 @@ c end invert using eigen value filtering
      1' and after filtering ', fcond
                   CALL XPRVDU(NCVDU, 1,0)
                 else
-                  istore(L11P+30)=3
                   WRITE ( CMON, '(A,G9.2)') 
      1'{I Condition number of normal matrix ', cond
                   CALL XPRVDU(NCVDU, 1,0)
@@ -757,7 +782,7 @@ c     2      STR11(IWRK), JY, AUGFAC, FILTER, DISCRM, ILEVEL  )
 C----- COMPRESS INVERTED MATRIX
 c               CALL XMTCVT (INM, JY, 2, MD11)
                
-            case(2) ! LDLT double precision
+            case(3) ! LDLT double precision
 
 c L D L^t inversion + preconditioning
 #ifdef CRY_FORTDIGITAL
@@ -768,42 +793,11 @@ c stupid compiler has a stack overflow by making a temporary array
                call LDLT_inversion_dp(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 #endif
-               istore(L11P+30)=1
                if(info==1111111) then
                   WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
                   CALL XPRVDU(NCVDU, 1,0)   
                   WRITE ( NCWU, '(A)') '!! Problem ill-conditioned.' 
-
-c we are now trying to invert using eigen value filtering
-                  WRITE ( CMON, '(A)') 
-     1              '{I trying eigen value filtering inversion.' 
-                  CALL XPRVDU(NCVDU, 1,0) 
-                  if(issprt==0) then  
-                    WRITE ( NCWU, '(A)') 
-     1                'Trying eigen value filtering inversion.' 
-                  end if
-#ifdef CRY_FORTDIGITAL
-c stupid compiler has a stack overflow by making a temporary array 
-                 call eigen_inversion(STR11(L11C), 
-     1               JY, 1e-3, nrejected, condition, 
-     2               filtered_condition, info)
-#else
-                 call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1), 
-     1               JY, 1e-3, nrejected, condition, 
-     2               filtered_condition, info)
-#endif
-                 istore(L11P+30)=-3
-                 if(info/=0) then
-                    WRITE ( CMON, '(A,I8)') '{E Error in ssyevd ', info 
-                    CALL XPRVDU(NCVDU, 1,0)
-                    if(issprt==0) then
-                      WRITE ( NCWU, '(A,I8)') 
-     1                  '{!! Error in ssyevd ', info 
-                    end if
-                    STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
-                  end if
-c end invert using eigen value filtering
-                                     
+                  istore(L11P+30)=-istore(L11P+30)
                else if(info>0) then
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
      1                ' is singular. Inversion failed.' 
@@ -824,11 +818,11 @@ c end invert using eigen value filtering
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
                     
-            case(3) ! original choleski
+            case(4) ! original choleski
                    
                CALL XCHOLS(JY, L11C, KO)
 
-           case(4)               
+           case(5)               
 c Cholesky inversion + preconditioning
                call choleskyl_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
