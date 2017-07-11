@@ -184,7 +184,8 @@ end module
 module hdf5_dsc
 use hdf5
 
-integer, parameter :: ISSDAR_copy = 512
+integer, parameter :: ISSDAR_copy = 512 !< ISSDAR specifies the number of logical records, ie the number of single precision real numbers. This value needs to match the one in preset.F
+
 logical :: hdf5_in_use = .false.
 logical, parameter :: debug_hdf5 = .false.
 
@@ -203,7 +204,7 @@ type, public :: t_dsc_hdf5
     !integer(hid_t) :: slicespace_id ! memory dataspace identifier
 end type
 
-type(t_dsc_hdf5), dimension(:), allocatable, target, private :: hdf5_dic
+type(t_dsc_hdf5), dimension(:), allocatable, target, private :: hdf5_dic !< several files can be opened at the same time, this array hold all of them
 
 contains
 
@@ -381,19 +382,19 @@ end subroutine
 subroutine hdf5_dsc_kstore(crfile, store_address, datastore, error)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
-    integer, intent(in) :: store_address
-    integer, dimension(:), intent(in) :: datastore
+    integer, intent(in) :: store_address !< starting address of the data in store
+    integer, dimension(:), intent(in) :: datastore !< data to be written to embedded dsc file
     integer, intent(out) :: error
     
     integer fileend
-    integer(hsize_t), dimension(1) :: recordoffset      !hyperslab offset in the file 
-    integer(hsize_t), dimension(1) :: slicedimension 
-    integer(hid_t) :: filespace     ! dataspace identifier 
-    integer(hid_t) :: slicespace_id ! memory dataspace identifier
+    integer(hsize_t), dimension(1) :: recordoffset      !< hyperslab offset in the file 
+    integer(hsize_t), dimension(1) :: slicedimension !< size of the data to be written
+    integer(hid_t) :: filespace     !< dataspace identifier 
+    integer(hid_t) :: slicespace_id !< memory dataspace identifier
     type(c_ptr) :: f_ptr
-    integer     ::   rank = 1                        ! dataset rank      
-    integer(hsize_t), dimension(1) :: readdims ! dataset dimensions
-    integer(hsize_t), dimension(1) :: readmaxdims  ! dataset dimensions
+    integer     ::   rank = 1                        !< dataset rank      
+    integer(hsize_t), dimension(1) :: readdims !< dataset dimensions
+    integer(hsize_t), dimension(1) :: readmaxdims  !< dataset dimensions
     integer last
         
     slicedimension(1)=size(datastore)
