@@ -749,7 +749,7 @@ end subroutine
 
 !> code for the inversion of the normal matrix using LDL^t decomposition
 !! of symmetric matrices with dynamic handling of conditioning
-subroutine auto_inversion(nmatrix, nmsize, info)
+subroutine auto_inversion(nmatrix, nmsize, info, blasname)
 use xiobuf_mod, only: cmon
 use xunits_mod, only:ncvdu,ncwu
 implicit none
@@ -761,6 +761,7 @@ integer, intent(in) :: nmsize
 real, dimension(nmsize*(nmsize+1)/2), intent(inout) :: nmatrix
 !> Status of the calculation. =0 if success
 integer, intent(out) :: info
+character(len=16), intent(out) :: blasname !< name of the blas function where error occurs
 
 real, dimension(:), allocatable :: preconditioner
 double precision, dimension(:), allocatable :: dpreconditioner
@@ -788,6 +789,7 @@ integer, dimension(8) :: measuredtime
 #endif
 
 info=0
+blasname=''
 
 #if defined(CRY_OSLINUX)
 print *, ''
@@ -852,6 +854,7 @@ print *, 'SSYTRF info: ', info
 deallocate(work)
 
 if(info/=0) then 
+    blasname='SSYTRF'
     return
 end if
 
@@ -865,6 +868,7 @@ deallocate(work)
 deallocate(iwork)
 
 if(info/=0) then 
+    blasname='SSYCON'
     return
 end if
 
@@ -921,7 +925,8 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
 #endif
     deallocate(dwork)
 
-    if(info>0) then 
+    if(info/=0) then 
+        blasname='DSYTRF'
         return
     end if
 
@@ -933,6 +938,12 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
 #endif
     deallocate(dwork)
     deallocate(iwork)
+    
+    if(info/=0) then 
+        blasname='DSYCON'
+        return
+    end if
+    
 #if defined(CRY_OSLINUX)
     print *, 'condition number ', 1.0d0/drcond, 1.0d0/epsilon(1.0d0)
     print *, 'relative error ', 1.0d0/drcond*epsilon(1.0d0)
@@ -945,7 +956,12 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
 #endif
         
         call eigen_inversion(nmatrix, nmsize, 1e-5, nrejected, condition, filtered_condition, info)
+        if(info/=0) then 
+            blasname='eigen_inversion'
+            return
+        end if
         if(info==0 .and. nrejected>0) then
+            blasname='eigen_inversion'
             info=1111111
         end if
         return
@@ -964,7 +980,8 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
         deallocate(ipiv)
         deallocate(dwork)
 
-        if(info>0) then 
+        if(info/=0) then 
+            blasname='DSYTRI'
             return
         end if
         
@@ -1023,6 +1040,7 @@ else ! all good for single precision inversion
     deallocate(work)
 
     if(info/=0) then 
+        blasname='SSYTRI'
         return
     end if
 

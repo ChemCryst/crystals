@@ -339,6 +339,7 @@ C
       
       real eigcutoff, condition, filtered_condition
       integer nrejected
+      character(len=16) blasname
       
       character(len=22),dimension(0:5), parameter :: methodtxt=(/
      &  'Automatic             ',
@@ -679,10 +680,10 @@ c L D L^t inversion + preconditioning
 #ifdef CRY_FORTDIGITAL
 c stupid compiler has a stack overflow by making a temporary array 
                call auto_inversion(
-     1             STR11(L11C), JY, info)
+     1             STR11(L11C), JY, info, blasname)
 #else
                call auto_inversion(
-     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info, blasname)
 #endif
                if(info==1111111) then
                   WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
@@ -697,22 +698,23 @@ c we are now trying to invert using eigen value filtering
                     WRITE ( NCWU, '(A)') 
      1                'Using approximate inversion.' 
                   end if
+                  istore(L11P+30)=-istore(L11P+30)
                                      
                else if(info>0) then
-                  WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
-     1                ' is singular. Inversion failed.' 
+                  WRITE ( CMON, '(A,I0,A,A)') '{E Parameter ', info, 
+     1               ' is singular. Inversion failed in ',trim(blasname) 
                   CALL XPRVDU(NCVDU, 1,0)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 else if(info<0) then
-                  WRITE ( CMON, '(I8,A,A)') '{E ', info, 
-     1                ' argument of SSYTRF or SSYTRI ',
-     2                'has an illegal value.' 
+                  WRITE ( CMON, '(I0,A,A,A)') '{E ', info, 
+     1                ' argument of ',trim(blasname),
+     2                ' has an illegal value.' 
                   CALL XPRVDU(NCVDU, 1,0)
                   if(issprt==0) then
-                    WRITE ( NCWU, '(I8,A,A)') '!! ', info, 
-     1                ' argument of SSYTRF or SSYTRI ',
-     2                'has an illegal value.' 
+                    WRITE ( NCWU, '(I0,A,A,A)') '!! ', info, 
+     1                ' argument of ',trim(blasname),
+     2                ' has an illegal value.' 
                   end if
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
