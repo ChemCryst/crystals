@@ -780,7 +780,7 @@ integer nrejected
 
 double precision, dimension(:,:), allocatable :: ref, check
 real rmax
-logical, parameter :: checkid=.true.
+logical, parameter :: checkid=.false.
 
 #if defined(CRY_OSLINUX)
 integer :: starttime
