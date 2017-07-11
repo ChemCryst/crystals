@@ -351,7 +351,7 @@ C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(2)
 C--READ ANY OTHER PARAMETERS
       IF ( KRDDPV ( ISTORE(NFL),1 )   .LT.   0 ) GO TO 9900
-C----- METHOD = 0 FOR CHOLESKI, ELSE 1
+C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOLESKI
       METHOD = ISTORE(NFL)
 C--CLEAR THE CORE
       CALL XCSAE
@@ -655,12 +655,15 @@ CDJW-OCT-05
    
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
-            IF (METHOD .LE. 0) THEN   !Cholesky
-c                allocate(ref(JY*(JY+1)/2))
-c                ref=STR11(L11C:L11C+JY*(JY+1)/2-1)
-c               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
-c     1              JY, 100.0)
-c               !deallocate(ref)
+        WRITE ( CMON, '(A,I0)') 'Inversion method:', method 
+        CALL XPRVDU(NCVDU, 1,0)
+        istore(L11P+30)=method
+
+c        allocate(ref(JY*(JY+1)/2))
+c        ref=STR11(L11C:L11C+JY*(JY+1)/2-1)
+
+        select case(method)
+            case(0) ! LDLT
 
 c L D L^t inversion + preconditioning
 #ifdef CRY_FORTDIGITAL
@@ -669,6 +672,100 @@ c stupid compiler has a stack overflow by making a temporary array
      1             STR11(L11C), JY, info)
 #else
                call LDLT_inversion(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+#endif
+               if(info==1111111) then
+                  WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
+                  CALL XPRVDU(NCVDU, 1,0)   
+                  WRITE ( NCWU, '(A)') '!! Problem ill-conditioned.' 
+
+c we are now trying to invert using eigen value filtering
+                  WRITE ( CMON, '(A)') 
+     1              '{I trying eigen value filtering inversion.' 
+                  CALL XPRVDU(NCVDU, 1,0) 
+                  if(issprt==0) then  
+                    WRITE ( NCWU, '(A)') 
+     1                'Trying eigen value filtering inversion.' 
+                  end if
+#ifdef CRY_FORTDIGITAL
+c stupid compiler has a stack overflow by making a temporary array 
+                 call eigen_inversion(STR11(L11C), 
+     1               JY, 1e-3, nrejected, condition, 
+     2               filtered_condition, info)
+#else
+                 call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1), 
+     1               JY, 1e-3, nrejected, condition, 
+     2               filtered_condition, info)
+#endif
+                 istore(L11P+30)=-1
+                 if(info/=0) then
+                    WRITE ( CMON, '(A,I8)') '{E Error in ssyevd ', info 
+                    CALL XPRVDU(NCVDU, 1,0)
+                    if(issprt==0) then
+                      WRITE ( NCWU, '(A,I8)') 
+     1                  '{!! Error in ssyevd ', info 
+                    end if
+                    STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  end if
+c end invert using eigen value filtering
+                                     
+               else if(info>0) then
+                  WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
+     1                ' is singular. Inversion failed.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                else if(info<0) then
+                  WRITE ( CMON, '(I8,A,A)') '{E ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  if(issprt==0) then
+                    WRITE ( NCWU, '(I8,A,A)') '!! ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  end if
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                end if
+
+            case(1) ! eigen decomposition filtering + inversion
+               
+               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
+     1              JY, 1e-2, nrej, cond, fcond, info)
+
+               if ( nrej .gt. 0 ) THEN
+                  istore(L11P+30)=-3
+                  WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 
+     1   ' eigenvalues rejected.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  WRITE ( CMON, '(A,G9.2,A,G9.2)') 
+     1'{E Condition before filtering', cond, 
+     1' and after filtering ', fcond
+                  CALL XPRVDU(NCVDU, 1,0)
+                else
+                  istore(L11P+30)=3
+                  WRITE ( CMON, '(A,G9.2)') 
+     1'{I Condition number of normal matrix ', cond
+                  CALL XPRVDU(NCVDU, 1,0)
+                end if
+
+c               CALL XMTCVT (INM, JY, 1, MD11)
+c               CALL XFILTR
+c     1      (STR11(INM), STR11(IVAL), STR11(IVEC), STR11(ISCL),
+c     2      STR11(IWRK), JY, AUGFAC, FILTER, DISCRM, ILEVEL  )
+C----- COMPRESS INVERTED MATRIX
+c               CALL XMTCVT (INM, JY, 2, MD11)
+               
+            case(2) ! LDLT double precision
+
+c L D L^t inversion + preconditioning
+#ifdef CRY_FORTDIGITAL
+c stupid compiler has a stack overflow by making a temporary array 
+               call LDLT_inversion_dp(
+     1             STR11(L11C), JY, info)
+#else
+               call LDLT_inversion_dp(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 #endif
                istore(L11P+30)=1
@@ -727,27 +824,26 @@ c end invert using eigen value filtering
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
                     
+            case(3) ! original choleski
+                   
+               CALL XCHOLS(JY, L11C, KO)
+
+           case(4)               
 c Cholesky inversion + preconditioning
-c               call choleskyl_inversion(
-c     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+               call choleskyl_inversion(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 c                print *, STR11(L11C:L11C+5)
-
-c - original cholesky               
-               !print *, '****** origin', STR11(L11C:L11C+4)
-c               call date_and_time(VALUES=measuredtime)
-c               starttime=((measuredtime(5)*3600+measuredtime(6)*60)+
-c     1             measuredtime(7))+measuredtime(8)/1000.0
-c               print *, 'start xchols'
-c               call flush
-c               STR11(L11C:L11C+JY*(JY+1)/2-1)=ref
-c               CALL XCHOLS(JY, L11C, KO)
-c                print *, STR11(L11C:L11C+5)
-c               call date_and_time(VALUES=measuredtime)
-c               print *, 'xchols done in (s): ', 
-c     1             ((measuredtime(5)*3600+measuredtime(6)*60)+
-c     2             measuredtime(7))+measuredtime(8)/1000.0-starttime
-c               call flush
-
+               
+            case default
+                WRITE ( CMON, '(A,I8)') 
+     1            '{E Error unknown invertor ', method
+                CALL XPRVDU(NCVDU, 1,0)
+                if(issprt==0) then
+                  WRITE ( NCWU, '(A,I8)') 
+     1              '{!! Error unknown invertor ', method 
+                end if            
+         end select
+         
 c                allocate(unpacked(JY,JY))
 c                allocate(check(JY,JY))
 c                do i=1, JY
@@ -759,17 +855,18 @@ c                    check(i:JY, i)=ref(1+j:1+k)
 c                    check(i, i:JY)=ref(1+j:1+k)
 c                end do
 c                check=matmul(check, unpacked)
-c                do i=1,min(15,JY)
-c                    write(*, '(15(F5.2,1X))') check(1:min(15,JY),i)
+c                rmax=0.0
+c                do i=1, jy
+c                  if(abs(check(i,i))>rmax) then
+c                    rmax=check(i,i)
+c                  end if
+c                  check(i,i)=0.0
 c                end do
+c                print *, rmax, minval(check), maxval(check)
 c                deallocate(unpacked)
 c                deallocate(check)
 c                deallocate(ref)
-               
-c               print *, '****** ref', STR11(L11C:L11C+4)
-               
-               
-            ELSE
+         
 C----- EXPAND  LOWER TRIANGLE OF FULL SQUARE
 
 c      WRITE (NCWU,103)
@@ -793,32 +890,6 @@ c      ENDDO
 c
 c
 c
-               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
-     1              JY, 1e-2, nrej, cond, fcond, info)
-
-               if ( nrej .gt. 0 ) THEN
-                  istore(L11P+30)=-3
-                  WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 
-     1   ' eigenvalues rejected.' 
-                  CALL XPRVDU(NCVDU, 1,0)
-                  WRITE ( CMON, '(A,G9.2,A,G9.2)') 
-     1'{E Condition before filtering', cond, 
-     1' and after filtering ', fcond
-                  CALL XPRVDU(NCVDU, 1,0)
-                else
-                  istore(L11P+30)=3
-                  WRITE ( CMON, '(A,G9.2)') 
-     1'{I Condition number of normal matrix ', cond
-                  CALL XPRVDU(NCVDU, 1,0)
-                end if
-
-c               CALL XMTCVT (INM, JY, 1, MD11)
-c               CALL XFILTR
-c     1      (STR11(INM), STR11(IVAL), STR11(IVEC), STR11(ISCL),
-c     2      STR11(IWRK), JY, AUGFAC, FILTER, DISCRM, ILEVEL  )
-C----- COMPRESS INVERTED MATRIX
-c               CALL XMTCVT (INM, JY, 2, MD11)
-            ENDIF
          ENDIF
          
 C-- If we are doing data punching then do it here.   

@@ -1655,7 +1655,7 @@ C--
       INCLUDE 'ICOM33.INC'
 C
       DIMENSION IRQ(3,8),IRCALC(3,3),IEND(2),INO(1), JRQ(3,2)
-      DIMENSION INVERT(2), JTYP33(2)
+      DIMENSION INVERT(5), JTYP33(2)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -1703,7 +1703,10 @@ C
       DATA INO(1)/4HNO  /
 
       DATA IEND(1)/4HE   /,IEND(2)/4HND  /
-      DATA INVERT(1) /4HCHOL/, INVERT(2) /4HEIGE/
+      ! Array invert must match commands.src
+      DATA INVERT(1) /4HLDLT/, INVERT(2) /4HEIGE/
+      DATA INVERT(3) /4HDP_L/, INVERT(4) /4HXCHO/
+      DATA INVERT(5) /4HCHOL/
 #else
       DATA JTYP33(1)/'   1'/, JTYP33(2)/'   2'/
 
@@ -1726,7 +1729,10 @@ C
       DATA INO(1)/'NO  '/
 
       DATA IEND(1)/'E   '/,IEND(2)/'ND  '/
-      DATA INVERT(1) /'CHOL'/, INVERT(2) /'EIGE'/
+      ! Array invert must match commands.src
+      DATA INVERT(1) /'LDLT'/, INVERT(2) /'EIGE'/
+      DATA INVERT(3) /'DP_L'/, INVERT(4) /'XCHO'/
+      DATA INVERT(5) /'CHOL'/
 #endif
 C
 C
@@ -1976,6 +1982,10 @@ C--'REFINE' HAS BEEN INPUT FOR THIS CYCLE
 2550     CONTINUE
          CALL XMOVEI (JRQ(1,2), IRQ(1,2), NWRQ)     !"SPEC LIS NO"
 C----- SET INVERSION TO CHOLESKI OR EIGENVECTOR
+         if(2+ ISTORE(M33CD+8)<1 .or. 
+     1     2+ ISTORE(M33CD+8)>size(invert)) then
+           call abort()
+         end if
          IRQ(3,5) = INVERT(2+ ISTORE(M33CD+8))      !"CHOL" or "EIGE"
          KG=1
 C--INDICATE THAT ANY TYPE OF CALCULATION IS NOW ALLOWED
