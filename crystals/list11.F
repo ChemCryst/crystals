@@ -917,7 +917,8 @@ C--AND NOW RETURN
 C-- Checking preambule
       if(MD11P<31) then ! 31 has to match the value in commands.src
         ! old list 11, extending preambule:
-        newl11p=KCHNFL(31)
+        newl11p = nfl
+		nextnf = KCHNFL(31)
         store(newl11p:newl11p+MD11P-1)=store(l11P:l11P+MD11P-1)
         store(newl11p+MD11P:newl11p+30)=0.0
         MD11P=31

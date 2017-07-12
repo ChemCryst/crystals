@@ -1655,7 +1655,7 @@ C--
       INCLUDE 'ICOM33.INC'
 C
       DIMENSION IRQ(3,8),IRCALC(3,3),IEND(2),INO(1), JRQ(3,2)
-      DIMENSION INVERT(6), JTYP33(2)
+      DIMENSION INVERT(7), JTYP33(2)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -1704,9 +1704,10 @@ C
 
       DATA IEND(1)/4HE   /,IEND(2)/4HND  /
       ! Array invert must match commands.src
-      DATA INVERT(1) /4HAUTO/, INVERT(2) /4HLDLT/
-      DATA INVERT(3) /4HEIGE/, INVERT(4) /4HDP_L/
-      DATA INVERT(5) /4HXCHO/, INVERT(6) /4HCHOL/
+      DATA INVERT(1) /4HDEFA/
+      DATA INVERT(2) /4HAUTO/, INVERT(3) /4HLDLT/
+      DATA INVERT(4) /4HEIGE/, INVERT(5) /4HDP_L/
+      DATA INVERT(6) /4HXCHO/, INVERT(7) /4HCHOL/
 #else
       DATA JTYP33(1)/'   1'/, JTYP33(2)/'   2'/
 
@@ -1730,9 +1731,10 @@ C
 
       DATA IEND(1)/'E   '/,IEND(2)/'ND  '/
       ! Array invert must match commands.src
-      DATA INVERT(1) /'AUTO'/, INVERT(2) /'LDLT'/
-      DATA INVERT(3) /'EIGE'/, INVERT(4) /'DP_L'/
-      DATA INVERT(5) /'XCHO'/, INVERT(6) /'CHOL'/
+      DATA INVERT(1) /'DEFA'/
+      DATA INVERT(2) /'AUTO'/, INVERT(3) /'LDLT'/
+      DATA INVERT(4) /'EIGE'/, INVERT(5) /'DP_L'/
+      DATA INVERT(6) /'XCHO'/, INVERT(7) /'CHOL'/
 #endif
 C
 C
@@ -2376,9 +2378,24 @@ C
 C
       INCLUDE 'QLST23.INC'
 C
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'QSTORE.INC'
       INCLUDE 'IDIM23.INC'
+
 C--LOAD THE LIST
-      CALL XLDLST(23,ICOM23,IDIM23,-1)
+      CALL XLDLST(23,ICOM23,IDIM23,-1)  
+
+C-- Checking L23M record
+      if (md23m .le. 7) then ! old l23. Extend record and set default invertor.
+        newl23m=nfl
+		nextnf = KCHNFL(8)
+        istore(newl23m:newl23m+md23m-1)=istore(l23m:l23m+md23m-1)
+        store(newl23m+MD23m:newl23m+7)=0.0
+        md23m=8
+        l23m=newl23m
+      end if
+
       RETURN
       END
 C

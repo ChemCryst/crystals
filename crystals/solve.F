@@ -665,6 +665,11 @@ CDJW-OCT-05
    
       IF (JP .GT. 0 ) THEN
 C----- CHOOSE INVERTOR
+
+        if (method == -1) then !default - look it up in L23.
+           method = istore(l23m+7)
+        end if
+
         WRITE ( CMON, '(A,A)') 'Inversion method: ', 
      &    trim(methodtxt(method))
         CALL XPRVDU(NCVDU, 1,0)

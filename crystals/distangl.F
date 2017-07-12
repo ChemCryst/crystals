@@ -7602,6 +7602,15 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
         I5A=I5A+1
       END DO
 
+C Some common sense: only consider cells within +- 50 of 0,0,0.
+      DO J=1,3
+        BPD(J+3)=MIN(BPD(J+3), 50.0)
+        BPD(J+3)=MAX(BPD(J+3), -50.0)
+        BPD(J+6)=MIN(BPD(J+6), 50.0)
+        BPD(J+6)=MAX(BPD(J+6), -50.0)
+      END DO
+
+ 
       DAT1 = 0.0
       DO M29 = L29, L29+(N29-1)*MD29, MD29
         IF ( ISTORE(MPIV) .EQ. ISTORE(M29) ) THEN
