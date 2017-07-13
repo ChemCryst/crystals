@@ -177,9 +177,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  extended PARTs in LIST 6                                                             Date              Time          
@@ -9379,7 +9379,7 @@ END
  List type   6 with serial number    32 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURG
- List type    6  serial number   32 from    63818 to    97749 will not be copied ( deleted )         
+ List type    6  serial number   32 from    63819 to    97750 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -18526,9 +18526,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  A&B KEYS SET, f' & f" SET, PARTS USED                                                Date              Time          
@@ -18712,7 +18712,7 @@ Mean C-C su =   0.0000
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.84
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  A&B KEYS SET, f' & f" SET, PARTS USED                                                Date              Time          
@@ -18894,7 +18894,7 @@ Mean C-C su =   0.0000
 LS-scale=  6.285   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  A&B KEYS SET, f' & f" SET, PARTS USED                                                Date              Time          

@@ -299,9 +299,9 @@ LS-scale=  1.598   Wilson Scale=  0.000
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  MEAN ANGLE: No derivatives found during Evaluation
  Directive  UIJ: No derivatives found during Evaluation
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -765,9 +765,9 @@ LS-scale=  1.598   Wilson Scale=  0.000
  Directive  UIJ: No derivatives found during Evaluation
  Directive  UIJ: No derivatives found during Evaluation
  Directive  UIJ: No derivatives found during Evaluation
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1135,7 +1135,7 @@ LS-scale=  1.598   Wilson Scale=  0.000
  Directive  MEAN DIST: No derivatives found during Evaluation
  Directive  MEAN ANGLE: No derivatives found during Evaluation
  Directive  MEAN DIST: No derivatives found during Evaluation
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          

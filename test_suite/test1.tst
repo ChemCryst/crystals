@@ -29,7 +29,7 @@ END
 #                                         NOFSQ, ANOM
 \use cyclo.in
 \list 16
-limit 100. EXTPARAM
+limit 10. EXTPARAM
 end
 \LIST 23 
 MODIFY EXTINCTION=YES ANOM=YES

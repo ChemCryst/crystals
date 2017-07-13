@@ -373,9 +373,9 @@ LS-scale=  0.480   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -560,7 +560,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.479   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -770,9 +770,9 @@ LS-scale=  0.493   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -941,7 +941,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.479   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1131,7 +1131,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.479   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.049    100*(<Fo>-<Fc>)/<Fo> =    -0.14
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1320,7 +1320,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.479   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1506,7 +1506,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.479   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1634,7 +1634,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address    70572     Length     160     Created on                          
+ Print list type    22     serial number        2     Address    70573     Length     160     Created on                          
 
 
              16 parameter(s) in    1 block(s) - as follows:
@@ -1694,7 +1694,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    71470     Length      52     Created on                          
+ Print list type    24     serial number        9     Address    71471     Length      52     Created on                          
 
 
 
@@ -2081,9 +2081,9 @@ LS-scale=  0.480   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2268,7 +2268,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.477   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2478,9 +2478,9 @@ LS-scale=  0.493   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2651,7 +2651,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.476   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2841,7 +2841,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.476   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.16
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3030,7 +3030,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.477   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3220,7 +3220,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.477   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3348,7 +3348,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        4     Address    70572     Length     160     Created on                          
+ Print list type    22     serial number        4     Address    70573     Length     160     Created on                          
 
 
              16 parameter(s) in    1 block(s) - as follows:
@@ -3408,7 +3408,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       18     Address   135218     Length      52     Created on                          
+ Print list type    24     serial number       18     Address   135219     Length      52     Created on                          
 
 
 
@@ -3795,9 +3795,9 @@ LS-scale=  0.480   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3982,7 +3982,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.478   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4192,9 +4192,9 @@ LS-scale=  0.493   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4359,7 +4359,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.478   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4544,7 +4544,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.478   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4733,7 +4733,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.478   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -4923,7 +4923,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.478   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5051,7 +5051,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        6     Address    70572     Length     160     Created on                          
+ Print list type    22     serial number        6     Address    70573     Length     160     Created on                          
 
 
              16 parameter(s) in    1 block(s) - as follows:
@@ -5111,7 +5111,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       27     Address   198966     Length      52     Created on                          
+ Print list type    24     serial number       27     Address   198967     Length      52     Created on                          
 
 
 
@@ -5498,9 +5498,9 @@ LS-scale=  0.480   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5689,7 +5689,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.476   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5878,7 +5878,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.475   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6088,9 +6088,9 @@ LS-scale=  0.493   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6257,7 +6257,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.475   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.003    100*(<Fo>-<Fc>)/<Fo> =    -0.01
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6444,7 +6444,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.475   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6629,7 +6629,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.476   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6819,7 +6819,7 @@ Mean C-C su =   0.0000
 LS-scale=  0.475   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -6947,7 +6947,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        8     Address    70572     Length     160     Created on                          
+ Print list type    22     serial number        8     Address    70573     Length     160     Created on                          
 
 
              16 parameter(s) in    1 block(s) - as follows:
@@ -7007,7 +7007,7 @@ Mean C-C su =   0.0000
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       37     Address   262869     Length      52     Created on                          
+ Print list type    24     serial number       37     Address   262870     Length      52     Created on                          
 
 
 

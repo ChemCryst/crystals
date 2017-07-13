@@ -328,9 +328,9 @@ LS-scale=  1.023   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  GROUP TORSION                                                                        Date              Time          
@@ -558,9 +558,9 @@ LS-scale=  1.023   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  NORMAL TORSION                                                                       Date              Time          

@@ -124,9 +124,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -270,7 +270,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -450,9 +450,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -588,7 +588,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -753,9 +753,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -899,7 +899,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1079,9 +1079,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1217,7 +1217,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1383,9 +1383,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1530,7 +1530,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1710,9 +1710,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -1848,7 +1848,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2015,9 +2015,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2163,7 +2163,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2343,9 +2343,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2481,7 +2481,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2670,9 +2670,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2812,7 +2812,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.199    100*(<Fo>-<Fc>)/<Fo> =    -3.87
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -2956,7 +2956,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3095,7 +3095,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3293,9 +3293,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3436,7 +3436,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.198    100*(<Fo>-<Fc>)/<Fo> =    -3.86
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3580,7 +3580,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -3719,7 +3719,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -4233,9 +4233,9 @@ LS-scale=  2.699   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -4445,7 +4445,7 @@ Mean C-C su =   0.0063
 LS-scale=  2.709   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -4658,7 +4658,7 @@ Mean C-C su =   0.0062
 LS-scale=  2.709   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  POLARITY AND ENANTIOPOLE REFINEMENT TEST                                             Date              Time          
@@ -4961,7 +4961,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    51199 to    51425 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51200 to    51426 will not be copied ( deleted )         
 
 
  ************************************************************************

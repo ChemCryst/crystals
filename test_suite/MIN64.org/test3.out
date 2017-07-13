@@ -4014,7 +4014,7 @@ Bonds: Update required - List5 length change
  TEST THE LIST MODIFICATION ROUTINES                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    52304     Length     587     Created on                          
+ Print list type    10     serial number        1     Address    51282     Length     587     Created on                          
 
 
 
@@ -4259,7 +4259,7 @@ Bonds: Update required - List5 length change
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        4     Address    54021     Length     785     Created on                          
+ Print list type     5     serial number        4     Address    52999     Length     785     Created on                          
 
 
 
@@ -4424,7 +4424,7 @@ Bonds: Update required - List5 length change
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        5     Address    56032     Length     677     Created on                          
+ Print list type     5     serial number        5     Address    55010     Length     677     Created on                          
 
 
 
@@ -4990,7 +4990,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- Print list type     5     serial number        6     Address    57603     Length     677     Created on                          
+ Print list type     5     serial number        6     Address    56581     Length     677     Created on                          
 
 
 
@@ -5811,9 +5811,9 @@ LS-scale= 12.394   Wilson Scale=  0.000
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -6535,7 +6535,7 @@ Bonds: Update required - List5 length change
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       86     Address    87621     Length    7570     Created on                          
+ Print list type     6     serial number       86     Address    86600     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6670,7 +6670,7 @@ Bonds: Update required - List5 length change
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       90     Address    95811     Length    7570     Created on                          
+ Print list type     6     serial number       90     Address    94790     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6805,7 +6805,7 @@ Bonds: Update required - List5 length change
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address   103381     Length     137     Created on                          
+ Print list type     5     serial number       14     Address   102360     Length     137     Created on                          
 
 
 
@@ -7151,9 +7151,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
@@ -7329,7 +7329,7 @@ Mean C-C su =   0.0282
 LS-scale=  1.014   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.00
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
@@ -7463,7 +7463,7 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    95811     Length    7570     Created on                          
+ Print list type     6     serial number       96     Address    94790     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -7683,9 +7683,9 @@ LS-scale=  1.992   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
@@ -7918,9 +7918,9 @@ ___________
 LS-scale=  1.992   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
@@ -8079,7 +8079,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   130798     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   129777     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8130,7 +8130,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   130798     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   129777     Length     809     Created on                          
 
 
  Print List 11 as correlation matrix
@@ -8221,7 +8221,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   130798     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   129777     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8411,7 +8411,7 @@ Bonds: Update required - List5 length change
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     5     serial number       30     Address   136065     Length     150     Created on                          
+ Print list type     5     serial number       30     Address   135041     Length     150     Created on                          
 
 
 
@@ -8590,7 +8590,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     6     serial number      118     Address   135354     Length     711     Created on                          
+ Print list type     6     serial number      118     Address   134330     Length     711     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 

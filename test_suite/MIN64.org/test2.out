@@ -811,7 +811,7 @@ Refining    41 parameters in    1 block :      959 elements in the LS matrix.
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        2     Address    89810     Length      52     Created on                          
+ Print list type    12     serial number        2     Address    89811     Length      52     Created on                          
 
      0 BLOCK SCALE X'S, U[ISO] 
 
@@ -883,9 +883,9 @@ Refining    41 parameters in    1 block :      959 elements in the LS matrix.
 LS-scale=  4.136   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    2.1     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -1101,7 +1101,7 @@ Mean C-C su =   0.0149
 LS-scale=  4.303   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -1320,7 +1320,7 @@ Mean C-C su =   0.0139
 LS-scale=  4.294   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -1539,7 +1539,7 @@ Mean C-C su =   0.0136
 LS-scale=  4.294   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -1758,7 +1758,7 @@ Mean C-C su =   0.0136
 LS-scale=  4.293   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -1974,7 +1974,7 @@ Mean C-C su =   0.0136
 LS-scale=  4.293   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -2202,9 +2202,9 @@ Refining    91 parameters in    1 block :     4384 elements in the LS matrix.
 LS-scale=  4.293   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -2431,7 +2431,7 @@ Mean C-C su =   0.0138
 LS-scale=  4.287   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -2651,7 +2651,7 @@ Mean C-C su =   0.0128
 LS-scale=  4.308   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -2870,7 +2870,7 @@ Mean C-C su =   0.0131
 LS-scale=  4.311   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -3089,7 +3089,7 @@ Mean C-C su =   0.0131
 LS-scale=  4.312   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -3580,7 +3580,7 @@ LS-scale=  4.747   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        4     Address   170817     Length      84     Created on                          
+ Print list type    12     serial number        4     Address   170818     Length      84     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -3659,9 +3659,9 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
 LS-scale=  4.747   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -3889,7 +3889,7 @@ Mean C-C su =   0.0082
 LS-scale=  4.748   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -4121,7 +4121,7 @@ Mean C-C su =   0.0066
 LS-scale=  4.748   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -4351,7 +4351,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.749   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -4581,7 +4581,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.750   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -4756,7 +4756,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        5     Address   177275     Length     112     Created on                          
+ Print list type    12     serial number        5     Address   177276     Length     112     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -4834,9 +4834,9 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
 LS-scale=  4.751   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -5062,7 +5062,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.751   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -5292,7 +5292,7 @@ Mean C-C su =   0.0061
 LS-scale=  4.751   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -5463,7 +5463,7 @@ Mean C-C su =   0.0061
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        6     Address   179988     Length     148     Created on                          
+ Print list type    12     serial number        6     Address   179989     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -5542,9 +5542,9 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
 LS-scale=  4.751   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -5771,7 +5771,7 @@ Mean C-C su =   0.0062
 LS-scale=  4.751   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.018    100*(<Fo>-<Fc>)/<Fo> =    -0.17
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -6001,7 +6001,7 @@ Mean C-C su =   0.0049
 LS-scale=  4.751   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -6231,7 +6231,7 @@ Mean C-C su =   0.0049
 LS-scale=  4.750   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -6461,7 +6461,7 @@ Mean C-C su =   0.0049
 LS-scale=  4.750   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -6636,7 +6636,7 @@ Mean C-C su =   0.0049
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        7     Address   179988     Length     148     Created on                          
+ Print list type    12     serial number        7     Address   179989     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -6715,9 +6715,9 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
 LS-scale=  4.750   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -6954,7 +6954,7 @@ Mean C-C su =   0.0049
 LS-scale=  4.750   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.049    100*(<Fo>-<Fc>)/<Fo> =    -0.48
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -7186,7 +7186,7 @@ Mean C-C su =   0.0039
 LS-scale=  4.749   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -7416,7 +7416,7 @@ Mean C-C su =   0.0039
 LS-scale=  4.749   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.009    100*(<Fo>-<Fc>)/<Fo> =    -0.08
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -7646,7 +7646,7 @@ Mean C-C su =   0.0039
 LS-scale=  4.749   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.008    100*(<Fo>-<Fc>)/<Fo> =    -0.08
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -8119,9 +8119,9 @@ LS-scale=  4.749   Wilson Scale=  4.723
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -8348,7 +8348,7 @@ Mean C-C su =   0.0026
 LS-scale=  4.746   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.046    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -8579,7 +8579,7 @@ Mean C-C su =   0.0021
 LS-scale=  4.743   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.39
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -8810,7 +8810,7 @@ Mean C-C su =   0.0021
 LS-scale=  4.739   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -9041,7 +9041,7 @@ Mean C-C su =   0.0021
 LS-scale=  4.736   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -9473,7 +9473,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from   183872 to   188310 will not be copied ( deleted )         
+ List type   11  serial number  136 from   183873 to   188311 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -9544,7 +9544,7 @@ The slope and correlation coefficient should be small
 LS-scale=  4.733   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.37
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -9771,7 +9771,7 @@ Mean C-C su =   0.0019
 LS-scale=  4.731   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -10002,7 +10002,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.729   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.53
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -10233,7 +10233,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.728   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -10464,7 +10464,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.726   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -10850,7 +10850,7 @@ LS-scale=  4.724   Wilson Scale=  4.723
 LS-scale=  4.724   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.052    100*(<Fo>-<Fc>)/<Fo> =    -0.51
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -11078,7 +11078,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.723   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.052    100*(<Fo>-<Fc>)/<Fo> =    -0.51
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -11306,7 +11306,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.721   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.51
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -11534,7 +11534,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.720   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.50
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -11762,7 +11762,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.718   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.50
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -11990,7 +11990,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.717   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.050    100*(<Fo>-<Fc>)/<Fo> =    -0.49
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -12513,7 +12513,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        8     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number        8     Address    72369     Length     148     Created on                          
 
      0 BLOCK SCALE X'S, U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -12527,7 +12527,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    16     serial number        4     Address    70635     Length     576     Created on                          
+ Print list type    16     serial number        4     Address    70636     Length     576     Created on                          
 
      0 LIMIT      0.01000000 ELEMENT SCALES 
      1 LIMIT      0.01000000 SCALE 
@@ -12552,7 +12552,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    17     serial number        8     Address     3707     Length      36     Created on                          
+ Print list type    17     serial number        8     Address     3708     Length      36     Created on                          
 
      0 NO 
 
@@ -12645,7 +12645,7 @@ LS-scale=  4.746   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        9     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number        9     Address    72369     Length     148     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -12724,9 +12724,9 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
 LS-scale=  4.746   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -12955,7 +12955,7 @@ Mean C-C su =   0.0085
 LS-scale=  4.779   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -13188,7 +13188,7 @@ Mean C-C su =   0.0067
 LS-scale=  4.813   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -13419,7 +13419,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.832   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -13650,7 +13650,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.843   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -13825,7 +13825,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       10     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       10     Address    72369     Length     148     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -13903,9 +13903,9 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
 LS-scale=  4.848   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -14132,7 +14132,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.831   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -14363,7 +14363,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.818   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -14593,7 +14593,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.810   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -14823,7 +14823,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.804   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -14998,7 +14998,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       11     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       11     Address    72369     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -15077,9 +15077,9 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
 LS-scale=  4.799   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -15307,7 +15307,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.781   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -15538,7 +15538,7 @@ Mean C-C su =   0.0051
 LS-scale=  4.764   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.016    100*(<Fo>-<Fc>)/<Fo> =    -0.16
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -15769,7 +15769,7 @@ Mean C-C su =   0.0051
 LS-scale=  4.751   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.014    100*(<Fo>-<Fc>)/<Fo> =    -0.13
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -15999,7 +15999,7 @@ Mean C-C su =   0.0051
 LS-scale=  4.742   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.12
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -16174,7 +16174,7 @@ Mean C-C su =   0.0051
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       12     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       12     Address    72369     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -16253,9 +16253,9 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
 LS-scale=  4.736   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -16491,7 +16491,7 @@ Mean C-C su =   0.0052
 LS-scale=  4.730   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -16723,7 +16723,7 @@ Mean C-C su =   0.0041
 LS-scale=  4.730   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.022    100*(<Fo>-<Fc>)/<Fo> =    -0.22
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -16953,7 +16953,7 @@ Mean C-C su =   0.0041
 LS-scale=  4.730   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -17183,7 +17183,7 @@ Mean C-C su =   0.0041
 LS-scale=  4.730   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.20
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -17652,9 +17652,9 @@ LS-scale=  4.730   Wilson Scale=  4.723
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -17881,7 +17881,7 @@ Mean C-C su =   0.0027
 LS-scale=  4.668   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -18112,7 +18112,7 @@ Mean C-C su =   0.0023
 LS-scale=  4.641   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.027    100*(<Fo>-<Fc>)/<Fo> =    -0.26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -18342,7 +18342,7 @@ Mean C-C su =   0.0022
 LS-scale=  4.633   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -18572,7 +18572,7 @@ Mean C-C su =   0.0022
 LS-scale=  4.630   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -18999,7 +18999,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96447 to   100885 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96448 to   100886 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -19070,7 +19070,7 @@ The slope and correlation coefficient should be small
 LS-scale=  4.630   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -19296,7 +19296,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.637   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -19526,7 +19526,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.640   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -19907,7 +19907,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
 LS-scale=  4.641   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -20134,7 +20134,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -20361,7 +20361,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -20588,7 +20588,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -20815,7 +20815,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -21042,7 +21042,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -21645,7 +21645,7 @@ LS-scale=  4.646   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       14     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       14     Address    72369     Length     148     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -21724,9 +21724,9 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
 LS-scale=  4.646   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -21955,7 +21955,7 @@ Mean C-C su =   0.0087
 LS-scale=  4.647   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -22188,7 +22188,7 @@ Mean C-C su =   0.0072
 LS-scale=  4.649   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -22419,7 +22419,7 @@ Mean C-C su =   0.0070
 LS-scale=  4.650   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -22650,7 +22650,7 @@ Mean C-C su =   0.0070
 LS-scale=  4.652   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -22826,7 +22826,7 @@ Mean C-C su =   0.0070
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       15     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       15     Address    72369     Length     148     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -22904,9 +22904,9 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
 LS-scale=  4.654   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -23132,7 +23132,7 @@ Mean C-C su =   0.0070
 LS-scale=  4.654   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -23362,7 +23362,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.655   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -23592,7 +23592,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.655   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -23822,7 +23822,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.656   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -23997,7 +23997,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       16     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       16     Address    72369     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -24076,9 +24076,9 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
 LS-scale=  4.657   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -24305,7 +24305,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.657   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.003    100*(<Fo>-<Fc>)/<Fo> =    -0.03
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -24535,7 +24535,7 @@ Mean C-C su =   0.0049
 LS-scale=  4.657   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -24765,7 +24765,7 @@ Mean C-C su =   0.0049
 LS-scale=  4.657   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -24995,7 +24995,7 @@ Mean C-C su =   0.0049
 LS-scale=  4.658   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -25170,7 +25170,7 @@ Mean C-C su =   0.0049
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       17     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       17     Address    72369     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -25249,9 +25249,9 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
 LS-scale=  4.658   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -25488,7 +25488,7 @@ Mean C-C su =   0.0050
 LS-scale=  4.658   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.031    100*(<Fo>-<Fc>)/<Fo> =    -0.31
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -25720,7 +25720,7 @@ Mean C-C su =   0.0039
 LS-scale=  4.658   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -25950,7 +25950,7 @@ Mean C-C su =   0.0039
 LS-scale=  4.659   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -26180,7 +26180,7 @@ Mean C-C su =   0.0039
 LS-scale=  4.659   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -26653,9 +26653,9 @@ LS-scale=  4.660   Wilson Scale=  4.723
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -26881,7 +26881,7 @@ Mean C-C su =   0.0023
 LS-scale=  4.659   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.031    100*(<Fo>-<Fc>)/<Fo> =    -0.30
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -27112,7 +27112,7 @@ Mean C-C su =   0.0019
 LS-scale=  4.658   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -27343,7 +27343,7 @@ Mean C-C su =   0.0019
 LS-scale=  4.657   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -27574,7 +27574,7 @@ Mean C-C su =   0.0019
 LS-scale=  4.655   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -28010,7 +28010,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from    95449 to    99887 will not be copied ( deleted )         
+ List type   11  serial number  136 from    95450 to    99888 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -28081,7 +28081,7 @@ The slope and correlation coefficient should be small
 LS-scale=  4.654   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.23
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -28307,7 +28307,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.654   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.035    100*(<Fo>-<Fc>)/<Fo> =    -0.34
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -28537,7 +28537,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.654   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -28767,7 +28767,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.653   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -28997,7 +28997,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.653   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -29382,7 +29382,7 @@ LS-scale=  4.653   Wilson Scale=  4.723
 LS-scale=  4.653   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -29609,7 +29609,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.652   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -29836,7 +29836,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.652   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -30063,7 +30063,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.652   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -30290,7 +30290,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.651   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -30517,7 +30517,7 @@ Mean C-C su =   0.0017
 LS-scale=  4.651   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -31121,7 +31121,7 @@ LS-scale=  4.746   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       19     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       19     Address    72369     Length     148     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -31200,9 +31200,9 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
 LS-scale=  4.746   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -31431,7 +31431,7 @@ Mean C-C su =   0.0085
 LS-scale=  4.779   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -31664,7 +31664,7 @@ Mean C-C su =   0.0067
 LS-scale=  4.812   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -31895,7 +31895,7 @@ Mean C-C su =   0.0064
 LS-scale=  4.832   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -32126,7 +32126,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.842   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -32301,7 +32301,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       20     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       20     Address    72369     Length     148     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -32379,9 +32379,9 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
 LS-scale=  4.848   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -32608,7 +32608,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.830   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -32839,7 +32839,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.818   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -33069,7 +33069,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.809   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -33299,7 +33299,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.803   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -33474,7 +33474,7 @@ Mean C-C su =   0.0063
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       21     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       21     Address    72369     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -33553,9 +33553,9 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
 LS-scale=  4.799   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -33783,7 +33783,7 @@ Mean C-C su =   0.0063
 LS-scale=  4.780   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.53
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -34014,7 +34014,7 @@ Mean C-C su =   0.0051
 LS-scale=  4.763   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.016    100*(<Fo>-<Fc>)/<Fo> =    -0.16
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -34245,7 +34245,7 @@ Mean C-C su =   0.0051
 LS-scale=  4.751   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.014    100*(<Fo>-<Fc>)/<Fo> =    -0.14
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -34475,7 +34475,7 @@ Mean C-C su =   0.0051
 LS-scale=  4.742   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.12
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -34650,7 +34650,7 @@ Mean C-C su =   0.0051
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number       22     Address    72368     Length     148     Created on                          
+ Print list type    12     serial number       22     Address    72369     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -34729,9 +34729,9 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
 LS-scale=  4.736   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -34967,7 +34967,7 @@ Mean C-C su =   0.0052
 LS-scale=  4.730   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.055    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -35199,7 +35199,7 @@ Mean C-C su =   0.0041
 LS-scale=  4.729   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.22
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -35429,7 +35429,7 @@ Mean C-C su =   0.0041
 LS-scale=  4.730   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -35659,7 +35659,7 @@ Mean C-C su =   0.0041
 LS-scale=  4.730   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -36128,9 +36128,9 @@ LS-scale=  4.730   Wilson Scale=  4.723
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -36357,7 +36357,7 @@ Mean C-C su =   0.0027
 LS-scale=  4.668   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.035    100*(<Fo>-<Fc>)/<Fo> =    -0.34
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -36588,7 +36588,7 @@ Mean C-C su =   0.0023
 LS-scale=  4.641   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.027    100*(<Fo>-<Fc>)/<Fo> =    -0.26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -36818,7 +36818,7 @@ Mean C-C su =   0.0022
 LS-scale=  4.633   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.25
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -37048,7 +37048,7 @@ Mean C-C su =   0.0022
 LS-scale=  4.630   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -37475,7 +37475,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96447 to   100885 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96448 to   100886 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -37546,7 +37546,7 @@ The slope and correlation coefficient should be small
 LS-scale=  4.629   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -37772,7 +37772,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.636   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -38002,7 +38002,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.640   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -38383,7 +38383,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
 LS-scale=  4.641   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -38610,7 +38610,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.641   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -38837,7 +38837,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.641   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -39064,7 +39064,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -39291,7 +39291,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          
@@ -39518,7 +39518,7 @@ Mean C-C su =   0.0018
 LS-scale=  4.642   Wilson Scale=  4.723
 <Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Keen in P21/c                                                                        Date              Time          

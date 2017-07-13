@@ -966,16 +966,16 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5012     Length      76     Created on                          
+ Print list type    23     serial number        1     Address     5012     Length      77     Created on                          
 
 
 
- Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
-    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE 
+    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
 
-         -1             -1              0             -1             -1             -1             -1
+         -1             -1              0             -1             -1             -1             -1              0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -1020,7 +1020,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5088     Length      52     Created on                          
+ Print list type    25     serial number        1     Address     5089     Length      52     Created on                          
 
 
 

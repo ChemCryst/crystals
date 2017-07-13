@@ -347,9 +347,9 @@ LS-scale=  6.428   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -711,7 +711,7 @@ Mean C-C su =   0.0298
 LS-scale=  6.236   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.057    100*(<Fo>-<Fc>)/<Fo> =    -0.47
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1054,7 +1054,7 @@ Mean C-C su =   0.0280
 LS-scale=  6.258   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1394,7 +1394,7 @@ Mean C-C su =   0.0283
 LS-scale=  6.258   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.28
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1677,16 +1677,16 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        3     Address    33943     Length      76     Created on                          
+ Print list type    23     serial number        3     Address    33945     Length      77     Created on                          
 
 
 
- Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
-    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE 
+    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
 
-         -1              0             -1             -1              0             -1             -1
+         -1              0             -1             -1              0             -1             -1              0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -1730,7 +1730,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38714     Length     729     Created on                          
+ Print list type    22     serial number        1     Address    38717     Length     729     Created on                          
 
 
             298 parameter(s) in    1 block(s) - as follows:
@@ -1919,7 +1919,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        5     Address    85694     Length     616     Created on                          
+ Print list type    24     serial number        5     Address    85697     Length     616     Created on                          
 
 
 
@@ -2390,7 +2390,7 @@ LS-scale=  6.259   Wilson Scale=  0.000
 LS-scale=  6.259   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2726,7 +2726,7 @@ Mean C-C su =   0.0272
 LS-scale=  6.251   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.013    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3066,7 +3066,7 @@ Mean C-C su =   0.0273
 LS-scale=  6.251   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.013    100*(<Fo>-<Fc>)/<Fo> =    -0.10
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3406,7 +3406,7 @@ Mean C-C su =   0.0273
 LS-scale=  6.251   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.10
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3685,16 +3685,16 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        4     Address    33943     Length      76     Created on                          
+ Print list type    23     serial number        4     Address    33945     Length      77     Created on                          
 
 
 
- Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
-    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE 
+    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
 
-         -1              0             -1             -1              0             -1             -1
+         -1              0             -1             -1              0             -1             -1              0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -3738,7 +3738,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38714     Length     729     Created on                          
+ Print list type    22     serial number        1     Address    38717     Length     729     Created on                          
 
 
             298 parameter(s) in    1 block(s) - as follows:
@@ -3927,7 +3927,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    85694     Length     616     Created on                          
+ Print list type    24     serial number        9     Address    85697     Length     616     Created on                          
 
 
 

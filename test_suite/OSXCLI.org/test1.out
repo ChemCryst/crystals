@@ -449,9 +449,9 @@ LS-scale=  1.456   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -671,7 +671,7 @@ Mean C-C su =   0.0111
 LS-scale=  1.457   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -895,7 +895,7 @@ Mean C-C su =   0.0110
 LS-scale=  1.457   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1126,9 +1126,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1351,7 +1351,7 @@ Mean C-C su =   0.0111
 LS-scale=  1.483   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.062    100*(<Fo>-<Fc>)/<Fo> =    -0.86
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1575,7 +1575,7 @@ Mean C-C su =   0.0104
 LS-scale=  1.488   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -1799,7 +1799,7 @@ Mean C-C su =   0.0104
 LS-scale=  1.488   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -2036,9 +2036,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -2273,7 +2273,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.664   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.095    100*(<Fo>-<Fc>)/<Fo> =    -1.49
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -2911,9 +2911,9 @@ LS-scale=  1.733   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3135,7 +3135,7 @@ Mean C-C su =   0.0095
 LS-scale=  1.617   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.071    100*(<Fo>-<Fc>)/<Fo> =    -1.08
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3359,7 +3359,7 @@ Mean C-C su =   0.0072
 LS-scale=  1.621   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.017    100*(<Fo>-<Fc>)/<Fo> =    -0.26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -3906,9 +3906,9 @@ LS-scale=  1.456   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4128,7 +4128,7 @@ Mean C-C su =   0.0111
 LS-scale=  1.457   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4352,7 +4352,7 @@ Mean C-C su =   0.0110
 LS-scale=  1.457   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4587,9 +4587,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4812,7 +4812,7 @@ Mean C-C su =   0.0111
 LS-scale=  1.482   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.059    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5036,7 +5036,7 @@ Mean C-C su =   0.0105
 LS-scale=  1.488   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5260,7 +5260,7 @@ Mean C-C su =   0.0104
 LS-scale=  1.488   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5497,9 +5497,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5734,7 +5734,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.645   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.096    100*(<Fo>-<Fc>)/<Fo> =    -1.49
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -6369,9 +6369,9 @@ LS-scale=  1.677   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -6593,7 +6593,7 @@ Mean C-C su =   0.0093
 LS-scale=  1.602   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.090    100*(<Fo>-<Fc>)/<Fo> =    -1.36
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -6817,7 +6817,7 @@ Mean C-C su =   0.0071
 LS-scale=  1.605   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.42
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -7363,9 +7363,9 @@ LS-scale=  1.010   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -7591,7 +7591,7 @@ Mean C-C su =   0.0337
 LS-scale=  1.255   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    1.1     100*(<Fo>-<Fc>)/<Fo> =    13.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -7816,7 +7816,7 @@ Mean C-C su =   0.0153
 LS-scale=  1.401   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -8051,9 +8051,9 @@ LS-scale=  1.401   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -8275,7 +8275,7 @@ Mean C-C su =   0.0111
 LS-scale=  1.415   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -8499,7 +8499,7 @@ Mean C-C su =   0.0104
 LS-scale=  1.420   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -8723,7 +8723,7 @@ Mean C-C su =   0.0105
 LS-scale=  1.418   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -8956,9 +8956,9 @@ LS-scale=  1.418   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -9200,7 +9200,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.588   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -9847,9 +9847,9 @@ LS-scale=  1.685   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -10071,7 +10071,7 @@ Mean C-C su =   0.0091
 LS-scale=  1.580   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.022    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -10295,7 +10295,7 @@ Mean C-C su =   0.0065
 LS-scale=  1.585   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -10841,9 +10841,9 @@ LS-scale=  1.010   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11069,7 +11069,7 @@ Mean C-C su =   0.0337
 LS-scale=  1.255   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    1.1     100*(<Fo>-<Fc>)/<Fo> =    13.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11294,7 +11294,7 @@ Mean C-C su =   0.0153
 LS-scale=  1.401   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11529,9 +11529,9 @@ LS-scale=  1.401   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11753,7 +11753,7 @@ Mean C-C su =   0.0111
 LS-scale=  1.415   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -11977,7 +11977,7 @@ Mean C-C su =   0.0104
 LS-scale=  1.420   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -12201,7 +12201,7 @@ Mean C-C su =   0.0105
 LS-scale=  1.418   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -12434,9 +12434,9 @@ LS-scale=  1.418   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -12678,7 +12678,7 @@ Mean C-C su =   0.0000
 LS-scale=  1.588   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -13325,9 +13325,9 @@ LS-scale=  1.685   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -13549,7 +13549,7 @@ Mean C-C su =   0.0091
 LS-scale=  1.580   Wilson Scale=  0.000
 <Fo>-<Fc> =   -0.022    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -13773,7 +13773,7 @@ Mean C-C su =   0.0065
 LS-scale=  1.585   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          

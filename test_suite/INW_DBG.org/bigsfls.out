@@ -70,7 +70,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
- Print list type    22     serial number        1     Address   439989     Length    7131     Created on                          
+ Print list type    22     serial number        1     Address   439990     Length    7131     Created on                          
 
 
             206 parameter(s) in    1 block(s) - as follows:
@@ -2081,9 +2081,9 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -3280,7 +3280,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 #LIST 17
 #PURGE
 #SFLS
- List type   11  serial number    4 from   458884 to   480479 will not be copied ( deleted )         
+ List type   11  serial number    4 from   458885 to   480480 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -3352,9 +3352,9 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -3905,8 +3905,8 @@ Mean C-C su =   0.0009
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #DISK
- List type   11  serial number    4 from   456600 to   456695 will not be copied ( deleted )         
- List type   22  serial number    2 from   449438 to   453852 will not be copied ( deleted )         
+ List type   11  serial number    4 from   456601 to   456696 will not be copied ( deleted )         
+ List type   22  serial number    2 from   449439 to   453853 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -3987,9 +3987,9 @@ LS-scale=  0.909   Wilson Scale=  0.000
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 #NEWSHIFTS
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -4594,7 +4594,7 @@ Mean C-C su =   0.0129
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
-#INVERT  CHOL
+#INVERT  DEFA
 
 
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
@@ -5140,8 +5140,8 @@ Mean C-C su =   0.0121
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #SFLS
- List type   11  serial number    8 from   453024 to   487544 will not be copied ( deleted )         
- List type   22  serial number    1 from   449038 to   450276 will not be copied ( deleted )         
+ List type   11  serial number    8 from   453025 to   487545 will not be copied ( deleted )         
+ List type   22  serial number    1 from   449039 to   450277 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -5237,11 +5237,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      12447 Physical writes      10115 Cache hits     210910
- Cache hit distribution   191314   13158    2238     767     337     575
- Cache hit distribution      170     147     231     168     260     212
- Cache hit distribution      136     147     220     132     204     129
- Cache hit distribution      102      54      41      55      60      53
+ Physical reads      12318 Physical writes      10115 Cache hits     210815
+ Cache hit distribution   191239   13122    2274     704     534     399
+ Cache hit distribution      185     245     219     165     216     139
+ Cache hit distribution      215     130     225      86     173     128
+ Cache hit distribution       90      51      39      75      83      79
 
 
           : Job ends ok       with     0 warnings and     0 errors
