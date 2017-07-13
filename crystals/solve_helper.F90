@@ -24,7 +24,7 @@ real, intent(out) :: condition
 real, intent(out) :: filtered_condition
 !> number of eigenvalues filtered out during inversion
 integer, intent(out) :: nrejected
-integer, intent(out :: info !< error code on exit
+integer, intent(out) :: info !< error code on exit
 character(len=16), intent(out) :: blasname !< name of blas subroutine where error occured
 
 real, dimension(:), allocatable :: preconditioner, eigvalues, work
