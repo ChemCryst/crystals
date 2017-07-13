@@ -670,6 +670,12 @@ C----- CHOOSE INVERTOR
            method = istore(l23m+7)
         end if
 
+        if(method<0 .or. method>size(methodtxt)) then
+            method=0
+            WRITE ( CMON, '(A,A)') '{E Bug in crystals: method ',
+     &        'out of bounds in methodtxt(method)'
+            CALL XPRVDU(NCVDU, 1,0)
+        end if
         WRITE ( CMON, '(A,A)') 'Inversion method: ', 
      &    trim(methodtxt(method))
         CALL XPRVDU(NCVDU, 1,0)
@@ -765,7 +771,7 @@ c stupid compiler has a stack overflow by making a temporary array
             case(2) ! eigen decomposition filtering + inversion
                
                call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
-     1              JY, 1e-2, nrej, cond, fcond, info)
+     1              JY, 1e-2, nrej, cond, fcond, info, blasname)
 
                if ( nrej .gt. 0 ) THEN
                   istore(L11P+30)=-istore(L11P+30)

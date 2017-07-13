@@ -4,7 +4,7 @@ contains
 
 !> code for the inversion of the normal matrix using eigen decomposition
 !! Small eigen values are filtered out based on a condition number threshold
-subroutine eigen_inversion(nmatrix, nmsize, eigcutoff, nrejected, condition, filtered_condition, info)
+subroutine eigen_inversion(nmatrix, nmsize, eigcutoff, nrejected, condition, filtered_condition, info, blasname)
 use m_mrgrnk
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
@@ -24,17 +24,21 @@ real, intent(out) :: condition
 real, intent(out) :: filtered_condition
 !> number of eigenvalues filtered out during inversion
 integer, intent(out) :: nrejected
+integer, intent(out :: info !< error code on exit
+character(len=16), intent(out) :: blasname !< name of blas subroutine where error occured
 
 real, dimension(:), allocatable :: preconditioner, eigvalues, work
 integer, dimension(:), allocatable :: iwork
 real, dimension(:,:), allocatable :: eigvectors, invert
 logical truncated
-integer i, j, k, info
+integer i, j, k
 
 #if defined(CRY_OSLINUX)
 integer :: starttime
 integer, dimension(8) :: measuredtime
 #endif
+
+blasname=''
 
 ! preconditioning using diagonal terms
 ! Allocate diagonal vector
@@ -100,6 +104,7 @@ print *, 'eigen decomp done in (ms): ', &
 #endif
 
 if(info>0) then
+    blasname='SSYEVD'
     return
 end if
 
@@ -772,8 +777,8 @@ double precision, dimension(:,:), allocatable :: dunpacked
 real, dimension(:), allocatable :: work
 double precision, dimension(:), allocatable :: dwork
 integer, dimension(:), allocatable :: ipiv, iwork
-real rcond, onenorm
-double precision drcond, donenorm
+real rcond, onenorm, lnorm
+double precision drcond, donenorm, dlnorm
 integer, external :: ILAENV
 
 real condition, filtered_condition
@@ -798,37 +803,37 @@ print *, 'single precision'
 #endif
 
 
-! preconditioning using diagonal terms
-! Allocate diagonal vector
-allocate(preconditioner(nmsize))
-do i=1,nmsize
-    j = ((i-1)*(2*(nmsize)-i+2))/2
-    if(abs(nmatrix(1+j))>epsilon(0.0)) then
-        preconditioner(i)=nmatrix(1+j)
-    else
-        preconditioner(i)=1.0
-    end if
-end do      
-preconditioner = 1.0/sqrt(preconditioner) 
-
 ! unpacking lower triangle for memory efficiency and preconditioning:
 ! N' = C N C
 ! N: normal matrix
 ! C: diagonal matrix with elements from the N diagonal
 onenorm=0.0
 allocate(unpacked(nmsize, nmsize))
+allocate(preconditioner(nmsize))
+! unpacking matrix and constructing conditioner based on diagonal element
 do i=1, nmsize
     j = ((i-1)*(2*(nmsize)-i+2))/2
     k = j + nmsize - i
     ! unpacking
     ! only lower triangle is referenced
     unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
-    ! applying preconditioning
-    unpacked(i:nmsize, i)=preconditioner(i:nmsize)*unpacked(i:nmsize, i)
-    unpacked(i:nmsize, i)=preconditioner(i)*unpacked(i:nmsize, i)
-    !unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
+    preconditioner(i)=unpacked(i,i)
     
     onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
+end do
+do i=1, nmsize
+    if(preconditioner(i)>epsilon(1.0)) then
+        preconditioner=1.0/sqrt(preconditioner)
+    else
+        preconditioner=1.0
+    end if
+end do
+
+! applying conditioner
+do i=1, nmsize
+    ! applying preconditioning unsing the vector norm
+    unpacked(i:nmsize, i)=preconditioner(i:nmsize)*unpacked(i:nmsize, i)
+    unpacked(i:nmsize, i)=preconditioner(i)*unpacked(i:nmsize, i)
 end do
 
 ! debugging, check A^-1 A
@@ -873,7 +878,7 @@ if(info/=0) then
 end if
 
 #if defined(CRY_OSLINUX)
-print *, 'condition number ', 1.0/rcond, 1.0/epsilon(1.0)
+print *, 'condition number ', 1.0/rcond
 print *, 'relative error ', 1.0/rcond*epsilon(1.0)
 #endif
 
@@ -883,37 +888,33 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
     print *, 'double precision'
 #endif
 
-    ! preconditioning using diagonal terms
-    ! Allocate diagonal vector
-    allocate(dpreconditioner(nmsize))
-    do i=1,nmsize
-        j = ((i-1)*(2*(nmsize)-i+2))/2
-        if(abs(nmatrix(1+j))>epsilon(0.0d0)) then
-            dpreconditioner(i)=nmatrix(1+j)
-        else
-            dpreconditioner(i)=1.0d0
-        end if
-    end do      
-    dpreconditioner = 1.0d0/sqrt(dpreconditioner) 
-
-    ! unpacking lower triangle for memory efficiency and preconditioning:
-    ! N' = C N C
-    ! N: normal matrix
-    ! C: diagonal matrix with elements from the N diagonal
-    donenorm=0.0d0
     allocate(dunpacked(nmsize, nmsize))
+    allocate(dpreconditioner(nmsize))
+    donenorm=0.0d0
+    ! unpacking matrix and constructing conditioner
     do i=1, nmsize
         j = ((i-1)*(2*(nmsize)-i+2))/2
         k = j + nmsize - i
         ! unpacking
         ! only lower triangle is referenced
         dunpacked(i:nmsize, i)=nmatrix(1+j:1+k)
-        ! applying preconditioning
-        dunpacked(i:nmsize, i)=dpreconditioner(i:nmsize)*dunpacked(i:nmsize, i)
-        dunpacked(i:nmsize, i)=dpreconditioner(i)*dunpacked(i:nmsize, i)
-        !unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
+        dpreconditioner(i)=dunpacked(i,i)
         
         donenorm=max(donenorm, sum(abs(dunpacked(i:nmsize,i)))+sum(abs(dunpacked(i,1:i-1))))
+    end do
+    do i=1, nmsize
+        if(dpreconditioner(i)>epsilon(1.0d0)) then
+            dpreconditioner=1.0d0/sqrt(dpreconditioner)
+        else
+            dpreconditioner=1.0d0
+        end if
+    end do
+
+    ! applying conditioner
+    do i=1, nmsize
+        ! applying preconditioning unsing the vector norm
+        dunpacked(i:nmsize, i)=dpreconditioner(i:nmsize)*dunpacked(i:nmsize, i)
+        dunpacked(i:nmsize, i)=dpreconditioner(i)*dunpacked(i:nmsize, i)
     end do
 
     !allocate(ipiv(nmsize))
@@ -945,23 +946,21 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
     end if
     
 #if defined(CRY_OSLINUX)
-    print *, 'condition number ', 1.0d0/drcond, 1.0d0/epsilon(1.0d0)
+    print *, 'condition number ', 1.0d0/drcond
     print *, 'relative error ', 1.0d0/drcond*epsilon(1.0d0)
 #endif
 
-    if(1.0d0/drcond*epsilon(1.0d0)>1e-7) then
+    if(1.0d0/drcond*epsilon(1.0d0)>1e-3) then
         ! we are in trouble, even double precision is not good enough
 #if defined(CRY_OSLINUX)
         print *, 'eigen values filtering'
 #endif
         
-        call eigen_inversion(nmatrix, nmsize, 1e-5, nrejected, condition, filtered_condition, info)
+        call eigen_inversion(nmatrix, nmsize, 1e-5, nrejected, condition, filtered_condition, info, blasname)
         if(info/=0) then 
-            blasname='eigen_inversion'
             return
         end if
         if(info==0 .and. nrejected>0) then
-            blasname='eigen_inversion'
             info=1111111
         end if
         return
@@ -1018,7 +1017,7 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
             ! packing back matrix
             nmatrix(1+j:1+k)=dunpacked(i:nmsize,i)
         end do    
-                    
+        
         deallocate(dpreconditioner)
         deallocate(dunpacked)   
         return
