@@ -297,6 +297,8 @@ c
       iequiv = 1
 C
 1001  continue
+c Area Detector. Compute the scattering vector
+c
       if (idifrt .eq.5) then
         ih=nint(store(m6)*store(m2+0)+store(m6+1)*store(m2+1)+
      1     store(m6+2)*store(m2+1))
