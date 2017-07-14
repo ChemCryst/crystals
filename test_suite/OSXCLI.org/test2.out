@@ -3257,7 +3257,7 @@ Mean C-C su =   0.0131
  Largest index tested = 12
  List 6 contains  2016 reflections of which  2016 are accepted by LIST 28
  After    13 structure factor/refinement calculations 
- R =  24.78     Weighted R =  43.57     Minimisation function =    0.363479E+06
+ R =  24.78     Weighted R =  43.57     Minimisation function =    0.363478E+06
 
  Reflections with greatest unexpected extra intensity:
    h   k   l (Fo2-Fc2)/s     Fo^2        Fc^2       Sigma
@@ -16703,7 +16703,7 @@ All cycle   Min function          0.0           0.33E+05       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0001  -0.0002   0.0000
+                                         0.0000  -0.0002   0.0000
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 

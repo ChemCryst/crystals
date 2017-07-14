@@ -20843,8 +20843,8 @@ LS-scale=  1.747   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
- S/ESD     1           1            -0.011     -0.7E-01    0.230E-02         -4.80                          BATCH     1
- S/ESD     1           1            -0.011     -0.7E-01    0.230E-02         -4.80                          BATCH     2
+ S/ESD     1           1            -0.011     -0.7E-01    0.230E-02         -4.81                          BATCH     1
+ S/ESD     1           1            -0.011     -0.7E-01    0.230E-02         -4.81                          BATCH     2
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           4.

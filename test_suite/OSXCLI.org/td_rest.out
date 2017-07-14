@@ -3005,7 +3005,7 @@ All cycle   Min function          0.0           0.55E+04       0.10E+16
 
  Statistics for     6 least squares parameters, with  1128 degrees of freedom
  Number of observations              1133                 1              1134
-[30]  Minimisation function              0.55 E+04         0.52 E+05         0.57 E+05
+[30]  Minimisation function              0.55 E+04         0.51 E+05         0.57 E+05
 [45]  Hamilton weighted R-value          14.              0.66              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3079,7 +3079,7 @@ All cycle   Min function          0.0           0.55E+04       0.10E+16
 [37]                       0.00            -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.026    0.024    0.010 
-Mean C-C su =   0.0215
+Mean C-C su =   0.0214
 #CYCLENDS
 #CHECK HI
 
