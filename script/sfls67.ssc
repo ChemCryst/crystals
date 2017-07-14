@@ -10,6 +10,9 @@
 %%      contribution removed and Fc be computed without f"
 %%      If there are Friedel pairs, Fo should be treated as above, the pairs should be
 %%      merged, and Fc re-computed without f"
+%%
+%%  See BY G. BERNARDINELLI AND H. D. FLACK Acta Cryst. (1985). A41,500-511 for
+%%  how to correct Fo
 %%      
 %%      Currently this cannot be done.
 %%      
