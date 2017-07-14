@@ -1,472 +1,581 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title> Analyses in CRYSTALS </title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<style type=”text/css”>
-body { background-color:white; color:black;
-#para2 { font-family:fantasy; color:blue }
-p { font-size:12pt; }
-p:first-letter {font-size: 200%; color:red }
-h3 { font-family:monospace; color:#ff00ff }
-h1 {  color:green }
-</style>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+
+  <title>Analyses in CRYSTALS</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <style type="&rdquo;text/css&rdquo;">
+<![CDATA[
+  body { background-color:white; color:black;
+  #para2 { font-family:fantasy; color:blue }
+  p { font-size:12pt; }
+  p:first-letter {font-size: 200%; color:red }
+  h3 { font-family:monospace; color:#ff00ff }
+  h1 {  color:green }
+  ]]>
+  </style>
 </head>
+
 <body>
-<center><h1>Structure Evaluation in CRYSTALS</h1></center> 
+  <center>
+    <h1>Structure Evaluation in CRYSTALS</h1>
+  </center>
 
-<table width="100%" border="1" cellspacing="0" cellpadding="10" >
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> Tabbed Initial</h3>
-</td>
-<td>
-&nbsp;
-</td>
-</tr>
+  <table border="3" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="10%"><a href="#agreement">Agreement Analysis</a></td>
 
-<tr>
-<td width="40%">
-<h4> Completeness</h4>
-<p>
-An almost solid row of blue crosses at the top - 
-good sign - high completeness.  <br>
-Missing Data: A few low angle reflections missing (probably 
-behind the beam stop)- Not usually important.  If the blue crosses
-fall off at high angle, you can click on the graph at the theta max
-at which you believe the data to be more-or-less complete.<br>
-The inset shows data from a  <a href="./cropped.jpg">
-poorly diffracting poly-peptide</a>. The 
-structure was difficult to solve, and refined to a conventional R=8%
-with data down to 2 sigma.<br>
-<img id="1a" src="./s-bad-completeness.jpg"    align="bottom"
- alt="Not Available">
+      <td width="10%"><a href="#fo-fc">Fo-Fc Plot</a></td>
 
-</p>
-</td>
-<td>
-&nbsp;
-<img id="1 " src="./completeness.jpg"    align="left"
- alt="Not Available">
-</td>
-</tr>
+      <td width="10%"><a href="#npp">Normal Probability plot</a></td>
 
+      <td width="10%"><a href="#difabs">DIFABS analysis</a></td>
 
-<tr>
-<td width="40%">
-<h4>Sigma Frequency</h4>
-<p>
-There are very few reflections below -2 sigma - i.e. no badly negative 
-reflections.  From the blue line you can see that about 5400 out of 
-the 7000 reflections have I/sigma(I) &GT; 3.  The listing file should
-give the exact figure. 77% of this data is reliably observable. If the
-figure falls below 50% you can expect problems with structure solution
-and refinement.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="2 " src="./sigfreq.JPG"    align="left"
- alt="Not Available">
-</td>
-</tr>
+      <td width="10%"><a href="#wp">Wilson plot</a></td>
 
+      <td width="10%">&nbsp;</td>
+    </tr>
 
-<tr>
-<td width="40%">
-<h4>Sigma vs Resolution</h4>
-<p>
-The green curve shows that the very reliable data fades away at
-[sin(theta)/lambda]<sup>2</sup> of about 0.3. As normal, 
-the weak data (red) is mostly at high resolution.  The yellow curve
-is the cumulative sum, and is scaled to fit the chart (in this example
-by being multiplied by 10). 
-It shows that the mean I/sigma(I) is about 2 at 0.36 resolution. This
-is typical of an 'ordinary' data set.  Weakly diffracting crystals
-fall below the 2-sigma threshold at a lower resolution.<br>
-The inset shows the data for the same poor crystal described above<br>
-<img id="3a" src="./s-bad-SvsR.jpg"  align="bottom"
- alt="Not Available">
-</p>
-</td>
-<td>
-&nbsp;
-<img id="3 " src="./sigvsres.jpg"  align="left"
- alt="Not Available">
-</td>
-</tr>
+    <tr>
+      <td width="10%"><a href="#IvE">Internal vs External Variance</a></td>
 
+      <td width="10%"><a href="#WvS">Wt vs Sigma graph</a></td>
 
-<tr>
-<td width="40%">
-<h4>Wilson Plot</h4>
-<p>
-This shows the usual ripple due to repeated molecular motifs.
-The gradient gives an estimate of the overall adp, the intercept
-an estimate of the overall scale of the data. Note the conventional
-use of <b>B</b> for the adp. <br>
-B=8.pi<sup>2</sup>U <br>
-Low values of <b>MOD[E<sup>2</sup>-1] </b> (&lt; 0.74) may
-indicate twinning.<br>
-If the high-rho end of the curve is ragged, 
-or shows an up-turn (due to systematic over-estimation of weak 
-reflections), a maximum value of rho for the
-rest of the analysis can be selected by right-clicking
-on the appropriate blue cross.  This value can be reset
-at any time in the REFINEMENT/FILTERING menu. The LIST 28
-check box enables you so see the effect of reflection filters.<br>
-<img id="4a" src="./s-bad-Wilson.jpg"  align="left"
- alt="Not Available">
-Same poor data as described above.
+      <td width="10%"><a href="#sd">Sigma Distribution</a></td>
 
-</p>
-</td>
-<td>
-&nbsp;
-<img id="4 " src="./Wilson.jpg"  align="left"
- alt="Not Available">
-</td>
-</tr>
+      <td width="10%"><a href="#mr">Merging R distribution</a></td>
 
+      <td width="10%"><a href="#nz">N(z) plot</a></td>
 
-<tr>
-<td width="40%">
-<h4>N(z) Distribution</h4>
-<p>
-This shows your data (as crosses) compared to thoretical 
-distributions and <b><i>may</i></b> 
-help you decide if you data is centrosymmetric or not.
-Generally not a very reliable test, especially if you have
-heavy atoms or repeated molecular motifs
-</p>
-</td>
-<td>
-&nbsp;
-<img id="5 " src="./Nz.jpg"  align="left"
- alt="Not Available">
-</td>
-</tr>
+      <td width="10%"><a href="tabbed-initial.html">Tabbed initial analyses</a></td>
+    </tr>
 
+    <tr>
+      <td width="10%"><a href="#ac">Absolute config</a></td>
 
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> Agreement</h3>
-</td>
-<td>
-&nbsp;
-</td>
-</tr>
+      <td width="10%"><a href="#ra">Rotax analysis</a></td>
 
+      <td width="10%"><a href="#lh">Likely H-bonds</a></td>
 
-<tr>
-<td width="40%">
-<h4>Residual</h4>
-<p> Plots &lt;(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (red)
-and &lt;w(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (blue).
-The blue bars should all be very short and centred at about 1.0.  
-In this example there is a systematic trend as a function of both
-Fc and resolution.  Since high angle reflections are generally weak,
-these two curves are saying more or less the same thing. In this case
-almost all blue bars hang down from the unit coordinate, indicating
-that the weights need re-adjusting (REFINEMENT/WEIGHTS). 
+      <td width="10%">&nbsp;</td>
 
-<p> 
-CRYSTALS can try to determine a weighting scheme for you.
-<br> For refinement against F<sup>2</sup> a scheme similar to 
-Sheldrick's scheme is avaiable.
-<br>For refinement againts Fo an optimal Chebychev polynomial is fitted 
-to the residual.
-<br>
-When the weights have been correclty assigned, the weighted residual
-for any batch of reflections should be about unity.
-</p>
+      <td width="10%">&nbsp;</td>
 
+      <td width="10%">&nbsp;</td>
+    </tr>
 
-<br>The second 
-image shows the result of recomputing the weights.  One strong and 
-one weak batch still have large blue deviations, but the green curve 
-shows that only a few reflections are involved in these batches.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="6 " src="./residual.jpg"  align="top"
- alt="Not Available">
-<br><br><hr><br>
-<img id="6 " src="./weights.jpg"  align="bottom"
- alt="Not Available">
-</td>
-</tr>
+    <tr>
+      <td width="10%"><a href="#lc">Local Acta checks</a></td>
 
+      <td width="10%"><a href="#lc">Checkcif</a></td>
 
-<tr>
-<td width="40%">
-<h4>Class/Parity (index, R-factor, R by class etc)</h4>
-<p>
-These are diagnostics which may point to problems with the data 
-or model in difficult cases. <i>Residual</i> and <i>R</i> 
-by parity/class should be constant across the calsses. 
-If there is alternation or some other pattern, this may indicate
-pseudo-translational symmetry. Examine the SIR ouput file for
-an alternative diagnostic. The Residual and R by index should also
-be contant. <br>
-In this example, the blue bars are consistantly below unity (but
-otherwise fairly constant) indicating that the weights need rescaling.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="7 " src="./class-parity.jpg"  align="left"
- alt="Not Available">
-</td>
-</tr>
+      <td width="10%"><a href="#mg">Mogul Geometry Check</a></td>
 
+      <td width="10%"><a href="#gw">Graphics Window</a></td>
 
+      <td width="10%">&nbsp;</td>
 
+      <td width="10%">&nbsp;</td>
+    </tr>
+  </table><br />
+  <br />
+  <br />
 
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> Agreement</h3>
-<p>
-The green line is unit gradient.  The reflections (red crosses) should
-be distributed evenly about this line. Blue crosses are reflection
-that have been filtered out (LIST 28).  If the red crosses follow
-a systematic downwards curve at high values of Fc, this may indicate 
-the need for an extinction correction. A few point falling a long way 
-from the line may be outliers (bad values of Fo), or may indicate
-serious erroes in the model (bad values of Fc).  They can be filtered 
-out of the refinement by right clicking on them, but only if you are
-confident that you can explain them. A slight systematic trend for Fo 
-to be greater than Fc, plus more scatter than usual, may indicate 
-twinning.<br>
-The blue crosses at Fc=zero are reflections that have been filtered out
-from the very start. Go to Refinement-Filter Reflections and uncheck the 
-filters if you want to compute all Fc values.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="8 " src="./F0vsFc.jpg"  align="left"
- alt="Not Available">
-</td>
-</tr>
+  <table width="100%" border="1" cellspacing="0" cellpadding="10">
+    <tr>
+      <td width="40%">
+        <a name="agreement" id="agreement">&nbsp;</a>
 
+        <h2>Analyse: Structure Residuals</h2>
 
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> Normal Probability Plot</h3>
-<p>
-This should be a straight line of unit gradient.  The tails
-are often ragged, and not too important if only a few reflections
-are involved.  If the line has a significan curve, this means that
-there is a significant
-trend in the residual which must be corrected either by improving
-the model or adjusting the weights. If the curve is more-or-less 
-straight but not of unit gradient, the weights need rescalling.
-<br> In this case there is a down turn in a few reflections (probably
-not too important), and the gradient is about 0.4, indicating that 
-the weights need re-scalling.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="9 " src="./Normal-p.jpg"  align="left"
- alt="Not Available">
-</td>
-</tr>
+        <h3>Agreement</h3>
 
+        <h4>Residual</h4>
 
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> Absolute Configuration</h3>
-&nbsp;
+        <p>Plots &lt;(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (red) and
+        &lt;w(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (blue). The blue bars should
+        all be very short and centred at about 1.0. In this example there is a systematic
+        trend as a function of both Fc and resolution. Since high angle reflections are
+        generally weak, these two curves are saying more or less the same thing. In this
+        case almost all blue bars hang down from the unit coordinate, indicating that the
+        weights need re-adjusting (REFINEMENT/WEIGHTS).</p>
 
-<A href="./Flack.pdf" >
-<img id="10c " src="./tn_Flack.jpg"  align="top"
- alt="Not Available"><br>
-See: <i>H. D. Flack and G. Bernardinelli., J. 
-Appl. Cryst. (2000). 33, 1143-1148</i>.
-</A>
-</td>
-<td >
-<p>
-CRYSTALS has two different refineable parameters to help with the 
-determination of absolute structure. <br>
-The oldest, the Rodger's "eta" parameter is a multiplier onto f", and 
-takes the value +1 if the model has the correct hand, and -1 if it needs 
-inverting. Flack showed that this parameter is unreliable as eta 
-approaches zero.<br>
-The Flack "x" parameter is the mixing term in 
-<br> F^2 = (1-x)F^2+h + xF^2-h <br>
-and takes the value zero if the model has the correct hand, and +1 if it needs 
-inverting.  <br>
-Either the Rodger's or Flack parameter should be refined simultaneously 
-with the other structural parameters since its value will influence 
-them, and they in turn will influence the s.u. on the absolute 
-configuration parameter.<br>
-<strong> Interpreting the Absolure Configuration Paramters</strong><br>
-<p style="font-size:80%">
-If the s.u. on the Flack parameter is greater than 0.30, the X-ray data 
-contain no significant anomalous information so that the absolute configuration
-cannot be assigned by X-ray means. The value of x can be set to zero and not refined.
- (It may be appropriate to report x and its s.u. to demonstrate that the 
-calculation was actually performed).  <br>
-If the s.u. is small enough (<0.04), then the parameter itself can be evaluated.  
-If it falls close to zero or unity, then the absolute configuration has been determined.
-If it falls within this range, but is significantly distant from the bounds, 
-the material is probably twinned by inversion.
-</p>
-<p style="font-size:100%">
-Hooft, Straver and Spek have devised a new parameter which examines the 
-anomalous differences computed with the Flack x set to zero.  Its 
-robustness has yet to be determined.
-</p>
-</td>
-</tr>
+        <p>CRYSTALS can try to determine a weighting scheme for you.<br />
+        For refinement against F<sup>2</sup> a scheme similar to Sheldrick's scheme is
+        avaiable.<br />
+        For refinement againts Fo an optimal Chebychev polynomial is fitted to the
+        residual.<br />
+        When the weights have been correclty assigned, the weighted residual for any
+        batch of reflections should be about unity.</p><br />
+        The second image shows the result of recomputing the weights. One strong and one
+        weak batch still have large blue deviations, but the green curve shows that only
+        a few reflections are involved in these batches.
+      </td>
 
+      <td>
+        &nbsp; <img id="1" src="./residual.jpg" align="top" alt="Not Available" name=
+        "1" /><br />
+        <br />
+        <hr />
+        <br />
+        <img id="2" src="./weights.jpg" align="bottom" alt="Not Available" name="2" />
+      </td>
+    </tr>
 
+    <tr>
+      <td width="40%">
+        <h4>Class/Parity (index, R-factor, R by class etc)</h4>
 
+        <p>These are diagnostics which may point to problems with the data or model in
+        difficult cases. <i>Residual</i> and <i>R</i> by parity/class should be constant
+        across the calsses. If there is alternation or some other pattern, this may
+        indicate pseudo-translational symmetry. Examine the SIR ouput file for an
+        alternative diagnostic. The Residual and R by index should also be contant.<br />
+        In this example, the blue bars are consistantly below unity (but otherwise fairly
+        constant) indicating that the weights need rescaling.</p>
+      </td>
 
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> Difabs</h3>
-<p>
-The colour-field shows the mean value &lt;Fo/Fc&gt; value as a funcion of 
-the azimuthal and declination angles, i.e. as a funcion of direction 
-with respect to the crystal shape.  It should be featureless, but 
-almost never is.  Steep gradients may indicate problems with the 
-structural model or with the data processing (e.g. unsatisfactory 
-absorption corrections). The text window shows the maximum, minimum and 
-mean values, which in  this case range over +/- 5% and are not very 
-significant. (Note that the DIFABS calculation can actually be applied 
-in CRYSTALS as a "correction" to the data, but this is not available 
-from a menu.)
-</p>
-</td>
-<td>
-&nbsp;
-<img id="10 " src="./difabs-1.jpg"  align="top"
- alt="Not Available">
-&nbsp;
-<br><br><hr><br>
-<img id="11 " src="./Difabs-2.jpg"  align="bottom"
- alt="Not Available">
-</td>
-</tr>
+      <td>&nbsp; <img id="3" src="./class-parity.jpg" align="left" alt="Not Available"
+      name="3" /></td>
+    </tr>
 
+    <tr>
+      <td width="40%">
+        <a name="fo-fc" id="fo-fc">&nbsp;</a>
 
+        <h2>Analyse: Structure Residuals</h2>
 
+        <h3>Fo vs Fc</h3>
 
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> Rotax</h3>
-<p>
-This utility, developed by Simon Parsons, Bob Gould and Richard Cooper, 
-examines the 30 reflections with the largest residuals for evidence of 
-merohedral or pseudo merahedral twinning.  Go to "Help - Twin Worked 
-Examples" for more information.<br>
-The image right is from the worked example "Keen - twin". 
-</p>
-</td>
-<td>
-&nbsp;
-<img id="Rot " src="./rotax.jpg"  align="bottom"
- alt="Not Available">
-</td>
-</tr>
+        <p>The green line is unit gradient. The reflections (red crosses) should be
+        distributed evenly about this line. Blue crosses are reflection that have been
+        filtered out (LIST 28). If the red crosses follow a systematic downwards curve at
+        high values of Fc, this may indicate the need for an extinction correction. A few
+        point falling a long way from the line may be outliers (bad values of Fo), or may
+        indicate serious erroes in the model (bad values of Fc). They can be filtered out
+        of the refinement by right clicking on them, but only if you are confident that
+        you can explain them. A slight systematic trend for Fo to be greater than Fc,
+        plus more scatter than usual, may indicate twinning.<br />
+        The blue crosses at Fc=zero are reflections that have been filtered out from the
+        very start. Go to Refinement-Filter Reflections and uncheck the filters if you
+        want to compute all Fc values.</p>
+      </td>
 
+      <td>&nbsp; <img id="4" src="./F0vsFc.jpg" align="left" alt="Not Available" name=
+      "4" /></td>
+    </tr>
 
+    <tr>
+      <td width="40%">
+        <a name="npp" id="npp"></a>
 
+        <h2>Analyse: Structure Residuals</h2>
 
-<tr>
-<td width="40%">
-<h2> Analyse</h2>
-<h3> MOGUL</h3>
-<p>
-This can only be used if you have the CCDC MOGUL system installed on 
-your PC.  It compares the local geometry of your structure with similar 
-geometries in the MOGUL data base and alerts you to any significant 
-differences (\Z\ values).  Clicking on a featue shows the corresponding 
-values stored in MOGUL.  It can be used to set up restraints, where the 
-target values and esds are based on the MOGUL values.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="12 " src="./Mogul.jpg"  align="left"
- alt="Not Available">
-</td>
-</tr>
+        <h3>Normal Probability Plot</h3>
 
+        <p>This should be a straight line of unit gradient. The tails are often ragged,
+        and not too important if only a few reflections are involved. If the line has a
+        significan curve, this means that there is a significant trend in the residual
+        which must be corrected either by improving the model or adjusting the weights.
+        If the curve is more-or-less straight but not of unit gradient, the weights need
+        rescalling.<br />
+        In this case there is a down turn in a few reflections (probably not too
+        important), and the gradient is about 0.4, suggesting that the weights need
+        re-scalling.</p>
+      </td>
 
+      <td>&nbsp; <img id="5" src="./Normal-p.jpg" align="left" alt="Not Available" name=
+      "5" /></td>
+    </tr>
 
-<tr>
-<td width="40%">
-<h2> Graphics Window</h2>
-<h3> Highlighted atoms + TLS</h3>
-<p>
-Computes the TLS analysis of the selected atoms.  Large values of R1 
-indicate thet the selected atoms do not form a rigid group.  Small 
-values of R1 plus large values of L<sub>33</sub> indicate thet there may 
-be a bond shortening effect.  Look in the listing file to see the 
-corrected bond lengths.  In this case the R1 value of 7% and the 
- L<sub>33</sub> value of 70 degree<sup>2</sup> leads to bond length 
-corrections of about 0.02A.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="13 " src="./TLS.jpg"  align="top"
- alt="Not Available">
-<br><br><hr><br>
-<img id="13b " src="./TLS-2.jpg"  align="bottom"
- alt="Not Available">
-</td>
-</tr>
+    <tr>
+      <td width="40%">
+        <a name="difabs" id="difabs"></a>
 
+        <h2>Analyse: Structure Residuals</h2>
 
-<tr>
-<td width="40%">
-<h2> Graphics Window</h2>
-<h3> Highlighted atoms + Slant Fourier</h3>
-<p>
-This computes the best plane through the selected atoms and then the 
-electron density (or difference density) in sections parallel to the 
-plane. You will probably need to raise the number of sections from the 
-default (2) in order to obtain a thicker slab of the structure.  Michael 
-Husaks MCE viewer lets you examine the density. <br>
-This is a really useful utiity for helping you to unravel disorder.  
-Remember that an ordinary peak-search picks out local maxima, but tells 
-you nothing about the surrounding density. Set the occupation factors of
-the suspicious atoms to zero and then re-compute structure factors 
-(<b>Do not try refinement</b>). Then click the solvent atoms to locate 
-the area of interest and view the slant difference Fourier. The atoms 
-with zero occupancie will not contribute to the map, but will help you
-locate the supposed solvent amongst the electron density.<br><br>
-The electron density distribution is displayed in MCE, distributed with 
-CRYSTALS by courtesy of Micheal Husak and Jan Rohlicek. 
-See www.vscht.cz/min/mce  for more details.
-</p>
-</td>
-<td>
-&nbsp;
-<img id="14 " src="./slant-1.jpg"  align="top"
- alt="Not Available">
-<br><br><hr><br>
-<img id="15 " src="./slant-2.jpg"  align="bottom"
- alt="Not Available">
-</td>
-</tr>
-</table>
+        <h3>Difabs Structure Residuals</h3>
 
+        <p>The colour-field shows the mean value &lt;Fo/Fc&gt; value as a funcion of
+        azimuth and declination of the incident and emergent beams, i.e. as a funcion of
+        direction with respect to the crystal shape.<br />
+        <br />
+        For Area Detector data, multiple observations at different angles are merged, so
+        the azimuth (angle in the h-k plane) and declination (angle above this plane) of
+        the scattering vector are used.<br />
+        <br />
+        The map should be featureless, but almost never is. Steep gradients may indicate
+        problems with the structural model or with the data processing (e.g.
+        unsatisfactory absorption corrections). The text window shows the maximum,
+        minimum and mean values, which in this case range over +/- 5% and are not very
+        significant. (Note that the DIFABS calculation can actually be applied in
+        CRYSTALS as a "correction" to the data, but this is not available from a
+        menu.)<br />
+        <br />
+        If the figure field is completely black (very little variation) more detail can
+        sometimes be seen by plotting the logarithm of the values (Press L on the
+        keyboard).<br />
+        Pressing / replaces the ratio map with the multiplicity of observation map. This
+        should show good coverage of the unique part of the reciprocal lattice.</p>
+      </td>
+
+      <td>
+        &nbsp; <img id="6" src="./difabs-1.jpg" align="top" alt="Not Available" name=
+        "6" /> &nbsp;<br />
+        <br />
+        <hr />
+        <br />
+        <img id="7" src="./Difabs-2.jpg" align="bottom" alt="Not Available" name="7" />
+      </td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="wp" id="wp"></a>
+
+        <h2>Analyse: Structure Residuals</h2>
+
+        <h3>Wilson Plot</h3>
+
+        <p>This shows the usual ripple due to repeated molecular motifs. The gradient
+        gives an estimate of the overall adp, the intercept an estimate of the overall
+        scale of the data. Note the conventional use of <b>B</b> for the adp.<br />
+        B=8.pi<sup>2</sup>U<br />
+        Low values of <b>MOD[E<sup>2</sup>-1]</b> (&lt; 0.74) may indicate
+        twinning.<br />
+        If the high-rho end of the curve is ragged, or shows an up-turn (due to
+        systematic over-estimation of weak reflections), a maximum value of rho for the
+        rest of the analysis can be selected by right-clicking on the appropriate blue
+        cross. This value can be reset at any time in the REFINEMENT/FILTERING menu. The
+        LIST 28 check box enables you so see the effect of reflection filters.<br />
+        <img id="8" src="./s-Bad-Wilson.jpg" align="left" alt="Not Available" name=
+        "8" /> Same poor data as described above.</p>
+      </td>
+
+      <td>&nbsp; <img id="9" src="./Wilson.jpg" align="left" alt="Not Available" name=
+      "9" /></td>
+    </tr><!--  Row 2 ################################################################ -->
+
+    <tr>
+      <td width="40%">
+        <a name="IvE" id="IvE"></a>
+
+        <h2>Analyse: Data Quality</h2>
+
+        <h3>Internal vs External Variances</h3>
+
+        <p>The Internal variance is the rms value of equivalent reflections, i.e. a
+        measure of the self consistency. The External variance is the weighted average of
+        the variances in the input file, i.e. the instrument makers estimated standard
+        uncertainty. If the gradient of the plot differs greatly from unity there may be
+        something wrong with the data processing.<br />
+        The red points have a low multiplicity (less than 6).<br />
+        The Multiplicity of Observation histogram shows the number of output reflections
+        in different multiplicity groups.</p>
+      </td>
+
+      <td>&nbsp; <img id="10" src="./intvsext.png" align="top" alt="Not Available" name=
+      "10" /></td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="WvS" id="WvS"></a>
+
+        <h2>Analyse: Data Quality</h2>
+
+        <h3>Weight vs Sigma</h3>
+
+        <p>The weights used in linear least-squares refinement should be the inverse of
+        the observed variance for Normally distributed errors. For non-linear least
+        squares the weights have to take into account errors in the model (equivalent to
+        unetected systematic errors in the data) and non-random errors in the data. It is
+        now common practice to augment the variances with term dependent upon the
+        mangnitude of the observation, (see, for example, <i>X-ray Analyses and the
+        Structure of Organic Molecules, J.D.Dunitz,Cornel, 1979, page 217</i> or <i>G.
+        Bernardinelli AND H. D. FlacK, Acta Cryst. (1987). A43, 75-78</i> where the
+        augmentation is called a 'Stability Constant'). The SHELX weighting scheme now
+        commonly used for F<sup>2</sup> tries to determine this (and a higher order
+        parameter) automatically. Because the variances of modern data are very small,
+        the weights of all but the weakest reflections are almost entirely derived from
+        these empirical parameters<br />
+        <br />
+        Note, in the plot, that very few refelctions lie on the unit gradient line. The
+        SHELX parameters were 0.048 and 2.54</p>
+      </td>
+
+      <td>&nbsp; <img id="11" src="./wt-vs-sig.png" align="top" alt="Not Available" name=
+      "11" /></td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="sd" id="sd"></a>
+
+        <h2>Analyse: Data Quality</h2>
+
+        <h3>Sigma Frequency</h3>
+
+        <p>There are very few reflections below -2 sigma - i.e. no badly negative
+        reflections. From the blue line you can see that about 5400 out of the 7000
+        reflections have I/sigma(I) &amp;GT; 3. The listing file should give the exact
+        figure. 77% of this data is reliably observable. If the figure falls below 50%
+        you can expect problems with structure solution and refinement.</p>
+      </td>
+
+      <td>&nbsp; <img id="12" src="./sigfreq.jpg" align="left" alt="Not Available" name=
+      "12" /></td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="mr" id="mr"></a>
+
+        <h2>Analyse: Data Quality</h2>
+
+        <h3>Merging R-factor</h3>
+
+        <p>The weak data, with I/sigma(I) &le; 3.0, have very large merging R values. The
+        equivalents are not really self-consistent, so that this weak data is very
+        unreliable.</p>
+      </td>
+
+      <td>&nbsp; <img id="13" src="./r-merg-2.png" align="top" alt="Not Available" name=
+      "13" /></td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="nz" id="nz"></a>
+
+        <h2>Analyse: Data Quality</h2>
+
+        <h3>N(z) Plot</h3>
+
+        <p>This shows your data (as crosses) compared to thoretical distributions and
+        <b><i>may</i></b> help you decide if you data is centrosymmetric or not.
+        Generally not a very reliable test, especially if you have heavy atoms or
+        repeated molecular motifs.<br />
+        Low values of MOD(E<sup>2</sup>-1), below 0.74, are sometimes symptomatic of
+        twinning.</p>
+      </td>
+
+      <td>&nbsp; <img id="14" src="./Nz.jpg" align="left" alt="Not Available" name=
+      "14" /></td>
+    </tr>
+
+    <tr>
+      <!-- Absolute Configuration -->
+
+      <td width="40%">
+        <a name="ac" id="ac"></a>
+
+        <h2>Advanced Analyse</h2>
+
+        <h3>Absolute Configuration</h3><a href="./Flack.pdf"><img id="15" src=
+        "./tn_flack.jpg" align="top" alt="Not Available" name="15" /><br />
+        See: <i>H. D. Flack and G. Bernardinelli., J. Appl. Cryst. (2000). 33,
+        1143-1148</i>.</a>
+      </td>
+
+      <td>
+        <p>CRYSTALS has two different refineable parameters to help with the
+        determination of absolute structure.<br />
+        The oldest, the Rodger's "eta" parameter is a multiplier onto f", and takes the
+        value +1 if the model has the correct hand, and -1 if it needs inverting. Flack
+        showed that this parameter is unreliable as eta approaches zero.<br />
+        <strong>Direct Refinement</strong><br />
+        The Flack "x" parameter is the mixing term in<br />
+        F<sup>2</sup> = (1-x)F<sup>2</sup>+h + x<sup>2</sup>-h<br />
+        and takes the value zero if the model has the correct hand, and +1 if it needs
+        inverting.<br />
+        Either the Rodger's or Flack parameter should be refined simultaneously with the
+        other structural parameters since its value will influence them, and they in turn
+        will influence the s.u. on the absolute configuration parameter.<br />
+        <strong>Post-refinement Methods</strong> Post-refinement methods analyse the
+        Bijvoet differences. Usually they produce more-or-less that same value for the
+        Flack parameter as direct refinement, but often with a much reduced esd. It has
+        been shown that the larger esd for direct refinement can usually be attributed to
+        the weighting scheme used during refinement, which is usually chosen to reflect
+        short comings in both the data and the model. <i>Watkin and Cooper, Acta Cryst.
+        (2016). B72, 661&ndash;683</i>. The Parsons(q), Hooft(y) and Bijvoet(d)
+        parameters and esds are generally very similar, and are the most reliable
+        estimators of absolute structure currently available.<br />
+        The Hooft, Straver and Spek Probability parameters are robust if the material is
+        known to be enantio pure. <i>Hooft, Straver, &amp; Spek, (2008). J. Appl. Cryst.
+        41, 96&ndash;103.</i><br />
+        <br />
+        <strong>Interpreting the Absolute Configuration Parameters</strong><br />
+        The interpretation is equally applicable to direct and post-refinement
+        methods.</p>
+
+        <p style="font-size:80%">If the s.u. on the Flack parameter is greater than 0.30,
+        the X-ray data contain no significant anomalous information so that the absolute
+        configuration cannot be assigned by X-ray means. The value of x can be set to
+        zero and not refined. (It may be appropriate to report x and its s.u. to
+        demonstrate that the calculation was actually performed).<br />
+        If the s.u. is small enough (&lt;0.04), then the parameter itself can be
+        evaluated. If it falls close to zero or unity, then the absolute configuration
+        has been determined. If it falls within this range, but is significantly distant
+        from the bounds, the material is probably twinned by inversion.</p>
+
+        <p style="font-size:100%"></p><br />
+        <br />
+        <a href="absolute.html">Examples</a>
+      </td>
+    </tr>
+
+    <tr>
+      <!-- ROTAX -->
+
+      <td width="40%">
+        <a name="ra" id="ra"></a>
+
+        <h2>Analyse: Data Quality</h2>
+
+        <h3>Rotax</h3>
+
+        <p>Search for potential twin laws<br />
+        This utility, developed by Simon Parsons, Bob Gould and Richard Cooper, examines
+        the 30 reflections with the largest residuals for evidence of merohedral or
+        pseudo merahedral twinning. Go to "Help - Twin Worked Examples" for more
+        information.<br />
+        The image right is from the worked example "Keen - twin".</p>
+      </td>
+
+      <td>&nbsp; <img id="16" src="./rotax.jpg" align="bottom" alt="Not Available" name=
+      "16" /></td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="lh" id="lh"></a>
+
+        <h2>Analyse: Bonding</h2>
+
+        <h3>Find Potential Hydrogen Bonds</h3>
+
+        <p>This utility list, in the text window, inter molecular contacts which may be
+        interpreted as hydrogen bonds.</p>
+      </td>
+
+      <td>&nbsp; <img id="17" src="./h-bond.png" align="top" alt="Not Available" name=
+      "17" /></td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="lc" id="lc"></a>
+
+        <h2>Publication Checks</h2>
+
+        <h3>Local Acta Checks</h3>
+
+        <p>CRYSTALS checks the dsc file to verify that the general Acta requirements have
+        been satisfied.</p>
+      </td>
+
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="cw" id="cw"></a>
+
+        <h2>Publication Checks</h2>
+
+        <h3>CHECKcif</h3>
+
+        <p>CRYSTALS generates cif (and optionally fcf) files for processing either
+        locally in PLATON or at the IUCr websites.</p>
+      </td>
+
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="mg" id="mg"></a>
+
+        <h2>Publication Checks</h2>
+
+        <h3>MOGUL Analysis</h3>
+
+        <p>If CCDC <i>MOGUL</i> is installed, the local geometry (bonds and/or angles) of
+        the structure can be compared with average values stored in the MOGUL data base.
+        The magnitude of any discrepancy is relected in a <i>Z</i> value, the smaller Z
+        the better.<br />
+        Features selected from the list are high lighted, and the MOGUL values can be
+        used to construct restraints.</p>
+      </td>
+
+      <td>&nbsp; <img id="18" src="./mogul.png" align="bottom" alt="Not Available" name=
+      "18" /></td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <a name="gw" id="gw"></a>
+
+        <h2>Graphics Window</h2>
+
+        <h3>Highlighted atoms + TLS</h3>
+
+        <p>Computes the TLS analysis of the selected atoms. Large values of R1 indicate
+        thet the selected atoms do not form a rigid group. Small values of R1 plus large
+        values of L<sub>33</sub> indicate thet there may be a bond shortening effect.
+        Look in the listing file to see the corrected bond lengths. In this case the R1
+        value of 7% and the L<sub>33</sub> value of 70 degree<sup>2</sup> leads to bond
+        length corrections of about 0.02A.</p>
+      </td>
+
+      <td>
+        &nbsp; <img id="19" src="./TLS.jpg" align="top" alt="Not Available" name=
+        "19" /><br />
+        <br />
+        <hr />
+        <br />
+        <img id="20" src="./TLS-2.jpg" align="bottom" alt="Not Available" name="20" />
+      </td>
+    </tr>
+
+    <tr>
+      <td width="40%">
+        <h2>Graphics Window</h2>
+
+        <h3>Highlighted atoms + Slant Fourier</h3>
+
+        <p>This computes the best plane through the selected atoms and then the electron
+        density (or difference density) in sections parallel to the plane. You will
+        probably need to raise the number of sections from the default (2) in order to
+        obtain a thicker slab of the structure. Michael Husaks MCE viewer lets you
+        examine the density.<br />
+        This is a really useful utiity for helping you to unravel disorder. Remember that
+        an ordinary peak-search picks out local maxima, but tells you nothing about the
+        surrounding density. Set the occupation factors of the suspicious atoms to zero
+        and then re-compute structure factors (<b>Do not try refinement</b>). Then click
+        the solvent atoms to locate the area of interest and view the slant difference
+        Fourier. The atoms with zero occupancie will not contribute to the map, but will
+        help you locate the supposed solvent amongst the electron density.<br />
+        <br />
+        The electron density distribution is displayed in MCE, distributed with CRYSTALS
+        by courtesy of Micheal Husak and Jan Rohlicek. See www.vscht.cz/min/mce for more
+        details.</p>
+      </td>
+
+      <td>
+        &nbsp; <img id="21" src="./slant-1.jpg" align="top" alt="Not Available" name=
+        "21" /><br />
+        <br />
+        <hr />
+        <br />
+        <img id="22" src="./slant-2.jpg" align="bottom" alt="Not Available" name="22" />
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
-
-
