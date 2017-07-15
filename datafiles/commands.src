@@ -1630,7 +1630,7 @@ Indices and theta for data collection
          1    1    1    1    1    1    0    0    0    0
 New Absorption correction details
 (8(3X,12A1))
-(8G15.3/3X,7I12)
+(8G15.3/3X,A4)
          2    2    2    2    2    2    2    2    3    
     .ANALMIN            0    0    1    0    1 0.
     .ANALMAX            0    0    1    0    1 0.

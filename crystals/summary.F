@@ -1969,9 +1969,9 @@ cdjwoct2010
           point=stl3max*(I/100.0)
           point2=exp((2.0*log(point))/3.0)
           point=rtd*asin(store(l13dc)*point**0.333)
-          write(ctemp,'(f10.3,a,f10.3)') point, ':', point2
+          write(ctemp,'(a,f10.3,a,f10.3,a)') '"',point, ' ', point2,'"'
 c      write(123,*) ctemp
-          call xcras(ctemp,nchar)
+c          call xcras(ctemp,nchar)
           call xctrim(ctemp,nchar)
 c      write(123,*) ctemp(1:nchar)
           WRITE(CMON,'(A,A,A,4F10.5)')

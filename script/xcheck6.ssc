@@ -74,7 +74,7 @@
 ^^WI      {                                                                     
 ^^WI       @ 1,1 PLOTWINDOW _VCOMPL NROWS=20 NCOLS=64                           
 ^^WI        DEFINEPOPUPMENU POPUP 'Selection'                                   
-^^WI        ITEM _SDELA '&Manually set theta full = _L' 'SIGFULL_N_L_N_Y'           
+^^WI        ITEM _SDELA '&Manually set theta full = _L' 'SIGFULL_N_L'           
 ^^WI        ENDDEFINEMENU                                                       
 ^^WI      }                                                                     
 ^^WI      ITEM GRID CR2 NROWS=3 NCOLS=1                                         
@@ -827,16 +827,16 @@
 %        END IF                                                                 
 %        COPY '#GENERALEDIT 30'                                                 
 %        COPY 'LOCATE RECORDTYPE = 109'                                         
-%        GET NOSTORE SILENT  REAL ' ' ' '                                  
+%        GET SILENT NOSTORE  REAL ' ' ' '
 %        EVALUATE THFULL = - VALUE                                              
 %        COPY 'TRANSFER TO OFFSET = 10 FROM THFULL'                             
 %        TRANSFER '{I Theta full manually set to ' // -                         
             CHARACTER ( - THFULL ) TO DISPLAY                                   
-
-%        GET NOSTORE SILENT FINAL REAL ' ' ' '                                  
-%        EVALUATE THFULL =  VALUE                                              
-%        COPY 'TRANSFER TO OFFSET = 11 FROM THFULL'                             
-
+%        GET SILENT NOSTORE TEXT ' ' ' '                                  
+%% Reset completeness of this value of theta.
+%%        GET SILENT NOSTORE REAL ' ' ' '                                  
+%%        EVALUATE THFULL =  VALUE                                              
+%        COPY 'TRANSFER TO OFFSET = 11 FROM 0.0'
 %        COPY 'WRITE'                                                           
 %        COPY 'END'                                                             
 %      END BLOCK                                                                
