@@ -253,7 +253,7 @@ end
 #punch 7 i                                                                      
 end
 
-#TITLE PART 1
+#TITLE PART 2
 #LIST   7
 READ NCOEF=13 TYPE=FIX, UNIT=DAT, CHECK=NO L30=NO ARCH=NO
 STORE  NCOEF=10

@@ -1,8 +1,8 @@
 %SCRIPT YGETSIG
 %%    read internal and external sigmas from the file SIGMAS.DAT 
 %%    called from XVARIANCE.SSC
-%     VARIABLE INTEGER H1 H2 H3 H4 H5 H6
-%     VARIABLE INTEGER B1 B2 B3 B4 B5 B6
+%     VARIABLE INTEGER H1 H2 H3 H4 H5 H6 H7 H8 H9 H10
+%     VARIABLE INTEGER B1 B2 B3 B4 B5 B6 B7 B8 B9 B10
 %     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES 
 %     VARIABLE INTEGER NSIGMAS NITEMS
 %     VARIABLE REAL ZERO
@@ -11,6 +11,7 @@
 %%   Skip first line:                                                      
 %     EXTRACT NEXT
 %     LOOP
+%      TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
 %      ON ERROR TERMINATE                                                           
 %      ON END TERMINATE
 %      EXTRACT NEXT                                                             
@@ -51,19 +52,29 @@
 %        EVALUATE NSIGMAS = NSIGMAS + 1
 %      END IF
 %% BUILD HISTOGRAM
+%  IF NITEMS .LE. B4 THEN
 %      IF NITEMS .LE. B1 THEN
 %       EVALUATE H1 = H1 + 1
 %      ELSE IF NITEMS .LE. B2 THEN
 %       EVALUATE H2 = H2 + 1
 %      ELSE IF NITEMS .LE. B3 THEN
 %       EVALUATE H3 = H3 + 1
-%      ELSE IF NITEMS .LE. B4 THEN
-%       EVALUATE H4 = H4 + 1
-%      ELSE IF NITEMS .LE. B5 THEN
-%       EVALUATE H5 = H5 + 1
 %      ELSE 
-%       EVALUATE H6 = H6 + 1
+%       EVALUATE H4 = H4 + 1
 %      END IF
+%  ELSE
+%      IF NITEMS .LE. B5 THEN
+%       EVALUATE H5 = H5 + 1
+%      ELSE IF NITEMS .LE. B6 THEN
+%       EVALUATE H6 = H6 + 1
+%      ELSE IF NITEMS .LE. B7 THEN
+%       EVALUATE H7 = H7 + 1
+%      ELSE IF NITEMS .LE. B8 THEN
+%       EVALUATE H8 = H8 + 1
+%      ELSE
+%       EVALUATE H9 = H9 + 1
+%      END IF
+%  END IF
 %%
 %     END LOOP
 %%

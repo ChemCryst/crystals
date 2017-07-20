@@ -1,14 +1,16 @@
 % script xvariance  
 %% plot internal vs external variance
 %%
-% VARIABLE INTEGER H1 H2 H3 H4 H5 H6
-% VARIABLE INTEGER B1 B2 B3 B4 B5 B6
+% VARIABLE INTEGER H1 H2 H3 H4 H5 H6 H7 H8 H9 H10
+% VARIABLE INTEGER B1 B2 B3 B4 B5 B6 B7 B8 B9 B10
 % EVALUATE B1 = 2
 % EVALUATE B2 = 4
 % EVALUATE B3 = 8
 % EVALUATE B4 = 16
 % EVALUATE B5 = 32
 % EVALUATE B6 = 64
+% EVALUATE B7 = 128
+% EVALUATE B8 = 256
 % VARIABLE LOGICAL XWVSRUNNING XVARRUNNING 
 % EVALUATE XVARRUNNING = TRUE
 % VARIABLE LOGICAL I6DONE I6MASK LMAONCE          
@@ -69,7 +71,7 @@
 ^^WI        @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 11
 ^^WI        {   
 ^^WI          @ 1,1 STATIC XFS2 ' Number of data used ='
-^^WI          @ 1,3 STATIC _MW_USED '0'                                  
+^^WI          @ 1,3 STATIC _MW_USED '00000'                                  
 ^^WI          @ 1,7 STATIC XFS 'Internal ='                        
 ^^WI          @ 1,9 STATIC _MW_GRAD '000.00'                                  
 ^^WI          @ 1,10 STATIC XFS2 'x External.'
@@ -102,16 +104,20 @@
 ^^WI   @ 1,2 BUTTON XC_HELP 'Help'                                            
 ^^WI   @ 1,6 BUTTON XC_BXX 'Close' COMMIT DEFAULT CANCEL                        
 ^^WI  }                                                                         
-^^WI  @ 3,1 PROGRESS _CHECKPR 'Please wait'                                     
+^^WI  @ 3,1 GRID PROG NROWS=1 NCOLS=2
+^^WI  {
+^^WI  @ 1,1 STATIC _MW_TEXT ' Reflections processed = '
+^^WI  @ 1,2 STATIC _MW_SOFAR '00000'                                  
+^^WI  }
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 %%
 %%
-^^CR                                                                            
-^^CO SENDPROGRESSTO _CHECKPR                                                    
+^^CR   
 %%                                                                              
 % LOOP                                                                          
 %%                                                                       
+%    TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
 %%                                                                       
 %%Variances
 ^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'  
@@ -201,10 +207,33 @@
 %      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H5 
 %      OUTPUT
 ^^CR                                                                            
+
+%      CLEAR
+%      INSERT !^^PL  LABEL '<!
+%      STORE FORMAT /(I2)/ LENGTH 2 INTEGER  B6  
+%      INSERT !' DATA !
+%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H6 
+%      OUTPUT
+^^CR                                                                            
+%      CLEAR
+%      INSERT !^^PL  LABEL '<!
+%      STORE FORMAT /(I3)/ LENGTH 2 INTEGER  B7  
+%      INSERT !' DATA !
+%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H7 
+%      OUTPUT
+^^CR                                                                            
+%      CLEAR
+%      INSERT !^^PL  LABEL '<!
+%      STORE FORMAT /(I3)/ LENGTH 2 INTEGER  B8
+%      INSERT !' DATA !
+%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H8 
+%      OUTPUT
+^^CR                                                                            
+
 %      CLEAR
 %      INSERT !^^PL  LABEL 'The rest' !
 %      INSERT ! DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H5 
+%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H9 
 %      OUTPUT
 ^^CR                                                                            
 ^^PL SHOW                                                                       

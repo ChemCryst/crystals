@@ -1684,7 +1684,7 @@ C--AND NOW THE TERMINATION MESSAGES
 4200  CONTINUE
 c     Process sigmas.dat to find possible equations.
       if (iuln.eq.6) then
-        moo = 3
+        moo = 5   !minimum acceptable multiplicity for regression
         CALL MRGLSQ(moo)
 c       close sigmas.dat
         CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 10 )
@@ -2155,32 +2155,20 @@ c
 C
 CODE FOR MRGLSQ
       SUBROUTINE  MRGLSQ(MOO)
-      Parameter (nterm=2)
-      dimension a(nterm,nterm),aa(nterm,nterm),aaa(nterm,nterm)
-      dimension b(nterm), c(nterm)
-      dimension x(nterm)
+      parameter(nbin=20)
+      dimension ibin(nbin)
       character*80 cterm
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
 C
-C
-      scale=0.1
-c    
-      sxx = 0.
-      sxy = 0.
-      sff = 0.
-      sfx = 0.
-c
-      do j=1,nterm
-            do i=1,nterm
-                  a(i,j)=0.
-            enddo
-            b(j)=0.
-            c(j)=0.
+      do j=1,nbin
+            ibin(j)=0
       enddo
 c
+      i= linfit(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
 c
       nobs=0
+      mobs=0
       rewind(ncfpu2)
       read(NCFPU2,'(a)',end=10,err=20) cterm
       goto 100
@@ -2190,104 +2178,49 @@ c
 20    continue
       write (cmon,'(a)')'Error in sigmas.dat'
       call xprvdu(ncvdu,1,1)
-      return
+      goto 999
+c
 100   continue
-      read(NCFPU2,101,end=200,err=999) x,y,imoo
-101   format(12x,f10.2,f11.2,f10.2,i10)
+      read(NCFPU2,101,end=200,err=20) x,y,imoo
+101   format(12x,10x,f11.2,f10.2,i10)
+      mobs=mobs+1
+      j = min(imoo,nbin)
+      if(j.gt.0) ibin(j)=ibin(j)+1
       if(imoo .lt. moo) goto 100
-      if(x(1).lt.0.) goto 100
-      sxx = sxx + x(2)*x(2)*float(imoo)
-      sxy = sxy + x(2)*y*float(imoo)
-      sff = sff + x(1)*x(1)*float(imoo)
-      sfx = sfx + x(1)*y*float(imoo)
-c      
+      if(x.lt.0.) goto 100
+      i= linfit(2,x,y,float(imoo),a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
       nobs=nobs+1
-      x(1)=x(1)*scale
-      do j=1,nterm
-            do i=j,nterm
-                  a(i,j)=a(i,j)+ x(i)*x(j)
-            enddo
-            b(j)=b(j)+y*x(j)
-      enddo
       goto 100
 c
 200   continue
-c      write(123,*)' '
-c      write(123,*)'Nobs=',nobs
-      if(nobs.le.0) goto 999
-      do i=1,nterm
-            do j=i,nterm
-                  a(i,j)=a(j,i)
-            enddo
-      enddo
-
-      if (issprt.eq.0) write(ncwu,210) nobs
-210   format(///' Analysis of', i6, ' reflection variances'/)
-
-c      write(123,*)' Internal vs F^2'
-c      write(123,'(a,f8.2)') 'simple gradient=', sfx/sff
-cundo      if (issprt.eq.0) write(ncwu,220) sfx/sff
-220   format('The internal variance (rms deviation) = ',f6.2,
-     1 ' times Fsquared')
-c      write(123,*)' Internal vs External'
-c      write(123,'(A,f8.2)') 'simple gradient=', sxy/sxx
-cundo      if (issprt.eq.0) write(ncwu,230) sxy/sxx
-230   format('The internal variance (rms deviation) = ',f6.2,
-     1 ' times the external variance (mean variance)')
-
-c      write(123,*)'Normal Matrix'
-c      write(123,'(2f12.2/4f12.2)') a, b
-      do j=1,nterm
-      do i=1,nterm
-      aa(i,j)=a(i,j)
-      enddo
-      enddo
-      j= kinv2(2,aa,a,4,1,b,c,2)
-c      write(123,*)'Inverse'
-c      write(123,'(2f12.6/2f12.6/)') a
-      do k=1,nterm
-      do i=1,nterm
-      aaa(i,k)=0.
-c form product as check 
-      do j=1,nterm
-      aaa(i,k)=aaa(i,k)+a(i,j)*aa(j,k)
-      enddo
-      enddo
-      enddo
-c      write(123,*) ' Checksum Product'
-c      write(123,'(/(2g12.2))')aaa
-      c(1) = c(1)*scale
-c      write(123,'(/a,2f10.2)') 'Results', c
-c
-      sum = 0.
-      sum1 = 0.
-      nobs = 0
-      rewind(ncfpu2)
-      read(ncfpu2,*) cterm
-500   continue
-      read(ncfpu2,101,end=600,err=999) x,y,imoo
-      if(imoo .lt. moo) goto 500
-      if(x(1).lt.0.) goto 500
-      ycalc = 0.
-      x(1)=x(1)
-      nobs=nobs+1
-      do i=1,nterm
-            ycalc = ycalc+c(i)*x(i)
-      enddo
-            sum = sum + (y-ycalc)*(y-ycalc)
-            sum1 = sum1 + (y-ycalc)
-      goto 500
-600   continue
-c      write(123,'(a,3f10.2)') 'delta-sq=', sum, sum/nobs
-c      write(123,'(a,3f10.2)') 'delta   =', sum1, sum1/nobs
-c      write(123,'(/2f10.4)') c(1), scale*a(1,1)*sum/nobs
-c      write(123,'( 2f10.4)') c(2), a(2,2)*sum/nobs
-      if(issprt.eq.0)then
-cundo       write(ncwu,'(A)')'Simultaneous Dependence'
-cundo       Write(ncwu,610) c(1), c(2)
-610   format('Internal Variance =',f6.2,'*F^2 + ',f6.2,
-     1 '* External Variance'/)
+      if(nobs.le.0) then
+       write(cmon,'(A )') 
+     1 ' Insufficient number of duplicated measurements'
+       call xprvdu(ncvdu,1,1)
+       return
+      else
+       if (issprt.eq.0) then
+        write(ncwu,'(/)')
+        write(ncwu,201)mobs
+201   format('Multiplicity of Observation (MoO) for',i8,' reflections')
+        write(ncwu,'(a,20i6)') 'Number', (ibin(j),j=1,nbin)
+        write(ncwu,'(a,20i6)') '  MoO ', (j,j=1,nbin)
+        write(ncwu,'(/)')
+       endif
+       write(cmon(1),201)mobs
+       write(cmon(2),'(a,20i6)') 'Number', (ibin(j),j=1,nbin)
+       write(cmon(3),'(a,20i6)') '  MoO ', (j,j=1,nbin)
+       call xprvdu(ncvdu,3,1)
       endif
+      if( linfit(3,x,y,wt,
+     1 a,sa,b,sb,t,tsq,r,rsq,mitem,tensor).lt.0) goto 999
+      if (issprt.eq.0) write(ncwu,210) nobs, moo
+210   format(/' Analysis of', i6, ' reflection variances ',
+     1 'with MoO of at least',i4)
+      if (issprt.eq.0) write(ncwu,230) b, sb, a, sa
+230   format('The internal variance (rms deviation) = ',f6.3,'(',f6.3,
+     1 ')', ' times the external variance (mean variance)',
+     2 f6.2,'(',f6.2,')')
       return
 
 999   continue
