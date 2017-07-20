@@ -636,11 +636,11 @@ C
 C....... Extract space group notation (expected char string)
 C        Note _alt is the old short name
       CSPACE = '?'
-       F1=CHAR_('_space_group_name_H-M_alt',c80)
-       if(f1) FSG=CHAR_('_space_group_name_H-M_alt',NAME)
-      if(.not. f1) then
       F1=CHAR_('_symmetry_space_group_name_H-M',c80)
       if(f1) FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
+      if(.not. f1) then
+       F1=CHAR_('_space_group_name_H-M_alt',c80)
+       if(f1) FSG=CHAR_('_space_group_name_H-M_alt',NAME)
       endif
 c
       IF (.NOT.(FSG)) THEN
