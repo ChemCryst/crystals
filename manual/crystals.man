@@ -8620,7 +8620,7 @@ factor control, see section #RLIST23#).
  to define the weighting scheme, P(1) is the first such
  parameter and P(NP) the last parameter.
 #PThe available weighting schemes are :
-#N  36#
+#N  53#
 #J
  1.     sqrt(W) = Fo/P(1), Fo < P(1) OR Fo = P(1)
         sqrt(W) = P(1)/Fo, Fo > P(1)
@@ -8731,6 +8731,14 @@ factor control, see section #RLIST23#).
  This scheme can in principle be introduced at any time, but the
  parameters P(i) are best optimised near the end of a refinement.
  Typical values for CAD4 data are: p(1)=.001, p(2)=3.0 and p(4)=1.
+#
+#YAuto-Statistical Weights, 17#
+#HSstat#
+ This scheme can in principle be introduced at any time, but the
+ parameters P(i) are best optimised near the end of a refinement.
+ The parameters are optimised automatically by a grid-search of 
+ the residual as a function of intensity and resolution.
+#
 #YPrinting LIST 4#
 #HSprint4#
 #Pof LIST 4 may be printed with:
