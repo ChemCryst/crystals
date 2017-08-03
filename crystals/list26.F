@@ -352,8 +352,9 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCUVOL(results)
+          subroutine XCVCUVOL(iasym, results)
               use list26_mod
+              integer, intent(in) :: iasym
               type(restraints_t), intent(inout), optional :: results
           end subroutine
       end interface
@@ -1673,7 +1674,7 @@ c      Print *, 'X End'
 
 C--'UVOL' RESTRAINT. restrain the volume to be equal
 5580  CONTINUE
-      CALL XCVCUVOL()
+      CALL XCVCUVOL(iasym)
       
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       if(size(restraints_list(ircpt)%subrestraints)>0) then
@@ -3193,9 +3194,10 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCUVOL(results)
+          subroutine XCVCUVOL(iasym, results)
               use list26_mod
               type(restraints_t), intent(inout), optional :: results
+              integer, intent(in) :: iasym
           end subroutine
       end interface
       interface 
@@ -3499,7 +3501,7 @@ C--'UQISO' RESTRAINT
 
 C--'UVOL' RESTRAINT
 1603  CONTINUE
-      CALL XCVCUVOL(restraints_list(idjwtemp))
+      CALL XCVCUVOL(iasym, restraints_list(idjwtemp))
       GOTO 1000  
 
 C--'EXECUTION LISTING'
@@ -4956,7 +4958,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       end if
 
       if(present(results)) then
-          call extend(results%subrestraints, 4, .true.)
+          call extend(results%subrestraints, 3, .true.)
           do icpt=1, size(results%subrestraints)
               call extend(results%subrestraints(icpt)%atoms, 1, .true.)
               results%subrestraints(icpt)%atoms(1)%label=
@@ -4965,9 +4967,8 @@ C--SET UP THE ADDRESSES OF THE ATOMS
      &            nint(store(JA+3))
           end do
           results%subrestraints(1)%description='L(1,1)-L(2,2)=0'
-          results%subrestraints(2)%description='L(2,3)=0'
-          results%subrestraints(3)%description='L(1,3)=0'
-          results%subrestraints(4)%description='L(1,2)=0'
+          results%subrestraints(2)%description='R=0'
+          results%subrestraints(2)%description='R=0'
 
           results%description=
      &      'The two smallest eigen values are restrained '//
@@ -5077,45 +5078,6 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
           JQ=ISTORE(JQ)
       end do
 
-
-      ! Restrain the 3 off diagonal terms of the diagonal matrix W_1 to zero
-      do icpt=1, 3 ! loop over the 3 off diagonal terms U[ij]
-      
-          if(icpt==1) then
-              DIFF_VAL = RABUBAR_1(2,3)
-              MEAN_VAL = RABUBAR_1(2,3)
-              a1(7:12)=dUcart(6, :)
-          else if(icpt==2) then
-              DIFF_VAL = RABUBAR_1(1,3)
-              MEAN_VAL = RABUBAR_1(1,3)
-              a1(7:12)=dUcart(3, :)
-            else if(icpt==3) then
-              DIFF_VAL = RABUBAR_1(1,2)
-              MEAN_VAL = RABUBAR_1(1,2)
-              a1(7:12)=dUcart(2, :)
-          end if
-
-          a1(1:6)=a1(7:12)
-          JP=ISTORE(JA+6)
-          JD=ISTORE(JA+16)
-          JX=JP ! JX used in XADUIJ
-          JO=JA ! JO used in XADUIJ
-          CALL XADUIJ  
-                         
-          STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
-          STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
-          STORE(L22PD+1) = STORE(LCG+3)
-          CALL XFMPDQ                                                       CVC01520
-
-C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.         
-          JQ=ISTORE(JA+6)
-          DO JX=1,6
-              STORE(JQ+2)=0.
-              JQ=ISTORE(JQ)
-          end do
-      
-      end do
-            
       JA=ISTORE(JA)                                                     CVC01530
 
       IF(JA .GT. 0) then
@@ -5266,9 +5228,6 @@ C Here, compute derivatives
           end do
       end if
       
-      ! The restraint should fully parameterise the adp in order to avoid problems
-      ! When the restraint is dominant and if under parametised, refinement become unstable.
-      ! Hence the reason of the 3 restraints on the off diagonal terms of the eigenvalue matrix
       do icpt=1, 6 ! loop over the 6 U[ij]
       
           if(icpt==1) then
@@ -5346,7 +5305,7 @@ CODE FOR XCVCUVOL
 !> => a_1 b_1 c_1 - (a_2 b_2 c_2) = 0
 !> 
 !> d(a_1 b_1 c_1) = d(a_1)(b_1 c_1) + d(b_1)(a_1 c_1) + d(c_1)(a_1 b_1)
-      SUBROUTINE XCVCUVOL(results)
+      SUBROUTINE XCVCUVOL(iasym, results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
       use xiobuf_mod, only:CMON
@@ -5357,6 +5316,7 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       type(restraints_t), intent(inout), optional :: results
+      integer, intent(in) :: iasym !< 1 if restraint is asymetric
 
       integer :: icpt
       real, dimension(12) :: A1 !< Partial derivatives
@@ -5418,7 +5378,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
       end if
 
       if(present(results)) then
-          call extend(results%subrestraints, 7, .true.)
+          call extend(results%subrestraints, 1, .true.)
           do icpt=1, size(results%subrestraints)
               call extend(results%subrestraints(icpt)%atoms, 2, .true.)
               results%subrestraints(icpt)%atoms(1)%label=
@@ -5431,12 +5391,6 @@ C--SET UP THE ADDRESSES OF THE ATOMS
      &            nint(store(JB+3))
           end do
           results%subrestraints(1)%description='V_1 - V_2 = 0'
-          results%subrestraints(2)%description='L_1[2,3] = 0'
-          results%subrestraints(3)%description='L_1[1,3] = 0'
-          results%subrestraints(4)%description='L_1[1,2] = 0'
-          results%subrestraints(5)%description='L_2[2,3] = 0'
-          results%subrestraints(6)%description='L_2[1,3] = 0'
-          results%subrestraints(7)%description='L_2[1,2] = 0'
       end if  
           
 C--DEFINE U Matrices 
@@ -5500,9 +5454,13 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
       MEAN_VAL = product(W_1)+product(W_2)       
                      
       ! V_1 derivative
-      a1(7:12)=dUcart1(1,:)*w_1(2)*w_1(3) + dUcart1(5,:)*w_1(1)*w_1(3) +
-     1   dUcart1(9,:)*w_1(1)*w_1(2)
-      a1(1:6)=a1(7:12)
+      if(iasym/=1) then
+        a1(7:12)=dUcart1(1,:)*w_1(2)*w_1(3) + dUcart1(5,:)*w_1(1)*w_1(3)
+     1   + dUcart1(9,:)*w_1(1)*w_1(2)
+        a1(1:6)=a1(7:12)
+      else
+        a1=0.0
+      end if
       JP=ISTORE(JA+6)
       JD=ISTORE(JA+16)
       JX=JP ! JX used in XADUIJ
@@ -5519,10 +5477,10 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
       JO=JB ! JO used in XADUIJ
       CALL XADUIJ  
                      
-      STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
+      STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)
       STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
-      STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
-      CALL XFMPDQ                                                       CVC01520
+      STORE(L22PD+1) = STORE(LCG+3)
+      CALL XFMPDQ
 
 C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.         
       JQ=ISTORE(JA+6)
@@ -5532,87 +5490,6 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
           STORE(JW+2)=0.
           JQ=ISTORE(JQ)
           JW=ISTORE(JW)
-      end do
-
-      ! The restraint should fully parameterise the adp in order to avoid problems
-      ! When the restraint is dominant and if under parametised, refinement become unstable.
-      ! Hence the reason of the 3 restraints on the off diagonal terms of the eigenvalue matrix
-      do icpt=1, 3 ! loop over the 3 off diagonal U[ij]
-      
-          if(icpt==1) then
-              DIFF_VAL = RABUBAR_1(2,3)
-              MEAN_VAL = RABUBAR_1(2,3)
-              a1(7:12)=dUcart1(6, :)
-          else if(icpt==2) then
-              DIFF_VAL = RABUBAR_1(1,3)
-              MEAN_VAL = RABUBAR_1(1,3)
-              a1(7:12)=dUcart1(3, :)
-          else if(icpt==3) then
-              DIFF_VAL = RABUBAR_1(1,2)
-              MEAN_VAL = RABUBAR_1(1,2)
-              a1(7:12)=dUcart1(2, :)
-          end if
-          
-          a1(1:6)=a1(7:12)
-          JP=ISTORE(JA+6)
-          JD=ISTORE(JA+16)
-          JX=JP ! JX used in XADUIJ
-          JO=JA ! JO used in XADUIJ
-          CALL XADUIJ  
-                         
-          STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
-          STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
-          STORE(L22PD+1) = STORE(LCG+3)
-          CALL XFMPDQ                                                       CVC01520
-
-          JQ=ISTORE(JA+6)
-          JW=ISTORE(JB+6)
-          DO JX=1,6
-              STORE(JQ+2)=0.
-              STORE(JW+2)=0.
-              JQ=ISTORE(JQ)
-              JW=ISTORE(JW)
-          end do
-      
-      end do
-
-      do icpt=1, 3 ! loop over the 3 off diagonal U[ij]
-      
-          if(icpt==1) then
-              DIFF_VAL = RABUBAR_2(2,3)
-              MEAN_VAL = RABUBAR_2(2,3)
-              a1(7:12)=dUcart2(6, :)
-          else if(icpt==2) then
-              DIFF_VAL = RABUBAR_2(1,3)
-              MEAN_VAL = RABUBAR_2(1,3)
-              a1(7:12)=dUcart2(3, :)
-          else if(icpt==3) then
-              DIFF_VAL = RABUBAR_2(1,2)
-              MEAN_VAL = RABUBAR_2(1,2)
-              a1(7:12)=dUcart2(2, :)
-          end if
-          
-          a1(1:6)=a1(7:12)
-          JP=ISTORE(JB+6)
-          JD=ISTORE(JB+16)
-          JX=JP ! JX used in XADUIJ
-          JO=JB ! JO used in XADUIJ
-          CALL XADUIJ  
-                         
-          STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
-          STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
-          STORE(L22PD+1) = STORE(LCG+3)
-          CALL XFMPDQ                                                       CVC01520
-
-          JQ=ISTORE(JA+6)
-          JW=ISTORE(JB+6)
-          DO JX=1,6
-              STORE(JQ+2)=0.
-              STORE(JW+2)=0.
-              JQ=ISTORE(JQ)
-              JW=ISTORE(JW)
-          end do
-      
       end do
       
       JA=ISTORE(JB)                                                     CVC01530
