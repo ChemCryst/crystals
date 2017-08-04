@@ -1,10 +1,17 @@
 %SCRIPT INLIST25
-% VARIABLE INTEGER NELEM
+{I 
+{I This script replaces an existing LIST 25 with a new one
+{I and sets the ELEMENT SCALES in LIST 5 to 1/N25
+{I 
+% VARIABLE INTEGER NELEM N25
 % VARIABLE REAL M1 M2 M3 M4 M5 M6 M7 M8 M9
+% VARIABLE REAL VOLF
 % GET FINAL INTEGER 'Number of twin components'
-% EVALUATE NELEM = VALUE - 1
+% EVALUATE N25 = VALUE
+% EVALUATE NELEM = N25 - 1
 
 {4,0 A unit matrix is automatically included for the first element.
+
 %  QUEUE REWIND
 %  LOOP NELEM TIMES 
 %  TRANSFER 'Element ' // CHARACTER ( LOOPCOUNTER + 1 ) // ':' TO DISPLAY
@@ -35,12 +42,77 @@
 %    COPY '#LIST 25'
 %    CLEAR
 %    INSERT 'READ NELEMENT = '
-%    EVALUATE NELEM = NELEM + 1
-%    STORE INTEGER NELEM
+%    STORE INTEGER N25
 %    SEND
 %    COPY 'MATRIX 1 0 0  0 1 0  0 0 1'
 %    QUEUE PROCESS
 %    COPY 'END'
 %    copy '#sum list 25'
 %    COPY 'END'
+%%
+% VARIABLE INTEGER ITMP
+% EVALUATE ITMP = 0
+% IF ( ( EXISTS 13 ) .EQ. 1 ) THEN
+%   COPY '#GENERALEDIT 13'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'TRANSFER TO OFFSET=1 TO ITMP'
+%   COPY 'WRITE'
+%   COPY 'END'
+% END IF
+%%
+%%
+% EVALUATE VOLF = 0.
+% LOOP N25 TIMES
+%   EVALUATE VOLF = VOLF + 1.
+% END LOOP
+% EVALUATE VOLF = 1. / VOLF
+%%
+% VARIABLE INTEGER NEL
+%         COPY '#GENERALEDIT 5'
+%         COPY 'TRANSHEAD FROM OFFSET=22 TO NEL'
+%         COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%         COPY 'LOCATE RECORDTYPE=105'
+%% Insert new record.
+%         COPY 'TRANSHEAD TO OFFSET=22 FROM N25'
+%         COPY 'INSERT'
+%         IF NEL .GT. 0 THEN
+%% Remove old record
+%           COPY 'DELETE'
+%         END IF
+%         COPY 'TRANSHEAD TO OFFSET=22 FROM N25'
+%         COPY 'TOP'
+%         LOOP N25 TIMES
+%           CASE LOOPCOUNTER
+%             COPY 'TRANSFER TO OFFSET = 0 FROM VOLF'  
+%             COPY 'TRANSFER TO OFFSET = 1 FROM VOLF'
+%             COPY 'TRANSFER TO OFFSET = 2 FROM VOLF'
+%             COPY 'TRANSFER TO OFFSET = 3 FROM VOLF'
+%             COPY 'TRANSFER TO OFFSET = 4 FROM VOLF'
+%             COPY 'TRANSFER TO OFFSET = 5 FROM VOLF'
+%             COPY 'TRANSFER TO OFFSET = 6 FROM VOLF'
+%             COPY 'TRANSFER TO OFFSET = 7 FROM VOLF'
+%             COPY 'TRANSFER TO OFFSET = 8 FROM VOLF'
+%           END CASE
+%         END LOOP
+%         COPY 'WRITE'
+%         COPY 'END'
+%%
+{I
+{I If you have a CRYSTALS reflection list (LIST 6) for twinned data,
+{I i.e. with ELEMENTS set (e.g. output from hklf52cry) you can input
+{I it now
+{I
+% VERIFY YES NO
+% GET NOSTORE YESNO 'Do you have a suitable LIST 6?' 'no'
+% IF ( VALUE .EQ. 2 ) THEN
+%   FINISH
+% ELSE
+%   VARIABLE CHARACTER CFILE
+%   VARIABLE LOGICAL RUNNOW
+%   COPY '#SCRIPT BROWSE'
+%   IF RUNNOW .EQ. TRUE THEN
+{I processing file
+%    TRANSFER '#USE ' // CFILE // ' ' TO CRYSTALS
+%   END IF
+% END IF
 % END SCRIPT
