@@ -218,7 +218,6 @@
 %          COPY 'LOCATE RECORDTYPE=103'
 %          COPY 'TRANSFER FROM OFFSET=30 TO INVERTSTATUS'
 %          COPY 'END'
-%          TRANSFER 'INVERT CODE: ' // CHARACTER ( INVERTSTATUS ) TO DISPLAY
 %          IF INVERTSTATUS .LT. 0 THEN
 {E Inversion is approximate please check your model and restraints. 
 {E Cycles of refinements have been stopped
@@ -275,7 +274,6 @@
 %          COPY 'LOCATE RECORDTYPE=103'
 %          COPY 'TRANSFER FROM OFFSET=30 TO INVERTSTATUS'
 %          COPY 'END'
-%          TRANSFER 'INVERT CODE: ' // CHARACTER ( INVERTSTATUS ) TO DISPLAY
 %          IF INVERTSTATUS .LT. 0 THEN
 {E Inversion is approximate please check your model and restraints. 
 {E Cycles of refinements have been stopped
