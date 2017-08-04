@@ -12,6 +12,7 @@
 %  EVALUATE CONVRG = FALSE
 %  VARIABLE REAL L5:OK
 %  VARIABLE REAL CONVERGE
+%  VARIABLE INTEGER INVERTSTATUS
 %%
 %%
 %% make sure SFLS record exists in LIST 39
@@ -212,6 +213,17 @@
 %               send
 %              END IF
 %            COPY 'END'
+%%         TEST IF INVERSION WENT OK
+%          COPY '#GENERALEDIT 11'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET=30 TO INVERTSTATUS'
+%          COPY 'END'
+%          TRANSFER 'INVERT CODE: ' // CHARACTER ( INVERTSTATUS ) TO DISPLAY
+%          IF INVERTSTATUS .LT. 0 THEN
+{E Inversion is approximate please check your model and restraints. 
+{E Cycles of refinements have been stopped
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
 %%         TEST IF CONVERGED 
 %          COPY '#SCRIPT SFLSCONVERGE'
 %            IF CONVERGE .GT. 1. THEN
@@ -256,6 +268,17 @@
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %          IF VALUE .EQ. 1 THEN
 {I Further refinement cycles abandoned at users request.
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%%         TEST IF INVERSION WENT OK
+%          COPY '#GENERALEDIT 11'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET=30 TO INVERTSTATUS'
+%          COPY 'END'
+%          TRANSFER 'INVERT CODE: ' // CHARACTER ( INVERTSTATUS ) TO DISPLAY
+%          IF INVERTSTATUS .LT. 0 THEN
+{E Inversion is approximate please check your model and restraints. 
+{E Cycles of refinements have been stopped
 %              EVALUATE LOOPEND = LOOPCOUNTER
 %          END IF
 %        END LOOP

@@ -709,7 +709,7 @@ c we are now trying to invert using eigen value filtering
                     WRITE ( NCWU, '(A)') 
      1                'Using approximate inversion.' 
                   end if
-                  istore(L11P+30)=-istore(L11P+30)
+                  istore(L11P+30)=-99 ! -0 not possible... design flaw, zero value should not have been used
                                      
                else if(info>0) then
                   WRITE ( CMON, '(A,I0,A,A)') '{E Parameter ', info, 
@@ -850,6 +850,10 @@ c                print *, STR11(L11C:L11C+5)
      1              '{!! Error unknown invertor ', method 
                 end if            
          end select
+         
+#if defined(CRY_OSLINUX)
+         print *, 'Invert status: ', method
+#endif         
          
 c                allocate(unpacked(JY,JY))
 c                allocate(check(JY,JY))
