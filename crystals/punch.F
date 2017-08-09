@@ -257,21 +257,42 @@ C Revision 1.16  2001/02/26 10:28:03  richard
 C RIC: Added changelog to top of file
 C
 C      A     COMPRESSED PUNCH FORMAT
-C                  XPCH6G(LSTNO,ICLASS)
+C                  XPCH6G(LSTNO,ICLASS,.false.)
 C      B     CIF OUTPUT F's
-C                  XPCH6C(LSTNO,0)
+C                  XPCH6C(LSTNO,0,.false.)
 C      C     NORMAL DATA, ONE REFLECTION PRE CARD
-C                  XPCH6S(LSTNO,LSTNO)
+C                  XPCH6S(LSTNO,LSTNO,.false.)
 C      D     OBSERVED QUANTITIES ONLY
-C                  XPCH6O(LSTNO)
+C                  XPCH6O(LSTNO,.false.)
 C      E     CIF OUTPUT F^2's
-C                  XPCH6C(LSTNO,1)
+C                  XPCH6C(LSTNO,1,.false.)
 C      F     PLAIN SHELX HKL OUTPUT
-C                  XPCH6X(LSTNO,0)
+C                  XPCH6X(LSTNO,0,.false.)
 C      G     SHELX HKL OUTPUT of FC with made up sigmas.
-C                  XPCH6X(LSTNO,1)
+C                  XPCH6X(LSTNO,1,.false.)
 C      H     CIF OUTPUT F^2's  on scale of Fc
-C                  XPCH6C(LSTNO,2)
+C                  XPCH6C(LSTNO,2,.false.)
+C      I     ALL Keys set
+C                  XPCH6N(LSTNO,LSTNO,1,.false.)
+C  Same output but reflection must not not be filtered out
+C      AF    COMPRESSED PUNCH FORMAT
+C                  XPCH6G(LSTNO,ICLASS,.true.)
+C      BF    CIF OUTPUT F's
+C                  XPCH6C(LSTNO,0,.true.)
+C      CF    NORMAL DATA, ONE REFLECTION PRE CARD
+C                  XPCH6S(LSTNO,LSTNO,.true.)
+C      DF    OBSERVED QUANTITIES ONLY
+C                  XPCH6O(LSTNO,.true.)
+C      EF    CIF OUTPUT F^2's
+C                  XPCH6C(LSTNO,1,.true.)
+C      FF    PLAIN SHELX HKL OUTPUT
+C                  XPCH6X(LSTNO,0,.true.)
+C      GF    SHELX HKL OUTPUT of FC with made up sigmas.
+C                  XPCH6X(LSTNO,1,.true.)
+C      HF    CIF OUTPUT F^2's  on scale of Fc
+C                  XPCH6C(LSTNO,2,.true.)
+C      IF    ALL Keys set
+C                  XPCH6N(LSTNO,LSTNO,1,.true.)
 
 C
 CODE FOR XPCH5S
@@ -988,10 +1009,11 @@ C -- ERRORS
       END
 C
 CODE FOR XPCH6S
-      SUBROUTINE XPCH6S(IULN, iuln2)
+      SUBROUTINE XPCH6S(IULN, iuln2, l28filter)
 C  PUNCH C      PUNCH LIST 6/7 IN SHORT CRYSTALS FORMAT
 C
 C--
+      logical, intent(in) :: l28filter
       DIMENSION JFOT(1), JFOO(1)
       INCLUDE 'ISTORE.INC'
 C
@@ -1085,8 +1107,14 @@ C--FETCH THE NEXT REFLECTION
 CDJWMAR99       PUNCH LESS THANS
 C      IF (KFNR(IN)) 1250, 1100, 1100
       IF (KLDRNR(IN)) 1250, 1100, 1100
-C--FIX THE INDICES
 1100  CONTINUE
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1050
+         end if
+      end if
+C--FIX THE INDICES
       J=M6+2
       DO 1150 I=M6,J
       ISTORE(I)=NINT(STORE(I))
@@ -1125,11 +1153,12 @@ C -- ERRORS
       END
 C
 CODE FOR XPCH6O
-      SUBROUTINE XPCH6O(IULN)
+      SUBROUTINE XPCH6O(IULN, l28filter)
 C  PUNCH D      PUNCH THE OBSERVED QUANTITIES FOR EACH REFLECTION ON
 C             SEVERAL LINES INFULL CRYSTALS FORMAT
 C
 C--
+      logical, intent(in) :: l28filter
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -1163,8 +1192,14 @@ C--FETCH THE NEXT REFLECTION
 CDJWMAR99       PUNCH LESS THANS
 C      IF (KFNR(IN)) 1250, 1100, 1100
       IF (KLDRNR(IN)) 1250, 1100, 1100
-C--FIX THE INDICES
 1100  CONTINUE
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1050
+         end if
+      end if
+C--FIX THE INDICES
       J=M6+2
       DO 1150 I=M6,J
       ISTORE(I)=NINT(STORE(I))
@@ -1194,7 +1229,7 @@ C -- ERRORS
       END
 C
 CODE FOR XPCH6G
-      SUBROUTINE XPCH6G(IULN, IN)
+      SUBROUTINE XPCH6G(IULN, IN, l28filter)
 C  PUNCH A   GENERAL COMPRESSED PUNCHING ROUTINES FOR LIST 6
 C
 C  IN  THE TYPE OF PUNCHING REQUIRED :
@@ -1215,6 +1250,7 @@ C--INDEX STEPS WHICH ARE NEGATIVE LEAD TO THE REFLECTION BEING REJECTED
 C  ON INPUT.
 C
 C--
+      logical, intent(in) :: l28filter
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION AA(5),IPOS(5)
@@ -1322,8 +1358,14 @@ C--FETCH THE NEXT REFLECTION
 CDJWMAR99       PUNCH LESS THANS
 C      IF (KFNR(IN)) 1250, 1100, 1100
       IF (KLDRNR(IN1)) 2400, 2000, 2000
-C--COMPUTE THE INDICES
 2000  CONTINUE
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1950
+         end if
+      end if
+C--COMPUTE THE INDICES
       JH=NINT(STORE(M6))
       IK=NINT(STORE(M6+1))
       IL=NINT(STORE(M6+2))
@@ -1370,12 +1412,13 @@ C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
 CODE FOR XPCH6C
-      SUBROUTINE XPCH6C(IULN,KF)
+      SUBROUTINE XPCH6C(IULN,KF, l28filter)
 C PUNCH B,E,H  CIF FORMAT PUNCH
 C KF  0 - F's
 C     1 - F^2's
 C     2 - F^2'S ON SCALE OF FC
 CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
+      logical, intent(in) :: l28filter
       CHARACTER*80 CBUF
       DIMENSION KDEV(4)
       DIMENSION IVEC(20), ESD(6)
@@ -1550,6 +1593,12 @@ C---- GET SIGMA THRESHOLD FROM L28
 1840  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 1850
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1840
+         end if
+      end if
 
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
@@ -1625,10 +1674,11 @@ CDJW02      CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
       END
 CODE FOR XPCH6X
-      SUBROUTINE XPCH6X(IULN,IFOFC)
+      SUBROUTINE XPCH6X(IULN,IFOFC, l28filter)
 C----- SHELX FORMAT PUNCH
 C - List number (6 or 7) for loading the right reflection list.
 C - IFOFC: 0 - punch FOsq, 1 - punch FCsq with made up errors sigma.
+      logical, intent(in) :: l28filter
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XLST06.INC'
@@ -1643,6 +1693,12 @@ c      E=STORE(M6DTL+1)       ! FETCH THE MAXIMUM VALUE OF /FO/
 
 1840  CONTINUE
         IF ( KLDRNR (IN) .LT. 0 ) GOTO 9999
+C--check if filtered reflections need printing
+        if(l28filter) then
+           if(KALLOW(IALLOW)<0) then
+             goto 1840
+           end if
+        end if
         IF ( IFOFC .EQ. 0 ) THEN
           CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
         ELSE
@@ -1674,13 +1730,14 @@ C sigma's underestimated by a factor of 5.
       END
 C
 CODE FOR XPCH6N
-      SUBROUTINE XPCH6N(IULN,IULN2, IFTYPE)
+      SUBROUTINE XPCH6N(IULN,IULN2, IFTYPE, l28filter)
 C BASED ON XPCH6Z, WHICH SEEMS INCOMPLETE
 C  PUNCH I      PUNCH LIST 6/7 WITH ALL SET KEYS
 C  IFTYPE = 1 FOR /FO/ OUTPUT
 C  IFTYPE = 2 FOR FO^2 USING CURRENT ALGORITHM TO COMPUTE SIGMA.
 C  IFTYPE = 3 FOR FO^2 USING OLD ALGORITHM TO COMPUTE SIGMA.
 C--
+      logical, intent(in) :: l28filter
       DIMENSION JFOT(1), JFOO(1)
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM06.INC'
@@ -1838,6 +1895,12 @@ c
 c
       nref = 0
       DO WHILE (KLDRNR(IN).GE.0)
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           cycle
+         end if
+      end if
       nref = nref + 1
 C--FIX THE INDICES
 c      J=M6+2

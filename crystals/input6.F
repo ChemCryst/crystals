@@ -158,26 +158,28 @@ C--NORMAL LIST PRINT
 C--LIST PUNCH ROUTINE
 C
 C      A     COMPRESSED PUNCH FORMAT
-C                  XPCH6G(LSTNO,ICLASS)
+C                  XPCH6G(LSTNO,ICLASS,l28filter)
 C      B     CIF OUTPUT F's
-C                  XPCH6C(LSTNO,0)
+C                  XPCH6C(LSTNO,0,l28filter)
 C      C     NORMAL DATA, ONE REFLECTION PRE CARD
-C                  XPCH6S(LSTNO,LSTNO)
+C                  XPCH6S(LSTNO,LSTNO,l28filter)
 C      D     OBSERVED QUANTITIES ONLY
-C                  XPCH6O(LSTNO)
+C                  XPCH6O(LSTNO,l28filter)
 C      E     CIF OUTPUT F^2's
-C                  XPCH6C(LSTNO,1)
+C                  XPCH6C(LSTNO,1,l28filter)
 C      F     PLAIN SHELX HKL OUTPUT
-C                  XPCH6X(LSTNO,0)
+C                  XPCH6X(LSTNO,0,l28filter)
 C      G     SHELX HKL OUTPUT of FC with made up sigmas.
-C                  XPCH6X(LSTNO,1)
+C                  XPCH6X(LSTNO,1,l28filter)
 C      H     CIF OUTPUT F^2's  on scale of Fc
-C                  XPCH6C(LSTNO,2)
+C                  XPCH6C(LSTNO,2,l28filter)
 C      I     ALL Keys set
-C                  XPCH6N(LSTNO,LSTNO,1)
+C                  XPCH6N(LSTNO,LSTNO,1,l28filter)
 C                            J     (removed CARMELO'S SIM WEIGHT TEST)
 C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales
-C                  XPCH6N(LSTNO,LSTNO,2 OR 3)
+C                  XPCH6N(LSTNO,LSTNO,2 OR 3,l28filter)
+C
+C      XF    Same subroutine but l28filter flag set to True
 7000  CONTINUE
       ITEMP1=NR60
       ITEMP2=NR61
@@ -202,8 +204,10 @@ C--NOT LIST 6  -  AN ERROR
       RETURN
 C--CHECK THE TYPE OF PUNCH
 7300  CONTINUE
-C           A    B    C    D    E    F    G    H    I    J
-      GOTO (7310,7340,7320,7330,7350,7360,7370,7380,7390,7400 ) 
+C           A    B    C    D    E    F    G    H    I    J   
+      GOTO (7310,7340,7320,7330,7350,7360,7370,7380,7390,7400,
+C           AF   BF   CF   DF   EF   FF   GF   HF   IF   JF   
+     1      7410,7440,7420,7430,7450,7460,7470,7480,7490,7500) 
      1 ICLASS+2
 71    CONTINUE
       CALL XERHDR(0)
@@ -215,43 +219,88 @@ C           A    B    C    D    E    F    G    H    I    J
       RETURN
 C--COMPRESSED PUNCH FORMAT - A
 7310  CONTINUE
-      CALL XPCH6G(LSTNO,ICLASS)
+      CALL XPCH6G(LSTNO,ICLASS,.false.)
       RETURN
 C--NORMAL DATA, ONE REFLECTION PRE CARD - C
 7320  CONTINUE
 cdjwmar08 - ENSURE LIST 6 IS PUNCH AS LIST 6
-      CALL XPCH6S(LSTNO,LSTNO)
+      CALL XPCH6S(LSTNO,LSTNO,.false.)
       RETURN
 C--OBSERVED QUANTITIES ONLY - D
 7330  CONTINUE
-      CALL XPCH6O(LSTNO)
+      CALL XPCH6O(LSTNO,.false.)
       RETURN
 C----- CIF OUTPUT F's - B
 7340  CONTINUE
-      CALL XPCH6C(LSTNO,0)
+      CALL XPCH6C(LSTNO,0,.false.)
       RETURN
 C----- CIF OUTPUT F^2's - E
 7350  CONTINUE
-      CALL XPCH6C(LSTNO,1)
+      CALL XPCH6C(LSTNO,1,.false.)
       RETURN
 C----- PLAIN SHELX HKL OUTPUT  - F
 7360  CONTINUE
-      CALL XPCH6X(LSTNO,0)
+      CALL XPCH6X(LSTNO,0,.false.)
       RETURN
 C----- SHELX HKL OUTPUT of FC with made up sigmas. - G
 7370  CONTINUE
-      CALL XPCH6X(LSTNO,1)
+      CALL XPCH6X(LSTNO,1,.false.)
 C----- CIF OUTPUT F^2's  on scale of Fc- H
 7380  CONTINUE
-      CALL XPCH6C(LSTNO,2)
+      CALL XPCH6C(LSTNO,2,.false.)
       RETURN
 C----- All set keys
 7390  CONTINUE
-      CALL XPCH6N(LSTNO,LSTNO,1)
+      CALL XPCH6N(LSTNO,LSTNO,1,.false.)
       RETURN
 7400  CONTINUE
 C      CALL SIMTEST(LSTNO) ! WAS CARMELO'S IDEA - NOT SUCCESSFUL
-      CALL XPCH6N(LSTNO,LSTNO,2)
+      CALL XPCH6N(LSTNO,LSTNO,2,.false.)
       RETURN
+
+C     filtered output below
+
+C--COMPRESSED PUNCH FORMAT - A
+7410  CONTINUE
+      CALL XPCH6G(LSTNO,ICLASS,.true.)
+      RETURN
+C--NORMAL DATA, ONE REFLECTION PRE CARD - C
+7420  CONTINUE
+cdjwmar08 - ENSURE LIST 6 IS PUNCH AS LIST 6
+      CALL XPCH6S(LSTNO,LSTNO,.true.)
+      RETURN
+C--OBSERVED QUANTITIES ONLY - D
+7430  CONTINUE
+      CALL XPCH6O(LSTNO,.true.)
+      RETURN
+C----- CIF OUTPUT F's - B
+7440  CONTINUE
+      CALL XPCH6C(LSTNO,0,.true.)
+      RETURN
+C----- CIF OUTPUT F^2's - E
+7450  CONTINUE
+      CALL XPCH6C(LSTNO,1,.true.)
+      RETURN
+C----- PLAIN SHELX HKL OUTPUT  - F
+7460  CONTINUE
+      CALL XPCH6X(LSTNO,0,.true.)
+      RETURN
+C----- SHELX HKL OUTPUT of FC with made up sigmas. - G
+7470  CONTINUE
+      CALL XPCH6X(LSTNO,1,.true.)
+C----- CIF OUTPUT F^2's  on scale of Fc- H
+7480  CONTINUE
+      CALL XPCH6C(LSTNO,2,.true.)
+      RETURN
+C----- All set keys
+7490  CONTINUE
+      CALL XPCH6N(LSTNO,LSTNO,1,.true.)
+      RETURN
+7500  CONTINUE
+C      CALL SIMTEST(LSTNO) ! WAS CARMELO'S IDEA - NOT SUCCESSFUL
+      CALL XPCH6N(LSTNO,LSTNO,2,.true.)
+      RETURN
+
+
       END
 

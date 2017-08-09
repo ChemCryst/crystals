@@ -36,9 +36,11 @@ PUNCH              1    0
    1.PUNCH              2    1    0    0
          1    3
      LIST               1   -1    1    0    0
-     CLASS              2    0    1   10   -1 A
+     CLASS              2    0    1   20   -1 A
      A              B              C              D              E
      F              G              H              I              J
+     AF             BF             CF             DF             EF
+     FF             GF             HF             IF             JF
 CELL       1       9    2
    1   40960 CRYSTALSINPUT
    20   30
