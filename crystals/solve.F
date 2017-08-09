@@ -714,6 +714,7 @@ c we are now trying to invert using eigen value filtering
                else if(info>0) then
                   WRITE ( CMON, '(A,I0,A,A)') '{E Parameter ', info, 
      1               ' is singular. Inversion failed in ',trim(blasname) 
+                  istore(L11P+30)=-99
                   CALL XPRVDU(NCVDU, 1,0)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
@@ -727,6 +728,7 @@ c we are now trying to invert using eigen value filtering
      1                ' argument of ',trim(blasname),
      2                ' has an illegal value.' 
                   end if
+                  istore(L11P+30)=-99
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
@@ -753,6 +755,7 @@ c stupid compiler has a stack overflow by making a temporary array
      1                ' is singular. Inversion failed.' 
                   CALL XPRVDU(NCVDU, 1,0)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  istore(L11P+30)=-istore(L11P+30)
                   CALL XSING(info-1,JY,L11C,L11C)    
                 else if(info<0) then
                   WRITE ( CMON, '(I8,A,A)') '{E ', info, 
@@ -764,6 +767,7 @@ c stupid compiler has a stack overflow by making a temporary array
      1                ' argument of SSYTRF or SSYTRI ',
      2                'has an illegal value.' 
                   end if
+                  istore(L11P+30)=-istore(L11P+30)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
@@ -815,6 +819,7 @@ c stupid compiler has a stack overflow by making a temporary array
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
      1                ' is singular. Inversion failed.' 
                   CALL XPRVDU(NCVDU, 1,0)
+                  istore(L11P+30)=-istore(L11P+30)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 else if(info<0) then
@@ -827,6 +832,7 @@ c stupid compiler has a stack overflow by making a temporary array
      1                ' argument of SSYTRF or SSYTRI ',
      2                'has an illegal value.' 
                   end if
+                  istore(L11P+30)=-istore(L11P+30)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
@@ -852,7 +858,7 @@ c                print *, STR11(L11C:L11C+5)
          end select
          
 #if defined(CRY_OSLINUX)
-         print *, 'Invert status: ', method
+         print *, 'Invert status: ', istore(L11P+30)
 #endif         
          
 c                allocate(unpacked(JY,JY))

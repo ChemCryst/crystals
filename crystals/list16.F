@@ -355,9 +355,10 @@ C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU          24.A-VIB
 C  25.A-U(IJ)'S     26. A-DIST       27.UXZBAR        28.UYZBAR
 C  29.UZZBAR        30. UPERP        31.UPERP2        32.ULIJ          
-C  33.UALIGN        34.RIGU          35.UPLANE        36.UXXQIV        
+C  33.UALIGN        34.URIGU         35.UPLANE        36.UXXQIV        
 C  37.UXYQIV        38.UXZQIV        39.UYYQIV        40.UYZQIV        
 C  41.UZZQIV        42.UEIG          43.UQISO         44.UVOL
+C  45.UEQIV
 C
 C----- ISTORE (LCG+1) OPERATIONS 
 c      Note that some correspond to several MG values.
@@ -369,9 +370,10 @@ C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
 C Hmmm.
 C      21 REM       22 SAME      23 DELU     24 SIMU 
 C      21 UXZBAR    22 UYZBAR    23 UZZBAR   24 UPERP
-C      25 UPERP2    26 UALIGN    27 RIGU     28 ULIJ
+C      25 UPERP2    26 UALIGN    27 URIGU    28 ULIJ
 C      29 UPLANE    30 UXXQIV    31 UXYQIV   32 UXZQIV   
 C      33 UYYQIV    34 UYZQIV    35 UZZQIV   36 UEIG
+C      37 UQISO     38 UVOL      39 UEQIV  
 C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM12.INC'
@@ -499,7 +501,7 @@ C--JUMP ON THE FUNCTION OF THE CARD
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
      3     1810,1810,1810,1851,2251,1510,2258,2259,2257,2255,
      4     2256,2260,2261,2262,2263,2264,2265,2266,2267,2268,
-     5     2269,2270,2271,2272,1250)MG
+     5     2269,2270,2271,2272,2273,1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -1260,7 +1262,7 @@ C--'UALIGN' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
-C--'RIGU' RESTRAINT
+C--'URIGU' RESTRAINT
 2261  CONTINUE
       ISTORE(LCG+1)=27
       K=1    ! Allow one 'TO' connector
@@ -1351,6 +1353,14 @@ C--'UQISO' RESTRAINT Near isotropic restraint
 C--'UVOL' RESTRAINT Restraint the volume to be equal
 2272  CONTINUE
       ISTORE(LCG+1)=38
+      K=1    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UEQIV' RESTRAINT Restraint the volume to be equal
+2273  CONTINUE
+      ISTORE(LCG+1)=39
       K=1    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
