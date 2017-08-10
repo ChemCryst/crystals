@@ -871,7 +871,7 @@ C----- PUT SOMETHING INTO ELEMENTS
 cdec2000
 c
       if ((jnft.gt.0).and.(store(m6+11).le.zero)) then
-        elem = 0.
+        elem = 1.            !there must always be one element
         if (n25 .gt. 1) then
          elem = 1.
          m25 = l25+md25
