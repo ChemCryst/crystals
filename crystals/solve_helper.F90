@@ -801,9 +801,9 @@ integer, dimension(8) :: measuredtime
 info=0
 blasname=''
 
-#open(123, file="2", STATUS='REPLACE')
-#write(123, *) nmatrix
-#close(123)
+!open(123, file="2", STATUS='REPLACE')
+!write(123, *) nmatrix
+!close(123)
 
 
 #if defined(CRY_OSLINUX)
