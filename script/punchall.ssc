@@ -1,0 +1,34 @@
+%SCRIPT PUNCHALL
+%%
+%%  Punch everything as an ASCII file
+%%
+% copy '#release punch punchall.cry'
+% copy '#punch 1'
+% copy 'end'
+% copy '#punch 2'
+% copy 'end'
+% copy '#punch 3'
+% copy 'end'
+% copy '#punch 4'
+% copy 'end'
+% copy '#punch 12'
+% copy 'end'
+% copy '#punch 13'
+% copy 'end'
+% copy '#punch 23'
+% copy 'end'
+% copy '#punch 28'
+% copy 'end'
+% copy '#punch 29'
+% copy 'end'
+% copy '#punch 40'
+% copy 'end'
+% copy '#punch 5'
+% copy 'end'
+% copy '#punch 16'
+% copy 'end'
+% copy '#punch 6 C'
+% copy 'end'
+% copy '#release punch bfile.pch'
+%%
+%END SCRIPT                                                                     
