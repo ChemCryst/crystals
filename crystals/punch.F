@@ -256,44 +256,28 @@ C
 C Revision 1.16  2001/02/26 10:28:03  richard
 C RIC: Added changelog to top of file
 C
-C      A     COMPRESSED PUNCH FORMAT
-C                  XPCH6G(LSTNO,ICLASS,.false.)
-C      B     CIF OUTPUT F's
-C                  XPCH6C(LSTNO,0,.false.)
-C      C     NORMAL DATA, ONE REFLECTION PRE CARD
-C                  XPCH6S(LSTNO,LSTNO,.false.)
-C      D     OBSERVED QUANTITIES ONLY
-C                  XPCH6O(LSTNO,.false.)
-C      E     CIF OUTPUT F^2's
-C                  XPCH6C(LSTNO,1,.false.)
-C      F     PLAIN SHELX HKL OUTPUT
-C                  XPCH6X(LSTNO,0,.false.)
-C      G     SHELX HKL OUTPUT of FC with made up sigmas.
-C                  XPCH6X(LSTNO,1,.false.)
-C      H     CIF OUTPUT F^2's  on scale of Fc
-C                  XPCH6C(LSTNO,2,.false.)
-C      I     ALL Keys set
-C                  XPCH6N(LSTNO,LSTNO,1,.false.)
-C  Same output but reflection must not not be filtered out
-C      AF    COMPRESSED PUNCH FORMAT
-C                  XPCH6G(LSTNO,ICLASS,.true.)
-C      BF    CIF OUTPUT F's
-C                  XPCH6C(LSTNO,0,.true.)
-C      CF    NORMAL DATA, ONE REFLECTION PRE CARD
-C                  XPCH6S(LSTNO,LSTNO,.true.)
-C      DF    OBSERVED QUANTITIES ONLY
-C                  XPCH6O(LSTNO,.true.)
-C      EF    CIF OUTPUT F^2's
-C                  XPCH6C(LSTNO,1,.true.)
-C      FF    PLAIN SHELX HKL OUTPUT
-C                  XPCH6X(LSTNO,0,.true.)
-C      GF    SHELX HKL OUTPUT of FC with made up sigmas.
-C                  XPCH6X(LSTNO,1,.true.)
-C      HF    CIF OUTPUT F^2's  on scale of Fc
-C                  XPCH6C(LSTNO,2,.true.)
-C      IF    ALL Keys set
-C                  XPCH6N(LSTNO,LSTNO,1,.true.)
+C      A     COMPRESSED PUNCH FORMAT                  XPCH6G(LSTNO,ICLASS,.false.)
+C      B     CIF OUTPUT F's                           XPCH6C(LSTNO,0,.false.)
+C      C     NORMAL DATA, ONE REFLECTION PRE CARD     XPCH6S(LSTNO,LSTNO,.false.)
+C      D     OBSERVED QUANTITIES ONLY                 XPCH6O(LSTNO,.false.)
+C      E     CIF OUTPUT F^2's                         XPCH6C(LSTNO,1,.false.)
+C      F     PLAIN SHELX HKL OUTPUT                   XPCH6X(LSTNO,0,.false.)
+C      G     SHELX HKL OUTPUT of FC with made up sigmas.  XPCH6X(LSTNO,1,.false.)
+C      H     CIF OUTPUT F^2's  on scale of Fc         XPCH6C(LSTNO,2,.false.)
+C      I     ALL Keys set                             XPCH6N(LSTNO,LSTNO,1,.false.)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  XPCH6N(LSTNO,LSTNO,2,.false.)
 
+C  Same output but reflection must not not be filtered out
+C      AF    COMPRESSED PUNCH FORMAT                  XPCH6G(LSTNO,ICLASS,.true.)
+C      BF    CIF OUTPUT F's                           XPCH6C(LSTNO,0,.true.)
+C      CF    NORMAL DATA, ONE REFLECTION PRE CARD     XPCH6S(LSTNO,LSTNO,.true.)
+C      DF    OBSERVED QUANTITIES ONLY                 XPCH6O(LSTNO,.true.)
+C      EF    CIF OUTPUT F^2's                         XPCH6C(LSTNO,1,.true.)
+C      FF    PLAIN SHELX HKL OUTPUTC                  XPCH6X(LSTNO,0,.true.)
+C      GF    SHELX HKL OUTPUT of FC with made up sigmas.  XPCH6X(LSTNO,1,.true.)
+C      HF    CIF OUTPUT F^2's  on scale of Fc         XPCH6C(LSTNO,2,.true.)
+C      IF    ALL Keys set          C                  XPCH6N(LSTNO,LSTNO,1,.true.)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  XPCH6N(LSTNO,LSTNO,2,.true.)
 C
 CODE FOR XPCH5S
       SUBROUTINE XPCH5S(IN)
@@ -1008,7 +992,25 @@ C -- ERRORS
       RETURN
       END
 C
-CODE FOR XPCH6S
+C--LIST PUNCH ROUTINES
+C
+C      A     COMPRESSED PUNCH FORMAT                        XG(LSTNO,ICLASS,l28filter)
+C      B     CIF OUTPUT F's                                 XPCH6C(LSTNO,0,l28filter)
+C      C     NORMAL DATA, ONE REFLECTION PRE CARD           XPCH6S(LSTNO,LSTNO,l28filter)
+C      D     OBSERVED QUANTITIES ONLY                       XPCH6O(LSTNO,l28filter)
+C      E     CIF OUTPUT F^2's                               XPCH6C(LSTNO,1,l28filter)
+C      F     PLAIN SHELX HKL OUTPUT                         XPCH6X(LSTNO,0,l28filter)
+C      G     SHELX HKL OUTPUT of FC with made up sigmas.    XPCH6X(LSTNO,1,l28filter)
+C      H     CIF OUTPUT F^2's  on scale of Fc               XPCH6C(LSTNO,2,l28filter)
+C      I     ALL Keys set                                   XPCH6N(LSTNO,LSTNO,1,l28filter)
+C         (J     removed - was CARMELO'S SIM WEIGHT TEST)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales
+C                                                           XPCH6N(LSTNO,LSTNO,2 OR 3,l28filter)
+C
+C      XF    Same subroutine but l28filter flag set to True
+C
+
+CODE FOR XPCH6S                                                      !PUNCH 6 C
       SUBROUTINE XPCH6S(IULN, iuln2, l28filter)
 C  PUNCH C      PUNCH LIST 6/7 IN SHORT CRYSTALS FORMAT
 C
@@ -1024,6 +1026,7 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
@@ -1040,6 +1043,8 @@ C     FACTOR3        RATIO/JCODE    NOTHING
 C
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
+
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1152,7 +1157,7 @@ C -- ERRORS
       RETURN
       END
 C
-CODE FOR XPCH6O
+CODE FOR XPCH6O                                                  ! PUNCH 6 D
       SUBROUTINE XPCH6O(IULN, l28filter)
 C  PUNCH D      PUNCH THE OBSERVED QUANTITIES FOR EACH REFLECTION ON
 C             SEVERAL LINES INFULL CRYSTALS FORMAT
@@ -1167,11 +1172,13 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1228,7 +1235,7 @@ C -- ERRORS
       RETURN
       END
 C
-CODE FOR XPCH6G
+CODE FOR XPCH6G                                                 !PUNCH 6 A
       SUBROUTINE XPCH6G(IULN, IN, l28filter)
 C  PUNCH A   GENERAL COMPRESSED PUNCHING ROUTINES FOR LIST 6
 C
@@ -1264,11 +1271,13 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C----- DEFINE IN TO BE 0, I,E. FULL PUNCH
       IN = 0
 C--INCREMENT THE VALUE OF 'IN'
@@ -1411,7 +1420,7 @@ C
 C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
-CODE FOR XPCH6C
+CODE FOR XPCH6C                                                       !PUNCH 6 B, E, H
       SUBROUTINE XPCH6C(IULN,KF, l28filter)
 C PUNCH B,E,H  CIF FORMAT PUNCH
 C KF  0 - F's
@@ -1459,6 +1468,7 @@ CDJW02  DO OPENS IN SCRIPT
 CDJW02      CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
 CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
       CALL XFAL05
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1673,7 +1683,7 @@ CRIGAUG00 - CLOSE CIF
 CDJW02      CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
       END
-CODE FOR XPCH6X
+CODE FOR XPCH6X                                                       !PUNCH 6 F, G
       SUBROUTINE XPCH6X(IULN,IFOFC, l28filter)
 C----- SHELX FORMAT PUNCH
 C - List number (6 or 7) for loading the right reflection list.
@@ -1681,10 +1691,14 @@ C - IFOFC: 0 - punch FOsq, 1 - punch FCsq with made up errors sigma.
       logical, intent(in) :: l28filter
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       CALL XRSL
       CALL XCSAE
       IN = 0
+      IF (KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
       CALL XFAL06(IULN, IN)
       IF (IERFLG .LT. 0) GOTO 9999
 
@@ -1729,7 +1743,7 @@ C sigma's underestimated by a factor of 5.
       RETURN
       END
 C
-CODE FOR XPCH6N
+CODE FOR XPCH6N                                                       !PUNCH 6 I,J
       SUBROUTINE XPCH6N(IULN,IULN2, IFTYPE, l28filter)
 C BASED ON XPCH6Z, WHICH SEEMS INCOMPLETE
 C  PUNCH I      PUNCH LIST 6/7 WITH ALL SET KEYS
@@ -1749,6 +1763,7 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XCONST.INC'
 c
@@ -1799,6 +1814,8 @@ C21    RATIO          THETA          OMEGA          CHI           PHI
 C26    KAPPA          PSI            CORRECTIONS(27)FACTOR1       FACTOR2
 C31    FACTOR3        RATIO/JCODE(31) NOTHING      A-IMAG        B-IMAG
 C
+      IF (KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
       CALL XZEROF(I6PCH,N6MAX)
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
@@ -1979,6 +1996,7 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
@@ -2005,6 +2023,7 @@ C
      8/
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -2133,6 +2152,7 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
       CHARACTER*11 C6KEYS(33),C6KEYI(33)
       CHARACTER*9  C6FORM(33)
@@ -2182,6 +2202,7 @@ C     KAPPA          PSI            CORRECTIONS(27)FACTOR1        FACTOR2
 C     FACTOR3        RATIO/JCODE(31) NOTHING
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
