@@ -2391,7 +2391,7 @@ C-- Checking L23M record
         newl23m=nfl
 		nextnf = KCHNFL(8)
         istore(newl23m:newl23m+md23m-1)=istore(l23m:l23m+md23m-1)
-        store(newl23m+MD23m:newl23m+7)=0.0
+        istore(newl23m+MD23m:newl23m+7)=0
         md23m=8
         l23m=newl23m
       end if
