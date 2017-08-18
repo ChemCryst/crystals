@@ -3,32 +3,62 @@
 %%  Punch everything as an ASCII file
 %%
 % copy '#release punch punchall.cry'
-% copy '#punch 1'
-% copy 'end'
-% copy '#punch 2'
-% copy 'end'
-% copy '#punch 3'
-% copy 'end'
-% copy '#punch 4'
-% copy 'end'
-% copy '#punch 12'
-% copy 'end'
-% copy '#punch 13'
-% copy 'end'
-% copy '#punch 23'
-% copy 'end'
-% copy '#punch 28'
-% copy 'end'
-% copy '#punch 29'
-% copy 'end'
-% copy '#punch 40'
-% copy 'end'
-% copy '#punch 5'
-% copy 'end'
-% copy '#punch 16'
-% copy 'end'
-% copy '#punch 6 C'
-% copy 'end'
+% if ( exists 1 .eq. 1 ) then 
+%   copy '#punch 1'
+%   copy 'end'
+% end if
+% if ( exists 2 .eq. 1 ) then 
+%   copy '#punch 2'
+%   copy 'end'
+% end if
+% if ( exists 3 .eq. 1 ) then 
+%   copy '#punch 3'
+%   copy 'end'
+% end if
+% if ( exists 4 .eq. 1 ) then 
+%   copy '#punch 4'
+%   copy 'end'
+% end if
+% if ( exists 12 .eq. 1 ) then 
+%   copy '#punch 12'
+%   copy 'end'
+% end if
+% if ( exists 13 .eq. 1 ) then 
+%   copy '#punch 13'
+%   copy 'end'
+% end if
+% if ( exists 23 .eq. 1 ) then 
+%   copy '#punch 23'
+%   copy 'end'
+% end if
+% if ( exists 25 .eq. 1 ) then 
+%   copy '#punch 25'
+%   copy 'end'
+% end if
+% if ( exists 28 .eq. 1 ) then 
+%   copy '#punch 28'
+%   copy 'end'
+% end if
+% if ( exists 29 .eq. 1 ) then 
+%   copy '#punch 29'
+%   copy 'end'
+% end if
+% if ( exists 40 .eq. 1 ) then 
+%   copy '#punch 40'
+%   copy 'end'
+% end if
+% if ( exists 5 .eq. 1 ) then 
+%   copy '#punch 5'
+%   copy 'end'
+% end if
+% if ( exists 16 .eq. 1 ) then 
+%   copy '#punch 16'
+%  copy 'end'
+% end if
+% if ( exists 6 .eq. 1 ) then 
+%   copy '#punch 6 C'
+%   copy 'end'
+% end if
 % copy '#release punch bfile.pch'
 %%
 %END SCRIPT                                                                     
