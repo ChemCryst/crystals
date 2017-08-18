@@ -2725,6 +2725,9 @@ for publication.
       G - SHELX output with statistically generated sigmas
       H - Output the reflections in 'cif' format. F^s, scale of Fc
       I - Outputs all set items as a LIST 6.
+      J - Used to convert pre-2016 esds to more precise ones. 
+
+     *F - * as above, F indicates that LIST 28 filters will be applied
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -13610,7 +13613,7 @@ OVER 1 Scale Du(iso) Ou(iso) Polarity Enantiopole Extinction
 #P
 There are three REAL records
 #
-FLAC holds information about the Absolute Structure
+FLAC(0) holds information about the Absolute Structure
 #J
 Slope of the npp for the refinement
 Slope of the npp for the Bijvoet pairs
@@ -13618,6 +13621,19 @@ Hole-in-one value and su
 Difference or Quotient value and su
 Hooft y value and su
 Histogram value and su
+#
+FLAC(1) Holds the numbers of reflections used for various calculations:
+#J
+No of Friedel Pairs found
+No of Friedel Pairs after applying filters 1,2 & 5
+No of Friedel Pairs used for the normal probability plot
+Not used
+No of Friedel Pairs used for the Parsons method, applying filters 1,2,3 & 5
+Not used
+No of Friedel Pairs used for the Parsons method, applying filters 1,2,3 & 5
+Not used
+No of Friedel Pairs used for the histogram method, applying filters 1,2,3,4 & 5
+Not used
 #
 HOOF holds the Hooft probabilities
 #J
