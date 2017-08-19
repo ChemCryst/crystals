@@ -390,6 +390,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.63E+00 condition number:  2.56E+01 relative error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -575,6 +576,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.63E+00 condition number:  2.56E+01 relative error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -787,6 +789,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.77E+00 condition number:  2.71E+01 relative error:  3.23E-06
  S/ESD     1           1            -0.014      0.0E+00    0.593E-02         -2.30                          SCALE   
                                                                                                             Composite
 
@@ -956,6 +959,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.62E+00 condition number:  2.53E+01 relative error:  3.01E-06
 [14]  S/ESD    11          11           -0.012      -0.1E+01    0.28 E-02         -4.3         O      1 U[33]   
 
                                                 for          16 parameters
@@ -1146,6 +1150,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.67E+00 condition number:  2.61E+01 relative error:  3.11E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1335,6 +1340,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.63E+00 condition number:  2.56E+01 relative error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1521,6 +1527,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.63E+00 condition number:  2.56E+01 relative error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2098,6 +2105,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.63E+00 condition number:  2.55E+01 relative error:  3.04E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2283,6 +2291,7 @@ LS-scale=  0.477   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.64E+00 condition number:  2.55E+01 relative error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2495,6 +2504,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.78E+00 condition number:  2.71E+01 relative error:  3.23E-06
  S/ESD     1           1            -0.016      0.0E+00    0.613E-02         -2.66                          SCALE   
                                                                                                             Composite
 
@@ -2666,6 +2676,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.64E+00 condition number:  2.53E+01 relative error:  3.02E-06
 [14]  S/ESD    11          11           -0.013      -0.1E+01    0.31 E-02         -4.1         O      1 U[33]   
 
                                                 for          16 parameters
@@ -2856,6 +2867,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.69E+00 condition number:  2.61E+01 relative error:  3.11E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3045,6 +3057,7 @@ LS-scale=  0.477   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.64E+00 condition number:  2.55E+01 relative error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3235,6 +3248,7 @@ LS-scale=  0.477   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.64E+00 condition number:  2.55E+01 relative error:  3.04E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3812,6 +3826,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.58E+00 condition number:  2.46E+01 relative error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3997,6 +4012,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.61E+00 condition number:  2.47E+01 relative error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4209,6 +4225,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  4.28E+00 condition number:  3.18E+01 relative error:  3.79E-06
  S/ESD     1           1            -0.014      0.0E+00    0.591E-02         -2.38                          SCALE   
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.2         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.44 E-02          2.5         O      1 U[33]   
@@ -4374,6 +4391,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.62E+00 condition number:  2.51E+01 relative error:  2.99E-06
                                                                                                             Composite
 
                                                                       Composite
@@ -4559,6 +4577,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.66E+00 condition number:  2.53E+01 relative error:  3.01E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4748,6 +4767,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.60E+00 condition number:  2.46E+01 relative error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4938,6 +4958,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.61E+00 condition number:  2.47E+01 relative error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -5515,6 +5536,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.57E+00 condition number:  2.45E+01 relative error:  2.92E-06
                                                                                                             Composite
 
                                                                       Composite
@@ -5704,6 +5726,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.61E+00 condition number:  2.45E+01 relative error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -5893,6 +5916,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.61E+00 condition number:  2.45E+01 relative error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6105,6 +6129,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  4.25E+00 condition number:  3.17E+01 relative error:  3.78E-06
  S/ESD     1           1            -0.017      0.0E+00    0.612E-02         -2.74                          SCALE   
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.0         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.46 E-02          2.5         O      1 U[33]   
@@ -6272,6 +6297,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.65E+00 condition number:  2.51E+01 relative error:  2.99E-06
                                                                                                             Composite
 
                                                                       Composite
@@ -6459,6 +6485,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.66E+00 condition number:  2.51E+01 relative error:  2.99E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6644,6 +6671,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.61E+00 condition number:  2.45E+01 relative error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6834,6 +6862,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.61E+00 condition number:  2.45E+01 relative error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.

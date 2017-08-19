@@ -546,7 +546,7 @@ END
  
 -512
 #      2 reflections output
-#TITLE PART 1
+#TITLE PART 2
 #LIST   7
  The updated reflections are now on UNIT 52
 
@@ -695,7 +695,7 @@ END
 #MERGE 7 TWIN=YES
 
 
- PART 1                                                                               Date              Time          
+ PART 2                                                                               Date              Time          
 
 
                                                     F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
@@ -724,7 +724,7 @@ END
  The updated reflections are now on UNIT 52
 
 
- PART 1                                                                               Date              Time          
+ PART 2                                                                               Date              Time          
 
 
 Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
@@ -863,7 +863,7 @@ END
 #MERGE 7 TWIN=NO
 
 
- PART 1                                                                               Date              Time          
+ PART 2                                                                               Date              Time          
 
 
                                                     F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
@@ -878,7 +878,7 @@ END
  The updated reflections are now on UNIT 53
 
 
- PART 1                                                                               Date              Time          
+ PART 2                                                                               Date              Time          
 
 
 Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.

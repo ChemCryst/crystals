@@ -194,6 +194,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -378,6 +379,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
 [13]  LARGE     1           1             0.0       0.2E+00    0.2 E-01          2.8                           ENANTIO 
 
                                                 for           1 parameters
@@ -560,6 +562,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -30125,6 +30128,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -30309,6 +30313,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
 [13]  LARGE     1           1             0.0       0.2E+00    0.2 E-01          2.8                           ENANTIO 
 
                                                 for           1 parameters
@@ -30491,6 +30496,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.

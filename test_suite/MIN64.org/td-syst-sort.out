@@ -1,27 +1,27 @@
-#TITLE TEST SYST/SORT/MERGE                                                                                                                                                                                                                                     
-# PART 1 SETS THE FREIDEL PAIRS FLAG TO NO IN SYST, THUS KEEPING                                                                                                                                                                                                
-# THE PAIRS SEPARATE INDEPENDENT OF WHAT WAS SET IN LIST 13                                                                                                                                                                                                     
-#                                                                                                                                                                                                                                                               
-# AFTER SORTING, THE REFLCTIONS ARE FIRST MERGED WITH TWIN SET TO YES,                                                                                                                                                                                          
-# THUS ONLY MERGING FOT FOR REFLECTIONS WITH IDENTICAL ELEMENT FLAGS. THE                                                                                                                                                                                       
-# DATA IS STILL TWINNED AND SO NEEDS A LIST 25 AND A LIST 13 INDICATING TWINNING                                                                                                                                                                                
-#                                                                                                                                                                                                                                                               
-# THE DATA IS THEN FUTHER MERGED WITH TWIN=NO.  THIS SETS THE ELEMENT FLAGS TO U                                                                                                                                                                                
-# AND MERGES FO, THE DE-TWINNED OBSERVED STRUCTURE FACTORS. FRIEDEL PAIRS ARE ST                                                                                                                                                                                
-# SEPARATE, SO THAT THERE ARE 2 REFLECTIONS IN THE FINAL LIST 7.                                                                                                                                                                                                
-#                                                                                                                                                                                                                                                               
-# PART 2 SETS THE FRIEDEL FLAG TO YES IN SYST, THUS APPLYING FRIEDELS LAW. SORT                                                                                                                                                                                 
-# ARE AS BEFORE, BUT BECAUSE FRIEDEL PAIRS ARE TRANSFORMED, THERE IS ONLY ONE RE                                                                                                                                                                                
-# IN THE FINAL LSIT 7                                                                                                                                                                                                                                           
-#                                                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+#TITLE TEST SYST/SORT/MERGE
+# PART 1 SETS THE FREIDEL PAIRS FLAG TO NO IN SYST, THUS KEEPING
+# THE PAIRS SEPARATE INDEPENDENT OF WHAT WAS SET IN LIST 13
+#
+# AFTER SORTING, THE REFLCTIONS ARE FIRST MERGED WITH TWIN SET TO YES,
+# THUS ONLY MERGING FOT FOR REFLECTIONS WITH IDENTICAL ELEMENT FLAGS. THE
+# DATA IS STILL TWINNED AND SO NEEDS A LIST 25 AND A LIST 13 INDICATING TWINNING
+#
+# THE DATA IS THEN FUTHER MERGED WITH TWIN=NO.  THIS SETS THE ELEMENT FLAGS TO U
+# AND MERGES FO, THE DE-TWINNED OBSERVED STRUCTURE FACTORS. FRIEDEL PAIRS ARE ST
+# SEPARATE, SO THAT THERE ARE 2 REFLECTIONS IN THE FINAL LIST 7.
+#
+# PART 2 SETS THE FRIEDEL FLAG TO YES IN SYST, THUS APPLYING FRIEDELS LAW. SORT
+# ARE AS BEFORE, BUT BECAUSE FRIEDEL PAIRS ARE TRANSFORMED, THERE IS ONLY ONE RE
+# IN THE FINAL LSIT 7
+#
+#
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE
+#LIST 14
+#SPACE
  The unique axis has been set to "b" - consistent with the unit cell   
   Space Group P1 21/C 1 
   The Space Group is  Centric  Primitive Monoclinic    Laue Symmetry 2/m     
@@ -42,51 +42,51 @@ Space group symbol is   P    1    21/C 1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 4                                                                                                                                                                                                                                                         
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 21/04/17 AT 13:26:11                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 21/04/17 AT 13:26:26                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST     12                                                                                                                                                                                                                                                    
-# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE                                                                                                                                                                                                                 
-# USE LAST                                                                                                                                                                                                                                                      
-#LIST 13                                                                                                                                                                                                                                                        
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 21/04/17 AT 13:26:36                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST     16                                                                                                                                                                                                                                                    
-# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE                                                                                                                                                                                                                 
-# USE LAST                                                                                                                                                                                                                                                      
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 25                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST 29                                                                                                                                                                                                                                                        
-# COVALENT,VDW,IONIC,NUMBER,MUA,WEIGHT,COLOUR                                                                                                                                                                                                                   
+#LIST 3
+#LIST 4
+#
+# PUNCHED ON 21/04/17 AT 13:26:11
+#
+#LIST      5
+#
+# PUNCHED ON 21/04/17 AT 13:26:26
+#
+#LIST     12
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE
+# USE LAST
+#LIST 13
+#
+# PUNCHED ON 21/04/17 AT 13:26:36
+#
+#LIST     16
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE
+# USE LAST
+#LIST 23
+#LIST 25
+#LIST 28
+#LIST 29
+# COVALENT,VDW,IONIC,NUMBER,MUA,WEIGHT,COLOUR
 Bonds: Update required - There is no list 41
-#LIST 31                                                                                                                                                                                                                                                        
-#LIST 39                                                                                                                                                                                                                                                        
-#                                                                                                                                                                                                                                                               
-#TITLE PART 1                                                                                                                                                                                                                                                   
-#STORE UNIT NCPU 9                                                                                                                                                                                                                                              
-#LIST   7                                                                                                                                                                                                                                                       
+#LIST 31
+#LIST 39
+#
+#TITLE PART 1
+#STORE UNIT NCPU 9
+#LIST   7
  The updated reflections are now on UNIT 53
 
 
 
-      11 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-Upating List 13 for twinned data                                                                                                                                                                                                                                
-#PURG                                                                                                                                                                                                                                                           
+      11 reflections accepted           0 reflections rejected
+Upating List 13 for twinned data
+#PURG
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -112,13 +112,13 @@ END
    1  13   0     18.47  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     18.40 
 -512
 #     11 reflections output
-#SYST 7 FRIED=NO                                                                                                                                                                                                                                                
+#SYST 7 FRIED=NO
  The updated reflections are now on UNIT 52
 
 
 
-     11 reflections accepted               0 reflections rejected                                                                                                                                                                                               
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+     11 reflections accepted               0 reflections rejected
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -144,10 +144,10 @@ END
    1  13   0     18.47  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     18.40 
 -512
 #     11 reflections output
-#SORT 7                                                                                                                                                                                                                                                         
+#SORT 7
  After   1 pass      11 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -173,10 +173,10 @@ END
    1  13   0     18.68  0.120E-01      3.99  1. -3.10  1.    1.57 1.0000     12.     18.60 
 -512
 #     11 reflections output
-#MERGE 7 TWIN=YES                                                                                                                                                                                                                                               
+#MERGE 7 TWIN=YES
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 1                                                                               Date              Time          
 
 
                                                     F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
@@ -213,10 +213,10 @@ END
  The updated reflections are now on UNIT 52
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 1                                                                               Date              Time          
 
 
-Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
    0.0 -  0.5     0  0     0     6 -
    0.5 -  1.0     0  0     0     6 -
    1.0 -  1.5     0  0     0     6 -
@@ -323,12 +323,12 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
     11 Contributors input            0 Contributors rejected
      6 Merged reflections output     0 Merged reflections rejected
      0 Contributors deviating from the average by more than   3.0e.s.ds
-     6 Reflections greater than 3 sigma(i), 100.000 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.033                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.034                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+     6 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.033
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.034
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.00            0.03           0.00
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -349,10 +349,10 @@ END
    1  13   0     18.53   0.00          3.99  1. -3.10  0.    1.11 1.0000      1.     18.50 
 -512
 #      6 reflections output
-#MERGE 7 TWIN=NO                                                                                                                                                                                                                                                
+#MERGE 7 TWIN=NO
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 1                                                                               Date              Time          
 
 
                                                     F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
@@ -373,10 +373,10 @@ END
  The updated reflections are now on UNIT 53
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 1                                                                               Date              Time          
 
 
-Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
    0.0 -  0.5     0  0     0     2 -
    0.5 -  1.0     0  0     0     2 -
    1.0 -  1.5     0  0     0     2 -
@@ -483,12 +483,12 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
      6 Contributors input            0 Contributors rejected
      2 Merged reflections output     0 Merged reflections rejected
      0 Contributors deviating from the average by more than   3.0e.s.ds
-     2 Reflections greater than 3 sigma(i), 100.000 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.008                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.012                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+     2 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.008
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.012
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.00            0.00           0.00
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -505,33 +505,33 @@ END
    1  13   0     18.55   0.00          3.75  1. -3.10  0.    0.64 1.0000      1.     18.50 
 -512
 #      2 reflections output
-#TITLE PART 1                                                                                                                                                                                                                                                   
-#LIST   7                                                                                                                                                                                                                                                       
+#TITLE PART 2
+#LIST   7
  The updated reflections are now on UNIT 52
 
 
 
-      11 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-Upating List 13 for twinned data                                                                                                                                                                                                                                
-#PURG                                                                                                                                                                                                                                                           
+      11 reflections accepted           0 reflections rejected
+Upating List 13 for twinned data
+#PURG
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of    Data    file 
-#USE TD-SYST-SORT.L7                                                                                                                                                                                                                                            
-# PUNCHING LIST  7 AS LIST  7 WITH ALL KEYS SET                                                                                                                                                                                                                 
-# NBGNXT=    67                                                                                                                                                                                                                                                 
-#LIST   7                                                                                                                                                                                                                                                       
+#USE TD-SYST-SORT.L7
+# PUNCHING LIST  7 AS LIST  7 WITH ALL KEYS SET
+# NBGNXT=    67
+#LIST   7
  The updated reflections are now on UNIT 53
 
 
 
-      11 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-Upating List 13 for twinned data                                                                                                                                                                                                                                
-#   3796 REFLECTIONS OUTPUT                                                                                                                                                                                                                                     
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+      11 reflections accepted           0 reflections rejected
+Upating List 13 for twinned data
+#   3796 REFLECTIONS OUTPUT
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -557,13 +557,13 @@ END
    1  13   0     19.00  0.120E-01      3.23  1. -3.10  2.    1.57 1.0000      2.     19.00 
 -512
 #     11 reflections output
-#SYST 7 FRIED=YES                                                                                                                                                                                                                                               
+#SYST 7 FRIED=YES
  The updated reflections are now on UNIT 52
 
 
 
-     11 reflections accepted               0 reflections rejected                                                                                                                                                                                               
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+     11 reflections accepted               0 reflections rejected
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -589,10 +589,10 @@ END
    1  13   0     19.00  0.120E-01      3.23  1. -3.10  1.    1.57 1.0000      2.     19.00 
 -512
 #     11 reflections output
-#SORT 7                                                                                                                                                                                                                                                         
+#SORT 7
  After   1 pass      11 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -618,10 +618,10 @@ END
    1  13   0     17.24  0.120E-01      3.99  1. -3.10  2.    1.57 1.0000     12.     18.88 
 -512
 #     11 reflections output
-#MERGE 7 TWIN=YES                                                                                                                                                                                                                                               
+#MERGE 7 TWIN=YES
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 2                                                                               Date              Time          
 
 
                                                     F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
@@ -650,10 +650,10 @@ END
  The updated reflections are now on UNIT 52
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 2                                                                               Date              Time          
 
 
-Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
    0.0 -  0.5     0  0     0     3 -
    0.5 -  1.0     0  0     0     3 -
    1.0 -  1.5     0  0     0     3 -
@@ -760,12 +760,12 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
     11 Contributors input            0 Contributors rejected
      3 Merged reflections output     0 Merged reflections rejected
      0 Contributors deviating from the average by more than   3.0e.s.ds
-     3 Reflections greater than 3 sigma(i), 100.000 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+     3 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.00            0.00           0.00
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -783,10 +783,10 @@ END
    1  13   0     17.13   0.00          3.99  1. -3.10  0.    0.79 1.0000      1.     17.00 
 -512
 #      3 reflections output
-#MERGE 7 TWIN=NO                                                                                                                                                                                                                                                
+#MERGE 7 TWIN=NO
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 2                                                                               Date              Time          
 
 
                                                     F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
@@ -801,10 +801,10 @@ END
  The updated reflections are now on UNIT 53
 
 
- PART 1                                                                               Date  26/05/17    Time  14:03:13
+ PART 2                                                                               Date              Time          
 
 
-Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
    0.0 -  0.5     0  0     0     1 -
    0.5 -  1.0     0  0     0     1 -
    1.0 -  1.5     0  0     0     1 -
@@ -911,12 +911,12 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
      3 Contributors input            0 Contributors rejected
      1 Merged reflections output     0 Merged reflections rejected
      0 Contributors deviating from the average by more than   3.0e.s.ds
-     1 Reflections greater than 3 sigma(i), 100.000 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.091                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.097                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+     1 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.091
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.097
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.09            0.00           0.00
-#PUNCH 7 I                                                                                                                                                                                                                                                      
+#PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
 #LIST   7
@@ -932,7 +932,7 @@ END
    1  13   0     17.82   0.00          3.75  1. -3.10  0.    0.48 1.0000      1.     18.32 
 -512
 #      1 reflections output
-#END                                                                                                                                                                                                                                                            
+#END
 
 
- 14:03:13 : Job ends ok       with     0 warnings and     0 errors
+          : Job ends ok       with     0 warnings and     0 errors
