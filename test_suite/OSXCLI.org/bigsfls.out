@@ -2100,6 +2100,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  8.21E+00 condition number:  1.82E+02 relative error:  2.17E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -3371,6 +3372,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.53E+00 condition number:  1.09E+01 relative error:  1.30E-06
 
                                                 for           6 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4006,6 +4008,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  3.21E+00 condition number:  2.31E+01 relative error:  2.76E-06
 [14]  S/ESD   217         217           -0.012       0.0E+00    0.79 E-03        -15.0         C    414 X       
 [14]  S/ESD   219         219           -0.010       0.0E+00    0.63 E-03        -16.9         C    414 Z       
 
@@ -5239,11 +5242,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      11352 Physical writes      10080 Cache hits     199635
- Cache hit distribution   181347   12581    2212     700     547     189
- Cache hit distribution      147     246     229     185     203     155
- Cache hit distribution      173     156     128      57      45      78
- Cache hit distribution       73      42      40      35      41      26
+ Physical reads      11383 Physical writes      10080 Cache hits     199775
+ Cache hit distribution   181373   12626    2162     789     327     367
+ Cache hit distribution      138     137     207     193     330     135
+ Cache hit distribution      134     170     229      67      63      97
+ Cache hit distribution       51      32      36      45      32      35
 
 
           : Job ends ok       with     0 warnings and     0 errors

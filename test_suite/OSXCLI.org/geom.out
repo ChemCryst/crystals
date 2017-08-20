@@ -5,6 +5,8 @@
 #LIST 1
 #SET PRINT OFF
 Bonds: Update required - There is no list 41
+Single precision:  1-norm:  9.27E+00 condition number:  1.33E+02 relative error:  1.59E-05
+Single precision:  1-norm:  9.26E+00 condition number:  1.33E+02 relative error:  1.59E-05
 #ESD
            Notification of SPECIAL conditions
  Initialising Special positions
@@ -169,7 +171,7 @@ AZIMUTH  =   -70.46     AZIMUTH /100 =  -0.7046
                 0.04549   -0.10454  -0.23735   0.96578   -0.10454  -0.23735   0.96578   0.03770   0.03681   0.06847                        
 
  C       10.    0.02494    0.77715  -0.50412  -0.37670    0.77715  -0.50412  -0.37670
-                0.04654    0.60964   0.45458   0.64938    0.60964   0.45458   0.64938
+                0.04654    0.60964   0.45458   0.64938    0.60964   0.45457   0.64938
                 0.06195   -0.15613  -0.73432   0.66061   -0.15613  -0.73432   0.66061   0.04448   0.04158   0.11560                        
  Average radius of      5 atoms =  0.0343 rmsd   0.0050
  Maximum radius of      5 atoms =  0.0416
@@ -239,7 +241,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
                L                           T                          S
 
 [35]    -0.06     0.00     0.0       0.03    -0.53    -0.62       0.14     0.00     0.00
-[35]     0.00     6.47     0.0      -0.53     0.89     1.01       0.00     0.00     0.00
+[35]     0.00     6.47     0.0      -0.53     0.88     1.01       0.00     0.00     0.00
 [35]     0.00     0.00    18.5      -0.62     1.01     1.21       0.00     0.00    -0.15
 
 
