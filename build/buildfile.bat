@@ -168,6 +168,7 @@
 @if exist %FOPATH%\%FILESTEM%.obj del %FOPATH%\%FILESTEM%.obj
 @set FSRC= %SRCDIR%\%FILESTEM%.f90
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
+@if      "%FILESTEM%" == "list26_helper" set FOPTIONS=%FDEF% %FWIN% %FNOPT%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 %F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS% || ( make_err.bat )
 @goto %JUMPBACK%
