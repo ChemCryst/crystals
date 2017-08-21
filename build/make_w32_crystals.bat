@@ -4,6 +4,7 @@
 @if "%1" == "clean" goto clean
 @if "%1" == "tidy" goto tidy
 @if "%1" == "link" goto link
+@if "%1" == "copylink" goto copylink
 
 @if exist ..\crystals.exe del ..\crystals.exe
 @if exist ..\crystalsd.exe del ..\crystalsd.exe
@@ -39,6 +40,8 @@ set LIST=%LIST:~1%
 @if "%COMPCODE%" == "INW" rc /fo rc.res %CDEF% ..\gui\wx.rc
 @rem  --include-dir c:\wxWidgets-2.8.11\include
 
+:copylink
+
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxbase%WXNUM%%WXMINOR%u_vc90.dll
 @if "%COMPCODE%" == "INW" copy %WXLIB%\wxbase%WXNUM%%WXMINOR%u_vc90.dll
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_vc90.dll
@@ -48,12 +51,64 @@ set LIST=%LIST:~1%
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_vc90.dll
 @if "%COMPCODE%" == "INW" copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_vc90.dll
 @rem @if "%COMPCODE%" == "INW" copy ..\hdf5\bin\*.dll .
-@if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFCOREMD.DLL"
-@if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFPORTMD.DLL"
-@if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBMMD.DLL"
 
-@if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIOMP5MD.DLL"
-@if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\SVML_DISPMD.DLL"
+del libifcoremd.dll
+del libifportmd.dll
+del libmmd.dll
+del libiomp5md.dll
+del svml_dispmd.dll
+
+SET COMMAND=where libifcoremd.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy1 
+)
+:copy1
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy %tempvar%
+
+SET COMMAND=where LIBIFPORTMD.DLL
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy2
+)
+:copy2
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy %tempvar%
+
+SET COMMAND=where LIBMMD.DLL
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy3
+)
+:copy3
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy %tempvar%
+
+SET COMMAND=where LIBIOMP5MD.DLL
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy4
+)
+:copy4
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy %tempvar%
+
+SET COMMAND=where SVML_DISPMD.DLL
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy5
+)
+:copy5
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy %tempvar%
+
+rem @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFCOREMD.DLL"
+rem @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFPORTMD.DLL"
+rem @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBMMD.DLL"
+
+rem @if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIOMP5MD.DLL"
+rem @if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\SVML_DISPMD.DLL"
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
