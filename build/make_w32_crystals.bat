@@ -43,13 +43,13 @@ set LIST=%LIST:~1%
 :copylink
 
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxbase%WXNUM%%WXMINOR%u_vc90.dll
-@if "%COMPCODE%" == "INW" copy %WXLIB%\wxbase%WXNUM%%WXMINOR%u_vc90.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxbase%WXNUM%%WXMINOR%u_vc90.dll"
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_vc90.dll
-@if "%COMPCODE%" == "INW" copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_vc90.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_vc90.dll"
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_gl_vc90.dll
-@if "%COMPCODE%" == "INW" copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_gl_vc90.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_gl_vc90.dll"
 @if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_vc90.dll
-@if "%COMPCODE%" == "INW" copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_vc90.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_vc90.dll"
 @rem @if "%COMPCODE%" == "INW" copy ..\hdf5\bin\*.dll .
 
 del libifcoremd.dll
@@ -65,7 +65,7 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 )
 :copy1
 ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy %tempvar%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
 
 SET COMMAND=where LIBIFPORTMD.DLL
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
@@ -74,7 +74,7 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 )
 :copy2
 ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy %tempvar%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
 
 SET COMMAND=where LIBMMD.DLL
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
@@ -83,7 +83,7 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 )
 :copy3
 ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy %tempvar%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
 
 SET COMMAND=where LIBIOMP5MD.DLL
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
@@ -92,7 +92,7 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 )
 :copy4
 ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy %tempvar%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
 
 SET COMMAND=where SVML_DISPMD.DLL
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
@@ -101,7 +101,7 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 )
 :copy5
 ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy %tempvar%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
 
 rem @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFCOREMD.DLL"
 rem @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIFPORTMD.DLL"
