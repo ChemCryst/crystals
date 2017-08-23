@@ -24,6 +24,7 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
    add_definitions("-D__CRDEBUG__")
+   add_definitions("-DCRY_DEBUG")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug) 
 
 
@@ -117,4 +118,6 @@ cxtextout.cc
 cxtoolbar.cc 
 cxweb.cc 
 cxwindow.cc 
-stdafx.cc )
+stdafx.cc
+crslider.cc
+cxslider.cc )

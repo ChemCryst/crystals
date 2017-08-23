@@ -147,6 +147,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.m_modview = (CxModel*)ptr_to_cxObject;
   m_style.showh = true;
   m_style.bond_style = BONDSTYLE_HALFPARENTPART;
+  m_style.min_peak_height_to_show = -99999;
 }
 
 CrModel::~CrModel()
@@ -303,6 +304,14 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       {
         tokenList.pop_front(); // Remove that token!
         m_style.radius_scale = float(atoi(tokenList.front().c_str()))/1000.0f;
+        tokenList.pop_front();
+        Update(true);
+        break;
+      }
+      case kTMinPeakHeight:
+      {
+        tokenList.pop_front(); // Remove that token!
+        m_style.min_peak_height_to_show = atoi(tokenList.front().c_str());
         tokenList.pop_front();
         Update(true);
         break;

@@ -99,6 +99,7 @@
 #include        "crmultiedit.h"
 #include        "crtextout.h"
 #include        "creditbox.h"
+#include        "crslider.h"
 #include        "crtext.h"
 #include        "cricon.h"
 #include        "crprogress.h"
@@ -462,6 +463,13 @@ CcParse CrGrid::ParseInput( deque<string> & tokenList )
             CrEditBox * editBoxPtr = new CrEditBox( this );
             if ( editBoxPtr != nil )
               retVal = InitElement( editBoxPtr, tokenList, xpos, ypos );
+            break;
+          }
+          case kTCreateSlider:                            // Create a slider
+          {
+            CrSlider * sliderPtr = new CrSlider( this );
+            if ( sliderPtr != nil )
+              retVal = InitElement( sliderPtr, tokenList, xpos, ypos );
             break;
           }
           case kTCreateText:                                      // Create a caption

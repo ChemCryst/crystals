@@ -101,6 +101,7 @@
 #define kSInform    "INFORM"
 #define kSIgnore    "IGNORE"
 #define kSDisabled  "DISABLED"
+#define kSSteps     "STEPS"
 #define kSChars     "CHARS"
 #define kSSetCommandText    "COMMAND"
 #define kSAddToList "ADDTOLIST"
@@ -164,6 +165,7 @@ enum
  kTInform,
  kTIgnore,
  kTDisabled,
+ kTSteps,
  kTChars,
  kTSetCommandText,
  kTAddToList,

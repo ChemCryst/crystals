@@ -198,13 +198,21 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
          vecZ = vecZ / vecLeng;
    }
 
+   float transparency = 1.0f;
+   
+   if (m_patms.size() > 1 ) {
+	// do not show
+       if ( (m_patms[0]->Label().length() > 1) && (m_patms[0]->Label()[0] == 'Q')&& (m_patms[0]->sparerad < style->min_peak_height_to_show ) ) transparency = 0.05;
+       if ( (m_patms[1]->Label().length() > 1) && (m_patms[1]->Label()[0] == 'Q')&& (m_patms[1]->sparerad < style->min_peak_height_to_show ) ) transparency = 0.05;
+   }   
+   
    int detail = style->normal_res;
 
 //   GLUquadricObj* cylinder;
 
-   GLfloat Surface1[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
-   GLfloat Surface2[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, 1.0f };
-   GLfloat White[] = { 255.0f,255.0f,255.0f, 1.0f };
+   GLfloat Surface1[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, transparency };
+   GLfloat Surface2[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, transparency };
+//   GLfloat White[] = { 255.0f,255.0f,255.0f, 1.0f };
 
    if ( style->bond_style == BONDSTYLE_HALFPARENTELEMENT && m_patms.size() == 2 ) {
    

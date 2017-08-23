@@ -127,6 +127,7 @@ class   CrGrid : public CrGUIElement
 #define kSCreateModList    "MODLIST"
 #define kSCreateDropDown    "DROPDOWN"
 #define kSCreateEditBox     "EDITBOX"
+#define kSCreateSlider      "SLIDER"
 #define kSCreateMultiEdit   "MULTIEDIT"
 #define kSCreateTextOut         "TEXTOUT"
 #define kSCreateText        "STATIC"
@@ -164,6 +165,7 @@ enum
  kTCreateModList,
  kTCreateDropDown,
  kTCreateEditBox,
+ kTCreateSlider,
  kTCreateMultiEdit,
  kTCreateTextOut,
  kTCreateText,
