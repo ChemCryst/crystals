@@ -390,10 +390,10 @@ do i=1, nmsize
     onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
 end do
 
-print *, '3 ', onenorm
-do i=1, 5
-print *, unpacked(1:5,i)
-end do
+!print *, '3 ', onenorm
+!do i=1, 5
+!print *, unpacked(1:5,i)
+!end do
 
 !open(666, file='matrix', form="unformatted",access="stream")
 !write(666) unpacked

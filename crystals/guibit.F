@@ -874,7 +874,7 @@ C Get atom type.
                WRITE(CATTYP,'(A4)')IATTYP
                IF(CATTYP(1:1).EQ.'Q') THEN
                  QSINL5 = .TRUE.
-                 IF ( STORE (I5+13).GT.0.0001 ) LSPARE = .TRUE.
+                 IF ( ABS(STORE (I5+13)).GT.0.0001 ) LSPARE = .TRUE.
                END IF
                IF ( ISTORE(I5+14).NE.0 ) PTINL5 = .TRUE.
 
