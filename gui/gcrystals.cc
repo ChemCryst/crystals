@@ -290,7 +290,7 @@ void macSetCRYSDIR(string pPath)
     putenv(writable);
 }
 
-void CCrystalsApp::MacOpenFile(const wxString & fileName )
+/*void CCrystalsApp::MacOpenFile(const wxString & fileName )
 	    {
     if ( fileName.length() > 0 )
 		{
@@ -307,12 +307,15 @@ void CCrystalsApp::MacOpenFile(const wxString & fileName )
 
 //    wxMessageBox("open",fileName);
     }
-
+*/
   void macSetCRYSDIR(const char* pPath)
   {
     string tResources = pPath;
     tResources = "CRYSDIR=" + tResources + "/Crystals_Resources/";
-    putenv(tResources.c_str()); 
+    char * writable = new char[tResources.size() + 1];
+    std::copy(tResources.begin(), tResources.end(), writable);
+    writable[tResources.size()] = '\0'; // don't forget the terminating 0
+    putenv(writable);
   }
 #endif    
 class BriefMessageBox;
