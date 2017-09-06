@@ -1,10 +1,10 @@
 
-if(APPLE)
-SET (ENV{CRYSDIR} "./")
-EXECUTE_PROCESS (COMMAND ../crystals )
+# IF (APPLE)
+# SET (ENV{CRYSDIR} "./")
+# EXECUTE_PROCESS (COMMAND ../crystals )
 # EXECUTE_PROCESS (COMMAND ../crystals.app/Contents/MacOS/crystals ./ )
 
-elseif( useGUI )
+if( useGUI )
 
 MESSAGE( STATUS "Using cl helper app to build dsc file." )
 # GUI versions with cl helper app.
