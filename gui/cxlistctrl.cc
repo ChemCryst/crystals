@@ -136,11 +136,10 @@ END_MESSAGE_MAP()
 BEGIN_EVENT_TABLE(CxListCtrl, wxListCtrl)
      EVT_CHAR( CxListCtrl::OnChar )
      EVT_LIST_COL_CLICK(-1, CxListCtrl::HeaderClicked )
-
+     EVT_LIST_ITEM_SELECTED(-1, CxListCtrl::ItemSelected )
+     EVT_LIST_ITEM_DESELECTED(-1, CxListCtrl::ItemDeselected )
 END_EVENT_TABLE()
 #endif
-
-
 
 
 void CxListCtrl::Focus()
@@ -375,6 +374,37 @@ bool CxListCtrl::CxSortItems( int colType, int nCol, bool bAscending)
 	SortItems(MyCxListSorter, 1);
     return true;
 
+}
+
+
+void CxListCtrl::ItemSelected ( wxListEvent& event )
+{
+    if(m_ProgSelecting > 0)
+    {
+        m_ProgSelecting--;
+    }
+    else
+    {
+      int item = event.m_itemIndex;
+      ostringstream strm;
+      strm << "SELECTED_N" << item + 1;
+      ((CrListCtrl*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index only.
+    }
+}
+
+void CxListCtrl::ItemDeselected ( wxListEvent& event )
+{
+    if(m_ProgSelecting > 0)
+    {
+        m_ProgSelecting--;
+    }
+    else
+    {
+      int item = event.m_itemIndex;
+      ostringstream strm;
+      strm << "UNSELECTED_N" << item + 1;
+      ((CrListCtrl*)ptr_to_crObject)->SendValue( strm.str() ); //Send the index
+    }
 }
 #endif
 

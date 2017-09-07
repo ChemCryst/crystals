@@ -2823,7 +2823,7 @@ cdjwMar-2017
 C       CHAR=PACK(CHAR) - REMOVES ALL SPACES AND LEFT-PACKS
 C
 cdjwdec08
-      PARAMETER ( NOPER = 56 , NUBASE = 28 )
+      PARAMETER ( NOPER = 57 , NUBASE = 28 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2868,7 +2868,7 @@ C
 CJAN99  abs dec08
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 /
+     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 , 12 /
 C
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
@@ -3249,7 +3249,7 @@ CJAN99  abs dec08
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
      4        5190 , 5200,  5210 , 5220 , 5230 ,
-     5        5240 , 5250,  5260 , 9940 ) , IUOPER
+     5        5240 , 5250,  5260 , 5270 , 9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3882,6 +3882,22 @@ C
       GO TO 8000
 C
 C
+5270  CONTINUE
+C
+C -- 'LEN'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      print *, cwork1
+      LEN1 = MAX ( LEN1, 1 )
+      print *, len1
+      print *, nctrim(cwork1)
+      ICODE(JVALUE,IARG(1)) = NCTRIM( CWORK1 )
+      ICODE(JVTYPE,IARG(1)) = 1
+C
+      GO TO 8000
+ 
+C
+C
 8000  CONTINUE
 C
 C
@@ -4123,7 +4139,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 26 )
 CJAN99  'ABS' dec08
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 28 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 29 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -4153,22 +4169,23 @@ C
       DATA IVARIB(JCTYPE) / 1 /
 C
       DATA COPER /                '('   ,   ')'   ,                ! 0-2
-     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6
+     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6    !Bop 1 - 
      3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,      ! 7-10
      4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
      5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
      6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
      7                '//'    , 'STARTSWITH' , '**', 'IOR',        !23-26
-     7                'IAND'  , 'IDECMASK',                        !27,28
+     7                'IAND'  , 'IDECMASK',                        !27,28   !Bop - 26
 C
-     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32
-     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36
+     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32   !Uop 1 - 4
+     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36   !Uop 5 - 8
 CJAN99 'ABS' dec08
-     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40
-     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44
-     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47
-     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51
-     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK'/ !52-56
+     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40   !un 9-12
+     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un 13-16
+     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
+     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
+     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
+     5                'LEN'/ !57  !un 29
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -4187,7 +4204,7 @@ CJAN99 'ABS' dec08
      2                  180   ,   180   ,   180   ,
      3                  180   ,   180   ,   180   ,   200   ,
      4                  180   ,   180   ,   180   ,   180   ,
-     5                  180   /
+     5                  180   ,   180 /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
