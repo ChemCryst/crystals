@@ -1390,6 +1390,11 @@ C----- MIN AND MAX INDICES, FROM L6 DETAILS
          STORE(L30IX+4)=STORE(LIX)
          STORE(L30IX+5)=STORE(LIX+1)
 C---- THETA IS NOT AVAILABLE DURING READING REFLECTIONS
+c djw-2017. Why Not? this is probably the best place to compute thmax
+c currrently it is done in SFLS.
+c we dont want to do this updating every time we access LIST 6
+c For twinned data the theta for contributors may be (slightly) different.
+c SFLS will see this difference.
 C        LIX = L6DTL + 16*MD6DTL
 C        STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
 C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD

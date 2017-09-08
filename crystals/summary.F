@@ -1359,9 +1359,11 @@ C
 c
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF (KHUNTR ( 6,0, IADDL,IADDR,IADDD, -1) .LT. 0) 
+     1                                      CALL XFAL06 (IULN, 0 )
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-      CALL XFAL06 (IULN, 0 )
+      
 
 C -- SCAN LIST 6 FOR ALL REFLECTIONS
 
@@ -1700,11 +1702,14 @@ C will not be optimised.
 
       END IF
 
-      STORE(L30IX+6)=THMIN
-      STORE(L30IX+7)=THMAX
-
+c If thmax already set in LIST 30, assume it was put there by
+c SFLS, which computes the actual theta values for every reflection
+c rather than an estimate based on index ranges.  DJW 2017
+      IF ( STORE(L30IX+7).LE. ZERO) THEN
+       STORE(L30IX+6)=THMIN
+       STORE(L30IX+7)=THMAX
+      END IF
       STORE(L30CF+9)=THMCMP
-
 
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 
@@ -2390,12 +2395,13 @@ c      determinant
                   write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
                 end if
             endif
-c-----      update list 39 - assumes only one FLAC record
+c-----      update list 39 - assumes value is in FLAC record 0
 c            iflac = 'FLAC'
             if (khuntr (39,0, iaddl,iaddr,iaddd, 0) .eq. 0) then
              m39f=l39f
              do i=1,n39f
-               if (istore(m39f) .eq. iflac) then
+               if ((istore(m39f) .eq. iflac) .and.
+     1            (nint(store(m39f+1)) .eq. 0))then
                 store(m39f+2) = slope
                 call xwlstd ( 39, icom39, idim39, -1, -1)
                 exit
@@ -3554,15 +3560,22 @@ c
         if(issprt.eq.0) write(ncwu,'(a)') 'floating data'
         m39f=l39f
         do i = 1,n39f
-         write(cmon,1010) (store(j),j=m39f,m39f+md39f-1)
+         vmax = 9999.                                    !choose output FORMAT
+         do j = m39f+2,m39f+md39f-1
+            if(store(j).gt.vmax) vmax=store(j)
+         enddo
+         if (vmax.le.9999.) then
+          write(cmon,1010) (store(j),j=m39f,m39f+md39f-1)
+         else 
+          write(cmon,1011) (store(j),j=m39f,m39f+md39f-1)
+         endif
          call xprvdu(ncvdu,1,0)
-         if(issprt.eq.0) 
-     1   write(ncwu,1010) (store(j),j=m39f,m39f+md39f-1)
+         if (issprt .eq. 0) write ( ncwu , '(a)' ) trim(cmon(1))
          m39f=m39f+md39f
         enddo
-1010  format(a6,f6.0,10f8.3)
+1010  format(a6,f6.0,10f9.3)
+1011  format(a6,f6.0,10f9.1)
       endif
-
       return
       end
 c

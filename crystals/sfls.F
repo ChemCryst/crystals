@@ -468,8 +468,6 @@ C--READ THE NEXT DIRECTIVE CARD
 C--SAVE THE LIST TYPE INDICATOR
             ITYP06=ISTORE(NFL)
       ENDIF
-
-
 1105  CONTINUE
       !CALL XZEROF(IWORKA(1),17)
       IWORKA(1:17)=0.0
@@ -491,8 +489,13 @@ C--'#CALCULATE' HAS BEEN GIVEN
 1300  CONTINUE
 
       SFLS_TYPE = SFLS_CALC
+c     RALL(1:18)  An array holding Rfactors etc
+c     RALL(1)   I/sigma threshold (2 for SX emulation)
+c     RALL(2-6) data above threshold
+C     RALL(7-12) All data
+c     RALL(13-18) list 28 sigma threshold
       !CALL XZEROF(RALL(1),12)
-      RALL(1:12)=0.0
+      RALL(1:18)=0.0
       GOTO 1400
 C
 C--'#CYCLENDS' INSTRUCTION
@@ -850,25 +853,24 @@ c
             IF(ISTORE(M33CD+4).GE.0) SCALED_FOT = .TRUE.   ! SCALED /FOT/ IS REQUIRED
          END IF
 
-         CALL XFAL03    ! READ DOWN SOME LISTS
+         CALL XFAL03            ! Scattering factors
          IULN = KTYP06(ITYP06)  ! FIND THE REFELCTIONLIST TYPE
          CALL XFAL06(IULN,1)
-
-         S6SIG = -10.0   ! SIGMA THRESHOLD
-         rall(1) = 2.0
-         IF ( MODE.ge. 0 ) then
+c
+         RALL(1) = 2.0   ! sIGMA THRESHOLD A LA shelx
+         RALL(7) = -10.0 ! SIGMA THRESHOLD OMITTING TERRIBLE DATA
+         RALL(13)= -10.0 ! JUST IN CASE LIST 28 NOT SET
+         S6SIG = -10.0   ! SIGMA THRESHOLD OMITTING TERRIBLE DATA
           IF ( N28MN .GT. 0 ) THEN
             INDNAM = L28CN
             DO I = L28MN , M28MN , MD28MN
                WRITE ( CTEMP , '(3A4)') (ISTORE(J), J = INDNAM,INDNAM+2)
                IF (INDEX(CTEMP,'RATIO') .GT. 0) THEN
-                  S6SIG = STORE(I+1)
-                  IF ( MODE.EQ.-1 ) RALL(1) = STORE(I+1)
+                  RALL(13) = STORE(I+1)
                ENDIF
                INDNAM = INDNAM + MD28CN
             END DO
           END IF
-         endif
          IF ( IERFLG .LT. 0 ) GO TO 9900
 
 
@@ -1190,96 +1192,91 @@ C--
       INCLUDE 'IDIM33.INC'
 
       CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)   ! OUTPUT THE NEW LIST 33 TO DISC
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
-cdjwoct09
-      IF (SFLS_TYPE .EQ. SFLS_SCALE) THEN
-C      update LIST 30 R and Rw values if only SCALE has been asked for
+C
+C DONT UPDATE LIST 30 FOR SFLS 7
+      IF (IULN .NE.7) THEN
+       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30  ! CALC or REF
+       IF ((SFLS_TYPE .EQ. SFLS_SCALE) .OR.                    ! scale requested
+     1    (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0)) THEN  !LIST 11 is loaded
+c                                                       or we are probably doing REFINE, 
+c                                                       update the RF record
+c
+cdjwmay07 L30GE (GENERAL) used to be set here, now
+c         L30GE is filled in ANALYSE and lets the user see the effect
+c         of changing the thresholds.
+C
         STORE(L30RF+0 ) = R  
         STORE(L30RF+1 ) = RW
-      ENDIF
-      IF (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0) THEN
-        STORE(L30RF+0 ) = R   ! 'REFINE' 
-cdjwmay07 L30GE is filled in ANALYSE and lets the user see the effect
-c         of changing the thresholds.
-cdjwmay07        STORE(L30GE+10 ) = R  ! UPDATE LIST 30
-        STORE(L30RF+1 ) = RW
-cdjwmay07        STORE(L30GE+11 ) = RW
-        IF(STORE(L11P+23) .GT.ZERO) STORE(L30RF+2 ) = STORE(L11P+23)
-        IF (STORE(L11P+16) .GT. ZERO) THEN
-          STORE(L30RF+4 ) = SQRT(AMINF / STORE(L11P+16))
+        IF(STORE(L11P+23).GT.ZERO)
+     1  STORE(L30RF+2 ) = STORE(L11P+23)
+        STORE(L30RF+3) = RALL(13)                 ! SIGMA THRESHOLD FOR REFINEMENT
+        IF(STORE(L11P+16).GT.ZERO) 
+     1  STORE(L30RF+4 ) = SQRT(AMINF / STORE(L11P+16))
+c djw Sep 2017. L30IX+6&7 are theta limits
+c For some reason I cannot follow, they are commented out of READ6
+c The limits are 'predicted' in THLIM, called by various routines.
+c Make THLIM the conditional fall-back case when THMAX is zero
+c Values set here are limits used in SFLS, and are 'true' values.
+c BEWARE that data isn't truncated by LIST 28
+        THMAX = RTD*ASIN(WAVE*SMAX)
+        IF (STORE(L30IX+7).LT. THMAX) THEN
+          STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)   
+          STORE(L30IX+7) = THMAX
         ENDIF
-        STORE(L30RF+8 ) = STORE(L11P+24)  ! NUMBER OF REFLECTIONS USED
-cdjwmay07        STORE(L30GE+9 ) = STORE(L11P+24)
+        STORE(L30RF+8 ) = STORE(L11P+24)           ! NUMBER OF REFLECTIONS USED
+        ISTORE(L30RF+12 ) = NV + 2                 ! REFINEMENT TYPE
+       ENDIF
+C      update LIST 30 CIFEXTRA R and Rw values if only CALC has been asked for
+       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN                       
+c                 The fltered data
+                             STORE(L30CF+0)=RALL(1)
+                             STORE(L30CF+1)=RALL(2)
+          IF(RALL(4).GT.ZERO)STORE(L30CF+2)=100.* RALL(3)/RALL(4)
+          IF(RALL(6).GT.ZERO)STORE(L30CF+3)=100.*SQRT(RALL(5)/RALL(6))
+c                 all the data
+                             STORE(L30CF+4)=RALL(7)
+                             STORE(L30CF+5)=RALL(8)
+          IF(RALL(9).GT.ZERO)STORE(L30CF+6)=100.* RALL(9)/RALL(10)
+          IF(RALL(11).GT.ZERO)
+     1                      STORE(L30CF+7)=100.*SQRT(RALL(11)/RALL(12))
+c
+C6260      FORMAT (/
+C     1       ' With Sigma(I) cutoff= ',F6.2, 
+C     1       ', there are', I9, ' reflections',/
+C     1       , ' R-value=',F7.3, 34X, ' Rw=', F7.3)
 
-c        IF ( SFLS_TYPE .NE. SFLS_REFINE )  THEN
-            STORE(L30RF+3) = S6SIG  ! SIGMA THRESHOLD FOR REFINEMENT
-cdjwmay07            STORE(L30GE+8) = S6SIG
-c        ENDIF
-
-        STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)  ! STORE THETA LIMITS
-        STORE(L30IX+7) = RTD*ASIN(WAVE*SMAX)
-
-        ISTORE(L30RF+12 ) = NV + 2   ! REFINEMENT TYPE
-
-      ENDIF
-
-
-      IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN  ! 'CALC' ONLY
-
-          STORE(L30RF+0 ) = R
-cdjwmay07          STORE(L30GE+10 ) = R
-          STORE(L30RF+1 ) = RW
-cdjwmay07          STORE(L30GE+11 ) = RW
-
-          STORE(L30CF)=RALL(1)
-          STORE(L30CF+1)=RALL(2)
-
-          STORE(L30CF+4)=-10.
-          STORE(L30CF+5)=RALL(7)
-
-          IF (RALL(4) .GT. ZERO) THEN
-            STORE(L30CF+2) =100.* RALL(3)/RALL(4)
-          ENDIF
-          IF (RALL(6) .GT. ZERO) THEN
-            STORE(L30CF+3) = 100.*SQRT(RALL(5)/RALL(6))
-          ENDIF
-
-          IF (RALL(9) .GT. ZERO) THEN
-            STORE(L30CF+6) =100.* RALL(8)/RALL(9)
-          ENDIF
-          IF (RALL(11) .GT. ZERO) THEN
-            STORE(L30CF+7) = 100.*SQRT(RALL(10)/RALL(11))
-          ENDIF
-
-6260      FORMAT (/
-     1       ' With Sigma(I) cutoff= ',F6.2, 
-     1       ', there are', I9, ' reflections',/
-     1       , ' R-value=',F7.3, 34X, ' Rw=', F7.3)
-6262      FORMAT (2X,I7,' reflections   R ',F5.2,
-     1    '% Rw ',F5.2,'% with I/u(I) from List 28')
 6261      FORMAT (2X,I7,' reflections   R ',F5.2,
      1    '% Rw ',F5.2,'% with I/u(I) >',F6.1)
+
+6262      FORMAT (2X,I7,' reflections   R ',F5.2,
+     1    '% Rw ',F5.2,'% with I/u(I) from List 28, I/Sig=',f7.2)
+
+
             if (issprt .eq.0) write(ncwu,'(//)')
             CALL OUTCOL(6)
+C AS USED           (NOTE WE SHOULD CHECK THE DENOMINATIOS ARE NOT ZERO)
             WRITE ( CMON, 6262) 
-     1       NT, MIN(99.99,STORE(L30RF)),MIN(99.99,STORE(L30RF+1))
+     1       NINT(RALL(14)), MIN(99.99,100.*RALL(15)/RALL(16)),
+     2       MIN(99.99,100.*SQRT(RALL(17)/RALL(18))),
+     2       RALL(13)
             CALL XPRVDU(NCVDU, 1, 0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
-
+C AT -10 SIGAM
             WRITE ( CMON, 6261)
-     1       NINT(RALL(7)), MIN(99.99,STORE(L30CF+6)),
+     1       NINT(STORE(L30CF+5)), MIN(99.99,STORE(L30CF+6)),
      2                      MIN(99.99,STORE(L30CF+7)), -10.0
             CALL XPRVDU(NCVDU, 1, 0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
-
+C AT +2 SIGMA
             WRITE ( CMON, 6261)  
-     1       NINT(RALL(2)), MIN(99.99,STORE(L30CF+2)),
+     1       NINT(STORE(L30CF+1)), MIN(99.99,STORE(L30CF+2)),
      2                      MIN(99.99,STORE(L30CF+3)), RALL(1)
             CALL XPRVDU(NCVDU, 1, 0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
             CALL OUTCOL(1)
-      ENDIF
-      CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+       ENDIF
+       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+      endif
 
       CALL XRSL     ! CLEAR THE CORE
       CALL XCSAE
@@ -2200,7 +2197,9 @@ C
 c
 CJan2017    Storage of A&B parts moved into XAB2FC 
 C           so that real and imaginary parts are available
-c        A=FO*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
+C
+c COMPUTE BIS AND PIECES FOR THE WEIGHTED R-FACTOR
+C
 c Add abs to deniminator
         A=abs(FO)*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
         DF=FO-FCEXS
@@ -2208,10 +2207,8 @@ c Add abs to deniminator
         S=SCALEK
 C
         IF(NV.GE.0)THEN ! 4500,4450,4450 ! CHECK IF WE REFINING AGAINST /FO/ **2
-c          A=ABS(FO)*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
-c remove abs Mar2009
-          A=FO*FO*W  ! COMPUTE W-DELTA FOR /FO/ **2 REFINEMENT
-          DF=ABS(FO)*FO-FCEXS*FCEXS
+          A=FO*FO*W                    !  w*Fo^2
+          DF=ABS(FO)*FO-FCEXS*FCEXS    !  (Fo^2-Fc^2) Abs in case Fo is -ve, to give Fo^2 -ve
           WDF=W*DF
           S=SCALEK*SCALEK
         END IF
@@ -2245,10 +2242,8 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
             CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, 
      1              XVALUR, 0)
           ENDIF
-
-
-
-
+C
+C
         IF(REFPRINT)THEN !   CHECK IF A PRINT OF THE RELFECTIONS IS NEEDED
           P=P*D             ! PRINT ALL REFLECTIONS
           VJ=WDF*S
@@ -2300,7 +2295,7 @@ C--COMPUTE THE TOTALS FOR REFINEMENT OF THE SCALE FACTOR ONLY
             IF(NV.GE.0) A=A*SCALES*FCEXT  ! IF WE ARE REFINING AGAINST /FO/ **2
 
 C Originally, CRYSTALS computed the scale wrt F, but this is non-linear,
-C so convergence was poor. Now the shifts are wrt F**2. This is taken car
+C so convergence was poor. Now the shifts are wrt F**2. This is taken care
 C of when the shift is applied. See near label 6100.
 
             SFO=SFO+WDF*A   ! ACCUMULATE THE TERMS FOR THE SCALE FACTOR
@@ -2459,20 +2454,29 @@ C----    H,K,L,SNTHL,LEV,
         CALL XACRT(16)
 
         IF(SFLS_TYPE .eq. SFLS_CALC) THEN ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
-          IF (STORE(M6+20) .GE. RALL(1)) THEN
-            RALL(2) = RALL(2) + 1.
-            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS)
-            RALL(4) = RALL(4) + ABS(FO)
-            RALL(5) = RALL(5) + WDF*WDF
-            RALL(6) = RALL(6) + A*A
+          IF (STORE(M6+20) .GE. RALL(1)) THEN      ! Check that sigma acceptable
+            RALL(2) = RALL(2) + 1.                 ! refs used
+            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
+            RALL(4) = RALL(4) + ABS(FO)            ! sum Fo
+            RALL(5) = RALL(5) + WDF*WDF            ! sum wdelta sq
+            RALL(6) = RALL(6) + A*A                ! 
           ENDIF
-          RALL(7) = RALL(7) + 1.
-          RALL(8) = RALL(8) + ABS(ABS(FO)-FCEXS)
-          RALL(9) = RALL(9) + ABS(FO)
-          RALL(10) = RALL(10) + WDF*WDF
-          RALL(11) = RALL(11) + A*A
+          ! NO CHECKS
+          RALL(8) = RALL(8) + 1.
+          RALL(9) = RALL(9) + ABS(ABS(FO)-FCEXS)
+          RALL(10) = RALL(10) + ABS(FO)
+          RALL(11) = RALL(11) + WDF*WDF
+          RALL(12) = RALL(12) + A*A
         ENDIF
-
+C
+C  DO THIS FOR ALL TYPES OF CALCULATION 
+          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! Check that sigma acceptable
+            RALL(14) = RALL(14) + 1.                 ! refs used
+            RALL(15) = RALL(15) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
+            RALL(16) = RALL(16) + ABS(FO)            ! sum Fo
+            RALL(17) = RALL(17) + WDF*WDF            ! sum wdelta sq
+            RALL(18) = RALL(18) + A*A                ! 
+          ENDIF
       END DO  ! END OF REFLECTION LOOP
       
       ! put back right hand side into original storage
