@@ -482,11 +482,11 @@ C--CHECK IF LIST 6 EXISTS
           CALL XFAL06(IULN06, 0)   ! Load READ ONLY
           IF ( IERFLG .LT. 0 ) GO TO 9900
 
-          IFSQ = ISTORE(L23MN+1)
+          IFSQ = ISTORE(L23MN+1)                               ! F or F^2
           RPARS = 1
           IF ( KEXIST(30).GE.1) THEN
             CALL XFAL30
-            RPARS = STORE(L30RF+2)
+            RPARS = STORE(L30RF+2)                            ! No of refined parameters
           END IF
           N6ACC = 0
 Cdjwdec12. Set Fcmax to zero in the hope we can find case where Fcs are 
@@ -507,13 +507,21 @@ C Make up some starting values of A and B:
           SXAG = .2 * SXA
           SXBG = .4 * SXB
 CDJWdec12
-          if (fcmax .gt. zero) then
-c          Some non zero Fc - a chance this might all work
+          if (fcmax .le. zero) then
+c          probably no Fcs
+           sxa = 0.1
+           sxb = 0.0
+           write(cmon,'(a)') 
+     1     'No Fcalcs yet - use default SHELX parameters'
+            call xprvdu(ncvdu,1,0)
+            if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
+          else
+c          Some non zero Fc - a good chance we have done SFLS
            DO WHILE ( .TRUE. ) ! Ensure grid doesn't extend below 0:
              SXA = MAX(SXA,4.*SXAG)
              SXB = MAX(SXB,4.*SXBG)
              IF ( SXA .GT. 0.3 ) THEN
-               SXA = 0.2
+               SXA = 0.2                    
                SXB = 0.0
                EXIT
              END IF
@@ -668,16 +676,10 @@ c Nov 2016. We get better results with 0.2 (DJW)
              endif
              EXIT
            END DO
-c^^^
-cDJWdec12
-          else
-           sxa = 0.1
-           sxb = 0.0
-           write(cmon,'(a)') 
-     1     'No Fcalcs yet - use default SHELX parameters'
-            call xprvdu(ncvdu,1,0)
-            if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
           endif
+c
+c
+c
           WRITE ( CMON,'(A,2F10.4,A)') '     Weights applied: ',SXA,SXB,
      1                             ' .0 .0 .0 .333'
           CALL XPRVDU(NCVDU,1,0)
@@ -707,7 +709,6 @@ C>> ALERT C for > 5
             call xprvdu(ncvdu,1,0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') trim(CMON(1))
           ENDIF
-c
 c
           CALL XCSAE                     ! CLEAR THE LIST ENTRIES
           IRCZAP = 0
