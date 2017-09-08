@@ -434,7 +434,7 @@ C----- MAXIMUM  SHIFT/ESD
 C>DJWOCT96
 cdjwapril2015
 c      SMAX = -1000000.0
-       smax = zero
+       shmax = zero
        JSAVE = 0
        CSAVE = ' '
 C<DJWOCT96
@@ -975,13 +975,13 @@ cdjwapri2015
 cRIC Ordering problem comparing zero with zero. Ensure that one
 c value is always chosen as smallest.
             IF (JSAVE .EQ. 0) THEN
-               SMAX = S
+               SHMAX = S
                JSAVE = JT
                CSAVE = CTEXT
             ENDIF
 c hang onto sign for the moment
-            IF (ABS(S) .GT. abs(SMAX)) THEN
-               SMAX = S
+            IF (ABS(S) .GT. abs(SHMAX)) THEN
+               SHMAX = S
                JSAVE = JT
                CSAVE = CTEXT
             ENDIF
@@ -1123,14 +1123,14 @@ CRIC13:     1 29x,      ' The mean abs(shift/su) =', F16.7)
 
       IF (ISSPRT .EQ. 0) 
 c remove the ABS() at some time in the future
-     1 WRITE(NCWU,3557) abs(SMAX), JSAVE, CSAVE(1:LENNAM)
+     1 WRITE(NCWU,3557) abs(SHMAX), JSAVE, CSAVE(1:LENNAM)
 CRIC13:3557  FORMAT(' The largest (shift/esd) =',F10.6,
 3557  FORMAT(' The largest (shift/esd) =',F10.2,
      1 ', for Parameter ', I4,', ', A/)
       WRITE ( CMON, 
      1 '('' Shift/su: sumsq='',f12.5,'' rms='',f12.5,
      2 '' max='',f12.5,'' for '',A)')
-     3 F, RMSS, SMAX, CSAVE(1:LENNAM)
+     3 F, RMSS, SHMAX, CSAVE(1:LENNAM)
       CALL XPRVDU(NCVDU, 1,0)
 
 C---JAN97 - THE FOLLOWING STATEMENT MAY BE NEEDED IF THE
@@ -1372,7 +1372,7 @@ cdjwjun09
       ENDIF
 C----- MAXIMUM SHIFT/ESD
 c     now remove sign from maximum shift
-      STORE(L30RF+7 ) = abs(SMAX)
+      STORE(L30RF+7 ) = abs(SHMAX)
       STORE(L30RF+8 ) = STORE(L11P+24)
       IF (STORE(L11P+24) .GT. ZERO) STORE(L30RF+9 ) = STORE(L11P+25)
       IF (STORE(L11P+27) .GT. ZERO) STORE(L30RF+10 ) = STORE(L11P+28)
@@ -1717,7 +1717,7 @@ c
 5102  format(a,f8.1,a,f6.2,a,f6.2,2(a,2f6.2),a,f6.2,
      1 a,f6.3,a,f6.3,a,f6.3)
 c      write(ncwu,5102)
-c     1 'Sssr=',sssr, ' Smax=',smax,' Rmss=',rmss,
+c     1 'Sssr=',sssr, ' Shmax=',shmax,' Rmss=',rmss,
 c     2 ' Av Rev ', adprev,xyzrev,
 c     3 ' Av shift/esd', adpsoe,xyzsoe, 
 c     4 ' R= ',store(l30rf),' adp=',adpshift,' Xyz', xyzshift,

@@ -11,7 +11,7 @@
 %%      If there are Friedel pairs, Fo should be treated as above, the pairs should be
 %%      merged, and Fc re-computed without f"
 %%
-%%  See BY G. BERNARDINELLI AND H. D. FLACK Acta Cryst. (1985). A41,500-511 for
+%%  See  G. BERNARDINELLI AND H. D. FLACK Acta Cryst. (1985). A41,500-511 for
 %%  how to correct Fo
 %%      
 %%      Currently this cannot be done.
@@ -19,13 +19,12 @@
 %%      If PARTS have been set, their contribution will have been included in Fc and
 %%      used in de-twinning Fo
 %%      
-%    EVALUATE F67 = 6
+%         EVALUATE F67 = 7                                                      
 %    IF ( EXISTS 5 .LE. 0 ) THEN                                                
 %         EVALUATE DOSCALE = 2                                              
 %         EVALUATE DOCALC = 2                                               
 %         FINISH
 %    END IF                                                                     
-%% That caused problems if SQUEEZE had set A and B parts.
 {I Copying reflection list to temporary storage.                                
 %         COPY '#SCRIPT COPY67'  
 %         IF ( DOCALC .EQ. 1 ) THEN                                             
@@ -37,7 +36,6 @@
 %            COPY 'SCALE'                                                       
 %            COPY 'END'                                                         
 %         END IF                                                                
-%         EVALUATE F67 = 7                                                      
 %                                                                               
 %  VARIABLE INTEGER ITMP                                                      
 %  BLOCK                                                                        
