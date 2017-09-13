@@ -3614,7 +3614,7 @@ Rsigma=  0.91
 
 
 
-     2805 reflections   R  6.66% Rw 16.67% with I/u(I) from List 28
+     2805 reflections   R  6.66% Rw 16.67% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) > -10.0
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.30    SumFoFc/SumFc^2=  6.19    SumwFoFc/SumwFc^2=  6.27
@@ -3723,7 +3723,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 
 
-     2805 reflections   R  6.66% Rw 16.67% with I/u(I) from List 28
+     2805 reflections   R  6.66% Rw 16.67% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) > -10.0
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.30    SumFoFc/SumFc^2=  6.19    SumwFoFc/SumwFc^2=  6.27
@@ -9533,7 +9533,7 @@ END
 
 
 
-     2805 reflections   R 22.28% Rw 77.59% with I/u(I) from List 28
+     2805 reflections   R 22.28% Rw 77.59% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R 22.28% Rw 77.59% with I/u(I) > -10.0
      2805 reflections   R 22.28% Rw 77.59% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.59    SumFoFc/SumFc^2=  6.62    SumwFoFc/SumwFc^2=  5.91
@@ -9703,7 +9703,7 @@ Rsigma=  0.91
 
 
 
-     2805 reflections   R  6.66% Rw 16.67% with I/u(I) from List 28
+     2805 reflections   R  6.66% Rw 16.67% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) > -10.0
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.30    SumFoFc/SumFc^2=  6.19    SumwFoFc/SumwFc^2=  6.27
@@ -15479,7 +15479,7 @@ Rsigma=  0.91
 
 
 
-     2805 reflections   R  7.02% Rw 17.80% with I/u(I) from List 28
+     2805 reflections   R  7.02% Rw 17.80% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) > -10.0
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
@@ -18408,7 +18408,7 @@ END
 
 
 
-     2805 reflections   R  7.02% Rw 17.80% with I/u(I) from List 28
+     2805 reflections   R  7.02% Rw 17.80% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) > -10.0
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
@@ -24218,7 +24218,7 @@ END
 
 
 
-     2805 reflections   R 22.19% Rw 78.38% with I/u(I) from List 28
+     2805 reflections   R 22.19% Rw 78.38% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R 22.19% Rw 78.38% with I/u(I) > -10.0
      2805 reflections   R 22.19% Rw 78.38% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.52    SumFoFc/SumFc^2=  6.57    SumwFoFc/SumwFc^2=  5.85
@@ -24388,7 +24388,7 @@ Rsigma=  0.91
 
 
 
-     2805 reflections   R  7.02% Rw 17.80% with I/u(I) from List 28
+     2805 reflections   R  7.02% Rw 17.80% with I/u(I) from List 28, I/Sig=  -3.00
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) > -10.0
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19

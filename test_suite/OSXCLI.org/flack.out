@@ -3996,7 +3996,7 @@ Space group symbol is   P    -4
 
 
 
-      904 reflections   R  3.66% Rw  6.01% with I/u(I) from List 28
+      904 reflections   R  3.66% Rw  6.01% with I/u(I) from List 28, I/Sig= -10.00
       904 reflections   R  3.66% Rw  6.01% with I/u(I) > -10.0
       824 reflections   R  3.24% Rw  5.70% with I/u(I) >   2.0
 [29] SumFo/SumFc=  2.71    SumFoFc/SumFc^2=  2.70    SumwFoFc/SumwFc^2=  2.70
@@ -4152,7 +4152,7 @@ LS-scale=  2.699   Wilson Scale=  0.000
 
 
 
-      904 reflections   R  3.66% Rw  7.19% with I/u(I) from List 28
+      904 reflections   R  3.66% Rw  7.19% with I/u(I) from List 28, I/Sig= -10.00
       904 reflections   R  3.66% Rw  7.19% with I/u(I) > -10.0
       824 reflections   R  3.24% Rw  6.90% with I/u(I) >   2.0
 [29] SumFo/SumFc=  2.71    SumFoFc/SumFc^2=  2.70    SumwFoFc/SumwFc^2=  2.71
@@ -4839,6 +4839,8 @@ Mean C-C su =   0.0062
 #GENERALEDIT 39
 #SCRIPT ADD39F
 #GENERALEDIT 39
+#SCRIPT ADD39F
+#GENERALEDIT 39
 #GENERALEDIT 39
 #SCRIPT ADD39F
 #GENERALEDIT 39
@@ -4967,12 +4969,6 @@ Rsigma=  2.79
  New scale factor (G) is      2.709,     904 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  3
-
-
-
-      904 reflections   R  3.64% Rw  7.15% with I/u(I) from List 28
-      904 reflections   R  3.64% Rw  7.15% with I/u(I) > -10.0
-      824 reflections   R  3.23% Rw  6.87% with I/u(I) >   2.0
 [29] SumFo/SumFc=  2.71    SumFoFc/SumFc^2=  2.70    SumwFoFc/SumwFc^2=  2.71
 LS-scale=  2.709   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
@@ -4989,7 +4985,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    50930 to    51156 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51014 to    51240 will not be copied ( deleted )         
 
 
  ************************************************************************
@@ -4997,15 +4993,15 @@ LS-scale=  2.709   Wilson Scale=  0.000
  ************************************************************************
 
 
- The space required for the lists to be saved is    81 record(s)
- The new file has been extended by    81 record(s)
+ The space required for the lists to be saved is    82 record(s)
+ The new file has been extended by    82 record(s)
  The  New data  file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
 
  Listing of file index of  New data  file 
- Copied:     87 dsc records.
+ Copied:     88 dsc records.
 #TON PLOT=NO PUNCH=NO
            Notification of SPECIAL conditions
  Initialising Special positions
@@ -5028,7 +5024,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
 
 
  No of Reflections processed =    904         No of Friedel Pairs =    314
- No of Friedel Pairs found =      314 No of Friedel Pairs used  =      300
+ No of Friedel Pairs found =      314 No of Friedel Pairs used  =      300 using filters 1,2 & 5
  No of Unpaired Reflections  =    178
  No of Centric Reflections   =     98
      Friedel Coverage        =    63 %
@@ -5050,8 +5046,7 @@ Dc    29     5     7     7    12    10    11    17    20    25    30    28    20
 
  Reflection Filters:  filter_1= 0.0001  filter_2= 1.0000  filter_3= 2.0000  filter_4= 0.0010  filter_5= 2.5000
 
-       Continuing Calculations with     300 pairs
-         Normal Probability Plot for    241 Bijvoet pairs
+         Normal Probability Plot for    241 Bijvoet pairs between 1st and 9th decile
  Reduced Chisq=  1.4438
  Gradient for zero intercept =               1.314
   Slope, intercept and Cc (R) of NPP Plot =  1.317  0.253  0.999
@@ -5087,7 +5082,7 @@ Dc    29     5     7     7    12    10    11    17    20    25    30    28    20
 
 
 
-        Difference Calculations for     300 Bijvoet pairs
+        Difference Calculations for     300 Bijvoet pairs using filters 1,2,3 & 5
 
 
  Principal Componenet Analysis
@@ -5132,7 +5127,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
    Final mean Flack(x) =     -0.0036 and LSQ Flack(x)      -0.0036
            Internal su =      0.1428
            External su =      0.1258
- Number of pairs with probability greater than  0.0010 =    226
+ Number of pairs with probability greater than  0.0010 =    226 using filters 1,2,3,4 & 5
 
 
  No of pairs for which delta(Io) has same sign as delta(Is)
@@ -5171,7 +5166,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
            Hole-in-one & su -0.004  0.009    
     Bijvoet Difference & su  0.006  0.009  £  (Using   300 reflections. Correl Coef =  90%)
 
- Histogram re-weighted,   226 reflections,  71.0% within -.5 to 1.5
+ Histogram re-weighted,   226 reflections,  71.0% within interval x= -.5 to 1.5
     Bijvoet Difference & su -0.004  0.013    
  Average of Ratios (x) & su -0.004  0.008  & 
  Average of Ratios (x) & su -0.004  0.011  %  (corrected for npp, * 1.32)

@@ -2922,7 +2922,7 @@ H23 C(11) C(10) C(1)
 
 
 
-     1133 reflections   R 12.52% Rw 14.63% with I/u(I) from List 28
+     1133 reflections   R 12.52% Rw 14.63% with I/u(I) from List 28, I/Sig= -10.00
      1133 reflections   R 12.52% Rw 14.63% with I/u(I) > -10.0
      1016 reflections   R 11.53% Rw 12.82% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.66    SumFoFc/SumFc^2=  1.63    SumwFoFc/SumwFc^2=  1.63
@@ -6765,7 +6765,7 @@ H23 C(11) C(10) C(1)
 
 
 
-     1133 reflections   R 12.51% Rw 14.63% with I/u(I) from List 28
+     1133 reflections   R 12.51% Rw 14.63% with I/u(I) from List 28, I/Sig= -10.00
      1133 reflections   R 12.51% Rw 14.63% with I/u(I) > -10.0
      1016 reflections   R 11.53% Rw 12.81% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.66    SumFoFc/SumFc^2=  1.63    SumwFoFc/SumwFc^2=  1.63
@@ -10611,7 +10611,7 @@ H23 C(11) C(10) C(1)
 
 
 
-     1133 reflections   R 14.92% Rw 29.74% with I/u(I) from List 28
+     1133 reflections   R 14.92% Rw 29.74% with I/u(I) from List 28, I/Sig= -10.00
      1133 reflections   R 14.92% Rw 29.74% with I/u(I) > -10.0
      1016 reflections   R 14.04% Rw 28.39% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.68    SumFoFc/SumFc^2=  1.63    SumwFoFc/SumwFc^2=  1.62
@@ -14463,7 +14463,7 @@ H23 C(11) C(10) C(1)
 
 
 
-     1133 reflections   R 14.92% Rw 29.74% with I/u(I) from List 28
+     1133 reflections   R 14.92% Rw 29.74% with I/u(I) from List 28, I/Sig= -10.00
      1133 reflections   R 14.92% Rw 29.74% with I/u(I) > -10.0
      1016 reflections   R 14.04% Rw 28.40% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.68    SumFoFc/SumFc^2=  1.63    SumwFoFc/SumwFc^2=  1.62
