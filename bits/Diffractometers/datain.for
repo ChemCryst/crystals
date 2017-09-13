@@ -70,10 +70,11 @@ C
 C Revision 1.8  2011/05/17 16:00:16  djw
 C Enable long lines, up to 512 characters
 C
-      SUBROUTINE DATAIN
+      SUBROUTINE DATAIN(interactive)
 c #include "ciftbx.sys"
 #include "ciftbx.cmn"
 #include "cifin.cmn"
+      logical, intent(in) :: interactive
       LOGICAL F2,F3,F4,F5
       LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
       LOGICAL F6L, FNX, PROBABLY_NEUTRONS 
@@ -674,7 +675,7 @@ C      IDIFF = 5 = CSD
 C
 c Kccd SG is only Point Group
       if (idiff .eq. 2) fsg = .false.
-      if (fsg) then
+      if (fsg .and. interactive) then
          write(6,'(/A)') 
      1 'CAUTION - some cifs only contain the Point Group'
          write(6,'(a,a)')'Space Group from cif is ',
@@ -1068,7 +1069,8 @@ C(FF)
 cdjw Insert space if character immediately follows a number
 c    beware if the element type is a charged species like Om2
 c
-        call fixform(line,cform,lenfil,atsum,celvol,zm,zp,idiff)
+        call fixform(line,cform,lenfil,atsum,celvol,zm,zp,idiff,
+     1    interactive)
 c
 c
 c
@@ -1265,7 +1267,10 @@ c      WRITE (CFILE,'(I8)') I
 c
 c
 c
-      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL,sum,celvol,zm,zp,idiff)
+      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL,sum,celvol,zm,zp,idiff,
+     1    interactive)
+     
+      logical, intent(in) :: interactive ! flag for user interaction
       CHARACTER*(*) LINE,CFORM
 c     Separate the components of the formula in LINE into CFORM
       LOGICAL LNUMER, LCHAR, LSPACE, FF, lhatom
@@ -1518,7 +1523,7 @@ c
      2  ,nint(zz),' (actually ',zn,')'
          if(zp.le.0.) zp = zz
 c
-         if(idiff.ne.5) then
+         if(idiff.ne.5 .and. interactive) then
           write(6,'(a,f6.1,a)') 'Please give Z [',
      1    zp,']'
           read (5,'(A)') ctemp
@@ -1528,7 +1533,7 @@ c
          endif
 750      continue
          zm=zp
-         write(6,'(a,f6.2)') 'Using Z = ', zp
+         write(6,'(a,f6.2)') 'Using Z = ', zm
 c
 c----     scale the contents
 c
