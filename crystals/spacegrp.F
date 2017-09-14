@@ -293,8 +293,8 @@ C-----------------------------------------------------------------------
       start=1 ! skip the lattice 
       do 
         cpos=scan(cbuff1(start+1:), letters)
-        print *, start, cpos
-        write(*,'(a,a)')'nm. Space group=',cbuff1
+c        print *, start, cpos
+c        write(*,'(a,a)')'nm. Space group=',cbuff1
         if(cpos>0) then
           if(cbuff1(start+cpos-1:start+cpos-1)/=' ' .and. 
      1       cbuff1(start+cpos-1:start+cpos-1)/='/') then
