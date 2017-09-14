@@ -15,7 +15,7 @@
 %      END IF
 % 
 %      IF ( F67 .EQ. 6 ) THEN                                                   
-%        COPY '#FOURIER 6'                                                      
+%        COPY '#FOURIER 6'             % we should never use LIST 6 except for Pattersons                                         
 %      ELSE                                                                     
 %        COPY '#FOURIER 7'                                                      
 %      END IF                                                                   

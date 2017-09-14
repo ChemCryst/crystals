@@ -267,7 +267,11 @@ view the generated sections.
 %         IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN                             
 %% Remove any Q atoms, but restore again later.                                 
 %           COPY '#GENERALEDIT 5'                                               
-%           COPY 'GETSERIAL OLDSER'                                             
+%           COPY 'GETSERIAL OLDSER'                
+%           COPY 'END'
+%           IF OLDSER .LT. 0 THEN
+%               EVALUATE OLDSER = - OLDSER
+%           END IF
 %           COPY '#EDIT'                                                        
 %           COPY 'SELECT TYPE NE Q'                                             
 %           COPY 'SELECT TYPE NE QH'                                            
@@ -348,7 +352,11 @@ view the generated sections.
 
             FINISH
 %       ELSE 
-%        IF F67 .EQ. 6 THEN                                                      
+%% show f67  (MAPS SHOULD ALWAYS BE DONE ON LIST 7)
+%        IF F67 .EQ. 6 THEN  
+{I ------------------------------------------------                                                    
+{I CRYSTALS should never get here but we will continue
+{I ------------------------------------------------                                                    
 %           COPY '#SLANT 6 '                                                    
 %        ELSE                                                                    
 %           COPY '#SLANT 7 '                                                    

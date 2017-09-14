@@ -2,11 +2,11 @@
 %  VARIABLE LOGICAL TWINNED FRIEDELPAIRS PARTIALS                                          
 %  VARIABLE INTEGER F67 DOSCALE DOCALC 
 %
-%%      Fouriers are all done on LIST 7
+%%      Fouriers should all be done on LIST 7
 %%      If the users requests a SCALE or CALC, this is done immediately
 %%      Additional SFLS may be required for internal reasons.
 %%      If the data is twinned, an additional SFLS must be done to de-twin Fo                                 
-%%      If the is non-centrosymmetric, the Fo values should have the anomalous
+%%      If the SG is non-centrosymmetric, the Fo values should have the anomalous
 %%      contribution removed and Fc be computed without f"
 %%      If there are Friedel pairs, Fo should be treated as above, the pairs should be
 %%      merged, and Fc re-computed without f"

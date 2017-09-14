@@ -372,7 +372,7 @@
 %       STORE FORMAT /(F7.2)/ LENGTH 7 REAL REJLIMIT                            
 %       QUEUE SEND                                                              
 %       CLEAR                                                                   
-%       IF ( F67 .EQ. 6 ) THEN                                                  
+%       IF ( F67 .EQ. 6 ) THEN          % should be patterson only
 %         COPY '#FOURIER 6'                                                       
 %         QUEUE PROCESS                                                         
 %         COPY 'END'                                                            
