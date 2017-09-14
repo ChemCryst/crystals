@@ -172,6 +172,10 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST02.INC'
       INCLUDE 'QLST14.INC'
+      
+      integer start, cpos
+      
+      character(len=11), parameter :: letters = 'CBAPFIRMNDH'
 C
 C
 C
@@ -255,10 +259,78 @@ C
 C
 C
 C -- INPUT COMPLETED
+
 c
 c start patching SG which the old code cannot handle
 c
+
+
+C-----------------------------------------------------------------------
+C Check if space is missing after lattice character or plane/axis
+C-----------------------------------------------------------------------
+
+      start=0
+      do 
+        cpos=scan(cbuff1(start+1:), letters)
+c        print *, start, cpos
+c        write(*,'(a,a)')'Space group=',cbuff1
+        if(cpos>0) then
+            if(cbuff1(start+cpos+1:start+cpos+1)/=' ') then
+                cbuff1=cbuff1(1:start+cpos)//' '//cbuff1(start+cpos+1:)
+            else 
+                start=start+cpos
+            end if
+        else
+            exit
+        end if
+      end do
+c      write(*,'(a,a)')'Space group=',cbuff1
+
+C-----------------------------------------------------------------------
+C Check if only / is present before plane/axis, ortherwise insert a space
+C-----------------------------------------------------------------------
+
+      start=1 ! skip the lattice 
+      do 
+        cpos=scan(cbuff1(start+1:), letters)
+        print *, start, cpos
+        write(*,'(a,a)')'nm. Space group=',cbuff1
+        if(cpos>0) then
+          if(cbuff1(start+cpos-1:start+cpos-1)/=' ' .and. 
+     1       cbuff1(start+cpos-1:start+cpos-1)/='/') then
+            cbuff1=cbuff1(1:start+cpos-1)//' '//cbuff1(start+cpos:)
+          else 
+            start=start+cpos
+          end if
+        else
+          exit
+        end if
+      end do
+c      write(*,'(a,a)')'Space group=',cbuff1
+
+C-----------------------------------------------------------------------
+C Check for any spaces before / and remove them
+C-----------------------------------------------------------------------
+      start=0
+      do 
+        cpos=index(cbuff1(start+1:), '/')
+c        print *, start, cpos
+c        write(*,'(a,a)')'Space group=',cbuff1
+        if(cpos>0) then
+          if(cbuff1(start+cpos-1:start+cpos-1)==' ') then
+            cbuff1=cbuff1(1:start+cpos-2)//cbuff1(start+cpos:)//' '
+          else 
+            start=start+cpos
+          end if
+        else
+          exit
+        end if
+      end do
+c      write(*,'(a,a)')'Space group=',cbuff1
+
+C-----------------------------------------------------------------------
 c sg 141
+C-----------------------------------------------------------------------
       IF ( CBUFF1(1:14) .EQ. 'I 41/A 2/M 2/D' ) THEN
         CBUFF1 = 'I 41/A M D '
         WRITE ( CMON, '(A,A)' ) 
