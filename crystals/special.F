@@ -292,6 +292,27 @@ C
           IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 523       FORMAT (1X, 3(A1,A3,A2,1X), 6(A1,A3,A5,1X) )
       ENDIF
+c  SET BITS IN M5+15 FOR SPECIAL COORDINATES
+C
+c      write(123,'(9i5)') (key(ik),ik=1,9)
+c      write(123,'(b34)')istore(m5+15)
+c     set bits 8-10 for x-z
+      do ik = 1,3
+       if (key(ik).eq.0) then
+            istore(m5+15)=ibset(istore(m5+15),7+ik)
+       else
+            istore(m5+15)=ibclr(istore(m5+15),7+ik)
+       endif
+      enddo
+c     set bits 25-30 for Uij
+      do ik = 4,9
+       if (key(ik).eq.0) then
+            istore(m5+15)=ibset(istore(m5+15),21+ik)
+       else
+            istore(m5+15)=ibclr(istore(m5+15),21+ik)
+       endif
+      enddo
+c      write(123,'(b34)')istore(m5+15)
 C
 C
       IF (IACTN .EQ. 2) THEN

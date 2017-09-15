@@ -1794,13 +1794,20 @@ C--SET UP THE FLAGS FOR THE PASS OVER THE COORDS.
         MPD=3
         IP=3
 C--LOOP OVER THE COORDS.
+C      write(123,'(a,b34)')'xyz', istore(m5+15)
         DO L=1,3
 C-DJW-APR-04
 C Check if riding H ESD to be omitted                      
-        IF ( ( AND(ISTORE(M5+15),KBREFB(3)).GT.0 ) .AND.                 
-     1  ((ISTORE(M5).EQ.KHYD).OR.(ISTORE(M5).EQ.KDET)) )THEN              
+          IF ( ( AND(ISTORE(M5+15),KBREFB(3)).GT.0 ) .AND.                 
+     1     ((ISTORE(M5).EQ.KHYD).OR.(ISTORE(M5).EQ.KDET)) )THEN              
           IF (IPESD .eq. 2) BPD(MPD) = 0.0                                               
-        ENDIF
+          ENDIF
+c Sep2017 
+C If an atom on a special position is mentioned in the users LIST 12
+C it cannot be automatically fixed by a constraint, so is restrained.
+c This lead to it being output with a very small esd rather than nothing.
+c bits 8-10 set to 1 for special positions
+          IF(BTEST(ISTORE(M5+15),7+L)) BPD(MPD)=0.
 C
           LOJ = J+6
           J=J+NXF
@@ -2213,7 +2220,15 @@ C--LOOP OVER THE PARAMETERS
       else if (iflag .eq. 4) then
             ll = 4
       endif
+c      write(123,'(a,b34)')'Uij', istore(m5+15)
       DO 1750 L=1,ll
+c Sep2017 
+C If an atom on a special position is mentioned in the users LIST 12
+C it cannot be automatically fixed by a constraint, so is restrained.
+c This lead to it being output with a very small esd rather than nothing.
+c bits 25-30 set to 1 for Uij special positions
+          IF(BTEST(ISTORE(M5+15),24+L)) BPD(MPD)=0.
+c
       LOJ = J + 6
       J=J+NUF
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
