@@ -387,7 +387,7 @@ view the generated sections.
 %       END IF                                                                  
 %      END IF                                                                   
                                                                                 
-%      IF DOVOID .EQ. 2 THEN                                                    
+%      IF DOVOID .EQ. 1 THEN                                                    
 %       BLOCK                                                                   
 %        TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS                      
 %        QUEUE REWIND                                                           
