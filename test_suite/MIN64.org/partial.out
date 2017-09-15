@@ -262,7 +262,7 @@ LS-scale=  6.428   Wilson Scale=  0.000
 
 
 
-     2803 reflections   R  6.39% Rw  8.72% with I/u(I) from List 28
+     2803 reflections   R  6.39% Rw  8.72% with I/u(I) from List 28, I/Sig= -10.00
      2803 reflections   R  6.39% Rw  8.72% with I/u(I) > -10.0
      2803 reflections   R  6.39% Rw  8.72% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.54    SumFoFc/SumFc^2=  6.42    SumwFoFc/SumwFc^2=  6.42
@@ -2321,7 +2321,7 @@ Mean C-C su =   0.0284
 
 
 
-     2803 reflections   R  6.32% Rw 14.80% with I/u(I) from List 28
+     2803 reflections   R  6.32% Rw 14.80% with I/u(I) from List 28, I/Sig= -10.00
      2803 reflections   R  6.32% Rw 14.80% with I/u(I) > -10.0
      2803 reflections   R  6.32% Rw 14.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.25    SumwFoFc/SumwFc^2=  6.22

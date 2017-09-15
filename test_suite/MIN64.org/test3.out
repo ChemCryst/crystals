@@ -6075,7 +6075,7 @@ Mean C-C su =   0.0000
 
 
 
-      270 reflections   R 27.04% Rw 32.02% with I/u(I) from List 28
+      270 reflections   R 27.04% Rw 32.02% with I/u(I) from List 28, I/Sig= -10.00
       270 reflections   R 27.04% Rw 32.02% with I/u(I) > -10.0
       270 reflections   R 27.04% Rw 32.02% with I/u(I) >   2.0
 [29] SumFo/SumFc= 12.67    SumFoFc/SumFc^2= 12.13    SumwFoFc/SumwFc^2= 12.13
@@ -8584,7 +8584,7 @@ Bonds: Update required - List5 length change
 
 
 
-       92 reflections   R 47.68% Rw 47.80% with I/u(I) from List 28
+       92 reflections   R 47.68% Rw 47.80% with I/u(I) from List 28, I/Sig= -10.00
        92 reflections   R 47.68% Rw 47.80% with I/u(I) > -10.0
        92 reflections   R 47.68% Rw 47.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.88    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
