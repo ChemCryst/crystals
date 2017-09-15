@@ -3887,10 +3887,7 @@ C
 C -- 'LEN'
 C
       ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
-      print *, cwork1
       LEN1 = MAX ( LEN1, 1 )
-      print *, len1
-      print *, nctrim(cwork1)
       ICODE(JVALUE,IARG(1)) = NCTRIM( CWORK1 )
       ICODE(JVTYPE,IARG(1)) = 1
 C
