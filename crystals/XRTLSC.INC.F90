@@ -3,7 +3,8 @@ module xrtlsc_mod
 real CF(3),CO(3),AO(3,3),UO(3,3),AL(3,3),AT(3,3),AS(3,3)
 real WA(3,3),WB(3,3),WC(6),WD(3),AA(20,20),AB(20)
 real DV(6,20),AI(20,20),AR(21)
-real AQ(3,3),DL,DA,TESTEV,TESTER,NDEL
+real AQ(3,3),DL,DA,TESTEV,TESTER
+integer NDEL
 integer IPRINT, JDEL(20)
 real SAVET(3,3), SAVEL(3,3), SAVES(3,3), SAVEE(3,3)
 real SAVEC(3)

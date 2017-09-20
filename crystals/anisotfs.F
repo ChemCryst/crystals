@@ -1243,7 +1243,7 @@ C      KWORK  ADDRESS FOR RESULTANT MATRICES
 C      IMODE  IF .LE. 0 PRODUCE NO OUTPUT
 C
 C--
-      DOUBLE PRECISION DAA,DAR,DAI,DWE,DAS
+      DOUBLE PRECISION DAA(20,20),DAR(21),DAI(20,20),DWE(60),DAS(20)
 C
       DIMENSION DUMMYA(420), DUMMYB(420)
       DIMENSION TEMP1(3,3), TEMP2(3,3)
@@ -1257,7 +1257,6 @@ C
       INCLUDE 'XWORKA.INC'
 C
       INCLUDE 'XRTLSC.INC'
-      COMMON /DRWORK/ DAA(20,20),DAR(21),DAI(20,20),DWE(60),DAS(20)
       INCLUDE 'XIOBUF.INC'
 C
 C
@@ -1968,14 +1967,13 @@ C
       double precision, intent(inout) :: DAA(20,20) !< normal matrix
       double precision, intent(out) :: DAI(20,20) !< normal matrix
       double precision, intent(out) :: DAR(21) ! eigen values (first 20 entries)
-      double precision DWE(60),DAS(20)
+      double precision DWE(60)
+      integer, dimension(21) :: iw
 C
-      integer IQ1(1), IB1(1), IW(21)
-      real WE(27)
 C
       INCLUDE 'STORE.INC'      
             
-      integer i, j, k, l, info, itemp2, itemp3
+      integer i, j, k, l, info
 C
 C
 !      EQUIVALENCE (IW(1),AA(1,1))
