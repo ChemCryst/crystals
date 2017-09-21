@@ -13,7 +13,8 @@ URIGU 0.0, 0.0001 = C(20) TO C(21)
 ULIJ 0.0, 0.0001 = C(19) TO C(21) TO C(20) TO C(21) TO C(22) TO C(23)
 UEIG 0.0, 0.001 = C(20)
 uqiso 0.0, 0.001 = Cl(4)
-uvol 0.0, 0.001 = c(2) to cl(3)
+uvol 0.001 cl(1) cl(3) cl(4)
+utls 0.001 c(17) c(18) c(19) c(20) c(21) c(22)
 END
 \SFLS
 REFINE
