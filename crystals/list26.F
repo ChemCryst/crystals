@@ -9746,7 +9746,15 @@ C---- RHS
          end do
       end do
 C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
-      CALL RLTNT(ab, DAA, DAR, DAI)
+      CALL RLTNT(ab, DAA, DAR, DAI, info)
+      if(info/=0) then
+        if(present(results)) then
+          write(cmon, '("{I", 1X, A)') 'The TLS restraint is aborted'
+          CALL XPRVDU(NCVDU, 1,0)      
+          deallocate(results%subrestraints)
+        end if
+        return
+      end if
       aa=daa
       ar=dar
       ai=dai

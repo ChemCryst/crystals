@@ -1399,7 +1399,7 @@ C---- RHS
          DAA(I,J)=DAA(J,I)
 1050  CONTINUE
 C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
-      CALL RLTNT(ab, DAA, DAR, DAI)
+      CALL RLTNT(ab, DAA, DAR, DAIm, info)
       AR=DAR
 C----- RESCALE THE RESULTS
       DO 1100 I=1,20
@@ -1954,7 +1954,7 @@ C
       RETURN
       END
 CODE FOR RLTNT
-      SUBROUTINE RLTNT(ab, DAA, DAR, Dai)
+      SUBROUTINE RLTNT(ab, DAA, DAR, Dai, info)
       use xssval_mod, only: issprt !INCLUDE 'XSSVAL.INC'
       use xunits_mod, only: ncvdu, ncwu !INCLUDE 'XUNITS.INC'
       use xchars_mod, only: ib, iq !INCLUDE 'XCHARS.INC'
@@ -1966,14 +1966,15 @@ C
       real, intent(in) :: ab(20) !< right hand side
       double precision, intent(inout) :: DAA(20,20) !< normal matrix
       double precision, intent(out) :: DAI(20,20) !< normal matrix
-      double precision, intent(out) :: DAR(21) ! eigen values (first 20 entries)
+      double precision, intent(out) :: DAR(21) !< eigen values (first 20 entries)
+      integer, intent(out) :: info !< Status of the calculation
       double precision DWE(60)
       integer, dimension(21) :: iw
 C
 C
       INCLUDE 'STORE.INC'      
             
-      integer i, j, k, l, info
+      integer i, j, k, l
 C
 C
 !      EQUIVALENCE (IW(1),AA(1,1))
@@ -2001,6 +2002,7 @@ C--THE EIGENVALUE HAS TOO SMALL A VALUE
          DO 200 K=1,J
             dWE(K)=0.
 200      CONTINUE
+         info=-999
          IF (ISSPRT.EQ.0) WRITE (NCWU,250) J,IB,IQ
 250      FORMAT (//' CRYSTALS is having difficulties withe the analysis'
      1    ,//' The inverse of the eigenvalues from 1 to ',I2,'  have bee
