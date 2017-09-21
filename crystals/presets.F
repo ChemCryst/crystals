@@ -2035,7 +2035,7 @@ C      THE NAMES OF THE VARIOUS RESTRAINTS
      1 coperation(24 ) /'UPERP'/,
      1 coperation(25 ) /'UPERP2'/,
      1 coperation(26 ) /'UALIGN'/,
-     1 coperation(27 ) /'RIGU'/,
+     1 coperation(27 ) /'URIGU'/,
      1 coperation(28 ) /'ULIJ'/,
      1 coperation(29 ) /'UPLANE'/,
      1 coperation(30 ) /'UXXQIV'/,
@@ -2045,8 +2045,10 @@ C      THE NAMES OF THE VARIOUS RESTRAINTS
      1 coperation(34 ) /'UYZQIV'/,
      1 coperation(35 ) /'UZZQIV'/,
      1 coperation(36 ) /'UEIG'/,
-     1 coperation(37 ) /'UNISO'/,
-     1 coperation(38 ) /'UVOL'/
+     1 coperation(37 ) /'UQISO'/,
+     1 coperation(38 ) /'UVOL'/,
+     1 coperation(39 ) /'UEQIV'/,
+     1 coperation(40 ) /'UTLS'/
 
 C--
 C

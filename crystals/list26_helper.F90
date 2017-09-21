@@ -35,6 +35,7 @@ type subrestraint_t !< subrestraints type
     type(block_t), dimension(:), allocatable :: blocks !< list blocks
     type(atom_t), dimension(:), allocatable :: atoms !< atoms involved in a subrestraint.
     character(len=1024) :: description !< Some help that could be helpful when debugging
+    real :: rvalue
 end type
 
 type restraints_t !< restraint type
