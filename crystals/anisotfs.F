@@ -1254,7 +1254,6 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLST01.INC'
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
 C
       INCLUDE 'XRTLSC.INC'
@@ -1660,7 +1659,6 @@ C   ARE STORED AT JJ
 C
 C--
       INCLUDE 'STORE.INC'
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XRTLSC.INC'
 C
       CALL XZEROF (DV(1,1),120)
@@ -1754,7 +1752,6 @@ CODE FOR RSUB11
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XRTLSC.INC'
       INCLUDE 'XIOBUF.INC'
 C
@@ -1781,7 +1778,6 @@ C
 C
       DIMENSION XX(3,3), YY(3,3)
 C
-      INCLUDE 'XWORK.INC'
 C
       DO 50 I=1,3
          DO 50 J=1,3
@@ -1935,7 +1931,6 @@ C--CALCULATES DISTANCE BETWEEN TWO ATOMS WHOSE ORTHOGONAL COORDINATES
 C   ARE STORED FROM MA AND FROM MB
 C
       INCLUDE 'STORE.INC'
-      INCLUDE 'XWORK.INC'
 C
       X=STORE(MB)-STORE(MA)
       Y=STORE(MB+1)-STORE(MA+1)
@@ -1947,7 +1942,6 @@ CODE FOR RANGLE
       FUNCTION RANGLE (D1,D2,D3)
 C---CALCULATES ANGLE A-B-C WHERE A-B=D1, B-C=D3, A-C=D2
 C
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XCONST.INC'
 C
       U=-(D2*D2-D1*D1-D3*D3)/(2.*D1*D3)
@@ -1967,7 +1961,7 @@ CODE FOR RLTNT
       use xiobuf_mod, only: cmon !INCLUDE 'XIOBUF.INC'
       use xrtlsc_mod, only: iprint, ndel, tester, testev !INCLUDE 'XRTLSC.INC'
       use xrtlsc_mod, only: jdel
-!      implicit none
+      implicit none
 C
       real, intent(in) :: ab(20) !< right hand side
       double precision, intent(inout) :: DAA(20,20) !< normal matrix
@@ -1978,10 +1972,9 @@ C
       integer, dimension(21) :: iw
 C
 C
-      INCLUDE 'XWORK.INC'
       INCLUDE 'STORE.INC'      
             
-C      integer i, j, k, l
+      integer i, j, k, l
 C
 C
 !      EQUIVALENCE (IW(1),AA(1,1))
