@@ -1967,7 +1967,7 @@ CODE FOR RLTNT
       use xiobuf_mod, only: cmon !INCLUDE 'XIOBUF.INC'
       use xrtlsc_mod, only: iprint, ndel, tester, testev !INCLUDE 'XRTLSC.INC'
       use xrtlsc_mod, only: jdel
-      implicit none
+!      implicit none
 C
       real, intent(in) :: ab(20) !< right hand side
       double precision, intent(inout) :: DAA(20,20) !< normal matrix
