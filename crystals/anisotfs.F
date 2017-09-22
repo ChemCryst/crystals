@@ -1981,7 +1981,7 @@ C
       INCLUDE 'XWORK.INC'
       INCLUDE 'STORE.INC'      
             
-      integer i, j, k, l
+C      integer i, j, k, l
 C
 C
 !      EQUIVALENCE (IW(1),AA(1,1))
