@@ -2002,7 +2002,7 @@ C--THE EIGENVALUE HAS TOO SMALL A VALUE
          DO 200 K=1,J
             dWE(K)=0.
 200      CONTINUE
-         info=-999
+!         info=-999
          IF (ISSPRT.EQ.0) WRITE (NCWU,250) J,IB,IQ
 250      FORMAT (//' CRYSTALS is having difficulties withe the analysis'
      1    ,//' The inverse of the eigenvalues from 1 to ',I2,'  have bee
