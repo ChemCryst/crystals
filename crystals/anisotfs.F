@@ -1399,7 +1399,7 @@ C---- RHS
          DAA(I,J)=DAA(J,I)
 1050  CONTINUE
 C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
-      CALL RLTNT(ab, DAA, DAR, DAIm, infodummy)
+      CALL RLTNT(ab, DAA, DAR, DAI, infodummy)
       AR=DAR
 C----- RESCALE THE RESULTS
       DO 1100 I=1,20
@@ -1968,9 +1968,8 @@ C
       double precision, intent(out) :: DAI(20,20) !< normal matrix
       double precision, intent(out) :: DAR(21) !< eigen values (first 20 entries)
       integer, intent(out) :: info !< Status of the calculation
-      double precision DWE(60)
+      double precision, dimension(:), allocatable :: DWE
       integer, dimension(21) :: iw
-C
 C
       INCLUDE 'STORE.INC'      
             
@@ -1987,7 +1986,14 @@ c      M=0
 c      CALL F02ABF (DAA,20,20,DAR,DAI,20,DWE,M)
       INFO = 0
       dai=daa
-      CALL DSYEV('V','L',20,DAI,20,DAR,DWE,60,INFO)
+      ! lookinf of optimal size of working array
+      allocate(DWE(1))
+      CALL DSYEV('V','L',20,dai,20,dar,DWE,-1,info)
+      info=nint(dwe(1))
+      deallocate(dwe)
+      allocate(dwe(info))
+      ! eigenvalue decomposition
+      CALL DSYEV('V','L',20,DAI,20,DAR,DWE,size(dwe),INFO)
 C--TRANSFORM THE R.H.S.      
       dwe(1:20)=matmul(transpose(dai), real(ab, kind(1.0d0))) !CALL XMLTTM (AI,AB,WE,20,20,1)
       DAR(21)=DAR(20)
