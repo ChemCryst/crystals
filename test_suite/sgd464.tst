@@ -15,6 +15,7 @@ UEIG 0.0, 0.001 = C(20)
 uqiso 0.0, 0.001 = Cl(4)
 uvol 0.001 cl(1) cl(3) cl(4)
 utls 0.001 c(17) c(18) c(19) c(20) c(21) c(22)
+ueqiv 0.001 c(24) c(25) c(26) c(27) c(28) c(29)
 END
 \SFLS
 REFINE
