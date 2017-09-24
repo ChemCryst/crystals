@@ -1046,7 +1046,7 @@ PATTERSON DIVISIONS FOR EACH OF THE AXES
 (1X ,6F10.2)
 LIST 15            0    0
   15   40960 CRYSTALSINPUT
-LIST 16           45    0
+LIST 16           46    0
   16   40960 CRYSTALSINPUT
    1.DEFINE             0 9999    0    0    0    0  101    5   16
          0    0    0    0    0    0    0    0    0    0
@@ -1137,6 +1137,8 @@ LIST 16           45    0
   44.UVOL               0 9999    0    0    0    0  144    5   16
          0    0    0    0    0    0    0    0    0    0	 
   45.UEQIV              0 9999    0    0    0    0  145    5   16
+         0    0    0    0    0    0    0    0    0    0	 
+  46.UTLS               0 9999    0    0    0    0  146    5   16
          0    0    0    0    0    0    0    0    0    0	 
 LIST 17           19    0
   17   40960 CRYSTALSINPUT
