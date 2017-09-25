@@ -19,7 +19,9 @@ type atom_t
     real, dimension(3) :: coordinates_cart !< coordinates in transformed coordinate system
     real, dimension(3,3) :: adps_crys !< adps in crystal system
     real, dimension(3,3) :: adps_cart !< adps in transformed coordinate system
-    real, dimension(3,3) :: adps_target !< target adps 
+    real, dimension(3,3) :: adps_target !< target adps
+    real rvalue
+    real rtarget 
 end type
 
 type block_t !< blocks used during refinement
