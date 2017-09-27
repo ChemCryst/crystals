@@ -1986,7 +1986,7 @@ c      M=0
 c      CALL F02ABF (DAA,20,20,DAR,DAI,20,DWE,M)
       INFO = 0
       dai=daa
-      ! lookinf of optimal size of working array
+      ! looking of optimal size of working array
       allocate(DWE(1))
       CALL DSYEV('V','L',20,dai,20,dar,DWE,-1,info)
       info=nint(dwe(1))
