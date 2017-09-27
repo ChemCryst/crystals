@@ -776,22 +776,21 @@ character(len=16), intent(out) :: blasname !< name of the blas function where er
 real, dimension(:), allocatable :: preconditioner
 double precision, dimension(:), allocatable :: dpreconditioner
 integer i, j, k, lwork 
-real, dimension(:,:), allocatable :: unpacked
-double precision, dimension(:,:), allocatable :: dunpacked
+real, dimension(:,:), allocatable :: unpacked !< single precision 2D normal matrix
+double precision, dimension(:,:), allocatable :: dunpacked !< double precision precision 2D normal matrix
 
 real, dimension(:), allocatable :: work
 double precision, dimension(:), allocatable :: dwork
 integer, dimension(:), allocatable :: ipiv, iwork
 real rcond, onenorm, lnorm
 double precision drcond, donenorm, dlnorm
-integer, external :: ILAENV
 
 real condition, filtered_condition
 integer nrejected
 
-double precision, dimension(:,:), allocatable :: ref, check
+double precision, dimension(:,:), allocatable :: ref, check !< arrays used for debugging
 real rmax
-logical, parameter :: checkid=.false.
+logical, parameter :: checkid=.false. !< flag for debugging
 
 #if defined(CRY_OSLINUX)
 integer :: starttime
@@ -810,8 +809,11 @@ blasname=''
 print *, ''
 print *, '--- Automatic inversion ---'
 print *, 'single precision'
+if(any(isnan(nmatrix))) then
+	print *, 'Error: Nan in input matrix'
+	stop
+end if
 #endif
-
 
 ! preconditioning using diagonal terms
 ! Allocate diagonal vector
@@ -842,7 +844,7 @@ do i=1, nmsize
     unpacked(i:nmsize, i)=preconditioner(i:nmsize)*unpacked(i:nmsize, i)
     unpacked(i:nmsize, i)=preconditioner(i)*unpacked(i:nmsize, i)
     !unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
-    
+     
     onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
 end do
 
@@ -860,11 +862,15 @@ end if
 !close(666)
 
 allocate(ipiv(nmsize))
-lwork = ILAENV( 1, 'SSYTRF', 'L', nmsize, nmsize, -1, -1)
-allocate(work(nmsize*lwork))
-call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, nmsize*lwork, INFO )
+allocate(work(1))
+! query work size
+call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, -1, INFO )
+lwork=nint(work(1))
+deallocate(work)
+allocate(work(lwork))
+call SSYTRF( 'L', nmsize, unpacked, nmsize, IPIV, WORK, size(work), INFO )
 #if defined(CRY_OSLINUX)
-print *, 'SSYTRF info: ', info
+print *, 'SSYTRF info: ', info, 'size: ', nmsize, 'work size: ', size(work)
 #endif
 deallocate(work)
 
@@ -938,9 +944,12 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
     end do
 
     !allocate(ipiv(nmsize))
-    lwork = ILAENV( 1, 'DSYTRF', 'L', nmsize, nmsize, -1, -1)
-    allocate(dwork(nmsize*lwork))
-    call DSYTRF( 'L', nmsize, dunpacked, nmsize, IPIV, dWORK, nmsize*lwork, INFO )
+    allocate(dwork(1))
+    call DSYTRF( 'L', nmsize, dunpacked, nmsize, IPIV, dWORK, -1, INFO )
+    lwork=nint(dwork(1))
+    deallocate(dwork)
+    allocate(dwork(lwork))
+    call DSYTRF( 'L', nmsize, dunpacked, nmsize, IPIV, dWORK, lwork, INFO )
 #if defined(CRY_OSLINUX)
     print *, 'DSYTRF info: ', info
 #endif
@@ -997,16 +1006,23 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
         &   'rel. error: ', 1.0d0/drcond*epsilon(1.0d0)
         CALL XPRVDU(NCVDU, 1,0)     
 
-        allocate(dwork(nmsize))
-        call DSYTRI( 'L', nmsize, dunpacked, nmsize, IPIV, dWORK, INFO )
+!        allocate(dwork(nmsize))
+!        call DSYTRI( 'L', nmsize, dunpacked, nmsize, IPIV, dWORK, INFO )
+
+		allocate(dwork(1))
+		call dsytri2( 'L', nmsize,unpacked,nmsize,IPIV,dWORK, -1, INFO)
+		lwork=nint(dwork(1))
+		deallocate(dwork)
+		allocate(dwork(lwork))
+		call dsytri2( 'L', nmsize,unpacked,nmsize,IPIV,dWORK,lwork,INFO)
 #if defined(CRY_OSLINUX)
-        print *, 'DSYTRI info: ', info
+        print *, 'DSYTRI2 info: ', info
 #endif
         deallocate(ipiv)
         deallocate(dwork)
 
         if(info/=0) then 
-            blasname='DSYTRI'
+            blasname='DSYTRI2'
             return
         end if
         
@@ -1056,16 +1072,24 @@ else ! all good for single precision inversion
     &   'rel. error: ', 1.0/rcond*epsilon(1.0)
     CALL XPRVDU(NCVDU, 1,0)     
 
-    allocate(work(nmsize))
-    call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
+!    allocate(work(nmsize))
+!    call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
+    
+    allocate(work(1))
+    call ssytri2( 'L', nmsize, unpacked, nmsize, IPIV, WORK, -1, INFO )
+    lwork=nint(work(1))
+    deallocate(work)
+    allocate(work(lwork))
+    call ssytri2( 'L', nmsize, unpacked, nmsize, IPIV, WORK,lwork,INFO )
+ 
 #if defined(CRY_OSLINUX)
-    print *, 'SSYTRI info: ', info
+    print *, 'SSYTRI2 info: ', info
 #endif
     deallocate(ipiv)
     deallocate(work)
-
+    
     if(info/=0) then 
-        blasname='SSYTRI'
+        blasname='SSYTRI2'
         return
     end if
 
