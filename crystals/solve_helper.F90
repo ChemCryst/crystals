@@ -811,7 +811,7 @@ print *, '--- Automatic inversion ---'
 print *, 'single precision'
 if(any(isnan(nmatrix))) then
 	print *, 'Error: Nan in input matrix'
-	stop
+	return
 end if
 #endif
 
