@@ -331,7 +331,6 @@ c      DIMENSION SHFO(N6D), SHFC(N6D), SIG(N6D)
 C Space for automatic determination of Scheme 16 parameters.
       DIMENSION WD(-4:4,-4:4,20), SGF(-4:4,-4:4)
       DIMENSION RWD(20), BMEAN(20)
-      CHARACTER *8 CTYPE(4)
 c function statements
       FPSX(FOBS,FCALC)      = AMAX1(0.,0.333*FOBS)+0.667*FCALC
       DELSQ(FOBS,FCALC)     = (FOBS-FCALC)**2
@@ -345,7 +344,6 @@ c
 
       DATA CSQUAR / '**2 ' /, IBL / '    ' /
       DATA SMALL / .01 /
-      DATA CTYPE /'NORMAL','1/FO','/FO/ **2','CHOOSE'/
 
 C----- NO OF PARAMETERS EXPECTED FOR EACH SCHEME. 0 = UNDEFINED
       DATA NPARAM / 1, 1, 2, 1, 0, 0, 0, 0, 0, 0,
@@ -410,19 +408,17 @@ C--FSQ REFINEMENT CHECK IF WE MUST USE 1/2FO, OR /FO/SQ
      1            (ITYPE4 .EQ. 14) .OR. (ITYPE4 .EQ. 15) .OR.
      1            (ITYPE4 .EQ. 17) .OR. (ITYPE4 .EQ. 16) )    THEN
                JTYPE = 2
-               IF (ISSPRT .EQ. 0) WRITE(NCWU,100) TRIM(CTYPE(JTYPE+1))
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,100) '/FO/ **2'
 100    FORMAT( 20X, ' LIST 4 weighting type is ', A)
             ELSE
                JTYPE = 1
-               IF (ISSPRT .EQ. 0) WRITE(NCWU,100) TRIM(CTYPE(JTYPE+1))
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,100) '1/FO'
             ENDIF
           ELSE                                         ! NORMAL REFINEMENT
             JTYPE = 0
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,100) TRIM(CTYPE(JTYPE+1))
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,100) 'NORMAL'
           ENDIF
         ENDIF
-        WRITE(CMON,100) TRIM(CTYPE(JTYPE+1))
-        CALL XPRVDU(NCVDU,1,0)
 
         WMX = STORE(L4F+1)               ! SET THE MAXIMUM WEIGHT
         WMXINV = 1./ AMAX1( WMX, ZERO)   ! SET THE RECIPROCAL MAXIMUM WEIGHT
@@ -876,13 +872,7 @@ cdjw aug99 - try to controll weighting of Fsq refinenent for small Fs
            RFO=1./FO
         ELSE               ! /FO/ IS ZERO - SET TO SMALL VALUE TO AVOID 0**0
            rfo = 1. /max(fo, aw, 2.)
-C2017 This horror is to conserve compatibility with old versions.
-c     We offer no gaurantee that setting Fo to zero was ever a good idea.
-           SELECT CASE ( ITYPE4 )  ! JUMP ON THE SORT OF WEIGHTING SCHEME
-           CASE (10:11,14:15)  ! CHEBYSHEV TYPE WEIGHTING  - 10,11,14,15
-              FO=ZEROSQ
-           CASE DEFAULT
-           END SELECT
+           FO=ZEROSQ
         ENDIF
 
         IF(ABS(AW).GT.ZERO) THEN  ! CHECK THE SIZE OF THE SIGMA TERM
@@ -1081,7 +1071,7 @@ C--Start again as 11 or 15, this time apply the weights:
 
           F=FO-FC
           F=F*F
-          DFSQ = F
+          FSQ = F
           IF (IFTYPE .EQ. 0) THEN
             G=2.*FO*E-1.
           ELSE
@@ -1123,14 +1113,12 @@ cdjw99              H=H+F*F*EW/(1.+FO**CS)
           ENDIF
           AW = 1. / AW                      !GET ACTUAL WEIGHT
           IF (ITYPE4 .EQ. 15)  THEN         !TUKEY-PRINCE SCHEME (SCHEME 15)
-            CALL XMODWT (DFSQ, AWI, WWT, JPRINT, jtype, 36.0) !APPLY WEIGHT MODIFIERS
-c Note - 2017.  WWT will be exactly 0.0 if the resudual exceeds 6^2 estimated
-c               residuals (ie inverse weights). XVALUE  then becomes 0.0 too.
-            IF (WWT .LE. XVALUE) THEN        !WRITE TO OUTLIER BUFFER. 
+            CALL XMODWT (FSQ, AWI, WWT, JPRINT, jtype, 36.0) !APPLY WEIGHT MODIFIERS
+            IF (WWT .LE. XVALUE) THEN        !WRITE TO OUTLIER BUFFER
               CALL XMOVE(STORE(M6), STORE(LTEMPE), 3)  !H,K,L,FO,FC,WWT
               STORE(LTEMPE+3) = FO
               STORE(LTEMPE+4) = FC
-              STORE(LTEMPE+5) = SQRT(DFSQ/(AWI+ZEROSQ))
+              STORE(LTEMPE+5) = SQRT(FSQ/(AWI+ZEROSQ))
               STORE(LTEMPE+6) = WWT
               CALL SRTDWN(LENAN,MDENAN,NENAN,JENAN, LTEMPE, XVALUE, -1)
             ENDIF
@@ -1155,11 +1143,14 @@ c
           endif
 C -- Convert everything to scale of FC: (for SHELX compatibility).
           IF ( JTYPE .EQ. 2 ) THEN   ! Fo**2 refinement
-c recover exact sigma(F^2)
+c
+c123  recover exact sigma(F^2) rather than bodged AW
 c Using the exact sigmas means that there are no points above the
 c limiting line in the SQRT(W) vs 1/sigma plot
-            call xsqrf(fsqtemp,store(m6+itwin),fabs,djwaw,store(m6+12))
+            call xsqrf(fsqtemp,store(m6+itwin),
+     1     fabs,djwaw,store(m6+12))
             AW = DJWAW
+c
             SFCSIG = AW / A**2
             SFCFO  = FO / A**2
             SFCFC  = FCprime / A**2
@@ -1190,38 +1181,29 @@ C -- Convert weight back onto scale of FO:
           END IF
         END SELECT
 c
-c
-c      APPLY MODIFIER TO ALL CASES
-c
-c
 C--APPLY ROBUST-RESISTANT TO ANY WEIGHTING SCHEME (except 15!)
         IF ((IROBUS .EQ. 1) .AND. (ITYPE4.NE.15)) THEN
-        DFSQ = (FO-FC)**2
+           FSQ = (FO-FC)**2
 Cdjwjun03.  For Scheme 15, it is assumed that the computed
 c      weight is a better estimate of 1/sigma than the observation
 c      itself.  For other schemes, try to use observed sigma.
-           IF (AW .LE. ZERO) THEN         !WEIGHT TOO SMALL
-             AWI = WMX                    !SET INV W TO WMX.
-           ELSE
-             AWI = 1./AW                  !GET ACTUAL INVERSE
-           ENDIF
-           if(jtype.eq.2) awi=sqrt(awi)
-c            if (store(m6+12) .gt. zero) then
-c                  awi = store(m6+12)
-c            else
-c                  awi = 1.
-c            endif
+c           IF (AW .LE. ZERO) THEN         !WEIGHT TOO SMALL
+c             AWI = WMX                    !SET INV W TO WMX.
+c           ELSE
+c             AWI = 1./AW                  !GET ACTUAL INVERSE
+c           ENDIF
+            if (store(m6+12) .gt. zero) then
+                  awi = store(m6+12)
+            else
+                  awi = 1.
+            endif
 c
-           CALL XMODWT (DFSQ, AWI, WWT, JPRINT, JTYPE, ROBTOL**2)
-c        write(123,'( 4i4,5f8.2)')nint(store(m6)),nint(store(m6+1)),
-c     1 nint(store(m6+2)),jtype,dfsq,awi,wwt,sqrt(aw),1./store(m6+12)
-c
-c
+           CALL XMODWT (FSQ, AWI, WWT, JPRINT, jtype, ROBTOL**2)
            IF (WWT .LE. XVALUE) THEN       ! WRITE TO OUTLIER BUFFER
               CALL XMOVE(STORE(M6), STORE(LTEMPE), 3) ! H,K,L,FO,FC,WWT
               STORE(LTEMPE+3) = FO
               STORE(LTEMPE+4) = FC
-              STORE(LTEMPE+5) = SQRT(DFSQ/(AWI+ZEROSQ))
+              STORE(LTEMPE+5) = SQRT(FSQ/(AWI+ZEROSQ))
               STORE(LTEMPE+6) = WWT
               CALL SRTDWN(LENAN,MDENAN,NENAN,JENAN, LTEMPE, XVALUE, -1)
            ENDIF
@@ -1242,7 +1224,7 @@ C--APPLY DUNITZ-SEILER TO ANY WEIGHTING SCHEME (except 13!)
           IF ((JPRINT .GT. 0) .AND. (JPRINT .LT. 60)) THEN
             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(10X, 3I4,2F10.2,2G10.2)')
      1      NINT(STORE(M6)), NINT(STORE(M6+1)), NINT(STORE(M6+2)),
-     2      FO, FC, DFSQ, AWI
+     2      FO, FC, FSQ, AWI
           ELSE IF (JPRINT .EQ. 60 ) THEN
             IF (ISSPRT .EQ. 0)WRITE(NCWU, '(1X,'' And so on .......'')')
           ELSE
@@ -1491,14 +1473,14 @@ C--For SCHEME 15 print outliers etc.
 6111      FORMAT (2('   h   k   l      Fo       Fc     N    '))
           CALL XPRVDU(NCVDU, 1,0)
           DO MENAN = LENAN, LENAN+(NENAN-1)*MDENAN, 2*MDENAN
-            IF (STORE(MENAN+5) .lt. 100000000) then
+             IF (STORE(MENAN+5) .lt. 100000000) then
              IF (STORE(MENAN+12) .GE. 1000000) STORE(MENAN+12)=0.0
              WRITE ( CMON,'(3I4, 2F9.1, F7.2, 2X,3I4, 2F9.1, F7.2 )')
      1         ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
      2         (STORE(IXAP), IXAP= JXAP+3,JXAP+5),
      3         JXAP= MENAN, MENAN+MDENAN, MDENAN)
              CALL XPRVDU(NCVDU, 1,0)
-            ENDIF
+             endif
           END DO
       ENDIF
 
@@ -1817,14 +1799,14 @@ c      RETURN
 c      end
 
 CODE FOR XMODWT
-      SUBROUTINE XMODWT (DELF, DELEST, AWT, IPRINT, JTYPE, TOLSQ)
+      SUBROUTINE XMODWT (DELF, DELEST, AWT, IPRINT, jtype, tolsq)
 C----- COMPUTE THE MODIFICATION TO BE APPLIED TO THE EXISTING WEIGHTS
 C
 C      DELF - DELTA FSQ
 C      DELEST - ESTIMATED DELTASQ, ON SAME SCALE
 C      AWT WEIGHT MODIFIER
 C      IPRINT IS .GE. 0 INCREMENTED HERE BY OUTLIERS
-C      JTYPE = 0 FOR FO, 2 FOR FSQ
+C     JTYPE = 0 FOR FO, 2 FOR FSQ
 C
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
@@ -1844,7 +1826,7 @@ C
       ELSE
             AWT = (1. - A / (TOLSQ * B)) **2
       ENDIF
-c2017      IF (JTYPE .EQ. 2) AWT = 0.5 * AWT
+      IF (JTYPE .EQ. 2) AWT = 0.5 * AWT
       RETURN
       END
 CODE FOR XANAL
