@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <iostream>
 
-#ifdef __INW__
+#ifdef __WITH_CRASHRPT__
 #include "CrashRpt.h"
 #endif 
 using namespace std;
@@ -366,7 +366,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
   bool CCrystalsApp::OnInit()
   {
 
-#ifdef __INW__
+#ifdef __WITH_CRASHRPT__
 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
@@ -538,7 +538,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 
      wxTheClipboard->Flush();
 
-#ifdef __INW__
+#ifdef __WITH_CRASHRPT__
 	// Uninstall CrashRpt here...
     crUninstall();
 #endif

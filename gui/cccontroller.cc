@@ -669,7 +669,7 @@ using namespace std;
 #include    "crtoolbar.h"
 #include    "cxweb.h"
 
-#ifdef __INW__
+#ifdef __WITH_CRASHRPT__
 #include "CrashRpt.h"
 #endif
 
@@ -2514,7 +2514,7 @@ UINT CrystalsThreadProc( void * arg )
 int CrystalsThreadProc( void * arg )
 #endif
 {
-#if defined (__INW__) 
+#if defined (__WITH_CRASHRPT__) 
     crInstallToCurrentThread2(0);
 #endif
 
@@ -3092,7 +3092,7 @@ bool CcController::DoCommandTransferStuff()
            }
   #endif
 
-  #ifdef __INW__
+  #ifdef __WITH_CRASHRPT__
             CR_EXCEPTION_INFO ei;
             memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
             ei.cb = sizeof(CR_EXCEPTION_INFO);
