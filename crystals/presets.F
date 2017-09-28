@@ -2309,6 +2309,9 @@ C --- UFILE ---
       IFLCHR(1) = 1 
       IFLCHR(2) = 2
       IRDLOG(2) = 0
+c reinstate logging of all input lines except GENERALEDIT
+c Cannot do this - causes initial output to go to fort.8
+c      IRDLOG(2) = 1
       IRDCAT(1) = 1
       IRDCMS(1) = 1
 

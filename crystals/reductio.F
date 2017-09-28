@@ -1146,6 +1146,9 @@ C  MAY       1988  4.54        DJW   CHECK FINAL SUMS
 C  SEPT      1995     5.00         DJW   TREATMENT OF -VE REFLECTIONS
 C
 C--
+      parameter(nbin=20)                        !Multipliicity histogram
+      dimension ibin(nbin)                      !
+c
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM30.INC'
 C
@@ -1685,9 +1688,16 @@ C--AND NOW THE TERMINATION MESSAGES
 c     Process sigmas.dat to find possible equations.
       if (iuln.eq.6) then
         moo = 5   !minimum acceptable multiplicity for regression
-        CALL MRGLSQ(moo)
+        CALL MRGLSQ(moo,ibin,nbin)
 c       close sigmas.dat
         CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 10 )
+c
+c
+c Now write out the Multiplicity of observation histogram
+        CFILE2 = 'moo.dat' 
+        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 7 )
+        WRITE(NCFPU2,'(i5,i10)')(i,ibin(i),i=1,nbin)
+        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 7 )
         CALL XOPMSG ( IOPMER , IOPEND , IVERSN )
         CALL XTIME2(2)
       endif
@@ -2154,12 +2164,11 @@ c
       END
 C
 CODE FOR MRGLSQ
-      SUBROUTINE  MRGLSQ(MOO)
-      parameter(nbin=20)
-      dimension ibin(nbin)
+      SUBROUTINE  MRGLSQ(MOO,ibin,nbin)
       character*80 cterm
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
+      dimension ibin(nbin)
 C
       do j=1,nbin
             ibin(j)=0

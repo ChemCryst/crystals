@@ -201,14 +201,14 @@ C--PRINT THE INITIAL CAPTIONS
      1 '{E Matrix for e.s.ds missing. Using mean errors instead'
         ELSE
             WRITE(CMON,'(A)') 
-     1 ' The SU is computed from the full VcV matrix if available'
+     1 '   The SU is computed from the full VcV matrix if available'
         ENDIF
       ELSE
         WRITE(CMON,'(A)')
-     1 ' The su is computed from the mean atomic variances'
+     1 '   The su is computed from the mean atomic variances'
       ENDIF
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1)(3:))
 C
       WRITE ( CMON,1150)
       CALL XPRVDU(NCVDU, 1,0)
