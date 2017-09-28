@@ -397,6 +397,12 @@ C----- INDICATE NO CHANGES TO LIST 23 YET
       imod23 = 0
       imod5 = 0 
       CALL XFAL23
+	  
+c	   write (9,*) 'L23M+7, MD23M, L23M, N23M: ', 
+c     1          ISTORE(L23M+7), MD23M, L23M, N23M
+	  
+c       write(9,*) '+ ',(ISTORE(L23M+I),I=0,7)
+	  
 C----- GET THE ACTION AND UPDADTE CONDITIONS
       IACTN = ISTORE(L23SP)
       ABTOL = STORE(L23SP+5)
@@ -1336,9 +1342,24 @@ c
             write ( cmon ,6151)
             call xprvdu(ncvdu, 1,0)
 6151        format(' New LIST 23 written to disk')
-            CALL XWLSTD ( 23, ICOM23, IDIM23, 1, -1)
+c	   write (9,*) 'Writing... L23M+7, MD23M: ', ISTORE(L23M+7), MD23M
+c       write(9,*) '+1 ',(ISTORE(L23M+I),I=0,7)
+c       write(9,*) '+1 ICOM23: ', (ICOM23(I),I=1,24)
+            CALL XWLSTD ( 23, ICOM23, IDIM23, 0, 1)
+c       write(9,*) '+2 ',(ISTORE(L23M+I),I=0,7)
+c       write(9,*) '+2 ICOM23: ', (ICOM23(I),I=1,24)
         ENDIF
 C
+
+c       CALL XFAL23
+	  
+c	   write (9,*) 'Reloaded L23M+7, MD23M, L23M, N23M: ', 
+c     1           ISTORE(L23M+7), MD23M, L23M, N23M 
+	  
+c       write(9,*) '+3 ',(ISTORE(L23M+I),I=0,7)
+c       write(9,*) '+3 ICOM23: ', (ICOM23(I),I=1,24)
+
+
 C----- WAS LIST 5 MODIFIED?
       nupdat = nupdat + imod5
 C

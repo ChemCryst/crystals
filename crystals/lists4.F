@@ -2382,21 +2382,33 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'IDIM23.INC'
-
+	  
 C--LOAD THE LIST
       CALL XLDLST(23,ICOM23,IDIM23,-1)  
 
 C-- Checking L23M record
       if (md23m .le. 7) then ! old l23. Extend record and set default invertor.
-        newl23m=nfl
-		nextnf = KCHNFL(8)
-        istore(newl23m:newl23m+md23m-1)=istore(l23m:l23m+md23m-1)
-        istore(newl23m+MD23m:newl23m+7)=0
-        md23m=8
-        l23m=newl23m
-      end if
+	  
+C When extending a record, we not only need to create new space for it in store and
+C update the common block, but also update the record header pointers which are stored
+C just before each data block pointed to by the common block. The only is IADDR+3 (which
+C should be 5 words before the start of the data block, but here we use KHUNTR to return
+C IADDR, just to be on the safe side.
 
-      RETURN
+        ISTAT = KHUNTR(23,101,IADDL,IADDR,IADDD,-1)
+        IF ( ISTAT.EQ.0 ) THEN
+           newl23m=nfl
+           nextnf = KCHNFL(12)
+           istore(newl23m:newl23m+md23m-1)=istore(l23m:l23m+md23m-1)
+           istore(newl23m+7)=0
+           md23m=8
+           l23m=newl23m
+           m23m=newl23m+7
+           istore(iaddr+3) = newl23m
+        end if
+      end if
+      RETURN 
+ 
       END
 C
 C
