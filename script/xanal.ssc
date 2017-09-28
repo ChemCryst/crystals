@@ -99,8 +99,9 @@
 ^^WI  }                                                                         
 ^^WI  @ 6,2 GRID BTNS NROWS=1 NCOLS=5                                           
 ^^WI  {                                                                         
-^^WI    @ 1,1 BUTTON CLOSE '&Close' COMMIT CANCEL DEFAULT                       
-^^WI    @ 1,3 BUTTON HELP '&Help'                                               
+^^WI    @ 1,1 STRETCH VB HORIZONTAL
+^^WI    @ 1,2 BUTTON HELP '&Help'                                               
+^^WI    @ 1,4 BUTTON CLOSE '&Close' COMMIT CANCEL DEFAULT                       
 ^^WI  }                                                                         
 ^^WI  @ 8,2 PROGRESS _XANAPR 'Please wait'                                      
 ^^WI }                                                                          

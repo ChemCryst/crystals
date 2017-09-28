@@ -55,9 +55,14 @@
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 ^^CO SENDPROGRESSTO _FOFCPR                                                     
-%  LOOP                                                                         
+%  LOOP  
 %    COPY '#sum list 6 level=sigma'                                              
 %    COPY 'END'                                                                 
+
+%% output a dividing ruler
+{S 
+%    copy '#sum l 4'
+%    copy 'end'                                                                       
 %    VERIFY EXT_BOK SAVENPP VARSCP X_HELP OMIT                                                        
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
 %    IF VALUE .EQ. 1 THEN                                                       

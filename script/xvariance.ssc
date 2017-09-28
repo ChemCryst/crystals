@@ -1,16 +1,6 @@
 % script xvariance  
 %% plot internal vs external variance
 %%
-% VARIABLE INTEGER H1 H2 H3 H4 H5 H6 H7 H8 H9 H10
-% VARIABLE INTEGER B1 B2 B3 B4 B5 B6 B7 B8 B9 B10
-% EVALUATE B1 = 2
-% EVALUATE B2 = 4
-% EVALUATE B3 = 8
-% EVALUATE B4 = 16
-% EVALUATE B5 = 32
-% EVALUATE B6 = 64
-% EVALUATE B7 = 128
-% EVALUATE B8 = 256
 % VARIABLE LOGICAL XWVSRUNNING XVARRUNNING 
 % EVALUATE XVARRUNNING = TRUE
 % VARIABLE LOGICAL I6DONE I6MASK LMAONCE          
@@ -166,76 +156,53 @@
 ^^CR  
 %%
 %%
+% VARIABLE LOGICAL MOO
+% VARIABLE INTEGER BIN CONTENT
+% EVALUATE MOO = FILEEXISTS 'moo.dat'
+%     if .not. sig then
+{E
+{E The file SIGMAS.DAT does not exist    
+{E
+%        copy '#script xhelp1'
+
+ The file 'moo.dat' was created during input of reflections.
+ It no longer exists, or is in a different folder
+
+%        copy '#script xhelp2'  
+%        FINISH
+%     end if
 %%
 ^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSIGMA2 KEY                               
 ^^PL XAXIS TITLE 'Multiplicity'    
 ^^PL YAXIS  TITLE 'Number of contibutors'                                
-^^PL NSERIES=1 LENGTH=10                                                       
+^^PL NSERIES=1 LENGTH=20                                                       
 ^^PL SERIES 1 SERIESNAME 'MoO'                                     
 %      CLEAR
-%      INSERT !^^PL  LABEL '<!
-%      STORE FORMAT /(I2)/ LENGTH 2 INTEGER  B1  
-%      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H1 
-%      OUTPUT
-^^CR                                                                            
-%      CLEAR
-%      INSERT !^^PL  LABEL '<!
-%      STORE FORMAT /(I2)/ LENGTH 2 INTEGER  B2  
-%      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H2 
-%      OUTPUT
-^^CR                                                                            
-%      CLEAR
-%      INSERT !^^PL  LABEL '< !
-%      STORE FORMAT /(I2)/ LENGTH 2 INTEGER  B3  
-%      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H3 
-%      OUTPUT
-^^CR                                                                            
-%      CLEAR
-%      INSERT !^^PL  LABEL '<!
-%      STORE FORMAT /(I2)/ LENGTH 2 INTEGER  B4  
-%      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H4 
-%      OUTPUT
-^^CR                                                                            
-%      CLEAR
-%      INSERT !^^PL  LABEL '<!
-%      STORE FORMAT /(I2)/ LENGTH 2 INTEGER  B5  
-%      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H5 
-%      OUTPUT
-^^CR                                                                            
 
+%     COPY '#OPEN SCPDATA moo.dat' 
+%     LOOP
+%      ON ERROR TERMINATE                                                           
+%      ON END TERMINATE
+%      EXTRACT NEXT                                                             
+%      CLEAR                                                                        
+%      EXTRACT TRANSFER INPUT                                                       
 %      CLEAR
-%      INSERT !^^PL  LABEL '<!
-%      STORE FORMAT /(I2)/ LENGTH 2 INTEGER  B6  
-%      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H6 
-%      OUTPUT
-^^CR                                                                            
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%      EVALUATE BIN = VALUE                                        
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%      EVALUATE CONTENT = VALUE                                        
+%%
 %      CLEAR
-%      INSERT !^^PL  LABEL '<!
-%      STORE FORMAT /(I3)/ LENGTH 2 INTEGER  B7  
+%      INSERT !^^PL LABEL '!   
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER BIN
 %      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H7 
+%      STORE FORMAT /(I10)/ LENGTH 10 INTEGER CONTENT
 %      OUTPUT
-^^CR                                                                            
-%      CLEAR
-%      INSERT !^^PL  LABEL '<!
-%      STORE FORMAT /(I3)/ LENGTH 2 INTEGER  B8
-%      INSERT !' DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H8 
-%      OUTPUT
-^^CR                                                                            
+%     END LOOP
+%     COPY '#CLOSE SCPDATA'
 
-%      CLEAR
-%      INSERT !^^PL  LABEL 'The rest' !
-%      INSERT ! DATA !
-%      STORE FORMAT /(I6)/ LENGTH 6 INTEGER  H9 
-%      OUTPUT
-^^CR                                                                            
+
+
 ^^PL SHOW                                                                       
 ^^CR     
 %    END BLOCK
