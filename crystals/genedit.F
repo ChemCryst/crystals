@@ -135,7 +135,8 @@ C than useless.
 
       INLOG = IRDLOG(IFLIND)
       IRDLOG(IFLIND) = 0
-      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
+cdjw-2017 Suppress this info line - we all know about GENERALEDIT now.
+c      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
 C
 C
 C -- ENSURE THAT THE ALL THE DIRECTIVES APPEAR TO HAVE BEEN READ ONCE
