@@ -1345,7 +1345,7 @@ c
 c	   write (9,*) 'Writing... L23M+7, MD23M: ', ISTORE(L23M+7), MD23M
 c       write(9,*) '+1 ',(ISTORE(L23M+I),I=0,7)
 c       write(9,*) '+1 ICOM23: ', (ICOM23(I),I=1,24)
-            CALL XWLSTD ( 23, ICOM23, IDIM23, 0, 1)
+            CALL XWLSTD ( 23, ICOM23, IDIM23, 0, -1)
 c       write(9,*) '+2 ',(ISTORE(L23M+I),I=0,7)
 c       write(9,*) '+2 ICOM23: ', (ICOM23(I),I=1,24)
         ENDIF
