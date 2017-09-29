@@ -36,6 +36,7 @@ XLST39.INC.F90
 XCONST.INC.F90
 XOPVAL.INC.F90
 XRTLSC.INC.F90
+math.F90
 formatnumber.F90
 solve_helper.F90
 sfls_punch.F90

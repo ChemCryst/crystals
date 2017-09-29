@@ -64,13 +64,14 @@ integer :: current_restraintindex=0 !< counter use for compatibility with the ol
 
 type param_t !< Type holding the description of a least square parameter
     integer index !< index of the refinable parameter
+    integer offset !< offset address in list 5
     character(len=4) :: label !< label of the atom
     integer serial !< serial of the atom
     character(len=24) :: name !< Name of the parameter
 contains
     procedure, pass(self) :: print => printparam !< print the content of the object (used for debugging)
 end type
-type(param_t), dimension(:), allocatable :: parameters_list !< List of least parameters
+type(param_t), dimension(:), allocatable :: parameters_list !< List of least squares parameters
 
 contains
 
@@ -339,11 +340,8 @@ end subroutine
 subroutine printparam(self)
 implicit none
 class(param_t), intent(in) :: self
-integer i, j, k
-character(len=128) :: buffer
-character(len=1024) :: atomlist
 
-write(*,'(I5,1X,A,"(",I0,")",1X,A)') self%index, trim(self%label), self%serial, trim(self%name)
+write(*,'(I5,1X,I6,1X,A,"(",I0,")",1X,A)') self%index, self%offset, trim(self%label), self%serial, trim(self%name)
 
 end subroutine
 
