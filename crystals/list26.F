@@ -347,7 +347,7 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCNI(results)
+          subroutine XCVCUQISO(results)
               use list26_mod
               type(restraints_t), intent(inout), optional :: results
           end subroutine
@@ -1645,7 +1645,7 @@ c      Print *, 'X End'
 
 C--'UQISO' RESTRAINT. near isotropic restraint
 5570  CONTINUE
-      CALL XCVCNI()
+      CALL XCVCUQISO()
       
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       if(size(restraints_list(ircpt)%subrestraints)>0) then
@@ -3488,7 +3488,7 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCNI(results)
+          subroutine XCVCUQISO(results)
               use list26_mod
               type(restraints_t), intent(inout), optional :: results
           end subroutine
@@ -3807,7 +3807,7 @@ C--'UEIG' RESTRAINT
 
 C--'UQISO' RESTRAINT
 1602  CONTINUE
-      CALL XCVCNI(restraints_list(idjwtemp))
+      CALL XCVCUQISO(restraints_list(idjwtemp))
       GOTO 1000  
 
 C--'UVOL' RESTRAINT
@@ -4988,6 +4988,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       END
       
 CODE FOR XCVCR
+!> RIGU shelxl type of restraint
       SUBROUTINE XCVCR(iasym, results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
@@ -5250,6 +5251,7 @@ CODE FOR XCVCE
 C--CALCULATE UEIG restraints. The 2 smalles eigen values are made equal
 C
 C--
+!> Restrain the 2 smallest eigenvalue of a restraint to be equal
       SUBROUTINE XCVCE(results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
@@ -5468,8 +5470,9 @@ c         print *, 'No more atom expected'
       END
 
 C
-CODE FOR XCVCNI
-      SUBROUTINE XCVCNI(results)
+CODE FOR XCVCUQISO
+!> Restrain the adp to isotropic or nearly if low weight is used
+      SUBROUTINE XCVCUQISO(results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
       use xiobuf_mod, only:CMON
@@ -5482,7 +5485,7 @@ C--
 C
       type(restraints_t), intent(inout), optional :: results
 
-      integer :: icpt, info
+      integer :: icpt, info, jcpt, srsize
       real, dimension(12) :: A1 !< Partial derivatives
       double precision U_L_1(6) !< adp in linear 6 element form
       integer, dimension(9), parameter :: U_ASSIGN=
@@ -5522,60 +5525,8 @@ C
 C--SET UP A FEW CONSTANTS                                        
       DUMP=STORE(LCG+4)   ! The 'observed value' of the restraint
       JA=LCA              ! Address of first parameter block header                                      
-      NCA=1 ! number of atom to treat
       MCA=JA ! address of first atom
-C--SET UP THE ADDRESSES OF THE ATOMS                                    
-      JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1  
 
-      IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
-        if(present(results)) then
-          WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') results%user_index,
-     1      trim(results%restraint_text)
-          CALL XPRVDU(NCVDU, 1,0)      
-            WRITE(CMON,'("{E", 4X, A)') 
-     1        'Error: atom already isotropic'
-          CALL XPRVDU(NCVDU, 1,0)      
-        end if
-        return
-      end if
-
-      if(present(results)) then
-          call extend(results%subrestraints, 6, .true.)
-          do icpt=1, size(results%subrestraints)
-              call extend(results%subrestraints(icpt)%atoms, 1, .true.)
-              results%subrestraints(icpt)%atoms(1)%label=
-     &            transfer(istore(JA+2), 'aaaa')
-              results%subrestraints(icpt)%atoms(1)%serial=
-     &            nint(store(JA+3))
-          end do
-          results%subrestraints(1)%description='L(1,1)-<eig>=0'
-          results%subrestraints(2)%description='L(2,2)-<eig>=0'
-          results%subrestraints(3)%description='L(3,3)-<eig>=0'
-          results%subrestraints(4)%description='L(2,3)=0'
-          results%subrestraints(5)%description='L(1,3)=0'
-          results%subrestraints(6)%description='L(1,2)=0'
-          
-          results%description=
-     &      'The eigen values are restrained to their mean.'//char(10)//
-     &      'Let''s define L a diagonal matrix of '//
-     &      'the eigenvalues, Q a matrix of eigen vectors, '//char(10)//
-     &      'R a tansformation matrix of adp to cartesian space and '//
-     &      'U a adp matrix. '//char(10)//
-     &      'Then R U R^t = Q L Q^t => L = Q^t R U R^t Q. '//char(10)//
-     &      'Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q'
-      end if  
-          
-C--DEFINE U Matrices 
-      U_L_1=STORE(ISTORE(JA+16)+14:ISTORE(JA+16)+14+11:2)
-C     U Matrices in 3x3 matrix
-      U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
-
-      if(present(results)) then
-          do icpt=1, size(results%subrestraints)
-              results%subrestraints(icpt)%atoms(1)%adps_crys=U_M_1
-          end do
-      end if
-      
       ! Orthogonalisation matrix (stored by rows, reshape fill column wise, hence the transpose)
       A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
       
@@ -5586,113 +5537,168 @@ C     U Matrices in 3x3 matrix
       B_M(3,3)=STORE(L1P2+2)
       
       R_M=matmul(A_M, B_M) 
-      ! Adp in cartesian space
-      U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))
-      ! eigen decomposition
-      call DSYEVJ3(U_C_1, Q_1, W_1, info)
-      if(info<0) then
-        WRITE(CMON,'("{E", A)') 
-     1    'UQISO: DSYEVJ3 failed to converged'
-        CALL XPRVDU(NCVDU, 1,0)   
-        return
-      end if              
-
-      U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))                
       
-      meaneig=sum(w_1)/3.0d0 ! average of eigenvalues
+      if(present(results)) then
+        IF(allocated(results%subrestraints)) then
+          deallocate(results%subrestraints)
+        end if
+      end if
+      do jcpt=1, NCA      
+
+        IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
+          if(present(results)) then
+            WRITE(CMON,'("{I",1X, "(",I0,")",1X,A)') results%user_index,
+     1        trim(results%restraint_text)
+            CALL XPRVDU(NCVDU, 1,0)      
+              WRITE(CMON,'("{I", 4X, A, A, "(",I0,")", A)') 
+     1          'Error: atom ',trim(transfer(istore(JA+2), 'aaaa')),
+     2          nint(store(JA+3)), 'already isotropic'
+            CALL XPRVDU(NCVDU, 1,0)      
+          end if
+          cycle
+        end if
+
+        if(present(results)) then
+            call extend(results%subrestraints, 6, .false.)
+            srsize=size(results%subrestraints)
+            do icpt=srsize-5, srsize
+                call extend(results%subrestraints(icpt)%atoms,1,.true.)
+                results%subrestraints(icpt)%atoms(1)%label=
+     &              transfer(istore(JA+2), 'aaaa')
+                results%subrestraints(icpt)%atoms(1)%serial=
+     &              nint(store(JA+3))
+            end do
+            results%subrestraints(1)%description='L(1,1)-<eig>=0'
+            results%subrestraints(2)%description='L(2,2)-<eig>=0'
+            results%subrestraints(3)%description='L(3,3)-<eig>=0'
+            results%subrestraints(4)%description='L(2,3)=0'
+            results%subrestraints(5)%description='L(1,3)=0'
+            results%subrestraints(6)%description='L(1,2)=0'
+          
+            results%description=
+     &        'The eigen values are restrained to their mean.'//
+     &        char(10)//'Let''s define L a diagonal matrix of '//
+     &        'the eigenvalues, Q a matrix of eigen vectors, '//
+     &        char(10)//'R a tansformation matrix of adp to'//
+     &        ' cartesian space and U a adp matrix. '//char(10)//
+     &        'Then R U R^t = Q L Q^t => L = Q^t R U R^t Q. '//
+     &        char(10)//'Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q'
+        end if  
+          
+C--DEFINE U Matrices 
+        U_L_1=STORE(ISTORE(JA+16)+14:ISTORE(JA+16)+14+11:2)
+C     U Matrices in 3x3 matrix
+        U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
+
+        if(present(results)) then
+            do icpt=srsize-5, srsize
+                results%subrestraints(icpt)%atoms(1)%adps_crys=U_M_1
+            end do
+        end if
+      
+        ! Adp in cartesian space
+        U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))
+        ! eigen decomposition
+        call DSYEVJ3(U_C_1, Q_1, W_1, info)
+        if(info<0) then
+          WRITE(CMON,'("{E", A)') 
+     1      'UQISO: DSYEVJ3 failed to converged'
+          CALL XPRVDU(NCVDU, 1,0)   
+          cycle
+        end if              
+
+        U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))                
+      
+        meaneig=sum(w_1)/3.0d0 ! average of eigenvalues
 C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
-      RABUBAR_1=0.0d0
-      RABUBAR_1(1,1)=w_1(1)
-      RABUBAR_1(2,2)=w_1(2)
-      RABUBAR_1(3,3)=w_1(3)
+        RABUBAR_1=0.0d0
+        RABUBAR_1(1,1)=w_1(1)
+        RABUBAR_1(2,2)=w_1(2)
+        RABUBAR_1(3,3)=w_1(3)
 
 C Here, compute derivatives
-      call rabubar_eigenderivs(Q_1, dUcart)
+        call rabubar_eigenderivs(Q_1, dUcart)
                   
-      if(present(results)) then
-          do icpt=1, size(results%subrestraints)
-              results%subrestraints(icpt)%atoms(1)%adps_cart=RABUBAR_1
-              results%subrestraints(icpt)%atoms(1)%M=Q_1
-          end do
-      end if
+        if(present(results)) then
+            do icpt=srsize-5, srsize
+                results%subrestraints(icpt)%atoms(1)%adps_cart=RABUBAR_1
+                results%subrestraints(icpt)%atoms(1)%M=Q_1
+            end do
+        end if
       
-      do icpt=1, 6 ! loop over the 6 U[ij]
+        do icpt=1, 6 ! loop over the 6 U[ij]
       
-          if(icpt==1) then
+            if(icpt==1) then
               DIFF_VAL = RABUBAR_1(1,1)-meaneig
               MEAN_VAL = RABUBAR_1(1,1)+meaneig
-          else if(icpt==2) then
+            else if(icpt==2) then
               DIFF_VAL = RABUBAR_1(2,2)-meaneig
               MEAN_VAL = RABUBAR_1(2,2)+meaneig
-          else if(icpt==3) then
+            else if(icpt==3) then
               DIFF_VAL = RABUBAR_1(3,3)-meaneig
               MEAN_VAL = RABUBAR_1(3,3)+meaneig
-          else if(icpt==4) then
+            else if(icpt==4) then
               DIFF_VAL = RABUBAR_1(2,3)
               MEAN_VAL = RABUBAR_1(2,3)
-          else if(icpt==5) then
+            else if(icpt==5) then
               DIFF_VAL = RABUBAR_1(1,3)
               MEAN_VAL = RABUBAR_1(1,3)
-          else if(icpt==6) then
+            else if(icpt==6) then
               DIFF_VAL = RABUBAR_1(1,2)
               MEAN_VAL = RABUBAR_1(1,2)
-          end if
+            end if
 
-          if(icpt==1) then
+            if(icpt==1) then
               a1(7:12)=dUcart(1, :)-meaneig
-          else if(icpt==2) then
+            else if(icpt==2) then
               a1(7:12)=dUcart(5, :)-meaneig
-          else if(icpt==3) then
-            a1(7:12)=dUcart(9, :)-meaneig
-          else if(icpt==4) then
-            a1(7:12)=dUcart(6, :)
-          else if(icpt==5) then
-            a1(7:12)=dUcart(3, :)
-          else if(icpt==6) then
-            a1(7:12)=dUcart(2, :)
-          end if
+            else if(icpt==3) then
+              a1(7:12)=dUcart(9, :)-meaneig
+            else if(icpt==4) then
+              a1(7:12)=dUcart(6, :)
+            else if(icpt==5) then
+              a1(7:12)=dUcart(3, :)
+            else if(icpt==6) then
+              a1(7:12)=dUcart(2, :)
+            end if
           
-          a1(1:6)=a1(7:12)
-          JP=ISTORE(JA+6)
-          JD=ISTORE(JA+16)
-          JX=JP ! JX used in XADUIJ
-          JO=JA ! JO used in XADUIJ
-          CALL XADUIJ  
+            a1(1:6)=a1(7:12)
+            JP=ISTORE(JA+6)
+            JD=ISTORE(JA+16)
+            JX=JP ! JX used in XADUIJ
+            JO=JA ! JO used in XADUIJ
+            CALL XADUIJ  
                          
-          STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
-          STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
-          STORE(L22PD+1) = STORE(LCG+3)
-          CALL XFMPDQ                                                       CVC01520
+            STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
+            STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
+            STORE(L22PD+1) = STORE(LCG+3)
+            CALL XFMPDQ                                                       CVC01520
 
 C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.         
-          JQ=ISTORE(JA+6)
-          DO JX=1,6
+            JQ=ISTORE(JA+6)
+            DO JX=1,6
               STORE(JQ+2)=0.
               JQ=ISTORE(JQ)
-          end do
+            end do
       
+        end do
+      
+        JA=ISTORE(JA)                             
       end do
-      
-      JA=ISTORE(JA)                                                     CVC01530
-
-      IF(JA .GT. 0) then
-c         print *, 'No more atom expected'
-         call abort()
-      end if
 
       RETURN
       END
 C
 CODE FOR XCVCUVOL
-!> Restrain the geometric mean of the principal axes of 2 adps to be equal
-!>
-!> geometric mean: <U> = (a b c)**(1/3)
-!> with a, b, c length of the principal axes (eigen values)
-!>
-!> The restraint is: <U_1> - <U_2> = 0
-!> => (a_1 b_1 c_1)**(1/3) - (a_2 b_2 c_2)**(1/3) = 0
-!> 
-!> d(a_1 b_1 c_1) = [ d(a_1)(b_1 c_1) + d(b_1)(a_1 c_1) + d(c_1)(a_1 b_1) ] / [3*(a_1 b_1 c_1)**(2.0/3.0)]
+!> \brief Restrain the geometric mean of the principal axes of 2 adps to be equal
+!!
+!! geometric mean: <U> = (a b c)**(1/3)
+!! with a, b, c length of the principal axes (eigen values)
+!!
+!! The restraint is: <U_1> - <U_2> = 0
+!! => (a_1 b_1 c_1)**(1/3) - (a_2 b_2 c_2)**(1/3) = 0
+!! 
+!! d(a_1 b_1 c_1) = [ d(a_1)(b_1 c_1) + d(b_1)(a_1 c_1) + d(c_1)(a_1 b_1) ] / [3*(a_1 b_1 c_1)**(2.0/3.0)]
       SUBROUTINE XCVCUVOL(results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
@@ -6415,6 +6421,7 @@ c         print *, 'No more atom expected'
       
 
 CODE FOR XCVCV
+!> Restrain ADP perpendicular to a bond
       SUBROUTINE XCVCV(results)
       use list26_mod
       use xiobuf_mod, only:cmon
@@ -6639,7 +6646,8 @@ c         print *, 'No more atom expected'
       RETURN
       END
       
-CODE FOR XCVCV
+CODE FOR XCVCV2
+!> Restrain ADP perpendicular to a bissector of 2 bonds
       SUBROUTINE XCVCV2(iasym, results)
       use list26_mod
 C--CALCULATE PERPENDICULAR RESTRAINTS TO the bissector of 2 vectors
@@ -7237,6 +7245,7 @@ c         print *, 'No more atom expected'
 C
 C
 CODE FOR XCVCW
+!> Restrain ADP to be in a plane defined by 3 atoms
       SUBROUTINE XCVCW(iaxis,iasym, results)
 C--CALCULATE PLANAR RESTRAINTS
 C
@@ -9346,7 +9355,8 @@ C
       end subroutine
 
 
-!!
+!> \brief calculate derivatives given a rotation matrix R in cartesian space
+!! 
 !! \f[
 !!   \partial\mathbf{U}_{\text{cart:} \vec{11}, \vec{22}, \vec{33}, \vec{23}, \vec{13}, \vec{12}}  = (\mathbf{R} \mathbf{A} \mathbf{B}) \otimes (\mathbf{R} \mathbf{A} \mathbf{B}) \partial\mathbf{U}_{\text{cif:} \vec{11}, \vec{22}, \vec{33}, \vec{23}, \vec{13}, \vec{12}} 
 !! \f]
@@ -9403,7 +9413,10 @@ C
 
 
 CODE FOR XCVCTLS
-!< Restraints based on a tls model
+!> \brief Restraints based on a tls model
+!!
+!! A TLS is calculated using all the atoms, then calculated ADPS are computed,
+!! first m atoms are then restrain to the target Uij
       SUBROUTINE XCVCTLS(results)
       use, intrinsic :: iso_fortran_env, only : stdout=>output_unit
       use list26_mod
@@ -9785,6 +9798,7 @@ C
 
 
 CODE FOR RSUB08
+!> Calculate derivatives in orthogonal coordinates given the centre of libration
       SUBROUTINE RSUB08PP (xyz, co, dv)
 C---CALCULATE DERIVATIVES FOR ATOM WHOSE ORTHOGONAL COORDINATES
 C
