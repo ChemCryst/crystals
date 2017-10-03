@@ -810,8 +810,8 @@ print *, ''
 print *, '--- Automatic inversion ---'
 print *, 'single precision'
 if(any(isnan(nmatrix))) then
-	print *, 'Error: Nan in input matrix'
-	return
+    print *, 'Error: Nan in input matrix'
+    return
 end if
 #endif
 
@@ -1006,23 +1006,23 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
         &   'rel. error: ', 1.0d0/drcond*epsilon(1.0d0)
         CALL XPRVDU(NCVDU, 1,0)     
 
-!        allocate(dwork(nmsize))
-!        call DSYTRI( 'L', nmsize, dunpacked, nmsize, IPIV, dWORK, INFO )
+        allocate(dwork(nmsize))
+        call DSYTRI( 'L', nmsize, dunpacked, nmsize, IPIV, dWORK, INFO )
 
-		allocate(dwork(1))
-		call dsytri2( 'L', nmsize,unpacked,nmsize,IPIV,dWORK, -1, INFO)
-		lwork=nint(dwork(1))
-		deallocate(dwork)
-		allocate(dwork(lwork))
-		call dsytri2( 'L', nmsize,unpacked,nmsize,IPIV,dWORK,lwork,INFO)
+!        allocate(dwork(1))
+!        call dsytri2( 'L', nmsize,unpacked,nmsize,IPIV,dWORK, -1, INFO)
+!        lwork=nint(dwork(1))
+!        deallocate(dwork)
+!        allocate(dwork(lwork))
+!        call dsytri2( 'L', nmsize,unpacked,nmsize,IPIV,dWORK,lwork,INFO)
 #if defined(CRY_OSLINUX)
-        print *, 'DSYTRI2 info: ', info
+        print *, 'DSYTRI info: ', info
 #endif
         deallocate(ipiv)
         deallocate(dwork)
 
         if(info/=0) then 
-            blasname='DSYTRI2'
+            blasname='DSYTRI'
             return
         end if
         
@@ -1072,24 +1072,24 @@ else ! all good for single precision inversion
     &   'rel. error: ', 1.0/rcond*epsilon(1.0)
     CALL XPRVDU(NCVDU, 1,0)     
 
-!    allocate(work(nmsize))
-!    call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
+    allocate(work(nmsize))
+    call SSYTRI( 'L', nmsize, unpacked, nmsize, IPIV, WORK, INFO )
     
-    allocate(work(1))
-    call ssytri2( 'L', nmsize, unpacked, nmsize, IPIV, WORK, -1, INFO )
-    lwork=nint(work(1))
-    deallocate(work)
-    allocate(work(lwork))
-    call ssytri2( 'L', nmsize, unpacked, nmsize, IPIV, WORK,lwork,INFO )
+!    allocate(work(1))
+!    call ssytri2( 'L', nmsize, unpacked, nmsize, IPIV, WORK, -1, INFO )
+!    lwork=nint(work(1))
+!    deallocate(work)
+!    allocate(work(lwork))
+!    call ssytri2( 'L', nmsize, unpacked, nmsize, IPIV, WORK,lwork,INFO )
  
 #if defined(CRY_OSLINUX)
-    print *, 'SSYTRI2 info: ', info
+    print *, 'SSYTRI info: ', info
 #endif
     deallocate(ipiv)
     deallocate(work)
     
     if(info/=0) then 
-        blasname='SSYTRI2'
+        blasname='SSYTRI'
         return
     end if
 
