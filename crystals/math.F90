@@ -15,7 +15,7 @@ end interface quaternionstomatrix
 
 contains
 
-!> calculate quaternions from rotation matrix
+!> \brief calculate quaternions from rotation matrix
 !!
 !! See Shoemake, K. Animating Rotation with Quaternion Curves
 !! SIGGRAPH Comput. Graph., ACM, 1985, Vol. 19(3), pp. 245-25
@@ -34,6 +34,7 @@ q=qdp
 
 end function
 
+!> return the outer product of 2 vectors
 function outer_product(a, b) result(c)
 implicit none
 double precision, dimension(:), intent(in) :: a
@@ -46,7 +47,7 @@ do i=1, size(a)
 end do
 end function
 
-!> calculate quaternions from rotation matrix
+!> \brief calculate quaternions from rotation matrix
 !!
 !! See Shoemake, K. Animating Rotation with Quaternion Curves
 !! SIGGRAPH Comput. Graph., ACM, 1985, Vol. 19(3), pp. 245-25
@@ -89,7 +90,7 @@ q=(/w,x,y,z/)
 
 end function
 
-!> calculate rotation matrix from quaternions
+!> \brief calculate rotation matrix from quaternions
 !!
 !! See Shoemake, K. Animating Rotation with Quaternion Curves
 !! SIGGRAPH Comput. Graph., ACM, 1985, Vol. 19(3), pp. 245-25
@@ -143,13 +144,13 @@ end function
 
 
 !* ----------------------------------------------------------------------------
+!> Calculates the eigenvalues and normalized eigenvectors of a symmetric 3x3 
+!! matrix A using the Jacobi algorithm.
+!! The upper triangular part of A is destroyed during the calculation,
+!! the diagonal elements are read but not destroyed, and the lower
+!! triangular elements are not referenced at all.
 SUBROUTINE DSYEVJ3(A, Q, W, info)
 !* ----------------------------------------------------------------------------
-!* Calculates the eigenvalues and normalized eigenvectors of a symmetric 3x3
-!* matrix A using the Jacobi algorithm.
-!* The upper triangular part of A is destroyed during the calculation,
-!* the diagonal elements are read but not destroyed, and the lower
-!* triangular elements are not referenced at all.
 !* ----------------------------------------------------------------------------
 !* Parameters:
 !*   A: The symmetric input matrix
@@ -284,7 +285,7 @@ END SUBROUTINE
 !***********************************************************************************************************************************
 !  M33DET  -  Compute the determinant of a 3x3 matrix.
 !***********************************************************************************************************************************
-
+!> Return the determinant of a 3x3 matrix
       FUNCTION M33DET (A) RESULT (DET)
 
       IMPLICIT NONE
