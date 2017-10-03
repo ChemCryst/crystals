@@ -341,7 +341,7 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCE(results)
+          subroutine XCVCUEIG(results)
               use list26_mod
               type(restraints_t), intent(inout), optional :: results
           end subroutine
@@ -1575,7 +1575,7 @@ C To be replaced with JAA routine:
       
 C--'eigen value restraint UEIG' RESTRAINT
 5560  CONTINUE
-      CALL XCVCE()
+      CALL XCVCUEIG()
       
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       if(size(restraints_list(ircpt)%subrestraints)>0) then
@@ -2745,8 +2745,9 @@ C--UEIG RESTRAINTS PRINT
      1  1PE10.3,1X,1PE10.3,6X,A)  
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
-      if(size(restraints_list(ircpt)%subrestraints)>0) then
-      associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
+      do icpt=1, size(restraints_list(ircpt)%subrestraints),3
+      associate(subrestraint => 
+     1  restraints_list(ircpt)%subrestraints(icpt))
 
       meaneig=(subrestraint%atoms(1)%adps_cart(1,1)+
      1  subrestraint%atoms(1)%adps_cart(2,2))/2.0
@@ -2792,13 +2793,7 @@ C--UEIG RESTRAINTS PRINT
       NCA = 1
 
       end associate
-      else
-        IF (ISSPRT .EQ. 0) THEN              
-          WRITE(NCWU,'(A)') 'No derivatives'
-        end if
-        WRITE(CMON,'(A)') 'No derivatives'
-        CALL XPRVDU(NCVDU, 1,0)
-      end if
+      end do
       else
         IF (ISSPRT .EQ. 0) THEN              
           WRITE(NCWU,'(A)') 'No derivatives'
@@ -2815,9 +2810,12 @@ C--UQISO RESTRAINTS PRINT
 32721  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,1PE12.3,1X),1PE12.3,1X,
      1   1PE12.3,1X,A,I0,I0,A)  
 
+      nca=0
       if(allocated(restraints_list(ircpt)%subrestraints)) then
-      if(size(restraints_list(ircpt)%subrestraints)>0) then
-      associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
+      print *, 'pp ', size(restraints_list(ircpt)%subrestraints)
+      do icpt=1, size(restraints_list(ircpt)%subrestraints),6
+      associate(subrestraint => 
+     1  restraints_list(ircpt)%subrestraints(icpt))
       
         meaneig=(subrestraint%atoms(1)%adps_crys(1,1)+
      1    subrestraint%atoms(1)%adps_cart(2,2)+
@@ -2835,7 +2833,7 @@ C--UQISO RESTRAINTS PRINT
      2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
      3         meaneig,
      3         subrestraint%atoms(1)%adps_cart(it,jt)-meaneig,
-     5         'Uc1[',it,jt,']-<eig>'
+     5         'Uc[',it,jt,']-<eig>'
             end associate
           end do
           deallocate(Uij_indices)
@@ -2853,7 +2851,7 @@ C--UQISO RESTRAINTS PRINT
      1        subrestraint%atoms(1)%serial,
      2        subrestraint%atoms(1)%adps_cart(it,jt),meaneig,
      3        subrestraint%atoms(1)%adps_cart(it,jt)-meaneig, ! B is the target
-     5        'Uc1[',it,jt,']-<eig>'
+     5        'Uc[',it,jt,']-<eig>'
             CALL XPRVDU(NCVDU, 1,0)
           end associate
         end do
@@ -2868,16 +2866,10 @@ C--UQISO RESTRAINTS PRINT
       P=(subrestraint%atoms(1)%adps_cart(1,1)-B)**2 + 
      1  (subrestraint%atoms(1)%adps_cart(2,2)-B)**2 +
      2  (subrestraint%atoms(1)%adps_cart(3,3)-B)**2
-      NCA = 1
+      NCA = nca+1
 
       end associate
-      else
-        IF (ISSPRT .EQ. 0) THEN              
-          WRITE(NCWU,'(A)') 'No derivatives'
-        end if
-        WRITE(CMON,'(A)') 'No derivatives'
-        CALL XPRVDU(NCVDU, 1,0)
-      end if
+      end do
       else
         IF (ISSPRT .EQ. 0) THEN              
           WRITE(NCWU,'(A)') 'No derivatives'
@@ -3482,7 +3474,7 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCE(results)
+          subroutine XCVCUEIG(results)
               use list26_mod
               type(restraints_t), intent(inout), optional :: results
           end subroutine
@@ -3802,7 +3794,7 @@ C--'UZZQIV' RESTRAINT
 C     
 C--'UEIG' RESTRAINT
 1601  CONTINUE
-      CALL XCVCE(restraints_list(idjwtemp))
+      CALL XCVCUEIG(restraints_list(idjwtemp))
       GOTO 1000  
 
 C--'UQISO' RESTRAINT
@@ -5247,12 +5239,12 @@ c         print *, 'No more atom expected'
       RETURN
       END
 C
-CODE FOR XCVCE
+CODE FOR XCVCUEIG
 C--CALCULATE UEIG restraints. The 2 smalles eigen values are made equal
 C
 C--
 !> Restrain the 2 smallest eigenvalue of a restraint to be equal
-      SUBROUTINE XCVCE(results)
+      SUBROUTINE XCVCUEIG(results)
       use xssval_mod, only: issapp, issprt
       use list26_mod
       use xiobuf_mod, only:CMON
@@ -5263,7 +5255,7 @@ C--
 C
       type(restraints_t), intent(inout), optional :: results
 
-      integer :: icpt, info
+      integer :: icpt, info, jcpt, srsize
       real, dimension(12) :: A1 !< Partial derivatives
       double precision U_L_1(6) !< adp in linear 6 element form
       integer, dimension(9), parameter :: U_ASSIGN=
@@ -5306,26 +5298,44 @@ C
 C--SET UP A FEW CONSTANTS                                        
       DUMP=STORE(LCG+4)   ! The 'observed value' of the restraint
       JA=LCA              ! Address of first parameter block header                                      
-      NCA=1 ! number of atom to treat
       MCA=JA ! address of first atom
 C--SET UP THE ADDRESSES OF THE ATOMS                                    
-      JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1  
 
-      IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
-        if(present(results)) then
-          WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') results%user_index,
-     1      trim(results%restraint_text)
-          CALL XPRVDU(NCVDU, 1,0)      
-            WRITE(CMON,'("{E", 4X, A)') 
-     1        'Error: atom already isotropic'
-          CALL XPRVDU(NCVDU, 1,0)      
-        end if
-        return
-      end if
-
+      ! Orthogonalisation matrix (stored by rows, reshape fill column wise, hence the transpose)
+      A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
+      
+      ! Ucif scaled to U*
+      B_M=0.0d0
+      B_M(1,1)=STORE(L1P2)
+      B_M(2,2)=STORE(L1P2+1)
+      B_M(3,3)=STORE(L1P2+2)
+      
+      R_M=matmul(A_M, B_M) 
+      
       if(present(results)) then
-          call extend(results%subrestraints, 3, .true.)
-          do icpt=1, size(results%subrestraints)
+        IF(allocated(results%subrestraints)) then
+          deallocate(results%subrestraints)
+        end if
+      end if
+      do jcpt=1, nca ! loop over each atom individually to set up restraints
+
+        IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
+          if(present(results)) then
+            WRITE(CMON,'("{I",1X, "(",I0,")",1X,A)') results%user_index,
+     1        trim(results%restraint_text)
+            CALL XPRVDU(NCVDU, 1,0)      
+              WRITE(CMON,'("{I", 4X, A, A, "(",I0,")", A)') 
+     1          'Error: atom ',trim(transfer(istore(JA+2), 'aaaa')),
+     2          nint(store(JA+3)), 'is isotropic'
+            CALL XPRVDU(NCVDU, 1,0)      
+          end if
+          cycle
+        end if
+
+        if(present(results)) then
+          call extend(results%subrestraints, 3, .false.)
+          srsize=size(results%subrestraints)
+          do icpt=srsize-2, srsize
               call extend(results%subrestraints(icpt)%atoms, 1, .true.)
               results%subrestraints(icpt)%atoms(1)%label=
      &            transfer(istore(JA+2), 'aaaa')
@@ -5344,80 +5354,69 @@ C--SET UP THE ADDRESSES OF THE ATOMS
      &      'U a adp matrix. '//char(10)//
      &      'Then R U R^t = Q L Q^t => L = Q^t R U R^t Q. '//char(10)//
      &      'Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q'
-      end if  
+        end if  
           
 C--DEFINE U Matrices 
-      U_L_1=STORE(ISTORE(JA+16)+14:ISTORE(JA+16)+14+11:2)
-C     U Matrices in 3x3 matrix
-      U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
+        U_L_1=STORE(ISTORE(JA+16)+14:ISTORE(JA+16)+14+11:2)
+C       U Matrices in 3x3 matrix
+        U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
 
-      if(present(results)) then
-          do icpt=1, size(results%subrestraints)
-              results%subrestraints(icpt)%atoms(1)%adps_crys=U_M_1
-          end do
-      end if
+        if(present(results)) then
+            do icpt=srsize-2, srsize
+                results%subrestraints(icpt)%atoms(1)%adps_crys=U_M_1
+            end do
+        end if
       
-      ! Orthogonalisation matrix (stored by rows, reshape fill column wise, hence the transpose)
-      A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
+        U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))
+        ! eigen decomposition
+        call DSYEVJ3(U_C_1, Q_1, W_1, info)      
+        if(info<0) then
+          WRITE(CMON,'("{I", A)') 
+     1      'UEIG: DSYEVJ3 failed to converged'
+          CALL XPRVDU(NCVDU, 1,0)   
+          cycle
+        end if              
       
-      ! Ucif scaled to U*
-      B_M=0.0d0
-      B_M(1,1)=STORE(L1P2)
-      B_M(2,2)=STORE(L1P2+1)
-      B_M(3,3)=STORE(L1P2+2)
-      
-      R_M=matmul(A_M, B_M) 
-      ! Adp in cartesian space
-      U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))
-      ! eigen decomposition
-      call DSYEVJ3(U_C_1, Q_1, W_1, info)      
-      if(info<0) then
-        WRITE(CMON,'("{I", A)') 
-     1    'UEIG: DSYEVJ3 failed to converged'
-        CALL XPRVDU(NCVDU, 1,0)   
-        return
-      end if              
-      
-      U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))                
+        U_C_1=matmul(matmul(R_M, U_M_1), transpose(R_M))                
 
-      ! sort eigenvalues in ascending order with their corresponding eigenvector
-      lexit=.true.
-      do
-        do icpt=1, 2
-          if(w_1(icpt)>w_1(icpt+1)) then
-            ! permute eigen values and corresponding eigen vectors
-            l1=w_1(icpt)
-            w_1(icpt)=w_1(icpt+1)
-            w_1(icpt+1)=l1
-            l3=Q_1(:,icpt)
-            Q_1(:,icpt)=Q_1(:,icpt+1)
-            Q_1(:,icpt+1)=l3
-            lexit=.false.
-            exit
-          end if
-        end do
-        if(lexit) exit ! no change done, already sorted
+        ! sort eigenvalues in ascending order with their corresponding eigenvector
         lexit=.true.
-      end do
+        do
+          do icpt=1, 2
+            if(w_1(icpt)>w_1(icpt+1)) then
+              ! permute eigen values and corresponding eigen vectors
+              l1=w_1(icpt)
+              w_1(icpt)=w_1(icpt+1)
+              w_1(icpt+1)=l1
+              l3=Q_1(:,icpt)
+              Q_1(:,icpt)=Q_1(:,icpt+1)
+              Q_1(:,icpt+1)=l3
+              lexit=.false.
+              exit
+            end if
+          end do
+          if(lexit) exit ! no change done, already sorted
+          lexit=.true.
+        end do
       
-      meaneig=(w_1(1)+w_1(2))/2.0d0 ! average of eigenvalues
+        meaneig=(w_1(1)+w_1(2))/2.0d0 ! average of eigenvalues
 C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
-      RABUBAR_1=0.0d0
-      RABUBAR_1(1,1)=w_1(1)
-      RABUBAR_1(2,2)=w_1(2)
-      RABUBAR_1(3,3)=w_1(3)
+        RABUBAR_1=0.0d0
+        RABUBAR_1(1,1)=w_1(1)
+        RABUBAR_1(2,2)=w_1(2)
+        RABUBAR_1(3,3)=w_1(3)
 
 C Here, compute derivatives
-      call rabubar_eigenderivs(Q_1, dUcart)
+        call rabubar_eigenderivs(Q_1, dUcart)
                   
-      if(present(results)) then
-          do icpt=1, size(results%subrestraints)
+        if(present(results)) then
+          do icpt=srsize-2, srsize
               results%subrestraints(icpt)%atoms(1)%adps_cart=RABUBAR_1
               results%subrestraints(icpt)%atoms(1)%M=Q_1
           end do
-      end if
+        end if
       
-      do icpt=1, 3 ! loop over the 3 U[ij]
+        do icpt=1, 3 ! loop over the 3 U[ij]
       
           if(icpt==1) then
               DIFF_VAL = RABUBAR_1(1,1)-meaneig
@@ -5457,14 +5456,10 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
               JQ=ISTORE(JQ)
           end do
       
-      end do
+        end do
       
-      JA=ISTORE(JA)                                                     CVC01530
-
-      IF(JA .GT. 0) then
-c         print *, 'No more atom expected'
-         call abort()
-      end if
+        JA=ISTORE(JA)              
+      end do
 
       RETURN
       END
@@ -5543,7 +5538,7 @@ C--SET UP A FEW CONSTANTS
           deallocate(results%subrestraints)
         end if
       end if
-      do jcpt=1, NCA      
+      do jcpt=1, NCA ! loop over each atom, restraints will be set individually
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
