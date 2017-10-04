@@ -916,13 +916,20 @@ C--AND NOW RETURN
 1250  CONTINUE
 C-- Checking preambule
       if(MD11P<31) then ! 31 has to match the value in commands.src
-        ! old list 11, extending preambule:
+        ! old list 11, extending preamble:
+C When extending a record, we not only need to create new space for it in store and
+C update the common block, but also update the record header pointers which are stored
+C just before each data block pointed to by the common block. The only update required 
+C is IADDR+3 (which should be 5 words before the start of the data block, but here we 
+C use KHUNTR to return IADDR, just to be on the safe side.
+        ISTAT = KHUNTR(11,103,IADDL,IADDR,IADDD,-1)
         newl11p = nfl
-		nextnf = KCHNFL(31)
+        nextnf = KCHNFL(31)
         store(newl11p:newl11p+MD11P-1)=store(l11P:l11P+MD11P-1)
         store(newl11p+MD11P:newl11p+30)=0.0
         MD11P=31
         l11p=newl11p
+        istore(iaddr+3) = newl11p
       end if
       RETURN
 C
