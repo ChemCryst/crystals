@@ -216,6 +216,7 @@ CODE FOR XSFLSE
       SUBROUTINE XSFLSE
       use solve_helper
       use sfls_punch_mod
+      use list26_mod, only: invertm
 C--GENERAL MATRIX INVERSION AND CALCULATION OF SHIFT ROUTINES.
 C
 C  THESE ROUTINES INVERT THE NORMAL MATRIX AND OUTPUT
@@ -861,16 +862,19 @@ c                print *, STR11(L11C:L11C+5)
          print *, 'Invert status: ', istore(L11P+30)
 #endif         
          
-c                allocate(unpacked(JY,JY))
+                if(allocated(invertm)) then
+                  deallocate(invertm)
+                end if
+                allocate(invertm(JY,JY))
 c                allocate(check(JY,JY))
-c                do i=1, JY
-c                    j = ((i-1)*(2*(JY)-i+2))/2
-c                    k = j + JY - i
-c                    unpacked(i:JY, i)=STR11(L11C+j:L11C+k)
-c                    unpacked(i, i:JY)=STR11(L11C+j:L11C+k)
+                do i=1, JY
+                    j = ((i-1)*(2*(JY)-i+2))/2
+                    k = j + JY - i
+                    invertm(i:JY, i)=STR11(L11C+j:L11C+k)
+                    invertm(i, i:JY)=STR11(L11C+j:L11C+k)
 c                    check(i:JY, i)=ref(1+j:1+k)
 c                    check(i, i:JY)=ref(1+j:1+k)
-c                end do
+                end do
 c                check=matmul(check, unpacked)
 c                rmax=0.0
 c                do i=1, jy

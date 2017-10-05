@@ -11,6 +11,20 @@
 module list26_mod
 implicit none
 
+real, dimension(:,:), allocatable :: invertm !< Inverted normal matrix
+
+type derivatives_t
+    integer :: ioldrestraint !< Restraint index in design matrix
+    integer :: irestraint !< restraint index in list 26
+    integer :: isubrestraint !< sub restraint index
+    real :: weight !< weight of the derivatives
+    real, dimension(:), allocatable :: derivatives !< list of derivatives, all blocks appended
+    integer, dimension(:), allocatable :: parameters !< parameters corresponding to the derivatives
+contains 
+	procedure, pass(self) :: dump => dumpderivatives
+end type
+type(derivatives_t), dimension(:), allocatable :: restraints_derivatives !< List of derivatives for the restraints
+
 type atom_t
     character(len=4) :: label !< label of the atom
     integer :: serial !< serial number of the atom
@@ -24,17 +38,7 @@ type atom_t
     real rtarget 
 end type
 
-type block_t !< blocks used during refinement
-    real, dimension(:), allocatable :: derivatives !< unweighted line of the design matrix in the current block (derivatives)
-    integer, dimension(:), allocatable :: parameters !< list of the parameters corresponding to the derivatives
-    real :: weight !< weight of the restraint
-contains
-    procedure, pass(self) :: print => formatted_derivatives
-    procedure, pass(self) :: printp => formatted_parameters
-end type
-
 type subrestraint_t !< subrestraints type 
-    type(block_t), dimension(:), allocatable :: blocks !< list blocks
     type(atom_t), dimension(:), allocatable :: atoms !< atoms involved in a subrestraint.
     character(len=1024) :: description !< Some help that could be helpful when debugging
     real :: rvalue
@@ -50,10 +54,12 @@ contains
     procedure, pass(self) :: print => printrestraint !< print the content of the object (used for debugging)
 end type
 
-private extend_restraints, extend_subrestraints, extend_blocks, extend_atoms, extend_parent, extend_parameters
+private extend_restraints, extend_subrestraints, extend_atoms
+private extend_parent, extend_parameters, extend_derivatives
 
 interface extend !< generic procedure to extend the several allocatables objects
-    module procedure extend_restraints, extend_subrestraints, extend_blocks, extend_atoms, extend_parent, extend_parameters
+    module procedure extend_restraints, extend_subrestraints, &
+    &	extend_atoms, extend_parent, extend_parameters, extend_derivatives
 end interface extend
     
 
@@ -74,6 +80,44 @@ end type
 type(param_t), dimension(:), allocatable :: parameters_list !< List of least squares parameters
 
 contains
+
+!> extend an array of derivatives type
+subroutine extend_derivatives(object, argsize, reset)
+implicit none
+type(derivatives_t), dimension(:), allocatable, intent(inout) :: object !< object to extend
+integer, optional, intent(in) :: argsize !< number of elements to add
+logical, intent(in), optional :: reset !< reallocate a new object
+type(derivatives_t), dimension(:), allocatable :: temp
+integer isize, newstart
+
+if(present(argsize)) then
+    isize=argsize
+else
+    isize=1
+end if
+
+if(present(reset)) then
+    if(reset) then
+        if(allocated(object)) deallocate(object)
+    end if
+end if
+
+if(allocated(object)) then
+    call move_alloc(object, temp)
+
+    allocate(object(size(temp)+isize))
+    object(1:size(temp)) = temp
+    newstart=size(temp)+1
+else
+    allocate(object(isize))
+    newstart=1
+end if
+
+object(newstart:)%ioldrestraint=-1
+object(newstart:)%irestraint=-1
+object(newstart:)%isubrestraint=-1
+    
+end subroutine
 
 !> extend an array of integer
 subroutine extend_parent(object, argsize, reset)
@@ -182,38 +226,6 @@ end if
 
 end subroutine
 
-!> extend an array of blocks
-subroutine extend_blocks(object, argsize, reset)
-implicit none
-type(block_t), dimension(:), allocatable, intent(inout) :: object !< object to extend
-integer, optional, intent(in) :: argsize !< number of elements to add
-logical, intent(in), optional :: reset !< reallocate a new object
-type(block_t), dimension(:), allocatable :: temp
-integer isize
-
-if(present(argsize)) then
-    isize=argsize
-else
-    isize=1
-end if
-
-if(present(reset)) then
-    if(reset) then
-        if(allocated(object)) deallocate(object)
-    end if
-end if
-
-if(allocated(object)) then
-    call move_alloc(object, temp)
-
-    allocate(object(lbound(temp,1):ubound(temp,1)+isize))
-    object(lbound(temp,1):ubound(temp,1)) = temp
-else
-    allocate(object(0:isize-1))
-end if
-
-end subroutine
-
 !> extend an array of parameters
 subroutine extend_parameters(object, argsize, reset)
 implicit none
@@ -292,6 +304,9 @@ do i=newstart, size(object)
     object(i)%coordinates_cart=0.0 !< coordinates in transformed coordinate system
     object(i)%adps_crys=0.0 !< adps in crystal system
     object(i)%adps_cart=0.0 !< adps in transformed coordinate system
+    object(i)%adps_target=0.0 !< target adps 
+    object(i)%rvalue=0.0 !< actual value
+    object(i)%rtarget=0.0 !< target value
 end do
 end subroutine
 
@@ -323,20 +338,12 @@ if(allocated(self%subrestraints)) then
            write(*, '(4X,I0,1X,A)') i, trim(atomlist)
        end if
         
-       if(allocated(self%subrestraints(i)%blocks)) then
-           write(*, '(4X,I0,A)') ubound(self%subrestraints(i)%blocks, 1), ' block(s):'
-           do j=1, ubound(self%subrestraints(i)%blocks, 1)
-               write(buffer, '("(7X,''('',I0,'')'',",I0,"(1X,1PE9.2))")') size(self%subrestraints(i)%blocks(j)%derivatives)
-               write(*, buffer) size(self%subrestraints(i)%blocks(j)%derivatives), self%subrestraints(i)%blocks(j)%derivatives
-               write(*, '(A, 1PE10.3)') 'Weight: ', self%subrestraints(i)%blocks(j)%weight
-           end do
-       end if
    end do
 end if
     
 end subroutine
 
-!> print the content of a restraint
+!> print the content of a parameter
 subroutine printparam(self)
 implicit none
 class(param_t), intent(in) :: self
@@ -345,69 +352,87 @@ write(*,'(I5,1X,I6,1X,A,"(",I0,")",1X,A)') self%index, self%offset, trim(self%la
 
 end subroutine
 
-function formatted_derivatives(self, weight) result(str)
+!> Print the leverage values of a restraint given the invert matrix
+subroutine showleverage(rindex)
+use xiobuf_mod, only: cmon
+use xunits_mod, only: ncvdu
 implicit none
-class(block_t), intent(in) :: self
-real, intent(in), optional :: weight
-character(len=:), allocatable :: str
-integer cpt, i
-character(len=128) :: formatstr
-character(len=4096) :: strlong
-integer, dimension(:), allocatable :: list
+integer, intent(in) :: rindex !< index of restraint in list 26
+integer i, k
+real leverage
 
-cpt=count(self%parameters/=0)
-allocate(list(cpt))
-list=pack( (/ (i, i=1, size(self%parameters)) /), self%parameters/=0)
-
-write(formatstr, '(A,I0,A,A)') "(",cpt, '(I5,":",1PE10.3,2X)',")"
-
-if(present(weight)) then
-    write(strlong, formatstr) (self%parameters(list(i)),weight*self%derivatives(list(i)),i=1, size(list))
-else
-    write(strlong, formatstr) (self%parameters(list(i)),self%derivatives(list(i)),i=1, size(list))
+if(.not. allocated(restraints_derivatives)) then
+    write(cmon, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
+    CALL XPRVDU(NCVDU, 1,0)
+    return
 end if
 
-str=trim(strlong)
+do k=1, size(restraints_derivatives)
+	if(rindex==restraints_derivatives(k)%irestraint) then
+		associate(r => restraints_derivatives(k))
 
-end function
+			leverage=dot_product(r%derivatives, matmul(invertm, r%derivatives))
 
-function formatted_parameters(self, names) result(str)
+			WRITE(CMON,'(10X, A, a, "(",I0,"): ", 1PE10.3, 2X, A )') &
+			&   'Leverage ', &
+			&   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%label), &
+			&   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%serial, &
+			&   leverage*r%weight**2, &
+			&	trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+			CALL XPRVDU(NCVDU, 1,0)
+			
+		end associate
+     end if
+end do
+  
+end subroutine
+
+!> print the derivatives in the lis output file
+subroutine printderivatives(rindex)
+use xunits_mod, only: ncwu
 implicit none
-class(block_t), intent(in) :: self
-logical, intent(in), optional :: names !< print names instead of nmubers
-character(len=:), allocatable :: str
-integer cpt, i, j
+integer, intent(in) :: rindex
+integer i, j, k, cpt
 character(len=128) :: formatstr
 character(len=4096) :: strlong
 integer, dimension(:), allocatable :: list
 
-cpt=count(self%parameters/=0)
-allocate(list(cpt))
-list=pack( (/ (i, i=1, size(self%parameters)) /), self%parameters/=0)
+if(.not. allocated(restraints_derivatives)) then
+	WRITE(NCWU,'(A)') 'No derivatives stored, do a refinement cycle'
+	return
+end if
 
-do i=1, cpt
-    do j=1, size(parameters_list)
-        if( list(i)==parameters_list(j)%index ) then
-            list(i)=j
-            exit
-        end if
-    end do
+do k=1, size(restraints_derivatives)
+	if(rindex==restraints_derivatives(k)%irestraint) then
+		associate(r => restraints_derivatives(k))
+			cpt=count(r%parameters/=0)	
+			allocate(list(cpt))
+			list=pack( (/ (i, i=1, size(r%parameters)) /), r%parameters/=0)
+
+			write(formatstr, '(A,I0,A,A)') "(",cpt, '(A4,"(",I4,")",A6,2X)',")"
+			write(strlong, formatstr) ( &
+			&   trim(parameters_list(list(i))%label), parameters_list(list(i))%serial, &
+			&   trim(parameters_list(list(i))%name) ,i=1, size(list))
+			
+			WRITE(NCWU,'(6X,A)') trim(strlong)
+
+			write(formatstr, '(A,I0,A,A)') "(",cpt, '(I5,":",1PE10.3,2X)',")"
+			write(strlong, formatstr) (r%parameters(list(i)),r%weight*r%derivatives(list(i)),i=1, size(list))
+			WRITE(NCWU,'(6X,A,3X,A)') trim(strlong), 'pp'
+			deallocate(list)
+		end associate
+	end if
 end do
 
 
-if(present(names)) then
-    write(formatstr, '(A,I0,A,A)') "(",cpt, '(A4,"(",I4,")",A6,2X)',")"
-    write(strlong, formatstr) ( &
-    &   trim(parameters_list(list(i))%label), parameters_list(list(i))%serial, &
-    &   trim(parameters_list(list(i))%name) ,i=1, size(list))
-else
-    write(formatstr, '(A,I0,A,A)') "(",cpt, '(I16,2X)',")"
-    write(strlong, formatstr) (list(i) ,i=1, size(list))
-end if
+end subroutine
 
-str=trim(strlong)
+!> dump content of derivatives_t (debugging)
+subroutine dumpderivatives(self)
+implicit none
+class(derivatives_t), intent(in) :: self
 
-end function
-
+	print *, self%ioldrestraint, self%irestraint, self%isubrestraint, self%weight
+end subroutine
 
 end module
