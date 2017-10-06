@@ -9106,10 +9106,14 @@ c                CALL XPRVDU(NCVDU,1,0)
             r%ioldrestraint=ioldrestraint
             r%irestraint=subrestraints_parent(ioldrestraint)
             r%isubrestraint=isubrestraint
-            allocate(r%derivatives(size(globalderivatives)))
-            r%derivatives=globalderivatives
-            allocate(r%parameters(size(globalderivatives)))
-            r%parameters=globalparameters
+            if(allocated(globalderivatives)) then
+                allocate(r%derivatives(size(globalderivatives)))
+                r%derivatives=globalderivatives
+            end if
+            if(allocated(globalparameters)) then
+                allocate(r%parameters(size(globalparameters)))
+                r%parameters=globalparameters
+            end if
             r%weight=sign(SQRT(ABS(C)),C)
           end associate
         end if

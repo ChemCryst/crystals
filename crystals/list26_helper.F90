@@ -417,6 +417,11 @@ end if
 do k=1, size(restraints_derivatives)
     if(rindex==restraints_derivatives(k)%irestraint) then
         associate(r => restraints_derivatives(k))
+            if(.not. allocated(r%parameters) .or. .not. allocated(r%derivatives)) then
+                WRITE(NCWU,'(6X,A)') 'No derivatives'
+                cycle
+            end if
+            
             cpt=count(r%parameters/=0)  
             allocate(list(cpt))
             list=pack( (/ (i, i=1, size(r%parameters)) /), r%parameters/=0)
