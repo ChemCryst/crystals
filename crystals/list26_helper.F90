@@ -21,7 +21,7 @@ type derivatives_t
     real, dimension(:), allocatable :: derivatives !< list of derivatives, all blocks appended
     integer, dimension(:), allocatable :: parameters !< parameters corresponding to the derivatives
 contains 
-	procedure, pass(self) :: dump => dumpderivatives
+    procedure, pass(self) :: dump => dumpderivatives
 end type
 type(derivatives_t), dimension(:), allocatable :: restraints_derivatives !< List of derivatives for the restraints
 
@@ -59,7 +59,7 @@ private extend_parent, extend_parameters, extend_derivatives
 
 interface extend !< generic procedure to extend the several allocatables objects
     module procedure extend_restraints, extend_subrestraints, &
-    &	extend_atoms, extend_parent, extend_parameters, extend_derivatives
+    &   extend_atoms, extend_parent, extend_parameters, extend_derivatives
 end interface extend
     
 
@@ -355,7 +355,7 @@ end subroutine
 !> Print the leverage values of a restraint given the invert matrix
 subroutine showleverage(rindex)
 use xiobuf_mod, only: cmon
-use xunits_mod, only: ncvdu
+use xunits_mod, only: ncvdu, ncwu
 implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
 integer i, k
@@ -364,24 +364,36 @@ real leverage
 if(.not. allocated(restraints_derivatives)) then
     write(cmon, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
     CALL XPRVDU(NCVDU, 1,0)
+    write(ncwu, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
     return
 end if
 
 do k=1, size(restraints_derivatives)
-	if(rindex==restraints_derivatives(k)%irestraint) then
-		associate(r => restraints_derivatives(k))
+    if(rindex==restraints_derivatives(k)%irestraint) then
+        associate(r => restraints_derivatives(k))
 
-			leverage=dot_product(r%derivatives, matmul(invertm, r%derivatives))
+            ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
+            ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
+            ! A is design matrix, W weight as a diagonal matrix
+            ! (A^t W A)^-1 is the inverse of normal matrix
+            ! calculation can be done one row of A at at time
+            leverage=dot_product(r%derivatives, matmul(invertm, r%derivatives))*r%weight**2
 
-			WRITE(CMON,'(10X, A, a, "(",I0,"): ", 1PE10.3, 2X, A )') &
-			&   'Leverage ', &
-			&   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%label), &
-			&   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%serial, &
-			&   leverage*r%weight**2, &
-			&	trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
-			CALL XPRVDU(NCVDU, 1,0)
-			
-		end associate
+            WRITE(CMON,'(10X, A, a, "(",I0,"): ", F5.3, 2X, A )') &
+            &   'Leverage ', &
+            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%label), &
+            &   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%serial, &
+            &   leverage, &
+            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+            CALL XPRVDU(NCVDU, 1,0)
+            WRITE(ncwu,'(10X, A, a, "(",I0,"): ", F5.3, 2X, A )') &
+            &   'Leverage ', &
+            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%label), &
+            &   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%serial, &
+            &   leverage, &
+            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+            
+        end associate
      end if
 end do
   
@@ -398,30 +410,32 @@ character(len=4096) :: strlong
 integer, dimension(:), allocatable :: list
 
 if(.not. allocated(restraints_derivatives)) then
-	WRITE(NCWU,'(A)') 'No derivatives stored, do a refinement cycle'
-	return
+    WRITE(NCWU,'(A)') 'No derivatives stored, do a refinement cycle'
+    return
 end if
 
 do k=1, size(restraints_derivatives)
-	if(rindex==restraints_derivatives(k)%irestraint) then
-		associate(r => restraints_derivatives(k))
-			cpt=count(r%parameters/=0)	
-			allocate(list(cpt))
-			list=pack( (/ (i, i=1, size(r%parameters)) /), r%parameters/=0)
+    if(rindex==restraints_derivatives(k)%irestraint) then
+        associate(r => restraints_derivatives(k))
+            cpt=count(r%parameters/=0)  
+            allocate(list(cpt))
+            list=pack( (/ (i, i=1, size(r%parameters)) /), r%parameters/=0)
 
-			write(formatstr, '(A,I0,A,A)') "(",cpt, '(A4,"(",I4,")",A6,2X)',")"
-			write(strlong, formatstr) ( &
-			&   trim(parameters_list(list(i))%label), parameters_list(list(i))%serial, &
-			&   trim(parameters_list(list(i))%name) ,i=1, size(list))
-			
-			WRITE(NCWU,'(6X,A)') trim(strlong)
+            write(formatstr, '(A,I0,A,A)') "(",cpt, '(A4,"(",I4,")",A6,2X)',")"
+            write(strlong, formatstr) ( &
+            &   trim(parameters_list(list(i))%label), parameters_list(list(i))%serial, &
+            &   trim(parameters_list(list(i))%name) ,i=1, size(list))
+            
+            WRITE(NCWU,'(6X,A)') trim(strlong)
 
-			write(formatstr, '(A,I0,A,A)') "(",cpt, '(I5,":",1PE10.3,2X)',")"
-			write(strlong, formatstr) (r%parameters(list(i)),r%weight*r%derivatives(list(i)),i=1, size(list))
-			WRITE(NCWU,'(6X,A,3X,A)') trim(strlong), 'pp'
-			deallocate(list)
-		end associate
-	end if
+            write(formatstr, '(A,I0,A,A)') "(",cpt, '(I5,":",1PE10.3,2X)',")"
+            write(strlong, formatstr) (r%parameters(list(i)),r%weight*r%derivatives(list(i)),i=1, size(list))
+            WRITE(NCWU,'(6X,A,3X,A)') trim(strlong), &
+            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+
+            deallocate(list)
+        end associate
+    end if
 end do
 
 
@@ -432,7 +446,7 @@ subroutine dumpderivatives(self)
 implicit none
 class(derivatives_t), intent(in) :: self
 
-	print *, self%ioldrestraint, self%irestraint, self%isubrestraint, self%weight
+    print *, self%ioldrestraint, self%irestraint, self%isubrestraint, self%weight
 end subroutine
 
 end module

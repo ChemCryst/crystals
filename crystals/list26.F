@@ -1031,6 +1031,7 @@ C--'UPERP' RESTRAINT
             WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
      1        subrestraints(1)%atoms(1)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            call printderivatives(ircpt)
 !            do it=1, size(subrestraints)
 !              if(allocated(subrestraints(it)%blocks)) then
 !                associate(block => subrestraints(it)%blocks(0))
@@ -1108,6 +1109,7 @@ C--'UPERP2' RESTRAINT
             WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
      1        subrestraints(1)%atoms(1)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            call printderivatives(ircpt)
 !            do it=1, size(subrestraints)
 !              if(allocated(subrestraints(1)%blocks)) 
 !     1          then
@@ -1187,7 +1189,8 @@ C--'UALIGN' RESTRAINT
             WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
      1        subrestraints(1)%atoms(1)%M(3,:),
      1        subrestraints(1)%atoms(2)%M(3,:)
-              WRITE(NCWU,'(6X, A)') 'Derivatives: '
+            WRITE(NCWU,'(6X, A)') 'Derivatives: '
+            call printderivatives(ircpt)
 !            do it=1, size(subrestraints)
 !              if(allocated(subrestraints(it)%blocks)) then
 !                associate(block => subrestraints(it)%blocks(0))
@@ -1264,6 +1267,7 @@ C--'URIGU' RESTRAINT
      1        subrestraints(1)%atoms(1)%M(3,:),
      1        subrestraints(1)%atoms(2)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives: '
+            call printderivatives(ircpt)
 !            do it=1, size(subrestraints)
 !              if(allocated(subrestraints(it)%blocks)) then
 !                associate(block => subrestraints(it)%blocks(0))
@@ -1345,6 +1349,7 @@ C--'ULIJ' RESTRAINT
 !              end if
               WRITE(NCWU,*) ''
             end do
+            call printderivatives(ircpt)
             WRITE(NCWU,5063) 
           ENDIF
        
@@ -1405,6 +1410,7 @@ C--'UPLANE' RESTRAINT
             WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
      1        subrestraints(1)%atoms(1)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            call printderivatives(ircpt)
 !            do it=1, size(subrestraints)
 !              if(allocated(subrestraints(1)%blocks)) then
 !                associate(block => subrestraints(it)%blocks(0))
@@ -1603,6 +1609,7 @@ C--'eigen value restraint UEIG' RESTRAINT
             WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
      1        subrestraints(1)%atoms(1)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            call printderivatives(ircpt)
 !            do itp=1, size(subrestraints)
 !              if(allocated(subrestraints(itp)%blocks)) then
 !                WRITE(NCWU,'(6X,A)') 
@@ -1674,6 +1681,7 @@ C--'UQISO' RESTRAINT. near isotropic restraint
             WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
      1        subrestraints(1)%atoms(1)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives:'
+            call printderivatives(ircpt)
 !            do itp=1, size(subrestraints)
 !              if(allocated(subrestraints(itp)%blocks)) then
 !                WRITE(NCWU,'(6X,A)') 
@@ -1754,6 +1762,7 @@ C--'UVOL' RESTRAINT. restrain the volume to be equal
 !              end if
               WRITE(NCWU,*) ''
             end do
+            call printderivatives(ircpt)
             WRITE(NCWU,5063) 
           ENDIF
        
@@ -1818,6 +1827,7 @@ C--'UEQIV' RESTRAINT. restrain the volume to be equal
 !              end if
               WRITE(NCWU,*) ''
             end do
+            call printderivatives(ircpt)
             WRITE(NCWU,5063) 
           ENDIF
        
@@ -2195,6 +2205,9 @@ C--UPERP and UPERP2 RESTRAINTS PRINT
         write(cmon, '(A)') 'Restraint not applied'
         CALL XPRVDU(NCVDU, 1,0)            
       end if
+
+      ! leverages
+      call showleverage(ircpt)
              
       goto 3600   
       
@@ -2276,6 +2289,9 @@ C--UALIGN RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
       
+      ! leverages
+      call showleverage(ircpt)
+
       GOTO 3600
 C
 C--URIGU RESTRAINTS PRINT
@@ -2358,6 +2374,9 @@ C--URIGU RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
 
+      ! leverages
+      call showleverage(ircpt)
+
       goto 3600
       
 C--ULIJ RESTRAINTS PRINT
@@ -2434,6 +2453,9 @@ C--ULIJ RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
             
+      ! leverages
+      call showleverage(ircpt)
+
       goto 3600
       
 C--UPLANE RESTRAINTS PRINT
@@ -2495,6 +2517,9 @@ C--UPLANE RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
       
+      ! leverages
+      call showleverage(ircpt)
+
       GOTO 3600
 C         
 C--UXXQIV RESTRAINTS PRINT
@@ -2871,6 +2896,9 @@ C--UQISO RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)
       end if
        
+      ! leverages
+      call showleverage(ircpt)
+
       goto 3600   
 
 C--UVOL RESTRAINTS PRINT
@@ -2953,6 +2981,9 @@ C--UVOL RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)
       end if
        
+      ! leverages
+      call showleverage(ircpt)
+
       goto 3600   
 
 C--UEQIV RESTRAINTS PRINT
@@ -3031,6 +3062,9 @@ C--UEQIV RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)
       end if
        
+      ! leverages
+      call showleverage(ircpt)
+
       goto 3600   
       
 C--UTLS RESTRAINTS PRINT
@@ -5558,12 +5592,12 @@ C--SET UP A FEW CONSTANTS
                 results%subrestraints(icpt)%atoms(1)%serial=
      &              nint(store(JA+3))
             end do
-            results%subrestraints(1)%description='L(1,1)-<eig>=0'
-            results%subrestraints(2)%description='L(2,2)-<eig>=0'
-            results%subrestraints(3)%description='L(3,3)-<eig>=0'
-            results%subrestraints(4)%description='L(2,3)=0'
-            results%subrestraints(5)%description='L(1,3)=0'
-            results%subrestraints(6)%description='L(1,2)=0'
+            results%subrestraints(srsize-5)%description='L(1,1)-<eig>=0'
+            results%subrestraints(srsize-4)%description='L(2,2)-<eig>=0'
+            results%subrestraints(srsize-3)%description='L(3,3)-<eig>=0'
+            results%subrestraints(srsize-2)%description='L(2,3)=0'
+            results%subrestraints(srsize-1)%description='L(1,3)=0'
+            results%subrestraints(srsize)%description='L(1,2)=0'
           
             results%description=
      &        'The eigen values are restrained to their mean.'//
