@@ -8901,6 +8901,8 @@ C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
       JK=ISTORE(M33CD+6)
       if(.not. savederivatives) then
         sfls_punch_flag=ISTORE(M33CD+5)
+      else
+        sfls_punch_flag=-1
       end if
 C--RESET THE CORE LIMITS
       CALL XRSL
