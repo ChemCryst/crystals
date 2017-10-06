@@ -8896,13 +8896,14 @@ C--CLEAR THE CORE ENTRIES
       CALL XRSL
       CALL XCSAE
 C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
-      CALL XFAL33
-      IF ( IERFLG .LT. 0 ) GO TO 9900
-      JK=ISTORE(M33CD+6)
       if(.not. savederivatives) then
+        CALL XFAL33
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+        JK=ISTORE(M33CD+6)
         sfls_punch_flag=ISTORE(M33CD+5)
       else
         sfls_punch_flag=-1
+        JK=0
       end if
 C--RESET THE CORE LIMITS
       CALL XRSL
