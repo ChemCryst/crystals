@@ -3533,12 +3533,6 @@ C
               type(restraints_t), intent(inout), optional :: results
           end subroutine
       end interface
-      interface 
-          subroutine XADCPD(savederivatives)
-              use list26_mod
-              logical, intent(in), optional :: savederivatives
-          end subroutine
-      end interface
       
       integer, dimension(8) :: IBUFF
       real, dimension(:), allocatable :: card
@@ -8841,7 +8835,7 @@ C--OUTPUT THE QUEUE TO THE DISC
       END
 C
 CODE FOR XADCPD
-      SUBROUTINE XADCPD(savederivativesarg)
+      SUBROUTINE XADCPD
       use sfls_punch_mod
       use list26_mod, only: restraints_derivatives, subrestraints_parent
       use list26_mod, only: extend
@@ -8871,8 +8865,6 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
             
-      logical, optional :: savederivativesarg !< flag to save the derivatives, True by default, disabled when doing CHECK
-      logical savederivatives
       double precision, dimension(:), allocatable :: globalderivatives !< Line of the unweigthed design matrix including all the blocks
       double precision, dimension(:), allocatable :: derivatives !< line of the unweighted design matrix from a single block
       integer, dimension(:), allocatable :: globalparameters !< Parameters number from globalderivatives
@@ -8882,12 +8874,7 @@ C
       integer sfls_punch_flag, iblockindex, isubrestraint
       integer ioldrestraint, saveilsmsg, saveilsnms
       
-      savederivatives=.true.
-      if(present(savederivativesarg)) then
-          savederivatives=savederivativesarg
-      end if
-      
-      if(savederivatives .and. allocated(restraints_derivatives)) then
+      if(allocated(restraints_derivatives)) then
         deallocate(restraints_derivatives)
       end if
       
@@ -8898,16 +8885,10 @@ C--CLEAR THE CORE ENTRIES
       CALL XRSL
       CALL XCSAE
 C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
-      if(savederivatives) then
-        ! during a refinement cycle
-        CALL XFAL33
-        IF ( IERFLG .LT. 0 ) GO TO 9900
-        JK=ISTORE(M33CD+6)
-        sfls_punch_flag=ISTORE(M33CD+5)
-      else
-        sfls_punch_flag=-1
-        JK=0
-      end if
+      CALL XFAL33
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+      JK=ISTORE(M33CD+6)
+      sfls_punch_flag=ISTORE(M33CD+5)
 C--RESET THE CORE LIMITS
       CALL XRSL
       CALL XCSAE
@@ -9107,24 +9088,22 @@ c                CALL XPRVDU(NCVDU,1,0)
 1800    CONTINUE
 
         ! Saving derivatives
-        if(savederivatives) then
-          call extend(restraints_derivatives)
-          icpt=size(restraints_derivatives)
-          associate(r => restraints_derivatives(icpt))
-            r%ioldrestraint=ioldrestraint
-            r%irestraint=subrestraints_parent(ioldrestraint)
-            r%isubrestraint=isubrestraint
-            if(allocated(globalderivatives)) then
-                allocate(r%derivatives(size(globalderivatives)))
-                r%derivatives=globalderivatives
-            end if
-            if(allocated(globalparameters)) then
-                allocate(r%parameters(size(globalparameters)))
-                r%parameters=globalparameters
-            end if
-            r%weight=sign(SQRT(ABS(C)),C)
-          end associate
-        end if
+        call extend(restraints_derivatives)
+        icpt=size(restraints_derivatives)
+        associate(r => restraints_derivatives(icpt))
+          r%ioldrestraint=ioldrestraint
+          r%irestraint=subrestraints_parent(ioldrestraint)
+          r%isubrestraint=isubrestraint
+          if(allocated(globalderivatives)) then
+            allocate(r%derivatives(size(globalderivatives)))
+            r%derivatives=globalderivatives
+          end if
+          if(allocated(globalparameters)) then
+            allocate(r%parameters(size(globalparameters)))
+            r%parameters=globalparameters
+          end if
+          r%weight=sign(SQRT(ABS(C)),C)
+        end associate
              
         if(sfls_punch_flag>0 .and. allocated(globalderivatives)) then
             call sfls_punch_addtodesign(
