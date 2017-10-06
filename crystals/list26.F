@@ -3867,7 +3867,9 @@ C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
 1750  CONTINUE
       ISTAT2=ISTAT2OLD
       CALL XTPDQF
-      CALL XADCPD(savederivatives)
+      if(savederivatives) then
+        CALL XADCPD
+      end if
       IF ( IERFLG .LT. 0 ) GO TO 9900
 1770  CONTINUE
       IF(L26WRN.GT.0) THEN
