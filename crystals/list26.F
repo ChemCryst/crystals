@@ -8896,7 +8896,8 @@ C--CLEAR THE CORE ENTRIES
       CALL XRSL
       CALL XCSAE
 C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
-      if(.not. savederivatives) then
+      if(savederivatives) then
+        ! during a refinement cycle
         CALL XFAL33
         IF ( IERFLG .LT. 0 ) GO TO 9900
         JK=ISTORE(M33CD+6)
