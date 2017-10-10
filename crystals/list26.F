@@ -1162,9 +1162,12 @@ C--'UALIGN' RESTRAINT
 5060  CONTINUE
       CALL XCVCUALIGN
 
+      n=0
       if(allocated(restraints_list(ircpt)%subrestraints)) then
-      if(size(restraints_list(ircpt)%subrestraints)>0) then
-        associate(subrestraints => restraints_list(ircpt)%subrestraints)
+        do jcpt=1, size(restraints_list(ircpt)%subrestraints), 3
+        n=n+1
+        associate(subrestraints => 
+     1    restraints_list(ircpt)%subrestraints(jcpt))
           ! lis file output
 5061      FORMAT(6x,'Restrain Delta eigenvectors ',F0.5,
      2      ' angstrom squared,',
@@ -1172,55 +1175,31 @@ C--'UALIGN' RESTRAINT
 5063      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
      2      8X,'Delta',2X,'Parameter')
           IF (ISSPRT .EQ. 0) THEN
-C TODO: atoms(2) isn't set in XCVCUALIGN!
-c            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
-c     1        A,'UALIGN from ',      
-c     1        trim(subrestraints(1)%atoms(1)%label), 
-c     1        subrestraints(1)%atoms(1)%serial, 
-c     1        trim(subrestraints(1)%atoms(2)%label), 
-c     1        subrestraints(1)%atoms(2)%serial
-            WRITE(NCWU,5061)B,C
-            WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-C TODO: atoms(2) isn't set in XCVCUALIGN!
-c            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-c     1        subrestraints(1)%atoms(1)%M(1,:),
-c     1        subrestraints(1)%atoms(2)%M(1,:)
-C TODO: atoms(2) isn't set in XCVCUALIGN!
-c            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-c     1        subrestraints(1)%atoms(1)%M(2,:),
-c     1        subrestraints(1)%atoms(2)%M(2,:)
-C TODO: atoms(2) isn't set in XCVCUALIGN!
-c            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-c     1        subrestraints(1)%atoms(1)%M(3,:),
-c     1        subrestraints(1)%atoms(2)%M(3,:)
-            WRITE(NCWU,'(6X, A)') 'Derivatives: '
-            call printderivatives(ircpt)
-!            do it=1, size(subrestraints)
-!              if(allocated(subrestraints(it)%blocks)) then
-!                associate(block => subrestraints(it)%blocks(0))
-!                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
-!                  WRITE(NCWU,'(6X,A,3X,A)') block%print(), 
-!     1            trim(subrestraints(it)%description)
-!                end associate
-!              end if
-!            end do
+            WRITE(NCWU,'(/1X,A,A,"(",I0,")", A)')          
+     1        'UALIGN ',      
+     1        trim(subrestraints%atoms(1)%label), 
+     1        subrestraints%atoms(1)%serial,
+     1        ' to average direction of all atoms of the restraints'
+            WRITE(NCWU,5061) 0.0 ,C
+            WRITE(NCWU,'(6X, A, A)') 'Transformation matrix to',
+     1        ' average eigenvector:'
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints%atoms(1)%M(1,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints%atoms(1)%M(2,:)
+            WRITE(NCWU,'(6X, 3(1PE10.3,1X))') 
+     1        subrestraints%atoms(1)%M(3,:)
             WRITE(NCWU,5063) 
           ENDIF
-       
-          ! screen output
-5062      FORMAT(1X, A, ' from ', A,'(',I0,') to ',
-     1       A,'(',I0,'). ', 
-     1      'Target ',F7.4,' esd ', 1PE10.3)
-          WRITE(CMON,5062) 'UALIGN', 
-     1      trim(subrestraints(1)%atoms(1)%label), 
-     1      subrestraints(1)%atoms(1)%serial, 
-     1      trim(subrestraints(1)%atoms(2)%label), 
-     1      subrestraints(1)%atoms(2)%serial, B,C
-          CALL XPRVDU(NCVDU, 1,0)      
-5064      FORMAT(8X, 'Atom', 8X, 'Value',8X,'Delta',4X,'Parameter')
-          WRITE(CMON,5064)
-          CALL XPRVDU(NCVDU, 1,0) 
         end associate
+        end do
+       
+        ! screen output
+        WRITE(CMON,'(/1X,A)')          
+     1    'Align principal axis each ADP to the average of all '      
+        CALL XPRVDU(NCVDU, 1,0)      
+        WRITE(CMON,'(8X, "Value ",8X,"Target", 4X, "Parameter")')
+        CALL XPRVDU(NCVDU, 1,0) 
       else      
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
@@ -1228,15 +1207,12 @@ c     1        subrestraints(1)%atoms(2)%M(3,:)
         write(cmon, '(A)') 'Restraint not applied'
         CALL XPRVDU(NCVDU, 1,0)            
       end if
-      else      
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
-        end if        
-        write(cmon, '(A)') 'Restraint not applied'
-        CALL XPRVDU(NCVDU, 1,0)            
+
+      IF (ISSPRT .EQ. 0) THEN
+        WRITE(NCWU,'(6X, A)') 'Derivatives: '
+        call printderivatives(ircpt)
       end if
       
-      N=2
       GOTO 2500
 C
 C--'URIGU' RESTRAINT
@@ -2219,65 +2195,57 @@ C
 C--UALIGN RESTRAINTS PRINT
 3260  CONTINUE
     
-3286  FORMAT('  ',(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A,I0,I0,A)    
+32601 FORMAT('  ',A1,6X,A4,I4,4X,I5,4I3,1PE12.3,1X,1PE12.3,X,
+     &   1PE12.3,6X,A)    
 
+      allocate(Uij_indices(3,2))
+      Uij_indices(1,:)=(/1,2/)
+      Uij_indices(2,:)=(/1,3/)
+      Uij_indices(3,:)=(/2,3/)
+          
       if(allocated(restraints_list(ircpt)%subrestraints)) then
-      if(size(restraints_list(ircpt)%subrestraints)>0) then
-      associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
+      do icpt=1, size(restraints_list(ircpt)%subrestraints)
+        associate(subrestraint => 
+     1      restraints_list(ircpt)%subrestraints(icpt),
+     1    it => Uij_indices(mod(icpt-1,3)+1, 1), 
+     1    jt => Uij_indices(mod(icpt-1,3)+1, 2) )
 
-        IF (ISSPRT .EQ. 0) THEN     
-          allocate(Uij_indices(3,2))
-          Uij_indices(1,:)=(/1,2/)
-          Uij_indices(2,:)=(/1,3/)
-          Uij_indices(3,:)=(/2,3/)
-          do lt=1, ubound(Uij_indices, 1)
-            associate(it=> Uij_indices(lt, 1), jt=> Uij_indices(lt, 2) )
-              WRITE(NCWU,3286) 
-     1         subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
-     3         subrestraint%atoms(1)%adps_cart(it,jt)-B, 
-     4         'U[',it,jt,']'
-              WRITE(NCWU,3286)  
-     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
-     3         subrestraint%atoms(2)%adps_cart(it,jt)-B, 
-     4         'U[',it,jt,']'
-            end associate
-          end do
-          deallocate(Uij_indices)
+        IF (ISSPRT .EQ. 0) THEN       
+              WRITE(NCWU,32601) ' ',
+     1         subrestraint%atoms(1)%label,
+     2         subrestraint%atoms(1)%serial,
+     2         (ISTORE(M),M=JD,JE),
+     3         subrestraint%atoms(1)%adps_cart(it,jt),
+     3         0.0,
+     3         subrestraint%atoms(1)%adps_cart(it,jt),
+     5         subrestraint%description
         ENDIF      
        
-3287    FORMAT(1X,2X,1X, (2X,A4,I4,1X,1PE10.3,1X),
-     1    2X,1PE10.3,6X,A,I0,I0,A)
+!3287    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
+32602    FORMAT(4X, A2,'(',I4,')', x, 1PE9.2,1x, 1pe9.2, x, 1pe9.2 , 
+     1     3x, A)
 
-        allocate(Uij_indices(3,2))
-        Uij_indices(1,:)=(/1,2/)
-        Uij_indices(2,:)=(/1,3/)
-        Uij_indices(3,:)=(/2,3/)
-        do lt=1, ubound(Uij_indices, 1)
-          associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-            WRITE(CMON, 3287) subrestraint%atoms(1)%label,
-     1        subrestraint%atoms(1)%serial,
-     2        subrestraint%atoms(1)%adps_cart(it,jt),
-     3        subrestraint%atoms(1)%adps_cart(it,jt)-B, ! B is the target
-     4        'Uc[',it,jt,']'
-            CALL XPRVDU(NCVDU, 1,0)
-            WRITE(CMON, 3287) subrestraint%atoms(2)%label,
-     1        subrestraint%atoms(2)%serial,
-     2        subrestraint%atoms(2)%adps_cart(it,jt),
-     3        subrestraint%atoms(2)%adps_cart(it,jt)-B, ! B is the target
-     4        'Uc[',it,jt,']'
-            CALL XPRVDU(NCVDU, 1,0)
-          end associate
-        end do
-        deallocate(Uij_indices)
+        if(mod(icpt-1,3)==0) then
+          write(cmon, '(5X,A, A,"(",I0,")")') 'Atom ',
+     2      trim(subrestraint%atoms(1)%label),
+     3      subrestraint%atoms(1)%serial
+          CALL XPRVDU(NCVDU, 1,0)
+        end if
+     
+        ! (8X, "Value ",8X,"Target", 4X, "Parameter")
+        WRITE(CMON, '(4X,1PE10.3,11X,F3.1,4X,A)') 
+     3    subrestraint%atoms(1)%adps_cart(it,jt),
+     4    0.0,
+     5    subrestraint%description
+        CALL XPRVDU(NCVDU, 1,0)
        
-        Q=sum(subrestraint%atoms(1)%adps_cart)
-        O=sum(subrestraint%atoms(1)%adps_cart-B)
-        P=sum(subrestraint%atoms(1)%adps_cart-B)**2 2
-        NCA = 2
-
-      end associate
+        Q=Q+subrestraint%atoms(1)%adps_cart(it,jt)
+        O=O+subrestraint%atoms(1)%adps_cart(it,jt)
+        P=P+subrestraint%atoms(1)%adps_cart(it,jt)**2
+     
+        end associate
+      end do
+      NCA=size(restraints_list(ircpt)%subrestraints)/3
       else      
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
@@ -2285,14 +2253,7 @@ C--UALIGN RESTRAINTS PRINT
         write(cmon, '(A)') 'Restraint not applied'
         CALL XPRVDU(NCVDU, 1,0)            
       end if
-      else      
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
-        end if        
-        write(cmon, '(A)') 'Restraint not applied'
-        CALL XPRVDU(NCVDU, 1,0)            
-      end if
-      
+            
       ! leverages
       call showleverage(ircpt)
 
@@ -2301,7 +2262,7 @@ C
 C--URIGU RESTRAINTS PRINT
 3261  CONTINUE
     
-!3286  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A,I0,I0,A)    
+3286  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A,I0,I0,A)    
 !3288  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),A12,6X,A,I0,I0,A)    
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
@@ -2332,7 +2293,7 @@ C--URIGU RESTRAINTS PRINT
           deallocate(Uij_indices)
         ENDIF      
        
-!3287    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
+3287    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
         allocate(Uij_indices(3,2))
         Uij_indices(1,:)=(/1,3/)
         Uij_indices(2,:)=(/2,3/)
