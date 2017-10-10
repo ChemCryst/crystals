@@ -1172,23 +1172,27 @@ C--'UALIGN' RESTRAINT
 5063      FORMAT(/2X,(10X,'Atom',2X,1X,4X,'S(I) L TX TY TZ',7X,'Value'),
      2      8X,'Delta',2X,'Parameter')
           IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
-     1        A,'UALIGN from ',      
-     1        trim(subrestraints(1)%atoms(1)%label), 
-     1        subrestraints(1)%atoms(1)%serial, 
-     1        trim(subrestraints(1)%atoms(2)%label), 
-     1        subrestraints(1)%atoms(2)%serial
+C TODO: atoms(2) isn't set in XCVCUALIGN!
+c            WRITE(NCWU,'(/1X,F4.0,A,A,"(",I0,") to ", A, "(",I0,")")')          
+c     1        A,'UALIGN from ',      
+c     1        trim(subrestraints(1)%atoms(1)%label), 
+c     1        subrestraints(1)%atoms(1)%serial, 
+c     1        trim(subrestraints(1)%atoms(2)%label), 
+c     1        subrestraints(1)%atoms(2)%serial
             WRITE(NCWU,5061)B,C
             WRITE(NCWU,'(6X, A)') 'Transformation matrix:'
-            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1        subrestraints(1)%atoms(1)%M(1,:),
-     1        subrestraints(1)%atoms(2)%M(1,:)
-            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1        subrestraints(1)%atoms(1)%M(2,:),
-     1        subrestraints(1)%atoms(2)%M(2,:)
-            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
-     1        subrestraints(1)%atoms(1)%M(3,:),
-     1        subrestraints(1)%atoms(2)%M(3,:)
+C TODO: atoms(2) isn't set in XCVCUALIGN!
+c            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+c     1        subrestraints(1)%atoms(1)%M(1,:),
+c     1        subrestraints(1)%atoms(2)%M(1,:)
+C TODO: atoms(2) isn't set in XCVCUALIGN!
+c            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+c     1        subrestraints(1)%atoms(1)%M(2,:),
+c     1        subrestraints(1)%atoms(2)%M(2,:)
+C TODO: atoms(2) isn't set in XCVCUALIGN!
+c            WRITE(NCWU,'(6X, 3(1PE10.3,1X), 6X, 3(1PE10.3,1X))') 
+c     1        subrestraints(1)%atoms(1)%M(3,:),
+c     1        subrestraints(1)%atoms(2)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives: '
             call printderivatives(ircpt)
 !            do it=1, size(subrestraints)
