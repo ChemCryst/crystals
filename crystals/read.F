@@ -922,6 +922,7 @@ C
       DATA ITYPE  / 9 / , IREMOV / 10 / , ISTRE  / 11 / , ISTART / 12 /
       DATA ISCRIP / 13 /, ICOMND / 14 / , ICLOSE / 15 / , ISPAWN / 16 /
       DATA IDOLLA / 17 /, IAPEND / 18 / , IBENCH / 19 / , IDEFIN / 20 /
+      DATA IFLUSH / 21 /
 C
       DATA NUSE / 2 / , LUSE / 4 /
 C
@@ -974,6 +975,7 @@ C      PAUS(E)     HELP        SET         ATTACH      OPEN
 C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
 C      SPAW(N)     $           APPE(ND)    BENCH       DEFI(NE)
+C      FLUS(H)
 C
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
       IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
@@ -994,7 +996,7 @@ CDJWMAR99
      2        1600 , 1700 , 1200 , 1200 , 2000 ,
      3        2100 , 2200 , 2300 , 2400 , 2500 , 
      4        2600 , 2600 , 1550 , 3000 , 3200 , 
-     5        9920 ) , ISYSIN
+     5        3300 , 9920 ) , ISYSIN
       GO TO 9920
 C
 C
@@ -1381,6 +1383,12 @@ C----- CREATE A NEW FILE
      1         'Closing in 4 seconds'/)
       CALL XPAUSE (4000)
       CALL XEND
+      GOTO 9000
+C
+3300  CONTINUE
+C -- Flush
+      CALL XRDOPN ( 9, IDEV, CFILE, LFILE )
+      GO TO 9000
 
 C
 9000  CONTINUE
@@ -2485,6 +2493,9 @@ C                          6      OPEN SPECIFIED FILE AND DEVICE
 C                          7      CLOSE SPECIFIED FILE AND DEVICE
 C                          8      APPEND TO SPECIFIED FILE AND DEVICE
 C
+C                          9      FLUSH
+C Flushing is a bit of a bodge in order to easily conserve the other operations
+C
 C            JDEV                 DEVICE
 C            CFILE,LFILE          FILE NAME AND LENGTH
 C
@@ -2496,7 +2507,7 @@ C
 C
 CDJWMAR99
 C      PARAMETER ( MAXFNC = 3 )
-      PARAMETER ( MAXFNC = 4 )
+      PARAMETER ( MAXFNC = 5 )
 C
       CHARACTER*16 COPER(MAXFNC)
       CHARACTER*8 CRESLT(MAXFNC) , CACTN(MAXFNC)
@@ -2517,23 +2528,26 @@ C
       INCLUDE 'XSSCHR.INC'
       INCLUDE 'XIOBUF.INC'
       DATA COPER / ' output sent to ', ' connected to ', 'closed', 
-     1 ' appended to '/
+     1 ' appended to ', 'flushed'/
       DATA CRESLT / 'released' , 'opened  ' , 'closed  '
-     1 , 'appended' /
+     1 , 'appended', 'flushed' /
       DATA CACTN  / 'releases' , ' opens  ' , ' closes ', 
-     1 'appends ' /
-      DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND '/
+     1 'appends ', 'flushed' /
+      DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND ',
+     1 'FLUSH'/
 C
-      DATA IRQARG / 2 , 2 , 1, 2  /
+      DATA IRQARG / 2 , 2 , 1, 2, 1  /
 CDJWMAR99]
 C
       DATA MCHNAM / 4 / , LNAM / 8 /
 C
 CDJWMAR99 - SET APPEND OFF
             IAPPND = 0
+      IF (JFUNC .EQ. 9) THEN
+        IFUNC=MAXFNC                      !FLUSH
+      ELSE IF (JFUNC .GT. MAXFNC-1) THEN
 C----- MAKE INTERNAL CALL LOOK LIKE AN EXTERNAL
-      IF (JFUNC .GT. MAXFNC) THEN
-        IFUNC = JFUNC - MAXFNC
+        IFUNC = JFUNC - MAXFNC+1
       ELSE
         IFUNC = JFUNC
       ENDIF
@@ -2551,7 +2565,7 @@ C -- CHECK PARAMETERS TO THE ROUTINE
       IF (LFILE .GT. LNMMAX) GOTO 9930
 C -- IDENTIFY FIRST INPUT ARGUMENT ( DEVICE NAME )
 C
-      IF (JFUNC .LE. MAXFNC) THEN
+      IF (IFUNC .LE. MAXFNC) THEN
         IREQUI = IRQARG(IFUNC)
         LENGTH = KRDARG ( IREQUI , 2 )
         IF ( LENGTH .LE. 0 ) GO TO 9910
@@ -2560,7 +2574,7 @@ C
 C -- IDENTIFY THE DEVICE THE USER WANTS, AND FIND ITS CHARACTERISTICS
 C
       IF ( NFLUSD .LE. 0 ) GO TO 9910
-      IF (JFUNC .LE. MAXFNC) THEN
+      IF (IFUNC .LE. MAXFNC) THEN
         N = MIN0 ( MCHNAM , LENGTH )
         IFIND = KCOMP ( N , IMAGE(NC) , KEYFIL , NFLUSD , LNAM )
       ELSE
@@ -2579,6 +2593,13 @@ C
       IF ( ISSINI .GT. 0 ) ILOCK = 1
       IOPEN  = IFLOPN(IFIND)
 C
+C
+      IF (JFUNC.EQ.9) THEN
+        CALL FLUSH(IDEV)
+        GOTO 9010
+      ENDIF     
+C
+CC
 C -- CHECK THAT THE OPERATION MAY BE PERFORMED ON THIS DEVICE
 C
       IF ( ILOCK .EQ. 2 ) GO TO 9960
@@ -2626,7 +2647,7 @@ C
 cdjwsep2011
              IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
               IDJW = MIN(8,LSSPRG)
-              WRITE(NCWU,1007)  CSSPRG(1:IDJW), CACTN(kFUNC),
+              WRITE(NCWU,1007)  CSSPRG(1:IDJW), CACTN(KFUNC),
      2                         IDEV, OLDFIL(1:LENNAM)
 1007    FORMAT('READ      ', A,A,           T38, ': Unit =',I8,1X,A)
              ENDIF
@@ -2736,9 +2757,6 @@ C
       IERFLG = -1
 9010  CONTINUE
       RETURN
-C
-C
-C
 C
 CDJWMAR99[
 9900  CONTINUE
