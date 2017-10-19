@@ -1,4 +1,4 @@
-C $Log: read.F,v $
+C $Log: read.F,v $ 
 C Revision 1.67  2013/06/11 12:30:39  pascal
 C Linux changes
 C
@@ -732,7 +732,7 @@ C If in script mode, set flag.
 	  CALL FLUSH(NCWU)
 	  CALL FLUSH(NCPU)
 	  CALL FLUSH(NCAWU)
-          call flush(123)       ! for debugging purposes
+          call FLUSH(123)       ! for debugging purposes
           CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
@@ -874,7 +874,7 @@ C
 CDJWMAR99 Add APPEND as system function - implies 'OPEN'
 CDJWOXT00 Add BENCHMARK for timings
 CRICAPR03 Add DEFINE as system instruction. Build .dsc and exit.
-C
+CDJWOCT17 Add FLUSH to flush output buffers while file is still open
 C  INPUT :-
 C
 C      IN          DUMMY ARGUMENT.
@@ -2507,12 +2507,12 @@ C
 C
 CDJWMAR99
 C      PARAMETER ( MAXFNC = 3 )
-      PARAMETER ( MAXFNC = 5 )
+      PARAMETER ( MAXFNCX = 5 )
 C
-      CHARACTER*16 COPER(MAXFNC)
-      CHARACTER*8 CRESLT(MAXFNC) , CACTN(MAXFNC)
-      CHARACTER*7 CINSTR(MAXFNC)
-      DIMENSION   IRQARG(MAXFNC)
+      CHARACTER*16 COPER(MAXFNCX)
+      CHARACTER*8 CRESLT(MAXFNCX) , CACTN(MAXFNCX)
+      CHARACTER*7 CINSTR(MAXFNCX)
+      DIMENSION   IRQARG(MAXFNCX)
 C
       DIMENSION JDEV(4)
 C
@@ -2542,39 +2542,37 @@ C
       DATA MCHNAM / 4 / , LNAM / 8 /
 C
 CDJWMAR99 - SET APPEND OFF
-            IAPPND = 0
+      IAPPND = 0
+      MAXFNC = MAXFNCX-1                   !THE REAL I/O FUNCTIONS
       IF (JFUNC .EQ. 9) THEN
-        IFUNC=MAXFNC                      !FLUSH
-      ELSE IF (JFUNC .GT. MAXFNC-1) THEN
+        IFUNC=MAXFNCX                      !FLUSH  (5)
+      ELSE IF (JFUNC .GT. MAXFNC) THEN
 C----- MAKE INTERNAL CALL LOOK LIKE AN EXTERNAL
-        IFUNC = JFUNC - MAXFNC+1
+        IFUNC = JFUNC - MAXFNC
       ELSE
         IFUNC = JFUNC
       ENDIF
-CDJWMAR99[
 C      A TEMPORARY BODGE TO TEST THE THE IDEA
       KFUNC = IFUNC
       IF (IFUNC .EQ. 4) THEN
             IFUNC = 2
             IAPPND = ISSAPP
       ENDIF
-CDJWMAR99]
 C
 C -- CHECK PARAMETERS TO THE ROUTINE
-      IF ((IFUNC .LE. 0 ) .OR. ( IFUNC .GT. MAXFNC ) ) GO TO 9920
+      IF ((IFUNC .LE. 0 ) .OR. ( IFUNC .GT. MAXFNCX ) ) GO TO 9920
       IF (LFILE .GT. LNMMAX) GOTO 9930
-C -- IDENTIFY FIRST INPUT ARGUMENT ( DEVICE NAME )
 C
-      IF (IFUNC .LE. MAXFNC) THEN
+C -- IDENTIFY FIRST INPUT ARGUMENT ( DEVICE NAME )
+      IF ((JFUNC .LE. MAXFNC).OR.(JFUNC.EQ.9)) THEN
         IREQUI = IRQARG(IFUNC)
         LENGTH = KRDARG ( IREQUI , 2 )
         IF ( LENGTH .LE. 0 ) GO TO 9910
       ENDIF
 C
 C -- IDENTIFY THE DEVICE THE USER WANTS, AND FIND ITS CHARACTERISTICS
-C
       IF ( NFLUSD .LE. 0 ) GO TO 9910
-      IF (IFUNC .LE. MAXFNC) THEN
+      IF ((JFUNC .LE. MAXFNC).OR.(JFUNC.EQ.9)) THEN
         N = MIN0 ( MCHNAM , LENGTH )
         IFIND = KCOMP ( N , IMAGE(NC) , KEYFIL , NFLUSD , LNAM )
       ELSE
