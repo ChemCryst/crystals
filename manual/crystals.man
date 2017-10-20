@@ -277,6 +277,15 @@ For a simple example, see LIST 1, section #RLIST01#.
  is likely to be very site-specific.
 #Q
 
+#I\RELEASE  devicename filename#
+#PThe file currently open on 'devicename' is closed, and a new file opened
+ on that device if necessary. The file just closed can be examined using
+ the \TYPE command. The filename parameter is optional. If it is
+ specified, the new file will be opened with that name.
+#PUseful devices currently available include PRINTER, PUNCH, LOG and MONITOR.
+
+#Q
+
 #I\OPEN devicename filename#
 #PThis command is similar to RELEASE, except that a wider range of
  device
@@ -297,18 +306,24 @@ For a simple example, see LIST 1, section #RLIST01#.
 #I\CLOSE devicename #
 #PAny file on specified device is closed.
 
-#I\RELEASE  devicename filename#
-#PThe file currently open on 'devicename' is closed, and a new file opened
- on that device if necessary. The file just closed can be examined using
- the \TYPE command. The filename parameter is optional. If it is
- specified, the new file will be opened with that name.
-#PUseful devices currently available include PRINTER, PUNCH, LOG and MONITOR.
-
 #Q
 #I\APPEND devicename filename#
 #POutput to the specified device is appended to any output already in
 the specified file.
 #Q
+
+
+#Q
+#I\FLUSH devicename #
+#PBuffered output on the specified device is flushed to the connected file
+ so that it can be seen with an editor.
+#J
+      e.g.
+      \FLUSH LOG
+      \FLUSH PRINT
+
+#Q
+
 #IDevice names#
 #PDevices are names used inside CRYSTALS to refer
 to files that it has opened. Deviecs recognised by CRYSTALS are:
@@ -8760,35 +8775,30 @@ factor control, see section #RLIST23#).
 #PIf the weighting scheme is changed, new weights are automatically
  computed for the next structure factor calculation. The computation of
  weights can be forced at any time with \WEIGHT.
-#I\WEIGHT INPUT=#
+#I\WEIGHT INPUT= FACTOR=#
 #KINPUT#
 Indicates which reflection list to use.
 #J
       6      Default
       7      Alternative reflection list
 #
-#Q
-#DLIST LEVEL=#
-#KLEVEL#
-LEVEL is OFF, LOW, MEDIUM or HIGH 
-#
-#YRe-weighting the reflections - REWEIGHT#
-#HSreweight#
-#I\REWEIGHT INPUT= FACTOR=#
-#KINPUT#
-Indicates which reflection list to use.
-#J
-      6      Default
-      7      Alternative reflection list
-#
+
 #KFACTOR#
 # If FACTOR is less or equal zero, the code tries to compute a value
  which will make S (GoF) about unity.  It is important that the GoF 
  stored in LIST 30 is up to date. The SCRIPT REWEIGHT will try to do this 
  for you.
+# If FACTOR is unity, the re-weighting factor is taken from LIST 4.
+ This is the default action
+#P
+If FACTOR is greater than zero and not exactly unity,
+ all weights will be multiplied by this amount.  
 #
-If FACTOR is greater than zero, all weights will be multiplied by this 
-amount.  The default value is unity.
+
+#Q
+#DLIST LEVEL=#
+#KLEVEL#
+LEVEL is OFF, LOW, MEDIUM or HIGH 
 #
 
 #Q
