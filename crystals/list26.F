@@ -2276,18 +2276,18 @@ C--URIGU RESTRAINTS PRINT
           Uij_indices(3,:)=(/3,3/)
           do lt=1, ubound(Uij_indices, 1)
             associate(it=> Uij_indices(lt, 1), jt=> Uij_indices(lt, 2) )
-              WRITE(NCWU,3286) 
+              WRITE(NCWU,3286) ' ',
      1         subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
      2       (ISTORE(M),M=JD,JE),subrestraint%atoms(1)%adps_cart(it,jt),
      3          subrestraint%atoms(1)%adps_cart(it,jt)-
      4          subrestraint%atoms(2)%adps_cart(it,jt)+B, 
      5          'Uc1[',it,jt,']'
-              WRITE(NCWU,3286)  
-     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
-     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
-     3          subrestraint%atoms(2)%adps_cart(it,jt)-
-     4          subrestraint%atoms(1)%adps_cart(it,jt)+B, 
-     5          'Uc2[',it,jt,']'
+c              WRITE(NCWU,3286) ' ', 
+c     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
+c     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
+c     3          subrestraint%atoms(2)%adps_cart(it,jt)-
+c     4          subrestraint%atoms(1)%adps_cart(it,jt)+B, 
+c     5          'Uc2[',it,jt,']'
             end associate
           end do
           deallocate(Uij_indices)
