@@ -2300,19 +2300,12 @@ c     5          'Uc2[',it,jt,']'
         Uij_indices(3,:)=(/3,3/)
         do lt=1, ubound(Uij_indices, 1)
           associate(it => Uij_indices(lt, 1), jt => Uij_indices(lt, 2) )
-            WRITE(CMON, 3287) subrestraint%atoms(1)%label,
+            WRITE(CMON, 3287) ' ', subrestraint%atoms(1)%label,
      1        subrestraint%atoms(1)%serial,
      2        subrestraint%atoms(1)%adps_cart(it,jt),
      3        subrestraint%atoms(1)%adps_cart(it,jt)-
      4        subrestraint%atoms(2)%adps_cart(it,jt)+B, ! B is the target
      5        'Uc1[',it,jt,']'
-            CALL XPRVDU(NCVDU, 1,0)
-            WRITE(CMON, 3287) subrestraint%atoms(2)%label,
-     1        subrestraint%atoms(2)%serial,
-     2        subrestraint%atoms(2)%adps_cart(it,jt),
-     3        subrestraint%atoms(2)%adps_cart(it,jt)- ! B is the target
-     4        subrestraint%atoms(1)%adps_cart(it,jt)+B, ! B is the target
-     4        'Uc2[',it,jt,']'
             CALL XPRVDU(NCVDU, 1,0)
           end associate
         end do
