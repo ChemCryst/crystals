@@ -2046,6 +2046,10 @@ C--VIBRATION RESTRAINTS PRINT
 C--CALCULATE THE MEAN
       A1(1)=0.5*(A1(1)+A1(2)+B)
       A1(2)=A1(3)
+      
+      ! leverages
+      call showleverage(ircpt)
+            
       GOTO 2950
 C--UXZBAR RESTRAINTS PRINT
 3280  CONTINUE
@@ -2215,9 +2219,9 @@ C--UALIGN RESTRAINTS PRINT
      1         subrestraint%atoms(1)%label,
      2         subrestraint%atoms(1)%serial,
      2         (ISTORE(M),M=JD,JE),
-     3         subrestraint%atoms(1)%adps_cart(it,jt),
-     3         0.0,
-     3         subrestraint%atoms(1)%adps_cart(it,jt),
+     3         subrestraint%rvalue,
+     3         subrestraint%rtarget,
+     3         subrestraint%rvalue-subrestraint%rtarget,
      5         subrestraint%description
         ENDIF      
        
@@ -2234,14 +2238,14 @@ C--UALIGN RESTRAINTS PRINT
      
         ! (8X, "Value ",8X,"Target", 4X, "Parameter")
         WRITE(CMON, '(4X,1PE10.3,11X,F3.1,4X,A)') 
-     3    subrestraint%atoms(1)%adps_cart(it,jt),
-     4    0.0,
+     3    subrestraint%rvalue,
+     4    subrestraint%rtarget,
      5    subrestraint%description
         CALL XPRVDU(NCVDU, 1,0)
        
-        Q=Q+subrestraint%atoms(1)%adps_cart(it,jt)
-        O=O+subrestraint%atoms(1)%adps_cart(it,jt)
-        P=P+subrestraint%atoms(1)%adps_cart(it,jt)**2
+        Q=Q+subrestraint%rvalue
+        O=O+subrestraint%rvalue
+        P=P+subrestraint%rvalue**2
      
         end associate
       end do
@@ -2282,12 +2286,12 @@ C--URIGU RESTRAINTS PRINT
      3          subrestraint%atoms(1)%adps_cart(it,jt)-
      4          subrestraint%atoms(2)%adps_cart(it,jt)+B, 
      5          'Uc1[',it,jt,']'
-c              WRITE(NCWU,3286) ' ', 
-c     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
-c     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
-c     3          subrestraint%atoms(2)%adps_cart(it,jt)-
-c     4          subrestraint%atoms(1)%adps_cart(it,jt)+B, 
-c     5          'Uc2[',it,jt,']'
+              WRITE(NCWU,3286) ' ', 
+     1         subrestraint%atoms(2)%label,subrestraint%atoms(2)%serial,
+     2       (ISTORE(M),M=JD,JE),subrestraint%atoms(2)%adps_cart(it,jt),
+     3          subrestraint%atoms(2)%adps_cart(it,jt)-
+     4          subrestraint%atoms(1)%adps_cart(it,jt)+B, 
+     5          'Uc2[',it,jt,']'
             end associate
           end do
           deallocate(Uij_indices)
@@ -2342,7 +2346,6 @@ C--ULIJ RESTRAINTS PRINT
     
 32621  FORMAT('  ',A1,6X,A4,I4,4X,I5,4I3,1PE12.3,1X,1PE12.3,X,
      &   1PE12.3,6X,A)    
-!3288  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),A12,6X,A,I0,I0,A)    
      
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       if(size(restraints_list(ircpt)%subrestraints)>0) then
@@ -2354,13 +2357,13 @@ C--ULIJ RESTRAINTS PRINT
      1         subrestraint(icpt)%atoms(1)%label,
      2         subrestraint(icpt)%atoms(1)%serial,
      2         (ISTORE(M),M=JD,JE),
-     3         subrestraint(icpt)%atoms(1)%rvalue,
-     3         subrestraint(icpt)%atoms(1)%rtarget,
-     4         subrestraint(icpt)%atoms(1)%rvalue, 
+     3         subrestraint(icpt)%rvalue,
+     3         subrestraint(icpt)%rtarget,
+     4         subrestraint(icpt)%rvalue-
+     4         subrestraint(icpt)%rtarget, 
      5         subrestraint(icpt)%description
         ENDIF      
        
-!3287    FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A,I0,I0,A)
 32622    FORMAT(4X, A2,'(',I4,')', x, 1PE9.2,1x, 1pe9.2, x, 1pe9.2 , 
      1     3x, A)
 
@@ -2380,18 +2383,18 @@ C--ULIJ RESTRAINTS PRINT
      
         WRITE(CMON, 32622) subrestraint(icpt)%atoms(1)%label,
      1    subrestraint(icpt)%atoms(1)%serial,
-     2    subrestraint(icpt)%atoms(1)%rvalue,
-     4    subrestraint(icpt)%atoms(1)%rtarget,
-     3    subrestraint(icpt)%atoms(1)%rvalue-
-     4    subrestraint(icpt)%atoms(1)%rtarget,
+     2    subrestraint(icpt)%rvalue,
+     4    subrestraint(icpt)%rtarget,
+     3    subrestraint(icpt)%rvalue-
+     4    subrestraint(icpt)%rtarget,
      5    subrestraint(icpt)%description
         CALL XPRVDU(NCVDU, 1,0)
        
-        Q=Q+subrestraint(icpt)%atoms(1)%rvalue
-        O=O+subrestraint(icpt)%atoms(1)%rvalue-
-     1    subrestraint(icpt)%atoms(1)%rtarget
-        P=P+(subrestraint(icpt)%atoms(1)%rvalue-
-     1    subrestraint(icpt)%atoms(1)%rtarget)**2 
+        Q=Q+subrestraint(icpt)%rvalue
+        O=O+subrestraint(icpt)%rvalue-
+     1    subrestraint(icpt)%rtarget
+        P=P+(subrestraint(icpt)%rvalue-
+     1    subrestraint(icpt)%rtarget)**2 
      
       end do
       NCA=size(restraints_list(ircpt)%subrestraints)/6
@@ -2411,9 +2414,6 @@ C--ULIJ RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
             
-      ! leverages
-      call showleverage(ircpt)
-
       goto 3600
       
 C--UPLANE RESTRAINTS PRINT
@@ -2475,9 +2475,6 @@ C--UPLANE RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
       
-      ! leverages
-      call showleverage(ircpt)
-
       GOTO 3600
 C         
 C--UXXQIV RESTRAINTS PRINT
@@ -2854,9 +2851,6 @@ C--UQISO RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)
       end if
        
-      ! leverages
-      call showleverage(ircpt)
-
       goto 3600   
 
 C--UVOL RESTRAINTS PRINT
@@ -2939,9 +2933,6 @@ C--UVOL RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)
       end if
        
-      ! leverages
-      call showleverage(ircpt)
-
       goto 3600   
 
 C--UEQIV RESTRAINTS PRINT
@@ -3020,9 +3011,6 @@ C--UEQIV RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)
       end if
        
-      ! leverages
-      call showleverage(ircpt)
-
       goto 3600   
       
 C--UTLS RESTRAINTS PRINT
@@ -3092,9 +3080,6 @@ C--UTLS RESTRAINTS PRINT
         WRITE(CMON,'(A)') 'No derivatives'
         CALL XPRVDU(NCVDU, 1,0)
       end if
-      
-      ! leverages
-      call showleverage(ircpt)
       
       goto 3600         
 
@@ -3202,11 +3187,19 @@ C--CHECK IF WE SHOULD PRINT THE MEAN DELTA AND R.M.S. DEVIATION
       CALL XPRVDU(NCVDU, 1,0)
 3700  FORMAT('      Mean value =',F9.4,'  Mean delta =',F9.4,
      2 '  r.m.s. delta =',F9.4)
+
+      ! leverages
+      call showleverage(ircpt)
+
       GOTO 1050
 3750  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3700)Q
       ENDIF
+
+      ! leverages
+      call showleverage(ircpt)
+
       GOTO 1050
 C
 C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
@@ -3285,6 +3278,10 @@ C     'ORIGIN' FIXING
       WRITE(CMON,"(I5,1X,A,'. Target ',1PE9.2, ' esd ', 1PE9.2)") 
      1  NINT(A+1), '              Origin', AB,C
       CALL XPRVDU(NCVDU, 1,0)
+
+      ! leverages
+      call showleverage(ircpt)
+            
       GOTO 4310
 C
 4370  CONTINUE
@@ -3298,6 +3295,10 @@ C----- 'LIMIT' RESTRAINT
      2 ' parameters to 0.0, with an E.S.D. of ',E20.10)
       WRITE(CMON,2460)NINT(A+1), '               Limit', 0.0, C
       CALL XPRVDU(NCVDU, 1,0)
+
+      ! leverages
+      call showleverage(ircpt)
+
       GO TO 1050
 C
 C--'AVERAGE' RESTRAINT
@@ -4577,34 +4578,34 @@ C     U Matrices in 3x3 matrix
 
             if(jcpt==0) then
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rvalue=Udata(icpt)%rabubar(1,1)
+     &        rvalue=Udata(icpt)%rabubar(1,1)
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rtarget=U_avg(1,1)
+     &        rtarget=U_avg(1,1)
             else if(jcpt==1) then
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rvalue=Udata(icpt)%rabubar(2,2)
+     &        rvalue=Udata(icpt)%rabubar(2,2)
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rtarget=U_avg(2,2)
+     &        rtarget=U_avg(2,2)
             else if(jcpt==2) then
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rvalue=Udata(icpt)%rabubar(3,3)
+     &        rvalue=Udata(icpt)%rabubar(3,3)
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rtarget=U_avg(3,3)
+     &        rtarget=U_avg(3,3)
             else if(jcpt==3) then
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rvalue=Udata(icpt)%rabubar(1,2)
+     &        rvalue=Udata(icpt)%rabubar(1,2)
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rtarget=U_avg(1,2)
+     &        rtarget=U_avg(1,2)
             else if(jcpt==4) then
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rvalue=Udata(icpt)%rabubar(2,3)
+     &        rvalue=Udata(icpt)%rabubar(2,3)
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rtarget=U_avg(2,3)
+     &        rtarget=U_avg(2,3)
             else
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rvalue=Udata(icpt)%rabubar(1,3)
+     &        rvalue=Udata(icpt)%rabubar(1,3)
               results%subrestraints((icpt-1)/3*6+1+jcpt)%
-     &        atoms(1)%rtarget=U_avg(1,3)
+     &        rtarget=U_avg(1,3)
             END IF         
 
           end do
@@ -4908,14 +4909,14 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         do jcpt=1, 3
           if(present(results)) then
             associate(r => 
-     &        results%subrestraints((icpt-1)*3+jcpt)%atoms(1))
+     &        results%subrestraints((icpt-1)*3+jcpt))
               r%rtarget=0.0
               if(jcpt==1) then
-                r%rvalue=r%adps_cart(1,2)
+                r%rvalue=r%atoms(1)%adps_cart(1,2)
               else if(jcpt==2) then
-                r%rvalue=r%adps_cart(2,3)
+                r%rvalue=r%atoms(1)%adps_cart(2,3)
               else
-                r%rvalue=r%adps_cart(1,3)
+                r%rvalue=r%atoms(1)%adps_cart(1,3)
               end if
              end associate
           end if

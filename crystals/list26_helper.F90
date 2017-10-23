@@ -34,14 +34,13 @@ type atom_t
     real, dimension(3,3) :: adps_crys !< adps in crystal system
     real, dimension(3,3) :: adps_cart !< adps in transformed coordinate system
     real, dimension(3,3) :: adps_target !< target adps
-    real rvalue
-    real rtarget 
 end type
 
 type subrestraint_t !< subrestraints type 
     type(atom_t), dimension(:), allocatable :: atoms !< atoms involved in a subrestraint.
     character(len=1024) :: description !< Some help that could be helpful when debugging
-    real :: rvalue
+    real :: rtarget !< current value of the parameter of the restraint
+    real :: rvalue !< Target value of the parameter of the restraint
 end type
 
 type restraints_t !< restraint type
@@ -224,6 +223,10 @@ else
     newstart=1
 end if
 
+object(newstart:)%rvalue=0.0 !< actual value
+object(newstart:)%rtarget=0.0 !< target value
+object(newstart:)%description='' !< Restraint description
+
 end subroutine
 
 !> extend an array of parameters
@@ -305,8 +308,6 @@ do i=newstart, size(object)
     object(i)%adps_crys=0.0 !< adps in crystal system
     object(i)%adps_cart=0.0 !< adps in transformed coordinate system
     object(i)%adps_target=0.0 !< target adps 
-    object(i)%rvalue=0.0 !< actual value
-    object(i)%rtarget=0.0 !< target value
 end do
 end subroutine
 
@@ -358,8 +359,9 @@ use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
-integer i, k
+integer i, k, l, numatoms, cpt
 real leverage
+character(len=1024) :: formatstr
 
 if(.not. allocated(restraints_derivatives)) then
     write(cmon, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
@@ -368,8 +370,18 @@ if(.not. allocated(restraints_derivatives)) then
     return
 end if
 
+cpt=0
 do k=1, size(restraints_derivatives)
+
+     if(cpt==13) then
+        WRITE(CMON,'(A)') &
+        &   '... Output truncated, see the rest in the listing file '
+        CALL XPRVDU(NCVDU, 1,0)
+    end if
+
+    formatstr=''
     if(rindex==restraints_derivatives(k)%irestraint) then
+        cpt=cpt+1
         associate(r => restraints_derivatives(k))
 
             ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
@@ -379,22 +391,49 @@ do k=1, size(restraints_derivatives)
             ! calculation can be done one row of A at at time
             leverage=dot_product(r%derivatives, matmul(invertm, r%derivatives))*r%weight**2
 
-            WRITE(CMON,'(10X, A, a, "(",I0,"): ", F5.3, 2X, A )') &
-            &   'Leverage ', &
-            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%label), &
-            &   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%serial, &
-            &   leverage, &
-            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
-            CALL XPRVDU(NCVDU, 1,0)
-            WRITE(ncwu,'(10X, A, a, "(",I0,"): ", F5.3, 2X, A )') &
-            &   'Leverage ', &
-            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%label), &
-            &   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(1)%serial, &
-            &   leverage, &
-            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+            if(allocated(restraints_list(rindex)%subrestraints)) then
+                if(allocated(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms)) then
+                    numatoms=size(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms)
+                else
+                    numatoms=0
+                end if
+            else
+                numatoms=0
+            end if
+            
+            if(numatoms>0) then
+                write(formatstr, '(A, I0,A, A)') '(10X, A, ', numatoms, '(a, "(",I0,")")', ', ": ", F5.3, 2X, A )'
+                print *, trim(formatstr)
+                if(cpt<13) then
+                    WRITE(CMON,trim(formatstr)) &
+                    &   'Leverage ', &
+                    &   ( trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%label), &
+                    &   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%serial, l=1, numatoms ), &
+                    &   leverage, &
+                    &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+                    CALL XPRVDU(NCVDU, 1,0)
+                end if
+                !WRITE(ncwu,'(10X, A, '//trim(formatstr)//'": ", F5.3, 2X, A )') &
+                !&   'Leverage ', &
+                !&   ( trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%label), &
+                !&   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%serial, l=1, numatoms ), &
+                !&   leverage, &
+                !&   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)                
+            else
+                if(cpt<13) then
+                    WRITE(CMON,'(10X, A, F5.3 )') &
+                    &   'Leverage: ', &
+                    &   leverage
+                    CALL XPRVDU(NCVDU, 1,0)
+                end if
+                WRITE(ncwu,'(10X, A, F5.3 )') &
+                &   'Leverage: ', &
+                &   leverage
+            end if
             
         end associate
      end if
+     
 end do
   
 end subroutine
