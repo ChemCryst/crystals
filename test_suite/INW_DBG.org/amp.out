@@ -1979,9 +1979,6 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
      11 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17
 #REFINE     1
-#WEIGHT
-                     LIST 4 weighting type is NORMAL
-#REFINE     1
  Initialising Special positions
 
 
