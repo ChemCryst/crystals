@@ -2253,7 +2253,7 @@ C--UALIGN RESTRAINTS PRINT
         write(cmon, '(A)') 'Restraint not applied'
         CALL XPRVDU(NCVDU, 1,0)            
       end if
-            
+      deallocate(Uij_indices)      
       ! leverages
       call showleverage(ircpt)
 
