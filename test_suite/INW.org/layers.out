@@ -2573,7 +2573,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        3     Address    63875     Length     318     Created on                          
+ Print list type    22     serial number        3     Address    63952     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -2665,7 +2665,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       12     Address    67399     Length     168     Created on                          
+ Print list type    24     serial number       12     Address    67553     Length     168     Created on                          
 
 
 
@@ -6418,7 +6418,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address   125932     Length     318     Created on                          
+ Print list type    22     serial number        7     Address   126240     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -6510,7 +6510,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       28     Address   129456     Length     168     Created on                          
+ Print list type    24     serial number       28     Address   129841     Length     168     Created on                          
 
 
 
@@ -10266,7 +10266,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   188636     Length     318     Created on                          
+ Print list type    22     serial number       11     Address   189087     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -10358,7 +10358,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       44     Address   192160     Length     168     Created on                          
+ Print list type    24     serial number       44     Address   192688     Length     168     Created on                          
 
 
 
@@ -14120,7 +14120,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       15     Address   250635     Length     318     Created on                          
+ Print list type    22     serial number       15     Address   252133     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -14212,7 +14212,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       60     Address   255014     Length     168     Created on                          
+ Print list type    24     serial number       60     Address   255734     Length     168     Created on                          
 
 
 
@@ -14374,8 +14374,8 @@ H23 C(11) C(10) C(1)
 
           Type      Serial    Occ         Flag      X         Y         Z        U[iso]
 
-           H        101.0    1.00000        1.    0.8105   -0.1374    0.2306    0.0505
-           H        102.0    1.00000        1.    0.6988   -0.1121    0.1377    0.0505
+           H        101.0    1.00000        1.    0.8105   -0.1374    0.2306    0.0506
+           H        102.0    1.00000        1.    0.6988   -0.1121    0.1377    0.0506
 
 
  Hydrogen atom(s) calculated for the C(sp3)H3 group :

@@ -802,7 +802,7 @@ Variance-covariance matrix of selected atoms (x10^6)
 
 
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
-{E Matrix for e.s.ds missing. Using mean errors instead
+ Matrix for e.s.ds missing. Using mean errors instead
                                                       Torsion angle & su
      CU(1) to       O(2) to       C(3) to       C(5)        -176.8    0.3
      CU(1) to       O(2) to       C(3) to       C(5)        -176.8    0.3

@@ -1,5 +1,4 @@
 \set time slow
-\rele print CROUTPUT:
 \TITLE real structure from james.thomson@chem.ox.ac.uk to test adps restraints
 END
 \use sgd464.in

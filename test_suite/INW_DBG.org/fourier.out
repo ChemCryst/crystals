@@ -29459,6 +29459,9 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
      11 Atoms modified;   New  LIST 5 written to DISK
 #LIST 17
 #REFINE     1
+#WEIGHT
+                     LIST 4 weighting type is NORMAL
+#REFINE     1
  Initialising Special positions
 
 
@@ -31597,7 +31600,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       19     Address    74010     Length     299     Created on                          
+ Print list type    10     serial number       19     Address    74087     Length     299     Created on                          
 
 
 
@@ -33352,7 +33355,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       20     Address    74309     Length     479     Created on                          
+ Print list type    10     serial number       20     Address    74386     Length     479     Created on                          
 
 
 
@@ -35137,7 +35140,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       21     Address    74788     Length     479     Created on                          
+ Print list type    10     serial number       21     Address    74865     Length     479     Created on                          
 
 
 
@@ -36922,7 +36925,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       22     Address    75267     Length     479     Created on                          
+ Print list type    10     serial number       22     Address    75344     Length     479     Created on                          
 
 
 
@@ -38728,7 +38731,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       23     Address    75746     Length     731     Created on                          
+ Print list type    10     serial number       23     Address    75823     Length     731     Created on                          
 
 
 
@@ -39955,7 +39958,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       24     Address    76477     Length     101     Created on                          
+ Print list type    10     serial number       24     Address    76554     Length     101     Created on                          
 
 
 
@@ -41077,7 +41080,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       25     Address    76578     Length     101     Created on                          
+ Print list type    10     serial number       25     Address    76655     Length     101     Created on                          
 
 
 
@@ -41180,7 +41183,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   -1, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41217,7 +41220,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    0, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41254,7 +41257,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    1, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41291,7 +41294,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    2, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41328,7 +41331,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    3, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41365,7 +41368,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    4, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41402,7 +41405,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    5, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41439,7 +41442,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    6, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41476,7 +41479,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    7, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41513,7 +41516,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    8, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41550,7 +41553,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =    9, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41588,7 +41591,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   10, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41625,7 +41628,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   11, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41656,14 +41659,14 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at      0.339     0.374     0.296
+ Malformed peak at      0.339     0.374     0.297
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
  X Down,  Y Across,  Section at Z =   12, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41700,7 +41703,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   13, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41737,7 +41740,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   14, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41775,7 +41778,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   15, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41812,7 +41815,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   16, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41849,7 +41852,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   17, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41886,7 +41889,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   18, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41923,7 +41926,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   19, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41960,7 +41963,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   20, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -41997,7 +42000,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   21, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42034,7 +42037,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   22, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42052,7 +42055,7 @@ Mean C-C su =   0.0000
  
     4 *  81  76  81  80  82  69  31  27  24 -18 -34 -21 -20 -39 -54 -69 -93 -88 -75 -77 -75 *   4
  
-    5 * 114 100 114 115 105  86  43  37  40   1 -25 -23 -20 -24 -29 -51 -89 -89 -68 -65 -68 *   5
+    5 * 114 100 114 115 105  86  43  37  40   1 -25 -23 -20 -24 -29 -51 -89 -89 -68 -66 -68 *   5
  
     6 * 113 100 113  97  67  71  65  53  28  -3  -2   3 -11 -37 -51 -52 -71 -84 -94-106 -94 *   6
  
@@ -42071,7 +42074,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   23, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42108,7 +42111,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   24, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42145,7 +42148,7 @@ Mean C-C su =   0.0000
 
 
  X Down,  Y Across,  Section at Z =   25, Part  1
-        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.083     Scan  2
+        Weighted (Fo-Fc)**2 Patt     Multiplied by    326.084     Scan  2
 
 
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
@@ -42189,7 +42192,7 @@ Mean C-C su =   0.0000
 
  Results of the peak search and contents of the new list  10
 
- Map scale factor =    326.083     Minimum peak height =       50.0     Maximum number of peaks allowed =    21
+ Map scale factor =    326.084     Minimum peak height =       50.0     Maximum number of peaks allowed =    21
 
  Type   Serial    X         Y         Z           Height(x 326.1)
 
@@ -42222,7 +42225,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       26     Address    76679     Length     335     Created on                          
+ Print list type    10     serial number       26     Address    76756     Length     335     Created on                          
 
 
 
