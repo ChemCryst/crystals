@@ -870,13 +870,9 @@ CONT S(1) TO O(1) S(1) TO C(1) S(1,7) TO C(1,7)
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            S       1     5  1  0  0  0     0.02533         O       1     5  1  0  0  0     0.05424   0.02891
-          - Derivatives not found, do a refinement cycle to get leverages -
            S       1     1  1  0  0  0     0.02533         O       1     1  1  0  0  0     0.05424   0.02891
-          - Derivatives not found, do a refinement cycle to get leverages -
            S       1     1  1  0  0  0     0.02533         C       1     1  1  0  0  0     0.03219   0.00686
-          - Derivatives not found, do a refinement cycle to get leverages -
            S       1     7  1  0  0  0     0.02533         C       1     7  1  0  0  0     0.03219   0.00686
-          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0343  Mean delta =   0.0179  r.m.s. delta =   0.02
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1779,6 +1775,7 @@ ___________
  (2) SUM LAYER SCALES
  Directive  SUM: No derivatives found during Evaluation
    1. The sum is restrained to be   2.3000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1797,6 +1794,7 @@ ___________
  (3) SUM ELEMENT SCALES
  Directive  SUM: No derivatives found during Evaluation
    2. The sum is restrained to be   1.3000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1819,6 +1817,7 @@ ___________
  (4) SUM BATCH SCALES
  Directive  SUM: No derivatives found during Evaluation
    3. The sum is restrained to be   2.9000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1848,6 +1847,7 @@ ___________
  (5) SUM X
  Directive  SUM: No derivatives found during Evaluation
    4. The sum is restrained to be  0.30000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1870,6 +1870,7 @@ ___________
  (6) SUM CELL PARAMETERS
  Directive  SUM: No derivatives found during Evaluation
    5. The sum is restrained to be   20.000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1896,6 +1897,7 @@ ___________
  (7) SUM PROFILE(1) PROFILE(2) PROFILE(3)
  Directive  SUM: No derivatives found during Evaluation
    6. The sum is restrained to be   5.1000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1922,6 +1924,7 @@ ___________
  (8) SUM PROFILE PARAMETERS
  Directive  SUM: No derivatives found during Evaluation
    7. The sum is restrained to be   5.1000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1944,6 +1947,7 @@ ___________
  (9) SUM EXTINCTION PARAMETERS
  Directive  SUM: No derivatives found during Evaluation
    8. The sum is restrained to be   1.7000      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :

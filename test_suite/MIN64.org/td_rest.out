@@ -983,12 +983,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
-          Leverage: 0.985
-          Leverage: 0.950
-          Leverage: 0.956
-          Leverage: 0.945
-          Leverage: 0.975
-          Leverage: 0.973
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
           Leverage: 0.985
           Leverage: 0.950
@@ -1196,7 +1190,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03377         C       7     1  1  0  0  0     0.03381   0.00004
-          Leverage: 0.971
 [41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
           Leverage: 0.971
 
@@ -1235,7 +1228,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-          Leverage: 0.971
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
           Leverage: 0.971
 
@@ -1438,7 +1430,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03381         O       6     1  1  0  0  0     0.03377  -0.00004
-          Leverage: 0.971
 [41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
           Leverage: 0.971
 
@@ -2005,12 +1996,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
-          Leverage: 0.926
-          Leverage: 0.826
-          Leverage: 0.853
-          Leverage: 0.822
-          Leverage: 0.899
-          Leverage: 0.900
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
           Leverage: 0.926
           Leverage: 0.826
@@ -2218,7 +2203,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            O       6     1  1  0  0  0     0.03343         C       7     1  1  0  0  0     0.03566   0.00224
-          Leverage: 0.962
 [41]       Mean value =   0.0345  Mean delta =   0.0022  r.m.s. delta =   0.00
           Leverage: 0.962
 
@@ -2257,7 +2241,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-          Leverage: 0.962
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
           Leverage: 0.962
 
@@ -2460,7 +2443,6 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            C       7     1  1  0  0  0     0.03501         O       6     1  1  0  0  0     0.03696   0.00195
-          Leverage: 0.904
 [41]       Mean value =   0.0360  Mean delta =   0.0019  r.m.s. delta =   0.00
           Leverage: 0.904
 
@@ -2512,7 +2494,6 @@ ___________
   
   VIBRATION restraint:  No derivatives found
   ?        C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-          Leverage: 0.904
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
           Leverage: 0.904
 
@@ -2719,7 +2700,7 @@ ___________
   
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550    -0.000
 [41]       Mean value =   1.5500  Mean delta =   0.0000  r.m.s. delta =   0.00
-          Leverage: 1.000
+          Leverage C(2),C(11): 1.000  Single distance
 
 ___________
  (1) NO
@@ -3120,7 +3101,7 @@ ___________
   
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
 [41]       Mean value =   1.5497  Mean delta =   0.0003  r.m.s. delta =   0.00
-          Leverage: 1.000
+          Leverage C(2),C(11): 1.000  Single distance
 
 ___________
  (1) NO

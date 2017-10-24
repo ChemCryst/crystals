@@ -418,6 +418,8 @@ ___________
            C      20     1  1  0  0  0  -0.0034701   -3.470E-03     Uc[13]
            C      20     1  1  0  0  0  -0.0034701    1.353E-04     Uc[23]
 [41]       Mean value =  -0.0017  Mean delta =  -0.0017  r.m.s. delta =   0.00
+          Leverage C(20),C(19): 0.673  Uc[1,3]==0
+          Leverage C(20),C(19): 0.461  Uc[2,3]==0
 
 ___________
  (2) UPERP2 0.00, 0.0001 = C(20) TO C(19) TO C(21)
@@ -440,6 +442,8 @@ ___________
            C      20     1  1  0  0  0   0.0027749    2.775E-03     Uc[13]
            C      20     1  1  0  0  0   0.0027749    6.158E-04     Uc[23]
 [41]       Mean value =   0.0017  Mean delta =   0.0017  r.m.s. delta =   0.00
+          Leverage C(20),C(19),C(21): 0.694  Uc[1,3]==0
+          Leverage C(20),C(19),C(21): 0.424  Uc[2,3]==0
 
 ___________
  (3) UPLANE 0.00, 0.0001 = C(19) TO C(20) TO C(21)
@@ -462,6 +466,8 @@ ___________
            C      19     1  1  0  0  0   0.0061025    6.102E-03     U[12]
            C      19     1  1  0  0  0   0.0000822    3.311E-03     U[23]
 [41]       Mean value =   0.0047  Mean delta =   0.0047  r.m.s. delta =   0.00
+          Leverage C(19),C(20),C(21): 0.496  Uc[1,2]==0
+          Leverage C(19),C(20),C(21): 0.496  Uc[2,3]==0
 
 ___________
  (4) UALIGN 0.0001 C(20) C(21)
@@ -506,6 +512,12 @@ ___________
          C     21        1  1  0  0  0  -6.292E-03    0.000E+00   -6.292E-03      U_xy = 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
          C     21        1  1  0  0  0  -3.872E-03    0.000E+00   -3.872E-03      U_xy = 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 [41]       Mean value =  -0.0093  Mean delta =  -0.0093  r.m.s. delta =   0.00
+          Leverage C(20): 0.765  U_xy = 0
+          Leverage C(20): 0.542  U_xy = 0
+          Leverage C(20): 0.495  U_xy = 0
+          Leverage C(21): 0.462  U_xy = 0
+          Leverage C(21): 0.447  U_xy = 0
+          Leverage C(21): 0.292  U_xy = 0
 
 ___________
  (5) URIGU 0.0, 0.0001 = C(20) TO C(21)
@@ -534,6 +546,9 @@ ___________
            C      20     1  1  0  0  0   0.0595893   -7.553E-04      Uc1[33]
            C      21     1  1  0  0  0   0.0603446    7.553E-04      Uc2[33]
 [41]       Mean value =   0.0882  Mean delta =   0.0882  r.m.s. delta =   0.00
+          Leverage C(20),C(21): 0.604  Uc[13]==0
+          Leverage C(20),C(21): 0.581  Uc[23]==0
+          Leverage C(20),C(21): 0.953  Uc[33]==0
 
 ___________
  (6) ULIJ 0.0001 C(19) TO C(21) TO C(20), C(21) TO C(22) TO C(23),
@@ -673,6 +688,24 @@ CONT C(23) TO C(25) TO C(24)
          C     23        1  1  0  0  0  -1.220E-02   -7.903E-03   -4.301E-03      U23_local = <U23_local>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
          C     23        1  1  0  0  0  -1.231E-02   -1.188E-02   -4.269E-04      U13_local = <U13_local>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 [41]       Mean value =   0.1438  Mean delta =   0.0000  r.m.s. delta =   0.00
+          Leverage C(19),C(21),C(20): 0.991  U11_local = <U11_local>
+          Leverage C(19),C(21),C(20): 0.992  U22_local = <U22_local>
+          Leverage C(19),C(21),C(20): 0.992  U33_local = <U33_local>
+          Leverage C(19),C(21),C(20): 0.496  U12_local = <U12_local>
+          Leverage C(19),C(21),C(20): 0.495  U23_local = <U23_local>
+          Leverage C(19),C(21),C(20): 0.987  U13_local = <U13_local>
+          Leverage C(21),C(22),C(23): 0.754  U11_local = <U11_local>
+          Leverage C(21),C(22),C(23): 0.924  U22_local = <U22_local>
+          Leverage C(21),C(22),C(23): 0.775  U33_local = <U33_local>
+          Leverage C(21),C(22),C(23): 0.484  U12_local = <U12_local>
+          Leverage C(21),C(22),C(23): 0.501  U23_local = <U23_local>
+          Leverage C(21),C(22),C(23): 0.874  U13_local = <U13_local>
+          Leverage C(23),C(25),C(24): 1.000  U11_local = <U11_local>
+          Leverage C(23),C(25),C(24): 1.000  U22_local = <U22_local>
+          Leverage C(23),C(25),C(24): 0.999  U33_local = <U33_local>
+          Leverage C(23),C(25),C(24): 0.999  U12_local = <U12_local>
+          Leverage C(23),C(25),C(24): 0.999  U23_local = <U23_local>
+          Leverage C(23),C(25),C(24): 0.999  U13_local = <U13_local>
 
 ___________
  (7) UEIG 0.001 C(20)
@@ -697,6 +730,9 @@ ___________
            C      20     1  1  0  0  0 4.844E-02  5.277E-02 -4.331E-03      Uc[11]
            C      20     1  1  0  0  0 5.710E-02  5.277E-02  4.331E-03      Uc[22]
 [41]       Mean value =   0.1055  Mean delta =   0.1055  r.m.s. delta =   0.07
+          Leverage C(20): 0.034  L_11-<L_11,L_22>=0
+          Leverage C(20): 0.032  L_22-<L_11,L_22>=0
+          Leverage C(20): 0.032  L_12=0
 
 ___________
  (8) UQISO 0.001 CL(4)
@@ -728,6 +764,12 @@ ___________
            CL      4     1  1  0  0  0   9.058E-02    8.961E-02    9.739E-04 Uc[22]-<eig>
            CL      4     1  1  0  0  0   8.552E-02    8.961E-02   -4.084E-03 Uc[33]-<eig>
 [41]       Mean value =   0.2701  Mean delta =   0.2701  r.m.s. delta =   0.15
+          Leverage CL(4): 0.797  L(1,1)-<eig>=0
+          Leverage CL(4): 0.654  L(2,2)-<eig>=0
+          Leverage CL(4): 0.756  L(3,3)-<eig>=0
+          Leverage CL(4): 0.759  L(2,3)=0
+          Leverage CL(4): 0.910  L(1,3)=0
+          Leverage CL(4): 0.881  L(1,2)=0
 
 ___________
  (9) UVOL 0.001 CL(1) CL(3) CL(4)
@@ -761,6 +803,9 @@ ___________
           CL      3     1  1  0  0  0 1.036E-01  9.338E-02 1.023E-02  U_geom
           CL      4     1  1  0  0  0 8.998E-02  9.338E-02-3.404E-03  U_geom
 [41]       Mean value =   0.0934  Mean delta =   0.0000  r.m.s. delta =   0.00
+          Leverage CL(1): 0.451  U_geom = <U>_geom
+          Leverage CL(3): 0.707  U_geom = <U>_geom
+          Leverage CL(4): 0.466  U_geom = <U>_geom
 
 ___________
  (10) UTLS 0.001 C(17) C(18) C(19) C(20) C(21) C(22)
@@ -855,6 +900,42 @@ ___________
           C      22     1  1  0  0  0 3.365E-02 -3.502E-03  7.950E-03 -3.502E-03  3.234E-02  2.303E-04  7.950E-03  2.303E-04  5.028E-02   Current
                   0     1  1  0  0  0 3.417E-02 -4.139E-03  5.610E-03 -4.139E-03  3.595E-02 -5.367E-03  5.610E-03 -5.367E-03  5.301E-02   Target
 [41]       Mean value =   0.0147  Mean delta =   0.0000  r.m.s. delta =   0.00
+          Leverage C(17): 0.921  U11
+          Leverage C(17): 0.928  U22
+          Leverage C(17): 0.916  U33
+          Leverage C(17): 0.901  U12
+          Leverage C(17): 0.894  U23
+          Leverage C(17): 0.914  U13
+          Leverage C(18): 0.931  U11
+          Leverage C(18): 0.954  U22
+          Leverage C(18): 0.938  U33
+          Leverage C(18): 0.933  U12
+          Leverage C(18): 0.912  U23
+          Leverage C(18): 0.932  U13
+          Leverage C(19): 0.012  U11
+          Leverage C(19): 0.010  U22
+          Leverage C(19): 0.011  U33
+          Leverage C(19): 0.007  U12
+          Leverage C(19): 0.007  U23
+          Leverage C(19): 0.005  U13
+          Leverage C(20): 0.038  U11
+          Leverage C(20): 0.049  U22
+          Leverage C(20): 0.030  U33
+          Leverage C(20): 0.009  U12
+          Leverage C(20): 0.006  U23
+          Leverage C(20): 0.007  U13
+          Leverage C(21): 0.012  U11
+          Leverage C(21): 0.009  U22
+          Leverage C(21): 0.010  U33
+          Leverage C(21): 0.005  U12
+          Leverage C(21): 0.005  U23
+          Leverage C(21): 0.005  U13
+          Leverage C(22): 0.924  U11
+          Leverage C(22): 0.936  U22
+          Leverage C(22): 0.943  U33
+          Leverage C(22): 0.926  U12
+          Leverage C(22): 0.910  U23
+          Leverage C(22): 0.917  U13
 
 ___________
  (11) UEQIV 0.001 C(24) C(25) C(26) C(27) C(28) C(29)
@@ -909,14 +990,20 @@ ___________
           C      28     1  1  0  0  0 4.899E-02  4.843E-02 5.600E-04  U_geom
           C      29     1  1  0  0  0 4.887E-02  4.843E-02 4.309E-04  U_geom
 [41]       Mean value =   0.0484  Mean delta =   0.0000  r.m.s. delta =   0.00
+          Leverage C(24): 0.811  U_geom = <U>_geom
+          Leverage C(25): 0.805  U_geom = <U>_geom
+          Leverage C(26): 0.866  U_geom = <U>_geom
+          Leverage C(27): 0.845  U_geom = <U>_geom
+          Leverage C(28): 0.855  U_geom = <U>_geom
+          Leverage C(29): 0.842  U_geom = <U>_geom
 
 ___________
  (12) NO
 
 ___________
  (13) ORIGIN  Y
-          Leverage: 1.000
   12. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
+          Leverage: 1.000
 #FINISH
 
 

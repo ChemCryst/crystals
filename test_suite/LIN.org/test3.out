@@ -8057,6 +8057,7 @@ Mean C-C su =   0.0000
 ___________
  (0) SUM Z
    0. The sum is restrained to be -0.10235E-01  with an E.S.D. of  0.10000E-01
+          Leverage: 0.011
 
 ___________
  (1) DISTANCES 0.0, 0.005= DIFFERENCE N(1) TO B(2,2), N(1) TO B(2,3)
@@ -8076,8 +8077,8 @@ ___________
 
 ___________
  (3) ORIGIN  Z
-          Leverage: 0.993
    3. The sum is restrained to be -0.12047      with an E.S.D. of  0.10000E-01
+          Leverage: 0.993
 
 
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
