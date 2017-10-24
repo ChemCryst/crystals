@@ -204,6 +204,7 @@ CONT TO C(1,7,1,-1)
            C       1     5  1  0  0  0      S       1     5  1  0  0  0      6.732    -5.232
            S       1     7  1 -1  0  0      C       1     7  1 -1  0  0      6.732    -5.232
 [41]       Mean value =   6.7319  Mean delta =  -5.2319  r.m.s. delta =   5.23
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -312,6 +313,7 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
            C       1     1  1  0  0  0      O       1     1  1  0  0  0     13.246
            C       1     7  1  0  0  0      O       1     7  1  0  0  0     13.246
       Mean value =   9.9891  Mean delta =
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -408,6 +410,7 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
            C       1     1  1  0  0  0      O       1     1  1  0  0  0     13.246    -3.257
            C       1     7  1  0  0  0      O       1     7  1  0  0  0     13.246    -3.257
 [41]       Mean value =   9.9891  Mean delta =   0.0000  r.m.s. delta =   3.25
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -482,6 +485,7 @@ CONT TO O(1,7,,-1)
            C       1     1  1  0  0  0      S       1     1  1  0  0  0      O       1     1  1  0  0  0     19.32 -19.32
            C       1     7  1 -1  0  0      S       1     7  1 -1  0  0      O       1     7  1 -1  0  0     19.32 -19.32
 [41]       Mean value =  19.3191  Mean delta = -19.3191  r.m.s. delta =  19.31
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -584,6 +588,7 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
            C       1     7  1  0  0  0      S       1     7  1  0  0  0      O       1     7  1  0  0  0     19.32
            S       1     3  1  0  0  0      C       1     3  1  0  0  0      O       1     4  1  0  0  0    130.01
       Mean value =  56.2160  Mean delta =
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -714,6 +719,7 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
            S       1     3  1  0  0  0      C       1     3  1  0  0  0      O       1     4  1  0  0  0    130.01 -55.35
            S       1     3  1  0  0  0      C       1     3  1  0  0  0      O       1     4  1  0  0  0    130.01 -55.35
 [41]       Mean value =  74.6645  Mean delta =   0.0000  r.m.s. delta =  55.34
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -864,10 +870,15 @@ CONT S(1) TO O(1) S(1) TO C(1) S(1,7) TO C(1,7)
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   
            S       1     5  1  0  0  0     0.02533         O       1     5  1  0  0  0     0.05424   0.02891
+          - Derivatives not found, do a refinement cycle to get leverages -
            S       1     1  1  0  0  0     0.02533         O       1     1  1  0  0  0     0.05424   0.02891
+          - Derivatives not found, do a refinement cycle to get leverages -
            S       1     1  1  0  0  0     0.02533         C       1     1  1  0  0  0     0.03219   0.00686
+          - Derivatives not found, do a refinement cycle to get leverages -
            S       1     7  1  0  0  0     0.02533         C       1     7  1  0  0  0     0.03219   0.00686
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0343  Mean delta =   0.0179  r.m.s. delta =   0.02
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1260,6 +1271,7 @@ ___________
            S       1     7  1  0  0  0     0.00000         O       1     7  1  0  0  0    -0.02000  -0.02000     U[13]   
            S       1     7  1  0  0  0     0.01266         O       1     7  1  0  0  0     0.02000   0.00733     U[12]   
 [41]       Mean value =   0.0221  Mean delta =   0.0069  r.m.s. delta =   0.01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :

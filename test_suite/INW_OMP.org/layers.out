@@ -2768,6 +2768,13 @@ ___________
 
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+          Leverage: 0.541
+          Leverage: 0.537
+          Leverage: 0.565
+          Leverage: 0.661
+          Leverage: 0.734
+          Leverage: 0.831
+          Leverage: 0.851
 
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
@@ -2784,12 +2791,20 @@ ___________
 [58]                                          PARAMETE          1.348   -0.348 
 [58]                                          PARAMETE          0.937    0.062 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.17
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
+          Leverage: 0.535
 
 ___________
  (3) NO
@@ -6613,6 +6628,13 @@ ___________
 
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+          Leverage: 0.541
+          Leverage: 0.537
+          Leverage: 0.565
+          Leverage: 0.661
+          Leverage: 0.734
+          Leverage: 0.831
+          Leverage: 0.851
 
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
@@ -6629,12 +6651,20 @@ ___________
 [58]                                          PARAMETE          1.348   -0.348 
 [58]                                          PARAMETE          0.937    0.062 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.17
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
+          Leverage: 0.535
 
 ___________
  (3) NO
@@ -10461,6 +10491,13 @@ ___________
 
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+          Leverage: 0.571
+          Leverage: 0.569
+          Leverage: 0.590
+          Leverage: 0.703
+          Leverage: 0.819
+          Leverage: 0.842
+          Leverage: 0.854
 
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
@@ -10477,12 +10514,20 @@ ___________
 [58]                                          PARAMETE          1.375   -0.375 
 [58]                                          PARAMETE          0.950    0.049 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.21
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
+          Leverage: 0.480
 
 ___________
  (3) NO
@@ -14315,6 +14360,13 @@ ___________
 
 
    0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+          Leverage: 0.571
+          Leverage: 0.569
+          Leverage: 0.590
+          Leverage: 0.703
+          Leverage: 0.819
+          Leverage: 0.842
+          Leverage: 0.854
 
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
@@ -14331,12 +14383,20 @@ ___________
 [58]                                          PARAMETE          1.375   -0.375 
 [58]                                          PARAMETE          0.950    0.049 
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.21
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
+          Leverage: 0.480
 
 ___________
  (3) NO

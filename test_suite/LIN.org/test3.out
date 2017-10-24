@@ -8069,12 +8069,14 @@ ___________
            N       1     1  1  0  0  0      B       2     2  1  0  0  0      1.426
            N       1     1  1  0  0  0      B       2     3  1  0  0  0      1.423
       Mean value =   1.4245  Mean delta =
+          Leverage: 0.863
 
 ___________
  (2) NO
 
 ___________
  (3) ORIGIN  Z
+          Leverage: 0.993
    3. The sum is restrained to be -0.12047      with an E.S.D. of  0.10000E-01
 
 
