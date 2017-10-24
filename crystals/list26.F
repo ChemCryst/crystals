@@ -381,6 +381,13 @@ C
               type(restraints_t), intent(inout), optional :: results
           end subroutine
       end interface
+      interface 
+          function KPLANE(in, results)
+              use list26_mod
+              integer in
+              type(restraints_t), intent(inout), optional :: results
+          end function
+      end interface
       
       
       character(len=1024) :: formatstr
@@ -2047,9 +2054,6 @@ C--CALCULATE THE MEAN
       A1(1)=0.5*(A1(1)+A1(2)+B)
       A1(2)=A1(3)
       
-      ! leverages
-      call showleverage(ircpt)
-            
       GOTO 2950
 C--UXZBAR RESTRAINTS PRINT
 3280  CONTINUE
@@ -2190,9 +2194,6 @@ C--UPERP and UPERP2 RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
 
-      ! leverages
-      call showleverage(ircpt)
-             
       goto 3600   
       
 C
@@ -2258,9 +2259,6 @@ C--UALIGN RESTRAINTS PRINT
         CALL XPRVDU(NCVDU, 1,0)            
       end if
       deallocate(Uij_indices)      
-      ! leverages
-      call showleverage(ircpt)
-
       GOTO 3600
 C
 C--URIGU RESTRAINTS PRINT
@@ -2335,9 +2333,6 @@ C--URIGU RESTRAINTS PRINT
         write(cmon, '(A)') 'Restraint not applied'
         CALL XPRVDU(NCVDU, 1,0)            
       end if
-
-      ! leverages
-      call showleverage(ircpt)
 
       goto 3600
       
@@ -3189,7 +3184,7 @@ C--CHECK IF WE SHOULD PRINT THE MEAN DELTA AND R.M.S. DEVIATION
      2 '  r.m.s. delta =',F9.4)
 
       ! leverages
-      call showleverage(ircpt)
+      call showleverage(ircpt, -1)
 
       GOTO 1050
 3750  CONTINUE
@@ -3198,7 +3193,7 @@ C--CHECK IF WE SHOULD PRINT THE MEAN DELTA AND R.M.S. DEVIATION
       ENDIF
 
       ! leverages
-      call showleverage(ircpt)
+      call showleverage(ircpt, 2)
 
       GOTO 1050
 C
@@ -3269,6 +3264,10 @@ C--'SUM' RESTRAINT
       IF (ISSPRT .EQ. 0) WRITE(NCWU,4350)A,AB,C
 4350  FORMAT(1X ,F4.0,' The sum is restrained to be ',
      2 G12.5,'  with an E.S.D. of ',G12.5)
+
+      ! leverages
+      call showleverage(ircpt,-1)
+
       GOTO 1050
 C
 C     'ORIGIN' FIXING
@@ -3279,9 +3278,6 @@ C     'ORIGIN' FIXING
      1  NINT(A+1), '              Origin', AB,C
       CALL XPRVDU(NCVDU, 1,0)
 
-      ! leverages
-      call showleverage(ircpt)
-            
       GOTO 4310
 C
 4370  CONTINUE
@@ -3297,7 +3293,7 @@ C----- 'LIMIT' RESTRAINT
       CALL XPRVDU(NCVDU, 1,0)
 
       ! leverages
-      call showleverage(ircpt)
+      call showleverage(ircpt, -1)
 
       GO TO 1050
 C
@@ -3491,6 +3487,13 @@ C
               use list26_mod
               type(restraints_t), intent(inout), optional :: results
           end subroutine
+      end interface
+      interface 
+          function KPLANE(in, results)
+              use list26_mod
+              integer in
+              type(restraints_t), intent(inout), optional :: results
+          end function
       end interface
       
       integer, dimension(8) :: IBUFF
@@ -3856,7 +3859,7 @@ C
 C--'PLANAR' RESTRAINT
 2000  CONTINUE
       IDWZAP = 0
-      IF(KPLANE(IDWZAP))1850,1000,1000
+      IF(KPLANE(IDWZAP, restraints_list(idjwtemp)))1850,1000,1000
 C
 C--'SUM' RESTRAINT
 2050  CONTINUE
@@ -7849,7 +7852,8 @@ c     2  STORE(L22PD+1), STORE(L22PD+2)
       END
 C
 CODE FOR KPLANE
-      FUNCTION KPLANE(IN)
+      FUNCTION KPLANE(IN, results)
+      use list26_mod
 C--CALCULATE THE DERIVATIVES FOR A 'PLANAR' RESTRAINT
 C
 C  IN  A DUMMY ARGUMENT.
@@ -7861,6 +7865,7 @@ C  >0  THE NUMBER OF ATOMS IN THE PLANE (>2).
 C
 C--
 C
+      type(restraints_t), intent(inout), optional :: results
       DIMENSION FF(3)
       INCLUDE 'ISTORE.INC'
 C
@@ -7909,6 +7914,22 @@ C--SET THE ERROR RETURN VALUE
       RETURN
 C--SET UP THE ATOM COORDINATES IN THE ATOM ARRAY AT 'JS'
 1200  CONTINUE
+
+      if(present(results)) then
+          call extend(results%subrestraints, NCA, .true.)
+          JA=LCA
+          do icpt=1, size(results%subrestraints)
+             write(results%subrestraints(icpt)%description, '(A)') 
+     &        'Distance to mean plane'
+              call extend(results%subrestraints(icpt)%atoms, 1, .true.)
+              results%subrestraints(icpt)%atoms(1)%label=
+     &            transfer(istore(JA+2), 'aaaa')
+              results%subrestraints(icpt)%atoms(1)%serial=
+     &            nint(store(JA+3))     
+             JA=ISTORE(JA)
+          end do
+      end if
+      
       JA=LCA
       JB=JS
 C--CHECK FOR THE END OF THE CHAIN

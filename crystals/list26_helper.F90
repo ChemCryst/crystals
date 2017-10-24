@@ -354,19 +354,24 @@ write(*,'(I5,1X,I6,1X,A,"(",I0,")",1X,A)') self%index, self%offset, trim(self%la
 end subroutine
 
 !> Print the leverage values of a restraint given the invert matrix
-subroutine showleverage(rindex)
+subroutine showleverage(rindex, output)
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
+integer, intent(in) :: output !< Where to print. -1 = all, 1=cmon, 2=ncwu
 integer i, k, l, numatoms, cpt
 real leverage
-character(len=1024) :: formatstr
+character(len=1024) :: formatstr, atomslist
 
 if(.not. allocated(restraints_derivatives)) then
-    write(cmon, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
-    CALL XPRVDU(NCVDU, 1,0)
-    write(ncwu, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
+    if(output==-1 .or. output==1) then
+        write(cmon, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
+        CALL XPRVDU(NCVDU, 1,0)
+    end if
+    if(output==-1 .or. output==2) then
+        write(ncwu, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
+    end if
     return
 end if
 
@@ -374,9 +379,11 @@ cpt=0
 do k=1, size(restraints_derivatives)
 
      if(cpt==13) then
-        WRITE(CMON,'(A)') &
-        &   '... Output truncated, see the rest in the listing file '
-        CALL XPRVDU(NCVDU, 1,0)
+        if(output==-1 .or. output==1) then
+            WRITE(CMON,'(A)') &
+            &   '... Output truncated, see the rest in the listing file '
+            CALL XPRVDU(NCVDU, 1,0)
+        end if
     end if
 
     formatstr=''
@@ -402,40 +409,49 @@ do k=1, size(restraints_derivatives)
             end if
             
             if(numatoms>0) then
-                write(formatstr, '(A, I0,A, A)') '(10X, A, ', numatoms, '(a, "(",I0,")")', ', ": ", F5.3, 2X, A )'
-                print *, trim(formatstr)
+                write(formatstr, '("(",I0,A,")")') numatoms, '(a, "(",I0,")",:,",")'
+                write(atomslist, formatstr) &
+                &   ( trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%label), &
+                &   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%serial, l=1, numatoms )
+
                 if(cpt<13) then
-                    WRITE(CMON,trim(formatstr)) &
+                    if(output==-1 .or. output==1) then
+                        WRITE(CMON,'(10X, A, A, ": ", F5.3, 2X, A )' ) &
+                        &   'Leverage ', &
+                        &   trim(atomslist), &
+                        &   leverage, &
+                        &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+                        CALL XPRVDU(NCVDU, 1,0)
+                    end if
+                end if
+                if(output==-1 .or. output==2) then
+                    WRITE(NCWU,'(10X, A, A, ": ", F5.3, 2X, A )' ) &
                     &   'Leverage ', &
-                    &   ( trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%label), &
-                    &   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%serial, l=1, numatoms ), &
+                    &   trim(atomslist), &
                     &   leverage, &
                     &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
-                    CALL XPRVDU(NCVDU, 1,0)
                 end if
-                !WRITE(ncwu,'(10X, A, '//trim(formatstr)//'": ", F5.3, 2X, A )') &
-                !&   'Leverage ', &
-                !&   ( trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%label), &
-                !&   restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms(l)%serial, l=1, numatoms ), &
-                !&   leverage, &
-                !&   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)                
             else
                 if(cpt<13) then
-                    WRITE(CMON,'(10X, A, F5.3 )') &
+                    if(output==-1 .or. output==1) then
+                        WRITE(CMON,'(10X, A, F5.3 )') &
+                        &   'Leverage: ', &
+                        &   leverage
+                        CALL XPRVDU(NCVDU, 1,0)
+                    end if
+                end if
+                if(output==-1 .or. output==2) then
+                    WRITE(ncwu,'(10X, A, F5.3 )') &
                     &   'Leverage: ', &
                     &   leverage
-                    CALL XPRVDU(NCVDU, 1,0)
                 end if
-                WRITE(ncwu,'(10X, A, F5.3 )') &
-                &   'Leverage: ', &
-                &   leverage
             end if
             
         end associate
      end if
      
 end do
-  
+
 end subroutine
 
 !> print the derivatives in the lis output file
