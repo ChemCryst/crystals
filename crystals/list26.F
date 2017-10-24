@@ -388,6 +388,13 @@ C
               type(restraints_t), intent(inout), optional :: results
           end function
       end interface
+      interface 
+          subroutine XCDC(iasym, results)
+              use list26_mod
+              integer iasym
+              type(restraints_t), intent(inout), optional :: results
+          end subroutine
+      end interface
       
       
       character(len=1024) :: formatstr
@@ -3495,6 +3502,13 @@ C
               type(restraints_t), intent(inout), optional :: results
           end function
       end interface
+      interface 
+          subroutine XCDC(iasym, results)
+              use list26_mod
+              integer iasym
+              type(restraints_t), intent(inout), optional :: results
+          end subroutine
+      end interface
       
       integer, dimension(8) :: IBUFF
       real, dimension(:), allocatable :: card
@@ -3670,7 +3684,7 @@ C--'RESTRAIN' FUNCTION
 C
 C--'SINGLE DISTANCE' RESTRAINTS
 1250  CONTINUE
-      CALL XCDC(iasym)
+      CALL XCDC(iasym, restraints_list(idjwtemp))
       GOTO 1000
 C
 C--'DISTANCE DIFFERENCE' RESTRAINTS
@@ -7605,12 +7619,16 @@ C--END OF THIS DISTANCE  -  MOVE TO THE NEXT
       END
 C
 CODE FOR XCDC
-      SUBROUTINE XCDC(iasym)
+      SUBROUTINE XCDC(iasym, results)
+      use list26_mod
 C--CALCULATE DISTANCE RESTRAINTS
 C
 C    IASYM = 0 FOR NORMAL
 C            1 FOR ASYMMETRIC
 C--
+
+      type(restraints_t), intent(inout), optional :: results
+      
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -7621,6 +7639,27 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+
+      if(present(results)) then
+          call extend(results%subrestraints, nca/2, .true.)
+          JA=LCA
+          do icpt=1, size(results%subrestraints)
+             write(results%subrestraints(icpt)%description, '(A)') 
+     &        'Single distance'
+              call extend(results%subrestraints(icpt)%atoms, 2, .true.)
+              results%subrestraints(icpt)%atoms(1)%label=
+     &            transfer(istore(JA+2), 'aaaa')
+              results%subrestraints(icpt)%atoms(1)%serial=
+     &            nint(store(JA+3))
+              JA=ISTORE(JA)
+              results%subrestraints(icpt)%atoms(2)%label=
+     &            transfer(istore(JA+2), 'aaaa')
+              results%subrestraints(icpt)%atoms(2)%serial=
+     &            nint(store(JA+3))
+              JA=ISTORE(JA)
+          end do
+      end if
+      
 C--SET UP THE INITIAL CONSTANTS
       JA=LCA
       NCA=2
