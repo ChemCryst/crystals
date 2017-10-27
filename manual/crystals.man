@@ -8479,6 +8479,11 @@ are only going to be calculated.
  with a summary on the terminal. If the LEVEL is LOW, only restraints
  where the calculated value differs significantly from the target are
  printed, otherwise all restraints are printed.
+#PIf a cycle of refinement is done before issuing the command, the leverages 
+ of all the restraints are calculated and printed on the screen and the lis file.
+ A leverage of 0 means that the restraint has no influence on the parameter, 
+ a leverage of 1 means that the restraint completely determine the value of the parameter,
+ a value between 0 and 1 indicate that bot the X-ray data and the restraint contribute to the parameter.
 #
 #XLIST 4#
 #XWeighting schemes#
@@ -9236,14 +9241,18 @@ default value is 4.0
  This parameter has the same options as for
  the  CALCULATE  directive above.
 #KPUNCH#
- Controls punching LIST 5 (the model parameters) to the .PCH file
+ Controls punching results to files
 #N   2#
 #J
-      NO   -  Default value
-      YES
+      NO  -  Default value
+      YES  -  write the model parameters to a *.pch file
+      MATLAB  - write the design matrix, normal matrix, inversion and weights to matlabs files *.m
+      TEXT  - write the design matrix, normal matrix, inversion and weights to ASCII files *.dat
+      LEVERAGES  - same as TEXT plus the leverages and t-values. Warning: shifts are not applied in this case
 #
- If  PUNCH  is  YES, LIST 5 is punched after the current cycle of
- refinement.
+ If  PUNCH is LEVERAGES, the shifts are not applied so that the model is consistent with the calculated leverages and derivatives.
+ the set of files produced by MATLAB, TEXT and LEVERAGES are self consistent, the same index in the name means they belong together.
+ ie. normal1.dat and leverages1.dat are part of the same calculation.
 #KMATRIX#
  Controls re-use of the normal matrix
 #N   2#
@@ -9272,18 +9281,21 @@ default value is 4.0
  SHIFT RATIO exceeds 3.0, and/or the SHIFT/ESD  exceeds 1.0 . Only those
  atoms in LIST 5 containing one or more refinable parameters are listed.
 #KINVERTOR#
- Two matrix inversion methods are provided.
+ Six matrix inversion methods are provided.
 #N   2#
 #J
-      CHOLESKI  -  Default value
-      EIGENVALUE
+      AUTO - Default value (Auto-adaptive single precision/double precision LDLT inversion)
+      LDLT - single precision Robust Cholesky decomposition of a matrix with pivoting
+      EIGENVALUE - Eigenvalue decomposition + filtering on small eigenvalues then inversion
+      DP_LDLT - double precision Robust Cholesky decomposition of a matrix with pivoting
+      XCHOLESKI - original crystals Choleski decomposition
+      CHOLESKI - Standard Choleski inversion
 #
- The default Choleski invertor is suitable for most well conditioned problems.
- The alternative Eigenvalue invertor is suitable for ill-conditioned cases,
- such as those involving pseudo-symmetry. It is slower than the Choleski
- method and cannot handle such large normal matrices. The memory
- required is almost three times that used for each block in the Cholesky
- method.
+ The AUTO method is suitable for most problem including moderatly ill condition problems.
+ Crystals will switch automatically from single precision to double precision for the inversion when needed.
+ The eigenvalue decomposition should be used with care, the XCHOLESKI method is kept for historical purpose,
+ The LDLT and DP_LDLT can be use to forced crystals to use single or double precision. Beware of precision loss
+ in single precision. The CHOLESKI method is deprecated.
 #KAUGFACT#
  This is a constant to be added to all eigen values during eigenvalue
  inversion. The default value is 0.0.
