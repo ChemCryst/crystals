@@ -9130,7 +9130,7 @@ c                CALL XPRVDU(NCVDU,1,0)
      2              (/size(globalderivatives), 1/) ),
      1          reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag )
             deallocate(globalderivatives)
-        end if        
+        end if
 C--FIND THE ADDRESS OF THE LENGTH OF THE NEXT ENTRY
         M16Q=M16Q+MD16Q
 C--FIND THE LENGTH OF THE NEXT ENTRY

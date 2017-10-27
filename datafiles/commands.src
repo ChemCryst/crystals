@@ -1786,8 +1786,8 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
      PART           NONE           FULL
     ./FO/               0    0    1    2   -1 /FOT/
      /FOT/          SCALED-/FOT/
-    .PUNCH              0    0    1    4   -1 NO
-     NO             YES            MATLAB         TEXT
+    .PUNCH              0    0    1    5   -1 NO
+     NO             YES            MATLAB         TEXT           LEVERAGES                
     .MATRIX             0    0    1    2   -1 NEW
      NEW            OLD
     .MONITOR            0    0    1    4   -1 LOW

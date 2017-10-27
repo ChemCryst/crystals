@@ -448,10 +448,15 @@ C--SET UP THE SHIFT AREA
       JC=KCHLFL(MW*NMW)
       JD=JC+(NMW-1)*MW
 cdec06
-         if (ispar .eq.0) then
+      if (ispar .eq.0) then
 c-----    set general shift to 0.8 for sparse build
-          store(m33sv)=min(store(m33sv), 0.8)
-         endif
+        store(m33sv)=min(store(m33sv), 0.8)
+      endif
+      if (sfls_punch_flag==3) then
+c-----    set general shift to 0.8 for leverages calculations
+        store(m33sv)=0.0
+      end if     
+
 c
 C--FIND THE POINTERS TO THE SHIFT INFORMATION
       JA=M33ST+1
@@ -471,9 +476,13 @@ C--MOVE THE SHIFT FACTOR FROM LIST 33
 1050     CONTINUE
 cdec06
          if (ispar .eq.0) then
-c-----    set maximal shift to 0.8 for sparse build
-          store(jb)=min(store(jb), 0.8)
+c-----     set maximal shift to 0.8 for sparse build
+           store(jb)=min(store(jb), 0.8)
          endif
+         if (sfls_punch_flag==3) then
+c-----     set general shift to 0.8 for leverages calculations
+           store(jb)=0.0
+         end if
          STORE(I)=STORE(JB)
 C--INCREMENT THE POINTERS
 1100     CONTINUE
@@ -917,6 +926,11 @@ C-- If we are doing data punching then do it here.
          IF ( sfls_punch_flag>0 ) THEN
             call sfls_punch_variance(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1          sfls_punch_flag)
+         END IF
+         
+C-- If we are calculating leverages then do it here         
+         IF ( sfls_punch_flag==3 ) THEN
+            call sfls_punch_leverages(jy)
          END IF
                     
 2050     CONTINUE

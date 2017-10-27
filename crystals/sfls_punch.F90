@@ -2,7 +2,7 @@
 !!
 !! \detaileddescription
 !!
-!! 2 Outputs are available: Matlab(1) and plain text(2)
+!! 2 Outputs are available: Matlab(1), plain text(2), plain text bis for leverages(3) 
 !!
 !! (1) **Matlab output (PUNCH=MATLAB)**
 !!
@@ -19,6 +19,14 @@
 !! - variance*.dat stores the variance/covariance matrix as a n*n matrix
 !! - wdf*.dat stores the weights
 !!
+!! (3) **Plain ascii output for leverages (PUNCH=LEVERAGES)**
+!!
+!! - design*.dat stores the design matrix. Each row starts with the h,k,l index followed by the derivatives
+!!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
+!! - normal*.dat stores the normal matrix as a n*n matrix
+!! - variance*.dat stores the variance/covariance matrix as a n*n matrix
+!! - wdf*.dat stores the weights
+!!
 !! The file naming is kept consistent. The same index is used for files written is the same cycle. See sfls_punch_get_newfileindex().
 !!
 module sfls_punch_mod
@@ -28,11 +36,12 @@ integer, private :: design_unit=0 !< unit number for the file
 integer, private :: wdf_unit=0 !< unit number for the file
 integer, private, save :: fileindex=-1 !< index used in the different filenames
 !> List of filename used. This list is used to find a new index for the filenames.
-character(len=24), dimension(4), parameter, private :: filelist=(/ &
-&  'normal  ', &
-&  'design  ', &
-&  'wdf     ', &
-&  'variance' /)
+character(len=25), dimension(5), parameter, private :: filelist=(/ &
+&  'normal   ', &
+&  'design   ', &
+&  'wdf      ', &
+&  'variance ', &
+&  'leverages' /)
 !> list of extension used. This list is used to find a new index for the filenames.
 character(len=4), dimension(2), parameter, private :: extlist=(/ '.m  ', '.dat' /)
 
@@ -58,7 +67,7 @@ character(len=255) :: file_name
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'normal', filecount, '.m'
+        write(file_name, '(a,i0,a)') 'normal', filecount, '.m'
 
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
@@ -66,7 +75,7 @@ character(len=255) :: file_name
         write(normal_unit, '(''N={};'')')
         write(normal_unit, '(''VC={};'')')
         
-    case(2) ! plain text
+    case(2,3) ! plain text
     ! Nothing needed here
         
     case default
@@ -80,10 +89,6 @@ end subroutine
 subroutine sfls_punch_close_normalfile(sfls_punch_flag)
 implicit none
 integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
-integer filecount
-logical file_exists
-character(len=255) :: file_name
-character(len=4) :: file_ext 
 logical fileopened
 
     ! Write header
@@ -105,7 +110,7 @@ logical fileopened
         close(normal_unit)
         normal_unit=0
         
-    case(2) ! plain text
+    case(2,3) ! plain text
     ! Nothing needed here
         
     case default
@@ -135,16 +140,22 @@ character(len=255) :: file_name
     case(1) ! matlab
 
         design_unit=786
-        write(file_name, '(a,i0,a)'), 'design', filecount, '.m'
+        write(file_name, '(a,i0,a)') 'design', filecount, '.m'
         open(design_unit, file=file_name, status='new')
         write (design_unit, '(''a=['')')
         
     case(2) ! plain text
 
         design_unit=786
-        write(file_name, '(a,i0,a)'), 'design', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'design', filecount, '.dat'
         open(design_unit, file=file_name, status='new')
         call print_design_header()
+
+    case(3) ! plain text for leverages
+
+        design_unit=786
+        write(file_name, '(a,i0,a)') 'design', filecount, '.dat'
+        open(design_unit, file=file_name, status='new')
         
     case default
 !        print *, 'Punch flag not recognised ', sfls_punch_flag
@@ -180,27 +191,27 @@ integer filecount
             call abort()
         end if
 
-        write (normal_unit, '(A, '' = ['')'), 'N{length(N)+1}'
+        write (normal_unit, '(A, '' = ['')') 'N{length(N)+1}'
         do xpos = 1, nmsize
             do ypos = 1, nmsize
-                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)'), '...'
-                write (normal_unit, '(G16.8$)'), unpacked(ypos, xpos)
+                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)') '...'
+                write (normal_unit, '(G16.8$)') unpacked(ypos, xpos)
             end do
             if (xpos/=nmsize) then
-                write (normal_unit, '(A)'), ';'
+                write (normal_unit, '(A)') ';'
             end if
         end do
-        write (normal_unit, '(A)'), '];'
+        write (normal_unit, '(A)') '];'
 
-    case(2) ! plain text
+    case(2,3) ! plain text
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'normal', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'normal', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
         do xpos = 1, nmsize
-            write (normal_unit, *), unpacked(:, xpos)
+            write (normal_unit, *) unpacked(:, xpos)
         end do    
         close(normal_unit)
         normal_unit=0
@@ -238,27 +249,27 @@ integer filecount
             call abort()
         end if
 
-        write (normal_unit, '(A, '' = ['')'), 'VC{length(VC)+1}'
+        write (normal_unit, '(A, '' = ['')') 'VC{length(VC)+1}'
         do xpos = 1, nmsize
             do ypos = 1, nmsize
-                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)'), '...'
-                write (normal_unit, '(G16.8$)'), unpacked(ypos, xpos)
+                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)') '...'
+                write (normal_unit, '(G16.8$)') unpacked(ypos, xpos)
             end do
             if (xpos/=nmsize) then
-                write (normal_unit, '(A)'), ';'
+                write (normal_unit, '(A)') ';'
             end if
         end do
-        write (normal_unit, '(A)'), '];'
+        write (normal_unit, '(A)') '];'
 
-    case(2) ! plain text
+    case(2,3) ! plain text
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'variance', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'variance', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
         do xpos = 1, nmsize
-            write (normal_unit, *), unpacked(:, xpos)
+            write (normal_unit, *) unpacked(:, xpos)
         end do    
         close(normal_unit)
         normal_unit=0
@@ -306,14 +317,14 @@ character(len=256) :: lineformat
             write(design_unit, '(5G16.8,: ," ...")') designmatrix(:,i)
         end do
 
-    case(2) ! plain text
+    case(2,3) ! plain text
     
         if(present(punch)) then
             close(design_unit)
             design_unit=0
             return
         end if
-
+        
         if(design_unit==0) then
 !            print *, 'design matrix file not opened yet'
             call abort()
@@ -365,7 +376,7 @@ if(present(punch)) then
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'wdf', filecount, '.m'
+        write(file_name, '(a,i0,a)') 'wdf', filecount, '.m'
         wdf_unit=785
         open(wdf_unit, file=file_name, status='new')
         write (wdf_unit, '(''DF=['')')
@@ -376,11 +387,11 @@ if(present(punch)) then
         deallocate(wdflist)
         wdfindex=0
 
-    case(2) ! plain text
+    case(2,3) ! plain text
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'wdf', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'wdf', filecount, '.dat'
         wdf_unit=785
         open(wdf_unit, file=file_name, status='new')
         write(wdf_unit, *) wdflist(1:wdfindex)
@@ -438,7 +449,7 @@ integer i, j
         filecount=filecount+1
         do i=1,size(extlist)
             do j=1,size(filelist)
-                write(tempstr, '(a,i0,a)'), trim(filelist(j)), filecount, trim(extlist(i))                
+                write(tempstr, '(a,i0,a)') trim(filelist(j)), filecount, trim(extlist(i))                
                 inquire(FILE=trim(tempstr), EXIST=file_exists)
                 if(file_exists) cycle dofind
             end do
@@ -474,7 +485,6 @@ use xlst05_mod, only: l5, m5, md5, n5
 use xlst12_mod, only: l12a, l12b, l12o, m12, m12a, m12b, md12a, md12b, n12, n12b
 use xerval_mod, only:
 use xopval_mod, only: iopabn, iopcmi, iopend, iopp22
-use xiobuf_mod, only: cmon
 implicit none
 
 integer, parameter :: nameln = 18 
@@ -482,7 +492,7 @@ integer, parameter :: lover = 10 , nover = 6
 integer, parameter :: latomp = 8 , natomp = 13 
 character(len=132) :: cline1 , cline2
 
-integer i, j, k, l, icombf, iend, ipos, istat
+integer i, j, l, iend, ipos
 integer length, natom, nbatch, ncell, nelem, nexti, nlayer
 integer nprof, nunref
 
@@ -504,8 +514,6 @@ character(len=latomp), dimension(natomp), parameter :: catomps= &
 &    '        ' , '        ' , '        ' , &
 &    '  u[iso]' , '  size  ' , '   dec  ' , &
 &    '   azi  ' , '        ' , '        ' /)
-
-integer, parameter :: iversn=210, icomsz=512
 
 !integer, external :: kstall, krddpv, kprtln
 
@@ -666,6 +674,329 @@ integer, parameter :: iversn=210, icomsz=512
 
 end subroutine
 
+!> \brief Output leverages and t values to an output file
+!! 
+!! - Calculate the leverages and t values as described in https://doi.org/10.1107/S0021889812015191
+!! - The calculation is done in 2 steps because we need the maximum t values to normalise the data and the t values are too much to be stored
+!! - First calculate the leverages and store all of them, then the t values and save the max value
+!! - Then calculate the t values again, normalise them and write to a file
+!! 
+!! The calculation is using a blocking algorithm to improve speed. block_size reflections are loaded and
+!! the block is processed in one go. openmp does not make significant speed, I suspect the I/O is a limited factor.
+!! using workshare for formatting the data, writing and calculating might speed things up but it does not seem to be necessary at the moment
+subroutine sfls_punch_leverages(nsize)
+use list26_mod, only: subrestraints_parent, restraints_list
+use xiobuf_mod, only: cmon !< screen
+use xunits_mod, only: ncvdu !< lis file
+!$ use OMP_LIB
+implicit none
+integer, intent(in) :: nsize !< number of parameters during least squares
+integer, parameter :: block_size=512
+integer filecount, variance_unit, leverage_unit
+character(len=255) :: file_name, formatstr
+double precision, dimension(:,:), allocatable :: variance, design_block, temp_block, tij_block, T2ij_block
+double precision, dimension(:), allocatable :: maxtij, maxT2ij
+double precision, dimension(:), allocatable :: leverage_all, temp1d
+integer info, irestraint, i, j, numobs, islider
+double precision normalize, check
+integer, dimension(:,:), allocatable :: hkl
+logical file_exists
+#if defined(CRY_OSLINUX)
+integer :: starttime
+integer, dimension(8) :: measuredtime
+#endif
+
+double precision, external :: ddot !< blas dot product
+
+    write(cmon,'(A,A)') '{I Starting leverages calculations...'
+    call xprvdu(ncvdu, 1,0)
+    ! updating slider in the gui
+    call slider(0,100)
+    
+    if(design_unit/=0) then
+#ifdef CRY_OSLINUX
+        print *, 'design matrix file already opened'
+#endif        
+        call abort()
+    end if
+
+#if defined(CRY_OSLINUX)
+    call date_and_time(VALUES=measuredtime)
+    starttime=((measuredtime(5)*3600+measuredtime(6)*60)+ &
+    measuredtime(7))*1000.0+measuredtime(8)
+#endif
+
+    ! search index for file to open and create
+    filecount = sfls_punch_get_newfileindex()
+
+    design_unit=786
+    write(file_name, '(a,i0,a)') 'design', filecount, '.dat'
+    inquire(file=file_name, exist=file_exists)
+    if(.not. file_exists) then
+#ifdef CRY_OSLINUX
+        print *, 'design matrix file does not exist, programming error'
+#endif        
+        call abort()
+    end if
+    open(design_unit, file=file_name, status='old')
+    
+    variance_unit=787
+    write(file_name, '(a,i0,a)') 'variance', filecount, '.dat'
+    inquire(file=file_name, exist=file_exists)
+    if(.not. file_exists) then
+#ifdef CRY_OSLINUX
+        print *, 'inverse of the normal matrix file does not exist, programming error'
+#endif        
+        call abort()
+    end if
+    open(variance_unit, file=file_name, status='old')
+
+    leverage_unit=788
+    write(file_name, '(a,i0,a)') 'leverages', filecount, '.dat'
+    open(leverage_unit, file=file_name, status='new')
+    
+    allocate(variance(nsize, nsize))
+    read(variance_unit, *) variance
+    
+    allocate(hkl(3, block_size))
+    allocate(maxtij(nsize))
+    allocate(maxT2ij(nsize))
+    allocate(design_block(nsize, block_size))
+    allocate(temp_block(nsize, block_size))
+    allocate(tij_block(block_size, nsize))
+    allocate(T2ij_block(block_size, nsize))
+    allocate(leverage_all(0))
+    maxtij=0.0d0
+    maxT2ij=0.0d0
+
+    ! first pre-calculate some constants
+    !##################################################################
+    info=0
+    numobs=0
+    islider=0
+    ! data don'f fit in memory and processing line by line is too slow
+    ! Using a blocking algorithm where a block of the design matrix is read and processed
+    ! leverages are saved for later the rest is just to calculate the max values
+    do while(info==0)
+        numobs=numobs+1
+        read(design_unit, *, iostat=info) hkl(:,mod(numobs-1,block_size)+1), &
+        &   design_block(:,mod(numobs-1,block_size)+1)
+        
+        if(mod(numobs-1,block_size)+1==block_size) then ! processing the block of design matrix
+    
+            ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
+            ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
+            ! A is design matrix, W weight as a diagonal matrix
+            ! (A^t W A)^-1 is the inverse of normal matrix
+            ! calculation can be done one row of A at at time
+            
+            ! bit for leverages
+            !temp_block=matmul(variance, design_block)
+            call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
+            !call dgemm('N', 'N', nsize, block_size, nsize, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
+
+            ! bit for tij
+            !tij_block=matmul(transpose(design_block), variance)
+            call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+            &   variance, nsize, 0.0d0, tij_block, block_size)
+                        
+            call move_alloc(leverage_all, temp1d)
+            allocate(leverage_all(size(temp1d)+block_size))
+            leverage_all(1:size(temp1d))=temp1d
+            deallocate(temp1d)
+            
+            do i=1, block_size
+                leverage_all(size(leverage_all)-block_size+i)=dot_product(design_block(:,i), temp_block(:,i))
+                !leverage_all(size(leverage_all)-block_size+i) = ddot(nsize, design_block(:,i), 1, temp_block(:,i), 1)
+
+                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-block_size+i))
+            end do
+            
+            do i=1, nsize
+                maxtij(i)=max(maxtij(i), maxval(abs(tij_block(:,i))))
+                maxT2ij(i)=max(maxT2ij(i), maxval(abs(T2ij_block(:,i))))
+            end do
+
+            ! updating slider in the gui
+            islider=islider+(50-islider)/4
+            call slider(islider,100)
+            
+        end if
+        
+    end do
+    
+    ! Processing the remaining incomplete block
+    if(mod(numobs-1,block_size)+1/=block_size) then ! processing the reamining block
+        design_block(:,mod(numobs-1,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
+    
+        call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
+
+        call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+        &   variance, nsize, 0.0d0, tij_block, block_size)
+
+        call move_alloc(leverage_all, temp1d)
+        allocate(leverage_all(size(temp1d)+mod(numobs-1,block_size)))
+        leverage_all(1:size(temp1d))=temp1d
+        deallocate(temp1d)
+        
+        do i=1, mod(numobs-1,block_size)
+            leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)=dot_product(design_block(:,i), temp_block(:,i))
+
+            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i))
+        end do
+        
+        do i=1, nsize
+            maxtij(i)=max(maxtij(i), maxval(abs(tij_block(:,i))))
+            maxT2ij(i)=max(maxT2ij(i), maxval(abs(T2ij_block(:,i))))
+        end do    
+    end if
+    numobs=numobs-1
+    
+    ! updating slider in the gui
+    islider=50
+    call slider(islider,100)
+    
+    normalize=real(numobs, kind(1.0d0))/real(nsize, kind(1.0d0))
+    
+    rewind ( unit=design_unit )  ! going back to begining of the file
+    ! Calculating the various values again and printing
+    ! using the leverages from previous run
+    !##################################################################
+    write(formatstr, '(A,I0,A)') '(A, ", ", 3(I0,", "), 2(F7.4, ", "), ',2*nsize,'(1PE10.3, :, ", "))'
+    write(leverage_unit, '(8(''"'',A,''"'',:,","))') 'Restraint','h','k','l', &
+    &   'Leverage', 'Normalised leverage', 'Normalised t_ij', 'Normalised T2_ij'
+    ! data don'f fit in memory and processing line by line is too slow
+    ! Using a blocking algorithm where a block of the design matrix is read and processed
+    info=0
+    irestraint=0
+    numobs=0
+    check=0.0d0
+    do while(info==0)
+        numobs=numobs+1
+        read(design_unit, *, iostat=info) hkl(:,mod(numobs-1,block_size)+1), &
+        &   design_block(:,mod(numobs-1,block_size)+1)
+        
+        if(mod(numobs-1,block_size)+1==block_size) then ! processing the block of design matrix
+    
+            ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
+            ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
+            ! A is design matrix, W weight as a diagonal matrix
+            ! (A^t W A)^-1 is the inverse of normal matrix
+            ! calculation can be done one row of A at at time
+            
+            !tij_block=matmul(transpose(design_block), variance)
+            call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+            &   variance, nsize, 0.0d0, tij_block, block_size)
+            
+            do i=1, block_size
+                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-block_size+i))
+                
+                if(all(hkl(:,i)==0)) then
+                    irestraint=irestraint+1
+                end if
+                
+                if(irestraint==0) then
+                    write(leverage_unit, formatstr) &
+                    &   '""', hkl(:,i), leverage_all(size(leverage_all)-block_size+i), &
+                    &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                else
+                    write(leverage_unit, formatstr) &
+                    &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
+                    &   hkl(:,i), leverage_all(size(leverage_all)-block_size+i), &
+                    &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                end if
+            end do
+
+            ! updating slider in the gui
+            islider=islider+(100-islider)/4
+            call slider(islider,100)
+
+        end if
+        
+    end do
+    
+    ! Processing the remaining incomplete block
+    if(mod(numobs-1,block_size)+1/=block_size) then ! processing the reamining block
+        design_block(:,mod(numobs-1,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
+    
+        call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+        &   variance, nsize, 0.0d0, tij_block, block_size)
+        
+        do i=1, mod(numobs-1,block_size)
+            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i))
+
+            if(all(hkl(:,i)==0)) then
+                irestraint=irestraint+1
+            end if
+            
+            if(irestraint==0) then
+                write(leverage_unit, formatstr) &
+                &   '""', hkl(:,i), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
+                &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+            else
+                write(leverage_unit, formatstr) &
+                &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
+                &   hkl(:,i), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
+                &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+            end if
+        end do
+    end if    
+    numobs=numobs-1
+    
+    close(leverage_unit)
+    design_unit=0
+    
+    write(cmon,'(A,A)') '{I Leverages written in file: ', trim(file_name)
+    call xprvdu(ncvdu, 1,0)      
+    call slider(100,100)
+
+#if defined(CRY_OSLINUX)
+    call date_and_time(VALUES=measuredtime)
+    print *, ''
+    print *, '--- Calculation of leverages ---'
+    print *, 'sum of leverage and num of observations ', sum(leverage_all), numobs    
+    print *, 'Calculation of leverages done in ', &
+    ((measuredtime(5)*3600+measuredtime(6)*60)+ &
+    measuredtime(7))*1000.0+measuredtime(8)-starttime, 'ms'
+#endif
+
+end subroutine
+
+!> This function return the text of the restraint as one line only
+function cleanrestraint(text)
+implicit none
+character(len=*), intent(in) :: text
+character(len=len(text)) :: temp
+character(len=:), allocatable :: cleanrestraint
+integer i
+
+temp=text
+
+i=index(temp, 'CONT')
+do while(i>0)
+    temp=temp(1:i-1)//temp(i+4:)//'    '
+    i=index(temp, 'CONT')
+end do
+
+i=index(temp, achar(10))
+do while(i>0)
+    temp=temp(1:i-1)//temp(i+1:)//' '
+    i=index(temp, achar(10))
+end do
+
+i=index(temp, achar(13))
+do while(i>0)
+    temp=temp(1:i-1)//temp(i+1:)//' '
+    i=index(temp, achar(13))
+end do
+
+cleanrestraint=trim(temp)
+
+end function
 
 
 end module
