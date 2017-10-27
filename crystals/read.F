@@ -290,7 +290,7 @@ C--THE COMMON BLOCK 'XCARDS' IS USED BY THIS AND OTHER ROUTINES
 C  FOR CARD I/O CONTROL. THE VARIABLES ARE :
 C
 C  LCMAGE  THE TERMINAL INPUT CARD IMAGE, POSSIBLY CONTAINING
-C              LOWERCASE CHARS. THE MONITOR OUTPUT IS FROM THIS ARRAY
+C              LOWERCASE CHARS. THE MIRROR OUTPUT IS FROM THIS ARRAY
 C  IMAGE   THE ALL UPPERCASE VERSION OF THE INPUT CARD. SYSTEM REQUEST
 C              QUEUE CARDS ARE READ INTO THIS ARRAY.
 C  NC      THE CURRENT PROCESSING POSITION IN 'IMAGE'.
@@ -345,14 +345,14 @@ C--
 C
 C      IRDCPY(I)   COPY FLAG
 C                    0      NO COPY. LINES READ ARE INSTRUCTIONS
-C                    1      COPY INPUT DIRECTLY TO MONITOR.
+C                    1      MIRROR INPUT DIRECTLY TO OUTPUT.
 C      IRDLOG(I)   LOG FLAG
 C                    O      NO LOGGING
 C                    1      INPUT WRITTEN TO LOG FILE
 C
-C      IRDCAT(I)   MONITOR FLAG
-C                    0      DO NOT MONITOR INPUT
-C                    1      MONITOR INPUT
+C      IRDCAT(I)   MIRROR FLAG
+C                    0      DO NOT MIRROR INPUT
+C                    1      MIRROR INPUT
 C      IRDPAG      PAGE SIZE FOR COPY FILE ( IN LINES )
 C      IRDLIN      NUMBER OF LINES SINCE LAST PROMPT
 C
@@ -1590,7 +1590,7 @@ C
 C      VALUE       KEYWORD           VARIABLE(S) SET
 C      -----       -------           ---------------
 C      1           MAPS              'MAPS'
-C      2           MONI(TOR)         'ICAT' AND 'IRDCAT(IFLIND)'
+C      2           MIRR(OR)          'ICAT' AND 'IRDCAT(IFLIND)'
 C      3           LOG               'IRDLOG(IFLIND)'
 C      4           PAGE              'IRDPAG'
 C      5           LIST(S)           'ISSLSM'
@@ -1611,6 +1611,7 @@ C     19           AUTO(UPDATE)      'ISSUPD'
 C     20           BOND(TYPE)        'ISSBND'
 C     21           CACHEMESSAGE      'ISSCSH'
 C     22           RATIO             'ISSRAT'
+C     23           MONI(TOR)         'ISSMON'
 C
 C    THE NAMES OF THE ALLOWED FUNCTIONS ARE STORED IN THE ARRAY
 C    'KEYFNC'. EACH STORED NAME IS 8 'A1' WORDS LONG. ONLY THE FIRST 4
@@ -1632,7 +1633,7 @@ C      IFIRVL      NUMERIC VALUE ASSOCIATED WITH FIRST ALLOWED STRING
 C                  VALUE. SUBSEQUENT STRING VALUES ARE GIVEN INCREASING
 C                  NUMERIC VALUES
       PARAMETER (LFNC=8)
-      PARAMETER (NFNC=22)
+      PARAMETER (NFNC=23)
       PARAMETER (LUFNC=4)
 C
       DIMENSION KEYFNC(LFNC,NFNC)
@@ -1642,7 +1643,7 @@ C
       DIMENSION IFIRVL(NFNC)
 C
       PARAMETER (LVAL=4)
-      PARAMETER (NVAL=23)
+      PARAMETER (NVAL=26)
       DIMENSION KEYVAL(LVAL,NVAL)
 C
       DIMENSION VALUE(1)
@@ -1660,28 +1661,28 @@ C
       INCLUDE 'XGUIOV.INC'
 C
 C
-C      MAPS        MONI(TOR)   LOG         PAGE        LIST(S)
-C      SPEE(D)     TIME        SRQ         TERM(INAL)   FILE(CASE)
-C      MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
+C      MAPS        MIRR(OR)    LOG         PAGE        LIST(S)
+C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL) 
+C      FILE(CASE)  MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
 C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
-C      CACHEMESSAGE RATIO
-C
+C      CACHEMESSAGE RATIO      MONITOR
 C
 C      LIST        NONE        CORE        OFF         ON
 C      SLOW        FAST        NONE        READ        WRIT
 C      BOTH        UNKN(OWN)   VT52        VT10(0)     VGA
 C      WIN(OW)     LOWE(R)     UPPE(R)     MIXE(D)     ARIT(H)
-C      GEOM        IO          IC
+C      GEOM        IO          IC          LOW         MEDIUM
+C      HIGH
 C
 #ifdef _HOL_
       DATA KEYFNC(1,1) / 1HM / , KEYFNC(2,1) / 1HA /
       DATA KEYFNC(3,1) / 1HP / , KEYFNC(4,1) / 1HS /
       DATA KEYFNC(5,1) / 1H  / , KEYFNC(6,1) / 1H  /
       DATA KEYFNC(7,1) / 1H  / , KEYFNC(8,1) / 1H  /
-      DATA KEYFNC(1,2) / 1HM / , KEYFNC(2,2) / 1HO /
-      DATA KEYFNC(3,2) / 1HN / , KEYFNC(4,2) / 1HI /
-      DATA KEYFNC(5,2) / 1HT / , KEYFNC(6,2) / 1HO /
-      DATA KEYFNC(7,2) / 1HR / , KEYFNC(8,2) / 1H  /
+      DATA KEYFNC(1,2) / 1HM / , KEYFNC(2,2) / 1HI /
+      DATA KEYFNC(3,2) / 1HR / , KEYFNC(4,2) / 1HR /
+      DATA KEYFNC(5,2) / 1HO / , KEYFNC(6,2) / 1HR /
+      DATA KEYFNC(7,2) / 1H  / , KEYFNC(8,2) / 1H  /
       DATA KEYFNC(1,3) / 1HL / , KEYFNC(2,3) / 1HO /
       DATA KEYFNC(3,3) / 1HG / , KEYFNC(4,3) / 1H  /
       DATA KEYFNC(5,3) / 1H  / , KEYFNC(6,3) / 1H  /
@@ -1775,6 +1776,11 @@ C
       DATA KEYFNC(5,22) / 1HO / , KEYFNC(6,22) / 1H  /
       DATA KEYFNC(7,22) / 1H  / , KEYFNC(8,22) / 1H  /
 C
+      DATA KEYFNC(1,23) / 1HM / , KEYFNC(2,23) / 1HO /
+      DATA KEYFNC(3,23) / 1HN / , KEYFNC(4,23) / 1HI /
+      DATA KEYFNC(5,23) / 1HT / , KEYFNC(6,23) / 1HO /
+      DATA KEYFNC(7,23) / 1HR / , KEYFNC(8,23) / 1H  /
+C
       DATA KEYVAL(1,1) / 1HL / , KEYVAL(2,1) / 1HI /
       DATA KEYVAL(3,1) / 1HS / , KEYVAL(4,1) / 1HT /
       DATA KEYVAL(1,2) / 1HN / , KEYVAL(2,2) / 1HO /
@@ -1821,15 +1827,27 @@ C
       DATA KEYVAL(3,22)/ 1H  / , KEYVAL(4,22)/ 1H  /
       DATA KEYVAL(1,23)/ 1HI / , KEYVAL(2,23)/ 1HC /
       DATA KEYVAL(3,23)/ 1H  / , KEYVAL(4,23)/ 1H  /
+      DATA KEYVAL(1,24)/ 1HL / , KEYVAL(2,24)/ 1HO /
+      DATA KEYVAL(3,24)/ 1HW / , KEYVAL(4,24)/ 1H  /
+      DATA KEYVAL(1,25)/ 1HM / , KEYVAL(2,25)/ 1HE /
+      DATA KEYVAL(3,25)/ 1HD / , KEYVAL(4,25)/ 1HI /
+      DATA KEYVAL(1,26)/ 1HH / , KEYVAL(2,26)/ 1HI /
+      DATA KEYVAL(3,26)/ 1HG / , KEYVAL(4,26)/ 1HH /
 #else
+C      MAPS        MIRR(OR)    LOG         PAGE        LIST(S)
+C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL)   
+C      FILE(CASE)  MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
+C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
+C      CACHEMESSAGE RATIO      MONITOR
+C
       DATA KEYFNC(1,1) / 'M' / , KEYFNC(2,1) / 'A' /
       DATA KEYFNC(3,1) / 'P' / , KEYFNC(4,1) / 'S' /
       DATA KEYFNC(5,1) / ' ' / , KEYFNC(6,1) / ' ' /
       DATA KEYFNC(7,1) / ' ' / , KEYFNC(8,1) / ' ' /
-      DATA KEYFNC(1,2) / 'M' / , KEYFNC(2,2) / 'O' /
-      DATA KEYFNC(3,2) / 'N' / , KEYFNC(4,2) / 'I' /
-      DATA KEYFNC(5,2) / 'T' / , KEYFNC(6,2) / 'O' /
-      DATA KEYFNC(7,2) / 'R' / , KEYFNC(8,2) / ' ' /
+      DATA KEYFNC(1,2) / 'M' / , KEYFNC(2,2) / 'I' /
+      DATA KEYFNC(3,2) / 'R' / , KEYFNC(4,2) / 'R' /
+      DATA KEYFNC(5,2) / 'O' / , KEYFNC(6,2) / 'R' /
+      DATA KEYFNC(7,2) / ' ' / , KEYFNC(8,2) / ' ' /
       DATA KEYFNC(1,3) / 'L' / , KEYFNC(2,3) / 'O' /
       DATA KEYFNC(3,3) / 'G' / , KEYFNC(4,3) / ' ' /
       DATA KEYFNC(5,3) / ' ' / , KEYFNC(6,3) / ' ' /
@@ -1923,6 +1941,11 @@ C
       DATA KEYFNC(5,22) / 'O' / , KEYFNC(6,22) / ' ' /
       DATA KEYFNC(7,22) / ' ' / , KEYFNC(8,22) / ' ' /
 C
+      DATA KEYFNC(1,23) / 'M' / , KEYFNC(2,23) / 'O' /
+      DATA KEYFNC(3,23) / 'N' / , KEYFNC(4,23) / 'I' /
+      DATA KEYFNC(5,23) / 'T' / , KEYFNC(6,23) / 'O' /
+      DATA KEYFNC(7,23) / 'R' / , KEYFNC(8,23) / ' ' /
+C
       DATA KEYVAL(1,1) / 'L' / , KEYVAL(2,1) / 'I' /
       DATA KEYVAL(3,1) / 'S' / , KEYVAL(4,1) / 'T' /
       DATA KEYVAL(1,2) / 'N' / , KEYVAL(2,2) / 'O' /
@@ -1970,6 +1993,13 @@ C
       DATA KEYVAL(1,23)/ 'I' / , KEYVAL(2,23)/ 'C' /
       DATA KEYVAL(3,23)/ ' ' / , KEYVAL(4,23)/ ' ' /
 
+      DATA KEYVAL(1,24)/ 'L' / , KEYVAL(2,24)/ 'O' /
+      DATA KEYVAL(3,24)/ 'W' / , KEYVAL(4,24)/ ' ' /
+      DATA KEYVAL(1,25)/ 'M' / , KEYVAL(2,25)/ 'E' /
+      DATA KEYVAL(3,25)/ 'D' / , KEYVAL(4,25)/ 'I' /
+      DATA KEYVAL(1,26)/ 'H' / , KEYVAL(2,26)/ 'I' /
+      DATA KEYVAL(3,26)/ 'G' / , KEYVAL(4,26)/ 'H' /
+
 #endif
 C
 C----- TYPE OF ARGUMENT: 1=KEYWORD, 2=INTEGER
@@ -1981,29 +2011,29 @@ C
       DATA ITPVAL(12) / 1 / , ITPVAL(13) / 1 / , ITPVAL(14) / 1 /
       DATA ITPVAL(15) / 1 / , ITPVAL(16) / 2 / , ITPVAL(17) / 1 /
       DATA ITPVAL(18) / 1 / , ITPVAL(19) / 1 / , ITPVAL(20) / 1 /
-      DATA ITPVAL(21) / 1 / , ITPVAL(22) / 1 /
+      DATA ITPVAL(21) / 1 / , ITPVAL(22) / 1 / , ITPVAL(23) / 1 /
 C
 C----- STARTING POSITION IN LIST OF KEYWORDS
 C
-      DATA ISTVAL(1)  /  1 / , ISTVAL(2)  /  4 / , ISTVAL(3)  /  4 /
-      DATA ISTVAL(4)  /  0 / , ISTVAL(5)  /  8 / , ISTVAL(6)  /  6 /
+      DATA ISTVAL(1)  /  1 / , ISTVAL(2)  /  4 / , ISTVAL(3)  / 4 /
+      DATA ISTVAL(4)  /  0 / , ISTVAL(5)  /  8 / , ISTVAL(6)  / 6 /
       DATA ISTVAL(7)  /  4 / , ISTVAL(8)  /  0 / , ISTVAL(9)  / 4 /
       DATA ISTVAL(10) /  12 /, ISTVAL(11) / 17 /
-      DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) /  4 /
+      DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) / 4 /
       DATA ISTVAL(15) /   4 /, ISTVAL(16) /  0 / , ISTVAL(17) / 4 /
-      DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 / , ISTVAL(20) /  4 /
-      DATA ISTVAL(21) /   4 /, ISTVAL(22) / 22 /
+      DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 / , ISTVAL(20) / 4 /
+      DATA ISTVAL(21) /   4 /, ISTVAL(22) / 22 / , ISTVAL(23) / 4 /
 C
 C----- NUMBER OF KEYWORDS PERMITTED
 C
       DATA NUMVAL(1)  /  3 / , NUMVAL(2)  /  2 / , NUMVAL(3)  /  2 /
       DATA NUMVAL(4)  /  0 / , NUMVAL(5)  /  4 / , NUMVAL(6)  /  2 /
-      DATA NUMVAL(7)  /  3 / , NUMVAL(8)  /  0 / , NUMVAL(9)  / 2 /
+      DATA NUMVAL(7)  /  3 / , NUMVAL(8)  /  0 / , NUMVAL(9)  /  2 /
       DATA NUMVAL(10) /  5/, NUMVAL(11) / 3/
-      DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14)  /  2 /
-      DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17)  /  2 /
-      DATA NUMVAL(18) /  2/, NUMVAL(19) /  2/, NUMVAL(20) /  2/
-      DATA NUMVAL(21) /  2/, NUMVAL(22) / 2/
+      DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14) /  2 /
+      DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17) /  2 /
+      DATA NUMVAL(18) /  2/, NUMVAL(19) / 2/ , NUMVAL(20) /  2/
+      DATA NUMVAL(21) /  2/, NUMVAL(22) / 2/ , NUMVAL(23) /  3/
 C
 C----- NUMERIC VALUE CORRESPONDING TO FIRST KEYWORD
 C
@@ -2011,10 +2041,10 @@ C
       DATA IFIRVL(4)  /  0 / , IFIRVL(5)  /  1 / , IFIRVL(6)  /  1 /
       DATA IFIRVL(7)  /  0 / , IFIRVL(8)  /  0 / , IFIRVL(9) /  0 /
       DATA IFIRVL(10)  /  0 /, IFIRVL(11) / 0 /
-      DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14)  /  0 /
-      DATA IFIRVL(15)  /  0 /, IFIRVL(16) /0/ , IFIRVL(17) / 0 /
-      DATA IFIRVL(18)  /  1 /, IFIRVL(19)  /  0 /, IFIRVL(20)  /  0 /
-      DATA IFIRVL(21)  /  0 /, IFIRVL(22) / 0 /
+      DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14) /  0 /
+      DATA IFIRVL(15)  /  0 /, IFIRVL(16) / 0 / , IFIRVL(17)  /  0 /
+      DATA IFIRVL(18)  /  1 /, IFIRVL(19) / 0 / , IFIRVL(20)  /  0 /
+      DATA IFIRVL(21)  /  0 /, IFIRVL(22) / 0 / , IFIRVL(23)  / -1 /
 C
 C
 C
@@ -2140,6 +2170,8 @@ c              ENDIF
         ISSCSH = IRQVAL
       ELSE IF ( IRQFNC .EQ. 22 ) THEN
         ISSRAT = IRQVAL
+      ELSE IF ( IRQFNC .EQ. 23 ) THEN
+        ISSMON = IRQVAL
       ELSE
         GO TO 9920
       ENDIF

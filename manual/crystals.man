@@ -335,7 +335,7 @@ to files that it has opened. Deviecs recognised by CRYSTALS are:
 # PRINTER  - the listing file (bfilenn.lis by default)
 # PUNCH    - the punch file (bfilenn.pch by default)
 # LOG      - record of all commands issued (bfile.log by default)
-# MONITOR  - obsolete, used to be text that appeared on the screen
+# MONITOR  - Copy of text that appears on the screen
 # SPY      - obsolete, used to collect usage data (locally!).
 # NEWDISC  - a second database, open during \PURGE commands.
 # COMMANDS - the file commands.dsc defines the syntax and data 
@@ -445,8 +445,8 @@ If  state = OFF  then subsequent commands are not written
  USE file called by it.
  Because the log file is a direct copy of the users commands, it may
  subsequently be used (probably after modification) as a control file.
-#I\SET MONITOR state#
-#PIf 'state' = ON, then all input is reflected in the monitor file.
+#I\SET MIRROR state#
+#PIf 'state' = ON, then all input is reflected in the monitor or list file.
  If 'state' = OFF, monitoring.
  is suppressed. Any change made to
  the monitoring state applies only to the current level of USE file and
@@ -493,6 +493,14 @@ If  state = OFF  then subsequent commands are not written
 #PThis command is used to control output to the 'printer' file. The
  state
  OFF suppresses printer output.
+#I\SET MONITOR state#
+#PThis command is used to control output to the 'monitor' file. 
+#J 
+ OFF  suppresses all output 
+ ON   copy screen output to monitor
+ SLOW copy all screen output PLUS output for graphics to monitor.
+ (Mainly used for debuging graphics)
+#J
 #I\SET OPENMESSAGE state#
 #PThis command is used to enable or disable file handling messages.
  OFF suppresses messages.

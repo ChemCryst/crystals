@@ -32,7 +32,7 @@
 % COPY '#SCRIPT XPUTINFO'                                                       
 %%                                                                              
 %%                                                                              
-^^WI WINDOW XVAR 'Analysis of Variance' LARGE MODAL KEEP SIZE                    
+^^WI WINDOW XVAR 'Analysis of Variance of F^2' LARGE MODAL KEEP SIZE                    
 ^^WI COMMIT='XC_BXX' CANCEL='XC_BXX'                                            
 ^^WI GRID MAIN NROWS=3 NCOLS=1                                                  
 ^^WI {                                                                          
@@ -159,9 +159,9 @@
 % VARIABLE LOGICAL MOO
 % VARIABLE INTEGER BIN CONTENT
 % EVALUATE MOO = FILEEXISTS 'moo.dat'
-%     if .not. sig then
+%     if .not. moo then
 {E
-{E The file SIGMAS.DAT does not exist    
+{E The file MOO.DAT does not exist    
 {E
 %        copy '#script xhelp1'
 

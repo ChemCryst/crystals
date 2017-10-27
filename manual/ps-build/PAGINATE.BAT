@@ -3,6 +3,7 @@
 @echo 
 
 @echo the .MAN extension is default.
+
 @echo use CTRL/C to abort
 
 @pause 
