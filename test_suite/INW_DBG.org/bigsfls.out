@@ -5277,10 +5277,10 @@ LS-scale=  0.909   Wilson Scale=  0.000
 #CYCLENDS
 #FINISH
  Physical reads      12420 Physical writes      10115 Cache hits     210629
- Cache hit distribution   191036   13161    2231     792     320     577
- Cache hit distribution      174     143     231     149     301     174
- Cache hit distribution      146     143     222     129     223     154
- Cache hit distribution       59      51      53      55      51      54
+ Cache hit distribution   191035   13161    2231     792     320     577
+ Cache hit distribution      174     143     231     149     301     173
+ Cache hit distribution      147     141     219     135     223     154
+ Cache hit distribution       59      51      52      54      53      54
 
 
           : Job ends ok       with     0 warnings and     0 errors

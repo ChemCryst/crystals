@@ -1,5 +1,5 @@
 # TEST ESD CALCULATIONS FOR COMBINED AND LINKED PARAMETERS
-#SET MONITOR OFF
+#SET MIRROR OFF
 #DISK
  Disc file extended by  50 record(s) (  25600 integer words ) 
 #LIST 29
@@ -24,7 +24,7 @@
 # PUNCHED ON 14-MAY81 AT 10:38:11
 #
 #LIST      5
-#SET MONITOR ON
+#SET MIRROR ON
 #EDIT
 #BONDCALC
 Bonds: Update required - There is no list 41

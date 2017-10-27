@@ -1,5 +1,5 @@
 # TEST ESD CALCULATIONS FOR COMBINED AND LINKED PARAMETERS
-#SET MONITOR OFF
+#SET MIRROR OFF
 #DISK
  Disc file extended by  50 record(s) (  25600 integer words ) 
 #LIST 29
@@ -25,7 +25,7 @@
 #
 #LIST      5
 Bonds: Update required - There is no list 41
-#SET MONITOR ON
+#SET MIRROR ON
 #EDIT
 # PERTURB THE STRUCTURE
  The following atom(s) will be arithmetically modified

@@ -6,7 +6,7 @@
 #LIST 2
 #LIST 29
 #LIST 5
-#SET MONITOR OFF
+#SET MIRROR OFF
 # DJW JUN09
 #LIST 13
 #COMPOSITION
@@ -34,7 +34,7 @@ Space group symbol is   P    -1
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
 # DJW JUN09
-#SET MONITOR ON
+#SET MIRROR ON
 #HYDROGEN
 
 
