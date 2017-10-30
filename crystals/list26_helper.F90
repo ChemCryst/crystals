@@ -462,7 +462,8 @@ integer, intent(in) :: rindex
 integer i, j, k, cpt
 character(len=128) :: formatstr
 character(len=4096) :: strlong
-integer, dimension(:), allocatable :: list
+integer, dimension(:), allocatable :: list, listserial
+character(len=24), dimension(:), allocatable :: listname, listlabel
 
 if(.not. allocated(restraints_derivatives)) then
     WRITE(NCWU,'(A)') 'No derivatives stored, do a refinement cycle'
@@ -479,12 +480,25 @@ do k=1, size(restraints_derivatives)
             
             cpt=count(r%parameters/=0)  
             allocate(list(cpt))
+            allocate(listname(cpt))
+            allocate(listlabel(cpt))
+            allocate(listserial(cpt))
             list=pack( (/ (i, i=1, size(r%parameters)) /), r%parameters/=0)
+            
+            do i=1, cpt
+                do j=1, size(parameters_list)
+                    if(parameters_list(j)%index==list(i)) then
+                        listname(i)=parameters_list(j)%name
+                        listlabel(i)=parameters_list(j)%label
+                        listserial(i)=parameters_list(j)%serial
+                        exit
+                    end if
+                end do
+            end do
 
             write(formatstr, '(A,I0,A,A)') "(",cpt, '(A4,"(",I4,")",A6,2X)',")"
             write(strlong, formatstr) ( &
-            &   trim(parameters_list(list(i))%label), parameters_list(list(i))%serial, &
-            &   trim(parameters_list(list(i))%name) ,i=1, size(list))
+            &   trim(listlabel(i)), listserial(i), trim(listname(i)) ,i=1, size(list))
             
             WRITE(NCWU,'(6X,A)') trim(strlong)
 
@@ -494,6 +508,9 @@ do k=1, size(restraints_derivatives)
             &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
 
             deallocate(list)
+            deallocate(listname)
+            deallocate(listlabel)
+            deallocate(listserial)
         end associate
     end if
 end do
