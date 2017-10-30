@@ -354,7 +354,7 @@ C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU          24.A-VIB
 C  25.A-U(IJ)'S     26. A-DIST       27.UXZBAR        28.UYZBAR
-C  29.UZZBAR        30. UPERP        31.UPERP2        32.ULIJ          
+C  29.UZZBAR        30. UPERP        31.unused        32.ULIJ          
 C  33.UALIGN        34.URIGU         35.UPLANE        36.UXXQIV        
 C  37.UXYQIV        38.UXZQIV        39.UYYQIV        40.UYZQIV        
 C  41.UZZQIV        42.UEIG          43.UQISO         44.UVOL
@@ -370,7 +370,7 @@ C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
 C Hmmm.
 C      21 REM       22 SAME      23 DELU     24 SIMU 
 C      21 UXZBAR    22 UYZBAR    23 UZZBAR   24 UPERP
-C      25 UPERP2    26 UALIGN    27 URIGU    28 ULIJ
+C      25 unused    26 UALIGN    27 URIGU    28 ULIJ
 C      29 UPLANE    30 UXXQIV    31 UXYQIV   32 UXZQIV   
 C      33 UYYQIV    34 UYZQIV    35 UZZQIV   36 UEIG
 C      37 UQISO     38 UVOL      39 UEQIV    40 UTLS
@@ -410,6 +410,7 @@ C
       INCLUDE 'QLST05.INC'
       INCLUDE 'QLST12.INC'
       INCLUDE 'QLST26.INC'
+      
 C
 C
       DATA IVERSN /421/
@@ -1242,19 +1243,54 @@ C--'UZZBAR' RESTRAINT
 
 C--'UPERP' RESTRAINT
 2255  CONTINUE
+2256  CONTINUE ! UPERP2 now merged with UPERP
+C--INSERT THE DEFAULT VALUES
       ISTORE(LCG+1)=24
-      K=1    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22751
+C--SEE IF WE CAN READ A NUMBER
+22751 CONTINUE
+      IF(KSYNUM(Z))2700,22752,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22752 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
 
-C--'UPERP2' RESTRAINT
-2256  CONTINUE
-      ISTORE(LCG+1)=25
-      K=2    ! Allow five 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900
+      ! count the number of to connectors
+      ! we are bypassing original crystals subroutines to allow UPERP to allow 2 different
+      ! syntaxes at the same time: A TO B and A TO B TO C
+      ! istore(mf) is a flag: -1 is text, 6 is "(", 7 is ")", 0 real numbers, 8 is end of group
+      ! istore(mf+1) in counter (maybe the character position in restraint text), -1 signal the end
+      ! istore(mf+2) is text or a real number
+      ! next block is at +lk2
+      indexchr=0
+      numto=0
+      do indexchr=0, ME-1, 1
+        if(istore(mf+indexchr*lk2)==-1) then ! -1 is text 
+          if(transfer(ISTORE(mf+indexchr*LK2+2), 'aaaa')=='TO') then
+            numto=numto+1
+          end if
+        end if
+        if(istore(mf+indexchr*lk2)==8) then
+          exit
+        end if
+      end do
+      ISTORE(LCG+4)=numto+1
+      
+      if(numto==2) then
+        ilist=KGCAS(2,6,8,0)
+      else
+        ilist=KGCAS(1,6,8,0)
+      end if
+          
+      IF(ilist)5850,5850,5700
+C-- END UPERP
     
 C--'UALIGN' RESTRAINT
 2260  CONTINUE
@@ -1336,12 +1372,6 @@ C--READ THE ATOMS ON THE CARD
 22626  CONTINUE
       IF(KGCAS(2,6,8,0))5850,5850,5700
 C-- END ULIJ
-
-
-      K=2 ! one connector TO
-      L=6 ! 3 parameters
-      M=8 ! address
-      goto 1900
 
 C--'UPLANE' RESTRAINT
 2263  CONTINUE
