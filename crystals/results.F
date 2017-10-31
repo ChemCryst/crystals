@@ -8336,7 +8336,7 @@ c
 C                                 Distribution graph definition
           WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY',
-     2  '^^PL XAXIS TITLE ''D/sigma(Do)''  ',
+     2  '^^PL XAXIS TITLE ''D/\sigma(Do)''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM ', 0.0, 100.,
      4  ' TITLE ''Frequency of Do (% of Dmax)'' ',
@@ -8919,7 +8919,7 @@ c
          WRITE 
      1  (CMON,'(A,/,A,/,A,/,A,f10.2,A,/,A,f10.2,A,A/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DO SCATTER ATTACH _VDO KEY',
-     2  '^^PL XAXIS TITLE ''[Sin(theta)/lambda]**3''  ',
+     2  '^^PL XAXIS TITLE ''[sin \theta / \lambda]\**3''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM 0. ', abinmax, ' TITLE Frequency ',
      5  '^^PL YAXISRIGHT ZOOM 0. ', bbinmax, 
@@ -9820,7 +9820,7 @@ c clear all plot windows
 c distribution
           WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY',
-     2  '^^PL XAXIS TITLE ''D/sigma(Do)''  ',
+     2  '^^PL XAXIS TITLE ''D/\sigma(Do)''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM ', 0.0, 100.,
      4  ' TITLE ''Frequency of Do (%)'' ',
@@ -9844,7 +9844,7 @@ c clear NPP
 c Signal plot
          WRITE (CMON,'(A/A/A/A/A,A/A/A/A)')
      1  '^^PL PLOTDATA _DO SCATTER ATTACH _VDO KEY',
-     2  '^^PL XAXIS TITLE ''[Sin(theta)/lambda]**3''  ',
+     2  '^^PL XAXIS TITLE ''[sin \theta / \lambda]\**3''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM 0. 100. TITLE ''Frequency'' ',
      5  '^^PL YAXISRIGHT ZOOM 0.  100.', 

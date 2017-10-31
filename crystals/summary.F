@@ -1933,8 +1933,8 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
         CMPMIN = 100.0 * MIN(0.99,CMPMIN)
         WRITE(CMON,'(A/A/A,F7.2,A/A/A/A)')
      1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL KEY',
-     1  '^^PL XAXIS TITLE (SIN(Theta)/lambda)^3 NSERIES=2 LENGTH=100',
-     1  '^^PL YAXIS ZOOM ', CMPMIN,
+     1  '^^PL XAXIS TITLE ''(sin \theta / \lambda)\**3'' ',
+     1  '^^PL NSERIES=2 LENGTH=100 YAXIS ZOOM ', CMPMIN,
      1  ' 100.0 TITLE ''Cumulative Completeness''',
      1  '^^PL YAXISRIGHT ZOOM 0 100 TITLE ''Shell Completeness''',
      1 '^^PL SERIES 1 SERIESNAME ''Cumulative Completeness'' TYPE LINE',
@@ -2091,8 +2091,9 @@ C--SETUP A GRAPH HERE
      3  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000'
         CALL XPRVDU(NCVDU, 2,0)
         IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
-          WRITE(CMON,'(A)')
-     1 '^^PL YAXIS TITLE ''w^.5 x (Fo^2-Fc^2)'' SERIES 1 TYPE SCATTER'
+          WRITE(CMON,'(2A)')
+     1 '^^PL YAXIS TITLE ''\sqrtw x (Fo\**2-Fc\**2)'' ',
+     2 'SERIES 1 TYPE SCATTER'
         ELSE
           WRITE(CMON,'(A)')
      1  '^^PL YAXIS TITLE ''w(Fo-Fc)'' SERIES 1 TYPE SCATTER'
@@ -2102,8 +2103,8 @@ C--SETUP A GRAPH HERE
       IF ( LEVEL.EQ.6 ) THEN                 ! Weight vs Sigma
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG KEY',
-     1  '^^PL YAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
-     1  '^^PL XAXIS TITLE ''1/Sigma'' SERIES 1 TYPE SCATTER'
+     1  '^^PL YAXIS TITLE ''\sqrt(weight)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL XAXIS TITLE ''1/\sigma'' SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
 C
@@ -3962,15 +3963,15 @@ c      nmax=max(1,nmax)
 c        WRITE(CMON,'(A,10(/A))')
         WRITE(CMON,'(a/a/a,i6,/a,/a,i6,a,5(/a))')
      1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
-     2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**3'' NSERIES=4',
+     2  '^^PL XAXIS TITLE ''(sin \theta /\lambda)\**3'' NSERIES=4',
      3  '^^PL LENGTH=',nbin,
      4  '^^PL YAXIS TITLE ''Frequency''',
      5  '^^PL YAXISRIGHT ZOOM 0 ',nint(smax),
-     5  ' TITLE ''Average(I/sigmaI)''',
-     6  '^^PL SERIES 1 SERIESNAME ''I/sigma(I)<3.0'' TYPE LINE ',
-     7  '^^PL SERIES 2 SERIESNAME ''I/sigma(I)<10.0'' TYPE LINE ',
-     8  '^^PL SERIES 3 SERIESNAME ''I/sigma(I)>10.0'' TYPE LINE ',
-     9  '^^PL SERIES 4 SERIESNAME ''<I/sigma>'' TYPE LINE ',
+     5  ' TITLE ''Average(I/\sigma(I))''',
+     6  '^^PL SERIES 1 SERIESNAME ''I/\sigma(I)<3.0'' TYPE LINE ',
+     7  '^^PL SERIES 2 SERIESNAME ''I/\sigma(I)<10.0'' TYPE LINE ',
+     8  '^^PL SERIES 3 SERIESNAME ''I/\sigma(I)>10.0'' TYPE LINE ',
+     9  '^^PL SERIES 4 SERIESNAME ''<I/\sigma>'' TYPE LINE ',
      1  '^^PL USERIGHTAXIS'
 
         CALL XPRVDU(NCVDU, 10,0)
@@ -3994,11 +3995,11 @@ c        WRITE(CMON,'(A,10(/A))')
       IF (IPLOT1 .EQ. 1) THEN
         WRITE(CMON,'(A,6(/A))')
      1  '^^PL PLOTDATA _SIGLEVL BARGRAPH ATTACH _VSIGLEVL KEY',
-     1  '^^PL XAXIS TITLE ''I/sigma(I)'' NSERIES=2 LENGTH=100',
+     1  '^^PL XAXIS TITLE ''I/\sigma(I)'' NSERIES=2 LENGTH=100',
      1  '^^PL YAXIS TITLE ''Number of observations''',
-     1  '^^PL YAXISRIGHT TITLE ''Percent > given I/s(I)''',
-     1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I) frequency''',
-     1  '^^PL SERIES 2 SERIESNAME ''% Observations > I/sigma(I)''',
+     1  '^^PL YAXISRIGHT TITLE ''Percent > given I/\sigma(I)''',
+     1  '^^PL SERIES 1 SERIESNAME ''I/\sigma(I) frequency''',
+     1  '^^PL SERIES 2 SERIESNAME ''% Observations > I/\sigma(I)''',
      1  '^^PL TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
 
@@ -4139,7 +4140,7 @@ C Calculate max distance in A^-2.
       IF (IAGREE .EQ. 1) THEN
         WRITE(CMON,'(A,2(/A))')
      1  '^^PL PLOTDATA _XTWAG SCATTER ATTACH _TWAG',
-     1  '^^PL XAXIS TITLE ''Deviation in A^-1'' NSERIES=1 LENGTH=25',
+     1  '^^PL XAXIS TITLE ''Deviation in A\**-1'' NSERIES=1 LENGTH=25',
      1  '^^PL YAXIS TITLE ''Fo-Fc'''
         CALL XPRVDU(NCVDU, 4,0)
         SCALE = STORE(L5O)
@@ -4208,7 +4209,7 @@ C SCAN LIST 6 FOR REFLECTIONS
       IF (IPLOT .EQ. 1) THEN
         WRITE(CMON,'(A,3(/A))')
      1  '^^PL PLOTDATA _XTLA BARGRAPH ATTACH _TLA',
-     1  '^^PL XAXIS TITLE ''Deviation in A^-1'' NSERIES=1 LENGTH=25',
+     1  '^^PL XAXIS TITLE ''Deviation in A\**-1'' NSERIES=1 LENGTH=25',
      1  '^^PL YAXIS TITLE ''Number of observations''',
      1  '^^PL SERIES 1 SERIESNAME ''Number of reflections at'''
         CALL XPRVDU(NCVDU, 4,0)

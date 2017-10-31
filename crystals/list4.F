@@ -1329,7 +1329,7 @@ c
             WRITE(CMON,'(A,/,A,/,A)')
      1      '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _RWGHT',
      1      '^^PL XAXIS TITLE ''Reciprocal weights vs /FO/''',
-     1   '^^PL NSERIES=1 LENGTH=20 YAXIS TITLE ''estimated <Fo-Fc>**2'''
+     1'^^PL NSERIES=1 LENGTH=20 YAXIS TITLE ''estimated <(Fo-Fc)\**2>'''
           CALL XPRVDU(NCVDU, 3,0)
           END IF
 
@@ -2525,7 +2525,7 @@ C--PRINT THE CURRENT INDEX TYPE
      1  CSHK(PKHKL),
      1  '^^PL XAXIS TITLE ''Layers by ',CH(I),' index ''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL NSERIES=3 LENGTH=30 YAXIS LOG TITLE "<Fo-Fc>**2"',
+     1  '^^PL NSERIES=3 LENGTH=30 YAXIS LOG TITLE "<(Fo-Fc)\**2>"',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
@@ -2670,7 +2670,7 @@ c--PLCLS IS EITHER 0 (OFF), 1 (DELTA) OR 2 (RFAC). PLOT GRAPH IF 1 OR 2.
      1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS', CSHK(PKCLS),
      1  '^^PL XAXIS TITLE ''HKL Class''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE "<Fo-Fc>**2"',
+     1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE "<(Fo-Fc)\**2>"',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
@@ -2753,7 +2753,7 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A)')
      1 '^^PL PLOTDATA _PAR BARGRAPH ATTACH _VPAR', CSHK(PKPAR),
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
-     1 '^^PL YAXIS LOG TITLE "<Fo-Fc>**2" ZOOM 0.01 100',
+     1 '^^PL YAXIS LOG TITLE "<(Fo-Fc)\**2>" ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
@@ -2845,7 +2845,7 @@ cdjwjul09
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO', CSHK(PKFOR),
      1 '^^PL NSERIES=4 LENGTH=20 XAXIS TITLE',
      1 '^^PL  ''<- Weak           Fc Range            Strong ->''',
-     1 '^^PL YAXIS LOG TITLE "<Fo-Fc>**2" ZOOM 0.01 100',
+     1 '^^PL YAXIS LOG TITLE "<(Fo-Fc)\**2>" ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
@@ -3037,8 +3037,8 @@ cdjwjul09
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1'^^PL PLOTDATA _THETA BARGRAPH ATTACH _VSINT ', CSHK(PKTHE),
      1'^^PL YAXIS ZOOM 0.01 100 TITLE',
-     1'^^PL  "<Fo-Fc>**2" LOG NSERIES=4 LENGTH=10 XAXIS TITLE',
-     1'^^PL ''<-Low angle  (Sin(theta)/lambda)^2 High angle->''',
+     1'^^PL  "<(Fo-Fc)\**2>" LOG NSERIES=4 LENGTH=10 XAXIS TITLE',
+     1'^^PL ''<-Low angle  sin\**2\theta/\lambda\**2 High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
@@ -3052,7 +3052,7 @@ cdjwjul09
      1'^^PL PLOTDATA _INTR BARGRAPH ATTACH _VSINTR ', CSHK(PKTHE),
      1'^^PL YAXIS TITLE ''R factor %''',
      1'^^PL NSERIES=4 LENGTH=10 XAXIS TITLE',
-     1'^^PL ''<-Low angle    Sin(theta)/lambda   High angle->''',
+     1'^^PL ''<-Low angle    sin\**2theta/\lambda\**2   High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1'^^PL SERIES 1 SERIESNAME ''R %''',
      1'^^PL SERIES 2 SERIESNAME ''Rw %''',

@@ -173,6 +173,7 @@ using namespace std;
 #ifdef CRY_USEWX
  #include <wx/font.h>
  #include <wx/thread.h>
+ #include "mathsymbols.h"
 
 // These macros are being defined somewhere. They shouldn't be.
 
@@ -655,6 +656,19 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 #endif
 #ifdef CRY_USEWX
       wxString wtext = wxString(text.c_str());
+
+      MathSymbols::replaceMarkup(wtext);
+
+/*      wtext.Replace("\\theta", L"\u03b8");
+      wtext.Replace("\\sigma", L"\u03c3");
+      wtext.Replace("\\rho", L"\u03c1");
+      wtext.Replace("\\lambda", L"\u03bb");
+      wtext.Replace("\\SUM", L"\u03a3");	
+      wtext.Replace("\\**-1", L"\u207B\u00B9");
+      wtext.Replace("\\**2", L"\u00B2");
+      wtext.Replace("\\**3", L"\u00B3");
+     wtext.Replace("\\sqrt", L"\u221A");
+*/
       m_memDC->SetBrush( *m_brush );
       wxPen apen(mfgcolour,1,wxPENSTYLE_SOLID);
       m_memDC->SetPen(apen);
@@ -1100,9 +1114,11 @@ void CxPlot::CreatePopup(string text, CcPoint point)
 #endif
 #ifdef CRY_USEWX
   int cx,cy;
-  GetTextExtent( text.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
+  wxString wtext = wxString(text.c_str());
+  MathSymbols::replaceMarkup(wtext);
+  GetTextExtent( wtext, &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
-  m_TextPopup = new mywxStaticText(this, -1, text.c_str(),
+  m_TextPopup = new mywxStaticText(this, -1, wtext,
                                  wxPoint(CRMAX(0,point.x-cx-4),CRMAX(0,point.y-cy-4)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
@@ -1522,7 +1538,10 @@ void CxPlotKey::OnPaint(wxPaintEvent & event)
       dc.SetBrush(abrush);
 
       dc.DrawRectangle( 3, i*cy/m_NumberOfSeries + 3, 12, 9);
-      dc.DrawText( m_Names[i].c_str(), 20, i*cy/m_NumberOfSeries);
+
+      wxString wtext = wxString(m_Names[i].c_str());
+      MathSymbols::replaceMarkup(wtext);
+      dc.DrawText(wtext , 20, i*cy/m_NumberOfSeries);
   }
 }
 #endif
