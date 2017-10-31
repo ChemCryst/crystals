@@ -360,7 +360,7 @@ use xunits_mod, only: ncvdu, ncwu
 implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
 integer, intent(in) :: output !< Where to print. -1 = all, 1=cmon, 2=ncwu
-integer i, k, l, numatoms, cpt
+integer i, k, l, numatoms, cpt, colorindex
 real leverage
 character(len=1024) :: formatstr, atomslist
 
@@ -397,6 +397,14 @@ do k=1, size(restraints_derivatives)
             ! (A^t W A)^-1 is the inverse of normal matrix
             ! calculation can be done one row of A at at time
             leverage=dot_product(r%derivatives, matmul(invertm, r%derivatives))*r%weight**2
+            
+            if(leverage>=0.9) then ! color code extreme values <=0.1 and >=0.9
+                colorindex=3
+            else if(leverage<=0.1) then
+                colorindex=2
+            else
+                colorindex=1
+            end if
 
             if(allocated(restraints_list(rindex)%subrestraints)) then
                 if(allocated(restraints_list(rindex)%subrestraints(r%isubrestraint)%atoms)) then
@@ -416,9 +424,10 @@ do k=1, size(restraints_derivatives)
 
                 if(cpt<13) then
                     if(output==-1 .or. output==1) then
-                        WRITE(CMON,'(10X, A, A, ": ", F5.3, 2X, A )' ) &
+                        WRITE(CMON,'(10X, A, A, ": {", I0,",",I0, F5.3, "{1,0", 2X, A )' ) &
                         &   'Leverage ', &
                         &   trim(atomslist), &
+                        &   colorindex, 0, &
                         &   leverage, &
                         &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
                         CALL XPRVDU(NCVDU, 1,0)
@@ -434,8 +443,9 @@ do k=1, size(restraints_derivatives)
             else
                 if(cpt<13) then
                     if(output==-1 .or. output==1) then
-                        WRITE(CMON,'(10X, A, F5.3 )') &
+                        WRITE(CMON,'(10X, A, "{", I0,",",I0, F5.3, "{1,0" )') &
                         &   'Leverage: ', &
+                        &   colorindex, 0, &
                         &   leverage
                         CALL XPRVDU(NCVDU, 1,0)
                     end if

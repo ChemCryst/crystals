@@ -314,7 +314,7 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCW(iaxis,iasym, results)
+          subroutine XCVUPLANE(iaxis,iasym, results)
               use list26_mod
               integer, intent(in) :: iaxis
               integer, intent(in) :: iasym
@@ -620,6 +620,14 @@ C--LOAD THE COMPILED LIST FOR PROCESSING
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE CARD NUMBER FLAG
       A=-1.
+      
+      WRITE(CMON,'("{3,15", A)') repeat('-',80)
+      CALL XPRVDU(NCVDU, 1,0)      
+      WRITE(CMON,'("{3,15", 1X, A)') 'Checking restraints'
+      CALL XPRVDU(NCVDU, 1,0)      
+      WRITE(CMON,'("{3,15", A)') repeat('-',80)
+      CALL XPRVDU(NCVDU, 1,0)      
+                  
 C--BRING DOWN THE NEXT BLOCK OF CODE AND RELOCATE IT
 1050  CONTINUE
       A=A+1.
@@ -722,7 +730,7 @@ c
 
           icptn=index(restraints_list(ircpt)%restraint_text, char(10))
           if(icptn>0) then
-            WRITE(CMON,'(1X, "(",I4,")",1X, A)') 
+            WRITE(CMON,'("{I",1X, "(",I4,")",1X, A)') 
      1        restraints_list(ircpt)%user_index, 
      2        trim(restraints_list(ircpt)%restraint_text(1:icptn))          
             CALL XPRVDU(NCVDU, 1,0)      
@@ -732,17 +740,17 @@ c
      1        restraints_list(ircpt)%restraint_text)
               if(restraints_list(ircpt)%restraint_text(ii:ii)==char(10))
      1          then
-                WRITE(CMON,'(1X, 6X,1X, A)') 
+                WRITE(CMON,'("{I",1X, 6X,1X, A)') 
      1            trim(restraints_list(ircpt)%restraint_text(icptn:ii))          
                 CALL XPRVDU(NCVDU, 1,0)      
                 icptn=ii+1
               end if
             end do
-                WRITE(CMON,'(1X, 6X,1X, A)') 
+                WRITE(CMON,'("{I",1X, 6X,1X, A)') 
      1            trim(restraints_list(ircpt)%restraint_text(icptn:))          
                 CALL XPRVDU(NCVDU, 1,0)      
           else
-            WRITE(CMON,'(1X, "(",I4,")",1X, A)') 
+            WRITE(CMON,'("{I",1X, "(",I4,")",1X, A)') 
      1        restraints_list(ircpt)%user_index, 
      2        trim(restraints_list(ircpt)%restraint_text)          
             CALL XPRVDU(NCVDU, 1,0)                
@@ -1270,7 +1278,7 @@ C--'ULIJ' RESTRAINT
 
 C--'UPLANE' RESTRAINT
 5090  CONTINUE
-      CALL XCVCW(0,IASYM)
+      CALL XCVUPLANE(0,IASYM)
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       if(size(restraints_list(ircpt)%subrestraints)>0) then
@@ -1302,15 +1310,6 @@ C--'UPLANE' RESTRAINT
      1        subrestraints(1)%atoms(1)%M(3,:)
             WRITE(NCWU,'(6X, A)') 'Derivatives:'
             call printderivatives(ircpt)
-!            do it=1, size(subrestraints)
-!              if(allocated(subrestraints(1)%blocks)) then
-!                associate(block => subrestraints(it)%blocks(0))
-!                  WRITE(NCWU,'(6X,A)') block%printp(.true.)
-!                  WRITE(NCWU,'(6X,A, 3X, A)') block%print(),
-!     1            trim(subrestraints(it)%description)
-!                end associate
-!              end if
-!            end do
             WRITE(NCWU,5093) 
           ENDIF
       
@@ -2059,7 +2058,7 @@ C--UPERP RESTRAINTS PRINT
      3      subrestraint%atoms(1)%adps_cart(2,3), 'Uc[23]'     
         ENDIF      
        
-3297    FORMAT(1X,2X,A1, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,7X,A)
+3297    FORMAT(1X,2X,A1, (2X,A4,I4,1X,1PE10.3,1X),2X,1PE10.3,7X,A)
         WRITE(CMON, 3297) ' ', subrestraint%atoms(1)%label,
      1     subrestraint%atoms(1)%serial,
      2     subrestraint%atoms(1)%adps_cart(1,3),
@@ -2245,7 +2244,6 @@ C--ULIJ RESTRAINTS PRINT
      &   1PE12.3,6X,A)    
      
       if(allocated(restraints_list(ircpt)%subrestraints)) then
-      if(size(restraints_list(ircpt)%subrestraints)>0) then
       associate(subrestraint => restraints_list(ircpt)%subrestraints)
       do icpt=1, size(subrestraint)
 
@@ -2303,13 +2301,6 @@ C--ULIJ RESTRAINTS PRINT
         write(cmon, '(A)') 'Restraint not applied'
         CALL XPRVDU(NCVDU, 1,0)            
       end if
-      else      
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
-        end if        
-        write(cmon, '(A)') 'Restraint not applied'
-        CALL XPRVDU(NCVDU, 1,0)            
-      end if
             
       goto 3600
       
@@ -2319,51 +2310,32 @@ C--UPLANE RESTRAINTS PRINT
 !3296  FORMAT('  ',A1,(8X,A4,I5,I6,4I3,F12.7,1X),1PE12.3,6X,A)    
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
-      if(size(restraints_list(ircpt)%subrestraints)>0) then
-      associate(subrestraint => restraints_list(ircpt)%subrestraints(1))
+      do icpt=1, size(restraints_list(ircpt)%subrestraints)
+      associate(subrestraint => 
+     &  restraints_list(ircpt)%subrestraints(icpt))
 
         IF (ISSPRT .EQ. 0) THEN              
           WRITE(NCWU,3296)' ',
      1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,2),
-     3      subrestraint%atoms(1)%adps_cart(1,2)-B, 'U[12]'
-          WRITE(NCWU,3296)' ',
-     1      subrestraint%atoms(1)%label,subrestraint%atoms(1)%serial,
-     2      (ISTORE(M),M=JD,JE), subrestraint%atoms(1)%adps_cart(1,3),
-     3      subrestraint%atoms(1)%adps_cart(2,3)-B, 'U[23]'     
+     2      (ISTORE(M),M=JD,JE), subrestraint%rvalue,
+     3      subrestraint%rvalue, subrestraint%description
         ENDIF      
        
 !3297   FORMAT(1X,A1,2X, (2X,A4,I4,1X,E10.3,1X),2X,1PE10.3,8X,A)
         WRITE(CMON, 3297)' ', subrestraint%atoms(1)%label,
      1     subrestraint%atoms(1)%serial,
-     2     subrestraint%atoms(1)%adps_cart(1,2),
-     3     subrestraint%atoms(1)%adps_cart(1,2)-B, ! B is the target
-     4     'Uc[12]'
+     2     subrestraint%rvalue,
+     3     subrestraint%rvalue,
+     4     subrestraint%description
         CALL XPRVDU(NCVDU, 1,0)
-       
-        WRITE(CMON, 3297)' ', subrestraint%atoms(1)%label,
-     1     subrestraint%atoms(1)%serial,
-     2     subrestraint%atoms(1)%adps_cart(2,3),
-     3     subrestraint%atoms(1)%adps_cart(2,3)-B, ! B is the target
-     4     'Uc[23]'
-        CALL XPRVDU(NCVDU, 1,0)
-       
-        Q=subrestraint%atoms(1)%adps_cart(1,2)+
-     1    subrestraint%atoms(1)%adps_cart(2,3)
-        O=subrestraint%atoms(1)%adps_cart(1,2)-B + 
-     1    subrestraint%atoms(1)%adps_cart(2,3)-B
-        P=(subrestraint%atoms(1)%adps_cart(1,2)-B)**2 + 
-     1    (subrestraint%atoms(1)%adps_cart(2,3)-B)**2
-        NCA = 2
+              
+        Q=Q+subrestraint%rvalue
+        O=O+subrestraint%rvalue
+        P=P+subrestraint%rvalue**2
 
       end associate
-      else      
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
-        end if        
-        write(cmon, '(A)') 'Restraint not applied'
-        CALL XPRVDU(NCVDU, 1,0)            
-      end if
+      end do
+      NCA=size(restraints_list(ircpt)%subrestraints)/2
       else      
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,'(/1X,A)') 'Restraint not applied'
@@ -3327,7 +3299,7 @@ C
           end subroutine
       end interface
       interface 
-          subroutine XCVCW(iaxis, iasym, results)
+          subroutine XCVUPLANE(iaxis, iasym, results)
               use list26_mod
               integer, intent(in) :: iaxis
               integer, intent(in) :: iasym
@@ -3645,7 +3617,7 @@ C--'ULIJ' RESTRAINT
 
 C--'UPLANE' RESTRAINT
 1593  CONTINUE
-      CALL XCVCW(0,iasym, restraints_list(idjwtemp))
+      CALL XCVUPLANE(0,iasym, restraints_list(idjwtemp))
       GOTO 1000  
 C     
 C--'UXXQIV' RESTRAINT
@@ -7169,9 +7141,9 @@ c         print *, 'No more atom expected'
       
 C
 C
-CODE FOR XCVCW
+CODE FOR XCVUPLANE
 !> Restrain ADP to be in a plane defined by 3 atoms
-      SUBROUTINE XCVCW(iaxis,iasym, results)
+      SUBROUTINE XCVUPLANE(iaxis,iasym, results)
 C--CALCULATE PLANAR RESTRAINTS
 C
 C      IAXIS = Not used
@@ -7215,7 +7187,7 @@ C
       
       integer JA_ad1, JA_ad2, JA_ad3, JA_ad4    ! Temporary values to extract 3rd atom data
       
-      integer icpt
+      integer icpt, jcpt
 C
       !include 'XSSVAL.INC'
       INCLUDE 'ISTORE.INC'
@@ -7234,215 +7206,133 @@ C
       EQUIVALENCE (O,A1(1))    ! Note well
 C
 
-       JA_ad1 = 0
-       JA_ad2 = 0
-       JA_ad3 = 0
-       JA_ad4 = 0
-            
-
-C--SET UP A FEW CONSTANTS                                        
-      DUMP=STORE(LCG+4)   ! The 'observed value' of the restraint
-c     print *, 'lca', lca
       JA=LCA              ! Address of first parameter block header                                      
-      NCA=1 ! number of atom to treat                                                             
-      MCA=JA  ! address of the first atom
-C--SET UP THE ADDRESSES OF THE ATOMS                                    
-1000  CONTINUE  
-c      print *, 'ja', ja                                                        
-      JB=ISTORE(JA)             ! Address of next parameter block
-      JA_ad1=ISTORE(JB)            ! Third atom?      
-      JP=ISTORE(JA+6)           ! Address of first parameter (U11) for atom 1                                        
-      JV=ISTORE(JB+6)           ! Address of first parameter (U11) for atom 2
-      JA_ad2=ISTORE(JA_ad1+6)         ! ^^ for atom 3?    
-C--CHECK THAT BOTH ATOMS ARE ANISO AND IF NOT MODIFY ACCORDINGLY        
-      JX=JP                                                             
-      JC=JA                                                             
-      DO I=1,2,3 
-         JD=ISTORE(JC+16)   !Address of atom in L5
-C--CHECK IF THE ATOM IS ANISO                                           
-         IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-            ISTORE(JC+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-            ISTORE(JX)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-            ISTORE(JX+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-            JE=JD                                                          
-            JF=L1C+2                                                       
-            DO J=L1C,JF                                                  
-               STORE(JE+14)=STORE(JD+14)
-               STORE(JE+20)=STORE(JD+14)*STORE(J)                        
-               JE=JE+2                                                   
-            END DO
-            STORE(JD+6)=0.
-         END IF
-C--PASS ONTO THE NEXT ATOM
-         IF ( I .EQ. 1 ) THEN                                     
-            JX=JV                                                          
-            JC=JB
-         ELSE IF ( I .EQ. 2 ) THEN                                     
-            JX=JA_ad1                                                          
-            JC=JA_ad2                                                          
-         ELSE
-         
-         END IF
-         
-      END DO
+      MCA=JA ! address of fisrt atom
       
       if(present(results)) then
-          call extend(results%subrestraints, 2, .true.)
-          results%subrestraints(1)%description='Uc[1,2]==0'
-          results%subrestraints(2)%description='Uc[2,3]==0'
-          do icpt=1, 2
-              call extend(results%subrestraints(icpt)%atoms, 3, .true.)
-              results%subrestraints(icpt)%atoms(1)%label=
-     &            transfer(istore(JA+2), 'aaaa')
-              results%subrestraints(icpt)%atoms(1)%serial=
-     &            nint(store(JA+3))
-              results%subrestraints(icpt)%atoms(2)%label=
-     &            transfer(istore(JB+2), 'aaaa')
-              results%subrestraints(icpt)%atoms(2)%serial=
-     &            nint(store(JB+3))
-              results%subrestraints(icpt)%atoms(3)%label=
-     &            transfer(istore(JA_ad1+2), 'aaaa')
-              results%subrestraints(icpt)%atoms(3)%serial=
-     &            nint(store(JA_ad1+3))
-          end do
-      end if
-            
-C--DEFINE U Matrices 
-
-      U_L_1=STORE(ISTORE(JA+16)+14:ISTORE(JA+16)+14+11:2)
-      
-C     U Matrices in 3x3 matrix
-      U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
-
-      if(present(results)) then
-          results%subrestraints(1)%atoms(1)%adps_crys=U_M_1
-          results%subrestraints(2)%atoms(1)%adps_crys=U_M_1
-      end if
-            
-C--CALCULATE THE INTERNUCLEAR DISTANCE                                  
-      JO=JA  
-      JS=JB
-      JA_ad3=JA_ad1   
-      JQ=ISTORE(JO+16)
-      JU=ISTORE(JS+16)
-      JA_ad4=ISTORE(JA_ad3+16)
-
-C Here is the interatomic vector in crystal fractions:    
-       DIFF_VEC(1) = STORE(JQ+8)-STORE(JU+8)
-       DIFF_VEC(2) = STORE(JQ+10)-STORE(JU+10)
-       DIFF_VEC(3) = STORE(JQ+12)-STORE(JU+12)
-          
-       ANAXIS(1) = STORE(JU+8)-STORE(JA_ad4+8)
-       ANAXIS(2) = STORE(JU+10)-STORE(JA_ad4+10)
-       ANAXIS(3) = STORE(JU+12)-STORE(JA_ad4+12)
-      
-c      print *, "Pre-Norm Pre-Orth Bond Vec"
-c      print *, A, B, C
-c      print *,   
+          call extend(results%subrestraints, NCA/3*2, .true.)
+      end if  
       
       ! Orthogonalisation matrix (stored by rows, reshape fill column wise, hence the transpose)
-      A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) 
-      ROT3=matmul(A_M, DIFF_VEC) ! Multiply diffvec by orthogonalisation matrix
+      A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
+      
+      JA=LCA
+      do icpt=1, nca/3 ! loop over each atom
+        JB=istore(ja)
+        jc=istore(jb)
 
-      ANORTH=matmul(A_M, ANAXIS)
-      CALL DNORM3(ROT3) !Normalise
-      CALL DNORM3(ANORTH) !Normalise
+        if(present(results)) then
+          do jcpt=1, 2
+            call extend(results%subrestraints((icpt-1)*2+jcpt)%atoms, 
+     &        3, .true.)
+            results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%label=
+     &        transfer(istore(JA+2), 'aaaa')
+            results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%serial=
+     &        nint(store(JA+3))
+            results%subrestraints((icpt-1)*2+jcpt)%atoms(2)%label=
+     &        transfer(istore(JB+2), 'aaaa')
+            results%subrestraints((icpt-1)*2+jcpt)%atoms(2)%serial=
+     &        nint(store(JB+3))
+            results%subrestraints((icpt-1)*2+jcpt)%atoms(3)%label=
+     &        transfer(istore(JC+2), 'aaaa')
+            results%subrestraints((icpt-1)*2+jcpt)%atoms(3)%serial=
+     &        nint(store(JC+3))
+          end do
+        end if
+      
+        U_L_1=STORE(ISTORE(JA+16)+14:ISTORE(JA+16)+14+11:2)
+      
+C       U Matrices in 3x3 matrix
+        U_M_1=reshape(U_L_1(U_ASSIGN), (/3,3/)) 
+        if(present(results)) then
+          do jcpt=1, 2
+            results%subrestraints((icpt-1)*2+jcpt)%
+     &        atoms(1)%adps_crys=U_M_1
+          end do
+        end if
+            
+C-- Set up the new coordinate system for the adp
+C-----------------------------------------------
+
+C--CALCULATE THE INTERNUCLEAR DISTANCE                                  
+        JQ=ISTORE(JA+16)
+        JU=ISTORE(JB+16)
+        JV=ISTORE(JC+16)
+
+C Here is the interatomic vector in crystal fractions:    
+         DIFF_VEC(1) = STORE(JQ+8)-STORE(JU+8)
+         DIFF_VEC(2) = STORE(JQ+10)-STORE(JU+10)
+         DIFF_VEC(3) = STORE(JQ+12)-STORE(JU+12)
+          
+         ANAXIS(1) = STORE(JU+8)-STORE(JV+8)
+         ANAXIS(2) = STORE(JU+10)-STORE(JV+10)
+         ANAXIS(3) = STORE(JU+12)-STORE(JV+12)
+      
+         ROT3=matmul(A_M, DIFF_VEC) ! Multiply diffvec by orthogonalisation matrix
+
+        ANORTH=matmul(A_M, ANAXIS)
+        CALL DNORM3(ROT3) !Normalise
+        CALL DNORM3(ANORTH) !Normalise
       
 C Take cross product with x axis 
-       CALL DNCROP3(ROT3, ANORTH, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
-       CALL DNORM3(ROT2) !Normalise
-       CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
-       CALL DNORM3(ROT1) !Normalise
+         CALL DNCROP3(ROT3, ANORTH, ROT2)  !Axis 2 perp to 3 and X-axis (or y if too close to x)
+         CALL DNORM3(ROT2) !Normalise
+         CALL DNCROP3(ROT2, ROT3, ROT1)   ! Axis 1 perp to 2 an 3.
+         CALL DNORM3(ROT1) !Normalise
+                 
+        ! rotation matrix from basis vectors
+        R_M(1,:)=rot1
+        R_M(2,:)=rot2
+        R_M(3,:)=rot3
+          
+        call rabubar_derivs(R_M, RAB, dUcart)
+        RABUBAR_1=matmul(rab, matmul(U_M_1, transpose(rab)))
+        if(present(results)) then
+          do jcpt=1, 2
+            results%subrestraints((icpt-1)*2+jcpt)%
+     &        atoms(1)%adps_cart=RABUBAR_1
+            results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%M=rab
+          end do
+          results%subrestraints((icpt-1)*2+1)%description='Uc[1,2]==0'
+          results%subrestraints((icpt-1)*2+1)%rvalue=RABUBAR_1(1,3)
+          results%subrestraints((icpt-1)*2+1)%rtarget=0.0
+          results%subrestraints((icpt-1)*2+2)%description='Uc[2,3]==0'
+          results%subrestraints((icpt-1)*2+2)%rvalue=RABUBAR_1(2,3)
+          results%subrestraints((icpt-1)*2+2)%rtarget=0.0
+        end if
+      
+        do i=1, 2
+      
+          IF ( i==1 ) THEN   
+C       #### XZ DERIVS ####
+            ! (1,2) -> 2
+            a1(7:12)=dUcart(2,:)
+          ELSE
+C      #### YZ DERIVS ####
+            ! (2,3) -> 8
+            a1(7:12)=dUcart(8,:)
+          END IF
 
-C The orthog matrix. It is an upper triangle assuming fortran column ordering. 
-C (i.e. offsets +1 +2 +5 are zero).
-C Derivatives go here. These values (iaxis*n) are currently just used for testing.
-
-
-C Here, compute
-
-      ! rotation matrix
-      R_M(1,:)=rot1
-      R_M(2,:)=rot2
-      R_M(3,:)=rot3
-
-      call rabubar_derivs(R_M, RAB, dUcart)           
-                       
-      RABUBAR_1=matmul(matmul(RAB, U_M_1), transpose(rab))
-
-      if(present(results)) then
-          results%subrestraints(1)%atoms(1)%adps_cart=RABUBAR_1
-          results%subrestraints(1)%atoms(1)%M=rab
-          results%subrestraints(2)%atoms(1)%adps_cart=RABUBAR_1
-          results%subrestraints(2)%atoms(1)%M=rab
-      end if
-
-      do i=1, 2
-          if(i==1) then
-C     #### XY DERIVS ####
-              ! (1,2) -> 2
-              a1(7:12)=dUcart(2,:)
-              a1(1:6)=a1(7:12)
-          else
-C     #### XZ DERIVS ####
-              ! (2,3) -> 6
-              a1(7:12)=dUcart(6,:)
-              a1(1:6)=a1(7:12)
-          end if
+          a1(1:6)=a1(7:12)
+      
+C First atom of the restraint        
+C The second atom is just used to define the basis        
 C-----------------------------------------------
-C--CHECK IF THE ATOM IS ANISO                                           
           JP=ISTORE(JA+6)
           JD=ISTORE(JA+16)
           JX=JP ! JX used in XADUIJ
           JO=JA ! JO used in XADUIJ
-          IF(ABS(STORE(JD+6)) .gt. zero) THEN
-C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-              ISTORE(JA+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-              ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-              ISTORE(JP+1)=8         ! Where they start 
-C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
-              JE=JD
-              JF=L1C+2                                                       
-              DO l=L1C,JF                                                  
-                  STORE(JE+14)=STORE(JD+14)
-                   STORE(JE+20)=STORE(JD+14)*STORE(l)                        
-                  JE=JE+2                                                   
-              END DO
-              STORE(JD+6)=0.
-             
-              STORE(JP+2)=STORE(JP+2)+A1(1)+A1(2)+A1(3)+
-     2           A1(4)*STORE(L1C)+A1(5)*STORE(L1C+1)+A1(6)*STORE(L1C+2)         
-          else 
-              if (iasym==1) then
-c           dont restrain first atom
-c            print *, "Asym"
-                 a1(1:6) = 0.0
-             endif      
-             CALL XADUIJ  
-          END IF
-     
-C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
-          
-          if(i==1) then           
-C             #### XY DERIVS ####
-              DIFF_VAL = RABUBAR_1(1,2)
-              MEAN_VAL = RABUBAR_1(1,2) 
-          else
-C             #### XZ DERIVS ####
-              DIFF_VAL = RABUBAR_1(2,3)
-              MEAN_VAL = RABUBAR_1(2,3) 
-          end if
-                          
-          if(issprt==i) then
-              write(ncwu, '(1X,A,I1,1X,6(E10.3, 1X))') 'Derivatives: ', 
-     &            i, a1(7:12)
+          CALL XADUIJ  
 
-              write(ncwu, '(A, I1, 1X, E10.3)') 'Delta: ', i, DIFF_VAL  
-              write(ncwu, '(A, I1, 1X, E10.3)') 'Mean: ', i, MEAN_VAL/2.0   
-          end if 
-             
+C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
+          IF  ( i==1 ) THEN          
+             DIFF_VAL = RABUBAR_1(1,2)
+             MEAN_VAL = RABUBAR_1(1,2) 
+          ELSE
+             DIFF_VAL = RABUBAR_1(2,3)
+             MEAN_VAL = RABUBAR_1(2,3) 
+          END IF
+                          
 C Here, you need to set D to be the computed value of the difference in the covariances
 C Note that DUMP is the target difference (and should usually be zero).
 C You need to set SUM to be the compute
@@ -7455,17 +7345,15 @@ C You need to set SUM to be the compute
 C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.         
           JQ=ISTORE(JA+6)
           DO JX=1,6
-              STORE(JQ+2)=0.
-              JQ=ISTORE(JQ)
+            STORE(JQ+2)=0.
+            JQ=ISTORE(JQ)
           end do
-      end do      
-            
-         JA=ISTORE(JA_ad1)                                                     CVC01530
-c         ja=jb
 
-      IF(JA .GT. 0) GOTO 1000
+        end do
+      
+        JA=ISTORE(JC)
+      end do
 
-      RETURN
       END
       
           
