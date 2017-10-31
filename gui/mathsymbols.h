@@ -18,6 +18,7 @@ class MathSymbols {
       io.Replace("\\**2", L"\u00B2");
       io.Replace("\\**3", L"\u00B3");
       io.Replace("\\sqrt", L"\u221A");
+      io.Replace("\\AA", L"\u212B");
       return ;
   };
   

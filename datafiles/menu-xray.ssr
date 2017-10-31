@@ -7,7 +7,7 @@
 
 ^^WI       ITEM XIN5    'Import S&helx files (ins, res, hkl, hklf5)'
 ^^WI                '#SCRIPT XFILES' DISABLEIF='IN'
-^^WI       ITEM XINA    'Import Agilent data (cif_od)'
+^^WI       ITEM XINA    'Import RigakuOD data (cif_od)'
 ^^WI                '#SCRIPT XFILEA' DISABLEIF='IN'
 ^^WI       ITEM XINK    'Import Nonius Kappa data'
 ^^WI                '#SCRIPT XFILEN' DISABLEIF='IN'

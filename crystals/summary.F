@@ -3967,7 +3967,7 @@ c        WRITE(CMON,'(A,10(/A))')
      3  '^^PL LENGTH=',nbin,
      4  '^^PL YAXIS TITLE ''Frequency''',
      5  '^^PL YAXISRIGHT ZOOM 0 ',nint(smax),
-     5  ' TITLE ''Average(I/\sigma(I))''',
+     5  ' TITLE ''<I/\sigma(I)>''',
      6  '^^PL SERIES 1 SERIESNAME ''I/\sigma(I)<3.0'' TYPE LINE ',
      7  '^^PL SERIES 2 SERIESNAME ''I/\sigma(I)<10.0'' TYPE LINE ',
      8  '^^PL SERIES 3 SERIESNAME ''I/\sigma(I)>10.0'' TYPE LINE ',
@@ -4140,7 +4140,7 @@ C Calculate max distance in A^-2.
       IF (IAGREE .EQ. 1) THEN
         WRITE(CMON,'(A,2(/A))')
      1  '^^PL PLOTDATA _XTWAG SCATTER ATTACH _TWAG',
-     1  '^^PL XAXIS TITLE ''Deviation in A\**-1'' NSERIES=1 LENGTH=25',
+     1'^^PL XAXIS TITLE ''Deviation in \AA\**-1'' NSERIES=1 LENGTH=25',
      1  '^^PL YAXIS TITLE ''Fo-Fc'''
         CALL XPRVDU(NCVDU, 4,0)
         SCALE = STORE(L5O)
@@ -4209,7 +4209,7 @@ C SCAN LIST 6 FOR REFLECTIONS
       IF (IPLOT .EQ. 1) THEN
         WRITE(CMON,'(A,3(/A))')
      1  '^^PL PLOTDATA _XTLA BARGRAPH ATTACH _TLA',
-     1  '^^PL XAXIS TITLE ''Deviation in A\**-1'' NSERIES=1 LENGTH=25',
+     1'^^PL XAXIS TITLE ''Deviation in \AA\**-1'' NSERIES=1 LENGTH=25',
      1  '^^PL YAXIS TITLE ''Number of observations''',
      1  '^^PL SERIES 1 SERIESNAME ''Number of reflections at'''
         CALL XPRVDU(NCVDU, 4,0)

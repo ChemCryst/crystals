@@ -30,9 +30,6 @@ spare 9
 #010 USER DEFINED  10                                                           
 spare 10                                                                        
             
-#036 CrysAlisPro, (Agilent, 2011)                                   
-Agilent (2011). CrysAlisPro.                                       
-                                                                                
 #011 SIR92 (Altomare et al., 1994)                                              
 Altomare, A., Cascarano, G., Giacovazzo, C., Guagliardi, A., Burla, M.C.,       
 Polidori, G.  & Camalli, M. (1994). J. Appl. Cryst. 27, 435.                    
@@ -137,6 +134,9 @@ Prince, E.
 Mathematical Techniques in Crystallography                                      
 and Materials Science                                                           
 Springer-Verlag, New York, 1982.                                                
+
+#036 CrysAlisPro (Rigaku Oxford Diffraction, 2017)                                   
+Rigaku Oxford Diffraction (2017). CrysAlisPro.                                       
                                                                                 
 #018 SHELXS 86 (Sheldrick, 1986)                                                
 Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
