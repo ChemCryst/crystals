@@ -413,8 +413,8 @@
 %% 1000x scale (and integer for CrModel)
 %       EVALUATE MINP = MINP * 1000.0
 %       CLEAR
-%       INSERT '^^CO SET MODEL02 MINPEAK'
-%       STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER ( MINP )
+%       INSERT '^^CO SET MODEL02 MINPEAK '
+%       STORE FORMAT /(I7)/ LENGTH 7 INTEGER INTEGER ( MINP )
 %       OUTPUT
 %       EVALUATE UPDATEP = FALSE
 %      END BLOCK                                                                
