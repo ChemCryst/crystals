@@ -364,7 +364,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
  Function at    1185  :   12   Uij        
 [38]  O           6.0000   1.00    0.00    0.22    0.25    0.34    0.06    0.02    0.03   -0.00   -0.00    0.00
 [38]  C           7.0000   1.00    0.00    0.35    0.16    0.40    0.08    0.03    0.04    0.00   -0.00    0.01
-
 ___________
  (2) U(IJ) 0.0,.001 = O(6) TO C(7)
  Derivative(s) :
@@ -396,15 +395,14 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            O       6     1  1  0  0  0     0.06268         C       7     1  1  0  0  0     0.08836   0.02568     U[11]   
            O       6     1  1  0  0  0     0.02850         C       7     1  1  0  0  0     0.03606   0.00757     U[22]   
            O       6     1  1  0  0  0     0.03698         C       7     1  1  0  0  0     0.04423   0.00725     U[33]   
            O       6     1  1  0  0  0    -0.00257         C       7     1  1  0  0  0     0.00133   0.00390     U[23]   
            O       6     1  1  0  0  0    -0.00748         C       7     1  1  0  0  0    -0.00674   0.00074     U[13]   
            O       6     1  1  0  0  0     0.00098         C       7     1  1  0  0  0     0.01229   0.01132     U[12]   
-[41]       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.01
           - Derivatives not found, do a refinement cycle to get leverages -
+[41]       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.01
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -414,7 +412,6 @@ ___________
        1185   -998815      1861        12  -1000676  -1000000  -1000000         0      1191      1871  16776876         0
  Work stack header at    1191  :  -1000000         6      -340         0   -998815         0
  Function at    1185  :   11   Nolist     
-
 ___________
  (3) NO
 #SFLS
@@ -637,7 +634,6 @@ Mean C-C su =   0.0000
  Function at    1185  :   12   Uij        
 [38]  O           6.0000   1.00    0.00    0.22    0.25    0.34    0.06    0.02    0.03   -0.00   -0.00    0.00
 [38]  C           7.0000   1.00    0.00    0.35    0.16    0.40    0.06    0.02    0.03   -0.00   -0.00    0.00
-
 ___________
  (2) U(IJ) 0.0,.001 = O(6) TO C(7)
  Derivative(s) :
@@ -669,20 +665,19 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            O       6     1  1  0  0  0     0.06830         C       7     1  1  0  0  0     0.06876   0.00047     U[11]   
            O       6     1  1  0  0  0     0.02812         C       7     1  1  0  0  0     0.02870   0.00058     U[22]   
            O       6     1  1  0  0  0     0.03900         C       7     1  1  0  0  0     0.03958   0.00058     U[33]   
            O       6     1  1  0  0  0    -0.00071         C       7     1  1  0  0  0    -0.00041   0.00030     U[23]   
            O       6     1  1  0  0  0    -0.00875         C       7     1  1  0  0  0    -0.00860   0.00015     U[13]   
            O       6     1  1  0  0  0     0.00322         C       7     1  1  0  0  0     0.00344   0.00021     U[12]   
-[41]       Mean value =   0.0248  Mean delta =   0.0004  r.m.s. delta =   0.00
           Leverage: 0.985
           Leverage: 0.950
           Leverage: 0.956
           Leverage: 0.945
           Leverage: 0.975
           Leverage: 0.973
+[41]       Mean value =   0.0248  Mean delta =   0.0004  r.m.s. delta =   0.00
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -692,7 +687,6 @@ ___________
        1185   -998815      1861        12  -1000676  -1000000  -1000000         0      1191      1871  16776876         0
  Work stack header at    1191  :  -1000000         6      -340         0   -998815         0
  Function at    1185  :   11   Nolist     
-
 ___________
  (3) NO
 #USE TD_REST.L5
@@ -718,7 +712,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) U(IJ) 0.0,.001 = C(7) TO O(6)
 
@@ -726,7 +719,6 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            C       7     1  1  0  0  0     0.08836         O       6     1  1  0  0  0     0.06268  -0.02568     U[11]   
            C       7     1  1  0  0  0     0.03606         O       6     1  1  0  0  0     0.02850  -0.00757     U[22]   
            C       7     1  1  0  0  0     0.04423         O       6     1  1  0  0  0     0.03698  -0.00725     U[33]   
@@ -734,7 +726,6 @@ ___________
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
 [41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
-
 ___________
  (1) NO
 #SFLS
@@ -925,7 +916,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) U(IJ) 0.0,.001 = C(7) TO O(6)
 
@@ -933,21 +923,19 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            C       7     1  1  0  0  0     0.06876         O       6     1  1  0  0  0     0.06830  -0.00047     U[11]   
            C       7     1  1  0  0  0     0.02870         O       6     1  1  0  0  0     0.02812  -0.00058     U[22]   
            C       7     1  1  0  0  0     0.03958         O       6     1  1  0  0  0     0.03900  -0.00058     U[33]   
            C       7     1  1  0  0  0    -0.00041         O       6     1  1  0  0  0    -0.00071  -0.00030     U[23]   
            C       7     1  1  0  0  0    -0.00860         O       6     1  1  0  0  0    -0.00875  -0.00015     U[13]   
            C       7     1  1  0  0  0     0.00344         O       6     1  1  0  0  0     0.00322  -0.00021     U[12]   
-[41]       Mean value =   0.0248  Mean delta =  -0.0004  r.m.s. delta =   0.00
           Leverage: 0.985
           Leverage: 0.950
           Leverage: 0.956
           Leverage: 0.945
           Leverage: 0.975
           Leverage: 0.973
-
+[41]       Mean value =   0.0248  Mean delta =  -0.0004  r.m.s. delta =   0.00
 ___________
  (1) NO
 # -------------------------------------
@@ -974,7 +962,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) VIB 0.0,.001 = O(6) TO C(7)
 
@@ -982,16 +969,14 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
-[41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
           Leverage: 0.985
           Leverage: 0.950
           Leverage: 0.956
           Leverage: 0.945
           Leverage: 0.975
           Leverage: 0.973
-
+[41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
 #SFLS
@@ -1181,7 +1166,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) VIB 0.0,.001 = O(6) TO C(7)
 
@@ -1189,11 +1173,9 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            O       6     1  1  0  0  0     0.03377         C       7     1  1  0  0  0     0.03381   0.00004
-[41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
           Leverage: 0.971
-
+[41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
 ___________
  (1) NO
 #USE TD_REST.L5
@@ -1219,7 +1201,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) VIB 0.0,.001 = C(7) TO O(6)
 
@@ -1227,11 +1208,9 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-[41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
           Leverage: 0.971
-
+[41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
 #SFLS
@@ -1421,7 +1400,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) VIB 0.0,.001 = C(7) TO O(6)
 
@@ -1429,11 +1407,9 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            C       7     1  1  0  0  0     0.03381         O       6     1  1  0  0  0     0.03377  -0.00004
-[41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
           Leverage: 0.971
-
+[41]       Mean value =   0.0338  Mean delta =   0.0000  r.m.s. delta =   0.00
 ___________
  (1) NO
 #PURG
@@ -1467,7 +1443,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-U(IJ) 0.0,.001 = O(6) TO C(7)
 
@@ -1475,16 +1450,14 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            O       6     1  1  0  0  0     0.06268         C       7     1  1  0  0  0     0.08836   0.02568     U[11]   
            O       6     1  1  0  0  0     0.02850         C       7     1  1  0  0  0     0.03606   0.00757     U[22]   
            O       6     1  1  0  0  0     0.03698         C       7     1  1  0  0  0     0.04423   0.00725     U[33]   
            O       6     1  1  0  0  0    -0.00257         C       7     1  1  0  0  0     0.00133   0.00390     U[23]   
            O       6     1  1  0  0  0    -0.00748         C       7     1  1  0  0  0    -0.00674   0.00074     U[13]   
            O       6     1  1  0  0  0     0.00098         C       7     1  1  0  0  0     0.01229   0.01132     U[12]   
-[41]       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.01
           Leverage: 0.971
-
+[41]       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.01
 ___________
  (1) NO
 #SFLS
@@ -1676,7 +1649,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-U(IJ) 0.0,.001 = O(6) TO C(7)
 
@@ -1684,21 +1656,19 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            O       6     1  1  0  0  0     0.06388         C       7     1  1  0  0  0     0.06325  -0.00063     U[11]   
            O       6     1  1  0  0  0     0.02665         C       7     1  1  0  0  0     0.02911   0.00246     U[22]   
            O       6     1  1  0  0  0     0.03704         C       7     1  1  0  0  0     0.03770   0.00066     U[33]   
            O       6     1  1  0  0  0    -0.00183         C       7     1  1  0  0  0    -0.00213  -0.00030     U[23]   
            O       6     1  1  0  0  0    -0.00931         C       7     1  1  0  0  0    -0.00736   0.00195     U[13]   
            O       6     1  1  0  0  0     0.00118         C       7     1  1  0  0  0     0.00124   0.00006     U[12]   
-[41]       Mean value =   0.0234  Mean delta =   0.0007  r.m.s. delta =   0.00
           Leverage: 0.981
           Leverage: 0.932
           Leverage: 0.942
           Leverage: 0.926
           Leverage: 0.967
           Leverage: 0.966
-
+[41]       Mean value =   0.0234  Mean delta =   0.0007  r.m.s. delta =   0.00
 ___________
  (1) NO
 #USE TD_REST.L5
@@ -1724,7 +1694,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-U(IJ) 0.0,.001 = C(7) TO O(6)
 
@@ -1732,21 +1701,19 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            C       7     1  1  0  0  0     0.08836         O       6     1  1  0  0  0     0.06268  -0.02568     U[11]   
            C       7     1  1  0  0  0     0.03606         O       6     1  1  0  0  0     0.02850  -0.00757     U[22]   
            C       7     1  1  0  0  0     0.04423         O       6     1  1  0  0  0     0.03698  -0.00725     U[33]   
            C       7     1  1  0  0  0     0.00133         O       6     1  1  0  0  0    -0.00257  -0.00390     U[23]   
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
-[41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
           Leverage: 0.981
           Leverage: 0.932
           Leverage: 0.942
           Leverage: 0.926
           Leverage: 0.967
           Leverage: 0.966
-
+[41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
 ___________
  (1) NO
 #SFLS
@@ -1938,7 +1905,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-U(IJ) 0.0,.001 = C(7) TO O(6)
 
@@ -1946,21 +1912,19 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            C       7     1  1  0  0  0     0.09020         O       6     1  1  0  0  0     0.08618  -0.00403     U[11]   
            C       7     1  1  0  0  0     0.03378         O       6     1  1  0  0  0     0.03356  -0.00023     U[22]   
            C       7     1  1  0  0  0     0.04449         O       6     1  1  0  0  0     0.04221  -0.00228     U[33]   
            C       7     1  1  0  0  0     0.00374         O       6     1  1  0  0  0     0.00057  -0.00317     U[23]   
            C       7     1  1  0  0  0    -0.00542         O       6     1  1  0  0  0    -0.00732  -0.00191     U[13]   
            C       7     1  1  0  0  0     0.01461         O       6     1  1  0  0  0     0.01127  -0.00334     U[12]   
-[41]       Mean value =   0.0311  Mean delta =  -0.0025  r.m.s. delta =   0.00
           Leverage: 0.926
           Leverage: 0.826
           Leverage: 0.853
           Leverage: 0.822
           Leverage: 0.899
           Leverage: 0.900
-
+[41]       Mean value =   0.0311  Mean delta =  -0.0025  r.m.s. delta =   0.00
 ___________
  (1) NO
 # -------------------------------------
@@ -1987,7 +1951,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-VIB 0.0,.001 = O(6) TO C(7)
 
@@ -1995,16 +1958,14 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
-[41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
           Leverage: 0.926
           Leverage: 0.826
           Leverage: 0.853
           Leverage: 0.822
           Leverage: 0.899
           Leverage: 0.900
-
+[41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
 #SFLS
@@ -2194,7 +2155,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-VIB 0.0,.001 = O(6) TO C(7)
 
@@ -2202,11 +2162,9 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            O       6     1  1  0  0  0     0.03343         C       7     1  1  0  0  0     0.03566   0.00224
-[41]       Mean value =   0.0345  Mean delta =   0.0022  r.m.s. delta =   0.00
           Leverage: 0.962
-
+[41]       Mean value =   0.0345  Mean delta =   0.0022  r.m.s. delta =   0.00
 ___________
  (1) NO
 #USE TD_REST.L5
@@ -2232,7 +2190,6 @@ Refining    12 parameters in    1 block :      118 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-VIB 0.0,.001 = C(7) TO O(6)
 
@@ -2240,11 +2197,9 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-[41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
           Leverage: 0.962
-
+[41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
 #SFLS
@@ -2434,7 +2389,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-VIB 0.0,.001 = C(7) TO O(6)
 
@@ -2442,11 +2396,9 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            C       7     1  1  0  0  0     0.03501         O       6     1  1  0  0  0     0.03696   0.00195
-[41]       Mean value =   0.0360  Mean delta =   0.0019  r.m.s. delta =   0.00
           Leverage: 0.904
-
+[41]       Mean value =   0.0360  Mean delta =   0.0019  r.m.s. delta =   0.00
 ___________
  (1) NO
 #LIST 12
@@ -2483,7 +2435,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
  Directive  VIBRATION: No derivatives found during Evaluation
-
 ___________
  (0) A-VIB 0.0,.001 = C(7) TO O(6)
  Directive  VIBRATION: No derivatives found during Evaluation
@@ -2492,12 +2443,10 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.00100
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
   VIBRATION restraint:  No derivatives found
   ?        C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-[41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
           Leverage: 0.904
-
+[41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
 #LIST     16
@@ -2690,7 +2639,6 @@ Mean C-C su =   0.0984
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) DIST 1.55,.0001 =  C(2) TO C(11)
 
@@ -2698,11 +2646,9 @@ ___________
                 with an E.S.D. of   0.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
-  
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
-[41]       Mean value =   1.5500  Mean delta =   0.0000  r.m.s. delta =   0.00
           Leverage C(2),C(11): 1.000  Single distance
-
+[41]       Mean value =   1.5500  Mean delta =   0.0000  r.m.s. delta =   0.00
 ___________
  (1) NO
 #USE TD_REST.L5
@@ -3091,7 +3037,6 @@ Mean C-C su =   0.0214
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) A-DIST 1.55,.0001 =  C(2) TO C(11)
 
@@ -3099,11 +3044,9 @@ ___________
                 with an E.S.D. of   0.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
-  
            C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
-[41]       Mean value =   1.5497  Mean delta =   0.0003  r.m.s. delta =   0.00
           Leverage C(2),C(11): 1.000  Single distance
-
+[41]       Mean value =   1.5497  Mean delta =   0.0003  r.m.s. delta =   0.00
 ___________
  (1) NO
 #END

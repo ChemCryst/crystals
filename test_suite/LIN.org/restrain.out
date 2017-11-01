@@ -102,7 +102,6 @@ Bonds: Update required - There is no list 41
       1336  :   -998953        14  16777216  16777216  16776315
 [38]  C           1.0000   0.50    0.00   -0.49    0.00    1.00    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  S           1.0000   0.50    0.00   -0.79   -0.59    1.25    0.02    0.02    0.02    0.00    0.00    0.01
-
 ___________
  (1) RESTRAIN 1.5 , 0.03 = SQRT
 CONT ((C(1,5,X)-S(1,5,X))*(C(1,5,X)-S(1,5,X))*G(1,1)
@@ -180,7 +179,6 @@ CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,Z)-S(1,5,Z))*G(3,3))
 [38]  S           1.0000   0.50    0.00   -0.79   -0.59    1.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  S           1.0000   0.50    0.00   -1.20    0.59   -0.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  C           1.0000   0.50    0.00   -1.49    0.00    0.00    0.04    0.04    0.02    0.00    0.00    0.02
-
 ___________
  (2) DISTANCE 1.5 , 0.03 = C(1) TO S(1) , C(1,5) TO S(1,5) S(1,7,1,-1)
 CONT TO C(1,7,1,-1)
@@ -201,12 +199,11 @@ CONT TO C(1,7,1,-1)
                 with an E.S.D. of   0.030
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
-  
            C       1     1  1  0  0  0      S       1     1  1  0  0  0      6.732    -5.232
            C       1     5  1  0  0  0      S       1     5  1  0  0  0      6.732    -5.232
            S       1     7  1 -1  0  0      C       1     7  1 -1  0  0      6.732    -5.232
-[41]       Mean value =   6.7319  Mean delta =  -5.2319  r.m.s. delta =   5.23
           - Derivatives not found, do a refinement cycle to get leverages -
+[41]       Mean value =   6.7319  Mean delta =  -5.2319  r.m.s. delta =   5.23
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -272,7 +269,6 @@ CONT TO C(1,7,1,-1)
 [38]  O           1.0000   1.00    0.00    0.48    0.09    0.03    0.03    0.04    0.05   -0.01   -0.02    0.01
 [38]  C           1.0000   0.50    0.00   -0.49    0.00    0.00    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  O           1.0000   1.00    0.00   -0.48   -0.39    0.62    0.03    0.05    0.05   -0.01   -0.02    0.02
-
 ___________
  (3) DISTANCE 1.5 , 0.03 = DIFFERENCE C(1,5) TO S(1,5) C(1) TO S(1)
 CONT C(1) TO O(1) C(1,7) TO O(1,7)
@@ -309,13 +305,12 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
     1.500  Angstrom, with an E.S.D. of    0.030
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances 
-  
            C       1     5  1  0  0  0      S       1     5  1  0  0  0      6.732
            C       1     1  1  0  0  0      S       1     1  1  0  0  0      6.732
            C       1     1  1  0  0  0      O       1     1  1  0  0  0     13.246
            C       1     7  1  0  0  0      O       1     7  1  0  0  0     13.246
-      Mean value =   9.9891  Mean delta =
           - Derivatives not found, do a refinement cycle to get leverages -
+      Mean value =   9.9891  Mean delta =
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -381,7 +376,6 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
 [38]  O           1.0000   1.00    0.00    0.48    0.09    0.03    0.03    0.04    0.05   -0.01   -0.02    0.01
 [38]  C           1.0000   0.50    0.00   -0.49    0.00    0.00    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  O           1.0000   1.00    0.00   -0.48   -0.39    0.62    0.03    0.05    0.05   -0.01   -0.02    0.02
-
 ___________
  (4) DISTANCE 0.0 , 0.03 = MEAN C(1,5) TO S(1,5) C(1) TO S(1)
 CONT C(1) TO O(1) C(1,7) TO O(1,7)
@@ -406,13 +400,12 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
                                                  with an E.S.D. of   0.030
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
-  
            C       1     5  1  0  0  0      S       1     5  1  0  0  0      6.732     3.257
            C       1     1  1  0  0  0      S       1     1  1  0  0  0      6.732     3.257
            C       1     1  1  0  0  0      O       1     1  1  0  0  0     13.246    -3.257
            C       1     7  1  0  0  0      O       1     7  1  0  0  0     13.246    -3.257
-[41]       Mean value =   9.9891  Mean delta =   0.0000  r.m.s. delta =   3.25
           - Derivatives not found, do a refinement cycle to get leverages -
+[41]       Mean value =   9.9891  Mean delta =   0.0000  r.m.s. delta =   3.25
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -464,7 +457,6 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
 [38]  C           1.0000   0.50    0.00   -1.49    0.00    0.00    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  S           1.0000   0.50    0.00   -1.20    0.59   -0.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  O           1.0000   1.00    0.00   -1.48   -0.39    0.62    0.03    0.05    0.05   -0.01   -0.02    0.02
-
 ___________
  (5) ANGLES 0 , 1.0 = C(1) TO S(1) TO O(1) , C(1,7,,-1) TO S(1,7,,-1)
 CONT TO O(1,7,,-1)
@@ -483,11 +475,10 @@ CONT TO O(1,7,,-1)
                 with an E.S.D. of   1.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
-  
            C       1     1  1  0  0  0      S       1     1  1  0  0  0      O       1     1  1  0  0  0     19.32 -19.32
            C       1     7  1 -1  0  0      S       1     7  1 -1  0  0      O       1     7  1 -1  0  0     19.32 -19.32
-[41]       Mean value =  19.3191  Mean delta = -19.3191  r.m.s. delta =  19.31
           - Derivatives not found, do a refinement cycle to get leverages -
+[41]       Mean value =  19.3191  Mean delta = -19.3191  r.m.s. delta =  19.31
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -560,7 +551,6 @@ CONT TO O(1,7,,-1)
 [38]  S           1.0000   0.50    0.00    0.79    0.20   -0.58    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  C           1.0000   0.50    0.00    0.49    0.49   -0.33    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  O           1.0000   1.00    0.00   -0.09   -0.48    0.79    0.04    0.03    0.05   -0.02   -0.01    0.01
-
 ___________
  (6) ANGLES 0.0 , 1.0 = DIFFERENCE C(1) TO S(1) TO O(1)
 CONT C(1,7) TO S(1,7) TO O(1,7)
@@ -585,12 +575,11 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
     0.000  degrees , with an E.S.D. of    1.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles 
-  
            C       1     1  1  0  0  0      S       1     1  1  0  0  0      O       1     1  1  0  0  0     19.32
            C       1     7  1  0  0  0      S       1     7  1  0  0  0      O       1     7  1  0  0  0     19.32
            S       1     3  1  0  0  0      C       1     3  1  0  0  0      O       1     4  1  0  0  0    130.01
-      Mean value =  56.2160  Mean delta =
           - Derivatives not found, do a refinement cycle to get leverages -
+      Mean value =  56.2160  Mean delta =
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -684,7 +673,6 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
 [38]  S           1.0000   0.50    0.00    0.79    0.20   -0.58    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  C           1.0000   0.50    0.00    0.49    0.49   -0.33    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  O           1.0000   1.00    0.00   -0.09   -0.48    0.79    0.04    0.03    0.05   -0.02   -0.01    0.01
-
 ___________
  (7) ANGLES 0.0 , 1.0 = MEAN C(1) TO S(1) TO O(1)
 CONT C(1,7) TO S(1,7) TO O(1,7)
@@ -715,13 +703,12 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
                                                  with an E.S.D. of   1.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
-  
            C       1     1  1  0  0  0      S       1     1  1  0  0  0      O       1     1  1  0  0  0     19.32  55.35
            C       1     7  1  0  0  0      S       1     7  1  0  0  0      O       1     7  1  0  0  0     19.32  55.35
            S       1     3  1  0  0  0      C       1     3  1  0  0  0      O       1     4  1  0  0  0    130.01 -55.35
            S       1     3  1  0  0  0      C       1     3  1  0  0  0      O       1     4  1  0  0  0    130.01 -55.35
-[41]       Mean value =  74.6645  Mean delta =   0.0000  r.m.s. delta =  55.34
           - Derivatives not found, do a refinement cycle to get leverages -
+[41]       Mean value =  74.6645  Mean delta =   0.0000  r.m.s. delta =  55.34
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -835,7 +822,6 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
 [38]  C           1.0000   0.50    0.00    0.49    0.49    0.66    0.04    0.04    0.02    0.00    0.00    0.02
 [38]  S           1.0000   0.50    0.00   -0.20    0.59   -0.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  C           1.0000   0.50    0.00   -0.49    0.00    0.00    0.04    0.04    0.02    0.00    0.00    0.02
-
 ___________
  (8) VIBRATION 0.0 , 0.06 = S(1,5) TO O(1,5)
 CONT S(1) TO O(1) S(1) TO C(1) S(1,7) TO C(1,7)
@@ -870,13 +856,12 @@ CONT S(1) TO O(1) S(1) TO C(1) S(1,7) TO C(1,7)
         0.00000  angstrom squared, with an E.S.D. of  0.06000
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
-  
            S       1     5  1  0  0  0     0.02533         O       1     5  1  0  0  0     0.05424   0.02891
            S       1     1  1  0  0  0     0.02533         O       1     1  1  0  0  0     0.05424   0.02891
            S       1     1  1  0  0  0     0.02533         C       1     1  1  0  0  0     0.03219   0.00686
            S       1     7  1  0  0  0     0.02533         C       1     7  1  0  0  0     0.03219   0.00686
-[41]       Mean value =   0.0343  Mean delta =   0.0179  r.m.s. delta =   0.02
           - Derivatives not found, do a refinement cycle to get leverages -
+[41]       Mean value =   0.0343  Mean delta =   0.0179  r.m.s. delta =   0.02
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -908,7 +893,6 @@ CONT S(1) TO O(1) S(1) TO C(1) S(1,7) TO C(1,7)
       1134  :   -998953        14  16777216  16777216  16776403
 [38]  S           1.0000   0.50    0.00    0.20    0.79    0.91    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  O           1.0000   1.00    0.00    0.48    0.09    0.03    0.03    0.04    0.05   -0.01   -0.02    0.01
-
 ___________
  (9) RESTRAIN 0.0,0.01=S(1,U[11])-O(1,U[11])
  Calculated value   -0.4669999704E-02
@@ -963,7 +947,6 @@ ___________
       1134  :   -998953        14  16777216  16777216  16776403
 [38]  S           1.0000   0.50    0.00   -0.79   -0.59    1.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  O           1.0000   1.00    0.00   -0.09    0.39    0.37    0.04    0.05    0.05   -0.01    0.01    0.03
-
 ___________
  (10) RESTRAIN 0.0,0.01=S(1,5,U[11])-O(1,5,U[11])
  Calculated value   -0.1467000134E-01
@@ -1018,7 +1001,6 @@ ___________
       1134  :   -998953        14  16777216  16777216  16776403
 [38]  S           1.0000   0.50    0.00   -0.20    0.59   -0.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  O           1.0000   1.00    0.00   -0.48   -0.39    0.62    0.03    0.05    0.05   -0.01   -0.02    0.02
-
 ___________
  (11) RESTRAIN 0.0,0.01=S(1,7,U[22])-O(1,7,U[22])
  Calculated value   -0.2467000112E-01
@@ -1074,7 +1056,6 @@ ___________
       1134  :   -998953        14  16777216  16777216  16776403
 [38]  S           1.0000   0.50    0.00   -0.20    0.59   -0.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  O           1.0000   1.00    0.00   -0.48   -0.39    0.62    0.03    0.05    0.05   -0.01   -0.02    0.02
-
 ___________
  (12) RESTRAIN 0.0,0.01=S(1,7,U[12])-O(1,7,U[12])
  Calculated value   -0.7334999740E-02
@@ -1167,7 +1148,6 @@ ___________
 [38]  O           1.0000   1.00    0.00   -0.09    0.39    0.37    0.04    0.05    0.05   -0.01    0.01    0.03
 [38]  S           1.0000   0.50    0.00   -0.20    0.59   -0.25    0.02    0.02    0.02    0.00    0.00    0.01
 [38]  O           1.0000   1.00    0.00   -0.48   -0.39    0.62    0.03    0.05    0.05   -0.01   -0.02    0.02
-
 ___________
  (13) U(IJ) 0.0,0.01=S(1) TO O(1) S(1,5) TO O(1,5) S(1,7) TO O(1,7)
  Derivative(s) :
@@ -1249,7 +1229,6 @@ ___________
         0.00000  angstrom squared, with an E.S.D. of  0.01000
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
-  
            S       1     1  1  0  0  0     0.02533         O       1     1  1  0  0  0     0.03000   0.00467     U[11]   
            S       1     1  1  0  0  0     0.02533         O       1     1  1  0  0  0     0.04000   0.01467     U[22]   
            S       1     1  1  0  0  0     0.02533         O       1     1  1  0  0  0     0.05000   0.02467     U[33]   
@@ -1268,8 +1247,8 @@ ___________
            S       1     7  1  0  0  0     0.00000         O       1     7  1  0  0  0    -0.01000  -0.01000     U[23]   
            S       1     7  1  0  0  0     0.00000         O       1     7  1  0  0  0    -0.02000  -0.02000     U[13]   
            S       1     7  1  0  0  0     0.01266         O       1     7  1  0  0  0     0.02000   0.00733     U[12]   
-[41]       Mean value =   0.0221  Mean delta =   0.0069  r.m.s. delta =   0.01
           - Derivatives not found, do a refinement cycle to get leverages -
+[41]       Mean value =   0.0221  Mean delta =   0.0069  r.m.s. delta =   0.01
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1279,7 +1258,6 @@ ___________
        1047   -998953      1592        12  -1000545  -1000000  -1000000         0      1053      1602  16776492         0
  Work stack header at    1053  :  -1000000         6      -724         0   -998953         0
  Function at    1047  :   11   Nolist     
-
 ___________
  (14) NO
 #CHECK
@@ -1424,7 +1402,6 @@ ___________
    10.0000
    20.0000
    30.0000
-
 ___________
  (2) RESTRAIN 0,1=ELEMENT(1)+ELEMENT(2)+ELEMENT(3)
  Calculated value    0.6000000000E+02
@@ -1471,7 +1448,6 @@ ___________
     3.0000
     1.0000
     0.0500
-
 ___________
  (3) RESTRAIN 0,1=LAYER(4)+LAYER(1)+LAYER(3)+SCALE+DU[ISO]
  Calculated value    0.9050000191E+01
@@ -1550,7 +1526,6 @@ ___________
    30.0000
 [38]  O           1.0000   1.00    0.00    0.48    0.09    0.03    0.03    0.04    0.05   -0.01   -0.02    0.01
     3.0000
-
 ___________
  (4) RESTRAIN 0,1=S(1,,X)*SCALE+C(1,Y)*ELEMENT(2)+ELEMENT(3)*O(1,Z)
 CONT +LAYER(3)*S(1,U[11])+ELEMENT(2)+ELEMENT(3)
@@ -1592,7 +1567,6 @@ CONT +LAYER(3)*S(1,U[11])+ELEMENT(2)+ELEMENT(3)
        1047   -998953      1672        12  -1000625  -1000000  -1000000         0      1053      1682  16776492         0
  Work stack header at    1053  :  -1000000         6      -724         0   -998953         0
  Function at    1047  :   11   Nolist     
-
 ___________
  (5) NO
 # TEST SPECIAL PARAMETERS
@@ -1771,7 +1745,6 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Function at     564  :   15   sum        
     1.1000
     1.2000
-
 ___________
  (2) SUM LAYER SCALES
  Directive  SUM: No derivatives found during Evaluation
@@ -1790,7 +1763,6 @@ ___________
        583  :   -999436  -1000000     ELEMENT 
  Function at     564  :   15   sum        
     1.3000
-
 ___________
  (3) SUM ELEMENT SCALES
  Directive  SUM: No derivatives found during Evaluation
@@ -1813,7 +1785,6 @@ ___________
  Function at     564  :   15   sum        
     1.4000
     1.5000
-
 ___________
  (4) SUM BATCH SCALES
  Directive  SUM: No derivatives found during Evaluation
@@ -1843,7 +1814,6 @@ ___________
  Function at     564  :   15   sum        
 [38]  C           1.0000   1.00    1.00    0.10    0.20    0.30    0.05    0.00    0.00    0.00    0.00    0.00
 [38]  C           2.0000   1.00    1.00    0.20    0.30    0.40    0.05    0.00    0.00    0.00    0.00    0.00
-
 ___________
  (5) SUM X
  Directive  SUM: No derivatives found during Evaluation
@@ -1866,7 +1836,6 @@ ___________
  Function at     564  :   15   sum        
    10.0000
    10.0000
-
 ___________
  (6) SUM CELL PARAMETERS
  Directive  SUM: No derivatives found during Evaluation
@@ -1893,7 +1862,6 @@ ___________
     1.6000
     1.7000
     1.8000
-
 ___________
  (7) SUM PROFILE(1) PROFILE(2) PROFILE(3)
  Directive  SUM: No derivatives found during Evaluation
@@ -1920,7 +1888,6 @@ ___________
     1.6000
     1.7000
     1.8000
-
 ___________
  (8) SUM PROFILE PARAMETERS
  Directive  SUM: No derivatives found during Evaluation
@@ -1943,7 +1910,6 @@ ___________
  Function at     564  :   15   sum        
     0.9000
     0.8000
-
 ___________
  (9) SUM EXTINCTION PARAMETERS
  Directive  SUM: No derivatives found during Evaluation
@@ -1958,7 +1924,6 @@ ___________
         564   -999436      1088        12  -1000524  -1000000  -1000000         0       570      1098  16776972         0
  Work stack header at     570  :  -1000000         6      -244         0   -999436         0
  Function at     564  :   11   Nolist     
-
 ___________
  (10) NO
 #FINI

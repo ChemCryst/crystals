@@ -7829,11 +7829,9 @@ Refining    37 parameters in    1 block :      793 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) SUM Z
    0. The sum is restrained to be -0.10352E-01  with an E.S.D. of  0.10000E-01
-
 ___________
  (1) DISTANCES 0.0, 0.005= DIFFERENCE N(1) TO B(2,2), N(1) TO B(2,3)
 
@@ -7841,14 +7839,11 @@ ___________
     0.000  Angstrom, with an E.S.D. of    0.005
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances 
-  
            N       1     1  1  0  0  0      B       2     2  1  0  0  0      1.425
            N       1     1  1  0  0  0      B       2     3  1  0  0  0      1.423
       Mean value =   1.4241  Mean delta =
-
 ___________
  (2) NO
-
 ___________
  (3) ORIGIN  Z
    3. The sum is restrained to be -0.12046      with an E.S.D. of  0.10000E-01
@@ -8053,12 +8048,10 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) SUM Z
    0. The sum is restrained to be -0.10235E-01  with an E.S.D. of  0.10000E-01
           Leverage: 0.011
-
 ___________
  (1) DISTANCES 0.0, 0.005= DIFFERENCE N(1) TO B(2,2), N(1) TO B(2,3)
 
@@ -8066,15 +8059,12 @@ ___________
     0.000  Angstrom, with an E.S.D. of    0.005
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances 
-  
            N       1     1  1  0  0  0      B       2     2  1  0  0  0      1.426
            N       1     1  1  0  0  0      B       2     3  1  0  0  0      1.423
-      Mean value =   1.4245  Mean delta =
           Leverage: 0.863
-
+      Mean value =   1.4245  Mean delta =
 ___________
  (2) NO
-
 ___________
  (3) ORIGIN  Z
    3. The sum is restrained to be -0.12047      with an E.S.D. of  0.10000E-01
