@@ -2762,7 +2762,7 @@ cdjwsep2011
        ENDIF
       ENDIF
 CRICFEB01[
-2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT ''', A , ''' ]' )
+2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT "', A , '" ]' )
 #ifdef CRY_GUI
       IF ( IDEV .EQ. NCPU ) THEN
         WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
