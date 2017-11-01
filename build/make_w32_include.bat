@@ -77,11 +77,12 @@ goto ALLDVF
 
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink %COPENMP%
-@set FNOOPT=/fpp /I..\crystals /MD -Od /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink
+@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /Qdiag-disable:8290 /Qdiag-disable:8291  /assume:realloc_lhs /nolink %COPENMP% 
+@set FNOOPT=/fpp /I..\crystals /MD -Od /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291  /assume:realloc_lhs /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
-@set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:bounds /check:format /check:overflow /check:pointers /check:uninit  /warn:argument_checking /warn:nofileopt /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink /traceback /Qtrapuv
+@set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:bounds /check:format /check:overflow /check:pointers 
+/check:uninit  /warn:nofileopt /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink /traceback /Qtrapuv
 @if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
 @if "%CRDEBUG%" == "TRUE" set COUT=/Fodobj\
 @goto exit
