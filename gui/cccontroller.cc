@@ -2025,7 +2025,7 @@ void    CcController::LogError( string errString , int level )
     fflush( mErrorLog );
 
     #ifdef CRY_OSLINUX
-          std::cerr << elapse << " " << errString.c_str() << "\n";
+//          std::cerr << elapse << " " << errString.c_str() << "\n";
     #endif
 }
 
