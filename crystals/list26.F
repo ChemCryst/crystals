@@ -7339,6 +7339,7 @@ C Here, you need to set D to be the computed value of the difference in the cova
 C Note that DUMP is the target difference (and should usually be zero).
 C You need to set SUM to be the compute
 
+          DUMP = 0.0
           STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
           STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
           STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
