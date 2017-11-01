@@ -2166,6 +2166,7 @@ C
 CODE FOR MRGLSQ
       SUBROUTINE  MRGLSQ(MOO,ibin,nbin)
       character*80 cterm
+      DIMENSION TENSOR(3)
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
       dimension ibin(nbin)
