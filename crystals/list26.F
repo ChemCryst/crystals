@@ -968,6 +968,7 @@ c      WRITE(*,*)'Hello UZZBar'
       
 C--'UPERP' RESTRAINT
 5040  CONTINUE
+      NN=0
       GOTO 2500
       
 C--'UPERP2' RESTRAINT
@@ -977,18 +978,22 @@ C--'UPERP2' RESTRAINT
 C
 C--'UALIGN' RESTRAINT
 5060  CONTINUE
+      NN=0
       GOTO 2500
 C
 C--'URIGU' RESTRAINT
 5070  CONTINUE
+      NN=0
       GOTO 2500
 C
 C--'ULIJ' RESTRAINT
 5080  CONTINUE
+      NN=0
       GOTO 2500
 
 C--'UPLANE' RESTRAINT
 5090  CONTINUE
+      NN=0
       GOTO 2500
 C
 C--'UXXQIV' RESTRAINT
@@ -1119,22 +1124,27 @@ C To be replaced with JAA routine:
       
 C--'eigen value restraint UEIG' RESTRAINT
 5560  CONTINUE
+      NN=0
       GOTO 2500
 
 C--'UQISO' RESTRAINT. near isotropic restraint
 5570  CONTINUE
+      NN=0
       GOTO 2500
 
 C--'UVOL' RESTRAINT. restrain the volume to be equal
 5580  CONTINUE
+      NN=0
       GOTO 2500
 
 C--'UEQIV' RESTRAINT. restrain the volume to be equal
 5590  CONTINUE
+      NN=0
       GOTO 2500
 
 C--'UTLS' RESTRAINT
 5600  CONTINUE
+      NN=0
       GOTO 2500
       
 C
@@ -1405,6 +1415,7 @@ C--ULIJ RESTRAINTS PRINT
 3262  CONTINUE
 C--UTLS RESTRAINTS PRINT
 3275  CONTINUE
+      NN=0
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       
