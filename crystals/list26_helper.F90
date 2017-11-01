@@ -46,8 +46,10 @@ end type
 type restraints_t !< restraint type
     character(len=4096) :: restraint_text !< Text of the restraint from the user
     character(len=4096) :: description !< Description
+    character(len=128) :: short_desc !< Short description
     character(len=128) :: restraint_type !< type of restraint (distance, plane...)
     integer :: user_index !< index of restraint in gui window (list 16)
+    integer :: groups !< number of groups presents in the restraint (ie. uperp 0.01 C(1) to c(2), c(2) to c(3) is 2 groups)
     type(subrestraint_t), dimension(:), allocatable :: subrestraints !< list of subrestraints generated from the restraint
 contains
     procedure, pass(self) :: print => printrestraint !< print the content of the object (used for debugging)
@@ -188,6 +190,10 @@ end if
 
 object(newstart:)%restraint_text=''
 object(newstart:)%restraint_type=''
+object(newstart:)%short_desc='' !< Restraint short description
+object(newstart:)%description='' !< Restraint description
+object(newstart:)%groups=0
+
 
 end subroutine
 
@@ -353,6 +359,50 @@ write(*,'(I5,1X,I6,1X,A,"(",I0,")",1X,A)') self%index, self%offset, trim(self%la
 
 end subroutine
 
+!> Calculate the leverage values of a restraint given the invert matrix
+function calcleverages(rindex) result(leverages)
+use xiobuf_mod, only: cmon
+use xunits_mod, only: ncvdu, ncwu
+implicit none
+integer, intent(in) :: rindex !< index of restraint in list 26
+real, dimension(:), allocatable :: leverages !< list of leverages
+real, dimension(:), allocatable :: temp1d
+integer i, k, l, numatoms, cpt, colorindex
+real leverage
+character(len=1024) :: formatstr, atomslist
+
+if(.not. allocated(restraints_derivatives)) then
+    allocate(leverages(0))
+    return
+end if
+cpt=0
+do k=1, size(restraints_derivatives)
+    if(rindex==restraints_derivatives(k)%irestraint) then
+        cpt=cpt+1
+        if(allocated(leverages)) then
+            call move_alloc(leverages, temp1d)
+            allocate(leverages(size(temp1d)+1))
+            leverages(1:size(temp1d))=temp1d
+            deallocate(temp1d)
+        else
+            allocate(leverages(1))
+        end if
+        
+        associate(r => restraints_derivatives(k))
+
+            ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
+            ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
+            ! A is design matrix, W weight as a diagonal matrix
+            ! (A^t W A)^-1 is the inverse of normal matrix
+            ! calculation can be done one row of A at at time
+            leverages(cpt)=dot_product(r%derivatives, matmul(invertm, r%derivatives))*r%weight**2
+        end associate
+    end if     
+end do
+
+end function
+
+
 !> Print the leverage values of a restraint given the invert matrix
 subroutine showleverage(rindex, output)
 use xiobuf_mod, only: cmon
@@ -424,7 +474,7 @@ do k=1, size(restraints_derivatives)
 
                 if(cpt<13) then
                     if(output==-1 .or. output==1) then
-                        WRITE(CMON,'(10X, A, A, ": {", I0,",",I0, F5.3, "{1,0", 2X, A )' ) &
+                        WRITE(CMON,'(10X, A, A, ":{", I0,",",I0, 1X, F5.3, "{1,0", 2X, A )' ) &
                         &   'Leverage ', &
                         &   trim(atomslist), &
                         &   colorindex, 0, &
@@ -443,8 +493,8 @@ do k=1, size(restraints_derivatives)
             else
                 if(cpt<13) then
                     if(output==-1 .or. output==1) then
-                        WRITE(CMON,'(10X, A, "{", I0,",",I0, F5.3, "{1,0" )') &
-                        &   'Leverage: ', &
+                        WRITE(CMON,'(10X, A, "{", I0,",",I0, 1X, F5.3, "{1,0" )') &
+                        &   'Leverage:', &
                         &   colorindex, 0, &
                         &   leverage
                         CALL XPRVDU(NCVDU, 1,0)
@@ -476,15 +526,17 @@ integer, dimension(:), allocatable :: list, listserial
 character(len=24), dimension(:), allocatable :: listname, listlabel
 
 if(.not. allocated(restraints_derivatives)) then
-    WRITE(NCWU,'(A)') 'No derivatives stored, do a refinement cycle'
+    WRITE(NCWU,'(4X, A)') 'No derivatives stored, do a refinement cycle'
+    WRITE(NCWU,'(4X, A)') ''
     return
 end if
 
+WRITE(NCWU,'(4X, A)') 'Derivatives:'
 do k=1, size(restraints_derivatives)
     if(rindex==restraints_derivatives(k)%irestraint) then
         associate(r => restraints_derivatives(k))
             if(.not. allocated(r%parameters) .or. .not. allocated(r%derivatives)) then
-                WRITE(NCWU,'(6X,A)') 'No derivatives'
+                WRITE(NCWU,'(4X,A)') 'No derivatives'
                 cycle
             end if
             
@@ -510,11 +562,11 @@ do k=1, size(restraints_derivatives)
             write(strlong, formatstr) ( &
             &   trim(listlabel(i)), listserial(i), trim(listname(i)) ,i=1, size(list))
             
-            WRITE(NCWU,'(6X,A)') trim(strlong)
+            WRITE(NCWU,'(4X,A)') trim(strlong)
 
             write(formatstr, '(A,I0,A,A)') "(",cpt, '(I5,":",1PE10.3,2X)',")"
             write(strlong, formatstr) (r%parameters(list(i)),r%weight*r%derivatives(list(i)),i=1, size(list))
-            WRITE(NCWU,'(6X,A,3X,A)') trim(strlong), &
+            WRITE(NCWU,'(4X,A,3X,A)') trim(strlong), &
             &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
 
             deallocate(list)
@@ -524,7 +576,7 @@ do k=1, size(restraints_derivatives)
         end associate
     end if
 end do
-
+WRITE(NCWU,'(A)') ''
 
 end subroutine
 
