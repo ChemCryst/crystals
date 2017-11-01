@@ -2764,7 +2764,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) LIMIT  0.01 LAYER SCALES
 
@@ -2777,14 +2776,12 @@ ___________
           Leverage: 0.734
           Leverage: 0.831
           Leverage: 0.851
-
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
             Atom       S(I) L TX TY TZ     Parameter        Value     Delta
-  
 [58]                                          PARAMETE          0.943    0.056 
 [58]                                          PARAMETE          1.015   -0.015 
 [58]                                          PARAMETE          1.064   -0.064 
@@ -2792,22 +2789,20 @@ ___________
 [58]                                          PARAMETE          0.732    0.267 
 [58]                                          PARAMETE          1.348   -0.348 
 [58]                                          PARAMETE          0.937    0.062 
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.17
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
           Leverage: 0.535
-
 ___________
  (3) NO
 #PERH
@@ -6622,7 +6617,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) LIMIT  0.01 LAYER SCALES
 
@@ -6635,14 +6629,12 @@ ___________
           Leverage: 0.734
           Leverage: 0.831
           Leverage: 0.851
-
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
             Atom       S(I) L TX TY TZ     Parameter        Value     Delta
-  
 [58]                                          PARAMETE          0.943    0.056 
 [58]                                          PARAMETE          1.015   -0.015 
 [58]                                          PARAMETE          1.064   -0.064 
@@ -6650,22 +6642,20 @@ ___________
 [58]                                          PARAMETE          0.732    0.267 
 [58]                                          PARAMETE          1.348   -0.348 
 [58]                                          PARAMETE          0.937    0.062 
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.17
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
           Leverage: 0.535
-
 ___________
  (3) NO
 #PERH
@@ -10483,7 +10473,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) LIMIT  0.01 LAYER SCALES
 
@@ -10496,14 +10485,12 @@ ___________
           Leverage: 0.819
           Leverage: 0.842
           Leverage: 0.854
-
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
             Atom       S(I) L TX TY TZ     Parameter        Value     Delta
-  
 [58]                                          PARAMETE          0.893    0.106 
 [58]                                          PARAMETE          1.052   -0.052 
 [58]                                          PARAMETE          1.120   -0.120 
@@ -10511,22 +10498,20 @@ ___________
 [58]                                          PARAMETE          0.594    0.405 
 [58]                                          PARAMETE          1.375   -0.375 
 [58]                                          PARAMETE          0.950    0.049 
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.21
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
           Leverage: 0.480
-
 ___________
  (3) NO
 #PERH
@@ -14350,7 +14335,6 @@ Mean C-C su =   0.0000
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
 ___________
  (0) LIMIT  0.01 LAYER SCALES
 
@@ -14363,14 +14347,12 @@ ___________
           Leverage: 0.819
           Leverage: 0.842
           Leverage: 0.854
-
 ___________
  (1) AVERAGE 0.5 LAYER SCALES
 
    1.   Restrain the following parameters to their common mean of   1.00000  with an E.S.D. of   0.50000
 
             Atom       S(I) L TX TY TZ     Parameter        Value     Delta
-  
 [58]                                          PARAMETE          0.893    0.106 
 [58]                                          PARAMETE          1.052   -0.052 
 [58]                                          PARAMETE          1.120   -0.120 
@@ -14378,22 +14360,20 @@ ___________
 [58]                                          PARAMETE          0.594    0.405 
 [58]                                          PARAMETE          1.375   -0.375 
 [58]                                          PARAMETE          0.950    0.049 
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
+          Leverage: 0.000
 [41]       Mean value =   1.0000  Mean delta =   0.0000  r.m.s. delta =   0.21
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-          Leverage: 0.000
-
 ___________
  (2) LIMIT 100.0 EXTPARAM
 
 
    2. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000000E+03
           Leverage: 0.480
-
 ___________
  (3) NO
 #PERH

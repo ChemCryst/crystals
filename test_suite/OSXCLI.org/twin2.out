@@ -489,13 +489,10 @@ LS-scale=  9.913   Wilson Scale=  0.000
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
  Directive  RESTRAIN: No derivatives found during Evaluation
-
 ___________
  (0) NO
-
 ___________
  (1) NO
-
 ___________
  (2) RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -504,7 +501,6 @@ ___________
 
    2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (3) RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -2.0 * SI  (   1,U[12])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -513,7 +509,6 @@ ___________
 
    3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (4) RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -1.0 * SI  (   2,U[22])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -522,7 +517,6 @@ ___________
 
    4.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (5) RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -2.0 * SI  (   2,U[12])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -531,7 +525,6 @@ ___________
 
    5.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (6) RESTRAIN  0.0000, .00001 = NA  (   1,X    ) -1.0 * NA  (   1,Y    )
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -540,7 +533,6 @@ ___________
 
    6.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (7) RESTRAIN  0.0000, .00001 = NA  (   1,U[11]) -1.0 * NA  (   1,U[22])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -549,7 +541,6 @@ ___________
 
    7.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (8) RESTRAIN  0.0000, .00001 = NA  (   1,U[23]) +1.0 * NA  (   1,U[13])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -558,7 +549,6 @@ ___________
 
    8.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (9) RESTRAIN  0.0000, .00001 = NA  (   2,X    ) -1.0 * NA  (   2,Y    )
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -567,7 +557,6 @@ ___________
 
    9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (10) RESTRAIN  0.0000, .00001 = NA  (   2,U[11]) -1.0 * NA  (   2,U[22])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -576,7 +565,6 @@ ___________
 
   10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
-
 ___________
  (11) RESTRAIN  0.0000, .00001 = NA  (   2,U[23]) +1.0 * NA  (   2,U[13])
  Directive  RESTRAIN: No derivatives found during Evaluation

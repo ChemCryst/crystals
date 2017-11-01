@@ -21722,7 +21722,7 @@ LS-scale=  1.838   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.67E+00 condition number:  5.00E+00 relative error:  5.95E-07
+Single precision:  1-norm:  1.67E+00 condition number:  4.99E+00 relative error:  5.95E-07
  S/ESD     1           1            -0.042     -0.2E+00    0.226E-01         -1.88                          SCALE   
 
                                                 for           2 parameters
