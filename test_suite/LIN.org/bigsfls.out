@@ -5206,9 +5206,9 @@ LS-scale=  0.909   Wilson Scale=  0.000
 #CYCLENDS
 #FINISH
  Physical reads      11363 Physical writes      10080 Cache hits     199542
- Cache hit distribution   181146   12625    2166     786     329     368
- Cache hit distribution      133     136     202     200     328     136
- Cache hit distribution      142     161     234      60      64      97
+ Cache hit distribution   181145   12625    2166     786     329     368
+ Cache hit distribution      133     136     202     200     328     135
+ Cache hit distribution      143     160     229      67      64      97
  Cache hit distribution       44      38      36      44      33      34
 
 
