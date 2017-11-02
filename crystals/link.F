@@ -483,6 +483,8 @@ C--WRITE THE PARAMETER FILE TYPE
       WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
 #endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
+      M2P = L2P+((N2P-1)*MD2P)
+      M2 = L2+((N2-1)*MD2)
       DO 16190 IND1=L2P,M2P,3
         DO 16180 IND2=L2,M2,MD2
 C--COMBINE T(I) & P(K) VECTORS

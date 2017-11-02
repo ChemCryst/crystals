@@ -2956,7 +2956,11 @@ C
       ENDIF
 C
            ICENTR=NINT(STORE(L2C))+1
+           M2P = L2P+((N2P-1)*MD2P)
+           M2 = L2+((N2-1)*MD2)
 C
+C           WRITE(NDEVICE,'(A,8I5)')'L2etc: ',
+C     1      L2,N2,M2,MD2,L2P,N2P,M2P,MD2P
 C DISPLAY EACH SYMMETRY OPERATOR
            WRITE (NDEVICE,1000)
 1000       FORMAT ('loop_',/,' _symmetry_equiv_pos_as_xyz')
@@ -2966,6 +2970,7 @@ C DISPLAY EACH SYMMETRY OPERATOR
                DO K=1,ICENTR
 C NEGATE IF REQUIRED
                   IF (K.EQ.2) CALL XNEGTR (STORE(I),STORE(NFL),9)
+C                  WRITE (NDEVICE,'(A,3I4)') 'Indices : ',I,J,K
                   CALL XSUMOP (STORE(NFL),STORE(J),CTEMP,LENGTH,1)
                   CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
                   WRITE (NDEVICE,1050) CBUF(1:LENGTH)

@@ -3,7 +3,7 @@
 @set WXWIN=c:\wx3
 :WX2
 @if not "%WXLIB%" == "" goto WX3
-@set WXLIB=%WXWIN%\lib\vc90_dll
+@set WXLIB=%WXWIN%\lib\vc140_dll
 :WX3
 @if not "%WXNUM%" == "" goto WX4
 @set WXNUM=30

@@ -42,14 +42,16 @@ set LIST=%LIST:~1%
 
 :copylink
 
-@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxbase%WXNUM%%WXMINOR%u_vc90.dll
-@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxbase%WXNUM%%WXMINOR%u_vc90.dll"
-@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_vc90.dll
-@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_vc90.dll"
-@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_gl_vc90.dll
-@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_gl_vc90.dll"
-@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_vc90.dll
-@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_vc90.dll"
+@if "%WXVC%" == "" set WXVC=vc140
+
+@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxbase%WXNUM%%WXMINOR%u_%WXVC%.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxbase%WXNUM%%WXMINOR%u_%WXVC%.dll"
+@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_%WXVC%.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_core_%WXVC%.dll"
+@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_gl_%WXVC%.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_gl_%WXVC%.dll"
+@if "%COMPCODE%" == "INW" echo copy %WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_%WXVC%.dll
+@if "%COMPCODE%" == "INW" copy "%WXLIB%\wxmsw%WXNUM%%WXMINOR%u_stc_%WXVC%.dll"
 @rem @if "%COMPCODE%" == "INW" copy ..\hdf5\bin\*.dll .
 
 del libifcoremd.dll

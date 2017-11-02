@@ -1219,6 +1219,8 @@ C--FIND OUT IF THE STRUCTURE IS CENTRIC
         ELSE
           WRITE ( NCFPU1 , '(''CENT'')' )
         END IF
+        M2P = L2P+((N2P-1)*MD2P)
+        M2 = L2+((N2-1)*MD2)
         DO IND1=L2P,M2P,3
           DO IND2=L2,M2,MD2
 C--COMBINE T(I) & P(K) VECTORS
