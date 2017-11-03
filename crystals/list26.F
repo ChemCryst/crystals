@@ -3324,6 +3324,8 @@ C     U Matrices in 3x3 matrix
         WRITE(CMON,'("{E", A)') 
      1    'ULIJ: All atoms are non positive definite'
         CALL XPRVDU(NCVDU, 1,0)      
+        results%groups=0
+        deallocate(results%subrestraints)
         return
       end if
       
@@ -3405,7 +3407,7 @@ C     U Matrices in 3x3 matrix
               ! (1,3) -> 7
               a1(7:12)=Udata(icpt)%dUcart(7,:)
           END IF         
-          a1(1:6)=-a1(7:12)
+          a1(1:6)=a1(7:12)
           JP=ISTORE(JA+6)
           JD=ISTORE(JA+16)
           JX=JP ! JX used in XADUIJ
@@ -3435,7 +3437,7 @@ C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                          CVC01190
 
           STORE(LCG+4)=0.5*(MEAN_VAL)                                       CVC01320
 c         print *, 'L22PD saved', l22pd, ' Dump: ',DUMP
-          STORE(L22PD+2)=DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
+          STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
 c         print *, 'L22PD+2 ', store(l22pd+2)
           STORE(L22PD+1) = STORE(LCG+3)                                     CVC01510
 c         print *, 'L22PD+1 ', store(l22pd+1)
@@ -3705,7 +3707,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
           CALL XADUIJ  
 
           STORE(LCG+4)=0.5*MEAN_VAL
-          STORE(L22PD+2)=DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
+          STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
           STORE(L22PD+1) = STORE(LCG+3)
           CALL XFMPDQ
 
@@ -3936,7 +3938,7 @@ C Note that DUMP is the target difference (and should usually be zero).
 C You need to set SUM to be the compute
 
           STORE(LCG+4)=0.5*MEAN_VAL
-          STORE(L22PD+2)=DIFF_VAL ! Difference between restraint target 0.0 and computed from current parameters (D)
+          STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target 0.0 and computed from current parameters (D)
           STORE(L22PD+1) = STORE(LCG+3)
           CALL XFMPDQ                  
 
@@ -4170,7 +4172,7 @@ C Here, compute derivatives
           CALL XADUIJ  
                          
           STORE(LCG+4)=0.5*MEAN_VAL
-          STORE(L22PD+2)=DIFF_VAL ! Difference between 0.0 and computed from current parameters (D)
+          STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between 0.0 and computed from current parameters (D)
           STORE(L22PD+1) = STORE(LCG+3)
           CALL XFMPDQ
 
@@ -4401,8 +4403,8 @@ C Here, compute derivatives
             JO=JA ! JO used in XADUIJ
             CALL XADUIJ  
                          
-            STORE(LCG+4)=0.5*(DUMP+MEAN_VAL)                                       CVC01320
-            STORE(L22PD+2)=DUMP-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
+            STORE(LCG+4)=0.5*(MEAN_VAL)                                       CVC01320
+            STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target (0.0) and computed from current parameters (D)
             STORE(L22PD+1) = STORE(LCG+3)
             CALL XFMPDQ                                                       CVC01520
 
@@ -4631,7 +4633,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         CALL XADUIJ  
 
         STORE(LCG+4)=0.5*MEAN_VAL
-        STORE(L22PD+2)=DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
+        STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
         STORE(L22PD+1) = STORE(LCG+3)
         CALL XFMPDQ
 
@@ -4853,7 +4855,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         CALL XADUIJ  
 
         STORE(LCG+4)=0.5*MEAN_VAL
-        STORE(L22PD+2)=DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
+        STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
         STORE(L22PD+1) = STORE(LCG+3)
         CALL XFMPDQ
 
@@ -5930,7 +5932,7 @@ C Take cross product with x axis
             results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%M=rab
           end do
           results%subrestraints((icpt-1)*2+1)%description='Uc[1,2]=0'
-          results%subrestraints((icpt-1)*2+1)%rvalue=RABUBAR_1(1,3)
+          results%subrestraints((icpt-1)*2+1)%rvalue=RABUBAR_1(1,2)
           results%subrestraints((icpt-1)*2+1)%rtarget=0.0
           results%subrestraints((icpt-1)*2+2)%description='Uc[2,3]=0'
           results%subrestraints((icpt-1)*2+2)%rvalue=RABUBAR_1(2,3)
@@ -5945,8 +5947,8 @@ C       #### XZ DERIVS ####
             a1(7:12)=dUcart(2,:)
           ELSE
 C      #### YZ DERIVS ####
-            ! (2,3) -> 8
-            a1(7:12)=dUcart(8,:)
+            ! (2,3) -> 6
+            a1(7:12)=dUcart(6,:)
           END IF
 
           a1(1:6)=a1(7:12)
@@ -5974,7 +5976,7 @@ C Note that DUMP is the target difference (and should usually be zero).
 C You need to set SUM to be the compute
 
           STORE(LCG+4)=0.5*MEAN_VAL
-          STORE(L22PD+2)=DIFF_VAL ! Difference between restraint target 0.0 and computed from current parameters (D)
+          STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target 0.0 and computed from current parameters (D)
           STORE(L22PD+1) = STORE(LCG+3)
           CALL XFMPDQ
 
@@ -6408,18 +6410,21 @@ C--SET UP THE ATOM COORDINATES IN THE ATOM ARRAY AT 'JS'
 1200  CONTINUE
 
       if(present(results)) then
-          call extend(results%subrestraints, NCA, .true.)
-          JA=LCA
-          do icpt=1, size(results%subrestraints)
-             write(results%subrestraints(icpt)%description, '(A)') 
-     &        'Distance to mean plane'
-              call extend(results%subrestraints(icpt)%atoms, 1, .true.)
-              results%subrestraints(icpt)%atoms(1)%label=
-     &            transfer(istore(JA+2), 'aaaa')
-              results%subrestraints(icpt)%atoms(1)%serial=
-     &            nint(store(JA+3))     
-             JA=ISTORE(JA)
-          end do
+        results%short_desc=
+     &    'Restrain the distance to a mean plane to zero'
+        results%groups=NCA
+        call extend(results%subrestraints, NCA, .true.)
+        JA=LCA
+        do icpt=1, size(results%subrestraints)
+           write(results%subrestraints(icpt)%description, '(A)') 
+     &      'Distance to mean plane'
+            call extend(results%subrestraints(icpt)%atoms, 1, .true.)
+            results%subrestraints(icpt)%atoms(1)%label=
+     &        transfer(istore(JA+2), 'aaaa')
+            results%subrestraints(icpt)%atoms(1)%serial=
+     &        nint(store(JA+3))     
+           JA=ISTORE(JA)
+        end do
       end if
       
       JA=LCA
@@ -6458,11 +6463,19 @@ C--NOW SET UP THE FLAGS TO CALCULATE THE DERIVATIVES
       JB=JS
       E=1.
 C--CHECK FOR THE END OF THE CHAIN
+      icpt=0
 1550  CONTINUE
       IF(MCA)1150,1150,1600
 C--CALCULATE THE OBSERVED DEVIATION FROM THE PLANE
 1600  CONTINUE
+      icpt=icpt+1
       STORE(JB+3)=F*STORE(JB)+G*STORE(JB+1)+H*STORE(JB+2)-D
+
+      if(present(results)) then
+        results%subrestraints(icpt)%rvalue=STORE(JB+3)
+        results%subrestraints(icpt)%rtarget=0.0
+      end if
+
 C--CALCULATE THE DELTA VALUE
       STORE(L22PD+2)=STORE(LCG+4)-STORE(JB+3)
 C--ADD IN THE DERIVATIVES
