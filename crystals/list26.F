@@ -1430,6 +1430,14 @@ C--UTLS RESTRAINTS PRINT
          allocate(leverages(size(restraints_list(ircpt)%subrestraints)))
           leverages=IEEE_VALUE(leverages, IEEE_QUIET_NAN)
         end if
+        
+        ! check for `corrupted` leverages
+        if(size(restraints_list(ircpt)%subrestraints)/=
+     1    size(leverages)) then
+          deallocate(leverages)
+         allocate(leverages(size(restraints_list(ircpt)%subrestraints)))
+          leverages=IEEE_VALUE(leverages, IEEE_QUIET_NAN)
+        end if
       
         IF (ISSPRT .EQ. 0) THEN       
           call printderivatives(ircpt)        
@@ -1565,16 +1573,16 @@ C--UTLS RESTRAINTS PRINT
 
           IF (ISSPRT .EQ. 0) THEN       
             WRITE(NCWU,'(4X,I6,4I3,3(1PE12.3,1X),0PF8.3,4X, A)')
-     2           (ISTORE(M),M=JD,JE),
-     3           subrestraint%rvalue,
-     3           subrestraint%rtarget,
-     3           subrestraint%rvalue-subrestraint%rtarget,
-     4           leverages(icpt),
-     5           trim(subrestraint%description)
+     2        (ISTORE(M),M=JD,JE),
+     3        subrestraint%rvalue,
+     3        subrestraint%rtarget,
+     3        subrestraint%rvalue-subrestraint%rtarget,
+     4        leverages(icpt),
+     5        trim(subrestraint%description)
           ENDIF      
             
           WRITE(CMON, 
-     1      '(4X,1P,3(E12.3,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
+     1    '(4X,1P,3(E12.3,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
      2      subrestraint%rvalue,
      3      subrestraint%rtarget,
      4      subrestraint%rvalue-subrestraint%rtarget,
@@ -1582,7 +1590,7 @@ C--UTLS RESTRAINTS PRINT
      6      leverages(icpt),
      7      trim(subrestraint%description)
           CALL XPRVDU(NCVDU, 1,0)
-       
+
           Q=Q+subrestraint%rvalue
           O=O+subrestraint%rvalue
           P=P+subrestraint%rvalue**2
@@ -4443,7 +4451,7 @@ CODE FOR XCVCUVOL
 C
       type(restraints_t), intent(inout), optional :: results
 
-      integer :: icpt, info
+      integer :: icpt, jcpt, info
       real, dimension(12) :: A1 !< Partial derivatives      
       integer, dimension(9), parameter :: U_ASSIGN=
      &    (/ 1, 6, 5, 6, 2, 4, 5, 4, 3 /) !< Transform linear 6 elements adp to linear 9 element adps
@@ -4491,13 +4499,6 @@ C--SET UP A FEW CONSTANTS
       DUMP=STORE(LCG+4)   ! The 'observed value' of the restraint
       MCA=LCA ! address of fisrt atom
 
-      if(present(results)) then
-          results%short_desc=
-     1      'Restraint geometric mean of all ADPs to be equal'
-          results%groups=NCA
-          call extend(results%subrestraints, NCA, .true.)
-      end if  
-
       ! Orthogonalisation matrix (stored by rows, reshape fill column wise, hence the transpose)
       A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
       
@@ -4512,16 +4513,6 @@ C--SET UP A FEW CONSTANTS
       JA=LCA
       Um_avg=0.0
       do icpt=1, nca ! loop over each atom
-
-        if(present(results)) then
-          call extend(results%subrestraints(icpt)%atoms, 1, .true.)
-          results%subrestraints(icpt)%atoms(1)%label=
-     &      transfer(istore(JA+2), 'aaaa')
-          results%subrestraints(icpt)%atoms(1)%serial=
-     &      nint(store(JA+3))
-          results%subrestraints(icpt)%description=
-     &      'U_geom = <U>_geom'
-        end if
 
         Udata(icpt)%tobeused=.true.
 
@@ -4543,10 +4534,6 @@ C--DEFINE U Matrices
 C     U Matrices in 3x3 matrix
         Udata(icpt)%U_M=reshape(Udata(icpt)%U_L(U_ASSIGN), (/3,3/)) 
 
-        if(present(results)) then
-          results%subrestraints(icpt)%atoms(1)%adps_crys=Udata(icpt)%U_M
-        end if
-      
         ! Adp in cartesian space
         Udata(icpt)%U_C=
      1    matmul(matmul(R_M, Udata(icpt)%U_M), transpose(R_M))
@@ -4575,55 +4562,79 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         Udata(icpt)%RABUBAR(2,2)=Udata(icpt)%w(2)
         Udata(icpt)%RABUBAR(3,3)=Udata(icpt)%w(3)
 
-        if(present(results)) then
-          associate(r => results%subrestraints(icpt)%atoms(1))
-            r%adps_cart=Udata(icpt)%RABUBAR
-            r%M=matmul(R_M,Udata(icpt)%Q)
-          end associate
-        end if
-        
         if(Udata(icpt)%tobeused) then
           Um_avg=Um_avg+product(Udata(icpt)%W)**(1.0d0/3.0d0)
         end if
         
         ja=istore(ja)
       end do
+
+      ! fill in data storage
+      if(count(Udata(:)%tobeused)>0) then
+        if(present(results)) then
+          results%short_desc=
+     1      'Restraint geometric mean of all ADPs to be equal'
+          results%groups=count(Udata(:)%tobeused)
+          call extend(results%subrestraints, 
+     1      count(Udata(:)%tobeused), .true.)
+
+          JA=LCA
+          jcpt=0
+          do icpt=1, nca
+            if(Udata(icpt)%tobeused) then
+              jcpt=jcpt+1
+              call extend(results%subrestraints(jcpt)%atoms, 1, .true.)
+              results%subrestraints(jcpt)%atoms(1)%label=
+     &          transfer(istore(JA+2), 'aaaa')
+              results%subrestraints(jcpt)%atoms(1)%serial=
+     &          nint(store(JA+3))
+              results%subrestraints(jcpt)%description=
+     &          'U_geom = <U>_geom'
+
+              associate(r => results%subrestraints(jcpt))
+                r%atoms(1)%adps_crys=Udata(icpt)%U_M
+                r%atoms(1)%adps_cart=Udata(icpt)%RABUBAR
+                r%atoms(1)%M=matmul(R_M,Udata(icpt)%Q)        
+                r%rvalue=product(Udata(icpt)%W)**(1.0d0/3.0d0)
+                r%rtarget=Um_avg
+              end associate
+            end if
+            ja=istore(ja)
+          end do      
+        end if
+      else 
+        if(present(results)) then
+          results%short_desc=
+     1      'Restraint geometric mean of all ADPs to be equal'
+        end if
+        return
+      end if
       
       Um_avg=Um_avg/real(count(Udata(:)%tobeused))
       
       JA=LCA
-      do icpt=1, nca ! loop over each atom to setup restraints
-        if(present(results)) then
-          results%subrestraints(icpt)%rvalue=
-     1      product(Udata(icpt)%W)**(1.0d0/3.0d0)
-          if(Udata(icpt)%tobeused) then
-            results%subrestraints(icpt)%rtarget=Um_avg
-          else
-            results%subrestraints(icpt)%rtarget=0.0
-          end if
-        end if
-        
-        if(any(Udata(icpt)%W<0.0)) then
+      do icpt=1, nca ! loop over each atom to setup restraints        
+        if(.not. Udata(icpt)%tobeused) then
           if(present(results)) then
             WRITE(CMON,'("{I", 4X, A, A, A, "(",I0,")")') 
      1        'UVOL: ',
      4        ' Non positive definite adp, restraint not applied to ',
-     2        trim(results%subrestraints(icpt)%atoms(1)%label),
-     3        results%subrestraints(icpt)%atoms(1)%serial
+     2        trim(transfer(istore(JA+2), 'aaaa')),
+     3        nint(store(JA+3))
             CALL XPRVDU(NCVDU, 1,0)      
           end if
           cycle
         end if
-      
+
         rtemp=product(Udata(icpt)%W)**(1.0d0/3.0d0)
         DIFF_VAL=rtemp-Um_avg
         MEAN_VAL=rtemp+Um_avg
                      
         a1(7:12)=-(
-     1      Udata(icpt)%dUcart(1,:)*Udata(icpt)%w(2)*Udata(icpt)%w(3)+ 
-     1      Udata(icpt)%dUcart(5,:)*Udata(icpt)%w(1)*Udata(icpt)%w(3)+
-     1      Udata(icpt)%dUcart(9,:)*Udata(icpt)%w(1)*Udata(icpt)%w(2))/ 
-     1      (3.0d0*rtemp**2)
+     1    Udata(icpt)%dUcart(1,:)*Udata(icpt)%w(2)*Udata(icpt)%w(3)+ 
+     1    Udata(icpt)%dUcart(5,:)*Udata(icpt)%w(1)*Udata(icpt)%w(3)+
+     1    Udata(icpt)%dUcart(9,:)*Udata(icpt)%w(1)*Udata(icpt)%w(2))/ 
+     1    (3.0d0*rtemp**2)
         a1(1:6)=a1(7:12)
 
         JP=ISTORE(JA+6)
@@ -4818,8 +4829,16 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         ja=istore(ja)
       end do
       
-      Um_avg=Um_avg/real(count(Udata(:)%tobeused))
-      
+      if(count(Udata(:)%tobeused)>0) then
+        Um_avg=Um_avg/real(count(Udata(:)%tobeused))
+      else
+        WRITE(CMON,'("{I", A)') 
+     1    'UEQIV: All atoms are non positive definite'
+        CALL XPRVDU(NCVDU, 1,0)   
+        deallocate(results%subrestraints)
+        return
+      end if
+            
       JA=LCA
       do icpt=1, nca ! loop over each atom to setup restraints
         if(present(results)) then

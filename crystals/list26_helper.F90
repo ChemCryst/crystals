@@ -242,7 +242,7 @@ type(param_t), dimension(:), allocatable, intent(inout) :: object !< object to e
 integer, optional, intent(in) :: argsize !< number of elements to add
 logical, intent(in), optional :: reset !< reallocate a new object
 type(param_t), dimension(:), allocatable :: temp
-integer isize, newstart,i
+integer isize, newstart
 
 if(present(argsize)) then
     isize=argsize
@@ -321,7 +321,7 @@ end subroutine
 subroutine printrestraint(self)
 implicit none
 class(restraints_t), intent(in) :: self
-integer i, j, k
+integer i, j
 character(len=128) :: buffer
 character(len=1024) :: atomlist
 
@@ -367,9 +367,7 @@ implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
 real, dimension(:), allocatable :: leverages !< list of leverages
 real, dimension(:), allocatable :: temp1d
-integer i, k, l, numatoms, cpt, colorindex
-real leverage
-character(len=1024) :: formatstr, atomslist
+integer k, cpt
 
 if(.not. allocated(restraints_derivatives)) then
     allocate(leverages(0))
@@ -410,7 +408,7 @@ use xunits_mod, only: ncvdu, ncwu
 implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
 integer, intent(in) :: output !< Where to print. -1 = all, 1=cmon, 2=ncwu
-integer i, k, l, numatoms, cpt, colorindex
+integer k, l, numatoms, cpt, colorindex
 real leverage
 character(len=1024) :: formatstr, atomslist
 
@@ -566,8 +564,10 @@ do k=1, size(restraints_derivatives)
 
             write(formatstr, '(A,I0,A,A)') "(",cpt, '(I5,":",1PE10.3,2X)',")"
             write(strlong, formatstr) (r%parameters(list(i)),r%weight*r%derivatives(list(i)),i=1, size(list))
-            WRITE(NCWU,'(4X,A,3X,A)') trim(strlong), &
-            &   trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+            if(r%isubrestraint<=size(restraints_list(rindex)%subrestraints)) then
+                WRITE(NCWU,'(4X,A,3X,A)') trim(strlong), &
+            &       trim(restraints_list(rindex)%subrestraints(r%isubrestraint)%description)
+            end if
 
             deallocate(list)
             deallocate(listname)
