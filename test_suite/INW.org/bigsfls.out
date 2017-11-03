@@ -1410,6 +1410,8 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Directive  DISTANCE: No derivatives found during Evaluation
 ___________
  (0) PLANAR C(111) UNTIL C(116)
+ -- Restrain the distance to a mean plane to zero
+
 
    0.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1457,6 +1459,8 @@ CONT C(114) TO C(115) TO C(116) , C(115) TO C(116) TO C(111)
 [41]       Mean value = 119.9997  Mean delta =   0.0003  r.m.s. delta =   1.04
 ___________
  (3) PLANAR C(121) UNTIL C(126)
+ -- Restrain the distance to a mean plane to zero
+
 
    3.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1504,6 +1508,8 @@ CONT C(124) TO C(125) TO C(126) , C(125) TO C(126) TO C(121)
 [41]       Mean value = 119.9958  Mean delta =   0.0042  r.m.s. delta =   1.09
 ___________
  (6) PLANAR C(131) UNTIL C(136)
+ -- Restrain the distance to a mean plane to zero
+
 
    6.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1551,6 +1557,8 @@ CONT C(134) TO C(135) TO C(136) , C(135) TO C(136) TO C(131)
 [41]       Mean value = 119.9964  Mean delta =   0.0036  r.m.s. delta =   1.37
 ___________
  (9) PLANAR C(211) UNTIL C(216)
+ -- Restrain the distance to a mean plane to zero
+
 
    9.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1598,6 +1606,8 @@ CONT C(214) TO C(215) TO C(216) , C(215) TO C(216) TO C(211)
 [41]       Mean value = 119.9731  Mean delta =   0.0269  r.m.s. delta =   0.47
 ___________
  (12) PLANAR C(221) UNTIL C(226)
+ -- Restrain the distance to a mean plane to zero
+
 
   12.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1645,6 +1655,8 @@ CONT C(224) TO C(225) TO C(226) , C(225) TO C(226) TO C(221)
 [41]       Mean value = 119.9890  Mean delta =   0.0110  r.m.s. delta =   1.88
 ___________
  (15) PLANAR C(231) UNTIL C(236)
+ -- Restrain the distance to a mean plane to zero
+
 
   15.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1692,6 +1704,8 @@ CONT C(234) TO C(235) TO C(236) , C(235) TO C(236) TO C(231)
 [41]       Mean value = 119.9620  Mean delta =   0.0380  r.m.s. delta =   0.96
 ___________
  (18) PLANAR C(311) UNTIL C(316)
+ -- Restrain the distance to a mean plane to zero
+
 
   18.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1739,6 +1753,8 @@ CONT C(314) TO C(315) TO C(316) , C(315) TO C(316) TO C(311)
 [41]       Mean value = 119.9965  Mean delta =   0.0035  r.m.s. delta =   0.87
 ___________
  (21) PLANAR C(321) UNTIL C(326)
+ -- Restrain the distance to a mean plane to zero
+
 
   21.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1786,6 +1802,8 @@ CONT C(324) TO C(325) TO C(326) , C(325) TO C(326) TO C(321)
 [41]       Mean value = 119.9973  Mean delta =   0.0027  r.m.s. delta =   0.78
 ___________
  (24) PLANAR C(331) UNTIL C(336)
+ -- Restrain the distance to a mean plane to zero
+
 
   24.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1833,6 +1851,8 @@ CONT C(334) TO C(335) TO C(336) , C(335) TO C(336) TO C(331)
 [41]       Mean value = 119.9862  Mean delta =   0.0138  r.m.s. delta =   1.45
 ___________
  (27) PLANAR C(411) UNTIL C(416)
+ -- Restrain the distance to a mean plane to zero
+
 
   27.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1882,6 +1902,8 @@ CONT C(414) TO C(415) TO C(416) , C(415) TO C(416) TO C(411)
 [41]       Mean value =  70.0430  Mean delta =  49.9570  r.m.s. delta =  59.70
 ___________
  (30) PLANAR C(421) UNTIL C(426)
+ -- Restrain the distance to a mean plane to zero
+
 
   30.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
@@ -1929,6 +1951,8 @@ CONT C(424) TO C(425) TO C(426) , C(425) TO C(426) TO C(421)
 [41]       Mean value = 119.9980  Mean delta =   0.0020  r.m.s. delta =   0.78
 ___________
  (33) PLANAR C(431) UNTIL C(436)
+ -- Restrain the distance to a mean plane to zero
+
 
   33.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 

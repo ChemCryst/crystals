@@ -393,6 +393,10 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         print("Running Crystals (release version) on $name.tst\n");
         `$CRYSEXE`;                   # Run it
 	
+        if ( "$?" != "0" ) {
+           print "CRYSTALS returned non-zero exit code";
+           $exitcode = 1;
+        }	
 	
         obscureMachinePrecision();
 
