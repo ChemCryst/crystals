@@ -11,6 +11,10 @@
   #define crysOS 'win-int-openmp'
 #endif
 
+#if "TRUE" == GetEnv('CR64BIT')
+  #define crysOS 'win-int64-openmp'
+#endif
+
 
 #if Len(GetEnv('CRYSVNVER')) > 0 
   #define crysSVN GetEnv('CRYSVNVER')
