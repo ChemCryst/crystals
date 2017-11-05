@@ -1466,7 +1466,7 @@ C--UTLS RESTRAINTS PRINT
      2              rb%atoms(kcpt)%serial
      
                   do lcpt=1, 3
-                    write(ncwu, '(6X, 1P, 3(E10.3,1X),10X,3(E10.3,1X))') 
+                    write(ncwu, '(6X, 1P, 3(E10.2,1X),10X,3(E10.2,1X))') 
      1                ra%atoms(kcpt)%M(lcpt,:), 
      2                rb%atoms(kcpt)%M(lcpt,:)
                   end do
@@ -1476,7 +1476,7 @@ C--UTLS RESTRAINTS PRINT
      2              rb%atoms(kcpt)%serial
      
                   do lcpt=1, 3
-                    write(ncwu, '(6X, 1P, 3(E10.3,1X))') 
+                    write(ncwu, '(6X, 1P, 3(E10.2,1X))') 
      2                rb%atoms(kcpt)%M(lcpt,:)
                   end do
                 else
@@ -1485,7 +1485,7 @@ C--UTLS RESTRAINTS PRINT
      2              ra%atoms(kcpt)%serial
      
                   do lcpt=1, 3
-                    write(ncwu, '(6X, 1P, 3(E10.3,1X))') 
+                    write(ncwu, '(6X, 1P, 3(E10.2,1X))') 
      2                ra%atoms(kcpt)%M(lcpt,:)
                   end do
                 end if            
@@ -1500,7 +1500,7 @@ C--UTLS RESTRAINTS PRINT
      2            ra%atoms(kcpt)%serial 
      
                 do lcpt=1, 3
-                  write(ncwu, '(6X, 1P, 3(E10.3,1X))') 
+                  write(ncwu, '(6X, 1P, 3(E10.2,1X))') 
      1              ra%atoms(kcpt)%M(lcpt,:)
                 end do
               end do
