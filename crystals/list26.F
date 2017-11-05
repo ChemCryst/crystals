@@ -7986,14 +7986,14 @@ C---SET UP MATRIX TO ORTHOGONALISE COORDINATES
       end do
       OUM=0.
 C---SET UP MATRIX TO ORTHOGONALISE U'S
-      AAA=COS(real(STORE(L1P1+3), kind(1.0d0))
-      BBB=COS(real(STORE(L1P1+4), kind(1.0d0))
-      CCC=COS(real(STORE(L1P1+5), kind(1.0d0))
+      AAA=COS(real(STORE(L1P1+3), kind(1.0d0)))
+      BBB=COS(real(STORE(L1P1+4), kind(1.0d0)))
+      CCC=COS(real(STORE(L1P1+5), kind(1.0d0)))
       DDD=1.0d0+2.0d0*AAA*BBB*CCC-AAA**2-BBB**2-CCC**2
       DDD=SQRT(DDD)
-      OUM(1,1)=SIN(real(STORE(L1P1+3), kind(1.0d0))/(ddD*STORE(L1P1))
-      OUM(2,2)=SIN(real(STORE(L1P1+4), kind(1.0d0))/(ddD*STORE(L1P1+1))
-      OUM(3,3)=SIN(real(STORE(L1P1+5), kind(1.0d0))/(ddD*STORE(L1P1+2))
+      OUM(1,1)=SIN(real(STORE(L1P1+3), kind(1.0d0)))/(ddD*STORE(L1P1))
+      OUM(2,2)=SIN(real(STORE(L1P1+4), kind(1.0d0)))/(ddD*STORE(L1P1+1))
+      OUM(3,3)=SIN(real(STORE(L1P1+5), kind(1.0d0)))/(ddD*STORE(L1P1+2))
       OUM=matmul(OCM, OUM)
 C---ZERO DERIVATIVES AND MATRICES
       DV=0.0
