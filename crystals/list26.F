@@ -7829,6 +7829,8 @@ CODE FOR XCVCTLS
       SUBROUTINE XCVCTLS(results)
       use, intrinsic :: iso_fortran_env, only : stdout=>output_unit
       use list26_mod
+      use xssval_mod
+      implicit none
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -7837,7 +7839,7 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       type(restraints_t), intent(inout), optional :: results
-      DIMENSION A1(12)
+      real, dimension(12) :: A1
 
       REAL DIFF_VAL
       REAL MEAN_VAL
@@ -7852,13 +7854,12 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
-      include 'XSSVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
-      integer icpt
+      integer icpt, jcpt, kcpt, ncpt
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -7877,14 +7878,20 @@ C
       real, dimension(3,3) :: OUM !< orthogonalisation U's matrix
       integer napplied !< number of atoms on which the restraint is applied
 
-      DOUBLE PRECISION DAA(20,20) !< normal matrix
-      DOUBLE PRECISION DAR(21),DAI(20,20),DAS(20)
+      double precision DAA(20,20) !< normal matrix
+      double precision DAR(21),DAI(20,20),DAS(20)
+      double precision aaa, bbb, ccc, ddd
+      real anumb, del, dels, delu, rad, rmsu, sfac, sum, sums, sumu
+      real ufac
+      integer imode, info, jff, natom, natom2
 C
       character(len=17), dimension(6), parameter :: rdescription=(/
      &  'U11 - Utls11 == 0', 'U22 - Utls22 == 0', 'U33 - Utls33 == 0', 
      &  'U12 - Utls12 == 0', 'U23 - Utls23 == 0', 'U13 - Utls13 == 0' /) 
       
       logical flag
+      
+      integer, external :: kinv2
 
       
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
@@ -7979,14 +7986,14 @@ C---SET UP MATRIX TO ORTHOGONALISE COORDINATES
       end do
       OUM=0.
 C---SET UP MATRIX TO ORTHOGONALISE U'S
-      AAA=COS(STORE(L1P1+3))
-      BBB=COS(STORE(L1P1+4))
-      CCC=COS(STORE(L1P1+5))
-      DDD=1.+2.*AAA*BBB*CCC-AAA**2-BBB**2-CCC**2
+      AAA=COS(real(STORE(L1P1+3), kind(1.0d0))
+      BBB=COS(real(STORE(L1P1+4), kind(1.0d0))
+      CCC=COS(real(STORE(L1P1+5), kind(1.0d0))
+      DDD=1.0d0+2.0d0*AAA*BBB*CCC-AAA**2-BBB**2-CCC**2
       DDD=SQRT(DDD)
-      OUM(1,1)=SIN(STORE(L1P1+3))/(ddD*STORE(L1P1))
-      OUM(2,2)=SIN(STORE(L1P1+4))/(ddD*STORE(L1P1+1))
-      OUM(3,3)=SIN(STORE(L1P1+5))/(ddD*STORE(L1P1+2))
+      OUM(1,1)=SIN(real(STORE(L1P1+3), kind(1.0d0))/(ddD*STORE(L1P1))
+      OUM(2,2)=SIN(real(STORE(L1P1+4), kind(1.0d0))/(ddD*STORE(L1P1+1))
+      OUM(3,3)=SIN(real(STORE(L1P1+5), kind(1.0d0))/(ddD*STORE(L1P1+2))
       OUM=matmul(OCM, OUM)
 C---ZERO DERIVATIVES AND MATRICES
       DV=0.0
