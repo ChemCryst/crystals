@@ -1572,7 +1572,7 @@ C--UTLS RESTRAINTS PRINT
           end if
 
           IF (ISSPRT .EQ. 0) THEN       
-            WRITE(NCWU,'(4X,I6,4I3,3(1PE12.3,1X),0PF8.3,4X, A)')
+            WRITE(NCWU,'(4X,I6,4I3,3(1PE12.2,1X),0PF8.3,4X, A)')
      2        (ISTORE(M),M=JD,JE),
      3        subrestraint%rvalue,
      3        subrestraint%rtarget,
@@ -1582,7 +1582,7 @@ C--UTLS RESTRAINTS PRINT
           ENDIF      
             
           WRITE(CMON, 
-     1    '(4X,1P,3(E12.3,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
+     1    '(4X,1P,3(E12.2,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
      2      subrestraint%rvalue,
      3      subrestraint%rtarget,
      4      subrestraint%rvalue-subrestraint%rtarget,
