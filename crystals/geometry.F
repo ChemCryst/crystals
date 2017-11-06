@@ -1097,9 +1097,17 @@ C
 3750  CONTINUE
 C----- NO ATOMS SPECIFIED
       IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,3760)ctype(jtype)
+         if(jtype<1 .or. jtype>size(ctype)) then
+           write(ncwu, '(a)') 'Error: Atom does not exist'
+         else
+           WRITE (NCWU,3760)ctype(jtype)
+         end if
       END IF
-      WRITE (CMON,3760)ctype(jtype)
+      if(jtype<1 .or. jtype>size(ctype)) then
+        write(cmon, '(a)') 'Error: Atom does not exist'
+      else
+        WRITE (CMON,3760)ctype(jtype)
+      end if
       CALL XPRVDU (NCVDU,2,0)
 3760  FORMAT (1X,'No atoms have been specified for a ',A,/
      1 'Atoms may only be given on a preceeding ATOM card')
