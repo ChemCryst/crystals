@@ -44,7 +44,7 @@ Single precision:  1-norm:  9.26E+00 condition number:  1.33E+02 relative error:
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-                 -0.0528   -0.0771   -0.1803              -0.2600   -0.3796   -0.8879
+[31]                  -0.052    -0.077    -0.180               
                   0.0848    0.0116   -0.0298               0.9358    0.1276   -0.3286
                   0.0155   -0.0598    0.0210               0.2380   -0.9163    0.3220
 
