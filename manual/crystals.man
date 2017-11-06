@@ -7810,6 +7810,16 @@ are only going to be calculated.
  U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
  A-VIBRATIONS VALUE, E.S.D= BOND1, BOND2
  A-U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
+ UTLS              E.S.D. [ m ] ATOM1 [ ATOM2 ] ...
+ UEQIV             E.S.D. ATOM1 [ ATOM2 ] ...
+ UVOL              E.S.D. ATOM1 [ ATOM2 ] ...
+ UQISO             E.S.D. ATOM1 [ ATOM2 ] ...
+ UEIG              E.S.D. ATOM1 [ ATOM2 ] ...
+ UALIGN            E.S.D. ATOM1 [ ATOM2 ] ...
+ URIGU             E.S.D. ATOM1 TO ATOM2 [, ATOM3 TO ATOM4 ] ...
+ UPERP             E.S.D. ATOM1 TO ATOM2 [ TO ATOM3 ] [, ATOM4 TO ATOM5 [ TO ATOM6 ] ] ...
+ UPLANE            E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...
+ ULIJ              E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...
  PLANAR            E.S.D  FOR 'ATOM SPECIFICATIONS'
  LIMIT             E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  ORIGIN            E.S.D  FOR 'PARAMETER SPECIFICATIONS'
@@ -8244,6 +8254,126 @@ are only going to be calculated.
  does not exist an error will occur. (By default L41 is kept up to date
  with the current model.)
 #
+
+
+#DUTLS              E.S.D. [ m ] ATOM1 [ ATOM2 ] ...#
+   Restrain ADPs of all or the m first atoms listed to calculated ADPs derived 
+   from a TLS model from all the atom list.
+#J
+ UTLS 0.01 3 F(1) F(2) F(3) C(1) C(2)
+#
+#P A TLS model is generated using F(1), F(2), F(3), C(1) and C(2). This model 
+ is then used to calculate theoritical ADPs. These ADPs are then used as targets
+ for the restraints on atoms F(1), F(2) and F(3) with an e.s.d. of 0.01.
+#
+
+   
+#DUEQIV             E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain Ueqiv of the ADPs of all the atom listed to be equal
+#J
+ UEQIV 0.01 F(1) F(2) F(3)
+#
+#P Ueq is the arthmetic mean of the principal axes of an ADP. 
+ the current Ueq is calculated for each atom and an average calculated.
+ If an atom is non positive definite, its Ueq is not used for the calculation of the mean
+ but the atom is included in the restraint. Ueq of each atom is then restrained to
+ the average.
+#
+   
+   
+#DUVOL              E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain Ugeom of the ADPs of all the atom listed to be equal
+#J
+ UVOL 0.01 F(1) F(2) F(3)
+#
+#P Ugeom is the geometric mean of the principal axes of an ADP. 
+ the current Ugeom is calculated for each atom and an average calculated.
+ If an atom is non positive definite, the atom is excluded from the restraint. 
+ Ugeom of each atom is then restrained to the average.
+#
+
+
+#DUQISO             E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain each atom listed to be isotropic
+#J
+ UQISO 0.01 F(1) F(2) F(3)
+#
+#P The length of the principal component of each atom are restrained to its average.
+ Each atom is treated independantly.
+#
+   
+   
+#DUEIG              E.S.D. ATOM1 [ ATOM2 ] ...# 
+   Restrain each atom listed to be spheroid (2 smallest principle axes to be equal)
+#J
+ UEIG 0.01 F(1) F(2) F(3)
+#
+#P The length of the two smallest principal component of each atom are restrained to its average.
+ Each atom is treated independantly and the third principal component is free.
+#
+  
+   
+#DUALIGN            E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain the ADPs of all the atom listed to be aligned to their average direction
+#J
+ UALIGN 0.01 F(1) F(2) F(3)
+#
+#P The matrix of eigenvectors is calculated for each ADP and an average calculated.
+ If an atom is non positive definite, the atom is excluded from average but keep for the restraint. 
+ Each matrix of eigenvectors is then restrained to the average. The eigenvalues remain free.
+#
+
+  
+#DURIGU             E.S.D. ATOM1 TO ATOM2 [, ATOM3 TO ATOM4 ] ...#
+   Restrain the ADPs listed using enhanced rigibody restraints
+#J
+ URIGU 0.01 F(1) TO F(2), F(2) TO F(3)
+#
+#P Implementation of the RIGU restraint from SHELXL. See 
+ #Uhttps://dx.doi.org/10.1107%2FS0108767312014535 Thorn, A., et. al., Acta Cryst. Sect A, 2012, Vol. 68, pp. 448-451#
+#   
+
+
+#DUPERP             E.S.D. ATOM1 TO ATOM2 [ TO ATOM3 ] [, ATOM4 TO ATOM5 [ TO ATOM6 ] ] ...#
+   Restrain the ADP of the first atom of the group to be perpendicular to the direction 
+   of the 2 atoms of the group or the bissector define by ATOM1 TO ATOM2 and ATOM1 TO ATOM3
+#J
+ UPERP 0.01 F(1) TO C(1), F(2) TO C(1)
+#
+#P The ADP of the atom F(1) and F(2) are restrained to be perpendicular to the direction
+ F(1)-C(1) and F(2)-C(2) respectively.
+#
+
+#J
+ UPERP 0.01 C(2) TO C(1) TO C(3)
+#
+#P The ADP of the atom C(2) is restrained to be perpendicular to the direction
+ define by the bissector of C(1)-C(2)-C(3).
+#
+
+
+#DUPLANE            E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...#   
+   Restrain the ADP of the first atom of the group to be perpendicular to the plane 
+   formed by the 3 atoms of the group
+#J
+ UPLANE 0.01 F(1) TO C(1) TO C(2)
+#
+#P The ADP of the atom F(1) is restrained to be colinear to the direction
+ define by the normal of the plane defined by F(1), C(1) and C(2).
+#
+
+ 
+#DULIJ              E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...#
+   Restrain the ADP of all the first atom (ATOM1, ATOM4...) of the groups to be equal in the local coordinate 
+   basis defined by all the atom of each group (ATOM1, ATOM2, ATOM3; ATOM4, ATOM5, ATOM6...).
+#J
+ ULIJ 0.01 F(1) TO C(1) TO C(2), F(2) TO C(1) TO C(2)
+#
+#P The Uij terms of the ADP of the atom F(1) and F(2) are restrained to be equal
+ in their repesctive local coordinate system defined by F(1), C(1), C(2) and
+ F(2), C(1), C(2).
+#
+
 
 #YGeneral restraints#
 #HSgeneral#
