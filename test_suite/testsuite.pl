@@ -5,6 +5,23 @@
 
 use Env qw(CRYUSEFILE CRYSDIR COMPCODE CROUTPUT);
 
+use Getopt::Std;
+my %testsuite_options=();
+getopts("cs", \%testsuite_options);
+$clean = 0;
+$smoketest = 0;
+
+if ( defined $testsuite_options{c} )
+{
+    print "\nRunning Cleanup\n";
+    $clean = 1;
+}
+if ( defined $testsuite_options{s} )
+{
+    print "\nRunning smoketest only\n" ;
+    $smoketest = 1;
+}
+
 my $windows=($^O=~/Win/)?1:0;# Are we running on windows?
 
 my $diff = "diff --strip-trailing-cr";
@@ -40,7 +57,7 @@ print (" using $CRYSEXE \n");
 
 # Either clean up, or run the tests.
 
-  if (TRUE eq contains("-c", @ARGV))
+  if ($clean)
   {
     print "Doing clean up\n";
     cleanUp(@cleanup);
@@ -382,7 +399,7 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 {
     foreach $currentFileName (@files)
     {
-	$CRYUSEFILE=$currentFileName;
+        $CRYUSEFILE=$currentFileName;
         $name = $currentFileName;   
         $name =~ s\.tst\\g;           # Remove the .tst extension.
 	
@@ -392,25 +409,27 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         unlink "crfilev2.h5";
         print("Running Crystals (release version) on $name.tst\n");
         `$CRYSEXE`;                   # Run it
-	
-        if ( "$?" != "0" ) {
-           print "CRYSTALS returned non-zero exit code: $?\n";
-           $exitcode = 1;
-        }	
-	
-        obscureMachinePrecision();
 
-
-        if (TRUE ne contains("-l", @ARGV)) {
-            print("Removing bfiles (use '-l' to leave in place)\n");
-	    cleanUp(@cleanup);
-	}
-        print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
-        
-        print "diff exitcode: $?\n";
+        print "CRYSTALS exit code: $?\n";
         if ( "$?" != "0" ) {
            $exitcode = 1;
-        }	
+        } 
+
+        if ( not $smoketest ) {		
+			obscureMachinePrecision();
+
+
+			if (TRUE ne contains("-l", @ARGV)) {
+				print("Removing bfiles (use '-l' to leave in place)\n");
+				cleanUp(@cleanup);
+			}
+			print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
+			
+			print "diff exitcode: $?\n";
+			if ( "$?" != "0" ) {
+			   $exitcode = 1;
+			}	
+		}
 	
 #        $CROUTPUT="$name.d.out";      # Set environment variable
 #        print("Deleting files... ");
