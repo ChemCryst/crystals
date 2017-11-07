@@ -149,6 +149,12 @@ character(len=:), allocatable :: stripline
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         return
     end if
+    
+    if(distance>15.0) then
+        write(log_unit,*) 'Error: Distance should between 0.0 and 15.0 but got ', trim(splitbuffer(1))
+        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
 
     ! Second element could be the esd
     read(splitbuffer(2), *, iostat=iostatus) esd

@@ -476,7 +476,8 @@ character(len=4) :: data_number_text
         if(iostatus/=0) then
             return
         end if
-        if(index(buffer, '_shelx_res_file')>0) then
+        if(index(buffer, '_shelx_res_file')>0 .or. &
+        &   index(buffer,'_iucr_refine_instructions_details')>0) then
             ! found a res file!
             found=.true.
             data_number=data_number+1
