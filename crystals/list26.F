@@ -1439,7 +1439,15 @@ C--UTLS RESTRAINTS PRINT
           leverages=IEEE_VALUE(leverages, IEEE_QUIET_NAN)
         end if
       
-        IF (ISSPRT .EQ. 0) THEN       
+        IF (ISSPRT .EQ. 0) THEN 
+          if(allocated(restraints_list(ircpt)%description)) then
+            do icpt=1, size(restraints_list(ircpt)%description)
+              write(ncwu, '(a)') 
+     1          trim(restraints_list(ircpt)%description(icpt))
+            end do
+            write(ncwu, *) ''
+          end if
+        
           call printderivatives(ircpt)        
         end if
 
@@ -3558,9 +3566,13 @@ C--SET UP A FEW CONSTANTS
      &        transfer(istore(JA+2), 'aaaa')
             results%subrestraints((icpt-1)*3+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
-            results%subrestraints((icpt-1)*3+jcpt)%description=
-     &        'U_xy = 0'
           end do
+          results%subrestraints((icpt-1)*3+1)%description=
+     &      'Ul_12 = 0.0'
+          results%subrestraints((icpt-1)*3+1)%description=
+     &      'Ul_23 = 0.0'
+          results%subrestraints((icpt-1)*3+1)%description=
+     &      'Ul_13 = 0.0'
         end if
 
         Udata(icpt)%tobeused=.true.
@@ -3706,7 +3718,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
             MEAN_VAL=Udata(icpt)%RABUBAR(1,3)
             a1(7:12)=Udata(icpt)%dUcart(3,:)
           end if
-          a1(1:6)=-a1(7:12)
+          a1(1:6)=a1(7:12)
 
           JP=ISTORE(JA+6)
           JD=ISTORE(JA+16)
@@ -4045,13 +4057,17 @@ C--SET UP THE ADDRESSES OF THE ATOMS
           results%groups=NCA
           call extend(results%subrestraints, NCA*3, .true.)
 
-          results%description=
+          allocate(results%description(5))
+          results%description(1)=
      &      'The 2 smallest eigen values are restrained to their mean.'
-     &      //char(10)//'Let''s define L a diagonal matrix of '//
-     &      'the eigenvalues, Q a matrix of eigen vectors, '//char(10)//
+          results%description(2)=
+     &      'the eigenvalues, Q a matrix of eigen vectors, '
+          results%description(3)=
      &      'R a tansformation matrix of adp to cartesian space and '//
-     &      'U a adp matrix. '//char(10)//
-     &      'Then R U R^t = Q L Q^t => L = Q^t R U R^t Q. '//char(10)//
+     &      'U a adp matrix. '
+          results%description(4)=
+     &      'Then R U R^t = Q L Q^t => L = Q^t R U R^t Q. '
+          results%description(5)=
      &      'Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q'
       end if
       
@@ -4273,14 +4289,19 @@ C--SET UP A FEW CONSTANTS
           results%groups=NCA
           call extend(results%subrestraints, NCA*6, .true.)
 
-            results%description=
-     &        'The eigen values are restrained to their mean.'//
-     &        char(10)//'Let''s define L a diagonal matrix of '//
-     &        'the eigenvalues, Q a matrix of eigen vectors, '//
-     &        char(10)//'R a tansformation matrix of adp to'//
-     &        ' cartesian space and U a adp matrix. '//char(10)//
-     &        'Then R U R^t = Q L Q^t => L = Q^t R U R^t Q. '//
-     &        char(10)//'Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q'
+            allocate(results%description(5))
+            results%description(1)=
+     &        'The eigen values are restrained to their mean.'
+            results%description(2)=
+     &        'Let''s define L a diagonal matrix of '//
+     &        'the eigenvalues, Q a matrix of eigen vectors, '
+            results%description(3)=
+     &        'R a tansformation matrix of adp to'//
+     &        ' cartesian space and U a adp matrix. '
+            results%description(4)=
+     &        'Then R U R^t = Q L Q^t => L = Q^t R U R^t Q. '
+            results%description(5)=
+     &        'Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q'
       end if      
       
       do icpt=1, NCA ! loop over each atom, restraints will be set individually
@@ -8114,6 +8135,12 @@ C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
       
 C----- RESCALE THE RESULTS
        AR(1:20)=AR(1:20)*SNGL(DAS(1:20))
+       
+       allocate(results%description(4))
+       write(results%description(1),'(a)') 'L tensor:'
+       write(results%description(2), '(1P,6(E10.2,1X))') ar(1:6)
+       write(results%description(3),'(a)') 'T tensor:'
+       write(results%description(4), '(1P,6(E10.2,1X))') ar(7:12)
 
 C---INVERT OUM TO GET MATRIX FOR CONVERSION OF U'S BACK TO CRYSTAL AXES
       I=KINV2(3,OUM,WA,9,0,WC,WD,3)
@@ -8144,7 +8171,7 @@ C--CHECK IF THE ATOM IS ISOTROPIC
 
          if(present(results)) then      
            do jcpt=1, 6 
-             results%subrestraints((JA-1)*6+jcpt)%atoms(1)%adps_target=WA
+            results%subrestraints((JA-1)*6+jcpt)%atoms(1)%adps_target=WA
              results%subrestraints((JA-1)*6+jcpt)%rvalue=adps(jcpt)
              results%subrestraints((JA-1)*6+jcpt)%rtarget=wc(jcpt)
            end do

@@ -45,11 +45,12 @@ end type
 
 type restraints_t !< restraint type
     character(len=4096) :: restraint_text !< Text of the restraint from the user
-    character(len=4096) :: description !< Description
     character(len=128) :: short_desc !< Short description
     character(len=128) :: restraint_type !< type of restraint (distance, plane...)
     integer :: user_index !< index of restraint in gui window (list 16)
     integer :: groups !< number of groups presents in the restraint (ie. uperp 0.01 C(1) to c(2), c(2) to c(3) is 2 groups)
+    ! fixed length of 512 becaus eof bug in gfortran 7.x last check 07/11/2017 (pp)
+    character(len=512), dimension(:), allocatable :: description !< Description
     type(subrestraint_t), dimension(:), allocatable :: subrestraints !< list of subrestraints generated from the restraint
 contains
     procedure, pass(self) :: print => printrestraint !< print the content of the object (used for debugging)
@@ -191,7 +192,6 @@ end if
 object(newstart:)%restraint_text=''
 object(newstart:)%restraint_type=''
 object(newstart:)%short_desc='' !< Restraint short description
-object(newstart:)%description='' !< Restraint description
 object(newstart:)%groups=0
 
 
