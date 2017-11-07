@@ -19,7 +19,11 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 ENDIF(APPLE)
 
-FIND_PACKAGE(wxWidgets REQUIRED html scintilla stc adv core gl base)
+if (WIN32)
+   FIND_PACKAGE(wxWidgets REQUIRED html scintilla stc adv core gl base)
+else ()
+   FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base)
+endif ()
 INCLUDE(${wxWidgets_USE_FILE})
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
