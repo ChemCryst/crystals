@@ -112,6 +112,43 @@ rem @if "%COMPCODE%" == "INW" copy "c:\program files (x86)\common files\intel\sh
 rem @if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\LIBIOMP5MD.DLL"
 rem @if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\shared libraries\redist\ia32\compiler\SVML_DISPMD.DLL"
 
+SET COMMAND=where msvcp140.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy6 
+)
+:copy6
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
+SET COMMAND=where vcruntime140.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy7 
+)
+:copy7
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
+SET COMMAND=where vccorlib140.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy8
+)
+:copy8
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
+SET COMMAND=where concrt140.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy9
+)
+:copy9
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
+
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
 %LD% %OPT% %OUT%crystals.exe %LDFLAGS% obj\*.obj %LIBS%  || ( make_err.bat )
