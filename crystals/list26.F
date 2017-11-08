@@ -3506,14 +3506,8 @@ C
       end type
       type(Udata_t), dimension(:), allocatable :: Udata
       
-      double precision, dimension(4) :: qi !< quaternion
-      double precision, dimension(4, 4) :: Msum !< sum of the outer products of qi see: 10.2514/1.28949 Averaging quaternions, Journal of Guidance, Control, and Dynamics, American Institute of Aeronautics and Astronautics, 2007, Vol. 30(4), pp. 1193-1197
-      double precision, dimension(680) :: work
+      double precision, dimension(4) :: qi, qi_avg !< quaternion
       
-      double precision, dimension(3) :: l3
-      double precision l1
-      logical lexit
-
       REAL DIFF_VAL
       REAL MEAN_VAL
       
@@ -3555,7 +3549,8 @@ C--SET UP A FEW CONSTANTS
       
       allocate(Udata(nca))
       JA=LCA
-      Msum=0.0d0
+      Q_avg=0.0d0
+      qi_avg=0.0d0
       do icpt=1, nca ! loop over each atom
 
         if(present(results)) then
@@ -3569,9 +3564,9 @@ C--SET UP A FEW CONSTANTS
           end do
           results%subrestraints((icpt-1)*3+1)%description=
      &      'Ul_12 = 0.0'
-          results%subrestraints((icpt-1)*3+1)%description=
+          results%subrestraints((icpt-1)*3+2)%description=
      &      'Ul_23 = 0.0'
-          results%subrestraints((icpt-1)*3+1)%description=
+          results%subrestraints((icpt-1)*3+3)%description=
      &      'Ul_13 = 0.0'
         end if
 
@@ -3613,26 +3608,6 @@ C     U Matrices in 3x3 matrix
           CALL XPRVDU(NCVDU, 1,0)   
           Udata(icpt)%W=-1.0d0   
         end if              
-
-        ! sort eigenvalues in ascending order with their corresponding eigenvector
-        lexit=.true.
-        do
-          do jcpt=1, 2
-            if(Udata(icpt)%W(jcpt)>Udata(icpt)%W(jcpt+1)) then
-              ! permute eigen values and corresponding eigen vectors
-              l1=Udata(icpt)%W(jcpt)
-              Udata(icpt)%W(jcpt)=Udata(icpt)%W(jcpt+1)
-              Udata(icpt)%W(jcpt+1)=l1
-              l3=Udata(icpt)%Q(:,jcpt)
-              Udata(icpt)%Q(:,jcpt)=Udata(icpt)%Q(:,jcpt+1)
-              Udata(icpt)%Q(:,jcpt+1)=l3
-              lexit=.false.
-              exit
-            end if
-          end do
-          if(lexit) exit ! no change done, already sorted
-          lexit=.true.
-        end do
         
         Udata(icpt)%U_C=
      1    matmul(matmul(R_M, Udata(icpt)%U_M), transpose(R_M))
@@ -3640,12 +3615,18 @@ C     U Matrices in 3x3 matrix
         if(any(Udata(icpt)%W<0.0d0) .or. 
      1    maxval(Udata(icpt)%W)-minval(Udata(icpt)%W)<1d-6) then
           Udata(icpt)%tobeused=.false.
+          qi=0.0d0
         else
           qi=matrixtoquaternions(Udata(icpt)%Q)
-          Msum=Msum+outer_product(qi, qi)        
+          if(sum(abs(qi_avg-qi))>sum(abs(qi_avg+qi))) then
+            qi=-qi
+          end if            
+          qi_avg=qi_avg+qi
         end if
         
         ja=istore(ja)
+        !write(*,'(A,I0,1X,1P, 9(E10.3,1X))') 'Q ', icpt, Udata(icpt)%Q
+        !write(*,'(A,I0,1X,1P, 4(E10.3,1X))') 'Qi ', icpt, qi
       end do
       
       if(count(Udata(:)%tobeused)==0) then
@@ -3653,18 +3634,25 @@ C     U Matrices in 3x3 matrix
      1      'UALIGN: All atoms are non positive definite ',
      2      'or nearly isotropic'
         CALL XPRVDU(NCVDU, 1,0)   
+        deallocate(results%subrestraints)
         return
       end if
 
       ! Calculating the average quaternions
+      ! The mean is a very crude approximation that works only for small differences
+      ! however as the refinement progress those differences will reach small values
+      !
+      ! I (pp) tried this method before with less success: 
       ! Markley, F. L., Cheng, Y., Crassidis, J. L. and Oshman, Y.
       ! Averaging Quaternions
       ! Journal of Guidance, Control, and Dynamics, American Institute of Aeronautics and Astronautics, 2007, Vol. 30(4), pp. 1193-1197
       ! doi: https://doi.org/10.2514/1.28949
-      Msum=Msum/real(count(Udata(:)%tobeused))
-      call DSYEV('V', 'U', 4, Msum, 4, qi, work, 680, info)      
-      qi=Msum(:,maxloc(qi, 1))
+
+      qi=qi_avg/real(count(Udata(:)%tobeused), kind(1.0d0))
+      qi=qi/sqrt(sum(qi**2))
       Q_avg=quaternionstomatrix(qi)
+      !write(*,'(A,1P, 4(E10.3,1X))') 'Qi_avg ', qi
+      !write(*,'(A,1P, 9(E10.3,1X))') 'Q_avg ', Q_avg
                         
       JA=LCA
       do icpt=1, nca ! loop over each atom
@@ -3679,7 +3667,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
           do jcpt=1, 3
             associate(r => 
      &        results%subrestraints((icpt-1)*3+jcpt)%atoms(1))
-              r%M=matmul(R_M,Q_avg)              
+              r%M=matmul(transpose(Q_avg), R_M)              
               r%adps_cart=Udata(icpt)%RABUBAR
             end associate
           end do
@@ -4590,6 +4578,8 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         ja=istore(ja)
       end do
 
+      Um_avg=Um_avg/real(count(Udata(:)%tobeused))
+      
       ! fill in data storage
       if(count(Udata(:)%tobeused)>0) then
         if(present(results)) then
@@ -4631,8 +4621,6 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         return
       end if
       
-      Um_avg=Um_avg/real(count(Udata(:)%tobeused))
-      
       JA=LCA
       do icpt=1, nca ! loop over each atom to setup restraints        
         if(.not. Udata(icpt)%tobeused) then
@@ -4651,7 +4639,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
         DIFF_VAL=rtemp-Um_avg
         MEAN_VAL=rtemp+Um_avg
                      
-        a1(7:12)=-(
+        a1(7:12)=(
      1    Udata(icpt)%dUcart(1,:)*Udata(icpt)%w(2)*Udata(icpt)%w(3)+ 
      1    Udata(icpt)%dUcart(5,:)*Udata(icpt)%w(1)*Udata(icpt)%w(3)+
      1    Udata(icpt)%dUcart(9,:)*Udata(icpt)%w(1)*Udata(icpt)%w(2))/ 
@@ -4781,7 +4769,7 @@ C--SET UP A FEW CONSTANTS
           results%subrestraints(icpt)%atoms(1)%serial=
      &      nint(store(JA+3))
           results%subrestraints(icpt)%description=
-     &      'U_geom = <U>_geom'
+     &      'U_eq = <U>_eq'
         end if
 
         Udata(icpt)%tobeused=.true.
@@ -4885,7 +4873,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
                      
         a1(7:12)=Udata(icpt)%dUcart(1,:) + 
      1    Udata(icpt)%dUcart(5,:) + Udata(icpt)%dUcart(9,:)
-        a1(7:12)=-1.0/3.0*a1(7:12)
+        a1(7:12)=1.0/3.0*a1(7:12)
         a1(1:6)=a1(7:12)
 
         JP=ISTORE(JA+6)
@@ -8093,22 +8081,19 @@ C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
         end if
         return
       end if
-      aa=daa
-      ar=dar
-      ai=dai
       
 C----- RESCALE THE RESULTS
-       AR(1:20)=AR(1:20)*SNGL(DAS(1:20))
+       DAR(1:20)=DAR(1:20)*SNGL(DAS(1:20))
        
        allocate(results%description(4))
        write(results%description(1),'(a)') 'L tensor:'
-       write(results%description(2), '(1P,6(E10.2,1X))') ar(1:6)
+       write(results%description(2), '(1P,6(E10.2,1X))') Dar(1:6)
        write(results%description(3),'(a)') 'T tensor:'
-       write(results%description(4), '(1P,6(E10.2,1X))') ar(7:12)
+       write(results%description(4), '(1P,6(E10.2,1X))') Dar(7:12)
 
 C---INVERT OUM TO GET MATRIX FOR CONVERSION OF U'S BACK TO CRYSTAL AXES
       I=KINV2dp(3,OUM,WAdp,9,0,WCdp,WDdp,3)
-      CALL XMOVE (WAdp,OUM,9)
+      OUM=WAdp
 C---CALCULATE AND OUTPUT OBSERVED AND CALCULATED TEMPERATURE FACTORS
 
 C--SET UP THE ACCUMULATION CONSTANTS FOR THE SCAN THROUGH THE ATOMS
@@ -8127,7 +8112,7 @@ C--LOOP OVER EACH ATOM IN TURN
 C--CHECK IF THE ATOM IS ISOTROPIC
          adps=store(ISTORE(JB+16)+14:ISTORE(JB+16)+14+11:2)
          CALL RSUB08PP(occordinates(:,ja), cogo, DAI(1:6,1:20))
-         WCdp=matmul(DAI(1:6,1:20), AR(1:20)) ! CALL XMLTMM (DV,AR,WC,6,20,1)
+         WCdp=matmul(DAI(1:6,1:20), DAR(1:20)) ! CALL XMLTMM (DV,AR,WC,6,20,1)
          CALL RSUB10DP (WAdp,WCdp) ! 6x1 (WC)  to 3x3 (WA)
          WBdp=matmul(OUM, WAdp) !CALL XMLTMM (OUM,WA,WB,3,3,3)
          WAdp=matmul(WBdp, transpose(OUM)) ! CALL XMLTMT (WB,OUM,WA,3,3,3)
@@ -8227,6 +8212,8 @@ C--
       
       double precision x, y, z, a, b, c, d, e, f
       integer i
+      
+      dv=0.0d0
 C
       X=xyz(1)-CO(1)
       Y=xyz(2)-CO(2)

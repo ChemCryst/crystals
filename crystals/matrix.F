@@ -1118,7 +1118,7 @@ C
 C  D=B.C
 C  C=A.D
 C
-C--RETURN VALUES OF 'KINV2' ARE :
+C--RETURN VALUES OF 'KINV2DP' ARE :
 C
 C   0  INVERSION ETC. WENT OKAY.
 C  >0  SINGULAR  -  RETURN VALUE INDICATES FIRST SIGNULAR ELEMENT FOUND.
@@ -1143,15 +1143,15 @@ C
 
       integer, external :: ilaenv
 
-      KINV2=0
+      KINV2DP=0
       nb=max(1, ilaenv( 1, 'dgetri', '', N, -1,-1,-1 ))
       allocate(work(n*nb))
       ab=reshape(a, (/n,n/))
       call dgetrf( n, n, ab, n, ipiv, info )
 
       if(info/=0) then
-          kinv2 = info
-          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          KINV2DP = info
+          if ( KINV2DP .GT. 0 ) goto 3100  ! Singular value. Flag and return
           !do i=1, n
           !    print *, real(ab(i, :), 4)
           !end do
@@ -1170,8 +1170,8 @@ C
       call dgetri( n, ab, n, ipiv, work, n*nb, info	)
 
       if(info/=0) then
-          KINV2=info
-          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          KINV2DP=info
+          if ( KINV2DP .GT. 0 ) goto 3100  ! Singular value. Flag and return
           WRITE(NCAWU,*)' Inverter fails (dgetri) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetri) '
