@@ -4588,6 +4588,7 @@ C--
                CALL PLUDIJ(JAT,KAT,AXYZO,D1)
 
                IF(D1.LT. 1.450  .AND. ISTORE(AELEM-1+KAT).NE.2) THEN
+     1             .AND. KLIST + NLIST .LT. 30 ) THEN
                   NBT=7
                   CALL SAMSBT(JAT,KAT,NBT,BOND,BTYPE,NBOCRY)
                   KLIST=KLIST+1
