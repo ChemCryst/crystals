@@ -1096,6 +1096,113 @@ C--SOLVE THE GIVEN EQUATIONS IF ANY
 C
 3100  RETURN
       END
+      integer FUNCTION KINV2DP(N,A,B,NA,NM,C,D,NC)
+C      implicit none
+C--MATRIX INVERSION AND SOLUTION OF SIMULTANEOUS LINEAR EQUATIONS
+C
+C  N       ORDER OF THE MATICES TO BE INVERTED.
+C  A       MATRIX TO BE INVERTED  I.E. A(N,N)
+C  B       INVERSE MATRIX  -  CALCULATED BY THIS SUBROUTINE  -  B(N,N)
+C  NA      THE ORDER OF 'A' AND 'B'  -  GREATER THAN OR EQUAL
+C          TO 'N*N'.
+C  NM      NUMBER OF COLUMN VECTORS TO BE MULTIPLIED ONTO THE INVERSE
+C          MATRIX
+C  C       COLUMN VECTORS TO BE MULTIPLIED ONTO THE INVERSE MATRIX C(N,M
+C  D       RESULTS OF MULTIPLICATION ON TO THE INVERSE MATRIX  -  D(N,M)
+C  NC      THE ORDER OF 'C' AND 'D'  -  GREATER THAN OR EQUAL
+C          TO THE MAXIMUM OF 'N' AND 'N*NM'. THIS MEANS THAT A COLUMN
+C          VECTOR AT LEAST MUST BE PROVIDED FOR BOTH.
+C
+C--IN MATRIX NOTATION
+C
+C  D=B.C
+C  C=A.D
+C
+C--RETURN VALUES OF 'KINV2' ARE :
+C
+C   0  INVERSION ETC. WENT OKAY.
+C  >0  SINGULAR  -  RETURN VALUE INDICATES FIRST SIGNULAR ELEMENT FOUND.
+C
+C--
+C
+      integer, intent(in) :: n, na, nm, nc
+      double precision, dimension(na), intent(in) :: A
+      double precision, dimension(na), intent(out) :: B
+      double precision, dimension(nc), intent(in) :: C
+      double precision, dimension(nc), intent(out) :: D
+C
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+C
+      integer, dimension(N) :: ipiv
+      integer info, nb, i, j, k, m1, m2, m3, m4
+      double precision, dimension(:), allocatable :: work
+      double precision, dimension(N,N) :: ab
+
+      integer, external :: ilaenv
+
+      KINV2=0
+      nb=max(1, ilaenv( 1, 'dgetri', '', N, -1,-1,-1 ))
+      allocate(work(n*nb))
+      ab=reshape(a, (/n,n/))
+      call dgetrf( n, n, ab, n, ipiv, info )
+
+      if(info/=0) then
+          kinv2 = info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          !do i=1, n
+          !    print *, real(ab(i, :), 4)
+          !end do
+          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetrf) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetrf) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )
+          return
+      end if
+
+           
+      
+      call dgetri( n, ab, n, ipiv, work, n*nb, info	)
+
+      if(info/=0) then
+          KINV2=info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          WRITE(NCAWU,*)' Inverter fails (dgetri) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetri) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetri) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )
+          return
+      end if
+      deallocate(work)
+
+      b=reshape(ab, (/n*n/))
+C
+C--SOLVE THE GIVEN EQUATIONS IF ANY
+      IF(NM)3100,3100,2900
+2900  M3=1
+      M4=1
+      DO 3050 I=1,NM
+      DO 3000 J=1,N
+      M1=J
+      M2=M3
+      D(M4)=0.
+      DO 2950 K=1,N
+      D(M4)=D(M4)+B(M1)*C(M2)
+      M1=M1+N
+2950  M2=M2+1
+3000  M4=M4+1
+3050  M3=M3+N
+C
+3100  RETURN
+      END      
 C
 CODE FOR XINT2
       SUBROUTINE XINT2(N,B,NB,D,ND,J,K,ITYPE)

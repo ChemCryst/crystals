@@ -7890,21 +7890,23 @@ C
       INCLUDE 'XIOBUF.INC'
       
       
-      real, dimension(3) :: xyz
-      real, dimension(6) :: adps
-      real, dimension(:,:), allocatable :: occordinates !< coordinates in orthogonal space
-      real, dimension(3) :: cog !< centre of gravity (crystal space)
-      real, dimension(3) :: cogo !< centre of gravity (orthogonal space)
-      real, dimension(3,3) :: OCM !< orthogonalisation coordinates matrix
-      real, dimension(3,3) :: OUM !< orthogonalisation U's matrix
+      double precision, dimension(3) :: xyz
+      double precision, dimension(6) :: adps
+      double precision, dimension(:,:), allocatable :: occordinates !< coordinates in orthogonal space
+      double precision, dimension(3) :: cog !< centre of gravity (crystal space)
+      double precision, dimension(3) :: cogo !< centre of gravity (orthogonal space)
+      double precision, dimension(3,3) :: OCM !< orthogonalisation coordinates matrix
+      double precision, dimension(3,3) :: OUM !< orthogonalisation U's matrix
       integer napplied !< number of atoms on which the restraint is applied
 
       double precision DAA(20,20) !< normal matrix
-      double precision DAR(21),DAI(20,20),DAS(20)
+      double precision DAR(21),DAI(20,20),DAS(20), ABdp(20)
       double precision aaa, bbb, ccc, ddd
-      real anumb, del, dels, delu, rad, rmsu, sfac, sum, sums, sumu
-      real ufac
+      double precision anumb, del, dels, delu, rad, rmsu, sfac
+      double precision sum, sums, sumu
+      double precision ufac
       integer imode, info, jff, natom, natom2
+      double precision WAdp(3,3),WBdp(3,3),WCdp(6), WDdp(3)
 C
       character(len=17), dimension(6), parameter :: rdescription=(/
      &  'U11 - Utls11 == 0', 'U22 - Utls22 == 0', 'U33 - Utls33 == 0', 
@@ -7912,7 +7914,7 @@ C
       
       logical flag
       
-      integer, external :: kinv2
+      integer, external :: kinv2, kinv2dp
 
       
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
@@ -7977,26 +7979,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
-    
-      
-C
-C----- USE SYSTEM-WIDE CONVENTION
-      RAD =RTD
-      IMODE=1
-            
-C--OUTPUT AN INITIAL CAPTION
-!      IF (IMODE.GT.0) THEN
-!         CALL XPRTCN
-!         IF (ISSPRT.EQ.0) WRITE (NCWU,50)
-!         WRITE (CMON,50)
-!         CALL XPRVDU (NCVDU,1,0)
-!50       FORMAT (' Analysis of rigid body motion')
-!         IF (ISSPRT.EQ.0) WRITE (NCWU,100) cog
-!         WRITE (CMON,100) cog
-!         CALL XPRVDU (NCVDU,1,0)
-!100      FORMAT (' Input centre of libration (crystal fractions) ',4X,
-!     1    3F8.4)
-!      END IF
+                
 C---SET UP MATRIX TO ORTHOGONALISE COORDINATES
       kcpt=L1O1
       DO Icpt=1,3
@@ -8017,12 +8000,11 @@ C---SET UP MATRIX TO ORTHOGONALISE U'S
       OUM(3,3)=SIN(real(STORE(L1P1+5), kind(1.0d0)))/(ddD*STORE(L1P1+2))
       OUM=matmul(OCM, OUM)
 C---ZERO DERIVATIVES AND MATRICES
-      DV=0.0
       Daa=0.0d0
-      AB=0.0
+      ABdp=0.0d0
 C---CALCULATE LOCATION OF FIRST ATOM;  SET LOCATION OF
 C   ORTHOGONAL COORDINATES
-      cog=0.0
+      cog=0.0d0
 C---- CYCLE THROUGH ATOM LIST TO GET C.OF.G
       jb=LCA
       NATOM=0
@@ -8034,20 +8016,13 @@ C----- INCLUDE ISOTROPIC ATOMS AT THIS STAGE
          cog(3)=cog(3)+store(ISTORE(JB+16)+12)
          jb=istore(jb)
       end do
-      cog(1)=cog(1)/FLOAT(NATOM)
-      cog(2)=cog(2)/FLOAT(NATOM)
-      cog(3)=cog(3)/FLOAT(NATOM)
-!      IF (IMODE.GT.0) THEN
-!         IF (ISSPRT.EQ.0) WRITE (NCWU,400) CF
-!cfeb08         WRITE (NCAWU,400) CF
-!         WRITE (CMON,400) CF
-!         CALL XPRVDU (NCVDU,1,0)
-!400      FORMAT (' Centre of gravity, used as centre of libration',4X,
-!     1    3F8.4)
-!      END IF
+      cog(1)=cog(1)/real(NATOM, kind(1.0d0))
+      cog(2)=cog(2)/real(NATOM, kind(1.0d0))
+      cog(3)=cog(3)/real(NATOM, kind(1.0d0))
 
 C------ ORTHOGONALISE CENTRE OF LIBRATION
       cogo=matmul(OCM, cog) ! CALL XMLTMM (OCM,cog,cogo,3,3,1)
+      
 C---CYCLE THROUGH ATOM LIST
       NATOM2=0
       JB=LCA
@@ -8056,38 +8031,27 @@ C---CYCLE THROUGH ATOM LIST
 C----- ORTHOGONAL COORDINATES AT JB
          xyz=store(ISTORE(JB+16)+8:ISTORE(JB+16)+12:2)
          occordinates(:,JA)=matmul(OCM,xyz)
-C---CHECK IF ATOM IS ISOTROPIC
-!         IF (ABS(STORE(istore(JB+16)+6))-UISO) 600,500,500
-!500      CONTINUE
-!         IF (IMODE.GT.0) THEN
-!            IF (ISSPRT.EQ.0) WRITE (NCWU,550) STORE(JB+2),STORE(JB+3)
-!550         FORMAT (' Atom  ',A4,F5.0,'  is isotropic and has been',
-!     1      'ignored')
-!         END IF
-!         GO TO 850
-!600      CONTINUE
          NATOM2=NATOM2+1
 C---ORTHOGONALIZE U'S, STORING AS WC
          adps=store(ISTORE(JB+16)+14:ISTORE(JB+16)+14+11:2)
-         CALL RSUB10 (WB,adps) ! copy 6x1 adps to 3x3 WB  
+         CALL RSUB10DP (WBdp,adps) ! copy 6x1 adps to 3x3 WB  
          if(present(results) .and. JA<=napplied) then       
-           results%subrestraints((JA-1)*6+1)%atoms(1)%adps_crys=WB
+           results%subrestraints((JA-1)*6+1)%atoms(1)%adps_crys=WBdp
          end if
-         WA=matmul(OUM, WB) ! CALL XMLTMM (OUM,WB,WA,3,3,3)         
-         WB=matmul(WA, transpose(OUM)) ! CALL XMLTMT (WA,OUM,WB,3,3,3)
-         CALL RSUB09 (WB,WC)
+         WAdp=matmul(OUM, WBdp) ! CALL XMLTMM (OUM,WB,WA,3,3,3)         
+         WBdp=matmul(WAdp, transpose(OUM)) ! CALL XMLTMT (WA,OUM,WB,3,3,3)
+         CALL RSUB09DP (WBdp,WCdp)
 C---SET UP DERIVATIVES FOR THIS ATOM
-         CALL RSUB08PP (occordinates(:,JA), cogo, dv)
-C---ACCUMULATE L.H.S. AS AA, R.H.S. AS AB
          dai=0.0d0
-         DAI(1:6,1:20)=DV ! copy to double precision
+         CALL RSUB08PP (occordinates(:,JA), cogo, DAI(1:6,1:20))
+C---ACCUMULATE L.H.S. AS AA, R.H.S. AS AB
          DO Ncpt=1,6
             DO Icpt=1,20
               DO Jcpt=Icpt,20
                 DAA(Icpt,Jcpt)=DAA(Icpt,Jcpt)+
      1             DAI(Ncpt,Icpt)*DAI(Ncpt,Jcpt)
               end do
-              AB(Icpt)=AB(Icpt)+DV(Ncpt,Icpt)*WC(Ncpt)
+              ABdp(Icpt)=ABdp(Icpt)+DAI(Ncpt,Icpt)*WCdp(Ncpt)
             end do
           end do
 C---RESET COUNTERS
@@ -8113,14 +8077,14 @@ C     FIND THE SCALE FACTORS , MAXIMUM=100
 C---FILL OUT AA
       DO Icpt=1,20
 C---- RHS
-         AB(Icpt)=AB(Icpt)*DAS(Icpt)
+         ABdp(Icpt)=ABdp(Icpt)*DAS(Icpt)
          DO Jcpt=1,Icpt
              DAA(Jcpt,Icpt)=DAA(Jcpt,Icpt)*DAS(Icpt)*DAS(Jcpt)
              DAA(Icpt,Jcpt)=DAA(Jcpt,Icpt)
          end do
       end do
 C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
-      CALL RLTNT(ab, DAA, DAR, DAI, info)
+      CALL RLTNT(abdp, DAA, DAR, DAI, info)
       if(info/=0) then
         if(present(results)) then
           write(cmon, '("{I", 1X, A)') 'The TLS restraint is aborted'
@@ -8143,8 +8107,8 @@ C----- RESCALE THE RESULTS
        write(results%description(4), '(1P,6(E10.2,1X))') ar(7:12)
 
 C---INVERT OUM TO GET MATRIX FOR CONVERSION OF U'S BACK TO CRYSTAL AXES
-      I=KINV2(3,OUM,WA,9,0,WC,WD,3)
-      CALL XMOVE (WA,OUM,9)
+      I=KINV2dp(3,OUM,WAdp,9,0,WCdp,WDdp,3)
+      CALL XMOVE (WAdp,OUM,9)
 C---CALCULATE AND OUTPUT OBSERVED AND CALCULATED TEMPERATURE FACTORS
 
 C--SET UP THE ACCUMULATION CONSTANTS FOR THE SCAN THROUGH THE ATOMS
@@ -8162,18 +8126,19 @@ C--LOOP OVER EACH ATOM IN TURN
          !end if
 C--CHECK IF THE ATOM IS ISOTROPIC
          adps=store(ISTORE(JB+16)+14:ISTORE(JB+16)+14+11:2)
-         CALL RSUB08PP(occordinates(:,ja), cogo, dv)
-         WC=matmul(DV, AR(1:20)) ! CALL XMLTMM (DV,AR,WC,6,20,1)
-         CALL RSUB10 (WA,WC) ! 6x1 (WC)  to 3x3 (WA)
-         WB=matmul(OUM, WA) !CALL XMLTMM (OUM,WA,WB,3,3,3)
-         WA=matmul(WB, transpose(OUM)) ! CALL XMLTMT (WB,OUM,WA,3,3,3)
-         CALL RSUB09 (WA,WC) ! 3x3 to 6x1
+         CALL RSUB08PP(occordinates(:,ja), cogo, DAI(1:6,1:20))
+         WCdp=matmul(DAI(1:6,1:20), AR(1:20)) ! CALL XMLTMM (DV,AR,WC,6,20,1)
+         CALL RSUB10DP (WAdp,WCdp) ! 6x1 (WC)  to 3x3 (WA)
+         WBdp=matmul(OUM, WAdp) !CALL XMLTMM (OUM,WA,WB,3,3,3)
+         WAdp=matmul(WBdp, transpose(OUM)) ! CALL XMLTMT (WB,OUM,WA,3,3,3)
+         CALL RSUB09DP (WAdp,WCdp) ! 3x3 to 6x1
 
          if(present(results)) then      
            do jcpt=1, 6 
-            results%subrestraints((JA-1)*6+jcpt)%atoms(1)%adps_target=WA
+             results%subrestraints((JA-1)*6+jcpt)%
+     1         atoms(1)%adps_target=WAdp
              results%subrestraints((JA-1)*6+jcpt)%rvalue=adps(jcpt)
-             results%subrestraints((JA-1)*6+jcpt)%rtarget=wc(jcpt)
+             results%subrestraints((JA-1)*6+jcpt)%rtarget=wcdp(jcpt)
            end do
          end if
 
@@ -8194,8 +8159,8 @@ C--CHECK IF THE ATOM IS ISOTROPIC
           CALL XADUIJ  
 
 C--CALCULATE THE MEAN VALUE AND THE DIFFERENCE                       
-           DIFF_VAL = adps(jcpt)-wc(jcpt)
-           MEAN_VAL = adps(jcpt)+wc(jcpt)
+           DIFF_VAL = adps(jcpt)-wcdp(jcpt)
+           MEAN_VAL = adps(jcpt)+wcdp(jcpt)
                           
           STORE(LCG+4)=0.5*(MEAN_VAL)                                  
           STORE(L22PD+2)=-DIFF_VAL ! Difference between restraint target (DUMP) and computed from current parameters (D)
@@ -8218,7 +8183,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
          JFF=JB+7
 C--ACCUMULATE THE TOTALS FOR THIS ATOM
          DO 2400 Kcpt=1,6
-            DEL=ABS(STORE(JFF)-WC(Kcpt))
+            DEL=ABS(STORE(JFF)-WCdp(Kcpt))
             SUM=ABS(STORE(JFF))
             JFF=JFF+1
             DELS=DELS+DEL*DEL
@@ -8230,8 +8195,8 @@ C--ACCUMULATE THE TOTALS FOR THIS ATOM
          JB=istore(JB)
 2500  CONTINUE
 C--COMPUTE AND PRINT THE TOTALS FOR ALL THE ATOMS
-      UFAC=DELU/SUMU*100.
-      SFAC=SQRT(DELS/SUMS)*100.
+      UFAC=DELU/SUMU*100.0d0
+      SFAC=SQRT(DELS/SUMS)*100.0d0
       RMSU=SQRT(DELS/ANUMB)
 !      IF (ISSPRT.EQ.0) WRITE (NCWU,2550) UFAC,SFAC,RMSU
 !      WRITE (CMON,2550) UFAC,SFAC,RMSU
@@ -8256,11 +8221,11 @@ C--
       implicit none
       INCLUDE 'STORE.INC'
       !INCLUDE 'XRTLSC.INC'
-      real, dimension(3), intent(in) :: xyz !< coordinates in orthogonal coordinates
-      real, dimension(3), intent(in) :: co !< centre of libration in orthogonal coordinates
-      real, dimension(6, 20), intent(out) :: dv !< calculated derivatives
+      double precision, dimension(3), intent(in) :: xyz !< coordinates in orthogonal coordinates
+      double precision, dimension(3), intent(in) :: co !< centre of libration in orthogonal coordinates
+      double precision, dimension(6, 20), intent(out) :: dv !< calculated derivatives
       
-      real x, y, z, a, b, c, d, e, f
+      double precision x, y, z, a, b, c, d, e, f
       integer i
 C
       X=xyz(1)-CO(1)
@@ -8274,18 +8239,18 @@ C
       F=X*Y
 C---DERIVATIVES W.R.T. T'S
       DO I=1,6
-        DV(I,I)=1.
+        DV(I,I)=1.0d0
       end do
 C---DERIVATIVES W.R.T. L'S
       DV(1,8)=C
       DV(1,9)=B
-      DV(1,10)=-2.*D
+      DV(1,10)=-2.0d0*D
       DV(2,7)=C
       DV(2,9)=A
-      DV(2,11)=-2.*E
+      DV(2,11)=-2.0d0*E
       DV(3,7)=B
       DV(3,8)=A
-      DV(3,12)=-2.*F
+      DV(3,12)=-2.0d0*F
       DV(4,7)=-D
       DV(4,10)=-A
       DV(4,11)=F
@@ -8299,17 +8264,17 @@ C---DERIVATIVES W.R.T. L'S
       DV(6,11)=D
       DV(6,12)=-C
 C---DERIVATIVES W.R.T. S'S
-      DV(1,16)=2.*Z
-      DV(1,19)=-2.*Y
-      DV(2,14)=-2.*Z
-      DV(2,20)=2.*X
-      DV(3,15)=2.*Y
-      DV(3,18)=-2.*X
+      DV(1,16)=2.0d0*Z
+      DV(1,19)=-2.0d0*Y
+      DV(2,14)=-2.0d0*Z
+      DV(2,20)=2.0d0*X
+      DV(3,15)=2.0d0*Y
+      DV(3,18)=-2.0d0*X
       DV(4,13)=-X
       DV(4,14)=Y
       DV(4,15)=-Z
-      DV(4,17)=-2.*X
-      DV(5,13)=2.*Y
+      DV(4,17)=-2.0d0*X
+      DV(5,13)=2.0d0*Y
       DV(5,16)=-X
       DV(5,17)=Y
       DV(5,18)=Z

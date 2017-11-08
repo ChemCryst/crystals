@@ -1399,7 +1399,7 @@ C---- RHS
          DAA(I,J)=DAA(J,I)
 1050  CONTINUE
 C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
-      CALL RLTNT(ab, DAA, DAR, DAI, infodummy)
+      CALL RLTNT(real(ab, kind(1.0d0)), DAA, DAR, DAI, infodummy)
       AR=DAR
 C----- RESCALE THE RESULTS
       DO 1100 I=1,20
@@ -1731,6 +1731,19 @@ C
       UB(6)=UA(1,2)
       RETURN
       END
+      SUBROUTINE RSUB09DP (UA,UB)
+C
+C
+      double precision UA(3,3), UB(6)
+C
+      UB(1)=UA(1,1)
+      UB(2)=UA(2,2)
+      UB(3)=UA(3,3)
+      UB(4)=UA(2,3)
+      UB(5)=UA(1,3)
+      UB(6)=UA(1,2)
+      RETURN
+      END
 CODE FOR RSUB10
       SUBROUTINE RSUB10 (UA,UB)
 C
@@ -1747,6 +1760,21 @@ C
 50       UA(J,I)=UA(I,J)
       RETURN
       END
+      SUBROUTINE RSUB10DP (UA,UB)
+C
+C
+      double precision :: UA(3,3), UB(6)
+C
+      UA(2,3)=UB(4)
+      UA(1,3)=UB(5)
+      UA(1,2)=UB(6)
+      DO 50 I=1,3
+         UA(I,I)=UB(I)
+         K=MIN0(3,I+1)
+         DO 50 J=K,3
+50       UA(J,I)=UA(I,J)
+      RETURN
+      END      
 CODE FOR RSUB11
       SUBROUTINE RSUB11 (MON)
 C
@@ -1963,7 +1991,7 @@ CODE FOR RLTNT
       use xrtlsc_mod, only: jdel
       implicit none
 C
-      real, intent(in) :: ab(20) !< right hand side
+      double precision, intent(in) :: ab(20) !< right hand side
       double precision, intent(inout) :: DAA(20,20) !< normal matrix
       double precision, intent(out) :: DAI(20,20) !< normal matrix
       double precision, intent(out) :: DAR(21) !< eigen values (first 20 entries)
@@ -1995,7 +2023,7 @@ c      CALL F02ABF (DAA,20,20,DAR,DAI,20,DWE,M)
       ! eigenvalue decomposition
       CALL DSYEV('V','L',20,DAI,20,DAR,DWE,size(dwe),INFO)
 C--TRANSFORM THE R.H.S.      
-      dwe(1:20)=matmul(transpose(dai), real(ab, kind(1.0d0))) !CALL XMLTTM (AI,AB,WE,20,20,1)
+      dwe(1:20)=matmul(transpose(dai), ab) !CALL XMLTTM (AI,AB,WE,20,20,1)
       DAR(21)=DAR(20)
       L=0
 C--LOOP OVER EACH EIGENVALUE AND CHECK ITS SIZE AND RATIO TO THE LAST
