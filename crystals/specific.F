@@ -1875,20 +1875,9 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
         LIST(LEVEL) = ' '
 #if defined (CRY_FORTDIGITAL)
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#elif defined (CRY_FORTINTEL) && defined (CRY_GUI)
-C The intel environment does not pick up changes made by _putenv in C++ code
-C Therefore use this interface to the C++ to get values.
+#else 
           call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
      &      LIST(LEVEL))
-          write(ncwu, *) 'pp ', NAME(LEVEL)(1:COLPOS(LEVEL)-1),
-     &       LIST(LEVEL)
-          CALL CGETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-          write(ncwu, *) 'pp ', NAME(LEVEL)(1:COLPOS(LEVEL)-1),
-     &       LIST(LEVEL)
-#else 
-          call GETVAR(NAME(LEVEL)(1:COLPOS(LEVEL)-1), LIST(LEVEL))
-c          call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
-c    &      LIST(LEVEL))
 #endif
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
         IF (LIST(LEVEL) .EQ. ' ') THEN
