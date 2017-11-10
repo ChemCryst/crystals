@@ -765,6 +765,10 @@ C--CALCULATE THE COMPUTED VALUE AND PRINT THE RESULTS
      3 8X,E20.10,19H  giving a delta of,E20.10)
       WRITE(CMON,1610)NINT(A), '   General restraint', B,C
       CALL XPRVDU(NCVDU, 1,0)
+      
+      ! leverages
+      call showleverage(ircpt, -1)
+
       GOTO 1050
 C
 C--'SINGLE DISTANCE' RESTRAINTS
