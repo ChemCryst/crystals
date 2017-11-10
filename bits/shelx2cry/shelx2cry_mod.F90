@@ -952,9 +952,10 @@ end subroutine
 subroutine write_list5()
 use crystal_data_m
 implicit none
-integer i
+integer i, j, k
 real occ
 integer flag, atompart, fvar_index
+real, dimension(3) :: diffxyz
 
     ! atom list
     !#LIST     5
@@ -978,6 +979,35 @@ integer flag, atompart, fvar_index
         &   '", NELEMENT = ",I0,", NBATCH = ",I0)') &
         &   atomslist_index, 0, 0, 0
         do i=1, atomslist_index
+            ! calculate multiplicity
+            atomslist(i)%multiplicity=0
+            do j=1, size(spacegroup%ListSeitzMx)
+                diffxyz=abs(atomslist(i)%coordinates- &
+                &   matmul(real(spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates))
+                do k=1, 3
+                    do while(diffxyz(k)>=1.0)
+                        diffxyz(k)=diffxyz(k)-1.0
+                    end do
+                end do
+                if(all(diffxyz<1e-3)) then
+                    atomslist(i)%multiplicity=atomslist(i)%multiplicity+1
+                end if
+            end do
+            if(spacegroup%centric==-1) then
+                do j=1, size(spacegroup%ListSeitzMx)
+                    diffxyz=abs(atomslist(i)%coordinates- &
+                    &   matmul(real(-1*spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates))
+                    do k=1, 3
+                        do while(diffxyz(k)>=1.0)
+                            diffxyz(k)=diffxyz(k)-1.0
+                        end do
+                    end do
+                    if(all(diffxyz<1e-3)) then
+                        atomslist(i)%multiplicity=atomslist(i)%multiplicity+1
+                    end if
+                end do
+            end if
+        
             ! extracting occupancy from sof
             if(atomslist(i)%sof>=10.0 .and. atomslist(i)%sof<20.0) then
                 ! fixed occupancy
@@ -1007,6 +1037,8 @@ integer flag, atompart, fvar_index
             else            
                 occ=atomslist(i)%sof
             end if
+            occ=occ*real(atomslist(i)%multiplicity)
+            
             if(atomslist(i)%iso/=0.0) then
                 flag=1
             else
@@ -1165,6 +1197,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
 
     write(crystals_fileunit, '(a)') '\LIST 2'
     write(crystals_fileunit, '(a, I0, a, a)') 'CELL NSYM=', SgInfo%nlist, ', LATTICE=', LatticeInfo%Code
+    spacegroup%centric=SgInfo%Centric
     if(SgInfo%Centric==0) then
         write(crystals_fileunit, '(a)') 'CONT CENTRIC=NO'
     else
@@ -1173,7 +1206,10 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     
     if(C_associated(SgInfo%ListSeitzMx)) then
         call C_F_POINTER(SgInfo%ListSeitzMx, lsmx, (/ SgInfo%nlist /) )
+        allocate(spacegroup%ListSeitzMx(SgInfo%nlist))
         do i=1, SgInfo%nlist
+            spacegroup%ListSeitzMx(i)%R=transpose(reshape(lsmx(i)%R,(/3,3/)))
+            spacegroup%ListSeitzMx(i)%T=lsmx(i)%T
             xyzptr=RTMx2XYZ(lsmx(i), 1, nint(sginfo_stbf), 0, 1, 0, ", ")
             call C_F_string_ptr(xyzptr, buffer)
             write(crystals_fileunit, '(a, a)') 'SYMM ', trim(buffer)        

@@ -48,6 +48,7 @@ type atom_t
     real, dimension(6) :: aniso !< Anistropic displacement parameters U11 U22 U33 U23 U13 U12 from shelx
     real :: iso !< isotropic temperature factor from shelx
     real :: sof !< Site occupation factor from shelx
+    integer :: multiplicity !< multiplicity (calculated)
     integer resi !< residue from shelx
     integer part !< group from shelx
     character(len=512) :: shelxline !< raw line from res/ins file
@@ -57,12 +58,20 @@ end type
 type(atom_t), dimension(:), allocatable :: atomslist !< list of atoms in the res/ins file
 integer atomslist_index !< Current index in the list of atoms list (atomslist)
 
+!> Symmetry operators
+type SeitzMx_t
+    integer, dimension(3,3) :: R !< rotation part of the symmetry
+    integer, dimension(3) :: T !< translation * 12 (see sginfo and STBF)
+end type
+
 !> Space group type. All the lements describing the space group.
 type spacegroup_t
     integer :: latt !< lattice type from shelx (1=P, 2=I, 3=rhombohedral obverse on hexagonal axes, 4=F, 5=A, 6=B, 7=C)
-    character(len=128), dimension(32) :: symm !< list of symmetry element as seen in res/ins file
+    character(len=128), dimension(32) :: symm !< list of symmetry element read from res/ins file
     integer :: symmindex=0 !< current index in symm
     character(len=128) :: symbol !< Space group symbol
+    type(SeitzMx_t), dimension(:), allocatable :: ListSeitzMx !< list of symmetry operators as matrices, see sginfo
+    integer :: centric 
 end type
 type(spacegroup_t), save :: spacegroup !< Hold the spagroup information
 
