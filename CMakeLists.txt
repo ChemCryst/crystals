@@ -302,8 +302,8 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -std=gnu++11 -O1 -g")
     SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer  -O1 -g")
 ELSEIF ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -Od -debug")
+    SET (CMAKE_Fortran_FLAGS_RELEASE "-debug -g -O3 -fpp -mkl")
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "-g -check all -debug all -ftrapuv -fpe0 -fstack-protector-all -O0 -fpp -mkl")
     SET (IFORT_COMPILER 1)
 ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
     SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")

@@ -1207,8 +1207,10 @@ c         of changing the thresholds.
 C
         STORE(L30RF+0 ) = R  
         STORE(L30RF+1 ) = RW
-        IF(STORE(L11P+23).GT.ZERO)
-     1  STORE(L30RF+2 ) = STORE(L11P+23)
+        if(.not. isnan(STORE(L11P+23))) then ! workaround. The origin of NaN here not found
+          IF(STORE(L11P+23).GT.ZERO)
+     1    STORE(L30RF+2 ) = STORE(L11P+23)
+        end if
         STORE(L30RF+3) = RALL(13)                 ! SIGMA THRESHOLD FOR REFINEMENT
         IF(STORE(L11P+16).GT.ZERO) 
      1  STORE(L30RF+4 ) = SQRT(AMINF / STORE(L11P+16))
