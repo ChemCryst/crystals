@@ -126,6 +126,7 @@ CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,Z)-S(1,5,Z))*G(3,3))
 
    1.  General restraint to be     0.1500000000E+01  with an E.S.D. of    0.3000000119E-01
        Calculated value            0.6731881142E+01  giving a delta of   -0.5231881142E+01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -914,6 +915,7 @@ ___________
 
    9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.4669999704E-02  giving a delta of    0.4669999704E-02
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -968,6 +970,7 @@ ___________
 
   10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.1467000134E-01  giving a delta of    0.1467000134E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1023,6 +1026,7 @@ ___________
 
   11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.2467000112E-01  giving a delta of    0.2467000112E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1077,6 +1081,7 @@ ___________
 
   12.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.7334999740E-02  giving a delta of    0.7334999740E-02
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1412,6 +1417,7 @@ ___________
 
    1.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
    ?   Calculated value            0.6000000000E+02  giving a delta of   -0.6000000000E+02
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1462,6 +1468,7 @@ ___________
 
    2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
        Calculated value            0.9050000191E+01  giving a delta of   -0.9050000191E+01
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -1556,6 +1563,7 @@ CONT +LAYER(3)*S(1,U[11])+ELEMENT(2)+ELEMENT(3)
 
    3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
        Calculated value            0.6137799072E+02  giving a delta of   -0.6137799072E+02
+          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :

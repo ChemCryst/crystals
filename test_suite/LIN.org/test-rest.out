@@ -99,6 +99,7 @@ ___________
 
    2.  General restraint to be     0.3700000048E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.3764899820E-01  giving a delta of   -0.6489977241E-03
+          - Derivatives not found, do a refinement cycle to get leverages -
 ___________
  (3) ANGLE 0.0, 2.0 = MEAN
 CONT H(31) TO N ( 3) TO C(2)
@@ -139,6 +140,7 @@ ___________
 
    5.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7076000422E-01  giving a delta of    0.1224000007E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 ___________
  (7) REST 0.083, 0.002 = H(72,U[ISO])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -147,12 +149,14 @@ ___________
 
    6.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7153201103E-01  giving a delta of    0.1146799326E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 ___________
  (8) REST 0.083, 0.002 = H(71,U[ISO])
 
 
    7.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.8240700513E-01  giving a delta of    0.5929991603E-03
+          - Derivatives not found, do a refinement cycle to get leverages -
 ___________
  (9) ANGLE 109.54, 2.0 =
 CONT O(6) TO C ( 7) TO H(73)
@@ -540,6 +544,7 @@ ___________
 
    2.  General restraint to be     0.3700000048E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.3764899820E-01  giving a delta of   -0.6489977241E-03
+          Leverage: 0.888
 ___________
  (3) ANGLE 0.0, 2.0 = MEAN
 CONT H(31) TO N ( 3) TO C(2)
@@ -583,6 +588,7 @@ ___________
 
    5.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7076000422E-01  giving a delta of    0.1224000007E-01
+          Leverage: 0.660
 ___________
  (7) REST 0.083, 0.002 = H(72,U[ISO])
  Directive  RESTRAIN: No derivatives found during Evaluation
@@ -591,12 +597,14 @@ ___________
 
    6.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
    ?   Calculated value            0.7153201103E-01  giving a delta of    0.1146799326E-01
+          Leverage: 0.660
 ___________
  (8) REST 0.083, 0.002 = H(71,U[ISO])
 
 
    7.  General restraint to be     0.8300000429E-01  with an E.S.D. of    0.2000000095E-02
        Calculated value            0.8240700513E-01  giving a delta of    0.5929991603E-03
+          Leverage: 0.956
 ___________
  (9) ANGLE 109.54, 2.0 =
 CONT O(6) TO C ( 7) TO H(73)
