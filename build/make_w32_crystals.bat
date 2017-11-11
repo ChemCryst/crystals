@@ -148,6 +148,15 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 ECHO %TEMPVAR%
 @if "%COMPCODE%" == "INW" copy "%tempvar%"
 
+SET COMMAND=where mkl_intel_thread.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy10
+)
+:copy10
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
