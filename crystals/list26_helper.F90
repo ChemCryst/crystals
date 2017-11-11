@@ -409,6 +409,7 @@ implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
 integer, intent(in) :: output !< Where to print. -1 = all, 1=cmon, 2=ncwu
 integer k, l, numatoms, cpt, colorindex
+integer, dimension(2) :: invmsh
 real leverage
 character(len=1024) :: formatstr, atomslist
 
@@ -439,7 +440,8 @@ do k=1, size(restraints_derivatives)
         cpt=cpt+1
         associate(r => restraints_derivatives(k))
 		
-        if ( size(r%derivatives) == 0 ) cycle
+        invmsh = shape(invertm)
+        if ( size(r%derivatives) /= invmsh(1) ) cycle
 
             ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
             ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
