@@ -438,6 +438,8 @@ do k=1, size(restraints_derivatives)
     if(rindex==restraints_derivatives(k)%irestraint) then
         cpt=cpt+1
         associate(r => restraints_derivatives(k))
+		
+        if ( size(r%derivatives) == 0 ) cycle
 
             ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
             ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
