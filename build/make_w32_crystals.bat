@@ -157,6 +157,34 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 ECHO %TEMPVAR%
 @if "%COMPCODE%" == "INW" copy "%tempvar%"
 
+SET COMMAND=where mkl_core.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy11
+)
+:copy11
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
+SET COMMAND=where mkl_rt.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy12
+)
+:copy12
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
+SET COMMAND=where mkl_avx.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    GOTO :copy13
+)
+:copy13
+ECHO %TEMPVAR%
+@if "%COMPCODE%" == "INW" copy "%tempvar%"
+
+
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
