@@ -64,7 +64,9 @@ goto ALLDVF
 @set OUT=/exe:
 @set OPT=/O2 /Zi
 @rem set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
-@set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+if "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+if not "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+
 @set LDEBUG=/Zi
 @rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
