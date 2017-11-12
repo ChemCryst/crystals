@@ -64,7 +64,7 @@ goto ALLDVF
 @set OUT=/exe:
 @set OPT=/O2 /Zi
 @rem set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
-@set LIBS=%LIBS% opengl32.lib glu32.lib 
+@set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
 @set LDEBUG=/Zi
 @rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
@@ -78,8 +78,8 @@ goto ALLDVF
 
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /Qdiag-disable:8290 /Qdiag-disable:8291  /assume:realloc_lhs /nolink %COPENMP% 
-@set FNOOPT=/fpp /I..\crystals /MD -Od /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291  /assume:realloc_lhs /nolink
+@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Qdiag-disable:8290 /Qdiag-disable:8291  /nolink %COPENMP% 
+@set FNOOPT=/fpp /I..\crystals /MD -Od /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
 @set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:all /check:format /check:overflow /check:pointers /check:uninit  /warn:nofileopt /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink /traceback /Qtrapuv

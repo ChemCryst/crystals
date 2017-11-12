@@ -148,42 +148,16 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 ECHO %TEMPVAR%
 @if "%COMPCODE%" == "INW" copy "%tempvar%"
 
-SET COMMAND=where mkl_intel_thread.dll
-FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-    SET TEMPVAR=%%A
-    GOTO :copy10
-)
-:copy10
-ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy "%tempvar%"
-
+@REM - copy all mkl dlls (we don't know beforehand which are required on the target machine)
 SET COMMAND=where mkl_core.dll
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
     SET TEMPVAR=%%A
-    GOTO :copy11
+    SET TEMPVARP=%%~pA
+    GOTO :copymkl
 )
-:copy11
+:copymkl
 ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy "%tempvar%"
-
-SET COMMAND=where mkl_rt.dll
-FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-    SET TEMPVAR=%%A
-    GOTO :copy12
-)
-:copy12
-ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy "%tempvar%"
-
-SET COMMAND=where mkl_avx.dll
-FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-    SET TEMPVAR=%%A
-    GOTO :copy13
-)
-:copy13
-ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy "%tempvar%"
-
+@if "%COMPCODE%" == "INW" copy "%tempvarp%" .
 
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
