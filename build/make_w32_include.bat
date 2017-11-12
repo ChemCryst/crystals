@@ -57,20 +57,21 @@ goto ALLDVF
 @if not "%CRDEBUG%" == "TRUE" @set CDEF= /I%WXWIN%\include /I%WXLIB%\mswu /I..\crashrpt /D"WXUSINGDLL"
 @if "%CROPENMP%" == "TRUE" @set COPENMP=/Qopenmp
 @if not "%CROPENMP%" == "TRUE" @set COPENMP=
-@set FDEF=-D__INW__ -DCRY_GUI -DCRY_USEWX -DCRY_OSWIN32 -DCRY_FORTINTEL -D_NOHDF5_ /Qmkl
+@set FDEF=-D__INW__ -DCRY_GUI -DCRY_USEWX -DCRY_OSWIN32 -DCRY_FORTINTEL -D_NOHDF5_ 
 @rem @set FDEF=-D__INW__ -DCRY_GUI -DCRY_USEWX -DCRY_OSWIN32 -DCRY_FORTINTEL /I..\hdf5\include
 @rem @set LD=xilink
 @set LD=ifort
 @set OUT=/exe:
 @set OPT=/O2 /Zi
 @rem set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
-if "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
-if not "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+@rem if "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+@rem if not "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+@set LIBS=%LIBS% opengl32.lib glu32.lib mkl_custom.lib
 
 @set LDEBUG=/Zi
 @rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
-@set LDFLAGS= /Qmkl %COPENMP%
+@set LDFLAGS= %COPENMP%
 
 @set CC=cl
 @set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D__%COMPCODE%__ /D_CRT_SECURE_NO_WARNINGS /DCRYSVNVER="%CRYSVNVER%"

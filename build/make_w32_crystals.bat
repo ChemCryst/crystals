@@ -22,6 +22,28 @@
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
 @REM - explicit ordering of f90 files so that required modules are build first.
 
+@REM - build custom mkl dll
+@if exist mkl_custom.lib goto :skipcopymkl
+SET COMMAND=where mkl_core.dll
+FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+    SET TEMPVAR=%%A
+    SET TEMPVARP=%%~pA
+    GOTO :copymkl
+)
+:copymkl
+ECHO %TEMPVAR%
+@if not "%COMPCODE%" == "INW" goto :skipcopymkl
+REM compile custom mkl dll. 
+pushd %tempvarp%\..\..\..\mkl\tools\builder
+if "%CR64BIT%" == "TRUE" nmake libintel64 export=f:\crystals-versions\crystals-stab\build\mkllibs.txt 
+if not "%CR64BIT%" == "TRUE" nmake libia32 export=f:\crystals-versions\crystals-stab\build\mkllibs.txt
+popd
+copy %tempvarp%\..\..\..\mkl\tools\builder\mkl_custom.dll .
+copy %tempvarp%\..\..\..\mkl\tools\builder\mkl_custom.lib .
+
+:skipcopymkl
+
+
 @FOR %%I IN ( %F90FILES% ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 REM @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\gui\fwrapper_gui.F90 ..\gui\fwrapperimp_gui.F90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
@@ -147,18 +169,6 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 :copy9
 ECHO %TEMPVAR%
 @if "%COMPCODE%" == "INW" copy "%tempvar%"
-
-@REM - copy all mkl dlls (we don't know beforehand which are required on the target machine)
-SET COMMAND=where mkl_core.dll
-FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-    SET TEMPVAR=%%A
-    SET TEMPVARP=%%~pA
-    GOTO :copymkl
-)
-:copymkl
-ECHO %TEMPVAR%
-@if "%COMPCODE%" == "INW" copy "%tempvarp%" .
-
 
 @if "%CRDEBUG%" == "TRUE"  goto debug
 :link
