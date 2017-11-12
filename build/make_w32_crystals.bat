@@ -35,12 +35,12 @@ ECHO %TEMPVAR%
 @if not "%COMPCODE%" == "INW" goto :skipcopymkl
 REM compile custom mkl dll. 
 set BPATH=%cd%
-pushd %tempvarp%\..\..\..\mkl\tools\builder
+pushd %tempvarp%..\..\..\mkl\tools\builder
 if "%CR64BIT%" == "TRUE" nmake libintel64 export="%bpath%\mkllibs.txt"
 if not "%CR64BIT%" == "TRUE" nmake libia32 export="%bpath%\mkllibs.txt"
 popd
-copy %tempvarp%\..\..\..\mkl\tools\builder\mkl_custom.dll .
-copy %tempvarp%\..\..\..\mkl\tools\builder\mkl_custom.lib .
+copy "%tempvarp%..\..\..\mkl\tools\builder\mkl_custom.dll" .
+copy "%tempvarp%..\..\..\mkl\tools\builder\mkl_custom.lib" .
 
 :skipcopymkl
 
