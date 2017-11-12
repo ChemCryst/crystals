@@ -205,7 +205,8 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 		GLfloat Surface[] = { 1.0f, 1.0f, 1.0f, 0.0f };
 		glColor4fv( Surface );
 	} else if ( m_excluded ) {
-        GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 0.3f };
+//        GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 0.3f };
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
         glColor4fv( Surface );
         extra = 20.0f;
 	} else {

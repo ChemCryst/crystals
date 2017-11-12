@@ -36,8 +36,8 @@ ECHO %TEMPVAR%
 REM compile custom mkl dll. 
 set BPATH=%cd%
 pushd %tempvarp%\..\..\..\mkl\tools\builder
-if "%CR64BIT%" == "TRUE" nmake libintel64 export=%bpath%\mkllibs.txt 
-if not "%CR64BIT%" == "TRUE" nmake libia32 export=%bpath%\mkllibs.txt
+if "%CR64BIT%" == "TRUE" nmake libintel64 export="%bpath%\mkllibs.txt"
+if not "%CR64BIT%" == "TRUE" nmake libia32 export="%bpath%\mkllibs.txt"
 popd
 copy %tempvarp%\..\..\..\mkl\tools\builder\mkl_custom.dll .
 copy %tempvarp%\..\..\..\mkl\tools\builder\mkl_custom.lib .

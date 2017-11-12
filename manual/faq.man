@@ -136,7 +136,7 @@ programs.
 #Up-to-date manuals are included in the downloadable distribution
 kit at #Uhttp://www.xtl.ox.ac.uk/download.html#.
 #PAll manuals are available as adobe acrobat files (.pdf) from
-#Uhttp://www.xtl.ox.ac.uk/download/manuals.zip#
+#Uhttp://www.xtl.ox.ac.uk/download/manuals.zip PDF Files#
 
 #P   HTML: #Uhttp://www.xtl.ox.ac.uk/cameron.html#
  02/05/96 The graphics manual (50 pages)
