@@ -639,6 +639,7 @@ c         loaded by the calling routine.
       INTEGER IUNKN
       CHARACTER*8 CRADTN(2)
       CHARACTER*11 CBONDS(0:9)
+      DIMENSION ID(2)
 
 
       DIMENSION LST(15)
