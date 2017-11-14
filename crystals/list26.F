@@ -2196,7 +2196,7 @@ C
       logical, optional, intent(in) :: savederivativesarg
       logical savederivatives
       integer ISTAT2OLD
-      
+      dimension ID(2) 
 C
       interface 
           subroutine XCVCV(results)
