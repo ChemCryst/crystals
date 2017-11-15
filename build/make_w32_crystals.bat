@@ -35,7 +35,7 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 ECHO %TEMPVAR%
 @if not "%COMPCODE%" == "INW" goto :skipcopymkl
 @REM Copy tools/builder folder here to avoid conflicts with other builds
-xcopy /I/E/Y %tempvarp%..\..\..\mkl\tools\builder builder
+xcopy /I/E/Y "%tempvarp%..\..\..\mkl\tools\builder" builder
 pushd builder
 if "%CR64BIT%" == "TRUE" nmake libintel64 export="..\mkllibs.txt"
 if not "%CR64BIT%" == "TRUE" nmake libia32 export="..\mkllibs.txt"
