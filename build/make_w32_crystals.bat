@@ -23,6 +23,7 @@
 @REM - explicit ordering of f90 files so that required modules are build first.
 
 @REM - build custom mkl dll
+@REM - find mkl installation
 @if exist mkl_custom.lib goto :skipcopymkl
 SET COMMAND=where mkl_core.dll
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
@@ -33,14 +34,14 @@ FOR /F "delims=" %%A IN ('%COMMAND%') DO (
 :copymkl
 ECHO %TEMPVAR%
 @if not "%COMPCODE%" == "INW" goto :skipcopymkl
-REM compile custom mkl dll. 
-set BPATH=%cd%
-pushd %tempvarp%..\..\..\mkl\tools\builder
-if "%CR64BIT%" == "TRUE" nmake libintel64 export="%bpath%\mkllibs.txt"
-if not "%CR64BIT%" == "TRUE" nmake libia32 export="%bpath%\mkllibs.txt"
+@REM Copy tools/builder folder here to avoid conflicts with other builds
+xcopy /I/E/Y %tempvarp%..\..\..\mkl\tools\builder builder
+pushd builder
+if "%CR64BIT%" == "TRUE" nmake libintel64 export="..\mkllibs.txt"
+if not "%CR64BIT%" == "TRUE" nmake libia32 export="..\mkllibs.txt"
 popd
-copy "%tempvarp%..\..\..\mkl\tools\builder\mkl_custom.dll" .
-copy "%tempvarp%..\..\..\mkl\tools\builder\mkl_custom.lib" .
+copy ".\builder\mkl_custom.dll" .
+copy ".\builder\mkl_custom.lib" .
 
 :skipcopymkl
 
