@@ -1508,13 +1508,11 @@ C
       INCLUDE 'QSTR11.INC'
 C
       LS=NOC+1
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)LS
-      ENDIF
       WRITE(NCAWU,1000) LS
       WRITE ( CMON, 1000) LS
       CALL XPRVDU(NCVDU, 1,0)
 1000  FORMAT('{E Singularity - relative parameter',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(//A//)')TRIM(CMON(1)(3:))
       LS=IBASE+NOC
       DO 1150 LT=1,N
       STR11(LS)=0.0
