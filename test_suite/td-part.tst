@@ -100,7 +100,7 @@ SCAT TYPE= TI        0.219100     1.806900     9.759500     7.850800
 CONT                7.355800     0.500000     1.699100    35.633801
 CONT                             1.902100   116.105003     1.280700
 END
-#USE TD-PART-23.DAT
+#USE td-part-23.dat
 #use td-part-5.dat
 #bondcalc force
 end
@@ -150,7 +150,7 @@ SCAT TYPE= TI        0.00     0.00     9.759500     7.850800
 CONT                7.355800     0.500000     1.699100    35.633801
 CONT                             1.902100   116.105003     1.280700
 END
-#USE TD-PART-23.DAT
+#USE td-part-23.dat
 #use td-part-5.dat
 #bondcalc force
 end
