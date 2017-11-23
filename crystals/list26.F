@@ -489,8 +489,12 @@ C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
                  parameters_list(size(parameters_list))%index=JT
                  parameters_list(size(parameters_list))%label=
      1             transfer(STORE(M5), 'aaaa')
-                 parameters_list(size(parameters_list))%serial=
-     1             NINT(STORE(M5+1))
+                 if(isnan(STORE(M5+1))) then
+                   parameters_list(size(parameters_list))%serial= -1
+                 else
+                   parameters_list(size(parameters_list))%serial=
+     1               NINT(STORE(M5+1))
+                 end if
                  parameters_list(size(parameters_list))%name=
      1            trim(formatstr)
                  parameters_list(size(parameters_list))%offset=M5
@@ -500,8 +504,12 @@ C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
                  parameters_list(size(parameters_list))%index=JT
                  parameters_list(size(parameters_list))%label=
      1             transfer(STORE(M5), 'aaaa')
-                 parameters_list(size(parameters_list))%serial=
-     1             NINT(STORE(M5+1))
+                 if(isnan(STORE(M5+1))) then
+                   parameters_list(size(parameters_list))%serial= -1
+                 else
+                   parameters_list(size(parameters_list))%serial=
+     1               NINT(STORE(M5+1))
+                 end if
                  parameters_list(size(parameters_list))%name=
      1            trim(formatstr)
                  parameters_list(size(parameters_list))%offset=M5

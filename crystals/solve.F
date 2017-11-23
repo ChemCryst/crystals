@@ -1637,13 +1637,42 @@ c      adp and overall are caught here (SFLSE) by looking at
 c      shift/esd, reversals and R-factor.
 c
       if (ispar .eq.0) then
-       adpshift = min(1., 4./adpsoe)
-       ovrshift = min(1., 4./ovrsoe)
-       xyzshift = min(1., 8./xyzsoe)
+       if(adpsoe<=4) then
+         adpshift = 1.0
+       else
+         adpshift = 4./adpsoe
+       end if
+       if(ovrsoe<=4) then
+         ovrshift = 1.0
+       else
+         ovrshift = 4./ovrsoe
+       end if
+       if(xyzsoe<=8) then
+         xyzshift = 1.0
+       else
+         xyzshift = 8./xyzsoe
+       end if
       else
-       adpshift = min(1., 15./adpsoe)
-       ovrshift = min(1., 15./ovrsoe)
-       xyzshift = min(1., 15./xyzsoe)
+       if(adpsoe<=15) then
+         adpshift = 1.0
+       else
+         adpshift = 15./adpsoe
+       end if
+       if(ovrsoe<=15) then
+         ovrshift = 1.0
+       else
+         ovrshift = 15./ovrsoe
+       end if
+       if(xyzsoe<=15) then
+         xyzshift = 1.0
+       else
+         xyzshift = 15./xyzsoe
+       end if
+       if(xyzsoe<=15) then
+         xyzshift = 1.0
+       else
+         xyzshift = 15./xyzsoe
+       end if
       endif
 c
       usershift = store(m33sv+1)      !current overall

@@ -3142,10 +3142,11 @@ C Check for clashing serial numebr
       DO ISW = 1,999
          ICLASH = 0
          DO K5 = L5,JT,MD5
-           IF ( ( ISTORE(K5)        .EQ. IHH(1) ) .AND.
-     1         ( NINT(STORE(K5+1)) .EQ. SW )     ) THEN
+           IF ( ISTORE(K5) .EQ. IHH(1) ) then
+             if( NINT(STORE(K5+1)) .EQ. SW ) THEN
               SW = SW + 1
               ICLASH = 1
+             end if
            END IF
          END DO
          IF ( ICLASH .EQ. 0) EXIT  ! No clash found
