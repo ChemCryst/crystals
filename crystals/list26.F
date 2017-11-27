@@ -2429,7 +2429,7 @@ C--JUMP ON THE FUNCTION
           end associate            
         end if         
       end do ! found the user restraint
-      
+
       I=ISTORE(LCG+1)
 cdjwsep2011
       if(i .lt. 1) then
@@ -7397,12 +7397,15 @@ C
       double precision, dimension(:), allocatable :: temp
       integer, dimension(:), allocatable :: itemp
       integer sfls_punch_flag, iblockindex, isubrestraint
-      integer ioldrestraint
+      integer ioldrestraint, restraints_derivatives_idx
+      integer derivatives_block_size
       
       if(allocated(restraints_derivatives)) then
         deallocate(restraints_derivatives)
       end if
       iblockindex=0
+      restraints_derivatives_idx=0
+      derivatives_block_size=128
       
 C
 C--SET THE LENGTH OF EACH ENTRY
@@ -7614,9 +7617,18 @@ c                CALL XPRVDU(NCVDU,1,0)
 1800    CONTINUE
 
         ! Saving derivatives
-        call extend(restraints_derivatives)
-        icpt=size(restraints_derivatives)
-        associate(r => restraints_derivatives(icpt))
+        restraints_derivatives_idx=restraints_derivatives_idx+1
+        if(.not. allocated(restraints_derivatives)) then
+          call extend(restraints_derivatives, derivatives_block_size)
+        else
+          if(restraints_derivatives_idx>size(restraints_derivatives)) 
+     1      then
+            derivatives_block_size=derivatives_block_size*2
+            call extend(restraints_derivatives, derivatives_block_size)
+          end if
+        end if
+        associate(r => 
+     1   restraints_derivatives(restraints_derivatives_idx))
           r%ioldrestraint=ioldrestraint
           r%irestraint=subrestraints_parent(ioldrestraint)
           r%isubrestraint=isubrestraint
