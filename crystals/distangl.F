@@ -1306,7 +1306,7 @@ c     3     'You must do another cycle of refinement')
 1500       FORMAT(' Matrix is wrong type for e.s.d.''s')
            CALL XERHND ( IERWRN )
            IESD=-1
-           GOTO 1000
+           GOTO 9900
         END IF
 
 C--APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
