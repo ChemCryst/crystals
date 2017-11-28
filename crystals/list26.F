@@ -2205,6 +2205,7 @@ C
       logical savederivatives
       integer ISTAT2OLD
       dimension ID(2) 
+      integer restraints_block_size
 C
       interface 
           subroutine XCVCV(results)
@@ -2297,6 +2298,7 @@ C
       end if
 C
       DATA IVERSN /403/
+      restraints_block_size=128
 C
       if(savederivatives) then
 C--INITIATE THE TIMING
@@ -2363,9 +2365,10 @@ C--JUMP ON THE FUNCTION
       
       ! check storage space for the next restraint  
       if(.not. allocated(restraints_list)) then
-        call extend(restraints_list)      
+        call extend(restraints_list,restraints_block_size)      
       else if(idjwtemp>size(restraints_list)) then
-        call extend(restraints_list)
+        restraints_block_size=restraints_block_size*2
+        call extend(restraints_list, restraints_block_size)
       end if        
 
       ! looking for the corresponding user restraint in list16,list17
