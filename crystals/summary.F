@@ -1731,14 +1731,18 @@ CODE FOR XCOMPL
       INCLUDE 'QSTORE.INC'
 cdjw0106  problems with dynamic arrays if > about 90,000 refls
 cric0712  problems with static arrays if about 100001 refls...
-      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
+c      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
 c      parameter (itrmax=100001)
 c      DIMENSION IHKLTR ( 3, itrmax )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
       DIMENSION ACTBIN ( 100 )
       character *80 ctemp
+      integer, dimension(:,:), allocatable :: ihkltr
 
+      allocate( ihkltr( 3, itrsz+1 ) )
+
+      
       THBEST = 0.0
       THBCMP = 0.0
 c   convert thmax to (sin(th)/lam)^3
@@ -1991,6 +1995,7 @@ c
         CALL XPRVDU(NCVDU, 2,0)
 
       END IF
+      deallocate(ihkltr)
 c
       RETURN
       END
