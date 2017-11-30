@@ -24,7 +24,7 @@
 ^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=2                                         
 ^^WI    {                                                                       
 ^^WI     @ 1,1 STATIC XFW1                                                      
-^^WI 'You are looking at a scatter plot of 1/Sigma versus SQRT(weight).' 
+^^WI 'You are looking at a scatter plot of 1/Sigma versus SQRT(weight)' 
 %        IF FTYPE .EQ. 0 THEN
 ^^WI     @ 1,2 STATIC XFW1 ' for a refinement on F' 
 %        ELSE

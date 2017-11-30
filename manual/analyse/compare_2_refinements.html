@@ -26,15 +26,15 @@
 
   <ol>
     <li>Perform the first refinement and save the resulting atomic coordinates (LIST 5).
-    You will need to know how many atoms you have in your structure, and he names of the
+    You will need to know how many atoms you have in your structure, and the names of the
     first and last atoms.
 
       <ol>
         <li>Issue<br />
         <small>#DISPLAY LOW<br />
         END</small><br />
-        <span class="c2">Make a note of the serial number of atoms, and the identity of
-        the first and last atoms.</span><br />
+        <span class="c2">Make a note of the number of atoms, and the identity of the
+        first and last atoms.</span><br />
         <code>Summary of contents of list 5 - Parameters<br />
         <br />
         The list currently contains <strong><span class="c2">22</span></strong>
@@ -67,10 +67,10 @@
         #RELE PUNCH BFILE.PCH<br /></small></li>
 
         <li>Restore the current working LIST 5<br />
-        <small><small>#DISK<br />
+        <small>#DISK<br />
         RESET 5 xx<br />
-        END<br /></small></small> <span class="c2">Where xx is the list Serial number you
-        made a note of.</span></li>
+        END<br /></small> <span class="c2">Where xx is the list Serial number you made a
+        note of.</span></li>
       </ol>
     </li>
 
@@ -135,7 +135,8 @@
       3    C         3.   0.001  -0.001  -0.000   0.002   0.019
       4    C         4.  -0.001   0.003  -0.001   0.003   0.049
 </code>
-</pre>The orthogonalised adps are then compared:
+</pre>The orthogonalised adps are then compared. Uprime is defined in <i>Watkin, Acta
+Cryst (2000)</i>.
       <pre>
 <code>
 
@@ -147,7 +148,9 @@
            Q        1.     0.048   0.097   0.099   0.004   0.003  -0.008    0.047 0.095 0.103    0.210    0.077
                           -0.000   0.000   0.000  -0.001   0.000  -0.000   -0.000 0.001-0.000    0.002    0.000
 </code>
-</pre>Below this corresponding bond lengths and torsion angles are compared:
+</pre>Below this corresponding bond lengths and torsion angles are compared. Note that
+the bond length discrepancies will not correspond to the atomic displacements seen in
+<strong>#DISTANCE</strong> above.
       <pre>
 <code>
 
@@ -162,7 +165,31 @@ F1-C2-C3-C4                           Q1-Q2-Q3-Q4                              -
 F1-C2-C3-H31                          Q1-Q2-Q3-Q31                                2.77    2.92   -0.15
 C17-C2-C3-C4                          Q17-Q2-Q3-Q4                                0.44    0.59   -0.15
 </code>
-</pre>followed by a summary of the overall discrepancies.
+</pre>followed by a summary of the overall discrepancies.<br />
+      <br />
+    </li>
+
+    <li>Comparing two refinement in an external program.<br />
+      <br />
+      If you wish to compute functions of the two data sets in an external program, such
+      as EXCEL, <strong>do not</strong> change the atom names to Q before punching them
+      to the named file, and output them with<strong>#PUNCH 5 E</strong>. The file
+      FIRST.dat will contain two lines for each atom. The first contains the coordinates,
+      the second the e.s.d.<br />
+      Do a similar thing for the second refinement.
+
+      <ul>
+        <li><code>Issue<br />
+        <small>#RELE PUNCH FIRST.DAT<br />
+        #PUNCH 5 E<br />
+        END<br />
+        #RELE PUNCH BFILE.PCH<br /></small></code> Carry out the second refinement<br />
+        <code>Issue<br />
+        <small>#RELE PUNCH SECOND.DAT<br />
+        #PUNCH 5 E<br />
+        END<br />
+        #RELE PUNCH BFILE.PCH<br /></small></code></li>
+      </ul>
     </li>
   </ol>
 </body>

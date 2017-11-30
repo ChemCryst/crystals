@@ -1,4 +1,4 @@
-C $Log: not supported by cvs2svn $
+C $Log: not supported by cvs2svn  $
 C Revision 1.29  2012/04/13 07:56:54  djw
 C Correst cif restraint/constraint data name from instruction to instructions
 C
@@ -151,7 +151,11 @@ C--LIST TYPE 4:
       STORE(I+2) = STORE(JA+18)          !STORE THE ROBUST TOLERANCE
       STORE(I+3) = STORE(JA+19)          !STORE THE D-S SCHEME P1
       STORE(I+4) = STORE(JA+20)          !STORE THE D-S SCHEME P2
-      STORE(I+5) = STORE(JA+21)          !STORE THE QUASI MULTIPLIER
+C Two spare slots had been left in the part of XLST04 used for input so a new
+c variable can be added, but no spare room was set aside if L4F to store it.
+c XFAL04 tries to fix this for old list 4s
+      STORE(I+5) = STORE(JA+21)          !2017 - THE QUASI MULTIPLIER
+      STORE(I+6) = STORE(JA+22)          !2017 - RE-WEIGHT MODIFIER
       GOTO 2300
 C
 C--CHECK FOR LIST TYPE 5

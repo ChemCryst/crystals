@@ -1172,7 +1172,7 @@ C
       REWIND (MTE)
 C
 C----- SET LEVEL TO HIGH IF COORDINATES REQUESTED
-      IF ((IP .GE. 0) .AND. (LEVEL . GE. 0)) LEVEL = 1
+      IF ((IP .GE. 0) .AND. (LEVEL.GE. 0)) LEVEL = 1
 C----- WRITE HEADER IF RESTRAINTS TO BE GENERATED
       IF (IPUNCH .EQ. 0) CALL XPCHLH (16, ncpu)
 
@@ -1189,7 +1189,7 @@ cnancy just make nw 16 for all cases
         nw = 16	
         NCOL=9
 C----- RESET COLUMNS FOR BRIEF O/P
-        IF (LEVEL .LE. 0) NCOL = 11
+        IF (LEVEL.LE. 0) NCOL = 11
         L12=-1
         JU=2
         JV=2
@@ -1230,7 +1230,7 @@ cnancy  make nw 16 for all cases
         JV=3
         NCOL=5
 C----- RESET COLUMN FOR BRIEF O/P
-        IF (LEVEL .LE. 0) NCOL = 6
+        IF (LEVEL.LE. 0) NCOL = 6
 C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
         JA=NFL
         JD = JA + NWA * NWS * MXPPP
@@ -2074,8 +2074,10 @@ c
      2           STORE(J+10),(STORE(J+JAR),JAR=7,9)
                 ENDIF
                 CALL XPRVDU(NCVDU, 1,0)
+                if ((issprt .eq. 0) .and. (level.eq.-2) )                
+     1          write(ncwu,'(a)')trim(cmon(1))
 c^^djwnov06
-                IF ((ISSPRT .EQ. 0) .and. (level .eq.0) )
+                IF ((ISSPRT .EQ. 0) .and. (LEVEL.eq.0) )
      1          WRITE(NCWU, '(A)') trim(CMON(1))
 2806            FORMAT (A,A,' - ',A, F6.3, F6.3, 1X, 3F6.3)
 2807            FORMAT (A,A,' - ',A, F6.3, 6X,   1X, 3F6.3)
@@ -2145,14 +2147,14 @@ C----- WRITE SIMPLE FORM
      1          STORE(J+10), CATOM1(1:LATOM1), CATOM2(1:LATOM2)
               ENDIF
 C
-              IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
+              IF ((LEVEL2 .EQ. 0) .AND. (LEVEL.GE. 0)) THEN
 C----- WRITE A CAPTION
-                IF (LEVEL .EQ. 0) THEN
+                IF (LEVEL.EQ. 0) THEN
 C                  IF (ISSPRT .EQ. 0) THEN
 C                    WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
 C                  ENDIF
 2825              FORMAT(/,'Pivot ',A4,F5.0)
-                ELSE IF (LEVEL .GE. 1) THEN
+                ELSE IF (LEVEL.GE.1) THEN
                   IF (ISSPRT .EQ. 0) THEN
                     WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
      1                    (STORE(MMN),MMN=M5P+4,M5P+6)
@@ -2297,13 +2299,13 @@ C--CHECK IF THIS IS THE FIRST TIME OR A CONTINUATION
 
 
           IF (NFLBAS .GE. L) THEN                           ! FIRST TIME
-            IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
+            IF ((LEVEL2 .EQ. 0) .AND. (LEVEL.GE. 0)) THEN
 C----- WRITE A CAPTION
-              IF (LEVEL .EQ. 0) THEN
+              IF (LEVEL.EQ. 0) THEN
                 IF (ISSPRT .EQ. 0) THEN
                   WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
                 ENDIF
-              ELSE IF (LEVEL .GE. 1) THEN
+              ELSE IF (LEVEL.GE. 1) THEN
                 IF (ISSPRT .EQ. 0) THEN
                   WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
      1              (STORE(MMN),MMN=M5P+4,M5P+6)
@@ -2312,7 +2314,7 @@ C----- WRITE A CAPTION
               LEVEL2 = 1
             ENDIF
 Cdjwnov06^^
-                IF (LEVEL .EQ. 0) THEN
+                IF (LEVEL.EQ. 0) THEN
                   IF (ISSPRT .EQ. 0) THEN
                     WRITE(NCWU,2825) STORE(M5a),STORE(M5a+1)
                   ENDIF
@@ -2795,7 +2797,7 @@ C--PRINT WITH ERRORS
                 WRITE(NCWU,5520)N,STORE(ND),STORE(ND+1),
      1                                       (APD(NF),NF=1,NC)
 5520            FORMAT(I4,2X,A4,F5.0,3X,7(F8.2,F6.2))
-              ELSE IF ( LEVEL .GT. 0 ) THEN
+              ELSE IF ( LEVEL.GT. 0 ) THEN
                 WRITE(NCWU,5500)N,STORE(ND),STORE(ND+1),
      1               (ISTORE(NF+2),NF=NZ,NE),(APD(NF),NF=1,NC)
 5500            FORMAT(I4,3X,A4,F8.0,4X,I3,I4,3I5,3X,5(F8.2,F6.2))

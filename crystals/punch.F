@@ -284,6 +284,7 @@ CODE FOR XPCH5S
 C--PUNCH LIST 5 IN CRYSTALS FORMAT
 C      IN 1 EVERYTHING
 C         0 ONLY ATOMS
+C        -1 NO HEADER OR OVERALL - SUITABLE FOR INPUT WITH #EDIT
 C
 C--
       INCLUDE 'ISTORE.INC'
@@ -294,9 +295,17 @@ C
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
+      IF (IN .GT. 0) THEN
+       WRITE(CMON,'('' Punching LIST 5A in CRYSTALS format'')')
+       CALL XPRVDU(NCVDU, 1,0)
+      ELSE
+       WRITE(CMON,'('' Punching LIST 5A atoms only'')')
+       CALL XPRVDU(NCVDU, 1,0)
+      ENDIF
 C--LOAD LIST 5 FROM THE DISC
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -387,9 +396,12 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
+      WRITE(CMON,'('' Punching LIST 5B in XRAY format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C--LOAD LIST 5
       CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -459,6 +471,7 @@ C
       INCLUDE 'XLST23.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 #ifdef _HOL_
@@ -469,6 +482,8 @@ C
       DATA KDET /'D   '/
 #endif
 C
+      WRITE(CMON,'('' Punching LIST 5C in SHELX format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
@@ -626,6 +641,8 @@ C
       INCLUDE 'UFILE.INC'
 C
       INCLUDE 'QSTORE.INC'
+      WRITE(CMON,'('' Punching LIST 5D in CHIME (xyz) format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C
       IF (KEXIST(1) .LT. 1) THEN
       WRITE(CMON,'('' No Cell Parameters Available'')')
@@ -727,6 +744,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'QSTORE.INC'
 C
+      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C
 C--INITIALISE THE TIMING
       CALL XTIME1(2)
@@ -3160,7 +3179,7 @@ C
 100   FORMAT('SCHEME ', I2, ' NPARAM=',I2,' TYPE=',A,/,
      1       'CONT WEIGHT=',F12.7,' MAX=',F12.4,' ROBUST=',A1,/,
      2       'CONT DUNITZ=',A1,' TOLER=',F12.4,' DS1=',F12.4,/,
-     3       'CONT DS2=',F12.4,' QUASI=',F12.4 )
+     3       'CONT DS2=',F12.4,' REWT=',F12.4 )
       IPARAM = 3
       IDIR   = 1
       IVAL   = ISTORE(L4C+1) !NB Param offset is different from param number here!

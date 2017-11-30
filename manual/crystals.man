@@ -6152,6 +6152,7 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
                 Kabsch method and applied. This algorithm
                 preserves chirality.
        4        Enable improper rotation in Kabsch method
+       5        Use identity matrix as rotation component
 #
 #DGROUP NUMBER#
 #PThis directive specifies the number of atoms in the groups to be matched.
@@ -11056,13 +11057,17 @@ section #RLIST20#).
 #N   3#
 #J
       OFF
-      LOW   -  Default
-      HIGH
+      LOW  
+      MEDIUM
+      HIGH   -  Default
+      DISTANCE
+      (DEBUG)
 #
- If  LIST  is  LOW , the default, then the listing is in a compressed
+ If  LIST  is  LOW the the listing is in a compressed
  format, without symmetry information. If LIST is OFF, no output is sent
  to the listing file unless PUNCH is PUBLISH, when a copy of the publication
- listing appears in the listing file.
+ listing appears in the listing file. If LIST is DISTANCE, a simplified table of
+ distances is output.
 #
 #KPUNCH=#
  This controls the output sent to the 'punch' file.
