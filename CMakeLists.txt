@@ -166,6 +166,11 @@ else ()
     endif()
 endif ()
 
+STRING(TOUPPER ${BLA_VENDOR} TEMP)
+if(TEMP MATCHES "INTEL")
+    add_definitions(-DCRY_MKL)
+endif ()
+
 # Reset flags
 set(CMAKE_Fortran_FLAGS "")
 set(CMAKE_C_FLAGS "")
@@ -261,13 +266,30 @@ endif ()
 # Required to assign hollerith data in a legacy manner to integers
 add_definitions(-D _HOL_)
 
-
 string (TIMESTAMP CRYYEAR "%Y")
 string (TIMESTAMP CRYMONTH "%m")
 string (TIMESTAMP CRYDAY "%d")
 set (CRYSVNVER "$ENV{CRYSVNVER}")
+set (CRYHOST "${CMAKE_SYSTEM_NAME}")
+
+if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
+    MESSAGE("++ 64 bit architecture") 
+    if(use32)
+        set(CRYARCH "x86") 
+    else ()
+        set(CRYARCH "x86_64") 
+    endif ()
+else() 
+    set(CRYARCH "x86") 
+endif()
+
 IF (NOT CRYSVNVER)  # not set
-    SET (CRYSVNVER "0000")
+    if ( ${CMAKE_SYSTEM_NAME} STREQUAL "Linux" )
+        EXECUTE_PROCESS(COMMAND svn info ${CMAKE_SOURCE_DIR} COMMAND grep Revision COMMAND cut -d " " -f 2 OUTPUT_VARIABLE CRYSVNVER OUTPUT_STRIP_TRAILING_WHITESPACE)
+    ELSE ()
+        SET (CRYSVNVER "0000")
+    ENDIF ()
+    message(STATUS "Svn version: ${CRYSVNVER}")
 ENDIF()
 message(STATUS "Compilation date = ${CRYDAY} / ${CRYMONTH} / ${CRYYEAR}")
 
@@ -527,7 +549,7 @@ SET  (srtfiles)
 FOREACH (_file ${ssrfiles})
     STRING(REPLACE ".ssr" ".srt" file_srt ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_srt}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
                         DEPENDS datafiles/${_file} )
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()
