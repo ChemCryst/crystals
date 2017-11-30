@@ -7915,7 +7915,7 @@ C
       integer napplied !< number of atoms on which the restraint is applied
 
       double precision DAA(20,20) !< normal matrix
-      double precision DAR(21),DAI(20,20),DAS(20), ABdp(20)
+      double precision DAR(21),DAI(20,20),DAII(6,20),DAS(20), ABdp(20)
       double precision aaa, bbb, ccc, ddd
       double precision anumb, del, dels, delu, rad, rmsu, sfac
       double precision sum, sums, sumu
@@ -7930,6 +7930,14 @@ C
       logical flag
       
       integer, external :: kinv2, kinv2dp
+      
+      interface
+        subroutine rsub08pp (xyz, co, dv)
+          double precision, dimension(3), intent(in) :: xyz !< coordinates in orthogonal coordinates
+          double precision, dimension(3), intent(in) :: co !< centre of libration in orthogonal coordinates
+          double precision, dimension(6, 20), intent(out) :: dv !< calculated derivatives
+        end subroutine
+      end interface
 
       
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
@@ -8057,16 +8065,16 @@ C---ORTHOGONALIZE U'S, STORING AS WC
          WBdp=matmul(WAdp, transpose(OUM)) ! CALL XMLTMT (WA,OUM,WB,3,3,3)
          CALL RSUB09DP (WBdp,WCdp)
 C---SET UP DERIVATIVES FOR THIS ATOM
-         dai=0.0d0
-         CALL RSUB08PP (occordinates(:,JA), cogo, DAI(1:6,1:20))
+         daii=0.0d0
+         CALL RSUB08PP (occordinates(:,JA), cogo, DAII)
 C---ACCUMULATE L.H.S. AS AA, R.H.S. AS AB
          DO Ncpt=1,6
             DO Icpt=1,20
               DO Jcpt=Icpt,20
                 DAA(Icpt,Jcpt)=DAA(Icpt,Jcpt)+
-     1             DAI(Ncpt,Icpt)*DAI(Ncpt,Jcpt)
+     1             DAII(Ncpt,Icpt)*DAII(Ncpt,Jcpt)
               end do
-              ABdp(Icpt)=ABdp(Icpt)+DAI(Ncpt,Icpt)*WCdp(Ncpt)
+              ABdp(Icpt)=ABdp(Icpt)+DAII(Ncpt,Icpt)*WCdp(Ncpt)
             end do
           end do
 C---RESET COUNTERS
@@ -8138,8 +8146,8 @@ C--LOOP OVER EACH ATOM IN TURN
          !end if
 C--CHECK IF THE ATOM IS ISOTROPIC
          adps=store(ISTORE(JB+16)+14:ISTORE(JB+16)+14+11:2)
-         CALL RSUB08PP(occordinates(:,ja), cogo, DAI(1:6,1:20))
-         WCdp=matmul(DAI(1:6,1:20), DAR(1:20)) ! CALL XMLTMM (DV,AR,WC,6,20,1)
+         CALL RSUB08PP(occordinates(:,ja), cogo, DAII)
+         WCdp=matmul(DAII, DAR(1:20)) ! CALL XMLTMM (DV,AR,WC,6,20,1)
          CALL RSUB10DP (WAdp,WCdp) ! 6x1 (WC)  to 3x3 (WA)
          WBdp=matmul(OUM, WAdp) !CALL XMLTMM (OUM,WA,WB,3,3,3)
          WAdp=matmul(WBdp, transpose(OUM)) ! CALL XMLTMT (WB,OUM,WA,3,3,3)

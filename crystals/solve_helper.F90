@@ -797,6 +797,11 @@ integer :: starttime
 integer, dimension(8) :: measuredtime
 #endif
 
+#if defined(CRY_OSLINUX) 
+call date_and_time(VALUES=measuredtime)
+starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+#endif
+
 info=0
 blasname=''
 
@@ -1062,7 +1067,6 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
         
         deallocate(dpreconditioner)
         deallocate(dunpacked)   
-        return
     
     end if
 else ! all good for single precision inversion
@@ -1131,6 +1135,13 @@ else ! all good for single precision inversion
     deallocate(preconditioner)
     deallocate(unpacked)
 end if
+
+#if defined(CRY_OSLINUX) 
+call date_and_time(VALUES=measuredtime)
+print *, 'invert via auto decomposition', &
+&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000 +&
+&       measuredtime(8)-starttime, 'ms'
+#endif
 
 end subroutine
 

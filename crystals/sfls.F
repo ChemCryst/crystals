@@ -1737,7 +1737,7 @@ c     getenv is a deprecated extension
               tid=i
           end if
       end if
-      tid=min(tid, 6)
+      tid=min(tid, 7)
 
 #ifdef CRY_OSLINUX
       print *, 'Number of threads used around DSYRK: ', tid
@@ -3415,6 +3415,9 @@ C-C-C-...FOR STRUCTURE FACTOR-CALCULATION
       DOUBLE PRECISION SLRFAC
 C-C-C-...FOR DERIVATIVES
       DOUBLE PRECISION DSIZE, DDECLINA, DAZIMUTH
+      
+      real, dimension(:), allocatable :: Tiso
+      real, dimension(:,:), allocatable :: T, Ttemp, atemp, cosa, sina
 
       REAL ALPD(11),BLPD(11)   ! Use local arrays for better optimisation?
 
@@ -3702,6 +3705,69 @@ C--START OF THE LOOP BASED ON THE ATOMS
 C
 
       M5A=L5
+      allocate(Tiso(N5))
+      allocate(T(n5, n2t))
+      allocate(Ttemp(n5, n2t))
+      allocate(atemp(n5, n2t))
+      allocate(cosa(n5, n2t))
+      allocate(sina(n5, n2t))
+
+c Pre-calculating some expensives values using optimised functions if available
+c and threads
+!$OMP SECTIONS
+!$OMP SECTION
+c calculate the iso-temperature factor coefficients for this atom
+c TC = -8 Pi^2 [sin(theta)/lambda]^2
+c T = exp(Uiso *TC)
+c 
+#ifdef CRY_MKL
+      call vsExp( n5, STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC, Tiso )
+#else
+      Tiso=EXP(STORE(M5A+7:M5A+7+(N5-1)*MD5A:MD5A)*TC)  
+#endif
+
+!$OMP SECTION
+c  calculate the aniso-temperature factor
+c  T=exp(h*Uij + ...)
+c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
+
+      do icpt=1, n2t
+        Ttemp(:, icpt)=
+     1    STORE(L5+7:L5+7+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+4)
+     2   +STORE(L5+8:L5+8+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+5)
+     3   +STORE(L5+9:L5+9+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+6)
+     4   +STORE(L5+10:L5+10+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+7)
+     5   +STORE(L5+11:L5+11+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+8)
+     6   +STORE(L5+12:L5+12+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+9)
+
+#ifdef CRY_MKL
+        call vsExp( n5, Ttemp(:,icpt), T(:,icpt) )
+#else
+        T(:,icpt)=exp(Ttemp(:,icpt))
+#endif
+      end do
+!$OMP SECTION
+C--CALCULATE THE SIN/COS TERMS 
+c  dd = 1.0/twopi
+c  a = h'.x + h.t
+c
+      do icpt=1, n2t
+          Atemp(:, icpt)=
+     1      STORE(L5+4:L5+4+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1))
+     1     +STORE(L5+5:L5+5+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+1)
+     2     +STORE(L5+6:L5+6+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+2)
+     3     +                                  STORE(L2T+MD2T*(icpt-1)+3)       
+
+#ifdef CRY_MKL
+      call vssincos(n5, atemp(:,icpt), sina(:,icpt), cosa(:,icpt))        
+#else
+      cosa(:,icpt)=cos(atemp(:,icpt))
+      sina(:,icpt)=sin(atemp(:,icpt))
+#endif
+      end do
+!$OMP END SECTIONS
+
+      
       DO LJY=1,N5
 
         AT=0.  ! CLEAR THE ACCUMULATION VARIABLES
@@ -3726,31 +3792,21 @@ c
         FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) 
 
         FLAG=STORE(M5A+3)   ! PICK UP THE TYPE OF THIS ATOM
+
         IF(NINT(FLAG) .EQ. 1) THEN  ! CHECK THE TEMPERAURE TYPE FOR THIS ATOM
-c
-c calculate the iso-temperature factor coefficients for this atom
-c TC = -8 Pi^2 [sin(theta)/lambda]^2
-c T = exp(Uiso *TC)
-c
-#ifdef USE_SLEEF 
-          T=sleef_expf(STORE(M5A+7)*TC)  
-#else
-          T=EXP(STORE(M5A+7)*TC)  
-#endif
-          TFOCC=T*FOCC
+          TFOCC=Tiso(ljy)*FOCC
         END IF
 c
 c L2T is address of symmetry transformed index
 c
         M2T=L2T
         M2=L2   ! M2 (ADDR. FOR TRANSF.MAT.) IS RESET TO ADDR. FOR 1ST SYM.OP.
+
 c
 c loop cycling over the different equivalent reflections for this atom
 c
 c  calculate a = h'.x + h.t
         DO LJX=1,N2T
-          A=STORE(M5A+4)*STORE(M2T)+STORE(M5A+5)*STORE(M2T+1)
-     2     +STORE(M5A+6)*STORE(M2T+2)+STORE(M2T+3)              
 c  slrfac starting-values for special shape factors and derivatives
           SLRFAC=1.0 
           DSIZE=1.0
@@ -3764,18 +3820,7 @@ c  T=exp(h*Uij + ...)
 c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
 
 c
-#ifdef USE_SLEEF
-            T=sleef_expf(STORE(M5A+7)*STORE(M2T+4)
-     2       +STORE(M5A+8)*STORE(M2T+5)
-     3       +STORE(M5A+9)*STORE(M2T+6)+STORE(M5A+10)*STORE(M2T+7)
-     4       +STORE(M5A+11)*STORE(M2T+8)+STORE(M5A+12)*STORE(M2T+9))
-            TFOCC=T*FOCC
-#else
-            T=EXP(STORE(M5A+7)*STORE(M2T+4)+STORE(M5A+8)*STORE(M2T+5)
-     2       +STORE(M5A+9)*STORE(M2T+6)+STORE(M5A+10)*STORE(M2T+7)
-     3       +STORE(M5A+11)*STORE(M2T+8)+STORE(M5A+12)*STORE(M2T+9))
-            TFOCC=T*FOCC
-#endif
+            TFOCC=T(LJY,LJX)*FOCC
 c
           ELSE IF ( NINT(FLAG) .GE. 2) THEN
             IF (NINT(FLAG) .EQ. 2) THEN  ! CALC SPHERE TF
@@ -3785,61 +3830,11 @@ c
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             END IF
-#ifdef USE_SLEEF 
-            T=sleef_expf(STORE(M5A+7)*TC)
-#else
-            T=EXP(STORE(M5A+7)*TC)
-#endif
-            TFOCC=T*FOCC
+
+            TFOCC=Tiso(ljy)*FOCC
             TFOCC=TFOCC*SLRFAC
           ENDIF
-
-C--CALCULATE THE SIN/COS TERMS   (NB This is a Chebychev approximation - v. fast)
-c  dd = 1.0/twopi
-c  a = h'.x + h.t
-c
-#ifdef USE_SLEEF 
-          c = mod(a,2.0*3.14159265359)
-          call sleef_sincosf(c, scb)          
-          s=scb(1)
-          c=scb(2)
-#else
-          c = cos(a)
-          s = sin(a)
-#endif
-c          A=A*DD
-c          A=4.*(A-FLOAT(INT(A)))
-c          IF(A .EQ. 0) THEN
-c            S=0.
-c            C=1.
-c            GOTO 8850
-c          ELSE IF ( A .LT. 0 ) THEN
-c            A=A+4.
-c          END IF
-c          S=1.
-c
-c          IF(A.EQ.2.)THEN
-c            S=0.
-c            C=-1.
-c            GOTO 8850
-c          ELSE IF ( A .GT. 2 ) THEN 
-c            S=-1.
-c            A=A-2.
-c          END IF
-c          C=S
-c
-c          IF(A.EQ.1.)THEN 
-c            C=0.
-c            GOTO 8850
-c          ELSE IF ( A .GT. 1 ) THEN
-c            C=-C
-c            A=2.-A
-c          END IF
-c          B=A*A
-cc
-cc c = Cos(h'x+ht)
-c          C=C*(C0+B*(C1+B*(C2+B*C3)))
-cc
+     
 cc Test if  centro with no refinement  -  only cos terms needed
           IF(COS_ONLY) GOTO 8900
 cc
@@ -3848,12 +3843,12 @@ c          S=S*A*(S0+B*(S1+B*(S2+B*S3)))
 c
 8850      CONTINUE
 C--CALCULATE THE B CONTRIBUTION
-          BP=S*TFOCC
+          BP=Sina(ljy,ljx)*TFOCC
           BT=BT+BP
 c
 C--CALCULATE THE A CONTRIBUTION
 8900      CONTINUE
-          AP=C*TFOCC
+          AP=Cosa(ljy,ljx)*TFOCC
           AT=AT+AP
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'BT:',BT,BT
@@ -3870,7 +3865,7 @@ c  c = cos(hx)
 c
 C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR X,Y AND Z
 C-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR OCC,X,Y AND Z
-            ALPD(1)=ALPD(1)+T*C*SLRFAC
+            ALPD(1)=ALPD(1)+T(LJY,LJX)*Cosa(ljy,ljx)*SLRFAC
             ALPD(3)=ALPD(3)-STORE(M2T)*BP
             ALPD(4)=ALPD(4)-STORE(M2T+1)*BP
             ALPD(5)=ALPD(5)-STORE(M2T+2)*BP
@@ -3879,12 +3874,7 @@ C--CHECK THE TEMPERATURE FACTOR TYPE
 C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
               IF (NINT(FLAG) .LE. 1) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR THE ANISO-TERMS
-                ALPD(6)=ALPD(6)+STORE(M2T+4)*AP
-                ALPD(7)=ALPD(7)+STORE(M2T+5)*AP
-                ALPD(8)=ALPD(8)+STORE(M2T+6)*AP
-                ALPD(9)=ALPD(9)+STORE(M2T+7)*AP
-                ALPD(10)=ALPD(10)+STORE(M2T+8)*AP
-                ALPD(11)=ALPD(11)+STORE(M2T+9)*AP
+                ALPD(6:11)=ALPD(6:11)+STORE(M2T+4:M2T+9)*AP
               ELSE
 C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR ISO-TERM + SPECIAL FIGURES
                 ALPD(6)=ALPD(6)+TC*AP
@@ -3901,7 +3891,7 @@ C--GOTO THE NEXT PART - DEPENDS ON WHETHER THE STRUCTURE IS CENTRO
             IF(.NOT. CENTRO) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR X,Y AND Z
 C-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR OCC,X,Y AND Z
-              BLPD(1)=BLPD(1)+T*S*SLRFAC
+              BLPD(1)=BLPD(1)+T(LJY,LJX)*Sina(ljy,ljx)*SLRFAC
               BLPD(3)=BLPD(3)+STORE(M2T)*AP
               BLPD(4)=BLPD(4)+STORE(M2T+1)*AP
               BLPD(5)=BLPD(5)+STORE(M2T+2)*AP
@@ -3910,12 +3900,7 @@ C--CHECK THE TEMPERATURE FACTOR TYPE
 C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
                 IF (NINT(FLAG) .LE. 1) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR THE ANISO-TERMS
-                  BLPD(6)=BLPD(6)+STORE(M2T+4)*BP
-                  BLPD(7)=BLPD(7)+STORE(M2T+5)*BP
-                  BLPD(8)=BLPD(8)+STORE(M2T+6)*BP
-                  BLPD(9)=BLPD(9)+STORE(M2T+7)*BP
-                  BLPD(10)=BLPD(10)+STORE(M2T+8)*BP
-                  BLPD(11)=BLPD(11)+STORE(M2T+9)*BP
+                  BLPD(6:11)=BLPD(6:11)+STORE(M2T+4:M2T+9)*BP
                 ELSE
 C-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                   BLPD(6)=BLPD(6)+TC*BP
@@ -4072,11 +4057,7 @@ c
       IF(SFLS_TYPE .EQ. SFLS_REFINE) THEN    ! CHECK IF WE ARE DOING REFINEMENT
         LJU=ISTORE(NI+18)    ! TRANSFER THE P.D.'S TO THE STACK
         LJV=ISTORE(NI+19)
-        LJS=JR
-        DO LJW=LJU,LJV
-          STORE(LJW)=STORE(LJS)
-          LJS=LJS+1
-        END DO
+        STORE(LJU:LJV)=STORE(JR:JR+(LJV-LJU))
       END IF
 
       RETURN
