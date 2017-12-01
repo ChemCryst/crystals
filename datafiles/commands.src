@@ -1779,7 +1779,7 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
 (1X ,I7,7I15)
          3    3    3    3    3    3    3    3    3    2    2    2    1    3    3
          3    2
-    .XXXXXXX            0    0    1    2   -1 NO
+    .HUGE               0    0    1    2   -1 NO
      NO             YES
     .YYYYYY             0    0    1   -1    1 NO
     .LIST               0    0    1    4   -2 OFF

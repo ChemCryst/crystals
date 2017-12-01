@@ -1712,13 +1712,15 @@ C
       ! other parameters
       double precision, dimension(:,:), allocatable :: designmatrix
       double precision, dimension(:,:,:), allocatable :: normalmatrix!, ref
+      real, dimension(:,:), allocatable :: designmatrix_sp
+      real, dimension(:,:,:), allocatable :: normalmatrix_sp!, ref
       ! right hand side temporary storage in double precision to fix error accumulation
       ! this storage in put back in str11 in the end
       double precision, dimension(:), allocatable :: righthandside
       ! reflections indices in designmatrix
       integer, dimension(:,:), allocatable :: hkllist
       ! tid is the number of threads
-      integer :: designindex, tid, sfls_punch_flag
+      integer :: designindex, tid, sfls_punch_flag, sfls_sp_normalm
       integer, parameter :: designchunk=512
       character(len=4) :: buffer
 
@@ -1760,6 +1762,7 @@ C----- INITIALISE THE SORT BUFFER
       JSORT = 5
 
       sfls_punch_flag=ISTORE(M33CD+5)
+      sfls_sp_normalm=ISTORE(M33CD)
       
       IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage calc.
 C----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
@@ -1869,14 +1872,25 @@ C--CHECK IF A PRINT IS REQUIRED
 
       NO=JO
       NP=JP
-      allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
-      !allocate(ref(JP-JO+1,JP-JO+1))
-      normalmatrix=0.0
+      if(sfls_sp_normalm<0) then
+        allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
+        !allocate(ref(JP-JO+1,JP-JO+1))
+        normalmatrix=0.0d0
+      else
+        allocate(normalmatrix_sp(JP-JO+1,JP-JO+1, tid))
+        !allocate(ref(JP-JO+1,JP-JO+1))
+        normalmatrix_sp=0.0
+      end if
       !ref=0.0
       designindex=0
       ! size of the design matrix chunk to be tuned (PP)
-      allocate(designmatrix(JP-JO+1,designchunk*tid))
-      designmatrix=0.0d0
+      if(sfls_sp_normalm<0) then
+        allocate(designmatrix(JP-JO+1,designchunk*tid))
+        designmatrix=0.0d0
+      else
+        allocate(designmatrix_sp(JP-JO+1,designchunk*tid))
+        designmatrix_sp=0.0
+      end if
       allocate(hkllist(3,designchunk*tid))
       hkllist=0
       allocate(righthandside(n11r))
@@ -2373,7 +2387,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                   ! Store a chunk of the design matrix
                   ! When the chunk is full, accumulate the normal matrix
                   designindex=designindex+1
-                  if(designindex>ubound(designmatrix,2)) then
+                  if(designindex>designchunk*tid) then
                       ! Output design matrix to disk
                       if(sfls_punch_flag>0) then
                           call sfls_punch_addtodesign(designmatrix, 
@@ -2382,15 +2396,24 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                   
                       ! accumulate normal matrix
 !$OMP PARALLEL default(none) 
-!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
+!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm)
+!$OMP& shared(designmatrix_sp, normalmatrix_sp)
 
 !$OMP DO schedule(static)
                       do i=1, tid
                           ! passing first element as array to avoid temporary copy
-                          call DSYRK('L','N',JP-JO+1,designchunk,
-     1                      1.0d0, 
-     2                      designmatrix(1,designchunk*(i-1)+1),
-     3                      JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
+                          if(sfls_sp_normalm<0) then
+                            call DSYRK('L','N',JP-JO+1,designchunk,
+     1                        1.0d0, 
+     2                        designmatrix(1,designchunk*(i-1)+1),
+     3                        JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
+                          else
+                            call SSYRK('L','N',JP-JO+1,designchunk,
+     1                        1.0, 
+     2                        designmatrix_sp(1,designchunk*(i-1)+1),
+     3                        JP-JO+1,1.0,
+     4                        normalmatrix_sp(1,1,i),JP-JO+1)
+                          end if
                       end do
 !$OMP END DO
 !$OMP END PARALLEL
@@ -2398,10 +2421,19 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
                       ! reset index for the chunk array
                       designindex=1
-                      designmatrix=0.0d0
+                      if(sfls_sp_normalm<0) then
+                        designmatrix=0.0d0
+                      else
+                        designmatrix_sp=0.0
+                      end if
                       hkllist=0
                   end if
-                  designmatrix(:,designindex) = STORE(JO:JP)
+
+                  if(sfls_sp_normalm<0) then
+                    designmatrix(:,designindex) = STORE(JO:JP)
+                  else
+                    designmatrix_sp(:,designindex) = STORE(JO:JP)
+                  end if
                   if(sfls_punch_flag>0) then
                       hkllist(:, designindex)=nint(STORE(M6:M6+2))
                   end if
@@ -2500,27 +2532,45 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
 
                    ! Accumulate the normal matrix
 !$OMP PARALLEL default(none) 
-!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid) 
+!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm) 
+!$OMP& shared(designmatrix_sp, normalmatrix_sp)
 
 !$OMP DO schedule(static)
                 do i=1, tid
-                     call DSYRK('L','N',JP-JO+1,designchunk,
-     1                   1.0d0, 
-     2                   designmatrix(1,designchunk*(i-1)+1),
-     3                   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
+                     if(sfls_sp_normalm<0) then
+                         call DSYRK('L','N',JP-JO+1,designchunk,
+     1                      1.0d0, 
+     2                       designmatrix(1,designchunk*(i-1)+1),
+     3                       JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
+                     else
+                         call SSYRK('L','N',JP-JO+1,designchunk,
+     1                      1.0, 
+     2                       designmatrix_sp(1,designchunk*(i-1)+1),
+     3                       JP-JO+1,1.0,normalmatrix_sp(1,1,i),JP-JO+1)
+                     end if
                  end do
 !$OMP END DO
 !$OMP END PARALLEL
                  end if
 
 c Only vectorized with gfortran 4.8 not 4.4
-                 do i=1, ubound(normalmatrix,2)
-                     do j=2, ubound(normalmatrix,3)
+                 if(sfls_sp_normalm<0) then
+                     do i=1, ubound(normalmatrix,2)
+                         do j=2, ubound(normalmatrix,3)
                             normalmatrix(:,i,1)=normalmatrix(:,i,1)
      1                          +normalmatrix(:,i,j)
-                      end do
-                 end do
- 
+                          end do
+                     end do
+                 else
+                     do i=1, ubound(normalmatrix_sp,2)
+                         do j=2, ubound(normalmatrix_sp,3)
+                            normalmatrix_sp(:,i,1)=
+     1                          normalmatrix_sp(:,i,1)
+     2                          +normalmatrix_sp(:,i,j)
+                          end do
+                     end do
+                 end if
+                 
                  ! Pack normal matrix back into original crystals storage     
                  IBL = 1                  ! Parameter # at start of current block
                  IBS = L11                ! Packed storage address.
@@ -2531,8 +2581,13 @@ c Only vectorized with gfortran 4.8 not 4.4
                    do i=1,MNR
                      j = ((i-1)*(2*(MNR)-i+2))/2
                      k = j + MNR - i
-                     STR11(IBS+j:IBS+k)
-     1                =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
+                     if(sfls_sp_normalm<0) then
+                       STR11(IBS+j:IBS+k)
+     1                   =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
+                     else
+                       STR11(IBS+j:IBS+k)
+     1                   =normalmatrix_sp(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
+                     end if
 
 c E.g. two blocks of 2 - normalmatrix is 4x4, output is 2 upper triangles of side 2.
 c Initially IBL is 1, IBS is L11.
@@ -2578,9 +2633,13 @@ c      end do
      2  measuredtime(7))*1000+measuredtime(8)-starttime
 #endif
       
-      deallocate(designmatrix)
-      deallocate(normalmatrix)      
-
+      if(sfls_sp_normalm<0) then
+        deallocate(designmatrix)
+        deallocate(normalmatrix)      
+      else
+        deallocate(designmatrix_sp)
+        deallocate(normalmatrix_sp)      
+      end if
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 
       IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage plot

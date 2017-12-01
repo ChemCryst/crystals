@@ -342,13 +342,14 @@ C
       integer nrejected
       character(len=16) blasname
       
-      character(len=22),dimension(0:5), parameter :: methodtxt=(/
+      character(len=22),dimension(0:6), parameter :: methodtxt=(/
      &  'Automatic             ',
      &  'LDLT                  ',
      &  'Eigen filtering       ',
-     &  'LDLT doublre precision',
+     &  'LDLT double precision ',
      &  'old crystals Choleski ',
-     &  'modern Choleski       ' /)
+     &  'modern Choleski       ',
+     &  'modern Choleski dp    ' /)
      
 c
 #ifdef _HOL_
@@ -362,8 +363,6 @@ C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(2)
 C--READ ANY OTHER PARAMETERS
       IF ( KRDDPV ( ISTORE(NFL),1 )   .LT.   0 ) GO TO 9900
-C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOLESKI
-      METHOD = ISTORE(NFL)
 C--CLEAR THE CORE
       CALL XCSAE
       CALL XRSL
@@ -372,6 +371,12 @@ C--LOAD THE CONTROL LISTS
       INCLUDE 'IDIM33.INC'
       CALL XFAL33
       sfls_punch_flag=ISTORE(M33CD+5)
+C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOLESKI
+      if(istore(M33CD)<0) then
+        METHOD = ISTORE(NFL)
+      else
+        method=6
+      end if
       IF ( IERFLG .LT. 0 ) GO TO 9900
 cdjwdec06 - save the sparsity flag. 0=sparse
       ispar = istore(m33cd+13)
@@ -854,6 +859,12 @@ c stupid compiler has a stack overflow by making a temporary array
            case(5)               
 c Cholesky inversion + preconditioning
                call choleskyl_inversion(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+c                print *, STR11(L11C:L11C+5)
+
+           case(6)               
+c Cholesky inversion + preconditioning
+               call choleskyl_inversion_dp(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 c                print *, STR11(L11C:L11C+5)
                

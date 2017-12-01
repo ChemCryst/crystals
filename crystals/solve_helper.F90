@@ -757,6 +757,149 @@ deallocate(unpacked)
 
 end subroutine
 
+!> code for the inversion of the normal matrix using cholesky decomposition in double precision
+!! from lapack
+subroutine choleskyl_inversion_dp(nmatrix, nmsize, info)
+implicit none
+!> Leading dimension of the matrix nmatrix
+integer, intent(in) :: nmsize
+!> On input symmetric real matrix stored in packed format (lower triangle)
+!! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
+!! On output the inverse of the matrix is return
+real, dimension(nmsize*(nmsize+1)/2), intent(inout) :: nmatrix
+!> Status of the calculation. =0 if success
+integer, intent(out) :: info
+
+double precision, dimension(:), allocatable :: preconditioner
+integer i, j, k
+double precision, dimension(:,:), allocatable :: unpacked, original
+
+double precision, dimension(:), allocatable :: work
+integer, dimension(:), allocatable :: iwork
+double precision rcond, onenorm
+
+#if defined(CRY_OSLINUX)
+integer :: starttime
+integer, dimension(8) :: measuredtime
+#endif
+
+info=0
+
+! preconditioning using diagonal terms
+! Allocate diagonal vector
+allocate(preconditioner(nmsize))
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    if(abs(nmatrix(1+j))>epsilon(0.0d0)) then
+        preconditioner(i)=nmatrix(1+j)
+    else
+        preconditioner(i)=1.0d0
+    end if
+end do      
+preconditioner = 1.0d0/sqrt(preconditioner) 
+
+! Applying C N C
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
+    nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
+end do              
+
+! unpacking lower triangle for memory efficiency
+allocate(unpacked(nmsize, nmsize))
+onenorm=0.0d0
+!allocate(original(nmsize, nmsize))
+do i=1, nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    unpacked(i:nmsize, i)=nmatrix(1+j:1+k)
+    unpacked(i, i+1:nmsize)=nmatrix(1+j+1:1+k)
+    
+    onenorm=max(onenorm, sum(abs(unpacked(i:nmsize,i)))+sum(abs(unpacked(i,1:i-1))))
+end do
+!original=unpacked
+
+#if defined(CRY_OSLINUX) 
+call date_and_time(VALUES=measuredtime)
+starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+#endif
+
+!open(666, file='matrix', form="unformatted",access="stream")
+!write(666) unpacked
+!close(666)
+
+!call date_and_time(VALUES=measuredtime)
+!starttime=((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)
+
+! choleski decomposition
+call  DPOTRF( 'L', nmsize, unpacked, nmsize, info )
+
+!condition number
+allocate(work(3*nmsize))
+allocate(iwork(nmsize))
+call DPOCON( 'L', nmsize, unpacked, nmsize, onenorm, rcond, work, iwork, info )
+deallocate(work)
+deallocate(iwork)
+#if defined(CRY_OSLINUX)
+print *, 'condition number ', 1.0d0/rcond
+print *, 'relative error ', 1.0d0/rcond*epsilon(1.0d0)
+#endif
+! inversion using previous decomposition
+call  DPOTRI( 'L', nmsize, unpacked, nmsize, info )
+
+!call date_and_time(VALUES=measuredtime)
+!print *, 'PP* ***** LDL ', info  , &
+!&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000+measuredtime(8)-starttime, 'ms'
+
+do i=1, nmsize
+    unpacked(i, i+1:nmsize)=unpacked(i+1:nmsize, i)
+end do
+
+!original=matmul(original, unpacked)
+!do  i=1, 5
+!  print *, original(i,1:5)
+!end do
+!j=0
+!do i=1, nmsize
+!  j=j+nint(original(i,i))
+!  original(i,i)=0.0
+!end do
+!print *, j
+!print *, maxval(abs(original)), maxloc(abs(original))
+
+! Pack normal matrix back into original crystals storage
+do i=1,nmsize
+    j = ((i-1)*(2*nmsize-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=unpacked(i:nmsize,i)
+end do    
+
+! revert pre conditioning                   
+! Applying C (C N C)^-1 C to get N^-1
+! N: normal matrix
+! C: diagonal matrix with elements from the N diagonal
+do i=1,nmsize
+    j = ((i-1)*(2*(nmsize)-i+2))/2
+    k = j + nmsize - i
+    nmatrix(1+j:1+k)=preconditioner(i)*nmatrix(1+j:1+k)
+    nmatrix(1+j:1+k)=preconditioner(i:nmsize)*nmatrix(1+j:1+k)
+end do  
+            
+deallocate(preconditioner)
+deallocate(unpacked)
+
+#if defined(CRY_OSLINUX) 
+call date_and_time(VALUES=measuredtime)
+print *, 'invert via choleski decomposition double precision', &
+&       ((measuredtime(5)*3600+measuredtime(6)*60)+measuredtime(7))*1000 +&
+&       measuredtime(8)-starttime, 'ms'
+#endif
+
+end subroutine
+
 !> code for the inversion of the normal matrix using LDL^t decomposition
 !! of symmetric matrices with dynamic handling of conditioning
 subroutine auto_inversion(nmatrix, nmsize, info, blasname)
