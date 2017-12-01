@@ -685,7 +685,7 @@ C----- CHOOSE INVERTOR
            method = istore(l23m+7)
         end if
 
-        if(method<0 .or. method>size(methodtxt)) then
+        if(method<0 .or. method>ubound(methodtxt,1)) then
             method=0
             WRITE ( CMON, '(A,A)') '{E Bug in crystals: method ',
      &        'out of bounds in methodtxt(method)'
