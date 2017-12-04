@@ -286,6 +286,8 @@ endif()
 IF (NOT CRYSVNVER)  # not set
     if ( ${CMAKE_SYSTEM_NAME} STREQUAL "Linux" )
         EXECUTE_PROCESS(COMMAND svnversion ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE CRYSVNVER OUTPUT_STRIP_TRAILING_WHITESPACE)
+        # `:` is a special character in crystals.srt
+        STRING(REPLACE ":" "%" CRYSVNVER ${CRYSVNVER})
     ELSE ()
         SET (CRYSVNVER "0000")
     ENDIF ()

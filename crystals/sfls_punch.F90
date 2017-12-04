@@ -46,6 +46,12 @@ character(len=25), dimension(5), parameter, private :: filelist=(/ &
 character(len=4), dimension(2), parameter, private :: extlist=(/ '.m  ', '.dat' /)
 
 private sfls_punch_get_newfileindex
+private sfls_punch_addtodesign_sp, sfls_punch_addtodesign_dp
+
+!> generic interface for sfls_punch_addtodesign
+interface sfls_punch_addtodesign
+    module procedure :: sfls_punch_addtodesign_sp, sfls_punch_addtodesign_dp
+end interface
   
 contains
 
@@ -281,7 +287,7 @@ integer filecount
 end subroutine
 
 !> Write a part of the design matrix to the file
-subroutine sfls_punch_addtodesign(designmatrix, hkllist, sfls_punch_flag, punch)
+subroutine sfls_punch_addtodesign_dp(designmatrix, hkllist, sfls_punch_flag, punch)
 implicit none
 double precision, dimension(:,:), intent(in) :: designmatrix !< Block of the design matrix
 integer, dimension(:,:), intent(in) :: hkllist !< List of corresponding hkl indices
@@ -337,6 +343,74 @@ character(len=256) :: lineformat
         end if
         
         write(lineformat, '("(3I5, 3X, ",I0,"E25.16)")') ubound(designmatrix, 1)
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit, lineformat) hkllist(:,i), designmatrix(:,i)
+        end do
+
+    case default
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
+        call abort()
+    end select
+
+end subroutine
+
+!> Write a part of the design matrix to the file
+subroutine sfls_punch_addtodesign_sp(designmatrix, hkllist, sfls_punch_flag, punch)
+implicit none
+real, dimension(:,:), intent(in) :: designmatrix !< Block of the design matrix
+integer, dimension(:,:), intent(in) :: hkllist !< List of corresponding hkl indices
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
+logical, optional, intent(in) :: punch !< Flag to close the file when done
+integer i
+logical fileopened
+character(len=256) :: lineformat
+
+    select case(sfls_punch_flag)
+    case(1) ! matlab
+
+        if(present(punch)) then
+            write (design_unit, '(''];'')')
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+
+        if(design_unit==0) then
+!            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit, '(a, 3I4)') ' % ', hkllist(:,i)
+            write(design_unit, '(5G16.8,: ," ...")') designmatrix(:,i)
+        end do
+
+    case(2,3) ! plain text
+    
+        if(present(punch)) then
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+        
+        if(design_unit==0) then
+!            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        write(lineformat, '("(3I5, 3X, ",I0,"E15.6)")') ubound(designmatrix, 1)
         do i=1, ubound(designmatrix, 2)
             write(design_unit, lineformat) hkllist(:,i), designmatrix(:,i)
         end do

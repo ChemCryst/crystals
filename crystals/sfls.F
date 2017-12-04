@@ -1717,6 +1717,7 @@ C
       ! right hand side temporary storage in double precision to fix error accumulation
       ! this storage in put back in str11 in the end
       double precision, dimension(:), allocatable :: righthandside
+      real, dimension(:), allocatable :: righthandside_sp
       ! reflections indices in designmatrix
       integer, dimension(:,:), allocatable :: hkllist
       ! tid is the number of threads
@@ -1887,14 +1888,16 @@ C--CHECK IF A PRINT IS REQUIRED
       if(sfls_sp_normalm<0) then
         allocate(designmatrix(JP-JO+1,designchunk*tid))
         designmatrix=0.0d0
+        allocate(righthandside(n11r))
+        righthandside=0.0d0
       else
         allocate(designmatrix_sp(JP-JO+1,designchunk*tid))
         designmatrix_sp=0.0
+        allocate(righthandside_sp(n11r))
+        righthandside_sp=0.0
       end if
       allocate(hkllist(3,designchunk*tid))
       hkllist=0
-      allocate(righthandside(n11r))
-      righthandside=0.0d0
 
 #ifdef CRY_OSLINUX
       call date_and_time(VALUES=measuredtime)
@@ -2371,7 +2374,12 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           END IF
 
-          CALL XADRHS(WDF,STORE(JO),righthandside,JP-JO+1)  ! ACCUMULATE THE RIGHT HAND SIDES
+          if(sfls_sp_normalm<0) then
+            righthandside=righthandside+STORE(JO:JP)*WDF   ! ACCUMULATE THE RIGHT HAND SIDES
+          else
+            righthandside_sp=righthandside_sp+STORE(JO:JP)*WDF   ! ACCUMULATE THE RIGHT HAND SIDES
+          end if 
+          
           if(sfls_punch_flag>0) then
               call sfls_punch_addtowdf(wdf, sfls_punch_flag)
           end if
@@ -2390,8 +2398,14 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                   if(designindex>designchunk*tid) then
                       ! Output design matrix to disk
                       if(sfls_punch_flag>0) then
-                          call sfls_punch_addtodesign(designmatrix, 
-     1                        hkllist, sfls_punch_flag)
+                          if(sfls_sp_normalm<0) then
+                              call sfls_punch_addtodesign(designmatrix, 
+     1                            hkllist, sfls_punch_flag)
+                          else
+                              call sfls_punch_addtodesign(
+     1                            designmatrix_sp, 
+     2                            hkllist, sfls_punch_flag)
+                          end if
                       end if
                   
                       ! accumulate normal matrix
@@ -2514,8 +2528,13 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
       END DO  ! END OF REFLECTION LOOP
       
       ! put back right hand side into original storage
-      str11(l11r:l11R+n11r-1)=righthandside
-      deallocate(righthandside)
+      if(sfls_sp_normalm<0) then
+        str11(l11r:l11R+n11r-1)=righthandside
+        deallocate(righthandside)
+      else
+        str11(l11r:l11R+n11r-1)=righthandside_sp
+        deallocate(righthandside_sp)
+      end if
 
       IF(SFLS_TYPE .EQ. SFLS_REFINE)THEN    ! NO REFINEMENT
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
@@ -2525,9 +2544,17 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
                  if(designindex>0) then
                    ! Output design matrix to disk
                    if(sfls_punch_flag>0) then
-                       call sfls_punch_addtodesign(
-     1                    designmatrix(:,1:designindex), 
-     2                    hkllist(:,1:designindex), sfls_punch_flag)
+                      if(sfls_sp_normalm<0) then                  
+                           call sfls_punch_addtodesign(
+     1                         designmatrix(:,1:designindex), 
+     2                         hkllist(:,1:designindex), 
+     3                         sfls_punch_flag)
+                      else
+                           call sfls_punch_addtodesign(
+     1                         designmatrix_sp(:,1:designindex), 
+     2                         hkllist(:,1:designindex), 
+     3                         sfls_punch_flag)
+                      end if
                    end if
 
                    ! Accumulate the normal matrix
@@ -2619,11 +2646,6 @@ c Looks OK.
             END IF
           END IF
       END IF
-c      do i=1,JP-JO+1
-c            j = ((i-1)*(2*(JP-JO+1)-i+2))/2
-c            k = j + JP-JO+1 - i
-c            STR11(L11+j:L11+k)=normalmatrix(i:JP-JO+1,i)
-c      end do
       
 
 #ifdef CRY_OSLINUX
@@ -3476,7 +3498,8 @@ C-C-C-...FOR DERIVATIVES
       DOUBLE PRECISION DSIZE, DDECLINA, DAZIMUTH
       
       real, dimension(:), allocatable :: Tiso
-      real, dimension(:,:), allocatable :: T, Ttemp, atemp, cosa, sina
+      real, dimension(:,:), allocatable :: Taniso, Ttemp, atemp
+      real, dimension(:,:), allocatable :: cosa, sina
 
       REAL ALPD(11),BLPD(11)   ! Use local arrays for better optimisation?
 
@@ -3493,9 +3516,6 @@ C Some constants for chebychev approx.
 
       INTEGER ISTACK
 
-#ifdef USE_SLEEF 
-      real, dimension(2) :: scb
-#endif
       ALPD=0.0
       BLPD=0.0
 
@@ -3592,10 +3612,7 @@ C--WE NEED THIS REFLECTION TWICE
               LJU=ISTORE(LJY+9)
               LJV=ISTORE(LJY+10)
               DO J=LJU,LJV,NR
-                STORE(LJX)=STORE(J)
-                STORE(LJX+1)=STORE(J+1)
-                STORE(LJX+2)=STORE(J+2)
-                STORE(LJX+3)=STORE(J+3)
+                STORE(LJX:LJX+3)=STORE(J:J+3)
                 LJX=LJX+NR
               END DO
             END IF
@@ -3661,10 +3678,7 @@ c
           STORE(M2T+8)=STORE(M2T)*STORE(M2T+2)
           STORE(M2T+9)=STORE(M2T)*STORE(M2T+1)
         END IF
-        STORE(M2T)=STORE(M2T)*TWOPI
-        STORE(M2T+1)=STORE(M2T+1)*TWOPI
-        STORE(M2T+2)=STORE(M2T+2)*TWOPI
-        STORE(M2T+3)=STORE(M2T+3)*TWOPI
+        STORE(M2T:M2T+3)=STORE(M2T:M2T+3)*TWOPI
         M2=M2+MD2
         M2T=M2T+MD2T
       END DO
@@ -3690,12 +3704,7 @@ C--CHECK IF THE ANISO TERMS ARE REQUIRED
 c
 c compute h* = h'.k'.a*.b* etc.
 c
-          STORE(M2T+4)=STORE(M2T+4)*STORE(L1A)
-          STORE(M2T+5)=STORE(M2T+5)*STORE(L1A+1)
-          STORE(M2T+6)=STORE(M2T+6)*STORE(L1A+2)
-          STORE(M2T+7)=STORE(M2T+7)*STORE(L1A+3)
-          STORE(M2T+8)=STORE(M2T+8)*STORE(L1A+4)
-          STORE(M2T+9)=STORE(M2T+9)*STORE(L1A+5)
+          STORE(M2T+4:M2T+9)=STORE(M2T+4:M2T+9)*STORE(L1A:L1A+5)
           M2T=M2T+MD2T
         END DO
       END IF
@@ -3743,19 +3752,10 @@ c        WRITE(NCWU,'(A,F16.9,1x,Z0)')'M3TR2:',STORE(M3TR),STORE(M3TR)
       END DO
       IF(SFLS_TYPE .EQ. SFLS_REFINE) THEN    ! CHECK IF WE ARE DOING REFINEMENT
 
-        DO LJZ=JO,JP
-          STORE(LJZ)=0.           ! CLEAR THE FINAL PARTIAL DERIVATIVE AREA TO ZERO
-        END DO
-        LJS=JR
-        N = N12*JQ
-        DO J = 0, N-1            ! CLEAR THE TEMPORARY PARTIAL DERIVATIVE AREAS TO ZERO
-          STORE(LJS+J) = 0.0
-        END DO
-        LJS=JN
-        DO J= 0, JQ-1            ! CLEAR THE DUMMY LOCATIONS
-          STORE(LJS+J)=0.
-        END DO
-        M12=L12                  ! SET THE ATOM POINTER IN LIST 12
+        STORE(JO:JP)=0.               ! CLEAR THE FINAL PARTIAL DERIVATIVE AREA TO ZERO
+        STORE(JR:JR+N12*JQ-1) = 0.0   ! CLEAR THE TEMPORARY PARTIAL DERIVATIVE AREAS TO ZERO
+        STORE(JN:JN+JQ-1)=0.0         ! CLEAR THE DUMMY LOCATIONS
+        M12=L12                       ! SET THE ATOM POINTER IN LIST 12
       END IF
 
 
@@ -3765,14 +3765,14 @@ C
 
       M5A=L5
       allocate(Tiso(N5))
-      allocate(T(n5, n2t))
+      allocate(Taniso(n5, n2t))
       allocate(Ttemp(n5, n2t))
       allocate(atemp(n5, n2t))
       allocate(cosa(n5, n2t))
       allocate(sina(n5, n2t))
 
 c Pre-calculating some expensives values using optimised functions if available
-c and threads
+c and using threads
 !$OMP SECTIONS
 !$OMP SECTION
 c calculate the iso-temperature factor coefficients for this atom
@@ -3782,7 +3782,7 @@ c
 #ifdef CRY_MKL
       call vsExp( n5, STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC, Tiso )
 #else
-      Tiso=EXP(STORE(M5A+7:M5A+7+(N5-1)*MD5A:MD5A)*TC)  
+      Tiso=EXP(STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC)  
 #endif
 
 !$OMP SECTION
@@ -3800,9 +3800,9 @@ c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
      6   +STORE(L5+12:L5+12+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+9)
 
 #ifdef CRY_MKL
-        call vsExp( n5, Ttemp(:,icpt), T(:,icpt) )
+        call vsExp( n5, Ttemp(:,icpt), Taniso(:,icpt) )
 #else
-        T(:,icpt)=exp(Ttemp(:,icpt))
+        Taniso(:,icpt)=exp(Ttemp(:,icpt))
 #endif
       end do
 !$OMP SECTION
@@ -3828,7 +3828,6 @@ c
 
       
       DO LJY=1,N5
-
         AT=0.  ! CLEAR THE ACCUMULATION VARIABLES
         BT=0.
 
@@ -3866,22 +3865,20 @@ c loop cycling over the different equivalent reflections for this atom
 c
 c  calculate a = h'.x + h.t
         DO LJX=1,N2T
+            print *, ljy, ljx, ALPD
 c  slrfac starting-values for special shape factors and derivatives
           SLRFAC=1.0 
-          DSIZE=1.0
-          DDECLINA=1.0
-          DAZIMUTH=1.0
+          DSIZE=1.0d0
+          DDECLINA=1.0d0
+          DAZIMUTH=1.0d0
 
           IF (NINT(FLAG) .EQ. 0) THEN   
-c
-c  calculate the aniso-temperature factor
-c  T=exp(h*Uij + ...)
-c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
-
-c
-            TFOCC=T(LJY,LJX)*FOCC
+c aniso-temperature factor
+            T=Taniso(LJY,LJX)
+            TFOCC=T*FOCC
 c
           ELSE IF ( NINT(FLAG) .GE. 2) THEN
+c Special shapes
             IF (NINT(FLAG) .EQ. 2) THEN  ! CALC SPHERE TF
               CALL XSPHERE (ST, M5A, SLRFAC, DSIZE)
             ELSE IF (NINT(FLAG) .EQ. 3) THEN   ! CALC LINE TF
@@ -3890,8 +3887,12 @@ c
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             END IF
 
-            TFOCC=Tiso(ljy)*FOCC
-            TFOCC=TFOCC*SLRFAC
+            T=Tiso(LJY)
+            TFOCC=T*FOCC
+            TFOCC=TFOCC*SLRFAC    
+          else
+c iso-temperature factor
+            T=Tiso(LJY)
           ENDIF
      
 cc Test if  centro with no refinement  -  only cos terms needed
@@ -3900,7 +3901,7 @@ cc
 c s = Sin(h'x+ht)
 c          S=S*A*(S0+B*(S1+B*(S2+B*S3)))
 c
-8850      CONTINUE
+
 C--CALCULATE THE B CONTRIBUTION
           BP=Sina(ljy,ljx)*TFOCC
           BT=BT+BP
@@ -3924,10 +3925,8 @@ c  c = cos(hx)
 c
 C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR X,Y AND Z
 C-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR OCC,X,Y AND Z
-            ALPD(1)=ALPD(1)+T(LJY,LJX)*Cosa(ljy,ljx)*SLRFAC
-            ALPD(3)=ALPD(3)-STORE(M2T)*BP
-            ALPD(4)=ALPD(4)-STORE(M2T+1)*BP
-            ALPD(5)=ALPD(5)-STORE(M2T+2)*BP
+            ALPD(1)=ALPD(1)+T*Cosa(ljy,ljx)*SLRFAC
+            ALPD(3:5)=ALPD(3:5)-STORE(M2T:M2T+2)*BP
 C--CHECK THE TEMPERATURE FACTOR TYPE
             IF(NINT(FLAG) .NE. 1) THEN
 C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
@@ -3950,7 +3949,7 @@ C--GOTO THE NEXT PART - DEPENDS ON WHETHER THE STRUCTURE IS CENTRO
             IF(.NOT. CENTRO) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR X,Y AND Z
 C-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR OCC,X,Y AND Z
-              BLPD(1)=BLPD(1)+T(LJY,LJX)*Sina(ljy,ljx)*SLRFAC
+              BLPD(1)=BLPD(1)+T*Sina(ljy,ljx)*SLRFAC
               BLPD(3)=BLPD(3)+STORE(M2T)*AP
               BLPD(4)=BLPD(4)+STORE(M2T+1)*AP
               BLPD(5)=BLPD(5)+STORE(M2T+2)*AP
@@ -3973,7 +3972,6 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
               ENDIF
             END IF
           END IF
-
 
           M2T=M2T+MD2T  ! UPDATE THE SYMMETRY INFORMATION POINTER
           M2=M2+MD2     ! M2 (ADDR. FOR TRANSF.MAT.) IS INCREASED FOR NEXT SYM.OP.
