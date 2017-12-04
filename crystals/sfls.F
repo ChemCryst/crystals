@@ -3865,7 +3865,6 @@ c loop cycling over the different equivalent reflections for this atom
 c
 c  calculate a = h'.x + h.t
         DO LJX=1,N2T
-            print *, ljy, ljx, ALPD
 c  slrfac starting-values for special shape factors and derivatives
           SLRFAC=1.0 
           DSIZE=1.0d0
