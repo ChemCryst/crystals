@@ -811,7 +811,7 @@ Refining    41 parameters in    1 block :      959 elements in the LS matrix.
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        2     Address    89407     Length      52     Created on                          
+ Print list type    12     serial number        2     Address    89408     Length      52     Created on                          
 
      0 BLOCK SCALE X'S, U[ISO] 
 
@@ -3300,7 +3300,7 @@ Mean C-C su =   0.0131
    3   3   6      39.35      9058.6       218.3       224.7
   -1   1   6      39.09     16077.7      3226.8       328.7
   -1   4   3      39.09     27203.2      6960.6       517.8
-   5   1   0      39.07      4400.8       543.9        98.7
+   5   1   0      39.07      4400.8       544.0        98.7
   -2   1   2      38.92      5904.6      1166.6       121.7
 
  Each set of indices above is transformed by the
@@ -3591,7 +3591,7 @@ LS-scale=  4.747   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        4     Address   170414     Length      84     Created on                          
+ Print list type    12     serial number        4     Address   170415     Length      84     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -4772,7 +4772,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        5     Address   176872     Length     112     Created on                          
+ Print list type    12     serial number        5     Address   176873     Length     112     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -5482,7 +5482,7 @@ Mean C-C su =   0.0061
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        6     Address   179585     Length     148     Created on                          
+ Print list type    12     serial number        6     Address   179586     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -6660,7 +6660,7 @@ Mean C-C su =   0.0049
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        7     Address   179585     Length     148     Created on                          
+ Print list type    12     serial number        7     Address   179586     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -9504,7 +9504,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from   183469 to   187907 will not be copied ( deleted )         
+ List type   11  serial number  136 from   183470 to   187908 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -10282,7 +10282,7 @@ LS-scale=  4.728   Wilson Scale=  4.723
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  4.71E+00 condition number:  4.99E+01 relative error:  5.95E-06
+Single precision:  1-norm:  4.71E+00 condition number:  5.00E+01 relative error:  5.95E-06
  S/ESD     1           1            -0.016      0.1E+01    0.964E-02         -1.64                          SCALE   
 
                                                 for          92 parameters
@@ -10515,7 +10515,7 @@ LS-scale=  4.726   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Single precision:  1-norm:  4.71E+00 condition number:  5.00E+01 relative error:  5.96E-06
- S/ESD     1           1            -0.016      0.1E+01    0.964E-02         -1.61                          SCALE   
+ S/ESD     1           1            -0.016      0.1E+01    0.964E-02         -1.62                          SCALE   
 
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -18910,7 +18910,7 @@ The slope and correlation coefficient should be small
           0.00                                                                                                . 
                         5        -1.65         0.4       0.194E+02       0.325E+01    90.79  102.76           .*     
           0.79                                                                                                . 
-                       23         1.43         2.1       0.248E+02       0.326E+01    58.92   73.33           .*     
+                       23         1.43         2.1       0.248E+02       0.326E+01    58.92   73.32           .*     
           3.16                                                                                                . 
                        45         3.86         5.3       0.304E+02       0.287E+01    36.06   51.83           .*     
           7.11                                                                                                . 
@@ -18991,7 +18991,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96227 to   100665 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96229 to   100667 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -27961,7 +27961,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from    95229 to    99667 will not be copied ( deleted )         
+ List type   11  serial number  136 from    95231 to    99669 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -29202,8 +29202,8 @@ Mean C-C su =   0.0017
 
 
 
-     2016 reflections   R  3.00% Rw  6.35% with I/u(I) from List 28, I/Sig= -10.00
-     2016 reflections   R  3.00% Rw  6.35% with I/u(I) > -10.0
+     2016 reflections   R  3.00% Rw  6.34% with I/u(I) from List 28, I/Sig= -10.00
+     2016 reflections   R  3.00% Rw  6.34% with I/u(I) > -10.0
      1913 reflections   R  2.74% Rw  6.17% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.653   Wilson Scale=  4.723
@@ -31549,11 +31549,11 @@ Mean C-C su =   0.0067
 
 [32]      96780          94860            8930                0.72 E+05          On scale of /FO/
 
- New scale factor (G) is      4.812,    2016 reflections used in refinement
+ New scale factor (G) is      4.813,    2016 reflections used in refinement
 
  Structure factor least squares calculation  120  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
-LS-scale=  4.812   Wilson Scale=  4.723
+LS-scale=  4.813   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
@@ -37387,7 +37387,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96227 to   100665 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96229 to   100667 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 

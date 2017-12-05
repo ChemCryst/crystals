@@ -464,7 +464,6 @@ LS-scale=  1.010   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.94E+00 condition number:  3.70E+00 relative error:  4.41E-07
 [13]  LARGE     1           1             0.9       0.0E+00    0.3 E-01         25.5                           SCALE   
 
                                                 for          34 parameters
@@ -691,7 +690,6 @@ LS-scale=  1.255   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  2.32E+00 condition number:  4.77E+00 relative error:  5.69E-07
 [13]  LARGE     1           1             0.3       0.4E+00    0.2 E-01         14.7                           SCALE   
 
                                                 for          34 parameters
@@ -917,7 +915,6 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  2.00E+00 condition number:  3.91E+00 relative error:  4.67E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2064,7 +2061,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  8.60E+00 condition number:  1.49E+02 relative error:  1.78E-05
+  Eigen filters  0.000       0.5000E-04    100.0    
 [13]  LARGE     1           1             0.5       0.0E+00    0.4 E-01         12.3                           SCALE   
 [13]  LARGE     2           2           563.2       0.0E+00    0.2 E+02         19.7                           EXTPARAM
 [14]  S/ESD     4           4            0.011       0.0E+00    0.44 E-02          2.5         C      1 U[22]   
@@ -2307,7 +2304,7 @@ LS-scale=  1.588   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  8.84E+00 condition number:  2.05E+02 relative error:  2.45E-05
+  Eigen filters  0.000       0.5000E-04    100.0    
 [13]  LARGE     1           1             0.3       0.6E+00    0.4 E-01          6.4                           SCALE   
 [43] Resetting shift for Extinction  Shift=     853.   Esd=      7   New shift=     102.59
 [13]  LARGE     2           2           102.5       0.2E+01    0.7 E+02         11.5                           EXTPARAM
@@ -2962,7 +2959,6 @@ LS-scale=  1.685   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  4.96E+00 condition number:  4.30E+01 relative error:  5.13E-06
 [13]  LARGE     1           1            -0.3       0.0E+00    0.3 E-01         -9.2                           SCALE   
 [14]  S/ESD    22          22           -0.045       0.0E+00    0.40 E-02        -11.3         C      4 U[ISO]  
 
@@ -3185,7 +3181,6 @@ LS-scale=  1.580   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  5.14E+00 condition number:  4.42E+01 relative error:  5.27E-06
 
                                                 for          55 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3410,7 +3405,6 @@ LS-scale=  1.585   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  5.11E+00 condition number:  4.39E+01 relative error:  5.23E-06
 
                                                 for          55 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4577,7 +4571,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        3     Address    83579     Length     234     Created on                          
+ Print list type    20     serial number        3     Address    83580     Length     234     Created on                          
 
 
 
@@ -4752,7 +4746,7 @@ Mean C-C su =   0.0061
 
 
 
- Centre for which s is symmetric :                   0.7055  0.1135  0.2721
+ Centre for which s is symmetric :                   0.7056  0.1135  0.2721
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -4809,7 +4803,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        4     Address    83813     Length     234     Created on                          
+ Print list type    20     serial number        4     Address    83814     Length     234     Created on                          
 
 
 
@@ -5044,7 +5038,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        5     Address    84047     Length     234     Created on                          
+ Print list type    20     serial number        5     Address    84048     Length     234     Created on                          
 
 
 
@@ -5291,7 +5285,7 @@ Mean C-C su =   0.0061
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        6     Address    84281     Length     234     Created on                          
+ Print list type    20     serial number        6     Address    84282     Length     234     Created on                          
 
 
 

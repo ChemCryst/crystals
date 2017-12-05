@@ -201,7 +201,6 @@ LS-scale= 10.008   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  8.00E+00 condition number:  4.66E+02 relative error:  5.55E-05
  S/ESD     1           1            -0.094      0.0E+00    0.485E-01         -1.95                          SCALE   
                                                                                                             Composite
 
@@ -450,7 +449,7 @@ LS-scale=  9.913   Wilson Scale=  0.000
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
 
 
- Print list type    17     serial number        2     Address    18770     Length    1156     Created on                          
+ Print list type    17     serial number        2     Address    18771     Length    1156     Created on                          
 
      0 NO 
      1 RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -1.0 * SI  (   1,U[22]) 

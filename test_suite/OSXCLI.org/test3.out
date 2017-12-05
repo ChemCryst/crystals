@@ -6532,7 +6532,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       86     Address    82619     Length    7570     Created on                          
+ Print list type     6     serial number       86     Address    82623     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6667,7 +6667,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       90     Address    90809     Length    7570     Created on                          
+ Print list type     6     serial number       90     Address    90813     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6802,7 +6802,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address    98379     Length     137     Created on                          
+ Print list type     5     serial number       14     Address    98383     Length     137     Created on                          
 
 
 
@@ -7464,7 +7464,7 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    90809     Length    7570     Created on                          
+ Print list type     6     serial number       96     Address    90813     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -8074,7 +8074,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125664     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   125668     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8125,7 +8125,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125664     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   125668     Length     809     Created on                          
 
 
  Print List 11 as correlation matrix
@@ -8216,7 +8216,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125664     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   125668     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8331,7 +8331,7 @@ ___________
 [52]     30    -0.106 E-07   0.629 E-08   0.421 E-08  -0.342 E-07   0.753 E-08   0.520 E-07
 [51]     31     0.923 E-08   0.454 E-07   0.280 E-07   0.136 E-08  -0.245 E-08   0.202 E-09   0.724 E-07
 [50]     32     0.725 E-07  -0.679 E-07  -0.106 E-06  -0.207 E-06  -0.628 E-07   0.207 E-07   0.159 E-07   0.696 E-06
-[50]     33     0.153 E-06   0.314 E-07   0.346 E-07  -0.758 E-07  -0.120 E-08   0.670 E-07   0.266 E-12   0.130 E-06
+[50]     33     0.153 E-06   0.314 E-07   0.346 E-07  -0.758 E-07  -0.120 E-08   0.670 E-07   0.283 E-12   0.130 E-06
 [50]     34    -0.685 E-06   0.496 E-08  -0.135 E-07   0.271 E-07   0.679 E-09  -0.446 E-08  -0.694 E-09  -0.141 E-06
 [50]     35    -0.442 E-07  -0.329 E-06  -0.219 E-06  -0.884 E-07  -0.763 E-08  -0.124 E-07  -0.407 E-07   0.591 E-07
 [50]     36    -0.524 E-07  -0.199 E-06  -0.247 E-06  -0.766 E-07  -0.193 E-07  -0.119 E-07  -0.215 E-07   0.858 E-07
@@ -8360,17 +8360,17 @@ ___________
                1             2             3             4             5             6             7             8
 
 
-           0.49294E+02   0.28999E+03  -0.10370E+04   0.11301E+04  -0.59557E+03   0.28246E+03   0.22542E+02   0.59856E+02
+           0.49294E+02   0.28999E+03  -0.10370E+04   0.11301E+04  -0.59557E+03   0.28246E+03   0.22541E+02   0.59856E+02
 
                9            10            11            12            13            14            15            16
 
 
-           0.38029E+02  -0.13595E+03  -0.36820E+03   0.75522E+04  -0.23035E+04   0.37861E+04   0.36959E+04   0.25416E+04
+           0.38029E+02  -0.13595E+03  -0.36820E+03   0.75522E+04  -0.23035E+04   0.37862E+04   0.36959E+04   0.25416E+04
 
               17            18            19            20            21            22            23            24
 
 
-           0.78912E+03  -0.86545E+03  -0.79747E+03  -0.38804E+04  -0.61595E+04  -0.31371E+03  -0.38866E+04   0.35006E+04
+           0.78912E+03  -0.86544E+03  -0.79747E+03  -0.38804E+04  -0.61595E+04  -0.31371E+03  -0.38866E+04   0.35006E+04
 
               25            26            27            28            29            30            31            32
 
@@ -8846,7 +8846,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
    11 *  170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 169 169 169 169 169 169 169 169 169 169
 
-   12 *  170 170 170 170 170 170 170 170 170 170 170 170 170 170 169 169 169 169 169 169 169 169 169 169 169 169
+   12 *  170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 169 169 169 169 169 169 169 169 169 169 169
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          

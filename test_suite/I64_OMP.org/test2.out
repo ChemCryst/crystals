@@ -811,7 +811,7 @@ Refining    41 parameters in    1 block :      959 elements in the LS matrix.
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        2     Address    89811     Length      52     Created on                          
+ Print list type    12     serial number        2     Address    89812     Length      52     Created on                          
 
      0 BLOCK SCALE X'S, U[ISO] 
 
@@ -3591,7 +3591,7 @@ LS-scale=  4.747   Wilson Scale=  4.723
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        4     Address   170818     Length      84     Created on                          
+ Print list type    12     serial number        4     Address   170819     Length      84     Created on                          
 
      0 FULL X'S 
      1 SUMFIX ELEMENT SCALES 
@@ -4772,7 +4772,7 @@ Mean C-C su =   0.0064
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        5     Address   177276     Length     112     Created on                          
+ Print list type    12     serial number        5     Address   177277     Length     112     Created on                          
 
      0 BLOCK SCALE X'S CL(10,U[ISO]) 
      1 SUMFIX ELEMENT SCALES 
@@ -5482,7 +5482,7 @@ Mean C-C su =   0.0061
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        6     Address   179989     Length     148     Created on                          
+ Print list type    12     serial number        6     Address   179990     Length     148     Created on                          
 
      0 BLOCK SCALE X'S FIRST(U[ISO]) UNTIL C(9) CL(10,U'S) 
      1 SUMFIX ELEMENT SCALES 
@@ -6660,7 +6660,7 @@ Mean C-C su =   0.0049
  Keen in P21/c                                                                        Date              Time          
 
 
- Print list type    12     serial number        7     Address   179989     Length     148     Created on                          
+ Print list type    12     serial number        7     Address   179990     Length     148     Created on                          
 
      0 FULL X'S U'S 
      1 SUMFIX ELEMENT SCALES 
@@ -9507,7 +9507,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from   183873 to   188311 will not be copied ( deleted )         
+ List type   11  serial number  136 from   183874 to   188312 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -9804,7 +9804,7 @@ Mean C-C su =   0.0019
  Structure factor least squares calculation   27  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.731   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
+<Fo>-<Fc> =   -0.055    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -10285,7 +10285,7 @@ LS-scale=  4.728   Wilson Scale=  4.723
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  4.71E+00 condition number:  4.99E+01 relative error:  5.95E-06
+Single precision:  1-norm:  4.71E+00 condition number:  5.00E+01 relative error:  5.95E-06
  S/ESD     1           1            -0.016      0.1E+01    0.964E-02         -1.64                          SCALE   
 
                                                 for          92 parameters
@@ -10327,7 +10327,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean          -0.01   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                         0.0000   0.0000  -0.0000
+[31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -10518,7 +10518,7 @@ LS-scale=  4.726   Wilson Scale=  4.723
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Single precision:  1-norm:  4.71E+00 condition number:  5.00E+01 relative error:  5.96E-06
- S/ESD     1           1            -0.016      0.1E+01    0.964E-02         -1.61                          SCALE   
+ S/ESD     1           1            -0.016      0.1E+01    0.964E-02         -1.62                          SCALE   
 
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -11171,7 +11171,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean          -0.01   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-[31]                                          0.000    0.000    0.000 
+                                         0.0000   0.0000  -0.0000
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -11400,7 +11400,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean          -0.01   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                         0.0000   0.0000  -0.0000
+[31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -11629,7 +11629,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean          -0.01   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-[31]                                          0.000    0.000    0.000 
+                                         0.0000   0.0000  -0.0000
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -12087,7 +12087,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean          -0.01   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                         0.0000   0.0000  -0.0000
+[31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -16841,7 +16841,7 @@ All cycle   Min function          0.0           0.33E+05       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0001  -0.0002   0.0000
+                                         0.0000  -0.0002   0.0000
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -18988,7 +18988,7 @@ The slope and correlation coefficient should be small
           0.00                                                                                                . 
                         5        -1.65         0.4       0.194E+02       0.325E+01    90.79  102.76           .*     
           0.79                                                                                                . 
-                       23         1.43         2.1       0.248E+02       0.326E+01    58.92   73.33           .*     
+                       23         1.43         2.1       0.248E+02       0.326E+01    58.92   73.32           .*     
           3.16                                                                                                . 
                        45         3.86         5.3       0.304E+02       0.287E+01    36.06   51.83           .*     
           7.11                                                                                                . 
@@ -19069,7 +19069,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96448 to   100886 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96450 to   100888 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -20679,7 +20679,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  7.24E+00 condition number:  9.42E+01 relative error:  1.12E-05
+Single precision:  1-norm:  7.24E+00 condition number:  9.43E+01 relative error:  1.12E-05
 
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -20798,7 +20798,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          5.    1.00    0.00    0.49    0.08    0.71    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
@@ -21223,7 +21223,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
       1        2
 
       0.606    0.394
-      0.000   -0.000
+      0.000    0.000
       0.001    0.001
 
 
@@ -21254,17 +21254,17 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          5.    1.00    0.00    0.49    0.08    0.71    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.001    0.001    0.001 
-
-[37]      C          6.    1.00    0.00    0.46    0.14    0.80    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
-[37]      C          7.    1.00    0.00    0.19    0.31    0.88    0.08
+[37]      C          6.    1.00    0.00    0.46    0.14    0.80    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[31]                                         0.001    0.001    0.001 
+
+[37]      C          7.    1.00    0.00    0.19    0.31    0.88    0.08
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.003    0.001    0.002 
 
@@ -21274,7 +21274,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          9.    1.00    0.00    0.01    0.10    0.86    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.001 
 
@@ -28114,7 +28114,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   136 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  136 from    95450 to    99888 will not be copied ( deleted )         
+ List type   11  serial number  136 from    95452 to    99890 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -29161,7 +29161,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                         0.0000   0.0000  -0.0000
+[31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -29355,8 +29355,8 @@ Mean C-C su =   0.0017
 
 
 
-     2016 reflections   R  3.00% Rw  6.35% with I/u(I) from List 28, I/Sig= -10.00
-     2016 reflections   R  3.00% Rw  6.35% with I/u(I) > -10.0
+     2016 reflections   R  3.00% Rw  6.34% with I/u(I) from List 28, I/Sig= -10.00
+     2016 reflections   R  3.00% Rw  6.34% with I/u(I) > -10.0
      1913 reflections   R  2.74% Rw  6.17% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.653   Wilson Scale=  4.723
@@ -30227,7 +30227,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-[31]                                          0.000    0.000    0.000 
+                                         0.0000   0.0000  -0.0000
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -30455,7 +30455,7 @@ All cycle   Rw                    0.0            6.3           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                         0.0000   0.0000  -0.0000
+[31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -30683,7 +30683,7 @@ All cycle   Rw                    0.0            6.3           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                         0.0000   0.0000  -0.0000
+[31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -31774,11 +31774,11 @@ Mean C-C su =   0.0067
 
 [32]      96780          94860            8930                0.72 E+05          On scale of /FO/
 
- New scale factor (G) is      4.812,    2016 reflections used in refinement
+ New scale factor (G) is      4.813,    2016 reflections used in refinement
 
  Structure factor least squares calculation  120  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
-LS-scale=  4.812   Wilson Scale=  4.723
+LS-scale=  4.813   Wilson Scale=  4.723
 [27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
@@ -37615,7 +37615,7 @@ The slope and correlation coefficient should be small
  List type  11 with serial number   144 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURGE
- List type   11  serial number  144 from    96448 to   100886 will not be copied ( deleted )         
+ List type   11  serial number  144 from    96450 to   100888 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -38806,7 +38806,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+                                         0.0000   0.0000  -0.0000
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -39034,7 +39034,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+                                         0.0000   0.0000  -0.0000
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -39121,7 +39121,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          6.    1.00    0.00    0.46    0.14    0.80    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
@@ -39364,7 +39364,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          9.    1.00    0.00    0.01    0.10    0.86    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.001 
 
@@ -39489,7 +39489,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
-[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
+[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
@@ -39577,7 +39577,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          6.    1.00    0.00    0.46    0.14    0.80    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
@@ -39592,7 +39592,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          9.    1.00    0.00    0.01    0.10    0.86    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.001 
 
@@ -39717,7 +39717,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
-[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [31]                                          0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
@@ -39810,7 +39810,7 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          7.    1.00    0.00    0.19    0.31    0.88    0.08
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.003    0.001    0.002 
 
@@ -39820,12 +39820,12 @@ All cycle   Rw                    0.0            3.7           0.10E+03
 [31]                                         0.001    0.001    0.001 
 
 [37]      C          9.    1.00    0.00    0.01    0.10    0.86    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.002    0.001 
 
 [37]      CL        10.    1.00    0.00   -0.21    0.17    0.54    0.02
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 Mean C-C su =   0.0018

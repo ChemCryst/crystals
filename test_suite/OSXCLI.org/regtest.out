@@ -61,7 +61,8 @@ Matching by Rotation/inversion (Method 1)
       6    Q         6.     0.000   0.000   0.000        0.000   1.668   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      3     0.000
                                                       Maximum angle      C      3     0.000
@@ -195,7 +196,8 @@ Matching by Rotation/inversion (Method 1)
       6    Q         6.     0.000   0.000   0.000        0.000   1.668   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      1     0.000
                                                       Maximum angle      C      1     0.002
@@ -205,14 +207,14 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
+           O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -238,8 +240,8 @@ Summary of Deviations
 
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.046         0.054
-New         0.046         0.054
-Delta                     0.000         0.000   O4       - O104    
+New         0.050         0.050
+Individual Delta          0.004         0.008   O4       - O104    
 
 
 
@@ -367,7 +369,8 @@ Matching by Rotation/inversion (Method 1)
       6    C         5.     1.204   0.973   0.000        1.204   0.973   0.000        0.000   0.000   0.000        0.000   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
@@ -501,7 +504,8 @@ Matching by Rotation/inversion (Method 1)
       6    C         5.     1.204   0.973   0.000        1.204   0.973   0.000        0.000   0.000   0.000        0.000   0.001
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      1     0.000
                                                       Maximum angle      C      1     0.002
@@ -511,15 +515,15 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    Q        6.  Isotropic
       2    C        1.  Isotropic
       3    C        2.  Isotropic
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
+           O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
 
       6    C        5.  Isotropic
 
@@ -544,8 +548,8 @@ Summary of Deviations
 
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.046         0.054
-New         0.046         0.054
-Delta                     0.000         0.000   O4       - O104    
+New         0.050         0.050
+Individual Delta          0.004         0.008   O4       - O104    
 
 
 
@@ -674,7 +678,8 @@ Matching by Rotation/inversion (Method 1)
       6    Q         6.     0.000   0.000   0.000        0.000   1.668   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      3     0.000
                                                       Maximum angle      C      3     0.000
@@ -803,7 +808,8 @@ Matching by Rotation/inversion (Method 1)
       6    Q         6.     0.000   0.000   0.000        0.000   1.668   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      1     0.000
                                                       Maximum angle      C      1     0.002
@@ -813,14 +819,14 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
+           O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -846,8 +852,8 @@ Summary of Deviations
 
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.046         0.054
-New         0.046         0.054
-Delta                     0.000         0.000   O4       - O104    
+New         0.050         0.050
+Individual Delta          0.004         0.008   O4       - O104    
 
 
 
@@ -965,7 +971,8 @@ Matching by Rotation/inversion (Method 1)
       6    C         5.     1.204   0.973   0.000        1.204   0.973   0.000        0.000   0.000   0.000        0.000   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
@@ -1094,7 +1101,8 @@ Matching by Rotation/inversion (Method 1)
       6    C         5.     1.204   0.973   0.000        1.204   0.973   0.000        0.000   0.000   0.000        0.000   0.001
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      1     0.000
                                                       Maximum angle      C      1     0.002
@@ -1104,15 +1112,15 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    Q        6.  Isotropic
       2    C        1.  Isotropic
       3    C        2.  Isotropic
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
+           O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
 
       6    C        5.  Isotropic
 
@@ -1137,8 +1145,8 @@ Summary of Deviations
 
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.046         0.054
-New         0.046         0.054
-Delta                     0.000         0.000   O4       - O104    
+New         0.050         0.050
+Individual Delta          0.004         0.008   O4       - O104    
 
 
 
@@ -1257,7 +1265,8 @@ Matching by Rotation/inversion (Method 1)
       6    Q         6.     0.000   0.000   0.000        0.000   1.668   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      3     0.000
                                                       Maximum angle      C      3     0.000
@@ -1386,7 +1395,8 @@ Matching by Rotation/inversion (Method 1)
       6    Q         6.     0.000   0.000   0.000        0.000   1.668   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      1     0.000
                                                       Maximum angle      C      1     0.002
@@ -1396,14 +1406,14 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
+           O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -1427,8 +1437,8 @@ Summary of Deviations
 
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.046         0.054
-New         0.046         0.054
-Delta                     0.000         0.000   O4       - O104    
+New         0.050         0.050
+Individual Delta          0.004         0.008   O4       - O104    
 
 
 
@@ -1546,7 +1556,8 @@ Matching by Rotation/inversion (Method 1)
       6    C         5.     1.204   0.973   0.000        1.204   0.973   0.000        0.000   0.000   0.000        0.000   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      2     0.000
                                                       Maximum angle      C      2     0.000
@@ -1675,7 +1686,8 @@ Matching by Rotation/inversion (Method 1)
       6    C         5.     1.204   0.973   0.000        1.204   0.973   0.000        0.000   0.000   0.000        0.000   0.001
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      1     0.000
                                                       Maximum angle      C      1     0.002
@@ -1685,15 +1697,15 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    Q        6.  Isotropic
       2    C        1.  Isotropic
       3    C        2.  Isotropic
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
+           O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
 
       6    C        5.  Isotropic
 
@@ -1716,8 +1728,8 @@ Summary of Deviations
 
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.046         0.054
-New         0.046         0.054
-Delta                     0.000         0.000   O4       - O104    
+New         0.050         0.050
+Individual Delta          0.004         0.008   O4       - O104    
 
 
 
@@ -1836,7 +1848,8 @@ Matching by Rotation/inversion (Method 1)
       6    Q         6.     0.000   0.000   0.000        0.000   1.668   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      1     0.000
                                                       Maximum angle      C      1     0.002
@@ -1846,14 +1859,14 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        1.  Isotropic
       2    C        2.  Isotropic
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-           O      104.     0.045   0.045   0.049  -0.004   0.004  -0.003    0.042 0.042 0.054    0.054    0.046
-[35]                            0.00    0.00    0.0    0.00   -0.00    0.00     0.00  0.00  0.00
+           O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
+[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -1879,8 +1892,8 @@ Summary of Deviations
 
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.046         0.054
-New         0.046         0.054
-Delta                     0.000         0.000   O4       - O104    
+New         0.050         0.050
+Individual Delta          0.004         0.008   O4       - O104    
 
 
 
@@ -1965,7 +1978,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      5     0.000
                                                       Maximum angle      C      5     0.001
@@ -2042,7 +2056,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
       8    C         1.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      5     0.000
                                                       Maximum angle      C      5     0.001
@@ -2052,7 +2067,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        2.  Isotropic
       2    C        5.  Isotropic
@@ -2098,7 +2113,7 @@ Summary of Deviations
          Ugeom(max)      Uprime(max)    U[ij](old-new)
 Old         0.050         0.050
 New         0.046         0.054
-Delta                     0.004         0.008   O104     - O4      
+Individual Delta          0.004         0.008   O104     - O4      
 
 
 
@@ -2166,7 +2181,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      5     0.000
                                                       Maximum angle      C      5     0.001
@@ -2243,7 +2259,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
       8    C         3.    -1.259   1.204   0.000       -1.259   1.204   0.000        0.000   0.000   0.000        0.000   0.000
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.000   0.000   0.000 Total   0.000
                                                       RMS deviations                  0.000   0.000   0.000  Mean   0.000
                                                       Maximum distance   C      5     0.000
                                                       Maximum angle      C      5     0.001
@@ -2253,7 +2270,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        2.  Isotropic
       2    C        5.  Isotropic
