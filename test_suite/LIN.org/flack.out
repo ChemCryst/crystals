@@ -2169,7 +2169,7 @@ Mean C-C su =   0.0000
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3884E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -4276,8 +4276,8 @@ LS-scale=  2.699   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Single precision:  1-norm:  6.59E+00 condition number:  8.27E+01 relative error:  9.86E-06
- S/ESD     1           1             0.052      0.0E+00    0.335E-01          1.57                          SCALE   
-[13]  LARGE     2           2             0.0       0.0E+00    0.2 E-01          0.0                           ENANTIO 
+ S/ESD     1           1             0.052      0.0E+00    0.335E-01          1.56                          SCALE   
+[13]  LARGE     2           2             0.0       0.0E+00    0.2 E-01          0.1                           ENANTIO 
 
                                                 for          56 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4637,9 +4637,9 @@ Mean C-C su =   0.0062
     h    k    l      Fo        Fc 
 
    -3.   6.   0.     2.76     1.69
-   -1.   6.   0.     4.66     4.10
+   -1.   6.   0.     4.66     4.11
    -5.   7.   0.     3.23     2.63
-   -4.   7.   0.     2.09     1.71
+   -4.   7.   0.     2.09     1.70
 [61]     2.   7.   0.     1.      0.
 [61]     3.   7.   0.     2.      1.
 [61]     4.   7.   0.     1.      0.
@@ -4855,10 +4855,10 @@ Mean C-C su =   0.0062
 [09]       Fc           0.175 E+00   0.925 E+02
  List   6 contains    904 reflections of which    904 are accepted by LIST 28
  After     6 structure factor/refinement calculations 
-  R =    3.64     Weighted R =   7.15     Minimisation function =    0.589013E+03
+  R =    3.64     Weighted R =   7.14     Minimisation function =    0.588529E+03
 Rsigma=  2.79
 
- Slope, intercept and Cc of Normal Probability Plot =  0.797      0.08   0.99098
+ Slope, intercept and Cc of Normal Probability Plot =  0.797      0.08   0.99097
 
  The slope should be unity
 
@@ -4868,7 +4868,7 @@ Rsigma=  2.79
 
  Outliers in Normal Probability Plot at delta(Z) > 0.33
     Indices        Zo         Zc     /Zc-Zo/
-  -2   3   1     5.763     2.685     3.078
+  -2   3   1     5.763     2.684     3.079
 
       1 outliers in Normal Probability Plot at delta(Z) >  0.33
 
@@ -4924,7 +4924,7 @@ Rsigma=  2.79
    -4.   5.   0.    12.10    11.91
    -3.   5.   0.    43.66    43.36
    -2.   5.   0.     6.51     7.05
-   -1.   5.   0.    56.41    57.52
+   -1.   5.   0.    56.41    57.53
 [61]     0.   5.   0.    34.     34.
 [61]     1.   5.   0.     8.      9.
 [61]     2.   5.   0.    11.     10.
@@ -4944,7 +4944,7 @@ Rsigma=  2.79
 [28]    1   2   2   38.5   36.9   2.0  1.0      2   5   0   11.2   10.0   2.0  1.1
 [28]    0   2   2    6.5    7.6   1.9  0.8      0   3   7    0.9    3.0   1.9  0.3
 [28]    0   1   3   23.2   21.9   1.9  1.0      2   1   2   50.8   49.1   1.8  1.0
-[28]    9   0   3    6.3    5.1   1.8  1.2      2   8   4    5.1    6.2   1.8  0.8
+[28]    2   8   4    5.1    6.2   1.8  0.8      9   0   3    6.3    5.1   1.8  1.2
 [28]   -7   5   4    4.0    2.5   1.8  1.6      6   5   6    2.9    0.4   1.8  6.5
 [28]    6   0   5   10.3   11.4   1.8  0.9      0  10   1    1.4    2.9   1.8  0.4
 [28]   -2   6   3   23.2   24.5   1.8  0.9      1   5   3   32.5   31.2   1.8  1.0
@@ -4985,7 +4985,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    51091 to    51317 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51093 to    51319 will not be copied ( deleted )         
 
 
  ************************************************************************
@@ -5055,23 +5055,23 @@ Dc    29     5     7     7    12    10    11    17    20    25    30    28    20
 
  Outliers in Normal Probability Plot at delta(Z) > 0.29
     Indices       Ds        Do        Zo         Zc     /Zc-Zo/
-[12]    0   2   1   176.71    389.24     -4.202    -3.143     1.060
+[12]    0   2   1   176.72    389.24     -4.202    -3.143     1.060
 [12]    0   6   5    -9.73      9.37     -3.951    -2.903     1.048
 [12]    1   4   2   -10.11     60.31     -3.678    -2.736     0.942
 [12]    1   2   4    -9.96     24.26     -3.338    -2.607     0.731
-[12]    3   3   1   138.21    245.14     -3.262    -2.501     0.762
-[12]    3   6   3    12.69     26.53     -3.186    -2.410     0.776
+[12]    3   3   1   138.21    245.14     -3.262    -2.501     0.761
+[12]    3   6   3    12.70     26.53     -3.186    -2.410     0.776
 [12]    0   1   1   116.10    144.19     -2.962    -2.330     0.633
 [12]    2   5   4    -2.87      8.32     -2.854    -2.258     0.596
 [12]    4   6   1    11.82     43.31     -2.638    -2.193     0.445
 [12]    2   4   4   -34.98     -2.28     -2.551    -2.134     0.417
 [12]    1   1   4   -31.31      5.71     -2.442    -2.079     0.363
 [12]    1   6   5    -4.23      6.87     -2.400    -2.028     0.372
-[12]    0   4   2   101.80    123.81     -2.368    -1.980     0.388
-[12]    4   4   1    -3.45     38.47     -2.291    -1.935     0.356
+[12]    0   4   2   101.80    123.82     -2.369    -1.980     0.388
+[12]    4   4   1    -3.46     38.47     -2.291    -1.935     0.356
 [12]   -1   5   1    96.42     44.46      3.338     2.916     0.422
 [12]   -1   3   2    32.56     -3.26      3.388     3.007     0.381
-[12]   -1   2   1  -170.37   -280.53      3.450     3.113     0.337
+[12]   -1   2   1  -170.36   -280.53      3.451     3.113     0.337
 [12]   -2   8   2    -2.67    -14.27      3.735     4.123     0.388
 
      19 outliers in Normal Probability Plot at delta(Z) >  0.29
@@ -5108,9 +5108,9 @@ I represents Fsquared
 
           Number +ve   mean(deltaI)   rms(deltaI)   Number -ve   mean(deltaI)   rms(deltaI)
 For Io
-             136         25.847         57.365          164        -24.628        50.191
+             136         25.848         57.365          164        -24.628        50.191
 For Ic
-             149         20.531         42.374          151        -18.777        38.358
+             149         20.531         42.375          151        -18.778        38.358
 
 
 Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
@@ -5140,20 +5140,20 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
  Minimum signal : noise used =  1.1942
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
-  0   10       10      0          7.2238           0.000
-  0   20       20      0          5.7160           0.000
-  0   50       50      0          3.4943           0.000
-  0  100       95      5          2.0331           0.000
+  0   10       10      0          7.2240           0.000
+  0   20       20      0          5.7162           0.000
+  0   50       50      0          3.4944           0.000
+  0  100       95      5          2.0325           0.000
   0  151      139     12          1.1942           0.000
 
  Top 50% of data
-  0  150      139     11          1.2047           0.000
+  0  150      139     11          1.2046           0.000
 
 
-  0   10       10      0          7.2238           0.000
- 10   20       10      0          5.7160           0.000
- 20   50       30      0          3.4943           0.000
- 50  100       45      5          2.0331           0.000
+  0   10       10      0          7.2240           0.000
+ 10   20       10      0          5.7162           0.000
+ 20   50       30      0          3.4944           0.000
+ 50  100       45      5          2.0325           0.000
 100  200       44      7          1.1942           0.000
 
 

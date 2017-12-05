@@ -86,7 +86,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.003   0.005   0.021 Total   0.028
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.003   0.005   0.021 Total   0.028
                                                       RMS deviations                  0.013   0.019   0.037  Mean   0.043
                                                       Maximum distance   S      1     0.101
                                                       Maximum angle      C      2     1.262
@@ -204,7 +205,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      34    H         9.    -0.265   0.795  -2.032       -0.222   0.806  -2.052        0.043   0.011  -0.020        0.049   0.927
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.018   0.041   0.088 Total   0.147
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.018   0.041   0.088 Total   0.147
                                                       RMS deviations                  0.023   0.035   0.051  Mean   0.066
                                                       Maximum distance   S      1     0.151
                                                       Maximum angle      H     11     1.831
@@ -214,7 +216,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    H        7.  Isotropic
       2    H       12.  Isotropic
@@ -543,7 +545,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.040   0.053   3.201 Total   3.294
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.040   0.053   3.201 Total   3.294
                                                       RMS deviations                  0.040   0.046   0.358  Mean   0.363
                                                       Maximum distance   C     20     1.497
                                                       Maximum angle      C     20    11.517
@@ -671,7 +674,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      42    H        10.     5.116   1.662  -0.597        5.112   1.687  -0.827       -0.004   0.025  -0.230        0.231   2.222
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.527   1.236  16.184 Total  17.947
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.527   1.236  16.184 Total  17.947
                                                       RMS deviations                  0.112   0.172   0.621  Mean   0.654
                                                       Maximum distance   H     16     2.429
                                                       Maximum angle      H     16    19.734
@@ -681,7 +685,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    H        4.  Isotropic
       2    C        9.  Isotropic
@@ -1053,7 +1057,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.164   0.214  12.752 Total  13.130
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.164   0.214  12.752 Total  13.130
                                                       RMS deviations                  0.088   0.101   0.779  Mean   0.791
                                                       Maximum distance   O      2     2.508
                                                       Maximum angle      O      2    31.963
@@ -1178,7 +1183,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      40    H         8.    -0.661   2.824  -0.421       -0.647   2.754  -0.646        0.014  -0.070  -0.225        0.236   3.990
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.300   0.364  13.660 Total  14.324
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.300   0.364  13.660 Total  14.324
                                                       RMS deviations                  0.087   0.095   0.584  Mean   0.598
                                                       Maximum distance   O      2     2.401
                                                       Maximum angle      O      2    28.344
@@ -1188,7 +1194,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        4.  Isotropic
       2    C        3.  Isotropic
@@ -1565,7 +1571,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.049   0.060   0.004 Total   0.113
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.049   0.060   0.004 Total   0.113
                                                       RMS deviations                  0.055   0.061   0.016  Mean   0.084
                                                       Maximum distance   H     10     0.156
                                                       Maximum angle      O      2     1.845
@@ -1676,7 +1683,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      31    H         7.    -0.691  -1.229  -0.539       -0.664  -1.186  -0.478        0.027   0.042   0.061        0.079   2.084
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.248   0.218   0.817 Total   1.283
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.248   0.218   0.817 Total   1.283
                                                       RMS deviations                  0.089   0.084   0.162  Mean   0.203
                                                       Maximum distance   H      9     0.453
                                                       Maximum angle      H      8     6.445
@@ -1686,7 +1694,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    H       10.  Isotropic
       2    C       10.  Isotropic
@@ -1990,7 +1998,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.043   0.076   0.090 Total   0.209
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.043   0.076   0.090 Total   0.209
                                                       RMS deviations                  0.043   0.058   0.063  Mean   0.095
                                                       Maximum distance   O      3     0.169
                                                       Maximum angle      O      5     3.757
@@ -2146,7 +2155,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      57    H        37.    -0.458   4.779  -0.455       -0.478   4.807  -0.286       -0.021   0.028   0.169        0.172   1.832
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.512   0.342   0.394 Total   1.249
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.512   0.342   0.394 Total   1.249
                                                       RMS deviations                  0.095   0.077   0.083  Mean   0.148
                                                       Maximum distance   H     23     0.324
                                                       Maximum angle      H      1     4.432
@@ -2156,7 +2166,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    O        5.  Isotropic
       2    O        3.  Isotropic
@@ -2654,7 +2664,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.038   0.148   0.081 Total   0.267
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.038   0.148   0.081 Total   0.267
                                                       RMS deviations                  0.040   0.080   0.059  Mean   0.108
                                                       Maximum distance   C     17     0.217
                                                       Maximum angle      H      2     3.743
@@ -2798,7 +2809,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      51    H        12.    -5.698  -1.824   0.181       -5.759  -1.762   0.109       -0.061   0.061  -0.072        0.112   0.998
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.169   0.478   0.806 Total   1.453
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.169   0.478   0.806 Total   1.453
                                                       RMS deviations                  0.058   0.097   0.126  Mean   0.169
                                                       Maximum distance   H     21     0.316
                                                       Maximum angle      H     16     5.092
@@ -2808,7 +2820,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C       11.  Isotropic
       2    C       17.  Isotropic
@@ -3250,7 +3262,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.438   0.122   0.040 Total   0.600
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.438   0.122   0.040 Total   0.600
                                                       RMS deviations                  0.156   0.082   0.047  Mean   0.183
                                                       Maximum distance   H      1     0.704
                                                       Maximum angle      H      1    10.673
@@ -3340,7 +3353,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      20    H         7.     0.830  -2.073  -1.134        0.898  -2.014  -1.155        0.068   0.059  -0.021        0.092   1.698
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.460   0.093   0.074 Total   0.627
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.460   0.093   0.074 Total   0.627
                                                       RMS deviations                  0.152   0.068   0.061  Mean   0.177
                                                       Maximum distance   H      1     0.704
                                                       Maximum angle      H      1    10.395
@@ -3350,7 +3364,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    H        4.  Isotropic
       2    H        5.  Isotropic
@@ -3592,7 +3606,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.013   0.008   0.027 Total   0.048
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.013   0.008   0.027 Total   0.048
                                                       RMS deviations                  0.035   0.027   0.050  Mean   0.066
                                                       Maximum distance   C      7     0.156
                                                       Maximum angle      C      7     3.063
@@ -3699,7 +3714,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      25    H        15.     1.953   1.700  -0.692        2.100   1.724  -0.518        0.147   0.024   0.174        0.229   3.963
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.125   0.096   0.138 Total   0.359
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.125   0.096   0.138 Total   0.359
                                                       RMS deviations                  0.071   0.062   0.074  Mean   0.120
                                                       Maximum distance   H     13     0.263
                                                       Maximum angle      H     13     4.130
@@ -3709,7 +3725,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        8.  Isotropic
       2    C        2.  Isotropic
@@ -4042,7 +4058,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.012   0.032   0.071 Total   0.116
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.012   0.032   0.071 Total   0.116
                                                       RMS deviations                  0.019   0.031   0.046  Mean   0.058
                                                       Maximum distance   H     26     0.158
                                                       Maximum angle      C     14     1.400
@@ -4233,7 +4250,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      80    H        38.    -0.103  -1.176   2.304       -0.025  -1.265   2.330        0.079  -0.089   0.026        0.121   2.193
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.090   0.183   0.454 Total   0.727
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.090   0.183   0.454 Total   0.727
                                                       RMS deviations                  0.033   0.048   0.075  Mean   0.095
                                                       Maximum distance   H     50     0.245
                                                       Maximum angle      H     36     2.479
@@ -4243,7 +4261,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C       26.  Isotropic
       2    C       27.  Isotropic
@@ -4913,7 +4931,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.014   0.010   0.024 Total   0.047
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.014   0.010   0.024 Total   0.047
                                                       RMS deviations                  0.030   0.025   0.040  Mean   0.056
                                                       Maximum distance   H      4     0.116
                                                       Maximum angle      H      4     2.091
@@ -5021,7 +5040,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      29    H        13.    -3.262   1.118   0.906       -3.246   1.084   0.887        0.016  -0.034  -0.018        0.042   0.576
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.031   0.051   0.054 Total   0.135
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.031   0.051   0.054 Total   0.135
                                                       RMS deviations                  0.033   0.042   0.043  Mean   0.068
                                                       Maximum distance   CL     1     0.140
                                                       Maximum angle      O      1     2.301
@@ -5031,7 +5051,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    H        3.  Isotropic
       2    H        5.  Isotropic
@@ -5326,7 +5346,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.053   0.013   0.028 Total   0.094
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.053   0.013   0.028 Total   0.094
                                                       RMS deviations                  0.046   0.023   0.033  Mean   0.061
                                                       Maximum distance   C     15     0.207
                                                       Maximum angle      C     15     3.420
@@ -5442,7 +5463,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      38    H         6.    -0.480  -2.696   1.142       -0.496  -2.725   1.124       -0.016  -0.029  -0.019        0.038   0.629
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.230   0.114   0.038 Total   0.383
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.230   0.114   0.038 Total   0.383
                                                       RMS deviations                  0.078   0.055   0.032  Mean   0.100
                                                       Maximum distance   H     18     0.250
                                                       Maximum angle      H     18     3.781
@@ -5452,7 +5474,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        5.  Isotropic
       2    C        4.  Isotropic
@@ -5827,7 +5849,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.007   0.011   0.001 Total   0.020
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.007   0.011   0.001 Total   0.020
                                                       RMS deviations                  0.039   0.048   0.011  Mean   0.062
                                                       Maximum distance   C      7     0.085
                                                       Maximum angle      N      1     2.528
@@ -5952,7 +5975,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      31    H         4.    -3.230   1.189   2.134       -3.313   1.204   2.042       -0.083   0.015  -0.092        0.125   1.569
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.963   1.398   0.730 Total   3.091
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.963   1.398   0.730 Total   3.091
                                                       RMS deviations                  0.176   0.212   0.153  Mean   0.316
                                                       Maximum distance   H      9     0.748
                                                       Maximum angle      H      8    12.242
@@ -5962,7 +5986,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    B        1.  Isotropic
       2    C       10.  Isotropic
@@ -6270,7 +6294,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.110   0.071   0.001 Total   0.182
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.110   0.071   0.001 Total   0.182
                                                       RMS deviations                  0.125   0.101   0.010  Mean   0.161
                                                       Maximum distance   C     12     0.264
                                                       Maximum angle      C     12     2.976
@@ -6404,7 +6429,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      38    H         4.     3.656   0.306  -2.313        3.517   0.213  -2.410       -0.139  -0.093  -0.096        0.193   2.299
 
 
-                                                                                        x        y       z                                                      Total squared deviations        1.948   1.267   1.830 Total   5.045
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        1.948   1.267   1.830 Total   5.045
                                                       RMS deviations                  0.226   0.183   0.219  Mean   0.364
                                                       Maximum distance   H      9     1.236
                                                       Maximum angle      H      9    11.814
@@ -6414,7 +6440,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    H       14.  Isotropic
       2    C       16.  Isotropic
@@ -6945,7 +6971,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.115   0.306   0.328 Total   0.749
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.115   0.306   0.328 Total   0.749
                                                       RMS deviations                  0.057   0.093   0.097  Mean   0.146
                                                       Maximum distance   C     30     0.328
                                                       Maximum angle      C     30     4.380
@@ -7102,7 +7129,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      62    H        16.     1.858  -0.455   1.686        1.756  -0.350   1.762       -0.102   0.104   0.076        0.165   3.066
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.302   0.849   2.551 Total   3.701
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.302   0.849   2.551 Total   3.701
                                                       RMS deviations                  0.070   0.117   0.203  Mean   0.244
                                                       Maximum distance   H     10     0.748
                                                       Maximum angle      H      7     6.210
@@ -7112,7 +7140,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    H        4.  Isotropic
       2    H       23.  Isotropic
@@ -7683,7 +7711,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.031   0.016   0.011 Total   0.058
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.031   0.016   0.011 Total   0.058
                                                       RMS deviations                  0.062   0.044   0.037  Mean   0.085
                                                       Maximum distance   H      1     0.181
                                                       Maximum angle      H      1     4.194
@@ -7790,7 +7819,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      25    H         7.     2.909  -0.448   1.122        2.931  -0.377   1.166        0.022   0.071   0.043        0.086   1.297
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.054   0.133   0.171 Total   0.358
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.054   0.133   0.171 Total   0.358
                                                       RMS deviations                  0.047   0.073   0.083  Mean   0.120
                                                       Maximum distance   H      1     0.270
                                                       Maximum angle      H      1     4.051
@@ -7800,7 +7830,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        3.  Isotropic
       2    O        2.  Isotropic
@@ -8083,7 +8113,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.406   0.509   1.704 Total   2.619
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.406   0.509   1.704 Total   2.619
                                                       RMS deviations                  0.170   0.191   0.349  Mean   0.433
                                                       Maximum distance   C      4     0.711
                                                       Maximum angle      C      4    14.062
@@ -8222,7 +8253,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      42    H        17.     1.664   0.492  -1.380        1.441   0.806  -1.553       -0.223   0.315  -0.173        0.423   8.311
 
 
-                                                                                        x        y       z                                                      Total squared deviations       13.608  16.416  30.700 Total  60.724
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations       13.608  16.416  30.700 Total  60.724
                                                       RMS deviations                  0.569   0.625   0.855  Mean   1.202
                                                       Maximum distance   H      7     3.252
                                                       Maximum angle      H     11    47.117
@@ -8232,7 +8264,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C       12.  Isotropic
       2    C        3.  Isotropic
@@ -8549,7 +8581,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        1.016   0.696   4.042 Total   5.754
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        1.016   0.696   4.042 Total   5.754
                                                       RMS deviations                  0.269   0.223   0.537  Mean   0.641
                                                       Maximum distance   O      4     1.012
                                                       Maximum angle      C     12    18.993
@@ -8688,7 +8721,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      42    H        17.     0.677   0.020   1.870        1.114   0.751   1.826        0.437   0.731  -0.044        0.853  17.055
 
 
-                                                                                        x        y       z                                                      Total squared deviations       18.629  23.251  41.770 Total  83.650
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations       18.629  23.251  41.770 Total  83.650
                                                       RMS deviations                  0.666   0.744   0.997  Mean   1.411
                                                       Maximum distance   H      9     3.353
                                                       Maximum angle      H      5    49.405
@@ -8698,7 +8732,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C       12.  Isotropic
       2    C        3.  Isotropic
@@ -9078,7 +9112,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
 
-                                                                                        x        y       z                                                      Total squared deviations        0.177   0.144   0.135 Total   0.457
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        0.177   0.144   0.135 Total   0.457
                                                       RMS deviations                  0.097   0.087   0.084  Mean   0.155
                                                       Maximum distance   O      1     0.251
                                                       Maximum angle      C      5     4.641
@@ -9202,7 +9237,8 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
      39    H        13.    -2.945   1.644   1.414       -2.631   1.612   1.763        0.315  -0.032   0.349        0.471   6.546
 
 
-                                                                                        x        y       z                                                      Total squared deviations        2.002   0.653   1.301 Total   3.957
+                                                                                        x        y       z       over-all
+                                                      Total squared deviations        2.002   0.653   1.301 Total   3.957
                                                       RMS deviations                  0.227   0.129   0.183  Mean   0.319
                                                       Maximum distance   H     20     0.812
                                                       Maximum angle      H     21     9.067
@@ -9212,7 +9248,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
  Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
                                             New U[ij]                       New Principal Axes
-deltas                                       U[ij]                          Principal Axes
+                                       delta U[ij]                        delta Principal Axes
 
       1    C        5.  Isotropic
       2    C        6.  Isotropic

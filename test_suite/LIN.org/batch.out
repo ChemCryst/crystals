@@ -3024,7 +3024,7 @@ Mean C-C su =   0.0078
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        3     Address    54006     Length     292     Created on                          
+ Print list type    22     serial number        3     Address    54007     Length     292     Created on                          
 
 
             100 parameter(s) in    1 block(s) - as follows:
@@ -3746,7 +3746,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        4     Address    63930     Length     141     Created on                          
+ Print list type    22     serial number        4     Address    63931     Length     141     Created on                          
 
 
               1 parameter(s) in    1 block(s) - as follows:
@@ -5236,7 +5236,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        5     Address    67609     Length     147     Created on                          
+ Print list type    22     serial number        5     Address    67610     Length     147     Created on                          
 
 
               2 parameter(s) in    1 block(s) - as follows:
@@ -6026,7 +6026,7 @@ Mean C-C su =   0.0048
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        6     Address    69619     Length     235     Created on                          
+ Print list type    22     serial number        6     Address    69620     Length     235     Created on                          
 
 
              35 parameter(s) in    1 block(s) - as follows:
@@ -7063,7 +7063,7 @@ Mean C-C su =   0.0067
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address    73362     Length     246     Created on                          
+ Print list type    22     serial number        7     Address    73363     Length     246     Created on                          
 
 
              46 parameter(s) in    1 block(s) - as follows:
@@ -8110,7 +8110,7 @@ Mean C-C su =   0.0052
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        8     Address    76963     Length     301     Created on                          
+ Print list type    22     serial number        8     Address    76964     Length     301     Created on                          
 
 
             101 parameter(s) in    1 block(s) - as follows:
@@ -11433,7 +11433,7 @@ Mean C-C su =   0.0078
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   130051     Length     292     Created on                          
+ Print list type    22     serial number       11     Address   130052     Length     292     Created on                          
 
 
             100 parameter(s) in    1 block(s) - as follows:
@@ -29680,7 +29680,7 @@ LS-scale=  1.772   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.85E+00 condition number:  1.27E+01 relative error:  1.52E-06
+Single precision:  1-norm:  1.85E+00 condition number:  1.28E+01 relative error:  1.52E-06
 [13]  LARGE     1           1             0.2       0.0E+00    0.3 E-01          7.6                           SCALE   
  S/ESD     2           2            -0.036      0.0E+00    0.405E-02         -8.93                          BATCH     1
  S/ESD     2           2            -0.036      0.0E+00    0.405E-02         -8.93                          BATCH     2

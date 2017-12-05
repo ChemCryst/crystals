@@ -576,7 +576,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        1     Address     4205     Length      49     Created on                          
+ Print list type     4     serial number        1     Address     4205     Length      50     Created on                          
 
 
 
@@ -597,12 +597,12 @@ REAL
         5              3              0              0
 
 
- Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
+ Record  103    LGRP    7  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI          REWT        
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
+[23]    2.00      10000.0000         6.0000         1.0000         1.0000         0.2500         1.0000
 
 
 
@@ -613,7 +613,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        2     Address     4254     Length      37     Created on                          
+ Print list type     4     serial number        2     Address     4255     Length      38     Created on                          
 
 
 
@@ -633,12 +633,12 @@ REAL
         6              3              0              0
 
 
- Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
+ Record  103    LGRP    7  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI          REWT        
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
+[23]    2.00      10000.0000         6.0000         1.0000         1.0000         0.2500         1.0000
 
 
 
@@ -667,7 +667,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     3     serial number        1     Address     4291     Length      72     Created on                          
+ Print list type     3     serial number        1     Address     4293     Length      72     Created on                          
 
 
 
@@ -728,7 +728,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     5     serial number        1     Address     4363     Length      83     Created on                          
+ Print list type     5     serial number        1     Address     4365     Length      83     Created on                          
 
 
 
@@ -831,7 +831,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    13     serial number        1     Address     4785     Length     155     Created on                          
+ Print list type    13     serial number        1     Address     4787     Length     155     Created on                          
 
 
 
@@ -922,7 +922,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    14     serial number        1     Address     4940     Length      72     Created on                          
+ Print list type    14     serial number        1     Address     4942     Length      72     Created on                          
 
 
 
@@ -966,7 +966,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5012     Length      77     Created on                          
+ Print list type    23     serial number        1     Address     5014     Length      77     Created on                          
 
 
 
@@ -1020,7 +1020,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5089     Length      52     Created on                          
+ Print list type    25     serial number        1     Address     5091     Length      52     Created on                          
 
 
 
