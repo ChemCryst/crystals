@@ -16207,7 +16207,7 @@ LS-scale=  0.448   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.44E+01 condition number:  3.16E+03 relative error:  3.77E-04
+Single precision:  1-norm:  1.44E+01 condition number:  3.17E+03 relative error:  3.77E-04
 [13]  LARGE     2           2             0.1      -0.7E+00    0.2 E+00          0.3                           ENANTIO 
 
                                                 for         263 parameters
@@ -20814,11 +20814,11 @@ T tensor:
     Atom C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    3.50E-02     3.49E-02     4.85E-05    0.999    U11 - Utls11 == 0
-         1  1  0  0  0    4.48E-02     4.48E-02    -4.39E-06    1.000    U22 - Utls22 == 0
+         1  1  0  0  0    4.48E-02     4.48E-02    -4.38E-06    1.000    U22 - Utls22 == 0
          1  1  0  0  0    4.71E-02     4.70E-02     5.91E-05    0.999    U33 - Utls33 == 0
          1  1  0  0  0    9.10E-04     1.05E-03    -1.39E-04    0.999    U12 - Utls12 == 0
          1  1  0  0  0   -4.51E-03    -4.18E-03    -3.28E-04    0.999    U23 - Utls23 == 0
-         1  1  0  0  0   -1.15E-03    -1.15E-03     1.20E-06    0.999    U13 - Utls13 == 0
+         1  1  0  0  0   -1.15E-03    -1.15E-03     1.19E-06    0.999    U13 - Utls13 == 0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    3.74E-02     3.74E-02     2.82E-05    0.999    U11 - Utls11 == 0
@@ -20845,7 +20845,7 @@ T tensor:
          1  1  0  0  0   -8.77E-03    -8.76E-03    -1.18E-05    1.000    U13 - Utls13 == 0
     Atom C(29)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    4.94E-02     4.93E-02     7.02E-05    0.999    U11 - Utls11 == 0
+         1  1  0  0  0    4.94E-02     4.93E-02     7.03E-05    0.999    U11 - Utls11 == 0
          1  1  0  0  0    6.45E-02     6.46E-02    -6.89E-05    1.000    U22 - Utls22 == 0
          1  1  0  0  0    3.47E-02     3.49E-02    -2.06E-04    0.999    U33 - Utls33 == 0
          1  1  0  0  0    6.09E-04     4.53E-04     1.57E-04    0.999    U12 - Utls12 == 0

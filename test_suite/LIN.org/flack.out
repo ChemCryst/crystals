@@ -5137,14 +5137,14 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1942
+ Minimum signal : noise used =  1.1941
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
   0   10       10      0          7.2240           0.000
   0   20       20      0          5.7162           0.000
   0   50       50      0          3.4944           0.000
   0  100       95      5          2.0325           0.000
-  0  151      139     12          1.1942           0.000
+  0  151      139     12          1.1941           0.000
 
  Top 50% of data
   0  150      139     11          1.2046           0.000
@@ -5154,7 +5154,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
  10   20       10      0          5.7162           0.000
  20   50       30      0          3.4944           0.000
  50  100       45      5          2.0325           0.000
-100  200       44      7          1.1942           0.000
+100  200       44      7          1.1941           0.000
 
 
 
