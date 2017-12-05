@@ -1739,6 +1739,11 @@ c      DIMENSION IHKLTR ( 3, itrmax )
       DIMENSION ACTBIN ( 100 )
       character *80 ctemp
       integer, dimension(:,:), allocatable :: ihkltr
+      !> address of first index l in sorted array ihkltr
+      integer, dimension(:,:), allocatable :: ladresses
+      !> current l
+      integer currentl
+      integer lstart, lend
 
       allocate( ihkltr( 3, itrsz+1 ) )
 
@@ -1774,7 +1779,20 @@ c
       END DO
 
       CALL XSHELI ( IHKLTR, 3, 3, NHKL, NHKL*3, IHKLTR(1,NHKL+1))
+      allocate(ladresses(2,IHKLTR(3,1):IHKLTR(3,NHKL)))
 
+      ! build address list of first l indices 
+      ladresses=-1
+      currentl=IHKLTR(3,1)
+      ladresses(1,currentl)=1
+      do icpt=1, nhkl
+        if(IHKLTR(3,icpt)/=currentl) then
+          ladresses(2,currentl)=icpt-1
+          currentl=IHKLTR(3,icpt)
+          ladresses(1,currentl)=icpt
+        end if
+      end do
+      ladresses(2,currentl)=nhkl
 
       NALLWD = 0
       NFOUND = 0
@@ -1809,16 +1827,20 @@ cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
                   JID = MAX ( 1,  JID )
                   JID = MIN ( 100,JID )
                   ALLBIN(JID) = ALLBIN(JID) + 1.0
-                  JP = 1
                   IFOUND = 0
 
-                  DO WHILE ( IHKLTR(3,JP) .NE. IL )
-                    JP = JP + 1
-                    IF ( JP .GT. NHKL ) JP = -1
-                    IF ( JP .LE. 0)  EXIT
-                  END DO
-                  IF ( JP .GT. 0 ) THEN
-                    DO WHILE ( IHKLTR(3,JP) .EQ. IL )
+                  ! use the look up table to find the first and last address of IL
+                  if(IL>=lbound(ladresses, 2) .and. 
+     1              IL<=ubound(ladresses, 2)) then
+                    lstart=ladresses(1,IL)
+                    lend=ladresses(2,IL)
+                  else
+                    lstart=-1
+                    lend=-1
+                  end if
+                  
+                  ! go through the remaining reflections
+                  do JP=lstart, lend
                       IF ( ( IHKLTR(1,JP) .EQ. IH ) .AND.
      1                     ( IHKLTR(2,JP) .EQ. IK ) ) THEN
                            NFOUND = NFOUND + 1
@@ -1826,10 +1848,8 @@ cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
                            FNDBIN(JID) = FNDBIN(JID) + 1.0
                            EXIT
                       END IF
-                      JP = JP + 1
-                      IF ( JP .GT. NHKL ) EXIT
-                    END DO
-                  END IF
+                  end do
+                  
                   IF ( IFOUND .EQ. 0 ) THEN
                     IF ((IPLOT.GE.0 ).AND.( IMISSI .EQ. 0)) THEN
                     IF (ISSPRT .EQ. 0)  
