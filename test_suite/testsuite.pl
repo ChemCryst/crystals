@@ -238,7 +238,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^( Minimisation function\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d.*)/ ) {
               print $fho "[30] $1 $2 $3 $4\n";
 # Shift max  "                                         0.0762   0.0487   0.0794"
-	   } elsif($line =~ m/^(           \s*-?\d\.\d\d\d)\d(   -?\d\.\d\d\d)\d(   -?\d.\d\d\d)\d(\s*)/ ) {
+	   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
               print $fho "[31] $1 $2 $3 $4\n";
 # Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
 	   } elsif($line =~ m/^(\s+\d+)\d\.(\s+\d+)\d\.(\s+\d+)\d\.(\s+0\.\d\d)\d\d(E.\d\d\s+On scale of \/FO\/\s*)/ ) {
