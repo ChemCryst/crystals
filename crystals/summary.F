@@ -1835,7 +1835,7 @@ cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
                     lstart=ladresses(1,IL)
                     lend=ladresses(2,IL)
                   else
-                    lstart=-1
+                    lstart=0
                     lend=-1
                   end if
                   
