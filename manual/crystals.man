@@ -9149,6 +9149,7 @@ including negative ones.
  FORCE  KEY= KEY=
  SOLVE MONITOR= MA=P /Fo/= PUNCH= MATRIX=
  VECTOR MONITOR= MAP= /Fo/= PUNCH= MATRIX=
+ HUGE=
  END
 #
 #J
@@ -9504,6 +9505,16 @@ default value is 4.0
  the eigenvalues of the normal matrix. Although no new matrix is produced
  by this directive, sufficient space must be allocated for the normal
  matrix, since it is loaded when the new coordinates are calculated.
+#KHUGE#
+#PThis directive tuned the refinement for big structures. It performs the
+ the normal matrix accumulation in single precision, 
+ the accumulation of the right and side is also done in single precision.
+ The inversion is still using double precision but with a 
+ Choleski decomposition faster than the default auto-adaptive LDL^t decomposition. 
+ Bigger structures tend to be more ill-conditioned so inversion needs to be done in double precision.
+ These changes could potentially lead to a less stable refinement but it is unlikely, 
+ the default refinement is just very conservative.
+ 
 #KMONITOR#
  This parameter has the same options as for
  the  CALCULATE  directive above.
