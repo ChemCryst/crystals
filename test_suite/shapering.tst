@@ -1,4 +1,4 @@
-# \release printer CROUTPUT:
+\release printer CROUTPUT:
 \set time slow
 #
 #
