@@ -1,7 +1,7 @@
 REM Each restraint is tested separately to avoid side effects on the output
 REM the scheme is: check, refine and check
 \set time slow
-# \rele print CROUTPUT:
+\rele print CROUTPUT:
 \TITLE real structure from james.thomson@chem.ox.ac.uk to test adps restraints
 END
 \use sgd464.in
