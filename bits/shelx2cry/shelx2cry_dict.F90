@@ -113,7 +113,7 @@ type(dict_t) :: this
         tuples(37)%key='HTAB'
         tuples(37)%func => shelx_ignored    
         tuples(38)%key='ISOR'
-        tuples(38)%func => shelx_unsupported    
+        tuples(38)%func => shelx_isor
         tuples(39)%key='LATT'
         tuples(39)%func => shelx_latt    
         tuples(40)%key='LAUE'

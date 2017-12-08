@@ -699,6 +699,55 @@ character :: linecont
             serial1=l
         end do
     end do riguloop
+
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   ISOR
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    ! ISOR [0.1] [0.2] O24 O25 O29 O28 O27 O26
+    if(isor_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing ISORs...'
+    end if
+    
+    isorloop:do i=1, isor_table_index
+        write(log_unit, '(a)') trim(isor_table(i)%shelxline)
+        write(crystals_fileunit, '(a, a)') '# ', isor_table(i)%shelxline
+        
+        write(crystals_fileunit, advance='no', fmt='(a, F9.7, 1X)') 'UQISO ', isor_table(i)%esd1
+        write(log_unit, advance='no', fmt='(a, F9.7, 1X)') 'UQISO ', isor_table(i)%esd1
+        do j=1, size(isor_table(i)%atoms)
+            l=0
+            do m=1, atomslist_index
+                if(trim(isor_table(i)%atoms(j))==trim(atomslist(m)%label)) then
+                    l=m
+                    exit
+                end if
+            end do
+            if(l>0) then
+                if(atomslist(l)%crystals_serial==-1) then
+                    write(log_unit, '(2a)') 'Error: Crystals serial not defined ', isor_table(i)%atoms(l)
+                    call abort()
+                end if
+            else
+                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', isor_table(i)%atoms(l)
+                call abort()
+            end if
+                        
+            if(mod(j, 5)==0) then
+                write(crystals_fileunit, '(a)') ''
+                write(crystals_fileunit, advance='no', fmt='(a)') 'CONT '
+                write(log_unit, '(a)') ''
+                write(log_unit, advance='no', fmt='(a)') 'CONT '
+            end if
+            write(crystals_fileunit, advance='no', fmt='(a,"(",I0,")", 1X)') &
+            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
+            write(log_unit, advance='no', fmt='(a,"(",I0,")", 1X)') &
+            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
+
+        end do
+        write(crystals_fileunit, '(a)') ''
+        write(log_unit, '(a)') ''
+    end do isorloop
         
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 !*   SAME

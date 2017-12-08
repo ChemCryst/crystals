@@ -109,6 +109,18 @@ end type
 type(eadp_t), dimension(1024), save :: eadp_table
 integer :: eadp_table_index=0
 
+!> type ISOR
+type isor_t
+    character(len=lenlabel), dimension(:), allocatable :: atoms
+    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    real :: esd1, esd2 !< if the atom is terminal (or makes no bonds), esd2 is used instead of esd1
+    character(len=128) :: namedresidue='' !< Residue alias
+    character(len=1024) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
+end type
+type(isor_t), dimension(1024), save :: isor_table
+integer :: isor_table_index=0
+
 !> type RIGU
 type rigu_t
     character(len=lenlabel), dimension(:), allocatable :: atoms
