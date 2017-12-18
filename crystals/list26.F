@@ -424,10 +424,6 @@ C to avoid problems down the line
       JS=1
       CALL XFAL12(JS,JQ,JR,JN)
 
-C--PUNCH OUT THE LIST HEADING
-      LN22 = 22
-      CALL XPCHLH (LN22,NCPU)
-
 C      JT            ABSOLUTE L.S. PARAMETER NO.
 C      JS            PHYSICAL PARAMETER NO FROM WHICH TO START SEARCH
 C      JX            RELATIVE PARAMETER NO
