@@ -95,7 +95,7 @@ integer, external :: khuntr
 
                     IF ( ILEBP .EQ. 1 ) THEN
                         call extend_parameters(parameters_list)
-                        write(formatstr, '(A)') KSCAL(:,NA+2)
+                        write(formatstr, '(2A)') KSCAL(:,NA+2)
                         parameters_list(size(parameters_list))%index=JT
                         parameters_list(size(parameters_list))%name=trim(formatstr)
                         parameters_list(size(parameters_list))%offset=M5
