@@ -17,6 +17,7 @@ endif()
 
 add_library(CrystalsFortran STATIC
 crystals_hdf5.F90
+numpy.F90
 STORE.INC.F90
 XCHARS.INC.F90
 XDAVAL.INC.F90
@@ -36,8 +37,11 @@ XLST30.INC.F90
 XLST33.INC.F90
 XLST39.INC.F90
 XCONST.INC.F90
+XAPK.INC.F90
+XOPK.INC.F90
 XOPVAL.INC.F90
 XRTLSC.INC.F90
+XSCALE.INC.F90
 math.F90
 formatnumber.F90
 solve_helper.F90
@@ -76,6 +80,7 @@ invert.F
 lexical.F
 link.F
 list11.F
+list12_helper.F90
 list12.F
 list16.F
 list26_helper.F90

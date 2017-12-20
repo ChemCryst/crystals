@@ -371,6 +371,12 @@ C--LOAD THE CONTROL LISTS
       INCLUDE 'IDIM33.INC'
       CALL XFAL33
       sfls_punch_flag=ISTORE(M33CD+5)
+      sfls_calcul_flag=ISTORE(M33CD+1)
+      if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
+        sfls_punch_flag=3 ! numpy is default
+      end if
+      ! sfls_calcul_flag == 1 is leverages calculations
+
 C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOLESKI
       if(istore(M33CD)<0) then
         METHOD = ISTORE(NFL)
@@ -457,7 +463,7 @@ cdec06
 c-----    set general shift to 0.8 for sparse build
         store(m33sv)=min(store(m33sv), 0.8)
       endif
-      if (sfls_punch_flag==3) then
+      if (sfls_calcul_flag==1) then
 c-----    set general shift to 0.8 for leverages calculations
         store(m33sv)=0.0
       end if     
@@ -484,7 +490,7 @@ cdec06
 c-----     set maximal shift to 0.8 for sparse build
            store(jb)=min(store(jb), 0.8)
          endif
-         if (sfls_punch_flag==3) then
+         if (sfls_calcul_flag==1) then
 c-----     set general shift to 0.8 for leverages calculations
            store(jb)=0.0
          end if
@@ -940,7 +946,8 @@ C-- If we are doing data punching then do it here.
          END IF
          
 C-- If we are calculating leverages then do it here         
-         IF ( sfls_punch_flag==3 ) THEN
+         IF ( sfls_calcul_flag==1 ) THEN
+            call sfls_punch_python()
             call sfls_punch_leverages(jy)
          END IF
                     

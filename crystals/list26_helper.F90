@@ -9,6 +9,7 @@
 !!
 !! For now this object only complements the original storage in the dsc and this new information is not saved and must be computed everytime.
 module list26_mod
+use list12_mod, only: param_t
 implicit none
 
 real, dimension(:,:), allocatable :: invertm !< Inverted normal matrix
@@ -57,11 +58,11 @@ contains
 end type
 
 private extend_restraints, extend_subrestraints, extend_atoms
-private extend_parent, extend_parameters, extend_derivatives
+private extend_parent, extend_derivatives
 
 interface extend !< generic procedure to extend the several allocatables objects
     module procedure extend_restraints, extend_subrestraints, &
-    &   extend_atoms, extend_parent, extend_parameters, extend_derivatives
+    &   extend_atoms, extend_parent, extend_derivatives
 end interface extend
     
 
@@ -70,15 +71,6 @@ type(restraints_t), dimension(:), allocatable :: restraints_list !< Main list of
 integer, dimension(:), allocatable :: subrestraints_parent !< compatibility layer with the old code which does not distinguished between user restraints and computed restraints
 integer :: current_restraintindex=0 !< counter use for compatibility with the old code
 
-type param_t !< Type holding the description of a least square parameter
-    integer index !< index of the refinable parameter
-    integer offset !< offset address in list 5
-    character(len=4) :: label !< label of the atom
-    integer serial !< serial of the atom
-    character(len=24) :: name !< Name of the parameter
-contains
-    procedure, pass(self) :: print => printparam !< print the content of the object (used for debugging)
-end type
 type(param_t), dimension(:), allocatable :: parameters_list !< List of least squares parameters
 
 contains
@@ -235,44 +227,6 @@ object(newstart:)%description='' !< Restraint description
 
 end subroutine
 
-!> extend an array of parameters
-subroutine extend_parameters(object, argsize, reset)
-implicit none
-type(param_t), dimension(:), allocatable, intent(inout) :: object !< object to extend
-integer, optional, intent(in) :: argsize !< number of elements to add
-logical, intent(in), optional :: reset !< reallocate a new object
-type(param_t), dimension(:), allocatable :: temp
-integer isize, newstart
-
-if(present(argsize)) then
-    isize=argsize
-else
-    isize=1
-end if
-
-if(present(reset)) then
-    if(reset) then
-        if(allocated(object)) deallocate(object)
-    end if
-end if
-
-if(allocated(object)) then
-    call move_alloc(object, temp)
-
-    allocate(object(size(temp)+isize))
-    object(1:size(temp)) = temp
-    newstart=size(temp)+1
-else
-    allocate(object(isize))
-    newstart=1
-end if
-
-object(newstart:)%index=-99 !< Index of the parameter
-object(newstart:)%label='' !< label of the atom
-object(newstart:)%serial=-1 !< serial number of the atom
-object(newstart:)%name='' !< Name of the parameter
-end subroutine
-
 !> extend an array of atoms
 subroutine extend_atoms(object, argsize, reset)
 implicit none
@@ -348,15 +302,6 @@ if(allocated(self%subrestraints)) then
    end do
 end if
     
-end subroutine
-
-!> print the content of a parameter
-subroutine printparam(self)
-implicit none
-class(param_t), intent(in) :: self
-
-write(*,'(I5,1X,I6,1X,A,"(",I0,")",1X,A)') self%index, self%offset, trim(self%label), self%serial, trim(self%name)
-
 end subroutine
 
 !> Calculate the leverage values of a restraint given the invert matrix
@@ -439,7 +384,7 @@ do k=1, size(restraints_derivatives)
     if(rindex==restraints_derivatives(k)%irestraint) then
         cpt=cpt+1
         associate(r => restraints_derivatives(k))
-		
+
         invmsh = shape(invertm)
         if ( size(r%derivatives) /= invmsh(1) ) cycle
 

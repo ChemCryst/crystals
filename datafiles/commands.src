@@ -1781,7 +1781,8 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
          3    2
     .HUGE               0    0    1    2   -1 NO
      NO             YES
-    .YYYYYY             0    0    1   -1    1 NO
+    .CALCULATE          0    0    1    2    0 NO
+     NO             LEVERAGES
     .LIST               0    0    1    4   -2 OFF
      OFF            LOW            MEDIUM         HIGH
     .MAP                0    0    1    3   -1 NONE
@@ -1789,7 +1790,7 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
     ./FO/               0    0    1    2   -1 /FOT/
      /FOT/          SCALED-/FOT/
     .PUNCH              0    0    1    5   -1 NO
-     NO             YES            MATLAB         TEXT           LEVERAGES                
+     NO             YES            MATLAB         TEXT           NUMPY                
     .MATRIX             0    0    1    2   -1 NEW
      NEW            OLD
     .MONITOR            0    0    1    4   -1 LOW

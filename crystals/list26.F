@@ -300,6 +300,7 @@ C--
 C
       use, intrinsic :: IEEE_ARITHMETIC
       use list26_mod
+      use list12_mod, only: load_lsq_params
 C
       interface 
           subroutine XAPP16(savederivatives)
@@ -424,110 +425,8 @@ C to avoid problems down the line
       JS=1
       CALL XFAL12(JS,JQ,JR,JN)
 
-C      JT            ABSOLUTE L.S. PARAMETER NO.
-C      JS            PHYSICAL PARAMETER NO FROM WHICH TO START SEARCH
-C      JX            RELATIVE PARAMETER NO
-
-      JX = 12
-      M5 = L5 - MD5
-      M12 = L12O
-      L12A = NOWT
-      JS = 0
-
-      DO WHILE(M12 .GE. 0)   ! More stuff in L12
-        IF(ISTORE(M12+1).GT.0) THEN ! Any refined params
-C--COMPUTE THE ADDRESS OF THE FIRST PART FOR THIS GROUP
-          L12A=ISTORE(M12+1)
-C--CHECK IF THIS PART CONTAINS ANY REFINABLE PARAMETERS
-12250  CONTINUE
-          DO WHILE(L12A.GT.0) ! --CHECK IF THERE ARE ANY MORE PARTS FOR THIS ATOM OR GROUP
-            IF(ISTORE(L12A+3).LT.0) EXIT
-C--SET UP THE CONSTANTS TO PASS THROUGH THIS PART
-            MD12A=ISTORE(L12A+1)
-            JU=ISTORE(L12A+2) 
-            JV=ISTORE(L12A+3)
-            JS=ISTORE(L12A+4)+1
-C--SEARCH THIS PART OF THIS ATOM
-            DO JW=JU,JV,MD12A
-              JT=ISTORE(JW)
-              NB=17
-              ILEBP = 0
-              DO NA=1,NSC
-                IF(ICOM12(NB).EQ.M12) THEN
-C--LAYER OR ELEMENT BATCH OR PARAMETER PRINT
-                   ILEBP = 1
-                   EXIT
-                END IF
-                NB=NB+4
-              END DO
-
-              IF ( ILEBP .EQ. 1 ) THEN
-                call extend(parameters_list)
-                write(formatstr, '(A)') KSCAL(:,NA+2)
-                parameters_list(size(parameters_list))%index=JT
-                parameters_list(size(parameters_list))%name=
-     1            trim(formatstr)
-                parameters_list(size(parameters_list))%offset=M5
-
-C--CHECK IF THIS IS AN OVERALL PARAMETER
-              ELSE IF (M12.EQ.L12O) THEN
-                call extend(parameters_list)
-                write(formatstr, '(100A)') KVP(:,JS)
-                parameters_list(size(parameters_list))%index=JT
-                parameters_list(size(parameters_list))%name=
-     1            trim(formatstr)
-                parameters_list(size(parameters_list))%offset=M5
-              ELSE  
-C-C-C-DISTINCTION BETWEEN ANISO'S AND ISO/SPECIAL'S FOR PRINT
-                IF((STORE(M5+3) .GE. 1.0) .AND. (JS .GE. 8)) THEN
-                 call extend(parameters_list)
-                 write(formatstr, '(100A)') ICOORD(:,JS+NKAO)
-                 parameters_list(size(parameters_list))%index=JT
-                 parameters_list(size(parameters_list))%label=
-     1             transfer(STORE(M5), 'aaaa')
-                 if(isnan(STORE(M5+1))) then
-                   parameters_list(size(parameters_list))%serial= -1
-                 else
-                   parameters_list(size(parameters_list))%serial=
-     1               NINT(STORE(M5+1))
-                 end if
-                 parameters_list(size(parameters_list))%name=
-     1            trim(formatstr)
-                 parameters_list(size(parameters_list))%offset=M5
-                ELSE
-                 call extend(parameters_list)
-                write(formatstr, '(100A)') ICOORD(:,JS)
-                 parameters_list(size(parameters_list))%index=JT
-                 parameters_list(size(parameters_list))%label=
-     1             transfer(STORE(M5), 'aaaa')
-                 if(isnan(STORE(M5+1))) then
-                   parameters_list(size(parameters_list))%serial= -1
-                 else
-                   parameters_list(size(parameters_list))%serial=
-     1               NINT(STORE(M5+1))
-                 end if
-                 parameters_list(size(parameters_list))%name=
-     1            trim(formatstr)
-                 parameters_list(size(parameters_list))%offset=M5
-                ENDIF
-              ENDIF
-C
-C--INCREMENT TO THE NEXT PARAMETER OF THIS PART
-              JS=JS+1
-            END DO
-C--CHANGE PARTS FOR THIS ATOM OR GROUP
-            L12A=ISTORE(L12A)
-          END DO
-        END IF
-C--MOVE TO THE NEXT GROUP OR ATOM
-        M5=M5+MD5
-        M12=ISTORE(M12)
-      END DO
-      
-      !do icpt=1, size(parameters_list)
-      !   call parameters_list(icpt)%print
-      !end do
-            
+      call load_lsq_params(parameters_list)
+                  
 C
 C--CLEAR THE CORE AREA
       CALL XRSL
@@ -7393,9 +7292,12 @@ C
       double precision, dimension(:), allocatable :: derivatives !< line of the unweighted design matrix from a single block
       integer, dimension(:), allocatable :: globalparameters !< Parameters number from globalderivatives
       integer, dimension(:), allocatable :: parameters !< Parameters number from derivatives
+      integer :: num_global_parameters !< number of parameters accross all blocks
+      integer :: sfls_sp_normalm !< flag for single precision calculation
       double precision, dimension(:), allocatable :: temp
       integer, dimension(:), allocatable :: itemp
-      integer sfls_punch_flag, iblockindex, isubrestraint
+      integer sfls_punch_flag, sfls_calcul_flag
+      integer iblockindex, isubrestraint
       integer ioldrestraint, restraints_derivatives_idx
       integer derivatives_block_size
       
@@ -7405,6 +7307,7 @@ C
       iblockindex=0
       restraints_derivatives_idx=0
       derivatives_block_size=128
+      num_global_parameters=-1
       
 C
 C--SET THE LENGTH OF EACH ENTRY
@@ -7417,6 +7320,11 @@ C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
       IF ( IERFLG .LT. 0 ) GO TO 9900
       JK=ISTORE(M33CD+6)
       sfls_punch_flag=ISTORE(M33CD+5)
+      sfls_calcul_flag=ISTORE(M33CD+1)
+      if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
+        sfls_punch_flag=3 ! numpy is default
+      end if
+      sfls_sp_normalm=ISTORE(M33CD)
 C--RESET THE CORE LIMITS
       CALL XRSL
       CALL XCSAE
@@ -7643,10 +7551,28 @@ c                CALL XPRVDU(NCVDU,1,0)
         end associate
              
         if(sfls_punch_flag>0 .and. allocated(globalderivatives)) then
-            call sfls_punch_addtodesign(
+            if(num_global_parameters==-1) then
+                num_global_parameters=size(globalderivatives)
+            else if(num_global_parameters/=size(globalderivatives)) then
+#if defined(CRY_OSLINUX)
+                print *, 'Inconsistent size of the design matrix'
+                print *, 'Got ', size(globalderivatives), 
+     1              ' expected ', num_global_parameters
+#endif
+                call abort()
+            end if
+            if(sfls_sp_normalm<0) then
+              call sfls_punch_addtodesign(
      1          reshape(globalderivatives*sign(SQRT(ABS(C)),C), 
-     2              (/size(globalderivatives), 1/) ),
+     2            (/size(globalderivatives), 1/) ),
      1          reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag )
+            else
+              call sfls_punch_addtodesign(
+     1          reshape(real(
+     2            globalderivatives*sign(SQRT(ABS(C)),C),kind(1.0)), 
+     3            (/size(globalderivatives), 1/) ),
+     1          reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag )
+              end if
             deallocate(globalderivatives)
         end if
 C--FIND THE ADDRESS OF THE LENGTH OF THE NEXT ENTRY
@@ -7666,9 +7592,21 @@ C--OUTPUT THE NEW MATRIX
       CALL XALTES(11,1)
 
       if(sfls_punch_flag>0) then
-        call sfls_punch_addtodesign(
-     1    reshape((/0.0d0/), (/1,1/)), 
-     1    reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag, punch=.true.)
+        ! it is important to pass a design matrix with the correct shape even though no data is written
+        ! it is how the subroutine will work out the size of the design matrix
+        allocate(globalderivatives(num_global_parameters))
+        if(sfls_sp_normalm<0) then
+          call sfls_punch_addtodesign(
+     1      reshape(globalderivatives, 
+     2        (/size(globalderivatives), 1/) ), 
+     3      reshape( (/0,0,0/), (/3,1/) ),sfls_punch_flag, punch=.true.)
+        else
+          call sfls_punch_addtodesign(
+     1      reshape(real(globalderivatives, kind(1.0)), 
+     2        (/size(globalderivatives), 1/) ), 
+     3      reshape( (/0,0,0/), (/3,1/) ),sfls_punch_flag, punch=.true.)
+        end if
+        deallocate(globalderivatives)
         call sfls_punch_addtowdf(D, sfls_punch_flag, punch=.true.)
       end if       
 

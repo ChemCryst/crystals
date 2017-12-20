@@ -89,7 +89,7 @@ C
 C Revision 1.66  2010/09/20 15:05:41  djw
 C Enable use of dual wavelength data
 C
-C Dual Wavelength Refinement.		Sept 1010
+C Dual Wavelength Refinement.       Sept 1010
 C
 C Dual wavelength machine are becoming increasingly common.  This provides
 C the possibility of simultaneously carrying out a high resolution refinement
@@ -110,7 +110,7 @@ C Merge:  Ability to merge reflections keeping the different wavelengths separat
 C Agreement Analysis on each wavelength separately
 C Fourier.  All data for one or other wavelength.
 C Fourier.  Possibly 'correct' Fo for extinction and then merge scaled data
-C 	for both radiations.
+C   for both radiations.
 C Ton Speks Bivjoet code.  Handle wavelengths separately or sequentially.
 C
 C
@@ -439,7 +439,7 @@ C----- V 810 INCLUDES THE SPECIAL SHAPES
       DATA JFRN /1HF, 1HR, 1HN, 1H1,
      1           1HF, 1HR, 1HN, 1H2/
 #endif
-	 DATA IVERSN /811/
+     DATA IVERSN /811/
       INTEGER PARAM_LIST_MAKE
       integer sfls_punch_flag
 
@@ -614,6 +614,10 @@ C punch matrices cannot be written
         ISTORE(M33CD+5)=0
       end if
       sfls_punch_flag=ISTORE(M33CD+5)
+      sfls_calcul_flag=ISTORE(M33CD+1)
+      if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
+        sfls_punch_flag=3 ! numpy is default
+      end if
       
       IF ( IERFLG .LT. 0 ) GO TO 9900
 !----      
@@ -1163,7 +1167,7 @@ C--STORE THE MINIMISATION FUNCTION
         STORE(L6P+3)=AMINF
 C--COMPUTE THE REFLECTION TOTALS FOR /FC/ AND PHASE
         N6TEMP = N6W
-	N6W  = NT
+        N6W  = NT
         CALL XCRD(6)
 CRIC11-Update FO totals in all cases, in case L28 changed
 c        IF(TWINNED) CALL XCRD(4)  ! CHECK FOR A TWINNED REFINEMENT
@@ -1764,6 +1768,10 @@ C----- INITIALISE THE SORT BUFFER
 
       sfls_punch_flag=ISTORE(M33CD+5)
       sfls_sp_normalm=ISTORE(M33CD)
+      sfls_calcul_flag=ISTORE(M33CD+1)
+      if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
+        sfls_punch_flag=3 ! numpy is default
+      end if
       
       IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage calc.
 C----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
@@ -4093,7 +4101,7 @@ c -check this        BCI=0.
       STORE(NI+14)=ACI  ! CALCULATION IN THE STACK
       STORE(NI+15)=BCR
       STORE(NI+16)=BCI
-c	  
+c     
       M2I=L2I
       LJU=ISTORE(NI+9)  ! STORE THE EQUIVALENT INDICES AND THE PHASE SHIFT
       LJV=ISTORE(NI+10)
