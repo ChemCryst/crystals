@@ -9388,11 +9388,7 @@ default value is 4.0
       YES  -  write the model parameters to a *.pch file
       MATLAB  - write the design matrix, normal matrix, inversion and weights to matlabs files *.m
       TEXT  - write the design matrix, normal matrix, inversion and weights to ASCII files *.dat
-      LEVERAGES  - same as TEXT plus the leverages and t-values. Warning: shifts are not applied in this case
-#
- If  PUNCH is LEVERAGES, the shifts are not applied so that the model is consistent with the calculated leverages and derivatives.
- the set of files produced by MATLAB, TEXT and LEVERAGES are self consistent, the same index in the name means they belong together.
- ie. normal1.dat and leverages1.dat are part of the same calculation.
+      NUMPY  - write numpy files for python plus a python script for the user to use
 #KMATRIX#
  Controls re-use of the normal matrix
 #N   2#
@@ -9514,6 +9510,11 @@ default value is 4.0
  Bigger structures tend to be more ill-conditioned so inversion needs to be done in double precision.
  These changes could potentially lead to a less stable refinement but it is unlikely, 
  the default refinement is just very conservative.
+#KCALCULATE
+ LEVERAGES  - CALCULATE the leverages and t-values. Warning: shifts are not applied in this case; 
+ default output is numpy but can be changed to TEXT using PUNCH. MATLAB abd pch is not supported at the moment.
+#
+ This directive CALCULATE is differente from the previous directive abd is applied under REFINE.
  
 #KMONITOR#
  This parameter has the same options as for
