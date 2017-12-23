@@ -22,7 +22,7 @@ contains
 !!
 !! The subroutine has no side effect and do not modify any global variables 
 subroutine load_lsq_params(parameters_list)
-use store_mod, only: store
+use store_mod, only: store, istore => i_store
 use xlst05_mod, only: l5, md5
 use xlst12_mod, only: L12O, L12LS, L12ES, L12BS, L12CL, L12PR, L12EX ! addresses of different scales
 use xscale_mod, only: KSCAL ! constant defined in preset
@@ -70,20 +70,20 @@ integer, external :: khuntr
     JS = 0
 
     DO WHILE(M12 .GE. 0)   ! More stuff in L12
-        IF(I_STORE(M12+1).GT.0) THEN ! Any refined params
+        IF(ISTORE(M12+1).GT.0) THEN ! Any refined params
 !C--COMPUTE THE ADDRESS OF THE FIRST PART FOR THIS GROUP
-            L12A=I_STORE(M12+1)
+            L12A=ISTORE(M12+1)
 !C--CHECK IF THIS PART CONTAINS ANY REFINABLE PARAMETERS
             DO WHILE(L12A.GT.0) ! --CHECK IF THERE ARE ANY MORE PARTS FOR THIS ATOM OR GROUP
-                IF(I_STORE(L12A+3).LT.0) EXIT
+                IF(ISTORE(L12A+3).LT.0) EXIT
 !C--SET UP THE CONSTANTS TO PASS THROUGH THIS PART
-                MD12A=I_STORE(L12A+1)
-                JU=I_STORE(L12A+2) 
-                JV=I_STORE(L12A+3)
-                JS=I_STORE(L12A+4)+1
+                MD12A=ISTORE(L12A+1)
+                JU=ISTORE(L12A+2) 
+                JV=ISTORE(L12A+3)
+                JS=ISTORE(L12A+4)+1
 !C--SEARCH THIS PART OF THIS ATOM
                 DO JW=JU,JV,MD12A
-                    JT=I_STORE(JW)
+                    JT=ISTORE(JW)
                     ILEBP = 0
                     DO NA=1,size(scales)
                         IF(scales(na).EQ.M12) THEN
@@ -140,22 +140,15 @@ integer, external :: khuntr
                     JS=JS+1
                 END DO
 !C--CHANGE PARTS FOR THIS ATOM OR GROUP
-                L12A=I_STORE(L12A)
+                L12A=ISTORE(L12A)
             END DO
         END IF
 !C--MOVE TO THE NEXT GROUP OR ATOM
         M5=M5+MD5
-        M12=I_STORE(M12)
+        M12=ISTORE(M12)
     END DO
       
 end subroutine
-
-integer function i_store(k)  ! Get item at address k in store as integer
-use store_mod, only: store
-implicit none
-integer, optional, intent(in) :: k !< address in store
-i_store = transfer(STORE(k), 1)
-end function
 
 !> extend an array of parameters
 subroutine extend_parameters(object, argsize, reset)
