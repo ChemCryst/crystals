@@ -22,7 +22,7 @@ contains
 !!
 !! The subroutine has no side effect and do not modify any global variables 
 subroutine load_lsq_params(parameters_list)
-use store_mod, only: store, istore => i_store
+use store_mod, only: store, istore => i_store, c_store
 use xlst05_mod, only: l5, md5
 use xlst12_mod, only: L12O, L12LS, L12ES, L12BS, L12CL, L12PR, L12EX ! addresses of different scales
 use xscale_mod, only: KSCAL ! constant defined in preset
@@ -113,7 +113,7 @@ integer, external :: khuntr
                             call extend_parameters(parameters_list)
                             write(formatstr, '(100A)') ICOORD(:,JS+NKAO)
                             parameters_list(size(parameters_list))%index=JT
-                            parameters_list(size(parameters_list))%label=transfer(STORE(M5), 'aaaa')
+                            parameters_list(size(parameters_list))%label=c_store(m5)
                             if(isnan(STORE(M5+1))) then
                                 parameters_list(size(parameters_list))%serial= -1
                             else
@@ -125,7 +125,7 @@ integer, external :: khuntr
                             call extend_parameters(parameters_list)
                             write(formatstr, '(100A)') ICOORD(:,JS)
                             parameters_list(size(parameters_list))%index=JT
-                            parameters_list(size(parameters_list))%label=transfer(STORE(M5), 'aaaa')
+                            parameters_list(size(parameters_list))%label=c_store(m5)
                             if(isnan(STORE(M5+1))) then
                                 parameters_list(size(parameters_list))%serial= -1
                             else

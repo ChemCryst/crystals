@@ -3042,8 +3042,8 @@ C
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
+      use store_mod, only: store, istore=>i_store, c_store
       implicit none
-      INCLUDE 'ISTORE.INC'
 C
       type(restraints_t), intent(inout), optional :: results
 
@@ -3080,7 +3080,6 @@ C
       REAL MEAN_VAL
       
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -3090,8 +3089,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       !include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -3137,18 +3134,18 @@ C--SET UP A FEW CONSTANTS
      &        results%subrestraints((icpt-1)/3*6+1+jcpt)%atoms,
      &        3, .true.)
             results%subrestraints((icpt-1)/3*6+1+jcpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints((icpt-1)/3*6+1+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
             results%subrestraints((icpt-1)/3*6+1+jcpt)%description=
      &        'U'//Uindices(jcpt+1)//'_local - <U'//
      &        Uindices(jcpt+1)//'_local> == 0'
             results%subrestraints((icpt-1)/3*6+1+jcpt)%atoms(2)%label=
-     &        transfer(istore(JB+2), 'aaaa')
+     &        c_store(JB+2)
             results%subrestraints((icpt-1)/3*6+1+jcpt)%atoms(2)%serial=
      &        nint(store(JB+3))
             results%subrestraints((icpt-1)/3*6+1+jcpt)%atoms(3)%label=
-     &        transfer(istore(JC+2), 'aaaa')
+     &        c_store(JC+2)
             results%subrestraints((icpt-1)/3*6+1+jcpt)%atoms(3)%serial=
      &        nint(store(JC+3))
           end do          
@@ -3390,8 +3387,8 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3, outer_product, matrixtoquaternions
       use math_mod, only: quaternionstomatrix, m33det
+      use store_mod, only: store, istore=>i_store, c_store
       implicit none
-      INCLUDE 'ISTORE.INC'
 C
       type(restraints_t), intent(inout), optional :: results
 
@@ -3422,7 +3419,6 @@ C
       REAL MEAN_VAL
       
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -3432,8 +3428,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       !include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -3468,7 +3462,7 @@ C--SET UP A FEW CONSTANTS
             call extend(results%subrestraints((icpt-1)*3+jcpt)%atoms, 1,
      &         .true.)
             results%subrestraints((icpt-1)*3+jcpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints((icpt-1)*3+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
           end do
@@ -3652,6 +3646,8 @@ CODE FOR XCVCURIGU
       use list26_mod
       use xiobuf_mod, only: cmon
       use math_mod, only: DSYEVJ3
+      use store_mod, only: store, istore=>i_store, c_store
+
       implicit none
 C--CALCULATE RIGID BODY RESTRAINTS (URIGU resraints)
 C
@@ -3659,8 +3655,6 @@ C
 C      IASYM = 1 FOR ASYMMETRIC OTHERWISE 0
 C
 C--
-      INCLUDE 'ISTORE.INC'
-C
       type(restraints_t), intent(inout), optional :: results
       integer, intent(in) :: iasym
 
@@ -3684,7 +3678,6 @@ C
       REAL MEAN_VAL
       
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -3694,8 +3687,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       !include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
 
@@ -3721,11 +3712,11 @@ C--SET UP A FEW CONSTANTS
             call extend(results%subrestraints((icpt-1)*3+jcpt)%atoms, 
      &        2, .true.)
             results%subrestraints((icpt-1)*3+jcpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints((icpt-1)*3+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
             results%subrestraints((icpt-1)*3+jcpt)%atoms(2)%label=
-     &        transfer(istore(JB+2), 'aaaa')
+     &        c_store(JB+2)
             results%subrestraints((icpt-1)*3+jcpt)%atoms(2)%serial=
      &        nint(store(JB+3))
           end do
@@ -3887,10 +3878,9 @@ C--
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
+      use store_mod, only:c_store, store, istore=>i_store
       implicit none
 
-      INCLUDE 'ISTORE.INC'
-C
       type(restraints_t), intent(inout), optional :: results
 
       integer :: icpt, info, jcpt
@@ -3917,7 +3907,6 @@ C
       REAL MEAN_VAL
       
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -3927,8 +3916,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       !include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -3977,7 +3964,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
      1        trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
               WRITE(CMON,'("{I", 4X, A, A, "(",I0,")", A)') 
-     1          'Error: atom ',trim(transfer(istore(JA+2), 'aaaa')),
+     1          'Error: atom ',trim(c_store(JA+2)),
      2          nint(store(JA+3)), 'is isotropic'
             CALL XPRVDU(NCVDU, 1,0)      
           end if
@@ -3989,7 +3976,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
             call extend(results%subrestraints((icpt-1)*3+jcpt)%atoms, 
      &        1, .true.)
             results%subrestraints((icpt-1)*3+jcpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints((icpt-1)*3+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
           end do
@@ -4121,12 +4108,11 @@ CODE FOR XCVCUQISO
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
+      use store_mod, only: store, istore=>i_store, c_store
       implicit none
 C--CALCULATE UQISO restraints. The 3 eigen values are made equal
 C
 C--
-      INCLUDE 'ISTORE.INC'
-C
       type(restraints_t), intent(inout), optional :: results
 
       integer :: icpt, info, jcpt
@@ -4149,8 +4135,6 @@ C
       REAL DIFF_VAL
       REAL MEAN_VAL
       
-C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -4160,8 +4144,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       !include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -4210,7 +4192,7 @@ C--SET UP A FEW CONSTANTS
      1        trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
               WRITE(CMON,'("{I", 4X, A, A, "(",I0,")", A)') 
-     1          'Error: atom ',trim(transfer(istore(JA+2), 'aaaa')),
+     1          'Error: atom ',trim(c_store(JA+2)),
      2          nint(store(JA+3)), 'already isotropic'
             CALL XPRVDU(NCVDU, 1,0)      
           end if
@@ -4222,7 +4204,7 @@ C--SET UP A FEW CONSTANTS
             call extend(results%subrestraints((icpt-1)*6+jcpt)%atoms,
      &        1,.true.)
             results%subrestraints((icpt-1)*6+jcpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints((icpt-1)*6+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
           end do
@@ -4365,9 +4347,9 @@ CODE FOR XCVCUVOL
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
+      use store_mod, only: store, c_store, istore=>i_store
       implicit none
-      INCLUDE 'ISTORE.INC'
-C
+
       type(restraints_t), intent(inout), optional :: results
 
       integer :: icpt, jcpt, info
@@ -4397,8 +4379,6 @@ C
       REAL DIFF_VAL
       REAL MEAN_VAL
       
-C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -4408,8 +4388,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       !include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -4506,7 +4484,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
               jcpt=jcpt+1
               call extend(results%subrestraints(jcpt)%atoms, 1, .true.)
               results%subrestraints(jcpt)%atoms(1)%label=
-     &          transfer(istore(JA+2), 'aaaa')
+     &          c_store(JA+2)
               results%subrestraints(jcpt)%atoms(1)%serial=
      &          nint(store(JA+3))
               results%subrestraints(jcpt)%description=
@@ -4538,7 +4516,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
             WRITE(CMON,'("{I", 4X, A, A, A, "(",I0,")")') 
      1        'UVOL: ',
      4        ' Non positive definite adp, restraint not applied to ',
-     2        trim(transfer(istore(JA+2), 'aaaa')),
+     2        trim(c_store(JA+2)),
      3        nint(store(JA+3))
             CALL XPRVDU(NCVDU, 1,0)      
           end if
@@ -4597,9 +4575,9 @@ CODE FOR XCVCUEQIV
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
+      use store_mod, only: store, c_store, istore=>i_store
       implicit none
-      INCLUDE 'ISTORE.INC'
-C
+
       type(restraints_t), intent(inout), optional :: results
 
       integer :: icpt, info
@@ -4629,8 +4607,6 @@ C
       REAL DIFF_VAL
       REAL MEAN_VAL
       
-C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -4640,8 +4616,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       !include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -4675,7 +4649,7 @@ C--SET UP A FEW CONSTANTS
         if(present(results)) then
           call extend(results%subrestraints(icpt)%atoms, 1, .true.)
           results%subrestraints(icpt)%atoms(1)%label=
-     &      transfer(istore(JA+2), 'aaaa')
+     &      c_store(JA+2)
           results%subrestraints(icpt)%atoms(1)%serial=
      &      nint(store(JA+3))
           results%subrestraints(icpt)%description=
@@ -4816,6 +4790,7 @@ C
 CODE FOR XCVCX
       SUBROUTINE XCVCX(iaxis,iasym)
       use xssval_mod, only: issapp, issprt
+      use store_mod, only: c_store
       implicit none
 C--CALCULATE VIBRATION RESTRAINTS
 C
@@ -4893,8 +4868,8 @@ C--SET UP THE ADDRESSES OF THE ATOMS
           write(ncwu, 
      &       '(A,A,"(",I0,") -- ",A,"(",I0,"), args: ",I0,1X,I0)') 
      &       "U??BAR: XCVCX ",
-     &       trim(transfer(istore(JA+2), 'aaaa')), nint(store(JA+3)), 
-     &       trim(transfer(istore(JB+2), 'aaaa')), nint(store(JB+3)),
+     &       trim(c_store(JA+2)), nint(store(JA+3)), 
+     &       trim(c_store(JB+2)), nint(store(JB+3)),
      &       iaxis,iasym
       end if
 C--DEFINE U Matrices 
@@ -4909,9 +4884,9 @@ C     U Matrices in 3x3 matrix
       if(issprt==0) then
           write(ncwu, '(1X, A, A,"(",I0,")", 32X, A, A,"(",I0,")")')
      &        'Adp 1:',
-     &        trim(transfer(istore(JA+2), 'aaaa')), nint(store(JA+3)),
+     &        trim(c_store(JA+2)), nint(store(JA+3)),
      &        'Adp 2:', 
-     &        trim(transfer(istore(JB+2), 'aaaa')), nint(store(JB+3))
+     &        trim(c_store(JB+2)), nint(store(JB+3))
           do i=1, 3
               write(ncwu, '(3(E10.3,1X), 10X, 3(E10.3,1X))') 
      &            U_M_1(i,:), U_M_2(i,:)
@@ -5104,6 +5079,7 @@ CODE FOR XCVCV
       SUBROUTINE XCVCV(results)
       use list26_mod
       use xiobuf_mod, only:cmon
+      use store_mod, only: store, istore=>i_store, c_store
 C--CALCULATE PERPENDICULAR RESTRAINTS
 C
 C--THE VARIABLES IN 'XWORK' ARE USED AS FOLLOWS :
@@ -5117,7 +5093,6 @@ C--SUBSEQUENTLY O TO T ARE USED FOR THE DIFFERENCES BETWEEN THE
 C  THE TWO VALUES OF EACH VIBRATION PARAMETER
 C
 C--
-      INCLUDE 'ISTORE.INC'
 C
       type(restraints_t), intent(inout), optional :: results
       DIMENSION A1(12)
@@ -5147,7 +5122,6 @@ C      REAL CHECK_CAL_2
       REAL MEAN_VAL
       
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -5157,8 +5131,6 @@ C
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
       include 'XSSVAL.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -5197,16 +5169,16 @@ C--SET UP A FEW CONSTANTS
             call extend(results%subrestraints((icpt-1)*2+jcpt)%atoms, 
      &        uperptype, .true.)
             results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
             results%subrestraints((icpt-1)*2+jcpt)%atoms(2)%label=
-     &        transfer(istore(JB+2), 'aaaa')
+     &        c_store(JB+2)
             results%subrestraints((icpt-1)*2+jcpt)%atoms(2)%serial=
      &        nint(store(JB+3))
             if(uperptype==3) then
               results%subrestraints((icpt-1)*2+jcpt)%atoms(3)%label=
-     &          transfer(istore(JC+2), 'aaaa')
+     &          c_store(JC+2)
               results%subrestraints((icpt-1)*2+jcpt)%atoms(3)%serial=
      &          nint(store(JC+3))
             end if
@@ -5380,6 +5352,7 @@ C
 CODE FOR XCVCY
       SUBROUTINE XCVCY(iaxis,iasym)
       use xssval_mod, only: issapp, issprt
+      use store_mod, only: store, istore=>i_store, c_store, i_store_set
       implicit none
 C--CALCULATE UEQIV RESTRAINTS
 C
@@ -5403,8 +5376,6 @@ C--SUBSEQUENTLY O TO T ARE USED FOR THE DIFFERENCES BETWEEN THE
 C  THE TWO VALUES OF EACH VIBRATION PARAMETER
 C
 C--
-      INCLUDE 'ISTORE.INC'
-C
       integer :: iaxis, iasym
       real, dimension(12) :: A1 !< Partial derivatives
       double precision, dimension(3) :: ROT1, ROT2, ROT3 !< Cartesian axes
@@ -5433,7 +5404,6 @@ C
       
       integer ij, ik
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -5442,8 +5412,6 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
 C
@@ -5478,9 +5446,9 @@ C--SET UP THE ADDRESSES OF THE ATOMS
 C--CHECK IF THE ATOM IS ANISO                                           
          IF(ABS(STORE(JD+6)) .gt. zero) THEN
 C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-            ISTORE(adps(1)%atom+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-            ISTORE(JX)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-            ISTORE(JX+1)=8         ! Where they start 
+            call i_store_set(adps(1)%atom+5, 4)         ! Reduce the number of restrained parameters to x,y,z,iso
+            call i_store_set(JX, -1000000)    ! Remove link to next parameter (U22- there isn't one)                                     
+            call i_store_set(JX+1, 8)         ! Where they start 
 C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
             DO i=0,2                                                  
                STORE(adps(1)%U_L+i*2)=STORE(adps(1)%U_L)
@@ -5510,9 +5478,9 @@ C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
           write(ncwu, 
      &       '(A,A,"(",I0,") -- ",A,"(",I0,"), args: ",I0,1X,I0)') 
      &       "U??QIV: XCVCY ",
-     &       trim(transfer(istore(adps(1)%atom+2), 'aaaa')), 
+     &       trim(c_store(adps(1)%atom+2)), 
      &       nint(store(adps(1)%atom+3)), 
-     &       trim(transfer(istore(adps(2)%atom+2), 'aaaa')), 
+     &       trim(c_store(adps(2)%atom+2)), 
      &       nint(store(adps(2)%atom+3)),
      &       iaxis,iasym
       end if
@@ -5520,10 +5488,10 @@ C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
       if(issprt==0) then
           write(ncwu, '(1X, A, A,"(",I0,")", 32X, A, A,"(",I0,")")')
      &        'Adp 1:',
-     &        trim(transfer(istore(adps(1)%atom+2), 'aaaa')), 
+     &        trim(c_store(adps(1)%atom+2)), 
      &        nint(store(adps(1)%atom+3)),
      &        'Adp 2:', 
-     &        trim(transfer(istore(adps(2)%atom+2), 'aaaa')), 
+     &        trim(c_store(adps(2)%atom+2)), 
      &        nint(store(adps(2)%atom+3))
           do i=1, 3
               write(ncwu, '(3(E10.3,1X), 10X, 3(E10.3,1X))') 
@@ -5623,9 +5591,9 @@ C--CHECK IF THE ATOM IS ANISO
           JO=JA ! JO used in XADUIJ
           IF(ABS(STORE(JD+6)) .gt. zero) THEN
 C--'ISO' ATOM  -  MODIFY THE ENTRY IN THE COORDINATE SECTION            
-             ISTORE(adps(ij)%atom+5)=4         ! Reduce the number of restrained parameters to x,y,z,iso
-             ISTORE(JP)=-1000000    ! Remove link to next parameter (U22- there isn't one)                                     
-             ISTORE(JP+1)=8         ! Where they start 
+             call i_store_set(adps(ij)%atom+5, 4)         ! Reduce the number of restrained parameters to x,y,z,iso
+             call i_store_set(JP, -1000000)    ! Remove link to next parameter (U22- there isn't one)                                     
+             call i_store_set(JP+1, 8)         ! Where they start 
 C--SET THE EQUIVALENT ANISO TEMPERATURE FACTORS FOR THE ATOM
              JE=JD
              JF=L1C+2                                                       
@@ -5740,6 +5708,7 @@ C--
 C
       use xssval_mod
       use list26_mod
+      use store_mod, only: store, istore=>i_store, c_store
       implicit none
 
       type(restraints_t), intent(inout), optional :: results
@@ -5764,8 +5733,6 @@ C
       integer icpt, jcpt
 C
       !include 'XSSVAL.INC'
-      INCLUDE 'ISTORE.INC'
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -5774,8 +5741,6 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
 C
@@ -5802,15 +5767,15 @@ C
             call extend(results%subrestraints((icpt-1)*2+jcpt)%atoms, 
      &        3, .true.)
             results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints((icpt-1)*2+jcpt)%atoms(1)%serial=
      &        nint(store(JA+3))
             results%subrestraints((icpt-1)*2+jcpt)%atoms(2)%label=
-     &        transfer(istore(JB+2), 'aaaa')
+     &        c_store(JB+2)
             results%subrestraints((icpt-1)*2+jcpt)%atoms(2)%serial=
      &        nint(store(JB+3))
             results%subrestraints((icpt-1)*2+jcpt)%atoms(3)%label=
-     &        transfer(istore(JC+2), 'aaaa')
+     &        c_store(JC+2)
             results%subrestraints((icpt-1)*2+jcpt)%atoms(3)%serial=
      &        nint(store(JC+3))
           end do
@@ -6014,6 +5979,7 @@ C
 CODE FOR XCDC
       SUBROUTINE XCDC(iasym, results)
       use list26_mod
+      use store_mod, only: store, istore=>i_store, c_store
 C--CALCULATE DISTANCE RESTRAINTS
 C
 C    IASYM = 0 FOR NORMAL
@@ -6022,15 +5988,11 @@ C--
 
       type(restraints_t), intent(inout), optional :: results
       
-      INCLUDE 'ISTORE.INC'
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
       INCLUDE 'XLST22.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
 
       if(present(results)) then
@@ -6041,12 +6003,12 @@ C
      &        'Single distance'
               call extend(results%subrestraints(icpt)%atoms, 2, .true.)
               results%subrestraints(icpt)%atoms(1)%label=
-     &            transfer(istore(JA+2), 'aaaa')
+     &            c_store(JA+2)
               results%subrestraints(icpt)%atoms(1)%serial=
      &            nint(store(JA+3))
               JA=ISTORE(JA)
               results%subrestraints(icpt)%atoms(2)%label=
-     &            transfer(istore(JA+2), 'aaaa')
+     &            c_store(JA+2)
               results%subrestraints(icpt)%atoms(2)%serial=
      &            nint(store(JA+3))
               JA=ISTORE(JA)
@@ -6286,6 +6248,7 @@ C
 CODE FOR KPLANE
       FUNCTION KPLANE(IN, results)
       use list26_mod
+      use store_mod, only: store, c_store, istore=>i_store
 C--CALCULATE THE DERIVATIVES FOR A 'PLANAR' RESTRAINT
 C
 C  IN  A DUMMY ARGUMENT.
@@ -6299,9 +6262,6 @@ C--
 C
       type(restraints_t), intent(inout), optional :: results
       DIMENSION FF(3)
-      INCLUDE 'ISTORE.INC'
-C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -6310,8 +6270,6 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XIOBUF.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (FF(1),F)
       IDWZAP = IN
@@ -6358,7 +6316,7 @@ C--SET UP THE ATOM COORDINATES IN THE ATOM ARRAY AT 'JS'
      &      'Distance to mean plane'
             call extend(results%subrestraints(icpt)%atoms, 1, .true.)
             results%subrestraints(icpt)%atoms(1)%label=
-     &        transfer(istore(JA+2), 'aaaa')
+     &        c_store(JA+2)
             results%subrestraints(icpt)%atoms(1)%serial=
      &        nint(store(JA+3))     
            JA=ISTORE(JA)
@@ -7800,22 +7758,19 @@ CODE FOR XCVCTLS
       use, intrinsic :: iso_fortran_env, only : stdout=>output_unit
       use list26_mod
       use xssval_mod
+      use store_mod, only: store, c_store, istore=>i_store
       implicit none
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 C--
-      INCLUDE 'ISTORE.INC'
-C
       type(restraints_t), intent(inout), optional :: results
       real, dimension(12) :: A1
 
       REAL DIFF_VAL
       REAL MEAN_VAL
       
-C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XCNTRL.INC'
@@ -7824,8 +7779,6 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XAPK.INC'
       include 'XUNITS.INC'
-C
-      INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (O,A1(1))    ! Note well
       
@@ -7923,7 +7876,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
      &        rdescription(mod(icpt-1,6)+1)
               call extend(results%subrestraints(icpt)%atoms, 1, .true.)
               results%subrestraints(icpt)%atoms(1)%label=
-     &            transfer(istore(JA+2), 'aaaa')
+     &            c_store(JA+2)
               results%subrestraints(icpt)%atoms(1)%serial=
      &            nint(store(JA+3))
      

@@ -114,6 +114,7 @@ C
 C
 CODE FOR XPRC16
       SUBROUTINE XPRC16
+      use store_mod, only:c_store
 C--FORM THE RELOCATABLE VERSION OF LIST 16  -  LIST 26 ON THE DISC.
 C
 C--THIS ROUTINE USES AND SETS WHERE NECESSARY THE FOLLOWING VARIABLES :
@@ -1273,7 +1274,7 @@ C--READ THE ATOMS ON THE CARD
       numto=0
       do indexchr=0, ME-1, 1
         if(istore(mf+indexchr*lk2)==-1) then ! -1 is text 
-          if(transfer(ISTORE(mf+indexchr*LK2+2), 'aaaa')=='TO') then
+          if(C_STORE(mf+indexchr*LK2+2)=='TO') then
             numto=numto+1
           end if
         end if
