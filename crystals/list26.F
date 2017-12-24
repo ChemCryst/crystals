@@ -6248,7 +6248,7 @@ C
 CODE FOR KPLANE
       FUNCTION KPLANE(IN, results)
       use list26_mod
-      use store_mod, only: nfl, store, c_store, istore=>i_store
+      use store_mod, only: lfl, nfl, store, c_store, istore=>i_store
 C--CALCULATE THE DERIVATIVES FOR A 'PLANAR' RESTRAINT
 C
 C  IN  A DUMMY ARGUMENT.
