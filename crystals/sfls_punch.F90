@@ -1337,7 +1337,7 @@ type(param_t), dimension(:), allocatable :: parameters_list !< List of least squ
 integer i
 character eol
 
-type(atom_t) 
+type atom_t 
   character(len=4) :: label
   integer serial
 end type
