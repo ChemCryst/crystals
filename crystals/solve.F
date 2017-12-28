@@ -944,10 +944,14 @@ C-- If we are doing data punching then do it here.
             call sfls_punch_variance(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1          sfls_punch_flag)
          END IF
+
+C -- if numpy format, print out a python script
+         IF ( sfls_punch_flag==3 ) THEN
+            !call sfls_punch_python() 
+         END IF
          
 C-- If we are calculating leverages then do it here         
          IF ( sfls_calcul_flag==1 ) THEN
-            !call sfls_punch_python() to be done
             call sfls_punch_leverages(jy)
          END IF
                     

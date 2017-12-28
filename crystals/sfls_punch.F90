@@ -1,9 +1,11 @@
-!> The module sfls_punch_mod deals with the export of different matrices during refinement
+!> The module sfls_punch_mod deals with the export of different matrices and claculations during refinement
 !!
 !! \detaileddescription
 !!
-!! 2 Outputs are available: Matlab(1), plain text(2), plain text bis for leverages(3) 
-!! With leverages, a python script is also written
+!! 2 options under \sfls, \refine can be used: PUNCH and CALCULATE
+!! Punch Outputs available: Matlab(1), plain text(2) and numpy(3) 
+!! calculate options: leverages(1)
+!! 
 !!
 !! (1) **Matlab output (PUNCH=MATLAB)**
 !!
@@ -22,11 +24,18 @@
 !!
 !! (3) **Numpy output (PUNCH=NUMPY)**
 !!
-!! - design*.dat stores the design matrix. Each row starts with the h,k,l index followed by the derivatives
+!! - design*.npy stores the design matrix. Each row starts with the h,k,l index followed by the derivatives
 !!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
-!! - normal*.dat stores the normal matrix as a n*n matrix
-!! - variance*.dat stores the variance/covariance matrix as a n*n matrix
-!! - wdf*.dat stores the weights
+!! - normal*.npy stores the normal matrix as a n*n matrix
+!! - variance*.npy stores the variance/covariance matrix as a n*n matrix
+!! - wdf*.npy stores the weights
+!! - crystals*.py is python with a bunch of usefull matrices fr doing calculations.
+!!
+!! ################################################################
+!!
+!! (1) ** leverages (CALCULATE=LEVERAGES)**
+!!
+!! - Calculate leverages and t values to a file. Format is set using PUNCH.
 !!
 !! The file naming is kept consistent. The same index is used for files written is the same cycle. See sfls_punch_get_newfileindex().
 !!
@@ -1328,6 +1337,12 @@ type(param_t), dimension(:), allocatable :: parameters_list !< List of least squ
 integer i
 character eol
 
+type(atom_t) 
+  character(len=4) :: label
+  integer serial
+end type
+type(atom_t), dimension(:), allocatable :: l5model
+
 integer, external :: khuntr
 
     ! Check if list 1 and 5 are loaded
@@ -1374,10 +1389,13 @@ integer, external :: khuntr
         if(i==size(parameters_list)) then
             eol=''
         end if
+        if(mod(i,10)==0) then
+            write(pyfile, *) ''
+        end if
         if(parameters_list(i)%index>-1) then
             ! python indices are zero based, hence index-1 below
             if(parameters_list(i)%serial>0) then
-                write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)') trim(parameters_list(i)%label), &
+                write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(parameters_list(i)%label), &
                 &   parameters_list(i)%serial, trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
             else
                 write(pyfile, '(4x, """", a,""":",I0, a)') &
@@ -1386,6 +1404,83 @@ integer, external :: khuntr
         end if
     end do
     write(pyfile, '(a)') "}"
+
+
+    allocate(l5model(N5))
+    write(pyfile, '(a)' ) '# Overall parameters'
+    write(pyfile, '(a ,F11.6,4(1X,F9.6),1X,F17.7)' ) '# ', STORE(L5O:L5O+5)
+    
+    m5=l5
+!    do i=1, n5
+
+! WRITE(NCPU,1000)N5,MD5LS,MD5ES,MD5BS
+!1000  FORMAT(13HREAD NATOM = ,I6,11H, NLAYER = ,I4,13H, NELEMENT = ,I4,
+!     2 11H, NBATCH = ,I4)
+!C--OUTPUT THE OVERALL PARAMETERS
+!       WRITE(NCPU,1050) STORE(L5O),STORE(L5O+1),STORE(L5O+2),
+!     1 STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
+!1050  FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
+!      ENDIF
+!C--CHECK FOR SOME ATOMS
+!      IF(N5)1200,1200,1100
+!C--OUTPUT THE ATOMS
+!1100  CONTINUE
+!      M5 = L5
+!      DO 1170 K = 1, N5
+!C----- DONT PUNCH 'SPARE' FOR THE MOMENT - IT CAUSES PROBLEMS
+!C      WITH ALIEN PROGRAMS
+!CDJWNOV2000 REINTRODUCE PUNCHING OF ALL DATA
+!C      MD5TMP = MIN (13, MD5)
+!      MD5TMP = MIN(18, MD5) 
+!      J = M5 + 13
+!C Offset18 used to contain a 4 character string '    ' by default.
+!C Catch that value here and change it to zero.
+!      IF ( ISTORE(M5+17) .EQ. 538976288 ) ISTORE(M5+17) = 0
+!C ISTORE bits will only print if J=18, not if J=14.
+!      WRITE(NCPU,1150) (STORE(I), I = M5, J),
+!     1                (ISTORE(I), I= J+1, M5+MD5TMP -1 )
+!1150  FORMAT
+!     1 ('ATOM ',A4,1X,F11.0,F11.6,F11.0,3F11.6/
+!     2 'CON U[11]=',6F11.6/
+!     3 'CON SPARE=',F11.2,3I11,10X,I12)
+!      M5 = M5 + MD5
+!1170  CONTINUE
+!C--CHECK IF THERE ARE ANY LAYER SCALES TO OUTPUT
+!      IF (IN .LE. 0) GOTO 1700
+!1200  CONTINUE
+!      IF(MD5LS)1350,1350,1250
+!C--PUNCH THE LAYER SCALES
+!1250  CONTINUE
+!      M5LS=L5LS+MD5LS-1
+!      WRITE(NCPU,1300)(STORE(I),I=L5LS,M5LS)
+!1300  FORMAT(10HLAYERS    ,6F11.6/(10HCONTINUE  ,6F11.6))
+!C--CHECK IF THERE ARE ANY ELEMENT SCALES TO OUTPUT
+!1350  CONTINUE
+!      IF(MD5ES)1500,1500,1400
+!C--OUTPUT THE ELEMENT SCALES
+!1400  CONTINUE
+!      M5ES=L5ES+MD5ES-1
+!      WRITE(NCPU,1450)(STORE(I),I=L5ES,M5ES)
+!1450  FORMAT(10HELEMENTS  ,6F11.6/(10HCONTINUE  ,6F11.6))
+!C--CHECK IF THERE ARE ANY BATCH SCALS TO BE OUTPUT
+!1500  CONTINUE
+!      IF(MD5BS)1650,1650,1550
+!C--OUTPUT THE BATCH SCALE FACTORS
+!1550  CONTINUE
+!      M5BS=L5BS+MD5BS-1
+!      WRITE(NCPU,1600)(STORE(I),I=L5BS,M5BS)
+!1600  FORMAT(10HBATCH     ,6F11.6/(10HCONTINUE  ,6F11.6))
+!C--AND NOW THE 'END'
+!1650  CONTINUE
+!      CALL XPCHND(ncpu)
+!1700  CONTINUE
+!      RETURN
+!C
+!9900  CONTINUE
+!C -- ERRORS
+!      CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
+!      RETURN
+
 
 
 

@@ -7523,13 +7523,15 @@ c                CALL XPRVDU(NCVDU,1,0)
               call sfls_punch_addtodesign(
      1          reshape(globalderivatives*sign(SQRT(ABS(C)),C), 
      2            (/size(globalderivatives), 1/) ),
-     1          reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag )
+     2          reshape( (/1000+restraints_derivatives_idx,0,0/), 
+     3            (/3,1/) ), sfls_punch_flag )
             else
               call sfls_punch_addtodesign(
      1          reshape(real(
      2            globalderivatives*sign(SQRT(ABS(C)),C),kind(1.0)), 
      3            (/size(globalderivatives), 1/) ),
-     1          reshape( (/0,0,0/), (/3,1/) ), sfls_punch_flag )
+     4          reshape( (/1000+restraints_derivatives_idx,0,0/), 
+     5            (/3,1/) ), sfls_punch_flag )
               end if
             deallocate(globalderivatives)
         end if
