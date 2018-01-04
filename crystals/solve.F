@@ -264,9 +264,6 @@ C--
       CHARACTER *14 CLST23(4)
 C-------STEFANS VARIABLES
       INTEGER ZEROED_COUNT
-      INTEGER XCOUNT, YCOUNT
-      REAL  THRESH_HOLD, RHS
-      REAL  SQRT_Mii, SQRT_Mjj, Mij
 C----------------------------
       INCLUDE 'TYPE11.INC'
 C
@@ -334,12 +331,10 @@ C      DATA RMSSM/ 0.3/
 C
       DATA IVERSN /410/
       
-      real, dimension(:), allocatable :: ref
-      real, dimension(:,:), allocatable :: check, unpacked
-      integer sfls_punch_flag
+!      real, dimension(:), allocatable :: ref
+!      real, dimension(:,:), allocatable :: check, unpacked
+      integer sfls_punch_flag, sfls_calcul_flag
       
-      real eigcutoff, condition, filtered_condition
-      integer nrejected
       character(len=16) blasname
       
       character(len=22),dimension(0:6), parameter :: methodtxt=(/
@@ -573,7 +568,6 @@ C--CHECK THAT THE NUMBER OF DEGREES OF FREEDOM IS POSITIVE
             E=D/STORE(L11P+16)
       ENDIF
 C--CHECK THE TYPE OF LIST 11
-1500  CONTINUE
 cdjwapr09 F is counter for sum of squares, ABSF for sum abs(shift/esd)
       F = 0.0
       ABSF = 0
@@ -679,7 +673,6 @@ c         DO 2051 I = 1, JY
 c            str11(jdjw) = STR11(IDJW)
 c            IDJW = IDJW + JY - I + 1
 c            jdjw=jdjw+1
-2051     CONTINUE 
 c        call outv(str11(iscl),jy)
 CDJW-OCT-05
 
@@ -955,7 +948,6 @@ C-- If we are calculating leverages then do it here
             call sfls_punch_leverages(jy)
          END IF
                     
-2050     CONTINUE
          L11RC = KADD11(-102,MD11R, JY)
          M11R=L11RC
          IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -1212,7 +1204,6 @@ C----- SINGULARITY SITUATION IS OKAY
      2 ' Terminating after this cycle')
       ENDIF
 C--UPDATE THE VALUES OF THE VARIOUS DETERMINED FUNCTIONS
-3700  CONTINUE
       JU=1
 C--CHECK IF THIS IS THE FIRST CYCLE TO SEE IF DIFFERENCES CAN BE CALCULA
       IF(ISTORE(L33CB+1))3800,3800,3750
@@ -1225,7 +1216,6 @@ C--NO REFINEMENT LAST TIME
 C--CHECK IF SINGULARITIES ALREADY INDICATE TERMINATION
 3850  CONTINUE
 C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
-3900  CONTINUE
       IF ( ISSPRT.EQ. 0)  write(ncwu,3901)
 3901  format(32x,'Min',10x,'Actual',11x,'Max')
       M23AC=L23AC
@@ -1241,10 +1231,8 @@ C--CHECK THE MINIMUM VALUE
      1  store(m23ac),store(je+1),store(m23ac+1)
       if (store(je+1) .lt. store(m23ac)) goto 4300
 C--CHECK THE MAXIMUM VALUE
-3950  CONTINUE
       if (store(je+1) .gt. store(m23ac+1)) goto 4300
 C--UPDATE FOR THE NEXT CONDITION
-4000  CONTINUE
       JE=JE+1
       M23AC=M23AC+JG
 4050  CONTINUE
@@ -1265,10 +1253,8 @@ C--LOOP OVER EACH
 C--CHECK THE MIMIMUM
       if (a .lt. store(m23ic)) goto 4300
 C--CHECK THE MAXIMUM
-4150  CONTINUE
       if (a .gt. store(m23ic+1)) goto 4300
 C--UPDATE
-4200  CONTINUE
       JE=JE+1
       JH=JH+1
       M23IC=M23IC+JG
@@ -1361,7 +1347,7 @@ C--PRINT THE HEADING AND THE VARIOUS DETAILS AMASSED
       ENDIF
 4447  FORMAT(1X ,' You have used neither restraints nor reflections')
 4448  FORMAT(/60(2H *)/)
-4449  FORMAT(/40(2H *)/)
+c4449  FORMAT(/40(2H *)/)
 C
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,4448)
@@ -1578,7 +1564,7 @@ c     3 'UisoRin',2X,'RadRin',3X,'DecRin',3X,'AziRin'
 c     4 //' Mean      ',10F9.5//' R.M.S.    ',10F9.5)
 c      WRITE(NCWU,4653) (STORE(I+6),I=JC+14*MW,JC+23*MW,MW)
 c      WRITE(NCWU,4775) (STORE(I+5),I=JC+14*MW,JC+23*MW,MW)
-4775  FORMAT(/' Maximum   ',10F9.5)
+c4775  FORMAT(/' Maximum   ',10F9.5)
 c      ENDIF
 c
 c
@@ -1783,8 +1769,8 @@ c     1 'oldshift',oldshift,'rfshift',rfshift,'adpshift',adpshift,
 c     2 'revshift',revshift,'adp',adpshift,' xyz',xyzshift,' Over',
 c     3 ovrshift
 c
-5102  format(a,f8.1,a,f6.2,a,f6.2,2(a,2f6.2),a,f6.2,
-     1 a,f6.3,a,f6.3,a,f6.3)
+c5102  format(a,f8.1,a,f6.2,a,f6.2,2(a,2f6.2),a,f6.2,
+c     1 a,f6.3,a,f6.3,a,f6.3)
 c      write(ncwu,5102)
 c     1 'Sssr=',sssr, ' Shmax=',shmax,' Rmss=',rmss,
 c     2 ' Av Rev ', adprev,xyzrev,
@@ -2139,7 +2125,7 @@ C
 c      WRITE(442,*) 'Ilen: ', ILEN
 
       IF ( ITYPE .EQ. 1 ) THEN
-	DO L = (N*N)-1, N, -1
+        DO L = (N*N)-1, N, -1
           IA = IMLIND(N,L)
 c          WRITE(442,*)'Moving: ', IA, ' to ', L
           XSTR11(IADD+L) = XSTR11(IADD+IA)
@@ -3545,7 +3531,7 @@ C fileid - The file id to open the file under.
       filecount = 0
       file_exists = .true.
       do while (file_exists)
-         write(file_name, '(a,i4,a)'), 'normal', filecount, '.m'
+         write(file_name, '(a,i4,a)') 'normal', filecount, '.m'
          call xcras(file_name, i) 
          inquire(FILE=FILE_NAME(1:i), EXIST=file_exists)
          filecount = filecount + 1

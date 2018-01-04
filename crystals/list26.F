@@ -7806,10 +7806,10 @@ C
       double precision DAA(20,20) !< normal matrix
       double precision DAR(21),DAI(20,20),DAII(6,20),DAS(20), ABdp(20)
       double precision aaa, bbb, ccc, ddd
-      double precision anumb, del, dels, delu, rad, rmsu, sfac
+      double precision anumb, del, dels, delu, rmsu, sfac
       double precision sum, sums, sumu
       double precision ufac
-      integer imode, info, jff, natom, natom2
+      integer info, jff, natom, natom2
       double precision WAdp(3,3),WBdp(3,3),WCdp(6), WDdp(3)
 C
       character(len=17), dimension(6), parameter :: rdescription=(/
