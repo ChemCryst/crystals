@@ -1319,7 +1319,7 @@ end function
 
 !> This subroutine write a python file with all the necessary info to do some calculations
 subroutine sfls_punch_python()
-use store_mod
+use store_mod, only: store, istore=>i_store
 use xlst01_mod
 use xlst05_mod
 use list12_mod
@@ -1334,8 +1334,9 @@ implicit none
 integer IADDL,IADDR,IADDD
 integer, parameter :: pyfile=578
 type(param_t), dimension(:), allocatable :: parameters_list !< List of least squares parameters
-integer i
+integer i, filecount
 character eol
+character(len=128) :: file_name
 
 type atom_t 
   character(len=4) :: label
@@ -1343,7 +1344,24 @@ type atom_t
 end type
 type(atom_t), dimension(:), allocatable :: l5model
 
+character(len=6) flag
+character(len=6), parameter :: iblank='      '
+integer ILEBP, jrr, js, jt, ju, jv, jw, jx, na, nc
+!integer, dimension(40) :: icom12
+!equivalence(l12, icom12(1))
+integer, dimension(6) :: icom12
+real weight
+real, dimension(:,:), allocatable :: constraintstable
+character(len=24), dimension(:), allocatable :: physicallist
+integer :: physicalindex
+
 integer, external :: khuntr
+
+    icom12=(/L12LS, L12ES, L12BS, L12CL, L12PR, L12EX/)
+    if(nsc>6) then
+      print *, 'programmer error'
+      call abort()
+    end if
 
     ! Check if list 1 and 5 are loaded
     IF (KHUNTR (1,0, IADDL,IADDR,IADDD,-1) /= 0) then
@@ -1359,16 +1377,40 @@ integer, external :: khuntr
     !  print *, 'Error, list 12 not loaded'
     !  call abort()
     !end if
-
-    print *, "unit cell ", STORE(L1P1:L1P1+5)
-    print *, "reciprocal unit cell ", STORE(L1P2:L1P2+5)
-    print *, "orthogonalisation matrix ", STORE(L1O1:L1O1+8)
-    print *, "metric tensor ", STORE(L1M1:L1M1+8)
     
-    open(pyfile, file="crystals.py")
+    ! search index for file to open and create
+    filecount = sfls_punch_get_newfileindex()
+
+    write(file_name, '(a,i0,a)') 'crysdata', filecount, '.py'
+    open(pyfile, file=trim(file_name))
 
     write(pyfile, '(a)') "#!/usr/bin/env python"
     write(pyfile, '(a)') "import numpy"
+    write(pyfile, '(a)') ""
+    write(pyfile, '(a)') ""
+
+    write(pyfile, '(a)') "class Atom:"
+    write(pyfile, '(4X, a)') '"""Atom definition class"""'
+    write(pyfile, '(4X, a)') 'label=""'
+    write(pyfile, '(4X, a)') "serial=0"
+    write(pyfile, '(4X, a)') "occupancy=0"
+    write(pyfile, '(4X, a)') "flag=0"
+    write(pyfile, '(4X, a)') "xyz=numpy.zeros(3)"
+    write(pyfile, '(4X, a)') "adp=numpy.zeros(6)"
+    write(pyfile, '(4X, a)') ""
+    write(pyfile, '(4X, a)') "def adp33(self):"
+    write(pyfile, '(8X, a)') "a=numpy.array((3,3))"
+    write(pyfile, '(8X, a)') "a[0,0]=self.adp[0]"
+    write(pyfile, '(8X, a)') "a[1,1]=self.adp[1]"
+    write(pyfile, '(8X, a)') "a[2,2]=self.adp[2]"
+    write(pyfile, '(8X, a)') "a[1,2]=self.adp[3]"
+    write(pyfile, '(8X, a)') "a[0,2]=self.adp[4]"
+    write(pyfile, '(8X, a)') "a[0,1]=self.adp[5]"
+    write(pyfile, '(8X, a)') "a[2,1]=self.adp[3]"
+    write(pyfile, '(8X, a)') "a[2,0]=self.adp[4]"
+    write(pyfile, '(8X, a)') "a[1,0]=self.adp[5]"
+    write(pyfile, '(8X, a)') "return a"
+
     write(pyfile, '(a)') ""
     write(pyfile, '(a)') ""
 
@@ -1382,107 +1424,161 @@ integer, external :: khuntr
     write(pyfile, "('metric=numpy.array([',2('[',F0.4,',',F0.4,',',F0.4,'],'),'[',F0.4,',',F0.4,',',F0.4,']])')") STORE(L1M1:L1M1+8)
 
     
+    ! Least square parameters list
+    write(pyfile, '(a)') ""
     call load_lsq_params(parameters_list)
     write(pyfile, '(a)') "lsq_params={"
     eol=','
     do i=1, size(parameters_list)
-        if(i==size(parameters_list)) then
-            eol=''
+      if(i==size(parameters_list)) then
+        eol=''
+      end if
+      if(mod(i,10)==0) then
+        write(pyfile, *) ''
+      end if
+      if(parameters_list(i)%index>-1) then
+        ! python indices are zero based, hence index-1 below
+        if(parameters_list(i)%serial>0) then
+          write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(parameters_list(i)%label), &
+          &   parameters_list(i)%serial, trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
+        else
+          write(pyfile, '(4x, """", a,""":",I0, a)') &
+          &   trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
         end if
-        if(mod(i,10)==0) then
-            write(pyfile, *) ''
-        end if
-        if(parameters_list(i)%index>-1) then
-            ! python indices are zero based, hence index-1 below
-            if(parameters_list(i)%serial>0) then
-                write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(parameters_list(i)%label), &
-                &   parameters_list(i)%serial, trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
-            else
-                write(pyfile, '(4x, """", a,""":",I0, a)') &
-                &   trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
-            end if
-        end if
+      end if
     end do
     write(pyfile, '(a)') "}"
 
 
-    allocate(l5model(N5))
+    ! List 5 model
+    write(pyfile, '(a)') ""
     write(pyfile, '(a)' ) '# Overall parameters'
-    write(pyfile, '(a ,F11.6,4(1X,F9.6),1X,F17.7)' ) '# ', STORE(L5O:L5O+5)
+    write(pyfile, '(a ,F11.6)' ) 'scale=', STORE(L5O)
+    write(pyfile, '(a ,F11.6)' ) 'ou_iso=', STORE(L5O+1)
+    write(pyfile, '(a ,F11.6)' ) 'du_iso=', STORE(L5O+2)
+    write(pyfile, '(a ,F11.6)' ) 'polarity=', STORE(L5O+3)
+    write(pyfile, '(a ,F11.6)' ) 'enantio=', STORE(L5O+4)
+    write(pyfile, '(a ,F11.6)' ) 'extinction=', STORE(L5O+5)
+    
+    write(pyfile, '(a)') ""
+    allocate(l5model(N5))
+    write(pyfile, '(a,I0,a)') "model = [ Atom() for i in range(",n5,")]"
     
     m5=l5
-!    do i=1, n5
+    do i=1, n5
+      WRITE(pyfile,'(a,a,"(",I0,")",a)') '# Atom ', trim(transfer(STORE(M5), 'aaaa')), nint(STORE(M5+1))
+      write(pyfile, '(a,I0,a,a,a)') "model[",i-1,'].label="',trim(transfer(STORE(M5), 'aaaa')),'"'
+      write(pyfile, '(a,I0,a,I0)') "model[",i-1,'].serial=',nint(STORE(M5+1))
+      write(pyfile, '(a,I0,a,F0.6)') "model[",i-1,'].occupancy=',STORE(M5+2)
+      write(pyfile, '(a,I0,a,I0)') "model[",i-1,'].flag=',nint(STORE(M5+3))
+      write(pyfile, '(a,I0,a,2(F0.6,","),F0.6,a)') "model[",i-1,'].xyz=numpy.array([',STORE(M5+4:M5+6),'])'
+      write(pyfile, '(a,I0,a,5(F0.6,","),F0.6,a)') "model[",i-1,'].adp=numpy.array([',STORE(M5+7:M5+12),'])'
+      M5 = M5 + MD5
+    end do
+    
+    ! matrix of constraints
+    allocate(constraintstable(131072, size(parameters_list)))
+    allocate(character(len=24) :: physicallist(131072))
+    physicallist=''
+    physicalindex=0
+    !      jt            absolute l.s. parameter no.
+    !      js            physical parameter no from which to start search
+    !      jx            relative parameter no
 
-! WRITE(NCPU,1000)N5,MD5LS,MD5ES,MD5BS
-!1000  FORMAT(13HREAD NATOM = ,I6,11H, NLAYER = ,I4,13H, NELEMENT = ,I4,
-!     2 11H, NBATCH = ,I4)
-!C--OUTPUT THE OVERALL PARAMETERS
-!       WRITE(NCPU,1050) STORE(L5O),STORE(L5O+1),STORE(L5O+2),
-!     1 STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
-!1050  FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
-!      ENDIF
-!C--CHECK FOR SOME ATOMS
-!      IF(N5)1200,1200,1100
-!C--OUTPUT THE ATOMS
-!1100  CONTINUE
-!      M5 = L5
-!      DO 1170 K = 1, N5
-!C----- DONT PUNCH 'SPARE' FOR THE MOMENT - IT CAUSES PROBLEMS
-!C      WITH ALIEN PROGRAMS
-!CDJWNOV2000 REINTRODUCE PUNCHING OF ALL DATA
-!C      MD5TMP = MIN (13, MD5)
-!      MD5TMP = MIN(18, MD5) 
-!      J = M5 + 13
-!C Offset18 used to contain a 4 character string '    ' by default.
-!C Catch that value here and change it to zero.
-!      IF ( ISTORE(M5+17) .EQ. 538976288 ) ISTORE(M5+17) = 0
-!C ISTORE bits will only print if J=18, not if J=14.
-!      WRITE(NCPU,1150) (STORE(I), I = M5, J),
-!     1                (ISTORE(I), I= J+1, M5+MD5TMP -1 )
-!1150  FORMAT
-!     1 ('ATOM ',A4,1X,F11.0,F11.6,F11.0,3F11.6/
-!     2 'CON U[11]=',6F11.6/
-!     3 'CON SPARE=',F11.2,3I11,10X,I12)
-!      M5 = M5 + MD5
-!1170  CONTINUE
-!C--CHECK IF THERE ARE ANY LAYER SCALES TO OUTPUT
-!      IF (IN .LE. 0) GOTO 1700
-!1200  CONTINUE
-!      IF(MD5LS)1350,1350,1250
-!C--PUNCH THE LAYER SCALES
-!1250  CONTINUE
-!      M5LS=L5LS+MD5LS-1
-!      WRITE(NCPU,1300)(STORE(I),I=L5LS,M5LS)
-!1300  FORMAT(10HLAYERS    ,6F11.6/(10HCONTINUE  ,6F11.6))
-!C--CHECK IF THERE ARE ANY ELEMENT SCALES TO OUTPUT
-!1350  CONTINUE
-!      IF(MD5ES)1500,1500,1400
-!C--OUTPUT THE ELEMENT SCALES
-!1400  CONTINUE
-!      M5ES=L5ES+MD5ES-1
-!      WRITE(NCPU,1450)(STORE(I),I=L5ES,M5ES)
-!1450  FORMAT(10HELEMENTS  ,6F11.6/(10HCONTINUE  ,6F11.6))
-!C--CHECK IF THERE ARE ANY BATCH SCALS TO BE OUTPUT
-!1500  CONTINUE
-!      IF(MD5BS)1650,1650,1550
-!C--OUTPUT THE BATCH SCALE FACTORS
-!1550  CONTINUE
-!      M5BS=L5BS+MD5BS-1
-!      WRITE(NCPU,1600)(STORE(I),I=L5BS,M5BS)
-!1600  FORMAT(10HBATCH     ,6F11.6/(10HCONTINUE  ,6F11.6))
-!C--AND NOW THE 'END'
-!1650  CONTINUE
-!      CALL XPCHND(ncpu)
-!1700  CONTINUE
-!      RETURN
-!C
-!9900  CONTINUE
-!C -- ERRORS
-!      CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
-!      RETURN
+    jx = 12
+    m5 = l5 - md5
+    m12 = l12o
+    l12a = nowt
+    js = 0
 
+    flag = iblank
 
+    do while(m12 .ge. 0)   ! more stuff in l12
+      if(istore(m12+1).gt.0) then ! any refined params
+!c--compute the address of the first part for this group
+        l12a=istore(m12+1)
+!c--check if this part contains any refinable parameters
+        do while(l12a.gt.0) ! --check if there are any more parts for this atom or group
+          if(istore(l12a+3).lt.0) exit
+!c--set up the constants to pass through this part
+            md12a=istore(l12a+1)
+            ju=istore(l12a+2) 
+            jv=istore(l12a+3)
+            js=istore(l12a+4)+1
+!c--search this part of this atom
+            do jw=ju,jv,md12a
+              jt=istore(jw)
 
+              ilebp = 0
+              do na=1,nsc
+                if(icom12(na).eq.m12) then
+!c--layer or element batch or parameter print
+                   ilebp = 1
+                   exit
+                end if
+              end do
+
+              if ( md12a .gt. 1 ) then
+                weight = store(jw+1)
+              else
+                weight = 1.
+              endif
+
+              if ( ilebp .eq. 1 ) then
+                write(*, '(1x, a6, 1X, i5,17x, f11.4, 1x, 2a4, i3)')flag,jt, weight, (kscal(nc,na+2),nc=1,2), js
+                if(jt>0) then
+                  physicalindex=physicalindex+1
+                  write(physicallist(physicalindex), '(2a4,1x,i0)') (kscal(nc,na+2),nc=1,2), js
+                  constraintstable(physicalindex, JT)=weight
+                end if
+
+!c--check if this is an overall parameter
+              else if (m12.eq.l12o) then
+                write(*,'(1x, i12,17x, f11.4, 1x, 2a4)') jt, weight, (kvp(jrr,js),jrr=1,2)
+                if(jt>0) then
+                  physicalindex=physicalindex+1
+                  write(physicallist(physicalindex), '(3a4)') (kvp(jrr,js),jrr=1,2)
+                  constraintstable(physicalindex, JT)=weight
+                end if
+              else  
+!c-c-c-distinction between aniso's and iso/special's for print
+
+                if((store(m5+3) .ge. 1.0) .and. (js .ge. 8)) then
+                  write(*,3050)jt,store(m5),nint(store(m5+1)), weight, (icoord(jrr,js+nkao),jrr=1,nwka)
+                  if(jt>0) then
+                    physicalindex=physicalindex+1
+                    write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
+                    &   store(m5),nint(store(m5+1)),(icoord(jrr,js+nkao),jrr=1,nwka)
+                    constraintstable(physicalindex, JT)=weight
+                  end if
+                else
+                  write(*,3050)jt,store(m5),nint(store(m5+1)), weight, (icoord(jrr,js),jrr=1,nwka)
+                  if(jt>0) then
+                    physicalindex=physicalindex+1
+                    write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
+                    &   store(m5),nint(store(m5+1)), (icoord(jrr,js),jrr=1,nwka)
+                    constraintstable(physicalindex, JT)=weight
+                  end if
+                endif
+                            
+              endif
+              
+3050  format(1x,i12,8x,a4,i4,1x,f11.4, 1x, 3a4)
+!c
+!c--increment to the next parameter of this part
+              js=js+1
+            end do
+!c--change parts for this atom or group
+            l12a=istore(l12a)
+          end do
+        end if
+!c--move to the next group or atom
+        m5=m5+md5
+        m12=istore(m12)
+      end do
+      
+      print *, physicallist(1:physicalindex)
+    
 
     close(pyfile)
 
