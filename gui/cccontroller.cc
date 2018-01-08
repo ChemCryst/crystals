@@ -1170,7 +1170,7 @@ CcController::~CcController()       //The destructor. Delete all the heap object
     list<char*>::iterator s = stringlist.begin();
     while ( s != stringlist.end() )
     {
-        delete *s;
+        delete[] *s;
         s++;
     }
 
@@ -4391,11 +4391,11 @@ extern "C" {
       {
           int ilen = strlen(theLine);
 
-          for (int j = ilen; j<256; j++)   //Pad with blanks.
+          for (int j = ilen; j<255; j++)   //Pad with blanks.
           {
               *(theLine + j) = ' ';
           }
-          *(theLine+256) = '\0';
+          *(theLine+255) = '\0';
 
       }
       else
