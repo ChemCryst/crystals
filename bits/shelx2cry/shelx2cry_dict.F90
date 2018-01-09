@@ -95,7 +95,7 @@ type(dict_t) :: this
         tuples(28)%key='FEND'
         tuples(28)%func => shelx_unsupported    
         tuples(29)%key='FLAT'
-        tuples(29)%func => shelx_unsupported    
+        tuples(29)%func => shelx_flat
         tuples(30)%key='FMAP'
         tuples(30)%func => shelx_ignored    
         tuples(31)%key='FRAG'
@@ -129,7 +129,7 @@ type(dict_t) :: this
         tuples(45)%key='MOVE'
         tuples(45)%func => shelx_unsupported    
         tuples(46)%key='MPLA'
-        tuples(46)%func => shelx_mpla    
+        tuples(46)%func => shelx_unsupported    
         tuples(47)%key='NCSY'
         tuples(47)%func => shelx_unsupported    
         tuples(48)%key='NEUT'

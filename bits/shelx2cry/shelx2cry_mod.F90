@@ -538,6 +538,7 @@ integer i, j, k, l, m
 integer :: serial1
 character(len=1024) :: buffer1, buffer2, buffertemp
 character :: linecont
+integer previous
     
     ! Restraints
     write(crystals_fileunit, '(a)') '\LIST 16'
@@ -546,9 +547,9 @@ character :: linecont
     write(crystals_fileunit, '(a)') 'REM   HREST   END (DO NOT REMOVE THIS LINE) '
 
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
-!*   MPLA
+!*   flat
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
-    call write_list16_mpla()
+    call write_list16_flat()
 
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 !*   DFIX/DANG
@@ -752,11 +753,13 @@ character :: linecont
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 !*   SAME
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
-    if(same_processing/=-1) then
-        write(log_unit, '(2a)') 'Error: Something went seriously wrong. A SAME instruction is on going ', same_processing
-    end if
-
     do i=1, same_table_index
+        if(same_table(i)%processing/=-1) then
+            write(log_unit, '(2a, 1x, I0)') 'Error: Something went seriously wrong. ', &
+            &   'A SAME instruction is on going ', same_table(i)%processing
+            write(log_unit, '("Line ", a)') trim(same_table(i)%shelxline)
+        end if
+        
         buffer1=''
         buffer2=''
         ! get crystals serial for list of atoms
@@ -779,8 +782,37 @@ character :: linecont
         write(crystals_fileunit, trim(buffertemp)) '# ', same_table(i)%list1
         write(crystals_fileunit, trim(buffertemp)) '# ', same_table(i)%list2
         write(crystals_fileunit, '(a)') 'SAME '
-        write(crystals_fileunit, '(a,a,a)') 'CONT ',trim(buffer1), ' AND'
-        write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2)
+        if(len_trim(buffer1)<line_length) then
+            write(crystals_fileunit, '(a,a,a)') 'CONT ',trim(buffer1), ' AND'
+        else
+            previous=1
+            do 
+                if(previous+line_length>len_trim(buffer1)) exit
+                l=0
+                do while(buffer1(previous+line_length-l:previous+line_length-l)/=' ')
+                    l=l+1
+                end do
+                write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer1(previous:previous+line_length-l))
+                previous=previous+line_length-l
+            end do
+            write(crystals_fileunit, '(a,a,a)') 'CONT ',trim(buffer1(previous:)), ' AND'
+        end if
+        if(len_trim(buffer2)<line_length) then
+            write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2)
+        else
+            previous=1
+            do 
+                if(previous+line_length>len_trim(buffer2)) exit
+                l=0
+                do while(buffer2(previous+line_length-l:previous+line_length-l)/=' ')
+                    l=l+1
+                end do
+                write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2(previous:previous+line_length-l))
+                previous=previous+line_length-l
+            end do
+            write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2(previous:))
+        end if
+                
         !print *, trim(same_table(i)%shelxline)
         !print *, size(same_table(i)%list1), same_table(i)%list1
         !print *, trim(buffer1)
@@ -1474,22 +1506,23 @@ integer i
     atomslist(atomslist_index)%shelxline=shelxline%line
     atomslist(atomslist_index)%line_number=shelxline%line_number
     
-    if(same_processing>=0) then
-        ! same instruction found before, adding this atom to the list
-        if(same_processing<size(same_table(same_table_index)%list2)) then
-            if(trim(sfac(atomslist(atomslist_index)%sfac))/='H' .and. &
-            &   trim(sfac(atomslist(atomslist_index)%sfac))/='D') then
-                same_processing=same_processing+1
-                same_table(same_table_index)%list2(same_processing)=atomslist(atomslist_index)%label
-            end if
-            
-            if(same_processing==size(same_table(same_table_index)%list2)) then
-                ! all done
-                same_processing=-1
+    do i=1, same_table_index
+        if(same_table(i)%processing>=0) then
+            ! same instruction found before, adding this atom to the list
+            if(same_table(i)%processing<size(same_table(i)%list2)) then
+                if(trim(sfac(atomslist(atomslist_index)%sfac))/='H' .and. &
+                &   trim(sfac(atomslist(atomslist_index)%sfac))/='D') then
+                    same_table(i)%processing=same_table(i)%processing+1
+                    same_table(i)%list2(same_table(i)%processing)=atomslist(atomslist_index)%label
+                end if
+                
+                if(same_table(i)%processing==size(same_table(i)%list2)) then
+                    ! all done
+                    same_table(i)%processing=-1
+                end if
             end if
         end if
-    end if
-    
+    end do
 end subroutine
 
 !> Parse the atom parameters when adps are not present but isotropic temperature factor.
@@ -1629,10 +1662,28 @@ type(atom_t), dimension(:), allocatable :: templist
     atomslist(atomslist_index)%shelxline=shelxline%line
     atomslist(atomslist_index)%line_number=shelxline%line_number
 
+    do i=1, same_table_index
+        if(same_table(i)%processing>=0) then
+            ! same instruction found before, adding this atom to the list
+            if(same_table(i)%processing<size(same_table(i)%list2)) then
+                if(trim(sfac(atomslist(atomslist_index)%sfac))/='H' .and. &
+                &   trim(sfac(atomslist(atomslist_index)%sfac))/='D') then
+                    same_table(i)%processing=same_table(i)%processing+1
+                    same_table(i)%list2(same_table(i)%processing)=atomslist(atomslist_index)%label
+                end if
+                
+                if(same_table(i)%processing==size(same_table(i)%list2)) then
+                    ! all done
+                    same_table(i)%processing=-1
+                end if
+            end if
+        end if
+    end do
+
 end subroutine
 
-!> Write mpla restraints to list16 section 
-subroutine write_list16_mpla()
+!> Write flat restraints to list16 section 
+subroutine write_list16_flat()
 use crystal_data_m
 implicit none
 integer, dimension(:), allocatable :: serials
@@ -1643,22 +1694,237 @@ integer i, j, k, l, indexresi, resi1
 integer :: serial1
 character(len=lenlabel) :: label
 integer, dimension(:), allocatable :: residuelist
+character(len=:), allocatable :: stripline
+character(len=6) :: startlabel, endlabel
+character(len=2048) :: bufferline
+logical collect, reverse
+real esd
+character(len=128) :: buffernum
+character(len=128) :: namedresidue
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+integer linepos, start, iostatus, cont, flatresidue
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+
 
     call makeresiduelist(residuelist)
     
     ! PLANAR 0.01 N(1) C(3) 
-    if(mpla_table_index>0) then
+    if(flat_table_index>0) then
         write(log_unit, '(a)') ''
-        write(log_unit, '(a)') 'Processing MPLASs...'
+        write(log_unit, '(a)') 'Processing FLATs...'
     end if
     ! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
-    mpla_loop:do i=1, mpla_table_index
-        write(log_unit, '(a)') trim(mpla_table(i)%shelxline)
+    flat_loop:do i=1, flat_table_index
+
+        if(len_trim(flat_table(i)%shelxline)<5) then
+            write(log_unit,*) 'Error: Empty FLAT'
+            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)
+            return
+        end if
+
+        ! print *, trim(flat_table(flat_table_index)%shelxline)
+        ! extracting list of atoms, first removing duplicates spaces and keyword
+        call deduplicates(flat_table(i)%shelxline(5:), stripline)
+        call to_upper(stripline)
+        
+        ! looking for <,> shortcut
+        cont=max(index(stripline, '<'), index(stripline, '>'))
+        !write(log_unit, *) '*************** ', cont
+        do while(cont>0)
+            if(index(stripline, '<')==cont) then    
+                reverse=.true.
+            else
+                reverse=.false.
+            end if
+        
+            ! found < or >, expliciting atom list
+            bufferline=stripline(1:cont-1)
+            
+            ! first searching for label on the right
+            if(stripline(cont+1:cont+1)==' ') cont=cont+1        
+            j=0
+            endlabel=''
+            do k=cont+1, len_trim(stripline)
+                if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
+                    exit
+                end if
+                j=j+1
+                endlabel(j:j)=stripline(k:k)
+            end do  
+            
+            ! then looking for label on the left
+            cont=max(index(stripline, '<'), index(stripline, '>'))
+            if(stripline(cont-1:cont-1)==' ') cont=cont-1        
+            j=7
+            startlabel=''
+            do k=cont-1, 1, -1
+                if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
+                    exit
+                end if
+                j=j-1
+                startlabel(j:j)=stripline(k:k)
+            end do  
+            startlabel=adjustl(startlabel)
+
+            ! scanning atom list to find the implicit atoms
+            if(reverse) then
+                k=atomslist_index
+            else
+                k=1
+            end if
+            collect=.false.
+            do 
+                if(trim(atomslist(k)%label)==trim(startlabel)) then
+                    !found the first atom
+                    !write(log_unit, *) flat_table(i)%shelxline
+                    !write(log_unit, *) 'Found start: ', trim(startlabel)
+                    collect=.true.
+                end if
+                if(reverse) then
+                    k=k-1
+                    if(k<1) then
+                        if(collect) then
+                            write(log_unit, *) 'Error: Cannot find end atom ', trim(endlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                        else
+                            write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                        end if
+                        return
+                    end if
+                else
+                    k=k+1
+                    if(k>atomslist_index) then
+                        if(collect) then
+                            write(log_unit, *) 'Error: Cannot find end atom ', trim(endlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                        else
+                            write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                        end if
+                        return
+                    end if
+                end if
+                if(collect) then
+                    if(trim(atomslist(k)%label)==trim(endlabel)) then
+                        !write(log_unit, *) 'Found end: ', trim(endlabel)
+                        !write(log_unit, *) 'Done!!!!!'
+                        ! job done
+                        exit
+                    end if
+                    
+                    if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
+                    &   trim(sfac(atomslist(k)%sfac))/='D') then
+                        ! adding the atom to the list
+                        bufferline=trim(bufferline)//' '//trim(atomslist(k)%label)
+                    end if
+                end if
+            end do
+            ! concatenating the remaining
+            bufferline=trim(bufferline)//' '//&
+            &   trim(adjustl(stripline(max(index(stripline, '<'), index(stripline, '>'))+1:)))
+
+            !write(log_unit, *) trim(stripline)
+            !write(log_unit, *) trim(bufferline)
+            stripline=bufferline
+            cont=max(index(stripline, '<'), index(stripline, '>'))
+        end do
+        
+        flatresidue=-99
+        buffernum=''
+        linepos=5
+        ! check for subscripts on FLAT
+        if(flat_table(i)%shelxline(5:5)=='_') then
+            ! check for `_*̀
+            if(flat_table(i)%shelxline(6:6)=='*') then
+                flatresidue=-1
+                linepos=7
+            else
+                ! check for a residue number
+                found=.true.
+                j=0
+                do while(found)
+                    found=.false.
+                    do k=1, size(numbers)
+                        if(flat_table(k)%shelxline(6+j:6+j)==numbers(k)) then
+                            found=.true.
+                            buffernum(j+1:j+1)=flat_table(i)%shelxline(6+j:6+j)
+                            j=j+1
+                            exit
+                        end if
+                    end do
+                end do
+                if(len_trim(buffernum)>0) then
+                    read(buffernum, *) flatresidue
+                    linepos=6+j
+                end if
+
+                ! check for a residue name
+                if(flatresidue==-99) then
+                    if(flat_table(i)%shelxline(6:6)/=' ') then
+                        ! FLAT applied to named residue
+                        k=6
+                        j=1
+                        do while(flat_table(i)%shelxline(k:k)/=' ')
+                            namedresidue(j:j)=flat_table(i)%shelxline(k:k)
+                            k=k+1
+                            j=j+1
+                            linepos=linepos+1
+                            if(k>=len(flat_table(i)%shelxline)) exit
+                        end do
+                        flatresidue=-98
+                        linepos=linepos+1
+                    else
+                        write(log_unit,*) 'Error: Cannot have a space after `_` '
+                        write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)
+                        write(log_unit,*) repeat(' ', 5+5+nint(log10(real(flat_table(i)%line_number)))+1), '^'
+                        return
+                    end if
+                end if        
+            end if
+        end if
+        
+        bufferline=stripline
+        call deduplicates(bufferline, stripline)
+        call to_upper(stripline)    
+        ! some files use ',' as a separator instead of a space
+        do k=1, len_trim(stripline)
+            if(stripline(k:k)==',') then
+                stripline(k:k)=' '
+            end if
+        end do
+
+        call explode(stripline, lenlabel, splitbuffer)    
+        
+        ! first element is the esd of atoms (optional)
+        read(splitbuffer(1), *, iostat=iostatus) esd
+        if(iostatus/=0) then
+            esd=0.1
+            start=0
+        else
+            start=1
+            if( size(splitbuffer)-start<3 ) then
+                write(log_unit, *) "Error: Can't fit a plane with less than 4 atoms"
+                write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                return
+            end if
+        end if
+            
+        allocate(flat_table(i)%atoms(size(splitbuffer)-start))
+        call to_upper(splitbuffer(start+1:size(splitbuffer)), flat_table(i)%atoms)
+        flat_table(i)%residue=flatresidue
+        flat_table(i)%namedresidue=namedresidue
+        flat_table(i)%esd=esd
+        
+        !print *, flat_table(i)%shelxline
+        !print *, flat_table(i)%atoms
+
+        write(log_unit, '(a)') trim(flat_table(i)%shelxline)
         
         found=.false.
-        do j=1, size(mpla_table(i)%atoms)
-            if(index(mpla_table(i)%atoms(j), '_*')>0) then
-                write(log_unit, '(a)') 'Warning: ignoring MPLA '
+        do j=1, size(flat_table(i)%atoms)
+            if(index(flat_table(i)%atoms(j), '_*')>0) then
+                write(log_unit, '(a)') 'Warning: ignoring FLAT '
                 write(log_unit, '(a)') '_* syntax not supported'
                 found=.true.
                 exit
@@ -1666,29 +1932,29 @@ integer, dimension(:), allocatable :: residuelist
         end do
         if(found) cycle
         
-        write(crystals_fileunit, '(a, a)') '# ', mpla_table(i)%shelxline
+        write(crystals_fileunit, '(a, a)') '# ', trim(flat_table(i)%shelxline)
         
-        if(mpla_table(i)%residue==-99) then
-            ! No residue used in MPLA card name
+        if(flat_table(i)%residue==-99) then
+            ! No residue used in FLAT card name
             if(allocated(serials)) deallocate(serials)
-            allocate(serials(size(mpla_table(i)%atoms)))
+            allocate(serials(size(flat_table(i)%atoms)))
             serials=0
             
-            do j=1, size(mpla_table(i)%atoms)
+            do j=1, size(flat_table(i)%atoms)
                 ! ICE on gfortran 61 when using associate
-                atom=mpla_table(i)%atoms(j)
-                !associate( atom => mpla_table(i)%atoms(j) )
+                atom=flat_table(i)%atoms(j)
+                !associate( atom => flat_table(i)%atoms(j) )
                     resi1=0
                     indexresi=index(atom, '_')
                     if(indexresi>0) then
                         if(atom(indexresi+1:indexresi+1)=='-') then
                             ! previous residue
-                            write(log_unit, '(a)') 'Warning: Residue - in atom with MPLA without _*'
+                            write(log_unit, '(a)') 'Warning: Residue - in atom with FLAT without _*'
                             write(log_unit, '(a)') '         Not implemented'
                             call abort()
                         else if(atom(indexresi+1:indexresi+1)=='+') then
                             ! next residue
-                            write(log_unit, '(a)') 'Warning: Residue + in atom with MPLA without _*'
+                            write(log_unit, '(a)') 'Warning: Residue + in atom with FLAT without _*'
                             write(log_unit, '(a)') '         Not implemented'
                             call abort()
                         else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
@@ -1697,9 +1963,9 @@ integer, dimension(:), allocatable :: residuelist
                             read(atom(indexresi+1:), *) resi1
                         else
                             ! residue name
-                            write(log_unit, '(a)') 'Warning: Residue name in atom with MPLA_*'
+                            write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
                             write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
-                            cycle mpla_loop
+                            cycle flat_loop
                         end if
                         label=atom(1:indexresi-1)
                     else
@@ -1715,7 +1981,7 @@ integer, dimension(:), allocatable :: residuelist
                 end do
             
                 if(serial1==0) then
-                    write(log_unit, '(a)') mpla_table(i)%atoms(j)
+                    write(log_unit, '(a)') flat_table(i)%atoms(j)
                     write(log_unit, '(I0)') serial1
                     write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
                     call abort()
@@ -1729,7 +1995,7 @@ integer, dimension(:), allocatable :: residuelist
             end do
                         
             ! good to go
-            buffertemp='PLANAR 0.05'
+            write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
              do k=1, size(serials)
                 write(buffer1, '(a,"(",I0,")")') &
                 &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
@@ -1739,19 +2005,19 @@ integer, dimension(:), allocatable :: residuelist
             write(*, '(a)') trim(buffertemp)                           
 
 
-        else if(mpla_table(i)%residue==-98) then
-            ! mpla applied to a named residues
+        else if(flat_table(i)%residue==-98) then
+            ! flat applied to a named residues
             do j=1, size(residue_names)
-                if(trim(residue_names(j))/=trim(mpla_table(i)%namedresidue)) cycle
+                if(trim(residue_names(j))/=trim(flat_table(i)%namedresidue)) cycle
                 
                 if(allocated(serials)) deallocate(serials)
-                allocate(serials(size(mpla_table(i)%atoms)))
+                allocate(serials(size(flat_table(i)%atoms)))
                 serials=0
                 
-                do k=1, size(mpla_table(i)%atoms)
+                do k=1, size(flat_table(i)%atoms)
                     ! ICE on gfortran 61 when using associate
-                    atom=mpla_table(i)%atoms(k)
-                    !associate( atom => mpla_table(i)%atoms(k) )
+                    atom=flat_table(i)%atoms(k)
+                    !associate( atom => flat_table(i)%atoms(k) )
                         resi1=j
                         indexresi=index(atom, '_')
                         if(indexresi>0) then
@@ -1767,9 +2033,9 @@ integer, dimension(:), allocatable :: residuelist
                                 read(atom(indexresi+1:), *) resi1
                             else
                                 ! residue name
-                                write(log_unit, '(a)') 'Warning: Residue name in atom with MPLA_*'
+                                write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
                                 write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
-                                cycle mpla_loop
+                                cycle flat_loop
                             end if
                             label=atom(1:indexresi-1)
                         else
@@ -1796,7 +2062,7 @@ integer, dimension(:), allocatable :: residuelist
                 end do
                             
                 ! good to go
-                buffertemp='PLANAR 0.05'
+                write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
                  do k=1, size(serials)
                     write(buffer1, '(a,"(",I0,")")') &
                     &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
@@ -1806,14 +2072,14 @@ integer, dimension(:), allocatable :: residuelist
                 write(*, '(a)') trim(buffertemp)
             end do
 
-        else if(mpla_table(i)%residue==-1) then
-            ! mpla applied to all residues
+        else if(flat_table(i)%residue==-1) then
+            ! flat applied to all residues
             do j=1, size(residuelist)
                 
-                do k=1, size(mpla_table(i)%atoms)
+                do k=1, size(flat_table(i)%atoms)
                     ! ICE on gfortran 61 when using associate
-                    atom=mpla_table(i)%atoms(k)
-                    !associate( atom => mpla_table(i)%atoms(k) )
+                    atom=flat_table(i)%atoms(k)
+                    !associate( atom => flat_table(i)%atoms(k) )
                         resi1=j
                         indexresi=index(atom, '_')
                         if(indexresi>0) then
@@ -1831,9 +2097,9 @@ integer, dimension(:), allocatable :: residuelist
                                 read(atom(indexresi+1:), *) resi1
                             else
                                 ! residue name
-                                write(log_unit, '(a)') 'Warning: Residue name in atom with MPLA_*'
+                                write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
                                 write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
-                                cycle mpla_loop
+                                cycle FLAT_loop
                             end if
                             label=atom(1:indexresi-1)
                         else
@@ -1860,7 +2126,7 @@ integer, dimension(:), allocatable :: residuelist
                 end do
                             
                 ! good to go
-                buffertemp='PLANAR 0.05'
+                write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
                  do k=1, size(serials)
                     write(buffer1, '(a,"(",I0,")")') &
                     &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
@@ -1872,34 +2138,34 @@ integer, dimension(:), allocatable :: residuelist
             end do
         else
             ! look for specific residue
-            resi1=mpla_table(i)%residue
-            do k=1, size(mpla_table(i)%atoms)
+            resi1=flat_table(i)%residue
+            do k=1, size(flat_table(i)%atoms)
                 ! ICE on gfortran 61 when using associate
-                atom=mpla_table(i)%atoms(k)
-                !associate( atom => mpla_table(i)%atoms(k) )
+                atom=flat_table(i)%atoms(k)
+                !associate( atom => flat_table(i)%atoms(k) )
                     indexresi=index(atom, '_')
                     if(indexresi>0) then 
                         if(atom(indexresi+1:indexresi+1)=='-') then
                             ! previous residue
-                            write(log_unit, '(a)') 'Warning: residue - in atom with MPLA_x'
+                            write(log_unit, '(a)') 'Warning: residue - in atom with FLAT_x'
                             write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
-                            cycle mpla_loop
+                            cycle flat_loop
                         else if(atom(indexresi+1:indexresi+1)=='+') then
                             ! next residue
-                            write(log_unit, '(a)') 'Warning: residue + in atom with MPLA_x'
+                            write(log_unit, '(a)') 'Warning: residue + in atom with FLAT_x'
                             write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
-                            cycle mpla_loop
+                            cycle flat_loop
                         else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
                         &   iachar(atom(indexresi+1:indexresi+1))<=57) then
                             ! residue number
-                            write(log_unit, '(a)') 'Warning: Residue number in atom with MPLA_x'
+                            write(log_unit, '(a)') 'Warning: Residue number in atom with FLAT_x'
                             write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
-                            cycle mpla_loop
+                            cycle flat_loop
                         else
                             ! residue name
-                            write(log_unit, '(a)') 'Warning: Residue name in atom with MPLA_*'
+                            write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
                             write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
-                            cycle mpla_loop
+                            cycle flat_loop
                         end if
                         label=atom(1:indexresi-1)
                     else
@@ -1925,7 +2191,7 @@ integer, dimension(:), allocatable :: residuelist
                 serials(k)=serial1
             end do                    
                 
-            buffertemp='PLANAR 0.05'
+            write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
              do k=1, size(serials)
                 write(buffer1, '(a,"(",I0,")")') &
                 &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
@@ -1936,7 +2202,7 @@ integer, dimension(:), allocatable :: residuelist
 
         end if
                     
-    end do mpla_loop
+    end do flat_loop
 end subroutine
 
 !> Write dfix restraints to list16 section 

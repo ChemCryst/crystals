@@ -6,6 +6,7 @@ logical, public :: the_end=.false. !< has the keyword END been reached
 integer, parameter :: crystals_fileunit=1234 !< unit number for the crystals file ouput
 integer :: log_unit
 integer, parameter :: lenlabel=12
+integer, parameter :: line_length=72
 
 type line_t
     integer :: line_number=1 !< Hold the line number from the shelx file
@@ -87,16 +88,17 @@ end type
 type(dfix_t), dimension(1024), save :: dfix_table
 integer :: dfix_table_index=0
 
-!> type MPLA
-type mpla_t
+!> type FLAT
+type flat_t
     character(len=lenlabel), dimension(:), allocatable :: atoms
+    real esd !< esd of the restraint
     integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
     character(len=128) :: namedresidue='' !< Residue alias
     character(len=1024) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
-type(mpla_t), dimension(1024), save :: mpla_table
-integer :: mpla_table_index=0
+type(flat_t), dimension(1024), save :: flat_table
+integer :: flat_table_index=0
 
 !> type EADP
 type eadp_t
@@ -148,12 +150,13 @@ integer :: sadi_table_index=0
 !> type SAME
 type same_t
     character(len=1024) :: shelxline
-    character(len=lenlabel), dimension(:), allocatable :: list1
-    character(len=lenlabel), dimension(:), allocatable :: list2
+    character(len=lenlabel), dimension(:), allocatable :: list1 !< reference atoms
+    character(len=lenlabel), dimension(:), allocatable :: list2 !< target atoms
+    real esd1, esd2 !< esds
+    integer processing !< flag if we are currently processing a same instruction. -1: nothing to do. >=0: working on it
 end type
 type(same_t), dimension(1024) :: same_table
 integer :: same_table_index=0
-integer :: same_processing=-1 !< flag if we are currently processing a same instruction. -1: nothing to do. >=0: working on it
 
 contains
 

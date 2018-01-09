@@ -191,126 +191,38 @@ character(len=:), allocatable :: stripline
 
 end subroutine
 
-!> Parse the MPLA keyword. Restrain Plane
-subroutine shelx_mpla(shelxline)
+!> Parse the FLAT keyword. Restrain Plane
+subroutine shelx_flat(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
+integer i, j, linepos, start, iostatus, cont
 character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
 logical found
 character(len=128) :: buffernum
 character(len=128) :: namedresidue
-integer :: mplaresidue, numatom
+integer :: flatresidue, numatom
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
+character(len=6) :: startlabel, endlabel
+character(len=2048) :: bufferline
+logical collect, reverse
+real esd
 
     ! parsing more complicated on this one as we don't know the number of parameters
-    linepos=5 ! First 4 is DFIX
+    linepos=5 ! First 4 is FLAT
     
     if(len_trim(shelxline%line)<5) then
-        write(log_unit,*) 'Error: Empty MPLA'
+        write(log_unit,*) 'Error: Empty FLAT'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         return
     end if
 
-    if(index(shelxline%line,'<')>0 .or. index(shelxline%line,'>')>0) then
-        write(log_unit,*) 'Error: < or > is not implemented'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-        return
-    end if
-    
-    if(index(shelxline%line,'$')>0) then
-        write(log_unit,*) 'Error: symmetry equivalent `_$?` is not implemented'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-        return
-    end if
-    
-    mplaresidue=-99
-    buffernum=''
-    ! check for subscripts on dfix
-    if(shelxline%line(5:5)=='_') then
-        ! check for `_*̀
-        if(shelxline%line(6:6)=='*') then
-            mplaresidue=-1
-            linepos=7
-        else
-            ! check for a residue number
-            found=.true.
-            j=0
-            do while(found)
-                found=.false.
-                do i=1, 10
-                    if(shelxline%line(6+j:6+j)==numbers(i)) then
-                        found=.true.
-                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
-                        j=j+1
-                        exit
-                    end if
-                end do
-            end do
-            if(len_trim(buffernum)>0) then
-                read(buffernum, *) mplaresidue
-                linepos=6+j
-            end if
-
-            ! check for a residue name
-            if(mplaresidue==-99) then
-                if(shelxline%line(6:6)/=' ') then
-                    ! MPLA applied to named residue
-                    i=6
-                    j=1
-                    do while(shelxline%line(i:i)/=' ')
-                        namedresidue(j:j)=shelxline%line(i:i)
-                        i=i+1
-                        j=j+1
-                        linepos=linepos+1
-                        if(i>=len(shelxline%line)) exit
-                    end do
-                    mplaresidue=-98
-                    linepos=linepos+1
-                else
-                    write(log_unit,*) 'Error: Cannot have a space after `_` '
-                    write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    return
-                end if
-            end if        
-        end if
-    end if
-    
-    call deduplicates(shelxline%line(linepos:), stripline)
-    call to_upper(stripline)    
-    ! some files use ',' as a separator instead of a space
-    do i=1, len_trim(stripline)
-        if(stripline(i:i)==',') then
-            stripline(i:i)=' '
-        end if
-    end do
-
-    call explode(stripline, lenlabel, splitbuffer)    
-    
-    ! first element is the number of atoms (optional)
-    read(splitbuffer(1), *, iostat=iostatus) numatom
-    if(iostatus/=0) then
-        numatom=-1
-        start=0
-    else
-        start=1
-        if( numatom<3 ) then
-            write(log_unit, *) "Error: Can't fit a plane with less than 3 atoms"
-            write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-            return
-        end if
-    end if
+    ! doing processing later, we don't know the atom list yet
         
-    mpla_table_index=mpla_table_index+1
-    allocate(mpla_table(mpla_table_index)%atoms(size(splitbuffer)-start))
-    call to_upper(splitbuffer(start+1:size(splitbuffer)), mpla_table(mpla_table_index)%atoms)
-    mpla_table(mpla_table_index)%shelxline=trim(shelxline%line)
-    mpla_table(mpla_table_index)%line_number=shelxline%line_number
-    mpla_table(mpla_table_index)%residue=mplaresidue
-    mpla_table(mpla_table_index)%namedresidue=namedresidue
+    flat_table_index=flat_table_index+1
+    flat_table(flat_table_index)%shelxline=trim(shelxline%line)
+    flat_table(flat_table_index)%line_number=shelxline%line_number
 
 end subroutine
 
@@ -795,7 +707,9 @@ integer cont, i, j
 character(len=2048) :: bufferline
 character(len=:), allocatable :: stripline
 character(len=6) :: startlabel, endlabel
-logical collect, reverse
+logical collect, reverse, found
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+character(len=lenlabel), dimension(:), allocatable :: templist
    
     ! extracting list of atoms, first removing duplicates spaces and keyword
     call deduplicates(shelxline%line(5:), stripline)
@@ -864,7 +778,6 @@ logical collect, reverse
                         write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
                         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     end if
-                    same_processing=-1
                     return
                 end if
             else
@@ -877,7 +790,6 @@ logical collect, reverse
                         write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
                         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     end if
-                    same_processing=-1
                     return
                 end if
             end if
@@ -906,13 +818,63 @@ logical collect, reverse
         cont=max(index(stripline, '<'), index(stripline, '>'))
     end do
     
-    ! set the flag
-    ! It is necessary as further information needs to be collected after this keyword.
-    same_processing=0
     
     same_table_index=same_table_index+1
+
+    ! set the flag
+    ! It is necessary as further information needs to be collected after this keyword.
+    same_table(same_table_index)%processing=0
+
     ! allocate and split line into all the individual labels
-    call explode(stripline, lenlabel, same_table(same_table_index)%list1)
+    call explode(trim(stripline), lenlabel, same_table(same_table_index)%list1)
+    ! check if there is an esd
+    same_table(same_table_index)%esd1=0.0
+    same_table(same_table_index)%esd2=0.0
+    found=.false.
+    bufferline=same_table(same_table_index)%list1(1)
+    do i=1, len_trim(bufferline)
+        do j=1, size(numbers)
+            if(bufferline(i:i)==numbers(j)) then
+                found=.true.
+                exit
+            end if
+        end do
+        if(.not. found) then
+            exit
+        end if
+    end do
+    if(found) then
+        read(same_table(same_table_index)%list1(1), *) same_table(same_table_index)%esd1
+    end if
+    found=.false.
+    bufferline=same_table(same_table_index)%list1(2)
+    do i=1, len_trim(bufferline)
+        do j=1, size(numbers)
+            if(bufferline(i:i)==numbers(j)) then
+                found=.true.
+                exit
+            end if
+        end do
+        if(.not. found) then
+            exit
+        end if
+    end do
+    if(found) then
+        read(same_table(same_table_index)%list1(2), *) same_table(same_table_index)%esd2
+    end if  
+    
+    if(same_table(same_table_index)%esd1/=0.0 .and. same_table(same_table_index)%esd2/=0.0) then
+        call move_alloc(same_table(same_table_index)%list1, templist)
+        allocate(same_table(same_table_index)%list1(size(templist)-2))
+        same_table(same_table_index)%list1=templist(3:)
+        deallocate(templist)
+    elseif(same_table(same_table_index)%esd1/=0.0 .or. same_table(same_table_index)%esd2/=0.0) then
+        call move_alloc(same_table(same_table_index)%list1, templist)
+        allocate(same_table(same_table_index)%list1(size(templist)-1))
+        same_table(same_table_index)%list1=templist(2:)
+        deallocate(templist)
+    end if
+    
     allocate(same_table(same_table_index)%list2(size(same_table(same_table_index)%list1)))
     same_table(same_table_index)%list2=''
     same_table(same_table_index)%shelxline=shelxline%line
@@ -992,7 +954,7 @@ character(len=:), allocatable :: stripline
             ! check for a residue name
             if(eadpresidue==-99) then
                 if(shelxline%line(6:6)/=' ') then
-                    ! MPLA applied to named residue
+                    ! FLAT applied to named residue
                     i=6
                     j=1
                     do while(shelxline%line(i:i)/=' ')
