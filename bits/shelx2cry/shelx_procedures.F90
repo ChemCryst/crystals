@@ -1146,125 +1146,20 @@ subroutine shelx_isor(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
 logical found
-character(len=128) :: buffernum
-character(len=128) :: namedresidue
-integer :: isorresidue
 real esd1, esd2
-character(len=lenlabel), dimension(:), allocatable :: splitbuffer
-character(len=:), allocatable :: stripline
-
-    ! parsing more complicated on this one as we don't know the number of parameters
-    linepos=5 ! First 4 is ISOR
     
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty ISOR'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         return
     end if
-
-    if(index(shelxline%line,'<')>0 .or. index(shelxline%line,'>')>0) then
-        write(log_unit,*) 'Error: < or > is not implemented'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-        return
-    end if
-    
-    if(index(shelxline%line,'$')>0) then
-        write(log_unit,*) 'Error: symmetry equivalent `_$?` is not implemented'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-        return
-    end if
-    
-    isorresidue=-99
-    buffernum=''
-    ! check for subscripts on isor
-    if(shelxline%line(5:5)=='_') then
-        ! check for `_*̀
-        if(shelxline%line(6:6)=='*') then
-            isorresidue=-1
-            linepos=7
-        else
-            ! check for a residue number
-            found=.true.
-            j=0
-            do while(found)
-                found=.false.
-                do i=1, 10
-                    if(shelxline%line(6+j:6+j)==numbers(i)) then
-                        found=.true.
-                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
-                        j=j+1
-                        exit
-                    end if
-                end do
-            end do
-            if(len_trim(buffernum)>0) then
-                read(buffernum, *) isorresidue
-                linepos=6+j
-            end if
-
-            ! check for a residue name
-            if(isorresidue==-99) then
-                if(shelxline%line(6:6)/=' ') then
-                    ! ISOR applied to named residue
-                    i=6
-                    j=1
-                    do while(shelxline%line(i:i)/=' ')
-                        namedresidue(j:j)=shelxline%line(i:i)
-                        i=i+1
-                        j=j+1
-                        linepos=linepos+1
-                        if(i>=len(shelxline%line)) exit
-                    end do
-                    isorresidue=-98
-                    linepos=linepos+1
-                else
-                    write(log_unit,*) 'Error: Cannot have a space after `_` '
-                    write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    return
-                end if
-            end if        
-        end if
-    end if
-    
-    call deduplicates(shelxline%line(linepos:), stripline)
-    call to_upper(stripline)    
-
-    call explode(stripline, lenlabel, splitbuffer)    
-    
-    ! first element is the esd (optional)
-    read(splitbuffer(1), *, iostat=iostatus) esd1
-    if(iostatus/=0) then
-        start=0
-        esd1=0.1
-    else
-        start=1
-    end if
-
-    ! second optional esd
-    if(start>0) then
-        read(splitbuffer(2), *, iostat=iostatus) esd2
-        if(iostatus/=0) then
-            esd2=2.0*esd1
-        else
-            start=2
-        end if
-    else
-        esd2=0.2
-    end if
         
     isor_table_index=isor_table_index+1
-    allocate(isor_table(isor_table_index)%atoms(size(splitbuffer)-start))
-    call to_upper(splitbuffer(start+1:size(splitbuffer)), isor_table(isor_table_index)%atoms)
     isor_table(isor_table_index)%shelxline=trim(shelxline%line)
     isor_table(isor_table_index)%line_number=shelxline%line_number
-    isor_table(isor_table_index)%residue=isorresidue
-    isor_table(isor_table_index)%namedresidue=namedresidue
-    isor_table(isor_table_index)%esd1=esd1
-    isor_table(isor_table_index)%esd2=esd2
+    isor_table(isor_table_index)%esd1=0.0
+    isor_table(isor_table_index)%esd2=0.0
 
 end subroutine
 

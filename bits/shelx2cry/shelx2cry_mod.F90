@@ -179,6 +179,10 @@ character(len=*), intent(in) :: crystals_filepath
 
     call write_list16()
     
+    write(crystals_fileunit, '(a)') '\LIST 23'
+    write(crystals_fileunit, '(a)') 'MODIFY ANOM=Y'
+    write(crystals_fileunit, '(a)') 'END'
+    
     close(crystals_fileunit)
 end subroutine
 
@@ -705,51 +709,8 @@ integer previous
 !*   ISOR
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
     ! ISOR [0.1] [0.2] O24 O25 O29 O28 O27 O26
-    if(isor_table_index>0) then
-        write(log_unit, '(a)') ''
-        write(log_unit, '(a)') 'Processing ISORs...'
-    end if
-    
-    isorloop:do i=1, isor_table_index
-        write(log_unit, '(a)') trim(isor_table(i)%shelxline)
-        write(crystals_fileunit, '(a, a)') '# ', isor_table(i)%shelxline
-        
-        write(crystals_fileunit, advance='no', fmt='(a, F9.7, 1X)') 'UQISO ', isor_table(i)%esd1
-        write(log_unit, advance='no', fmt='(a, F9.7, 1X)') 'UQISO ', isor_table(i)%esd1
-        do j=1, size(isor_table(i)%atoms)
-            l=0
-            do m=1, atomslist_index
-                if(trim(isor_table(i)%atoms(j))==trim(atomslist(m)%label)) then
-                    l=m
-                    exit
-                end if
-            end do
-            if(l>0) then
-                if(atomslist(l)%crystals_serial==-1) then
-                    write(log_unit, '(2a)') 'Error: Crystals serial not defined ', isor_table(i)%atoms(l)
-                    call abort()
-                end if
-            else
-                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', isor_table(i)%atoms(l)
-                call abort()
-            end if
-                        
-            if(mod(j, 5)==0) then
-                write(crystals_fileunit, '(a)') ''
-                write(crystals_fileunit, advance='no', fmt='(a)') 'CONT '
-                write(log_unit, '(a)') ''
-                write(log_unit, advance='no', fmt='(a)') 'CONT '
-            end if
-            write(crystals_fileunit, advance='no', fmt='(a,"(",I0,")", 1X)') &
-            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
-            write(log_unit, advance='no', fmt='(a,"(",I0,")", 1X)') &
-            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
-
-        end do
-        write(crystals_fileunit, '(a)') ''
-        write(log_unit, '(a)') ''
-    end do isorloop
-        
+    call write_list16_isor()
+            
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 !*   SAME
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
@@ -2872,6 +2833,554 @@ logical found
         deallocate(listtemp)
     end if
     
+end subroutine
+
+!> Write isor restraints to list16 section 
+subroutine write_list16_isor()
+use crystal_data_m
+implicit none
+integer, dimension(:), allocatable :: serials
+character(len=lenlabel) :: atom
+character(len=1024) :: buffer1, buffertemp
+logical found
+integer i, j, k, l, indexresi, resi1
+integer :: serial1
+character(len=lenlabel) :: label
+integer, dimension(:), allocatable :: residuelist
+character(len=:), allocatable :: stripline
+character(len=6) :: startlabel, endlabel
+character(len=2048) :: bufferline
+logical collect, reverse
+real esd1, esd2
+character(len=128) :: buffernum
+character(len=128) :: namedresidue
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+integer linepos, start, iostatus, cont, isorresidue
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+
+
+    call makeresiduelist(residuelist)
+    
+    ! ISOR 0.01 0.02 N(1) C(3) 
+    if(isor_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing ISORs...'
+    end if
+
+    isor_loop:do i=1, isor_table_index
+
+        if(len_trim(isor_table(i)%shelxline)<5) then
+            write(log_unit,*) 'Error: Empty ISOR'
+            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+            return
+        end if
+
+        ! print *, trim(isor_table(isor_table_index)%shelxline)
+        ! extracting list of atoms, first removing duplicates spaces and keyword
+        call deduplicates(isor_table(i)%shelxline(5:), stripline)
+        call to_upper(stripline)
+        
+        ! looking for <,> shortcut
+        cont=max(index(stripline, '<'), index(stripline, '>'))
+        !write(log_unit, *) '*************** ', cont
+        do while(cont>0)
+            if(index(stripline, '<')==cont) then    
+                reverse=.true.
+            else
+                reverse=.false.
+            end if
+        
+            ! found < or >, expliciting atom list
+            bufferline=stripline(1:cont-1)
+            
+            ! first searching for label on the right
+            if(stripline(cont+1:cont+1)==' ') cont=cont+1        
+            j=0
+            endlabel=''
+            do k=cont+1, len_trim(stripline)
+                if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
+                    exit
+                end if
+                j=j+1
+                endlabel(j:j)=stripline(k:k)
+            end do  
+            
+            ! then looking for label on the left
+            cont=max(index(stripline, '<'), index(stripline, '>'))
+            if(stripline(cont-1:cont-1)==' ') cont=cont-1        
+            j=7
+            startlabel=''
+            do k=cont-1, 1, -1
+                if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
+                    exit
+                end if
+                j=j-1
+                startlabel(j:j)=stripline(k:k)
+            end do  
+            startlabel=adjustl(startlabel)
+
+            ! scanning atom list to find the implicit atoms
+            if(reverse) then
+                k=atomslist_index
+            else
+                k=1
+            end if
+            collect=.false.
+            do 
+                if(trim(atomslist(k)%label)==trim(startlabel)) then
+                    !found the first atom
+                    !write(log_unit, *) isor_table(i)%shelxline
+                    !write(log_unit, *) 'Found start: ', trim(startlabel)
+                    collect=.true.
+                end if
+                if(reverse) then
+                    k=k-1
+                    if(k<1) then
+                        if(collect) then
+                            write(log_unit, *) 'Error: Cannot find end atom ', trim(endlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, isor_table(i)%shelxline
+                        else
+                            write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, isor_table(i)%shelxline
+                        end if
+                        return
+                    end if
+                else
+                    k=k+1
+                    if(k>atomslist_index) then
+                        if(collect) then
+                            write(log_unit, *) 'Error: Cannot find end atom ', trim(endlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, isor_table(i)%shelxline
+                        else
+                            write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
+                            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, isor_table(i)%shelxline
+                        end if
+                        return
+                    end if
+                end if
+                if(collect) then
+                    if(trim(atomslist(k)%label)==trim(endlabel)) then
+                        !write(log_unit, *) 'Found end: ', trim(endlabel)
+                        !write(log_unit, *) 'Done!!!!!'
+                        ! job done
+                        exit
+                    end if
+                    
+                    if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
+                    &   trim(sfac(atomslist(k)%sfac))/='D') then
+                        ! adding the atom to the list
+                        bufferline=trim(bufferline)//' '//trim(atomslist(k)%label)
+                    end if
+                end if
+            end do
+            ! concatenating the remaining
+            bufferline=trim(bufferline)//' '//&
+            &   trim(adjustl(stripline(max(index(stripline, '<'), index(stripline, '>'))+1:)))
+
+            !write(log_unit, *) trim(stripline)
+            !write(log_unit, *) trim(bufferline)
+            stripline=bufferline
+            cont=max(index(stripline, '<'), index(stripline, '>'))
+        end do
+        
+        isorresidue=-99
+        buffernum=''
+        linepos=5
+        ! check for subscripts on ISOR
+        if(isor_table(i)%shelxline(5:5)=='_') then
+            ! check for `_*̀
+            if(isor_table(i)%shelxline(6:6)=='*') then
+                isorresidue=-1
+                linepos=7
+            else
+                ! check for a residue number
+                found=.true.
+                j=0
+                do while(found)
+                    found=.false.
+                    do k=1, size(numbers)
+                        if(isor_table(k)%shelxline(6+j:6+j)==numbers(k)) then
+                            found=.true.
+                            buffernum(j+1:j+1)=isor_table(i)%shelxline(6+j:6+j)
+                            j=j+1
+                            exit
+                        end if
+                    end do
+                end do
+                if(len_trim(buffernum)>0) then
+                    read(buffernum, *) isorresidue
+                    linepos=6+j
+                end if
+
+                ! check for a residue name
+                if(isorresidue==-99) then
+                    if(isor_table(i)%shelxline(6:6)/=' ') then
+                        ! ISOR applied to named residue
+                        k=6
+                        j=1
+                        do while(isor_table(i)%shelxline(k:k)/=' ')
+                            namedresidue(j:j)=isor_table(i)%shelxline(k:k)
+                            k=k+1
+                            j=j+1
+                            linepos=linepos+1
+                            if(k>=len(isor_table(i)%shelxline)) exit
+                        end do
+                        isorresidue=-98
+                        linepos=linepos+1
+                    else
+                        write(log_unit,*) 'Error: Cannot have a space after `_` '
+                        write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+                        write(log_unit,*) repeat(' ', 5+5+nint(log10(real(isor_table(i)%line_number)))+1), '^'
+                        return
+                    end if
+                end if        
+            end if
+        end if
+        
+        bufferline=stripline
+        call deduplicates(bufferline, stripline)
+        call to_upper(stripline)    
+        ! some files use ',' as a separator instead of a space
+        do k=1, len_trim(stripline)
+            if(stripline(k:k)==',') then
+                stripline(k:k)=' '
+            end if
+        end do
+
+        call explode(stripline, lenlabel, splitbuffer)    
+        
+        ! first element is the esd of atoms (optional)
+        read(splitbuffer(1), *, iostat=iostatus) esd1
+        if(iostatus/=0) then
+            esd1=0.1
+            start=0
+        else
+            start=1
+        end if
+
+        ! second element is the esd of terminal atoms (optional)
+        read(splitbuffer(2), *, iostat=iostatus) esd2
+        if(iostatus/=0) then
+            esd2=0.2
+        else
+            start=start+1
+            write(log_unit, '(a)') 'Warning: [st] esd in ISOR not supported, using [s] instead'
+        end if
+            
+        allocate(isor_table(i)%atoms(size(splitbuffer)-start))
+        call to_upper(splitbuffer(start+1:size(splitbuffer)), isor_table(i)%atoms)
+        isor_table(i)%residue=isorresidue
+        isor_table(i)%namedresidue=namedresidue
+        isor_table(i)%esd1=esd1
+        isor_table(i)%esd2=esd2
+        
+        !print *, isor_table(i)%shelxline
+        !print *, isor_table(i)%atoms
+
+        write(log_unit, '(a)') trim(isor_table(i)%shelxline)
+        
+        found=.false.
+        do j=1, size(isor_table(i)%atoms)
+            if(index(isor_table(i)%atoms(j), '_*')>0) then
+                write(log_unit, '(a)') 'Warning: ignoring ISOR '
+                write(log_unit, '(a)') '_* syntax not supported'
+                found=.true.
+                exit
+            end if
+        end do
+        if(found) cycle
+        
+        write(crystals_fileunit, '(a, a)') '# ', trim(isor_table(i)%shelxline)
+        
+        if(isor_table(i)%residue==-99) then
+            ! No residue used in ISOR card name
+            if(allocated(serials)) deallocate(serials)
+            allocate(serials(size(isor_table(i)%atoms)))
+            serials=0
+            
+            do j=1, size(isor_table(i)%atoms)
+                ! ICE on gfortran 61 when using associate
+                atom=isor_table(i)%atoms(j)
+                !associate( atom => isor_table(i)%atoms(j) )
+                    resi1=0
+                    indexresi=index(atom, '_')
+                    if(indexresi>0) then
+                        if(atom(indexresi+1:indexresi+1)=='-') then
+                            ! previous residue
+                            write(log_unit, '(a)') 'Warning: Residue - in atom with ISOR without _*'
+                            write(log_unit, '(a)') '         Not implemented'
+                            call abort()
+                        else if(atom(indexresi+1:indexresi+1)=='+') then
+                            ! next residue
+                            write(log_unit, '(a)') 'Warning: Residue + in atom with ISOR without _*'
+                            write(log_unit, '(a)') '         Not implemented'
+                            call abort()
+                        else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                        &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                            ! residue number
+                            read(atom(indexresi+1:), *) resi1
+                        else
+                            ! residue name
+                            write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        end if
+                        label=atom(1:indexresi-1)
+                    else
+                        label=atom
+                    end if
+                !end associate
+                serial1=0
+                do k=1, atomslist_index
+                    if(trim(label)==trim(atomslist(k)%label) .and. resi1==atomslist(k)%resi) then
+                        serial1=k
+                        exit
+                    end if
+                end do
+            
+                if(serial1==0) then
+                    write(log_unit, '(a)') isor_table(i)%atoms(j)
+                    write(log_unit, '(I0)') serial1
+                    write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                    call abort()
+                end if
+                
+                if(atomslist(serial1)%crystals_serial==-1) then
+                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    call abort()
+                end if
+                serials(j)=serial1
+            end do
+                        
+            ! good to go
+            write(buffertemp, '(a, F7.5, 1X)') 'UQISO ', isor_table(i)%esd1
+             do k=1, size(serials)
+                write(buffer1, '(a,"(",I0,")")') &
+                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                if(len_trim(buffertemp)>72) then
+                    write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                    write(log_unit, '(a)') trim(buffertemp)  
+                    buffertemp='CONT '
+                end if
+            end do
+            write(crystals_fileunit, '(a)') trim(buffertemp)                           
+            write(log_unit, '(a)') trim(buffertemp)                           
+
+
+        else if(isor_table(i)%residue==-98) then
+            ! ISOR applied to a named residues
+            do j=1, size(residue_names)
+                if(trim(residue_names(j))/=trim(isor_table(i)%namedresidue)) cycle
+                
+                if(allocated(serials)) deallocate(serials)
+                allocate(serials(size(isor_table(i)%atoms)))
+                serials=0
+                
+                do k=1, size(isor_table(i)%atoms)
+                    ! ICE on gfortran 61 when using associate
+                    atom=isor_table(i)%atoms(k)
+                    !associate( atom => isor_table(i)%atoms(k) )
+                        resi1=j
+                        indexresi=index(atom, '_')
+                        if(indexresi>0) then
+                            if(atom(indexresi+1:indexresi+1)=='-') then
+                                ! previous residue
+                                resi1=j-1                        
+                            else if(atom(indexresi+1:indexresi+1)=='+') then
+                                ! next residue
+                                resi1=j+1
+                            else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                            &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                                ! residue number
+                                read(atom(indexresi+1:), *) resi1
+                            else
+                                ! residue name
+                                write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                cycle isor_loop
+                            end if
+                            label=atom(1:indexresi-1)
+                        else
+                            label=atom
+                        end if
+                    !end associate
+                    serial1=0
+                    do l=1, atomslist_index
+                        if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                            serial1=l
+                            exit
+                        end if
+                    end do
+
+                    if(serial1==0) then
+                        cycle
+                    end if
+                    
+                    if(atomslist(serial1)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    serials(k)=serial1
+                end do
+                            
+                ! good to go
+                write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', isor_table(i)%esd1
+                 do k=1, size(serials)
+                    write(buffer1, '(a,"(",I0,")")') &
+                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    if(len_trim(buffertemp)>72) then
+                        write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                        write(log_unit, '(a)') trim(buffertemp)  
+                        buffertemp='CONT '
+                    end if
+                end do
+                write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                write(log_unit, '(a)') trim(buffertemp)
+            end do
+
+        else if(isor_table(i)%residue==-1) then
+            ! ISOR applied to all residues
+            do j=1, size(residuelist)
+                
+                do k=1, size(isor_table(i)%atoms)
+                    ! ICE on gfortran 61 when using associate
+                    atom=isor_table(i)%atoms(k)
+                    !associate( atom => isor_table(i)%atoms(k) )
+                        resi1=j
+                        indexresi=index(atom, '_')
+                        if(indexresi>0) then
+                            if(atom(indexresi+1:indexresi+1)=='-') then
+                                ! previous residue
+                                if(j==1) cycle
+                                resi1=residuelist(j-1)
+                            else if(atom(indexresi+1:indexresi+1)=='+') then
+                                ! next residue
+                                if(j==size(residuelist)) cycle
+                                resi1=residuelist(j+1)
+                            else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                            &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                                ! residue number
+                                read(atom(indexresi+1:), *) resi1
+                            else
+                                ! residue name
+                                write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                cycle isor_loop
+                            end if
+                            label=atom(1:indexresi-1)
+                        else
+                            label=atom
+                        end if
+                    !end associate
+                    serial1=0
+                    do l=1, atomslist_index
+                        if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                            serial1=l
+                            exit
+                        end if
+                    end do
+
+                    if(serial1==0) then
+                        cycle
+                    end if
+                    
+                    if(atomslist(serial1)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    serials(k)=serial1
+                end do
+                            
+                ! good to go
+                write(buffertemp, '(a, F7.5, 1X)') 'UQISO ', isor_table(i)%esd1
+                 do k=1, size(serials)
+                    write(buffer1, '(a,"(",I0,")")') &
+                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    if(len_trim(buffertemp)>72) then
+                        write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                        write(log_unit, '(a)') trim(buffertemp)  
+                        buffertemp='CONT '
+                    end if
+                end do
+                write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                write(log_unit, '(a)') trim(buffertemp)  
+
+            end do
+        else
+            ! look for specific residue
+            resi1=isor_table(i)%residue
+            do k=1, size(isor_table(i)%atoms)
+                ! ICE on gfortran 61 when using associate
+                atom=isor_table(i)%atoms(k)
+                !associate( atom => isor_table(i)%atoms(k) )
+                    indexresi=index(atom, '_')
+                    if(indexresi>0) then 
+                        if(atom(indexresi+1:indexresi+1)=='-') then
+                            ! previous residue
+                            write(log_unit, '(a)') 'Warning: residue - in atom with ISOR_x'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        else if(atom(indexresi+1:indexresi+1)=='+') then
+                            ! next residue
+                            write(log_unit, '(a)') 'Warning: residue + in atom with ISOR_x'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                        &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                            ! residue number
+                            write(log_unit, '(a)') 'Warning: Residue number in atom with ISOR_x'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        else
+                            ! residue name
+                            write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        end if
+                        label=atom(1:indexresi-1)
+                    else
+                        label=atom
+                    end if
+                !end associate
+                serial1=0
+                do l=1, atomslist_index
+                    if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                        serial1=l
+                        exit
+                    end if
+                end do
+
+                if(serial1==0) then
+                    cycle
+                end if
+                
+                if(atomslist(serial1)%crystals_serial==-1) then
+                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    call abort()
+                end if
+                serials(k)=serial1
+            end do                    
+                
+            write(buffertemp, '(a, F7.5, 1X)') 'UQISO ', isor_table(i)%esd1
+             do k=1, size(serials)
+                write(buffer1, '(a,"(",I0,")")') &
+                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                if(len_trim(buffertemp)>72) then
+                    write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                    write(log_unit, '(a)') trim(buffertemp)  
+                    buffertemp='CONT '
+                end if
+            end do
+            write(crystals_fileunit, '(a)') trim(buffertemp)                           
+            write(log_unit, '(a)') trim(buffertemp)  
+
+        end if
+                    
+    end do isor_loop
 end subroutine
 
 end module
