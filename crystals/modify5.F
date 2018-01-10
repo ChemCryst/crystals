@@ -4685,9 +4685,9 @@ C     NON-CENTRIC
 C            TRICLINIC - ALL ORIGINS FLOAT
       WRITE(CMON,'(A)')'Triclinic'
       call xprvdu(ncvdu,1,0)
-             CSHIFT(1) = 0.5 - COFG(1) + CSHIFT(I)
-             CSHIFT(2) = 0.5 - COFG(2) + CSHIFT(I)
-             CSHIFT(3) = 0.5 - COFG(3) + CSHIFT(I)
+             CSHIFT(1) = 0.5 - COFG(1) + CSHIFT(1)
+             CSHIFT(2) = 0.5 - COFG(2) + CSHIFT(2)
+             CSHIFT(3) = 0.5 - COFG(3) + CSHIFT(3)
        ELSE IF ((ICLASS .EQ. 2) .OR.
      1          (ICLASS .EQ. 3)) THEN
 C            MONOCLINIC OR ORTHORHOMBIC
