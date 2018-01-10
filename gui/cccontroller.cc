@@ -4391,11 +4391,11 @@ extern "C" {
       {
           int ilen = strlen(theLine);
 
-          for (int j = ilen; j<255; j++)   //Pad with blanks.
+          for (int j = ilen; j<256; j++)   //Pad with blanks.
           {
               *(theLine + j) = ' ';
           }
-          *(theLine+255) = '\0';
+//          *(theLine+255) = '\0'; /Fortran does not need null terminated strings.
 
       }
       else
