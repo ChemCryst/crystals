@@ -427,11 +427,11 @@ CODE FOR XCTRIM
       SUBROUTINE XCTRIM( CSOURC, NCHAR)
 C------ TRIM OFF TRAILING SPACES
 C      CSOURC - SOURCE STRING
-C      NCHAR   - LAST NON-SPACE CHARACTER
+C      NCHAR  - LAST NON-SPACE CHARACTER + 1
       CHARACTER *(*) CSOURC
       integer nchar
       
-      nchar=len_trim(csourc)
+      nchar=len_trim(csourc)+1
       
       END
 C
