@@ -429,21 +429,10 @@ C------ TRIM OFF TRAILING SPACES
 C      CSOURC - SOURCE STRING
 C      NCHAR   - LAST NON-SPACE CHARACTER
       CHARACTER *(*) CSOURC
-      CHARACTER *1 CBLANK
-      DATA CBLANK /' '/
-C
-      LENGTH = LEN (CSOURC)
-      IF (CSOURC(LENGTH:LENGTH) .NE. CBLANK) THEN
-            NCHAR = LENGTH
-            RETURN
-      ENDIF
-      DO 100 I = LENGTH, 1, -1
-      IF (CSOURC(I:I) .NE. CBLANK) GOTO 200
-100   CONTINUE
-      I = 0
-200   CONTINUE
-      NCHAR = I + 1
-      RETURN
+      integer nchar
+      
+      nchar=len_trim(csourc)
+      
       END
 C
 CODE FOR XCREMS
