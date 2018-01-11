@@ -705,120 +705,19 @@ implicit none
 type(line_t), intent(in) :: shelxline
 integer cont, i, j
 character(len=2048) :: bufferline
-character(len=:), allocatable :: stripline
+character(len=:), allocatable :: stripline, errormsg
 character(len=6) :: startlabel, endlabel
 logical collect, reverse, found
 character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
 character(len=lenlabel), dimension(:), allocatable :: templist
    
-    ! extracting list of atoms, first removing duplicates spaces and keyword
-    call deduplicates(shelxline%line(5:), stripline)
-    call to_upper(stripline)
+    call explicit_atoms(shelxline%line, stripline, errormsg)
+    if(allocated(errormsg)) then
+        write(log_unit,*) trim(errormsg)
+        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)  
+    end if
     
-    ! looking for <,> shortcut
-    cont=max(index(stripline, '<'), index(stripline, '>'))
-    !write(log_unit, *) '*************** ', cont
-    do while(cont>0)
-        if(index(stripline, '<')==cont) then    
-            reverse=.true.
-        else
-            reverse=.false.
-        end if
-    
-        ! found < or >, expliciting atom list
-        bufferline=stripline(1:cont-1)
         
-        ! first searching for label on the right
-        if(stripline(cont+1:cont+1)==' ') cont=cont+1        
-        j=0
-        endlabel=''
-        do i=cont+1, len_trim(stripline)
-            if(stripline(i:i)==' ' .or. stripline(i:i)=='<' .or. stripline(i:i)=='>') then
-                exit
-            end if
-            j=j+1
-            endlabel(j:j)=stripline(i:i)
-        end do  
-        
-        ! then looking for label on the left
-        cont=max(index(stripline, '<'), index(stripline, '>'))
-        if(stripline(cont-1:cont-1)==' ') cont=cont-1        
-        j=7
-        startlabel=''
-        do i=cont-1, 1, -1
-            if(stripline(i:i)==' ' .or. stripline(i:i)=='<' .or. stripline(i:i)=='>') then
-                exit
-            end if
-            j=j-1
-            startlabel(j:j)=stripline(i:i)
-        end do  
-        startlabel=adjustl(startlabel)
-
-        ! scanning atom list to find the implicit atoms
-        if(reverse) then
-            i=atomslist_index
-        else
-            i=1
-        end if
-        collect=.false.
-        do 
-            if(trim(atomslist(i)%label)==trim(startlabel)) then
-                !found the first atom
-                !write(log_unit, *) trim(shelxline%line)
-                !write(log_unit, *) 'Found start: ', trim(startlabel)
-                collect=.true.
-            end if
-            if(reverse) then
-                i=i-1
-                if(i<1) then
-                    if(collect) then
-                        write(log_unit, *) 'Error: Cannot find end atom ', trim(endlabel)
-                        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    else
-                        write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
-                        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    end if
-                    return
-                end if
-            else
-                i=i+1
-                if(i>atomslist_index) then
-                    if(collect) then
-                        write(log_unit, *) 'Error: Cannot find end atom ', trim(endlabel)
-                        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    else
-                        write(log_unit, *) 'Error: Cannot find first atom ', trim(startlabel)
-                        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    end if
-                    return
-                end if
-            end if
-            if(collect) then
-                if(trim(atomslist(i)%label)==trim(endlabel)) then
-                    !write(log_unit, *) 'Found end: ', trim(endlabel)
-                    !write(log_unit, *) 'Done!!!!!'
-                    ! job done
-                    exit
-                end if
-                
-                if(trim(sfac(atomslist(i)%sfac))/='H' .and. &
-                &   trim(sfac(atomslist(i)%sfac))/='D') then
-                    ! adding the atom to the list
-                    bufferline=trim(bufferline)//' '//trim(atomslist(i)%label)
-                end if
-            end if
-        end do
-        ! concatenating the remaining
-        bufferline=trim(bufferline)//' '//&
-        &   trim(adjustl(stripline(max(index(stripline, '<'), index(stripline, '>'))+1:)))
-
-        !write(log_unit, *) trim(stripline)
-        !write(log_unit, *) trim(bufferline)
-        stripline=bufferline
-        cont=max(index(stripline, '<'), index(stripline, '>'))
-    end do
-    
-    
     same_table_index=same_table_index+1
 
     ! set the flag
@@ -827,25 +726,10 @@ character(len=lenlabel), dimension(:), allocatable :: templist
 
     ! allocate and split line into all the individual labels
     call explode(trim(stripline), lenlabel, same_table(same_table_index)%list1)
+    
     ! check if there is an esd
     same_table(same_table_index)%esd1=0.0
     same_table(same_table_index)%esd2=0.0
-    found=.false.
-    bufferline=same_table(same_table_index)%list1(1)
-    do i=1, len_trim(bufferline)
-        do j=1, size(numbers)
-            if(bufferline(i:i)==numbers(j)) then
-                found=.true.
-                exit
-            end if
-        end do
-        if(.not. found) then
-            exit
-        end if
-    end do
-    if(found) then
-        read(same_table(same_table_index)%list1(1), *) same_table(same_table_index)%esd1
-    end if
     found=.false.
     bufferline=same_table(same_table_index)%list1(2)
     do i=1, len_trim(bufferline)
@@ -860,18 +744,34 @@ character(len=lenlabel), dimension(:), allocatable :: templist
         end if
     end do
     if(found) then
-        read(same_table(same_table_index)%list1(2), *) same_table(same_table_index)%esd2
+        read(same_table(same_table_index)%list1(2), *) same_table(same_table_index)%esd1
+    end if
+    found=.false.
+    bufferline=same_table(same_table_index)%list1(3)
+    do i=1, len_trim(bufferline)
+        do j=1, size(numbers)
+            if(bufferline(i:i)==numbers(j)) then
+                found=.true.
+                exit
+            end if
+        end do
+        if(.not. found) then
+            exit
+        end if
+    end do
+    if(found) then
+        read(same_table(same_table_index)%list1(3), *) same_table(same_table_index)%esd2
     end if  
     
     if(same_table(same_table_index)%esd1/=0.0 .and. same_table(same_table_index)%esd2/=0.0) then
         call move_alloc(same_table(same_table_index)%list1, templist)
-        allocate(same_table(same_table_index)%list1(size(templist)-2))
-        same_table(same_table_index)%list1=templist(3:)
+        allocate(same_table(same_table_index)%list1(size(templist)-3))
+        same_table(same_table_index)%list1=templist(4:)
         deallocate(templist)
     elseif(same_table(same_table_index)%esd1/=0.0 .or. same_table(same_table_index)%esd2/=0.0) then
         call move_alloc(same_table(same_table_index)%list1, templist)
-        allocate(same_table(same_table_index)%list1(size(templist)-1))
-        same_table(same_table_index)%list1=templist(2:)
+        allocate(same_table(same_table_index)%list1(size(templist)-2))
+        same_table(same_table_index)%list1=templist(3:)
         deallocate(templist)
     end if
     

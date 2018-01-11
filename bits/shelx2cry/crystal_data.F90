@@ -280,5 +280,160 @@ integer i
     end do
 end function
 
+!> explicit the use of '<' or '>' in the list of atoms
+subroutine explicit_atoms(linein, lineout, errormsg)
+implicit none
+character(len=*), intent(in) :: linein
+character(len=:), allocatable, intent(out) :: lineout
+character(len=:), allocatable, intent(out) :: errormsg
+character(len=:), allocatable :: stripline
+character(len=:), allocatable :: bufferline
+logical reverse, collect
+character(len=6) :: startlabel, endlabel
+integer cont, k, j
+
+    ! extracting list of atoms, first removing duplicates spaces and keyword
+    call deduplicates(linein, stripline)
+    call to_upper(stripline)
+    allocate(character(len=len(stripline)) :: bufferline)
+    
+    ! looking for <,> shortcut
+    cont=max(index(stripline, '<'), index(stripline, '>'))
+    !write(log_unit, *) '*************** ', cont
+    do while(cont>0)
+        if(index(stripline, '<')==cont) then    
+            reverse=.true.
+        else
+            reverse=.false.
+        end if
+    
+        ! found < or >, expliciting atom list
+        bufferline=stripline(1:cont-1)
+        
+        ! first searching for label on the right
+        if(stripline(cont+1:cont+1)==' ') cont=cont+1        
+        j=0
+        endlabel=''
+        do k=cont+1, len_trim(stripline)
+            if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
+                exit
+            end if
+            j=j+1
+            endlabel(j:j)=stripline(k:k)
+        end do  
+        
+        ! then looking for label on the left
+        cont=max(index(stripline, '<'), index(stripline, '>'))
+        if(stripline(cont-1:cont-1)==' ') cont=cont-1        
+        j=7
+        startlabel=''
+        do k=cont-1, 1, -1
+            if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
+                exit
+            end if
+            j=j-1
+            startlabel(j:j)=stripline(k:k)
+        end do  
+        startlabel=adjustl(startlabel)
+
+        ! scanning atom list to find the implicit atoms
+        if(reverse) then
+            k=atomslist_index
+        else
+            k=1
+        end if
+        collect=.false.
+        do 
+            if(trim(atomslist(k)%label)==trim(startlabel)) then
+                !found the first atom
+                !write(log_unit, *) isor_table(i)%shelxline
+                !write(log_unit, *) 'Found start: ', trim(startlabel)
+                collect=.true.
+            end if
+            if(reverse) then
+                k=k-1
+                if(k<1) then
+                    if(collect) then
+                        allocate(character(len=32+len_trim(endlabel)) :: errormsg)
+                        write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel)
+                    else
+                        allocate(character(len=32+len_trim(startlabel)) :: errormsg)
+                        write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel)
+                    end if
+                    return
+                end if
+            else
+                k=k+1
+                if(k>atomslist_index) then
+                    if(collect) then
+                        allocate(character(len=32+len_trim(endlabel)) :: errormsg)
+                        write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel)
+                    else
+                        allocate(character(len=32+len_trim(startlabel)) :: errormsg)
+                        write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel)
+                    end if
+                    return
+                end if
+            end if
+            if(collect) then
+                if(trim(atomslist(k)%label)==trim(endlabel)) then
+                    !write(log_unit, *) 'Found end: ', trim(endlabel)
+                    !write(log_unit, *) 'Done!!!!!'
+                    ! job done
+                    exit
+                end if
+                
+                if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
+                &   trim(sfac(atomslist(k)%sfac))/='D') then
+                    ! adding the atom to the list
+                    bufferline=trim(bufferline)//' '//trim(atomslist(k)%label)
+                end if
+            end if
+        end do
+        ! concatenating the remaining
+        bufferline=trim(bufferline)//' '//&
+        &   trim(adjustl(stripline(max(index(stripline, '<'), index(stripline, '>'))+1:)))
+
+        !write(log_unit, *) trim(stripline)
+        !write(log_unit, *) trim(bufferline)
+        stripline=bufferline
+        cont=max(index(stripline, '<'), index(stripline, '>'))
+    end do
+        
+    allocate(character(len=len_trim(stripline)) :: lineout)
+    lineout=trim(stripline)
+        
+end subroutine
+
+!> Extract any residue information from an instruction or an atom
+subroutine get_residue(txtin, label, resi_num, resi_name)
+implicit none
+character(len=*), intent(in) :: txtin
+integer, intent(out) :: resi_num
+character(len=lenlabel), intent(out) :: label
+character(len=128), intent(out) :: resi_name
+integer ipos, i, iostatus
+
+    resi_num=0
+    resi_name=''
+
+    ipos=index(txtin, '_')
+    if(ipos==0) then
+        label=txtin
+        return
+    end if
+    
+    ! We have a residue
+    label=txtin(1:ipos-1)
+    
+    read(txtin(ipos+1:), '(I6)', iostat=iostatus) resi_num
+    if(iostatus/=0) then 
+        ! not a number
+        resi_num=0
+        resi_name=txtin(ipos+1:)
+    end if
+    
+end subroutine
+    
 
 end module
