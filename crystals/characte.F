@@ -526,11 +526,27 @@ C      LENNAM      USEFUL LENGTH
 C
 C
       CHARACTER *(*) CSOURC
+      character(len=len_trim(csourc)) :: buffer
+      integer i, j, k
 C
 
       CSOURC=adjustl(csourc)
       LENNAM=len_trim(csourc)
 
+      ! checking for spaces in the middle of the chain
+      j=index(trim(csourc), ' ')
+      if(j>0) then
+        k=0
+        do i=j, LENNAM
+          if(csourc(i:i)/=' ') then
+            k=k+1
+            buffer(k:k)=csourc(i:i)
+          end if
+        end do
+        csourc=buffer
+        LENNAM=len_trim(csourc)
+      end if
+        
       RETURN
       END
 C
