@@ -2541,3 +2541,44 @@ C e.g. "Fri Sep 07 04:37:23 2001"
       RETURN
       END
 
+      !< Pack the hkl indices into one single precision float.
+      !! Warning: it does not put the 3 8bits numbers in the first 8, 8 to 16 and 16 to 24 bits of packed 
+      !! because it operates on floating point numbers instead of integers
+      subroutine packhkl(h,k,l,packed)
+      implicit none
+      integer, intent(in) :: h,k,l
+      real, intent(out) :: packed
+      
+        if(h>127 .or. h<-127) then
+          print *, 'h outside permitted range'
+          call abort()
+        end if
+        if(k>127 .or. l<-127) then
+          print *, 'k outside permitted range'
+          call abort()
+        end if
+        if(l>127 .or. l<-127) then
+          print *, 'l outside permitted range'
+          call abort()
+        end if
+
+        packed=h+k*256.0+l*65536.0
+
+      end subroutine
+
+      !< Unpack the hkl indices from one single precision float.
+      !! Warning: it does not put the 3 8bits numbers in the first 8, 8 to 16 and 16 to 24 bits of packed 
+      !! because it operates on floating point numbers instead of integers
+      subroutine unpackhkl(packed, h, k, l)
+      implicit none
+      real packed
+      integer h, k, l
+      integer itemp
+      real D
+        
+        D=FLOAT(NINT(packed/256.))
+        H=packed-D*256.
+        L=FLOAT(NINT(D/256.))
+        K=D-L*256.        
+           
+      end subroutine

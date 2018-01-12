@@ -526,19 +526,11 @@ C      LENNAM      USEFUL LENGTH
 C
 C
       CHARACTER *(*) CSOURC
-      CHARACTER *1  CBUF
 C
-      LENFIL=  LEN(CSOURC)
-      K = 1
-      DO 100 I = 1 , LENFIL
-       CBUF = CSOURC(I:I)
-       IF (CBUF .NE. ' ') THEN
-           CSOURC(K:K) = CBUF
-         K = K + 1
-       ENDIF
-100   CONTINUE
-      LENNAM = MAX (1, K-1)
-      IF (LENNAM .LT. LENFIL) CSOURC(LENNAM+1:LENFIL) = ' '
+
+      CSOURC=adjustl(csourc)
+      LENNAM=len_trim(csourc)
+
       RETURN
       END
 C

@@ -2022,6 +2022,7 @@ c
 c
 CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
+      use m_mrgrnk
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
@@ -2052,6 +2053,7 @@ C
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST39.INC'
 C
+      integer, dimension(:), allocatable :: sort_keys
 C
       DATA KEY/ 1, 2, 3, 4, 5, 6, 0, 0, 0, 0,
      1          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2073,6 +2075,7 @@ c      DIMENSION X(N6D)
 c      DIMENSION Y(N6D)
 
       DIMENSION TEMP(2)
+      
 CDJW08
       MAX11 = ISIZ11
 C
@@ -2335,7 +2338,10 @@ C -- PRINT THE R VALUE ETC.
      1    N6ACC, ' reflections.'
         CALL XPRVDU(NCVDU,1,0)
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
-        CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
+        !CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
+        !xshelq very slow, replaced with merge-sort ranking subroutine instead
+        allocate(sort_keys(N6ACC))
+        call mrgrnk(STR11(1:N6ACC*2:2), sort_keys)
 c Numerical Recipes (ed3) . p265 "Incomplete gamma function"
 C
         iz10=CEILING(N6ACC*0.05)
@@ -2349,12 +2355,9 @@ c
            C = A*(A*.04481+.99229)+1
            Z = A-B/C
 C Unpack HKL
-           D=FLOAT(NINT(STR11(I*2)/256.))
-           MH=STR11(I*2)-D*256.
-           ML=FLOAT(NINT(D/256.))
-           MK=D-ML*256.
+           call unpackhkl(STR11(sort_keys(I)*2), mh, mk, ml)
 
-           ZH = STR11(I*2-1)
+           ZH = STR11(sort_keys(I)*2-1)
 
            if (I.LE.N6ACC/2) Z=-Z
            IF (I.EQ.iz10) z10=z
@@ -2363,7 +2366,7 @@ C Unpack HKL
 c debug          WRITE(CMON,'(I5,2F15.2)') I,ZH,Z
 c debug          CALL XPRVDU(NCVDU,1,0)
 c
-           ss =  ss  + 1.
+           !ss =  ss  + 1.
            sx =  sx  + z
            sy =  sy  + zh
            sxx = sxx + z*z
@@ -2372,14 +2375,17 @@ c
 c
            PLOTMAX = MAX( PLOTMAX, Z )
            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
-           CALL XCRAS(HKLLAB, IHKLLEN)
-           WRITE(CMON,'(3A,2F11.3)')
-     1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
-            CALL XPRVDU(NCVDU, 1,0)
+           HKLLAB=adjustl(HKLLAB)
+           write(CMON, '(3A,2F11.3)') 
+     1     '^^PL LABEL ''',trim(HKLLAB),''' DATA ',Z,
+     2     STR11(sort_keys(I)*2-1)
+           CALL XPRVDU(NCVDU, 1,0)
         END DO
+        
 c      find slope and intercept
         ycut = 0.
         yslope = 0.
+        ss=real(n6acc)
 c      determinant
         deter = ss*sxx-sx*sx
         if (deter .ne. 0.) then
@@ -2460,6 +2466,7 @@ c
             call xprvdu(ncvdu, 1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
         endif
+                
 c
 c recycle looking for outliers
 c---------------------------------------------------------
@@ -2468,19 +2475,16 @@ C                                       NEW PASS TO DETECT OUTLIERS
       noutl=0
       npploop2:  DO I=1,N6ACC
 C Unpack HKL
-        D=FLOAT(NINT(STR11(I*2)/256.))
-        MH=STR11(I*2)-D*256.
-        ML=FLOAT(NINT(D/256.))
-        MK=D-ML*256.
+        call unpackhkl(STR11(sort_keys(I)*2), mh, mk, ml)
 C
-        PC = (I-0.5)/float(N6ACC)
+        PC = (sort_keys(I)-0.5)/float(N6ACC)
         A = sqrt(-2.*log(.5-abs(PC-.5)))
         B = 0.27061*A+2.30753
         C = A*(A*.04481+.99229)+1
         Z = A-B/C
         if (I.LE.N6ACC/2) Z=-Z
         Zcalc = z*yslope+ycut
-        ZH = STR11(I*2-1)
+        ZH = STR11(sort_keys(I)*2-1)
         ston=abs(Zcalc-ZH)
 C
         IF((zh.lt.zcalc-.1*z_max).or.(zh.gt.zcalc+0.1*z_max)) THEN

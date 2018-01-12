@@ -16,6 +16,7 @@ endif()
 #)
 
 add_library(CrystalsFortran STATIC
+mrgrnk.f90
 crystals_hdf5.F90
 numpy.F90
 STORE.INC.F90
