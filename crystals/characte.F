@@ -526,26 +526,19 @@ C      LENNAM      USEFUL LENGTH
 C
 C
       CHARACTER *(*) CSOURC
-      character(len=len_trim(csourc)) :: buffer
-      integer i, j, k
+      CHARACTER *1  CBUF
 C
-
-      CSOURC=adjustl(csourc)
-      LENNAM=len_trim(csourc)
-
-      ! checking for spaces in the middle of the chain
-      j=index(trim(csourc), ' ')
-      if(j>0) then
-        k=0
-        do i=j, LENNAM
-          if(csourc(i:i)/=' ') then
-            k=k+1
-            buffer(k:k)=csourc(i:i)
-          end if
-        end do
-        csourc=buffer
-        LENNAM=len_trim(csourc)
-      end if
+      LENFIL=  LEN(CSOURC)
+      K = 1
+      DO 100 I = 1 , LENFIL
+       CBUF = CSOURC(I:I)
+       IF (CBUF .NE. ' ') THEN
+           CSOURC(K:K) = CBUF
+         K = K + 1
+       ENDIF
+100   CONTINUE
+      LENNAM = MAX (1, K-1)
+      IF (LENNAM .LT. LENFIL) CSOURC(LENNAM+1:LENFIL) = ' '
         
       RETURN
       END
