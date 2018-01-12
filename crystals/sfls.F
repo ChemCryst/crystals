@@ -3611,9 +3611,7 @@ C--WE NEED THIS REFLECTION TWICE
                 LJU=ISTORE(LJY+18)
                 LJV=ISTORE(LJY+19)
                 N = LJV - LJU
-                DO J = 0, N
-                  STORE(LJX+J) = STORE(LJU+J)
-                END DO
+                STORE(LJX:LJX+N) = STORE(LJU:LJU+N)
               END IF
 
               LJX=ISTORE(NI+9)   ! TRANSFER THE EQUIVALENT INDICES
