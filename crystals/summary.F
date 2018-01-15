@@ -2359,9 +2359,9 @@ C Unpack HKL
 
            ZH = STR11(sort_keys(I)*2-1)
 
-           if (I.LE.N6ACC/2) Z=-Z
-           IF (I.EQ.iz10) z10=z
-           IF (I.EQ.iz90) z90=z
+           if (sort_keys(i).LE.N6ACC/2) Z=-Z
+           IF (sort_keys(i).EQ.iz10) z10=z
+           IF (sort_keys(i).EQ.iz90) z90=z
            z_max=max(z_max,z)
 c debug          WRITE(CMON,'(I5,2F15.2)') I,ZH,Z
 c debug          CALL XPRVDU(NCVDU,1,0)
@@ -2482,7 +2482,7 @@ C
         B = 0.27061*A+2.30753
         C = A*(A*.04481+.99229)+1
         Z = A-B/C
-        if (I.LE.N6ACC/2) Z=-Z
+        if (sort_keys(i).LE.N6ACC/2) Z=-Z
         Zcalc = z*yslope+ycut
         ZH = STR11(sort_keys(I)*2-1)
         ston=abs(Zcalc-ZH)
