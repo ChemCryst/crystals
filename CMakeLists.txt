@@ -166,9 +166,11 @@ else ()
     endif()
 endif ()
 
-STRING(TOUPPER ${BLA_VENDOR} TEMP)
-if(TEMP MATCHES "INTEL")
-    add_definitions(-DCRY_MKL)
+if(BLA_VENDOR)
+	STRING(TOUPPER ${BLA_VENDOR} TEMP)
+	if(TEMP MATCHES "INTEL")
+		add_definitions(-DCRY_MKL)
+	endif()
 endif ()
 
 # Reset flags
