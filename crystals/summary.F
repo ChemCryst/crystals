@@ -2052,7 +2052,8 @@ C
       INCLUDE 'QLST39.INC'
 C
       integer, dimension(:), allocatable :: sort_keys
-      real, dimension(:,:), allocatable :: reflections, temp2d      
+      real, dimension(:,:), allocatable :: reflections, omitted, temp2d     
+      integer omitindex 
 C
       DATA KEY/ 1, 2, 3, 4, 5, 6, 0, 0, 0, 0,
      1          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2179,6 +2180,7 @@ C
       SIGTOP = 0.0
       N6ACC = 0
       PLOTMAX = 0
+      omitindex = 0
 c----- totals for slope and intercept
         ss = 0.
         sx = 0.
@@ -2188,8 +2190,9 @@ c----- totals for slope and intercept
         sxy = 0.
 
 1100  CONTINUE
-        ISTAT = KFNR ( 0 )
+        ISTAT = KLDRNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
+        IF (KALLOW(IALLOW)==0) THEN
 
         N6ACC = N6ACC + 1
 cjun2010  FO = STORE(M6+itwin)
@@ -2265,32 +2268,40 @@ c         refinement on F
           CALL XPRVDU(NCVDU, 1,0)
         END IF
 
-
+      else if (KALLOW(IALLOW)<0) THEN ! ommited reflection
+        if(.not. allocated(omitted)) then
+          allocate(omitted(16384, 5))
+          omitindex=0
+        else if(omitindex>=ubound(omitted, 1)) then
+          ! array too small, need to extend
+          call move_alloc(omitted, temp2d)
+          allocate(omitted(ubound(temp2d, 1)+16384, 5))
+          omitted(1:ubound(temp2d, 1),:)=temp2d
+          deallocate(temp2d)
+        end if
+        omitindex=omitindex+1
+        omitted(omitindex,1:3)=STORE(M6:M6+2)
+        omitted(omitindex, 4)=STORE(M6+3)        ! Fo
+        omitted(omitindex, 5)=scale * STORE(M6+5) ! Fc
+      end if
 
       GO TO 1100
 1200  CONTINUE
 
       IF ( LEVEL.EQ.4 ) THEN      !Also output the omitted refls.
-
-        WRITE(CMON,'(A)')
-     1  '^^PL ADDSERIES Omitted TYPE SCATTERX'
-        CALL XPRVDU(NCVDU,1,0)
-
-        CALL XFAL06 (IULN, 0 )
-        DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
-          IF (KALLOW(IALLOW).LT.0) THEN
-cjun2010            FO = STORE(M6+itwin)
-            FO = STORE(M6+3)
-            FC = SCALE * STORE(M6+5)
-            WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
-     1      NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
-            CALL XCRAS(HKLLAB, IHKLLEN)
-            WRITE(CMON,'(3A,2(1X,F12.2))')
-     1     '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
-c            WRITE(CMON,'(A,2(1X,F12.2))')
-c     1     '^^PL DATA ', FC ,FO
-            CALL XPRVDU(NCVDU, 1,0)
-          ENDIF
+        if(omitindex>0) then
+          WRITE(CMON,'(A)')
+     1      '^^PL ADDSERIES Omitted TYPE SCATTERX'
+          CALL XPRVDU(NCVDU,1,0)
+        end if
+        do i=1, omitindex
+          WRITE(HKLLAB, '(2(I0,A),I0)') NINT(omitted(i,1)),',',
+     1      NINT(omitted(i,2)), ',', NINT(omitted(i,3))
+            hkllab=adjustl(hkllab)
+          WRITE(CMON,'(3A,2(1X,F12.2))')
+     1     '^^PL LABEL ''', trim(HKLLAB), ''' DATA ', omitted(i,5),
+     2     omitted(i,4)
+          CALL XPRVDU(NCVDU, 1,0)
         END DO
       END IF
 C
@@ -2372,7 +2383,7 @@ c
            sxy = sxy + zh*z
 c
            PLOTMAX = MAX( PLOTMAX, Z )
-           WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
+           WRITE(HKLLAB, '(2(I0,A),I0)') MH, ',', MK, ',', ML
            HKLLAB=adjustl(HKLLAB)
            WRITE(CMON,'(3A,2F11.3)')
      1     '^^PL LABEL ''',trim(HKLLAB),''' DATA ',Z,

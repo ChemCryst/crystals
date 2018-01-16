@@ -39,6 +39,9 @@
 ^^CO SENDPROGRESSTO _FOFCPR
 %  LOOP
 %    ON ERROR CONTINUE
+%    COPY '#sfls' 
+%    COPY 'calc' 
+%    COPY 'END'
 %    COPY '#sum list 6 level=plot'
 %    COPY 'END'
 %    VERIFY EXT_BOK EXT_SAV EXT_EXP OMIT

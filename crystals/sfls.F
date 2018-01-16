@@ -1923,22 +1923,8 @@ c      write(123,'(/)')
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
         IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-C Remove I/sigma(I) cutoff, temporarily, leaving all other filters
-C in place.
-          DO I28MN = L28MN,L28MN+((N28MN-1)*MD28MN),MD28MN
-            IF(ISTORE(I28MN)-M6.EQ.20) THEN
-              SAVSIG = STORE(I28MN+1)
-              STORE(I28MN+1) = -99999.0
-            END IF
-          END DO
-C Fetch reflection using all other filters:
-          IFNR = KFNR(1)
-C Put sigma filter back:
-          DO I28MN = L28MN,M28MN,MD28MN
-            IF(ISTORE(I28MN)-M6.EQ.20) THEN
-              STORE(I28MN+1) = SAVSIG
-            END IF
-          END DO
+          ! use all reflections discarding filters
+          IFNR=KLDRNR(1)
         ELSE
           IFNR = KFNR(1)
         ENDIF
@@ -2510,6 +2496,9 @@ C----    H,K,L,SNTHL,LEV,
         CALL XACRT(16)
 
         IF(SFLS_TYPE .eq. SFLS_CALC) THEN ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
+          k=kallow(iallow)
+          if(iallow/=-1 .and. k/=-21) then
+        
           IF (STORE(M6+20) .GE. RALL(1)) THEN      ! Check that sigma acceptable
             RALL(2) = RALL(2) + 1.                 ! refs used
             RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
@@ -2523,6 +2512,7 @@ C----    H,K,L,SNTHL,LEV,
           RALL(10) = RALL(10) + ABS(FO)
           RALL(11) = RALL(11) + WDF*WDF
           RALL(12) = RALL(12) + A*A
+          end if
         ENDIF
 C
 C  DO THIS FOR ALL TYPES OF CALCULATION 
@@ -2661,6 +2651,9 @@ c Looks OK.
       print *, 'Formation of the normal matrix time (ms): ',
      1  ((measuredtime(5)*3600+measuredtime(6)*60)+
      2  measuredtime(7))*1000+measuredtime(8)-starttime
+      if(sfls_sp_normalm>=0) then
+        print *, 'Single precision accumulation'
+      end if
 #endif
       
       if(sfls_sp_normalm<0) then
