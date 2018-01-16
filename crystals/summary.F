@@ -2022,12 +2022,13 @@ c
 c
 CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
+c$    use omp_lib
       use m_mrgrnk
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
       CHARACTER *8 CNAME(35)
-      CHARACTER *15 HKLLAB
+      character(len=15) :: hkllab
 
       INCLUDE 'ICOM39.INC'
       DIMENSION KEY(35)
@@ -2045,15 +2046,13 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
-      INCLUDE 'TYPE11.INC'
-      INCLUDE 'XSTR11.INC'
       INCLUDE 'XSIZES.INC'
 C
       INCLUDE 'QSTORE.INC'
-      INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST39.INC'
 C
       integer, dimension(:), allocatable :: sort_keys
+      real, dimension(:,:), allocatable :: reflections, temp2d      
 C
       DATA KEY/ 1, 2, 3, 4, 5, 6, 0, 0, 0, 0,
      1          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2076,8 +2075,6 @@ c      DIMENSION Y(N6D)
 
       DIMENSION TEMP(2)
       
-CDJW08
-      MAX11 = ISIZ11
 C
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
             IF (KEXIST(1) .GT. 0) CALL XFAL01
@@ -2105,6 +2102,7 @@ C
       ELSE                                 ! F = FOT
             ITWIN = 10
       ENDIF
+      
 C--SETUP A GRAPH HERE
       IF ( LEVEL.EQ.4 ) THEN                 ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
@@ -2225,11 +2223,17 @@ C - FSQ REFINENENT
         WBOT = WBOT + WFO*WFO
 
         IF ( LEVEL.EQ.5 ) THEN
-C If you have more than 8.8 million reflections you might be in trouble.
-         IF ( N6ACC .LE. MAX11/2 ) THEN
-          STR11(N6ACC*2-1) = WDEL     !Format:   [WDEL,INDICES]
-          STR11(N6ACC*2) = STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*65536.
-         END IF
+          if(.not. allocated(reflections)) then
+            allocate(reflections(16384, 4))
+          else if(n6acc>ubound(reflections, 1)) then
+            ! array too small, need to extend
+            call move_alloc(reflections, temp2d)
+            allocate(reflections(ubound(temp2d, 1)+16384, 4))
+            reflections(1:ubound(temp2d, 1),:)=temp2d
+            deallocate(temp2d)
+          end if
+          reflections(n6acc,1:3)=STORE(M6:M6+2)
+          reflections(n6acc, 4)=wdel
         END IF
 
         IF ( LEVEL.EQ.6 ) THEN
@@ -2329,35 +2333,29 @@ C -- PRINT THE R VALUE ETC.
 
       IF ( LEVEL.EQ.5 ) THEN
 
-        IF ( N6ACC .GT. MAX11/2 ) THEN
-          WRITE(CMON,'(A,I8)') '{E Too many reflections: ', N6ACC
-          CALL XPRVDU(NCVDU,1,0)
-          N6ACC = MAX11/2
-        END IF
         WRITE(CMON,'(A,I8,A)')' Computing normal probability plot for',
      1    N6ACC, ' reflections.'
         CALL XPRVDU(NCVDU,1,0)
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
-        !CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
-        !xshelq very slow, replaced with merge-sort ranking subroutine instead
         allocate(sort_keys(N6ACC))
-        call mrgrnk(STR11(1:N6ACC*2:2), sort_keys)
+        call mrgrnk(reflections(1:n6acc,4), sort_keys)
 c Numerical Recipes (ed3) . p265 "Incomplete gamma function"
 C
         iz10=CEILING(N6ACC*0.05)
         iz90=CEILING(N6ACC*0.95)
         z_max = 0.
-c
+c 
         DO I=1,N6ACC
            PC = (I-0.5)/float(N6ACC)
            A = sqrt(-2.*log(.5-abs(PC-.5)))
            B = 0.27061*A+2.30753
            C = A*(A*.04481+.99229)+1
            Z = A-B/C
-C Unpack HKL
-           call unpackhkl(STR11(sort_keys(I)*2), mh, mk, ml)
 
-           ZH = STR11(sort_keys(I)*2-1)
+           MH=nint(reflections(sort_keys(I),1))
+           MK=nint(reflections(sort_keys(I),2))
+           ML=nint(reflections(sort_keys(I),3))
+           ZH = reflections(sort_keys(I),4)
 
            if (I.LE.N6ACC/2) Z=-Z
            IF (I.EQ.iz10) z10=z
@@ -2376,10 +2374,10 @@ c
            PLOTMAX = MAX( PLOTMAX, Z )
            WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
            HKLLAB=adjustl(HKLLAB)
-           write(CMON, '(3A,2F11.3)') 
+           WRITE(CMON,'(3A,2F11.3)')
      1     '^^PL LABEL ''',trim(HKLLAB),''' DATA ',Z,
-     2     STR11(sort_keys(I)*2-1)
-           CALL XPRVDU(NCVDU, 1,0)
+     2     reflections(sort_keys(I),4)
+          CALL XPRVDU(NCVDU, 1,0)
         END DO
         
 c      find slope and intercept
@@ -2474,8 +2472,6 @@ c---------------------------------------------------------
 C                                       NEW PASS TO DETECT OUTLIERS
       noutl=0
       npploop2:  DO I=1,N6ACC
-C Unpack HKL
-        call unpackhkl(STR11(sort_keys(I)*2), mh, mk, ml)
 C
         PC = (I-0.5)/float(N6ACC)
         A = sqrt(-2.*log(.5-abs(PC-.5)))
@@ -2484,7 +2480,10 @@ C
         Z = A-B/C
         if (I.LE.N6ACC/2) Z=-Z
         Zcalc = z*yslope+ycut
-        ZH = STR11(sort_keys(I)*2-1)
+        MH=nint(reflections(sort_keys(I),1))
+        MK=nint(reflections(sort_keys(I),2))
+        ML=nint(reflections(sort_keys(I),3))
+        ZH = reflections(sort_keys(I),4)
         ston=abs(Zcalc-ZH)
 C
         IF((zh.lt.zcalc-.1*z_max).or.(zh.gt.zcalc+0.1*z_max)) THEN
