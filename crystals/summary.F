@@ -1719,6 +1719,7 @@ c
 CODE FOR XCOMPL
       SUBROUTINE XCOMPL ( ITRSZ, JNH,JNK,JNL, JXH,JXK,JXL,
      1              THMAX,THMCMP, THBEST,THBCMP, IPLOT, IULN, IGLST )
+      use m_mrgrnk
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST06.INC'
@@ -1738,6 +1739,7 @@ c      DIMENSION IHKLTR ( 3, itrmax )
       DIMENSION FNDBIN ( 100 )
       DIMENSION ACTBIN ( 100 )
       character *80 ctemp
+      integer, dimension(:), allocatable :: sort_keys
       integer, dimension(:,:), allocatable :: ihkltr
       !> address of first index l in sorted array ihkltr
       integer, dimension(:,:), allocatable :: ladresses
@@ -1745,7 +1747,7 @@ c      DIMENSION IHKLTR ( 3, itrmax )
       integer currentl
       integer lstart, lend
 
-      allocate( ihkltr( 3, itrsz+1 ) )
+      allocate( ihkltr( 3, itrsz ) )
 
       
       THBEST = 0.0
@@ -1774,21 +1776,24 @@ c
           NHKL = NHKL + 1
           ISTAT = KSYSAB ( 2 )
           DO I = 0,2
-             IHKLTR(I+1, NHKL) = STORE(M6+I)
+             IHKLTR(I+1, NHKL) = nint(STORE(M6+I))
           END DO
       END DO
 
-      CALL XSHELI ( IHKLTR, 3, 3, NHKL, NHKL*3, IHKLTR(1,NHKL+1))
-      allocate(ladresses(2,IHKLTR(3,1):IHKLTR(3,NHKL)))
+      !CALL XSHELI ( IHKLTR, 3, 3, NHKL, NHKL*3, IHKLTR(1,NHKL+1))
+      allocate(sort_keys(NHKL))
+      call mrgrnk(ihkltr( 3, : ), sort_keys)
+      allocate(ladresses(2,
+     1  IHKLTR(3,sort_keys(1)):IHKLTR(3,sort_keys(NHKL))))
 
       ! build address list of first l indices 
       ladresses=-1
-      currentl=IHKLTR(3,1)
+      currentl=IHKLTR(3,sort_keys(1))
       ladresses(1,currentl)=1
       do icpt=1, nhkl
-        if(IHKLTR(3,icpt)/=currentl) then
+        if(IHKLTR(3,sort_keys(icpt))/=currentl) then
           ladresses(2,currentl)=icpt-1
-          currentl=IHKLTR(3,icpt)
+          currentl=IHKLTR(3,sort_keys(icpt))
           ladresses(1,currentl)=icpt
         end if
       end do
@@ -1841,8 +1846,8 @@ cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
                   
                   ! go through the remaining reflections
                   do JP=lstart, lend
-                      IF ( ( IHKLTR(1,JP) .EQ. IH ) .AND.
-     1                     ( IHKLTR(2,JP) .EQ. IK ) ) THEN
+                      IF ( ( IHKLTR(1,sort_keys(JP)) .EQ. IH ) .AND.
+     1                     ( IHKLTR(2,sort_keys(JP)) .EQ. IK ) ) THEN
                            NFOUND = NFOUND + 1
                            IFOUND = 1
                            FNDBIN(JID) = FNDBIN(JID) + 1.0
@@ -2016,13 +2021,13 @@ c
 
       END IF
       deallocate(ihkltr)
+      deallocate(sort_keys) 
 c
       RETURN
       END
 c
 CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
-c$    use omp_lib
       use m_mrgrnk
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
