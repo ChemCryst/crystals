@@ -1,0 +1,13 @@
+%SCRIPT XPRUNE                                                                  
+^^WI WINDOW PEAKS 'Test Slider'    
+^^WI COMMIT='BTNOK' CANCEL='BTNXX'                                              
+^^WI GRID MYMAIN NROWS=5 NCOLS=5                                                
+^^WI {                                                                          
+^^WI   @ 2,2 SLIDER Slide1 CHARS = 18
+^^WI   @ 4,2 SLIDER Slide2 STEPS = 4
+^^WI   @ 2,4 SLIDER Slide3 CHARS = 5 STEPS = 10
+^^WI   @ 4,4 SLIDER Slide4 
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+%END SCRIPT

@@ -1,4 +1,8 @@
 #  Test storage of partial structure factors within LIST 6.
+# Note change between F and F^2 refinements
+# Largely replaced by td-part
+
+
 #SET TIME SLOW
 #RELE PRINT CROUTPUT:
 #LIST 1

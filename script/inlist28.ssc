@@ -2,7 +2,7 @@
 %COPY '#LIST 28'
 %CLEAR
 %INSERT 'MINIMA RATIO = '
-%GET FINAL REAL 'Enter RATIO (I/sigma(I)) for LIST 28'  '3.0'
+%GET FINAL REAL 'Enter RATIO (I/sigma(I)) for LIST 28'  '-3.0'
 %SEND
 %COPY 'END'
 %END SCRIPT

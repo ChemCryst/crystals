@@ -294,6 +294,8 @@ C----- THE SCRIPT STACK
       INCLUDE 'XFIRST.INC'
       INCLUDE 'XPCK06.INC'
 C
+      INCLUDE 'XIOBUF.INC'
+C
 C
       INCLUDE 'XDVNAM.INC'
 C
@@ -380,7 +382,7 @@ C----- INITIALISE THE VMS SCREEN MANAGER
 C
       DATA IACC/-1/,MLSS/15/
 C
-      DATA ISIZST / 16777216 /, ISIZ11 / 33554432 /
+      DATA ISIZST / 16777216 /, ISIZ11 / 67108864 /
 C
 #ifdef __VAX__
 C      INITIALISE THE ENVIRONMENT TO BATCH
@@ -1145,6 +1147,7 @@ C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
 C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
 C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
 C      'SPAW'      '$   '      'APPE'      'BENC'      'DEFI'
+C      'FLUS'
 C
 C
       DATA IHF / 1HP, 1HA, 1HU, 1HS, 1HH, 1HE, 1HL, 1HP,
@@ -1156,7 +1159,8 @@ C
      7           1HS, 1HC, 1HR, 1HI, 1HC, 1HO, 1HM, 1HM,
      8           1HC, 1HL, 1HO, 1HS, 1HS, 1HP, 1HA, 1HW,
      9           1H$, 1H , 1H , 1H , 1HA, 1HP, 1HP, 1HE,
-     1           1HB, 1HE, 1HN, 1HC, 1HD, 1HE, 1HF, 1HI  /
+     1           1HB, 1HE, 1HN, 1HC, 1HD, 1HE, 1HF, 1HI,
+     2           1HF, 1HL, 1HU, 1HS  /
 
 #else
       DATA KTITL( 1)/'THIS'/,KTITL( 2)/' IS '/,KTITL( 3)/'THE '/
@@ -1181,6 +1185,7 @@ C      'PAUS'      'HELP'      'SET '      'ATTA'      'OPEN'
 C      'RELE'      'USE '      'MANU'      'TYPE'      'REMO'
 C      'STOR'      'STAR'      'SCRI'      'COMM'      'CLOS'
 C      'SPAW'      '$   '      'APPE'      'BENC'      'DEFI'
+C      'FLUS'
 C
 C
       DATA IHF / 'P', 'A', 'U', 'S', 'H', 'E', 'L', 'P',
@@ -1192,7 +1197,8 @@ C
      7           'S', 'C', 'R', 'I', 'C', 'O', 'M', 'M',
      8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
      9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E',
-     1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I'  /
+     1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I',  
+     2           'F', 'L', 'U', 'S'  /
 #endif
 C
       DATA MD0/8/,N0/0/,LN/0/,LSN/0/,IREC/0/,LEF/0/,LSTLEF/0/,MAPS/0/
@@ -1206,7 +1212,7 @@ C
 C
 C -- DEFINE SYSTEM INSTRUCTIONS
 cdjwmar99
-      DATA NWHF / 4 / , NHF / 20 / , LHF / 4 /
+      DATA NWHF / 4 / , NHF / 21 / , LHF / 4 /
 C
 C
 C
@@ -1538,6 +1544,7 @@ C      ISSTML      TERMINAL TYPE (UNKNOWN, VT52, VT100)
 C      ISSFLC      FILE NAME CHARACTERISTICS (LOWER, UPPER, MIXED CASE)
 C      ISSMSG      SET TERMINATION MESSAGES (OFF, ON)
 C      ISSPRT      SET PRINTER (OFF, ON)
+C      ISSMON      SET MONITO (OFF,ON)
 C      ISSGEN      GENERATE
 C      ISSFLM      OPENMESSAGE
 C      ISSPAS      PAUSE
@@ -1685,7 +1692,7 @@ C
 #endif
       DATA ISSSFI / 1 /, ISSTML /0/, ISSFLC /2/, ISSMSG /1/
       DATA ISSPRT / -1/, ISSEXP /1/,   ISSUEQ /1/, ISSUPD /0/, ISSBND/1/
-      DATA ISSCSH /0/, ISSRAT /0/
+      DATA ISSCSH /0/, ISSRAT /0/ , ISSMON /-1/
 C
 C
 C -- THE FOLLOWING VARIABLES ARE USED TO STORE IN CHARACTER FORM CERTAIN
@@ -1866,7 +1873,7 @@ c - now in parameter statement
 c      DATA ILSCLN / 1 / , ILSCLS / 2 / , ILSCLV / 3 /
 c      DATA ILSEXI / 4 / , ILSAVI / 5 / , ILSRFI / 6 /
 cC    REQUEST CODES FOR 'KLSCHK'
-c      DATA ILSMSG / 1 / , ILSNMS / -1 /
+      DATA ILSMSG / 1 / , ILSNMS / -1 /
 cC    FUNCTION CODES FOR 'XLSALT'
 c      DATA ILSERF / 1 / , ILSPUF / 2 / , ILSDLF / 3 /
 c      DATA ILSOWF / 4 / , ILSCUR / 5 / , ILSRTF / 2 /
@@ -1980,21 +1987,24 @@ C
       DATA IOFORE / -1 /
       DATA IOBACK / -1 /
 
-C Bits set in the REF parameter of list 5 depending on refinement.
+C Bits set in the REF parameter (M5+15) of list 5 depending on refinement.
+C BITS 8-10 set to 1 if x,y or z a special position
+C BITS 25-30 set if U[ij] are special
+C USED to suppress output of ESDs for restrained special positions
 C Will be used to set the _atom_site_refinement_flags CIF item.
-      DATA KBREFB(1) / 65536 /   ! S 'special position constraint'
-      DATA KBREFB(2) / 131072 /  ! G 'rigid group'
-      DATA KBREFB(3) / 262144 /  ! R 'riding atom attached to non-riding atom' (?)
-      DATA KBREFB(4) / 524288 /  ! D 'dist or angle restraint'
-      DATA KBREFB(5) / 1048576 / ! T 'thermal displacement constraints'
-      DATA KBREFB(6) / 2097152 / ! U 'Uiso or Uij restraint (rigid bond)'
-      DATA KBREFB(7) / 4194304 / ! P 'partial occupancy constraint'
+      DATA KBREFB(1) / 65536 /   ! bit 15 S 'special position constraint'
+      DATA KBREFB(2) / 131072 /  !        G 'rigid group'
+      DATA KBREFB(3) / 262144 /  !        R 'riding atom attached to non-riding atom' (?)
+      DATA KBREFB(4) / 524288 /  !        D 'dist or angle restraint'
+      DATA KBREFB(5) / 1048576 / !        T 'thermal displacement constraints'
+      DATA KBREFB(6) / 2097152 / !        U 'Uiso or Uij restraint (rigid bond)'
+      DATA KBREFB(7) / 4194304 / ! bit 22 P 'partial occupancy constraint'
       DATA KBCIFF / 'SGRDTUP' /
 
 C Will be used to set the _atom_site_calc_flag and the
 C _refine_ls_hydrogen_treatment CIF items.
-      DATA KBREFX / 8388608 / ! X,Y, or Z refined.
-      DATA KBREFU / 16777216 / ! Any temp factor refined.
+      DATA KBREFX /  8388608 / ! bit 22 X,Y, or Z refined.
+      DATA KBREFU / 16777216 / ! bit 23 Any temp factor refined.
 
 C NB cif dictionary makes no allowance for:
 C     Thermal displacement restraints (SIMU, DELU etc.)
@@ -2023,10 +2033,30 @@ C      THE NAMES OF THE VARIOUS RESTRAINTS
      1 coperation(17 ) /'AVERAGE'/,
      1 coperation(18 ) /'LIMIT'/,
      1 coperation(19 ) /'ENERGY'/,
-     1 coperation(20 ) /'ORIGIN'/
-C
-C
+     1 coperation(20 ) /'ORIGIN'/,
+     1 coperation(21 ) /'UXZBAR'/,
+     1 coperation(22 ) /'UYZBAR'/,
+     1 coperation(23 ) /'UZZBAR'/,
+     1 coperation(24 ) /'UPERP'/,
+     1 coperation(25 ) /'UPERP2'/,
+     1 coperation(26 ) /'UALIGN'/,
+     1 coperation(27 ) /'URIGU'/,
+     1 coperation(28 ) /'ULIJ'/,
+     1 coperation(29 ) /'UPLANE'/,
+     1 coperation(30 ) /'UXXQIV'/,
+     1 coperation(31 ) /'UXYQIV'/,
+     1 coperation(32 ) /'UXZQIV'/,
+     1 coperation(33 ) /'UYYQIV'/,
+     1 coperation(34 ) /'UYZQIV'/,
+     1 coperation(35 ) /'UZZQIV'/,
+     1 coperation(36 ) /'UEIG'/,
+     1 coperation(37 ) /'UQISO'/,
+     1 coperation(38 ) /'UVOL'/,
+     1 coperation(39 ) /'UEQIV'/,
+     1 coperation(40 ) /'UTLS'/
 
+C--
+C
       END
 C
 C
@@ -2220,6 +2250,7 @@ CODE FOR MACBLK
       INCLUDE 'XFILEC.INC'
       INCLUDE 'XGUIOV.INC'
 
+	  
       EQUIVALENCE ( IRIC,ZRIC )
 
 C --- XSSVAL ---
@@ -2240,6 +2271,7 @@ C --- XSSVAL ---
       ISSFLC = 2
       ISSMSG = 1
       ISSPRT = -1
+      ISSMON = -1
       ISSEXP = 1
       ISSUEQ = 1 
 
@@ -2283,6 +2315,9 @@ C --- UFILE ---
       IFLCHR(1) = 1 
       IFLCHR(2) = 2
       IRDLOG(2) = 0
+c reinstate logging of all input lines except GENERALEDIT
+c Cannot do this - causes initial output to go to fort.8
+c      IRDLOG(2) = 1
       IRDCAT(1) = 1
       IRDCMS(1) = 1
 

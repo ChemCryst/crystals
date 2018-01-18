@@ -24,10 +24,12 @@
 ^^WI     DEFINEPOPUPMENU POPUP 'Selection'
 ^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
 ^^WI     ENDDEFINEMENU
-^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=3
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=6
 ^^WI   {
-^^WI    @ 1,1 BUTTON EXT_BOK 'Close' DEFAULT
-^^WI    @ 1,3 BUTTON EXT_EXP 'Export' 
+^^WI    @ 1,1 STRETCH VB HORIZONTAL
+^^WI    @ 1,2 BUTTON EXT_SAV 'Save Image' 
+^^WI    @ 1,4 BUTTON EXT_EXP 'Export Data' 
+^^WI    @ 1,6 BUTTON EXT_BOK 'Close' DEFAULT
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
@@ -37,18 +39,28 @@
 ^^CO SENDPROGRESSTO _FOFCPR
 %  LOOP
 %    ON ERROR CONTINUE
+%    COPY '#sfls' 
+%    COPY 'calc' 
+%    COPY 'END'
 %    COPY '#sum list 6 level=plot'
 %    COPY 'END'
-%    VERIFY EXT_BOK EXT_EXP OMIT
+%    VERIFY EXT_BOK EXT_SAV EXT_EXP OMIT
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'
 %    CASE VALUE
 %    BLOCK
 ^^CO    DISPOSE xfovsfc
 %       FINISH
 %    END BLOCK
+%%
+%    BLOCK
+Saving Image
+^^CO SET _VFOFC SAVE 800 600 FOvsFC
+%    END BLOCK
+%%
 %    BLOCK
 ^^CO SET _VFOFC EXPORT FOvsFC.csv
 %    END BLOCK
+%%
 %    BLOCK
 %      ON EDITERROR TERMINATE
 %      COPY '#GENERALEDIT 28'

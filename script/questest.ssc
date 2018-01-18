@@ -1,0 +1,26 @@
+%SCRIPT QUESTEST
+%% variables used by the question box                                           
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+%  VARIABLE CHARACTER BUTINFO  BUTFILE
+%  VARIABLE LOGICAL ANSWER                                                      
+%%     
+% IF EXISTS 5 .EQ. 1 THEN                                                                         
+%  EVALUATE QTITLE = 'Information'                                
+%  EVALUATE QLINE1 = ' Some information about the choices'     
+%  EVALUATE QLINE2 = 'Choose'        
+%%  EVALUATE BUTFILE = 'no-questest.dat'
+%  EVALUATE BUTFILE = 'questest.dat'
+%  VARIABLE CHARACTER MYFILE
+%  EVALUATE MYFILE =  'CRYSDIR:script/' // BUTFILE
+
+%  EVALUATE BUTTOK = 'OK'                             
+%  EVALUATE BUTTXX = 'CLOSE' 
+%  EVALUATE BUTINFO = 'Info'                   
+%  COPY '#SCRIPT XHELPQUEST'                                           
+%  IF ANSWER .EQ. TRUE THEN                                          
+      TRUE
+%  ELSE                                                                
+      FALSE
+%  END IF                                                              
+% END IF
+%END SCRIPT

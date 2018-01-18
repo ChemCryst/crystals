@@ -33,6 +33,9 @@
 ^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RP '&Set occupancy of _A' '#SCRIPT XOCCG_N_A' 
 ^^wi                    DISABLEIF= 'IN'
+^^WI             ITEM _GUISO 'Change to Uequiv'
+^^WI                         '#SCRIPT XUEQUIV_N_GEND' DISABLEIF='IN'
+^^WI             ITEM _GUSET 'Set U[iso]' '#SCRIPT XUSET_N_GEND' DISABLEIF='IN'
 ^^WI             SPLIT
 ^^WI             ITEM _EDA 'Ed&it _A' '#SCRIPT XPARAM_N_A' DISABLEIF='IN'
 ^^WI             ITEM _ADDH 'Add &hydrogens to _A' '#SCRIPT XADDH_N_A'

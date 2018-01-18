@@ -3,7 +3,8 @@
 %%   Local variables:
 %  VARIABLE CHARACTER CTYPE
 %  VARIABLE REAL SERIAL
-%  VARIABLE LOGICAL HRIDE
+%  VARIABLE LOGICAL HRIDE HINC
+%  VARIABLE INTEGER REFLAG
 %% Initialise to no hydrogen, but if any found, refine them.
 %% see also XWRITE5.SSC, which tests REFLAG for each atom
 %  EVALUATE HRIDE = FALSE
@@ -14,20 +15,42 @@ You have no atoms for this structure
 
 %   FINISH
 %  END IF
-%     COPY '#GENERALEDIT 5'
-%     COPY 'LOCATE RECORDTYPE=101'
-%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%     LOOP
-%       ON EDITERROR TERMINATE
-%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
-%       IF ( CTYPE .EQ. 'H' )  THEN
-%         EVALUATE HRIDE = TRUE
-%       ELSE IF ( CTYPE .EQ. 'D' )  THEN
-%         EVALUATE HRIDE = TRUE
-%       END IF
-%       COPY 'NEXT'
-%     END LOOP
-%     COPY 'END'
+%  EVALUATE HRIDE = FALSE                                                    
+%  QUEUE REWIND                                                              
+%  COPY '#GENERALEDIT 5'                                                     
+%  COPY 'LOCATE RECORDTYPE=101'                                              
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                   
+%  LOOP                                                                      
+%      ON EDITERROR TERMINATE                                                  
+%      COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
+%      COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
+%      COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
+%      IF REFLAG .LT. 0 THEN                                                   
+%         EVALUATE REFLAG = - REFLAG                                            
+%      END IF                                                                  
+%      EVALUATE REFLAG = ( REFLAG IAND 255 )
+%      EVALUATE HINC = ( REFLAG .EQ. 10 ) .OR. ( REFLAG .EQ. 0 )                                   
+%      IF ( CTYPE .EQ. 'H' ) .AND. ( HINC ) THEN                     
+%         EVALUATE HRIDE = TRUE                                                 
+%         CLEAR                                                                 
+%         INSERT 'CONT H('                                                      
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
+%         INSERT ')'                                                            
+%%         OUTPUT                                                               
+%         QUEUE SEND                                                            
+%      ELSE IF ( CTYPE .EQ. 'D' ) .AND. ( HINC ) THEN                
+%         EVALUATE HRIDE = TRUE                                                 
+%         CLEAR                                                                 
+%         INSERT 'CONT D('                                                      
+%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
+%         INSERT ')'                                                            
+%%         OUTPUT                                                               
+%         QUEUE SEND                                                            
+%      END IF                                                                  
+%      COPY 'NEXT'                                                             
+%  END LOOP                                                                  
+%  COPY 'END'                                                                
+%%
 %% If HRIDE is still set, we found some atoms to ride.
 %%
 %  IF ( HRIDE ) THEN
@@ -35,6 +58,7 @@ You have no atoms for this structure
 %     COPY '#DISTANCES'
 %     COPY 'OUTPUT MON=OFF PUNCH=SCRIPT'
 %     COPY 'SELECT SYMMETRY=NONE  RANGE=L41'
+%     COPY 'NOTPIVOT H D'                                                       
 %     COPY 'BONDED'
 %     QUEUE PROCESS
 %     COPY 'END'

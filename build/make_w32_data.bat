@@ -4,7 +4,7 @@
 @if "%1" == "tidy" goto tidy
 
 @echo Copying datafiles
-@FOR %%I IN ( ..\datafiles\*.ssr ) DO perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o %%~nI.srt -D__%COMPCODE%__ -DCRYSVNVER=%CRYSVNVER:~0,8% -DCRYMONTH=%CRYMONTH% -DCRYYEAR=%CRYYEAR% %%I
+@FOR %%I IN ( ..\datafiles\*.ssr ) DO perl ..\editor\filepp.pl -w -imacros ..\gui\crystalsinterface.h -o %%~nI.srt -D__%COMPCODE%__ -DCRYARCH=%PROCESSOR_ARCHITECTURE% -DCRYHOST=Windows -DCRYSVNVER=%CRYSVNVER:~0,8% -DCRYMONTH=%CRYMONTH% -DCRYYEAR=%CRYYEAR% %%I
 
 @echo Copying precompiled stuff
 echo CVS > cvs.txt

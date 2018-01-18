@@ -1,7 +1,7 @@
 \set time slow
 \rele print CROUTPUT:
 \ Test esd calculations for combined and linked parameters
-\SET MONITOR OFF
+\SET MIRROR OFF
 \DISK
 EXTEND 50
 \list 29
@@ -106,7 +106,7 @@ ATOM H      71.000000   1.000000   0.082269  -0.288919   0.426858   0.128565
 ATOM H      72.000000   1.000000   0.082269  -0.521962   0.328422   0.084547 
 ATOM H      73.000000   1.000000   0.082269  -0.449482   0.239848   0.205914 
 END 
-\SET MONITOR ON
+\SET MIRROR ON
 \EDIT
 \ perturb the structure
 MULT 1.02 C(1,X) UNTIL H(73)

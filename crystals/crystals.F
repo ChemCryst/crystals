@@ -70,7 +70,7 @@ C Look for arguments from the command line
           found = index(args_value, '--hdf5')
           if(found>0) then
             hdf5_in_use = .true.
-            print *, 'Experimental use of hdf5 files'
+!            print *, 'Experimental use of hdf5 files'
           end if
         end do
       end if

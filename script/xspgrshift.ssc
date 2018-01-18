@@ -1,0 +1,84 @@
+%SCRIPT SPGRSHIFT
+%%
+%% CALLED FROM XINVERT WITH "ITEM" SET TO SG IN LIST 
+%%
+{1,9                                        
+{1,9 An origin shift will be applied for this Space Group 
+{1,9                                        
+% VARIABLE INTEGER ITEM NEXT
+%%
+% EVALUATE NEXT  = ITEM - 22
+% CASE NEXT
+%%
+%    BLOCK     
+{I Inverting I41
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT 1   .5  1    ALL'
+%     COPY 'END'
+%    END BLOCK  
+%%
+%%
+%    BLOCK     
+{I Inverting I-42D
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT 1   .5 .25   ALL'
+%     COPY 'END'
+%    END BLOCK  
+%%
+%%
+%    BLOCK     
+{I Inverting I4122
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT 1   .5 .25   ALL'
+%     COPY 'END'
+%    END BLOCK  
+%%
+%%
+%    BLOCK     
+{I Inverting FDD2
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT .25 .25 1    ALL'
+%     COPY 'END'
+%    END BLOCK  
+%%
+%%
+%    BLOCK     
+{I Inverting F4132
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT .25 .25 .25 ALL'
+%     COPY 'END'
+%    END BLOCK  
+%%
+%%
+%    BLOCK     
+{I Inverting I41CD
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT 1   .5  1 ALL'
+%     COPY 'END'
+%    END BLOCK  
+%%
+%%
+%    BLOCK     
+{I Inverting I41MD
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT 1   .5  1    ALL'
+%     COPY 'END'
+%    END BLOCK  
+%%
+%   END CASE 
+%%
+%END SCRIPT

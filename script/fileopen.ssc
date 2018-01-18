@@ -22,7 +22,7 @@
 ^^WI  {                       
 ^^WI     @ 2,2 STATIC T1 'Basic data cifs:'                                          
 ^^WI     @ 4,2 RADIOBUTTON NO 'Nonius Kccd' INFORM 
-^^WI     @ 5,2 RADIOBUTTON AG 'Agilent' INFORM
+^^WI     @ 5,2 RADIOBUTTON AG 'Rigaku OD' INFORM
 ^^WI     @ 6,2 RADIOBUTTON RI 'Rigaku' INFORM        
 ^^WI     @ 7,2 RADIOBUTTON GD 'Generalised (WinGX)' INFORM STATE=ON        
 ^^WI     @ 7,4 RADIOBUTTON PP 'Pre-processed' INFORM
@@ -257,7 +257,7 @@
 %%
 %     BLOCK                         %AG%                                        
 %%
- Agilent (Oxford Diffraction)
+ Rigaku Oxford Diffraction
 %     END BLOCK                                                                 
 %%
 %     BLOCK                         %RI%                                        

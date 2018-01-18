@@ -293,7 +293,7 @@ cavdl dec06
       INTEGER IMAXIND(3),IVOXEL(3)
       CHARACTER *1 CBLANK
       CHARACTER *4 CATOM(15)
-      CHARACTER *21 CDUMF
+      CHARACTER *22 CDUMF
       CHARACTER *10 CSPG
       character *32 CLINE
       CHARACTER LOCASE*(200)
@@ -483,6 +483,8 @@ C--WRITE THE PARAMETER FILE TYPE
       WRITE ( NCFPU1 ,  '(''SNOOPI.L5'')' )
 #endif
       WRITE ( NCFPU1 ,' ( ''$SYMM'' )' )
+      M2P = L2P+((N2P-1)*MD2P)
+      M2 = L2+((N2-1)*MD2)
       DO 16190 IND1=L2P,M2P,3
         DO 16180 IND2=L2,M2,MD2
 C--COMBINE T(I) & P(K) VECTORS
@@ -1060,25 +1062,26 @@ C----- WRITE ATOM INFORMATION
         DO 18390 J = L29, M29, MD29
           DO 18320 K = L3, M3, MD3
            IF (ISTORE(J) .EQ. ISTORE(K)) GOTO 18380
-18320      CONTINUE
-18380    CONTINUE
-        WRITE ( CATOM(IAT) , '(A4)') ISTORE(J)
+18320     CONTINUE
+18380     CONTINUE
+          WRITE ( CATOM(IAT) , '(A4)') ISTORE(J)
 CAvdLdec06 EDMA wants the second character of an element symbol in lower case
-        CALL XCCLWC ( CATOM(IAT)(2:2), CSOURC(2:2))
-        WRITE(CATOM(IAT)(2:2),'(A1)')CSOURC(2:2)
-        IAT=IAT+1
+          CALL XCCLWC ( CATOM(IAT)(2:2), CSOURC(2:2))
+          WRITE(CATOM(IAT)(2:2),'(A1)')CSOURC(2:2)
+          IAT=IAT+1
 18390   CONTINUE
        IAT=IAT-1
 c       IHYD=0
 CAVDLdec06 Don't use hydrogens, because EDMA gets confused
 cavdljun08 This is not true anymore, so leave H-atoms
-       cdumf='(''composition '',3A4)'
-c       DO I=1,IAT
-c       IF (IHYD.EQ.1)CATOM(I-1)=CATOM(I)
-c       IF (CATOM(I)(1:1).EQ.'H')IHYD=1
-c       END DO
-c       IF (IHYD.EQ.1)IAT=IAT-1
-       WRITE(CDUMF(17:17),'(I1)')IAT
+       cdumf='(''composition '', 3A4)'
+c       ('composition ', 3A4)
+c       12345678901234567890  17+18 for prefix 
+       IF ( IAT .GE. 10 ) THEN
+         WRITE(CDUMF(16:17),'(I2)')IAT
+       ELSE
+         WRITE(CDUMF(17:17),'(I1)')IAT
+       END IF
 c       write(*,'('' format: '',a21)')cdumf(1:21)
        WRITE(NCFPU1,CDUMF)(CATOM(I),I=1,IAT)
       ENDIF

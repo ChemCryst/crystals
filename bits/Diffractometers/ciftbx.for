@@ -1060,8 +1060,9 @@ C
 C
 #include "ciftbx.sys"
          character test*15,c*1
-         integer*4 m,nchar
-         integer*4 ccnt,mant,expn,msin,esin,ndec
+         integer*4 nchar
+         integer*4 ccnt,expn,msin,esin,ndec
+		 integer*8 mant, m
          real      numb,sdev
          data test /'0123456789+.-()'/
 C

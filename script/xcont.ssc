@@ -5,7 +5,7 @@
 % VARIABLE CHARACTER CFILE                                                      
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
 %%                                                                              
-% VARIABLE INTEGER F67                                                          
+% VARIABLE INTEGER F67                      
 % VARIABLE LOGICAL TWINNED LMCE LMAPV                                           
 % EVALUATE TWINNED = FALSE                                                      
 %                                                                               
@@ -267,7 +267,11 @@ view the generated sections.
 %         IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN                             
 %% Remove any Q atoms, but restore again later.                                 
 %           COPY '#GENERALEDIT 5'                                               
-%           COPY 'GETSERIAL OLDSER'                                             
+%           COPY 'GETSERIAL OLDSER'                
+%           COPY 'END'
+%           IF OLDSER .LT. 0 THEN
+%               EVALUATE OLDSER = - OLDSER
+%           END IF
 %           COPY '#EDIT'                                                        
 %           COPY 'SELECT TYPE NE Q'                                             
 %           COPY 'SELECT TYPE NE QH'                                            
@@ -342,18 +346,28 @@ view the generated sections.
 %         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
 %         QUEUE SEND                                                            
 %       END BLOCK                                                               
-%%                                                                              
-%       IF F67 .EQ. 6 THEN                                                      
+%%                 
+%       IF DOCALC .EQ. 2 THEN     %ERROR CONDITION                                                             
+{I  Slant Fourier abandoned
+
+            FINISH
+%       ELSE 
+%% show f67  (MAPS SHOULD ALWAYS BE DONE ON LIST 7)
+%        IF F67 .EQ. 6 THEN  
+{I ------------------------------------------------                                                    
+{I CRYSTALS should never get here but we will continue
+{I ------------------------------------------------                                                    
 %           COPY '#SLANT 6 '                                                    
-%       ELSE                                                                    
+%        ELSE                                                                    
 %           COPY '#SLANT 7 '                                                    
-%       END IF                                                                  
-%       QUEUE PROCESS                                                           
-%       COPY 'END'                                                              
-%       COPY '#PURGE LIST =7'                                                   
-%       COPY 'END'                                                              
+%        END IF                                                                  
+%        QUEUE PROCESS                                                           
+%        COPY 'END'                                                              
+%        COPY '#PURGE LIST =7'                                                   
+%        COPY 'END'                                                              
 {R * Done. Slant fourier complete.                                              
 %%                                                                              
+%       END IF
 %       IF TWINNED .EQ. TRUE THEN                                               
 %           BLOCK                                                               
 %           ON ERROR TERMINATE                                                  
@@ -373,7 +387,7 @@ view the generated sections.
 %       END IF                                                                  
 %      END IF                                                                   
                                                                                 
-%      IF DOVOID .EQ. 2 THEN                                                    
+%      IF DOVOID .EQ. 1 THEN                                                    
 %       BLOCK                                                                   
 %        TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS                      
 %        QUEUE REWIND                                                           

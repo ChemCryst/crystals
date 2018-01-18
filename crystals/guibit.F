@@ -578,9 +578,9 @@ C--MOVE BACK ONE MORE UNIT CELL
 
 CODE FOR XGUIUP
       SUBROUTINE XGUIUP ( IULN )
-#if defined(CRY_GUI)      
-      use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
-#endif
+C#if defined(CRY_GUI)      
+C      use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
+C#endif
 C----- UPDATE THE GUI
 C
 C Unlike earlier versions of this subroutine, we can now sometimes claim store
@@ -639,6 +639,7 @@ c         loaded by the calling routine.
       INTEGER IUNKN
       CHARACTER*8 CRADTN(2)
       CHARACTER*11 CBONDS(0:9)
+      DIMENSION ID(2)
 
 
       DIMENSION LST(15)
@@ -874,7 +875,7 @@ C Get atom type.
                WRITE(CATTYP,'(A4)')IATTYP
                IF(CATTYP(1:1).EQ.'Q') THEN
                  QSINL5 = .TRUE.
-                 IF ( STORE (I5+13).GT.0.0001 ) LSPARE = .TRUE.
+                 IF ( ABS(STORE (I5+13)).GT.0.0001 ) LSPARE = .TRUE.
                END IF
                IF ( ISTORE(I5+14).NE.0 ) PTINL5 = .TRUE.
 
@@ -1602,14 +1603,14 @@ c             CALL XPRVDU(NCVDU, 1,0)
               IF (STORE(L30RF+3).GT.-9.9)
      1            WRITE(CCOL,'(F6.2)')STORE(L30RF+3)
 
-246           FORMAT ('^^WI SAFESET [ _MT_REF_R TEXT ',F8.2,' ]',
-     1                    ' SAFESET [ _MT_REF_RW TEXT ',F8.2,' ]',/,
-     1                '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F5.0,' ]',
-     1                    ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
-     1                  '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F6.3,' ]',
-     1                    ' SAFESET [ _MT_REF_MAXRMS TEXT ',F8.4,' ]',/,
-     1                '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',/,
-     1                '^^CR')
+246           FORMAT('^^WI SAFESET [ _MT_REF_R TEXT ',F8.2,' ]',
+     1                   ' SAFESET [ _MT_REF_RW TEXT ',F8.2,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F9.0,' ]',
+     1                   ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F9.3,' ]',
+     1                   ' SAFESET [ _MT_REF_MAXRMS TEXT ',F9.4,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',/,
+     1               '^^CR')
               WRITE ( CMON, 246 ) STORE(L30RF), STORE(L30RF+1),
      1            STORE(L30RF+2), CCOL,  STORE(L30RF+4),
      1            STORE(L30RF+7),STORE(L30RF+8)

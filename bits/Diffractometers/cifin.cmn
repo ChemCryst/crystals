@@ -1,6 +1,6 @@
       CHARACTER*24    CDATE,creduct,cinst
-      character*132   filename, chkl
-      character*256   infil
+      character*512   filename, chkl
+      character*512   infil
       CHARACTER*132   NAME, block_name
       common /cifch/  CDATE, creduct, cinst,  filename, 
      1                chkl, infil, NAME, block_name

@@ -1,8 +1,11 @@
-!> The module sfls_punch_mod deals with the export of different matrices during refinement
+!> The module sfls_punch_mod deals with the export of different matrices and claculations during refinement
 !!
 !! \detaileddescription
 !!
-!! 2 Outputs are available: Matlab(1) and plain text(2)
+!! 2 options under \sfls, \refine can be used: PUNCH and CALCULATE
+!! Punch Outputs available: Matlab(1), plain text(2) and numpy(3) 
+!! calculate options: leverages(1)
+!! 
 !!
 !! (1) **Matlab output (PUNCH=MATLAB)**
 !!
@@ -19,6 +22,21 @@
 !! - variance*.dat stores the variance/covariance matrix as a n*n matrix
 !! - wdf*.dat stores the weights
 !!
+!! (3) **Numpy output (PUNCH=NUMPY)**
+!!
+!! - design*.npy stores the design matrix. Each row starts with the h,k,l index followed by the derivatives
+!!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
+!! - normal*.npy stores the normal matrix as a n*n matrix
+!! - variance*.npy stores the variance/covariance matrix as a n*n matrix
+!! - wdf*.npy stores the weights
+!! - crystals*.py is python with a bunch of usefull matrices fr doing calculations.
+!!
+!! ################################################################
+!!
+!! (1) ** leverages (CALCULATE=LEVERAGES)**
+!!
+!! - Calculate leverages and t values to a file. Format is set using PUNCH.
+!!
 !! The file naming is kept consistent. The same index is used for files written is the same cycle. See sfls_punch_get_newfileindex().
 !!
 module sfls_punch_mod
@@ -28,15 +46,22 @@ integer, private :: design_unit=0 !< unit number for the file
 integer, private :: wdf_unit=0 !< unit number for the file
 integer, private, save :: fileindex=-1 !< index used in the different filenames
 !> List of filename used. This list is used to find a new index for the filenames.
-character(len=24), dimension(4), parameter, private :: filelist=(/ &
-&  'normal  ', &
-&  'design  ', &
-&  'wdf     ', &
-&  'variance' /)
+character(len=25), dimension(5), parameter, private :: filelist=(/ &
+&  'normal   ', &
+&  'design   ', &
+&  'wdf      ', &
+&  'variance ', &
+&  'leverages' /)
 !> list of extension used. This list is used to find a new index for the filenames.
-character(len=4), dimension(2), parameter, private :: extlist=(/ '.m  ', '.dat' /)
+character(len=4), dimension(3), parameter, private :: extlist=(/ '.m  ', '.dat' , '.npy'/)
 
 private sfls_punch_get_newfileindex
+private sfls_punch_addtodesign_sp, sfls_punch_addtodesign_dp
+
+!> generic interface for sfls_punch_addtodesign
+interface sfls_punch_addtodesign
+    module procedure :: sfls_punch_addtodesign_sp, sfls_punch_addtodesign_dp
+end interface
   
 contains
 
@@ -52,13 +77,13 @@ character(len=255) :: file_name
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit/=0) then
-            print *, 'normal matrix file already opened'
+!            print *, 'normal matrix file already opened'
             call abort()
         end if
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'normal', filecount, '.m'
+        write(file_name, '(a,i0,a)') 'normal', filecount, '.m'
 
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
@@ -68,9 +93,12 @@ character(len=255) :: file_name
         
     case(2) ! plain text
     ! Nothing needed here
+
+    case(3) ! numpy
+    ! Nothing needed here
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -80,23 +108,19 @@ end subroutine
 subroutine sfls_punch_close_normalfile(sfls_punch_flag)
 implicit none
 integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
-integer filecount
-logical file_exists
-character(len=255) :: file_name
-character(len=4) :: file_ext 
 logical fileopened
 
     ! Write header
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit==0) then
-            print *, 'normal matrix file not opened yet'
+!            print *, 'normal matrix file not opened yet'
             call abort()
         end if
         
         inquire(normal_unit, opened=fileopened)
         if(.not. fileopened) then
-            print *, 'normal matrix file not opened but unit set'
+!            print *, 'normal matrix file not opened but unit set'
             call abort()
         end if        
 
@@ -108,8 +132,11 @@ logical fileopened
     case(2) ! plain text
     ! Nothing needed here
         
+    case(3) ! numpy
+    ! Nothing needed here
+
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -123,7 +150,7 @@ integer filecount
 character(len=255) :: file_name
 
     if(design_unit/=0) then
-        print *, 'design matrix file already opened'
+!        print *, 'design matrix file already opened'
         call abort()
     end if
 
@@ -135,19 +162,26 @@ character(len=255) :: file_name
     case(1) ! matlab
 
         design_unit=786
-        write(file_name, '(a,i0,a)'), 'design', filecount, '.m'
+        write(file_name, '(a,i0,a)') 'design', filecount, '.m'
         open(design_unit, file=file_name, status='new')
         write (design_unit, '(''a=['')')
         
     case(2) ! plain text
 
         design_unit=786
-        write(file_name, '(a,i0,a)'), 'design', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'design', filecount, '.dat'
         open(design_unit, file=file_name, status='new')
         call print_design_header()
+
+    case(3) ! numpy
+
+        design_unit=786
+        write(file_name, '(a,i0,a)') 'design', filecount, '.npy'
+        open(design_unit, file=file_name, status='new', access='stream', form='unformatted')
+        write(design_unit) repeat(' ', 128) ! book space for numpy header
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -155,6 +189,7 @@ end subroutine
 
 !> Writting the normal matrix to the file (before conditioning)
 subroutine sfls_punch_normal(nmatrix, nmsize, sfls_punch_flag)
+use numpy_mod, only: numpy_save
 implicit none
 real, dimension(:), intent(in) :: nmatrix !< Normal matrix (packed upper triangular)
 integer, intent(in) :: nmsize !< size of the matrix
@@ -176,43 +211,51 @@ integer filecount
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit==0) then
-            print *, 'normal matrix file not opened yet'
+!            print *, 'normal matrix file not opened yet'
             call abort()
         end if
 
-        write (normal_unit, '(A, '' = ['')'), 'N{length(N)+1}'
+        write (normal_unit, '(A, '' = ['')') 'N{length(N)+1}'
         do xpos = 1, nmsize
             do ypos = 1, nmsize
-                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)'), '...'
-                write (normal_unit, '(G16.8$)'), unpacked(ypos, xpos)
+                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)') '...'
+                write (normal_unit, '(G16.8$)') unpacked(ypos, xpos)
             end do
             if (xpos/=nmsize) then
-                write (normal_unit, '(A)'), ';'
+                write (normal_unit, '(A)') ';'
             end if
         end do
-        write (normal_unit, '(A)'), '];'
+        write (normal_unit, '(A)') '];'
 
     case(2) ! plain text
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'normal', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'normal', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
         do xpos = 1, nmsize
-            write (normal_unit, *), unpacked(:, xpos)
+            write (normal_unit, *) unpacked(:, xpos)
         end do    
         close(normal_unit)
         normal_unit=0
+
+    case(3) ! numpy
+
+        ! search for new file to open
+        filecount = sfls_punch_get_newfileindex()
+        write(file_name, '(a,i0,a)') 'normal', filecount, '.npy'
+        call numpy_save(trim(file_name), unpacked, shape(unpacked))
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 end subroutine
 
 !> Writting of the variance/covariance matrix to the file
 subroutine sfls_punch_variance(nmatrix, nmsize, sfls_punch_flag)
+use numpy_mod, only: numpy_save
 implicit none
 real, dimension(:), intent(in) :: nmatrix !< Variance/covariance matrix (packed upper triangular)
 integer, intent(in) :: nmsize !< size of the matrix
@@ -234,49 +277,59 @@ integer filecount
     select case(sfls_punch_flag)
     case(1) ! matlab
         if(normal_unit==0) then
-            print *, 'normal matrix file not opened yet'
+!            print *, 'normal matrix file not opened yet'
             call abort()
         end if
 
-        write (normal_unit, '(A, '' = ['')'), 'VC{length(VC)+1}'
+        write (normal_unit, '(A, '' = ['')') 'VC{length(VC)+1}'
         do xpos = 1, nmsize
             do ypos = 1, nmsize
-                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)'), '...'
-                write (normal_unit, '(G16.8$)'), unpacked(ypos, xpos)
+                if (mod(ypos, 6) .eq. 0) write (normal_unit, '(A)') '...'
+                write (normal_unit, '(G16.8$)') unpacked(ypos, xpos)
             end do
             if (xpos/=nmsize) then
-                write (normal_unit, '(A)'), ';'
+                write (normal_unit, '(A)') ';'
             end if
         end do
-        write (normal_unit, '(A)'), '];'
+        write (normal_unit, '(A)') '];'
 
     case(2) ! plain text
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'variance', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'variance', filecount, '.dat'
         normal_unit=785
         open(normal_unit, file=file_name, status='new')
         do xpos = 1, nmsize
-            write (normal_unit, *), unpacked(:, xpos)
+            write (normal_unit, *) unpacked(:, xpos)
         end do    
         close(normal_unit)
         normal_unit=0
+
+    case(3) ! numpy
+
+        ! search for new file to open
+        filecount = sfls_punch_get_newfileindex()
+        write(file_name, '(a,i0,a)') 'variance', filecount, '.npy'
+        call numpy_save(trim(file_name), unpacked, shape(unpacked))
         
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 end subroutine
 
-!> Write a part of the design matrix to the file
-subroutine sfls_punch_addtodesign(designmatrix, hkllist, sfls_punch_flag, punch)
+!> Write a part of the design matrix to the file or close the file.
+!! 
+!! It is important to pass the correct shape of the design matrix when closing so that the subroutine can work out the size of it.
+subroutine sfls_punch_addtodesign_dp(designmatrix, hkllist, sfls_punch_flag, punch)
+use numpy_mod, only: numpy_save, numpy_write_header
 implicit none
 double precision, dimension(:,:), intent(in) :: designmatrix !< Block of the design matrix
 integer, dimension(:,:), intent(in) :: hkllist !< List of corresponding hkl indices
 integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
 logical, optional, intent(in) :: punch !< Flag to close the file when done
-integer i
+integer i, mypos, m, n
 logical fileopened
 character(len=256) :: lineformat
 
@@ -291,13 +344,13 @@ character(len=256) :: lineformat
         end if
 
         if(design_unit==0) then
-            print *, 'design matrix file not opened yet'
+!            print *, 'design matrix file not opened yet'
             call abort()
         end if
         
         inquire(design_unit, opened=fileopened)
         if(.not. fileopened) then
-            print *, 'design matrix file not opened but unit set'
+ !           print *, 'design matrix file not opened but unit set'
             call abort()
         end if
         
@@ -313,15 +366,15 @@ character(len=256) :: lineformat
             design_unit=0
             return
         end if
-
+        
         if(design_unit==0) then
-            print *, 'design matrix file not opened yet'
+!            print *, 'design matrix file not opened yet'
             call abort()
         end if
         
         inquire(design_unit, opened=fileopened)
         if(.not. fileopened) then
-            print *, 'design matrix file not opened but unit set'
+ !           print *, 'design matrix file not opened but unit set'
             call abort()
         end if
         
@@ -329,9 +382,141 @@ character(len=256) :: lineformat
         do i=1, ubound(designmatrix, 2)
             write(design_unit, lineformat) hkllist(:,i), designmatrix(:,i)
         end do
+        
+    case(3) ! numpy
+        if(present(punch)) then
+            ! writing header
+            ! we need to know how many values were written, it is a bit of guess work as the shape is not known
+            inquire(unit=design_unit, pos=mypos) ! size of data in bytes is mypos-1-128, 128 is the space reserved for header, -1 because it is the position for a new write
+            m=ubound(designmatrix, 1)
+            n=((mypos-1-128)/8)/(m+3)
+            call numpy_write_header(design_unit, (/n,m+3/), 128, 'C', '<f8')            
+            
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+        
+        if(design_unit==0) then
+#if defined(CRY_OSLINUX)
+            print *, 'design matrix file not opened yet'
+#endif            
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+#if defined(CRY_OSLINUX)
+            print *, 'design matrix file not opened but unit set'
+#endif        
+            call abort()
+        end if
+
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit) real(hkllist(:,i), kind(1.0d0)), designmatrix(:,i)
+        end do
 
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
+        call abort()
+    end select
+
+end subroutine
+
+!> Write a part of the design matrix to the file
+subroutine sfls_punch_addtodesign_sp(designmatrix, hkllist, sfls_punch_flag, punch)
+use numpy_mod, only: numpy_write_header
+implicit none
+real, dimension(:,:), intent(in) :: designmatrix !< Block of the design matrix
+integer, dimension(:,:), intent(in) :: hkllist !< List of corresponding hkl indices
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
+logical, optional, intent(in) :: punch !< Flag to close the file when done
+integer i, m, n, mypos
+logical fileopened
+character(len=256) :: lineformat
+
+    select case(sfls_punch_flag)
+    case(1) ! matlab
+
+        if(present(punch)) then
+            write (design_unit, '(''];'')')
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+
+        if(design_unit==0) then
+!            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit, '(a, 3I4)') ' % ', hkllist(:,i)
+            write(design_unit, '(5G16.8,: ," ...")') designmatrix(:,i)
+        end do
+
+    case(2) ! plain text
+    
+        if(present(punch)) then
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+        
+        if(design_unit==0) then
+!            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        write(lineformat, '("(3I5, 3X, ",I0,"E15.6)")') ubound(designmatrix, 1)
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit, lineformat) hkllist(:,i), designmatrix(:,i)
+        end do
+
+    case(3) ! numpy
+    
+        if(present(punch)) then
+            ! writing header
+            ! we need to know how many values were written, it is a bit of guess work as the shape is not known
+            inquire(unit=design_unit, pos=mypos) ! size of data in bytes is mypos-1-128, 128 is the space reserved for header, -1 because it is the position for a new write
+            m=ubound(designmatrix, 1)
+            n=((mypos-1-128)/4)/(m+3)
+            call numpy_write_header(design_unit, (/n,m+3/), 128, 'C', '<f4')            
+
+            close(design_unit)
+            design_unit=0
+            return
+        end if
+        
+        if(design_unit==0) then
+!            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(design_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        do i=1, ubound(designmatrix, 2)
+            write(design_unit) real(hkllist(:,i), kind(1.0)), designmatrix(:,i)
+        end do
+
+    case default
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
 
@@ -339,6 +524,7 @@ end subroutine
 
 !> add a value to wdf in memory. When punch is set, the content is written to a file
 subroutine sfls_punch_addtowdf(wdf, sfls_punch_flag, punch)
+use numpy_mod, only: numpy_save
 implicit none
 real, intent(in) :: wdf !< wdf value
 integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
@@ -351,12 +537,12 @@ integer filecount
 
 if(present(punch)) then
     if(.not. allocated(wdflist)) then
-        print *, 'Cannot output array, not allocated'
+ !       print *, 'Cannot output array, not allocated'
         call abort()
     end if
     
     if(wdfindex==0) then
-        print *, 'Cannot output array, wdflist is empty'
+!        print *, 'Cannot output array, wdflist is empty'
         call abort()
     end if
     
@@ -365,7 +551,7 @@ if(present(punch)) then
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'wdf', filecount, '.m'
+        write(file_name, '(a,i0,a)') 'wdf', filecount, '.m'
         wdf_unit=785
         open(wdf_unit, file=file_name, status='new')
         write (wdf_unit, '(''DF=['')')
@@ -380,7 +566,7 @@ if(present(punch)) then
 
         ! search for new file to open
         filecount = sfls_punch_get_newfileindex()
-        write(file_name, '(a,i0,a)'), 'wdf', filecount, '.dat'
+        write(file_name, '(a,i0,a)') 'wdf', filecount, '.dat'
         wdf_unit=785
         open(wdf_unit, file=file_name, status='new')
         write(wdf_unit, *) wdflist(1:wdfindex)
@@ -389,8 +575,17 @@ if(present(punch)) then
         deallocate(wdflist)
         wdfindex=0
 
+    case(3) ! numpy
+
+        ! search for new file to open
+        filecount = sfls_punch_get_newfileindex()
+        write(file_name, '(a,i0,a)') 'wdf', filecount, '.npy'
+        call numpy_save(trim(file_name), wdflist(1:wdfindex), (/wdfindex/))        
+        deallocate(wdflist)
+        wdfindex=0
+
     case default
-        print *, 'Punch flag not recognised ', sfls_punch_flag
+ !       print *, 'Punch flag not recognised ', sfls_punch_flag
         call abort()
     end select
     
@@ -438,7 +633,7 @@ integer i, j
         filecount=filecount+1
         do i=1,size(extlist)
             do j=1,size(filelist)
-                write(tempstr, '(a,i0,a)'), trim(filelist(j)), filecount, trim(extlist(i))                
+                write(tempstr, '(a,i0,a)') trim(filelist(j)), filecount, trim(extlist(i))                
                 inquire(FILE=trim(tempstr), EXIST=file_exists)
                 if(file_exists) cycle dofind
             end do
@@ -453,15 +648,15 @@ end function
 subroutine sfls_punch_reset_filename()
 implicit none
     if(normal_unit/=0) then
-        print *, 'normal file still open'
+ !       print *, 'normal file still open'
         call abort()
     end if
     if(design_unit/=0) then
-        print *, 'design file still open'
+ !       print *, 'design file still open'
         call abort()
     end if
     if(wdf_unit/=0) then
-        print *, 'wdf file still open'
+ !       print *, 'wdf file still open'
         call abort()
     end if
     fileindex=-1
@@ -474,7 +669,6 @@ use xlst05_mod, only: l5, m5, md5, n5
 use xlst12_mod, only: l12a, l12b, l12o, m12, m12a, m12b, md12a, md12b, n12, n12b
 use xerval_mod, only:
 use xopval_mod, only: iopabn, iopcmi, iopend, iopp22
-use xiobuf_mod, only: cmon
 implicit none
 
 integer, parameter :: nameln = 18 
@@ -482,7 +676,7 @@ integer, parameter :: lover = 10 , nover = 6
 integer, parameter :: latomp = 8 , natomp = 13 
 character(len=132) :: cline1 , cline2
 
-integer i, j, k, l, icombf, iend, ipos, istat
+integer i, j, l, iend, ipos
 integer length, natom, nbatch, ncell, nelem, nexti, nlayer
 integer nprof, nunref
 
@@ -505,36 +699,34 @@ character(len=latomp), dimension(natomp), parameter :: catomps= &
 &    '  u[iso]' , '  size  ' , '   dec  ' , &
 &    '   azi  ' , '        ' , '        ' /)
 
-integer, parameter :: iversn=210, icomsz=512
+!integer, external :: kstall, krddpv, kprtln
 
-integer, external :: kstall, krddpv, kprtln
+!    icombf = kstall (icomsz)
+!    call xzerof (store(icombf), icomsz)
 
-    icombf = kstall (icomsz)
-    call xzerof (store(icombf), icomsz)
+!    istat = krddpv ( istore(icombf) , icomsz )
+!    if ( istat .lt. 0 ) then
+!        print *, "error allocating space in store"
+!        call abort()
+!    end if !go to 9910
 
-    istat = krddpv ( istore(icombf) , icomsz )
-    if ( istat .lt. 0 ) then
-        print *, "error allocating space in store"
-        call abort()
-    end if !go to 9910
+!    !c -- check if list 22 is available for printing
+!    istat = kprtln ( 22 , i )
+!    if ( istat .lt. 0 ) then !
+!        print *, "error list 22 not available"
+!        call abort()
+!    end if !go to 9900
 
-    !c -- check if list 22 is available for printing
-    istat = kprtln ( 22 , i )
-    if ( istat .lt. 0 ) then !
-        print *, "error list 22 not available"
-        call abort()
-    end if !go to 9900
-
-    !c -- load lists 5 and 22
-    call xfal05
-    call xfal12 ( 0 , 0 , i , j )
-    if ( ierflg .lt. 0 ) then
-        print *, "error when loading list 5 or 22"
-        call abort()
-    end if !go to 9900
+!    !c -- load lists 5 and 22
+!    call xfal05
+!    call xfal12 ( 0 , 0 , i , j )
+!    if ( ierflg .lt. 0 ) then
+!        print *, "error when loading list 5 or 22"
+!        call abort()
+!    end if !go to 9900
 
     if(n12b>1) then
-        print *, "error more than 1 bloc"
+!        print *, "error more than 1 bloc"
         call abort()
     end if
     
@@ -666,7 +858,796 @@ integer, external :: kstall, krddpv, kprtln
 
 end subroutine
 
+!> \brief Output leverages and t values to an output file
+!! 
+!! - Calculate the leverages and t values as described in https://doi.org/10.1107/S0021889812015191
+!! - The calculation is done in 2 steps because we need the maximum t values to normalise the data and the t values are too much to be stored
+!! - First calculate the leverages and store all of them, then the t values and save the max value
+!! - Then calculate the t values again, normalise them and write to a file
+!! 
+!! The calculation is using a blocking algorithm to improve speed. block_size reflections are loaded and
+!! the block is processed in one go. openmp does not make significant speed, I suspect the I/O is a limited factor.
+!! using workshare for formatting the data, writing and calculating might speed things up but it does not seem to be necessary at the moment
+subroutine sfls_punch_leverages(nsize)
+use list26_mod, only: subrestraints_parent, restraints_list
+use xiobuf_mod, only: cmon !< screen
+use xunits_mod, only: ncvdu !< lis file
+use numpy_mod, only: numpy_read_header, numpy_write_header
+!$ use OMP_LIB
+implicit none
+integer, intent(in) :: nsize !< number of parameters during least squares
+integer, parameter :: block_size=512
+integer filecount, variance_unit, leverage_unit
+character(len=255) :: file_name, formatstr
+double precision, dimension(:,:), allocatable :: variance, design_block, temp_block, tij_block, T2ij_block
+double precision, dimension(:), allocatable :: maxtij, maxT2ij
+double precision, dimension(:), allocatable :: leverage_all, temp1d
+double precision, dimension(3) :: hkl_dp
+real, dimension(:,:), allocatable :: temp2d
+integer info, irestraint, i, j, numobs, islider, datheader
+double precision normalize, check
+integer, dimension(:,:), allocatable :: hkl
+logical file_exists
+integer file_type !<  0 for npy, 1 for dat
+character vorder, dorder
+integer, dimension(:), allocatable :: vdatashape, ddatashape
+integer vnpyformat, dnpyformat
+character(len=1024) :: msgstatus
+#if defined(CRY_OSLINUX)
+integer :: starttime
+integer, dimension(8) :: measuredtime
+#endif
 
+double precision, external :: ddot !< blas dot product
+
+    write(cmon,'(A,A)') '{I Starting leverages calculations...'
+    call xprvdu(ncvdu, 1,0)
+    ! updating slider in the gui
+    call slider(0,100)
+    
+    if(design_unit/=0) then
+#ifdef CRY_OSLINUX
+        print *, 'design matrix file already opened'
+#endif        
+        call abort()
+    end if
+
+#if defined(CRY_OSLINUX)
+    call date_and_time(VALUES=measuredtime)
+    starttime=((measuredtime(5)*3600+measuredtime(6)*60)+ &
+    measuredtime(7))*1000.0+measuredtime(8)
+#endif
+
+    ! search index for file to open and create
+    filecount = sfls_punch_get_newfileindex()
+
+    design_unit=786
+    write(file_name, '(a,i0,a)') 'design', filecount, '.npy'
+    inquire(file=file_name, exist=file_exists)
+    file_type=0
+    if(.not. file_exists) then
+        write(file_name, '(a,i0,a)') 'design', filecount, '.dat'
+        inquire(file=file_name, exist=file_exists)
+        file_type=1
+        if(.not. file_exists) then
+            file_type=-1
+#ifdef CRY_OSLINUX
+            print *, 'design matrix file does not exist, programming error'
+#endif        
+            call abort()
+        end if
+    end if
+    if(file_type==0) then
+        open(design_unit, file=file_name, status='old', access='stream',  form='unformatted')
+        call numpy_read_header(design_unit, dorder, ddatashape, dnpyformat)
+        if(dnpyformat/=8) then
+#ifdef CRY_OSLINUX
+            print *, 'npy format in design matrix not supported ', dnpyformat
+#endif        
+            call abort()
+        end if
+        if(dorder/='C') then
+#ifdef CRY_OSLINUX
+            print *, 'npy order in design matrix not supported'
+#endif        
+            call abort()
+        end if
+    else
+        open(design_unit, file=file_name, status='old')
+        ! skip header
+        info=0
+        datheader=0
+        do while(info==0)
+            datheader=datheader+1
+            read(design_unit, '(a)', iostat=info) formatstr
+            if(formatstr(1:5)=='#   h') then
+                exit
+            end if
+        end do
+    end if
+    
+    variance_unit=787
+    write(file_name, '(a,i0,a)') 'variance', filecount, '.npy'
+    inquire(file=file_name, exist=file_exists)
+    file_type=0
+    if(.not. file_exists) then
+        write(file_name, '(a,i0,a)') 'variance', filecount, '.dat'
+        inquire(file=file_name, exist=file_exists)
+        file_type=1
+        if(.not. file_exists) then
+            file_type=-1
+#ifdef CRY_OSLINUX
+            print *, 'inverse of the normal matrix file does not exist, programming error'
+#endif        
+            call abort()
+        end if
+    end if
+    if(file_type==0) then
+        open(variance_unit, file=file_name, status='old', access='stream',  form='unformatted')
+        call numpy_read_header(variance_unit, vorder, vdatashape, vnpyformat)
+        if(size(vdatashape)/=2) then
+#ifdef CRY_OSLINUX
+            print *, 'data are not 2D'
+#endif        
+            call abort()
+        end if
+        if(vdatashape(1)/=nsize .or. vdatashape(2)/=nsize) then
+#ifdef CRY_OSLINUX
+            print *, 'data have the wrong size'
+#endif        
+            call abort()
+        end if
+        if(vnpyformat==4) then
+            allocate(temp2d(nsize, nsize))
+            read(variance_unit) temp2d
+            allocate(variance(nsize, nsize))
+            variance=temp2d
+            deallocate(temp2d)
+        else if(vnpyformat==8) then            
+            allocate(variance(nsize, nsize))
+            read(variance_unit) variance
+        else 
+#ifdef CRY_OSLINUX
+            print *, 'npy format not supported'
+#endif        
+            call abort()
+        end if
+        close(variance_unit) 
+        if(vorder=='C') then
+            variance=transpose(variance)
+        end if
+    else
+        open(variance_unit, file=file_name, status='old')
+        allocate(variance(nsize, nsize))
+        read(variance_unit, *) variance
+        close(variance_unit)
+    end if
+
+    leverage_unit=788
+    if(file_type==0) then
+        write(file_name, '(a,i0,a)') 'leverages', filecount, '.npy'
+        open(leverage_unit, file=file_name, status='new', access='stream',  form='unformatted')
+        write(leverage_unit) repeat(' ', 128) ! book space for numpy header
+    else
+        write(file_name, '(a,i0,a)') 'leverages', filecount, '.dat'
+        open(leverage_unit, file=file_name, status='new')
+    end if
+    
+    
+    allocate(hkl(3, block_size))
+    allocate(maxtij(nsize))
+    allocate(maxT2ij(nsize))
+    allocate(design_block(nsize, block_size))
+    allocate(temp_block(nsize, block_size))
+    allocate(tij_block(block_size, nsize))
+    allocate(T2ij_block(block_size, nsize))
+    allocate(leverage_all(0))
+    maxtij=0.0d0
+    maxT2ij=0.0d0
+
+    ! first pre-calculate some constants
+    !##################################################################
+    info=0
+    numobs=0
+    islider=0
+    ! data don't fit in memory and processing line by line is too slow
+    ! Using a blocking algorithm where a block of the design matrix is read and processed
+    ! leverages are saved for later the rest is just to calculate the max values
+    do while(info==0)
+        numobs=numobs+1
+        if(file_type==0) then
+            read(design_unit, iostat=info) hkl_dp, &
+            &   design_block(:,mod(numobs-1,block_size)+1)
+            hkl(:,mod(numobs-1,block_size)+1)=nint(hkl_dp)
+        else
+            read(design_unit, *, iostat=info, iomsg=msgstatus) hkl(:,mod(numobs-1,block_size)+1), &
+            &   design_block(:,mod(numobs-1,block_size)+1)
+        end if
+        if(info/=0) exit
+        
+        if(mod(numobs-1,block_size)+1==block_size) then ! processing the block of design matrix
+    
+            ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
+            ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
+            ! A is design matrix, W weight as a diagonal matrix
+            ! (A^t W A)^-1 is the inverse of normal matrix
+            ! calculation can be done one row of A at at time
+            
+            ! bit for leverages
+            !temp_block=matmul(variance, design_block)
+            call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
+            !call dgemm('N', 'N', nsize, block_size, nsize, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
+
+            ! bit for tij
+            !tij_block=matmul(transpose(design_block), variance)
+            call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+            &   variance, nsize, 0.0d0, tij_block, block_size)
+                        
+            call move_alloc(leverage_all, temp1d)
+            allocate(leverage_all(size(temp1d)+block_size))
+            leverage_all(1:size(temp1d))=temp1d
+            deallocate(temp1d)
+            
+            do i=1, block_size
+                leverage_all(size(leverage_all)-block_size+i)=dot_product(design_block(:,i), temp_block(:,i))
+                !leverage_all(size(leverage_all)-block_size+i) = ddot(nsize, design_block(:,i), 1, temp_block(:,i), 1)
+
+                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-block_size+i))
+            end do
+            
+            do i=1, nsize
+                maxtij(i)=max(maxtij(i), maxval(abs(tij_block(:,i))))
+                maxT2ij(i)=max(maxT2ij(i), maxval(abs(T2ij_block(:,i))))
+            end do
+
+            ! updating slider in the gui
+            islider=islider+(50-islider)/4
+            call slider(islider,100)
+            
+        end if
+        
+    end do
+    
+    ! Processing the remaining incomplete block
+    if(mod(numobs-1,block_size)+1/=block_size) then ! processing the reamining block
+        design_block(:,mod(numobs-1,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
+    
+        call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
+
+        call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+        &   variance, nsize, 0.0d0, tij_block, block_size)
+
+        call move_alloc(leverage_all, temp1d)
+        allocate(leverage_all(size(temp1d)+mod(numobs-1,block_size)))
+        leverage_all(1:size(temp1d))=temp1d
+        deallocate(temp1d)
+        
+        do i=1, mod(numobs-1,block_size)
+            leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)=dot_product(design_block(:,i), temp_block(:,i))
+
+            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i))
+        end do
+        
+        do i=1, nsize
+            maxtij(i)=max(maxtij(i), maxval(abs(tij_block(:,i))))
+            maxT2ij(i)=max(maxT2ij(i), maxval(abs(T2ij_block(:,i))))
+        end do    
+    end if
+    numobs=numobs-1
+    
+    ! updating slider in the gui
+    islider=50
+    call slider(islider,100)
+    
+    normalize=real(numobs, kind(1.0d0))/real(nsize, kind(1.0d0))
+    
+    if(file_type==0) then
+        ! reading the header again will reset the position in the file
+        call numpy_read_header(design_unit, dorder, ddatashape, dnpyformat)
+    else
+        rewind ( unit=design_unit )  ! going back to begining of the file
+        ! skip header
+        do i=1, datheader
+            read(design_unit, '(a)') formatstr
+        end do
+    end if
+    ! Calculating the various values again and printing
+    ! using the leverages from previous run
+    !##################################################################
+    write(formatstr, '(A,I0,A)') '(A, ", ", 3(I0,", "), 2(F7.4, ", "), ',2*nsize,'(1PE10.3, :, ", "))'
+    if(file_type/=0) then
+        write(leverage_unit, '(8(''"'',A,''"'',:,","))') 'Restraint','h','k','l', &
+        &   'Leverage', 'Normalised leverage', 'Normalised t_ij', 'Normalised T2_ij'
+    end if
+    ! data don't fit in memory and processing line by line is too slow
+    ! Using a blocking algorithm where a block of the design matrix is read and processed
+    info=0
+    irestraint=0
+    numobs=0
+    check=0.0d0
+    do while(info==0)
+        numobs=numobs+1
+        if(file_type==0) then
+            read(design_unit, iostat=info) hkl_dp, &
+            &   design_block(:,mod(numobs-1,block_size)+1)
+            hkl(:,mod(numobs-1,block_size)+1)=nint(hkl_dp)
+        else
+            read(design_unit, *, iostat=info) hkl(:,mod(numobs-1,block_size)+1), &
+            &   design_block(:,mod(numobs-1,block_size)+1)
+        end if
+        if(info/=0) exit
+        
+        if(mod(numobs-1,block_size)+1==block_size) then ! processing the block of design matrix
+    
+            ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
+            ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
+            ! A is design matrix, W weight as a diagonal matrix
+            ! (A^t W A)^-1 is the inverse of normal matrix
+            ! calculation can be done one row of A at at time
+            
+            !tij_block=matmul(transpose(design_block), variance)
+            call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+            &   variance, nsize, 0.0d0, tij_block, block_size)
+            
+            do i=1, block_size
+                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-block_size+i))
+                
+                if(all(hkl(:,i)==0)) then
+                    irestraint=irestraint+1
+                end if
+                
+                if(file_type==0) then
+                    write(leverage_unit) &
+                    &   real(hkl(:,i), kind(1.0d0)), leverage_all(size(leverage_all)-block_size+i), &
+                    &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )                
+                else
+                    if(irestraint==0) then
+                        write(leverage_unit, formatstr) &
+                        &   '""', hkl(:,i), leverage_all(size(leverage_all)-block_size+i), &
+                        &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                        &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                    else
+                        write(leverage_unit, formatstr) &
+                        &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
+                        &   hkl(:,i), leverage_all(size(leverage_all)-block_size+i), &
+                        &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                        &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                    end if
+                end if
+            end do
+
+            ! updating slider in the gui
+            islider=islider+(100-islider)/4
+            call slider(islider,100)
+
+        end if
+        
+    end do
+    
+    ! Processing the remaining incomplete block
+    if(mod(numobs-1,block_size)+1/=block_size) then ! processing the reamining block
+        design_block(:,mod(numobs-1,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
+    
+        call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
+        &   variance, nsize, 0.0d0, tij_block, block_size)
+        
+        do i=1, mod(numobs-1,block_size)
+            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i))
+
+            if(all(hkl(:,i)==0)) then
+                irestraint=irestraint+1
+            end if
+            
+            if(file_type==0) then
+                write(leverage_unit) &
+                &   real(hkl(:,i), kind(1.0d0)), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
+                &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+            else
+                if(irestraint==0) then
+                    write(leverage_unit, formatstr) &
+                    &   '""', hkl(:,i), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
+                    &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                else
+                    write(leverage_unit, formatstr) &
+                    &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
+                    &   hkl(:,i), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
+                    &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                end if
+            end if
+        end do
+    end if    
+    numobs=numobs-1
+
+    if(file_type==0) then
+        call numpy_write_header(leverage_unit, (/numobs, 5+2*nsize/), 128, 'C', '<f8')
+    end if
+    
+    close(leverage_unit)
+    design_unit=0
+    
+    write(cmon,'(A,A)') '{I Leverages written in file: ', trim(file_name)
+    call xprvdu(ncvdu, 1,0)      
+    call slider(100,100)
+
+#if defined(CRY_OSLINUX)
+    call date_and_time(VALUES=measuredtime)
+    print *, ''
+    print *, '--- Calculation of leverages ---'
+    print *, 'sum of leverage and num of observations ', sum(leverage_all), numobs    
+    print *, 'Calculation of leverages done in ', &
+    ((measuredtime(5)*3600+measuredtime(6)*60)+ &
+    measuredtime(7))*1000.0+measuredtime(8)-starttime, 'ms'
+#endif
+
+end subroutine
+
+!> This function return the text of the restraint as one line only
+function cleanrestraint(text)
+implicit none
+character(len=*), intent(in) :: text
+character(len=len(text)) :: temp
+character(len=:), allocatable :: cleanrestraint
+integer i
+
+temp=text
+
+i=index(temp, 'CONT')
+do while(i>0)
+    temp=temp(1:i-1)//temp(i+4:)//'    '
+    i=index(temp, 'CONT')
+end do
+
+i=index(temp, achar(10))
+do while(i>0)
+    temp=temp(1:i-1)//temp(i+1:)//' '
+    i=index(temp, achar(10))
+end do
+
+i=index(temp, achar(13))
+do while(i>0)
+    temp=temp(1:i-1)//temp(i+1:)//' '
+    i=index(temp, achar(13))
+end do
+
+cleanrestraint=trim(temp)
+
+end function
+
+!> This subroutine write a python file with all the necessary info to do some calculations
+subroutine sfls_punch_python()
+use store_mod, only: store, istore=>i_store
+use xlst01_mod
+use xlst02_mod
+use xlst05_mod
+use list12_mod
+use xlst12_mod
+use xscale_mod
+use xopk_mod
+use xapk_mod
+use xconst_mod
+use numpy_mod
+use xunits_mod, only: ierflg
+implicit none
+
+integer IADDL,IADDR,IADDD
+integer, parameter :: pyfile=578
+type(param_t), dimension(:), allocatable :: parameters_list !< List of least squares parameters
+integer i, j, k, filecount
+character eol
+character(len=128) :: file_name
+
+type atom_t 
+  character(len=4) :: label
+  integer serial
+end type
+type(atom_t), dimension(:), allocatable :: l5model
+
+character(len=6) flag
+character(len=24) :: buffer
+character(len=6), parameter :: iblank='      '
+integer ILEBP, jrr, js, jt, ju, jv, jw, jx, na, nc
+!integer, dimension(40) :: icom12
+!equivalence(l12, icom12(1))
+integer, dimension(6) :: icom12
+real weight
+real, dimension(:,:), allocatable :: constraintstable
+character(len=24), dimension(:), allocatable :: physicallist
+integer :: physicalindex, icentr
+
+integer, external :: khuntr
+
+    icom12=(/L12LS, L12ES, L12BS, L12CL, L12PR, L12EX/)
+    if(nsc>6) then
+      print *, 'programmer error'
+      call abort()
+    end if
+
+    ! check if list 1 and 5 are loaded
+    if (khuntr (1,0, iaddl,iaddr,iaddd,-1) /= 0) then
+      print *, 'error, list 1 not loaded'
+      call abort()
+    end if
+    if (khuntr (2,0, iaddl,iaddr,iaddd,-1) /= 0) then
+      call xfal02
+      if ( ierflg .lt. 0 ) then
+        print *, 'error, list 2 cannot be loaded'
+        call abort()
+      endif
+    end if
+    if (khuntr (5,0, iaddl,iaddr,iaddd,-1) /= 0) then
+      print *, 'error, list 5 not loaded'
+      call abort()
+    end if
+    ! cannot check list 12. must assume it is loaded
+    !IF (KHUNTR (12,0, IADDL,IADDR,IADDD,-1) /= 0) then
+    !  print *, 'Error, list 12 not loaded'
+    !  call abort()
+    !end if
+    
+    ! search index for file to open and create
+    filecount = sfls_punch_get_newfileindex()
+
+    write(file_name, '(a,i0,a)') 'crysdata', filecount, '.py'
+    open(pyfile, file=trim(file_name))
+
+    write(pyfile, '(a)') "#!/usr/bin/env python"
+    write(pyfile, '(a)') "import numpy"
+    write(pyfile, '(a)') ""
+    write(pyfile, '(a)') ""
+
+    write(pyfile, '(a)') "class Atom:"
+    write(pyfile, '(4X, a)') '"""Atom definition class"""'
+    write(pyfile, '(4X, a)') 'label=""'
+    write(pyfile, '(4X, a)') "serial=0"
+    write(pyfile, '(4X, a)') "occupancy=0"
+    write(pyfile, '(4X, a)') "flag=0"
+    write(pyfile, '(4X, a)') "xyz=numpy.zeros(3)"
+    write(pyfile, '(4X, a)') "adp=numpy.zeros(6)"
+    write(pyfile, '(4X, a)') ""
+    write(pyfile, '(4X, a)') "def adp33(self):"
+    write(pyfile, '(8X, a)') "a=numpy.array((3,3))"
+    write(pyfile, '(8X, a)') "a[0,0]=self.adp[0]"
+    write(pyfile, '(8X, a)') "a[1,1]=self.adp[1]"
+    write(pyfile, '(8X, a)') "a[2,2]=self.adp[2]"
+    write(pyfile, '(8X, a)') "a[1,2]=self.adp[3]"
+    write(pyfile, '(8X, a)') "a[0,2]=self.adp[4]"
+    write(pyfile, '(8X, a)') "a[0,1]=self.adp[5]"
+    write(pyfile, '(8X, a)') "a[2,1]=self.adp[3]"
+    write(pyfile, '(8X, a)') "a[2,0]=self.adp[4]"
+    write(pyfile, '(8X, a)') "a[1,0]=self.adp[5]"
+    write(pyfile, '(8X, a)') "return a"
+    write(pyfile, '(a)') ""
+
+    write(pyfile, '(a)') "class TRM:"
+    write(pyfile, '(4X, a)') '"""Symmetry operator"""'
+    write(pyfile, '(4X, a)') 'R=numpy.zeros((3,3))'
+    write(pyfile, '(4X, a)') 'T=numpy.zeros((3))'
+
+    write(pyfile, '(a)') ""
+    write(pyfile, '(a)') ""
+
+    write(pyfile, '(a)') "#Unit cell [a,b,c,alpha,beta,gamma]"
+    write(pyfile, "('cell=numpy.array([',5(F0.4,','),F0.4,'])')") STORE(L1P1:L1P1+5)
+    write(pyfile, '(a)') "#Reciprocal unit cell [a*,b*,c*,alpha*,beta*,gamma*]"
+    write(pyfile, "('rcell=numpy.array([',5(F0.4,','),F0.4,'])')") STORE(L1P2:L1P2+5)
+    write(pyfile, '(a)') "#Orthogonalisation matrix"
+    write(pyfile, "('ortho=numpy.array([',2('[',F0.4,',',F0.4,',',F0.4,'],'),'[',F0.4,',',F0.4,',',F0.4,']])')") STORE(L1O1:L1O1+8)
+    write(pyfile, '(a)') "#Metric tensor"
+    write(pyfile, "('metric=numpy.array([',2('[',F0.4,',',F0.4,',',F0.4,'],'),'[',F0.4,',',F0.4,',',F0.4,']])')") STORE(L1M1:L1M1+8)
+
+    
+    ! Least square parameters list
+    write(pyfile, '(a)') ""
+    call load_lsq_params(parameters_list)
+    write(pyfile, '(a)') "lsq_params={"
+    eol=','
+    do i=1, size(parameters_list)
+      if(i==size(parameters_list)) then
+        eol=''
+      end if
+      if(mod(i,10)==0) then
+        write(pyfile, *) ''
+      end if
+      if(parameters_list(i)%index>-1) then
+        ! python indices are zero based, hence index-1 below
+        if(parameters_list(i)%serial>0) then
+          write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(parameters_list(i)%label), &
+          &   parameters_list(i)%serial, trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
+        else
+          write(pyfile, '(4x, """", a,""":",I0, a)') &
+          &   trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
+        end if
+      end if
+    end do
+    write(pyfile, '(a)') "}"
+
+
+    ! List 5 model
+    write(pyfile, '(a)') ""
+    write(pyfile, '(a)' ) '# Overall parameters'
+    write(pyfile, '(a ,F11.6)' ) 'scale=', STORE(L5O)
+    write(pyfile, '(a ,F11.6)' ) 'ou_iso=', STORE(L5O+1)
+    write(pyfile, '(a ,F11.6)' ) 'du_iso=', STORE(L5O+2)
+    write(pyfile, '(a ,F11.6)' ) 'polarity=', STORE(L5O+3)
+    write(pyfile, '(a ,F11.6)' ) 'enantio=', STORE(L5O+4)
+    write(pyfile, '(a ,F11.6)' ) 'extinction=', STORE(L5O+5)
+    
+    write(pyfile, '(a)') ""
+    allocate(l5model(N5))
+    write(pyfile, '(a,I0,a)') "model = [ Atom() for i in range(",n5,")]"
+    
+    m5=l5
+    do i=1, n5
+      WRITE(pyfile,'(a,a,"(",I0,")",a)') '# Atom ', trim(transfer(STORE(M5), 'aaaa')), nint(STORE(M5+1))
+      write(pyfile, '(a,I0,a,a,a)') "model[",i-1,'].label="',trim(transfer(STORE(M5), 'aaaa')),'"'
+      write(pyfile, '(a,I0,a,I0)') "model[",i-1,'].serial=',nint(STORE(M5+1))
+      write(pyfile, '(a,I0,a,F0.6)') "model[",i-1,'].occupancy=',STORE(M5+2)
+      write(pyfile, '(a,I0,a,I0)') "model[",i-1,'].flag=',nint(STORE(M5+3))
+      write(pyfile, '(a,I0,a,2(F0.6,","),F0.6,a)') "model[",i-1,'].xyz=numpy.array([',STORE(M5+4:M5+6),'])'
+      write(pyfile, '(a,I0,a,5(F0.6,","),F0.6,a)') "model[",i-1,'].adp=numpy.array([',STORE(M5+7:M5+12),'])'
+      M5 = M5 + MD5
+    end do
+    
+    ! matrix of constraints
+    allocate(constraintstable(131072, size(parameters_list)))
+    allocate(character(len=24) :: physicallist(131072))
+    physicallist=''
+    physicalindex=0
+    !      jt            absolute l.s. parameter no.
+    !      js            physical parameter no from which to start search
+    !      jx            relative parameter no
+
+    jx = 12
+    m5 = l5 - md5
+    m12 = l12o
+    l12a = nowt
+    js = 0
+
+    flag = iblank
+
+    do while(m12 .ge. 0)   ! more stuff in l12
+      if(istore(m12+1).gt.0) then ! any refined params
+!c--compute the address of the first part for this group
+        l12a=istore(m12+1)
+!c--check if this part contains any refinable parameters
+        do while(l12a.gt.0) ! --check if there are any more parts for this atom or group
+          if(istore(l12a+3).lt.0) exit
+!c--set up the constants to pass through this part
+          md12a=istore(l12a+1)
+          ju=istore(l12a+2) 
+          jv=istore(l12a+3)
+          js=istore(l12a+4)+1
+!c--search this part of this atom
+          do jw=ju,jv,md12a
+            jt=istore(jw)
+
+            ilebp = 0
+            do na=1,nsc
+              if(icom12(na).eq.m12) then
+!c--layer or element batch or parameter print
+                 ilebp = 1
+                 exit
+              end if
+            end do
+
+            if ( md12a .gt. 1 ) then
+              weight = store(jw+1)
+            else
+              weight = 1.
+            endif
+
+            if ( ilebp .eq. 1 ) then
+              if(jt>0) then
+                physicalindex=physicalindex+1
+                write(buffer, '(2a4)') (kscal(nc,na+2),nc=1,2)
+                write(physicallist(physicalindex), '(a,1x,i0)') trim(buffer), js
+                constraintstable(physicalindex, JT)=weight
+              end if
+
+!c--check if this is an overall parameter
+            else if (m12.eq.l12o) then
+              if(jt>0) then
+                physicalindex=physicalindex+1
+                write(physicallist(physicalindex), '(3a4)') (kvp(jrr,js),jrr=1,2)
+                constraintstable(physicalindex, JT)=weight
+              end if
+            else  
+!c-c-c-distinction between aniso's and iso/special's for print
+
+              if((store(m5+3) .ge. 1.0) .and. (js .ge. 8)) then
+                if(jt>0) then
+                  physicalindex=physicalindex+1
+                  write(buffer, '(a4)') store(m5)
+                  write(physicallist(physicalindex), '(a,"(",I0,")",1X,3a4)') &
+                  &   trim(buffer),nint(store(m5+1)),(icoord(jrr,js+nkao),jrr=1,nwka)
+                  constraintstable(physicalindex, JT)=weight
+                end if
+              else
+                if(jt>0) then
+                  physicalindex=physicalindex+1
+                  write(buffer, '(a4)') store(m5)
+                  write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
+                  &   trim(buffer),nint(store(m5+1)), (icoord(jrr,js),jrr=1,nwka)
+                  constraintstable(physicalindex, JT)=weight
+                end if
+              endif
+                            
+            endif              
+!c
+!c--increment to the next parameter of this part
+            js=js+1
+          end do
+!c--change parts for this atom or group
+          l12a=istore(l12a)
+        end do
+      end if
+!c--move to the next group or atom
+      m5=m5+md5
+      m12=istore(m12)
+    end do
+      
+    write(pyfile,'(a)') ''
+    write(pyfile,'(a)') '# Matrix of constraints'
+    write(pyfile,'(a,I0,",",I0,a)') 'mconstraints=numpy.zeros( (', physicalindex, size(parameters_list),') )'
+    do j=1, size(parameters_list)
+      do i=1, physicalindex
+        if(constraintstable(i, j)/=0.0) then
+          write(pyfile, '(a,I0,",",I0,a,F5.2)') 'mconstraints[', i-1, j-1, ']=', constraintstable(i, j)
+        end if
+      end do
+    end do
+      
+
+    ! physical parameters list
+    write(pyfile, '(a)') ""
+    write(pyfile, '(a)') "parameters={"
+    eol=','
+    do i=1, physicalindex
+      if(i==physicalindex) then
+        eol=''
+      end if
+      if(mod(i,10)==0) then
+        write(pyfile, *) ''
+      end if
+      write(pyfile, '(4x, """", a,""":",I0, a)', advance="no") trim(adjustl(physicallist(i))), i, eol
+    end do
+    write(pyfile, '(a)') "}"
+    
+    ! space group symbol
+    write(pyfile, '(a)') ""
+    j=l2sg+md2sg-1
+    write (buffer,'(4(A4,1X))') (istore(i),i=l2sg,j)   
+    write(pyfile, '(a, a)') '# Space group: ', trim(buffer)
+    icentr=nint(store(l2c))
+    write(pyfile, '(a)') '# 1 means centrosymmetric, zero otherwise'
+    write(pyfile, '(a,I0)') "centering = ", icentr
+    
+    ! symmetry operators
+    write(pyfile, '(a,I0,a)') "TRMlist = [ TRM() for i in range(",n2p*n2,")]"
+    m2p = l2p+((n2p-1)*md2p)
+    m2 = l2+((n2-1)*md2)
+
+    k=-1
+    do i=l2,m2,md2
+     do j=l2p,m2p,md2p
+       k=k+1
+       write(pyfile, '(a,I0,a)') 'TRMlist[',k,'].R = numpy.array(['
+       write(pyfile, '(4X, a,2(F4.1,","),F4.1,a)') '[', STORE(I:I+2), '],'
+       write(pyfile, '(4X, a,2(F4.1,","),F4.1,a)') '[', STORE(I+3:I+5), '],'
+       write(pyfile, '(4X, a,2(F4.1,","),F4.1,a)') '[', STORE(I+6:I+8), ']])'
+       write(pyfile, '(a,I0,a)') 'TRMlist[',k,'].T = numpy.array('
+       write(pyfile, '(4X, a,2(F4.1,"/12.0,"),F4.1,"/12.0", a)') '[', STORE(j:j+2)*12.0, '])'
+     end do
+    end do    
+    write(pyfile, '(a)') ""
+
+    close(pyfile)
+
+end subroutine
 
 end module
 

@@ -874,7 +874,7 @@ C----- NEGATED MAP
 2610  FORMAT(' The minimum and maximum',
      1' map densities are ',2G10.3,A,'/A^3',
      2 / 17X,' The deepest hole is at ', 3F8.3)
-       IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') CMON(1),CMON(2)
+       IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1)),trim(CMON(2))
       endif
 C----- STORE IN LIST30 IF DIFFERENCE MAP
       IF (NTYP .EQ. 3) THEN
@@ -4355,7 +4355,7 @@ C -- INPUT ERROR
 C -- NOT ENOUGH STORE
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 9925  FORMAT ( 1X ,
      1'Not enough stack to allocate the resolution of mask specified' )
       CALL XERHND ( IERERR )

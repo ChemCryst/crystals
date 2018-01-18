@@ -20,7 +20,8 @@
 % EVALUATE I6DONE = TRUE                                                        
 % EVALUATE I6MASK = TRUE                                                        
 % COPY '#SCRIPT XPUTINFO'                                                       
-%%                                                                              
+%% 
+%%                                                                             
 %%                                                                              
 ^^WI WINDOW XWILSON 'Wilson Plot' LARGE MODAL KEEP SIZE                    
 ^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'                                            
@@ -84,7 +85,7 @@
 ^^CO SENDPROGRESSTO _CHECKPR                                                    
 %%                                                                              
 % LOOP                                                                          
-
+%%                                                                              
 ^^CO SET PROGOUTPUT TEXT 'Computing Wilson statistics'                          
 %  COPY '#WILSON'                                                               
 %  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'                                      
@@ -96,7 +97,7 @@
 %  COPY 'END'                                                                   
 %%                                                                              
 %%                                                                              
-
+%%                                                                              
 ^^CO SET PROGOUTPUT TEXT 'Ready'                                                
 %%                                                                              
 %  LOOP                                                                         
@@ -185,7 +186,7 @@
   box and select the maximum observed Rho value before selecting
   a new Rho value.
 %      END BLOCK                                                            
-                                                                
+%%                                                                                                                                              
 %    END CASE                                                                   
 %  END LOOP                                                                     
 % END LOOP                                                                      

@@ -157,8 +157,9 @@
 @if exist %FOPATH%\%FILESTEM%.obj del %FOPATH%\%FILESTEM%.obj
 @if  not "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.F
 @if      "%FILESTEM%" == "lapack" set FSRC= %SRCDIR%\%FILESTEM%.f
-@if  not "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FOPTS%
+@set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @if      "%FILESTEM%" == "lapack" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
+@if      "%FILESTEM%" == "list26" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 %F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS% || ( make_err.bat )
 @goto %JUMPBACK%
@@ -168,6 +169,7 @@
 @if exist %FOPATH%\%FILESTEM%.obj del %FOPATH%\%FILESTEM%.obj
 @set FSRC= %SRCDIR%\%FILESTEM%.f90
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
+@if      "%FILESTEM%" == "list26_helper" set FOPTIONS=%FDEF% %FWIN% %FNOOPT%
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 %F77% %FSRC% %FOUT%%FILESTEM%.obj %FOPTIONS% || ( make_err.bat )
 @goto %JUMPBACK%

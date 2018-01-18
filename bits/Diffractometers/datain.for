@@ -70,10 +70,11 @@ C
 C Revision 1.8  2011/05/17 16:00:16  djw
 C Enable long lines, up to 512 characters
 C
-      SUBROUTINE DATAIN
+      SUBROUTINE DATAIN(interactive)
 c #include "ciftbx.sys"
 #include "ciftbx.cmn"
 #include "cifin.cmn"
+      logical, intent(in) :: interactive
       LOGICAL F2,F3,F4,F5
       LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
       LOGICAL F6L, FNX, PROBABLY_NEUTRONS 
@@ -138,6 +139,7 @@ C---- INDICATE NO INFO YET FOUD
       F6L = .FALSE.
       FL6 = .FALSE.
       cspace = '?'
+	  ZM = 1.0
 c
 C....... Assign the DATA block to be accessed
 C 
@@ -207,6 +209,14 @@ c
       F1=CHAR_('_computing_data_reduction',C80)
       IF (F1) WRITE (NCIF,1234) '_computing_data_reduction ',
      1 C80(1:NCTRIM(C80))
+C 
+C.....Look for a SHELX scalefactor
+c
+      F1 = NUMB_('_shelx_F_squared_multiplier',adum,DUM)
+      if (f1) then
+       FZ = NUMB_('_cell_formula_units_Z',RSCALE,DUM)
+      endif
+      IF (.NOT. (FZ)) RSCALE=1.
 C 
 c
 C....... Read in Z
@@ -539,6 +549,9 @@ C
          IH=NINT(RH)
          IK=NINT(RK)
          IL=NINT(RL)
+c........ use SHELX scalefactor
+         RF = RF/RSCALE
+         RS = RS/RSCALE
          IF ((ABS(IL).GT.255).OR.(ABS(IK).GT.255).OR.(ABS(IH).GT.255))
      1    THEN
           WRITE(6,'(A,3I10,2F10.2,i10)') 'Index too big for CRYSTALS',
@@ -562,18 +575,18 @@ C
          MAXK=MAX(MAXK,IK)
          MAXL=MAX(MAXL,IL)
 C
-        if (( rf .lt. 99999. ).and.( rc .lt. 99999. )) then
-          write ( noutr, '(3I4,3F8.2)' )ih,ik,il,rf,rs
-     1                                  ,rc
+        if (( rf .lt. 9999. ).and.( rc .lt. 9999. )) then
+          write ( noutr, '(3I4,3F10.3)' )ih,ik,il,rf,rs, rc
+        else if (( rf .lt. 99999. ).and.( rc .lt. 99999. )) then
+          write ( noutr, '(3I4,3F10.2)' )ih,ik,il,rf,rs, rc
         else if (( rf .lt. 999999. ).and.( rc .lt. 999999. )) then
-          write ( noutr, '(3I4,3F8.1)' )ih,ik,il,rf,rs
-     1                                  ,rc
+          write ( noutr, '(3I4,3F10.1)' )ih,ik,il,rf,rs, rc
         else if (( rf .lt. 9999999. ).and.( rc .lt. 9999999. )) then
-          write ( noutr, '(3I4,3F8.0)' )ih,ik,il,rf,rs
-     1                                  ,rc
+          write ( noutr, '(3I4,3F10.0)' )ih,ik,il,rf,rs, rc
         else
-          write ( noutr, '(3I4,3I8)' )ih,ik,il,
-     *                                NINT(rf),NINT(rs),NINT(rc)
+          write ( noutr, '(A)') 
+     1    'F8 format overflow. fcf values too big'
+          write ( noutr, '(3I4,3F12.0)' )ih,ik,il,rf,rs, rc
         end if
 
         if(.not.(loop_)) exit
@@ -622,6 +635,7 @@ C
 C
 C
 C....... Extract space group notation (expected char string)
+C        Note _alt is the old short name
       CSPACE = '?'
       F1=CHAR_('_symmetry_space_group_name_H-M',c80)
       if(f1) FSG=CHAR_('_symmetry_space_group_name_H-M',NAME)
@@ -661,7 +675,7 @@ C      IDIFF = 5 = CSD
 C
 c Kccd SG is only Point Group
       if (idiff .eq. 2) fsg = .false.
-      if (fsg) then
+      if (fsg .and. interactive) then
          write(6,'(/A)') 
      1 'CAUTION - some cifs only contain the Point Group'
          write(6,'(a,a)')'Space Group from cif is ',
@@ -912,7 +926,6 @@ c        compatibility with SHELX
 c
 C........Check if there are more atoms in the loop to get.
       if(loop_) goto 240
-241   continue
 
 
 
@@ -935,6 +948,7 @@ C....... Read the Uij loop and store in the site list
 300     if(.not.(loop_)) exit
       end do
 c
+241   continue
 c
 700   CONTINUE
       write(6,*) nsite, ' Atoms found'
@@ -948,9 +962,9 @@ C
       IF (.NOT.(FC)) THEN
          write(6,'(//a)') 'No cell DATA in this block.'
          write(NTEXT,'(a)') 'No cell DATA in this block.'
-         write(6,'(//a)') 'Abandoning  block'
-         write(NTEXT,'(a)') 'Abandoning block'
-         GO TO 1050
+c         write(6,'(//a)') 'Abandoning  block'
+c         write(NTEXT,'(a)') 'Abandoning block'
+c         GO TO 1050
       END IF
 C
 5678  CONTINUE
@@ -1055,7 +1069,8 @@ C(FF)
 cdjw Insert space if character immediately follows a number
 c    beware if the element type is a charged species like Om2
 c
-        call fixform(line,cform,lenfil,atsum,celvol,zm,zp,idiff)
+        call fixform(line,cform,lenfil,atsum,celvol,zm,zp,idiff,
+     1    interactive)
 c
 c
 c
@@ -1220,7 +1235,7 @@ Cc #LIST 6
           write(NOUTF,'(a)')'READ F''S=FO NCOEF=6 TYPE=FIXED CHECK=NO'
         end if
         write(NOUTF,'(a)')'INPUT H K L /FO/ SIGMA(/FO/) /Fc/'
-        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F8.0)'
+        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F10.0)'
         write(NOUTF,'(a)')'STORE NCOEF=7'
         write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
         write(NOUTF,'(a)')'END'
@@ -1252,7 +1267,10 @@ c      WRITE (CFILE,'(I8)') I
 c
 c
 c
-      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL,sum,celvol,zm,zp,idiff)
+      SUBROUTINE FIXFORM (LINE,CFORM,LENFIL,sum,celvol,zm,zp,idiff,
+     1    interactive)
+     
+      logical, intent(in) :: interactive ! flag for user interaction
       CHARACTER*(*) LINE,CFORM
 c     Separate the components of the formula in LINE into CFORM
       LOGICAL LNUMER, LCHAR, LSPACE, FF, lhatom
@@ -1505,7 +1523,7 @@ c
      2  ,nint(zz),' (actually ',zn,')'
          if(zp.le.0.) zp = zz
 c
-         if(idiff.ne.5) then
+         if(idiff.ne.5 .and. interactive) then
           write(6,'(a,f6.1,a)') 'Please give Z [',
      1    zp,']'
           read (5,'(A)') ctemp
@@ -1515,7 +1533,7 @@ c
          endif
 750      continue
          zm=zp
-         write(6,'(a,f6.2)') 'Using Z = ', zp
+         write(6,'(a,f6.2)') 'Using Z = ', zm
 c
 c----     scale the contents
 c

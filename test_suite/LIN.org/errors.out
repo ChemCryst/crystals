@@ -1,12 +1,12 @@
-#TITLE TEST LIST INPUT                                                                                                                                                                                                                                          
-# THE \SIMULATE IS TO PERMIT CONTINUATION AFTER ERRORS IN BATCHMODE                                                                                                                                                                                             
-#SIMULATE                                                                                                                                                                                                                                                       
-#LIST TYPE= 1                                                                                                                                                                                                                                                   
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST TYPE= 1                                                                                                                                                                                                                                                   
-#PRINT 1                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
+#TITLE TEST LIST INPUT
+# THE \SIMULATE IS TO PERMIT CONTINUATION AFTER ERRORS IN BATCHMODE
+#SIMULATE
+#LIST TYPE= 1
+#LIST 20
+#LIST 30
+#LIST TYPE= 1
+#PRINT 1
+#LIST 1
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -103,18 +103,18 @@
  Record  108    LGRP    6  NGRP      1   ANISOTROPIC TEMPERATURE FACTOR COEFFICIENTS                                     
 
 
-            -0.683243      -0.557167      -0.342629      -0.873845      -0.967676      -1.233986
+            -0.683243      -0.557166      -0.342629      -0.873845      -0.967676      -1.233986
 
 
  Record  109    LGRP    3  NGRP      1   CONSTANTS TO CONVERT AN ATOM FROM ISO TO ANISO                                  
 
 
-            -0.204013       0.120026       0.316226
+            -0.204012       0.120026       0.316226
 
 
 
-#PRINT 1                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
+#PRINT 1
+#LIST 1
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -223,7 +223,7 @@
 
  The following character string does not uniquely define one  DIRECTIVE  : 
 RE
-#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -233,7 +233,7 @@ RE
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
-#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -244,7 +244,7 @@ RE
  Parameter keyword : C           
 
  The user directive has been omitted or does not begin in column one
-#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -255,7 +255,7 @@ RE
  Parameter keyword : C           
 
  The directive on the last card is illegal with this '#Instruction'
-#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -267,11 +267,11 @@ RE
 
  The directive above may not follow a card containing the directive : 
 REAL        
-#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1
  The last directive has appeared too many times,
  or should not have appeared at all
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 1                                                                                                                                                                                                                                                         
+#LIST 1
+#LIST 1
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
  Parameter   1  has no default value and has been omitted
@@ -283,9 +283,9 @@ REAL
 
  Parameter     1  has appeared too many times
  Parameter keyword : A           
-#LIST 2                                                                                                                                                                                                                                                         
-#PRINT 2                                                                                                                                                                                                                                                        
-#LIST 2                                                                                                                                                                                                                                                         
+#LIST 2
+#PRINT 2
+#LIST 2
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -394,9 +394,9 @@ REAL
 
  CRYSTALS -- ERROR
 
-#LIST 2                                                                                                                                                                                                                                                         
-#PRINT 2                                                                                                                                                                                                                                                        
-#LIST 4                                                                                                                                                                                                                                                         
+#LIST 2
+#PRINT 2
+#LIST 4
 
 
  TEST LIST INPUT                                                                      Date              Time          
@@ -569,14 +569,14 @@ REAL
 
 
 
-#PRINT 4                                                                                                                                                                                                                                                        
-#LIST 4                                                                                                                                                                                                                                                         
+#PRINT 4
+#LIST 4
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        1     Address     4205     Length      49     Created on                          
+ Print list type     4     serial number        1     Address     4205     Length      50     Created on                          
 
 
 
@@ -597,23 +597,23 @@ REAL
         5              3              0              0
 
 
- Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
+ Record  103    LGRP    7  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI          REWT        
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
+[23]    2.00      10000.0000         6.0000         1.0000         1.0000         0.2500         1.0000
 
 
 
-#PRINT 4                                                                                                                                                                                                                                                        
-#LIST 4                                                                                                                                                                                                                                                         
+#PRINT 4
+#LIST 4
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     4     serial number        2     Address     4254     Length      37     Created on                          
+ Print list type     4     serial number        2     Address     4255     Length      38     Created on                          
 
 
 
@@ -633,12 +633,12 @@ REAL
         6              3              0              0
 
 
- Record  103    LGRP    6  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
+ Record  103    LGRP    7  NGRP      1   THE REAL PARAMETERS (SET BY SPECIAL TREATMENT IN LISTS3/XRDLN)                  
 
 
-    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI       
+    WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI          REWT        
 
-   2.0000     10000.0000         6.0000         1.0000         1.0000         0.2500
+[23]    2.00      10000.0000         6.0000         1.0000         1.0000         0.2500         1.0000
 
 
 
@@ -648,7 +648,7 @@ REAL
 
  CRYSTALS -- ERROR
 
-#LIST 2                                                                                                                                                                                                                                                         
+#LIST 2
  A directive has been omitted leaving the parameters below undefined
  Directive : CELL        
  Parameter   1  has no default value and has been omitted
@@ -659,15 +659,15 @@ REAL
 
  CRYSTALS -- ERROR
 
-#LIST 3                                                                                                                                                                                                                                                         
-#PRINT 3                                                                                                                                                                                                                                                        
-#LIST 5                                                                                                                                                                                                                                                         
+#LIST 3
+#PRINT 3
+#LIST 5
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     3     serial number        1     Address     4291     Length      72     Created on                          
+ Print list type     3     serial number        1     Address     4293     Length      72     Created on                          
 
 
 
@@ -703,7 +703,7 @@ REAL
 
  Unknown parameter keyword : 
  U[ISO]
-#PRINT 5                                                                                                                                                                                                                                                        
+#PRINT 5
  CRYSTALS command input error 
 
  CRYSTALS -- ERROR
@@ -712,7 +712,7 @@ REAL
 
  CRYSTALS -- ERROR
 
-#LIST 5                                                                                                                                                                                                                                                         
+#LIST 5
  No list of type        5 stored
 
  CRYSTALS -- ERROR
@@ -721,14 +721,14 @@ REAL
 
 
 
-#PRINT 5                                                                                                                                                                                                                                                        
-#LIST TYPE= 1                                                                                                                                                                                                                                                   
+#PRINT 5
+#LIST TYPE= 1
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type     5     serial number        1     Address     4363     Length      83     Created on                          
+ Print list type     5     serial number        1     Address     4365     Length      83     Created on                          
 
 
 
@@ -799,8 +799,8 @@ REAL
 
 
 
-#LIST 2                                                                                                                                                                                                                                                         
-#LIST 13                                                                                                                                                                                                                                                        
+#LIST 2
+#LIST 13
  Absorption correction -- Internal consistency check failed
 
  CRYSTALS -- PROGRAMMING ERROR
@@ -824,14 +824,14 @@ REAL
                         0.0000    0.0000    0.0000
 
                         0.0000    0.0000    0.0000
-#PRINT 13                                                                                                                                                                                                                                                       
-#LIST 14                                                                                                                                                                                                                                                        
+#PRINT 13
+#LIST 14
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    13     serial number        1     Address     4785     Length     155     Created on                          
+ Print list type    13     serial number        1     Address     4787     Length     155     Created on                          
 
 
 
@@ -915,14 +915,14 @@ REAL
 
 
 
-#PRINT 14                                                                                                                                                                                                                                                       
-#LIST 23                                                                                                                                                                                                                                                        
+#PRINT 14
+#LIST 23
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    14     serial number        1     Address     4940     Length      72     Created on                          
+ Print list type    14     serial number        1     Address     4942     Length      72     Created on                          
 
 
 
@@ -959,23 +959,23 @@ REAL
 
 
 
-#PRINT 23                                                                                                                                                                                                                                                       
-#LIST 25                                                                                                                                                                                                                                                        
+#PRINT 23
+#LIST 25
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5012     Length      76     Created on                          
+ Print list type    23     serial number        1     Address     5014     Length      77     Created on                          
 
 
 
- Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
-    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE 
+    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
 
-         -1             -1              0             -1             -1             -1             -1
+         -1             -1              0             -1             -1             -1             -1              0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -1013,14 +1013,14 @@ REAL
 
 
 
-#PRINT 25                                                                                                                                                                                                                                                       
-#LIST 28                                                                                                                                                                                                                                                        
+#PRINT 25
+#LIST 28
 
 
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5088     Length      52     Created on                          
+ Print list type    25     serial number        1     Address     5091     Length      52     Created on                          
 
 
 
@@ -1062,7 +1062,7 @@ REAL
 
  CRYSTALS -- ERROR
 
-#PRINT 28                                                                                                                                                                                                                                                       
+#PRINT 28
  No list of type       28 stored
 
  CRYSTALS -- ERROR
@@ -1071,7 +1071,7 @@ REAL
 
 
 
-#FINISH                                                                                                                                                                                                                                                         
+#FINISH
 
 
           : Job ends ok       with     0 warnings and     9 errors

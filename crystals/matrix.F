@@ -856,10 +856,44 @@ C--ZERO LENGTH VECTOR
       RETURN
       END
 C
+CODE FOR NCROP3
+      subroutine DNCROP3(A,B,C)
+C--COMPUTES THE CROSS PRODUCT OF THE VECTORS A AND B AND STORES THE
+C  RESULT IN C.
+C
+C  A  THE FIRST VECTOR.
+C  B  THE SECOND VECTOR.
+C  C  THE CROSS PRODUCT OF A WITH B. (C = A CROSS B).
+C
+C--THE RETURN VALUES OF 'NCROP' ARE :
+C
+C  -1  THE INPUT VECTORS ARE PARALLEL  RESULTANT VECTOR HAS ZERO LENGTH.
+C  >0  THE RESULTANT VECTOR IS NOT ZERO.
+C
+C--THE OUTPUT VECTOR IN 'C' IS NORMALISED BEFORE RETURN.
+C
+C--
+C
+      double precision A(3),B(3),C(3)
+C
+      CALL DVMULT(A,B,C)
+      RETURN
+      END
+C
 CODE FOR VMULT
       SUBROUTINE VMULT(A,B,C)
 C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
       DIMENSION A(3),B(3),C(3)
+      C(1)=A(2)*B(3)-A(3)*B(2)
+      C(2)=A(3)*B(1)-A(1)*B(3)
+      C(3)=A(1)*B(2)-A(2)*B(1)
+      RETURN
+      END
+C
+CODE FOR VMULT
+      SUBROUTINE DVMULT(A,B,C)
+C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
+      double precision A(3),B(3),C(3)
       C(1)=A(2)*B(3)-A(3)*B(2)
       C(2)=A(3)*B(1)-A(1)*B(3)
       C(3)=A(1)*B(2)-A(2)*B(1)
@@ -922,6 +956,37 @@ C--AND NOW RETURN
 1050  CONTINUE
       RETURN
       END
+CODE FOR NORM3
+      subroutine DNORM3(X)
+C--NORMALISE THE VECTOR 'X' SO THAT THE SUM OF THE SQUARES
+C  OF ITS THREE ELEMENTS IS UNITY.
+C
+C  X  THE VECTOR, CONTAINING THREE ELEMENTS.
+C
+C--THE RETURN VALUES OF 'NORM' ARE :
+C
+C  -1  THE VECTOR HAS ZERO LENGTH  (<0.0001).
+C  >0  ALL OKAY.
+C
+C--
+C
+      include 'XCONST.INC'
+      double precision X(3)
+      double precision d
+C
+C
+C--SUM THE SQUARES
+      D=sum(X**2)
+C--CHECK THAT THE VECTOR IS NOT OF ZERO LENGTH
+      IF(D-ZEROSQ)1050,1050,1000
+C--NORMALISE THE COMPONENTS
+1000  CONTINUE
+      D=1./SQRT(D)
+      X=X*D
+C--AND NOW RETURN
+1050  CONTINUE
+      RETURN
+      END
 C
 CODE FOR KINV2
       integer FUNCTION KINV2(N,A,B,NA,NM,C,D,NC)
@@ -978,7 +1043,8 @@ C
       call dgetrf( n, n, ab, n, ipiv, info )
 
       if(info/=0) then
-          KINV2=info
+          kinv2 = info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
           !do i=1, n
           !    print *, real(ab(i, :), 4)
           !end do
@@ -992,10 +1058,13 @@ C
           return
       end if
 
+           
+      
       call dgetri( n, ab, n, ipiv, work, n*nb, info	)
 
       if(info/=0) then
-          KINV2=-1
+          KINV2=info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
           WRITE(NCAWU,*)' Inverter fails (dgetri) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetri) '
@@ -1027,6 +1096,113 @@ C--SOLVE THE GIVEN EQUATIONS IF ANY
 C
 3100  RETURN
       END
+      integer FUNCTION KINV2DP(N,A,B,NA,NM,C,D,NC)
+C      implicit none
+C--MATRIX INVERSION AND SOLUTION OF SIMULTANEOUS LINEAR EQUATIONS
+C
+C  N       ORDER OF THE MATICES TO BE INVERTED.
+C  A       MATRIX TO BE INVERTED  I.E. A(N,N)
+C  B       INVERSE MATRIX  -  CALCULATED BY THIS SUBROUTINE  -  B(N,N)
+C  NA      THE ORDER OF 'A' AND 'B'  -  GREATER THAN OR EQUAL
+C          TO 'N*N'.
+C  NM      NUMBER OF COLUMN VECTORS TO BE MULTIPLIED ONTO THE INVERSE
+C          MATRIX
+C  C       COLUMN VECTORS TO BE MULTIPLIED ONTO THE INVERSE MATRIX C(N,M
+C  D       RESULTS OF MULTIPLICATION ON TO THE INVERSE MATRIX  -  D(N,M)
+C  NC      THE ORDER OF 'C' AND 'D'  -  GREATER THAN OR EQUAL
+C          TO THE MAXIMUM OF 'N' AND 'N*NM'. THIS MEANS THAT A COLUMN
+C          VECTOR AT LEAST MUST BE PROVIDED FOR BOTH.
+C
+C--IN MATRIX NOTATION
+C
+C  D=B.C
+C  C=A.D
+C
+C--RETURN VALUES OF 'KINV2DP' ARE :
+C
+C   0  INVERSION ETC. WENT OKAY.
+C  >0  SINGULAR  -  RETURN VALUE INDICATES FIRST SIGNULAR ELEMENT FOUND.
+C
+C--
+C
+      integer, intent(in) :: n, na, nm, nc
+      double precision, dimension(na), intent(in) :: A
+      double precision, dimension(na), intent(out) :: B
+      double precision, dimension(nc), intent(in) :: C
+      double precision, dimension(nc), intent(out) :: D
+C
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+C
+      integer, dimension(N) :: ipiv
+      integer info, nb, i, j, k, m1, m2, m3, m4
+      double precision, dimension(:), allocatable :: work
+      double precision, dimension(N,N) :: ab
+
+      integer, external :: ilaenv
+
+      KINV2DP=0
+      nb=max(1, ilaenv( 1, 'dgetri', '', N, -1,-1,-1 ))
+      allocate(work(n*nb))
+      ab=reshape(a, (/n,n/))
+      call dgetrf( n, n, ab, n, ipiv, info )
+
+      if(info/=0) then
+          KINV2DP = info
+          if ( KINV2DP .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          !do i=1, n
+          !    print *, real(ab(i, :), 4)
+          !end do
+          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetrf) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetrf) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )
+          return
+      end if
+
+           
+      
+      call dgetri( n, ab, n, ipiv, work, n*nb, info	)
+
+      if(info/=0) then
+          KINV2DP=info
+          if ( KINV2DP .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          WRITE(NCAWU,*)' Inverter fails (dgetri) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetri) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetri) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )
+          return
+      end if
+      deallocate(work)
+
+      b=reshape(ab, (/n*n/))
+C
+C--SOLVE THE GIVEN EQUATIONS IF ANY
+      IF(NM)3100,3100,2900
+2900  M3=1
+      M4=1
+      DO 3050 I=1,NM
+      DO 3000 J=1,N
+      M1=J
+      M2=M3
+      D(M4)=0.
+      DO 2950 K=1,N
+      D(M4)=D(M4)+B(M1)*C(M2)
+      M1=M1+N
+2950  M2=M2+1
+3000  M4=M4+1
+3050  M3=M3+N
+C
+3100  RETURN
+      END      
 C
 CODE FOR XINT2
       SUBROUTINE XINT2(N,B,NB,D,ND,J,K,ITYPE)
@@ -1332,13 +1508,11 @@ C
       INCLUDE 'QSTR11.INC'
 C
       LS=NOC+1
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)LS
-      ENDIF
       WRITE(NCAWU,1000) LS
       WRITE ( CMON, 1000) LS
       CALL XPRVDU(NCVDU, 1,0)
 1000  FORMAT('{E Singularity - relative parameter',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(//A//)')TRIM(CMON(1)(3:))
       LS=IBASE+NOC
       DO 1150 LT=1,N
       STR11(LS)=0.0
@@ -2116,8 +2290,8 @@ C  ================Function calls ================
                   end if
             end do
       end do
-      print '(A, F7.5, I10)', 'Threshold is: ', threshhold,
-     1 tri_matrix_apply_threshhold
+c      print '(A, F7.5, I10)', 'Threshold is: ', threshhold,
+c     1 tri_matrix_apply_threshhold
       end
 
 C======================================================================C
@@ -2208,8 +2382,8 @@ CODE FOR matlab_add_matrix_to_cell
       ! calculate the kronecker product of a and b
       ! An explicit interface is needed to use this subroutine!! (I don't know why)
           implicit none
-          real, dimension(:,:), intent(in)  :: a, b
-          real, dimension(:,:), intent(out) :: k
+          double precision, dimension(:,:), intent(in)  :: a, b
+          double precision, dimension(:,:), intent(out) :: k
           integer :: i, j, ma, na, mb, nb
           
           ma = ubound(a, 1)
@@ -4871,7 +5045,7 @@ c
 *
       WRITE( CMON, FMT = 9999 )SRNAME, INFO
       CALL XPRVDU(NCVDU,1,0)
-      WRITE(NCWU,'(A)')CMON(1)
+      WRITE(NCWU,'(A)')trim(CMON(1))
 *
       CALL GUEXIT(3001)
 

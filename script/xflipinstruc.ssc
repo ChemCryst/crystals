@@ -28,7 +28,7 @@
 %%                                                                              
 %%                                                                              
 %%                                                                              
-% EVALUATE CFILE = 'SFLIP.INS'                                                  
+% EVALUATE CFILE = 'sflip.ins'                                                  
 % TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                           
 %%                                                                              
 %%                                                                              

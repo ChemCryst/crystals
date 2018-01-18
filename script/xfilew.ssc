@@ -2,6 +2,7 @@
 %% 
 %    VARIABLE LOGICAL T
 %    VARIABLE CHARACTER C_FILE CEXTN CARG
+%    VARIABLE INTEGER EXITSTATUS                                                    
 %%                               
 %  IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 %% If called incorrectly or without argument, then get a file.
@@ -39,8 +40,9 @@
 %     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
 %     END IF
-%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d W -o from-cif.cry " ' - 
+%     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d W -o from-cif.cry "' - 
       // C_FILE //   '" ' TO CRYSTALS
+%     TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY      
 %%
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       COPY '#SCRIPT DIFFEXEC'
@@ -62,6 +64,7 @@
 %     EVALUATE CARG = ' -f -d W -o '
 % TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -           
   // '" "' // C_FILE // '"' TO CRYSTALS                                            
+%     TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY      
 %     COPY '#SCRIPT diffexec'   
 %     FINISH
 %   END IF

@@ -32,4 +32,9 @@
 %  COPY '#PUNCH 16'
 %  COPY 'END'
 %  COPY '#RELEASE PUNCH bfile.pch'
+{1,11
+{1,11
+{1,11       Your ASCII data has been saved to EXCHANGE.DAT
+{1,11
+{1,11
 %END SCRIPT

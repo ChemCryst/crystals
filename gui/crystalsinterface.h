@@ -266,7 +266,8 @@ enum {
     kStretchBase        =   60000,
     kPlotBase           =   61000,
     kModListBase        =   62000,
-    kWebBase           =   63000
+    kWebBase            =   63000,
+    kSliderBase         =   26000  //if used as actual window ID must be less that 32767.
 };
 #define kNoAlignment        0
 #define kIsolate            1
@@ -278,6 +279,7 @@ enum {
 #define kSize               8
 #define kFrame              16
 #define EMPTY_CELL          10
+
 
 
 #define NOTUSED(a) //Gets rid of warnings about unused variables.
@@ -335,7 +337,7 @@ enum {
 // #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
-// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
+ #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #endif
 
 
@@ -359,6 +361,7 @@ enum {
        #define TEXTOUT(a)
 #endif
 
+#define LOGTEST(a) ( (CcController::theController)->LogError(a,2) )
 
 
 

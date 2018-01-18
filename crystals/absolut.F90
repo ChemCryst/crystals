@@ -258,7 +258,7 @@ integer, external :: nctrim
             write (ncwu,'(a)') ''
         else
             write (cmon,'(a//)') ' data do not resolve the p3 hypothesis'
-            write (ncwu,'(a//)') cmon(1)(:nctrim(cmon(1)))
+            write (ncwu,'(a//)') trim(CMON(1))
         end if
     end if
 
@@ -518,7 +518,7 @@ integer, external :: nctrim
             if(ierror .le. 0) then
                 write(cmon,'(a)') ' Too few reflections for histogram'
                 call xprvdu (ncvdu,1,0)
-                if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+                if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
             endif
             call outcol(1)
             return
@@ -548,7 +548,7 @@ integer, external :: nctrim
     if(ierror .le. 0) then
         write(cmon,'(a)') ' Too few reflections for histogram'
         call xprvdu (ncvdu,1,0)
-        if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+        if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
     endif
     call outcol(1)
     return
@@ -939,7 +939,7 @@ double precision, external :: ddot
 
     mitem=size(xin)
     if(size(yin)/=mitem .or. size(wt)/=mitem) then
-        print *, 'Size does not match'
+!        print *, 'Size does not match'
         call abort
     end if
     
@@ -1082,7 +1082,7 @@ double precision, external :: ddot
 
     mitem=size(xin)
     if(size(yin)/=mitem .or. size(wt)/=mitem) then
-        print *, 'Size does not match'
+!        print *, 'Size does not match'
         call abort
     end if
     
@@ -1211,7 +1211,7 @@ double precision, external :: ddot
 
     mitem=size(xin)
     if(size(yin)/=mitem .or. size(wt)/=mitem) then
-        print *, 'Size does not match'
+!        print *, 'Size does not match'
         call abort
     end if
     
@@ -1356,13 +1356,13 @@ real mean, s2, est, goof
 
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
-        print *, "Arguments size don't match in subroutine hole_in_one"
+!        print *, "Arguments size don't match in subroutine hole_in_one"
         call abort
     end if
     
     if(present(weights)) then
         if(size(weights)/=size(filtered_reflections)) then
-            print *, "Arguments size don't match in subroutine hole_in_one"
+!            print *, "Arguments size don't match in subroutine hole_in_one"
             call abort
         end if
     end if
@@ -1996,13 +1996,13 @@ real mean, s2, est, goof
 
     !Check input data
     if(ubound(reflections_data, 2)/=size(filtered_reflections)) then
-        print *, "Arguments size don't match in subroutine bijvoet_difference"
+!        print *, "Arguments size don't match in subroutine bijvoet_difference"
         call abort
     end if
     
     if(present(weights)) then
         if(size(weights)/=size(filtered_reflections)) then
-            print *, "Arguments size don't match in subroutine bijvoet_difference"
+!            print *, "Arguments size don't match in subroutine bijvoet_difference"
             call abort
         end if
     end if

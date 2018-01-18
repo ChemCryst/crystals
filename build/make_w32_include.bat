@@ -3,7 +3,7 @@
 @set WXWIN=c:\wx3
 :WX2
 @if not "%WXLIB%" == "" goto WX3
-@set WXLIB=%WXWIN%\lib\vc90_dll
+@set WXLIB=%WXWIN%\lib\vc140_dll
 :WX3
 @if not "%WXNUM%" == "" goto WX4
 @set WXNUM=30
@@ -50,8 +50,8 @@ goto ALLDVF
 :INW
 @rem @if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\hdf5\lib -libpath:..\crashrpt wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib  CrashRpt1403.lib hdf5.lib hdf5_fortran.lib shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @rem @if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB%  -libpath:..\hdf5\lib -libpath:..\crashrpt wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw%WXNUM%u_gl.lib  CrashRpt1403.lib hdf5.lib hdf5_fortran.lib user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
-@if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib  CrashRpt1403.lib shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
-@if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib  wxjpeg.lib  wxtiff.lib  wxpng.lib  wxmsw%WXNUM%u_gl.lib  CrashRpt1403.lib user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if "%CRDEBUG%" == "TRUE"     set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%ud.lib wxmsw%WXNUM%ud_core.lib wxmsw%WXNUM%ud_aui.lib wxmsw%WXNUM%ud_stc.lib wxzlibd.lib  wxjpegd.lib  wxtiffd.lib  wxpngd.lib  wxmsw%WXNUM%ud_gl.lib shell32.lib user32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
+@if not "%CRDEBUG%" == "TRUE" set LIBS=/link /subsystem:windows -libpath:%WXLIB% -libpath:..\crashrpt wxbase%WXNUM%u.lib  wxmsw%WXNUM%u_core.lib  wxmsw%WXNUM%u_aui.lib  wxmsw%WXNUM%u_stc.lib  wxzlib.lib   wxjpeg.lib   wxtiff.lib   wxpng.lib   wxmsw%WXNUM%u_gl.lib  user32.lib shell32.lib ole32.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib Comdlg32.lib Oleaut32.lib Winspool.lib
 @set LIBS=%LIBS% rc.res
 @if "%CRDEBUG%" == "TRUE"     @set CDEF= /I%WXWIN%\include /I%WXLIB%\mswud  /I..\crashrpt /D"WXUSINGDLL" /D"CRY_DEBUG"
 @if not "%CRDEBUG%" == "TRUE" @set CDEF= /I%WXWIN%\include /I%WXLIB%\mswu /I..\crashrpt /D"WXUSINGDLL"
@@ -63,11 +63,15 @@ goto ALLDVF
 @set LD=ifort
 @set OUT=/exe:
 @set OPT=/O2 /Zi
-@set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
+@rem set LIBS=%LIBS% opengl32.lib glu32.lib   mkl_intel_c.lib mkl_sequential.lib  mkl_core.lib
+@rem if "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_lp64.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+@rem if not "%CR64BIT%" == "TRUE" @set LIBS=%LIBS% opengl32.lib glu32.lib  mkl_intel_c.lib mkl_intel_thread.lib mkl_core.lib libiomp5md.lib
+@set LIBS=%LIBS% opengl32.lib glu32.lib mkl_custom.lib
+
 @set LDEBUG=/Zi
 @rem /debugtype:cv /pdb:none /incremental:no
 @set LDCFLAGS=/SUBSYSTEM:console
-@set LDFLAGS= /Qmkl %COPENMP%
+@set LDFLAGS= %COPENMP%
 
 @set CC=cl
 @set CDEF=%CDEF% /D"WIN32" /D"_WINDOWS" /D"_UNICODE"  /D__WXMSW__ /D__%COMPCODE%__ /D_CRT_SECURE_NO_WARNINGS /DCRYSVNVER="%CRYSVNVER%"
@@ -77,11 +81,11 @@ goto ALLDVF
 
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Oy- /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink %COPENMP%
-@set FNOOPT=/fpp /I..\crystals /MD /O0 /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink
+@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Qdiag-disable:8290 /Qdiag-disable:8291  /nolink %COPENMP% 
+@set FNOOPT=/fpp /I..\crystals /MD -Od /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
-@set FDEBUG=/fpp /I..\crystals /MDd /debug /fp:source /check:bounds /check:format /check:overflow /check:pointers /check:uninit  /warn:argument_checking /warn:nofileopt /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink /traceback /Qtrapuv
+@set FDEBUG=/fpp /I..\crystals /MDd /debug /check:all /check:format /check:overflow /check:pointers /check:uninit /check:nooutput_conversion /check:noarg_temp_created /warn:nofileopt /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink /traceback /Qtrapuv
 @if "%CRDEBUG%" == "TRUE" set FOUT=/object:dobj\
 @if "%CRDEBUG%" == "TRUE" set COUT=/Fodobj\
 @goto exit

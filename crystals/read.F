@@ -1,4 +1,4 @@
-C $Log: read.F,v $
+C $Log: read.F,v $ 
 C Revision 1.67  2013/06/11 12:30:39  pascal
 C Linux changes
 C
@@ -290,7 +290,7 @@ C--THE COMMON BLOCK 'XCARDS' IS USED BY THIS AND OTHER ROUTINES
 C  FOR CARD I/O CONTROL. THE VARIABLES ARE :
 C
 C  LCMAGE  THE TERMINAL INPUT CARD IMAGE, POSSIBLY CONTAINING
-C              LOWERCASE CHARS. THE MONITOR OUTPUT IS FROM THIS ARRAY
+C              LOWERCASE CHARS. THE MIRROR OUTPUT IS FROM THIS ARRAY
 C  IMAGE   THE ALL UPPERCASE VERSION OF THE INPUT CARD. SYSTEM REQUEST
 C              QUEUE CARDS ARE READ INTO THIS ARRAY.
 C  NC      THE CURRENT PROCESSING POSITION IN 'IMAGE'.
@@ -345,14 +345,14 @@ C--
 C
 C      IRDCPY(I)   COPY FLAG
 C                    0      NO COPY. LINES READ ARE INSTRUCTIONS
-C                    1      COPY INPUT DIRECTLY TO MONITOR.
+C                    1      MIRROR INPUT DIRECTLY TO OUTPUT.
 C      IRDLOG(I)   LOG FLAG
 C                    O      NO LOGGING
 C                    1      INPUT WRITTEN TO LOG FILE
 C
-C      IRDCAT(I)   MONITOR FLAG
-C                    0      DO NOT MONITOR INPUT
-C                    1      MONITOR INPUT
+C      IRDCAT(I)   MIRROR FLAG
+C                    0      DO NOT MIRROR INPUT
+C                    1      MIRROR INPUT
 C      IRDPAG      PAGE SIZE FOR COPY FILE ( IN LINES )
 C      IRDLIN      NUMBER OF LINES SINCE LAST PROMPT
 C
@@ -583,7 +583,7 @@ cdjwjun07
 cdjwjun09 copy all # lines
 c        if ((issprt .eq. 0) .and. (cmon(1)(2:4) .eq. 'SCR')) then
         if (issprt .eq. 0)  then
-            write(ncwu,'(A)') cmon(1)(:)
+            write(ncwu,'(A)') trim(CMON(1))
         endif
 cdjwjun07
         IHFLAG = 0
@@ -732,7 +732,7 @@ C If in script mode, set flag.
 	  CALL FLUSH(NCWU)
 	  CALL FLUSH(NCPU)
 	  CALL FLUSH(NCAWU)
-          call flush(123)       ! for debugging purposes
+          call FLUSH(123)       ! for debugging purposes
           CALL GETCOM(CLINE)
 
 C If in script mode, set progress text.
@@ -874,7 +874,7 @@ C
 CDJWMAR99 Add APPEND as system function - implies 'OPEN'
 CDJWOXT00 Add BENCHMARK for timings
 CRICAPR03 Add DEFINE as system instruction. Build .dsc and exit.
-C
+CDJWOCT17 Add FLUSH to flush output buffers while file is still open
 C  INPUT :-
 C
 C      IN          DUMMY ARGUMENT.
@@ -922,6 +922,7 @@ C
       DATA ITYPE  / 9 / , IREMOV / 10 / , ISTRE  / 11 / , ISTART / 12 /
       DATA ISCRIP / 13 /, ICOMND / 14 / , ICLOSE / 15 / , ISPAWN / 16 /
       DATA IDOLLA / 17 /, IAPEND / 18 / , IBENCH / 19 / , IDEFIN / 20 /
+      DATA IFLUSH / 21 /
 C
       DATA NUSE / 2 / , LUSE / 4 /
 C
@@ -974,6 +975,7 @@ C      PAUS(E)     HELP        SET         ATTACH      OPEN
 C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
 C      SPAW(N)     $           APPE(ND)    BENCH       DEFI(NE)
+C      FLUS(H)
 C
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
       IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
@@ -994,7 +996,7 @@ CDJWMAR99
      2        1600 , 1700 , 1200 , 1200 , 2000 ,
      3        2100 , 2200 , 2300 , 2400 , 2500 , 
      4        2600 , 2600 , 1550 , 3000 , 3200 , 
-     5        9920 ) , ISYSIN
+     5        3300 , 9920 ) , ISYSIN
       GO TO 9920
 C
 C
@@ -1194,7 +1196,8 @@ C            close back to top level if a SCRIPT does not exist
      3      '{EProbably a bug.',
      4      '{EPlease send the .log and .lis files to Oxford'
              CALL XPRVDU(NCVDU, 4, 0)
-             write(ncwu,'(a)') cmon(1), cmon(2), cmon(3), cmon(4)
+             write(ncwu,'(a)') trim(CMON(1)), trim(cmon(2)), 
+     1         trim(cmon(3)), trim(cmon(4))
              CALL XFLUNW ( 1 , 3 )
             ELSE
              CALL XFLUNW ( 2 , 1 )
@@ -1369,7 +1372,7 @@ C----- CREATE A NEW FILE
       CALL XDAXTN ( NCIFU, -1, 120) ! Extend disk to 120 records.
       WRITE ( CMON, 3191 )
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 3191  FORMAT(' Create command file')
       CALL XSYSDC(-1,-1)
       NU=NCIFU         ! ENSURE ALL TRANSFERS ARE TO THE COMMAND FILE DISC
@@ -1380,6 +1383,12 @@ C----- CREATE A NEW FILE
      1         'Closing in 4 seconds'/)
       CALL XPAUSE (4000)
       CALL XEND
+      GOTO 9000
+C
+3300  CONTINUE
+C -- Flush
+      CALL XRDOPN ( 9, IDEV, CFILE, LFILE )
+      GO TO 9000
 
 C
 9000  CONTINUE
@@ -1581,7 +1590,7 @@ C
 C      VALUE       KEYWORD           VARIABLE(S) SET
 C      -----       -------           ---------------
 C      1           MAPS              'MAPS'
-C      2           MONI(TOR)         'ICAT' AND 'IRDCAT(IFLIND)'
+C      2           MIRR(OR)          'ICAT' AND 'IRDCAT(IFLIND)'
 C      3           LOG               'IRDLOG(IFLIND)'
 C      4           PAGE              'IRDPAG'
 C      5           LIST(S)           'ISSLSM'
@@ -1602,6 +1611,7 @@ C     19           AUTO(UPDATE)      'ISSUPD'
 C     20           BOND(TYPE)        'ISSBND'
 C     21           CACHEMESSAGE      'ISSCSH'
 C     22           RATIO             'ISSRAT'
+C     23           MONI(TOR)         'ISSMON'
 C
 C    THE NAMES OF THE ALLOWED FUNCTIONS ARE STORED IN THE ARRAY
 C    'KEYFNC'. EACH STORED NAME IS 8 'A1' WORDS LONG. ONLY THE FIRST 4
@@ -1623,7 +1633,7 @@ C      IFIRVL      NUMERIC VALUE ASSOCIATED WITH FIRST ALLOWED STRING
 C                  VALUE. SUBSEQUENT STRING VALUES ARE GIVEN INCREASING
 C                  NUMERIC VALUES
       PARAMETER (LFNC=8)
-      PARAMETER (NFNC=22)
+      PARAMETER (NFNC=23)
       PARAMETER (LUFNC=4)
 C
       DIMENSION KEYFNC(LFNC,NFNC)
@@ -1633,7 +1643,7 @@ C
       DIMENSION IFIRVL(NFNC)
 C
       PARAMETER (LVAL=4)
-      PARAMETER (NVAL=23)
+      PARAMETER (NVAL=26)
       DIMENSION KEYVAL(LVAL,NVAL)
 C
       DIMENSION VALUE(1)
@@ -1651,28 +1661,28 @@ C
       INCLUDE 'XGUIOV.INC'
 C
 C
-C      MAPS        MONI(TOR)   LOG         PAGE        LIST(S)
-C      SPEE(D)     TIME        SRQ         TERM(INAL)   FILE(CASE)
-C      MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
+C      MAPS        MIRR(OR)    LOG         PAGE        LIST(S)
+C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL) 
+C      FILE(CASE)  MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
 C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
-C      CACHEMESSAGE RATIO
-C
+C      CACHEMESSAGE RATIO      MONITOR
 C
 C      LIST        NONE        CORE        OFF         ON
 C      SLOW        FAST        NONE        READ        WRIT
 C      BOTH        UNKN(OWN)   VT52        VT10(0)     VGA
 C      WIN(OW)     LOWE(R)     UPPE(R)     MIXE(D)     ARIT(H)
-C      GEOM        IO          IC
+C      GEOM        IO          IC          LOW         MEDIUM
+C      HIGH
 C
 #ifdef _HOL_
       DATA KEYFNC(1,1) / 1HM / , KEYFNC(2,1) / 1HA /
       DATA KEYFNC(3,1) / 1HP / , KEYFNC(4,1) / 1HS /
       DATA KEYFNC(5,1) / 1H  / , KEYFNC(6,1) / 1H  /
       DATA KEYFNC(7,1) / 1H  / , KEYFNC(8,1) / 1H  /
-      DATA KEYFNC(1,2) / 1HM / , KEYFNC(2,2) / 1HO /
-      DATA KEYFNC(3,2) / 1HN / , KEYFNC(4,2) / 1HI /
-      DATA KEYFNC(5,2) / 1HT / , KEYFNC(6,2) / 1HO /
-      DATA KEYFNC(7,2) / 1HR / , KEYFNC(8,2) / 1H  /
+      DATA KEYFNC(1,2) / 1HM / , KEYFNC(2,2) / 1HI /
+      DATA KEYFNC(3,2) / 1HR / , KEYFNC(4,2) / 1HR /
+      DATA KEYFNC(5,2) / 1HO / , KEYFNC(6,2) / 1HR /
+      DATA KEYFNC(7,2) / 1H  / , KEYFNC(8,2) / 1H  /
       DATA KEYFNC(1,3) / 1HL / , KEYFNC(2,3) / 1HO /
       DATA KEYFNC(3,3) / 1HG / , KEYFNC(4,3) / 1H  /
       DATA KEYFNC(5,3) / 1H  / , KEYFNC(6,3) / 1H  /
@@ -1766,6 +1776,11 @@ C
       DATA KEYFNC(5,22) / 1HO / , KEYFNC(6,22) / 1H  /
       DATA KEYFNC(7,22) / 1H  / , KEYFNC(8,22) / 1H  /
 C
+      DATA KEYFNC(1,23) / 1HM / , KEYFNC(2,23) / 1HO /
+      DATA KEYFNC(3,23) / 1HN / , KEYFNC(4,23) / 1HI /
+      DATA KEYFNC(5,23) / 1HT / , KEYFNC(6,23) / 1HO /
+      DATA KEYFNC(7,23) / 1HR / , KEYFNC(8,23) / 1H  /
+C
       DATA KEYVAL(1,1) / 1HL / , KEYVAL(2,1) / 1HI /
       DATA KEYVAL(3,1) / 1HS / , KEYVAL(4,1) / 1HT /
       DATA KEYVAL(1,2) / 1HN / , KEYVAL(2,2) / 1HO /
@@ -1812,15 +1827,27 @@ C
       DATA KEYVAL(3,22)/ 1H  / , KEYVAL(4,22)/ 1H  /
       DATA KEYVAL(1,23)/ 1HI / , KEYVAL(2,23)/ 1HC /
       DATA KEYVAL(3,23)/ 1H  / , KEYVAL(4,23)/ 1H  /
+      DATA KEYVAL(1,24)/ 1HL / , KEYVAL(2,24)/ 1HO /
+      DATA KEYVAL(3,24)/ 1HW / , KEYVAL(4,24)/ 1H  /
+      DATA KEYVAL(1,25)/ 1HM / , KEYVAL(2,25)/ 1HE /
+      DATA KEYVAL(3,25)/ 1HD / , KEYVAL(4,25)/ 1HI /
+      DATA KEYVAL(1,26)/ 1HH / , KEYVAL(2,26)/ 1HI /
+      DATA KEYVAL(3,26)/ 1HG / , KEYVAL(4,26)/ 1HH /
 #else
+C      MAPS        MIRR(OR)    LOG         PAGE        LIST(S)
+C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL)   
+C      FILE(CASE)  MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
+C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
+C      CACHEMESSAGE RATIO      MONITOR
+C
       DATA KEYFNC(1,1) / 'M' / , KEYFNC(2,1) / 'A' /
       DATA KEYFNC(3,1) / 'P' / , KEYFNC(4,1) / 'S' /
       DATA KEYFNC(5,1) / ' ' / , KEYFNC(6,1) / ' ' /
       DATA KEYFNC(7,1) / ' ' / , KEYFNC(8,1) / ' ' /
-      DATA KEYFNC(1,2) / 'M' / , KEYFNC(2,2) / 'O' /
-      DATA KEYFNC(3,2) / 'N' / , KEYFNC(4,2) / 'I' /
-      DATA KEYFNC(5,2) / 'T' / , KEYFNC(6,2) / 'O' /
-      DATA KEYFNC(7,2) / 'R' / , KEYFNC(8,2) / ' ' /
+      DATA KEYFNC(1,2) / 'M' / , KEYFNC(2,2) / 'I' /
+      DATA KEYFNC(3,2) / 'R' / , KEYFNC(4,2) / 'R' /
+      DATA KEYFNC(5,2) / 'O' / , KEYFNC(6,2) / 'R' /
+      DATA KEYFNC(7,2) / ' ' / , KEYFNC(8,2) / ' ' /
       DATA KEYFNC(1,3) / 'L' / , KEYFNC(2,3) / 'O' /
       DATA KEYFNC(3,3) / 'G' / , KEYFNC(4,3) / ' ' /
       DATA KEYFNC(5,3) / ' ' / , KEYFNC(6,3) / ' ' /
@@ -1914,6 +1941,11 @@ C
       DATA KEYFNC(5,22) / 'O' / , KEYFNC(6,22) / ' ' /
       DATA KEYFNC(7,22) / ' ' / , KEYFNC(8,22) / ' ' /
 C
+      DATA KEYFNC(1,23) / 'M' / , KEYFNC(2,23) / 'O' /
+      DATA KEYFNC(3,23) / 'N' / , KEYFNC(4,23) / 'I' /
+      DATA KEYFNC(5,23) / 'T' / , KEYFNC(6,23) / 'O' /
+      DATA KEYFNC(7,23) / 'R' / , KEYFNC(8,23) / ' ' /
+C
       DATA KEYVAL(1,1) / 'L' / , KEYVAL(2,1) / 'I' /
       DATA KEYVAL(3,1) / 'S' / , KEYVAL(4,1) / 'T' /
       DATA KEYVAL(1,2) / 'N' / , KEYVAL(2,2) / 'O' /
@@ -1961,6 +1993,13 @@ C
       DATA KEYVAL(1,23)/ 'I' / , KEYVAL(2,23)/ 'C' /
       DATA KEYVAL(3,23)/ ' ' / , KEYVAL(4,23)/ ' ' /
 
+      DATA KEYVAL(1,24)/ 'L' / , KEYVAL(2,24)/ 'O' /
+      DATA KEYVAL(3,24)/ 'W' / , KEYVAL(4,24)/ ' ' /
+      DATA KEYVAL(1,25)/ 'M' / , KEYVAL(2,25)/ 'E' /
+      DATA KEYVAL(3,25)/ 'D' / , KEYVAL(4,25)/ 'I' /
+      DATA KEYVAL(1,26)/ 'H' / , KEYVAL(2,26)/ 'I' /
+      DATA KEYVAL(3,26)/ 'G' / , KEYVAL(4,26)/ 'H' /
+
 #endif
 C
 C----- TYPE OF ARGUMENT: 1=KEYWORD, 2=INTEGER
@@ -1972,29 +2011,29 @@ C
       DATA ITPVAL(12) / 1 / , ITPVAL(13) / 1 / , ITPVAL(14) / 1 /
       DATA ITPVAL(15) / 1 / , ITPVAL(16) / 2 / , ITPVAL(17) / 1 /
       DATA ITPVAL(18) / 1 / , ITPVAL(19) / 1 / , ITPVAL(20) / 1 /
-      DATA ITPVAL(21) / 1 / , ITPVAL(22) / 1 /
+      DATA ITPVAL(21) / 1 / , ITPVAL(22) / 1 / , ITPVAL(23) / 1 /
 C
 C----- STARTING POSITION IN LIST OF KEYWORDS
 C
-      DATA ISTVAL(1)  /  1 / , ISTVAL(2)  /  4 / , ISTVAL(3)  /  4 /
-      DATA ISTVAL(4)  /  0 / , ISTVAL(5)  /  8 / , ISTVAL(6)  /  6 /
+      DATA ISTVAL(1)  /  1 / , ISTVAL(2)  /  4 / , ISTVAL(3)  / 4 /
+      DATA ISTVAL(4)  /  0 / , ISTVAL(5)  /  8 / , ISTVAL(6)  / 6 /
       DATA ISTVAL(7)  /  4 / , ISTVAL(8)  /  0 / , ISTVAL(9)  / 4 /
       DATA ISTVAL(10) /  12 /, ISTVAL(11) / 17 /
-      DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) /  4 /
+      DATA ISTVAL(12) /   4 /, ISTVAL(13) /  4 / , ISTVAL(14) / 4 /
       DATA ISTVAL(15) /   4 /, ISTVAL(16) /  0 / , ISTVAL(17) / 4 /
-      DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 / , ISTVAL(20) /  4 /
-      DATA ISTVAL(21) /   4 /, ISTVAL(22) / 22 /
+      DATA ISTVAL(18) /  20 /, ISTVAL(19) /  4 / , ISTVAL(20) / 4 /
+      DATA ISTVAL(21) /   4 /, ISTVAL(22) / 22 / , ISTVAL(23) / 4 /
 C
 C----- NUMBER OF KEYWORDS PERMITTED
 C
       DATA NUMVAL(1)  /  3 / , NUMVAL(2)  /  2 / , NUMVAL(3)  /  2 /
       DATA NUMVAL(4)  /  0 / , NUMVAL(5)  /  4 / , NUMVAL(6)  /  2 /
-      DATA NUMVAL(7)  /  3 / , NUMVAL(8)  /  0 / , NUMVAL(9)  / 2 /
+      DATA NUMVAL(7)  /  3 / , NUMVAL(8)  /  0 / , NUMVAL(9)  /  2 /
       DATA NUMVAL(10) /  5/, NUMVAL(11) / 3/
-      DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14)  /  2 /
-      DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17)  /  2 /
-      DATA NUMVAL(18) /  2/, NUMVAL(19) /  2/, NUMVAL(20) /  2/
-      DATA NUMVAL(21) /  2/, NUMVAL(22) / 2/
+      DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14) /  2 /
+      DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17) /  2 /
+      DATA NUMVAL(18) /  2/, NUMVAL(19) / 2/ , NUMVAL(20) /  2/
+      DATA NUMVAL(21) /  2/, NUMVAL(22) / 2/ , NUMVAL(23) /  3/
 C
 C----- NUMERIC VALUE CORRESPONDING TO FIRST KEYWORD
 C
@@ -2002,10 +2041,10 @@ C
       DATA IFIRVL(4)  /  0 / , IFIRVL(5)  /  1 / , IFIRVL(6)  /  1 /
       DATA IFIRVL(7)  /  0 / , IFIRVL(8)  /  0 / , IFIRVL(9) /  0 /
       DATA IFIRVL(10)  /  0 /, IFIRVL(11) / 0 /
-      DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14)  /  0 /
-      DATA IFIRVL(15)  /  0 /, IFIRVL(16) /0/ , IFIRVL(17) / 0 /
-      DATA IFIRVL(18)  /  1 /, IFIRVL(19)  /  0 /, IFIRVL(20)  /  0 /
-      DATA IFIRVL(21)  /  0 /, IFIRVL(22) / 0 /
+      DATA IFIRVL(12)  /  0 /, IFIRVL(13) / -1 / , IFIRVL(14) /  0 /
+      DATA IFIRVL(15)  /  0 /, IFIRVL(16) / 0 / , IFIRVL(17)  /  0 /
+      DATA IFIRVL(18)  /  1 /, IFIRVL(19) / 0 / , IFIRVL(20)  /  0 /
+      DATA IFIRVL(21)  /  0 /, IFIRVL(22) / 0 / , IFIRVL(23)  / -1 /
 C
 C
 C
@@ -2131,6 +2170,8 @@ c              ENDIF
         ISSCSH = IRQVAL
       ELSE IF ( IRQFNC .EQ. 22 ) THEN
         ISSRAT = IRQVAL
+      ELSE IF ( IRQFNC .EQ. 23 ) THEN
+        ISSMON = IRQVAL
       ELSE
         GO TO 9920
       ENDIF
@@ -2484,6 +2525,9 @@ C                          6      OPEN SPECIFIED FILE AND DEVICE
 C                          7      CLOSE SPECIFIED FILE AND DEVICE
 C                          8      APPEND TO SPECIFIED FILE AND DEVICE
 C
+C                          9      FLUSH
+C Flushing is a bit of a bodge in order to easily conserve the other operations
+C
 C            JDEV                 DEVICE
 C            CFILE,LFILE          FILE NAME AND LENGTH
 C
@@ -2495,12 +2539,12 @@ C
 C
 CDJWMAR99
 C      PARAMETER ( MAXFNC = 3 )
-      PARAMETER ( MAXFNC = 4 )
+      PARAMETER ( MAXFNCX = 5 )
 C
-      CHARACTER*16 COPER(MAXFNC)
-      CHARACTER*8 CRESLT(MAXFNC) , CACTN(MAXFNC)
-      CHARACTER*7 CINSTR(MAXFNC)
-      DIMENSION   IRQARG(MAXFNC)
+      CHARACTER*16 COPER(MAXFNCX)
+      CHARACTER*8 CRESLT(MAXFNCX) , CACTN(MAXFNCX)
+      CHARACTER*7 CINSTR(MAXFNCX)
+      DIMENSION   IRQARG(MAXFNCX)
 C
       DIMENSION JDEV(4)
 C
@@ -2516,50 +2560,51 @@ C
       INCLUDE 'XSSCHR.INC'
       INCLUDE 'XIOBUF.INC'
       DATA COPER / ' output sent to ', ' connected to ', 'closed', 
-     1 ' appended to '/
+     1 ' appended to ', 'flushed'/
       DATA CRESLT / 'released' , 'opened  ' , 'closed  '
-     1 , 'appended' /
+     1 , 'appended', 'flushed' /
       DATA CACTN  / 'releases' , ' opens  ' , ' closes ', 
-     1 'appends ' /
-      DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND '/
+     1 'appends ', 'flushed' /
+      DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND ',
+     1 'FLUSH'/
 C
-      DATA IRQARG / 2 , 2 , 1, 2  /
+      DATA IRQARG / 2 , 2 , 1, 2, 1  /
 CDJWMAR99]
 C
       DATA MCHNAM / 4 / , LNAM / 8 /
 C
 CDJWMAR99 - SET APPEND OFF
-            IAPPND = 0
+      IAPPND = 0
+      MAXFNC = MAXFNCX-1                   !THE REAL I/O FUNCTIONS
+      IF (JFUNC .EQ. 9) THEN
+        IFUNC=MAXFNCX                      !FLUSH  (5)
+      ELSE IF (JFUNC .GT. MAXFNC) THEN
 C----- MAKE INTERNAL CALL LOOK LIKE AN EXTERNAL
-      IF (JFUNC .GT. MAXFNC) THEN
         IFUNC = JFUNC - MAXFNC
       ELSE
         IFUNC = JFUNC
       ENDIF
-CDJWMAR99[
 C      A TEMPORARY BODGE TO TEST THE THE IDEA
       KFUNC = IFUNC
       IF (IFUNC .EQ. 4) THEN
             IFUNC = 2
             IAPPND = ISSAPP
       ENDIF
-CDJWMAR99]
 C
 C -- CHECK PARAMETERS TO THE ROUTINE
-      IF ((IFUNC .LE. 0 ) .OR. ( IFUNC .GT. MAXFNC ) ) GO TO 9920
+      IF ((IFUNC .LE. 0 ) .OR. ( IFUNC .GT. MAXFNCX ) ) GO TO 9920
       IF (LFILE .GT. LNMMAX) GOTO 9930
-C -- IDENTIFY FIRST INPUT ARGUMENT ( DEVICE NAME )
 C
-      IF (JFUNC .LE. MAXFNC) THEN
+C -- IDENTIFY FIRST INPUT ARGUMENT ( DEVICE NAME )
+      IF ((JFUNC .LE. MAXFNC).OR.(JFUNC.EQ.9)) THEN
         IREQUI = IRQARG(IFUNC)
         LENGTH = KRDARG ( IREQUI , 2 )
         IF ( LENGTH .LE. 0 ) GO TO 9910
       ENDIF
 C
 C -- IDENTIFY THE DEVICE THE USER WANTS, AND FIND ITS CHARACTERISTICS
-C
       IF ( NFLUSD .LE. 0 ) GO TO 9910
-      IF (JFUNC .LE. MAXFNC) THEN
+      IF ((JFUNC .LE. MAXFNC).OR.(JFUNC.EQ.9)) THEN
         N = MIN0 ( MCHNAM , LENGTH )
         IFIND = KCOMP ( N , IMAGE(NC) , KEYFIL , NFLUSD , LNAM )
       ELSE
@@ -2578,6 +2623,13 @@ C
       IF ( ISSINI .GT. 0 ) ILOCK = 1
       IOPEN  = IFLOPN(IFIND)
 C
+C
+      IF (JFUNC.EQ.9) THEN
+        CALL FLUSH(IDEV)
+        GOTO 9010
+      ENDIF     
+C
+CC
 C -- CHECK THAT THE OPERATION MAY BE PERFORMED ON THIS DEVICE
 C
       IF ( ILOCK .EQ. 2 ) GO TO 9960
@@ -2625,7 +2677,7 @@ C
 cdjwsep2011
              IF ((ISSPRT .EQ. 0) .AND. (ISSFLM .EQ. 1)) THEN
               IDJW = MIN(8,LSSPRG)
-              WRITE(NCWU,1007)  CSSPRG(1:IDJW), CACTN(kFUNC),
+              WRITE(NCWU,1007)  CSSPRG(1:IDJW), CACTN(KFUNC),
      2                         IDEV, OLDFIL(1:LENNAM)
 1007    FORMAT('READ      ', A,A,           T38, ': Unit =',I8,1X,A)
              ENDIF
@@ -2710,7 +2762,7 @@ cdjwsep2011
        ENDIF
       ENDIF
 CRICFEB01[
-2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT ''', A , ''' ]' )
+2346    FORMAT ( '^^CO SAFESET [ ', A , ' TEXT "', A , '" ]' )
 #ifdef CRY_GUI
       IF ( IDEV .EQ. NCPU ) THEN
         WRITE ( CMON,2346) '_MT_PCH', NEWFIL(1:LENNAM)
@@ -2735,9 +2787,6 @@ C
       IERFLG = -1
 9010  CONTINUE
       RETURN
-C
-C
-C
 C
 CDJWMAR99[
 9900  CONTINUE
@@ -4060,7 +4109,7 @@ C
      2          K =NSTART,NEND)
                 CALL XPRVDU(NCVDU, NROW, 0)
                 IF (ISSPRT .EQ. 0) 
-     1          WRITE ( NCWU, '(A)') (CMON(IDJW)(:),IDJW=1,NROW)
+     1          WRITE ( NCWU, '(A)') (trim(CMON(IDJW)),IDJW=1,NROW)
               NSTART = NEND+1
 97531       CONTINUE
 1015        FORMAT ( 4(1X,16A1) )
@@ -4338,6 +4387,31 @@ C
 1050  FORMAT(1X)
 1100  CONTINUE
 1150  CONTINUE
+      RETURN
+      END
+C
+CODE FOR XABSRQ
+      SUBROUTINE XABSRQ
+C--
+C PROBLEM: Label 9900 (return) in SFLSB still leaves CRYSTALS loading
+C LIST 33, which may then generate an error in (say) DORESTRAIN because
+C there is no LIST 11 to load. 
+C ABANDON PROCESSING OF THE srq FOR LIST 33 IF THERE IS AN ERROR
+C CONDITION IN PROCESSING AN SFLS INSTRUCTION
+
+C
+      character*80 csrq
+      INCLUDE 'XCARDS.INC'
+C
+      DO 1100 I=1,nrec
+      READ(NUSRQ,1050,END=99)cline
+1050  FORMAT(20A4)
+1100  CONTINUE
+      NREC = 0
+      IPOSRQ = 1
+      IEOF = 1
+      RETURN
+99    CONTINUE
       RETURN
       END
 C

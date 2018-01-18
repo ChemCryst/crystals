@@ -1,4 +1,4 @@
-C $Log: not supported by cvs2svn $
+C $Log: not supported by cvs2svn  $
 C Revision 1.29  2012/04/13 07:56:54  djw
 C Correst cif restraint/constraint data name from instruction to instructions
 C
@@ -151,7 +151,11 @@ C--LIST TYPE 4:
       STORE(I+2) = STORE(JA+18)          !STORE THE ROBUST TOLERANCE
       STORE(I+3) = STORE(JA+19)          !STORE THE D-S SCHEME P1
       STORE(I+4) = STORE(JA+20)          !STORE THE D-S SCHEME P2
-      STORE(I+5) = STORE(JA+21)          !STORE THE QUASI MULTIPLIER
+C Two spare slots had been left in the part of XLST04 used for input so a new
+c variable can be added, but no spare room was set aside if L4F to store it.
+c XFAL04 tries to fix this for old list 4s
+      STORE(I+5) = STORE(JA+21)          !2017 - THE QUASI MULTIPLIER
+      STORE(I+6) = STORE(JA+22)          !2017 - RE-WEIGHT MODIFIER
       GOTO 2300
 C
 C--CHECK FOR LIST TYPE 5
@@ -1712,7 +1716,7 @@ C----- REMOVE ANY '.'
         CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
         WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
         CALL XPRVDU(NCEROR, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
       ENDIF
 CDJWAPR99}
 
@@ -2008,11 +2012,11 @@ c            print *, NRECOR, ios
 2735    CONTINUE
         WRITE (CMON,'(A,I4)') 'Error copying scratch back to dsc: ',IOS
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
 2740    CONTINUE
         WRITE (CMON,'(1X,A,I6,A)') 'Copied: ',NRECOR+1,' dsc records.'
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
         ISTAT = KFLCLS(NUNEW)     ! and then close scratch.
       ENDIF
 
@@ -2055,7 +2059,7 @@ C -- INPUT ERRORS
 CDJWAPR99
       WRITE(CMON,'(A)') 'Filename limited to 16 characters'
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
       CALL XOPMSG ( IOPPUR , IOPCMI , 0 )
       GO TO 9900
 C

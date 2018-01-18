@@ -722,9 +722,9 @@ C TOP FRAME
       IF ( IPLOTW .EQ. 1 ) THEN
         WRITE(CMON,'(A,6(/A))')
      1  '^^PL PLOTDATA _WILSON SCATTER ATTACH _VWILSON KEY',
-     1  '^^PL XAXIS TITLE "ln(<F(obs)**2>rho/<SUM(f**2)>rho)"',
+     1 '^^PL XAXIS TITLE "ln(<Fo\**2>(\rho)/<\SUMf\**2>(\rho))"',
      1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE ', 
-     1  '^^PL "Rho=(Sin(theta)/lambda)**2"',
+     1  '^^PL "\rho (= sin\**2\theta/\lambda\**2)"',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson (Fobs)''',
      1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'''

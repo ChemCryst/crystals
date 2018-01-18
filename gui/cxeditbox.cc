@@ -517,7 +517,7 @@ void CxEditBox::IsInputPlace()
      else
        ASSERT(0);
 #else
-    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
+    wxFont* pFont = new wxFont(12,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
  #ifndef _WINNT
     *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
  #else

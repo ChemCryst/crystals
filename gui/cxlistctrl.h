@@ -83,6 +83,8 @@ class CxListCtrl : public BASELISTCTRL
 #else
     void OnChar(wxKeyEvent & event );
     void HeaderClicked( wxListEvent & wxle );
+    void ItemSelected ( wxListEvent & event );
+    void ItemDeselected ( wxListEvent & event );
     DECLARE_EVENT_TABLE()
 #endif
 

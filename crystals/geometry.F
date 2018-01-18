@@ -875,8 +875,8 @@ C----- 'SAVE' TLS INSTRUCTION
       IUPDT=1
       WRITE (CMON,3580) CCALC(JTYPE)
       CALL XPRVDU (NCVDU,1,0)
-c      WRITE (NCAWU,'(A)') CMON(1)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,3580) CMON(1)
+c      WRITE (NCAWU,'(A)') trim(CMON(1))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,3580) trim(CMON(1))
 3580  FORMAT (' LIST 20 ',A,' record will be updated ')
       GO TO 20
 C
@@ -1097,9 +1097,17 @@ C
 3750  CONTINUE
 C----- NO ATOMS SPECIFIED
       IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,3760)ctype(jtype)
+         if(jtype<1 .or. jtype>size(ctype)) then
+           write(ncwu, '(a)') 'Error: Atom does not exist'
+         else
+           WRITE (NCWU,3760)ctype(jtype)
+         end if
       END IF
-      WRITE (CMON,3760)ctype(jtype)
+      if(jtype<1 .or. jtype>size(ctype)) then
+        write(cmon, '(a)') 'Error: Atom does not exist'
+      else
+        WRITE (CMON,3760)ctype(jtype)
+      end if
       CALL XPRVDU (NCVDU,2,0)
 3760  FORMAT (1X,'No atoms have been specified for a ',A,/
      1 'Atoms may only be given on a preceeding ATOM card')

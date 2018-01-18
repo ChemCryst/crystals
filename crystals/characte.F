@@ -427,23 +427,12 @@ CODE FOR XCTRIM
       SUBROUTINE XCTRIM( CSOURC, NCHAR)
 C------ TRIM OFF TRAILING SPACES
 C      CSOURC - SOURCE STRING
-C      NCHAR   - LAST NON-SPACE CHARACTER
+C      NCHAR  - LAST NON-SPACE CHARACTER + 1
       CHARACTER *(*) CSOURC
-      CHARACTER *1 CBLANK
-      DATA CBLANK /' '/
-C
-      LENGTH = LEN (CSOURC)
-      IF (CSOURC(LENGTH:LENGTH) .NE. CBLANK) THEN
-            NCHAR = LENGTH
-            RETURN
-      ENDIF
-      DO 100 I = LENGTH, 1, -1
-      IF (CSOURC(I:I) .NE. CBLANK) GOTO 200
-100   CONTINUE
-      I = 0
-200   CONTINUE
-      NCHAR = I + 1
-      RETURN
+      integer nchar
+      
+      nchar=len_trim(csourc)+1
+      
       END
 C
 CODE FOR XCREMS
@@ -550,6 +539,7 @@ C
 100   CONTINUE
       LENNAM = MAX (1, K-1)
       IF (LENNAM .LT. LENFIL) CSOURC(LENNAM+1:LENFIL) = ' '
+        
       RETURN
       END
 C

@@ -165,6 +165,12 @@
 %   COPY 'END'                                                                  
 %  END IF                                                                       
 %%
+%% If controlling script has requested extinction - make sure it is switched on by default.
+%%
+%  IF ( DOEXTNC ) THEN
+%     EVALUATE IEXTINCT = 1
+%  END IF
+%%
 %%                                                                              
 %  COPY '#SCRIPT A_GETRESIDUESANDPARTS'                                         
 %% TRANSFER "Number of parts: " // CHARACTER ( ICOUNTP ) TO DISPLAY             

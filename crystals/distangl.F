@@ -1172,7 +1172,7 @@ C
       REWIND (MTE)
 C
 C----- SET LEVEL TO HIGH IF COORDINATES REQUESTED
-      IF ((IP .GE. 0) .AND. (LEVEL . GE. 0)) LEVEL = 1
+      IF ((IP .GE. 0) .AND. (LEVEL.GE. 0)) LEVEL = 1
 C----- WRITE HEADER IF RESTRAINTS TO BE GENERATED
       IF (IPUNCH .EQ. 0) CALL XPCHLH (16, ncpu)
 
@@ -1189,7 +1189,7 @@ cnancy just make nw 16 for all cases
         nw = 16	
         NCOL=9
 C----- RESET COLUMNS FOR BRIEF O/P
-        IF (LEVEL .LE. 0) NCOL = 11
+        IF (LEVEL.LE. 0) NCOL = 11
         L12=-1
         JU=2
         JV=2
@@ -1230,7 +1230,7 @@ cnancy  make nw 16 for all cases
         JV=3
         NCOL=5
 C----- RESET COLUMN FOR BRIEF O/P
-        IF (LEVEL .LE. 0) NCOL = 6
+        IF (LEVEL.LE. 0) NCOL = 6
 C--SET A FEW AREAS OF CORE FOR E.S.D. CALCLATION
         JA=NFL
         JD = JA + NWA * NWS * MXPPP
@@ -1306,7 +1306,7 @@ c     3     'You must do another cycle of refinement')
 1500       FORMAT(' Matrix is wrong type for e.s.d.''s')
            CALL XERHND ( IERWRN )
            IESD=-1
-           GOTO 1000
+           GOTO 9900
         END IF
 
 C--APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
@@ -2074,9 +2074,11 @@ c
      2           STORE(J+10),(STORE(J+JAR),JAR=7,9)
                 ENDIF
                 CALL XPRVDU(NCVDU, 1,0)
+                if ((issprt .eq. 0) .and. (level.eq.-2) )                
+     1          write(ncwu,'(a)')trim(cmon(1))
 c^^djwnov06
-                IF ((ISSPRT .EQ. 0) .and. (level .eq.0) )
-     1          WRITE(NCWU, '(A)') CMON( 1)(:)
+                IF ((ISSPRT .EQ. 0) .and. (LEVEL.eq.0) )
+     1          WRITE(NCWU, '(A)') trim(CMON(1))
 2806            FORMAT (A,A,' - ',A, F6.3, F6.3, 1X, 3F6.3)
 2807            FORMAT (A,A,' - ',A, F6.3, 6X,   1X, 3F6.3)
               ENDIF
@@ -2145,14 +2147,14 @@ C----- WRITE SIMPLE FORM
      1          STORE(J+10), CATOM1(1:LATOM1), CATOM2(1:LATOM2)
               ENDIF
 C
-              IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
+              IF ((LEVEL2 .EQ. 0) .AND. (LEVEL.GE. 0)) THEN
 C----- WRITE A CAPTION
-                IF (LEVEL .EQ. 0) THEN
+                IF (LEVEL.EQ. 0) THEN
 C                  IF (ISSPRT .EQ. 0) THEN
 C                    WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
 C                  ENDIF
 2825              FORMAT(/,'Pivot ',A4,F5.0)
-                ELSE IF (LEVEL .GE. 1) THEN
+                ELSE IF (LEVEL.GE.1) THEN
                   IF (ISSPRT .EQ. 0) THEN
                     WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
      1                    (STORE(MMN),MMN=M5P+4,M5P+6)
@@ -2297,13 +2299,13 @@ C--CHECK IF THIS IS THE FIRST TIME OR A CONTINUATION
 
 
           IF (NFLBAS .GE. L) THEN                           ! FIRST TIME
-            IF ((LEVEL2 .EQ. 0) .AND. (LEVEL .GE. 0)) THEN
+            IF ((LEVEL2 .EQ. 0) .AND. (LEVEL.GE. 0)) THEN
 C----- WRITE A CAPTION
-              IF (LEVEL .EQ. 0) THEN
+              IF (LEVEL.EQ. 0) THEN
                 IF (ISSPRT .EQ. 0) THEN
                   WRITE(NCWU,2825) STORE(M5P),STORE(M5P+1)
                 ENDIF
-              ELSE IF (LEVEL .GE. 1) THEN
+              ELSE IF (LEVEL.GE. 1) THEN
                 IF (ISSPRT .EQ. 0) THEN
                   WRITE(NCWU,1850) STORE(M5P),STORE(M5P+1),
      1              (STORE(MMN),MMN=M5P+4,M5P+6)
@@ -2312,7 +2314,7 @@ C----- WRITE A CAPTION
               LEVEL2 = 1
             ENDIF
 Cdjwnov06^^
-                IF (LEVEL .EQ. 0) THEN
+                IF (LEVEL.EQ. 0) THEN
                   IF (ISSPRT .EQ. 0) THEN
                     WRITE(NCWU,2825) STORE(M5a),STORE(M5a+1)
                   ENDIF
@@ -2795,7 +2797,7 @@ C--PRINT WITH ERRORS
                 WRITE(NCWU,5520)N,STORE(ND),STORE(ND+1),
      1                                       (APD(NF),NF=1,NC)
 5520            FORMAT(I4,2X,A4,F5.0,3X,7(F8.2,F6.2))
-              ELSE IF ( LEVEL .GT. 0 ) THEN
+              ELSE IF ( LEVEL.GT. 0 ) THEN
                 WRITE(NCWU,5500)N,STORE(ND),STORE(ND+1),
      1               (ISTORE(NF+2),NF=NZ,NE),(APD(NF),NF=1,NC)
 5500            FORMAT(I4,3X,A4,F8.0,4X,I3,I4,3I5,3X,5(F8.2,F6.2))
@@ -3320,24 +3322,25 @@ C--CHECK THAT THE PIVOT IS AN ATOM AND NOT A PEAK
 C--NOT A PEAK  -  SEARCH FOR AN ACCEPTABLE CONTACT
 2200  CONTINUE
       E=D3
+
 C--LOOP OVER ALL THE ATOMS
       DO 2400 I=JE,JS,JT
-      K=ISTORE(I)
+          K=ISTORE(I)
 C----- ONLY INSIST THE CONTACT IS A PEAK DURING CONDENSING OR
 C      FOURIER REFINEMENT
-      IF (ITYPE .NE. 1) THEN
-       IF(KCOMP(1,JPEAK(1),STORE(K),1,MD5A))2400,2400,2250
-      ENDIF
+          IF (ITYPE .NE. 1) THEN
+          IF(KCOMP(1,JPEAK(1),STORE(K),1,MD5A))2400,2400,2250
+          ENDIF
 C--CHECK THAT THE TWO HAVE THE SAME OCCUPANCY
 2250  CONTINUE
-      IF(ABS(XOCC(K)-XOCC(M5A))-ZERO)2300,2300,2400
+          IF(ABS(XOCC(K)-XOCC(M5A))-ZERO)2300,2300,2400
 C--COMPARE THE CURRENT MINIMUM DISTANCE
-2300  CONTINUE
-      IF(STORE(I+10)-E)2350,2400,2400
+2300      CONTINUE
+          IF(STORE(I+10)-E)2350,2400,2400
 C--DISTANCE IS OKAY TOO  -  ALTER THE POINTERS
-2350  CONTINUE
-      E=STORE(I+10)
-      IPOINT=I
+2350      CONTINUE
+          E=STORE(I+10)
+          IPOINT=I
 2400  CONTINUE
 C--ELIMINATE UNWANTED ATOMS
 2450  CONTINUE
@@ -3595,9 +3598,11 @@ C
 #if !defined(_HOL_) 
       DATA IQPEAK/'Q   '/
       DATA ICPEAK/'QC  '/
+      DATA INPEAK/'QN  '/
 #else
       DATA IQPEAK/4HQ   /
       DATA ICPEAK/4HQC  /
+      DATA INPEAK/4HQN  /
 C
 C--CALLL THE TIMING FUNCTION
 #endif
@@ -3699,7 +3704,8 @@ C----- ONLY MOVE PEAKS - MARK ALL NON-PEAKS AS FOUND
           MATVC = LATVC
           DO M5 = L5, I5, MD5
               IF((ISTORE(M5) .NE. IQPEAK) .AND. 
-     1           (ISTORE(M5) .NE. ICPEAK)) THEN
+     1           (ISTORE(M5) .NE. ICPEAK) .AND.
+     1           (ISTORE(M5) .NE. INPEAK)) THEN
                 DO I = 0,MDATVC-1
                   ISTORE(MATVC+I) = ICURR
                 END DO
@@ -3712,7 +3718,8 @@ C    ONLY MOVE NON-PEAKS
           MATVC = LATVC
           DO M5 = L5, I5, MD5
               IF((ISTORE(M5) .EQ. IQPEAK) .OR. 
-     1           (ISTORE(M5) .EQ. ICPEAK)) THEN
+     1           (ISTORE(M5) .EQ. ICPEAK) .OR.
+     1           (ISTORE(M5) .EQ. INPEAK)) THEN
                 DO I = 0,MDATVC-1
                   ISTORE(MATVC+I) = ICURR
                 END DO
@@ -6971,7 +6978,7 @@ cdjwnov08 - fix causes=d looping if no list 41 exists
 c      if (n5 .lt. 2) then
 c            write (cmon,'(a,i4,a)') 'Only', n5, ' atoms'
 c            call xprvdu(ncvdu,2,0)
-c            if (issprt .eq. 0) write(ncwu, '(a)') cmon( 1)(:)
+c            if (issprt .eq. 0) write(ncwu, '(a)') trim(CMON(1))
 c            goto 3350
 c      endif
 c
@@ -7298,7 +7305,7 @@ c           CALL XPRVDU(NCVDU, 1,0)
      1    'Making bond from   ',ISTORE(M40M  ),ISTORE(M40M+1),
      1                   ' to ',ISTORE(M40M+7),ISTORE(M40M+8)
 C            CALL XPRVDU(NCVDU, 1,0)
-             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 
 C -- Add this bond into the L41. Still descending from the top of store.
           NWL41B = KCHLFL(MD41B) !Increase storage for L41B records
@@ -7414,7 +7421,7 @@ C -- Copy data down.
 C            CALL XPRVDU(NCVDU, 1,0)
 C NB - Level not defined here ("3" was "debug" in XDIST analogous routine)
 c             IF ((ISSPRT .EQ. 0) .AND. (LEVEL.EQ.3))
-c     1       WRITE(NCWU, '(A)') CMON( 1)(:)
+c     1       WRITE(NCWU, '(A)') trim(CMON(1))
             IF ( KM41B .NE. M41B ) THEN
                CALL XMOVE(STORE(M41B),STORE(KM41B),MD41B)
             END IF
@@ -7517,7 +7524,7 @@ C -- INPUT ERROR
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 9925  FORMAT ( 1X , 'Rotation matrix is singular' )
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -7602,6 +7609,15 @@ C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
         I5A=I5A+1
       END DO
 
+C Some common sense: only consider cells within +- 50 of 0,0,0.
+      DO J=1,3
+        BPD(J+3)=MIN(BPD(J+3), 50.0)
+        BPD(J+3)=MAX(BPD(J+3), -50.0)
+        BPD(J+6)=MIN(BPD(J+6), 50.0)
+        BPD(J+6)=MAX(BPD(J+6), -50.0)
+      END DO
+
+ 
       DAT1 = 0.0
       DO M29 = L29, L29+(N29-1)*MD29, MD29
         IF ( ISTORE(MPIV) .EQ. ISTORE(M29) ) THEN
@@ -7924,8 +7940,8 @@ CODE FOR DIS11
 c----- set c-h distance to dist
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a,f5.2,a )') 'dist ', dist, ', 0.02 = '
@@ -7963,8 +7979,8 @@ c----- set h-c-c angle to 180.0
 c
       INCLUDE 'XUNITS.INC'
       CHARACTER*132 CLINE
-      CHARACTER catom1*(*), cbonda(4)*(*)
       PARAMETER (NBONDA=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
 C
       DO J=1,KHY
@@ -7988,8 +8004,8 @@ c----- set h-c-c angle to mean of group
 c
       INCLUDE 'XUNITS.INC'
       CHARACTER*132 CLINE
-      CHARACTER catom1*(*), cbonda(4)*(*)
       PARAMETER (NBONDA=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
 C
       WRITE(CLINE,'(A )') 'ANGLE 0.0, 2.0 = MEAN'
@@ -8019,8 +8035,8 @@ c----- set c-c-h angle to mean of group of several h's
 c
       INCLUDE 'XUNITS.INC'
       CHARACTER*132 CLINE
-      CHARACTER catom1*(*), cbonda(4)*(*)
       PARAMETER (NBONDA=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       DIMENSION IHY(NBONDA), LBONDA(NBONDA),IPARTH(NBONDA)
 C
       WRITE(CLINE,'(A )') 'ANGLE 0.0, 2.0 = MEAN'
@@ -8049,8 +8065,8 @@ c--- set h-c-c angle to 109.54
 c
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 109.54, 2.0 = '
@@ -8078,8 +8094,8 @@ c--- set h-c-c angle to 120
 c
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 120.0, 2.0 = '
@@ -8106,8 +8122,8 @@ CODE FOR hch109
       SUBROUTINE hch109(khy, ihy, catom1, cbonda, iparth)
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 109.54, 2.0 = '
@@ -8144,8 +8160,8 @@ CODE FOR hchav
       SUBROUTINE hchav(khy, ihy, catom1, cbonda, iparth)
       INCLUDE 'XUNITS.INC'
       character*132 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
       write(cline,'(a )') 'angle 0.0, 2.0 = mean '
@@ -8183,8 +8199,8 @@ CODE FOR PLANH
       SUBROUTINE PLANH(khy, ihy, catom1, cbonda)
       INCLUDE 'XUNITS.INC'
       character*240 cline
-      CHARACTER catom1*(*), cbonda(4)*(*)
       parameter (nbonda=12)
+      CHARACTER catom1*(*), cbonda(nbonda)*(*)
       dimension ihy(nbonda), lbonda(nbonda),iparth(nbonda)
 c
         write(cline,'(a,a,a,a,a,a )') 

@@ -277,6 +277,15 @@ For a simple example, see LIST 1, section #RLIST01#.
  is likely to be very site-specific.
 #Q
 
+#I\RELEASE  devicename filename#
+#PThe file currently open on 'devicename' is closed, and a new file opened
+ on that device if necessary. The file just closed can be examined using
+ the \TYPE command. The filename parameter is optional. If it is
+ specified, the new file will be opened with that name.
+#PUseful devices currently available include PRINTER, PUNCH, LOG and MONITOR.
+
+#Q
+
 #I\OPEN devicename filename#
 #PThis command is similar to RELEASE, except that a wider range of
  device
@@ -297,18 +306,24 @@ For a simple example, see LIST 1, section #RLIST01#.
 #I\CLOSE devicename #
 #PAny file on specified device is closed.
 
-#I\RELEASE  devicename filename#
-#PThe file currently open on 'devicename' is closed, and a new file opened
- on that device if necessary. The file just closed can be examined using
- the \TYPE command. The filename parameter is optional. If it is
- specified, the new file will be opened with that name.
-#PUseful devices currently available include PRINTER, PUNCH, LOG and MONITOR.
-
 #Q
 #I\APPEND devicename filename#
 #POutput to the specified device is appended to any output already in
 the specified file.
 #Q
+
+
+#Q
+#I\FLUSH devicename #
+#PBuffered output on the specified device is flushed to the connected file
+ so that it can be seen with an editor.
+#J
+      e.g.
+      \FLUSH LOG
+      \FLUSH PRINT
+
+#Q
+
 #IDevice names#
 #PDevices are names used inside CRYSTALS to refer
 to files that it has opened. Deviecs recognised by CRYSTALS are:
@@ -497,7 +512,11 @@ If  state = OFF  then subsequent commands are not written
 during filtering. Arguments are Io or Ic, default is Io.
 See "The use of partial observations, partial models and partial residuals
 to improve the least-squares refinement of crystal structures."
-A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165,
+A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165.
+#PIo is appropriate during initial stages of an analysis, but once the R factor
+drops below 10-15%, Ic gives an unbiassed filtering of the weak reflections. A
+threshold ratio of 1 or 2 is useful if there are a very large number of very
+weak reflections.
 #Q
 #YFiles#
 #PWhen CRYSTALS runs it stores all crystallographic data in a single file,
@@ -2721,6 +2740,9 @@ for publication.
       G - SHELX output with statistically generated sigmas
       H - Output the reflections in 'cif' format. F^s, scale of Fc
       I - Outputs all set items as a LIST 6.
+      J - Used to convert pre-2016 esds to more precise ones. 
+
+     *F - * as above, F indicates that LIST 28 filters will be applied
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -3555,9 +3577,10 @@ For example:
  taken when computing Fourier maps. See the sections on Fourier maps, 
  #RFOURIER# and DIFABS #RDIFABS#.  
 #PIf FRIEDEL is set to "YES", Friedel's law is applied whatever the 
- space group.  A flag is set in the 'phase' slot for each reflcetion 
- to indicate if the law was invoked or not.  If the data is then
- sorted byt not merged, Friedel pairs will be adjacent and flagged. Use
+ space group.  A flag is set in the 'JCODE' slot for each reflcetion 
+ to indicate if the law was invoked or not. 
+ DO NOT USE excluded JCODES IN \MERGE. If the data is then
+ sorted but not merged, Friedel pairs will be adjacent and flagged. Used
  by the function "\TON" for evaluating absolute configuration.
 #
 #Q
@@ -4788,6 +4811,8 @@ done automatically.
  ATOM TYPE= SERIAL= OCC= FLAG= X= Y= Z= U11= ..
  CENTROID Z ATOM-SPECIFICATION ...
  CHANGE  PARAMETER-SPECIFICATION VALUE ...
+ COPYXYZ ATOM-PAIRS
+ COPYUIJ ATOM-PAIRS
  CREATE Z ATOM-SPECIFICATION  ...
  DELETE  ATOM SPECIFICATIONS  .  .
  DEORTHOGINAL  ATOM-SPECIFICATION . .
@@ -5007,6 +5032,17 @@ section #RLIST05#).
       CHANGE  S(1,OCC) UNTIL O(1) .5
       CONT    C(1,-2,1) UNTIL C(12)
       CONT    C(13,X) .0179
+#
+#
+#DCOPYXYZ  ATOM-PAIRS  ...#
+ This directive COPIES the XYZ coordinates of the first atom into
+ the second atom.  The other parameters are left  unchanged.  
+#
+#
+#DCOPYUIJ  ATOM-PAIRS  ...#
+ This directive COPIES the Uij coordinates of the first atom into
+ the second atom.    The other parameters are left  unchanged.
+#
 #
 #DCREATE Z ATOM-SPECIFICATION  ...#
  This directive applies the symmetry operators given or assumed by default
@@ -8602,7 +8638,7 @@ factor control, see section #RLIST23#).
  to define the weighting scheme, P(1) is the first such
  parameter and P(NP) the last parameter.
 #PThe available weighting schemes are :
-#N  36#
+#N  53#
 #J
  1.     sqrt(W) = Fo/P(1), Fo < P(1) OR Fo = P(1)
         sqrt(W) = P(1)/Fo, Fo > P(1)
@@ -8713,6 +8749,14 @@ factor control, see section #RLIST23#).
  This scheme can in principle be introduced at any time, but the
  parameters P(i) are best optimised near the end of a refinement.
  Typical values for CAD4 data are: p(1)=.001, p(2)=3.0 and p(4)=1.
+#
+#YAuto-Statistical Weights, 17#
+#HSstat#
+ This scheme can in principle be introduced at any time, but the
+ parameters P(i) are best optimised near the end of a refinement.
+ The parameters are optimised automatically by a grid-search of 
+ the residual as a function of intensity and resolution.
+#
 #YPrinting LIST 4#
 #HSprint4#
 #Pof LIST 4 may be printed with:
@@ -8731,35 +8775,30 @@ factor control, see section #RLIST23#).
 #PIf the weighting scheme is changed, new weights are automatically
  computed for the next structure factor calculation. The computation of
  weights can be forced at any time with \WEIGHT.
-#I\WEIGHT INPUT=#
+#I\WEIGHT INPUT= FACTOR=#
 #KINPUT#
 Indicates which reflection list to use.
 #J
       6      Default
       7      Alternative reflection list
 #
-#Q
-#DLIST LEVEL=#
-#KLEVEL#
-LEVEL is OFF, LOW, MEDIUM or HIGH 
-#
-#YRe-weighting the reflections - REWEIGHT#
-#HSreweight#
-#I\REWEIGHT INPUT= FACTOR=#
-#KINPUT#
-Indicates which reflection list to use.
-#J
-      6      Default
-      7      Alternative reflection list
-#
+
 #KFACTOR#
 # If FACTOR is less or equal zero, the code tries to compute a value
  which will make S (GoF) about unity.  It is important that the GoF 
  stored in LIST 30 is up to date. The SCRIPT REWEIGHT will try to do this 
  for you.
+# If FACTOR is unity, the re-weighting factor is taken from LIST 4.
+ This is the default action
+#P
+If FACTOR is greater than zero and not exactly unity,
+ all weights will be multiplied by this amount.  
 #
-If FACTOR is greater than zero, all weights will be multiplied by this 
-amount.  The default value is unity.
+
+#Q
+#DLIST LEVEL=#
+#KLEVEL#
+LEVEL is OFF, LOW, MEDIUM or HIGH 
 #
 
 #Q
@@ -13584,7 +13623,7 @@ OVER 1 Scale Du(iso) Ou(iso) Polarity Enantiopole Extinction
 #P
 There are three REAL records
 #
-FLAC holds information about the Absolute Structure
+FLAC(0) holds information about the Absolute Structure
 #J
 Slope of the npp for the refinement
 Slope of the npp for the Bijvoet pairs
@@ -13592,6 +13631,19 @@ Hole-in-one value and su
 Difference or Quotient value and su
 Hooft y value and su
 Histogram value and su
+#
+FLAC(1) Holds the numbers of reflections used for various calculations:
+#J
+No of Friedel Pairs found
+No of Friedel Pairs after applying filters 1,2 & 5
+No of Friedel Pairs used for the normal probability plot
+Not used
+No of Friedel Pairs used for the Parsons method, applying filters 1,2,3 & 5
+Not used
+No of Friedel Pairs used for the Parsons method, applying filters 1,2,3 & 5
+Not used
+No of Friedel Pairs used for the histogram method, applying filters 1,2,3,4 & 5
+Not used
 #
 HOOF holds the Hooft probabilities
 #J

@@ -71,7 +71,7 @@ C  -- ZERO THE COMMON BLOCK
 C--READ THE DETAILS OF THE LIST
       CALL XRLIND(LN,LSN,IADDI,I,J,K,IBUFF(1))
 C
-C -- MONITOR OPERATION IF REQUIRED
+C -- MONITOR LIST OPERATION IF REQUIRED
       IF ( ( ISSLSM .EQ. 2 ) .OR. ( ISSLSM .EQ. 4 ) ) THEN
         IF ( ( ISSLNM .EQ. 0 ) .OR. ( ISSLNM .EQ. LN ) ) THEN
       IF (ISSPRT .EQ. 0) THEN
@@ -145,18 +145,22 @@ C--CHECK THE VALUE
 C--NOT THE CORRECT SERIAL NUMBER
 1650  CONTINUE
       K=K+1
-      CALL OUTCOL(3)
-      WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
-     1 CLISTS(IBUFF(1)), IBUFF(2)
-      CALL XPRVDU(NCEROR, 5,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
-      WRITE(NCAWU,'(/A/A/A/)')CMON(2),CMON(3),CMON(4)
-      CALL OUTCOL(1)
+      if(ILSMSG>0) then
+        CALL OUTCOL(3)
+        WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
+     1   CLISTS(IBUFF(1)), IBUFF(2), IABS(J)
+        CALL XPRVDU(NCEROR, 5,0)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)') trim(CMON(2)), 
+     1  trim(CMON(3)), trim(CMON(4))
+        WRITE(NCAWU,'(/A/A/A/)')trim(CMON(2)), 
+     1  trim(CMON(3)), trim(CMON(4))
+        CALL OUTCOL(1)
+      end if
 1700  FORMAT(/
      1 '              List type ',I5,' (',A,')',/
      1 ' depends upon list type ',I5,' (',A,')',/
      2 ' with original serial no.',I8,
-     3 ', not the current version.'/)
+     3 ', not the current version,',I8/)
       GOTO 1400
 C--ALL INTERDEPENDENCIES PROCESSED
 1750  CONTINUE
@@ -205,14 +209,16 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
       GO TO 9900
 9930  CONTINUE
 C -- LIST CANNOT BE LOADED BECAUSE OF INTERDEPENDCIES
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 ) LN
-      ENDIF
-      WRITE ( NCAWU , 9935 ) LN
-      WRITE ( CMON, 9935 ) LN
-      CALL XPRVDU(NCEROR, 1,0)
-9935  FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
-      CALL XERHND ( IERERR )
+      if(ILSMSG>0) then
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE ( NCWU , 9935 ) LN
+        ENDIF
+        WRITE ( NCAWU , 9935 ) LN
+        WRITE ( CMON, 9935 ) LN
+        CALL XPRVDU(NCEROR, 1,0)
+9935    FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
+        CALL XERHND ( IERERR )
+      end if      
       GO TO 9900
       END
 C

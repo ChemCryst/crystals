@@ -163,9 +163,24 @@
 %       BLOCK %BOK%
 ^^??      E2 TEXT
 %         GET SILENT NOSTORE REAL 'Esd' '1.8'
-%         EVALUATE RSESD = CVALUE // ' '
- 
-%         EVALUATE CLINE1 = 'PLANAR ' // RSESD // CATM
+%         EVALUATE CLINE1 = 'PLANAR ' // CVALUE 
+%% Put string of atoms back in input buffer
+%         TRANSFER CATM TO INPUT
+%         LOOP
+%           IF LEN CLINE1 .GT. 70 THEN
+%% Store remainder of line
+%              GET NOSTORE TEXT 'Atom' ' '
+%              EVALUATE CATM = CVALUE
+%              COPY '#SCRIPT YADDLI16'
+%              TRANSFER CATM TO INPUT
+%              EVALUATE CLINE1 = 'CONT '
+%           END IF        
+%           GET KEYWORD 'Atom' ' '
+%           EVALUATE CLINE1 = CLINE1 // ' ' // CVALUE
+%           IF CVALUE .EQ. ' ' THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%           END IF
+%         END LOOP
 %         COPY '#SCRIPT YADDLI16'
 ^^WI      DISPOSE XRESTRD
 ^^CR

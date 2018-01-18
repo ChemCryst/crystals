@@ -7,7 +7,7 @@
 
 ^^WI       ITEM XIN5    'Import S&helx files (ins, res, hkl, hklf5)'
 ^^WI                '#SCRIPT XFILES' DISABLEIF='IN'
-^^WI       ITEM XINA    'Import Agilent data (cif_od)'
+^^WI       ITEM XINA    'Import RigakuOD data (cif_od)'
 ^^WI                '#SCRIPT XFILEA' DISABLEIF='IN'
 ^^WI       ITEM XINK    'Import Nonius Kappa data'
 ^^WI                '#SCRIPT XFILEN' DISABLEIF='IN'
@@ -20,9 +20,13 @@
 
 ^^WI     ITEM XIN5 'Import Shel&x file (INS or RES)'
 ^^WI              '#SCRIPT XSHELXIN' DISABLEIF='IN'
+^^WI     ITEM XINP    'Experimental Import S&helx files (ins, res)'
+^^WI                '#SCRIPT XPASCAL' DISABLEIF='IN'
 ^^WI     ITEM IN6 'Import HKLF4 data' '#SCRIPT XINLIST6' DISABLEIF='IN'
 ^^WI     ITEM XTWN  'Import hklf5 file'
 ^^WI              '#SCRIPT HKLF52CRY' DISABLEIF='IN'
+^^WI     ITEM XTWN  'Import twin laws'
+^^WI              '#SCRIPT INLIST25' DISABLEIF='IN'
 ^^WI   SPLIT
 
 ^^WI     ITEM XCIF  'Import Structural (CSD) cif file'
@@ -31,7 +35,7 @@
 
 ^^WI      ITEM _XIN1 'Input/Edit Cell' '#SCRIPT XCELLIN'      DISABLEIF='IN'
 ^^WI      ITEM _XIN2 'Input/Edit Space Group' '#SCRIPT XSPACE'  DISABLEIF='IN'
-^^WI      ITEM _XIN3 'Input/Edit Formula / Radiation' '#SCRIPT XINLIST3'
+^^WI      ITEM _XIN3 'Input/Edit Formula/scattering/Radiation' '#SCRIPT XINLIST3'
 ^^WI              DISABLEIF='IN'
 ^^WI     ENDMENU
 ^^WI   SPLIT

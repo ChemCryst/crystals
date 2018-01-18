@@ -1056,16 +1056,25 @@ C--PRINT IS REQUIRED
       END
 C
 CODE FOR XCDEF
-      SUBROUTINE XCDEF
+      SUBROUTINE XCDEF(results)
+      use list26_mod
 C--CALCULATE THE VALUE OF A DEFINE FUNCTION
 C
 C--
+      type(restraints_t), intent(inout), optional :: results
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XCNTRL.INC'
 C
       INCLUDE 'QSTORE.INC'
+            
+      if(present(results)) then
+          call extend(results%subrestraints, 1, .true.)
+          results%subrestraints(1)%description='Define'
+          results%subrestraints(1)%rvalue=XVALUE(LC)
+      end if      
+      
 C
 C--FIND THE LOCATION TO STORE THE COMPUTED VALUE
       I=ISTORE(LCG+2)+LC

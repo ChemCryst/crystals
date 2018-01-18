@@ -1,14 +1,13 @@
 %SCRIPT XCHECK6                                                                 
 % VARIABLE REAL WORK1 WORK2 WORK3                                               
 % VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE          
-% VARIABLE LOGICAL WILFIL HIST  SIG                                                      
+% VARIABLE LOGICAL WILFIL HIST  
 % VARIABLE REAL NEWRHO NEWRAT THFULL MRGR NMBR                                      
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP      
 % VARIABLE INTEGER ABSPRINT ABSTOTAL                                            
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'                                   
 % EVALUATE ABSENT = FILEEXISTS 'absences.dat'                                   
 % EVALUATE HIST = FILEEXISTS 'histogram.dat'                                   
-% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
 % VARIABLE INTEGER NSIGMAS
@@ -64,9 +63,9 @@
 ^^WI       @ 2,2 STATIC XFW22                                                    
 ^^WI 'data complete) by right-clicking on the red line.'  
 ^^WI       @ 3,1 STATIC XFW31                                                    
-^^WI ' The intervals in (sin(theta)/lambda)^3 have equal volumes.'  
+^^WI ' The intervals in (sin\theta/lambda)\**3 have equal volumes.'  
 ^^WI       @ 4,1  STATIC XFW41
-^^WI ' The values under the cursor are Theta, and (sin(theta)/lambda)^2'
+^^WI ' The values under the cursor are \theta, and (sin\theta/\lambda)\**2'
 ^^WI      }                                                                     
 ^^WI     }                                                                      
 ^^WI     @ 4,2 RESIZE _COMPRSZ VERTICAL 
@@ -75,7 +74,7 @@
 ^^WI      {                                                                     
 ^^WI       @ 1,1 PLOTWINDOW _VCOMPL NROWS=20 NCOLS=64                           
 ^^WI        DEFINEPOPUPMENU POPUP 'Selection'                                   
-^^WI        ITEM _SDELA '&Manually set theta full = _L' 'SIGFULL_N_L_N_Y'           
+^^WI        ITEM _SDELA '&Manually set theta full = _L' 'SIGFULL_N_L'           
 ^^WI        ENDDEFINEMENU                                                       
 ^^WI      }                                                                     
 ^^WI      ITEM GRID CR2 NROWS=3 NCOLS=1                                         
@@ -97,9 +96,9 @@
 ^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'You are looking at the frequency of I/sigma(I). The green line shows'      
+^^WI 'You are looking at the frequency of I/\sigma(I). The green line shows'      
 ^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'number of reflections above a given I/sigma(I) ratio.'                    
+^^WI 'number of reflections above a given I/\sigma(I) ratio.'                    
 ^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'   
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
@@ -115,16 +114,14 @@
 %%sig-vs-res                                                                       
 ^^WI    TAB _MAINTAB2b 'Sigma vs Res' GRID _MAINTG2 NROWS=5 NCOLS=3              
 ^^WI    {                                                                       
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''               
 ^^WI     {                                                                      
 ^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
 ^^WI      {                                                                     
-^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI '         You are looking at the distribution of I/sigma(I) against '               
-^^WI       @ 1,2 STATIC XFW1B                                                    
-^^WI '(sin(theta)/lambda)**3'                                                   
+^^WI       @ 1,1 STATIC XFW1
+^^WI 'You are looking at the distribution of I/\sigma(I) against sin\**3\theta/\lambda\**3'                                                   
 ^^WI       @ 2,1 STATIC XWF2
-^^WI '         The first value under the pointer is (sin(theta)/lambda)**2'
+^^WI 'The first value under the pointer is sin\**2\theta/\lambda\**2'
 ^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
@@ -136,50 +133,6 @@
 ^^WI    }
 %%end-sig-vs-res                                                                       
 %%    
-%%Variances
-^^WI    TAB _MAINTAB7 'Variances' GRID _MAINTG7 NROWS=7 NCOLS=3                  
-^^WI    {                                                                       
-% IF ( SIG ) THEN                                                            
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
-^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
-^^WI      {                                                                     
-^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI 'The Internal Variance is a measure of self-consistency of equivalents'
-^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'The External Variance comes from the instrument makers estimates'         
-^^WI       @ 3,1 STATIC XFW3                                                    
-%     if sig then
-^^WI 'Only reflections with 3 or more contributors are plotted'      
-%     else
-^^WI 'THE FILE SIGMAS.DAT DOES NOT EXIST'      
-%     end if
-^^WI      }                                                                     
-^^WI      @ 1,1 ICON IM INFO                                                    
-^^WI     }                                                                      
-^^WI     @ 4,2 PLOTWINDOW _VSIGMA NROWS=20 NCOLS=64 
-^^WI     @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 8
-^^WI      {   
-^^WI       @ 1,1 STATIC XFS2 ' Number of data used ='
-^^WI       @ 1,3 STATIC _MW_USED '0'                                  
-%%
-^^WI       @ 1,5 STATIC XFS 'Internal ='                        
-^^WI       @ 1,7 STATIC _MW_GRAD '000.00'                                  
-^^WI       @ 1,8 STATIC XFS2 'x External.'
-%%
-^^WI      }
-% ELSE                                                                          
-^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
-^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=1 NCOLS=1                                       
-^^WI      {                                                                     
-^^WI       @ 1,1 STATIC XFW1 'The sigmas.dat file not found'
-^^WI      }                                                                     
-^^WI      @ 1,1 ICON IM ERROR                                                   
-^^WI     }                                                                      
-% END IF                                                                        
-^^WI    }                                                                       
-%%end_Variances
 %%                                                                       
 %%                                                                       
 %%Merging-R                                                                       
@@ -264,7 +217,7 @@
 ^^WI       @ 2,1 STATIC XFW2                                                    
 ^^WI 'Fo distributions'         
 ^^WI       @ 3,1 STATIC XFW3                                                    
-^^WI 'Fo/sigma distributions'      
+^^WI 'Fo/\sigma(Fo) distributions'      
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -313,7 +266,7 @@
 ^^WI       @ 5,1 STATIC XFW3 
 ^^WI 'Avoid setting LIST 28 filters to eliminate too many reflections'
 ^^WI       @ 6,1 STATIC XFW4 
-^^WI '<|E^2-1|> less than 0.736 may indicate twinning'   
+^^WI '<|E\**2-1|> less than 0.736 may indicate twinning'   
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -330,7 +283,7 @@
 ^^WI       @ 1,3 STATIC _MW_BFACTR '0000.0000'                                  
 ^^WI       @ 1,5 STATIC WBFS 'Scale:'                                           
 ^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'                                  
-^^WI     @ 1,9 STATIC WBFS 'MOD(E**2-1)'                                        
+^^WI     @ 1,9 STATIC WBFS '<|E\**2-1|>'                                        
 ^^WI     @ 1,11 STATIC _MW_E2MIN1 '000000.000'                                  
 ^^WI     }                                                                      
 ^^WI    }                                                                       
@@ -358,7 +311,7 @@
 ^^WI           STATE=OFF INFORM=YES                                             
 ^^WI     @ 7,2 GRID GSTAT2 NROWS=1 NCOLS=3                                      
 ^^WI     {                                                                      
-^^WI       @ 1,1 STATIC WBFS 'MOD(E**2-1)'                                      
+^^WI       @ 1,1 STATIC WBFS '<|E\**2-1|>'                                      
 ^^WI       @ 1,3 STATIC _MW_E2MIN2 '000000.000'                                 
 ^^WI     }                                                                      
 ^^WI    }                                                                       
@@ -487,8 +440,8 @@
 %    EXTRACT NEXT                                                               
 %%                                                                              
 ^^PL PLOTDATA _CLASS SCATTER ATTACH _VABSENT                                    
-^^PL XAXIS TITLE 'Fo**2/sigma(Fo**2)'                                           
-^^PL NSERIES=1 LENGTH=40 YAXIS TITLE 'Fo**2'                                    
+^^PL XAXIS TITLE 'Fo\**2/\sigma(Fo\**2)'                                           
+^^PL NSERIES=1 LENGTH=40 YAXIS TITLE 'Fo\**2'                                    
 %%                                                                              
 %    COPY '#SCRIPT YGETABS'                                                     
 %    COPY '#CLOSE SCPDATA'                                                      
@@ -663,13 +616,13 @@
 %    EXTRACT NEXT                                                               
 %%                                                                              
 ^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VHIST2 KEY                               
-^^PL XAXIS TITLE 'Fo/sigma Interval'                                                   
+^^PL XAXIS TITLE 'Fo/\sigma(Fo) Interval'                                                   
 % TRANSFER '^^PL YAXIS ZOOM 0 ' // CHARACTER MREF // - 
   " TITLE 'Number of reflections' " TO DISPLAY                                
-^^PL YAXISRIGHT TITLE 'Mean value of Fo/sigma'                                   
+^^PL YAXISRIGHT TITLE 'Mean value of Fo/\sigma(Fo)'                                   
 ^^PL NSERIES=2 LENGTH=100                                                       
 ^^PL SERIES 1 SERIESNAME 'Number of reflections'                                     
-^^PL SERIES 2 SERIESNAME 'Mean value of Fo/sigma' TYPE LINE USERIGHTAXIS
+^^PL SERIES 2 SERIESNAME 'Mean value of Fo/\sigma(Fo)' TYPE LINE USERIGHTAXIS
 %%                                                                              
 % LOOP
 %  ON ERROR TERMINATE                                                           
@@ -707,51 +660,6 @@
 %%                                                                       
 %%                                                                       
 %%                                                                       
-%%Variances
-
-^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'  
-%  VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES
-%  IF ( SIG .AND. LMAONCE ) THEN  
-%    BLOCK
-^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'             
-^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA                                  
-^^PL XAXIS TITLE 'External (Mean variance)'                                           
-^^PL NSERIES=1 LENGTH=40 
-^^PL SERIES 1 SERIESNAME 'No of contributors'
-^^PL YAXIS TITLE 'Internal (rms deviation)'                                    
-%    EVALUATE SXX = 0.
-%    EVALUATE SXY = 0.
-%    COPY '#GENERALEDIT 30'
-%    COPY 'LOCATE RECORDTYPE = 101'
-%    COPY 'TRANSFER FROM OFFSET = 2 TO NREFMES'
-%    COPY 'END'
-%%
-%%
-%      IF ( NREFMES .GE. 5000. ) THEN
-^^WI    WINDOW XINFO 'Warning'  MODAL
-^^WI    GRID MAIN NROWS=2 NCOLS=3                   
-^^WI     { 
-^^WI      @ 1,2 STATIC T1 'You have more than 5000 merged reflections'
-^^WI      @ 2,2 STATIC T2 'Plotting them may take some time'
-^^WI     } 
-^^WI    SHOW        
-^^CR 
-%      END IF
-%%
-%     COPY '#SCRIPT YGETSIG'
-%%
-%      IF ( NREFMES .GE. 5000. ) THEN
-^^WI   DISPOSE XINFO
-^^CR
-%      END IF
-^^PL  SHOW                                                                       
-^^CR  
-%%
-%    END BLOCK
-%  END IF
-%%end-variances
-%%                                                                       
-%%                                                                       
 %%                                                                       
 ^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'             
 %  IF ( MERGER .AND. LMAONCE ) THEN                                             
@@ -763,12 +671,12 @@
 %    EXTRACT NEXT                                                               
 %%                                                                              
 ^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VRMERGE KEY                               
-^^PL XAXIS TITLE 'I/sigma(I)'                                                   
+^^PL XAXIS TITLE 'I/\sigma(I)'                                                   
 ^^PL YAXIS ZOOM 0 50 TITLE 'Merging R factor(%)'                                
 ^^PL YAXISRIGHT TITLE 'Number Of Reflections Output'                                   
 ^^PL NSERIES=2 LENGTH=100                                                       
 ^^PL SERIES 1 SERIESNAME 'Merging R factor'                                     
-^^PL SERIES 2 SERIESNAME 'Number > given I/sigma(I)' TYPE LINE USERIGHTAXIS     
+^^PL SERIES 2 SERIESNAME 'Number > given I/\sigma(I)' TYPE LINE USERIGHTAXIS     
 %%                                                                              
 % LOOP
 %  ON ERROR TERMINATE                                                           
@@ -917,16 +825,16 @@
 %        END IF                                                                 
 %        COPY '#GENERALEDIT 30'                                                 
 %        COPY 'LOCATE RECORDTYPE = 109'                                         
-%        GET NOSTORE SILENT  REAL ' ' ' '                                  
+%        GET SILENT NOSTORE  REAL ' ' ' '
 %        EVALUATE THFULL = - VALUE                                              
 %        COPY 'TRANSFER TO OFFSET = 10 FROM THFULL'                             
 %        TRANSFER '{I Theta full manually set to ' // -                         
             CHARACTER ( - THFULL ) TO DISPLAY                                   
-
-%        GET NOSTORE SILENT FINAL REAL ' ' ' '                                  
-%        EVALUATE THFULL =  VALUE                                              
-%        COPY 'TRANSFER TO OFFSET = 11 FROM THFULL'                             
-
+%        GET SILENT NOSTORE TEXT ' ' ' '                                  
+%% Reset completeness of this value of theta.
+%%        GET SILENT NOSTORE REAL ' ' ' '                                  
+%%        EVALUATE THFULL =  VALUE                                              
+%        COPY 'TRANSFER TO OFFSET = 11 FROM 0.0'
 %        COPY 'WRITE'                                                           
 %        COPY 'END'                                                             
 %      END BLOCK                                                                

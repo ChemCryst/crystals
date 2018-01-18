@@ -13,7 +13,7 @@ type(line_t), intent(out) :: shelxline !< Line read from res/ins file
 integer, intent(out) :: iostatus !< status of the read
 character(len=1024) :: buffer
 character(len=:), allocatable :: linetemp
-integer first
+integer first, lens
 integer, save :: line_number=1
 
     shelxline%line_number=line_number
@@ -33,7 +33,8 @@ integer, save :: line_number=1
         end if
         if(allocated(shelxline%line)) then
             ! appending new text
-            allocate(character(len=len_trim(shelxline%line)) :: linetemp)
+            lens=len_trim(shelxline%line)
+            allocate(character(len=lens) :: linetemp)
             linetemp=shelxline%line
             deallocate(shelxline%line)
             allocate(character(len=len(linetemp)+len_trim(buffer)+1) :: shelxline%line)
@@ -67,7 +68,7 @@ type(line_t), intent(in) :: shelxline !< line from res/ins file
 character(len=4) :: keyword
 logical found
 
-character(len=6) :: label
+character(len=lenlabel) :: label
 integer atomtype, iostatus
 real, dimension(3) :: coordinates
 real occupancy
@@ -85,8 +86,9 @@ procedure(shelx_dummy), pointer :: proc
     
     ! 4 letters keywords first
     if(len_trim(shelxline%line)>3) then
-        keyword=to_upper(shelxline%line(1:4))
-        proc => keywords2functions%getvalue( keyword )
+        keyword=shelxline%line(1:4)
+        call to_upper(keyword)
+        call keywords2functions%getvalue( keyword, proc )
         if ( associated(proc) ) then
             call proc(shelxline)
             found=.true.
@@ -94,8 +96,9 @@ procedure(shelx_dummy), pointer :: proc
     end if
     
     ! 3 letters keywords 
-    keyword=to_upper(shelxline%line(1:3))
-    proc => keywords2functions%getvalue( keyword )
+    keyword=shelxline%line(1:3)//' '
+    call to_upper(keyword)
+    call keywords2functions%getvalue( keyword, proc )
     if ( associated(proc) ) then
         call proc(shelxline)
         found=.true.
@@ -137,11 +140,12 @@ procedure(shelx_dummy), pointer :: proc
 end subroutine
 
 !> Write the crystals file
-subroutine write_crystalfile()
+subroutine write_crystalfile(crystals_filepath)
 use crystal_data_m
 implicit none
+character(len=*), intent(in) :: crystals_filepath
 
-    open(crystals_fileunit, file='crystalsinput.dat')
+    open(crystals_fileunit, file=crystals_filepath)
 
     ! process serial numbers 
     call get_shelx2crystals_serial
@@ -164,12 +168,20 @@ implicit none
     call write_list13()
 
     call write_composition()
+
+    call write_list3()
+    
+    call write_list29()
     
     call write_list5()
 
     call write_list12()
 
     call write_list16()
+    
+    write(crystals_fileunit, '(a)') '\LIST 23'
+    write(crystals_fileunit, '(a)') 'MODIFY ANOM=Y'
+    write(crystals_fileunit, '(a)') 'END'
     
     close(crystals_fileunit)
 end subroutine
@@ -178,23 +190,41 @@ end subroutine
 subroutine get_shelx2crystals_serial()
 use crystal_data_m
 implicit none
-integer i, j, k, start
-character(len=6) :: label, buffer
-logical found, foundresidue
+integer i, j, k, start, maxresidue, maxresiduelen, iostatus
+character(len=128) :: label, residueformat, residuetext, serialtext
+character(len=128) :: buffer
+logical found
+    
+    write(log_unit, '(a)') ''
+    write(log_unit, '(a)') 'Processing shelxl labels into crystals serials'
 
     ! shelx allows the same label in different residues. It's messing up the numerotation for crystals
-    ! in this case, we will prefix the serial in crystals with the residue
-    foundresidue=.false.
+    ! in this case, we will suffix the serial in crystals with the residue
+    maxresidue=0
     do i=1, atomslist_index
-        if(atomslist(i)%resi/=0) then
-            foundresidue=.true.
-            exit
+        if(atomslist(i)%resi>maxresidue) then
+            maxresidue=atomslist(i)%resi        
         end if
-    end do        
+    end do   
+    
+    ! finding format to print residue
+    maxresiduelen=0
+    if(maxresidue>0) then
+        write(buffer, '(I0)') maxresidue
+        maxresiduelen=len_trim(buffer)
+        write(residueformat, '("(I",I0,".",I0,")")') maxresiduelen, maxresiduelen
+    end if
+    residuetext=''
 
-    do i=1, atomslist_index
+    do i=atomslist_index, 1, -1
+        ! fetch and format residue, it will be appended as a suffix
+        if(atomslist(i)%resi/=0) then
+            write(residuetext, trim(residueformat)) atomslist(i)%resi
+        end if
+
         label=atomslist(i)%label
-        ! fetch first number
+        !print *, trim(label), atomslist(i)%resi
+        ! fetch first number, anything before is ignored, atom type is get using sfac
         start=0
         do j=1, len_trim(label)
             if(iachar(label(j:j))>=48 .and. iachar(label(j:j))<=57) then ! [0-9]
@@ -202,27 +232,16 @@ logical found, foundresidue
                 exit
             end if
         end do
+        
         if(start/=0) then
             ! fetch the serial number
-            buffer=''
+            serialtext=''
             k=0
-            ! Now check if labels are duplicated
-            if(foundresidue) then
-                do j=1, atomslist_index 
-                    if(i/=j) then
-                        if(atomslist(i)%label==atomslist(j)%label) then !found a duplicate
-                            ! now prefix serial with residue
-                            write(buffer, '(I0)') atomslist(i)%resi
-                            k=len_trim(buffer)
-                            exit
-                        end if
-                    end if
-                end do
-            end if
+            
             do j=start, len_trim(label)
                 if(iachar(label(j:j))>=48 .and. iachar(label(j:j))<=57) then ! [0-9]
                     k=k+1
-                    buffer(k:k)=label(j:j)
+                    serialtext(k:k)=label(j:j)
                 else
                     ! no more number but a suffix not supported by crystals
                     ! if it is a symbol ignore it and hope for something after
@@ -232,26 +251,64 @@ logical found, foundresidue
                     ! if a letter, append its number in alphabet instead
                     if(iachar(label(j:j))>=65 .and. iachar(label(j:j))<=90) then ! [A-Z]
                         k=k+1
-                        write(buffer(k:), '(I0)') iachar(label(j:j))-64
+                        write(serialtext(k:), '(I0)') iachar(label(j:j))-64
                         if(iachar(label(j:j))-64>10) k=k+1
                     end if
                 end if
             end do
+            buffer=trim(serialtext)//residuetext
             read(buffer, *) atomslist(i)%crystals_serial
         else
-            atomslist(i)%crystals_serial=1
-        end if    
+            ! default to 1 one serial is absent
+            buffer='1'//trim(residuetext)
+            read(buffer, *) atomslist(i)%crystals_serial
+        end if
+                        
+        ! Most likely we have duplicates, lets fix that
+        found=.true.
+        do while(found)
+            found=.false.
+            do j=1, atomslist_index
+                if(i/=j .and. atomslist(i)%crystals_serial==atomslist(j)%crystals_serial) then
+                    if(atomslist(i)%sfac==atomslist(j)%sfac) then
+                        ! identical serial, incrementing and starting search again
+                        write(log_unit, '(3a,I0,3a,I0)') '2 identical serial for ', &
+                        &   trim(atomslist(i)%label), ': ', atomslist(i)%crystals_serial, ' and ', &
+                        &   trim(atomslist(j)%label), ': ', atomslist(j)%crystals_serial
+                        read(serialtext, *, iostat=iostatus) k
+                        if(iostatus==0) then
+                            k=k+1
+                            write(serialtext, '(I0)') k
+                        else
+                            serialtext='1     '
+                        end if                        
+                        buffer=trim(serialtext)//residuetext
+                        read(buffer, *) atomslist(i)%crystals_serial
+                        write(log_unit, '(3a,I0,3a,I0)') 'New serial for ', &
+                        &   trim(atomslist(i)%label), ': ', atomslist(i)%crystals_serial, ' and ', &
+                        &   trim(atomslist(j)%label), ': ', atomslist(j)%crystals_serial
+                        found=.true.
+                        exit
+                    end if
+                end if
+            end do
+        end do             
+            
     end do
 
-    ! Most likely we have duplicates, lets fix that
+    ! We can still have duplicates, lets check again
     found=.true.
     duplicates:do while(found)
         found=.false.
         do i=1, atomslist_index
-            do j=i+1, atomslist_index
-                if(atomslist(i)%crystals_serial==atomslist(j)%crystals_serial) then
+            do j=1, atomslist_index
+                if(i/=j .and. atomslist(i)%crystals_serial==atomslist(j)%crystals_serial) then
                     if(atomslist(i)%sfac==atomslist(j)%sfac) then
-                        ! identical serial, incrementing and starting search again
+                        write(log_unit, '(8a)') '2 identical serial for ', &
+                        &   trim(atomslist(i)%label), ':', atomslist(i)%crystals_serial, ' and ', &
+                        &   trim(atomslist(j)%label), ':', atomslist(j)%crystals_serial
+                        !print *, atomslist(i)%sfac, atomslist(i)%crystals_serial
+                        ! identical serial, looking for maxima and starting search again
                         atomslist(i)%crystals_serial=atomslist(i)%crystals_serial+1
                         found=.true.
                         cycle duplicates
@@ -260,6 +317,8 @@ logical found, foundresidue
             end do
         end do
     end do duplicates
+
+    write(log_unit, '(a)') 'Done'
 
 !do i=1, atomslist_index
 !    print *, atomslist(i)%label, atomslist(i)%sfac, atomslist(i)%crystals_serial
@@ -402,24 +461,30 @@ END SUBROUTINE M33INV
 
 !> Extract a res file from a cif file
 subroutine extract_res_from_cif(shelx_filepath, found)
+use crystal_data_m, only: log_unit
 implicit  none
 character(len=*), intent(in) :: shelx_filepath
 logical, intent(out) :: found
-character(len=len(shelx_filepath)) :: res_filepath
+character(len=len(shelx_filepath)+4) :: res_filepath
 integer resid, cifid, iostatus
 character(len=2048) :: buffer
+integer :: data_number
+character(len=4) :: data_number_text
 
     found=.false.
     cifid=815
+    data_number=0
     open(unit=cifid,file=shelx_filepath, status='old')
     do
         read(cifid, '(a)', iostat=iostatus) buffer
         if(iostatus/=0) then
             return
         end if
-        if(index(buffer, '_shelx_res_file')>0) then
+        if(index(buffer, '_shelx_res_file')>0 .or. &
+        &   index(buffer,'_iucr_refine_instructions_details')>0) then
             ! found a res file!
             found=.true.
+            data_number=data_number+1
             read(cifid, '(a)', iostat=iostatus) buffer
             if(trim(buffer)/=';') then
                 print *, 'unexpected line: ', trim(buffer)
@@ -428,8 +493,9 @@ character(len=2048) :: buffer
             end if
             
             res_filepath=shelx_filepath
-            res_filepath(len_trim(res_filepath)-2:)='res'
-            resid=815
+            write(data_number_text, '(I0)') data_number
+            res_filepath(len_trim(res_filepath)-3:)=trim(data_number_text)//'.res'
+            resid=816
             open(unit=resid,file=res_filepath)       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
@@ -445,14 +511,15 @@ character(len=2048) :: buffer
             ! found a hkl file!
             read(cifid, '(a)', iostat=iostatus) buffer
             if(trim(buffer)/=';') then
-                print *, 'unexpected line: ', trim(buffer)
-                print *, 'I was expecting `;`'
+                write(log_unit, '(2a)') 'unexpected line: ', trim(buffer)
+                write(log_unit, '(a)') 'I was expecting `;`'
                 call abort()
             end if
             
             res_filepath=shelx_filepath
-            res_filepath(len_trim(res_filepath)-2:)='hkl'
-            resid=815
+            write(data_number_text, '(I0)') data_number
+            res_filepath(len_trim(res_filepath)-3:)=trim(data_number_text)//'.hkl'
+            resid=816
             open(unit=resid,file=res_filepath)       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
@@ -471,11 +538,12 @@ end subroutine
 subroutine write_list16()
 use crystal_data_m
 implicit none
-integer i, j, k, l, k1,k2
-integer, dimension(1024) :: serial1, serial2
-logical found
+integer i, j, k, l, m
+integer :: serial1
 character(len=1024) :: buffer1, buffer2, buffertemp
-
+character :: linecont
+integer previous
+    
     ! Restraints
     write(crystals_fileunit, '(a)') '\LIST 16'
     write(crystals_fileunit, '(a)') 'NO'
@@ -483,158 +551,176 @@ character(len=1024) :: buffer1, buffer2, buffertemp
     write(crystals_fileunit, '(a)') 'REM   HREST   END (DO NOT REMOVE THIS LINE) '
 
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
-!*   DFIX
+!*   flat
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    call write_list16_flat()
 
-    ! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
-    do i=1, dfix_table_index
-        if(index(dfix_table(i)%atom1, '_')>0) then
-            print *, 'Warning: ignoring DFIX between ', trim(dfix_table(i)%atom1), ' and ', trim(dfix_table(i)%atom2)
-            print *, '_* syntax not supported'
-            cycle
-        end if
-        if(index(dfix_table(i)%atom2, '_')>0) then
-            print *, 'Warning: ignoring DFIX between ', trim(dfix_table(i)%atom1), ' and ', trim(dfix_table(i)%atom2)
-            print *, '_* syntax not supported'
-            cycle
-        end if
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   DFIX/DANG
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    call write_list16_dfix()
 
-        if(dfix_table(i)%distance<0.0) then
-            print *, 'Warning: Anti bumping in DFIX not supported '
-            write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
-            cycle
-        end if
-        
-        write(crystals_fileunit, '(a, a)') '# ', dfix_table(i)%shelxline
-        ! get serial for atom 1
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   SADI
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    call write_list16_sadi()
+
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   EADP
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    ! EADP O24 O25 O29 O28 O27 O26
+    if(eadp_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing EADPs...'
+    end if
+    
+    eadploop:do i=1, eadp_table_index
+        write(log_unit, '(a)') trim(eadp_table(i)%shelxline)
+        write(crystals_fileunit, '(a, a)') '# ', eadp_table(i)%shelxline
         serial1=0
-        k1=0
-        do j=1, atomslist_index
-            if(trim(dfix_table(i)%atom1)==trim(atomslist(j)%label)) then
-                k1=k1+1
-                serial1(k1)=j
+        do m=1, atomslist_index
+            if(trim(eadp_table(i)%atoms(1))==trim(atomslist(m)%label)) then
+                serial1=m
+                exit
             end if
         end do
-        ! get serial for atom 2
-        serial2=0
-        k2=0
-        do j=1, atomslist_index
-            if(trim(dfix_table(i)%atom2)==trim(atomslist(j)%label)) then
-                k2=k2+1
-                serial2(k2)=j
-            end if
-        end do
-        
-        if(dfix_table(i)%residue==-99) then
-            ! No residue used
-            if(k1>1 .or. k2>1) then
-                print *, 'Error: duplicated label found and no residue specified in DFIX'
-                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
-                do j=1, k1
-                    write(*, '("Line ", I0, ": ", a)') atomslist(serial1(j))%line_number, trim(atomslist(serial1(j))%shelxline)
-                end do
-                do j=1, k2
-                    write(*, '("Line ", I0, ": ", a)') atomslist(serial2(j))%line_number, trim(atomslist(serial2(j))%shelxline)
-                end do
+        if(serial1>0) then
+            if(atomslist(serial1)%crystals_serial==-1) then
+                write(log_unit, '(2a)')  'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
                 call abort()
-            else if(k1==0 .or. k2==0) then
-                if(k1==0) then
-                    print *, 'Error: cannot find ', trim(dfix_table(i)%atom1), ' in res file'
-                end if
-                if(k2==0) then
-                    print *, 'Error: cannot find ', trim(dfix_table(i)%atom2), ' in res file'
-                end if
-                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
-                do j=1, atomslist_index
-                    print *, j, trim(atomslist(j)%label)
-                end do
-                call abort()
-            else
-                ! good to go
-                if(atomslist(serial1(1))%crystals_serial==-1 .or. atomslist(serial2(1))%crystals_serial==-1) then
-                    print *, 'Error: Crystals serial not defined'
-                    call abort()
-                end if
-                write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
-                &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-                &   trim(sfac(atomslist(serial1(1))%sfac)), atomslist(serial1(1))%crystals_serial, &
-                &   trim(sfac(atomslist(serial2(1))%sfac)), atomslist(serial2(1))%crystals_serial
-            end if
-        else if(dfix_table(i)%residue==-1) then
-            ! dfix applied to all residues
-            if(k1/=k2) then
-                print *, 'Error: check your res file. I cannot find all the atom in all the residues'
-                call abort()
-            else
-                do k=1, k1
-                    ! good to go
-                    ! looking for matching residue
-                    found=.false.
-                    do l=1, k1
-                        if(atomslist(serial1(k))%resi==atomslist(serial2(l))%resi) then
-                            found=.true.
-                            exit
-                        end if
-                    end do
-                    if(.not. found) then
-                        print *, 'Error: cannot find the corresponding atom in the residue ', atomslist(serial1(k))%resi
-                        call abort()
-                    end if
-                                        
-                    if(atomslist(serial1(k))%crystals_serial==-1 .or. atomslist(serial2(l))%crystals_serial==-1) then
-                        print *, 'Error: Crystals serial not defined'
-                        call abort()
-                    end if
-                    write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
-                    &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-                    &   trim(sfac(atomslist(serial1(k))%sfac)), atomslist(serial1(k))%crystals_serial, &
-                    &   trim(sfac(atomslist(serial2(l))%sfac)), atomslist(serial2(l))%crystals_serial
-                end do
             end if
         else
-            ! looking for a specific residue
-            found=.false.
-            do l=1, k1
-                if(dfix_table(i)%residue==atomslist(serial1(l))%resi) then
-                    found=.true.
-                    exit
-                end if
-            end do
-            k1=l
-            if(.not. found) then
-                print *, 'Error: cannot find the corresponding atom in the residue ', dfix_table(i)%residue
-                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
-                call abort()
-            end if
-            do l=1, k2
-                if(dfix_table(i)%residue==atomslist(serial2(l))%resi) then
-                    found=.true.
-                    exit
-                end if
-            end do
-            k2=l
-            if(.not. found) then
-                print *, 'Error: cannot find the corresponding atom in the residue ', dfix_table(i)%residue
-                write(*, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
-                call abort()
-            end if
-
-            write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
-            &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-            &   trim(sfac(atomslist(serial1(k1))%sfac)), atomslist(serial1(k1))%crystals_serial, &
-            &   trim(sfac(atomslist(serial2(k2))%sfac)), atomslist(serial2(k2))%crystals_serial
+            write(log_unit, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
+            call abort()
         end if
-                    
-    end do
+        
+        do j=2, size(eadp_table(i)%atoms)
+            l=0
+            do m=1, atomslist_index
+                if(trim(eadp_table(i)%atoms(j))==trim(atomslist(m)%label)) then
+                    l=m
+                    exit
+                end if
+            end do
+            if(l>0) then
+                if(atomslist(l)%crystals_serial==-1) then
+                    write(log_unit, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
+                    call abort()
+                end if
+            else
+                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
+                call abort()
+            end if
+            
+            if(j==size(eadp_table(i)%atoms)) then 
+                linecont=''
+            else
+                linecont=','
+            end if
+            if(j==2) then
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'U(IJ) 0.0, 0.001 =  ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+                write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'U(IJ) 0.0, 0.001 =  ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+            else
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+                write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   linecont
+            end if
+            
+            serial1=l
+        end do
+    end do eadploop
+
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   RIGU
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    ! RIGU N2 C7 C8 C9 C10 C6 C5 C4 C3 C2 C1 N1 C12
+    if(rigu_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing RIGUs...'
+    end if
     
+    riguloop:do i=1, rigu_table_index
+        write(log_unit, '(a)') trim(rigu_table(i)%shelxline)
+        write(crystals_fileunit, '(a, a)') '# ', rigu_table(i)%shelxline
+        serial1=0
+        do m=1, atomslist_index
+            if(trim(rigu_table(i)%atoms(1))==trim(atomslist(m)%label)) then
+                serial1=m
+                exit
+            end if
+        end do
+        if(serial1>0) then
+            if(atomslist(serial1)%crystals_serial==-1) then
+                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
+                call abort()
+            end if
+        else
+            write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
+            call abort()
+        end if
+        
+        do j=2, size(rigu_table(i)%atoms)
+            l=0
+            do m=1, atomslist_index
+                if(trim(rigu_table(i)%atoms(j))==trim(atomslist(m)%label)) then
+                    l=m
+                    exit
+                end if
+            end do
+            if(l>0) then
+                if(atomslist(l)%crystals_serial==-1) then
+                    write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
+                    call abort()
+                end if
+            else
+                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
+                call abort()
+            end if
+            
+            write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
+            &   'RIGU 0.0, 0.001 =  ', &
+            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
+            write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
+            &   'RIGU 0.0, 0.001 =  ', &
+            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
+            
+            serial1=l
+        end do
+    end do riguloop
+
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+!*   ISOR
+!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
+    ! ISOR [0.1] [0.2] O24 O25 O29 O28 O27 O26
+    call write_list16_isor()
+            
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 !*   SAME
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
-    if(same_processing/=-1) then
-        print *, 'Error: Something went seriously wrong. A SAME instruction is on going ', same_processing
-    end if
-
     do i=1, same_table_index
+        if(same_table(i)%processing/=-1) then
+            write(log_unit, '(2a, 1x, I0)') 'Error: Something went seriously wrong. ', &
+            &   'A SAME instruction is on going ', same_table(i)%processing
+            write(log_unit, '("Line ", a)') trim(same_table(i)%shelxline)
+        end if
+        
         buffer1=''
         buffer2=''
         ! get crystals serial for list of atoms
@@ -657,8 +743,37 @@ character(len=1024) :: buffer1, buffer2, buffertemp
         write(crystals_fileunit, trim(buffertemp)) '# ', same_table(i)%list1
         write(crystals_fileunit, trim(buffertemp)) '# ', same_table(i)%list2
         write(crystals_fileunit, '(a)') 'SAME '
-        write(crystals_fileunit, '(a,a,a)') 'CONT ',trim(buffer1), ' AND'
-        write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2)
+        if(len_trim(buffer1)<line_length) then
+            write(crystals_fileunit, '(a,a,a)') 'CONT ',trim(buffer1), ' AND'
+        else
+            previous=1
+            do 
+                if(previous+line_length>len_trim(buffer1)) exit
+                l=0
+                do while(buffer1(previous+line_length-l:previous+line_length-l)/=' ')
+                    l=l+1
+                end do
+                write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer1(previous:previous+line_length-l))
+                previous=previous+line_length-l
+            end do
+            write(crystals_fileunit, '(a,a,a)') 'CONT ',trim(buffer1(previous:)), ' AND'
+        end if
+        if(len_trim(buffer2)<line_length) then
+            write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2)
+        else
+            previous=1
+            do 
+                if(previous+line_length>len_trim(buffer2)) exit
+                l=0
+                do while(buffer2(previous+line_length-l:previous+line_length-l)/=' ')
+                    l=l+1
+                end do
+                write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2(previous:previous+line_length-l))
+                previous=previous+line_length-l
+            end do
+            write(crystals_fileunit, '(a,a)') 'CONT ',trim(buffer2(previous:))
+        end if
+                
         !print *, trim(same_table(i)%shelxline)
         !print *, size(same_table(i)%list1), same_table(i)%list1
         !print *, trim(buffer1)
@@ -879,9 +994,10 @@ end subroutine
 subroutine write_list5()
 use crystal_data_m
 implicit none
-integer i
+integer i, j, k
 real occ
 integer flag, atompart, fvar_index
+real, dimension(3) :: diffxyz
 
     ! atom list
     !#LIST     5
@@ -905,6 +1021,35 @@ integer flag, atompart, fvar_index
         &   '", NELEMENT = ",I0,", NBATCH = ",I0)') &
         &   atomslist_index, 0, 0, 0
         do i=1, atomslist_index
+            ! calculate multiplicity
+            atomslist(i)%multiplicity=0
+            do j=1, size(spacegroup%ListSeitzMx)
+                diffxyz=abs(atomslist(i)%coordinates- &
+                &   matmul(real(spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates))
+                do k=1, 3
+                    do while(diffxyz(k)>=1.0)
+                        diffxyz(k)=diffxyz(k)-1.0
+                    end do
+                end do
+                if(all(diffxyz<1e-3)) then
+                    atomslist(i)%multiplicity=atomslist(i)%multiplicity+1
+                end if
+            end do
+            if(spacegroup%centric==-1) then
+                do j=1, size(spacegroup%ListSeitzMx)
+                    diffxyz=abs(atomslist(i)%coordinates- &
+                    &   matmul(real(-1*spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates))
+                    do k=1, 3
+                        do while(diffxyz(k)>=1.0)
+                            diffxyz(k)=diffxyz(k)-1.0
+                        end do
+                    end do
+                    if(all(diffxyz<1e-3)) then
+                        atomslist(i)%multiplicity=atomslist(i)%multiplicity+1
+                    end if
+                end do
+            end if
+        
             ! extracting occupancy from sof
             if(atomslist(i)%sof>=10.0 .and. atomslist(i)%sof<20.0) then
                 ! fixed occupancy
@@ -916,8 +1061,8 @@ integer flag, atompart, fvar_index
                 ! occupancy depends on a free variable
                 fvar_index=int(abs(atomslist(i)%sof)/10.0)
                 if(fvar_index>size(fvar) .or. fvar_index<=0) then
-                    print *, 'Error: Free variable missing for sof=', atomslist(i)%sof
-                    write(*, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+                    write(log_unit, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
+                    write(log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
                     occ=1.0
                 else                               
                     occ=abs(atomslist(i)%sof)-fvar_index*10.0
@@ -929,18 +1074,20 @@ integer flag, atompart, fvar_index
                     ! restraints done automatically using parts later. See below
                 end if
             else if(atomslist(i)%sof<0.0) then
-                print *, "don't know what to do with a sof between -20.0 < sof < 0.0"
+                write(log_unit, '(a)') "don't know what to do with a sof between -20.0 < sof < 0.0"
                 stop
             else            
                 occ=atomslist(i)%sof
             end if
+            occ=occ*real(atomslist(i)%multiplicity)
+            
             if(atomslist(i)%iso/=0.0) then
                 flag=1
             else
                 flag=0
             end if
             if(atomslist(i)%crystals_serial==-1) then
-                print *, 'Error: crystals serial not defined'
+                write(log_unit, '(a)') 'Error: crystals serial not defined'
                 call abort()
             end if
             
@@ -1001,6 +1148,7 @@ end subroutine
 !> write list2 (space group and symmetry)
 subroutine write_list2()
 use crystal_data_m
+use iso_c_binding
 use sginfo_mod
 implicit none
 type(T_sginfo) :: sginfo
@@ -1018,7 +1166,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     call InitSgInfo(SgInfo)
     error=MemoryInit(SgInfo)
     if(error/=0) then
-        print *, 'Error Cannot allocate memory'
+        write(log_unit, '(a)') 'Error Cannot allocate memory'
         call abort()
     end if
     
@@ -1033,13 +1181,13 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
         error=ParseSymXYZ(xyz, NewSMx, nint(sginfo_stbf))
         deallocate(xyz)
         if(error/=0) then
-            print *, 'Error: Cannot recognize symmetry operator ', trim(buffer)
+            write(log_unit, '(2a)') 'Error: Cannot recognize symmetry operator ', trim(buffer)
             call abort()
         end if
         
         error=Add2ListSeitzMx(SgInfo, NewSMx)
         if(error/=0) then
-            print *, 'Error in Add2ListSeitzMx'
+            write(log_unit, '(a)') 'Error in Add2ListSeitzMx'
             call abort()
         end if
     end do
@@ -1063,7 +1211,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     if(spacegroup%latt>0) then
         error=AddInversion2ListSeitzMx(SgInfo)
         if(error/=0) then
-            print *, 'Error in AddInversion2ListSeitzMx'
+            write(log_unit, '(a)') 'Error in AddInversion2ListSeitzMx'
             call abort()
         end if
     end if
@@ -1071,7 +1219,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     ! All done!
     error=CompleteSgInfo(SgInfo)
     if(error/=0) then
-        print *, 'Error in CompleteSgInfo'
+        write(log_unit, '(a)') 'Error in CompleteSgInfo'
         call abort()
     end if
 
@@ -1085,12 +1233,13 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     if(c_associated(SgInfo%LatticeInfo)) then
         call C_F_POINTER(SgInfo%LatticeInfo, LatticeInfo)
     else
-        print *, 'Error: LatticeInfo not associated'
+        write(log_unit, '(a)') 'Error: LatticeInfo not associated'
         call abort()
     end if
 
     write(crystals_fileunit, '(a)') '\LIST 2'
     write(crystals_fileunit, '(a, I0, a, a)') 'CELL NSYM=', SgInfo%nlist, ', LATTICE=', LatticeInfo%Code
+    spacegroup%centric=SgInfo%Centric
     if(SgInfo%Centric==0) then
         write(crystals_fileunit, '(a)') 'CONT CENTRIC=NO'
     else
@@ -1099,13 +1248,16 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     
     if(C_associated(SgInfo%ListSeitzMx)) then
         call C_F_POINTER(SgInfo%ListSeitzMx, lsmx, (/ SgInfo%nlist /) )
+        allocate(spacegroup%ListSeitzMx(SgInfo%nlist))
         do i=1, SgInfo%nlist
+            spacegroup%ListSeitzMx(i)%R=transpose(reshape(lsmx(i)%R,(/3,3/)))
+            spacegroup%ListSeitzMx(i)%T=lsmx(i)%T
             xyzptr=RTMx2XYZ(lsmx(i), 1, nint(sginfo_stbf), 0, 1, 0, ", ")
             call C_F_string_ptr(xyzptr, buffer)
             write(crystals_fileunit, '(a, a)') 'SYMM ', trim(buffer)        
         end do
     else
-        print *, 'Error: No summetry operators in SgInfo%ListSeitzMx'
+        write(log_unit, '(a)') 'Error: No summetry operators in SgInfo%ListSeitzMx'
         call abort()
     end if
     
@@ -1133,9 +1285,9 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
         write(crystals_fileunit, '(a, a)') 'SPACEGROUP ', trim(spacegroupsymbol)    
         end if
     else
-        print *, 'Warning: Uknown space group!!'
-        print *, 'Hall Symbol ', SgInfo%HallSymbol
-        print *, 'Resulting input file won''t work'
+        write(log_unit, '(a)') 'Warning: Uknown space group!!'
+        write(log_unit, '(2a)') 'Hall Symbol ', SgInfo%HallSymbol
+        write(log_unit, '(a)') 'Resulting input file won''t work'
     end if
     write(crystals_fileunit, '(a, a)') 'CLASS ', trim(XS_name(SgInfo%XtalSystem))  
     
@@ -1150,6 +1302,120 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     ! CLASS MONOCLINIC
     ! END
 
+end subroutine
+
+!> write list3 (atomic scattering factors)
+subroutine write_list3()
+use crystal_data_m
+implicit none
+integer i, j
+
+    if(any(sfac_long/=0.0)) then
+
+    ! process list3
+    ! \LIST 3
+    ! READ 2
+    ! SCATT C    0    0
+    ! CONT  1.93019  12.7188  1.87812  28.6498  1.57415  0.59645
+    ! CONT  0.37108  65.0337  0.24637
+    ! SCATT S 0.35 0.86  7.18742  1.43280  5.88671  0.02865
+    ! CONT               5.15858  22.1101  1.64403  55.4561
+    ! CONT              -3.87732
+    ! END
+    
+        write(crystals_fileunit, '(a)') '\LIST 3 '
+        write(crystals_fileunit, '(a, 1X, I0)') 'READ', sfac_index
+        
+        do i=1, sfac_index
+            !print *, i, trim(sfac(i))
+            write(crystals_fileunit, '(a, a, 2F12.6)') 'SCATT ', trim(sfac(i)), sfac_long(10,i), sfac_long(11,i)
+            write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(1:4,i)
+            write(crystals_fileunit, '(a, 4F12.6)') 'CONT ', sfac_long(5:8,i)
+            write(crystals_fileunit, '(a, F12.6)') 'CONT ', sfac_long(9,i)
+        end do    
+        write(crystals_fileunit, '(a)') 'END'
+        
+    end if
+    
+    if(allocated(disp_table)) then
+    
+        !\generaledit 3
+        !LOCATE RECORDTYPE=101
+        !top
+        !next
+        !next
+        !TRANSFER TO OFFSET=1 FROM 1.01
+        !TRANSFER TO OFFSET=2 FROM 2.03
+        !write
+        !end
+        
+        write(crystals_fileunit, '(a)') '\GENERALEDIT 3 '
+        write(crystals_fileunit, '(a)') 'LOCATE RECORDTYPE=101'
+        write(crystals_fileunit, '(a)') 'TOP'
+    
+        do i=1, size(sfac)
+            if(sfac(i)=='') exit
+            if(i/=1) write(crystals_fileunit, '(a)') 'NEXT'
+            
+            do j=1, size(disp_table)
+                if(sfac(i)==disp_table(j)%atom) then
+                    write(crystals_fileunit, '(a,a)') '# ', trim(disp_table(j)%shelxline)
+                    if(disp_table(j)%values(1)/=0.0) then
+                        write(crystals_fileunit, '(a, f15.5)') 'TRANSFER TO OFFSET=1 FROM ', disp_table(j)%values(1)
+                    end if
+                    if(disp_table(j)%values(2)/=0.0) then
+                        write(crystals_fileunit, '(a, f15.5)') 'TRANSFER TO OFFSET=2 FROM ', disp_table(j)%values(2)
+                    end if
+                    exit
+                end if
+            end do
+        end do
+        
+        write(crystals_fileunit, '(a)') 'WRITE'
+        write(crystals_fileunit, '(a)') 'END'
+    end if                   
+            
+    
+    
+end subroutine
+
+!> write list29 (atomic scattering factors)
+subroutine write_list29()
+use crystal_data_m
+implicit none
+integer i
+
+    if(all(sfac_long==0.0)) then
+        return
+    end if
+    
+    write(crystals_fileunit, '(a)') '\LIST 29 '
+    write(crystals_fileunit, '(a, 1X, I0)') 'READ', sfac_index
+    
+    do i=1, sfac_index
+        ! warning units in shelx file is for the unit cell, crystals wants in the asymetric unit (to be fixed)
+        write(crystals_fileunit, '(a, a, 1X, a, F0.3)') 'ELEMENT ', trim(sfac(i)), 'NUM=', sfac_units(i)
+        if(sfac_long(12,i)/=0.0) then
+            write(crystals_fileunit, '(a, F12.6)') 'CONT MUA=', sfac_long(12,i)
+        end if
+        if(sfac_long(13,i)/=0.0) then
+            write(crystals_fileunit, '(a, F12.6)') 'CONT COVALENT=', sfac_long(13,i)
+        end if
+        if(sfac_long(14,i)/=0.0) then
+            write(crystals_fileunit, '(a, F12.6)') 'CONT WEIGHT=', sfac_long(14,i)
+        end if
+    end do    
+    write(crystals_fileunit, '(a)') 'END'
+    
+    ! process list29
+    !  ELEMENT TYPE= COVALENT= VANDERWAALS= IONIC= NUMBER= MUA= WEIGHT= COLOUR=
+    ! \LIST 29
+    ! READ NELEMENT=4
+    ! ELEMENT MO NUM=0 .5
+    ! ELEMENT S NUM=2
+    ! ELEMENT O NUM=3
+    ! ELEMENT C NUM=10
+    ! END
 end subroutine
 
 !> Parse the atom parameters when adps are present.
@@ -1182,16 +1448,17 @@ integer i
     end if
 
     atomslist_index=atomslist_index+1
-    atomslist(atomslist_index)%label=to_upper(label)
+    atomslist(atomslist_index)%label=label
+    call to_upper(atomslist(atomslist_index)%label)
     atomslist(atomslist_index)%sfac=atomtype
     atomslist(atomslist_index)%coordinates=coordinates
     atomslist(atomslist_index)%aniso=aniso
     if(part>0 .and. part_sof/=-1.0) then
         ! We are working on a res file, this values should be the same as the one reported on each atom
         if(abs(sof-part_sof)>0.01) then
-            print *, 'Error: res file not consistent'
-            print *, '       sof from part should be the same of the atom one'
-            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            write(log_unit, '(a)') 'Error: res file not consistent'
+            write(log_unit, '(a)') '       sof from part should be the same of the atom one'
+            write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         end if
     end if
     atomslist(atomslist_index)%sof=sof
@@ -1200,22 +1467,23 @@ integer i
     atomslist(atomslist_index)%shelxline=shelxline%line
     atomslist(atomslist_index)%line_number=shelxline%line_number
     
-    if(same_processing>=0) then
-        ! same instruction found before, adding this atom to the list
-        if(same_processing<size(same_table(same_table_index)%list2)) then
-            if(trim(sfac(atomslist(atomslist_index)%sfac))/='H' .and. &
-            &   trim(sfac(atomslist(atomslist_index)%sfac))/='D') then
-                same_processing=same_processing+1
-                same_table(same_table_index)%list2(same_processing)=atomslist(atomslist_index)%label
-            end if
-            
-            if(same_processing==size(same_table(same_table_index)%list2)) then
-                ! all done
-                same_processing=-1
+    do i=1, same_table_index
+        if(same_table(i)%processing>=0) then
+            ! same instruction found before, adding this atom to the list
+            if(same_table(i)%processing<size(same_table(i)%list2)) then
+                if(trim(sfac(atomslist(atomslist_index)%sfac))/='H' .and. &
+                &   trim(sfac(atomslist(atomslist_index)%sfac))/='D') then
+                    same_table(i)%processing=same_table(i)%processing+1
+                    same_table(i)%list2(same_table(i)%processing)=atomslist(atomslist_index)%label
+                end if
+                
+                if(same_table(i)%processing==size(same_table(i)%list2)) then
+                    ! all done
+                    same_table(i)%processing=-1
+                end if
             end if
         end if
-    end if
-    
+    end do
 end subroutine
 
 !> Parse the atom parameters when adps are not present but isotropic temperature factor.
@@ -1235,6 +1503,7 @@ double precision, dimension(3) :: eigv
 real, dimension(6) :: unitcellradian
 real rgamma
 logical ok_flag
+type(atom_t), dimension(:), allocatable :: templist
 
     unitcellradian(1:3)=unitcell(1:3)
     unitcellradian(4:6)=unitcell(4:6)*2.0*3.14159/360.0
@@ -1268,16 +1537,38 @@ logical ok_flag
     end if
 
     atomslist_index=atomslist_index+1
-    atomslist(atomslist_index)%label=to_upper(label)
+    if(atomslist_index>size(atomslist)) then
+        allocate(templist(size(atomslist)))
+        templist=atomslist
+        deallocate(atomslist)
+        allocate(atomslist(size(templist)+1024))
+        atomslist(1:size(templist))=templist
+
+        atomslist(size(templist)+1:)%label=''
+        atomslist(size(templist)+1:)%sfac=0
+        do i=size(templist)+1, size(atomslist)
+            atomslist(i)%coordinates=0.0
+            atomslist(i)%aniso=0.0
+        end do
+        atomslist(size(templist)+1:)%iso=0.0
+        atomslist(size(templist)+1:)%sof=0.0
+        atomslist(size(templist)+1:)%resi=0
+        atomslist(size(templist)+1:)%part=0
+        atomslist(size(templist)+1:)%shelxline=''   
+        deallocate(templist)     
+    end if
+    
+    atomslist(atomslist_index)%label=label
+    call to_upper(atomslist(atomslist_index)%label)
     atomslist(atomslist_index)%sfac=atomtype
     atomslist(atomslist_index)%coordinates=coordinates
     if(iso<0.0) then
         ! If an isotropic U is given as -T, where T is in the range 
         ! 0.5 < T < 5, it is fixed at T times the Ueq of the previous 
         ! atom not constrained in this way
-        print *, 'Warning: isotropic thermal parameter depends on previous atom'
-        print *, '         Thermal parameter will be fixed at current value'
-        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        write(log_unit, '(a)') 'Warning: isotropic thermal parameter depends on previous atom'
+        write(log_unit, '(a)') '         Thermal parameter will be fixed at current value'
+        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         do i=atomslist_index-1, 1, -1
             if(atomslist(i)%iso>0.0) then
                 atomslist(atomslist_index)%iso=atomslist(i)%iso*iso
@@ -1305,14 +1596,25 @@ logical ok_flag
             end if
         end do
     else
-        atomslist(atomslist_index)%iso=iso
+        if(iso>=20) then   
+            ! proportional to fvar
+            j=2
+            do while(j*10<=iso)
+                j=j+1
+            end do
+            atomslist(atomslist_index)%iso=(iso-(j-1)*10)*fvar(j-1)
+        else if(iso>=10) then
+            atomslist(atomslist_index)%iso=iso-10.0
+        else
+            atomslist(atomslist_index)%iso=iso
+        end if
     end if  
     if(part>0 .and. part_sof/=-1.0) then
         ! We are working on a res file, this values should be the same as the one reported on each atom
         if(abs(sof-part_sof)>0.01) then
-            print *, 'Error: res file not consistent'
-            print *, '       sof from part should be the same of the atom one'
-            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            write(log_unit, '(a)') 'Error: res file not consistent'
+            write(log_unit, '(a)') '       sof from part should be the same of the atom one'
+            write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         end if
     end if
     atomslist(atomslist_index)%sof=sof
@@ -1321,6 +1623,1477 @@ logical ok_flag
     atomslist(atomslist_index)%shelxline=shelxline%line
     atomslist(atomslist_index)%line_number=shelxline%line_number
 
+    do i=1, same_table_index
+        if(same_table(i)%processing>=0) then
+            ! same instruction found before, adding this atom to the list
+            if(same_table(i)%processing<size(same_table(i)%list2)) then
+                if(trim(sfac(atomslist(atomslist_index)%sfac))/='H' .and. &
+                &   trim(sfac(atomslist(atomslist_index)%sfac))/='D') then
+                    same_table(i)%processing=same_table(i)%processing+1
+                    same_table(i)%list2(same_table(i)%processing)=atomslist(atomslist_index)%label
+                end if
+                
+                if(same_table(i)%processing==size(same_table(i)%list2)) then
+                    ! all done
+                    same_table(i)%processing=-1
+                end if
+            end if
+        end if
+    end do
+
 end subroutine
- 
+
+!> Write flat restraints to list16 section 
+subroutine write_list16_flat()
+use crystal_data_m
+implicit none
+integer, dimension(:), allocatable :: serials
+character(len=lenlabel) :: atom
+character(len=1024) :: buffer1, buffertemp
+logical found
+integer i, j, k, l, indexresi, resi1
+integer :: serial1
+character(len=lenlabel) :: label
+integer, dimension(:), allocatable :: residuelist
+character(len=:), allocatable :: stripline, errormsg
+character(len=6) :: startlabel, endlabel
+character(len=2048) :: bufferline
+logical collect, reverse
+real esd
+character(len=128) :: buffernum
+character(len=128) :: namedresidue
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+integer linepos, start, iostatus, cont, flatresidue
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+
+
+    call makeresiduelist(residuelist)
+    
+    ! PLANAR 0.01 N(1) C(3) 
+    if(flat_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing FLATs...'
+    end if
+    ! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
+    flat_loop:do i=1, flat_table_index
+
+        if(len_trim(flat_table(i)%shelxline)<5) then
+            write(log_unit,*) 'Error: Empty FLAT'
+            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)
+            return
+        end if
+
+        call explicit_atoms(flat_table(i)%shelxline, stripline, errormsg)
+        if(allocated(errormsg)) then
+            write(log_unit,*) trim(errormsg)
+            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)  
+        end if
+        
+        bufferline=stripline
+        call deduplicates(bufferline, stripline)
+        call to_upper(stripline)    
+        ! some files use ',' as a separator instead of a space
+        do k=1, len_trim(stripline)
+            if(stripline(k:k)==',') then
+                stripline(k:k)=' '
+            end if
+        end do
+
+        call explode(stripline, lenlabel, splitbuffer)    
+        
+        ! first element is shelx instruction
+        call get_residue(splitbuffer(1), label, flat_table(i)%residue, flat_table(i)%namedresidue)
+        if(flat_table(i)%namedresidue=='-' .or. flat_table(i)%namedresidue=='+') then
+            write(log_unit, *) "Error: This residue name does not make sense"
+            write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+            return
+        end if
+
+        ! second element is the esd of atoms (optional)
+        read(splitbuffer(2), *, iostat=iostatus) esd
+        if(iostatus/=0) then
+            esd=0.1
+            start=1
+        else
+            start=2
+            if( size(splitbuffer)-start<3 ) then
+                write(log_unit, *) "Error: Can't fit a plane with less than 4 atoms"
+                write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                return
+            end if
+        end if
+            
+        allocate(flat_table(i)%atoms(size(splitbuffer)-start))
+        call to_upper(splitbuffer(start+1:size(splitbuffer)), flat_table(i)%atoms)
+        flat_table(i)%esd=esd
+        
+        !print *, flat_table(i)%shelxline
+        !print *, flat_table(i)%atoms
+
+        write(log_unit, '(a)') trim(flat_table(i)%shelxline)
+        
+        found=.false.
+        do j=1, size(flat_table(i)%atoms)
+            if(index(flat_table(i)%atoms(j), '_*')>0) then
+                write(log_unit, '(a)') 'Warning: ignoring FLAT '
+                write(log_unit, '(a)') '_* syntax not supported'
+                found=.true.
+                exit
+            end if
+        end do
+        if(found) cycle
+        
+        write(crystals_fileunit, '(a, a)') '# ', trim(flat_table(i)%shelxline)
+        
+        if(flat_table(i)%residue==0 .and. flat_table(i)%namedresidue=='') then
+            ! No residue used in FLAT card name
+            if(allocated(serials)) deallocate(serials)
+            allocate(serials(size(flat_table(i)%atoms)))
+            serials=0
+            
+            do j=1, size(flat_table(i)%atoms)
+                ! ICE on gfortran 61 when using associate
+                atom=flat_table(i)%atoms(j)
+                !associate( atom => flat_table(i)%atoms(j) )
+                call get_residue(atom, label, resi1, namedresidue)
+                
+                if(namedresidue=='-') then
+                    ! previous residue
+                    write(log_unit, '(a)') 'Warning: Residue - in atom with FLAT without _*'
+                    write(log_unit, '(a)') '         Not implemented'
+                    cycle flat_loop
+                else if(namedresidue=='+') then
+                    ! next residue
+                    write(log_unit, '(a)') 'Warning: Residue + in atom with FLAT without _*'
+                    write(log_unit, '(a)') '         Not implemented'
+                    cycle flat_loop
+                else if(namedresidue/='') then
+                    ! residue name
+                    write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle flat_loop
+                end if
+
+                !end associate
+                serial1=0
+                do k=1, atomslist_index
+                    if(trim(label)==trim(atomslist(k)%label) .and. resi1==atomslist(k)%resi) then
+                        serial1=k
+                        exit
+                    end if
+                end do
+            
+                if(serial1==0) then
+                    write(log_unit, '(a)') flat_table(i)%atoms(j)
+                    write(log_unit, '(I0)') serial1
+                    write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                    call abort()
+                end if
+                
+                if(atomslist(serial1)%crystals_serial==-1) then
+                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    call abort()
+                end if
+                serials(j)=serial1
+            end do
+                        
+            ! good to go
+            write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
+             do k=1, size(serials)
+                write(buffer1, '(a,"(",I0,")")') &
+                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+            end do
+            write(crystals_fileunit, '(a)') trim(buffertemp)                           
+            write(*, '(a)') trim(buffertemp)                           
+
+
+        else if(len_trim(flat_table(i)%namedresidue)>1 .and. flat_table(i)%namedresidue/='*') then
+            ! flat applied to a named residues
+            do j=1, size(residue_names)
+                if(trim(residue_names(j))/=trim(flat_table(i)%namedresidue)) cycle
+                
+                if(allocated(serials)) deallocate(serials)
+                allocate(serials(size(flat_table(i)%atoms)))
+                serials=0
+                
+                do k=1, size(flat_table(i)%atoms)
+                    ! ICE on gfortran 61 when using associate
+                    atom=flat_table(i)%atoms(k)
+                    call get_residue(atom, label, resi1, namedresidue)
+                    
+                    if(namedresidue=='-') then
+                        ! previous residue
+                        resi1=j-1                        
+                    else if(namedresidue=='+') then
+                        ! next residue
+                        resi1=j+1                        
+                    else if(namedresidue/='') then
+                        ! residue name
+                        write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
+                        write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                        cycle flat_loop
+                    end if                    
+                    
+                    serial1=0
+                    do l=1, atomslist_index
+                        if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                            serial1=l
+                            exit
+                        end if
+                    end do
+
+                    if(serial1==0) then
+                        cycle
+                    end if
+                    
+                    if(atomslist(serial1)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    serials(k)=serial1
+                end do
+                            
+                ! good to go
+                write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
+                 do k=1, size(serials)
+                    write(buffer1, '(a,"(",I0,")")') &
+                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                end do
+                write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                write(*, '(a)') trim(buffertemp)
+            end do
+
+        else if(flat_table(i)%namedresidue=='*') then
+            ! flat applied to all residues
+            do j=1, size(residuelist)
+                
+                do k=1, size(flat_table(i)%atoms)
+                    ! ICE on gfortran 61 when using associate
+                    atom=flat_table(i)%atoms(k)
+                    call get_residue(atom, label, resi1, namedresidue)
+                    
+                    if(namedresidue=='-') then
+                        ! previous residue
+                        resi1=j-1                        
+                    else if(namedresidue=='+') then
+                        ! next residue
+                        resi1=j+1                        
+                    else if(namedresidue/='') then
+                        ! residue name
+                        write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
+                        write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                        cycle flat_loop
+                    end if    
+                    
+                    serial1=0
+                    do l=1, atomslist_index
+                        if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                            serial1=l
+                            exit
+                        end if
+                    end do
+
+                    if(serial1==0) then
+                        cycle
+                    end if
+                    
+                    if(atomslist(serial1)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    serials(k)=serial1
+                end do
+                            
+                ! good to go
+                write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
+                 do k=1, size(serials)
+                    write(buffer1, '(a,"(",I0,")")') &
+                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                end do
+                write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                write(*, '(a)') trim(buffertemp)  
+
+            end do
+        else if(flat_table(i)%residue>=0) then
+            ! look for specific residue
+            resi1=flat_table(i)%residue
+            do k=1, size(flat_table(i)%atoms)
+                ! ICE on gfortran 61 when using associate
+                atom=flat_table(i)%atoms(k)                
+                call get_residue(atom, label, resi1, namedresidue)
+                
+                if(namedresidue=='-') then
+                    ! previous residue
+                    write(log_unit, '(a)') 'Warning: Residue - in atom with FLAT without _*'
+                    write(log_unit, '(a)') '         Not implemented'
+                    cycle flat_loop
+                else if(namedresidue=='+') then
+                    ! next residue
+                    write(log_unit, '(a)') 'Warning: Residue + in atom with FLAT without _*'
+                    write(log_unit, '(a)') '         Not implemented'
+                    cycle flat_loop
+                else if(namedresidue/='') then
+                    ! residue name
+                    write(log_unit, '(a)') 'Warning: Residue name in atom with FLAT_*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle flat_loop
+                end if
+                                
+                serial1=0
+                do l=1, atomslist_index
+                    if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                        serial1=l
+                        exit
+                    end if
+                end do
+
+                if(serial1==0) then
+                    cycle
+                end if
+                
+                if(atomslist(serial1)%crystals_serial==-1) then
+                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    call abort()
+                end if
+                serials(k)=serial1
+            end do                    
+                
+            write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
+             do k=1, size(serials)
+                write(buffer1, '(a,"(",I0,")")') &
+                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+            end do
+            write(crystals_fileunit, '(a)') trim(buffertemp)                           
+            write(*, '(a)') trim(buffertemp)  
+            
+        else
+            print *, 'This should not happened'
+            call abort()
+
+        end if
+                    
+    end do flat_loop
+end subroutine
+
+!> Write dfix restraints to list16 section 
+subroutine write_list16_dfix()
+use crystal_data_m
+implicit none
+integer i, j, k, indexresi, resi1, resi2
+integer :: serial1, serial2
+character(len=lenlabel) :: label
+integer, dimension(:), allocatable :: residuelist
+
+    call makeresiduelist(residuelist)
+
+    if(dfix_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing DFIXs/DANGs...'
+    end if
+    
+    ! DISTANCE 1.000000 , 0.050000 = N(1) TO C(3) 
+    dfix_loop:do i=1, dfix_table_index
+        write(log_unit, '(a)') trim(dfix_table(i)%shelxline)
+        if(index(dfix_table(i)%atom1, '_*')>0) then
+            write(log_unit, '(4a)') 'Warning: ignoring DFIX between ', trim(dfix_table(i)%atom1), ' and ', trim(dfix_table(i)%atom2)
+            write(log_unit, '(a)') '          _* syntax not supported'
+            cycle
+        end if
+        if(index(dfix_table(i)%atom2, '_*')>0) then
+            write(log_unit, '(4a)') 'Warning: ignoring DFIX between ', trim(dfix_table(i)%atom1), ' and ', trim(dfix_table(i)%atom2)
+            write(log_unit, '(a)') '          _* syntax not supported'
+            cycle
+        end if
+
+        if(dfix_table(i)%distance<0.0) then
+            write(log_unit, '(a)') 'Warning: Anti bumping in DFIX not supported '
+            write(log_unit, '("Line ", I0, ": ", a)') dfix_table(i)%line_number, trim(dfix_table(i)%shelxline)
+            cycle
+        end if
+        
+        write(crystals_fileunit, '(a, a)') '# ', dfix_table(i)%shelxline
+        
+        if(dfix_table(i)%residue==-99) then
+            ! No residue used in DFIX card            
+            resi1=0
+            indexresi=index(dfix_table(i)%atom1, '_')
+            if(indexresi>0) then
+                if(dfix_table(i)%atom1(indexresi+1:indexresi+1)=='-') then
+                    ! previous residue
+                    write(log_unit, '(a)') 'Warning: Residue - in atom with DFIX without _*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle dfix_loop
+                else if(dfix_table(i)%atom1(indexresi+1:indexresi+1)=='+') then
+                    ! next residue
+                    write(log_unit, '(a)') 'Warning: Residue - in atom with DFIX without _*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle dfix_loop
+                else if(iachar(dfix_table(i)%atom1(indexresi+1:indexresi+1))>=48 .and. &
+                &   iachar(dfix_table(i)%atom1(indexresi+1:indexresi+1))<=57) then
+                    ! residue number
+                    read(dfix_table(i)%atom1(indexresi+1:), *) resi1
+                else
+                    ! residue name
+                    write(log_unit, '(a)') 'Warning: Residue name in atom with DFIX_*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle dfix_loop
+                end if
+                label=dfix_table(i)%atom1(1:indexresi-1)
+            else
+                label=dfix_table(i)%atom1
+            end if
+            serial1=0
+            do k=1, atomslist_index
+                if(trim(label)==trim(atomslist(k)%label)) then
+                    serial1=k
+                    exit
+                end if
+            end do
+            
+            resi2=0
+            indexresi=index(dfix_table(i)%atom2, '_')
+            if(indexresi>0) then
+                if(dfix_table(i)%atom2(indexresi+1:indexresi+1)=='-') then
+                    ! previous residue
+                    write(log_unit, '(a)') 'Warning: Residue - in atom with DFIX without _*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle dfix_loop
+                else if(dfix_table(i)%atom2(indexresi+1:indexresi+1)=='+') then
+                    ! next residue
+                    write(log_unit, '(a)') 'Warning: Residue - in atom with DFIX without _*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle dfix_loop
+                else if(iachar(dfix_table(i)%atom2(indexresi+1:indexresi+1))>=48 .and. &
+                &   iachar(dfix_table(i)%atom2(indexresi+1:indexresi+1))<=57) then
+                    ! residue number
+                    read(dfix_table(i)%atom2(indexresi+1:), *) resi2
+                else
+                    ! residue name
+                    write(log_unit, '(a)') 'Warning: Residue name in atom with DFIX_*'
+                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                    cycle dfix_loop
+                end if
+                label=dfix_table(i)%atom2(1:indexresi-1)
+            else
+                label=dfix_table(i)%atom2
+            end if
+            serial2=0
+            do k=1, atomslist_index
+                if(trim(label)==trim(atomslist(k)%label)) then
+                    serial2=k
+                    exit
+                end if
+            end do
+
+            if(serial1==0 .or. serial2==0) then
+                write(log_unit, '(2a)') dfix_table(i)%atom1, dfix_table(i)%atom2
+                write(log_unit, '(2I0)') serial1, serial2
+                write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                call abort()
+            end if
+                        
+            ! good to go
+            if(atomslist(serial1)%crystals_serial==-1 .or. atomslist(serial2)%crystals_serial==-1) then
+                write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                call abort()
+            end if
+            write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+            &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+            &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+            write(log_unit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+            &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+            &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+        else if(dfix_table(i)%residue==-98) then
+            ! dfix applied to a named residues
+            do j=1, size(residue_names)
+                if(trim(residue_names(j))/=trim(dfix_table(i)%namedresidue)) cycle
+                
+                resi1=j
+                indexresi=index(dfix_table(i)%atom1, '_')
+                if(indexresi>0) then
+                    if(dfix_table(i)%atom1(indexresi+1:indexresi+1)=='-') then
+                        ! previous residue
+                        resi1=j-1                        
+                    else if(dfix_table(i)%atom1(indexresi+1:indexresi+1)=='+') then
+                        ! next residue
+                        resi1=j+1
+                    else if(iachar(dfix_table(i)%atom1(indexresi+1:indexresi+1))>=48 .and. &
+                    &   iachar(dfix_table(i)%atom1(indexresi+1:indexresi+1))<=57) then
+                        ! residue number
+                        read(dfix_table(i)%atom1(indexresi+1:), *) resi1
+                    else
+                        ! residue name
+                        write(log_unit, '(a)') 'Warning: Residue name in atom with DFIX_*'
+                        write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                        cycle dfix_loop
+                    end if
+                    label=dfix_table(i)%atom1(1:indexresi-1)
+                else
+                    label=dfix_table(i)%atom1
+                end if
+                serial1=0
+                do k=1, atomslist_index
+                    if(trim(label)==trim(atomslist(k)%label) .and. resi1==atomslist(k)%resi) then
+                        serial1=k
+                        exit
+                    end if
+                end do
+                
+                resi2=j
+                indexresi=index(dfix_table(i)%atom2, '_')
+                if(indexresi>0) then
+                    if(dfix_table(i)%atom2(indexresi+1:indexresi+1)=='-') then
+                        ! previous residue
+                        resi2=j-1
+                    else if(dfix_table(i)%atom2(indexresi+1:indexresi+1)=='+') then
+                        ! next residue
+                        resi2=j+1
+                    else if(iachar(dfix_table(i)%atom2(indexresi+1:indexresi+1))>=48 .and. &
+                    &   iachar(dfix_table(i)%atom2(indexresi+1:indexresi+1))<=57) then
+                        ! residue number
+                        read(dfix_table(i)%atom2(indexresi+1:), *) resi2
+                    else
+                        ! residue name
+                        write(log_unit, '(a)') 'Warning: Residue name in atom with DFIX_*'
+                        write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                        cycle dfix_loop
+                    end if
+                    label=dfix_table(i)%atom2(1:indexresi-1)
+                else
+                    label=dfix_table(i)%atom2
+                end if
+                serial2=0
+                do k=1, atomslist_index
+                    if(trim(label)==trim(atomslist(k)%label) .and. resi2==atomslist(k)%resi) then
+                        serial2=k
+                        exit
+                    end if
+                end do
+                                                        
+                if(serial1==0 .or. serial2==0) then
+                    if(serial1==0) then
+                        write(log_unit, '(4a,I0,1X,a)') 'Warning: ', &
+                        &   trim(dfix_table(i)%atom1), ' is missing in RESI ', j, trim(residue_names(j))
+                    end if
+                    if(serial2==0) then
+                        write(log_unit, '(4a,I0,1X,a)') 'Warning: ', &
+                        &   trim(dfix_table(i)%atom1), ' is missing in RESI ', j, trim(residue_names(j))
+                    end if
+                else
+                
+                    if(atomslist(serial1)%crystals_serial==-1 .or. atomslist(serial2)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                    &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+                    &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                    &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+                    write(log_unit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                    &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+                    &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                    &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+                end if
+            end do
+        else if(dfix_table(i)%residue==-1) then
+            ! dfix applied to all residues
+            do j=1, size(residuelist)
+                
+                resi1=residuelist(j)
+                indexresi=index(dfix_table(i)%atom1, '_')
+                if(indexresi>0) then
+                    if(dfix_table(i)%atom1(indexresi+1:indexresi+1)=='-') then
+                        ! previous residue
+                        if(j==1) cycle
+                        resi1=residuelist(j-1)
+                    else if(dfix_table(i)%atom1(indexresi+1:indexresi+1)=='+') then
+                        ! next residue
+                        if(j==size(residuelist)) cycle
+                        resi1=residuelist(j+1)
+                    else if(iachar(dfix_table(i)%atom1(indexresi+1:indexresi+1))>=48 .and. &
+                    &   iachar(dfix_table(i)%atom1(indexresi+1:indexresi+1))<=57) then
+                        ! residue number
+                        read(dfix_table(i)%atom1(indexresi+1:), *) resi1
+                    else
+                        ! residue name
+                        write(log_unit, '(a)') 'Warning: Residue name in atom with DFIX_*'
+                        write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                        cycle dfix_loop
+                    end if
+                    label=dfix_table(i)%atom1(1:indexresi-1)
+                else
+                    label=dfix_table(i)%atom1
+                end if
+                serial1=0
+                do k=1, atomslist_index
+                    if(trim(label)==trim(atomslist(k)%label) .and. resi1==atomslist(k)%resi) then
+                        serial1=k
+                        exit
+                    end if
+                end do
+                
+                resi2=residuelist(j)
+                indexresi=index(dfix_table(i)%atom2, '_')
+                if(indexresi>0) then
+                    if(dfix_table(i)%atom2(indexresi+1:indexresi+1)=='-') then
+                        ! previous residue
+                        resi2=residuelist(j)-1
+                    else if(dfix_table(i)%atom2(indexresi+1:indexresi+1)=='+') then
+                        ! next residue
+                        resi2=residuelist(j)+1
+                    else if(iachar(dfix_table(i)%atom2(indexresi+1:indexresi+1))>=48 .and. &
+                    &   iachar(dfix_table(i)%atom2(indexresi+1:indexresi+1))<=57) then
+                        ! residue number
+                        read(dfix_table(i)%atom2(indexresi+1:), *) resi2
+                    else
+                        ! residue name
+                        write(log_unit, '(a)') 'Warning: Residue name in atom with DFIX_*'
+                        write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                        cycle dfix_loop
+                    end if
+                    label=dfix_table(i)%atom2(1:indexresi-1)
+                else
+                    label=dfix_table(i)%atom2
+                end if
+                serial2=0
+                do k=1, atomslist_index
+                    if(trim(label)==trim(atomslist(k)%label) .and. resi2==atomslist(k)%resi) then
+                        serial2=k
+                        exit
+                    end if
+                end do
+                                                        
+                if(serial1/=0 .and. serial2/=0) then
+                    if(atomslist(serial1)%crystals_serial==-1 .or. atomslist(serial2)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                    &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+                    &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                    &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+                    write(log_unit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                    &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+                    &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                    &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+                end if
+            end do
+        else
+            ! looking for a specific residue
+            indexresi=index(dfix_table(i)%atom1, '_')
+            if(indexresi>0) then
+                write(log_unit, '(a)') 'Warning: Residue name in atom is not yet implemented'
+                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                cycle dfix_loop
+            end if
+            indexresi=index(dfix_table(i)%atom2, '_')
+            if(indexresi>0) then
+                write(log_unit, '(a)') 'Warning: Residue name in atom is not yet implemented'
+                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                cycle dfix_loop
+            end if
+            
+            serial1=0
+            serial2=0
+            do j=1, atomslist_index
+                if(trim(atomslist(j)%label)==trim(dfix_table(i)%atom1) .and. &
+                &   atomslist(j)%resi==dfix_table(i)%residue) then
+                    serial1=j
+                end if
+                if(trim(atomslist(j)%label)==trim(dfix_table(i)%atom2) .and. &
+                &   atomslist(j)%resi==dfix_table(i)%residue) then
+                    serial2=j
+                end if
+                
+                if(serial1/=0 .and. serial2/=0) then
+                    write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                    &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+                    &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                    &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+                    write(*, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                    &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
+                    &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
+                    &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+                    serial1=0
+                    serial2=0
+                end if
+            end do
+        end if
+                    
+    end do dfix_loop
+
+end subroutine
+
+!> Write sadi restraints to list16 section 
+subroutine write_list16_sadi()
+use crystal_data_m
+implicit none
+integer, dimension(:), allocatable :: serials
+character(len=lenlabel) :: atom
+integer i, j, k, l, m, indexresi, resi1
+integer :: serial1
+character(len=lenlabel) :: label
+character :: linecont
+integer, dimension(:), allocatable :: residuelist
+
+    call makeresiduelist(residuelist)
+
+    ! DISTANCE 0.000000 , 0.050000 = MEAN N(1) TO C(3), ...
+    if(sadi_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing SADIs...'
+        if(allocated(serials)) deallocate(serials)
+        allocate(serials(2))
+        serials=0
+    end if
+    
+    sadi_loop:do i=1, sadi_table_index
+        write(log_unit, '(a)') trim(sadi_table(i)%shelxline)
+        
+        write(crystals_fileunit, '(a, a)') '# ', sadi_table(i)%shelxline
+        write(crystals_fileunit, '(a, 1X, F0.5, a)') &
+        &   'DISTANCE 0.0, ', sadi_table(i)%esd, ' = MEAN ' 
+        write(*, '(a, 1X, F0.5, a)') &
+        &   'DISTANCE 0.0, ', sadi_table(i)%esd, ' = MEAN ' 
+                
+        sadipairs:do j=1, ubound(sadi_table(i)%atom_pairs, 2)
+            if(j==ubound(sadi_table(i)%atom_pairs, 2)) then
+                linecont=''
+            else
+                linecont=','
+            end if
+            
+            do k=1, 2
+                if(index(sadi_table(i)%atom_pairs(k,j), '_*')>0) then
+                    write(log_unit, '(a)') 'Warning: ignoring DFIX between ', trim(sadi_table(i)%atom_pairs(1,j)), &
+                    &   ' and ', trim(sadi_table(i)%atom_pairs(2,j))
+                    write(log_unit, '(a)') '_* syntax not supported'
+                    cycle
+                end if
+            end do
+                    
+            if(sadi_table(i)%residue==-99) then
+                ! No residue used in SADI card 
+                do k=1, 2           
+                    resi1=0
+                    ! ICE on gfortran 61 when using associate
+                    atom=sadi_table(i)%atom_pairs(k,j)
+                    !associate( atom => sadi_table(i)%atom_pairs(k,j) )
+                        indexresi=index(atom, '_')
+                        if(indexresi>0) then
+                            if(atom(indexresi+1:indexresi+1)=='-') then
+                                ! previous residue
+                                write(log_unit, '(a)') 'Warning: Residue - in atom with SADI without _*'
+                                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                cycle sadi_loop
+                            else if(atom(indexresi+1:indexresi+1)=='+') then
+                                ! next residue
+                                write(log_unit, '(a)') 'Warning: Residue - in atom with SADI without _*'
+                                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                cycle sadi_loop
+                            else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                            &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                                ! residue number
+                                read(atom(indexresi+1:), *) resi1
+                            else
+                                ! residue name
+                                write(log_unit, '(a)') 'Warning: Residue name in atom with SADI_*'
+                                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                cycle sadi_loop
+                            end if
+                            label=atom(1:indexresi-1)
+                        else
+                            label=atom
+                        end if
+                        serial1=0
+                        do l=1, atomslist_index
+                            if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                                serial1=l
+                                exit
+                            end if
+                        end do
+                        if(serial1==0) then
+                            write(log_unit, '(I0, 1X, a)') j, sadi_table(i)%atom_pairs(:,j)
+                            write(log_unit, '(3a)') 'Warning: ', trim(atom), ' is missing in res file '
+                            cycle sadipairs
+                        end if                        
+                        
+                        serials(k)=serial1
+                        if(atomslist(serial1)%crystals_serial==-1) then
+                            write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                            call abort()
+                        end if
+                    !end associate
+                end do
+                                       
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")",a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                &   linecont
+                write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")",a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                &   linecont
+            else if(sadi_table(i)%residue==-98) then
+                ! dfix applied to a named residues
+                do k=1, size(residue_names)
+                    if(trim(residue_names(k))/=trim(dfix_table(i)%namedresidue)) cycle
+
+                    do l=1, 2           
+                        resi1=k
+                        atom=sadi_table(i)%atom_pairs(l,j)
+                        !associate( atom => sadi_table(i)%atom_pairs(l,j) )
+                            indexresi=index(atom, '_')
+                            if(indexresi>0) then
+                                if(atom(indexresi+1:indexresi+1)=='-') then
+                                    ! previous residue
+                                    resi1=j-1     
+                                else if(atom(indexresi+1:indexresi+1)=='+') then
+                                    ! next residue
+                                    resi1=j+1 
+                                else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                                &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                                    ! residue number
+                                    read(atom(indexresi+1:), *) resi1
+                                else
+                                    ! residue name
+                                    write(log_unit, '(a)') 'Warning: Residue name in atom with SADI_*'
+                                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                    cycle sadi_loop
+                                end if
+                                label=atom(1:indexresi-1)
+                            else
+                                label=atom
+                            end if
+                            serial1=0
+                            do m=1, atomslist_index
+                                if(trim(label)==trim(atomslist(m)%label) .and. resi1==atomslist(m)%resi) then
+                                    serial1=m
+                                    exit
+                                end if
+                            end do
+                            serials(l)=serial1
+                            if(atomslist(serial1)%crystals_serial==-1) then
+                                write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                                call abort()
+                            end if
+                        !end associate
+                    end do
+                                           
+                    write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                    &   'CONT ', &
+                    &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                    &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                    &   linecont
+                    write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                    &   'CONT ', &
+                    &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                    &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                    &   linecont
+
+                end do
+            else if(sadi_table(i)%residue==-1) then
+                ! dfix applied to all residues
+                do k=1, size(residuelist)
+                    
+                    do l=1, 2           
+                        resi1=residuelist(k)
+                        atom=sadi_table(i)%atom_pairs(l,j)
+                        !associate( atom => sadi_table(i)%atom_pairs(l,j) )
+                            indexresi=index(atom, '_')
+                            if(indexresi>0) then
+                                if(atom(indexresi+1:indexresi+1)=='-') then
+                                    ! previous residue
+                                    if(k==1) cycle
+                                    resi1=residuelist(k-1)
+                                else if(atom(indexresi+1:indexresi+1)=='+') then
+                                    ! next residue
+                                    if(k==size(residuelist)) cycle
+                                    resi1=residuelist(k+1)
+                                else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                                &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                                    ! residue number
+                                    read(atom(indexresi+1:), *) resi1
+                                else
+                                    ! residue name
+                                    write(log_unit, '(a)') 'Warning: Residue name in atom with SADI_*'
+                                    write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                    cycle sadi_loop
+                                end if
+                                label=atom(1:indexresi-1)
+                            else
+                                label=atom
+                            end if
+                            serial1=0
+                            do m=1, atomslist_index
+                                if(trim(label)==trim(atomslist(m)%label) .and. resi1==atomslist(m)%resi) then
+                                    serial1=m
+                                    exit
+                                end if
+                            end do
+                            serials(l)=serial1
+                            if(atomslist(serial1)%crystals_serial==-1) then
+                                write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                                call abort()
+                            end if
+                        !end associate
+                    end do
+                                           
+                    write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                    &   'CONT ', &
+                    &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                    &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                    &   linecont
+                    write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                    &   'CONT ', &
+                    &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                    &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                    &   linecont
+                end do
+            else
+                do k=1, 2           
+                    atom=sadi_table(i)%atom_pairs(k,j)
+                    !associate( atom => sadi_table(i)%atom_pairs(k,j) )
+                        indexresi=index(atom, '_')
+                        if(indexresi>0) then
+                            write(log_unit, '(a)') 'Warning: Residues in atom with SADI_x'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle sadi_loop
+                        else
+                            label=atom
+                        end if
+                        serial1=0
+                        do l=1, atomslist_index
+                            if(trim(label)==trim(atomslist(l)%label) .and. sadi_table(i)%residue==atomslist(l)%resi) then
+                                serial1=l
+                                exit
+                            end if
+                        end do
+                        serials(k)=serial1
+                        if(atomslist(serial1)%crystals_serial==-1) then
+                            write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                            call abort()
+                        end if
+                    !end associate
+                end do
+                                       
+                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                &   linecont
+                write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                &   'CONT ', &
+                &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
+                &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                &   linecont
+            end if
+        end do sadipairs
+    end do sadi_loop
+end subroutine
+
+subroutine makeresiduelist(residuelist)
+use crystal_data_m, only: atomslist, atomslist_index
+implicit none
+integer, dimension(:), allocatable, intent(out) :: residuelist
+integer i, j, indexresi
+integer, dimension(:), allocatable :: listtemp
+logical found
+
+    allocate(residuelist(1024))
+    residuelist=0
+    indexresi=0
+    do i=1, atomslist_index
+        if(atomslist(i)%resi==0) cycle
+        found=.false.
+        do j=1, indexresi
+            if(atomslist(i)%resi==residuelist(j)) then
+                found=.true.
+                exit
+            end if
+        end do
+        if(.not. found) then
+            indexresi=indexresi+1
+            if(indexresi>size(residuelist)) then
+                allocate(listtemp(size(residuelist)))
+                listtemp=residuelist
+                deallocate(residuelist)
+                allocate(residuelist(size(listtemp)+1024))
+                residuelist=0
+                residuelist(1:size(listtemp))=listtemp
+                deallocate(listtemp)
+            end if
+            residuelist(indexresi)=atomslist(i)%resi
+        end if
+    end do 
+    if(indexresi==0) then
+        deallocate(residuelist)
+        allocate(residuelist(0))
+    else
+        allocate(listtemp(indexresi))
+        listtemp=residuelist(1:indexresi)
+        deallocate(residuelist)
+        allocate(residuelist(indexresi))
+        residuelist=listtemp
+        deallocate(listtemp)
+    end if
+    
+end subroutine
+
+!> Write isor restraints to list16 section 
+subroutine write_list16_isor()
+use crystal_data_m
+implicit none
+integer, dimension(:), allocatable :: serials
+character(len=lenlabel) :: atom
+character(len=1024) :: buffer1, buffertemp
+logical found
+integer i, j, k, l, indexresi, resi1
+integer :: serial1
+character(len=lenlabel) :: label
+integer, dimension(:), allocatable :: residuelist
+character(len=:), allocatable :: stripline, errormsg
+character(len=6) :: startlabel, endlabel
+character(len=2048) :: bufferline
+logical collect, reverse
+real esd1, esd2
+character(len=128) :: buffernum
+character(len=128) :: namedresidue
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+integer linepos, start, iostatus, cont, isorresidue
+character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+
+
+    call makeresiduelist(residuelist)
+    
+    ! ISOR 0.01 0.02 N(1) C(3) 
+    if(isor_table_index>0) then
+        write(log_unit, '(a)') ''
+        write(log_unit, '(a)') 'Processing ISORs...'
+    end if
+
+    isor_loop:do i=1, isor_table_index
+
+        if(len_trim(isor_table(i)%shelxline)<5) then
+            write(log_unit,*) 'Error: Empty ISOR'
+            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+            return
+        end if
+
+        call explicit_atoms(isor_table(i)%shelxline, stripline, errormsg)
+        if(allocated(errormsg)) then
+            write(log_unit,*) trim(errormsg)
+            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)  
+        end if
+        
+        isorresidue=-99
+        buffernum=''
+        linepos=5
+        ! check for subscripts on ISOR
+        if(isor_table(i)%shelxline(5:5)=='_') then
+            ! check for `_*̀
+            if(isor_table(i)%shelxline(6:6)=='*') then
+                isorresidue=-1
+                linepos=7
+            else
+                ! check for a residue number
+                found=.true.
+                j=0
+                do while(found)
+                    found=.false.
+                    do k=1, size(numbers)
+                        if(isor_table(k)%shelxline(6+j:6+j)==numbers(k)) then
+                            found=.true.
+                            buffernum(j+1:j+1)=isor_table(i)%shelxline(6+j:6+j)
+                            j=j+1
+                            exit
+                        end if
+                    end do
+                end do
+                if(len_trim(buffernum)>0) then
+                    read(buffernum, *) isorresidue
+                    linepos=6+j
+                end if
+
+                ! check for a residue name
+                if(isorresidue==-99) then
+                    if(isor_table(i)%shelxline(6:6)/=' ') then
+                        ! ISOR applied to named residue
+                        k=6
+                        j=1
+                        do while(isor_table(i)%shelxline(k:k)/=' ')
+                            namedresidue(j:j)=isor_table(i)%shelxline(k:k)
+                            k=k+1
+                            j=j+1
+                            linepos=linepos+1
+                            if(k>=len(isor_table(i)%shelxline)) exit
+                        end do
+                        isorresidue=-98
+                        linepos=linepos+1
+                    else
+                        write(log_unit,*) 'Error: Cannot have a space after `_` '
+                        write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+                        write(log_unit,*) repeat(' ', 5+5+nint(log10(real(isor_table(i)%line_number)))+1), '^'
+                        return
+                    end if
+                end if        
+            end if
+        end if
+        
+        bufferline=stripline
+        call deduplicates(bufferline, stripline)
+        call to_upper(stripline)    
+        ! some files use ',' as a separator instead of a space
+        do k=1, len_trim(stripline)
+            if(stripline(k:k)==',') then
+                stripline(k:k)=' '
+            end if
+        end do
+
+        call explode(stripline, lenlabel, splitbuffer)    
+        
+        ! first element is shelx instruction
+        ! second element is the esd of atoms (optional)
+        read(splitbuffer(2), *, iostat=iostatus) esd1
+        if(iostatus/=0) then
+            esd1=0.1
+            start=1
+        else
+            start=2
+        end if
+
+        ! third element is the esd of terminal atoms (optional)
+        read(splitbuffer(3), *, iostat=iostatus) esd2
+        if(iostatus/=0) then
+            esd2=0.2
+        else
+            start=start+1
+            write(log_unit, '(a)') 'Warning: [st] esd in ISOR not supported, using [s] instead'
+        end if
+            
+        allocate(isor_table(i)%atoms(size(splitbuffer)-start))
+        call to_upper(splitbuffer(start+1:size(splitbuffer)), isor_table(i)%atoms)
+        isor_table(i)%residue=isorresidue
+        isor_table(i)%namedresidue=namedresidue
+        isor_table(i)%esd1=esd1
+        isor_table(i)%esd2=esd2
+        
+        !print *, isor_table(i)%shelxline
+        !print *, isor_table(i)%atoms
+
+        write(log_unit, '(a)') trim(isor_table(i)%shelxline)
+        
+        found=.false.
+        do j=1, size(isor_table(i)%atoms)
+            if(index(isor_table(i)%atoms(j), '_*')>0) then
+                write(log_unit, '(a)') 'Warning: ignoring ISOR '
+                write(log_unit, '(a)') '_* syntax not supported'
+                found=.true.
+                exit
+            end if
+        end do
+        if(found) cycle
+        
+        write(crystals_fileunit, '(a, a)') '# ', trim(isor_table(i)%shelxline)
+        
+        if(isor_table(i)%residue==-99) then
+            ! No residue used in ISOR card name
+            if(allocated(serials)) deallocate(serials)
+            allocate(serials(size(isor_table(i)%atoms)))
+            serials=0
+            
+            do j=1, size(isor_table(i)%atoms)
+                ! ICE on gfortran 61 when using associate
+                atom=isor_table(i)%atoms(j)
+                !associate( atom => isor_table(i)%atoms(j) )
+                    resi1=0
+                    indexresi=index(atom, '_')
+                    if(indexresi>0) then
+                        if(atom(indexresi+1:indexresi+1)=='-') then
+                            ! previous residue
+                            write(log_unit, '(a)') 'Warning: Residue - in atom with ISOR without _*'
+                            write(log_unit, '(a)') '         Not implemented'
+                            call abort()
+                        else if(atom(indexresi+1:indexresi+1)=='+') then
+                            ! next residue
+                            write(log_unit, '(a)') 'Warning: Residue + in atom with ISOR without _*'
+                            write(log_unit, '(a)') '         Not implemented'
+                            call abort()
+                        else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                        &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                            ! residue number
+                            read(atom(indexresi+1:), *) resi1
+                        else
+                            ! residue name
+                            write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        end if
+                        label=atom(1:indexresi-1)
+                    else
+                        label=atom
+                    end if
+                !end associate
+                serial1=0
+                do k=1, atomslist_index
+                    if(trim(label)==trim(atomslist(k)%label) .and. resi1==atomslist(k)%resi) then
+                        serial1=k
+                        exit
+                    end if
+                end do
+            
+                if(serial1==0) then
+                    write(log_unit, '(a)') isor_table(i)%atoms(j)
+                    write(log_unit, '(I0)') serial1
+                    write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                    call abort()
+                end if
+                
+                if(atomslist(serial1)%crystals_serial==-1) then
+                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    call abort()
+                end if
+                serials(j)=serial1
+            end do
+                        
+            ! good to go
+            write(buffertemp, '(a, F7.5, 1X)') 'UQISO ', isor_table(i)%esd1
+             do k=1, size(serials)
+                write(buffer1, '(a,"(",I0,")")') &
+                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                if(len_trim(buffertemp)>72) then
+                    write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                    write(log_unit, '(a)') trim(buffertemp)  
+                    buffertemp='CONT '
+                end if
+            end do
+            write(crystals_fileunit, '(a)') trim(buffertemp)                           
+            write(log_unit, '(a)') trim(buffertemp)                           
+
+
+        else if(isor_table(i)%residue==-98) then
+            ! ISOR applied to a named residues
+            do j=1, size(residue_names)
+                if(trim(residue_names(j))/=trim(isor_table(i)%namedresidue)) cycle
+                
+                if(allocated(serials)) deallocate(serials)
+                allocate(serials(size(isor_table(i)%atoms)))
+                serials=0
+                
+                do k=1, size(isor_table(i)%atoms)
+                    ! ICE on gfortran 61 when using associate
+                    atom=isor_table(i)%atoms(k)
+                    !associate( atom => isor_table(i)%atoms(k) )
+                        resi1=j
+                        indexresi=index(atom, '_')
+                        if(indexresi>0) then
+                            if(atom(indexresi+1:indexresi+1)=='-') then
+                                ! previous residue
+                                resi1=j-1                        
+                            else if(atom(indexresi+1:indexresi+1)=='+') then
+                                ! next residue
+                                resi1=j+1
+                            else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                            &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                                ! residue number
+                                read(atom(indexresi+1:), *) resi1
+                            else
+                                ! residue name
+                                write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                cycle isor_loop
+                            end if
+                            label=atom(1:indexresi-1)
+                        else
+                            label=atom
+                        end if
+                    !end associate
+                    serial1=0
+                    do l=1, atomslist_index
+                        if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                            serial1=l
+                            exit
+                        end if
+                    end do
+
+                    if(serial1==0) then
+                        cycle
+                    end if
+                    
+                    if(atomslist(serial1)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    serials(k)=serial1
+                end do
+                            
+                ! good to go
+                write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', isor_table(i)%esd1
+                 do k=1, size(serials)
+                    write(buffer1, '(a,"(",I0,")")') &
+                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    if(len_trim(buffertemp)>72) then
+                        write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                        write(log_unit, '(a)') trim(buffertemp)  
+                        buffertemp='CONT '
+                    end if
+                end do
+                write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                write(log_unit, '(a)') trim(buffertemp)
+            end do
+
+        else if(isor_table(i)%residue==-1) then
+            ! ISOR applied to all residues
+            do j=1, size(residuelist)
+                
+                do k=1, size(isor_table(i)%atoms)
+                    ! ICE on gfortran 61 when using associate
+                    atom=isor_table(i)%atoms(k)
+                    !associate( atom => isor_table(i)%atoms(k) )
+                        resi1=j
+                        indexresi=index(atom, '_')
+                        if(indexresi>0) then
+                            if(atom(indexresi+1:indexresi+1)=='-') then
+                                ! previous residue
+                                if(j==1) cycle
+                                resi1=residuelist(j-1)
+                            else if(atom(indexresi+1:indexresi+1)=='+') then
+                                ! next residue
+                                if(j==size(residuelist)) cycle
+                                resi1=residuelist(j+1)
+                            else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                            &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                                ! residue number
+                                read(atom(indexresi+1:), *) resi1
+                            else
+                                ! residue name
+                                write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                                write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                                cycle isor_loop
+                            end if
+                            label=atom(1:indexresi-1)
+                        else
+                            label=atom
+                        end if
+                    !end associate
+                    serial1=0
+                    do l=1, atomslist_index
+                        if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                            serial1=l
+                            exit
+                        end if
+                    end do
+
+                    if(serial1==0) then
+                        cycle
+                    end if
+                    
+                    if(atomslist(serial1)%crystals_serial==-1) then
+                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        call abort()
+                    end if
+                    serials(k)=serial1
+                end do
+                            
+                ! good to go
+                write(buffertemp, '(a, F7.5, 1X)') 'UQISO ', isor_table(i)%esd1
+                 do k=1, size(serials)
+                    write(buffer1, '(a,"(",I0,")")') &
+                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    if(len_trim(buffertemp)>72) then
+                        write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                        write(log_unit, '(a)') trim(buffertemp)  
+                        buffertemp='CONT '
+                    end if
+                end do
+                write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                write(log_unit, '(a)') trim(buffertemp)  
+
+            end do
+        else
+            ! look for specific residue
+            resi1=isor_table(i)%residue
+            do k=1, size(isor_table(i)%atoms)
+                ! ICE on gfortran 61 when using associate
+                atom=isor_table(i)%atoms(k)
+                !associate( atom => isor_table(i)%atoms(k) )
+                    indexresi=index(atom, '_')
+                    if(indexresi>0) then 
+                        if(atom(indexresi+1:indexresi+1)=='-') then
+                            ! previous residue
+                            write(log_unit, '(a)') 'Warning: residue - in atom with ISOR_x'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        else if(atom(indexresi+1:indexresi+1)=='+') then
+                            ! next residue
+                            write(log_unit, '(a)') 'Warning: residue + in atom with ISOR_x'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
+                        &   iachar(atom(indexresi+1:indexresi+1))<=57) then
+                            ! residue number
+                            write(log_unit, '(a)') 'Warning: Residue number in atom with ISOR_x'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        else
+                            ! residue name
+                            write(log_unit, '(a)') 'Warning: Residue name in atom with ISOR_*'
+                            write(log_unit, '(a)') '         Not implemented, restraint has been ignored'
+                            cycle isor_loop
+                        end if
+                        label=atom(1:indexresi-1)
+                    else
+                        label=atom
+                    end if
+                !end associate
+                serial1=0
+                do l=1, atomslist_index
+                    if(trim(label)==trim(atomslist(l)%label) .and. resi1==atomslist(l)%resi) then
+                        serial1=l
+                        exit
+                    end if
+                end do
+
+                if(serial1==0) then
+                    cycle
+                end if
+                
+                if(atomslist(serial1)%crystals_serial==-1) then
+                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    call abort()
+                end if
+                serials(k)=serial1
+            end do                    
+                
+            write(buffertemp, '(a, F7.5, 1X)') 'UQISO ', isor_table(i)%esd1
+             do k=1, size(serials)
+                write(buffer1, '(a,"(",I0,")")') &
+                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                if(len_trim(buffertemp)>72) then
+                    write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                    write(log_unit, '(a)') trim(buffertemp)  
+                    buffertemp='CONT '
+                end if
+            end do
+            write(crystals_fileunit, '(a)') trim(buffertemp)                           
+            write(log_unit, '(a)') trim(buffertemp)  
+
+        end if
+                    
+    end do isor_loop
+end subroutine
+
+
 end module

@@ -76,8 +76,8 @@ CxTextOut::CxTextOut( CrTextOut * container )
 #endif
 #ifdef CRY_USEWX
     m_BackCol = wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW );
-    m_pen     = new wxPen(m_BackCol,1,wxSOLID);
-    m_brush   = new wxBrush(m_BackCol,wxSOLID);
+    m_pen     = new wxPen(m_BackCol,1,wxPENSTYLE_SOLID);
+    m_brush   = new wxBrush(m_BackCol,wxBRUSHSTYLE_SOLID);
 #endif
     m_nHead = -1;    //The line # currently at the BOTTOM of the output area.
     m_nLinesDone = 0;
@@ -194,7 +194,7 @@ void CxTextOut::Init()
 
 
 #ifdef CRY_USEWX
-    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
+    wxFont* pFont = new wxFont(12,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
 
 #ifndef _WINNT
     *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
@@ -1050,6 +1050,16 @@ bool CxTextOut::RenderSingleLine( string& strLine, PlatformDC* pDC, int nX, int 
       do
       {
         nPos = strTemp.find( CONTROL_BYTE );
+        // check if the control byte is escaped
+        if(nPos!= string::npos && nPos>(size_t)1) 
+        {
+          if(strTemp.substr(nPos-1, 1)=="\\")
+          {
+		    // remove \ and orint { as normal character
+		    strTemp.erase(nPos-1, 1);
+		    nPos=string::npos;
+	      }
+        }
         if( nPos != string::npos )
         {
             cbFound = true;
@@ -1399,7 +1409,7 @@ void CxTextOut::ChooseFont()
 
     wxFontData data;
 
-    wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
+    wxFont* pFont = new wxFont(12,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
 
     if ( m_pFont == NULL )
     {

@@ -27,3 +27,4 @@ Theta  Sin   Sin/lam (sin/lam)^2 (sin/lam)^3 |  Sin/lam (sin/lam)^2 (sin/lam)^3
  60    0.87   1.22     1.48       1.81       |   0.56      0.31      0.18
  70    0.94   1.32     1.75       2.31       |   0.61      0.37      0.23
 % COPY '#SCRIPT XHELP2'
+% END SCRIPT

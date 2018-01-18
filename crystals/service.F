@@ -761,7 +761,7 @@ C-----  RECOVER SCRIPT NAME
         WRITE(CMON,'(A,A,A,I6)')'Script ', cscpnm(1:lennm),
      1  ' abandoned at line ',IRDREC(IFLIND)
         CALL XPRVDU(NCVDU,1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
         END IF
 
         CALL XFLUNW ( 3 , 2 )
@@ -872,6 +872,9 @@ C --
 C
 CODE FOR XFINAL
       SUBROUTINE XFINAL ( ICODE )
+#ifdef CRY_OSLINUX
+      use iso_fortran_env, only: error_unit
+#endif
 C -- THIS IS THE LAST SUBROUTINE TO BE CALLED, FOR ALL CONTROLLED
 C    TERMINATIONS.
 C
@@ -902,6 +905,18 @@ C
 C
       IF ( ICODE .GT. 3 ) ICODE = 3
       IF ( ICODE .LE. 0 ) ICODE = 3
+      
+#ifdef CRY_OSLINUX
+#ifdef __GNUC__
+      if(icode/=1) then
+        write(error_unit, *) ''
+        write(error_unit, *) 
+     1    'Crystals just crashed, here is a backtrace:'
+        call backtrace
+        write(error_unit, *) ''
+      end if
+#endif
+#endif
 C
 C -- DISPLAY DISC EFFICIENCY STATISTICS
 C
@@ -1045,12 +1060,14 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2005 ) CSSPRG(1:LSSPRG) , CTIME , CDATE
 2005  FORMAT ( // , 1X , A , ' initialised at ' , A , ' on ' , A )
-      WRITE ( NCWU , 2015 ) 0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
+      WRITE ( NCWU , 2015 ) 0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
+     1 CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       ENDIF
-      WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSMAC(1:LSSMAC),
-     2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
 C
+      WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
+     1 CSSMAC(1:LSSMAC),
+     2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       WRITE ( CMON,2015)  0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
      1 CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
@@ -1139,8 +1156,8 @@ C--DAY HAS CHANGED
       CALL XTIME(IA,IB)
       WRITE ( CMON,1150) IA,IB,I,J,K,L
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
-      WRITE(NCAWU,'(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
+      WRITE(NCAWU,'(A)') trim(CMON(1))
 1150  FORMAT(1X,2A4,' : Processor time ',I4,' min',I4,
      2 ' sec : Elapsed time ',I4,' min',I4,' sec')
       RETURN
@@ -1978,8 +1995,8 @@ C      TO USE THE SYSTEM VARIABLE SET WITH #SET FILECASE
          WRITE ( CMON,100)FILNAM(1:NAMLEN)
 100      FORMAT ( 'Filename truncated to 256 characters',A )
          CALL XPRVDU(NCEROR, 3,0)
-         WRITE ( NCAWU , '(A)' ) CMON(1)
-         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)
+         WRITE ( NCAWU , '(A)' ) trim(CMON(1))
+         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
         ENDIF
         IF (ICASE .EQ. 0) THEN
 C----- CONVERT NAME TO LOWER CASE

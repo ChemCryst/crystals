@@ -858,7 +858,7 @@ C--PRINT THE INITIAL CAPTIONS
      1 ' The su is computed from the mean atomic variances'
       ENDIF
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 C
       WRITE ( CMON,1150)
       CALL XPRVDU(NCVDU, 1,0)
@@ -924,7 +924,7 @@ C--NO ARGUMENTS FOUND
       CALL XPCLNN(LN)
       WRITE ( CMON,1550)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1550  FORMAT(' No arguments found')
       GOTO 1200
 C--ARGUMENTS TO BE PROCESSED  -  CHECK FOR AN OPERAND
@@ -935,7 +935,7 @@ C--ARGUMENT IS OF THE WRONG TYPE
       CALL XPCLNN(LN)
       WRITE ( CMON,1700)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1700  FORMAT(' Only atoms may appear on an ''ATOM'' card')
       GOTO 2650
 C--PICK UP ATOM SPECIFICATION AND FIND THE ATOMS IN LIST 5
@@ -1011,7 +1011,7 @@ C--NOT ENOUGH ATOMS
         CALL XPCLNN(LN)
         WRITE ( CMON,2100)
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 2100    FORMAT(' Not enough atoms provided')
         GOTO 2650
       END IF
@@ -1154,7 +1154,7 @@ C--VCV not available
       CALL XPCLNN(LN)
       WRITE ( CMON,2901)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 2901  FORMAT(' Covariance matrix not available. Do some refinement.')
       GOTO 2650
 C

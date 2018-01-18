@@ -399,8 +399,9 @@ C--SET UP THE GENERAL OR CODE HEADER BLOCK
       ISTORE(LCG+2)=NOWT
       STORE(LCG+3)=1.0
       STORE(LCG+4)=1.0
+      ISTORE(LCG+5)=-1
       MDCG=LCG
-      MCG=LCG+5
+      MCG=LCG+6
       NCG=0
 C--SET THE FLAGS TO INDICATE THAT NO ATOMS HAVE BEEN INPUT THUS FAR
       NCA=0
@@ -549,7 +550,7 @@ C
 C  IA  BASE ADDRESS OF THE CODE INFORMATION (LCG)
 C  IB  BASE ADDRESS OF WORK STACK (LC)
 C
-      CHARACTER*10  COPERATE(24)
+      CHARACTER*11  COPERATE(25)
 C--
       INCLUDE 'ICNTRL.INC'
       INCLUDE 'ISTORE.INC'
@@ -576,7 +577,7 @@ C----- ISTORE (LCG + 1) OPERATIONS
      1 'Vibration',  'executioN',  'Nolist',  'Uij',
      1 'Equate',  'Planar',  'sum',  'Form',
      1 'Average', 'Limit',  'Energy',  'Origin',
-     1 'Rem', 'Same', 'Delu', 'Simu'/
+     1 'Rem', 'Same', 'Delu', 'Simu','Uknown(bug)'/
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1000)IA,IB,NFL,LFL,LC,ICNTRL
@@ -647,7 +648,7 @@ C--BRANCH ON THE TYPE OF HEADER
 1750  CONTINUE
       WRITE ( CMON,1755)KA
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1755  FORMAT(' Illegal header type ',I10)
       CALL XERHND ( IERCAT )
 C--ATOMIC PARAMETERS TO BE PRINTED
@@ -680,13 +681,19 @@ C
 C--PRINT THE INSTRUCTION STACK
 2100  CONTINUE
       MCG=LCG+IA
+      if(abs(istore(mcg+1))>size(coperate) .or. 
+     1  abs(istore(mcg+1))<1) then
+        it=25
+      else
+        it=abs(istore(mcg+1))
+      end if
       IF (ISSPRT .EQ. 0) THEN
 C     DJWsep2011. The asymmetric restraints have -ve keys
 c      WRITE(NCWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
-      WRITE(NCWU,2150)MCG,ISTORE(MCG+1),coperate(abs(istore(mcg+1)))
+      WRITE(NCWU,2150)MCG,ISTORE(MCG+1),coperate(it)
       ENDIF
 c      WRITE(NCAWU,2150)MCG,ISTORE(MCG+1),coperate(istore(mcg+1))
-      WRITE(NCAWU,2150)MCG,ISTORE(MCG+1),coperate(abs(istore(mcg+1)))
+      WRITE(NCAWU,2150)MCG,ISTORE(MCG+1),coperate(it)
 2150  FORMAT(' Function at',I8,'  :',I5, 3x,a)
       MCG=ISTORE(MCG)+IA
 2200  CONTINUE

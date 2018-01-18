@@ -105,6 +105,7 @@ public:
    bool showh;
    int bond_style;
    CxModel* m_modview;
+   int min_peak_height_to_show;
 };
 
 class   CrModel : public CrGUIElement
@@ -172,6 +173,7 @@ class   CrModel : public CrGUIElement
 #define kSModelClear        "CLEAR"
 #define kSRadiusType        "RADTYPE"
 #define kSRadiusScale       "RADSCALE"
+#define kSMinPeakHeight     "MINPEAK"
 #define kSBondStyle         "BONDSTYLE"
 #define kSNormal            "NORMAL"
 #define kSElement           "ELEMENT"
@@ -218,6 +220,7 @@ enum
  kTModelClear,
  kTRadiusType,
  kTRadiusScale,
+ kTMinPeakHeight,
  kTBondStyle,
  kTVDW,
  kTThermal,

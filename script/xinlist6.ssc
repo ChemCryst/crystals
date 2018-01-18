@@ -12,6 +12,8 @@
 %  VARIABLE INTEGER XCHOICE
 %  VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
 %  VARIABLE REAL HKLT31 HKLT32 HKLT33
+%% variables used to check if any reflections were actually read in
+%  VARIABLE REAL  H K L SUM
 %% First check for all zero values
 %  EVALUATE HTRANS = FALSE
 %  IF ABS ( HKLT11 ) .GT. 0.01 THEN
@@ -343,10 +345,18 @@
 %        CLEAR                                                                  
 ^^WI     SET L6FILE TEXT                                                        
 %        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                          
+%        EVALUATE HKLTITLE = CVALUE
 ^^CR                                                                            
 ^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO                              
 %         EVALUATE LOKOK = TRUE                                                 
 %       END IF                                                                  
+% END IF
+% IF ( UPPERCASE GETFILE ( HKLTITLE ) .EQ. 'FROM-CIF.HKL' ) THEN
+^^CO    SET L6FORM DISABLED=NO TEXT='(3F4.0,2F10.0)' 
+^^CO    SET RDF3 STATE=ON
+% ELSE
+^^CO    SET L6FORM DISABLED=YES  
+^^CO    SET RDF2 STATE=ON
 % END IF
 %%                                                                              
 %% Now the window is displayed, we wait for any of the following                
@@ -531,7 +541,7 @@
 %         COPY 'END'                                                                
 
 ^^WI      DISPOSE XINLIST6                                                      
-^^CR             
+^^CR  
 %         COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %         COPY '#HKLI'                                                          
 %         QUEUE PROCESS                                                         
@@ -539,6 +549,38 @@
 %         COPY '#CLOSE FRN2'
 %         COPY '#CLOSE HKLI'                                                    
 %%                                                                              
+%         BLOCK
+%         IF ( EXISTS 6 .NE. 1 ) THEN 
+{E
+{E  You have not succeeded in reading in any reflections
+
+{E  Check the file format and the file extension.
+{E
+%           COPY "#USE CONTROL"
+%           FINISH
+%         END IF
+%% 
+%           ON ERROR TERMINATE
+%           COPY "#GENERALEDIT 6"
+%% get the rms Indices
+%           COPY "LOCATE RECORDTYPE=107"
+%           COPY "TRANSFER FROM OFFSET=3 TO H"
+%           COPY "NEXT"
+%           COPY "TRANSFER FROM OFFSET=3 TO K"
+%           COPY "NEXT"
+%           COPY "TRANSFER FROM OFFSET=3 TO L"
+%           COPY "END"
+%           EVALUATE SUM = H + K + L
+%           IF SUM .LE. 0.0 THEN
+{E
+{E  You have not succeeded in reading in any reflections
+{E  Check the file format and the file extension.
+{E
+%             COPY "#USE CONTROL"
+%             FINISH
+%           END IF  
+%         END BLOCK
+%%
 %         IF FS .EQ. 3 THEN                                                     
 %           COPY '#LP'                                                          
 %           COPY 'END'                                                          
@@ -584,7 +626,10 @@
 %     END BLOCK                                                                 
 %     BLOCK                         %BXX%                                       
 ^^WI    DISPOSE XINLIST6                                                        
-^^CR                                                                            
+^^CR                                 
+{E
+{E You have aborted reading in reflection data
+{E                                           
 %       FINISH                                                                  
 %     END BLOCK                                                                 
 %     BLOCK                         %BROWSE%                                    
@@ -596,8 +641,16 @@
 ^^WI     SET L6FILE TEXT                                                        
 %        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                          
 ^^CR                                                                            
-^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO                              
-%         EVALUATE LOKOK = TRUE                                                 
+^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO  
+%         EVALUATE LOKOK = TRUE                    
+%% For from-cif.hkl files set correct FORMAT
+%         IF ( UPPERCASE GETFILE ( CVALUE ) .EQ. 'FROM-CIF.HKL' ) THEN
+^^CO        SET L6FORM DISABLED=NO TEXT='(3F4.0,2F10.0)' 
+^^CO        SET RDF3 STATE=ON
+%         ELSE
+^^CO        SET L6FORM DISABLED=YES  
+^^CO        SET RDF2 STATE=ON
+%         END IF
 %       END IF                                                                  
 %     END BLOCK                                                                 
 %     BLOCK                         %HELP1%                                     

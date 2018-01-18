@@ -1,0 +1,46 @@
+%SCRIPT XPASCAL
+%% Exactly the same as XFILES except for INS/RES files
+%% 
+%% To do - how to resolve HKLF5 from 4
+%%                               
+^^WI SYSOPENFILE 'All files (*.*)|*.*;'
+^^WI          'SHELX (*.ins,res,hkl,hklf5)|*.ins;*.res;*.hkl;*.hklf5'
+^^CR
+%%
+%   GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
+%   IF CVALUE .EQ. 'CANCEL' THEN
+%     FINISH
+%   END IF
+%   VARIABLE LOGICAL T
+%   VARIABLE CHARACTER INSTITLE HKLTITLE
+%   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
+%%
+%   EVALUATE C_FILE = CVALUE
+%%
+%   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
+{E Error: Filename given does not exist.
+%     FINISH
+%   END IF 
+%%   
+%   EVALUATE CEXTN = GETEXTN ( C_FILE )
+%   EVALUATE CEXTN = UPPERCASE ( CEXTN )
+%%   EVALUATE INSTITLE = GETPATH ( C_FILE ) // GETTITLE ( C_FILE )
+%   IF ( CEXTN .EQ. 'INS' ) .OR. ( CEXTN .EQ. 'RES' ) THEN
+%      EVALUATE INSTITLE = C_FILE
+%      IF FILEEXISTS ( 'crystalsinput.cry' )  THEN
+%       EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
+%      END IF
+%      COPY '#SCRIPT XSX2CRY' 
+%      FINISH
+%   ELSE IF ( CEXTN .EQ. 'HKL' ) THEN
+%      EVALUATE HKLTITLE = C_FILE
+%      COPY '#SCRIPT XINLIST6' 
+%      FINISH
+%   ELSE IF ( CEXTN .EQ. 'HKLF5' ) THEN
+%      COPY '#SCRIPT HKLF52CRY'
+%      FINISH
+%   END IF
+%%
+%   COPY '#SCRIPT XFILE_ANY'
+%
+%END SCRIPT

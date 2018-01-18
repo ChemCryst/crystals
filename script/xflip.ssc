@@ -65,7 +65,11 @@
 ^^WI @ 2,2 CHECKBOX CME '&Merge before going on'                                
 ^^WI STATE=ON                                                                   
 ^^WI @ 3,2 CHECKBOX BKUP '&Backup dsc before doing anything else'
+%  IF ( FILEEXISTS ( 'PRE-SUPERFLIP.dsc' ) ) THEN
+^^WI STATE=OFF
+%  ELSE
 ^^WI STATE=ON
+%  END IF
 %%                                           
 ^^WI @ 2,4 RADIOBUTTON RD '&Default Superflip parameters'                       
 ^^WI STATE=ON                        
@@ -94,7 +98,7 @@
 %%                                                                              
 ^^?? BKUP STATE
 %    VERIFY ON OFF                                                              
-%    GET SILENT NOSTORE ABBREVIATED 'ON=bachup now'                            
+%    GET SILENT NOSTORE ABBREVIATED 'ON=backup now'                             
 %    IF ( VALUE .EQ. 1 ) THEN                                                   
 %        COPY '#PURGE pre-superflip'                                            
 %        copy 'end'                                                             

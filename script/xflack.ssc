@@ -15,6 +15,18 @@
 % EVALUATE FILTER5 = 2.5
 % VARIABLE INTEGER _BADNPP 
 %%
+% VARIABLE INTEGER ICENTRIC
+%      IF ( EXISTS 2 .GT. 0 ) THEN
+%          COPY '#GENERALEDIT 2'
+%          COPY 'LOCATE RECORDTYPE=101'
+%          COPY 'TRANSFER FROM OFFSET =  0 TO ICENTRIC'
+%          COPY 'END'
+%          IF ICENTRIC .EQ. 1 THEN
+{E The space group is cenrosymmetric.
+{E There is no Absolute Structure
+%          FINISH 
+%      END IF
+%%
 % IF ( EXISTS 6 ) .NE. 1 THEN
 {E  No reflections have been stored.
 {E  Absolute configuration analysis is not possible.

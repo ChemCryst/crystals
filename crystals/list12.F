@@ -397,6 +397,12 @@ C----- INDICATE NO CHANGES TO LIST 23 YET
       imod23 = 0
       imod5 = 0 
       CALL XFAL23
+	  
+c	   write (9,*) 'L23M+7, MD23M, L23M, N23M: ', 
+c     1          ISTORE(L23M+7), MD23M, L23M, N23M
+	  
+c       write(9,*) '+ ',(ISTORE(L23M+I),I=0,7)
+	  
 C----- GET THE ACTION AND UPDADTE CONDITIONS
       IACTN = ISTORE(L23SP)
       ABTOL = STORE(L23SP+5)
@@ -1336,9 +1342,24 @@ c
             write ( cmon ,6151)
             call xprvdu(ncvdu, 1,0)
 6151        format(' New LIST 23 written to disk')
-            CALL XWLSTD ( 23, ICOM23, IDIM23, 1, -1)
+c	   write (9,*) 'Writing... L23M+7, MD23M: ', ISTORE(L23M+7), MD23M
+c       write(9,*) '+1 ',(ISTORE(L23M+I),I=0,7)
+c       write(9,*) '+1 ICOM23: ', (ICOM23(I),I=1,24)
+            CALL XWLSTD ( 23, ICOM23, IDIM23, 0, -1)
+c       write(9,*) '+2 ',(ISTORE(L23M+I),I=0,7)
+c       write(9,*) '+2 ICOM23: ', (ICOM23(I),I=1,24)
         ENDIF
 C
+
+c       CALL XFAL23
+	  
+c	   write (9,*) 'Reloaded L23M+7, MD23M, L23M, N23M: ', 
+c     1           ISTORE(L23M+7), MD23M, L23M, N23M 
+	  
+c       write(9,*) '+3 ',(ISTORE(L23M+I),I=0,7)
+c       write(9,*) '+3 ICOM23: ', (ICOM23(I),I=1,24)
+
+
 C----- WAS LIST 5 MODIFIED?
       nupdat = nupdat + imod5
 C
@@ -1502,7 +1523,7 @@ C (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
      1          THEN
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CRST
-                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 527   FORMAT(' Parameter  ',A4, I4,4X,  A,6X,' to be fixed by ', A)
                 NRESTR = NRESTR + 1
                 CALL XRESTF (KS, XO(KS), M5S )
@@ -1510,7 +1531,7 @@ C (EG EQUIVALENCED, IS MULTIPART OR WEIGHTED)
 
                 WRITE(CMON,527)STORE(M5S), NINT(STORE(M5S+1)),
      1          COORD(KS+1), CCST
-                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 C SET 'FIX' AND 'EXPLICIT'
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IO(2))
                 ISTORE(KPA+2) = KOR(ISTORE(KPA+2),IE(2))
@@ -1573,14 +1594,18 @@ C INCREMENT THE RELATED PARAMETER COUNT
                         NRELP = NRELP + 1
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
      1                  ,COORD(KS+1), COORD(JS+1), CCST
-                        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                        IF (ISSPRT .EQ. 0) then
+                            WRITE(NCWU,'(A)') trim(CMON(1))
+                        end if
 528                     FORMAT(' Parameters ',A4, I4,4X, A, ' and ', A,
      1                  ' related by ', A)
                       ELSE
 C RELATED COORDS, BUT WE CANNOT SET UP CONSTRAINTS
                         WRITE(CMON,528)STORE(M5S),NINT(STORE(M5S+1))
      1                    ,COORD(KS+1), COORD(JS+1), CRST
-                        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(:)
+                        IF (ISSPRT .EQ. 0) then
+                            WRITE(NCWU,'(A)') trim(CMON(1))
+                        end if
                         CALL XRESTL (KS, COEF(KS), XO(KS),
      1                   JS, COEF(JS), XO(JS), M5S)
                           NRESTR = NRESTR + 1

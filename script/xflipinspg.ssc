@@ -3,13 +3,14 @@
 %%                                                                              
 %% Read in a space group from a superflip shelx file.                           
 %%                                                                              
-{R Script version by R. Cooper. Based on the fortran program SXTOCA by          
-{R R.O. Gould, The University of Edinburgh, March 1994.                         
-{R Slightly modified by A van der Lee for use with Superflip                                     
+ Script version by R. Cooper. Based on the FORTRAN program SXTOCA by          
+ R.O. Gould, The University of Edinburgh, March 1994.                         
+ Slightly modified by A van der Lee for use with Superflip                                     
 %%                                                                              
 %%                                                                              
 %  VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM CLAT                 
-%  VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD SPACEREADOLD        
+%  VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD SPACEREADOLD 
+%  VARIABLE CHARACTER SGCOPY       
 %  VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND                                 
 %  VARIABLE LOGICAL SFILERR LCANCEL LCRY SXGETALL LQS SPACETEXT                 
 %  VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA                                     
@@ -44,12 +45,12 @@
 %%                                                                              
 %% looking for SG symbol on TITLE card
 %   IF ( FILEEXISTS ( 'sflip_sym.ins' ) ) THEN                                  
-%     EVALUATE CFILE = 'SFLIP_SYM.INS'                                          
+%     EVALUATE CFILE = 'sflip_sym.ins'                                          
 %     TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                       
 {I Scanning SUPERFLIP symmetry file for information.                            
-%    EXTRACT REWIND                                                             
-%    EVALUATE SFILERR = TRUE                                                    
-%    LOOP                                                                       
+%     EXTRACT REWIND                                                             
+%     EVALUATE SFILERR = TRUE                                                    
+%     LOOP                                                                       
 %      ON ERROR TERMINATE                                                       
 %      ON END TERMINATE                                                         
 %      EXTRACT NEXT                                                             
@@ -80,33 +81,33 @@
 %          END IF                                                               
 %        END LOOP                                                               
 %      END IF                                                                   
-%    END LOOP                                                                   
+%     END LOOP                                                                   
 %    IF SFILERR .EQ. TRUE THEN                                                  
 {E *** No "TITL" card found with Space Group symbol on it                          
 %      ELSE                                                                     
 {R Space group proposed by Superflip found.                                     
 %    END IF                                                                     
 %%                                                                              
-%    TRANSFER 'Space group read from TITL card: ' // SPACEREAD TO DISPLAY       
+%    EVALUATE SGCOPY = SPGTOCRY ( SPACEREAD )                                
+%    TRANSFER '  Space group read from TITL card: ' // SGCOPY TO DISPLAY       
                                                                                 
 %    IF ( SPACEREAD .EQ. SPACEREADOLD ) THEN                                    
 %       EVALUATE QTITLE = SPACEREAD
 %       EVALUATE QLINE1 = 'Superflip confirms the original space group'
-%       EVALUATE QLINE2 = 'The symmetry operators are updated.'
+%       EVALUATE QLINE2 = 'but the origin may have been changed'
 %       EVALUATE BUTTOK = 'OK'
 %       COPY '#SCRIPT XMESSAGE'
 %       COPY 'END'
 %       EVALUATE ANSWER = TRUE
-%      ELSE
-%       EVALUATE QTITLE = 'Initial space group: ' // SPACEREADOLD
-%       EVALUATE QLINE1 = 'Superflip proposes: ' // SPACEREAD
+%    ELSE
+%       EVALUATE QTITLE = 'Current space group: ' // SPACEREADOLD
+%       EVALUATE QLINE1 = 'Superflip proposes: ' // SGCOPY
 %       EVALUATE QLINE2 = 'Do you accept this (see also the log-file)?'
 %       EVALUATE BUTTOK = 'Yes'
 %       EVALUATE BUTTXX = 'No'
 %       EVALUATE SGCHANGE = TRUE
 %%       COPY '#SCRIPT XQUESTIO'
 %%       COPY 'END'
-
 %    END IF                                                                     
 %%AvdL now put spaces in spgr symbol for export to CRSYTALS; this is approximate
 %    EVALUATE SPACEREAD = SPGTOCRY ( SPACEREAD )                                
@@ -136,25 +137,24 @@
 ^^WI 'Expert input of space group symbol: '                                     
 % TRANSFER "^^WI @ 1,4 BUTTON B3 '" // BUTTADVANCED // "'" TO DISPLAY           
 ^^WI   }                                                                        
-                                                                                
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 %%                                                                              
-                                                                                
-%  VERIFY B1 B2 B3                                                              
-%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
-%  CASE VALUE                                                                   
-%   BLOCK                      %B1                                              
-%    EVALUATE ANSWER = TRUE                                                     
-%% TRANSFER ' I am in B1 '  TO DISPLAY                                          
-^^CO DISPOSE FQUESTION                                                          
-%   END BLOCK                                                                   
-%   BLOCK                      %B2                                              
-%    EVALUATE ANSWER = FALSE                                                    
-%   END BLOCK                                                                   
-%   BLOCK                      %B3                                              
-%% CREATE LIST 2                                                                
+%     VERIFY B1 B2 B3                                                              
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%     CASE VALUE                                                                   
+%      BLOCK                      %B1                                              
+%       EVALUATE ANSWER = TRUE                                                     
+^^CO    DISPOSE FQUESTION                                                          
+%      END BLOCK                                                                   
+%      BLOCK                      %B2                                              
+%       EVALUATE ANSWER = FALSE                                                    
+^^CO    DISPOSE FQUESTION                                                          
+%      END BLOCK                                                                   
+%      BLOCK                      %B3                                              
+%%      CREATE LIST 2                                                                
+^^CO    DISPOSE FQUESTION                                                          
 %%                                                                              
 ^^WI WINDOW INFLIST2 'Space Group Symbol' MODAL COMMIT='BOK' CANCEL='BXX'       
 ^^WI GRID GRM NROWS=2 NCOLS=2                                                   
@@ -162,7 +162,7 @@
 ^^WI  @ 1,1 GRID GRL NROWS=10 NCOLS=3                                           
 ^^WI  {                                                                         
 ^^WI   @ 2,2 STATIC WARN                                                        
-^^WI 'Correct Superflip space group symbol   '                                  
+^^WI 'Edit Superflip space group symbol   '                                  
 ^^WI   @ 4,2 STATIC WARN                                                        
 ^^WI 'Put spaces between operators'                                             
 ^^WI   @ 5,2 STATIC WARN                                                        
@@ -182,41 +182,38 @@
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 %%                                                                              
-% CLEAR                                                                         
-% INSERT !^^CO SET SPT TEXT '!                                                  
-%   STORE FORMAT /(A24)/ LENGTH 24 CHARACTER SPACEREAD                          
-% INSERT !'!                                                                    
-% OUTPUT                                                                        
-%%                                                                              
-%%                                                                              
-%%                                                                              
-%   VERIFY RST BXX BOK                                                          
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'RST'                              
-%   CASE VALUE                                                                  
-%    BLOCK             %RST%                                                    
-^^CO   SET SPT DISABLED=NO                                                      
-%    END BLOCK                                                                  
-%    BLOCK             %BXX%                                                    
-^^WI   DISPOSE INFLIST2                                                         
+%       CLEAR                                                                         
+%       INSERT !^^CO SET SPT TEXT '!                                                  
+%       STORE FORMAT /(A24)/ LENGTH 24 CHARACTER SPACEREAD                          
+%       INSERT !'!                                                                    
+%       OUTPUT                                                                        
+%       VERIFY RST BXX BOK                                                          
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'RST'                              
+%       CASE VALUE                                                                  
+%        BLOCK             %RST%                                                    
+^^CO      SET SPT DISABLED=NO                                                      
+%        END BLOCK                                                                  
+%        BLOCK             %BXX%                                                    
+^^WI       DISPOSE INFLIST2                                                         
 ^^CR                                                                            
-%      EVALUATE LCANCEL = TRUE                                                  
-%      FINISH                                                                   
-%    END BLOCK                                                                  
-%    BLOCK             %BOK%                                                    
-%     CLEAR                                                                     
-^^??    SPT TEXT                                                                
-%       GET SILENT NOSTORE TEXT ' ' ' '                                         
-%       EVALUATE SPACEREAD = CVALUE                                             
-^^CO  DISPOSE INFLIST2                                                          
-%%                                                                              
-%    END BLOCK                                                                  
-%   END CASE                                                                    
-^^CO DISPOSE FQUESTION                                                          
-%   END BLOCK         %B3                                                       
-%  END CASE                                                                     
-%  END IF                                                                       
-                                                                                
-                                                                                
+%          EVALUATE LCANCEL = TRUE                                                  
+%          FINISH                                                                   
+%        END BLOCK                                                                  
+%        BLOCK             %BOK%                                                    
+%          CLEAR                                                                     
+^^??       SPT TEXT                                                                
+%          GET SILENT NOSTORE TEXT ' ' ' '                                         
+%          EVALUATE SPACEREAD = CVALUE                                             
+^^CO       DISPOSE INFLIST2                                                          
+%          EVALUATE ANSWER =  TRUE
+%        END BLOCK                                                                  
+%       END CASE                                                                    
+^^CO    DISPOSE FQUESTION                                                          
+%      END BLOCK         %B3                                                       
+%%
+%     END CASE                                                                     
+%    END IF                                                                       
+%%                                                                                
 %%TEST    EVALUATE SPACEREAD = 'P 6 52 2'                                       
 %%AvdL repair troublesome cases:                                                
 %% TRANSFER ' SPACEREAD before ' // SPACEREAD TO DISPLAY                        
@@ -257,10 +254,12 @@
 %    END IF                                                                     
 %% TRANSFER ' SPACEREAD after ' // SPACEREAD TO DISPLAY                         
 %    IF ANSWER .EQ. TRUE THEN                                                   
-%%                                                                              
-%%AvdL Even if the initial spacegroup and the proposed one are the same, read   
-%%AvdL explicit space group operators, since origin might have changed          
-{I Entering explicit space group info from sflip_sym file...                    
+%%                                                                             
+{I Even if the initial spacegroup and the proposed one are the same,
+{I copy explicit space group operators, since origin might have changed.
+{I
+{I If the Point Group has changed, you should re-import the relections'
+{I
 %% Get first lattice centering and inversion center                             
 %                                                                               
 %      EXTRACT REWIND                                                           
@@ -270,8 +269,8 @@
 %        ON END TERMINATE                                                       
 %        EXTRACT NEXT                                                           
 %        CLEAR                                                                  
-%% EXTRACT TRANSFER COMMAND                                                     
-%% EXECUTE SEND                                                                 
+%%       EXTRACT TRANSFER COMMAND                                                     
+%%       EXECUTE SEND                                                                 
 %        EXTRACT TRANSFER INPUT                                                 
 %        CLEAR                                                                  
 %        GET NOSTORE NOPROMPT NOMESSAGE KEYWORD NULLSTRING                      
@@ -315,7 +314,6 @@
 %          QUEUE SEND                                                           
 %        END IF                                                                 
 %      END LOOP                                                                 
-%% FINISH                                                                       
 %% Start writing LIST 2 info                                                    
 %      EVALUATE LEND = LEND + 1                                                 
 %% TRANSFER 'NUMBER SYMOPS ' // CVALUE TO DISPLAY                               
@@ -400,10 +398,9 @@
 %%   calculate new Fourier limits                                               
 %      COPY '#FLIMIT'                                                           
 %      COPY 'END'                                                               
-%%   re-import reflection data in case of a space group change                  
 %    IF ( SGCHANGE .EQ. TRUE ) THEN                                             
 {I                                                                              
-{I Re-import reflection data because space group has changed                    
+{I Re-import reflection data because space/point group has changed                    
 {I                                                                              
 %        COPY '#SCRIPT XFLIPINLIST6'                                            
 %    END IF                                                                     
@@ -414,7 +411,5 @@
 %      FINISH                                                                   
 %    END IF                                                                     
 %  END IF                                                                       
-%%                                                                              
-%%                                                                              
-% FINISH                                                                        
+%  FINISH                                                                        
 % END SCRIPT                                                                    

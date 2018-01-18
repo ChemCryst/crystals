@@ -16,7 +16,11 @@ endif()
 #)
 
 add_library(CrystalsFortran STATIC
+mrgrnk.f90
 crystals_hdf5.F90
+numpy.F90
+STORE.INC.F90
+XCHARS.INC.F90
 XDAVAL.INC.F90
 XUNITS.INC.F90
 XSSVAL.INC.F90
@@ -24,6 +28,7 @@ XERVAL.INC.F90
 XIOBUF.INC.F90
 XDISC.INC.F90
 XLST01.INC.F90
+XLST02.INC.F90
 XLST05.INC.F90
 XLST06.INC.F90
 XLST12.INC.F90
@@ -31,15 +36,20 @@ XLST13.INC.F90
 XLST23.INC.F90
 XLST28.INC.F90
 XLST30.INC.F90
+XLST33.INC.F90
 XLST39.INC.F90
 XCONST.INC.F90
+XAPK.INC.F90
+XOPK.INC.F90
 XOPVAL.INC.F90
+XRTLSC.INC.F90
+XSCALE.INC.F90
+math.F90
 formatnumber.F90
 solve_helper.F90
 sfls_punch.F90
 mrgrnk.F90
 absolut.F90
-${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90
 absorb.F
 accumula.F
 alter5.F
@@ -55,6 +65,7 @@ distan.F
 distangl.F
 empabs.F
 execute.F
+fcal.F
 fiddle.F
 findfrag.F
 foreig.F
@@ -71,8 +82,10 @@ invert.F
 lexical.F
 link.F
 list11.F
+list12_helper.F90
 list12.F
 list16.F
+list26_helper.F90
 list26.F
 list4.F
 list50.F
@@ -126,6 +139,10 @@ SET_PROPERTY( SOURCE fourie.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
 #target_link_libraries(CrystalsFortran openblas)
 SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
+if(SLEEFTARGET MATCHES "CrystalsSleef")
+    target_link_libraries(CrystalsFortran CrystalsSleef)
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  USE_SLEEF)
+endif ()
 
 # These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.
 # Without these lines modules may be built in the wrong order causing a compilation failure in parallel builds.

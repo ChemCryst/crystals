@@ -114,6 +114,7 @@ C
 C
 CODE FOR XPRC16
       SUBROUTINE XPRC16
+      use store_mod, only:c_store
 C--FORM THE RELOCATABLE VERSION OF LIST 16  -  LIST 26 ON THE DISC.
 C
 C--THIS ROUTINE USES AND SETS WHERE NECESSARY THE FOLLOWING VARIABLES :
@@ -254,6 +255,7 @@ C  2  NOT DEFINED  -  FOR RESTRAINTS MAY BE A WORK STACK ADDRESS REL.
 C                     TO 'LC'..
 C  3  NOT DEFINED  -  FOR RESTRAINTS THE WEIGHT.
 C  4  NOT DEFINED  -  FOR RESTRAINTS THE INPUT OR OBSERVED VALUE.
+C  5  The index of the restraint in the user list `list 16` starting from zero
 C
 C--THE FORMAT OF THE INSTRUCTION BLOCKS ON THE CHAIN IS :
 C
@@ -353,9 +355,11 @@ C  13.PLANAR        14.SUM           15.FORM          16.AVERAGE
 C  17.LIMIT         18.ENERGY        19.ORIGIN        20.REM
 C  21.SAME          22.DELU          23.SIMU          24.A-VIB
 C  25.A-U(IJ)'S     26. A-DIST       27.UXZBAR        28.UYZBAR
-C  29.UZZBAR        30. UXPERP       31.UYPERP        32.UXPARA
-C  33.UYPARA        34. UZPARA       35.UXXQIV        36.UXYQIV
-C  37.UXZQIV        38. UYYQIV       39.UYZQIV        40.UZZQIV
+C  29.UZZBAR        30. UPERP        31.unused        32.ULIJ          
+C  33.UALIGN        34.URIGU         35.UPLANE        36.UXXQIV        
+C  37.UXYQIV        38.UXZQIV        39.UYYQIV        40.UYZQIV        
+C  41.UZZQIV        42.UEIG          43.UQISO         44.UVOL
+C  45.UEQIV         46.UTLS
 C
 C----- ISTORE (LCG+1) OPERATIONS 
 c      Note that some correspond to several MG values.
@@ -366,10 +370,13 @@ C      13 EQUATE    14 PLANAR    15 SUM      16 FORM
 C      17 AVERAGE   18 LIMIT     19 ENERGY   20 ORIGIN
 C Hmmm.
 C      21 REM       22 SAME      23 DELU     24 SIMU 
-C      21 UXZBAR    22 UYZBAR    23 UZZBAR   24 UXPERP
-C      25 UYPERP    26 UXPARA    27 UYPARA   28 UZPARA
-C      29 UXXQIV    30 UXYQIV    31 UXZQIV   32 UYYQIV
-C      33 UYZQIV    34 UZZQIV
+C      21 UXZBAR    22 UYZBAR    23 UZZBAR   24 UPERP
+C      25 unused    26 UALIGN    27 URIGU    28 ULIJ
+C      29 UPLANE    30 UXXQIV    31 UXYQIV   32 UXZQIV   
+C      33 UYYQIV    34 UYZQIV    35 UZZQIV   36 UEIG
+C      37 UQISO     38 UVOL      39 UEQIV    40 UTLS
+C
+C Don't forget to chage coperation in preset.F !!
 C
       INCLUDE 'ICOM05.INC'
       INCLUDE 'ICOM12.INC'
@@ -404,6 +411,7 @@ C
       INCLUDE 'QLST05.INC'
       INCLUDE 'QLST12.INC'
       INCLUDE 'QLST26.INC'
+      
 C
 C
       DATA IVERSN /421/
@@ -462,6 +470,7 @@ C--INDICATE THAT LIST 12 IS NOT IN CORE
       DO 1100 I=1,IDIM12
       ICOM12(I)=NOWT
 1100  CONTINUE
+      irestraintcpt=-1
 C--SET THE INPUT LIST TYPE
       KD=16
 C----- INDICATE LIST 17 NOT YET USED
@@ -486,14 +495,17 @@ C--INITIALISE THE CONTROL VARIABLES
       CALL XSETCC
 C--RECORD THE NUMBER OF ERRORS SO FAR
       LSTLEF=LEF
-      MZ=0
+      MZ=0      
 c----- indicate a normal directive
       iasym = 0
+      irestraintcpt=irestraintcpt+1
+      istore(lcg+5)=irestraintcpt ! store the index of the restraint
 C--JUMP ON THE FUNCTION OF THE CARD
       GOTO(1300,1350,1500,1800,1850,2050,2100,2150,2200,2250,
      2     2300,2450,4050,4550,5400,5650,5660,7000,7200,1150,
-     3     1810,1810,1810,1851,2251,1510,2258,2259,2257,2255,2256,
-     4     2260,2261,2262,2263,2264,2265,2266,2267,2268,1250)MG
+     3     1810,1810,1810,1851,2251,1510,2258,2259,2257,2255,
+     4     2256,2260,2261,2262,2263,2264,2265,2266,2267,2268,
+     5     2269,2270,2271,2272,2273,2274,1250)MG
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -523,10 +535,10 @@ c     asymmetric distance. Dont allow MEAN or DIFFERENCE
       istore(lcg+1) = -3
       iasym = 1
 1520  continue
-      K=1
+      K=1 ! one connector TO
 1550  CONTINUE
-      L=3
-      M=5
+      L=3 ! 3 parameters
+      M=5 ! address
       I=KRCI(LN)  ! Check for normal, mean, or difference format.
       IF(I)5850,1700,1650
 1650  CONTINUE    ! A Diff or Mean distance.
@@ -654,7 +666,7 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
           IF ( NGROUP .GT. 1 ) THEN   ! It is not the first group.
             IF ( NATOMS .NE. JATOMS ) THEN  ! Check number atoms matches first group.
               WRITE (CMON,'(A)') 'A group is different size from first'
-              if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+              if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
               CALL XPRVDU(NCVDU,1,0)
               GOTO 5850
             END IF
@@ -670,7 +682,7 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
         IF ( MS .LE. 0 ) THEN
           WRITE (CMON,'(A)') 'Error reading atom from SAME directive.'
           CALL XPRVDU(NCVDU,1,0)
-          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
           GOTO 5850
         END IF
         INDATM = ( M5A - L5 ) / MD5
@@ -699,8 +711,8 @@ C Check types match.
      1         'have different element types: ',CATOM1(1:LATOM1),
      1         ' and ', CATOM2(1:LATOM2)
               CALL OUTCOL(9)
-              if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
-              if (issprt.eq.0) write(ncwu,'(a)') cmon(2)(:)
+              if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+              if (issprt.eq.0) write(ncwu,'(a)') trim(cmon(2))
               CALL XPRVDU(NCVDU,2,0)
               CALL OUTCOL(1)
               GOTO 5850
@@ -722,19 +734,21 @@ c      call xprvdu(ncvdu,1,0)
 
       IF ((MG .EQ.21) .AND. ( NGROUP .LE. 1 )) THEN
         WRITE (CMON,'(A)') 'Only one group given on SAME card.'
-        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+        if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       ELSE IF (((MG .EQ.22) .or.(mg.eq.23))
      1  .AND. ( NGROUP .LE. 0 )) THEN
         WRITE (CMON,'(A)') '{I Not enough atoms for DELU/SIMU'
-        if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+        if (issprt.eq.0) write(ncwu,'(a)') 
+     1    cmon(1)(3:len_trim(cmon(1)))
         CALL XPRVDU(NCVDU,1,0)
         GOTO 5850
       END IF
         IF ((ngroup .gt. 1) .and. ( NATOMS .NE. JATOMS )) THEN
          WRITE (CMON,'(A)')'{E Last group different size from first.'
-         if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+         if (issprt.eq.0) write(ncwu,'(a)') 
+     1     cmon(1)(3:len_trim(cmon(1)))
          CALL XPRVDU(NCVDU,1,0)
          GOTO 5850
         END IF
@@ -768,7 +782,9 @@ C Get the distances and angles. One at a time.
         IF ( K .LT. 0 ) THEN
            WRITE (CMON,'(A)')'{E "KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
-           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+           if (issprt.eq.0) then
+             write(ncwu,'(a)') cmon(1)(3:len_trim(cmon(1)))
+           end if
            GOTO 5850
         ELSE IF ( K .EQ. 0 ) THEN
            CALL CATSTR(STORE(M5A),STORE(M5A+1),1,1,0,0,0,
@@ -780,7 +796,9 @@ C Get the distances and angles. One at a time.
            WRITE (CMON,'(3A)')'{E DELU/SIMU restraint warning: Atom ',
      2      CATOM1(1:LATOM1), ' has no bonded contacts.'
            END IF
-           if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(3:)
+           if (issprt.eq.0) then
+             write(ncwu,'(a)') cmon(1)(3:len_trim(cmon(1)))
+          end if
           CALL XPRVDU(NCVDU,1,0)
           CYCLE MAINLOOP
         END IF
@@ -801,7 +819,7 @@ cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND1 .GE. 0 ) .and. (mg .eq. 21))  THEN
           WRITE (CMON,'(A,i5,a)')'Programming error [1]',
      1    mg,' in XPRC16.'
-          if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
           CALL XPRVDU(NCVDU,1,0)  
           GOTO 5850
         END IF
@@ -824,8 +842,8 @@ CDJW DEBUGGING
      1       CATOM2(1:25)
              CALL XPRVDU(NCVDU, 1,0)
 2804         FORMAT ( 6x, A,' ',F6.3,'A from ',A)
-             IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(:)
-             WRITE(NCAWU,'(A)') CMON(1)(:)
+             IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(CMON(1))
+             WRITE(NCAWU,'(A)') trim(CMON(1))
            END IF
           endif
 CDJW DEBUGGING
@@ -843,7 +861,7 @@ cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND2 .GE. 0 ) .and. (mg .eq. 21))  THEN
           WRITE (CMON,'(A,i5,a)')'Programming error [2]',
      1    mg,' in XPRC16.'
-            if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
             CALL XPRVDU(NCVDU,1,0)  
             GOTO 5850
           END IF
@@ -914,8 +932,8 @@ CDJW - DEBUGGING
               if(istat2 .eq.1) then
                write(cmon,'(a,i5)') ' Processing group ',K+1
                CALL XPRVDU(NCVDU,1,0)
-               if (issprt.eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
-               WRITE(NCAWU,'(A)') CMON(1)(:)
+               if (issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
+               WRITE(NCAWU,'(A)') trim(CMON(1))
                CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
      1         CATOM1,LATOM1)
                CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
@@ -925,8 +943,8 @@ CDJW - DEBUGGING
                WRITE(CMON,2804)CATOM1(1:LATOM1),STORE(J+10),
      2         CATOM2(1:25)
                CALL XPRVDU(NCVDU,1,0)
-               if (issprt .eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
-               WRITE(NCAWU,'(A)') CMON(1)(:)
+               if (issprt .eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
+               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 CDJW - DEBUGGING
               MQ=MCG ! Next free word (we'll store atom1 header here)
@@ -992,8 +1010,8 @@ cdjwdebugging
      1       CATOM3(1:25)
              CALL XPRVDU(NCVDU, 1,0)
 2805         FORMAT ( 6x, A, ' to ', A, ' to ', A)
-             if(issprt.eq.0) WRITE(NCWU,'(A)') CMON(1)(:)
-             WRITE(NCAWU,'(A)') CMON(1)(:)
+             if(issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
+             WRITE(NCAWU,'(A)') trim(CMON(1))
             endif
 cdjwdebugging
 C Find third atom of angle in the first group of SAME.
@@ -1008,7 +1026,7 @@ C Find third atom of angle in the first group of SAME.
             IF ( IND3 .GE. 0 ) THEN
               WRITE (CMON,'(A)') 'Programming error [3] in XPRC16.'
               CALL XPRVDU(NCVDU,1,0)  
-            if (issprt.eq.0) write(ncwu,'(a)') cmon(1)(:)
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
               GOTO 5850
             END IF
             IND3 = -IND3 ! Now index into the vector at JATD
@@ -1085,7 +1103,7 @@ cdjwdebugging
                WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
      1         CATOM3(1:25)
                CALL XPRVDU(NCVDU,1,0)
-               WRITE(NCAWU,'(A)') CMON(1)(:)
+               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 cdjwdebugging
 
@@ -1224,79 +1242,203 @@ C--'UZZBAR' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 
-C--'UXPERP' RESTRAINT
+C--'UPERP' RESTRAINT
 2255  CONTINUE
+2256  CONTINUE ! UPERP2 now merged with UPERP
+C--INSERT THE DEFAULT VALUES
       ISTORE(LCG+1)=24
-      K=1    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22751
+C--SEE IF WE CAN READ A NUMBER
+22751 CONTINUE
+      IF(KSYNUM(Z))2700,22752,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22752 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
 
-C--'UYPERP' RESTRAINT
-2256  CONTINUE
-      ISTORE(LCG+1)=25
-      K=1    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900
-	  
-C--'UXPARA' RESTRAINT
+      ! count the number of to connectors
+      ! we are bypassing original crystals subroutines to allow UPERP to allow 2 different
+      ! syntaxes at the same time: A TO B and A TO B TO C
+      ! istore(mf) is a flag: -1 is text, 6 is "(", 7 is ")", 0 real numbers, 8 is end of group
+      ! istore(mf+1) in counter (maybe the character position in restraint text), -1 signal the end
+      ! istore(mf+2) is text or a real number
+      ! next block is at +lk2
+      indexchr=0
+      numto=0
+      do indexchr=0, ME-1, 1
+        if(istore(mf+indexchr*lk2)==-1) then ! -1 is text 
+          if(C_STORE(mf+indexchr*LK2+2)=='TO') then
+            numto=numto+1
+          end if
+        end if
+        if(istore(mf+indexchr*lk2)==8) then
+          exit
+        end if
+      end do
+      ISTORE(LCG+4)=numto+1
+      
+      if(numto==2) then
+        ilist=KGCAS(2,6,8,0)
+      else
+        ilist=KGCAS(1,6,8,0)
+      end if
+          
+      IF(ilist)5850,5850,5700
+C-- END UPERP
+    
+C--'UALIGN' RESTRAINT
 2260  CONTINUE
       ISTORE(LCG+1)=26
-      K=2    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900	  
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22601
+C--SEE IF WE CAN READ A NUMBER
+22601 CONTINUE
+      IF(KSYNUM(Z))22604,22602,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22602 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--CHECK FOR MORE ARGUMENTS
+      IF(ME)2550,2550,22603
+C--CHECK THE TYPE OF THE NEXT ARGUMENT  -  IT SHOULD 'FOR'
+22603 CONTINUE
+      IF(ISTORE(MF))22604,2650,2700
+C--IT IS AN ALPHA-NUMERIC ARGUMENT  -  CHECK IF IT IS 'FOR'
+22604 CONTINUE
+      IF(KCOMP(1,ISTORE(MF+2),IEQU(5),1,1))22606,22606,22605
+C--UPDATE THE POINTERS AFTER A 'FOR'
+22605 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--READ THE ATOMS ON THE CARD
+22606  CONTINUE
+      IF(KGCAS(0,6,8,0))5850,5850,5700
+C-- END UALIGN
 
-C--'UYPARA' RESTRAINT
+C--'URIGU' RESTRAINT
 2261  CONTINUE
       ISTORE(LCG+1)=27
-      K=2    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22611
+C--SEE IF WE CAN READ A NUMBER
+22611 CONTINUE
+      IF(KSYNUM(Z))22616,22612,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22612 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
+22616  CONTINUE
+      IF(KGCAS(1,6,8,0))5850,5850,5700
+C-- END URIGU
       GOTO 1900	  
 
-C--'UZPARA' RESTRAINT
+C--'ULIJ' RESTRAINT
 2262  CONTINUE
-      ISTORE(LCG+1)=28
-      K=2    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900	  
+      ISTORE(LCG+1)=28     
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22621
+C--SEE IF WE CAN READ A NUMBER
+22621 CONTINUE
+      IF(KSYNUM(Z))22624,22622,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22622 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--CHECK FOR MORE ARGUMENTS
+      IF(ME)2550,2550,22623
+C--CHECK THE TYPE OF THE NEXT ARGUMENT  -  IT SHOULD 'FOR'
+22623 CONTINUE
+      IF(ISTORE(MF))22624,2650,2700
+C--IT IS AN ALPHA-NUMERIC ARGUMENT  -  CHECK IF IT IS 'FOR'
+22624 CONTINUE
+      IF(KCOMP(1,ISTORE(MF+2),IEQU(5),1,1))22626,22626,22625
+C--UPDATE THE POINTERS AFTER A 'FOR'
+22625 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--READ THE ATOMS ON THE CARD
+22626  CONTINUE
+      IF(KGCAS(2,6,8,0))5850,5850,5700
+C-- END ULIJ
 
-C--'UXXQIV' RESTRAINT
+C--'UPLANE' RESTRAINT
 2263  CONTINUE
       ISTORE(LCG+1)=29
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22631
+C--SEE IF WE CAN READ A NUMBER
+22631 CONTINUE
+      IF(KSYNUM(Z))22636,22632,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22632 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
+22636  CONTINUE
+      IF(KGCAS(2,6,8,0))5850,5850,5700
+C-- END UPLANE
+
+C--'UXXQIV' RESTRAINT
+2264  CONTINUE
+      ISTORE(LCG+1)=30
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 
 C--'UXYQIV' RESTRAINT
-2264  CONTINUE
-      ISTORE(LCG+1)=30
+2265  CONTINUE
+      ISTORE(LCG+1)=31
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900	  
 
 C--'UXZQIV' RESTRAINT
-2265  CONTINUE
-      ISTORE(LCG+1)=31
-      K=5    ! Allow one 'TO' connector
-      L=6    ! Six parameters involved
-      M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900
-
-C--'UYYQIV' RESTRAINT
 2266  CONTINUE
       ISTORE(LCG+1)=32
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
-	  
-C--'UYZQIV' RESTRAINT
+
+C--'UYYQIV' RESTRAINT
 2267  CONTINUE
       ISTORE(LCG+1)=33
       K=5    ! Allow one 'TO' connector
@@ -1304,13 +1446,152 @@ C--'UYZQIV' RESTRAINT
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
 	  
-C--'UZZQIV' RESTRAINT
+C--'UYZQIV' RESTRAINT
 2268  CONTINUE
       ISTORE(LCG+1)=34
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
+	  
+C--'UZZQIV' RESTRAINT
+2269  CONTINUE
+      ISTORE(LCG+1)=35
+      K=5    ! Allow one 'TO' connector
+      L=6    ! Six parameters involved
+      M=8    ! First parameter at slot '8' (U11).
+      GOTO 1900
+
+C--'UEIG' RESTRAINT
+2270  CONTINUE
+      ISTORE(LCG+1)=36
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22701
+C--SEE IF WE CAN READ A NUMBER
+22701 CONTINUE
+      IF(KSYNUM(Z))22706,22702,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22702 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
+22706  CONTINUE
+      IF(KGCAS(0,6,8,0))5850,5850,5700
+C-- END UEIG
+
+C--'UQISO' RESTRAINT Near isotropic restraint
+2271  CONTINUE
+      ISTORE(LCG+1)=37
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22711
+C--SEE IF WE CAN READ A NUMBER
+22711 CONTINUE
+      IF(KSYNUM(Z))22716,22712,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22712 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
+22716  CONTINUE
+      IF(KGCAS(0,6,8,0))5850,5850,5700
+C-- END UQISO
+
+C--'UVOL' RESTRAINT Restraint the volume to be equal
+2272  CONTINUE
+      ISTORE(LCG+1)=38
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22721
+C--SEE IF WE CAN READ A NUMBER
+22721 CONTINUE
+      IF(KSYNUM(Z))22726,22722,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22722 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
+22726  CONTINUE
+      IF(KGCAS(0,6,8,0))5850,5850,5700
+C-- END UVOL
+
+C--'UEQIV' RESTRAINT Restraint Ueq to be equal
+2273  CONTINUE
+      ISTORE(LCG+1)=39
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22731
+C--SEE IF WE CAN READ A NUMBER
+22731 CONTINUE
+      IF(KSYNUM(Z))22736,22732,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22732 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--READ THE ATOMS ON THE CARD
+22736  CONTINUE
+      IF(KGCAS(0,6,8,0))5850,5850,5700
+C-- END UEQIV
+      
+C--'UTLS' RESTRAINT
+2274  CONTINUE
+      ISTORE(LCG+1)=40
+C--INSERT THE DEFAULT VALUES
+      STORE(LCG+4)=0.
+      STORE(LCG+3)=10000.
+      ESD=0.01
+      J=LCG+3
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22741
+C--SEE IF WE CAN READ A NUMBER
+22741 CONTINUE
+      IF(KSYNUM(Z))2700,22742,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE E.S.D.
+22742 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(J)=1./(Z*Z)
+C--CHECK FOR AN ARGUMENT
+      IF(ME)2550,2550,22743
+C--SEE IF WE CAN READ A NUMBER
+22743 CONTINUE
+      IF(KSYNUM(Z))22745,22744,2700
+C--A NUMBER HAS BEEN READ  -  IT MUST BE THE number of atoms
+22744 CONTINUE
+      ME=ME-1
+      MF=MF+LK2
+C--COMPUTE  AND STORE THE WEIGHT
+      STORE(LCG+4)=Z
+C--READ THE ATOMS ON THE CARD
+22745 CONTINUE
+      IF(KGCAS(0,6,8,0))5850,5850,5700
+C-- END UTLS
 C
 C--'ABORT' CARD  -  RESET THE ABORTION LIMIT FOR 'EQUATE'
 2300  CONTINUE
@@ -1374,7 +1655,7 @@ C--SET UP THE CONTROL BLOCK FOR THIS CONDITION
       MDCG=MCG
       ISTORE(MCG)=NOWT
       ISTORE(MCG+1)=J
-      MCG=MCG+5
+      MCG=MCG+6
       J=MDCG+2
       IF(MCG-LFL)3050,3050,6150
 C--FETCH THE REMAINING THREE NUMBERS FOR THIS RESTRAINT

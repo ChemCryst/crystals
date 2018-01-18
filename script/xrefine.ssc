@@ -12,6 +12,7 @@
 %  EVALUATE CONVRG = FALSE
 %  VARIABLE REAL L5:OK
 %  VARIABLE REAL CONVERGE
+%  VARIABLE INTEGER INVERTSTATUS
 %%
 %%
 %% make sure SFLS record exists in LIST 39
@@ -195,7 +196,9 @@
 %%
 %      BLOCK                                        % NORMAL (not forced)
 %%
+%  IF XREFINE .EQ. FALSE THEN
 ^^CO     SETKEY XREFINE_CONVERGE 1
+%  END IF
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
@@ -210,6 +213,16 @@
 %               send
 %              END IF
 %            COPY 'END'
+%%         TEST IF INVERSION WENT OK
+%          COPY '#GENERALEDIT 11'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET=30 TO INVERTSTATUS'
+%          COPY 'END'
+%          IF INVERTSTATUS .LT. 0 THEN
+{E Inversion is approximate please check your model and restraints. 
+{E Cycles of refinements have been stopped
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
 %%         TEST IF CONVERGED 
 %          COPY '#SCRIPT SFLSCONVERGE'
 %            IF CONVERGE .GT. 1. THEN
@@ -231,7 +244,9 @@
 %%
 %% n forced cycles.
 %%
+%  IF XREFINE .EQ. FALSE THEN
 ^^CO SETKEY XREFINE_CONVERGE 0
+%  END IF 
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
@@ -252,6 +267,16 @@
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %          IF VALUE .EQ. 1 THEN
 {I Further refinement cycles abandoned at users request.
+%              EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%%         TEST IF INVERSION WENT OK
+%          COPY '#GENERALEDIT 11'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET=30 TO INVERTSTATUS'
+%          COPY 'END'
+%          IF INVERTSTATUS .LT. 0 THEN
+{E Inversion is approximate please check your model and restraints. 
+{E Cycles of refinements have been stopped
 %              EVALUATE LOOPEND = LOOPCOUNTER
 %          END IF
 %        END LOOP

@@ -192,6 +192,10 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
         mp_parent->ApplyIndexColour( m_glID );
 //        glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
 
+  } else if ( m_label.length() && ( m_label[0] == 'Q' ) && ( sparerad < style->min_peak_height_to_show  ) ) {
+  // do not show
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
+		glColor4fv( Surface );
   } else if ( style->radius_type == CRTINY ) {  //make invisible (unless selected or no bonds)
 
     if ( m_nbonds == 0 ) {
@@ -201,7 +205,8 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 		GLfloat Surface[] = { 1.0f, 1.0f, 1.0f, 0.0f };
 		glColor4fv( Surface );
 	} else if ( m_excluded ) {
-        GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 0.3f };
+//        GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 0.3f };
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
         glColor4fv( Surface );
         extra = 20.0f;
 	} else {

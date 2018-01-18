@@ -7,9 +7,9 @@ CRYSTALS CODE FOR SPECIFIC.FOR
 CAMERON CODE FOR SPECIFIC
 CODE FOR ZCLRA
       SUBROUTINE ZCLRA (IX1,IY1,IX2,IY2,ICOL)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: fstclr, fstcol, fstfpo
-#endif
+c#ifdef CRY_GUI
+c      use fwrappergui_mod, only: fstclr, fstcol, fstfpo
+c#endif
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -51,9 +51,9 @@ C&&GIDGIL      CHARACTER*80 CHARTC
  
 CODE FOR ZDLINE
       SUBROUTINE ZDLINE (IX1,IY1,IX2,IY2,ICOL)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: fstlin, fstcol
-#endif
+c#ifdef CRY_GUI
+c      use fwrappergui_mod, only: fstlin, fstcol
+c#endif
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -84,9 +84,9 @@ CODE FOR ZDLINE
  
 CODE FOR ZDTEXT
       SUBROUTINE ZDTEXT (TEXT,IX,IY,ICOL)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: fstcol, fstext
-#endif
+c#ifdef CRY_GUI
+c      use fwrappergui_mod, only: fstcol, fstext
+c#endif
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -121,9 +121,9 @@ CODE FOR ZDTEXT
  
 CODE FOR ZFILEL
       SUBROUTINE ZFILEL (IXC,IYC,IMAJ,IMIN,ICOL)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: fstcol, fstfel
-#endif
+c#ifdef CRY_GUI
+c      use fwrappergui_mod, only: fstcol, fstfel
+c#endif
 #if defined(_DOS_) 
       INCLUDE 'CAMWIN.INC'
 #endif
@@ -155,9 +155,9 @@ CODE FOR ZFILEL
  
 CODE FOR ZPLINE
       SUBROUTINE ZPLINE (IX,IY,N,ICOL)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: fstcol, fstepo
-#endif
+c#ifdef CRY_GUI
+c      use fwrappergui_mod, only: fstcol, fstepo
+c#endif
       INTEGER IX(N),IY(N),ICOL
       
       INCLUDE 'CAMPAR.INC'
@@ -218,9 +218,9 @@ C &&GILGID      CHARACTER*80 CHARTC
  
 CODE FOR ZVGAEL
       SUBROUTINE ZVGAEL (IXC,IYC,IMAJ,IMIN,ICOL)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: fstcol, fsteel
-#endif
+c#ifdef CRY_GUI
+c      use fwrappergui_mod, only: fstcol, fsteel
+c#endif
       INTEGER IMAJ,IMIN,ICOL
 #if defined(_DOS_) 
       INTEGER*2 IMAJ1,IMIN1,ICOL1,ixc1,iyc1
@@ -475,9 +475,9 @@ CNOV98      CNPATH = 'CRCAMER:'//CFNAME
  
 CODE FOR ZPOLGN
       SUBROUTINE ZPOLGN ( IX,IY,N,ICOL)
-#ifdef CRY_GUI
-      use fwrappergui_mod, only: fstcol, fstfpo
-#endif
+c#ifdef CRY_GUI
+c      use fwrappergui_mod, only: fstcol, fstfpo
+c#endif
       INTEGER IX(N),IY(N),ICOL
       
       INCLUDE 'CAMPAR.INC'

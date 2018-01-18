@@ -59,8 +59,8 @@ subroutine c_f_strings ( input_string, regular_string )
     allocate(character(len=lenstr) :: regular_string)
 #else
     if(lenstr>2048) then
-        print *, 'Error: input_string is too long for the harcoded string'
-        print *, 'Contact the authors'
+!        print *, 'Error: input_string is too long for the harcoded string'
+!        print *, 'Contact the authors'
         call abort()
     end if
 #endif

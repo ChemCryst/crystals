@@ -1,15 +1,16 @@
-%SCRIPT EDLIST3
+%SCRIPT XEDLIST3
 %%
-%  VARIABLE LOGICAL EDLIST3 LXIN3CANCEL NOUPDATE CHANG3
+%  VARIABLE LOGICAL EDLIST3 LXIN3CANCEL DOUPDATE CHANG3
 %  VARIABLE CHARACTER CLTYPE
-%  VARIABLE REAL FPRIME FDOUBL WAVE
+%  VARIABLE INTEGER N3
+%  VARIABLE REAL FPRIME FDOUBL WAVE MU
 %%
 %% The variables needed by XQUESTIO
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 %  VARIABLE LOGICAL   ANSWER
 %%
 %  EVALUATE EDLIST3 = TRUE
-%  EVALUATE NOUPDATE = FALSE
+%  EVALUATE DOUPDATE = TRUE
 %  EVALUATE CHANG3 = FALSE
 %%
 %  IF EXISTS 3 .NE. 1 THEN
@@ -37,15 +38,25 @@
 %    COPY 'END'
 %  END IF
 %%
+%% Restart from here if list of scatterers is updated.
+%%
+%  LOOP 
+%% Find number of elements in L3
+%    COPY '#GENERALEDIT 3'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    COPY 'TRANSHEAD FROM OFFSET=3 TO N3'
+%    COPY 'END'
+%%    TRANSFER 'Elements in L3: ' // CHARACTER ( N3 ) TO DISPLAY
+%%
+%    IF ( DOUPDATE ) THEN
 %%
 ^^WI WINDOW EDLIST3 'Edit scattering factors' MODAL
 ^^WI COMMIT='ED3OK' CANCEL='ED3XX'
-^^WI GRID GRIDM NROWS=9 NCOLS=3
+^^WI GRID GRIDM NROWS=7 NCOLS=3
 ^^WI {
-^^WI  @ 8,2 STATIC T2 'Make all changes before clicking Apply '
 ^^WI  @ 6,2 GRID GRIDB NROWS=1 NCOLS=5
 ^^WI  {
-^^WI    @ 1,5 BUTTON ED3OK '&Apply' DEFAULT
+^^WI    @ 1,5 BUTTON ED3OK '&OK' DEFAULT
 ^^WI    @ 1,1 BUTTON ED3XX '&Cancel'
 ^^WI    @ 1,3 BUTTON ED3HELP '&Help'
 ^^WI  }
@@ -55,64 +66,129 @@
 % TRANSFER "^^WI @ 1,2 STATIC WAVE " // CHARACTER WAVE TO DISPLAY
 ^^WI    @ 1,4 BUTTON INL3 'Change wavelength or scatterers '
 ^^WI  }
-^^WI  @ 4,2 GRID GRIDB NROWS=1 NCOLS=9
+^^WI  @ 4,2 GRID GRIDB 
+%  TRANSFER '^^WI NROWS=' // CHARACTER ( N3 + 1 ) TO DISPLAY
+^^WI  NCOLS=7 COMMAND='EDITED'
 ^^WI  {
-^^WI    @ 1,1 DROPDOWN XL3T INFORM=YES
-^^WI          ADDTOLIST
-%  COPY '#GENERALEDIT 3'
-%  COPY 'LOCATE RECORDTYPE=101'
-%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%  LOOP
-%    ON EDITERROR TERMINATE
-%    COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%    TRANSFER '^^WI ' // CLTYPE TO DISPLAY
-%    COPY 'NEXT'
-%  END LOOP
-%  COPY 'END'
-^^WI         'NULL'
-^^WI    @ 1,3 STATIC T2 "F':"
-^^WI    @ 1,5 EDITBOX FPRIME ' ' NCOLS=10 REAL INFORM=YES
-^^WI    @ 1,7 STATIC T3 'F":'
-^^WI    @ 1,9 EDITBOX FDOUBL ' ' NCOLS=10 REAL INFORM=YES
+^^WI   @ 1,1 STATIC E "Element"
+^^WI   @ 1,3 STATIC F "f'"
+^^WI   @ 1,5 STATIC G "f''"
+^^WI   @ 1,7 STATIC M "Mu(mm-1)"
+%    QUEUE REWIND
+%    COPY '#GENERALEDIT 3'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP N3 TIMES
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
+%      COPY 'TRANSFER FROM OFFSET=1 TO FPRIME'
+%      COPY 'TRANSFER FROM OFFSET=2 TO FDOUBL'
+% TRANSFER "^^WI @ " // CHARACTER ( LOOPCOUNTER + 1 ) // ",1" TO DISPLAY
+% TRANSFER "^^WI STATIC X3EL" // CHARACTER ( LOOPCOUNTER ) TO DISPLAY
+% TRANSFER "^^WI '" // CLTYPE // "'" TO DISPLAY
+% TRANSFER "^^WI @ " // CHARACTER ( LOOPCOUNTER + 1 ) // ",3" TO DISPLAY
+% TRANSFER "^^WI EDITBOX X3FP" // CHARACTER ( LOOPCOUNTER )  TO DISPLAY
+% TRANSFER "^^WI '" // CHARACTER FPRIME // "' NCOLS=5 REAL INFORM=YES" TO DISPLAY
+% TRANSFER "^^WI @ " // CHARACTER ( LOOPCOUNTER + 1 ) // ",5" TO DISPLAY
+% TRANSFER "^^WI EDITBOX X3FPP" // CHARACTER ( LOOPCOUNTER )  TO DISPLAY
+% TRANSFER "^^WI '" // CHARACTER FDOUBL // "' NCOLS=5 REAL INFORM=YES" TO DISPLAY
+% TRANSFER "^^WI @ " // CHARACTER ( LOOPCOUNTER + 1 ) // ",7" TO DISPLAY
+% TRANSFER "^^WI EDITBOX X3MU" // CHARACTER ( LOOPCOUNTER )  TO DISPLAY
+% TRANSFER "^^WI ' ' NCOLS=5 REAL INFORM=YES" TO DISPLAY
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
 ^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CR
+^^CW 
 %%
+%% After window displayed, loop and fill in mu values.
 %%
-%  COPY '#GENERALEDIT 3'
-%  COPY 'LOCATE RECORDTYPE=101'
-%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%%
-%  LOOP
-%    IF  ( NOUPDATE ) THEN
-%      EVALUATE NOUPDATE = FALSE
-%    ELSE
-%% Find current selected in L3.
-%      COPY 'TOP'
-^^??   XL3T SELECTED
-%      GET NOSTORE SILENT INTEGER ' ' '1'
-%      LOOP ( VALUE - 1 ) TIMES
-%        COPY 'NEXT'
-%      END LOOP
-%      COPY 'TRANSFER FROM OFFSET=1 TO FPRIME'
-%      COPY 'TRANSFER FROM OFFSET=2 TO FDOUBL'
-%      TRANSFER '^^CO SET FPRIME TEXT ' // CHARACTER FPRIME TO DISPLAY
-%      TRANSFER '^^CO SET FDOUBL TEXT ' // CHARACTER FDOUBL TO DISPLAY
+%    COPY '#GENERALEDIT 29'                                                       
+%    COPY 'LOCATE RECORDTYPE = 101'                                               
+%    COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'                            
+%    COPY 'GROUP MODE = REAL'                                                     
+%    COPY 'RECORD MODE = REAL'                                                    
+%    COPY 'FORMAT KEY (6(8X,A4))'                                                 
+%    COPY 'FORMAT GROUP ( 4X,A4,6F10.2,2X,A4 )'                                   
+%    COPY 'FORMAT RECORD ( 4X,A4,6F10.2,2X,A4 )'                                  
+%    COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'    
+%    LOOP N3 TIMES
+%      ON EDITERROR TERMINATE
+%% Fetch back name of this element from GUI
+%      TRANSFER "^^?? X3EL" // CHARACTER ( LOOPCOUNTER ) // ' TEXT' TO DISPLAY
+%      CLEAR
+%      INSERT 'SEARCH CHAR = ' 
+%      GET SILENT TEXT 'X3EL?' ' '
+%      SEND
+%      COPY 'TRANSFER FROM OFFSET=5 TO MU'
+%      TRANSFER "^^CO SET X3MU" // CHARACTER ( LOOPCOUNTER ) // ' TEXT ' // CHARACTER ( MU ) TO DISPLAY
+%    END LOOP
+%    COPY 'END'
+%    EVALUATE DOUPDATE = FALSE
 %    END IF
 %%
-%    VERIFY ED3OK ED3XX ED3HELP XL3T FPRIME FDOUBL INL3
+%    VERIFY ED3OK ED3XX ED3HELP EDITED INL3
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    CASE VALUE
 %      BLOCK          %OK%
-%        COPY 'WRITE'
-%        COPY 'END'
+%%
+%% Update L29 - need to find each element in dialog order, look up record and adjust.
+%%
+ Update L29
+%    COPY '#GENERALEDIT 29'                                                       
+%    COPY 'LOCATE RECORDTYPE = 101'                                               
+%    COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'                            
+%    COPY 'GROUP MODE = REAL'                                                     
+%    COPY 'RECORD MODE = REAL'                                                    
+%    COPY 'FORMAT KEY (6(8X,A4))'                                                 
+%    COPY 'FORMAT GROUP ( 4X,A4,6F10.2,2X,A4 )'                                   
+%    COPY 'FORMAT RECORD ( 4X,A4,6F10.2,2X,A4 )'                                  
+%    COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'    
+%    LOOP N3 TIMES
+%      ON EDITERROR TERMINATE
+%% Fetch back name of this element from GUI
+%      TRANSFER "^^?? X3EL" // CHARACTER ( LOOPCOUNTER ) // ' TEXT' TO DISPLAY
+%      CLEAR
+%      INSERT 'SEARCH CHAR = ' 
+%      GET SILENT TEXT 'X3EL?' ' '
+%      SEND
+%      TRANSFER "^^?? X3MU" // CHARACTER ( LOOPCOUNTER ) // ' TEXT' TO DISPLAY
+%      GET SILENT NOSTORE REAL ' ' '0.0'
+%      EVALUATE MU = VALUE
+%      COPY 'TRANSFER TO OFFSET=5 FROM MU' 
+%    END LOOP
+%    COPY 'WRITE'
+%    COPY 'END'
+%%
+%% Update L3 (easy - as in same order as entries in the dialog box
+%%
+ Update L3
+%    COPY '#GENERALEDIT 3'                                                       
+%    COPY 'LOCATE RECORDTYPE = 101'                          
+%    COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'    
+%    COPY 'TOP'
+%    LOOP N3 TIMES
+%      ON EDITERROR TERMINATE
+%      TRANSFER "^^?? X3FP" // CHARACTER ( LOOPCOUNTER ) // ' TEXT' TO DISPLAY
+%      GET SILENT NOSTORE REAL ' ' '0.0'
+%      EVALUATE FPRIME = VALUE
+%      TRANSFER "^^?? X3FPP" // CHARACTER ( LOOPCOUNTER ) // ' TEXT' TO DISPLAY
+%      GET SILENT NOSTORE REAL ' ' '0.0'
+%      EVALUATE FDOUBL = VALUE
+%      COPY 'TRANSFER TO OFFSET=1 FROM FPRIME' 
+%      COPY 'TRANSFER TO OFFSET=2 FROM FDOUBL' 
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'WRITE'
+%    COPY 'END'
 ^^CO     DISPOSE EDLIST3
 %        FINISH
 %      END BLOCK
 %      BLOCK          %CANCEL%
 ^^CO     DISPOSE EDLIST3
-%        COPY 'END'
 %        FINISH
 %      END BLOCK
 %      BLOCK          %HELP%
@@ -121,24 +197,13 @@
  wavelengths, (e.g. synchrotron radiation), for each type
  of atom present in your structure.
 %        COPY '#SCRIPT XHELP2'
-%        EVALUATE NOUPDATE = TRUE
+%        EVALUATE DOUPDATE = FALSE
 %      END BLOCK
-%      BLOCK          %LIST CHANGED%
-%       GET SILENT NOSTORE INTEGER 'New value' '0'
-%      END BLOCK
-%      BLOCK          %FPRIME CHANGED%
-%        GET SILENT NOSTORE REAL 'fprime' '0.0'
-%        EVALUATE FPRIME = VALUE
-%        COPY 'TRANSFER TO OFFSET=1 FROM FPRIME'
-%        EVALUATE NOUPDATE = TRUE
-%        EVALUATE CHANG3 = TRUE
-%      END BLOCK
-%      BLOCK          %FDOUBLEPRIME CHANGED%
-%        GET SILENT NOSTORE REAL 'fdoubleprime' '0.0'
-%        EVALUATE FDOUBL = VALUE
-%        COPY 'TRANSFER TO OFFSET=2 FROM FDOUBL'
-%        EVALUATE NOUPDATE = TRUE
-%        EVALUATE CHANG3 = TRUE
+%      BLOCK
+%         GET SILENT NOSTORE TEXT ' ' ' '
+%         GET SILENT NOSTORE TEXT ' ' ' '
+%         EVALUATE CHANG3 = TRUE
+%         EVALUATE DOUPDATE = FALSE
 %      END BLOCK
 %      BLOCK
 %         IF ( CHANG3 ) THEN
@@ -152,30 +217,10 @@
 %          EVALUATE ANSWER = TRUE
 %         END IF
 %         IF ANSWER .EQ. TRUE THEN
-%           COPY 'END'
 %           COPY '#SCRIPT XINLIST3'
-%% Re-do wavelength
-%           IF ( EXISTS 13 .EQ. 1 ) THEN
-%             COPY '#GENERALEDIT 13'
-%             COPY 'LOCATE RECORDTYPE=103'
-%             COPY 'TRANSFER FROM OFFSET=0 TO WAVE'
-%             COPY 'END'
-%           END IF
-%           TRANSFER "^^CO SET WAVE TEXT " // CHARACTER WAVE TO DISPLAY
-%% Re-do list of elements.
-^^CO        SET XL3T REMOVE 0
-^^WI        SET XL3T ADDTOLIST
-%           COPY '#GENERALEDIT 3'
-%           COPY 'LOCATE RECORDTYPE=101'
-%           COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%           LOOP
-%             ON EDITERROR TERMINATE
-%             COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
-%             TRANSFER '^^WI ' // CLTYPE TO DISPLAY
-%             COPY 'NEXT'
-%           END LOOP
-^^WI        'NULL'
-^^CR
+%           EVALUATE CHANG3 = FALSE
+%           EVALUATE DOUPDATE = TRUE
+^^CO DISPOSE EDLIST3
 %         END IF
 %      END BLOCK
 %    END CASE

@@ -27,7 +27,7 @@ Using user-specified editor.
 %  END IF
 %%
 %%
-%TRANSFER "^^WI WINDOW XREADER 'Viewing " // READER_FILE // "'" TO DISPLAY
+%TRANSFER '^^WI WINDOW XREADER "Viewing ' // READER_FILE // '"' TO DISPLAY
 ^^WI SIZE MODAL KEEP
 ^^WI GRID OUTER NROWS=3 NCOLS=5
 ^^WI {
@@ -40,7 +40,7 @@ Using user-specified editor.
 ^^WI }
 ^^WI SHOW
 ^^CR
-%TRANSFER "^^CO SET TEXT5 LOAD '" // READER_FILE // "'" TO DISPLAY
+%TRANSFER '^^CO SET TEXT5 LOAD "' // READER_FILE // '"' TO DISPLAY
 %%
 %   VERIFY BOK
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BOK?' ' '

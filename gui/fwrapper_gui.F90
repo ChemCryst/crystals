@@ -102,11 +102,11 @@ end interface
 !> interface to C function guexec (digital compiler)
 !! Unkwown function
 interface
-  subroutine guexec (caline)
+   integer function guexec (caline)
     !dec$ attributes c :: guexec
     character*(*) caline
     !dec$ attributes reference :: caline
-  end subroutine guexec
+  end function guexec
 end interface
 
 !> interface to C function callccode (digital compiler)
@@ -384,11 +384,11 @@ end interface
 interface
 !> interface to C function guexec (iso_c_bindings)
 !! Unkwown function
-  subroutine guexec (caline) bind(c)
+  integer function guexec (caline) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
     character caline
-  end subroutine guexec
+  end function guexec
 end interface
 
 
@@ -496,139 +496,5 @@ end interface
 
 contains
 
-#if defined(CRY_GUI)
-!! subroutines below are wrappers around the c functions call
-
-subroutine fstlin(ix1, iy1, ix2, iy2)
-    implicit none
-    integer ix1, ix2, iy1, iy2
-
-    call fastline(ix1, iy1, ix2, iy2)
-end subroutine
-      
-subroutine fstfel(ix, iy, iw, ih)
-    implicit none
-    integer ix, iy, iw, ih
-
-    call fastfelli(ix, iy, iw, ih)
-end subroutine
-    
-subroutine fsteel(ix, iy, iw, ih)
-    implicit none
-    integer ix, iy, iw, ih
-
-    call fasteelli(ix, iy, iw, ih)
-end subroutine
-
-subroutine fstfpo(nv, ipts)
-    implicit none
-    integer nv, ipts(:)
-
-    call fastfpoly(nv, ipts)
-end subroutine
-
-subroutine fstepo(nv, ipts)
-    implicit none
-    integer nv
-    integer, dimension(:) :: ipts
-
-    call fastepoly(nv, ipts)
-end subroutine
-
-subroutine fstext(ix, iy, ctext, ifsize)
-    implicit none
-    integer n, ix, iy, ifsize
-    character*(*) ctext
-    character*80  ntext
-
-    n=len_trim(ntext)
-    n = min(n,79)        ! set n to be no more than 79
-    ntext = ctext
-    ntext(n+1:n+1) = char(0)  ! make into a c string.
-
-    call fasttext(ix, iy, ntext, ifsize )
-end subroutine
-
-subroutine fstcol(ir, ig, ib)
-    implicit none
-    integer ir, ig, ib
-
-    call fastcolour(ir, ig, ib)
-end subroutine
-
-subroutine fstclr()
-    implicit none
-
-    call fastclear()
-end subroutine
-
-subroutine fstbnd(ix1,iy1,iz1,ix2,iy2,iz2,ir,ig,ib,irad, &
-&   ibt,inp,lpts,illen,clabl,islen,cslabl)
-
-    integer ix1, ix2, iz1, iy1, iy2, iz2
-    integer ir,ig,ib,irad,ibt,inp,lpts(*),illen
-    character*(*) clabl
-    character*(*) cslabl
-
-    character*(illen+1) blabl
-    character*(islen+1) bslabl
-
-    blabl = clabl(1:illen)  // char(0)
-    bslabl= cslabl(1:islen) // char(0)
-
-    call fastbond(ix1,iy1,iz1,ix2,iy2,iz2,ir,ig,ib,irad, &
-    &   ibt,inp,lpts,blabl,bslabl)
-end subroutine
-
-
-
-subroutine fstatm(ce,is,ll,cl,ix,iy,iz,ir,ig,ib,ioc,rco, &
-&   ivd,isp,ifl,ru1,ru2,ru3,ru4,ru5,ru6,ru7,ru8,ru9, &
-&   rfx,rfy,rfz,iff,ifa,ifg,rue,rus)
-
-    integer ll,ix,iy,iz,ir,ig,ib,ioc,ivd
-    integer isp,ifl, iff, ifa, ifg, is
-    real ru1,ru2,ru3,ru4,ru5,ru6,ru7,ru8,ru9,rco,rfx,rfy,rfz
-    real rue, rus
-    character*(*) cl
-    character ce*4, be*5
-    character*(ll+1) bl
-
-    bl = cl(1:ll)  // char(0)
-    be = ce(1:4)  // char(0)
-
-    call fastatom(be,is,bl,ix,iy,iz,ir,ig,ib,ioc,rco,ivd, &
-    &   isp,ifl,ru1,ru2,ru3,ru4,ru5,ru6,ru7,ru8,ru9,rfx,rfy,rfz, &
-    &   iff, ifa, ifg, rue, rus)
-end subroutine
-
-subroutine fstsph(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-&   isp,ifl,iso,irad)
-
-    integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
-    integer isp,ifl,iso,irad
-    character*(*) cl
-    character*(ll+1) bl
-
-    bl = cl(1:ll)  // char(0)
-
-    call fastsphere(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-    &   isp,ifl,iso,irad)
-end subroutine
-
-subroutine fstrng(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-&   isp,ifl,iso,irad, idec, iaz)
-
-    integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
-    integer isp,ifl,iso,irad,idec,iaz
-    character*(*) cl
-    character*(ll+1) bl
-
-    bl = cl(1:ll)  // char(0)
-
-    call fastdonut(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-    &   isp,ifl,iso,irad, idec,iaz)
-end subroutine
-#endif
 
 end module

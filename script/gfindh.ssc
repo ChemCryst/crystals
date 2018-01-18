@@ -128,7 +128,8 @@
 %      COPY '#RELEASE PUNCH bfile.pch'                                                   
 %      COPY '#LIST 12'                                                             
 %      COPY 'FULL'                                                             
-%      COPY 'END'                                                             
+%      COPY 'END'                     
+^^CO SET RENUMB STATE=OFF
 %   END IF                                                                      
 % END IF                                                                        
 %%                                                                              

@@ -361,7 +361,7 @@ C
 1400  CONTINUE
       WRITE ( CMON ,1500)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1500  FORMAT(' Singular Matrix')
       RETURN
       END
@@ -671,7 +671,7 @@ C
 1000  CONTINUE
       WRITE(CMON, 1100) A, S
       CALL XPRVDU(NCVDU, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:),CMON( 2)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1)),trim(CMON(2))
 1100  FORMAT(' Sin theta gt than 1',3F6.1,F8.4/
      1 'Check cell parameters and reflection file')
       CALL XOPMSG (IOPABS,IOPINT,0)
@@ -790,7 +790,7 @@ C
 1000  CONTINUE
       WRITE ( CMON ,1010)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1010  FORMAT(' This geometry not available ')
       CALL XOPMSG (IOPABS,IOPINT,0)
       CALL XERHND(IERPRG)
