@@ -373,10 +373,10 @@ C--LOAD THE CONTROL LISTS
       ! sfls_calcul_flag == 1 is leverages calculations
 
 C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOLESKI
-      if(istore(M33CD)<0) then
-        METHOD = ISTORE(NFL)
+      if(istore(M33CD)<0) then ! overwrite invertor when huge is used.
+        METHOD = ISTORE(M33CD+8)
       else
-        method=6
+        method=6 ! choleski double precision
       end if
       IF ( IERFLG .LT. 0 ) GO TO 9900
 cdjwdec06 - save the sparsity flag. 0=sparse
