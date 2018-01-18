@@ -1798,9 +1798,9 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
     .INVERTOR           0    0    1    7   -1 DEFAULT
      DEFAULT        AUTO           LDLT           EIGENVALUE     DP_LDLT        
      XCHOLESKI      CHOLESKI       
-    .AUGFACT            0    0    1    0    0 0.0
-    .FILTER             0    0    1    0    0 .00005
-    .DISCRIMINATOR      0    0    1    0    0 100.0
+    .UNUSED1            0    0    1    0    0 0.0
+    .UNUSED2            0    0    1    0    0 0.0
+    .UNUSED3            0    0    1    0    0 0.0
     .LEVERAGE           0    0    1    0    0         0
     .SPARSE             0    0    1    2   -1 NO
      NO             BOND

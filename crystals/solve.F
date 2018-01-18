@@ -433,10 +433,6 @@ C----- FIND THE 'PRINT' LEVEL
      5 /' Parameters marked COMPOSITE contain derivatives from ',
      6  'other physical parameters'/)
       ENDIF
-C----- SET THE EIGENVALUE FILTERS
-      AUGFAC = STORE(M33CD+9)
-      FILTER = STORE(M33CD+10)
-      DISCRM = STORE(M33CD+11)
 C----- MAXIMUM  SHIFT/ESD
 C>DJWOCT96
 cdjwapril2015
@@ -459,7 +455,7 @@ c-----    set general shift to 0.8 for sparse build
         store(m33sv)=min(store(m33sv), 0.8)
       endif
       if (sfls_calcul_flag==1) then
-c-----    set general shift to 0.8 for leverages calculations
+c-----    set general shift to 0.0 for leverages calculations
         store(m33sv)=0.0
       end if     
 
@@ -496,10 +492,6 @@ C--INCREMENT THE POINTERS
          JB=JB+1
 1150  CONTINUE
 C
-      IF (METHOD .EQ. 1) THEN
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,1151)  AUGFAC, FILTER, DISCRM
-1151    FORMAT(1X, ' Eigen filters ', 3(G10.4,3X) )
-      ENDIF
 C--FORM THE ABSOLUTE LIST 12
       JQ=2
       JS=1
@@ -628,27 +620,9 @@ C--INVERT THE  MATRIX BLOCK IF IT IS NECESSARY
          JY=ISTORE(M12B+1)
          NELEM = (JY*(JY+1))/2
 C
-         IF ( (JP .LE. 0) .OR.(METHOD .EQ. 0) ) THEN
 C-----  RE-USE OF MSTRIX OR CHOLESKI - GET SOME CORE FOR THE UPPER TRIAN
-            L11C = KADD11(-101,MD11,NELEM)
-c oct-05
-C----- ALLOCATE SPACE FOR SCALE VECTOR
-            ISCL = KADD11( 1013, MD11, JY)
-c oct-05
+         L11C = KADD11(-101,MD11,NELEM)
 
-         ELSE
-C-----  GET SOME CORE FOR THE FULL MATRIX
-            L11C = KADD11( -101, MD11, JY*JY)
-C----- ALLOCATE SPACE FOR EIGEN VALUES
-            IVAL = KADD11( 1012, MD11, JY)
-C----- ALLOCATE SPACE FOR SCALE VECTOR
-            ISCL = KADD11( 1013, MD11, JY)
-C----- ALLOCATE SPACE FOR EGENVECTORS
-            IVEC = KADD11( 1014, MD11, JY*JY)
-C----- ALLOCATE WORK SPACE
-            IWRK = KADD11( 1015, MD11, 5*JY)
-            IF ( IERFLG .LT. 0 ) GO TO 9900
-         ENDIF
          M11 = L11C
          INM = L11C
 C--BRING DOWN THE MATRIX - REMEMBER MD11 INDICATES SINGLE OR DOUBLE PREC
@@ -664,22 +638,10 @@ C --- If we are doing punching then do it here.
           call sfls_punch_normal(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1        sfls_punch_flag)
       END IF
-
-CDJW-OCT-05
-c      write(ncwu,'(a)') 'The scaling vector'
-c         IDJW = L11C
-c         jdjw = iscl
-c         DO 2051 I = 1, JY
-c            str11(jdjw) = STR11(IDJW)
-c            IDJW = IDJW + JY - I + 1
-c            jdjw=jdjw+1
-c        call outv(str11(iscl),jy)
-CDJW-OCT-05
-
    
       IF (JP .GT. 0 ) THEN
-C----- CHOOSE INVERTOR
 
+C----- CHOOSE INVERTOR
         if (method == -1) then !default - look it up in L23.
            method = istore(l23m+7)
         end if
@@ -806,13 +768,6 @@ c stupid compiler has a stack overflow by making a temporary array
                   CALL XPRVDU(NCVDU, 1,0)
                 end if
 
-c               CALL XMTCVT (INM, JY, 1, MD11)
-c               CALL XFILTR
-c     1      (STR11(INM), STR11(IVAL), STR11(IVEC), STR11(ISCL),
-c     2      STR11(IWRK), JY, AUGFAC, FILTER, DISCRM, ILEVEL  )
-C----- COMPRESS INVERTED MATRIX
-c               CALL XMTCVT (INM, JY, 2, MD11)
-               
             case(3) ! LDLT double precision
 
 c L D L^t inversion + preconditioning
@@ -1898,307 +1853,6 @@ C -- LIST 11 WRONG TYPE
 C
       END
 C
-CODE FOR OUTV
-      SUBROUTINE OUTV(A,N)
-      DIMENSION A(N)
-      INCLUDE 'XUNITS.INC'
-      WRITE(NCWU, 123) A
-123   FORMAT(10F13.0)
-      RETURN
-      END
-      
-C
-C
-CODE FOR XFILTR
-      SUBROUTINE XFILTR (A, B, C, U, W, M, AUGFAC, FILTER, DISC, ILEVEL)
-C----- INVERT NORMAL MATRIX BY EIGENVALUE FILTERING
-C
-C      N.x = y
-C      N = V.D.V'
-C      N-1 = V.D-1.V'
-C      x = N-1. y
-C
-C      THIS IS NOT AS EFFICIENT AS SOLVING THE EQUATIONS DIRECTLY FROM
-C      EIGEN FACTORS (SEE BELOW), BUT IS NECESSARY IF WE NEED TO SAVE
-C      THE INVERSE FOR THE ESDS.
-C      N.x = y
-C      V.D.V'.x = y
-C      D.V'.x = V'. y      (V' = V-1)
-C      V'.x = D-1.V'. y
-C      x = V.D-1.V'. y
-C
-C----- A(M,M) NORMAL MATRIX - UPPER TRIANGLE USED AS WORK SPACE, LOWER
-C             RETURNED UNCHANGED.
-C----- B(M)   EIGENVALUES
-C----- C(M,M) EIGENVECTORS
-C----- U(M)   SCALING VECTOR
-C----- W(5*M) WORK AREA
-C----- AUGFAC AUGMENTATION (MARQUARDT) FACTOR    E.G. 0.0000
-C----- FILTER FILTER LEVEL                       E.G. 0.00005
-C----- DISC   DISCONTINUITY VALUE                E.G. 100
-C----- ILEVEL MONITOR LEVEL -1 OFF,  2 HIGH
-C
-      DIMENSION A(M,M), B(M), C(M,M), U(M), W(5*M)
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XIOBUF.INC'
-C
-C
-C
-C PRE-SCALE NORMAL MATRIX.
-C GET INVERSE DIAGONAL SCALING MATRIX U FROM NORMAL MATRIX.
-C THE ELEMENTS ARE 1./SQRT(DIAGONAL ELEMENT OF NORMAL MATRIX)
-C
-c      WRITE (NCWU,103)
-c103   FORMAT(/ , ' The Normal Matrix' )
-c      DO J = 1, M
-c        WRITE (NCWU,101) J
-c        WRITE (NCWU, 102) (A(I,J),I=1,M)
-c101     FORMAT (/, ' Column ', I5)
-c102     FORMAT((1X,20G15.8/))
-c      ENDDO
-
-      DO 10 I=1,M
-        U(I)=1.0
-        IF (ABS(A(I,I)) .GT. ZERO) U(I)=1.0 / SQRT(A(I,I))
-10    CONTINUE
-C
-C SCALE MATRIX BY U
-C
-      DO 20 J=1, M
-        UJ=U(J)
-        DO 30 K=1,J
-          A(J,K) = A(J,K) * U(K) * UJ
-30      CONTINUE
-20    CONTINUE
-C
-C-----  EA06C RETURNS EIGENVECTORS AND EIGENVALUES
-C
-C      CALL EA06C(A, B, C, M, M, M, W)
-C
-C Replace Harwell routine with LAPACK one. Differences: The LAPACK
-C one overwrites the normal matrix with the eigenvectors. That's OK,
-C we overwrite it with it's inverse soon anyway.
-C
-      INFO = 0
-      CALL SSYEV('V','L', M, A, M, B, W, M*5, INFO)
-C
-C
-      IF (ILEVEL .GE.2) THEN
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE (NCWU,1000)
-          WRITE (NCWU, 1010) (B(I),I=1,M)
-        ENDIF
-1000    FORMAT(/,' Eigen values of Normal matrix')
-1010    FORMAT((1X,10F8.3/))
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE (NCWU,1020)
-1020      FORMAT(/ , ' Eigen vectors of Normal Matrix' )
-          DO 1040 J = 1, M
-          WRITE (NCWU,1030) J
-          WRITE (NCWU, 1015) (A(I,J),I=1,M)
-1030      FORMAT (/, ' Column ', I5)
-1015      FORMAT((1X,20F6.2/))
-1040      CONTINUE
-        ENDIF
-      ENDIF
-C
-C                  EIGENVALUE FILTERING
-C
-C----- SEE IF THERE IS A DISCONTINUITY IN THE MAGNITUDES OF THE
-C      EIGENVALUES. IF THERE IS, SET ALL THE SMALL ONES TO ZERO.
-C
-C
-C----- FIND LARGEST AND SMALLEST
-      Y = B(1)
-      Z = B(1)
-      II = 1
-      IK = 1
-      DO 100 I = 2, M
-       IF ( B(I) .GT. Y ) THEN
-         II = I
-         Y = B(I)
-       ELSE IF (B(I) .LT. Z) THEN
-         IK = I
-         Z = B(I)
-       ENDIF
-100   CONTINUE
-
-c      WRITE(NCWU,'(A,I4)')'Info: ',INFO
-c      WRITE(NCWU,'(A,2(I4,G15.8))')'Largest, smallest: ',II,Y,IK,Z
-
-C
-C----- FIND NEXT LARGEST
-      DO 120 J = 1, M
-         X = Z
-         IJ = IK
-         DO 110 I = 1, M
-           IF( (B(I).GT.X) .AND. (B(I).LT.Y) )  THEN
-             X = B(I)
-             IJ = I
-           ENDIF
-110      CONTINUE
-
-c      WRITE(NCWU,'(A,I4,G15.8)')'Next largest: ',IJ,X
-
-
-C-----   LOOK FOR A DISCONTINUITY
-         IF ( Y .GT. (DISC * X)) THEN
-C-----   RESET ALL SMALLER TO ZERO AND EXIT LOOP
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,111) II, Y, IJ, X
-         WRITE ( CMON,113 )
-         CALL XPRVDU(NCVDU, 1,0)
-113      FORMAT(' Discontinuity in eigenvector list ')
-111      FORMAT(' Discontinuity in eigenvector list ',/,
-     1    12X, 2(I5, G11.4,4X))
-           DO 115 K = 1, M
-             IF(B(K) .LE. X ) THEN
-                  IF (ISSPRT .EQ. 0) WRITE(NCWU,112)  K, B(K)
-                  WRITE ( CMON,112 ) K
-                  CALL XPRVDU(NCVDU, 1,0)
- 112              FORMAT(1X,' Zeroing eigen value ',I5,4X, G11.4,
-     1            ' Eigen vectors are: ')
-                  B(K) = 0.0
-                  IF (ISSPRT .EQ. 0) WRITE (NCWU, 1015) (A(I,K),I=1,M)
-             END IF
-115        CONTINUE
-           GOTO 130
-         ELSE
-C-----     EXCHANGE SMALLER
-           Y = X
-           II = IJ
-         ENDIF
-120    CONTINUE
-130    CONTINUE
-C
-C------ INVERT DIAGONAL MATRIX, REJECTING LOW EIGENVALUES AND
-C------ AUGMENTING OTHERS.
-C
-      DO 40 I=1,M
-        IF(B(I) .GT. FILTER) THEN
-              B(I) = 1.0 / (B(I) + AUGFAC)
-        ELSE
-              B(I) = 0.0
-        ENDIF
-40    CONTINUE
-C
-C----- TRANSPOSE 'A' into 'C' TO INCREASE EFFICIENCY OF INNER LOOP LATER
-       DO J = 1,M
-         DO I = 1, M
-            C(J,I) = A(I,J)
-         END DO
-       END DO
-C
-C----- FORM       N-1 = U.V.D-1.V'.U'
-C
-      DO J = 1, M
-        UJ = U(J)
-        DO I = 1, M
-          SUM = 0.0
-          DO K = 1,M
-            SUM =  SUM + ( B(K) * C(K,I) * C(K,J) )
-          END DO
-         A(I,J) = SUM * U(I) * UJ
-        END DO
-      END DO
-C
-      RETURN
-      END
-CODE FOR XMTCVT
-      SUBROUTINE XMTCVT(IADD, N, ITYPE, ILEN)
-C
-C----- ILEN LENGTH OF REPRESENTATION OF VALUE (MD11)
-C      IF ITYPE = 1
-C----- EXPAND A LOWER TRIANGLE STARTING AT IADD AND STORED BY COLUMNS
-C      INTO LOWER HALF OF SQUARE SYMETRIC MATRIX STARTING AT SAME ADDRES
-C      ELSE
-C----- CONTRACT A SQUARE MATRIX INTO A LOWER TRIANGLE
-C
-      INCLUDE 'TYPE11.INC'
-      INCLUDE 'XSTR11.INC'
-      INCLUDE 'QSTR11.INC'
-C
-C
-C
-
-c      WRITE(442,*) 'Ilen: ', ILEN
-
-      IF ( ITYPE .EQ. 1 ) THEN
-        DO L = (N*N)-1, N, -1
-          IA = IMLIND(N,L)
-c          WRITE(442,*)'Moving: ', IA, ' to ', L
-          XSTR11(IADD+L) = XSTR11(IADD+IA)
-        END DO
-        RETURN
-      END IF  
-
-      JADD = IADD - 1
-      DO 10 L = 2, N
-      IF (ITYPE .EQ. 1) THEN
-            STOP 'Reimplemented above'
-            M = N - L + 2
-      ELSE
-            M = L
-      ENDIF
-C---- NUMBER OF ITEMS IN COLUMN M
-            NIM = N - M + 1
-C----- ADDRESS OG LAST ELEMENT OF COLUMN M OF LOWER TRIANGLE
-            ITL = JADD + M* (2*N - M +1) /2
-C----- ADDRESS OF DIAGONAL ELEMENT OF COLUMN M OF LOWER TRIANGLE
-            ITD = ITL - NIM + 1
-C----- ADDRESS OF LAST ELEMENT IN COLUMN M IN SQUARE MATRIX
-            ISL = JADD + M * N
-C----- ADDRESS OF FIRST ELEMENT IN COLUMN M IN SQUARE MATRIX
-            ISF = ISL - N + 1
-C----- ADDRESS OF DIAGONAL ELEMENT IN COLUMN M IN SQUARE MATRIX
-            ISD = ISL - NIM + 1
-C----- MOVE THE COLUMN ALONG
-      IF (ITYPE .EQ. 1) THEN
-            CALL XMOVE (XSTR11(ITD), XSTR11(ISD), NIM*ILEN)
-      ELSE
-            CALL XMOVE (XSTR11(ISD), XSTR11(ITD), NIM*ILEN)
-      ENDIF
-10    CONTINUE
-C
-      END
-C
-C Given zero-based index into NxN square array, give corresponding index into lower triangle array, 
-C assuming symmetry.
-CODE FOR IMLIND
-      FUNCTION IMLIND(N,I)
-C N - dimension of matrix
-C I - 0-based index into 3x3 matrix, e.g. 8 = 3,3 for a 3x3 matrix
-C IMLIND - 0-based index of position (column order), e.g. 5 = 3,3 for a 3x3 lower triangle matrix
-      
-      IROW = MOD(I,N) ! zero-based row index
-      ICOL = (I - IROW) / N !  zero-based col index
-
-c      WRITE(442,*)'IMLIND:', N, ' ', I
-
-
-C Lower triangle only contains entries where row >= col, swap if reqd:
-      IF ( IROW < ICOL ) THEN
-         ITEMP = IROW
-         IROW = ICOL
-         ICOL = ITEMP
-      END IF
-
-
-C Compute index into lower triangle of IROW, ICOL
-
-      IMLIND = ( ICOL * ( 2 * N - ICOL - 1 ) / 2 ) + IROW
-
-c     $B22+(9-C$17)/2*C$17
-
-c      WRITE(442,*) 'IROW, ICOL, IMLIND: ', IROW, ICOL, IMLIND
-c      WRITE(442,*) 'IROW, ICOL: ', IROW, ICOL
-c      WRITE(442,*) 'IROW, ICOL, IMLIND: ', IROW, ICOL, IMLIND
-      RETURN
-      END
-
-         
-
 CODE FOR KFLSP
       FUNCTION KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
      1 E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
@@ -3517,25 +3171,4 @@ c----- output shift summary info to punch
 100   FORMAT ('# ', 4(3F9.5,3X))
       RETURN
       END      
-
-Code for open_normalfile
-C --- Subroutine for opening a new file for outputing the normal matrix into.
-C fileid - The file id to open the file under.
-      Subroutine open_normalfile(fileid)
-      implicit none
-
-      integer fileid, filecount, i
-      logical file_exists
-      character*255 file_name
-
-      filecount = 0
-      file_exists = .true.
-      do while (file_exists)
-         write(file_name, '(a,i4,a)') 'normal', filecount, '.m'
-         call xcras(file_name, i) 
-         inquire(FILE=FILE_NAME(1:i), EXIST=file_exists)
-         filecount = filecount + 1
-      end do
-      OPEN(fileid, FILE=file_name, STATUS='UNKNOWN')
-      end subroutine open_normalfile
 
