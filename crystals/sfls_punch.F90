@@ -1321,6 +1321,7 @@ end function
 subroutine sfls_punch_python()
 use store_mod, only: store, istore=>i_store
 use xlst01_mod
+use xlst02_mod
 use xlst05_mod
 use list12_mod
 use xlst12_mod
@@ -1329,12 +1330,13 @@ use xopk_mod
 use xapk_mod
 use xconst_mod
 use numpy_mod
+use xunits_mod, only: ierflg
 implicit none
 
 integer IADDL,IADDR,IADDD
 integer, parameter :: pyfile=578
 type(param_t), dimension(:), allocatable :: parameters_list !< List of least squares parameters
-integer i, filecount
+integer i, j, k, filecount
 character eol
 character(len=128) :: file_name
 
@@ -1345,6 +1347,7 @@ end type
 type(atom_t), dimension(:), allocatable :: l5model
 
 character(len=6) flag
+character(len=24) :: buffer
 character(len=6), parameter :: iblank='      '
 integer ILEBP, jrr, js, jt, ju, jv, jw, jx, na, nc
 !integer, dimension(40) :: icom12
@@ -1353,7 +1356,7 @@ integer, dimension(6) :: icom12
 real weight
 real, dimension(:,:), allocatable :: constraintstable
 character(len=24), dimension(:), allocatable :: physicallist
-integer :: physicalindex
+integer :: physicalindex, icentr
 
 integer, external :: khuntr
 
@@ -1363,16 +1366,23 @@ integer, external :: khuntr
       call abort()
     end if
 
-    ! Check if list 1 and 5 are loaded
-    IF (KHUNTR (1,0, IADDL,IADDR,IADDD,-1) /= 0) then
-      print *, 'Error, list 1 not loaded'
+    ! check if list 1 and 5 are loaded
+    if (khuntr (1,0, iaddl,iaddr,iaddd,-1) /= 0) then
+      print *, 'error, list 1 not loaded'
       call abort()
     end if
-    IF (KHUNTR (5,0, IADDL,IADDR,IADDD,-1) /= 0) then
-      print *, 'Error, list 5 not loaded'
+    if (khuntr (2,0, iaddl,iaddr,iaddd,-1) /= 0) then
+      call xfal02
+      if ( ierflg .lt. 0 ) then
+        print *, 'error, list 2 cannot be loaded'
+        call abort()
+      endif
+    end if
+    if (khuntr (5,0, iaddl,iaddr,iaddd,-1) /= 0) then
+      print *, 'error, list 5 not loaded'
       call abort()
     end if
-    ! cannot check list 12. Must assume it is loaded
+    ! cannot check list 12. must assume it is loaded
     !IF (KHUNTR (12,0, IADDL,IADDR,IADDD,-1) /= 0) then
     !  print *, 'Error, list 12 not loaded'
     !  call abort()
@@ -1410,6 +1420,12 @@ integer, external :: khuntr
     write(pyfile, '(8X, a)') "a[2,0]=self.adp[4]"
     write(pyfile, '(8X, a)') "a[1,0]=self.adp[5]"
     write(pyfile, '(8X, a)') "return a"
+    write(pyfile, '(a)') ""
+
+    write(pyfile, '(a)') "class TRM:"
+    write(pyfile, '(4X, a)') '"""Symmetry operator"""'
+    write(pyfile, '(4X, a)') 'R=numpy.zeros((3,3))'
+    write(pyfile, '(4X, a)') 'T=numpy.zeros((3))'
 
     write(pyfile, '(a)') ""
     write(pyfile, '(a)') ""
@@ -1501,84 +1517,133 @@ integer, external :: khuntr
         do while(l12a.gt.0) ! --check if there are any more parts for this atom or group
           if(istore(l12a+3).lt.0) exit
 !c--set up the constants to pass through this part
-            md12a=istore(l12a+1)
-            ju=istore(l12a+2) 
-            jv=istore(l12a+3)
-            js=istore(l12a+4)+1
+          md12a=istore(l12a+1)
+          ju=istore(l12a+2) 
+          jv=istore(l12a+3)
+          js=istore(l12a+4)+1
 !c--search this part of this atom
-            do jw=ju,jv,md12a
-              jt=istore(jw)
+          do jw=ju,jv,md12a
+            jt=istore(jw)
 
-              ilebp = 0
-              do na=1,nsc
-                if(icom12(na).eq.m12) then
+            ilebp = 0
+            do na=1,nsc
+              if(icom12(na).eq.m12) then
 !c--layer or element batch or parameter print
-                   ilebp = 1
-                   exit
-                end if
-              end do
+                 ilebp = 1
+                 exit
+              end if
+            end do
 
-              if ( md12a .gt. 1 ) then
-                weight = store(jw+1)
-              else
-                weight = 1.
-              endif
+            if ( md12a .gt. 1 ) then
+              weight = store(jw+1)
+            else
+              weight = 1.
+            endif
 
-              if ( ilebp .eq. 1 ) then
-                write(*, '(1x, a6, 1X, i5,17x, f11.4, 1x, 2a4, i3)')flag,jt, weight, (kscal(nc,na+2),nc=1,2), js
-                if(jt>0) then
-                  physicalindex=physicalindex+1
-                  write(physicallist(physicalindex), '(2a4,1x,i0)') (kscal(nc,na+2),nc=1,2), js
-                  constraintstable(physicalindex, JT)=weight
-                end if
+            if ( ilebp .eq. 1 ) then
+              if(jt>0) then
+                physicalindex=physicalindex+1
+                write(buffer, '(2a4)') (kscal(nc,na+2),nc=1,2)
+                write(physicallist(physicalindex), '(a,1x,i0)') trim(buffer), js
+                constraintstable(physicalindex, JT)=weight
+              end if
 
 !c--check if this is an overall parameter
-              else if (m12.eq.l12o) then
-                write(*,'(1x, i12,17x, f11.4, 1x, 2a4)') jt, weight, (kvp(jrr,js),jrr=1,2)
-                if(jt>0) then
-                  physicalindex=physicalindex+1
-                  write(physicallist(physicalindex), '(3a4)') (kvp(jrr,js),jrr=1,2)
-                  constraintstable(physicalindex, JT)=weight
-                end if
-              else  
+            else if (m12.eq.l12o) then
+              if(jt>0) then
+                physicalindex=physicalindex+1
+                write(physicallist(physicalindex), '(3a4)') (kvp(jrr,js),jrr=1,2)
+                constraintstable(physicalindex, JT)=weight
+              end if
+            else  
 !c-c-c-distinction between aniso's and iso/special's for print
 
-                if((store(m5+3) .ge. 1.0) .and. (js .ge. 8)) then
-                  write(*,3050)jt,store(m5),nint(store(m5+1)), weight, (icoord(jrr,js+nkao),jrr=1,nwka)
-                  if(jt>0) then
-                    physicalindex=physicalindex+1
-                    write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
-                    &   store(m5),nint(store(m5+1)),(icoord(jrr,js+nkao),jrr=1,nwka)
-                    constraintstable(physicalindex, JT)=weight
-                  end if
-                else
-                  write(*,3050)jt,store(m5),nint(store(m5+1)), weight, (icoord(jrr,js),jrr=1,nwka)
-                  if(jt>0) then
-                    physicalindex=physicalindex+1
-                    write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
-                    &   store(m5),nint(store(m5+1)), (icoord(jrr,js),jrr=1,nwka)
-                    constraintstable(physicalindex, JT)=weight
-                  end if
-                endif
-                            
+              if((store(m5+3) .ge. 1.0) .and. (js .ge. 8)) then
+                if(jt>0) then
+                  physicalindex=physicalindex+1
+                  write(buffer, '(a4)') store(m5)
+                  write(physicallist(physicalindex), '(a,"(",I0,")",1X,3a4)') &
+                  &   trim(buffer),nint(store(m5+1)),(icoord(jrr,js+nkao),jrr=1,nwka)
+                  constraintstable(physicalindex, JT)=weight
+                end if
+              else
+                if(jt>0) then
+                  physicalindex=physicalindex+1
+                  write(buffer, '(a4)') store(m5)
+                  write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
+                  &   trim(buffer),nint(store(m5+1)), (icoord(jrr,js),jrr=1,nwka)
+                  constraintstable(physicalindex, JT)=weight
+                end if
               endif
-              
-3050  format(1x,i12,8x,a4,i4,1x,f11.4, 1x, 3a4)
+                            
+            endif              
 !c
 !c--increment to the next parameter of this part
-              js=js+1
-            end do
-!c--change parts for this atom or group
-            l12a=istore(l12a)
+            js=js+1
           end do
-        end if
+!c--change parts for this atom or group
+          l12a=istore(l12a)
+        end do
+      end if
 !c--move to the next group or atom
-        m5=m5+md5
-        m12=istore(m12)
-      end do
+      m5=m5+md5
+      m12=istore(m12)
+    end do
       
-      print *, physicallist(1:physicalindex)
+    write(pyfile,'(a)') ''
+    write(pyfile,'(a)') '# Matrix of constraints'
+    write(pyfile,'(a,I0,",",I0,a)') 'mconstraints=numpy.zeros( (', physicalindex, size(parameters_list),') )'
+    do j=1, size(parameters_list)
+      do i=1, physicalindex
+        if(constraintstable(i, j)/=0.0) then
+          write(pyfile, '(a,I0,",",I0,a,F5.2)') 'mconstraints[', i-1, j-1, ']=', constraintstable(i, j)
+        end if
+      end do
+    end do
+      
+
+    ! physical parameters list
+    write(pyfile, '(a)') ""
+    write(pyfile, '(a)') "parameters={"
+    eol=','
+    do i=1, physicalindex
+      if(i==physicalindex) then
+        eol=''
+      end if
+      if(mod(i,10)==0) then
+        write(pyfile, *) ''
+      end if
+      write(pyfile, '(4x, """", a,""":",I0, a)', advance="no") trim(adjustl(physicallist(i))), i, eol
+    end do
+    write(pyfile, '(a)') "}"
     
+    ! space group symbol
+    write(pyfile, '(a)') ""
+    j=l2sg+md2sg-1
+    write (buffer,'(4(A4,1X))') (istore(i),i=l2sg,j)   
+    write(pyfile, '(a, a)') '# Space group: ', trim(buffer)
+    icentr=nint(store(l2c))
+    write(pyfile, '(a)') '# 1 means centrosymmetric, zero otherwise'
+    write(pyfile, '(a,I0)') "centering = ", icentr
+    
+    ! symmetry operators
+    write(pyfile, '(a,I0,a)') "TRMlist = [ TRM() for i in range(",n2p*n2,")]"
+    m2p = l2p+((n2p-1)*md2p)
+    m2 = l2+((n2-1)*md2)
+
+    k=-1
+    do i=l2,m2,md2
+     do j=l2p,m2p,md2p
+       k=k+1
+       write(pyfile, '(a,I0,a)') 'TRMlist[',k,'].R = numpy.array(['
+       write(pyfile, '(4X, a,2(F4.1,","),F4.1,a)') '[', STORE(I:I+2), '],'
+       write(pyfile, '(4X, a,2(F4.1,","),F4.1,a)') '[', STORE(I+3:I+5), '],'
+       write(pyfile, '(4X, a,2(F4.1,","),F4.1,a)') '[', STORE(I+6:I+8), ']])'
+       write(pyfile, '(a,I0,a)') 'TRMlist[',k,'].T = numpy.array('
+       write(pyfile, '(4X, a,2(F4.1,"/12.0,"),F4.1,"/12.0", a)') '[', STORE(j:j+2)*12.0, '])'
+     end do
+    end do    
+    write(pyfile, '(a)') ""
 
     close(pyfile)
 

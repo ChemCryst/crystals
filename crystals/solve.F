@@ -940,7 +940,7 @@ C-- If we are doing data punching then do it here.
 
 C -- if numpy format, print out a python script
          IF ( sfls_punch_flag==3 ) THEN
-            !call sfls_punch_python() 
+            call sfls_punch_python() 
          END IF
          
 C-- If we are calculating leverages then do it here         
