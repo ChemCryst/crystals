@@ -2357,9 +2357,9 @@ use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
-logical, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
+integer, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
 integer, parameter :: nplt=10
-integer, dimension(2*nplt+1) :: ifoplt, ifcplt
+integer, dimension(2*nplt+1) :: ifoplt, ifcplt, ifopltf, ifcpltf
 real, parameter :: distplt = 3.0
 integer i, nfc, nfo, refls_size
 real distmax, stnfc, stnfo
@@ -2368,7 +2368,7 @@ real distmax, stnfc, stnfo
     ifcplt=0
     refls_size=ubound(reflections_data, 2)
     do i=1, refls_size
-        if(.not. filtered_reflections(i)) then
+        if(filtered_reflections(i)>=0) then
             stnfo=reflections_data(C_FOKD, i)/reflections_data(C_SIGMAD, i)
             stnfc=reflections_data(C_FCKD, i)/reflections_data(C_SIGMAD, i)
             nfo=nint(distplt*stnfo)+nplt+1   
@@ -2383,6 +2383,24 @@ real distmax, stnfc, stnfo
     end do
     distmax=max(maxval(ifoplt), maxval(ifcplt))
 
+    ifopltf=0
+    ifcpltf=0
+    do i=1, refls_size
+        if(filtered_reflections(i)==0) then
+            stnfo=reflections_data(C_FOKD, i)/reflections_data(C_SIGMAD, i)
+            stnfc=reflections_data(C_FCKD, i)/reflections_data(C_SIGMAD, i)
+            nfo=nint(distplt*stnfo)+nplt+1   
+            nfo=max(nfo,1)
+            nfo=min(nfo,2*nplt+1)
+            nfc=nint(distplt*stnfc)+nplt+1
+            nfc=max(nfc,1)
+            nfc=min(nfc,2*nplt+1)
+            ifopltf(nfo)=ifopltf(nfo)+1
+            ifcpltf(nfc)=ifcpltf(nfc)+1
+        end if
+    end do
+    distmax=max(maxval(ifopltf), maxval(ifcpltf), nint(distmax))
+
     WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)') &
     &  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY', &
     &  '^^PL XAXIS TITLE ''D/sigma(Do)''  ', &
@@ -2393,6 +2411,8 @@ real distmax, stnfc, stnfo
     &  ' TITLE ''Frequency of Dsingle (% of Dmax)''  ', &
     &  '^^PL SERIES 1 SERIESNAME ''Dobs'' TYPE LINE', &
     &  '^^PL SERIES 2 SERIESNAME ''Dsingle''    TYPE LINE', &
+    &  '^^PL SERIES 3 SERIESNAME ''Dobs (filtered)'' TYPE LINE', &
+    &  '^^PL SERIES 4 SERIESNAME ''Dsingle (filtered)''    TYPE LINE', &
     &  '^^PL USERIGHTAXIS'
     CALL XPRVDU (NCVDU, 8, 0)
 
@@ -2401,9 +2421,11 @@ real distmax, stnfc, stnfo
 !c  at last non-empty bin.  May then have to scale x axis.
 !c
     do i=1,2*nplt+1
-        WRITE (CMON,'(A,4F11.3)') '^^PL DATA ', &
+        WRITE (CMON,'(A,8F11.3)') '^^PL DATA ', &
         &   float(i-nplt-1)/DISTPLT, 100.*float(ifoplt(i))/distmax, &
-        &   float(i-nplt-1)/DISTPLT, 100.*float(ifcplt(i))/distmax
+        &   float(i-nplt-1)/DISTPLT, 100.*float(ifcplt(i))/distmax, &
+        &   float(i-nplt-1)/DISTPLT, 100.*float(ifopltf(i))/distmax, &
+        &   float(i-nplt-1)/DISTPLT, 100.*float(ifcpltf(i))/distmax
         CALL XPRVDU (NCVDU, 1, 0)
     enddo
     !C -- FINISH THE GRAPH DEFINITION

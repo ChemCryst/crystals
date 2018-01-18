@@ -7308,6 +7308,7 @@ C
       logical, dimension(:,:), allocatable :: reflections_filters
       logical, dimension(:,:), allocatable :: logicaltemp
       logical, dimension(:), allocatable :: currentfilter, logicalvector
+      integer, dimension(:), allocatable :: currentfilteri
 c      Format was :   [WDEL,INDICES, Do,Ds,sigmaD, So, Sm,    sigmaQ, ifail]
 c      Format now :   [WDEL,INDICES, Do,Ds,sigmaD, x, sigmax, sigmaQ, ifail]
       
@@ -8182,8 +8183,24 @@ C Plot all the graphs
 C ------------------------------------------------
       
       if(iplot.eq.1) then
+        deallocate(currentfilter)
+        allocate(currentfilter(ubound(reflections_filters, 2)))
+        currentfilter=reflections_filters(1,:).or.
+     1  reflections_filters(2,:).or.
+     2  reflections_filters(3,:).or.
+     3  reflections_filters(5,:)
+
+        allocate(currentfilteri(ubound(reflections_data, 2)))
+        where(reflections_data(C_FRIED2,:)/=2.0)
+          currentfilteri=-1
+        else where(currentfilter)
+          currentfilteri=1
+        else where
+          currentfilteri=0
+        end where
+
         call plot_Dsigma(reflections_data, 
-     1    reflections_data(C_FRIED2,:)/=2.0)      
+     1    currentfilteri)      
      
         call plot_npp(reflections_data,
      1    reflections_data(C_FRIED2,:)/=2.0)
@@ -8197,6 +8214,7 @@ C ------------------------------------------------
         call plot_flackx(reflections_data, 
      1    reflections_data(C_FRIED2,:)/=2.0)
       end if
+      deallocate(currentfilteri)
       
       IF (IPUNCH.EQ.1) THEN
         call punchdata(reflections_data, reflections_filters)
