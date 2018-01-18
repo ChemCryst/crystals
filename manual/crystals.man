@@ -9143,7 +9143,7 @@ including negative ones.
  \SFLS  INPUT=
  CALCULATE LIST= MAP= /Fo/= THRESHHOLD=
  SCALE LIST= MAP= /Fo/=
- REFINE LIST= MAP= /Fo/= PUNCH= MATRIX= MONITOR= INVERTOR=
+ REFINE LIST= MAP= /Fo/= PUNCH= MATRIX= MONITOR= INVERTOR= CALCULATE=
  SHIFT  KEY= KEY=
  MAXIMUM  KEY= KEY=
  FORCE  KEY= KEY=
@@ -9432,16 +9432,6 @@ default value is 4.0
  The eigenvalue decomposition should be used with care, the XCHOLESKI method is kept for historical purpose,
  The LDLT and DP_LDLT can be use to forced crystals to use single or double precision. Beware of precision loss
  in single precision. The CHOLESKI method is deprecated.
-#KAUGFACT#
- This is a constant to be added to all eigen values during eigenvalue
- inversion. The default value is 0.0.
-#KFILTER#
- The inverse of eigen values below this threshold are set to 0.0 rather than
- 1./value. It filters out latent singularities. The default is 0.00005
-#KDISCRIMINATOR#
- If the ratio of two adjacent eigenvalues in a ranked listing exceeds this
- value, the inverse of the smaller and all subsequent eigen values is set
- to 0.0. The default is 100.0
 #DSHIFT  KEY = VALUE  KEY = VALUE .  .  .  .#
 #PThis directive sets the shift factor for the specified cycle of
  refinement. (The shift factor is the amount by which the calculated
@@ -9512,9 +9502,9 @@ default value is 4.0
  the default refinement is just very conservative.
 #KCALCULATE
  LEVERAGES  - CALCULATE the leverages and t-values. Warning: shifts are not applied in this case; 
- default output is numpy but can be changed to TEXT using PUNCH. MATLAB abd pch is not supported at the moment.
+ default output is numpy but can be changed to TEXT using PUNCH. MATLAB and pch is not supported at the moment.
 #
- This directive CALCULATE is differente from the previous directive abd is applied under REFINE.
+ This directive CALCULATE is differente from the previous directive and is applied under REFINE.
  
 #KMONITOR#
  This parameter has the same options as for
