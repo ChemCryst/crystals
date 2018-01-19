@@ -7459,7 +7459,7 @@ C----- PRINT OUT THE USED-REFERENCES
       END
 c
 CODE FOR TONSPK
-      SUBROUTINE TONSPK (ITYP06,ITYPE,IPLOT,IPUNCH,FILTER,IWEIGHT)
+      SUBROUTINE TONSPKPASCAL(ITYP06,ITYPE,IPLOT,IPUNCH,FILTER,IWEIGHT)
       use absolut_mod
       use formatnumber_mod, only:print_value
       use xlst28_mod, only: i28spc
