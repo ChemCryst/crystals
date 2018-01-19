@@ -1,0 +1,11 @@
+%SCRIPT choosevar
+%%
+
+% VARIABLE LOGICAL SIG                                                      
+% EVALUATE SIG = FILEEXISTS 'sigmas2.dat'                                   
+%     if  sig then
+%            copy '#script xvariance2'
+% else
+%            copy '#script xvariance1'
+%     end if
+%end script

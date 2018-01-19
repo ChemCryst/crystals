@@ -1,0 +1,114 @@
+%SCRIPT XWTVSIG2                                                                 
+%%
+% VARIABLE LOGICAL XWVSRUNNING XVARRUNNING
+% EVALUATE XWVSRUNNING  = TRUE
+% VARIABLE INTEGER FTYPE
+%% Find refinement type
+%% FTYPE is 0 for Fo ref and 1 for Fsq ref                                     
+%      IF ( EXISTS 23 .GT. 0 ) THEN
+%          COPY '#GENERALEDIT 23'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET =  1 TO FTYPE'
+%          COPY 'END'
+%          EVALUATE FTYPE = FTYPE + 1
+%      END IF
+%%
+^^WI WINDOW xwtvsig 'Weight versus Sigma' KEEP SIZE MODAL                              
+^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'                                          
+^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3                                          
+^^WI  {                                                                         
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                               
+^^WI   {                                                                        
+^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=2                                         
+^^WI    {                                                                       
+^^WI     @ 1,1 STATIC XFW1                                                      
+^^WI 'You are looking at a scatter plot of 1/Sigma versus SQRT(weight)' 
+%        IF FTYPE .EQ. 0 THEN
+^^WI     @ 1,2 STATIC XFW1 ' for a refinement on F' 
+%        ELSE
+^^WI     @ 1,2 STATIC XFW1 ' for a refinement on Fsquare' 
+%        END IF      
+^^WI     @ 2,1 STATIC XFW4                                                      
+^^WI 'Right-click on any outliers to add them to the Omited list (LIST28)'      
+^^WI     @ 3,1 STATIC XWF5
+^^WI 'The continuous line represents simple statistical weights'      
+^^WI    }                                                                       
+^^WI    @ 1,1 ICON IM INFO                                                      
+^^WI   }                                                                        
+^^WI   @ 4,2 PLOTWINDOW _VWTVSIG NROWS=20 NCOLS=64                                
+^^WI     DEFINEPOPUPMENU POPUP 'Selection'                                      
+^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'                                    
+^^WI     ENDDEFINEMENU                                                          
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=8                                          
+^^WI   {                                                                        
+^^WI    @ 1,1 STRETCH VB HORIZONTAL
+^^WI    @ 1,2 BUTTON X_HELP 'Help'
+^^WI    @ 1,4 BUTTON SAVENPP 'Save Image'
+^^WI    @ 1,6 BUTTON VARSCP 'Variance Plot'
+^^WI    @ 1,8 BUTTON EXT_BOK 'Close' DEFAULT COMMIT CANCEL
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'                                      
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO SENDPROGRESSTO _FOFCPR                                                     
+%  LOOP  
+%    COPY '#sum list 6 level=sigma'                                              
+%    COPY 'END'                                                                 
+
+%% output a dividing ruler
+{S 
+%    copy '#sum l 4'
+%    copy 'end'                                                                       
+%    VERIFY EXT_BOK SAVENPP VARSCP X_HELP OMIT                                                        
+%    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
+%    IF VALUE .EQ. 1 THEN                                                       
+^^CO    DISPOSE xwtvsig                                                
+%       EVALUATE XWVSRUNNING  = FALSE
+%       FINISH                                                                  
+%    ELSE IF VALUE .EQ. 2 THEN
+^^CO    SET _VWTVSIG SAVE 800 600 weight_
+%    ELSE IF VALUE .EQ. 3 THEN
+%       IF XVARRUNNING .EQ. FALSE THEN
+%         COPY '#SCRIPT XVARIANCE'
+%       ELSE
+{E Variance SCRIPT already running
+%       END IF
+%    ELSE IF VALUE .EQ. 4 THEN
+%     BLOCK    %XHELP
+%       COPY '#SCRIPT HELPSIGMA'
+%     END BLOCK
+%    ELSE IF VALUE .EQ. 5 THEN
+%     BLOCK                                                                      
+%      ON EDITERROR TERMINATE                                                   
+%      COPY '#GENERALEDIT 28'                                                   
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
+%      COPY 'LOCATE RECORDTYPE = 104'                                           
+%      COPY 'INSERT'                                                            
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 0 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 1 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 2 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      COPY 'WRITE'                                                             
+%      COPY 'END'                                                               
+%     END BLOCK                                                                  
+%    END IF                                                                     
+%  END LOOP                                                                     
+% EVALUATE XWVSRUNNING  = FALSE
+%END SCRIPT                                                                     
+                                                                                

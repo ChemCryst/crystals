@@ -1,0 +1,67 @@
+%SCRIPT YGETSIG2
+%%    read internal and external sigmas from the file SIGMAS.DAT 
+%%    called from XVARIANCE.SSC
+%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES 
+%     VARIABLE INTEGER NSIGMAS NITEMS
+%     VARIABLE REAL ZERO
+%     EVALUATE ZERO = 0.
+%     COPY '#OPEN SCPDATA sigmas2.dat' 
+%%   Skip first line:                                                      
+%     EXTRACT NEXT
+%     LOOP
+%      TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
+%      ON ERROR TERMINATE                                                           
+%      ON END TERMINATE
+%      EXTRACT NEXT                                                             
+%      CLEAR                                                                        
+%      EXTRACT TRANSFER INPUT                                                       
+%      CLEAR
+%%     get  fifth, sixth and seventh items
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'                                         
+%      EVALUATE EXTERNAL = VALUE                                        
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      EVALUATE INTERNAL = VALUE                                        
+%      GET NOSTORE NOPROMPT INTEGER ' ' '1' 
+%      EVALUATE NITEMS = VALUE  
+%% skip the 8th item
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%%
+%      CLEAR
+%      INSERT !^^PL LABEL '!   
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NITEMS
+%      INSERT !' DATA !
+%      IF NITEMS .LT. 6 THEN
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL EXTERNAL
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL INTERNAL
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%      ELSE
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL EXTERNAL
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL INTERNAL
+%      END IF
+%      IF NITEMS .GE. 3 THEN
+%        OUTPUT
+%        EVALUATE SXX = SXX + EXTERNAL * EXTERNAL * REAL ( NITEMS )
+%        EVALUATE SXY = SXY + EXTERNAL * INTERNAL * REAL ( NITEMS )
+%        EVALUATE NSIGMAS = NSIGMAS + 1
+%      END IF
+%%
+%     END LOOP
+%%
+%     TRANSFER '^^CO SET _MW_USED TEXT ' // CHARACTER NSIGMAS TO DISPLAY                             
+%     IF ( NSIGMAS .GT. 1 ) THEN
+%      EVALUATE GRADIENT = SXY / SXX    
+%      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
+%     ELSE
+{E Insufficient equivalent reflections for variance plot in "sigmas.dat" 
+%      TRANSFER '{E   ' //  CHARACTER NSIGMAS // ' equivalents found' TO DISPLAY
+%     END IF                                                                          
+%%
+%     COPY '#CLOSE SCPDATA'
+%END SCRIPT
