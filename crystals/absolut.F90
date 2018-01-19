@@ -2404,17 +2404,15 @@ real distmax, stnfc, stnfo
     WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)') &
     &  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY', &
     &  '^^PL XAXIS TITLE ''D/sigma(Do)''  ', &
-    &  '^^PL NSERIES=2 LENGTH=100 ', &
-    &  '^^PL YAXIS ZOOM ', 0.0, 100., &
-    &  ' TITLE ''Frequency of Do (% of Dmax)'' ', &
-    &  '^^PL YAXISRIGHT ZOOM ', 0.0, 100., &
-    &  ' TITLE ''Frequency of Dsingle (% of Dmax)''  ', &
+    &  '^^PL NSERIES=4 LENGTH=100 ', &
+    &  '^^PL YAXIS ZOOM ', 0.0, 100., ' TITLE ''Frequency of Do (% of Dmax)'' ', &
+    &  '^^PL YAXISRIGHT ZOOM ', 0.0, 100., ' TITLE ''Frequency of Dsingle (% of Dmax)''  ', &
     &  '^^PL SERIES 1 SERIESNAME ''Dobs'' TYPE LINE', &
     &  '^^PL SERIES 2 SERIESNAME ''Dsingle''    TYPE LINE', &
     &  '^^PL SERIES 3 SERIESNAME ''Dobs (filtered)'' TYPE LINE', &
     &  '^^PL SERIES 4 SERIESNAME ''Dsingle (filtered)''    TYPE LINE', &
     &  '^^PL USERIGHTAXIS'
-    CALL XPRVDU (NCVDU, 8, 0)
+    CALL XPRVDU (NCVDU, 10, 0)
 
 !c
 !c  in here, replace start (-nplt) by first non-empty bin, and stop
@@ -2516,13 +2514,13 @@ end interface
     WRITE (CMON,'(A,/,A,/,A)') &
     &   '^^PL PLOTDATA _NPP SCATTER ATTACH _VNPP KEY', &
     &   '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000', &
-    &   '^^PL YAXIS TITLE Residual SERIES 1 TYPE SCATTER'
+    &   '^^PL YAXIS TITLE ''Residual'' SERIES 1 TYPE SCATTER'
     CALL XPRVDU (NCVDU, 3, 0)
 
 !   plot data
     do i=1, refls_valid_size
         hkl=fixquadrant(-reflections_data( (/C_H,C_K,C_L/), reflections_rank(i)))
-        WRITE (buffer,'(5(I4,A),I4)') nint(reflections_data(C_H, reflections_rank(i))),',',&
+        WRITE (buffer,'(5(I0,A),I0)') nint(reflections_data(C_H, reflections_rank(i))),',',&
         &   nint(reflections_data(C_K, reflections_rank(i))),',',&
         &   nint(reflections_data(C_L, reflections_rank(i))),' vs ', &
         &   nint(hkl(1)),',',nint(hkl(2)),',',nint(hkl(3))
@@ -2680,8 +2678,8 @@ integer mh, mk, ml, i
 !C       Flack As-Ds scatter
     WRITE (CMON,'(A,/,A,/,A,/A,/A)') &
     &   '^^PL PLOTDATA _AO SCATTER ATTACH _VAO KEY', &
-    &   '^^PL XAXIS TITLE 2As&Ds NSERIES=1 LENGTH=2000', &
-    &   '^^PL YAXIS TITLE 2Ao&Do', &
+    &   '^^PL XAXIS TITLE ''2As&Ds'' NSERIES=1 LENGTH=2000', &
+    &   '^^PL YAXIS TITLE ''2Ao&Do''', &
     &   '^^PL SERIES 1 SERIESNAME ''2Ao'' TYPE SCATTER'
     CALL XPRVDU (NCVDU, 4, 0)
 
@@ -2704,7 +2702,7 @@ integer mh, mk, ml, i
         end if
     end do
 
-    WRITE (CMON,'(A)') '^^PL ADDSERIES  Do TYPE SCATTER'
+    WRITE (CMON,'(A)') '^^PL ADDSERIES  ''Do'' TYPE SCATTER'
     CALL XPRVDU (NCVDU, 1, 0)
 
     do i=1, refls_size
