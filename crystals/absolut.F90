@@ -102,7 +102,9 @@ integer, external :: nctrim
         end if
     end do
     
-    datc=datc/yslope**2      
+    if(yslope/=0.0) then
+        datc=datc/yslope**2      
+    end if
 
     !    c determine largest and smallest log-probability for scaling
     datcm=datc(1)
@@ -1975,7 +1977,11 @@ real mean, s2, est, goof
     end if
 
     if(punch) then
-        open(145, file='bijvoet_fit')
+        if(itype==1) then
+            open(145, file='bijvoet_fit')
+        else
+            open(145, file='Parsons_fit')
+        end if
     end if
     
     if(issprt.eq.0) then
@@ -2166,9 +2172,10 @@ real mean, s2, est, goof
     end if
     
     if(punch) then
-        write(145, '(a)') 'Reflection x, y, w, residuals'
+        write(145, '(a)') ''
+        write(145, '(5X, 1A, 5X, 1A, 5X, 1A, 4a16)') 'h', 'k', 'l', 'x(calc diff)', 'y(obs diff)', 'weights', 'residuals'
         do i=1, ubound(buffertemp, 1)
-            write(145,*) selected_reflections(:,i), buffertemp(i,:), residuals(i)
+            write(145,'(3i6, 4(1PE16.8))') selected_reflections(:,i), buffertemp(i,:), residuals(i)
         end do
         write(145, '(a)') ''
     end if
@@ -2350,9 +2357,9 @@ use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
-logical, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
+integer, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
 integer, parameter :: nplt=10
-integer, dimension(2*nplt+1) :: ifoplt, ifcplt
+integer, dimension(2*nplt+1) :: ifoplt, ifcplt, ifopltf, ifcpltf
 real, parameter :: distplt = 3.0
 integer i, nfc, nfo, refls_size
 real distmax, stnfc, stnfo
@@ -2361,7 +2368,7 @@ real distmax, stnfc, stnfo
     ifcplt=0
     refls_size=ubound(reflections_data, 2)
     do i=1, refls_size
-        if(.not. filtered_reflections(i)) then
+        if(filtered_reflections(i)>=0) then
             stnfo=reflections_data(C_FOKD, i)/reflections_data(C_SIGMAD, i)
             stnfc=reflections_data(C_FCKD, i)/reflections_data(C_SIGMAD, i)
             nfo=nint(distplt*stnfo)+nplt+1   
@@ -2376,27 +2383,47 @@ real distmax, stnfc, stnfo
     end do
     distmax=max(maxval(ifoplt), maxval(ifcplt))
 
+    ifopltf=0
+    ifcpltf=0
+    do i=1, refls_size
+        if(filtered_reflections(i)==0) then
+            stnfo=reflections_data(C_FOKD, i)/reflections_data(C_SIGMAD, i)
+            stnfc=reflections_data(C_FCKD, i)/reflections_data(C_SIGMAD, i)
+            nfo=nint(distplt*stnfo)+nplt+1   
+            nfo=max(nfo,1)
+            nfo=min(nfo,2*nplt+1)
+            nfc=nint(distplt*stnfc)+nplt+1
+            nfc=max(nfc,1)
+            nfc=min(nfc,2*nplt+1)
+            ifopltf(nfo)=ifopltf(nfo)+1
+            ifcpltf(nfc)=ifcpltf(nfc)+1
+        end if
+    end do
+    distmax=max(maxval(ifopltf), maxval(ifcpltf), nint(distmax))
+
     WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)') &
     &  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY', &
     &  '^^PL XAXIS TITLE ''D/sigma(Do)''  ', &
-    &  '^^PL NSERIES=2 LENGTH=100 ', &
-    &  '^^PL YAXIS ZOOM ', 0.0, 100., &
-    &  ' TITLE ''Frequency of Do (% of Dmax)'' ', &
-    &  '^^PL YAXISRIGHT ZOOM ', 0.0, 100., &
-    &  ' TITLE ''Frequency of Dsingle (% of Dmax)''  ', &
+    &  '^^PL NSERIES=4 LENGTH=100 ', &
+    &  '^^PL YAXIS ZOOM ', 0.0, 100., ' TITLE ''Frequency of Do (% of Dmax)'' ', &
+    &  '^^PL YAXISRIGHT ZOOM ', 0.0, 100., ' TITLE ''Frequency of Dsingle (% of Dmax)''  ', &
     &  '^^PL SERIES 1 SERIESNAME ''Dobs'' TYPE LINE', &
     &  '^^PL SERIES 2 SERIESNAME ''Dsingle''    TYPE LINE', &
+    &  '^^PL SERIES 3 SERIESNAME ''Dobs (filtered)'' TYPE LINE', &
+    &  '^^PL SERIES 4 SERIESNAME ''Dsingle (filtered)''    TYPE LINE', &
     &  '^^PL USERIGHTAXIS'
-    CALL XPRVDU (NCVDU, 8, 0)
+    CALL XPRVDU (NCVDU, 10, 0)
 
 !c
 !c  in here, replace start (-nplt) by first non-empty bin, and stop
 !c  at last non-empty bin.  May then have to scale x axis.
 !c
     do i=1,2*nplt+1
-        WRITE (CMON,'(A,4F11.3)') '^^PL DATA ', &
+        WRITE (CMON,'(A,8F11.3)') '^^PL DATA ', &
         &   float(i-nplt-1)/DISTPLT, 100.*float(ifoplt(i))/distmax, &
-        &   float(i-nplt-1)/DISTPLT, 100.*float(ifcplt(i))/distmax
+        &   float(i-nplt-1)/DISTPLT, 100.*float(ifcplt(i))/distmax, &
+        &   float(i-nplt-1)/DISTPLT, 100.*float(ifopltf(i))/distmax, &
+        &   float(i-nplt-1)/DISTPLT, 100.*float(ifcpltf(i))/distmax
         CALL XPRVDU (NCVDU, 1, 0)
     enddo
     !C -- FINISH THE GRAPH DEFINITION
@@ -2487,13 +2514,13 @@ end interface
     WRITE (CMON,'(A,/,A,/,A)') &
     &   '^^PL PLOTDATA _NPP SCATTER ATTACH _VNPP KEY', &
     &   '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000', &
-    &   '^^PL YAXIS TITLE Residual SERIES 1 TYPE SCATTER'
+    &   '^^PL YAXIS TITLE ''Residual'' SERIES 1 TYPE SCATTER'
     CALL XPRVDU (NCVDU, 3, 0)
 
 !   plot data
     do i=1, refls_valid_size
         hkl=fixquadrant(-reflections_data( (/C_H,C_K,C_L/), reflections_rank(i)))
-        WRITE (buffer,'(5(I4,A),I4)') nint(reflections_data(C_H, reflections_rank(i))),',',&
+        WRITE (buffer,'(5(I0,A),I0)') nint(reflections_data(C_H, reflections_rank(i))),',',&
         &   nint(reflections_data(C_K, reflections_rank(i))),',',&
         &   nint(reflections_data(C_L, reflections_rank(i))),' vs ', &
         &   nint(hkl(1)),',',nint(hkl(2)),',',nint(hkl(3))
@@ -2651,8 +2678,8 @@ integer mh, mk, ml, i
 !C       Flack As-Ds scatter
     WRITE (CMON,'(A,/,A,/,A,/A,/A)') &
     &   '^^PL PLOTDATA _AO SCATTER ATTACH _VAO KEY', &
-    &   '^^PL XAXIS TITLE 2As&Ds NSERIES=1 LENGTH=2000', &
-    &   '^^PL YAXIS TITLE 2Ao&Do', &
+    &   '^^PL XAXIS TITLE ''2As&Ds'' NSERIES=1 LENGTH=2000', &
+    &   '^^PL YAXIS TITLE ''2Ao&Do''', &
     &   '^^PL SERIES 1 SERIESNAME ''2Ao'' TYPE SCATTER'
     CALL XPRVDU (NCVDU, 4, 0)
 
@@ -2675,7 +2702,7 @@ integer mh, mk, ml, i
         end if
     end do
 
-    WRITE (CMON,'(A)') '^^PL ADDSERIES  Do TYPE SCATTER'
+    WRITE (CMON,'(A)') '^^PL ADDSERIES  ''Do'' TYPE SCATTER'
     CALL XPRVDU (NCVDU, 1, 0)
 
     do i=1, refls_size

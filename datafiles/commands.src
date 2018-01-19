@@ -4447,8 +4447,8 @@ TONSPEK            1    1
          1    3    3    3    2    2    2    2    2    3
     .INPUTLIST          1    0    1    2    1         7
               6         7
-    .TYPE               2    0    1    2    0 DODC
-     DODC           QOQC
+    .TYPE               2    0    1    3    0 DODC
+     DODC           QOQC           PASCAL
     .PLOT               3    0    1    2    0 NONE
      NONE           YES
     .PUNCH              4    0    1    5    0 NONE

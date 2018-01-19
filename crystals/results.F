@@ -1,4 +1,4 @@
-C $Log: results.F,v $ 
+C $Log: results.F,v $
 C Revision 1.203  2013/05/25 09:28:06  rich
 C Internal buffer read was one character too long.
 C
@@ -6651,7 +6651,7 @@ C            These are updated only if the user does an ABSOLUTE analysis
 C-----   Pack up the LIST 39 data
          write(chline,'(a,a)')
      1     '#  For an explanation, see Cooper & Watkin,' ,
-     2   ' Acta Cryst. (2016). B72, 661–683'
+     2   ' Acta Cryst. (2016). B72, 661ï¿½683'
          if(ipunch.eq.0) call xpcif (chline)
          call xfill (ib,ivec,16)
          call snum (store(iflack0+8),store(iflack0+9),-0,0,10,ivec)
@@ -9539,7 +9539,7 @@ c
      1   ' (Using', nfofc,' reflections. Correl Coef =',
      2   nint(100.*pseudoc),'%)'
          CALL XPRVDU (NCVDU, 1, 0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'£ ',
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'Â£ ',
      1   CMON(1)(45:nctrim(cmon(1)))
          call outcol(1)
          write(cmon,'(/)')
@@ -9582,7 +9582,7 @@ c
 2100      FORMAT (/4(/a,a))
           WRITE (ncwu,2100)
      1   '@  ','Flack,1983, Acta Cryst A39, 876-881',
-     2   '£  ','Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022',
+     2   'Â£  ','Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022',
      3   '$  ','Hooft et al, 2008, J Appl Cryst, 41, 96-103',
      4   '&  ','Cooper et al, to be published'
          END IF
@@ -10037,6 +10037,970 @@ C -- ERRORS DETECTED
       RETURN
       END
 c
+CODE FOR TONSPK
+C New code to replace the old TONSPK subroutine in due time
+C this subroutine is call via #TONSPK TYPE=PASCAL
+      SUBROUTINE TONSPKPASCAL(ITYP06,ITYPE,IPLOT,IPUNCH,FILTER,IWEIGHT)
+      use absolut_mod
+      use formatnumber_mod, only:print_value
+      use xlst28_mod, only: i28spc
+      use xerval_mod, only: ierwrn
+      use xunits_mod, only: ierflg, nceror, ncvdu, ncwu
+      use xssval_mod, only: issprt
+      use xlst23_mod, only: l23mn
+      use xlst05_mod, only: l5o
+      use xlst06_mod, only: m6
+      use xiobuf_mod, only: cmon
+      implicit none
+C
+C     TON SPEK'S ENANTIOPOLE
+C      
+C March 2008
+C seriously based on ton's own code with his permission and help
+C Requires the user to set up a LIST 7 with the Friedel flag
+C set in the JCODE field.
+C This can be done with the script COPY67
+C
+C      ITYPE = 0 FOR Do/Ds, 1 FOR Qo/Qs
+C      IPLOT = 0 FOR NONE, 1 FOR YES
+C      ipunch  no/table/restraint/graph/summary  0/1/2/3/4
+C      FILTER(5) - see FILTERS below
+C      IWEIGHT - 1 =LSQ weights else SIGMA weights
+C
+
+      integer ITYP06, itype, iplot, ipunch, iweight
+
+      real tempdjw(20)
+      integer itempdjw(20)
+      equivalence (tempdjw(1), itempdjw(1))
+
+      CHARACTER*16 CFILTER(C_NUMFILTERS)
+      real, DIMENSION(C_NUMFILTERS) :: FILTER
+      real, dimension(:,:), allocatable :: reflections_data, buffertemp
+      logical, dimension(:,:), allocatable :: reflections_filters
+      logical, dimension(:,:), allocatable :: logicaltemp
+      logical, dimension(:), allocatable :: currentfilter, logicalvector
+      integer, dimension(:), allocatable :: currentfilteri
+c      Format was :   [WDEL,INDICES, Do,Ds,sigmaD, So, Sm,    sigmaQ, ifail]
+c      Format now :   [WDEL,INDICES, Do,Ds,sigmaD, x, sigmax, sigmaQ, ifail]
+      
+      integer refls_size
+      real fabs, fck1, fck2, fcka, fckd, distmax
+      real fok1, fok2, foka, fokd
+      real fried1, fried2, friedif, fsign, fsq
+      real hin1, hin1su
+      integer i, i1, iaddd, iaddl, iaddr, h1, h2
+      integer ierror, iftype
+      integer istat, j, itemp, iuln6, j1, k, k1
+      integer len
+      integer n
+      integer ncentric
+      real yslope, zh, tony, tonsy, vard, xflack, qflack
+      real scale, sig, sig1, sig2, sigest, sigfsq, sigmad, sigmaq
+      real sigmas
+      real parsons, parsonssu, bijvoet, bijvoetsu, xbar, sbar
+      
+      real, dimension(6) :: v1, sv1, v2, sv2, v3, sv3
+      
+      
+      integer, external :: kexist, khuntr, ktyp06, kcprop, nctrim
+      integer, external :: linfit, kfnr, ktoncent
+      
+C      set packing constants for Ton's code
+      integer, parameter :: npak=256
+      integer, parameter :: nn2=npak/2
+C
+      INCLUDE  'ISTORE.INC'
+      INCLUDE  'ICOM39.INC'
+C
+      INCLUDE  'STORE.INC'
+      INCLUDE  'XCOMPD.INC'
+!      INCLUDE  'XCONST.INC'
+      INCLUDE  'XLST02.INC'
+      INCLUDE  'XSIZES.INC'
+C
+      INCLUDE  'QSTORE.INC'
+!      INCLUDE  'QSTR11.INC'
+      ! INCLUDE  'QLST39.INC' should not be usefull
+C
+      integer, parameter ::  NLISTS=9
+      integer, dimension(nlists) :: LISTS
+      DATA LISTS(1)/5/,LISTS(2)/6/,LISTS(3)/28/,LISTS(4)/30/,LISTS(5)/1/
+      DATA LISTS(6)/2/,LISTS(7)/23/,LISTS(8)/13/,LISTS(9)/39/
+
+
+C
+      CALL XRSL
+      CALL XCSAE
+c
+C--FIND OUT IF LISTS EXIST
+c
+      IERROR=1
+      DO N=1,NLISTS ! 300
+        IF (LISTS(N).EQ.0) exit
+        IF (KEXIST(LISTS(N))==0) then !150,50,250
+          IF (ISSPRT.EQ.0) then 
+            WRITE (NCWU,"(1X,'List ',I2,' contains errors')") LISTS(N)
+          end if
+          WRITE (CMON,"(1X,'List ',I2,' contains errors')") LISTS(N)
+          CALL XPRVDU (NCEROR, 1, 0)
+          IERROR=-1
+          !GO TO 300
+        else if (KEXIST(LISTS(N))<0) then !150,50,250
+          IF (ISSPRT.EQ.0) then
+            WRITE (NCWU,"(1X,'List',I2,' does not exist')") LISTS(N)
+          end if
+          WRITE (CMON,"(1X,'List',I2,' does not exist')") LISTS(N)
+          CALL XPRVDU (NCEROR, 1, 0)
+          IERROR=-1
+          !GO TO 300
+        else
+          select case(LISTS(N))
+            case(1)          
+            IF (KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+            
+            case(2)
+            IF (KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
+
+            case(5)
+            IF (KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
+
+            case(13)
+            IF (KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL13
+
+            case(23)
+            IF (KHUNTR(23,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL23
+
+            case(28)
+            IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
+
+            case(30)
+            IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL30
+
+            case(39)
+            IF (KHUNTR(39,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL39
+
+            case(6)
+Cdjwsep07 check the type of reflections
+            IULN6=KTYP06(ITYP06)
+            CALL XFAL06 (IULN6, 0)
+
+            case default
+            print *, 'Serious error, seek developper advice'
+            print *, 'Error code: tonspk001'
+            stop
+          end select
+        end if
+      end do !300   CONTINUE
+      IF (IERROR.LE.0) then
+C -- ERRORS DETECTED
+        CALL XERHND (IERWRN)
+        RETURN      
+      end if
+      
+c  reset IERROR for use as general error flag -1 = fail
+      IERROR = 1
+      
+      call outcol(5)
+C----- OUTPUT THE TITLE, FIRST 20 CHARACTERS ONLY
+      write(cmon,'(/6x,a//20a4//)')
+     1 ' Absolute Structure Determination',
+     2 (ktitl(i),i=1,20)
+      call xprvdu(ncvdu,3,0)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(cmon(2)),trim(cmon(5))
+      call outcol(1)
+c
+c--- copy the filter values to an output area
+c 1      /Ds/ > filter(1)*sigma(Do)
+c 2       As  > filter(2)*sigma(Ao)
+c 3      /Do/ < filter(3)*Ds(max)
+c 4
+c 5      Ratio Ao/Ac >< filter(5)
+C
+      do i=1,C_NUMFILTERS
+        WRITE(CFILTER(1),'(F12.2)')  filter(1)
+        call xcras(cfilter(i), len)
+      enddo      
+      
+      SCALE=STORE(L5O)
+      SCALE=1./(SCALE*SCALE)
+      
+      IFTYPE=ISTORE(L23MN+1)+2
+
+      refls_size=1
+
+C ------------------------------------------------
+C Get reflections data
+C All reflections are stored
+C friedel pairs are stored together
+C ------------------------------------------------
+
+C  ----- GET REFLECTION(1)
+      istat=0
+      do while(istat>=0) ! 450   CONTINUE
+        ISTAT=KFNR(0)
+        IF (ISTAT.LT.0) exit ! goto 700
+        I=NINT(STORE(M6))
+        J=NINT(STORE(M6+1))
+        K=NINT(STORE(M6+2))
+        I1=I
+        J1=J
+        K1=K
+C       pack into h1
+        H1=NPAK*NPAK*(I+NN2)+NPAK*(J+NN2)+K+NN2
+        FSIGN=STORE(M6+3)
+        SIG=STORE(M6+12)
+C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
+C      FROM A SIGNED STRUCTURE FACTOR
+        CALL XSQRF (FSQ, FSIGN, FABS, SIGFSQ, SIG)
+        FOK1=FSQ*SCALE
+        SIG1=SIGFSQ*SCALE
+CDJWAUG2011 
+C-FOR SIMON. CREATE A PSUEDO-SIGMA FROM THE WEIGHT
+        if (iftype .eq.1) then
+c            refinement on F 
+          sigest = 2. * fsign / store(m6+4)
+        else
+          sigest = 1./ store(m6+4)
+        endif
+C
+        if (iweight.eq.1) SIG1 = SCALE*SIGEST
+c
+        FCK1=STORE(M6+5)*STORE(M6+5)
+        FRIED1=STORE(M6+18)
+
+C   First reflection loaded
+C   loading the next reflection
+
+        do ! 500   CONTINUE
+          ISTAT=KFNR(0)
+          IF (ISTAT.LT.0) exit !GO TO 650
+          I=NINT(STORE(M6))
+          J=NINT(STORE(M6+1))
+          K=NINT(STORE(M6+2))
+C       pack into h2
+          H2=NPAK*NPAK*(I+NN2)+NPAK*(J+NN2)+K+NN2
+          FSIGN=STORE(M6+3)
+          SIG=STORE(M6+12)
+C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
+C      FROM A SIGNED STRUCTURE FACTOR
+          CALL XSQRF (FSQ, FSIGN, FABS, SIGFSQ, SIG)
+          FOK2=FSQ*SCALE
+          SIG2=SIGFSQ*SCALE
+CDJWAUG2011 
+C-FOR SIMON. CREATE A PSUEDO-SIGMA FROM THE WEIGHT
+          if (iftype .eq.1) then
+c            refinement on F 
+            sigest = 2. * fsign / store(m6+4)
+          else
+            sigest = 1./ store(m6+4)
+          endif
+C
+          if (iweight.eq.1) SIG2 = SCALE*SIGEST
+C
+          FCK2=STORE(M6+5)*STORE(M6+5)
+          FRIED2=STORE(M6+18)
+
+
+         ! allocate/extend data space to store the data
+          if(.not. allocated(reflections_data)) then
+            allocate(reflections_data(C_NUMFIELD,1000))
+            reflections_data=0.0
+          end if
+          if(.not. allocated(reflections_filters)) then
+            allocate(reflections_filters(C_NUMFILTERS,1000))
+            reflections_filters=.false.
+          end if
+          if(refls_size>ubound(reflections_data, 2)) then
+            ! array full, extending...
+            if(allocated(buffertemp)) deallocate(buffertemp)
+            allocate(buffertemp(ubound(reflections_data, 1), 
+     1        ubound(reflections_data, 2)))
+            buffertemp=reflections_data
+            deallocate(reflections_data)
+            allocate(reflections_data(ubound(buffertemp, 1), 
+     1        ubound(buffertemp, 2)+1000))
+            reflections_data=0.0
+            reflections_data(:,1:ubound(buffertemp, 2))=buffertemp
+              
+            if(allocated(logicaltemp)) deallocate(logicaltemp)
+            allocate(logicaltemp(ubound(reflections_filters, 1), 
+     1        ubound(reflections_filters, 2)))
+            logicaltemp=reflections_filters
+            deallocate(reflections_filters)
+            allocate(reflections_filters(ubound(logicaltemp, 1), 
+     1        ubound(logicaltemp, 2)+1000))
+            reflections_filters=.false.
+           reflections_filters(:,1:ubound(logicaltemp, 2))=logicaltemp              
+          end if
+
+
+
+C    Compare indices
+C    If they are the same, we have a friedel pair
+          IF (H1.EQ.H2) THEN
+            FokD=FOK1-FOK2
+            FckD=FCK1-FCK2 !FckD is difference of Fc
+            foka=0.5*(FOK1+FOK2)
+            fcka=0.5*(FCK1+FCK2) ! fcka is average of Fc
+            VARD=SIG1*SIG1+SIG2*SIG2
+            SIGMAD=SQRT(VARD)
+            SIGMAQ=SQRT((Fok1*sig2)*(Fok1*sig2)+(Fok2*sig1)*(Fok2*sig1))
+            SIGMAQ=SIGMAQ*2./((2.*foka)*(2.*foka))
+
+
+            ! ZH = SIGNAL:NOISE
+            ZH=(FckD-FokD)/SIGMAD
+               
+            ! saving data
+            reflections_data(C_ZH,    refls_size)=ZH
+            reflections_data(C_H,     refls_size)=STORE(M6) ! H
+            reflections_data(C_K,     refls_size)=STORE(M6+1) ! K
+            reflections_data(C_L,     refls_size)=STORE(M6+2) ! L
+            reflections_data(C_FOKD,  refls_size)=fokd
+            reflections_data(C_FCKD,  refls_size)=fckd
+            reflections_data(C_SIGMAD,refls_size)=sigmad
+            reflections_data(C_FOKA,  refls_size)=foka
+            reflections_data(C_FCKA,  refls_size)=fcka
+            reflections_data(C_SIGMAQ,refls_size)=sigmaq
+            reflections_data(C_FRIED1,refls_size)=fried1
+            reflections_data(C_FRIED2,refls_size)=fried2
+            reflections_data(C_FOK1,  refls_size)=fok1
+            reflections_data(C_SIG1,  refls_size)=sig1
+            reflections_data(C_FCK1,  refls_size)=fck1
+            reflections_data(C_FOK2,  refls_size)=fok2
+            reflections_data(C_SIG2,  refls_size)=sig2
+            reflections_data(C_FCK2,  refls_size)=fck2
+            if(fckd/=0.0) then
+                reflections_data(C_X, refls_size)=(fckd-fokd)/(2.0*fckd)
+                reflections_data(C_SX,refls_size)=sigmad/abs(2.0*fckd)
+            end if
+            if(sigmad/=0.0) then
+                reflections_data(C_SIGNOISE,refls_size)=abs(fckd)/sigmad
+            end if
+            
+            refls_size=refls_size+1 ! reflection processed
+  
+c
+C       END OF CURRENT REFLECTION PAIR -       GET NEXT REFLECTION(1)
+            exit
+C
+          ELSE
+C                                          ----- UNPAIRED REFLECTIONS
+C      CHECK FOR CENTRIC REFLECTIONS
+            ITEMP=KTONCENT(I1,J1,K1,NCENTRIC)
+            reflections_data(C_H,     refls_size)=I1 ! H
+            reflections_data(C_K,     refls_size)=J1 ! K
+            reflections_data(C_L,     refls_size)=K1 ! L
+            reflections_data(C_FRIED1,refls_size)=itemp
+            reflections_data(C_FOK1,  refls_size)=fok1
+            reflections_data(C_SIG1,  refls_size)=sig1
+            reflections_data(C_FCK1,  refls_size)=fck1
+            reflections_data(C_FAIL,  refls_size)=99999.0
+            refls_size=refls_size+1
+            I1=I
+            J1=J
+            K1=K
+            H1=H2
+            FOK1=FOK2
+            SIG1=SIG2
+            FCK1=FCK2
+            FRIED1=FRIED2
+            cycle                           !GET NEXT REFLECTION(2)
+          END IF
+        end do !650    CONTINUE
+      end do !700   CONTINUE
+      
+      refls_size=refls_size-1
+            
+      ! resizing array to final size
+      if(allocated(buffertemp)) deallocate(buffertemp)
+      allocate(buffertemp(ubound(reflections_data, 1), 
+     1  refls_size))
+      buffertemp=reflections_data(:, 1:refls_size)
+      deallocate(reflections_data)
+      allocate(reflections_data(ubound(buffertemp, 1), 
+     1  ubound(buffertemp, 2)))
+      reflections_data=buffertemp
+      deallocate(buffertemp)
+      
+      if(allocated(logicaltemp)) deallocate(logicaltemp)
+      allocate(logicaltemp(ubound(reflections_filters, 1), 
+     1  refls_size))
+      logicaltemp=reflections_filters(:, 1:refls_size)
+      deallocate(reflections_filters)
+      allocate(reflections_filters(ubound(logicaltemp, 1), 
+     1  ubound(logicaltemp, 2)))
+      reflections_filters=logicaltemp
+      deallocate(logicaltemp)
+            
+C
+C
+C                                ---- ALL REFELCTIONS NOW PROCESSED.
+
+C ------------------------------------------------
+C- Apply filters
+C ------------------------------------------------
+      call applyfilters(reflections_data, reflections_filters, filter)
+
+      
+C ------------------------------------------------
+C- General information on processed reflections
+C ------------------------------------------------
+      
+      write(cmon,'(a, I0)') 'Number of reflections ', 
+     1    ubound(reflections_data, 2)+
+     1    count(reflections_data(C_FRIED2,:)==2.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, I0)') 'Number of friedel pairs ', 
+     1    count(reflections_data(C_FRIED2,:)==2.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, I0)') 'Number of lone reflections ', 
+     1    count(reflections_data(C_FRIED1,:)==-1.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, I0)') 'Number of centric reflections ', 
+     1    count(reflections_data(C_FRIED1,:)==0.0)
+      call xprvdu(ncvdu,1,0)
+
+      do i=1, ubound(reflections_filters, 1)
+          write(cmon,'(a, I0, ": ", I0)') 
+     1        'Number of friedel pairs failing filter ', i,
+     1        count(reflections_filters(i,:))
+          call xprvdu(ncvdu,1,0)
+      end do
+      write(cmon,'(a, I0)')
+     1    'Number of friedel pairs failing any of the filters ',
+     1    count(reflections_data(C_FAIL,:)>0.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') ''
+      call xprvdu(ncvdu,1,0)
+
+      ! Check if there any Friedel pair
+      if(count(reflections_data(C_FRIED2,:)==2.0)==0) then
+            write(cmon,'(a)') 'No Friedel pairs found'
+            call xprvdu(ncvdu,1,0)
+            IERROR = -1
+            goto 2850
+      endif
+      
+      ! check if enough friedel pairs are selected through the filters
+!      if( float(count(reflections_data(C_FAIl,:)==0.0))/
+!     1  float(count(reflections_data(C_FRIED2,:)==2.0)) <=0.1 ) then
+!            write(cmon,'(a)') 'Not enough Friedel pairs found'
+!            print *, 'accepted reflections ' , 
+!     1      count(reflections_data(C_FAIl,:)==0.0)
+!            print *, 'number of friedels ', 
+!     1      count(reflections_data(C_FRIED2,:)==2.0)
+!            call abort
+!            call xprvdu(ncvdu,1,0)
+!            IERROR = -1
+!            goto 2850
+!      endif
+      
+C     yslope is the gradient of the normal probability plot
+      if(count(reflections_data(C_FRIED2,:)==2.0)>10) then
+          call npp_slope(reflections_data,  
+     1        reflections_data(C_FRIED2,:)==2.0, yslope)
+      else
+          yslope=1.0
+      end if
+      
+C ------------------------------------------------
+C- COMPUTE Friedif and <D^2>
+C ------------------------------------------------
+      !print *, '-----------------------------------'
+      call getfriedif(reflections_data, friedif)
+
+C ------------------------------------------------
+C Get flackx from refinement 
+C calculate howard goodies
+C ------------------------------------------------
+
+      !print *, '-----------------------------------'
+      call howard_goodies(reflections_data, xflack, qflack, 
+     1  friedif, distmax)
+      
+      
+      write(ncwu,'(a)') '++++++++++++++++++++++++++++++++++++'
+      write(ncwu,'(a)') '  First pass using all reflections'
+      write(ncwu,'(a)') '++++++++++++++++++++++++++++++++++++'
+
+C ------------------------------------------------
+C- Hole in one
+C ------------------------------------------------
+      call hole_in_one(reflections_data, 
+     1   reflections_data(C_FRIED2,:)/=2.0, hin1, hin1su, 
+     2   outliersarg=logicalvector)
+      reflections_filters(C_HIN1,:)=logicalvector
+      
+C ------------------------------------------------
+C calculate Hooft goodies
+C ------------------------------------------------
+      call hooft(reflections_data, reflections_data(C_FRIED2,:)/=2.0, 
+     1    yslope, tony, tonsy)
+
+C ------------------------------------------------
+C calculate average ratios
+C ------------------------------------------------
+      call average_ratios(reflections_data,
+     1  reflections_data(C_FRIED2,:)/=2.0, xbar, sbar)
+     
+C ------------------------------------------------
+C calculate Le Page stats
+C ------------------------------------------------
+      call lepage(reflections_data, reflections_data(C_FRIED2,:)/=2.0)
+
+
+C ------------------------------------------------
+C calculate Bijvoet differences
+C ------------------------------------------------
+      IF (IPUNCH.EQ.1) THEN
+        call bijvoet_differences(reflections_data, 
+     1    reflections_data(C_FRIED2,:)/=2.0, 1, bijvoet, bijvoetsu, 
+     2    outliersarg=logicalvector, punch_arg=.true.)
+        reflections_filters(C_BIJVOET,:)=logicalvector
+      else
+        call bijvoet_differences(reflections_data, 
+     1    reflections_data(C_FRIED2,:)/=2.0, 1, bijvoet, bijvoetsu, 
+     2    outliersarg=logicalvector)
+        reflections_filters(C_BIJVOET,:)=logicalvector
+      end if
+
+C ------------------------------------------------
+C calculate Parsons quotients
+C ------------------------------------------------
+      IF (IPUNCH.EQ.1) THEN
+        call bijvoet_differences(reflections_data, 
+     1    reflections_data(C_FRIED2,:)/=2.0, -1, parsons, parsonssu,
+     2    outliersarg=logicalvector, punch_arg=.true.)
+        reflections_filters(C_PARSONS,:)=logicalvector
+      else
+        call bijvoet_differences(reflections_data, 
+     1    reflections_data(C_FRIED2,:)/=2.0, -1, parsons, parsonssu,
+     2    outliersarg=logicalvector)
+        reflections_filters(C_PARSONS,:)=logicalvector
+      end  if
+C ------------------------------------------------
+C Summary
+C ------------------------------------------------
+      v1=(/xflack, hin1, tony, xbar, bijvoet, parsons/)
+      sv1=(/qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
+
+      write(ncwu,'(a)') '+++++++++++++++++++++++++++++++++++++++++'
+      write(ncwu,'(a)') '    Second pass using all filters exept 4'
+      write(ncwu,'(a)') '+++++++++++++++++++++++++++++++++++++++++'
+      
+      allocate(currentfilter(ubound(reflections_filters, 2)))
+      currentfilter=reflections_filters(1,:).or.
+     1  reflections_filters(2,:).or.
+     2  reflections_filters(3,:).or.
+     3  reflections_filters(5,:).or.
+     4  reflections_data(C_FRIED2,:)/=2.0
+      if(count(currentfilter)/=size(currentfilter)) then
+        
+     
+C ------------------------------------------------
+C- Hole in one
+C ------------------------------------------------
+      !print *, '-----------------------------------'
+      call hole_in_one(reflections_data, 
+     1   currentfilter, hin1, hin1su, 
+     2   outliersarg=logicalvector)
+                  
+C ------------------------------------------------
+C calculate Hooft goodies
+C ------------------------------------------------
+      call hooft(reflections_data, currentfilter, 
+     1    yslope, tony, tonsy)
+
+C ------------------------------------------------
+C calculate average ratios
+C ------------------------------------------------
+      call average_ratios(reflections_data,
+     1  reflections_data(C_FAIL,:)/=0.0, xbar, sbar)
+
+C ------------------------------------------------
+C calculate Le Page stats
+C ------------------------------------------------
+      call lepage(reflections_data, currentfilter)
+
+C ------------------------------------------------
+C calculate Bijvoet differences
+C ------------------------------------------------
+      call bijvoet_differences(reflections_data, 
+     1   currentfilter, 1, bijvoet, bijvoetsu)
+
+C ------------------------------------------------
+C calculate Parsons quotients
+C ------------------------------------------------
+      call bijvoet_differences(reflections_data, 
+     1   currentfilter, -1, parsons, parsonssu)
+            
+C ------------------------------------------------
+C Summary
+C ------------------------------------------------
+      v2=(/xflack, hin1, tony, xbar, bijvoet, parsons/)
+      sv2=(/qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
+
+      write(ncwu,'(a)') '++++++++++++++++++++++++++++++++'
+      write(ncwu,'(a)') '    Third pass using all filters'
+      write(ncwu,'(a)') '++++++++++++++++++++++++++++++++'
+      
+C ------------------------------------------------
+C- Hole in one
+C ------------------------------------------------
+      !print *, '-----------------------------------'
+      call hole_in_one(reflections_data, 
+     1   reflections_data(C_FAIL,:)/=0.0, hin1, hin1su, 
+     2   outliersarg=logicalvector)
+                  
+C ------------------------------------------------
+C calculate Hooft goodies
+C ------------------------------------------------
+      call hooft(reflections_data, reflections_data(C_FAIL,:)/=0.0, 
+     1    yslope, tony, tonsy)
+
+C ------------------------------------------------
+C calculate average ratios
+C ------------------------------------------------
+      call average_ratios(reflections_data,
+     1  reflections_data(C_FAIL,:)/=0.0, xbar, sbar)
+
+C ------------------------------------------------
+C calculate Le Page stats
+C ------------------------------------------------
+      call lepage(reflections_data, reflections_data(C_FAIL,:)/=0.0)
+
+
+C ------------------------------------------------
+C calculate Bijvoet differences
+C ------------------------------------------------
+      call bijvoet_differences(reflections_data, 
+     1   reflections_data(C_FAIL,:)/=0.0, 1, bijvoet, bijvoetsu)
+
+C ------------------------------------------------
+C calculate Parsons quotients
+C ------------------------------------------------
+      call bijvoet_differences(reflections_data, 
+     1   reflections_data(C_FAIL,:)/=0.0, -1, parsons, parsonssu)
+      v3=(/xflack, hin1, tony, xbar, bijvoet, parsons/)
+      sv3=(/qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
+      
+      else
+        v2=0.0
+        sv2=0.0
+        v3=0.0
+        sv3=0.0
+      end if
+      
+C ------------------------------------------------
+C Print summary
+C ------------------------------------------------
+      
+      ! get maximum length of numbers
+      zh=maxval(v1)
+      If(zh<=1.0) then
+        n=1
+      else
+        n=nint(log10(zh))+1
+      end if
+      ! add sign, decimal point
+      n=n+2
+      sig=minval(sv1)
+      if(sig<1.0d0) then
+        ! number of zeros before eny digit
+        if(sig>tiny(1.0)) then
+            i=0
+            do while(10**i*sig<=1.0d0)
+                i=i+1
+            end do
+            ! add decimal part, esd and ( and )
+        end if
+        i=i+2+2+2
+      else
+        i=ceiling(log10(sig))+2
+      end if
+      write(cmon,'(a)') ''
+      write(ncwu,'(a)') ''
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') 'All reflections used summary:'
+      write(ncwu,'(a)') 'All reflections used summary:'
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      write(ncwu,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Flack parameter from refinement ', 
+     1  print_value(v1(1), sv1(1), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Flack parameter from refinement ', 
+     1  print_value(v1(1), sv1(1), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Hole-in-one                     ', 
+     1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Hole-in-one                     ', 
+     1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Hooft method                    ', 
+     1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Hooft method                    ', 
+     1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Average of ratios (x)           ', 
+     1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
+     1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Bijvoet differences             ', 
+     1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Bijvoet differences             ', 
+     1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Parsons quotients               ',  
+     1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Parsons quotients               ',  
+     1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      write(ncwu,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') ''
+      write(ncwu,'(a)') ''
+      call xprvdu(ncvdu,1,0)
+
+      zh=maxval(v2)
+      If(zh<=1.0) then
+        n=1
+      else
+        n=nint(log10(zh))+1
+      end if
+      ! add sign, decimal point
+      n=n+2
+      sig=minval(sv2)
+      if(sig<1.0d0) then
+        ! number of zeros before eny digit
+        i=0
+        if(sig>tiny(1.0)) then
+            do while(10**i*sig<=1.0d0)
+                i=i+1
+            end do
+        end if
+        ! add decimal part (i+2), esd (2) and ( and ) (1+1)
+        i=(i+2)+2+(1+1)
+      else
+        i=ceiling(log10(sig))+2
+      end if
+      write(cmon,'(a)') ''
+      write(ncwu,'(a)') ''
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') 'Reflections in filter 1,2,3,5 summary:'
+      write(ncwu,'(a)') 'Reflections in filter 1,2,3,5 summary:'
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      write(ncwu,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Flack parameter from refinement ', 
+     1  print_value(v2(1), sv2(1), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Flack parameter from refinement ', 
+     1  print_value(v2(1), sv2(1), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Hole-in-one                     ', 
+     1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Hole-in-one                     ', 
+     1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Hooft method                    ', 
+     1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Hooft method                    ', 
+     1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Average of ratios (x)           ', 
+     1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
+     1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Bijvoet differences             ', 
+     1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Bijvoet differences             ', 
+     1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Parsons quotients               ',  
+     1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Parsons quotients               ',  
+     1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      write(ncwu,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') ''
+      write(ncwu,'(a)') ''
+      call xprvdu(ncvdu,1,0)
+
+      zh=maxval(v3)
+      If(zh<=1.0) then
+        n=1
+      else
+        n=nint(log10(zh))+1
+      end if
+      ! add sign, decimal point
+      n=n+2
+      sig=minval(sv3)
+      if(sig<1.0d0) then
+        ! number of zeros before eny digit
+        i=0
+        if(sig>tiny(1.0)) then
+            do while(10**i*sig<=1.0d0)
+                i=i+1
+            end do
+        end if
+        ! add decimal part, esd and ( and )
+        i=i+2+2+2
+      else
+        i=ceiling(log10(sig))+2
+      end if
+      write(cmon,'(a)') ''
+      write(ncwu,'(a)') ''
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') 'Reflections in all filters summary:'
+      write(ncwu,'(a)') 'Reflections in all filters summary:'
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      write(ncwu,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Flack parameter from refinement ', 
+     1  print_value(v3(1), sv3(1), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Flack parameter from refinement ', 
+     1  print_value(v3(1), sv3(1), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Hole-in-one                     ', 
+     1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Hole-in-one                     ', 
+     1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Hooft method                    ', 
+     1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Hooft method                    ', 
+     1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Average of ratios (x)           ', 
+     1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
+     1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Bijvoet differences             ', 
+     1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Bijvoet differences             ', 
+     1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, a)') 'Parsons quotients               ',  
+     1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      write(ncwu,'(a, a)') 'Parsons quotients               ',  
+     1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
+     1  opt_length=n+i+2, opt_decimal_pos=n)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      write(ncwu,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') ''
+      write(ncwu,'(a)') ''
+      call xprvdu(ncvdu,1,0)      
+      
+C ------------------------------------------------
+C Plot all the graphs
+C ------------------------------------------------
+      
+      if(iplot.eq.1) then
+        deallocate(currentfilter)
+        allocate(currentfilter(ubound(reflections_filters, 2)))
+        currentfilter=reflections_filters(1,:).or.
+     1  reflections_filters(2,:).or.
+     2  reflections_filters(3,:).or.
+     3  reflections_filters(5,:)
+
+        allocate(currentfilteri(ubound(reflections_data, 2)))
+        where(reflections_data(C_FRIED2,:)/=2.0)
+          currentfilteri=-1
+        else where(currentfilter)
+          currentfilteri=1
+        else where
+          currentfilteri=0
+        end where
+
+        call plot_Dsigma(reflections_data, 
+     1    currentfilteri)      
+     
+        call plot_npp(reflections_data,
+     1    reflections_data(C_FRIED2,:)/=2.0)
+     
+        call plot_histogram(reflections_data, 
+     1    reflections_data(C_FRIED2,:)/=2.0)
+     
+        call plot_flackdo2ao(reflections_data, 
+     1    reflections_data(C_FRIED2,:)/=2.0)
+
+        call plot_flackx(reflections_data, 
+     1    reflections_data(C_FRIED2,:)/=2.0)
+        deallocate(currentfilteri)
+      end if
+      
+      IF (IPUNCH.EQ.1) THEN
+        call punchdata(reflections_data, reflections_filters)
+      end if
+
+      GOTO 2860
+2850  CONTINUE
+C -- ERRORS DETECTED
+      CALL XERHND (IERWRN)
+      GO TO 2860
+2860  CONTINUE
+      RETURN
+      END
+C
 CODE FOR XTONCENT
       FUNCTION KTONCENT (I1,J1,K1,NCENTRIC)
 C     KTONCENT = -1 IF NON-CENTRIC
