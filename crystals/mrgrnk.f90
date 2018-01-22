@@ -1,3 +1,6 @@
+!> MRGRNK = Merge-sort ranking of an array
+!!
+!! See: http://www.fortran-2000.com/rank/
 Module m_mrgrnk
 Integer, Parameter :: kdp = selected_real_kind(15)
 public :: mrgrnk
@@ -15,8 +18,8 @@ Subroutine D_mrgrnk (XDONT, IRNGT)
 !   out of the standard loop, and use dedicated coding.
 ! __________________________________________________________
 ! __________________________________________________________
-      Real (kind=kdp), Dimension (:), Intent (In) :: XDONT
-      Integer, Dimension (:), Intent (Out) :: IRNGT
+      Real (kind=kdp), Dimension (:), Intent (In) :: XDONT !< Array to rank
+      Integer, Dimension (:), Intent (Out) :: IRNGT !< sorted indices 
 ! __________________________________________________________
       Real (kind=kdp) :: XVALA, XVALB
 !
@@ -215,8 +218,8 @@ Subroutine R_mrgrnk (XDONT, IRNGT)
 !   out of the standard loop, and use dedicated coding.
 ! __________________________________________________________
 ! _________________________________________________________
-      Real, Dimension (:), Intent (In) :: XDONT
-      Integer, Dimension (:), Intent (Out) :: IRNGT
+      Real, Dimension (:), Intent (In) :: XDONT !< Array to rank
+      Integer, Dimension (:), Intent (Out) :: IRNGT !< sorted indices 
 ! __________________________________________________________
       Real :: XVALA, XVALB
 !
@@ -414,8 +417,8 @@ Subroutine I_mrgrnk (XDONT, IRNGT)
 !   out of the standard loop, and use dedicated coding.
 ! __________________________________________________________
 ! __________________________________________________________
-      Integer, Dimension (:), Intent (In)  :: XDONT
-      Integer, Dimension (:), Intent (Out) :: IRNGT
+      Integer, Dimension (:), Intent (In)  :: XDONT !< Array to rank
+      Integer, Dimension (:), Intent (Out) :: IRNGT !< sorted indices 
 ! __________________________________________________________
       Integer :: XVALA, XVALB
 !

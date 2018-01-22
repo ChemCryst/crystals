@@ -16,9 +16,9 @@ character(len=*), intent(in) :: npyformat !< format of the data. '<f4' is single
 character(len=6), parameter :: magic=char(147)//'NUMPY' ! npy magic constant
 character(len=:), allocatable :: formatstr ! len(formatstr)+len(major,minor)+len(magic) multiple of 16
 character(len=128) :: formatshape
-character, parameter :: major=char(1) ! npy major version
-character, parameter :: minor=char(0) ! npy minor version
-integer(c_short) :: c_hsize ! size must be lower than 37767
+character, parameter :: major=char(1) !< npy major version
+character, parameter :: minor=char(0) !< npy minor version
+integer(c_short) :: c_hsize !< Size of the header. size must be lower than 37767
 character(len=5) :: order_bool
 
     if(mod(header_size, 16)/=0 .or. header_size>37767) then
@@ -96,16 +96,16 @@ end subroutine
 subroutine numpy_read_header(npyunit, order, datashape, npyformat)
 use iso_c_binding, only: c_short
 implicit none
-integer, intent(in) :: npyunit
+integer, intent(in) :: npyunit !< unit number of the file to operate on
 character, intent(out) :: order !< order covention (F=Fortran or column by column, C=C or rows by rows)
-integer, dimension(:), allocatable, intent(out) :: datashape
-integer, intent(out) :: npyformat
+integer, dimension(:), allocatable, intent(out) :: datashape !< shape of the array stored
+integer, intent(out) :: npyformat !< format number, only 2 supported for now: single and double precision
 character(len=6), parameter :: magicnpy=char(147)//'NUMPY' ! npy magic constant
 character(len=6) :: magic
 character(len=:), allocatable :: formatstr ! len(formatstr)+len(major,minor)+len(magic) multiple of 16
 character(len=128) :: formatshape, ctemp
-character :: major ! npy major version
-character :: minor ! npy minor version
+character :: major !< npy major version
+character :: minor !< npy minor version
 integer(c_short) :: header_size 
 integer n,m, i
 

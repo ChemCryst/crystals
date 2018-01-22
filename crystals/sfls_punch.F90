@@ -2,10 +2,11 @@
 !!
 !! \detaileddescription
 !!
-!! 2 options under \sfls, \refine can be used: PUNCH and CALCULATE
-!! Punch Outputs available: Matlab(1), plain text(2) and numpy(3) 
-!! calculate options: leverages(1)
-!! 
+!! 4 options under \sfls, \refine can be used: PUNCH, CALCULATE, PLOT, P1
+!! - PUNCH:  Outputs available: Matlab(1), plain text(2) and numpy(3) 
+!! - CALCULATE: leverages(1)
+!! - PLOT(optional): yes or no. plot a graph on crystals gui.
+!! - P1(optional): parameter used to tweak results of punch and/or calculate
 !!
 !! (1) **Matlab output (PUNCH=MATLAB)**
 !!
@@ -44,14 +45,16 @@ implicit none
 integer, private :: normal_unit=0 !< unit number for the file
 integer, private :: design_unit=0 !< unit number for the file
 integer, private :: wdf_unit=0 !< unit number for the file
+integer, private :: reflections_unit=0  !< unit number for the file
 integer, private, save :: fileindex=-1 !< index used in the different filenames
 !> List of filename used. This list is used to find a new index for the filenames.
-character(len=25), dimension(5), parameter, private :: filelist=(/ &
-&  'normal   ', &
-&  'design   ', &
-&  'wdf      ', &
-&  'variance ', &
-&  'leverages' /)
+character(len=27), dimension(6), parameter, private :: filelist=(/ &
+&  'normal     ', &
+&  'design     ', &
+&  'reflections', &
+&  'wdf        ', &
+&  'variance   ', &
+&  'leverages  ' /)
 !> list of extension used. This list is used to find a new index for the filenames.
 character(len=4), dimension(3), parameter, private :: extlist=(/ '.m  ', '.dat' , '.npy'/)
 
@@ -142,7 +145,7 @@ logical fileopened
 
 end subroutine
 
-!> Initialisation of design[0-9].m file
+!> Initialisation of design[0-9]* file
 subroutine sfls_punch_init_design(sfls_punch_flag)
 implicit none
 integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
@@ -186,6 +189,53 @@ character(len=255) :: file_name
     end select
 
 end subroutine
+
+!> Initialisation of reflections[0-9]* file
+subroutine sfls_punch_init_reflections(sfls_punch_flag, header)
+implicit none
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
+character(len=*), dimension(:), intent(in) :: header
+integer filecount
+character(len=255) :: file_name
+
+    if(reflections_unit/=0) then
+!        print *, 'design matrix file already opened'
+        call abort()
+    end if
+
+    ! search for new file to open
+    filecount = sfls_punch_get_newfileindex()
+
+    ! Write header
+    select case(sfls_punch_flag)
+    case(1) ! matlab
+
+        reflections_unit=796
+        write(file_name, '(a,i0,a)') 'reflections', filecount, '.m'
+        open(reflections_unit, file=file_name, status='new')
+        write (reflections_unit, '(''a=['')')
+        
+    case(2) ! plain text
+
+        reflections_unit=796
+        write(file_name, '(a,i0,a)') 'reflections', filecount, '.dat'
+        open(reflections_unit, file=file_name, status='new')
+        call print_reflections_header(header)
+
+    case(3) ! numpy
+
+        reflections_unit=796
+        write(file_name, '(a,i0,a)') 'reflections', filecount, '.npy'
+        open(reflections_unit, file=file_name, status='new', access='stream', form='unformatted')
+        write(reflections_unit) repeat(' ', 128) ! book space for numpy header
+        
+    case default
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
+        call abort()
+    end select
+
+end subroutine
+
 
 !> Writting the normal matrix to the file (before conditioning)
 subroutine sfls_punch_normal(nmatrix, nmsize, sfls_punch_flag)
@@ -612,6 +662,100 @@ wdflist(wdfindex)=wdf
 
 end subroutine
 
+!> Write a part of the design matrix to the file
+subroutine sfls_punch_addtoreflections(hkl, datas, sfls_punch_flag, punch)
+use numpy_mod, only: numpy_write_header
+implicit none
+integer, dimension(3), intent(in) :: hkl
+real, dimension(:), intent(in) :: datas
+integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
+logical, optional, intent(in) :: punch !< Flag to close the file when done
+integer m, n, mypos
+logical fileopened
+character(len=256) :: lineformat
+
+    select case(sfls_punch_flag)
+    case(1) ! matlab
+
+        if(present(punch)) then
+            write (reflections_unit, '(''];'')')
+            close(reflections_unit)
+            design_unit=0
+            return
+        end if
+
+        if(reflections_unit==0) then
+!            print *, 'reflections file not opened yet'
+            call abort()
+        end if
+        
+        inquire(reflections_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'reflections file not opened but unit set'
+            call abort()
+        end if
+        
+        write(reflections_unit, '(a, 3I4)') ' % ', hkl
+        write(lineformat, '(a,I0,a)') '(',size(datas),'G16.8)'
+        write(reflections_unit, lineformat) datas
+
+    case(2) ! plain text
+    
+        if(present(punch)) then
+            close(reflections_unit)
+            reflections_unit=0
+            return
+        end if
+        
+        if(reflections_unit==0) then
+!            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(reflections_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        write(lineformat, '("(3I5, 3X, ",I0,"E15.6)")') size(datas)
+        write(reflections_unit, lineformat) hkl, datas
+
+    case(3) ! numpy
+    
+        if(present(punch)) then
+            ! writing header
+            ! we need to know how many values were written, it is a bit of guess work as the shape is not known
+            inquire(unit=reflections_unit, pos=mypos) ! size of data in bytes is mypos-1-128, 128 is the space reserved for header, -1 because it is the position for a new write
+            m=size(datas)
+            n=((mypos-1-128)/4)/(m+3)
+            call numpy_write_header(reflections_unit, (/n, m+3/), 128, 'C', '<f4')            
+
+            close(reflections_unit)
+            reflections_unit=0
+            return
+        end if
+        
+        if(reflections_unit==0) then
+!            print *, 'design matrix file not opened yet'
+            call abort()
+        end if
+        
+        inquire(reflections_unit, opened=fileopened)
+        if(.not. fileopened) then
+ !           print *, 'design matrix file not opened but unit set'
+            call abort()
+        end if
+        
+        write(reflections_unit) real(hkl, kind(1.0)), datas
+
+    case default
+!        print *, 'Punch flag not recognised ', sfls_punch_flag
+        call abort()
+    end select
+
+end subroutine
+
 !> Search for the next available index for the file name.
 !!
 !! The index is not independent between files. The index is determined for a group of files using \p filelist and \p extlist.
@@ -660,6 +804,19 @@ implicit none
         call abort()
     end if
     fileindex=-1
+end subroutine
+
+subroutine print_reflections_header(header)
+implicit none
+character(len=*), dimension(:), intent(in) :: header
+integer i
+
+write(reflections_unit, '(a)', advance='no') '# '
+do i=1, size(header)-1
+    write(reflections_unit, '(a, a, a)', advance='no') '"', trim(header(i)), '", '
+end do
+write(reflections_unit, '(a, a, a)') '"', trim(header(size(header))), '"'
+
 end subroutine
 
 subroutine print_design_header()
@@ -868,7 +1025,7 @@ end subroutine
 !! The calculation is using a blocking algorithm to improve speed. block_size reflections are loaded and
 !! the block is processed in one go. openmp does not make significant speed, I suspect the I/O is a limited factor.
 !! using workshare for formatting the data, writing and calculating might speed things up but it does not seem to be necessary at the moment
-subroutine sfls_punch_leverages(nsize)
+subroutine sfls_punch_leverages(nsize, plot, tselectedarg)
 use list26_mod, only: subrestraints_parent, restraints_list
 use xiobuf_mod, only: cmon !< screen
 use xunits_mod, only: ncvdu !< lis file
@@ -876,17 +1033,23 @@ use numpy_mod, only: numpy_read_header, numpy_write_header
 !$ use OMP_LIB
 implicit none
 integer, intent(in) :: nsize !< number of parameters during least squares
+logical, intent(in), optional :: plot !< plot some graphs
+integer, intent(inout), optional :: tselectedarg !< choice of parameter to plot
 integer, parameter :: block_size=512
-integer filecount, variance_unit, leverage_unit
+integer block_num
+integer filecount, variance_unit, leverage_unit, refl_unit
 character(len=255) :: file_name, formatstr
-double precision, dimension(:,:), allocatable :: variance, design_block, temp_block, tij_block, T2ij_block
+double precision, dimension(:,:), allocatable :: variance, design_block, temp_block, tij_block, T2ij_block, reflections
 double precision, dimension(:), allocatable :: maxtij, maxT2ij
 double precision, dimension(:), allocatable :: leverage_all, temp1d
 double precision, dimension(3) :: hkl_dp
-real, dimension(:,:), allocatable :: temp2d
+real, dimension(:,:), allocatable :: ftemp2d
+real, dimension(:), allocatable :: ftemp1d
+integer tselected
 integer info, irestraint, i, j, numobs, islider, datheader
 double precision normalize, check
 integer, dimension(:,:), allocatable :: hkl
+integer numfields, iostatus
 logical file_exists
 integer file_type !<  0 for npy, 1 for dat
 character vorder, dorder
@@ -899,6 +1062,17 @@ integer, dimension(8) :: measuredtime
 #endif
 
 double precision, external :: ddot !< blas dot product
+
+    if(present(tselectedarg)) then
+        tselected=tselectedarg
+    else
+        tselected=1
+    end if
+    if(tselected>nsize) then
+        tselected=nsize
+    else if (tselected<1) then
+        tselected=1
+    end if
 
     write(cmon,'(A,A)') '{I Starting leverages calculations...'
     call xprvdu(ncvdu, 1,0)
@@ -998,11 +1172,11 @@ double precision, external :: ddot !< blas dot product
             call abort()
         end if
         if(vnpyformat==4) then
-            allocate(temp2d(nsize, nsize))
-            read(variance_unit) temp2d
+            allocate(ftemp2d(nsize, nsize))
+            read(variance_unit) ftemp2d
             allocate(variance(nsize, nsize))
-            variance=temp2d
-            deallocate(temp2d)
+            variance=ftemp2d
+            deallocate(ftemp2d)
         else if(vnpyformat==8) then            
             allocate(variance(nsize, nsize))
             read(variance_unit) variance
@@ -1013,9 +1187,10 @@ double precision, external :: ddot !< blas dot product
             call abort()
         end if
         close(variance_unit) 
-        if(vorder=='C') then
-            variance=transpose(variance)
-        end if
+        !no need the matrix is symmetric
+        !if(vorder=='C') then
+        !    variance=transpose(variance)
+        !end if
     else
         open(variance_unit, file=file_name, status='old')
         allocate(variance(nsize, nsize))
@@ -1023,6 +1198,108 @@ double precision, external :: ddot !< blas dot product
         close(variance_unit)
     end if
 
+    if(present(plot)) then
+        if(plot) then
+            call plot_leverages_init()
+            
+            refl_unit=788
+            write(file_name, '(a,i0,a)') 'reflections', filecount, '.npy'
+            inquire(file=file_name, exist=file_exists)
+            file_type=0
+            if(.not. file_exists) then
+                write(file_name, '(a,i0,a)') 'reflections', filecount, '.dat'
+                inquire(file=file_name, exist=file_exists)
+                file_type=1
+                if(.not. file_exists) then
+                    file_type=-1
+#ifdef CRY_OSLINUX
+                    print *, 'inverse of the normal matrix file does not exist, programming error'
+#endif        
+                    call abort()
+                end if
+            end if
+            if(file_type==0) then
+                open(refl_unit, file=file_name, status='old', access='stream',  form='unformatted')
+                call numpy_read_header(refl_unit, vorder, vdatashape, vnpyformat)
+                if(size(vdatashape)/=2) then
+#ifdef CRY_OSLINUX
+                    print *, 'data are not 2D'
+#endif        
+                    call abort()
+                end if
+                if(vorder=='C') then
+                    if(vnpyformat==4) then
+                        allocate(ftemp1d(vdatashape(2)))
+                        allocate(reflections(vdatashape(1), vdatashape(2)))
+                        do i=1, vdatashape(1)
+                            read(refl_unit) ftemp1d
+                            reflections(i, :)=ftemp1d
+                        end do
+                        deallocate(ftemp1d)
+                    else if(vnpyformat==8) then            
+                        allocate(reflections(vdatashape(1), vdatashape(2)))
+                        read(refl_unit) reflections
+                    else 
+                    
+#ifdef CRY_OSLINUX
+                        print *, 'npy format not supported'
+#endif        
+                        call abort()
+                    end if
+                else
+                     if(vnpyformat==4) then
+                        allocate(ftemp2d(vdatashape(1), vdatashape(2)))
+                        read(refl_unit) ftemp2d
+                        allocate(reflections(vdatashape(1), vdatashape(2)))
+                        reflections=ftemp2d
+                        deallocate(ftemp2d)
+                    else if(vnpyformat==8) then            
+                        allocate(reflections(vdatashape(1), vdatashape(2)))
+                        read(refl_unit) reflections
+                    else 
+                    
+#ifdef CRY_OSLINUX
+                        print *, 'npy format not supported'
+#endif        
+                        call abort()
+                    end if
+                end if
+                close(refl_unit) 
+            else
+                open(refl_unit, file=file_name, status='old')
+                read(refl_unit, '(a)', iostat=info) formatstr
+                if(formatstr(1:1)/='#') then
+#ifdef CRY_OSLINUX
+                    print *, 'Error reflections file should start with a header line'
+#endif              
+                    call abort()
+                end if
+                numfields=1
+                do i=1, len_trim(formatstr)
+                    if(formatstr(i:i)==",") then
+                        numfields=numfields+1
+                    end if
+                end do
+                
+                i=0
+                allocate(reflections(1024, numfields))
+                do 
+                    i=i+1
+                    if(i>ubound(reflections, 1)) then
+                        ! extend reflections
+                        call move_alloc(reflections, temp_block)
+                        allocate(reflections(ubound(temp_block, 1)+1024, numfields))
+                        reflections(1:ubound(temp_block, 1), :)=temp_block
+                        deallocate(temp_block)
+                    end if
+                    read(refl_unit, *, iostat=iostatus)  reflections(i, :)
+                    if(iostatus/=0) exit
+                end do
+                close(refl_unit)
+            end if
+        end if
+    end if
+    
     leverage_unit=788
     if(file_type==0) then
         write(file_name, '(a,i0,a)') 'leverages', filecount, '.npy'
@@ -1032,7 +1309,6 @@ double precision, external :: ddot !< blas dot product
         write(file_name, '(a,i0,a)') 'leverages', filecount, '.dat'
         open(leverage_unit, file=file_name, status='new')
     end if
-    
     
     allocate(hkl(3, block_size))
     allocate(maxtij(nsize))
@@ -1163,21 +1439,23 @@ double precision, external :: ddot !< blas dot product
     ! Using a blocking algorithm where a block of the design matrix is read and processed
     info=0
     irestraint=0
-    numobs=0
+    numobs=-1
     check=0.0d0
+    block_num=-1
     do while(info==0)
         numobs=numobs+1
         if(file_type==0) then
             read(design_unit, iostat=info) hkl_dp, &
-            &   design_block(:,mod(numobs-1,block_size)+1)
-            hkl(:,mod(numobs-1,block_size)+1)=nint(hkl_dp)
+            &   design_block(:,mod(numobs,block_size)+1)
+            hkl(:,mod(numobs,block_size)+1)=nint(hkl_dp)
         else
-            read(design_unit, *, iostat=info) hkl(:,mod(numobs-1,block_size)+1), &
-            &   design_block(:,mod(numobs-1,block_size)+1)
+            read(design_unit, *, iostat=info) hkl(:,mod(numobs,block_size)+1), &
+            &   design_block(:,mod(numobs,block_size)+1)
         end if
         if(info/=0) exit
         
-        if(mod(numobs-1,block_size)+1==block_size) then ! processing the block of design matrix
+        if(mod(numobs,block_size)+1==block_size) then ! processing the block of design matrix
+            block_num=block_num+1
     
             ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
             ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
@@ -1190,28 +1468,44 @@ double precision, external :: ddot !< blas dot product
             &   variance, nsize, 0.0d0, tij_block, block_size)
             
             do i=1, block_size
-                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-block_size+i))
+                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(block_num*block_size+i))
                 
-                if(all(hkl(:,i)==0)) then
+                if(hkl(1,i)>1000) then
                     irestraint=irestraint+1
                 end if
                 
                 if(file_type==0) then
                     write(leverage_unit) &
-                    &   real(hkl(:,i), kind(1.0d0)), leverage_all(size(leverage_all)-block_size+i), &
-                    &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                    &   real(hkl(:,i), kind(1.0d0)), leverage_all(block_num*block_size+i), &
+                    &   leverage_all(block_num*block_size+i)*normalize, &
                     &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )                
+                    if(irestraint==0) then
+                        if(present(plot)) then
+                            if(plot) then
+                                call plot_leverages_push(hkl(:,i), reflections(block_num*block_size+i, 4), &
+                                &   leverage_all(block_num*block_size+i), &
+                                &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
+                            end if
+                        end if
+                    end if
                 else
                     if(irestraint==0) then
                         write(leverage_unit, formatstr) &
-                        &   '""', hkl(:,i), leverage_all(size(leverage_all)-block_size+i), &
-                        &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                        &   '""', hkl(:,i), leverage_all(block_num*block_size+i), &
+                        &   leverage_all(block_num*block_size+i)*normalize, &
                         &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                        if(present(plot)) then
+                            if(plot) then
+                                call plot_leverages_push(hkl(:,i), reflections(block_num*block_size+i, 4), &
+                                &   leverage_all(block_num*block_size+i), &
+                                &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
+                            end if
+                        end if
                     else
                         write(leverage_unit, formatstr) &
                         &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
-                        &   hkl(:,i), leverage_all(size(leverage_all)-block_size+i), &
-                        &   leverage_all(size(leverage_all)-block_size+i)*normalize, &
+                        &   hkl(:,i), leverage_all(block_num*block_size+i), &
+                        &   leverage_all(block_num*block_size+i)*normalize, &
                         &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
                     end if
                 end if
@@ -1226,42 +1520,66 @@ double precision, external :: ddot !< blas dot product
     end do
     
     ! Processing the remaining incomplete block
-    if(mod(numobs-1,block_size)+1/=block_size) then ! processing the reamining block
-        design_block(:,mod(numobs-1,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
+    if(mod(numobs,block_size)+1/=block_size) then ! processing the reamining block
+        block_num=block_num+1
+        design_block(:,mod(numobs,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
     
         call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
         &   variance, nsize, 0.0d0, tij_block, block_size)
         
-        do i=1, mod(numobs-1,block_size)
-            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i))
+        do i=1, mod(numobs,block_size)
+            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(block_num*block_size+i))
 
-            if(all(hkl(:,i)==0)) then
+            if(hkl(1,i)>1000) then
                 irestraint=irestraint+1
             end if
             
             if(file_type==0) then
                 write(leverage_unit) &
-                &   real(hkl(:,i), kind(1.0d0)), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
-                &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                &   real(hkl(:,i), kind(1.0d0)), leverage_all(block_num*block_size+i), &
+                &   leverage_all(block_num*block_size+i)*normalize, &
                 &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                if(irestraint==0) then
+                    if(present(plot)) then
+                        if(plot) then
+                            call plot_leverages_push(hkl(:,i), &
+                            &   reflections(block_num*block_size+i, 4), &
+                            &   leverage_all(block_num*block_size+i), &
+                            &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
+                        end if
+                    end if
+                end if
             else
                 if(irestraint==0) then
                     write(leverage_unit, formatstr) &
-                    &   '""', hkl(:,i), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
-                    &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                    &   '""', hkl(:,i), leverage_all(block_num*block_size+i), &
+                    &   leverage_all(block_num*block_size+i)*normalize, &
                     &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
+                    if(present(plot)) then
+                        if(plot) then
+                            call plot_leverages_push(hkl(:,i), &
+                            &   reflections(block_num*block_size+i, 4), &
+                            &   leverage_all(block_num*block_size+i), &
+                            &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
+                        end if
+                    end if
                 else
                     write(leverage_unit, formatstr) &
                     &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
-                    &   hkl(:,i), leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i), &
-                    &   leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)*normalize, &
+                    &   hkl(:,i), leverage_all(block_num*block_size+i), &
+                    &   leverage_all(block_num*block_size+i)*normalize, &
                     &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
                 end if
             end if
         end do
     end if    
-    numobs=numobs-1
 
+    if(present(plot)) then
+        if(plot) then
+            call plot_leverages_close()
+        end if
+    end if
+    
     if(file_type==0) then
         call numpy_write_header(leverage_unit, (/numobs, 5+2*nsize/), 128, 'C', '<f8')
     end if
@@ -1320,16 +1638,15 @@ end function
 !> This subroutine write a python file with all the necessary info to do some calculations
 subroutine sfls_punch_python()
 use store_mod, only: store, istore=>i_store
-use xlst01_mod
-use xlst02_mod
-use xlst05_mod
-use list12_mod
-use xlst12_mod
-use xscale_mod
-use xopk_mod
-use xapk_mod
-use xconst_mod
-use numpy_mod
+use xlst01_mod !< unit cell
+use xlst02_mod !< symmetry operators
+use xlst05_mod !< atomic model
+use list12_mod !< matrix of constraints
+use xlst12_mod !< matrix of constraints
+use xscale_mod, only: nsc, kscal
+use xopk_mod, only: kvp
+use xapk_mod, only: nkao, nwka, icoord
+use xconst_mod, only: nowt
 use xunits_mod, only: ierflg
 implicit none
 
@@ -1646,6 +1963,55 @@ integer, external :: khuntr
     write(pyfile, '(a)') ""
 
     close(pyfile)
+
+end subroutine
+
+!> Initialise a plot of the leverages
+subroutine plot_leverages_init()
+use xiobuf_mod, only: cmon !< screen
+use xunits_mod, only: ncvdu !< lis file
+implicit none
+
+WRITE(CMON,'(A,6(/,A))') &
+&   '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP', &
+&   '^^PL XAXIS TITLE ''k x Fo'' NSERIES=2 LENGTH=2000', &
+&   '^^PL YAXIS TITLE ''Leverage, Pii'' ZOOM 0.0 1.0', &
+&   '^^PL YAXISRIGHT TITLE ''tij**2/(1+Pii)''', &
+&   '^^PL SERIES 1 TYPE SCATTER SERIESNAME ''Leverage''', &
+&   '^^PL SERIES 2 TYPE SCATTER', &
+&   '^^PL SERIESNAME ''Influence of remeasuring'' USERIGHTAXIS'
+CALL XPRVDU(NCVDU, 7,0)
+
+end subroutine
+
+!> Add data to the leverages plot
+subroutine plot_leverages_push(hkl, Fo, Pii, red)
+use xiobuf_mod, only: cmon !< screen
+use xunits_mod, only: ncvdu !< lis file
+implicit none
+integer, dimension(3), intent(in) :: hkl !< hkl indices
+double precision, intent(in) :: Fo !< Fobs
+double precision, intent(in) :: Pii !< leverage
+double precision, intent(in) :: red !< T2 (t**2)/(1.0+PII)
+character(len=64) :: hkllab !< hkl indices formatted string
+
+write(hkllab, '(2(i0,","),i0)') hkl
+write(cmon,'(3a,4f11.4)') &
+&   '^^PL LABEL ''',trim(hkllab),''' DATA ',fo,pii,fo, red
+call xprvdu(ncvdu, 1,0)
+
+end subroutine
+
+!> Close the ploting of the leverages in crystals gui
+subroutine plot_leverages_close()
+use xiobuf_mod, only: cmon !< screen
+use xunits_mod, only: ncvdu !< lis file
+implicit none
+
+write(cmon,'(a,f18.14,a/a)')'^^PL YAXISRIGHT ZOOM 0.0 ',&
+&   100.0,' SHOW', &
+&   '^^CR'
+call xprvdu(ncvdu, 2,0) 
 
 end subroutine
 

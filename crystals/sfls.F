@@ -630,10 +630,6 @@ C punch matrices cannot be written
 !      END IF
 !----
 c
-      IF ( SFLS_TYPE .eq. SFLS_REFINE ) THEN     
-        ILEV = ISTORE(M33CD+12)
-      END IF
-
       NF=-1
       REFPRINT = .FALSE.
 C----- READ DOWN SOME LISTS
@@ -986,6 +982,9 @@ c---- Opening and initailising file for punching least square data
         IF (sfls_punch_flag>0) THEN
           call sfls_punch_reset_filename()
           call sfls_punch_init_design(sfls_punch_flag)
+          call sfls_punch_init_reflections( sfls_punch_flag, 
+     1      (/ "Fobs    ", "Fcalc   ", "weight  ", 
+     2         "Scale   ", "sin(t)/l" /) )
         END IF
         
         IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -1767,37 +1766,15 @@ C----- INITIALISE THE SORT BUFFER
       JSORT = 5
 
       sfls_punch_flag=ISTORE(M33CD+5)
+      if(sfls_punch_flag>3) then
+        sfls_punch_flag=3
+      end if
       sfls_sp_normalm=ISTORE(M33CD)
       sfls_calcul_flag=ISTORE(M33CD+1)
       if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
-        sfls_punch_flag=3 ! numpy is default
+        sfls_punch_flag=3 ! numpy is default in this case
       end if
       
-      IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage calc.
-C----- A BUFFER FOR ONE REFELCTION AND ITS LEVERAGE
-        LTEMPL = NFL
-        NTEMPL = 7              ! Seven items to be stored: H,K,L,STL2,LEV,FO,FC
-        NFL = KCHNFL(LTEMPL)    ! Make the space
-C----- INITIALISE THE SORT BUFFER
-        JLEVER = -5             ! Sort on the fifth item (NB: abs)
-        MDLEVE = NTEMPL         ! Five items to be stored
-        NLEVER = 30             ! Worst 30 reflections to be kept
-        CALL SRTDWN(LLEVER,MDLEVE,NLEVER,JLEVER,LTEMPL,XVALUL,-1)             ! Init
-        JLEVER = 4              ! Sort on the fifth item (NB: offset)
-        REDMAX = 0.0
-
-        WRITE(CMON,'(A,6(/,A))')
-     1  '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP',
-     1  '^^PL XAXIS TITLE ''k x Fo'' NSERIES=2 LENGTH=2000',
-     1  '^^PL YAXIS TITLE ''Leverage, Pii'' ZOOM 0.0 1.0',
-     1  '^^PL YAXISRIGHT TITLE ''tij**2/(1+Pii)''',
-     1  '^^PL SERIES 1 TYPE SCATTER SERIESNAME ''Leverage''',
-     1  '^^PL SERIES 2 TYPE SCATTER',
-     2  '^^PL SERIESNAME ''Influence of remeasuring'' USERIGHTAXIS'
-        CALL XPRVDU(NCVDU, 7,0)
-
-      END IF
-
 C----- SET PRINT COUNTER
       IENPRT = -1
       ILEVPR = 0
@@ -2380,113 +2357,74 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
-            IF (ISTORE(M33CD+12).EQ.0) THEN    ! Just a normal accumulation.
-               if (ISTORE(M33CD+13).EQ.0) THEN
-                  CALL PARM_PAIRS_XLHS(STORE(JO), JP-JO+1, STR11(L11), 
-     1             N11, iresults, nresults, 
-     2             STORE(L12B), N12B*MD12B, MD12B)
-               else
-                  ! Store a chunk of the design matrix
-                  ! When the chunk is full, accumulate the normal matrix
-                  designindex=designindex+1
-                  if(designindex>designchunk*tid) then
-                      ! Output design matrix to disk
-                      if(sfls_punch_flag>0) then
-                          if(sfls_sp_normalm<0) then
-                              call sfls_punch_addtodesign(designmatrix, 
-     1                            hkllist, sfls_punch_flag)
-                          else
-                              call sfls_punch_addtodesign(
-     1                            designmatrix_sp, 
-     2                            hkllist, sfls_punch_flag)
-                          end if
-                      end if
+              if (ISTORE(M33CD+13).EQ.0) THEN
+                 CALL PARM_PAIRS_XLHS(STORE(JO), JP-JO+1, STR11(L11), 
+     1            N11, iresults, nresults, 
+     2            STORE(L12B), N12B*MD12B, MD12B)
+              else
+                 ! Store a chunk of the design matrix
+                 ! When the chunk is full, accumulate the normal matrix
+                 designindex=designindex+1
+                 if(designindex>designchunk*tid) then
+                     ! Output design matrix to disk
+                     if(sfls_punch_flag>0) then
+                         if(sfls_sp_normalm<0) then
+                             call sfls_punch_addtodesign(designmatrix, 
+     1                           hkllist, sfls_punch_flag)
+                         else
+                             call sfls_punch_addtodesign(
+     1                           designmatrix_sp, 
+     2                           hkllist, sfls_punch_flag)
+                         end if
+                     end if
                   
-                      ! accumulate normal matrix
+                     ! accumulate normal matrix
 !$OMP PARALLEL default(none) 
 !$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm)
 !$OMP& shared(designmatrix_sp, normalmatrix_sp)
 
 !$OMP DO schedule(static)
-                      do i=1, tid
-                          ! passing first element as array to avoid temporary copy
-                          if(sfls_sp_normalm<0) then
-                            call DSYRK('L','N',JP-JO+1,designchunk,
-     1                        1.0d0, 
-     2                        designmatrix(1,designchunk*(i-1)+1),
-     3                        JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
-                          else
-                            call SSYRK('L','N',JP-JO+1,designchunk,
-     1                        1.0, 
-     2                        designmatrix_sp(1,designchunk*(i-1)+1),
-     3                        JP-JO+1,1.0,
-     4                        normalmatrix_sp(1,1,i),JP-JO+1)
-                          end if
-                      end do
+                     do i=1, tid
+                         ! passing first element as array to avoid temporary copy
+                         if(sfls_sp_normalm<0) then
+                           call DSYRK('L','N',JP-JO+1,designchunk,
+     1                       1.0d0, 
+     2                       designmatrix(1,designchunk*(i-1)+1),
+     3                       JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
+                         else
+                           call SSYRK('L','N',JP-JO+1,designchunk,
+     1                       1.0, 
+     2                       designmatrix_sp(1,designchunk*(i-1)+1),
+     3                       JP-JO+1,1.0,
+     4                       normalmatrix_sp(1,1,i),JP-JO+1)
+                         end if
+                     end do
 !$OMP END DO
 !$OMP END PARALLEL
 
 
-                      ! reset index for the chunk array
-                      designindex=1
-                      if(sfls_sp_normalm<0) then
-                        designmatrix=0.0d0
-                      else
-                        designmatrix_sp=0.0
-                      end if
-                      hkllist=0
-                  end if
+                     ! reset index for the chunk array
+                     designindex=1
+                     if(sfls_sp_normalm<0) then
+                       designmatrix=0.0d0
+                     else
+                       designmatrix_sp=0.0
+                     end if
+                     hkllist=0
+                 end if
 
-                  if(sfls_sp_normalm<0) then
-                    designmatrix(:,designindex) = STORE(JO:JP)
-                  else
-                    designmatrix_sp(:,designindex) = STORE(JO:JP)
-                  end if
-                  if(sfls_punch_flag>0) then
-                      hkllist(:, designindex)=nint(STORE(M6:M6+2))
-                  end if
-                  
+                 if(sfls_sp_normalm<0) then
+                   designmatrix(:,designindex) = STORE(JO:JP)
+                 else
+                   designmatrix_sp(:,designindex) = STORE(JO:JP)
+                 end if
+                 if(sfls_punch_flag>0) then
+                     hkllist(:, designindex)=nint(STORE(M6:M6+2))
+                 end if
+                 
 c                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
 c     1                 STORE(L12B), N12B*MD12B, MD12B )
-               end if
-            ELSE                    ! No accumulation, compute leverages, Pii.
-               if (ISTORE(M33CD+13).EQ.0) THEN
-                  write(CMON,
-     1                 '(''SPARSE IS NOT USED FOR LEVERAGE'')')
-                  call xprvdu(ncvdu,1,0)
-               end if
-               Pii = PDOLEV( ISTORE(L12B),MD12B*N12B,MD12B,
-     1                    STR11(L11),N11,  STORE(JO),JP-JO+1,
-     2                    ISTORE(M33CD+12), TIX, RED)
-              REDMAX = MAX ( REDMAX, RED )
-
-              WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)), ',',
-     1                                     NINT(STORE(M6+1)), ',',
-     2                                     NINT(STORE(M6+2))
-              CALL XCRAS(HKLLAB, IHKLLEN)
-              WRITE(CMON,'(3A,4F11.4)')
-     1       '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',FO,Pii,FO,
-     2        RED*1000000000.0
-              CALL XPRVDU(NCVDU, 1,0)
-
-              CALL XCRAS(HKLLAB, IHKLLEN)
-              WRITE(124,'(2A,2F11.4,1X,2(1x,G15.9))')
-     1        HKLLAB(1:IHKLLEN),' FO,PII,tix,Red ',FO,Pii,tix,RED
-
-
-
-              IF (( ILEVPR .LT. 30 ) .OR. ( PII .LT. XVALUL ) ) THEN
-C----    H,K,L,SNTHL,LEV,
-                CALL XMOVE(STORE(M6), STORE(LTEMPL), 3)
-                STORE(LTEMPL+3) = SST
-                STORE(LTEMPL+4) = Pii
-                STORE(LTEMPL+5) = FO*SCALEK
-                STORE(LTEMPL+6) = FCEXT
-                CALL SRTDWN(LLEVER,MDLEVE,NLEVER, JLEVER, LTEMPL, 
-     1          XVALUL,-1)
-                ILEVPR = ILEVPR + 1
-              END IF
-            END IF
+              end if
           END IF
         END IF
 
@@ -2523,7 +2461,22 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
             RALL(17) = RALL(17) + WDF*WDF            ! sum wdelta sq
             RALL(18) = RALL(18) + A*A                ! 
           ENDIF
+
+         if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
+             !hkl=nint(STORE(M6:M6+2))
+             call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
+     1         (/ Fo, FCEXS, wdf, scale, st/), sfls_punch_flag)
+         end if
+          
+          
       END DO  ! END OF REFLECTION LOOP
+
+      if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
+          !hkl=nint(STORE(M6:M6+2))
+          call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
+     1      (/ Fo, FCEXS, wdf, scale, st/), sfls_punch_flag, .true.)
+      end if
+
       
       ! put back right hand side into original storage
       if(sfls_sp_normalm<0) then
@@ -2534,9 +2487,8 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
         deallocate(righthandside_sp)
       end if
 
-      IF(SFLS_TYPE .EQ. SFLS_REFINE)THEN    ! NO REFINEMENT
+      IF(SFLS_TYPE .EQ. SFLS_REFINE)THEN    ! REFINEMENT
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
-            IF (ISTORE(M33CD+12).EQ.0) THEN    ! Just a normal accumulation.
               if (ISTORE(M33CD+13).NE.0) THEN
                  ! process the remaining chunk of design matrix
                  if(designindex>0) then
@@ -2641,7 +2593,6 @@ c Looks OK.
                  END DO
 
               END IF
-            END IF
           END IF
       END IF
       
@@ -2664,13 +2615,6 @@ c Looks OK.
         deallocate(normalmatrix_sp)      
       end if
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
-
-      IF (ISTORE(M33CD+12).NE.0) THEN    ! Leverage plot
-        WRITE(CMON,'(A,F18.14,A/A)')'^^PL YAXISRIGHT ZOOM 0.0 ',
-     1   REDMAX,' SHOW',
-     1   '^^CR'
-        CALL XPRVDU(NCVDU, 2,0)
-      ENDIF
 
       IF (NT .LE. 0) THEN
       IF (ISSPRT .EQ. 0) WRITE(NCWU,5851)

@@ -1,4 +1,4 @@
-! The module solve_helper contains methods to invert the normal matrix
+!> The module solve_helper contains methods to invert the normal matrix
 module solve_helper
 contains 
 

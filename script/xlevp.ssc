@@ -27,11 +27,7 @@
 ^^CR
 ^^CO SENDPROGRESSTO _FOFCPR
 %  COPY '#sfls'
-%  COPY 'refine'
-%  COPY 'shift general=0'
-%  COPY '#sfls'
-%  COPY 'refine lev=1'
-%  COPY 'shift general=0'
+%  COPY 'refine calc=leverages plot=yes'
 %  COPY 'end'
 %  GET SILENT NOSTORE TEXT ' ' ' '
 ^^CO DISPOSE xlevp

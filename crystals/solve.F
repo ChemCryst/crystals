@@ -900,7 +900,12 @@ C -- if numpy format, print out a python script
          
 C-- If we are calculating leverages then do it here         
          IF ( sfls_calcul_flag==1 ) THEN
-            call sfls_punch_leverages(jy)
+            if(ISTORE(M33CD+12)>=0) then ! PLOT=YES keyword 
+              i=nint(STORE(M33CD+9)) !parameter P1. In this case, least square parameter number to consider
+              call sfls_punch_leverages(jy, plot=.true., tselectedarg=i)
+            else
+              call sfls_punch_leverages(jy)
+            end if
          END IF
                     
          L11RC = KADD11(-102,MD11R, JY)
