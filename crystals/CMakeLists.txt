@@ -48,7 +48,6 @@ math.F90
 formatnumber.F90
 solve_helper.F90
 sfls_punch.F90
-mrgrnk.F90
 absolut.F90
 absorb.F
 accumula.F
