@@ -1973,13 +1973,13 @@ use xunits_mod, only: ncvdu !< lis file
 implicit none
 
 WRITE(CMON,'(A,6(/,A))') &
-&   '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP', &
+&   '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP KEY', &
 &   '^^PL XAXIS TITLE ''k x Fo'' NSERIES=2 LENGTH=2000', &
 &   '^^PL YAXIS TITLE ''Leverage, Pii'' ZOOM 0.0 1.0', &
 &   '^^PL YAXISRIGHT TITLE ''tij**2/(1+Pii)''', &
 &   '^^PL SERIES 1 TYPE SCATTER SERIESNAME ''Leverage''', &
 &   '^^PL SERIES 2 TYPE SCATTER', &
-&   '^^PL SERIESNAME ''Influence of remeasuring'' USERIGHTAXIS'
+&   '^^PL SERIESNAME ''Influence of remeasuring (normalised)'' USERIGHTAXIS'
 CALL XPRVDU(NCVDU, 7,0)
 
 end subroutine
