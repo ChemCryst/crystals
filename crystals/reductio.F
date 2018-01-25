@@ -1709,6 +1709,8 @@ c
 c Now write out the Multiplicity of observation histogram
         CFILE2 = 'moo2.dat' 
         CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 8 )
+        write(ncfpu2,'(A)')
+     1  '  Mult     nRef  Resol      nRef'
         do i=1,nbin
           if(jbin(i,2).gt.0)then
            idjw=nint(float(jbin(i,1))/float(jbin(i,2)))
@@ -2208,6 +2210,7 @@ c
       nobs=0
       mobs=0
       rewind(ncfpu2)
+      read(NCFPU2,'(a)',end=10,err=20) cterm    !skip captions
       read(NCFPU2,'(a)',end=10,err=20) cterm
       goto 100
 10    continue 
