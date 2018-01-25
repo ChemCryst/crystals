@@ -1,11 +1,9 @@
-% script xvariance  
+% script xvariance1  
 %% plot internal vs external variance
 %%
 % VARIABLE LOGICAL XWVSRUNNING XVARRUNNING 
 % EVALUATE XVARRUNNING = TRUE
 % VARIABLE LOGICAL I6DONE I6MASK LMAONCE          
-% VARIABLE LOGICAL SIG                                                      
-% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 %%                                                                              
 % IF ( EXISTS 6 .NE. 1 ) THEN                                                   
@@ -14,7 +12,23 @@
                                                                                 
 %   FINISH                                                                      
 % END IF                                                                        
-%     if .not. sig then
+% VARIABLE LOGICAL MOO
+% EVALUATE MOO = FILEEXISTS 'moo.dat'
+%     if .not. moo then
+{E
+{E The file MOO.DAT does not exist    
+{E
+%        copy '#script xhelp1'
+
+ The file 'moo.dat' was created during input of reflections.
+ It no longer exists, or is in a different folder
+
+%        copy '#script xhelp2'  
+%        FINISH
+%     end if
+% VARIABLE LOGICAL SIG                                                      
+% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
+% IF .NOT. SIG THEN
 {E
 {E The file SIGMAS.DAT does not exist    
 {E
@@ -25,7 +39,7 @@
 
 %        copy '#script xhelp2'  
 %        FINISH
-%     end if
+% END IF
 %%                                                                              
 % EVALUATE I6DONE = TRUE                                                        
 % EVALUATE I6MASK = TRUE                                                        
@@ -101,9 +115,8 @@
 ^^WI  }
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
-%%
-%%
 ^^CR   
+%%
 %%                                                                              
 % LOOP                                                                          
 %%                                                                       
@@ -156,21 +169,7 @@
 ^^CR  
 %%
 %%
-% VARIABLE LOGICAL MOO
 % VARIABLE INTEGER BIN CONTENT
-% EVALUATE MOO = FILEEXISTS 'moo.dat'
-%     if .not. moo then
-{E
-{E The file MOO.DAT does not exist    
-{E
-%        copy '#script xhelp1'
-
- The file 'moo.dat' was created during input of reflections.
- It no longer exists, or is in a different folder
-
-%        copy '#script xhelp2'  
-%        FINISH
-%     end if
 %%
 ^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSIGMA2 KEY                               
 ^^PL XAXIS TITLE 'Multiplicity'    
