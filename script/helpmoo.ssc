@@ -53,8 +53,9 @@ The right histogram shows the average multiplicity as a function of resolution.
  (sin(theta) / lambda)**3.  This ensues that each bin 
  contains roughly the same number of reciprocal lattice points.
 
-
-
+{S  REMEMBER that the s.u. stored in the .DSC file is the s.u. of the Mean.
+{S  s.u.(Mean) = (population s.u.) / square_root(multiplicity)
+{S  and is therefor reduced for high multiplicity reflections.
 % COPY '#SCRIPT XHELP2'
 % END SCRIPT
 
