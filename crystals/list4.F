@@ -832,12 +832,12 @@ C
           IF (IFTYPE .EQ. 0) THEN
             G=2.*FO*E-1.
           ELSE
-            G = 2. * (LOG10(FC)*E) -1.
+            G = 2.*(LOG10(FC)*E) -1.
             DFSQ = SQRT(DFSQ)
           ENDIF
           B=1.                  
           C=G
-          AWI=B*STORE(L4)
+          AWI=B*STORE(L4)           ! The first weight parameter, P(1)
           IF ( MD4 .GE. 3 ) THEN    ! MORE THAN TWO TERMS
             M=L4+2
             DO L=3,MD4
@@ -2696,8 +2696,9 @@ C--PRINT THE TOTALS FOR THIS GROUP OF REFLECTIONS
       else
             adjw1=0.
       endif
-      if (store(l+2) .ge. 10.*store(l+3)) then
-            fovsfc = 10000.
+c     limit the maximum value of Fo/Fc sent to plot to 2.0
+      if (store(l+2) .ge. 2.*store(l+3)) then
+            fovsfc = 2000.
       else
             fovsfc = 1000. * adjw1
       endif
@@ -2792,7 +2793,7 @@ cdjwjul09
      1'^^PL PLOTDATA _THETA BARGRAPH ATTACH _VSINT ', CSHK(PKTHE),
      1'^^PL YAXIS ZOOM 0.01 100 TITLE',
      1'^^PL  "<(Fo-Fc)\**2>" LOG NSERIES=4 LENGTH=10 XAXIS TITLE',
-     1'^^PL ''<-Low angle  sin\**2\theta/\lambda\**2 High angle->''',
+     1'^^PL ''<-Low angle  (sin_theta/lambda)\**2 High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
      1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
      1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',

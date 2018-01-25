@@ -1,5 +1,10 @@
 %SCRIPT XWTVSIG                                                                 
 %%
+%% plot weight vs sigma from old-type sigmas.dat file.
+%% New-type files are processes in XVARIANCE2
+%%
+% VARIABLE LOGICAL SIG SIG2               % Decalre both so that SIG2 is false
+% EVALUATE SIG = FILEEXISTS 'sigmas.dat'
 % VARIABLE LOGICAL XWVSRUNNING XVARRUNNING
 % EVALUATE XWVSRUNNING  = TRUE
 % VARIABLE INTEGER FTYPE
@@ -55,14 +60,15 @@
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 ^^CO SENDPROGRESSTO _FOFCPR                                                     
+%%
 %  LOOP  
 %    COPY '#sum list 6 level=sigma'                                              
 %    COPY 'END'                                                                 
-
 %% output a dividing ruler
 {S 
 %    copy '#sum l 4'
-%    copy 'end'                                                                       
+%    copy 'end' 
+%%
 %    VERIFY EXT_BOK SAVENPP VARSCP X_HELP OMIT                                                        
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
 %    IF VALUE .EQ. 1 THEN                                                       
@@ -73,7 +79,15 @@
 ^^CO    SET _VWTVSIG SAVE 800 600 weight_
 %    ELSE IF VALUE .EQ. 3 THEN
 %       IF XVARRUNNING .EQ. FALSE THEN
-%         COPY '#SCRIPT XVARIANCE'
+% show sig sig2
+%         IF .NOT. SIG THEN
+{E
+{E Required sigma.dat file does not exist
+{E
+%           FINISH
+%         ELSE
+%           COPY '#SCRIPT XVARIANCE'
+%         END IF
 %       ELSE
 {E Variance SCRIPT already running
 %       END IF

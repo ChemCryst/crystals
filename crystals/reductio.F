@@ -1148,6 +1148,7 @@ C
 C--
       parameter(nbin=20)                        !Multipliicity histogram
       dimension ibin(nbin)                      !
+      dimension jbin(nbin,2)
 c
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM30.INC'
@@ -1166,6 +1167,7 @@ C
      2 JCODE,MDCODE,NCODE,CHOP,NCHOP,IPRINT,APRINT,ISQ,IMTWIN,IBUF,
      3 JBUF,NBUF,ITEMP2,IREF,JREF,NTERM,NREF,NEND,IFO,JFO,ITWIN,
      4 N6DEAD,N6CTMP,N6RTMP,JPRINT,NPRINT
+      INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST30.INC'
@@ -1176,13 +1178,13 @@ C
       INCLUDE 'QLST30.INC'
       EQUIVALENCE (PROCS(1),ITYP06)
       CHARACTER *12 CFILE
-      CHARACTER *10 CFILE2
+      CHARACTER *11 CFILE2
       DIMENSION JFRN(4), JFRN2(4)
       SAVE
 C
       DATA IVERSN / 500 /
       DATA CFILE / 'mergingr.dat' /
-      DATA CFILE2/ 'sigmas.dat' /
+      DATA CFILE2/ 'sigmas2.dat' /      !'2' added to indicate a new 2-table format
 #ifdef _HOL_
       DATA JFRN  /1HF, 1HR, 1HN, 1H1/
       DATA JFRN2 /1HF, 1HR, 1HN, 1H2/
@@ -1237,11 +1239,18 @@ C--ALLOCATE SPACE FOR THE INPUT BUFFER
       JBUF=KCHNFL(NBUF)
 C--SET UP THE LENGTH OF EACH EQUIVALENT WHILE IT IS IN CORE
       NTERM=MD6+4
-C--LOAD LIST 13
-      CALL XFAL13
+C--LOAD LISTS
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
       IF ( IERFLG .LT. 0 ) GO TO 9900
-
-
+c set up resolution bin sizes for moo plots.
+      wavelength=store(l13dc)
+      thetamax=store(l30ix+7)
+      resmax=sin(dtr*thetamax)/wavelength
+      resmax3=resmax*resmax*resmax
+      binres=resmax3/float(nbin)
+c      write(123,*)wavelength, thetamax, resmax3, binres
 cdjwjun05
 C IMTWIN INDICATES IF THE DATA ARE TO BE REGARDED AS TWINNED DURING
 C THE MERGE
@@ -1302,11 +1311,15 @@ C--SET UP THE CORE BUFFER FLAGS
       NEND=0
       IF ( IULN .EQ. 6 ) THEN
         CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
-        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 10 )
+        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 11 ) !sigmas2
         IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
-c       write internal and external variances to sigma.dat
-        WRITE(NCFPU2,'(A)')
-     1'     Index        Fo^2   External  Internal contributors'
+c       write internal and external standard errors to sigma.dat
+        WRITE(NCFPU2,'(A,A)') 
+     1 'Internal and external estimates of the standard deviation',
+     2 ' of the mean (standard error of the mean)'
+        WRITE(NCFPU2,'(A,A)')
+     1'     Index        Fo^2   External  Internal contributors',
+     2 ' Resolution'
       endif
       IF(IPRINT)1550,1450,1450
 C--PRINT THE CAPTIONS
@@ -1656,7 +1669,7 @@ c  jul09  Now fixed in the SCRIPTS XCHECK6 and XRMERGE
         I = KFLCLS(NCFPU1)
       END IF
 C
-C----- LOAD DATA IF LIST 30 NOT ALREADY IN CORE
+C----- LOAD DATA IF LISTS NOT ALREADY IN CORE
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (IERFLG .LT. 0) GOTO 6520
@@ -1685,19 +1698,27 @@ cdjwapr2010 - dont fiddle with List 30 if values already set
 4150  CONTINUE
 C--AND NOW THE TERMINATION MESSAGES
 4200  CONTINUE
-c     Process sigmas.dat to find possible equations.
+c     Process sigmas2.dat to find possible equations.
       if (iuln.eq.6) then
         moo = 5   !minimum acceptable multiplicity for regression
-        CALL MRGLSQ(moo,ibin,nbin)
-c       close sigmas.dat
-        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 10 )
+        CALL MRGLSQ(moo,ibin,nbin,jbin,binres)
+c       close sigmas2.dat
+        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 11 ) !sigmas2
 c
 c
 c Now write out the Multiplicity of observation histogram
-        CFILE2 = 'moo.dat' 
-        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 7 )
-        WRITE(NCFPU2,'(i5,i10)')(i,ibin(i),i=1,nbin)
-        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 7 )
+        CFILE2 = 'moo2.dat' 
+        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 8 )
+        do i=1,nbin
+          if(jbin(i,2).gt.0)then
+           idjw=nint(float(jbin(i,1))/float(jbin(i,2)))
+          else
+           idjw=0
+          endif
+        WRITE(NCFPU2,'(i5,i10,f6.2,i10)')
+     1  i,ibin(i),float(i)*binres,idjw
+        enddo
+        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 8 )  !close the moo file
         CALL XOPMSG ( IOPMER , IOPEND , IVERSN )
         CALL XTIME2(2)
       endif
@@ -1775,6 +1796,8 @@ C--ROUTINE TO COMBINE THE CONTRIBUTORS FOR ONE REFLECTION
 C  TOGETHER.
 C
 C  IULN  - type of LIST 6
+      INCLUDE 'XLST01.INC'
+      EXTERNAL RCSTL3
 C
 C--RETURN VALUES OF 'KMERGE' ARE :
 C
@@ -2140,11 +2163,13 @@ C--PRINT THE REFLECTION
 2850  FORMAT(/1X,3I4,1X,3F10.2,8x,i8,1x,a1,f9.2,f10.2/)
 C--FIND THE STATISTICS IF NECESSARY
 2900  CONTINUE
-c
-c     write to sigmas.dat
-      IF ( IULN .EQ. 6 ) 
-     1 WRITE(NCFPU2,'(3i4,f10.2,1x,2f10.2,i10)')
-     2 (istore(i),i=iref,iref+2),work(5),work10, work9, nref
+C     compute (sintheta/lambda)**3
+      res3=rcstl3(float(istore(iref)),float(istore(iref+1)),
+     1 float(istore(iref+2)),store(L1S))
+c     write to sigmas2.dat
+      IF ( IULN .EQ. 6 )
+     1 WRITE(NCFPU2,'(3i4,f10.2,1x,2f10.2,i10,f9.3)')
+     2 (istore(i),i=iref,iref+2),work(5),work10, work9, nref, res3
 c
       IF(J-2)2950,3000,3000
 C--COMPUTE THE POINT
@@ -2164,15 +2189,18 @@ c
       END
 C
 CODE FOR MRGLSQ
-      SUBROUTINE  MRGLSQ(MOO,ibin,nbin)
+      SUBROUTINE  MRGLSQ(MOO,ibin,nbin,jbin,binres)
       character*80 cterm
       DIMENSION TENSOR(3)
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
       dimension ibin(nbin)
+      dimension jbin(nbin,2)
 C
       do j=1,nbin
             ibin(j)=0
+            jbin(j,1)=0
+            jbin(j,2)=0
       enddo
 c
       i= linfit(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
@@ -2191,15 +2219,22 @@ c
       goto 999
 c
 100   continue
-      read(NCFPU2,101,end=200,err=20) x,y,imoo
-101   format(12x,10x,f11.2,f10.2,i10)
+      read(NCFPU2,101,end=200,err=20) x,y,imoo,res3
+101   format(12x,10x,f11.2,f10.2,i10,f9.3)
       mobs=mobs+1
       j = min(imoo,nbin)
       if(j.gt.0) ibin(j)=ibin(j)+1
-      if(imoo .lt. moo) goto 100
-      if(x.lt.0.) goto 100
+      if(imoo .lt. moo) goto 150
+      if(x.lt.0.) goto 150
       i= linfit(2,x,y,float(imoo),a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
       nobs=nobs+1
+150   continue
+      j=nint(res3/binres)
+      j=min(j,nbin)
+      if(j.gt.0)then
+            jbin(j,1)=jbin(j,1)+imoo
+            jbin(j,2)=jbin(j,2)+1
+      endif
       goto 100
 c
 200   continue

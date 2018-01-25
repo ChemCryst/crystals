@@ -19,6 +19,7 @@
 
  The file 'moo2.dat' was created during input of reflections.
  It no longer exists, or is in a different folder
+ Re-input your reflection data.
 
 %        copy '#script xhelp2'  
 %        FINISH
@@ -95,6 +96,8 @@
 ^^PL SERIES 1 SERIESNAME 'MoO'                                     
 %     CLEAR
 %     COPY '#OPEN SCPDATA moo2.dat' 
+%% skip one line
+%      EXTRACT NEXT                                                             
 %     LOOP
 %      ON ERROR TERMINATE                                                           
 %      ON END TERMINATE
@@ -130,6 +133,8 @@
 ^^PL SERIES 1 SERIESNAME 'MoO'                                     
 %     CLEAR
 %     COPY '#OPEN SCPDATA moo2.dat' 
+%% skip one line
+%      EXTRACT NEXT                                                             
 %     LOOP
 %      ON ERROR TERMINATE                                                           
 %      ON END TERMINATE
@@ -144,7 +149,6 @@
 %      EVALUATE ABIN = VALUE                                        
 %      GET NOSTORE NOPROMPT INTEGER ' ' '0'
 %      EVALUATE CONTENT = VALUE                                        
-
 %%
 %      CLEAR
 %      INSERT !^^PL LABEL '!   
@@ -156,11 +160,6 @@
 %     COPY '#CLOSE SCPDATA'
 ^^PL SHOW                                                                       
 ^^CR     
-
-
-
-
-
 %%                                                                       
 %  LOOP                                                                         
 %    VERIFY XC_BXX  XC_HELP                                                        

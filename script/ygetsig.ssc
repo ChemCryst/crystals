@@ -1,15 +1,28 @@
 %SCRIPT YGETSIG
-%%    read internal and external sigmas from the file SIGMAS.DAT 
-%%    called from XVARIANCE.SSC
+%%    read internal and external sigmas from the SIGMAS.DAT files
+%%    called from XVARIANCE.SSC and XVARIANCE2
 %     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES 
-%     VARIABLE INTEGER NSIGMAS NITEMS
-%     VARIABLE REAL ZERO
+%     VARIABLE LOGICAL SIG SIG2
+%SHOW SIG SIG2
+%     VARIABLE INTEGER NSIGMAS NITEMS STEP
+%     VARIABLE REAL ZERO 
 %     EVALUATE ZERO = 0.
-%     COPY '#OPEN SCPDATA sigmas.dat' 
-%%   Skip first line:                                                      
-%     EXTRACT NEXT
+%     IF SIG THEN 
+%        COPY '#OPEN SCPDATA sigmas.dat' 
+%%       Skip first  line:                                                      
+%        EXTRACT NEXT
+%     ELSE IF SIG2 THEN
+%        COPY '#OPEN SCPDATA sigmas2.dat' 
+%%       Skip first 2 lineS:                                                      
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT NEXT
+%     END IF
 %     LOOP
-%      TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
+%      EVALUATE STEP = LOOPCOUNTER MOD  200 
+%      IF STEP .EQ. 0 THEN
+%       TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
+%      END IF
 %      ON ERROR TERMINATE                                                           
 %      ON END TERMINATE
 %      EXTRACT NEXT                                                             
@@ -27,6 +40,10 @@
 %      EVALUATE INTERNAL = VALUE                                        
 %      GET NOSTORE NOPROMPT INTEGER ' ' '1' 
 %      EVALUATE NITEMS = VALUE  
+%      IF SIG2 THEN
+%% skip the 8th item
+%        GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      END IF
 %%
 %      CLEAR
 %      INSERT !^^PL LABEL '!   
@@ -57,7 +74,7 @@
 %      EVALUATE GRADIENT = SXY / SXX    
 %      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     ELSE
-{E Insufficient equivalent reflections for variance plot in "sigmas.dat" 
+{E Insufficient equivalent reflections for variance plot in "sigmas2.dat" 
 %      TRANSFER '{E   ' //  CHARACTER NSIGMAS // ' equivalents found' TO DISPLAY
 %     END IF                                                                          
 %%

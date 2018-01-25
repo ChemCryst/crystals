@@ -1,11 +1,24 @@
-%SCRIPT choosevar
+%SCRIPT CHOOSEVAR
 %%
-
-% VARIABLE LOGICAL SIG                                                      
-% EVALUATE SIG = FILEEXISTS 'sigmas2.dat'                                   
-%     if  sig then
+%% DECIDE WHETHER TO READ OLD-STYLE sigmas.dat OR New sigmas2.dat
+% VARIABLE LOGICAL SIG SIG2                                                      
+% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
+% EVALUATE SIG2 = FILEEXISTS 'sigmas2.dat'                                   
+% show sig sig2
+%     if  sig2 then
 %            copy '#script xvariance2'
-% else
-%            copy '#script xvariance1'
+%     else if sig then
+%            copy '#script xvariance'
+%     else
+{E
+{E The file SIGMAS2.DAT does not exist    
+{E
+%        copy '#script xhelp1'
+
+ The file SIGMAS2.DAT was created during input of reflections.
+ It no longer exists, or is in a different folder
+ Re-input your reflection data.
+
+%        copy '#script xhelp2'  
 %     end if
 %end script

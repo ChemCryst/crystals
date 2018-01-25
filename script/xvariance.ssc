@@ -1,12 +1,8 @@
-% script xvariance  
-%% plot internal vs external variance
+% SCRIPT XVARIANCE   
+%% plot internal vs external variance for old-style sigmas.dat
 %%
 % VARIABLE LOGICAL XWVSRUNNING XVARRUNNING 
 % EVALUATE XVARRUNNING = TRUE
-% VARIABLE LOGICAL I6DONE I6MASK LMAONCE          
-% VARIABLE LOGICAL SIG                                                      
-% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
-% EVALUATE LMAONCE = TRUE                                                       
 %%                                                                              
 % IF ( EXISTS 6 .NE. 1 ) THEN                                                   
                                                                                 
@@ -14,6 +10,8 @@
                                                                                 
 %   FINISH                                                                      
 % END IF                                                                        
+% VARIABLE LOGICAL SIG SIG2                                                     
+% EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 %     if .not. sig then
 {E
 {E The file SIGMAS.DAT does not exist    
@@ -22,14 +20,28 @@
 
  The file SIGMAS.DAT was created during input of reflections.
  It no longer exists, or is in a different folder
+ Re-input your reflection data.
+
 
 %        copy '#script xhelp2'  
 %        FINISH
 %     end if
-%%                                                                              
-% EVALUATE I6DONE = TRUE                                                        
-% EVALUATE I6MASK = TRUE                                                        
-% COPY '#SCRIPT XPUTINFO'                                                       
+% VARIABLE LOGICAL MOO
+% VARIABLE INTEGER BIN CONTENT
+% EVALUATE MOO = FILEEXISTS 'moo.dat'
+%     if .not. MOO then
+{E
+{E The file MOO.DAT does not exist    
+{E
+%        copy '#script xhelp1'
+
+ The file 'moo.dat' was created during input of reflections.
+ It no longer exists, or is in a different folder
+ Re-input your reflection data.
+
+%        copy '#script xhelp2'  
+%        FINISH
+%     end if
 %%                                                                              
 %%                                                                              
 ^^WI WINDOW XVAR 'Analysis of Variance of F^2' LARGE MODAL KEEP SIZE                    
@@ -113,7 +125,7 @@
 ^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'  
 %  VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES
 %  VARIABLE INTEGER NITEMS
-%  IF ( SIG .AND. LMAONCE ) THEN  
+%  IF ( SIG ) THEN  
 %    BLOCK
 ^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas.dat - may be slow'             
 ^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA    KEY                              
@@ -156,29 +168,12 @@
 ^^CR  
 %%
 %%
-% VARIABLE LOGICAL MOO
-% VARIABLE INTEGER BIN CONTENT
-% EVALUATE MOO = FILEEXISTS 'moo.dat'
-%     if .not. moo then
-{E
-{E The file MOO.DAT does not exist    
-{E
-%        copy '#script xhelp1'
-
- The file 'moo.dat' was created during input of reflections.
- It no longer exists, or is in a different folder
-
-%        copy '#script xhelp2'  
-%        FINISH
-%     end if
-%%
 ^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VSIGMA2 KEY                               
 ^^PL XAXIS TITLE 'Multiplicity'    
 ^^PL YAXIS  TITLE 'Number of contibutors'                                
 ^^PL NSERIES=1 LENGTH=20                                                       
 ^^PL SERIES 1 SERIESNAME 'MoO'                                     
 %      CLEAR
-
 %     COPY '#OPEN SCPDATA moo.dat' 
 %     LOOP
 %      ON ERROR TERMINATE                                                           
@@ -200,9 +195,6 @@
 %      OUTPUT
 %     END LOOP
 %     COPY '#CLOSE SCPDATA'
-
-
-
 ^^PL SHOW                                                                       
 ^^CR     
 %    END BLOCK

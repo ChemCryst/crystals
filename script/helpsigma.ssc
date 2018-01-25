@@ -1,8 +1,20 @@
 %SCRIPT HELPSIGMA
 % COPY '#SCRIPT XHELP1'
 
-{S The scripts "Weight vs Sigma"  and "Variance" provide information
+{S The menu "Variance of Refelctions" provide information
 {S about the intensity statistics
+
+{S Wt vs Sigma plots the reciprocal of the LSQ weight versus the reciprocal
+{S of the standard Uncertainty.
+ 
+{I Once the structure is solved and partially refined, look at the plot of
+{I weight versus sigma (Analyse/Wt vs sigma graph) to visualise how the weights
+{I deviate from those expected from the observed variances (the green line).
+{I Usually the points lie below the green line, indicating that the
+{I sigmas have been augmented to produce a flat analysis of variance or that
+{I the weight of outliers have been reduced.
+{I
+
 
 {S Variance plots the Internal variance against the External variance
 
@@ -22,12 +34,6 @@
 {I absorption, ice formation on crystal, crystal movement etc.
 {I
 
-{S Wt vs Sigma plots the reciprocal of the LSQ weight versus the variance.
  
-{I Once the structure is solved and partially refined, look at the plot of
-{I weight versus sigma (Analyse/Wt vs sigma graph) to visualise the extent to
-{I  which the sigmas have been augmented to produce a flat analysis of variance
-{I 
-{I 
 
 % COPY '#SCRIPT XHELP2'

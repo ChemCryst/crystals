@@ -1259,6 +1259,18 @@ c      print *,'rcstl2: ', h,k,l, rcstl2, r
       RETURN
       END
 C
+C
+CODE FOR RCSTL3
+      FUNCTION RCSTL3(H,K,L,R)
+C--CALCULATE (SIN(THETA)/LAMBDA)**3
+      REAL R(6) ! Upper triangle (11,22,33,23,13,12 ordering) of R matrix used to compute sin(theta)/lambda
+C          R IS NORMALLY STORE(L1S)
+      REAL H, K, L ! Reflection indices   
+      RCSTL3=SQRT(RCSTL2(H,K,L,R))
+      RCSTL3=RCSTL3*RCSTL3*RCSTL3
+      RETURN
+      END
+C
 CODE FOR KTYP06
       FUNCTION KTYP06(ITYP06)
 C--SET THE TYPE OF LIST 6 TO BE USED.

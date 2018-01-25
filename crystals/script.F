@@ -2789,6 +2789,8 @@ C
       PARAMETER ( JPOSTK = 4 )
 CDEC08  1 NEW UNARY OPERATOR
 C       REAL=ABS(REAL)
+cjan18  New Binary Operator
+c       REAL = REAL MOD (REAL) or INT
 C
 CJAN02  1 NEW UNARY OPERATOR
 C       CHAR=GETENV(CHAR)
@@ -2823,7 +2825,7 @@ cdjwMar-2017
 C       CHAR=PACK(CHAR) - REMOVES ALL SPACES AND LEFT-PACKS
 C
 cdjwdec08
-      PARAMETER ( NOPER = 57 , NUBASE = 28 )
+      PARAMETER ( NOPER = 58 , NUBASE = 29 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2864,7 +2866,7 @@ C
 C
       DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,
      2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,
-     3              6 , 7 , 11, 11, 2,  2 , 2 , 2 ,
+     3              6 , 7 , 11, 11, 2,  2 , 2 , 2 , 2 ,
 CJAN99  abs dec08
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
@@ -2962,7 +2964,7 @@ C
      3        4050 , 4050 , 4050 , 4050 , 4050 ,
      4        4050 , 4050 , 4050 , 4100 , 4110 ,
      5        8000 , 4120 , 4130 , 4140 , 4150 ,
-     6        4160 , 4170 , 4180 ,
+     6        4160 , 4170 , 4180 , 4155 ,
      6        9940 ) , IOPER
       GO TO 9940
 C
@@ -3157,6 +3159,22 @@ C
 C
       GO TO 8000
 C
+
+4155  CONTINUE
+C
+C -- 'MOD'
+C
+          IF ( ITYPE(1) .EQ. 1 ) THEN
+            ICODE(JVALUE,IARG(2)) = MOD(ICODE(JVALUE,IARG(2)) ,
+     2                              ICODE(JVALUE,IARG(1)))
+          ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
+            XCODE(JVALUE,IARG(2)) = MOD(XCODE(JVALUE,IARG(2)) ,
+     2                              XCODE(JVALUE,IARG(1)))
+          ENDIF
+C
+      GO TO 8000
+C
+
 C
 4160  CONTINUE
 C
@@ -4134,7 +4152,7 @@ C
       PARAMETER ( NOUTVL = 100 , NOPERS = 20 )
 C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
-      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 26 )
+      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 27 )
 CJAN99  'ABS' dec08
       PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 29 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
@@ -4172,7 +4190,7 @@ C
      5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
      6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
      7                '//'    , 'STARTSWITH' , '**', 'IOR',        !23-26
-     7                'IAND'  , 'IDECMASK',                        !27,28   !Bop - 26
+     7                'IAND'  , 'IDECMASK', 'MOD' ,                !27-29   !Bop - 27
 C
      8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32   !Uop 1 - 4
      9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36   !Uop 5 - 8
@@ -4182,7 +4200,7 @@ CJAN99 'ABS' dec08
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
      3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
      4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
-     5                'LEN'/ !57  !un 29
+     5                'LEN'/                                       !57      !un 29
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -4191,7 +4209,7 @@ C
      5                   80   ,    80   ,    80   ,    80   ,
      6                   50   ,    60   ,    30   ,    20   ,
      7                  100   ,    80   ,   190   ,    90   ,
-     8                   90   ,    90   ,
+     8                   90   ,    90   ,   190   ,
 C
      8                   90   ,   180   ,   180   ,   180   ,
      9                   40   ,   180   ,   180   ,   180   ,

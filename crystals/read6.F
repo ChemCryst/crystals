@@ -1392,12 +1392,13 @@ C----- MIN AND MAX INDICES, FROM L6 DETAILS
 C---- THETA IS NOT AVAILABLE DURING READING REFLECTIONS
 c djw-2017. Why Not? this is probably the best place to compute thmax
 c currrently it is done in SFLS.
-c we dont want to do this updating every time we access LIST 6
 c For twinned data the theta for contributors may be (slightly) different.
 c SFLS will see this difference.
-C        LIX = L6DTL + 16*MD6DTL
-C        STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
-C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
+c djw-2018. Store the current 'best estimate' on input. SFLS may update it
+c but we need some kind of value for the MOO calculations.
+         LIX = L6DTL + 16*MD6DTL
+         STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
+         STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
          CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
        ENDIF
        ENDIF
