@@ -1,15 +1,23 @@
 %SCRIPT YGETSIG2
-%%    read internal and external sigmas from the file SIGMAS.DAT 
-%%    called from XVARIANCE.SSC
+%%    read internal and external sigmas from the file SIGMAS2.DAT 
+%%    called from XVARIANCE2.SSC
 %     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES 
-%     VARIABLE INTEGER NSIGMAS NITEMS
-%     VARIABLE REAL ZERO
+%     VARIABLE LOGICAL SIG
+%SHOW SIG
+% FINISH
+%     VARIABLE INTEGER NSIGMAS NITEMS STEP
+%     VARIABLE REAL ZERO 
 %     EVALUATE ZERO = 0.
 %     COPY '#OPEN SCPDATA sigmas2.dat' 
-%%   Skip first line:                                                      
+%%   Skip first 2 lines:                                                      
+%     EXTRACT NEXT
+%     CLEAR
 %     EXTRACT NEXT
 %     LOOP
-%      TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
+%      EVALUATE STEP = LOOPCOUNTER MOD  200 
+%      IF STEP .EQ. 0 THEN
+%       TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
+%      END IF
 %      ON ERROR TERMINATE                                                           
 %      ON END TERMINATE
 %      EXTRACT NEXT                                                             
@@ -59,7 +67,7 @@
 %      EVALUATE GRADIENT = SXY / SXX    
 %      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     ELSE
-{E Insufficient equivalent reflections for variance plot in "sigmas.dat" 
+{E Insufficient equivalent reflections for variance plot in "sigmas2.dat" 
 %      TRANSFER '{E   ' //  CHARACTER NSIGMAS // ' equivalents found' TO DISPLAY
 %     END IF                                                                          
 %%
