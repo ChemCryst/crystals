@@ -1,0 +1,227 @@
+%SCRIPT XVARIANCE2                                                                 
+%%   
+%% Process the newer sigmas2.dat fle (with extra info)
+%%
+% VARIABLE LOGICAL XWVSRUNNING XVARRUNNING 
+% VARIABLE LOGICAL ABORT
+% EVALUATE ABORT = FALSE
+% EVALUATE XWVSRUNNING  = TRUE
+% IF ( EXISTS 6 .NE. 1 ) THEN                                                   
+                                                                                
+{E No reflections stored. Use "X-ray data->Input reflections".                  
+                                                                                
+%        EVALUATE ABORT = TRUE
+% END IF                                                                        
+% VARIABLE LOGICAL SIG SIG2                                                     
+% EVALUATE SIG2 = FILEEXISTS 'sigmas2.dat'                                   
+% IF .NOT. SIG2 THEN
+{E
+{E The file SIGMAS2.DAT does not exist    
+{E
+%        copy '#script xhelp1'
+
+ The file SIGMAS2.DAT was created during input of reflections.
+ It no longer exists, or is in a different folder
+ Re-input your reflection data.
+
+%        copy '#script xhelp2'  
+%        EVALUATE ABORT = TRUE
+% END IF
+% IF ABORT .EQ. TRUE THEN
+
+{E  Abandoning SCRIPT
+
+%  FINISH
+% END IF
+%%                                                                              
+% VARIABLE INTEGER FTYPE
+%% Find refinement type
+%% FTYPE is 0 for Fo ref and 1 for Fsq ref                                     
+%      IF ( EXISTS 23 .GT. 0 ) THEN
+%          COPY '#GENERALEDIT 23'
+%          COPY 'LOCATE RECORDTYPE=103'
+%          COPY 'TRANSFER FROM OFFSET =  1 TO FTYPE'
+%          COPY 'END'
+%          EVALUATE FTYPE = FTYPE + 1
+%      END IF
+%%
+^^WI WINDOW xwtvsig 'Weight versus Sigma' KEEP SIZE MODAL                              
+^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'                                          
+^^WI GRID MAIN NROWS=4 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI  @ 1,1 GRID PRIME NROWS=3 NCOLS=3                                          
+^^WI  {
+^^WI    @ 2,2 RESIZE _XARSZ VERTICAL
+^^WI     {
+%%
+^^WI     ITEM GRID GRAPH NROWS=7 NCOLS=3
+^^WI      {
+^^WI      @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                               
+^^WI       {                                                                        
+^^WI       @ 1,3 GRID EXP2 NROWS=4 NCOLS=2                                         
+^^WI        {                                                                       
+^^WI        @ 1,1 STATIC XFW1                                                      
+^^WI        'You are looking at a scatter plot of 1/Sigma versus SQRT(weight)' 
+%           IF FTYPE .EQ. 0 THEN
+^^WI         @ 1,2 STATIC XFW1 ' for a refinement on F' 
+%           ELSE
+^^WI         @ 1,2 STATIC XFW1 ' for a refinement on Fsquare' 
+%           END IF      
+^^WI        @ 2,1 STATIC XFW4                                                      
+^^WI         'Right-click on any outliers to add them to the Omited list (LIST28)'
+^^WI        @ 3,1 STATIC XWF5
+^^WI          'The continuous green line represents simple statistical weights'      
+^^WI        }                                                                       
+^^WI       }                                                                        
+^^WI       @ 4,2 PLOTWINDOW _VWTVSIG NROWS=20 NCOLS=64                                
+^^WI         DEFINEPOPUPMENU POPUP 'Selection'                                      
+^^WI          ITEM _SDELA '&Omit _L' 'OMIT_N_L'                                    
+^^WI         ENDDEFINEMENU                                                          
+^^WI       @ 6,2 GRID EXBT NROWS=1 NCOLS=3
+^^WI       {                                                                        
+^^WI        @ 1,1 STRETCH VB HORIZONTAL
+^^WI        @ 1,3 BUTTON SAVENPP 'Save Image'
+^^WI       }  
+^^WI      }
+%%
+%%
+%%
+^^WI       ITEM GRID GRAPH NROWS=7 NCOLS=3
+^^WI      {
+^^WI       @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI       {                                                                      
+^^WI        @ 1,1 ICON IM INFO                                                    
+^^WI        @ 1,3 GRID EXP2 NROWS=2 NCOLS=1                                       
+^^WI        {                                                                     
+^^WI         @ 1,1 STATIC XFW1                                                    
+^^WI          'The Internal Variance is a measure of self-consistency of equivalents'
+^^WI         @ 2,1 STATIC XFW2                                                    
+^^WI          'The External Variance comes from the instrument makers estimates'         
+^^WI        }                                                                     
+^^WI       }                                                                      
+^^WI       @ 4,2 PLOTWINDOW _VSIGMA NROWS=20 NCOLS=64 
+^^WI       @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 11
+^^WI       {   
+^^WI        @ 1,1 STATIC XFS2 ' Number of data used ='
+^^WI        @ 1,3 STATIC _MW_USED '00000'                                  
+^^WI        @ 1,7 STATIC XFS 'Internal ='                        
+^^WI        @ 1,9 STATIC _MW_GRAD '000.00'                                  
+^^WI        @ 1,10 STATIC XFS2 'x External.'
+^^WI       }
+^^WI      }
+%%
+^^WI   }
+^^WI  }                                                                         
+^^WI  @ 2,1 GRID BUTT NROWS=1 NCOLS=7                                           
+^^WI  {                                                                         
+^^WI   @ 1,1 STRETCH RS HORIZONTAL                                              
+^^WI   @ 1,2 BUTTON X_HELP 'Help'                                            
+^^WI   @ 1,6 BUTTON EXT_BOK 'Close' DEFAULT COMMIT CANCEL
+^^WI  }                                                                         
+^^WI  @ 3,1 GRID PROG NROWS=1 NCOLS=2
+^^WI  {
+^^WI    @ 1,1 STATIC _MW_TEXT ' Reflections processed = '
+^^WI    @ 1,2 STATIC _MW_SOFAR '00000'                                  
+^^WI  }
+^^WI  @ 4,1 PROGRESS _FOFCPR 'Please wait'                                      
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR
+%%
+%%
+%%Variances
+^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas2.dat - may be slow'  
+%  VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES
+%  VARIABLE INTEGER NITEMS
+%    BLOCK
+^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas2.dat - may be slow'             
+^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA    KEY                              
+^^PL XAXIS TITLE 'External (Mean variance)'                                           
+^^PL NSERIES=2 LENGTH=40 
+^^PL SERIES 1 SERIESNAME 'Low Multiplicity (<6)'
+^^PL SERIES 2 SERIESNAME 'High Multiplicity'
+^^PL YAXIS TITLE 'Internal (rms deviation)'                                    
+%    EVALUATE SXX = 0.
+%    EVALUATE SXY = 0.
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 2 TO NREFMES'
+%    COPY 'END'
+%%
+%      IF ( NREFMES .GE. 3000. ) THEN
+^^WI    WINDOW XINFO 'Warning'  MODAL
+^^WI    GRID MAIN NROWS=3 NCOLS=3                   
+^^WI     { 
+^^WI      @ 1,2 STATIC T1 'You have more than 3000 merged reflections'
+^^WI      @ 2,2 STATIC T2 'Plotting them may take some time'
+^^WI      @ 3,3 BUTTON CANCELBUTTON 'Close' CANCEL
+^^WI     } 
+^^WI    SHOW        
+^^CR 
+%       COPY '#SCRIPT YGETSIG'
+%       VERIFY  CANCELBUTTON 
+%       GET SILENT NOSTORE ABBREVIATED ' ' ' '
+%       CASE VALUE
+%        BLOCK
+%        END BLOCK
+%       END CASE
+^^WI    DISPOSE XINFO
+^^CR
+%      ELSE
+%       COPY '#SCRIPT YGETSIG'
+%      END IF
+^^PL  SHOW                                                                       
+^^CR  
+%%
+%%
+%  LOOP  
+^^CO SENDPROGRESSTO _FOFCPR                                                     
+%    COPY '#sum list 6 level=sigma'                                              
+%    COPY 'END'                                                                 
+%% output a dividing ruler
+{S 
+%    copy '#sum l 4'
+%    copy 'end'
+%%
+%    VERIFY EXT_BOK SAVENPP X_HELP OMIT                                                        
+%    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
+%    IF VALUE .EQ. 1 THEN                                                       
+^^CO    DISPOSE xwtvsig                                                
+%       EVALUATE XWVSRUNNING  = FALSE
+%       FINISH                                                                  
+%    ELSE IF VALUE .EQ. 2 THEN
+^^CO    SET _VWTVSIG SAVE 800 600 weight_
+%    ELSE IF VALUE .EQ. 3 THEN
+%     BLOCK    %XHELP
+%       COPY '#SCRIPT HELPSIGMA'
+%     END BLOCK
+%    ELSE IF VALUE .EQ. 4 THEN
+%     BLOCK                                                                      
+%      ON EDITERROR TERMINATE                                                   
+%      COPY '#GENERALEDIT 28'                                                   
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  
+%      COPY 'LOCATE RECORDTYPE = 104'                                           
+%      COPY 'INSERT'                                                            
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 0 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 1 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      INSERT 'CHANGE 2 REAL REAL ='                                            
+%      GET INTEGER ' ' ' '                                                      
+%      SEND                                                                     
+%      OUTPUT                                                                   
+%      CLEAR                                                                    
+%      COPY 'WRITE'                                                             
+%      COPY 'END'                                                               
+%     END BLOCK                                                                  
+%    END IF                                                                     
+%  END LOOP                                                                     
+% EVALUATE XWVSRUNNING  = FALSE
+%END SCRIPT                                                                     
