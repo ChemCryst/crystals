@@ -171,6 +171,8 @@ character(len=*), intent(in) :: crystals_filepath
 
     call write_list3()
     
+    call write_list28()
+
     call write_list29()
     
     call write_list5()
@@ -181,6 +183,7 @@ character(len=*), intent(in) :: crystals_filepath
     
     write(crystals_fileunit, '(a)') '\LIST 23'
     write(crystals_fileunit, '(a)') 'MODIFY ANOM=Y'
+    write(crystals_fileunit, '(a)') 'MINIMI NSING=    0 F-SQ=Y RESTR=Y REFLEC=Y'
     write(crystals_fileunit, '(a)') 'END'
     
     close(crystals_fileunit)
@@ -1291,6 +1294,8 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     end if
     write(crystals_fileunit, '(a, a)') 'CLASS ', trim(XS_name(SgInfo%XtalSystem))  
     
+    write(crystals_fileunit, '(a)') 'END'
+    write(crystals_fileunit, '(a)') '\FLIMIT'
     write(crystals_fileunit, '(a)') 'END'
     
     ! process list2
@@ -3095,5 +3100,16 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
     end do isor_loop
 end subroutine
 
+!> Write list28 (filter reflections)
+!! Insert default filters to be consistent with processing from within crystals
+subroutine write_list28()
+use crystal_data_m
+implicit none
+
+    write(crystals_fileunit, '(a)') '\LIST 28'
+    write(crystals_fileunit, '(a)') 'MINIMA'
+    write(crystals_fileunit, '(a)') 'CONT    SINTH/L**2  =   0.01000'
+    write(crystals_fileunit, '(a)') 'CONT    RATIO       =  -3.00000'
+    write(crystals_fileunit, '(a)') 'END'
 
 end module
