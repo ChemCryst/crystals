@@ -5141,6 +5141,12 @@ C--SET UP A FEW CONSTANTS
       JA=LCA              ! Address of first parameter block header                                      
       MCA=JA ! address of fisrt atom
       
+      if(uperptype<1 .or. uperptype>2) then
+         WRITE (CMON,'(a)') '{E Corrupted uperp restraint'
+         CALL XPRVDU (NCVDU,1,0)
+         return
+      end if
+      
       if(present(results)) then
           if(uperptype==2) then
             results%short_desc='Restrain an ADP perpendicular to a bond'
