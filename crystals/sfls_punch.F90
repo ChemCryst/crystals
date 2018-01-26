@@ -8,14 +8,14 @@
 !! - PLOT(optional): yes or no. plot a graph on crystals gui.
 !! - P1(optional): parameter used to tweak results of punch and/or calculate
 !!
-!! (1) **Matlab output (PUNCH=MATLAB)**
+!! (1.1) **Matlab output (PUNCH=MATLAB)**
 !!
 !! - design*.m stores the design matrix. The h,k,l index is written as a comment before the row of the design matrix.
 !!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
 !! - normal*.m stores the normal matrix and the variance/covariance matrix as a n*n matrix
 !! - wdf*.m stores the weights
 !!
-!! (2) **Plain ascii output (PUNCH=TEXT)**
+!! (1.2) **Plain ascii output (PUNCH=TEXT)**
 !!
 !! - design*.dat stores the design matrix. Each row starts with the h,k,l index followed by the derivatives
 !!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
@@ -23,7 +23,7 @@
 !! - variance*.dat stores the variance/covariance matrix as a n*n matrix
 !! - wdf*.dat stores the weights
 !!
-!! (3) **Numpy output (PUNCH=NUMPY)**
+!! (1.3) **Numpy output (PUNCH=NUMPY)**
 !!
 !! - design*.npy stores the design matrix. Each row starts with the h,k,l index followed by the derivatives
 !!   The design matrix is weighted with the square root of the weights so that when forming the normal matrix the result is weighted.
@@ -34,9 +34,25 @@
 !!
 !! ################################################################
 !!
-!! (1) ** leverages (CALCULATE=LEVERAGES)**
+!! (2.1) **leverages (CALCULATE=LEVERAGES)**
 !!
 !! - Calculate leverages and t values to a file. Format is set using PUNCH.
+!!
+!! ################################################################
+!!
+!! (3.1) **Option PLOT=YES**
+!!
+!! - When used with CALCULATE, it plots graphs in the gui window.
+!!
+!! ################################################################
+!!
+!! (4.1) **Option P1=0.0**
+!!
+!! - When use with CALCULATE, it passes arguments. Their use differ depending
+!!   on the calculation made. At the moment, only the leverages calculations exist
+!!   and the P1 parameter chose the least square parameter to plot its \em t value.
+!!
+!! ################################################################
 !!
 !! The file naming is kept consistent. The same index is used for files written is the same cycle. See sfls_punch_get_newfileindex().
 !!
@@ -47,6 +63,7 @@ integer, private :: design_unit=0 !< unit number for the file
 integer, private :: wdf_unit=0 !< unit number for the file
 integer, private :: reflections_unit=0  !< unit number for the file
 integer, private, save :: fileindex=-1 !< index used in the different filenames
+integer, parameter, private :: funitconstant=452 !< constant added to graphical unit to generate a file unit
 !> List of filename used. This list is used to find a new index for the filenames.
 character(len=27), dimension(6), parameter, private :: filelist=(/ &
 &  'normal     ', &
@@ -1035,22 +1052,24 @@ implicit none
 integer, intent(in) :: nsize !< number of parameters during least squares
 logical, intent(in), optional :: plot !< plot some graphs
 integer, intent(inout), optional :: tselectedarg !< choice of parameter to plot
-integer, parameter :: block_size=512
+integer, parameter :: block_size=2048
 integer block_num
-integer filecount, variance_unit, leverage_unit, refl_unit
+integer filecount, variance_unit, leverage_unit, refl_unit, sigmas_unit
 character(len=255) :: file_name, formatstr
-double precision, dimension(:,:), allocatable :: variance, design_block, temp_block, tij_block, T2ij_block, reflections
-double precision, dimension(:), allocatable :: maxtij, maxT2ij
-double precision, dimension(:), allocatable :: leverage_all, temp1d
+double precision, dimension(:,:), allocatable :: variance, design_block, temp2d !< inverse of the normal, block of the design matrix and temporary 2D matrix
+double precision, dimension(:,:), allocatable :: reflections !< reflections data from reflections??.*
+double precision, dimension(:,:), allocatable :: sigmas, sigmast !< sigmas and moo data from sigmas.dat (generated when merging)
+double precision maxt, maxT2
+double precision, dimension(:), allocatable :: leverage_all, tvalues, t2values, temp1d
 double precision, dimension(3) :: hkl_dp
 real, dimension(:,:), allocatable :: ftemp2d
 real, dimension(:), allocatable :: ftemp1d
 integer tselected
-integer info, irestraint, i, j, numobs, islider, datheader
-double precision normalize, check
-integer, dimension(:,:), allocatable :: hkl
+integer info, irestraint, i, j, k, previous, numobs, islider, datheader
+double precision normalize
+integer, dimension(:,:), allocatable :: hkl,temp2di
 integer numfields, iostatus
-logical file_exists
+logical file_exists, sigmas_exists, found
 integer file_type !<  0 for npy, 1 for dat
 character vorder, dorder
 integer, dimension(:), allocatable :: vdatashape, ddatashape
@@ -1095,6 +1114,8 @@ double precision, external :: ddot !< blas dot product
     ! search index for file to open and create
     filecount = sfls_punch_get_newfileindex()
 
+    !####################
+    !Looking for design matrix
     design_unit=786
     write(file_name, '(a,i0,a)') 'design', filecount, '.npy'
     inquire(file=file_name, exist=file_exists)
@@ -1140,6 +1161,8 @@ double precision, external :: ddot !< blas dot product
         end do
     end if
     
+    !####################
+    !Looking for variance matrix
     variance_unit=787
     write(file_name, '(a,i0,a)') 'variance', filecount, '.npy'
     inquire(file=file_name, exist=file_exists)
@@ -1199,9 +1222,9 @@ double precision, external :: ddot !< blas dot product
     end if
 
     if(present(plot)) then
-        if(plot) then
-            call plot_leverages_init()
-            
+        if(plot) then            
+            !####################
+            !Looking for reflections data
             refl_unit=788
             write(file_name, '(a,i0,a)') 'reflections', filecount, '.npy'
             inquire(file=file_name, exist=file_exists)
@@ -1287,19 +1310,83 @@ double precision, external :: ddot !< blas dot product
                     i=i+1
                     if(i>ubound(reflections, 1)) then
                         ! extend reflections
-                        call move_alloc(reflections, temp_block)
-                        allocate(reflections(ubound(temp_block, 1)+1024, numfields))
-                        reflections(1:ubound(temp_block, 1), :)=temp_block
-                        deallocate(temp_block)
+                        call move_alloc(reflections, temp2d)
+                        allocate(reflections(ubound(temp2d, 1)+1024, numfields))
+                        reflections(1:ubound(temp2d, 1), :)=temp2d
+                        deallocate(temp2d)
                     end if
                     read(refl_unit, *, iostat=iostatus)  reflections(i, :)
                     if(iostatus/=0) exit
                 end do
                 close(refl_unit)
             end if
+            
+            !####################
+            !Looking for sigmas and moo
+            sigmas_unit=788
+            inquire(file='sigmas.dat', exist=sigmas_exists)
+            if(sigmas_exists) then
+
+                open(sigmas_unit, file='sigmas.dat', status='old')
+                read(sigmas_unit, '(a)', iostat=info) formatstr ! skip first line (header)
+                
+                i=0
+                allocate(sigmast(1024, 7))
+                do 
+                    i=i+1
+                    if(i>ubound(sigmast, 1)) then
+                        ! extend reflections
+                        call move_alloc(sigmast, temp2d)
+                        allocate(sigmast(ubound(temp2d, 1)+1024, 7))
+                        sigmast(1:ubound(temp2d, 1), :)=temp2d
+                        deallocate(temp2d)
+                    end if
+                    read(sigmas_unit, *, iostat=iostatus)  sigmast(i, :)
+                    if(iostatus/=0) exit
+                end do
+                close(sigmas_unit)
+                
+                ! extracting the reflections that we need
+                allocate(sigmas(ubound(reflections, 1), 7))
+                previous=1
+                k=0
+                do i=1, ubound(reflections, 1)
+                    found=.false.
+                    do j=previous, ubound(sigmas, 1) ! that should make the search faster if file is sorted
+                        if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
+                            k=k+1
+                            sigmas(k,:)=sigmast(j,:)
+                            previous=j
+                            found=.true.
+                            exit
+                        end if
+                    end do
+                    if(.not. found) then
+                        do j=1, ubound(sigmas, 1) ! that should make the search faster if file is sorted
+                            if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
+                                k=k+1
+                                sigmas(k,:)=sigmast(j,:)
+                                previous=j
+                                found=.true.
+                                exit
+                            end if
+                        end do
+                    end if
+                end do
+                deallocate(sigmast)
+            end if
+            
+            call plot_leverages_init(1, '_VLEVP', 'k x Fo')
+            call plot_leverages_init(2, '_VLEVR', 'sin(t)/l')
+            if(sigmas_exists) then
+                call plot_leverages_init(3, '_VLEVM', 'moo')
+            end if
+
         end if
     end if
     
+    !####################
+    !opening leverages file for output
     leverage_unit=788
     if(file_type==0) then
         write(file_name, '(a,i0,a)') 'leverages', filecount, '.npy'
@@ -1311,15 +1398,13 @@ double precision, external :: ddot !< blas dot product
     end if
     
     allocate(hkl(3, block_size))
-    allocate(maxtij(nsize))
-    allocate(maxT2ij(nsize))
     allocate(design_block(nsize, block_size))
-    allocate(temp_block(nsize, block_size))
-    allocate(tij_block(block_size, nsize))
-    allocate(T2ij_block(block_size, nsize))
+    allocate(temp2d(nsize, block_size))
     allocate(leverage_all(0))
-    maxtij=0.0d0
-    maxT2ij=0.0d0
+    allocate(tvalues(0))
+    allocate(t2values(0))
+    maxt=0.0d0
+    maxT2=0.0d0
 
     ! first pre-calculate some constants
     !##################################################################
@@ -1330,13 +1415,14 @@ double precision, external :: ddot !< blas dot product
     ! Using a blocking algorithm where a block of the design matrix is read and processed
     ! leverages are saved for later the rest is just to calculate the max values
     do while(info==0)
+        
         numobs=numobs+1
         if(file_type==0) then
             read(design_unit, iostat=info) hkl_dp, &
             &   design_block(:,mod(numobs-1,block_size)+1)
-            hkl(:,mod(numobs-1,block_size)+1)=nint(hkl_dp)
+            hkl(:,numobs)=nint(hkl_dp)
         else
-            read(design_unit, *, iostat=info, iomsg=msgstatus) hkl(:,mod(numobs-1,block_size)+1), &
+            read(design_unit, *, iostat=info, iomsg=msgstatus) hkl(:,numobs), &
             &   design_block(:,mod(numobs-1,block_size)+1)
         end if
         if(info/=0) exit
@@ -1348,36 +1434,42 @@ double precision, external :: ddot !< blas dot product
             ! A is design matrix, W weight as a diagonal matrix
             ! (A^t W A)^-1 is the inverse of normal matrix
             ! calculation can be done one row of A at at time
+            ! Careful, data store in fortran order, matriced are transposed compared to the Math
             
             ! bit for leverages
             !temp_block=matmul(variance, design_block)
-            call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
+            call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp2d, nsize)
             !call dgemm('N', 'N', nsize, block_size, nsize, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
-
-            ! bit for tij
-            !tij_block=matmul(transpose(design_block), variance)
-            call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
-            &   variance, nsize, 0.0d0, tij_block, block_size)
                         
+            call move_alloc(hkl, temp2di)
+            allocate(hkl(3, ubound(temp2di, 2)+block_size))
+            hkl(1:3, 1:ubound(temp2di, 2))=temp2di
+            deallocate(temp2di)
             call move_alloc(leverage_all, temp1d)
             allocate(leverage_all(size(temp1d)+block_size))
             leverage_all(1:size(temp1d))=temp1d
             deallocate(temp1d)
+            call move_alloc(tvalues, temp1d)
+            allocate(tvalues(size(temp1d)+block_size))
+            tvalues(1:size(temp1d))=temp1d
+            deallocate(temp1d)
+            call move_alloc(t2values, temp1d)
+            allocate(t2values(size(temp1d)+block_size))
+            t2values(1:size(temp1d))=temp1d
+            deallocate(temp1d)
             
             do i=1, block_size
-                leverage_all(size(leverage_all)-block_size+i)=dot_product(design_block(:,i), temp_block(:,i))
-                !leverage_all(size(leverage_all)-block_size+i) = ddot(nsize, design_block(:,i), 1, temp_block(:,i), 1)
+                leverage_all(size(leverage_all)-block_size+i)=dot_product(design_block(:,i), temp2d(:,i))
+                !leverage_all(size(leverage_all)-block_size+i) = ddot(nsize, design_block(:,i), 1, temp_block(:,i), 1) ! not much faster, vectors probably too small
 
-                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-block_size+i))
+                ! Careful, design is stored tansposed plus variance is symmtric so we can use the column instead of the row (contiguous in memory)
+                ! tvalues(size(tvalues)-block_size+i)=dot_product(design_block(:,i), variance(:,tselected)) ! Replaced with faster blas call
             end do
-            
-            do i=1, nsize
-                maxtij(i)=max(maxtij(i), maxval(abs(tij_block(:,i))))
-                maxT2ij(i)=max(maxT2ij(i), maxval(abs(T2ij_block(:,i))))
-            end do
+            call dgemv('T', nsize, block_size, 1.0d0, design_block, nsize, &
+            &   variance(:,tselected), 1, 0.0d0, tvalues(size(tvalues)-block_size+1:), 1)
 
             ! updating slider in the gui
-            islider=islider+(50-islider)/4
+            islider=islider+(100-islider)/4
             call slider(islider,100)
             
         end if
@@ -1388,34 +1480,41 @@ double precision, external :: ddot !< blas dot product
     if(mod(numobs-1,block_size)+1/=block_size) then ! processing the reamining block
         design_block(:,mod(numobs-1,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
     
-        call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp_block, nsize)
-
-        call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
-        &   variance, nsize, 0.0d0, tij_block, block_size)
+        call dsymm('L', 'U', nsize, block_size, 1.0d0, variance, nsize, design_block, nsize, 0.0d0, temp2d, nsize)
 
         call move_alloc(leverage_all, temp1d)
         allocate(leverage_all(size(temp1d)+mod(numobs-1,block_size)))
         leverage_all(1:size(temp1d))=temp1d
         deallocate(temp1d)
+        call move_alloc(tvalues, temp1d)
+        allocate(tvalues(size(temp1d)+mod(numobs-1,block_size)))
+        tvalues(1:size(temp1d))=temp1d
+        deallocate(temp1d)
+        call move_alloc(t2values, temp1d)
+        allocate(t2values(size(temp1d)+mod(numobs-1,block_size)))
+        t2values(1:size(temp1d))=temp1d
+        deallocate(temp1d)
         
         do i=1, mod(numobs-1,block_size)
-            leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)=dot_product(design_block(:,i), temp_block(:,i))
+            leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i)=dot_product(design_block(:,i), temp2d(:,i))
 
-            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(size(leverage_all)-mod(numobs-1,block_size)+i))
+            !tvalues(size(tvalues)-mod(numobs-1,block_size)+i)=dot_product(design_block(:,i), variance(:,tselected)) ! replaced with blas call below
         end do
+        call dgemv('T', nsize, block_size, 1.0d0, design_block, nsize, &
+        &   variance(:,tselected), 1, 0.0d0, tvalues(size(tvalues)-block_size+1:), 1)
         
-        do i=1, nsize
-            maxtij(i)=max(maxtij(i), maxval(abs(tij_block(:,i))))
-            maxT2ij(i)=max(maxT2ij(i), maxval(abs(T2ij_block(:,i))))
-        end do    
     end if
     numobs=numobs-1
-    
+
+    t2values(1:numobs)= tvalues(1:numobs)**2 / (1.0d0+leverage_all(1:numobs))
+    maxt=maxval(abs(tvalues))
+    maxt2=maxval(abs(t2values))
+        
     ! updating slider in the gui
-    islider=50
     call slider(islider,100)
     
     normalize=real(numobs, kind(1.0d0))/real(nsize, kind(1.0d0))
+    irestraint=0
     
     if(file_type==0) then
         ! reading the header again will reset the position in the file
@@ -1430,153 +1529,79 @@ double precision, external :: ddot !< blas dot product
     ! Calculating the various values again and printing
     ! using the leverages from previous run
     !##################################################################
-    write(formatstr, '(A,I0,A)') '(A, ", ", 3(I0,", "), 2(F7.4, ", "), ',2*nsize,'(1PE10.3, :, ", "))'
+    write(formatstr, '(A,I0,A)') '(A, ", ", 3(I0,", "), 2(F7.4, ", "), ',2,'(1PE10.3, :, ", "))'
     if(file_type/=0) then
         write(leverage_unit, '(8(''"'',A,''"'',:,","))') 'Restraint','h','k','l', &
         &   'Leverage', 'Normalised leverage', 'Normalised t_ij', 'Normalised T2_ij'
     end if
-    ! data don't fit in memory and processing line by line is too slow
-    ! Using a blocking algorithm where a block of the design matrix is read and processed
-    info=0
-    irestraint=0
-    numobs=-1
-    check=0.0d0
-    block_num=-1
-    do while(info==0)
-        numobs=numobs+1
+    
+    do i=1, numobs
+        if(hkl(1,i)>1000) then
+            irestraint=irestraint+1
+        end if
+                
         if(file_type==0) then
-            read(design_unit, iostat=info) hkl_dp, &
-            &   design_block(:,mod(numobs,block_size)+1)
-            hkl(:,mod(numobs,block_size)+1)=nint(hkl_dp)
-        else
-            read(design_unit, *, iostat=info) hkl(:,mod(numobs,block_size)+1), &
-            &   design_block(:,mod(numobs,block_size)+1)
-        end if
-        if(info/=0) exit
-        
-        if(mod(numobs,block_size)+1==block_size) then ! processing the block of design matrix
-            block_num=block_num+1
-    
-            ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
-            ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
-            ! A is design matrix, W weight as a diagonal matrix
-            ! (A^t W A)^-1 is the inverse of normal matrix
-            ! calculation can be done one row of A at at time
-            
-            !tij_block=matmul(transpose(design_block), variance)
-            call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
-            &   variance, nsize, 0.0d0, tij_block, block_size)
-            
-            do i=1, block_size
-                T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(block_num*block_size+i))
-                
-                if(hkl(1,i)>1000) then
-                    irestraint=irestraint+1
-                end if
-                
-                if(file_type==0) then
-                    write(leverage_unit) &
-                    &   real(hkl(:,i), kind(1.0d0)), leverage_all(block_num*block_size+i), &
-                    &   leverage_all(block_num*block_size+i)*normalize, &
-                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )                
-                    if(irestraint==0) then
-                        if(present(plot)) then
-                            if(plot) then
-                                call plot_leverages_push(hkl(:,i), reflections(block_num*block_size+i, 4), &
-                                &   leverage_all(block_num*block_size+i), &
-                                &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
+            write(leverage_unit) &
+            &   real(hkl(:,i), kind(1.0d0)), leverage_all(i), &
+            &   leverage_all(i)*normalize, &
+            &   tvalues(i)/maxt*100.0d0, t2values(i)/maxT2*100.0d0
+            if(irestraint==0) then
+                if(present(plot)) then
+                    if(plot) then
+                        call plot_leverages_push(1, hkl(:,i), reflections(i, 4), &
+                        &   leverage_all(i), &
+                        &   -t2values(i)/maxT2*100.0d0)
+                        call plot_leverages_push(2, hkl(:,i), reflections(i, 8), &
+                        &   leverage_all(i), &
+                        &   -t2values(i)/maxT2*100.0d0)
+                        if(sigmas_exists) then
+                            if(all(hkl(:,i)==nint(sigmas(i,1:3)))) then
+                                call plot_leverages_push(3, hkl(:,i), sigmas(i, 7), &
+                                &   leverage_all(i), &
+                                &   -t2values(i)/maxT2*100.0d0)
                             end if
                         end if
                     end if
-                else
-                    if(irestraint==0) then
-                        write(leverage_unit, formatstr) &
-                        &   '""', hkl(:,i), leverage_all(block_num*block_size+i), &
-                        &   leverage_all(block_num*block_size+i)*normalize, &
-                        &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
-                        if(present(plot)) then
-                            if(plot) then
-                                call plot_leverages_push(hkl(:,i), reflections(block_num*block_size+i, 4), &
-                                &   leverage_all(block_num*block_size+i), &
-                                &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
-                            end if
-                        end if
-                    else
-                        write(leverage_unit, formatstr) &
-                        &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
-                        &   hkl(:,i), leverage_all(block_num*block_size+i), &
-                        &   leverage_all(block_num*block_size+i)*normalize, &
-                        &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
-                    end if
                 end if
-            end do
-
-            ! updating slider in the gui
-            islider=islider+(100-islider)/4
-            call slider(islider,100)
-
-        end if
-        
-    end do
-    
-    ! Processing the remaining incomplete block
-    if(mod(numobs,block_size)+1/=block_size) then ! processing the reamining block
-        block_num=block_num+1
-        design_block(:,mod(numobs,block_size)+1:)=0.0d0 ! zeroing unusued part of the block
-    
-        call dgemm('T', 'N', block_size, nsize, nsize, 1.0d0, design_block, nsize, &
-        &   variance, nsize, 0.0d0, tij_block, block_size)
-        
-        do i=1, mod(numobs,block_size)
-            T2ij_block(i,:)=tij_block(i,:)**2/(1.0d0+leverage_all(block_num*block_size+i))
-
-            if(hkl(1,i)>1000) then
-                irestraint=irestraint+1
             end if
-            
-            if(file_type==0) then
-                write(leverage_unit) &
-                &   real(hkl(:,i), kind(1.0d0)), leverage_all(block_num*block_size+i), &
-                &   leverage_all(block_num*block_size+i)*normalize, &
-                &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
-                if(irestraint==0) then
-                    if(present(plot)) then
-                        if(plot) then
-                            call plot_leverages_push(hkl(:,i), &
-                            &   reflections(block_num*block_size+i, 4), &
-                            &   leverage_all(block_num*block_size+i), &
-                            &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
+        else
+            if(irestraint==0) then
+                write(leverage_unit, formatstr) &
+                &   '""', hkl(:,i), leverage_all(i), &
+                &   leverage_all(i)*normalize, &
+                &   tvalues(i)/maxt*100.0d0, T2values(i)/maxT2*100.0d0
+                if(present(plot)) then
+                    if(plot) then
+                        call plot_leverages_push(1, hkl(:,i), reflections(i, 4), &
+                        &   leverage_all(i), &
+                        &   -t2values(i)/maxT2*100.0d0)
+                        call plot_leverages_push(2, hkl(:,i), reflections(i, 8), &
+                        &   leverage_all(i), &
+                        &   -t2values(i)/maxT2*100.0d0)
+                        if(sigmas_exists) then
+                            if(all(hkl(:,i)==nint(sigmas(i,1:3)))) then
+                                call plot_leverages_push(3, hkl(:,i), sigmas(i, 7), &
+                                &   leverage_all(i), &
+                                &   -t2values(i)/maxT2*100.0d0)
+                            end if
                         end if
                     end if
                 end if
             else
-                if(irestraint==0) then
-                    write(leverage_unit, formatstr) &
-                    &   '""', hkl(:,i), leverage_all(block_num*block_size+i), &
-                    &   leverage_all(block_num*block_size+i)*normalize, &
-                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
-                    if(present(plot)) then
-                        if(plot) then
-                            call plot_leverages_push(hkl(:,i), &
-                            &   reflections(block_num*block_size+i, 4), &
-                            &   leverage_all(block_num*block_size+i), &
-                            &   T2ij_block(i,tselected)/maxT2ij(tselected)*100.0d0)
-                        end if
-                    end if
-                else
-                    write(leverage_unit, formatstr) &
-                    &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
-                    &   hkl(:,i), leverage_all(block_num*block_size+i), &
-                    &   leverage_all(block_num*block_size+i)*normalize, &
-                    &   ( tij_block(i,j)/maxtij(j)*100.0d0, T2ij_block(i,j)/maxT2ij(j)*100.0d0, j=1, nsize )
-                end if
+                write(leverage_unit, formatstr) &
+                &   '"'//cleanrestraint(trim(restraints_list(subrestraints_parent(irestraint))%restraint_text))//'"', &
+                &   hkl(:,i), leverage_all(i), &
+                &   leverage_all(i)*normalize, &
+                &   tvalues(i)/maxt*100.0d0, T2values(i)/maxT2*100.0d0
             end if
-        end do
-    end if    
+        end if
+    end do
 
     if(present(plot)) then
         if(plot) then
-            call plot_leverages_close()
+            call plot_leverages_close(1)
+            call plot_leverages_close(2)
+            call plot_leverages_close(3)
         end if
     end if
     
@@ -1967,51 +1992,70 @@ integer, external :: khuntr
 end subroutine
 
 !> Initialise a plot of the leverages
-subroutine plot_leverages_init()
-use xiobuf_mod, only: cmon !< screen
-use xunits_mod, only: ncvdu !< lis file
+subroutine plot_leverages_init(gunit, plotid, xaxis)
 implicit none
+integer, intent(in) :: gunit !< graph id
+character(len=*), intent(in) :: plotid !< id of the plot in SCRIPT
+character(len=*), intent(in) :: xaxis !< xaxis name in the plot
+integer :: funit
 
-WRITE(CMON,'(A,6(/,A))') &
-&   '^^PL PLOTDATA _LEVP SCATTER ATTACH _VLEVP KEY', &
-&   '^^PL XAXIS TITLE ''k x Fo'' NSERIES=2 LENGTH=2000', &
-&   '^^PL YAXIS TITLE ''Leverage, Pii'' ZOOM 0.0 1.0', &
-&   '^^PL YAXISRIGHT TITLE ''tij**2/(1+Pii)''', &
+funit=funitconstant+gunit
+
+open(funit, status="scratch")
+
+WRITE(funit,'(A,6(/,A))') &
+&   '^^PL PLOTDATA '//trim(plotid)//' SCATTER ATTACH '//trim(plotid)//' KEY', &
+&   '^^PL XAXIS TITLE '''//trim(xaxis)//''' NSERIES=2 LENGTH=2000', &
+&   '^^PL YAXIS TITLE ''Leverage, P\_i\_i'' ZOOM -1.0 1.0', &
+&   '^^PL YAXISRIGHT TITLE ''-100*T2/max(T2)''', &
 &   '^^PL SERIES 1 TYPE SCATTER SERIESNAME ''Leverage''', &
 &   '^^PL SERIES 2 TYPE SCATTER', &
 &   '^^PL SERIESNAME ''Influence of remeasuring (normalised)'' USERIGHTAXIS'
-CALL XPRVDU(NCVDU, 7,0)
 
 end subroutine
 
 !> Add data to the leverages plot
-subroutine plot_leverages_push(hkl, Fo, Pii, red)
-use xiobuf_mod, only: cmon !< screen
-use xunits_mod, only: ncvdu !< lis file
+subroutine plot_leverages_push(gunit, hkl, x, Pii, red)
 implicit none
+integer, intent(in) :: gunit !< graph id
 integer, dimension(3), intent(in) :: hkl !< hkl indices
-double precision, intent(in) :: Fo !< Fobs
+double precision, intent(in) :: x !< Fobs
 double precision, intent(in) :: Pii !< leverage
 double precision, intent(in) :: red !< T2 (t**2)/(1.0+PII)
 character(len=64) :: hkllab !< hkl indices formatted string
+integer :: funit
+
+funit=funitconstant+gunit
 
 write(hkllab, '(2(i0,","),i0)') hkl
-write(cmon,'(3a,4f11.4)') &
-&   '^^PL LABEL ''',trim(hkllab),''' DATA ',fo,pii,fo, red
-call xprvdu(ncvdu, 1,0)
+write(funit,'(3a,4f11.4)') &
+&   '^^PL LABEL ''',trim(hkllab),''' DATA ',x,pii,x, red
 
 end subroutine
 
 !> Close the ploting of the leverages in crystals gui
-subroutine plot_leverages_close()
+subroutine plot_leverages_close(gunit)
 use xiobuf_mod, only: cmon !< screen
 use xunits_mod, only: ncvdu !< lis file
 implicit none
+integer, intent(in) :: gunit !< graph id
+integer :: funit, iostatus
+character(len=512) :: buffer
 
-write(cmon,'(a,f18.14,a/a)')'^^PL YAXISRIGHT ZOOM 0.0 ',&
+funit=funitconstant+gunit
+
+write(funit,'(a,f18.14,a/a)')'^^PL YAXISRIGHT ZOOM -100.0 ',&
 &   100.0,' SHOW', &
 &   '^^CR'
-call xprvdu(ncvdu, 2,0) 
+
+rewind(funit)
+do
+  read(funit, '(a)', iostat=iostatus) buffer
+  if(iostatus/=0) exit
+  write(cmon, '(a)') trim(buffer)
+  call XPRVDU (NCVDU,1,0)
+end do
+close(funit)
 
 end subroutine
 
