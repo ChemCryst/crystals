@@ -3111,5 +3111,6 @@ implicit none
     write(crystals_fileunit, '(a)') 'CONT    SINTH/L**2  =   0.01000'
     write(crystals_fileunit, '(a)') 'CONT    RATIO       =  -3.00000'
     write(crystals_fileunit, '(a)') 'END'
+end subroutine
 
 end module
