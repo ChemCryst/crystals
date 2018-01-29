@@ -9,20 +9,29 @@
 ^^WI  {
 ^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI   {
-^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=1
+^^WI    @ 1,3 GRID EXP2 NROWS=1 NCOLS=3
 ^^WI    {
-^^WI     @ 1,1 STATIC XFW1    'See: Applications of leverage analysis in structure refinement '
-^^WI     @ 2,1 STATIC XFW2    'Parsons, S., Wagner, T., Presly, O., Wood, P. A. & Cooper, R. I. (2012). J. Appl. Cryst. 45, 417-429.   '
-^^WI     @ 3,1 STATIC XFW3    ' P = Z(Z\**tZ)\**-1Z\**t and T2 = t\_i\_j\**2\$/(1+P\_i\_i) '
-^^WI     @ 4,1 GRID NCYC NROWS=1 NCOLS=2
-^^WI     {                                                                        
-^^WI       @ 1,1 STATIC T5 'Least square parameter number (see \print 22)'
-^^WI       @ 1,2 EDITBOX LSPARAMBOX                                                        
-%            TRANSFER "^^WI '  " // CHARACTER ( LSPARAM )  // "'" TO DISPLAY         
-^^WI       CHARS=6 INTEGER                                                          
+^^WI     @ 1,1 GRID EXP2 NROWS=2 NCOLS=1
+^^WI     {
+^^WI      @ 1,1 STATIC T5 'Least square parameter'
+^^WI      @ 2,1 LISTBOX LSPARAMBOX VISLINES=8 ADDTOLIST                                                    
+^^WI		NULL
+           
+%% %            TRANSFER "^^WI '  " // CHARACTER ( LSPARAM )  // "'" TO DISPLAY         
+%% ^^WI       CHARS=6 INTEGER                                                          
 ^^WI     } 
+^^WI     @ 1,2 GRID EXP2 NROWS=1 NCOLS=1
+^^WI     {
+^^WI      @ 1,1 STATIC XFW1    ' '
+^^WI     } 
+^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     {
+^^WI      @ 1,1 STATIC XFW1    'See: Applications of leverage analysis in structure refinement '
+^^WI      @ 2,1 STATIC XFW2    'Parsons, S., Wagner, T., Presly, O., Wood, P. A. & Cooper, R. I. (2012). J. Appl. Cryst. 45, 417-429.   '
+^^WI      @ 3,1 STATIC XFW3    ' P = Z(Z\**tZ)\**-1Z\**t and T2 = t\_i\_j\**2\$/(1+P\_i\_i) '
+^^WI     }
 ^^WI    }
-^^WI    @ 1,1 ICON IM INFO
+%% ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
 ^^WI   @ 4,2 TABCTRL _MAINTABS
 ^^WI   {
@@ -61,7 +70,7 @@
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   CASE VALUE
 %     BLOCK  %CALCULATE%
-^^??  LSPARAMBOX TEXT                                                                    
+^^??  LSPARAMBOX SELECTED                                                                    
 %     GET NOSTORE SILENT FINAL INTEGER 'LSPARAM' '1'                          
 %     EVALUATE LSPARAM = VALUE                                                    
 %     TRANSFER '#sfls' TO CRYSTALS

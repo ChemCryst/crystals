@@ -1047,6 +1047,7 @@ use list26_mod, only: subrestraints_parent, restraints_list
 use xiobuf_mod, only: cmon !< screen
 use xunits_mod, only: ncvdu !< lis file
 use numpy_mod, only: numpy_read_header, numpy_write_header
+use list12_mod, only: param_t, load_lsq_params !< parameters list
 !$ use OMP_LIB
 implicit none
 integer, intent(in) :: nsize !< number of parameters during least squares
@@ -1062,6 +1063,7 @@ double precision, dimension(:,:), allocatable :: sigmas, sigmast !< sigmas and m
 double precision maxt, maxT2
 double precision, dimension(:), allocatable :: leverage_all, tvalues, t2values, temp1d
 double precision, dimension(3) :: hkl_dp
+type(param_t), dimension(:), allocatable :: lsq_list !< List of least squares parameters
 real, dimension(:,:), allocatable :: ftemp2d
 real, dimension(:), allocatable :: ftemp1d
 integer tselected
@@ -1093,7 +1095,9 @@ double precision, external :: ddot !< blas dot product
         tselected=1
     end if
 
-    write(cmon,'(A,A)') '{I Starting leverages calculations...'
+    write(cmon,'(A,A)') '{I Starting leverages calculations'
+    call xprvdu(ncvdu, 1,0)
+    write(cmon,'(A,I0)') '{I Calculating T2 values for parameter ', tselected
     call xprvdu(ncvdu, 1,0)
     ! updating slider in the gui
     call slider(0,100)
@@ -1602,6 +1606,19 @@ double precision, external :: ddot !< blas dot product
             call plot_leverages_close(1)
             call plot_leverages_close(2)
             call plot_leverages_close(3)
+            call load_lsq_params(lsq_list)
+            write (cmon,'(a)') '^^CO  SET LSPARAMBOX REMOVE 0'
+            call xprvdu(ncvdu,1,0)            
+            write (cmon,'(a)') '^^WI SET LSPARAMBOX ADDTOLIST'
+            call xprvdu(ncvdu,1,0)            
+            do i=1, size(lsq_list)
+                write(cmon, '(a, a, a)') "^^WI  '", trim(lsq_list(i)%print()), "'"
+                call xprvdu(ncvdu, 1,0)
+            end do
+            write(cmon, '(a, a)') '^^WI  NULL'
+            call xprvdu(ncvdu, 1,0)
+            write(cmon, '(a, I0)') '^^WI SET LSPARAMBOX SELECTION=', tselected
+            call xprvdu(ncvdu, 1,0)
         end if
     end if
     
@@ -1677,7 +1694,8 @@ implicit none
 
 integer IADDL,IADDR,IADDD
 integer, parameter :: pyfile=578
-type(param_t), dimension(:), allocatable :: parameters_list !< List of least squares parameters
+type(param_t), dimension(:), allocatable :: lsq_list !< List of least squares parameters
+type(param_t), dimension(:), allocatable :: phys_list !< List of physical parameters
 integer i, j, k, filecount
 character eol
 character(len=128) :: file_name
@@ -1710,8 +1728,13 @@ integer, external :: khuntr
 
     ! check if list 1 and 5 are loaded
     if (khuntr (1,0, iaddl,iaddr,iaddd,-1) /= 0) then
-      print *, 'error, list 1 not loaded'
-      call abort()
+      CALL XFAL01
+      !print *, 'error, list 1 not loaded'
+      !call abort()
+      if ( ierflg .lt. 0 ) then
+        print *, 'error, list 1 cannot be loaded'
+        call abort()
+      endif
     end if
     if (khuntr (2,0, iaddl,iaddr,iaddd,-1) /= 0) then
       call xfal02
@@ -1784,24 +1807,24 @@ integer, external :: khuntr
     
     ! Least square parameters list
     write(pyfile, '(a)') ""
-    call load_lsq_params(parameters_list)
+    call load_lsq_params(lsq_list)
     write(pyfile, '(a)') "lsq_params={"
     eol=','
-    do i=1, size(parameters_list)
-      if(i==size(parameters_list)) then
+    do i=1, size(lsq_list)
+      if(i==size(lsq_list)) then
         eol=''
       end if
       if(mod(i,10)==0) then
         write(pyfile, *) ''
       end if
-      if(parameters_list(i)%index>-1) then
+      if(lsq_list(i)%index>-1) then
         ! python indices are zero based, hence index-1 below
-        if(parameters_list(i)%serial>0) then
-          write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(parameters_list(i)%label), &
-          &   parameters_list(i)%serial, trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
+        if(lsq_list(i)%serial>0) then
+          write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(lsq_list(i)%label), &
+          &   lsq_list(i)%serial, trim(lsq_list(i)%name), lsq_list(i)%index-1, eol
         else
           write(pyfile, '(4x, """", a,""":",I0, a)') &
-          &   trim(parameters_list(i)%name), parameters_list(i)%index-1, eol
+          &   trim(lsq_list(i)%name), lsq_list(i)%index-1, eol
         end if
       end if
     end do
@@ -1835,8 +1858,9 @@ integer, external :: khuntr
     end do
     
     ! matrix of constraints
-    allocate(constraintstable(131072, size(parameters_list)))
-    allocate(character(len=24) :: physicallist(131072))
+    call load_phys_params(phys_list)
+    allocate(constraintstable(size(phys_list), size(lsq_list)))
+    allocate(character(len=24) :: physicallist(size(phys_list)))
     physicallist=''
     physicalindex=0
     !      jt            absolute l.s. parameter no.
@@ -1885,6 +1909,10 @@ integer, external :: khuntr
             if ( ilebp .eq. 1 ) then
               if(jt>0) then
                 physicalindex=physicalindex+1
+                if(physicalindex>ubound(physicallist, 1)) then
+                  !print *, 'index out of bound 1'
+                  call abort()
+                end if
                 write(buffer, '(2a4)') (kscal(nc,na+2),nc=1,2)
                 write(physicallist(physicalindex), '(a,1x,i0)') trim(buffer), js
                 constraintstable(physicalindex, JT)=weight
@@ -1894,6 +1922,10 @@ integer, external :: khuntr
             else if (m12.eq.l12o) then
               if(jt>0) then
                 physicalindex=physicalindex+1
+                if(physicalindex>ubound(physicallist, 1)) then
+                  !print *, 'index out of bound 2'
+                  call abort()
+                end if
                 write(physicallist(physicalindex), '(3a4)') (kvp(jrr,js),jrr=1,2)
                 constraintstable(physicalindex, JT)=weight
               end if
@@ -1903,6 +1935,10 @@ integer, external :: khuntr
               if((store(m5+3) .ge. 1.0) .and. (js .ge. 8)) then
                 if(jt>0) then
                   physicalindex=physicalindex+1
+                  if(physicalindex>ubound(physicallist, 1)) then
+                    !print *, 'index out of bound 3'
+                    call abort()
+                  end if
                   write(buffer, '(a4)') store(m5)
                   write(physicallist(physicalindex), '(a,"(",I0,")",1X,3a4)') &
                   &   trim(buffer),nint(store(m5+1)),(icoord(jrr,js+nkao),jrr=1,nwka)
@@ -1911,6 +1947,10 @@ integer, external :: khuntr
               else
                 if(jt>0) then
                   physicalindex=physicalindex+1
+                  if(physicalindex>ubound(physicallist, 1)) then
+                    !print *, 'index out of bound 4 ', physicalindex, ubound(physicallist, 1)
+                    call abort()
+                  end if
                   write(buffer, '(a4)') store(m5)
                   write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
                   &   trim(buffer),nint(store(m5+1)), (icoord(jrr,js),jrr=1,nwka)
@@ -1934,8 +1974,8 @@ integer, external :: khuntr
       
     write(pyfile,'(a)') ''
     write(pyfile,'(a)') '# Matrix of constraints'
-    write(pyfile,'(a,I0,",",I0,a)') 'mconstraints=numpy.zeros( (', physicalindex, size(parameters_list),') )'
-    do j=1, size(parameters_list)
+    write(pyfile,'(a,I0,",",I0,a)') 'mconstraints=numpy.zeros( (', physicalindex, size(lsq_list),') )'
+    do j=1, size(lsq_list)
       do i=1, physicalindex
         if(constraintstable(i, j)/=0.0) then
           write(pyfile, '(a,I0,",",I0,a,F5.2)') 'mconstraints[', i-1, j-1, ']=', constraintstable(i, j)

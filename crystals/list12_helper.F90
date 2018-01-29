@@ -22,6 +22,38 @@ contains
 !!
 !! The subroutine has no side effect and do not modify any global variables 
 subroutine load_lsq_params(parameters_list)
+implicit none
+
+integer i, j
+!integer, dimension(:), allocatable :: istore
+type(param_t), dimension(:), allocatable, intent(out) :: parameters_list !< List of least squares parameters
+type(param_t), dimension(:), allocatable :: phys_list !< List of physical parameters
+
+
+    call load_phys_params(phys_list)
+    j=0
+    do i=1, size(phys_list)
+        j=max(j,phys_list(i)%index)
+    end do
+    
+    allocate(parameters_list(j))
+    parameters_list%index=-1
+    
+    do i=1, size(parameters_list)
+        do j=1, size(phys_list)
+            if(i==phys_list(j)%index) then
+                parameters_list(i)=phys_list(j)
+                exit
+            end if
+        end do
+    end do
+          
+end subroutine
+
+!> Load the physical parameters with their name 
+!!
+!! The subroutine has no side effect and do not modify any global variables 
+subroutine load_phys_params(parameters_list)
 use store_mod, only: store, istore => i_store, c_store
 use xlst05_mod, only: l5, md5
 use xlst12_mod, only: L12O, L12LS, L12ES, L12BS, L12CL, L12PR, L12EX ! addresses of different scales
@@ -189,13 +221,14 @@ object(newstart:)%name='' !< Name of the parameter
 end subroutine
 
 !> print the content of a parameter
-subroutine printparam(self)
+function printparam(self)
 implicit none
 class(param_t), intent(in) :: self
+character(len=48) :: printparam
 
-write(*,'(I5,1X,I6,1X,A,"(",I0,")",1X,A)') self%index, self%offset, trim(self%label), self%serial, trim(self%name)
+write(printparam,'(I5,1X,A,"(",I0,")",1X,A)') self%index, trim(self%label), self%serial, trim(self%name)
 
-end subroutine
+end function
 
 
 end module
