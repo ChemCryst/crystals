@@ -15,23 +15,21 @@
 ^^WI     {
 ^^WI      @ 1,1 STATIC T5 'Least square parameter'
 ^^WI      @ 2,1 LISTBOX LSPARAMBOX VISLINES=8 ADDTOLIST                                                    
-^^WI		NULL
-           
-%% %            TRANSFER "^^WI '  " // CHARACTER ( LSPARAM )  // "'" TO DISPLAY         
-%% ^^WI       CHARS=6 INTEGER                                                          
+^^WI        NULL
 ^^WI     } 
 ^^WI     @ 1,2 GRID EXP2 NROWS=1 NCOLS=1
 ^^WI     {
 ^^WI      @ 1,1 STATIC XFW1    ' '
 ^^WI     } 
-^^WI     @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI     @ 1,3 GRID EXP2 NROWS=5 NCOLS=1
 ^^WI     {
 ^^WI      @ 1,1 STATIC XFW1    'See: Applications of leverage analysis in structure refinement '
 ^^WI      @ 2,1 STATIC XFW2    'Parsons, S., Wagner, T., Presly, O., Wood, P. A. & Cooper, R. I. (2012). J. Appl. Cryst. 45, 417-429.   '
 ^^WI      @ 3,1 STATIC XFW3    ' P = Z(Z\**tZ)\**-1Z\**t and T2 = t\_i\_j\**2\$/(1+P\_i\_i) '
+^^WI      @ 4,1 STATIC XFW4    ' moo = multiplicity of observations '
+^^WI      @ 5,1 STATIC XFW5    ' '
 ^^WI     }
 ^^WI    }
-%% ^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
 ^^WI   @ 4,2 TABCTRL _MAINTABS
 ^^WI   {
@@ -59,9 +57,13 @@
 ^^WI SHOW
 ^^CR
 ^^CO SENDPROGRESSTO _FOFCPR
+^^CO SET LSPARAMBOX DISABLED=YES
+^^CO SET CALC DISABLED=YES
 %  COPY '#sfls'
 %  COPY 'refine calc=leverages plot=yes'
 %  COPY 'end'
+^^CO SET LSPARAMBOX DISABLED=NO
+^^CO SET CALC DISABLED=NO
 % VARIABLE INTEGER JLOOP
 % LOOP
 % EVALUATE JLOOP = LOOPCOUNTER
@@ -73,10 +75,14 @@
 ^^??  LSPARAMBOX SELECTED                                                                    
 %     GET NOSTORE SILENT FINAL INTEGER 'LSPARAM' '1'                          
 %     EVALUATE LSPARAM = VALUE                                                    
+^^CO SET LSPARAMBOX DISABLED=YES
+^^CO SET CALC DISABLED=YES
 %     TRANSFER '#sfls' TO CRYSTALS
 %     TRANSFER 'refine calc=leverages plot=yes P1=' // -
         CHARACTER ( LSPARAM ) TO CRYSTALS
 %     TRANSFER 'end'  TO CRYSTALS
+^^CO SET LSPARAMBOX DISABLED=NO
+^^CO SET CALC DISABLED=NO
 %     END BLOCK
 %     BLOCK %CANCEL%
 %        EVALUATE LOOPEND = LOOPCOUNTER

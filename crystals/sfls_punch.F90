@@ -1054,7 +1054,6 @@ integer, intent(in) :: nsize !< number of parameters during least squares
 logical, intent(in), optional :: plot !< plot some graphs
 integer, intent(inout), optional :: tselectedarg !< choice of parameter to plot
 integer, parameter :: block_size=2048
-integer block_num
 integer filecount, variance_unit, leverage_unit, refl_unit, sigmas_unit
 character(len=255) :: file_name, formatstr
 double precision, dimension(:,:), allocatable :: variance, design_block, temp2d !< inverse of the normal, block of the design matrix and temporary 2D matrix
@@ -1410,7 +1409,7 @@ double precision, external :: ddot !< blas dot product
     maxt=0.0d0
     maxT2=0.0d0
 
-    ! first pre-calculate some constants
+    ! Calculate leverages and T values
     !##################################################################
     info=0
     numobs=0
@@ -1473,6 +1472,7 @@ double precision, external :: ddot !< blas dot product
             &   variance(:,tselected), 1, 0.0d0, tvalues(size(tvalues)-block_size+1:), 1)
 
             ! updating slider in the gui
+            ! we don't know the number of observation so working out something for the slider
             islider=islider+(100-islider)/4
             call slider(islider,100)
             
@@ -1515,7 +1515,7 @@ double precision, external :: ddot !< blas dot product
     maxt2=maxval(abs(t2values))
         
     ! updating slider in the gui
-    call slider(islider,100)
+    call slider(100,100)
     
     normalize=real(numobs, kind(1.0d0))/real(nsize, kind(1.0d0))
     irestraint=0
@@ -1530,8 +1530,8 @@ double precision, external :: ddot !< blas dot product
             read(design_unit, '(a)') formatstr
         end do
     end if
-    ! Calculating the various values again and printing
-    ! using the leverages from previous run
+    
+    ! Writing the values to a file and plotting
     !##################################################################
     write(formatstr, '(A,I0,A)') '(A, ", ", 3(I0,", "), 2(F7.4, ", "), ',2,'(1PE10.3, :, ", "))'
     if(file_type/=0) then
@@ -1539,7 +1539,13 @@ double precision, external :: ddot !< blas dot product
         &   'Leverage', 'Normalised leverage', 'Normalised t_ij', 'Normalised T2_ij'
     end if
     
+    ! updating slider in the gui
+    call slider(0,100)
     do i=1, numobs
+        if(mod(i, numobs/10)==0) then
+            call slider(90*i/numobs, 100)
+        end if
+    
         if(hkl(1,i)>1000) then
             irestraint=irestraint+1
         end if
@@ -1562,7 +1568,7 @@ double precision, external :: ddot !< blas dot product
                             if(all(hkl(:,i)==nint(sigmas(i,1:3)))) then
                                 call plot_leverages_push(3, hkl(:,i), sigmas(i, 7), &
                                 &   leverage_all(i), &
-                                &   -t2values(i)/maxT2*100.0d0)
+                                &   -t2values(i)/(sigmas(i, 7)*maxT2)*100.0d0)
                             end if
                         end if
                     end if
@@ -1586,7 +1592,7 @@ double precision, external :: ddot !< blas dot product
                             if(all(hkl(:,i)==nint(sigmas(i,1:3)))) then
                                 call plot_leverages_push(3, hkl(:,i), sigmas(i, 7), &
                                 &   leverage_all(i), &
-                                &   -t2values(i)/maxT2*100.0d0)
+                                &   -t2values(i)/(sigmas(i, 7)*maxT2)*100.0d0)
                             end if
                         end if
                     end if
@@ -1600,6 +1606,8 @@ double precision, external :: ddot !< blas dot product
             end if
         end if
     end do
+    ! updating slider in the gui
+    call slider(90,100)
 
     if(present(plot)) then
         if(plot) then
@@ -1631,6 +1639,7 @@ double precision, external :: ddot !< blas dot product
     
     write(cmon,'(A,A)') '{I Leverages written in file: ', trim(file_name)
     call xprvdu(ncvdu, 1,0)      
+    ! updating slider in the gui
     call slider(100,100)
 
 #if defined(CRY_OSLINUX)
