@@ -1326,16 +1326,18 @@ C--UTLS RESTRAINTS PRINT
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       
-        leverages=calcleverages(ircpt)
-        if(size(leverages)==0) then
+        leverages=calcleverages(ircpt, info)
+        if(info==-1) then
           write(cmon, '(4X, A)') 
      1      '{6,0 Do a cycle of refinement to get leverages'
           CALL XPRVDU(NCVDU, 1,0)
           write(cmon, '(A)') ''
           CALL XPRVDU(NCVDU, 1,0)
-          deallocate(leverages)
          allocate(leverages(size(restraints_list(ircpt)%subrestraints)))
           leverages=IEEE_VALUE(leverages, IEEE_QUIET_NAN)
+        end if
+        if(info==-2) then !< no restraints
+          allocate(leverages(0))
         end if
         
         ! check for `corrupted` leverages

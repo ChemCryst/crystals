@@ -305,19 +305,25 @@ end if
 end subroutine
 
 !> Calculate the leverage values of a restraint given the invert matrix
-function calcleverages(rindex) result(leverages)
+function calcleverages(rindex, info) result(leverages)
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 implicit none
 integer, intent(in) :: rindex !< index of restraint in list 26
+integer, intent(out) :: info !< return zero if all is well, negative on error
 real, dimension(:), allocatable :: leverages !< list of leverages
 real, dimension(:), allocatable :: temp1d
 integer k, cpt
 
 if(.not. allocated(restraints_derivatives)) then
-    allocate(leverages(0))
+    info=-1
     return
 end if
+if(size(restraints_derivatives)<1) then
+    info=-2
+    return
+end if
+
 cpt=0
 do k=1, size(restraints_derivatives)
     if(rindex==restraints_derivatives(k)%irestraint) then
