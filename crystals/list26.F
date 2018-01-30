@@ -1343,7 +1343,7 @@ C--UTLS RESTRAINTS PRINT
         ! check for `corrupted` leverages
         if(size(restraints_list(ircpt)%subrestraints)/=
      1    size(leverages)) then
-          deallocate(leverages)
+          if(allocated(leverages)) deallocate(leverages)
          allocate(leverages(size(restraints_list(ircpt)%subrestraints)))
           leverages=IEEE_VALUE(leverages, IEEE_QUIET_NAN)
         end if
