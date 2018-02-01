@@ -5160,8 +5160,8 @@ C--SET UP A FEW CONSTANTS
       JA=LCA              ! Address of first parameter block header                                      
       MCA=JA ! address of fisrt atom
       
-      if(uperptype<1 .or. uperptype>2) then
-         WRITE (CMON,'(a)') '{E Corrupted uperp restraint'
+      if(uperptype<2 .or. uperptype>3) then
+         WRITE (CMON,'(a,I0)') '{E Corrupted uperp restraint ',uperptype
          CALL XPRVDU (NCVDU,1,0)
          return
       end if
