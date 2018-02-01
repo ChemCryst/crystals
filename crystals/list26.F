@@ -1326,28 +1326,23 @@ C--UTLS RESTRAINTS PRINT
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       
-        leverages=calcleverages(ircpt, info)
-        if(info==-1) then
+        call calcleverages(ircpt, leverages, infolev)
+        if(infolev==-1) then
           write(cmon, '(4X, A)') 
      1      '{6,0 Do a cycle of refinement to get leverages'
           CALL XPRVDU(NCVDU, 1,0)
           write(cmon, '(A)') ''
           CALL XPRVDU(NCVDU, 1,0)
-         allocate(leverages(size(restraints_list(ircpt)%subrestraints)))
-          leverages=IEEE_VALUE(leverages, IEEE_QUIET_NAN)
         end if
-        if(info==-2) then !< no restraints
-          allocate(leverages(0))
-        end if
-        
+
         ! check for `corrupted` leverages
         if(size(restraints_list(ircpt)%subrestraints)/=
      1    size(leverages)) then
+
           if(allocated(leverages)) deallocate(leverages)
-         allocate(leverages(size(restraints_list(ircpt)%subrestraints)))
-          leverages=IEEE_VALUE(leverages, IEEE_QUIET_NAN)
+          infolev=-3
         end if
-      
+              
         IF (ISSPRT .EQ. 0) THEN 
           if(allocated(restraints_list(ircpt)%description)) then
             do icpt=1, size(restraints_list(ircpt)%description)
@@ -1480,34 +1475,55 @@ C--UTLS RESTRAINTS PRINT
           end if
           ! end of header
 
-          if(leverages(icpt)>=0.9) then ! color code extreme values <=0.1 and >=0.9
-            icolorindex=3
-          else if(leverages(icpt)<=0.1) then
-            icolorindex=2
-          else
-            icolorindex=1
-          end if
+          if(infolev>=0) then
+            if(leverages(icpt)>=0.9) then ! color code extreme values <=0.1 and >=0.9
+              icolorindex=3
+            else if(leverages(icpt)<=0.1) then
+              icolorindex=2
+            else
+              icolorindex=1
+            end if
 
-          IF (ISSPRT .EQ. 0) THEN       
-            WRITE(NCWU,'(4X,I6,4I3,3(1PE12.2,1X),0PF8.3,4X, A)')
-     2        (ISTORE(M),M=JD,JE),
-     3        subrestraint%rvalue,
-     3        subrestraint%rtarget,
-     3        subrestraint%rvalue-subrestraint%rtarget,
-     4        leverages(icpt),
-     5        trim(subrestraint%description)
-          ENDIF      
+            IF (ISSPRT .EQ. 0) THEN       
+              WRITE(NCWU,'(4X,I6,4I3,3(1PE12.2,1X),0PF8.3,4X, A)')
+     2          (ISTORE(M),M=JD,JE),
+     3          subrestraint%rvalue,
+     3          subrestraint%rtarget,
+     3          subrestraint%rvalue-subrestraint%rtarget,
+     4          leverages(icpt),
+     5          trim(subrestraint%description)
+            ENDIF      
             
-          WRITE(CMON, 
-     1    '(4X,1P,3(E12.2,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
-     2      subrestraint%rvalue,
-     3      subrestraint%rtarget,
-     4      subrestraint%rvalue-subrestraint%rtarget,
-     5      icolorindex, 0, 
-     6      leverages(icpt),
-     7      trim(subrestraint%description)
-          CALL XPRVDU(NCVDU, 1,0)
-
+            WRITE(CMON, 
+     1      '(4X,1P,3(E12.2,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
+     2        subrestraint%rvalue,
+     3        subrestraint%rtarget,
+     4        subrestraint%rvalue-subrestraint%rtarget,
+     5        icolorindex, 0, 
+     6        leverages(icpt),
+     7        trim(subrestraint%description)
+            CALL XPRVDU(NCVDU, 1,0)
+          else
+            IF (ISSPRT .EQ. 0) THEN       
+              WRITE(NCWU,'(4X,I6,4I3,3(1PE12.2,1X),0PF8.3,4X, A)')
+     2          (ISTORE(M),M=JD,JE),
+     3          subrestraint%rvalue,
+     3          subrestraint%rtarget,
+     3          subrestraint%rvalue-subrestraint%rtarget,
+     4          IEEE_VALUE(1.0, IEEE_QUIET_NAN),
+     5          trim(subrestraint%description)
+            ENDIF      
+            
+            WRITE(CMON, 
+     1      '(4X,1P,3(E12.2,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
+     2        subrestraint%rvalue,
+     3        subrestraint%rtarget,
+     4        subrestraint%rvalue-subrestraint%rtarget,
+     5        icolorindex, 0, 
+     6        IEEE_VALUE(1.0, IEEE_QUIET_NAN),
+     7        trim(subrestraint%description)
+            CALL XPRVDU(NCVDU, 1,0)
+          end if
           Q=Q+subrestraint%rvalue
           O=O+subrestraint%rvalue
           P=P+subrestraint%rvalue**2
