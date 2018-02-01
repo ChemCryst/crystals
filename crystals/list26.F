@@ -1504,6 +1504,7 @@ C--UTLS RESTRAINTS PRINT
      7        trim(subrestraint%description)
             CALL XPRVDU(NCVDU, 1,0)
           else
+            icolorindex=1
             IF (ISSPRT .EQ. 0) THEN       
               WRITE(NCWU,'(4X,I6,4I3,3(1PE12.2,1X),0PF8.3,4X, A)')
      2          (ISTORE(M),M=JD,JE),
