@@ -29,7 +29,6 @@
     <tr>
       <td width="40%">
         <a name="ti" id="ti"></a>
-
         <h2>Analyse: Data Quality</h2>
       </td>
 
@@ -42,19 +41,26 @@
 
     <tr>
       <td width="40%">
+        <a name="cmp" id="cmp"></a>
         <h4>Completeness</h4>
 
-        <p>An almost solid row of blue crosses at the top - good sign - high
+        <p>An almost solid row of green crosses at the top - good sign - high
         completeness.<br />
         Missing Data: A few low angle reflections missing (probably behind the beam
-        stop)- Not usually important. If the blue crosses fall off at high angle, you can
+        stop)- Not usually important. If the green crosses fall off at high angle, you can
         click on the graph at the theta max at which you believe the data to be
         more-or-less complete.<br />
         The inset shows data from a <a href="./cropped.jpg">poorly diffracting
         poly-peptide</a>. The structure was difficult to solve, and refined to a
-        conventional R=8% with data down to 2 sigma.<br />
+        conventional R=8% with data down to 2 &sigma;.<br />
         <img id="1a" src="./s-bad-completeness.jpg" align="bottom" alt="Not Available"
-        name="1a" /></p>
+        name="1a" /><br />
+        The bottom figure is from a data set measured to a very high resolution, requiring
+        two different detector theta setings. Note the &apos;hole&apos; where the two 
+        settings don't quite overlap.<br />
+        <img id="1b" src="./s-hole-completeness.png" align="bottom" alt="Not Available"
+        name="1b" /><br />
+       </p>
       </td>
 
       <td>&nbsp; <img id="1" src="./completeness.jpg" align="left" alt="Not Available"
@@ -63,11 +69,12 @@
 
     <tr>
       <td width="40%">
+        <a name="frq" id="frq"></a>
         <h4>Sigma Frequency</h4>
 
-        <p>There are very few reflections below -2 sigma - i.e. no badly negative
+        <p>There are very few reflections below -2 &sigma; - i.e. no badly negative
         reflections. From the blue line you can see that about 5400 out of the 7000
-        reflections have I/sigma(I) &amp;GT; 3. The listing file should give the exact
+        reflections have I/&sigma;(I) &amp;GT; 3. The listing file should give the exact
         figure. 77% of this data is reliably observable. If the figure falls below 50%
         you can expect problems with structure solution and refinement.</p>
       </td>
@@ -78,26 +85,124 @@
 
     <tr>
       <td width="40%">
+        <a name="res" id="res"></a>
         <h4>Sigma vs Resolution</h4>
 
-        <p>The green curve shows that the very reliable data fades away at
-        [sin(theta)/lambda]<sup>2</sup> of about 0.3. As normal, the weak data (red) is
-        mostly at high resolution. The yellow curve is the cumulative sum, and is scaled
-        to fit the chart (in this example by being multiplied by 10). It shows that the
-        mean I/sigma(I) is about 2 at 0.36 resolution. This is typical of an 'ordinary'
-        data set. Weakly diffracting crystals fall below the 2-sigma threshold at a lower
-        resolution.<br />
-        The inset shows the data for the same poor crystal described above<br />
-        <img id="3a" src="./s-bad-SvsR.jpg" align="bottom" alt="Not Available" name=
-        "3a" /></p>
+        <p>The dark blue curve shows that there is a roughly constant amount of
+        very reliable data throughout the
+        [sin(theta)/lambda]<sup>3</sup>. As normal, the weak data (red) is
+        mostly at high resolution. The pale blue curve is the cumulative sum, and is scaled
+        to fit the chart (right hand scale). Note that it slowly falls away until a
+        [sin(theta)/lambda]<sup>3</sup> of about 1.0, when it suddenl;y rises
+        before falling away again. This is the point where the time-per-frame
+        was increased.<br />
+        The inset shows the data for a poor crystal.  The frequency of good strong 
+        reflections falls away with resolution (dark blue curve). The mean I/sig(I)
+        falls away rapidly.<br />
+        <img id="resa" src="./s-bad-svsr.png" align="bottom" alt="Not Available" name=
+        "resa" /></p>
       </td>
 
-      <td>&nbsp; <img id="3" src="./sigvsres.jpg" align="left" alt="Not Available" name=
-      "3" /></td>
+      <td>&nbsp; <img id="resb" src="./sigvsres.png" align="left" alt="Not Available" name=
+      "resb" /></td>
     </tr>
+
+
+
+
+
 
     <tr>
       <td width="40%">
+        <a name="mgr" id="mgr"></a>
+        <h4>Merging R factor</h4>
+        <p>The red histogram shows the Merging R-factor as a function of population 
+        data quality (<i>I/sig(I)</i>). Note that this has a quite well defined
+        upper limit (See Diederichs, K. (2010). Acta Cryst. D66, 733–740.).<br />
+
+        The green curve is the number of reflections classed by the intensity and standard
+        uncertainty of the mean.
+        <p>setings. <br />
+        <img id="mr2" src="./weak-mergingr.png" align="bottom" alt="Not Available"
+        name=mr2" /><br />
+       </p>
+      </td>
+      <td>&nbsp; <img id="mgr1" src="./mergingr.png" align="left" alt="Not Available"
+      name="mgr1" /></td>
+    </tr>
+
+
+    <tr>
+      <td width="40%">
+        <a name="abs" id="abs"></a>
+        <h4>Systematic Absences</h4>
+        <p>If the systematic absences were measured in the same way as the rest of the 
+        data, they throw light on the quality of the accidentally weak reflections.<br />
+        The systematicaly absent reflections will not be exactly zero because of random
+        noise, but their average value shold be zero. The distribution of refections in the 
+        upper right and lower left quadrants should be similar.  An excess in the upper
+        right might imply that the weak reflections are being over-estimated, that the 
+        crystal is twinned or that there is substantial &lambda;/2 contamination.
+        <br />
+        The inset image is from a weakly difracting sample of the same material.
+        <img id="1b" src="./weak-abs.png" align="bottom" alt="Not Available"
+        name="1b" /><br />
+       </p>
+      </td>
+      <td>&nbsp; <img id="1" src="./strong-abs.png" align="left" alt="Not Available"
+      name="1" /></td>
+    </tr>
+
+
+    <tr>
+      <td width="40%">
+        <a name="his" id="his"></a>
+        <h4>Absences Histogram</h4>
+        <p>In the upper plot, the red histogram shows the number of systemaitic absences
+        in each interval of Fo. (note that the scale is quadratic).  The green line is the
+        mean intensity in each bin.<br />
+        The lower plot shows the signal to noise distribution F/&sigma;(F). 
+        <br />
+        The inset image is of the equivalent plots for a weakly diffracting crystal
+        <img id="hisa" src="./weak-hist.png" align="bottom" alt="Not Available"
+        name="hisa" /><br />
+       </p>
+      </td>
+      <td>&nbsp; <img id="hisb" src="./strong-hist.png" align="left" alt="Not Available"
+      name="hisb" /></td>
+    </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <tr>
+      <td width="40%">
+        <a name="wil" id="wil"></a>
         <h4>Wilson Plot</h4>
 
         <p>This shows the usual ripple due to repeated molecular motifs. The gradient
@@ -121,6 +226,7 @@
 
     <tr>
       <td width="40%">
+        <a name="nz" id="nz"></a>
         <h4>N(z) Distribution</h4>
 
         <p>This shows your data (as crosses) compared to thoretical distributions and
