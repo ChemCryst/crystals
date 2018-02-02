@@ -792,35 +792,35 @@
 %      END BLOCK
 %      BLOCK    %XC_CMP                             %completeness   
 %%                                 All these links are awaiting implementation of # anchor
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#cmp' 
 {S Completeness help
 %      END BLOCK
 %      BLOCK    %XC_FRQ                             %Sigma Frequency
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#frq' 
 {S Frequency help
 %      END BLOCK
 %      BLOCK    %XC_RES                              %Sigma v Res
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#res' 
 {S Sig vs res R help
 %      END BLOCK
 %      BLOCK    %XC_MGR                              %Merging R
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#mgr' 
 {S Merging R help
 %      END BLOCK
 %      BLOCK    %XC_ABS                              %Systematic absences
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#abs' 
 {S systematic help
 %      END BLOCK
 %      BLOCK    %XC_HIS                              %Absences histogram
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#his' 
 {S Histogram help
 %      END BLOCK
 %      BLOCK    %XC_WIL                              %Wilson Plot
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#wil' 
 {S Wilson Plot help
 %      END BLOCK
 %      BLOCK    %XC_NZ                              %N(z) Plot
-%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html#nz' 
 {S Wilson Plot help
 %      END BLOCK
 %%
