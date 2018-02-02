@@ -210,6 +210,8 @@
 %               clear
 %               insert 'SHIFT GENERAL ='
 %               store real  shift
+%               insert ' OVERALL = '
+%               store real  shift
 %               send
 %              END IF
 %            COPY 'END'
@@ -257,6 +259,8 @@
 %              IF SHIFT .LT. 1.0 THEN
 %                clear
 %                insert 'SHIFT GENERAL ='
+%                store real  shift
+%                insert ' OVERALL = '
 %                store real  shift
 %                send
 %              END IF
