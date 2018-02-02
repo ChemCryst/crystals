@@ -3979,6 +3979,13 @@ extern "C" {
     else
     {
 // Launch with ShellExecute function. There is no waiting for apps to finish.
+//Special case http urls:
+      tstring lFirstTok = firstTok; 
+#ifdef _UNICODE
+      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower );
+#else
+      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
+#endif
 
 //Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
@@ -3989,31 +3996,57 @@ extern "C" {
             restLine = firstTok + restLine;
             bRest = true;
             firstTok = buf;
+            if ( lFirstTok.find("http") != 0 ) {  // Not a web URL, add file:/// to start.
+               if ( lFirstTok.find("file") != 0 ) {  // Not a file URL, add file:/// to start.
+			   
+					string launch = string( firstTok + " file:///" + restLine);
+					STARTUPINFOA si;
+					PROCESS_INFORMATION proc;
+					GetStartupInfoA(&si);      //set startupinfo for the spawned process
+					si.dwFlags = STARTF_USESHOWWINDOW;
+					si.wShowWindow = SW_HIDE;
+					::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
+					return 0;
+				}
+			}
+			
          }
       }
-//Special case http urls:
-      tstring lFirstTok = firstTok; 
-#ifdef _UNICODE
-      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower );
-#else
-      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
-#endif
       match = lFirstTok.find("http://");
       if ( match == 0 )
       {
-         restLine = "url.dll,FileProtocolHandler " + firstTok + " "+ restLine;
-         bRest = true;
-         firstTok = "rundll32.exe";
-       }
+     	 return ( wxLaunchDefaultBrowser( firstTok, wxBROWSER_NEW_WINDOW ) ? 0: 1);
+      } else { 
+		 match = lFirstTok.find("file:///");
+         if ( match == 0 )
+         {
+			wxMimeTypesManager manager;
+			wxFileType *filetype=manager.GetFileTypeFromExtension("html");
+			wxString command=filetype->GetOpenCommand(firstTok);
+			wxExecute(command);
+			return 0;
+         }
+	  }
 
 
+      
+      if ( restLine.find('#') != string::npos ) {
+        string launch = string(firstTok + " " + restLine);
+		STARTUPINFOA si;
+		PROCESS_INFORMATION proc;
+		GetStartupInfoA(&si);      //set startupinfo for the spawned process
+		si.dwFlags = STARTF_USESHOWWINDOW;
+		si.wShowWindow = SW_HIDE;
+		::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
+		return 0;
+	  }
       HINSTANCE ex = ShellExecuteA( GetDesktopWindow(),
                                    "open",
                                    firstTok.c_str(),
                                    ( (bRest)? restLine.c_str() : NULL ),
                                    NULL,
                                    SW_SHOWNORMAL);
-
+	  
       if ( (uintptr_t)ex == SE_ERR_NOASSOC )
       {
         (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
@@ -4030,21 +4063,24 @@ extern "C" {
         (CcController::theController)->AddInterfaceCommand( "Could not launch Win process. Trying command prompt." );
 
         tstring newparam = tstring("/c ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
-        if ( IsWinNT() )
+        if ( IsWinNT() ) {
            ShellExecuteA( GetDesktopWindow(),
                        "open",
                        "cmd.exe",
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);
-        else
-           ShellExecuteA( GetDesktopWindow(),
+	  } else {
+
+		ShellExecuteA( GetDesktopWindow(),
                        "open",
                        "command.com",
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);
-
+		}
+		
+		
 /*
 // Some other failure. Try another method of starting external programs.
         extern int errno;
