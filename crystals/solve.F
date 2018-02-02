@@ -263,7 +263,7 @@ C--
       CHARACTER *21 CTEXT, CSAVE
       CHARACTER *14 CLST23(4)
 C-------STEFANS VARIABLES
-      INTEGER ZEROED_COUNT
+c18      INTEGER ZEROED_COUNT
 C----------------------------
       INCLUDE 'TYPE11.INC'
 C
@@ -286,7 +286,7 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
-      common /xpatch/djwscl
+c18      common /xpatch/djwscl
       INCLUDE 'XPDS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
@@ -380,7 +380,7 @@ C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOL
       end if
       IF ( IERFLG .LT. 0 ) GO TO 9900
 cdjwdec06 - save the sparsity flag. 0=sparse
-      ispar = istore(m33cd+13)
+c18      ispar = istore(m33cd+13)
 C--LOAD A FEW MORE LISTS
       CALL XFAL01
       CALL XFAL05
@@ -450,10 +450,10 @@ C--SET UP THE SHIFT AREA
       JC=KCHLFL(MW*NMW)
       JD=JC+(NMW-1)*MW
 cdec06
-      if (ispar .eq.0) then
+c18      if (ispar .eq.0) then
 c-----    set general shift to 0.8 for sparse build
-        store(m33sv)=min(store(m33sv), 0.8)
-      endif
+c18        store(m33sv)=min(store(m33sv), 0.8)
+c18      endif
       if (sfls_calcul_flag==1) then
 c-----    set general shift to 0.0 for leverages calculations
         store(m33sv)=0.0
@@ -477,12 +477,12 @@ C--CHECK IF A SHIFT FACTOR HAS BEEN GIVEN IN LIST 33
 C--MOVE THE SHIFT FACTOR FROM LIST 33
 1050     CONTINUE
 cdec06
-         if (ispar .eq.0) then
+c18         if (ispar .eq.0) then
 c-----     set maximal shift to 0.8 for sparse build
-           store(jb)=min(store(jb), 0.8)
-         endif
+c18           store(jb)=min(store(jb), 0.8)
+c18         endif
          if (sfls_calcul_flag==1) then
-c-----     set general shift to 0.8 for leverages calculations
+c-----     set general shift to 0.0 for leverages calculations
            store(jb)=0.0
          end if
          STORE(I)=STORE(JB)
@@ -629,15 +629,15 @@ C--BRING DOWN THE MATRIX - REMEMBER MD11 INDICATES SINGLE OR DOUBLE PREC
 
       CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
 C     If we are going to threshhold the normal matrix then we do it here
-      if ( store(M33CD+16) .gt. 0 ) then
-            ZEROED_COUNT =  tri_matrix_apply_threshhold(STR11(L11C),
-     1       JY*(JY+1)/2, JY, store(M33CD+16))
-      end if
+c18      if ( store(M33CD+16) .gt. 0 ) then
+c18            ZEROED_COUNT =  tri_matrix_apply_threshhold(STR11(L11C),
+c18     1       JY*(JY+1)/2, JY, store(M33CD+16))
+c18      end if
 C --- If we are doing punching then do it here.      
-      IF ( sfls_punch_flag>0 ) THEN
-          call sfls_punch_normal(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
+         IF ( sfls_punch_flag>0 ) THEN
+             call sfls_punch_normal(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1        sfls_punch_flag)
-      END IF
+         END IF
    
       IF (JP .GT. 0 ) THEN
 
@@ -1380,48 +1380,48 @@ c      9 = U11      = JC+8mw
 c
 c----- find average adp and position
 c      reversals and s/esd
-      ovrtms=0.
-      ovrrev=0.
-      ovrsoe=0.
-      adptms=0.
-      adprev=0.
-      adpsoe=0.
-      xyztms=0.
-      xyzrev=0.
-      xyzsoe=0.
-C--COMPUTE THE mean TOTALS TO BE PRINTED
+c18   ovrtms=0.
+c18   ovrrev=0.
+c18   ovrsoe=0.
+c18   adptms=0.
+c18   adprev=0.
+c18   adpsoe=0.
+c18   xyztms=0.
+c18   xyzrev=0.
+c18   xyzsoe=0.
+C--COMPUTE THE TOTALS TO BE PRINTED
       Y=0.
       Z=0.
-      j = 0
+c18   j = 0
       DO 4550 I=JC,JD,MW
-      j = j + 1
-      terms = store(i+1)
-         select case(j)
-            case(1)
+c18   j = j + 1
+c18   terms = store(i+1)
+c18      select case(j)
+c18         case(1)
 c  overall
-              ovrtms = ovrtms+terms
-              ovrsoe = ovrsoe +store(i+6)
-            case(5,9,10,11)
+c18           ovrtms = ovrtms+terms
+c18           ovrsoe = ovrsoe +store(i+6)
+c18         case(5,9,10,11)
 c  adp
-              adptms=adptms+terms
-              adpsoe=adpsoe+store(i+6)            
-            case(6,7,8)
+c18           adptms=adptms+terms
+c18           adpsoe=adpsoe+store(i+6)            
+c18         case(6,7,8)
 c   xyz
-              xyztms=xyztms+terms
-              xyzsoe=xyzsoe+store(i+6)            
-         end select
+c18           xyztms=xyztms+terms
+c18           xyzsoe=xyzsoe+store(i+6)            
+c18      end select
 c
 c      check no of reversals is valid
-       if (store(i+4) .gt. zero) then
-         select case(j)
-            case(5,9,10,11)
+c18    if (store(i+4) .gt. zero) then
+c18      select case(j)
+c18         case(5,9,10,11)
 c  adp
-              adprev=adprev+store(i+4)            
-            case(6,7,8)
+c18           adprev=adprev+store(i+4)            
+c18         case(6,7,8)
 c   xyz
-              xyzrev=xyzrev+store(i+4)            
-         end select
-       endif
+c18           xyzrev=xyzrev+store(i+4)            
+c18      end select
+c18    endif
       Y=Y+STORE(I+1)
       Z=Z+STORE(I+4)
       STORE(I+1)=1./AMAX1(STORE(I+1),1.)
@@ -1435,11 +1435,11 @@ c      write(ncwu,'(3(a,g16.4))')'adptms',adptms,' xyztms',xyztms,
 c     1 ' ovrtms',ovrtms 
 c      write(ncwu,'(3(a,g16.4))')'adpsoe',adpsoe,' xyzsoe',xyzsoe,
 c     1 ' ovrsoe',ovrsoe 
-      ovrsoe=sqrt(ovrsoe/max(1.,ovrtms))
-      adpsoe=sqrt(adpsoe/max(1.,adptms))
-      xyzsoe=sqrt(xyzsoe/max(1.,xyztms))
-      adprev=100. * adprev/max(1.,adptms)
-      xyzrev=100. * xyzrev/max(1.,xyztms)
+c18   ovrsoe=sqrt(ovrsoe/max(1.,ovrtms))
+c18   adpsoe=sqrt(adpsoe/max(1.,adptms))
+c18   xyzsoe=sqrt(xyzsoe/max(1.,xyztms))
+c18   adprev=100. * adprev/max(1.,adptms)
+c18   xyzrev=100. * xyzrev/max(1.,xyztms)
 c      write(ncwu,'(3(a,g16.4))')'adpsoe',adpsoe,' xyzsoe',xyzsoe,
 c     1 ' ovrsoe',ovrsoe 
 c      write(ncwu,'(3(a,g16.4))')'adprev',adprev,' xyzrev',xyzrev,
@@ -1588,8 +1588,8 @@ c----- TYPE eq -1 - normal scale factors
 C--COMPUTE THE NEW TOTALS AFTER THE NEW SHIFT FACTOR HAS BEEN APPLIED
 cdjwdec06
 c---- reset values in list 33
-      istore(j) = -1
-      store(k) = store(i)
+c18    istore(j) = -1
+c18    store(k) = store(i)
 cdjwdec06
       STORE(I+2)=STORE(I+2)*STORE(I)
       STORE(I+3)=STORE(I+3)*STORE(I)
@@ -1604,50 +1604,50 @@ c      xyz,occ,ext,Flack are caught as absolute values in KFLSP
 c      adp and overall are caught here (SFLSE) by looking at 
 c      shift/esd, reversals and R-factor.
 c
-      if (ispar .eq.0) then
-       if(adpsoe<=4) then
-         adpshift = 1.0
-       else
-         adpshift = 4./adpsoe
-       end if
-       if(ovrsoe<=4) then
-         ovrshift = 1.0
-       else
-         ovrshift = 4./ovrsoe
-       end if
-       if(xyzsoe<=8) then
-         xyzshift = 1.0
-       else
-         xyzshift = 8./xyzsoe
-       end if
-      else
-       if(adpsoe<=15) then
-         adpshift = 1.0
-       else
-         adpshift = 15./adpsoe
-       end if
-       if(ovrsoe<=15) then
-         ovrshift = 1.0
-       else
-         ovrshift = 15./ovrsoe
-       end if
-       if(xyzsoe<=15) then
-         xyzshift = 1.0
-       else
-         xyzshift = 15./xyzsoe
-       end if
-       if(xyzsoe<=15) then
-         xyzshift = 1.0
-       else
-         xyzshift = 15./xyzsoe
-       end if
-      endif
+c18      if (ispar .eq.0) then
+c18       if(adpsoe<=4) then
+c18         adpshift = 1.0
+c18       else
+c18         adpshift = 4./adpsoe
+c18       end if
+c18       if(ovrsoe<=4) then
+c18         ovrshift = 1.0
+c18       else
+c18         ovrshift = 4./ovrsoe
+c18       end if
+c18       if(xyzsoe<=8) then
+c18         xyzshift = 1.0
+c18       else
+c18         xyzshift = 8./xyzsoe
+c18       end if
+c18      else
+c18       if(adpsoe<=15) then
+c18         adpshift = 1.0
+c18       else
+c18         adpshift = 15./adpsoe
+c18       end if
+c18       if(ovrsoe<=15) then
+c18         ovrshift = 1.0
+c18       else
+c18         ovrshift = 15./ovrsoe
+c18       end if
+c18       if(xyzsoe<=15) then
+c18         xyzshift = 1.0
+c18       else
+c18         xyzshift = 15./xyzsoe
+c18       end if
+c18       if(xyzsoe<=15) then
+c18         xyzshift = 1.0
+c18       else
+c18         xyzshift = 15./xyzsoe
+c18       end if
+c18      endif
 c
-      usershift = store(m33sv+1)      !current overall
-      oldshift = usershift
+c18      usershift = store(m33sv+1)      !current overall
+c18      oldshift = usershift
 c
 c--- check for old shift factor for adps
-      if (m33sv .gt. l33sv) then
+c18      if (m33sv .gt. l33sv) then
 c        write(ncwu,'(a)') 'old and new shift factors'
 c        write(ncwu,'(20i5)')(istore(jjdjw),jjdjw=m33st,m33st+md33st-1)
 c        write(ncwu,'(20f5.2)') 
@@ -1655,73 +1655,73 @@ c     1  (store(jjdjw-md33sv),jjdjw=m33sv,m33sv+md33sv-1)
 c        write(ncwu,'(20f5.2)')(store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
 c
 c       Find minimum of current and oldshifts
-
-        k=0      !general
-        if (istore(k+m33st) .eq. -1) 
-     1    oldshift= min(store(k+m33sv-md33sv),oldshift)
-        k=1      !overall
-        if (istore(k+m33st) .eq. -1) 
-     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
-        k=5      !Uiso
-        if (istore(k+m33st) .eq. -1) 
-     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
-        do k=9,11      !Uii
-        if (istore(k+m33st) .eq. -1) 
-     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
-        enddo
-      endif         
+c18
+c18        k=0      !general
+c18        if (istore(k+m33st) .eq. -1) 
+c18     1    oldshift= min(store(k+m33sv-md33sv),oldshift)
+c18        k=1      !overall
+c18        if (istore(k+m33st) .eq. -1) 
+c18     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
+c18        k=5      !Uiso
+c18        if (istore(k+m33st) .eq. -1) 
+c18     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
+c18        do k=9,11      !Uii
+c18        if (istore(k+m33st) .eq. -1) 
+c18     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
+c18        enddo
+c18      endif         
 c
 c
-      rfshift = 1.
-      if (ispar .eq. 0) then
+c18      rfshift = 1.
+c18      if (ispar .eq. 0) then
 c-- sparse build - modify shift factor depending upon R
-       if (rlast .ge. 30.) then
-        rfshift = .3
-       else if (rlast .ge. 20.) then
-        rfshift = .5
-       else
-        rfshift = .8
-       endif 
-      endif
+c18       if (rlast .ge. 30.) then
+c18        rfshift = .3
+c18       else if (rlast .ge. 20.) then
+c18        rfshift = .5
+c18       else
+c18        rfshift = .8
+c18       endif 
+c18      endif
 c
-       revshift = 1.0
-       if ((adprev .gt. 0.0) .and. (adpsoe .gt. 2.)) then
+c18       revshift = 1.0
+c18       if ((adprev .gt. 0.0) .and. (adpsoe .gt. 2.)) then
 c  reversal info if large shifts
-         if (adprev .gt. 80.) then
-           revshift =  0.41
-         else if (adprev .gt. 70.) then
-           revshift =  0.71
-         else if (adprev .lt. 35.) then
-           revshift = 1.09
-         endif
-       endif
-      if (revshift .le. 1.0) then
-      adpshift=min(1.,usershift,rfshift,adpshift,revshift)
-      else
-      adpshift=revshift*adpshift
-      endif
+c18         if (adprev .gt. 80.) then
+c18           revshift =  0.41
+c18         else if (adprev .gt. 70.) then
+c18           revshift =  0.71
+c18         else if (adprev .lt. 35.) then
+c18           revshift = 1.09
+c18         endif
+c18       endif
+c18      if (revshift .le. 1.0) then
+c18      adpshift=min(1.,usershift,rfshift,adpshift,revshift)
+c18      else
+c18      adpshift=revshift*adpshift
+c18      endif
 c
 c now overall
-      ovrshift=ovrshift * revshift
+c18      ovrshift=ovrshift * revshift
 c
 c      now do something about xyz
-       revshift = 1.0
-       if ((xyzrev .gt. 0.0) .and. (xyzsoe .gt. 3.)) then
+c18       revshift = 1.0
+c18       if ((xyzrev .gt. 0.0) .and. (xyzsoe .gt. 3.)) then
 c  reversal info if large shifts
-         if (xyzrev .gt. 80.) then
-           revshift =  0.41
-         else if (xyzrev .gt. 70.) then
-           revshift =  0.71
-         else if (xyzrev .lt. 35.) then
-           revshift = 1.09
-         endif
-       endif
-      if (revshift .le. 1.0) then
-      xyzshift=min(1.,usershift,rfshift,xyzshift,revshift)
-      else
-      xyzshift=revshift*xyzshift
-      endif
-
+c18         if (xyzrev .gt. 80.) then
+c18           revshift =  0.41
+c18         else if (xyzrev .gt. 70.) then
+c18           revshift =  0.71
+c18         else if (xyzrev .lt. 35.) then
+c18           revshift = 1.09
+c18         endif
+c18       endif
+c18      if (revshift .le. 1.0) then
+c18      xyzshift=min(1.,usershift,rfshift,xyzshift,revshift)
+c18      else
+c18      xyzshift=revshift*xyzshift
+c18      endif
+c18
 c
 c
 c      write(ncwu,'(8(a,f8.4,x))')'usershift',usershift,
@@ -1737,47 +1737,47 @@ c     2 ' Av Rev ', adprev,xyzrev,
 c     3 ' Av shift/esd', adpsoe,xyzsoe, 
 c     4 ' R= ',store(l30rf),' adp=',adpshift,' Xyz', xyzshift,
 c     5 ' Over', ovrshift
-
+c18
 c
 c       write(ncwu,'(a)') 'Current shift factors'
 c       write(ncwu,'(20i5)') (istore(jjdjw),jjdjw=m33st,m33st+md33st-1)
 c       write(ncwu,'(20f5.2)') (store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
 c
 c write back to list 33
-       k=0 !general
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
-       k=1 !overall
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift, ovrshift,store(k+m33sv))
-       k=5 !Uiso
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
-       do k=6,8 ! xyz
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= xyzshift
-       enddo
-       do k=9,14 !adp
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift, store(k+m33sv))
-       enddo
+c18       k=0 !general
+c18         if (istore(k+m33st) .eq. -1) 
+c18     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
+c18       k=1 !overall
+c18         if (istore(k+m33st) .eq. -1) 
+c18     1    store(k+m33sv)= min(adpshift, ovrshift,store(k+m33sv))
+c18       k=5 !Uiso
+c18         if (istore(k+m33st) .eq. -1) 
+c18     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
+c18       do k=6,8 ! xyz
+c18         if (istore(k+m33st) .eq. -1) 
+c18     1    store(k+m33sv)= xyzshift
+c18       enddo
+c18       do k=9,14 !adp
+c18         if (istore(k+m33st) .eq. -1) 
+c18     1    store(k+m33sv)= min(adpshift, store(k+m33sv))
+c18       enddo
 c
 c       
 c       write(ncwu,'(/a)') 'New shift factors'
 c       write(ncwu,'(20f5.2)') (store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
 c
-      J=M33ST+1
-      k=m33sv+1
+c18      J=M33ST+1
+c18      k=m33sv+1
 c--see if the shifts have to be adjusted
-      do i=jc,jd,mw
-       if(istore(j) .EQ. -1)  then
-        store(i) = store(k)
-        store(i+2)=store(i+2)*store(i)
-        store(i+3)=store(i+3)*store(i)
-       endif
-       j=j+1
-       k=k+1
-      enddo
+c18      do i=jc,jd,mw
+c18       if(istore(j) .EQ. -1)  then
+c18        store(i) = store(k)
+c18        store(i+2)=store(i+2)*store(i)
+c18        store(i+3)=store(i+3)*store(i)
+c18       endif
+c18       j=j+1
+c18       k=k+1
+c18      enddo
 c
 c
       if ( issprt .eq. 0 ) write(ncwu,5105)
@@ -1789,32 +1789,32 @@ c
 c--shuffle the results for x, y and z
       jf=jc+5*mw
       jg=l1p1
-      do 5150 i=1,3
-      a1(i)=store(jf+2)*store(jg)
-      a1(i+3)=store(jf+3)
-      store(jf+3)=store(jf+3)/store(jg)
-      jf=jf+mw
-      jg=jg+1
-5150  continue
+      do i=1,3 !5150
+        a1(i)=store(jf+2)*store(jg)
+        a1(i+3)=store(jf+3)
+        store(jf+3)=store(jf+3)/store(jg)
+        jf=jf+mw
+        jg=jg+1
+      end do !5150  continue
 cdjwaug06
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts
 c
-      scalsv = ovrshift
-      if (ovrshift .lt. 1.0) then
-        write(cmon,'(a,f4.2)') 'Over-all rescaling factor ', scalsv
-        call outcol(9)
-        call xprvdu(ncvdu, 1,0)
-        call outcol(1)
-        if (issprt .eq. 0) write(ncwu,'(//a//)') trim(CMON(1))
-      endif
+c18      scalsv = ovrshift
+c18      if (ovrshift .lt. 1.0) then
+c18        write(cmon,'(a,f4.2)') 'Over-all rescaling factor ', scalsv
+c18        call outcol(9)
+c18        call xprvdu(ncvdu, 1,0)
+c18        call outcol(1)
+c18        if (issprt .eq. 0) write(ncwu,'(//a//)') trim(CMON(1))
+c18      endif
 c      djwscl =  min(shift, scalsv)
 c ric11 - shift is not initialised.
-      djwscl =   scalsv
+c18      djwscl =   scalsv
 C
 cdjwdec06
 c----- rewrite list 33 to disk in case scalefactors have been changed
-      CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
+c18            CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
 c
 C
 C--PREPARE THE LIST 24 FOR OUTPUT
@@ -2265,7 +2265,7 @@ C
 C
       COMMON /XWORK/F,BC(11),IBC(14)
       INCLUDE 'XWORKA.INC'
-      common /xpatch/djwscl
+c18      common /xpatch/djwscl
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
@@ -2567,7 +2567,7 @@ cdjwjul07
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts by factor from SFLSE
 C   B holds the shift to the DU[iso]. 
-      B= STORE(JX+1) - (B * DJWSCL)
+      b= store(jx+1) - b
 cric11 - added brackets around difference above. Wrongly. Now fixed.
 c
       IF (ISSPRT .EQ. 0) THEN
