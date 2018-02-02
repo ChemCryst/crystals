@@ -91,12 +91,14 @@
 ^^WI       @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI       {                                                                      
 ^^WI        @ 1,1 ICON IM INFO                                                    
-^^WI        @ 1,3 GRID EXP2 NROWS=2 NCOLS=1                                       
+^^WI        @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
 ^^WI        {                                                                     
-^^WI         @ 1,1 STATIC XFW1                                                    
-^^WI          'The Internal Variance is a measure of self-consistency of equivalents'
+^^WI         @ 1,1 STATIC XFW1
+^^WI          'Population (Sample) Standard Deviations (independent of MoO).'
 ^^WI         @ 2,1 STATIC XFW2                                                    
-^^WI          'The External Variance comes from the instrument makers estimates'         
+^^WI          'The Internal s.u. is a measure of self-consistency of equivalents'
+^^WI         @ 3,1 STATIC XFW3                                                    
+^^WI          'The External s.u. comes from the instrument makers estimates'         
 ^^WI        }                                                                     
 ^^WI       }                                                                      
 ^^WI       @ 4,2 PLOTWINDOW _VSIGMA NROWS=20 NCOLS=64 
@@ -136,7 +138,7 @@
 %    BLOCK
 ^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas2.dat - may be slow'             
 ^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA    KEY                              
-^^PL XAXIS TITLE 'External (Mean variance)'                                           
+^^PL XAXIS TITLE 'External (Mean standard uncertianty)'                                           
 ^^PL NSERIES=2 LENGTH=40 
 ^^PL SERIES 1 SERIESNAME 'Low Multiplicity (<6)'
 ^^PL SERIES 2 SERIESNAME 'High Multiplicity'

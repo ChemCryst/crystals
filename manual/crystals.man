@@ -9447,7 +9447,7 @@ default value is 4.0
  The following  KEYS  are recognized :
 #N   7#
 #J
-      GENERAL   This refers to all the variable parameters
+      GENERAL   This refers to all the atomic, batch and element parameters
       OVERALL   This refers to the overall parameters
 
       OCC     U[ISO]      X       Y       Z

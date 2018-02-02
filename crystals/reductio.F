@@ -1650,9 +1650,11 @@ C
      2 2X,F18.3, F16.3, F15.3)
 
       IF ( IULN .EQ. 6 ) THEN
-        WRITE(NCFPU1,'(A)')'Rmerge%  Rint%'
+        WRITE(NCFPU1,'(A)')
+     1 ' Rmerge%   Rint%         Observations    '
         WRITE(NCFPU1,'(2F8.2)')WORK(25)*100.,WORK(28)*100.
-        WRITE(NCFPU1,'(A)')'F2/sigma(F2)  Rmerge%    Observations'
+        WRITE(NCFPU1,'(A)')
+     1 'F2/sigma(F2)  Rmerge%       Input  Merged'
 
         NTOT = 0
         DO I = 301,400

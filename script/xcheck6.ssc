@@ -52,20 +52,19 @@
 ^^WI        @ 3,11 STATIC _TH_M '0.00000'
 ^^WI      }
 %%                                                  
-^^WI      @ 1,3 GRID EXP2 NROWS=4 NCOLS=2                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=5 NCOLS=2                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW11                                                    
-^^WI 'Completeness of the data set out to theta max.  Friedels Law is always'  
-^^WI       @ 1,2 STATIC XFW12
-^^WI 'applied'                         
+^^WI 'Completeness of the data set out to theta max.  Friedels Law is always applied'                         
 ^^WI       @ 2,1 STATIC XFW21                                                    
 ^^WI 'You may manually select "theta full" (the value at which you consider the'    
-^^WI       @ 2,2 STATIC XFW22                                                    
-^^WI 'data complete) by right-clicking on the red line.'  
 ^^WI       @ 3,1 STATIC XFW31                                                    
+^^WI 'data complete) by right-clicking on the red line.'  
+^^WI       @ 4,1 STATIC XFW41                                                    
 ^^WI ' The intervals in (sin\theta/lambda)\**3 have equal volumes.'  
-^^WI       @ 4,1  STATIC XFW41
+^^WI       @ 5,1 STATIC XFW51
 ^^WI ' The values under the cursor are \theta, and (sin\theta/\lambda)\**2'
+^^WI       @ 1,2 BUTTON XC_CMP 'Help'                                            
 ^^WI      }                                                                     
 ^^WI     }                                                                      
 ^^WI     @ 4,2 RESIZE _COMPRSZ VERTICAL 
@@ -93,13 +92,14 @@
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=3                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'You are looking at the frequency of I/\sigma(I). The green line shows'      
 ^^WI       @ 2,1 STATIC XFW2                                                    
 ^^WI 'number of reflections above a given I/\sigma(I) ratio.'                    
 ^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'   
+^^WI       @ 1,2 BUTTON XC_FRQ 'Help'                                            
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -116,13 +116,14 @@
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''               
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1
 ^^WI 'You are looking at the distribution of I/\sigma(I) against sin\**3\theta/\lambda\**3'                                                   
 ^^WI       @ 2,1 STATIC XWF2
 ^^WI 'The first value under the pointer is sin\**2\theta/\lambda\**2'
 ^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
+^^WI       @ 1,2 BUTTON XC_RES 'Help'                                            
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -141,13 +142,16 @@
 % IF ( MERGER ) THEN                                                            
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI       @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                      
+^^WI       @ 1,3 GRID EXP2 NROWS=3 NCOLS=3                                      
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
-^^WI  'You are looking at merging R versus signal to noise. Merging R is'       
+^^WI 'You are looking at merging R versus signal to noise. '       
 ^^WI       @ 2,1 STATIC XFW2                                                    
-^^WI 'expected to be worse for low signal to noise data.'                       
-^^WI       @ 3,1 STATIC XFW3 'Right-click on a bar for data cut-off options.'   
+^^WI 'Merging R is expected to be worse for low signal to noise data.'                       
+^^WI       @ 3,1 STATIC XFW3
+^^WI 'Right-click on a bar for data cut-off options.'  
+^^WI       @ 1,3 BUTTON XC_MGR 'Help'                                            
+^^WI 
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -176,7 +180,7 @@
 % IF ( ABSENT ) THEN                                                            
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'Systematic absences: These data points were measured, but should be'      
@@ -184,6 +188,7 @@
 ^^WI 'absent due to space group. Allowing random noise, they should be'         
 ^^WI       @ 3,1 STATIC XFW3                                                    
 ^^WI 'evenly distributed about zero. Absences are not used in refinement.'      
+^^WI       @ 1,2 BUTTON XC_ABS 'Help'                                            
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -210,7 +215,7 @@
 % IF ( HIST ) THEN                                                            
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'Systematic Absences. End bins also contain extreme values'
@@ -218,6 +223,7 @@
 ^^WI 'Fo distributions'         
 ^^WI       @ 3,1 STATIC XFW3                                                    
 ^^WI 'Fo/\sigma(Fo) distributions'      
+^^WI       @ 1,2 BUTTON XC_HIS 'Help'
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -253,7 +259,7 @@
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=6 NCOLS=1                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=6 NCOLS=2
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'The data should lie on a straight line rising from left to right'   
@@ -266,7 +272,8 @@
 ^^WI       @ 5,1 STATIC XFW3 
 ^^WI 'Avoid setting LIST 28 filters to eliminate too many reflections'
 ^^WI       @ 6,1 STATIC XFW4 
-^^WI '<|E\**2-1|> less than 0.736 may indicate twinning'   
+^^WI '<|E\**2-1|> less than 0.736 may indicate twinning'
+^^WI       @ 1,2 BUTTON XC_WIL 'Help'   
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -294,7 +301,7 @@
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
+^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=2                                       
 ^^WI      {                                                                     
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'You are looking at N(Z) cumulative probability distribution functions.'   
@@ -302,6 +309,7 @@
 ^^WI 'These show actual and expected distribution of E values. The "All Data"'  
 ^^WI       @ 3,1 STATIC XFW3                                                    
 ^^WI '(red) curve should follow one of the theoretical lines.'                       
+^^WI       @ 1,2 BUTTON XC_NZ 'Help'
 ^^WI      }                                                                     
 ^^WI      @ 1,1 ICON IM INFO                                                    
 ^^WI     }                                                                      
@@ -398,7 +406,7 @@
 ^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=7                                           
 ^^WI  {                                                                         
 ^^WI   @ 1,1 STRETCH RS HORIZONTAL                                              
-^^WI   @ 1,2 BUTTON XC_HLP 'Help'                                            
+^^WI   @ 1,2 BUTTON XC_HLP 'Resolution Table'                                            
 ^^WI   @ 1,4 BUTTON XC_REF 'Refresh'                                            
 ^^WI   @ 1,6 BUTTON XC_BOK 'Close' COMMIT DEFAULT CANCEL                        
 ^^WI  }                                                                         
@@ -764,7 +772,8 @@
 ^^CO SET PROGOUTPUT TEXT 'Ready'                                                
 %%                                                                              
 %  LOOP                                                                         
-%    VERIFY XC_BOK XC_REF XC_HLP RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 -       
+%    VERIFY XC_BOK XC_REF XC_HLP XC_CMP XC_FRQ XC_RES XC_MGR  XC_ABS - 
+ XC_HIS XC_WIL  XC_NZ RHOMIT1 RHOMIT2 SIGCUT ED28 ED02 ED29 -       
  SIGFULL WILFILT1 WILFILT2                                                       
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
 %    CASE VALUE                                                                 
@@ -775,9 +784,48 @@
 %      BLOCK    %XC_REF                                                         
 %        EVALUATE LOOPCOUNTER = LOOPEND                                         
 %      END BLOCK                                                                
-%      BLOCK    %XC_HLP
-%        COPY '#SCRIPT SINTHETA'
+%%
+%%                                                  %HELP BUTTONS
+%      BLOCK    %XC_HLP                             %Resolution Table
+%        COPY '#SCRIPT SINTHETA'                   
+{S Resolution Table
 %      END BLOCK
+%      BLOCK    %XC_CMP                             %completeness   
+%%                                 All these links are awaiting implementation of # anchor
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S Completeness help
+%      END BLOCK
+%      BLOCK    %XC_FRQ                             %Sigma Frequency
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S Frequency help
+%      END BLOCK
+%      BLOCK    %XC_RES                              %Sigma v Res
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S Sig vs res R help
+%      END BLOCK
+%      BLOCK    %XC_MGR                              %Merging R
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S Merging R help
+%      END BLOCK
+%      BLOCK    %XC_ABS                              %Systematic absences
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S systematic help
+%      END BLOCK
+%      BLOCK    %XC_HIS                              %Absences histogram
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S Histogram help
+%      END BLOCK
+%      BLOCK    %XC_WIL                              %Wilson Plot
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S Wilson Plot help
+%      END BLOCK
+%      BLOCK    %XC_NZ                              %N(z) Plot
+%         COPY '#SPAWN CRYSDIR:manual/analyse/analysis.html' 
+{S Wilson Plot help
+%      END BLOCK
+%%
+%%                                                  % END HELP BUTTONS
+%%
 %      BLOCK    %RHOMIT1                                                         
 %        GET SILENT NOSTORE REAL ' ' ' '                                        
 %        EVALUATE NEWRHO = VALUE                                                

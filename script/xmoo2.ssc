@@ -34,8 +34,9 @@
 ^^WI  {                                                                         
 ^^WI   @ 2,2 TABCTRL _MAINTABS                                                  
 ^^WI   {                                                                        
-^^WI    TAB _MAINTAB7 'Multiplicities' GRID _MAINTG7 NROWS=3 NCOLS=3                  
+^^WI    TAB _MAINTAB7 'Multiplicities' GRID _MAINTG7 NROWS=3 NCOLS=3  
 ^^WI    { 
+^^WI    @ 1,2 BUTTON XC_BHLP 'Help'                
 ^^WI    @ 2,2 RESIZE _XARSZ VERTICAL
 ^^WI     {
 ^^WI       ITEM GRID GRAPH NROWS=5 NCOLS=3
@@ -76,7 +77,7 @@
 ^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=7                                           
 ^^WI  {                                                                         
 ^^WI   @ 1,1 STRETCH RS HORIZONTAL                                              
-^^WI   @ 1,2 BUTTON XC_HELP 'Help'                                            
+^^WI   @ 1,2 BUTTON XC_HELP 'Resolution Table'                                            
 ^^WI   @ 1,6 BUTTON XC_BXX 'Close' COMMIT DEFAULT CANCEL                        
 ^^WI  }                                                                         
 ^^WI }                                                                          
@@ -162,7 +163,7 @@
 ^^CR     
 %%                                                                       
 %  LOOP                                                                         
-%    VERIFY XC_BXX  XC_HELP                                                        
+%    VERIFY XC_BXX  XC_HELP  XC_BHLP
 %    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
 %    CASE VALUE                                                                 
 %      BLOCK    %XC_XX                                                         
@@ -170,7 +171,12 @@
 %        FINISH                                                                 
 %      END BLOCK           
 %      BLOCK    %XC_HELP
-%        COPY '#SCRIPT HELPMOO'
+%        COPY '#SCRIPT SINTHETA'
+Botton Button
+%      END BLOCK
+%      BLOCK    %XC_BHLP
+%         COPY '#SPAWN CRYSDIR:manual/analyse/moo.html' 
+Top Button
 %      END BLOCK
 %    END CASE                                                                   
 %  END LOOP                                                                     
