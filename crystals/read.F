@@ -4425,6 +4425,10 @@ C
 C
       INCLUDE 'XCARDS.INC'
       M = ND - NC
+      if(m<=0) then
+      kcnxts = 0
+      return
+      end if
       CALL XMOVE (IMAGE(NC), ITEXT(1), M)
       I = KCHKDS (ITEXT(1), M, NWDIR, IDIR, NDIR, LDIR)
       IF (I .GT. 0) NC = ND
