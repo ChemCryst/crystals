@@ -9801,7 +9801,7 @@ Mean C-C su =   0.0019
  Structure factor least squares calculation   27  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.731   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.055    100*(<Fo>-<Fc>)/<Fo> =    -0.54
+<Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -20601,7 +20601,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  7.24E+00 condition number:  9.42E+01 relative error:  1.12E-05
+Single precision:  1-norm:  7.24E+00 condition number:  9.43E+01 relative error:  1.12E-05
 
                                                 for          92 parameters
 [64]                                  The rms (shift/su)  =           0.
