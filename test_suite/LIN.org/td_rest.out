@@ -725,6 +725,7 @@ ___________
            C       7     1  1  0  0  0     0.00133         O       6     1  1  0  0  0    -0.00257  -0.00390     U[23]   
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
 ___________
  (1) NO
@@ -970,12 +971,7 @@ ___________
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
-          Leverage: 0.985
-          Leverage: 0.950
-          Leverage: 0.956
-          Leverage: 0.945
-          Leverage: 0.975
-          Leverage: 0.973
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
@@ -1209,7 +1205,7 @@ ___________
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-          Leverage: 0.971
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
@@ -1456,7 +1452,7 @@ ___________
            O       6     1  1  0  0  0    -0.00257         C       7     1  1  0  0  0     0.00133   0.00390     U[23]   
            O       6     1  1  0  0  0    -0.00748         C       7     1  1  0  0  0    -0.00674   0.00074     U[13]   
            O       6     1  1  0  0  0     0.00098         C       7     1  1  0  0  0     0.01229   0.01132     U[12]   
-          Leverage: 0.971
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0271  Mean delta =   0.0094  r.m.s. delta =   0.01
 ___________
  (1) NO
@@ -1707,12 +1703,7 @@ ___________
            C       7     1  1  0  0  0     0.00133         O       6     1  1  0  0  0    -0.00257  -0.00390     U[23]   
            C       7     1  1  0  0  0    -0.00674         O       6     1  1  0  0  0    -0.00748  -0.00074     U[13]   
            C       7     1  1  0  0  0     0.01229         O       6     1  1  0  0  0     0.00098  -0.01132     U[12]   
-          Leverage: 0.981
-          Leverage: 0.932
-          Leverage: 0.942
-          Leverage: 0.926
-          Leverage: 0.967
-          Leverage: 0.966
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0271  Mean delta =  -0.0094  r.m.s. delta =   0.01
 ___________
  (1) NO
@@ -1959,12 +1950,7 @@ ___________
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
            O       6     1  1  0  0  0     0.03570         C       7     1  1  0  0  0     0.03734   0.00164
-          Leverage: 0.926
-          Leverage: 0.826
-          Leverage: 0.853
-          Leverage: 0.822
-          Leverage: 0.899
-          Leverage: 0.900
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0365  Mean delta =   0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
@@ -2198,7 +2184,7 @@ ___________
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
            C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-          Leverage: 0.962
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO
@@ -2445,7 +2431,7 @@ ___________
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
   VIBRATION restraint:  No derivatives found
   ?        C       7     1  1  0  0  0     0.03734         O       6     1  1  0  0  0     0.03570  -0.00164
-          Leverage: 0.904
+          - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0365  Mean delta =  -0.0016  r.m.s. delta =   0.00
 ___________
  (1) NO

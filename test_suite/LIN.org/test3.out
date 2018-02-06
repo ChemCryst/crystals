@@ -7832,6 +7832,7 @@ Refining    37 parameters in    1 block :      793 elements in the LS matrix.
 ___________
  (0) SUM Z
    0. The sum is restrained to be -0.10352E-01  with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 ___________
  (1) DISTANCES 0.0, 0.005= DIFFERENCE N(1) TO B(2,2), N(1) TO B(2,3)
 
@@ -7841,12 +7842,14 @@ ___________
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances 
            N       1     1  1  0  0  0      B       2     2  1  0  0  0      1.425
            N       1     1  1  0  0  0      B       2     3  1  0  0  0      1.423
+          - Derivatives not found, do a refinement cycle to get leverages -
       Mean value =   1.4241  Mean delta =
 ___________
  (2) NO
 ___________
  (3) ORIGIN  Z
    3. The sum is restrained to be -0.12046      with an E.S.D. of  0.10000E-01
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL

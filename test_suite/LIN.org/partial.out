@@ -364,7 +364,7 @@ LS-scale=  6.428   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.64E+01 condition number:  4.79E+03 relative error:  5.71E-04
  S/ESD     1           1            -0.192      0.0E+00    0.182E-01        -10.60                          SCALE   
 [14]  S/ESD    52          52           -0.033       0.0E+00    0.22 E-01         -1.4         C      5 U[33]   
 [14]  S/ESD    54          54           -0.013       0.0E+00    0.12 E-01         -1.1         C      5 U[13]   
@@ -727,7 +727,7 @@ LS-scale=  6.236   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.56E+01 condition number:  6.96E+03 relative error:  8.30E-04
  S/ESD     1           1             0.022     -0.1E+00    0.160E-01          1.36                          SCALE   
  LARGE    77          77            0.0604      0.4E+00    0.109E+00          0.55        C     13 U[11]   
 [14]  S/ESD   230         230            0.011      -0.5E+00    0.97 E-02          1.1         C    120 U[11]   
@@ -1071,7 +1071,7 @@ LS-scale=  6.258   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.58E+01 condition number:  7.60E+03 relative error:  9.06E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1412,7 +1412,7 @@ LS-scale=  6.258   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.58E+01 condition number:  7.54E+03 relative error:  8.99E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2409,7 +2409,7 @@ LS-scale=  6.259   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.53E+01 condition number:  7.47E+03 relative error:  8.90E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2746,7 +2746,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.53E+01 condition number:  7.35E+03 relative error:  8.76E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3087,7 +3087,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.53E+01 condition number:  7.51E+03 relative error:  8.95E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3428,7 +3428,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  2.53E+01 condition number:  7.36E+03 relative error:  8.77E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.

@@ -3995,7 +3995,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
+Single precision:  1-norm:  3.21E+00 condition number:  2.31E+01 relative error:  2.76E-06
 [14]  S/ESD   217         217           -0.012       0.0E+00    0.79 E-03        -15.0         C    414 X       
 [14]  S/ESD   219         219           -0.010       0.0E+00    0.63 E-03        -16.9         C    414 Z       
 
@@ -4601,7 +4601,6 @@ LS-scale=  0.909   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-  Eigen filters  0.000       0.5000E-04    100.0    
 
                                                 for         261 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -5230,11 +5229,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      11380 Physical writes      10072 Cache hits     199523
- Cache hit distribution   181132   12602    2171     790     333     370
- Cache hit distribution      128     136     198     206     324     125
- Cache hit distribution      139     180     181     117      56      98
- Cache hit distribution       43      34      54      39      35      32
+ Physical reads      11391 Physical writes      10031 Cache hits     199224
+ Cache hit distribution   180899   12536    2215     739     312     378
+ Cache hit distribution      139     111     208     279     275     105
+ Cache hit distribution      148     174     139     176      42     104
+ Cache hit distribution       41      36      52      47      34      35
 
 
           : Job ends ok       with     0 warnings and     0 errors
