@@ -37,6 +37,304 @@ C Revision 1.5  2001/02/26 10:28:03  richard
 C RIC: Added changelog to top of file
 C
 C
+
+C ######################################################################
+C Subroutine below in a module because of explicit interface necessary
+C ######################################################################
+
+C> Module containing some subroutine for lists1 because an explicit interdace is needed
+      module lists1_mod
+
+      contains
+
+CODE FOR XRLIND
+C> READ THE ENTRY FOR A LIST IN THE CURRENT INDEX TABLE
+      SUBROUTINE XRLIND(LN,LSN,NFW,LL,IOW,NOS,IDATE, nostop)
+C
+C  LN      THE LIST TYPE NUMBER
+C  LSN     THE LIST SERIAL NUMBER
+C  NFW     FIRST WORD OCCUPIED BY THE LIST
+C          'NFW' IS SET NEGATIVE IF NO SUCH LIST EXISTS
+C  LL      LIST LENGTH
+C  IOW     THE UPDATE FLAG, TAKEN FROM THE LAST WRITE/OVERWRITE OPERATIO
+C  NOS     THE SERIAL NUMBER OF THE ORIGINAL VERSION OF THIS LIST.
+C  DATE    DATE THAT THE LIST WAS CREATED ON
+C
+C--
+C
+C
+      DIMENSION IDATE(2)
+C
+      INCLUDE 'XFILE.INC'
+      INCLUDE 'XLISTS.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XLSVAL.INC'
+C
+      INCLUDE 'QFILE.INC'
+      INCLUDE 'QLISTS.INC'
+C
+      integer, intent(out), optional :: nostop !< report error only, do not stop execution. zero=no error, negative otherwise
+C
+C
+      DATA I / 0 /
+C
+C--CHECK IF THIS LIST NUMBER IS ALLOWED
+      if(present(nostop)) then
+        ISTAT=KLSCHK(LN , 0 , 0 , ILSCLN , ILSMSG , I , IERPRG,nostop)
+      else
+        ISTAT=KLSCHK(LN , 0 , 0 , ILSCLN , ILSMSG , I , IERPRG)
+      end if
+C--COMPUTE THE ADDRESS IN THE CURRENTLIST INDEX
+      I=LN*IL+IL+1
+      IF(LIST(I))1000,1000,1100
+C--NO LIST STORED  -  SET THE FIRST WORD ADDRESS NEGATIVE
+1000  CONTINUE
+CDJWFEB98
+      LSN = 0
+      LL = 0
+      IOW = 0
+      NOS = 0
+      IDATE(1) = 0
+      IDATE(2) = 0
+      NFW=-1
+1050  CONTINUE
+      RETURN
+C--TRANSFER THE INFORMATION WE HAVE FOUND IN THE CURRENT LIST INDEX
+1100  CONTINUE
+      LSN=LIST(I+1)
+      NFW=LIST(I+2)
+      LL=(LIST(I+3)-LIST(I+2))/KINCRF(1)+1
+      IOW=LIST(I+4)
+      NOS=LIST(I+5)
+      CALL XMOVEI (LIST(I+6),IDATE(1),1)
+      CALL XMOVEI (LIST(I+7),IDATE(2),1)
+      GOTO 1050
+      END
+C
+CODE FOR KLSCHK
+C> GENERAL LIST CHECKING ROUTINE
+      FUNCTION KLSCHK(LN, LSN, LRSN, IREQ, IMSG, IADDR, IERR, nostop )
+C
+C
+C    LN      LIST TYPE
+C   LSN      SERIAL NUMBER
+C  LRSN      RELATIVE SERIAL NUMBER. ONLY USED IF LSN = 0
+C  IREQ      REQUEST TYPE. VALUES ARE:-
+C
+C      ILSCLN     1       CHECK FOR VALID LIST TYPE. LSN/LRSN NOT USED
+C      ILSCLS     2       CHECK FOR VALID LIST TYPE/SERIAL. LRSN NOT
+C                          USED.
+C      ILSCLV     3       CHECK FOR VALID LIST SERIAL NUMBER. LN/LRSN
+C                          NOT USED.
+C      ILSEXI     4       CHECK IF A LIST OF THIS TYPE/SERIAL EXISTS.
+C      ILSAVI     5       CHECK IF A LIST OF THIS TYPE/SERIAL CAN BE
+C                          USED.
+C      ILSRFI     6       CHECK LIST EXISTS AND LOCATE IT IN FILE INDEX
+C            THESE VALUES ARE SET IN COMMON BLOCK /XLSVAL/
+C
+C  IMSG      MESSAGE FLAG.
+C
+C      ILSNMS    -1      NO MESSAGE
+C      ILSMSG    +1      ERROR MESSAGES PRINTED
+C            THESE VALUES ARE SET IN COMMON BLOCK /XLSVAL/
+C
+C IADDR      ADDRESS OF FILE INDEX ENTRY FOR THE REQUESTED LIST. SET
+C            FOR REQUEST TYPE 'ILSRFI' , AND
+C            REQUEST TYPES 'ILSEXI' AND 'ILSAVI' IF INDEX IS READ
+C  IERR      ERROR FLAG. TYPE OF ERROR TO SIGNAL, IF ANY. FOR REQUESTS
+C            OF TYPE 'ILSAVI' , INVALID LN OR LSN OR LRSN
+C            CAUSE PROGRAMMING ERROR TO BE SIGNALLED.
+C
+C            RETURN VALUES :-
+C                 -1      ERROR DURING PROCESSING.
+C                  1      LIST CHECK SUCCESSFUL
+C
+C
+      INCLUDE 'XFILE.INC'
+      INCLUDE 'XLISTS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XLSVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+C
+      INCLUDE 'QFILE.INC'
+      INCLUDE 'QLISTS.INC'
+C
+      integer, intent(out), optional :: nostop !< report error only, do not stop execution. zero=no error, negative otherwise
+
+      IFAIL = -1
+      if(present(nostop)) then
+        nostop=0
+        imsg=-1
+      end if
+C
+C -- ENSURE THAT THE SYSTEM IS INITIALISED
+      CALL XLC
+C
+C -- SET READ FILE INDEX FLAG
+      IRDFIL = -1
+      IF ( LSN .NE. 0 ) IRDFIL = 1
+      IF ( LRSN .NE. 0 ) IRDFIL = 1
+      IF ( IREQ .EQ. ILSRFI ) IRDFIL = 1
+C
+C -- FIRST SECTION. CHECK IS 'LIST TYPE'
+      IF ( IREQ .EQ. ILSCLV ) GO TO 2100
+      IF ( LN .LE. 0 ) GO TO 9910
+      IF ( LN .GT. MLN ) GO TO 9910
+C
+2100  CONTINUE
+C -- SERIAL O.K. OR SKIPPED. NEXT CHECK IS 'SERIAL NUMBER'
+      IF ( IREQ .EQ. ILSCLN ) GO TO 8000
+      LSER = LSN
+      IF ( LSN .NE. 0 ) GO TO 2200
+C -- PROCESSING OF RELATIVE SERIAL NUMBER. NOT ALLOWED FOR 'ILSCLS'
+      IF ( IREQ .EQ. ILSCLS ) GO TO 9920
+C -- LOOK UP CURRENT LIST IN INDEX.
+      I = IL + IL * LN + 1
+      IF ( LIST(I) .EQ. 0 ) GO TO 9930
+      LSER = IABS ( LIST(I+1) ) + LRSN
+2200  CONTINUE
+C -- CHECK CALCULATED SERIAL NUMBER VALID
+      IF ( LSER .LE. 0 ) GO TO 9920
+C
+C -- LIST TYPE/SERIAL O.K.  NEXT CHECK IS 'EXISTS'
+      IF ( IREQ .LT. ILSEXI ) GO TO 8000
+C -- FIND THE ACTUAL LIST REQUESTED.
+      IF ( IRDFIL .GE. 1 ) GO TO 3100
+      GO TO 3200
+3100  CONTINUE
+      CALL XFINDE ( LN , LSER , IADDR , -1 )
+C -- CHECK THAT THERE IS A LIST OF THE REQUESTED TYPE/SERIAL .
+      IF ( IADDR .LE. 0 ) GO TO 9940
+      ITYPE = INDEXF(IADDR)
+      IUSAGE = INDEXF(IADDR+4)
+      IERROR = INDEXF(IADDR+5)
+      GO TO 4000
+C
+3200  CONTINUE
+      LOCLST = IL + ( IL * LN ) + 1
+      IF ( LIST(LOCLST) .EQ. 0 ) GO TO 9940
+      ITYPE = LIST(LOCLST)
+      IUSAGE = LIST(LOCLST+4)
+      IERROR = LIST(LOCLST+5)
+      GO TO 4000
+C
+4000  CONTINUE
+C -- LIST REQUESTED HAS NOW BE LOCATED. NEXT CHECK IS 'AVAILABLE'
+      IF ( IREQ .LT. ILSAVI ) GO TO 8000
+      IF ( IREQ .EQ. ILSRFI ) GO TO 8000
+C -- FAILURES NOW INDICATE LIST NOT AVAILABLE
+      IFAIL = 0
+C -- CHECK THAT LIST IS AVAILABLE FOR USE
+      IF ( ITYPE .LE. 0 ) GO TO 9950
+      IF ( IUSAGE .LT. 0 ) GO TO 9960
+      IF ( IERROR .LE. 0 ) GO TO 9970
+C
+C
+8000  CONTINUE
+      KLSCHK = 1
+      RETURN
+C
+C
+9910  CONTINUE
+      IF ( IMSG .LT. 0 ) GO TO 9990
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9915 ) LN
+      ENDIF
+cfeb08      WRITE ( NCAWU , 9915 ) LN
+      WRITE ( CMON, 9915 ) LN
+      CALL XPRVDU(NCEROR, 1,0)
+9915  FORMAT ( 1X , I8 , ' is not a valid list type number' )
+      GO TO 9990
+9920  CONTINUE
+      IF ( IMSG .LT. 0 ) GO TO 9990
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9925 ) LSER
+      ENDIF
+cfeb08      WRITE ( NCAWU , 9925 ) LSER
+      WRITE ( CMON, 9925 ) LSER
+      CALL XPRVDU(NCEROR, 1,0)
+9925  FORMAT ( 1X , I8 , ' is not a valid list serial number' )
+      GO TO 9990
+9930  CONTINUE
+      IF ( IMSG .LT. 0 ) GO TO 9992
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9935 ) LN
+      ENDIF
+cfeb08      WRITE ( NCAWU , 9935 ) LN
+      WRITE ( CMON, 9935 ) LN
+      CALL XPRVDU(NCEROR, 1,0)
+9935  FORMAT ( 1X , 'No list of type ' , I8 , ' stored' )
+      GO TO 9992
+9940  CONTINUE
+      IF ( IMSG .LT. 0 ) GO TO 9992
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9945 ) LN , LSER
+      ENDIF
+cfeb08      WRITE ( NCAWU , 9945 ) LN , LSER
+      WRITE ( CMON, 9945 ) LN , LSER
+      CALL XPRVDU(NCEROR, 1,0)
+9945  FORMAT ( 1X , 'No list of type ' , I8 , ' and serial ' , I8 ,
+     2 ' stored' )
+      GO TO 9992
+9950  CONTINUE
+      IF ( IMSG .LT. 0 ) GO TO 9992
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9955 ) LN , LSER
+      ENDIF
+cfeb08      WRITE ( NCAWU , 9955 ) LN , LSER
+      WRITE ( CMON, 9955 ) LN , LSER
+      CALL XPRVDU(NCEROR, 1,0)
+9955  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
+     2 ' has been deleted' )
+      GO TO 9992
+9960  CONTINUE
+      IF ( IMSG .LT. 0 ) GO TO 9992
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9965 ) LN , LSER
+      ENDIF
+cfeb08      WRITE ( NCAWU , 9965 ) LN , LSER
+      WRITE ( CMON, 9965 ) LN , LSER
+      CALL XPRVDU(NCEROR, 1,0)
+9965  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
+     2 ' is marked as being written to' )
+      GO TO 9992
+9970  CONTINUE
+      IF ( IMSG .LT. 0 ) GO TO 9992
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , 9975 ) LN , LSER
+      ENDIF
+cfeb08      WRITE ( NCAWU , 9975 ) LN , LSER
+      WRITE ( CMON, 9975 ) LN , LSER
+      CALL XPRVDU(NCEROR, 1,0)
+9975  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
+     2 ' is marked as an error list' )
+      GO TO 9992
+C
+9990  CONTINUE
+      ISTAT = IERR
+      IF ( IREQ .EQ. ILSAVI ) ISTAT = IERPRG
+      GO TO 9995
+9992  CONTINUE
+      ISTAT = IERR
+9995  CONTINUE
+      if(.not. present(nostop)) then 
+        CALL XERHND ( ISTAT )
+      else
+        nostop=-1
+      end if
+      KLSCHK = IFAIL
+      RETURN
+C
+      END
+C
+      end module
+
+C ######################################################################
+C Subroutine below not in module
+C ######################################################################
+
 CODE FOR XALTES
       SUBROUTINE XALTES(LN,IV)
 C--ALTER THE ERROR STATUS OF LIST TYPE 'LN'
@@ -47,6 +345,8 @@ C
 C      -1  ERROR LIST.
 C      +1  NOT AN ERROR LIST.
 C
+      use lists1_mod, only: klschk
+      
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XLSVAL.INC'
       ISTAT = KLSCHK ( LN , 0 , 0 , ILSEXI , ILSNMS , I , IERNOP )
@@ -62,6 +362,8 @@ C--RETURN VALUES ARE :
 C
 C  -1  LIST EXISTS, BUT IS MARKED AS AN ERROR LIST.
 C   0  NO SUCH LIST EXISTS.
+      use lists1_mod, only: klschk
+      
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XLSVAL.INC'
 C
@@ -83,8 +385,11 @@ C          -1  THIS LIST IS BEING OVERWRITTEN.
 C           0  THIS LIST IS READY TO BE USED.
 C          +1  THIS LIST IS BEING CAREFULLY UPDATED.
 C
+      use lists1_mod, only: klschk
+      
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XLSVAL.INC'
+
 C -- CHECK THAT LIST EXISTS
       ISTAT = KLSCHK ( LN , 0 , 0 , ILSEXI , ILSNMS , I , IERNOP )
 C -- IF IT DOES THEN ALTER FLAG
@@ -113,6 +418,7 @@ C        0  THIS IS A NEW VERSION.
 C
 C--
 C
+      use lists1_mod, only: xrlind, klschk
 C
       CHARACTER*24 CDT
       DIMENSION ID(4)
@@ -221,65 +527,6 @@ cfeb08        WRITE ( NCAWU,910) LN,LSN,CDT
         ENDIF
       ENDIF
       RETURN
-      END
-C
-CODE FOR XRLIND
-      SUBROUTINE XRLIND(LN,LSN,NFW,LL,IOW,NOS,IDATE)
-C--READ THE ENTRY FOR A LIST IN THE CURRENT INDEX TABLE
-C
-C  LN      THE LIST TYPE NUMBER
-C  LSN     THE LIST SERIAL NUMBER
-C  NFW     FIRST WORD OCCUPIED BY THE LIST
-C          'NFW' IS SET NEGATIVE IF NO SUCH LIST EXISTS
-C  LL      LIST LENGTH
-C  IOW     THE UPDATE FLAG, TAKEN FROM THE LAST WRITE/OVERWRITE OPERATIO
-C  NOS     THE SERIAL NUMBER OF THE ORIGINAL VERSION OF THIS LIST.
-C  DATE    DATE THAT THE LIST WAS CREATED ON
-C
-C--
-C
-C
-      DIMENSION IDATE(2)
-C
-      INCLUDE 'XFILE.INC'
-      INCLUDE 'XLISTS.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XLSVAL.INC'
-C
-      INCLUDE 'QFILE.INC'
-      INCLUDE 'QLISTS.INC'
-C
-C
-C
-      DATA I / 0 /
-C
-C--CHECK IF THIS LIST NUMBER IS ALLOWED
-      ISTAT = KLSCHK ( LN , 0 , 0 , ILSCLN , ILSMSG , I , IERPRG )
-C--COMPUTE THE ADDRESS IN THE CURRENTLIST INDEX
-      I=LN*IL+IL+1
-      IF(LIST(I))1000,1000,1100
-C--NO LIST STORED  -  SET THE FIRST WORD ADDRESS NEGATIVE
-1000  CONTINUE
-CDJWFEB98
-      LSN = 0
-      LL = 0
-      IOW = 0
-      NOS = 0
-      IDATE(1) = 0
-      IDATE(2) = 0
-      NFW=-1
-1050  CONTINUE
-      RETURN
-C--TRANSFER THE INFORMATION WE HAVE FOUND IN THE CURRENT LIST INDEX
-1100  CONTINUE
-      LSN=LIST(I+1)
-      NFW=LIST(I+2)
-      LL=(LIST(I+3)-LIST(I+2))/KINCRF(1)+1
-      IOW=LIST(I+4)
-      NOS=LIST(I+5)
-      CALL XMOVEI (LIST(I+6),IDATE(1),1)
-      CALL XMOVEI (LIST(I+7),IDATE(2),1)
-      GOTO 1050
       END
 C
 CODE FOR KRCLI
@@ -1462,216 +1709,6 @@ C      STOP
 C
 C
 C
-CODE FOR KLSCHK
-      FUNCTION KLSCHK ( LN , LSN , LRSN , IREQ , IMSG , IADDR , IERR )
-C
-C -- GENERAL LIST CHECKING ROUTINE
-C
-C    LN      LIST TYPE
-C   LSN      SERIAL NUMBER
-C  LRSN      RELATIVE SERIAL NUMBER. ONLY USED IF LSN = 0
-C  IREQ      REQUEST TYPE. VALUES ARE:-
-C
-C      ILSCLN     1       CHECK FOR VALID LIST TYPE. LSN/LRSN NOT USED
-C      ILSCLS     2       CHECK FOR VALID LIST TYPE/SERIAL. LRSN NOT
-C                          USED.
-C      ILSCLV     3       CHECK FOR VALID LIST SERIAL NUMBER. LN/LRSN
-C                          NOT USED.
-C      ILSEXI     4       CHECK IF A LIST OF THIS TYPE/SERIAL EXISTS.
-C      ILSAVI     5       CHECK IF A LIST OF THIS TYPE/SERIAL CAN BE
-C                          USED.
-C      ILSRFI     6       CHECK LIST EXISTS AND LOCATE IT IN FILE INDEX
-C            THESE VALUES ARE SET IN COMMON BLOCK /XLSVAL/
-C
-C  IMSG      MESSAGE FLAG.
-C
-C      ILSNMS    -1      NO MESSAGE
-C      ILSMSG    +1      ERROR MESSAGES PRINTED
-C            THESE VALUES ARE SET IN COMMON BLOCK /XLSVAL/
-C
-C IADDR      ADDRESS OF FILE INDEX ENTRY FOR THE REQUESTED LIST. SET
-C            FOR REQUEST TYPE 'ILSRFI' , AND
-C            REQUEST TYPES 'ILSEXI' AND 'ILSAVI' IF INDEX IS READ
-C  IERR      ERROR FLAG. TYPE OF ERROR TO SIGNAL, IF ANY. FOR REQUESTS
-C            OF TYPE 'ILSAVI' , INVALID LN OR LSN OR LRSN
-C            CAUSE PROGRAMMING ERROR TO BE SIGNALLED.
-C
-C            RETURN VALUES :-
-C                 -1      ERROR DURING PROCESSING.
-C                  1      LIST CHECK SUCCESSFUL
-C
-C
-      INCLUDE 'XFILE.INC'
-      INCLUDE 'XLISTS.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XLSVAL.INC'
-      INCLUDE 'XIOBUF.INC'
-C
-      INCLUDE 'QFILE.INC'
-      INCLUDE 'QLISTS.INC'
-C
-      IFAIL = -1
-C
-C -- ENSURE THAT THE SYSTEM IS INITIALISED
-      CALL XLC
-C
-C -- SET READ FILE INDEX FLAG
-      IRDFIL = -1
-      IF ( LSN .NE. 0 ) IRDFIL = 1
-      IF ( LRSN .NE. 0 ) IRDFIL = 1
-      IF ( IREQ .EQ. ILSRFI ) IRDFIL = 1
-C
-C -- FIRST SECTION. CHECK IS 'LIST TYPE'
-      IF ( IREQ .EQ. ILSCLV ) GO TO 2100
-      IF ( LN .LE. 0 ) GO TO 9910
-      IF ( LN .GT. MLN ) GO TO 9910
-C
-2100  CONTINUE
-C -- SERIAL O.K. OR SKIPPED. NEXT CHECK IS 'SERIAL NUMBER'
-      IF ( IREQ .EQ. ILSCLN ) GO TO 8000
-      LSER = LSN
-      IF ( LSN .NE. 0 ) GO TO 2200
-C -- PROCESSING OF RELATIVE SERIAL NUMBER. NOT ALLOWED FOR 'ILSCLS'
-      IF ( IREQ .EQ. ILSCLS ) GO TO 9920
-C -- LOOK UP CURRENT LIST IN INDEX.
-      I = IL + IL * LN + 1
-      IF ( LIST(I) .EQ. 0 ) GO TO 9930
-      LSER = IABS ( LIST(I+1) ) + LRSN
-2200  CONTINUE
-C -- CHECK CALCULATED SERIAL NUMBER VALID
-      IF ( LSER .LE. 0 ) GO TO 9920
-C
-C -- LIST TYPE/SERIAL O.K.  NEXT CHECK IS 'EXISTS'
-      IF ( IREQ .LT. ILSEXI ) GO TO 8000
-C -- FIND THE ACTUAL LIST REQUESTED.
-      IF ( IRDFIL .GE. 1 ) GO TO 3100
-      GO TO 3200
-3100  CONTINUE
-      CALL XFINDE ( LN , LSER , IADDR , -1 )
-C -- CHECK THAT THERE IS A LIST OF THE REQUESTED TYPE/SERIAL .
-      IF ( IADDR .LE. 0 ) GO TO 9940
-      ITYPE = INDEXF(IADDR)
-      IUSAGE = INDEXF(IADDR+4)
-      IERROR = INDEXF(IADDR+5)
-      GO TO 4000
-C
-3200  CONTINUE
-      LOCLST = IL + ( IL * LN ) + 1
-      IF ( LIST(LOCLST) .EQ. 0 ) GO TO 9940
-      ITYPE = LIST(LOCLST)
-      IUSAGE = LIST(LOCLST+4)
-      IERROR = LIST(LOCLST+5)
-      GO TO 4000
-C
-4000  CONTINUE
-C -- LIST REQUESTED HAS NOW BE LOCATED. NEXT CHECK IS 'AVAILABLE'
-      IF ( IREQ .LT. ILSAVI ) GO TO 8000
-      IF ( IREQ .EQ. ILSRFI ) GO TO 8000
-C -- FAILURES NOW INDICATE LIST NOT AVAILABLE
-      IFAIL = 0
-C -- CHECK THAT LIST IS AVAILABLE FOR USE
-      IF ( ITYPE .LE. 0 ) GO TO 9950
-      IF ( IUSAGE .LT. 0 ) GO TO 9960
-      IF ( IERROR .LE. 0 ) GO TO 9970
-C
-C
-8000  CONTINUE
-      KLSCHK = 1
-      RETURN
-C
-C
-9910  CONTINUE
-      IF ( IMSG .LT. 0 ) GO TO 9990
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 ) LN
-      ENDIF
-cfeb08      WRITE ( NCAWU , 9915 ) LN
-      WRITE ( CMON, 9915 ) LN
-      CALL XPRVDU(NCEROR, 1,0)
-9915  FORMAT ( 1X , I8 , ' is not a valid list type number' )
-      GO TO 9990
-9920  CONTINUE
-      IF ( IMSG .LT. 0 ) GO TO 9990
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 ) LSER
-      ENDIF
-cfeb08      WRITE ( NCAWU , 9925 ) LSER
-      WRITE ( CMON, 9925 ) LSER
-      CALL XPRVDU(NCEROR, 1,0)
-9925  FORMAT ( 1X , I8 , ' is not a valid list serial number' )
-      GO TO 9990
-9930  CONTINUE
-      IF ( IMSG .LT. 0 ) GO TO 9992
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9935 ) LN
-      ENDIF
-cfeb08      WRITE ( NCAWU , 9935 ) LN
-      WRITE ( CMON, 9935 ) LN
-      CALL XPRVDU(NCEROR, 1,0)
-9935  FORMAT ( 1X , 'No list of type ' , I8 , ' stored' )
-      GO TO 9992
-9940  CONTINUE
-      IF ( IMSG .LT. 0 ) GO TO 9992
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9945 ) LN , LSER
-      ENDIF
-cfeb08      WRITE ( NCAWU , 9945 ) LN , LSER
-      WRITE ( CMON, 9945 ) LN , LSER
-      CALL XPRVDU(NCEROR, 1,0)
-9945  FORMAT ( 1X , 'No list of type ' , I8 , ' and serial ' , I8 ,
-     2 ' stored' )
-      GO TO 9992
-9950  CONTINUE
-      IF ( IMSG .LT. 0 ) GO TO 9992
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9955 ) LN , LSER
-      ENDIF
-cfeb08      WRITE ( NCAWU , 9955 ) LN , LSER
-      WRITE ( CMON, 9955 ) LN , LSER
-      CALL XPRVDU(NCEROR, 1,0)
-9955  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
-     2 ' has been deleted' )
-      GO TO 9992
-9960  CONTINUE
-      IF ( IMSG .LT. 0 ) GO TO 9992
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9965 ) LN , LSER
-      ENDIF
-cfeb08      WRITE ( NCAWU , 9965 ) LN , LSER
-      WRITE ( CMON, 9965 ) LN , LSER
-      CALL XPRVDU(NCEROR, 1,0)
-9965  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
-     2 ' is marked as being written to' )
-      GO TO 9992
-9970  CONTINUE
-      IF ( IMSG .LT. 0 ) GO TO 9992
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9975 ) LN , LSER
-      ENDIF
-cfeb08      WRITE ( NCAWU , 9975 ) LN , LSER
-      WRITE ( CMON, 9975 ) LN , LSER
-      CALL XPRVDU(NCEROR, 1,0)
-9975  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
-     2 ' is marked as an error list' )
-      GO TO 9992
-C
-9990  CONTINUE
-      ISTAT = IERR
-      IF ( IREQ .EQ. ILSAVI ) ISTAT = IERPRG
-      GO TO 9995
-9992  CONTINUE
-      ISTAT = IERR
-9995  CONTINUE
-      CALL XERHND ( ISTAT )
-      KLSCHK = IFAIL
-      RETURN
-C
-      END
-C
-C
-C
 CODE FOR XLSALT
       SUBROUTINE XLSALT ( LN , LSN , LRSN , IFLAG , IVALUE )
 C
@@ -1705,6 +1742,8 @@ C      ILSRDY      0      LIST READY              OVERWRITE
 C      ILSUPD     +1      LIST BEING UPDATED      OVERWRITE
 C
 C
+      use lists1_mod, only: klschk
+      
       LOGICAL WRFILE , WRCURR , REQCUR
 C
       INCLUDE 'XFILE.INC'
@@ -1810,4 +1849,3 @@ C -- INTERNAL ERROR
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
       END
-

@@ -72,6 +72,9 @@ C      1.01      FEBRUARY 1985         PWB   ADD 'OPERATE' DIRECTIVE
 C      1.02      FEBRUARY 1985         PWB   CHANGE 'ERROR' DIRECTIVE
 C      1.03      JANUARY 1991          DJW   ADD 'TOP, NEXT, LAST, BOTTO
 C
+      use lists1_mod, only: xrlind
+      use lists2_mod, only: xldlst
+      
       CHARACTER*80 CFORM(3) , CIFORM
       CHARACTER*12 CEVARI , CTVARI
 C
@@ -101,6 +104,7 @@ C
      1     (/'0','1','2','3','4','5','6','7','8','9',
      2       '+','-','.',' ','e','E','d','D'/)
       logical found, isanumber
+      
 C
 C
 C -- SET THE TIMING AND READ THE CONSTANTS

@@ -267,6 +267,8 @@ C           FOR CSD          IEFORT = 1, normal - 2d structure
 C                                     2, special - just cell search
 c      ITYP06                6 OR 7
 C
+      use lists2_mod, only: xldlst
+
 Cavdldec06 - now THIRTEEN links (NLINK=13)
 C     ADD SIR02, SIR11
       PARAMETER (NLINK=13, NLIST=8)

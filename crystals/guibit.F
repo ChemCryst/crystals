@@ -596,6 +596,8 @@ C   -ve - update list -IULN, but don't touch store. ( We may use STR11 )
 C         for list 5, this means that 1, 2, 5, 29 and 41 must have been
 c         loaded by the calling routine.
 
+      use lists1_mod, only: xrlind, klschk
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -645,7 +647,6 @@ c         loaded by the calling routine.
       DIMENSION LST(15)
       DIMENSION ICLINF(400)
       DIMENSION TXYZ(9)
-
 
       SAVE NCLINF, ICLINF
 

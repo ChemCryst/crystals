@@ -319,12 +319,10 @@ info=0
 
 if(.not. allocated(restraints_derivatives)) then
     info=-1
-    allocate(leverages(0))
     return
 end if
 if(size(restraints_derivatives)<1) then
     info=-2
-    allocate(leverages(0))
     return
 end if
 

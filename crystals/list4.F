@@ -3556,6 +3556,8 @@ CODE FOR XFAL04
 C--ROUTINE TO LOAD LIST 4 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM04.INC'
 C

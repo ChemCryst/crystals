@@ -104,6 +104,8 @@ CODE FOR XRD01
 C--READ LIST TYPE 1, THE CELL PARAMETERS
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM01.INC'
       INCLUDE 'ICOM20.INC'
@@ -359,6 +361,8 @@ CODE FOR XFAL01
 C--ROUTINE TO LOAD LIST 1 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       double precision D(3), RN, CALP, CBET, CGAM
       integer, parameter :: dp=kind(1.0d0)
       INCLUDE 'ICOM01.INC'
@@ -996,6 +1000,8 @@ CODE FOR XFAL02
 C--ROUTINE TO LOAD LIST 2 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM02.INC'
 C
@@ -1045,6 +1051,8 @@ CODE FOR XFAL03
 C--ROUTINE TO LOAD LIST 3 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM03.INC'
 C
       INCLUDE 'XLST03.INC'
@@ -1175,6 +1183,8 @@ C     THE CALLING ROUTINE MUST SAVE THE REAL LIST 5 ADDRESSES
 C     IF THEY ARE ALREADY IN USE.
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM05.INC'
 C
@@ -1465,6 +1475,8 @@ CODE FOR XFAL13
 C--ROUTINE TO LOAD LIST 13 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM13.INC'
 C
       INCLUDE 'XLST13.INC'
@@ -1486,6 +1498,8 @@ C      1 = ORTHOGONALISATION MATRIX
 C      2 = CRYSTAL FRACTIONS TO INERTIAL
 C      3 = CRYSTAL FRACTIONS TO TLS
 C      4 = USER DEFINED
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM20.INC'
       INCLUDE 'ISTORE.INC'
 C
@@ -1547,6 +1561,8 @@ CODE FOR XFAL14
 C--ROUTINE TO LOAD LIST 14 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM14.INC'
 C
       INCLUDE 'XLST14.INC'
@@ -1564,6 +1580,8 @@ CODE FOR XFAL24
 C--ROUTINE TO LOAD LIST 24 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM24.INC'
 C
       INCLUDE 'XLST24.INC'
@@ -1581,6 +1599,8 @@ CODE FOR XFAL25
 C--ROUTINE TO LOAD LIST 25 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM25.INC'
 C
       INCLUDE 'XLST25.INC'
@@ -1598,6 +1618,8 @@ CODE FOR XFAL29
 C--ROUTINE TO LOAD LIST 29 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM29.INC'
 C
       INCLUDE 'XLST29.INC'
@@ -1616,6 +1638,8 @@ CODE FOR XFAL30
 C--ROUTINE TO LOAD LIST 30 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM30.INC'
 C
       INCLUDE 'XLST30.INC'
@@ -2244,6 +2268,8 @@ CODE FOR XFAL27
 C--ROUTINE TO LOAD LIST 27 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM27.INC'
 C
@@ -2264,6 +2290,8 @@ CODE FOR XFAL33
 C--ROUTINE TO LOAD LIST 33 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM33.INC'
 C
@@ -2289,6 +2317,8 @@ CODE FOR XFAL38
 C--ROUTINE TO LOAD LIST 38 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM38.INC'
 C
       INCLUDE 'XLST38.INC'
@@ -2306,6 +2336,8 @@ CODE FOR XFAL39
 C--ROUTINE TO LOAD LIST 39 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM39.INC'
 C
       INCLUDE 'XLST39.INC'
@@ -2322,6 +2354,8 @@ CODE FOR XFAL40
 C--ROUTINE TO LOAD LIST 40 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM40.INC'
 C
       INCLUDE 'XLST40.INC'
@@ -2338,6 +2372,8 @@ CODE FOR XFAL41
 C--ROUTINE TO LOAD LIST 41 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM41.INC'
 C
       INCLUDE 'XLST41.INC'
@@ -2355,6 +2391,8 @@ CODE FOR XFAL42
 C--ROUTINE TO LOAD LIST 42 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM42.INC'
 C
       INCLUDE 'XLST42.INC'
@@ -2372,6 +2410,8 @@ CODE FOR XFAL23
 C--ROUTINE TO LOAD LIST 23 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM23.INC'
 C
       INCLUDE 'XLST23.INC'

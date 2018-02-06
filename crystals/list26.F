@@ -301,6 +301,7 @@ C
       use, intrinsic :: IEEE_ARITHMETIC
       use list26_mod
       use list12_mod, only: load_lsq_params
+      use lists2_mod, only: xldlst
 C
       interface 
           subroutine XAPP16(savederivatives)
@@ -364,6 +365,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'ICOM12.INC'
+      INCLUDE 'ICOM11.INC'
       
       real, dimension(:), allocatable :: leverages
       
@@ -452,6 +454,16 @@ C--LOAD THE COMPILED LIST FOR PROCESSING
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE CARD NUMBER FLAG
       A=-1.
+      
+      nostop=1
+      call XLDLST(-11,ICOM11,size(icom11),0,nostop)
+      if(nostop==-1) then ! list26 out of sync with derivatives
+        if(allocated(invertm)) deallocate(invertm)
+        if(allocated(restraints_derivatives)) then
+          deallocate(restraints_derivatives)
+        end if
+        if(allocated(parameters_list)) deallocate(parameters_list)
+      end if
       
       WRITE(CMON,'("{3,15", A)') repeat('-',80)
       CALL XPRVDU(NCVDU, 1,0)      
@@ -1327,7 +1339,7 @@ C--UTLS RESTRAINTS PRINT
       if(allocated(restraints_list(ircpt)%subrestraints)) then
       
         call calcleverages(ircpt, leverages, infolev)
-        if(infolev==-1) then
+        if(infolev<0) then
           write(cmon, '(4X, A)') 
      1      '{6,0 Do a cycle of refinement to get leverages'
           CALL XPRVDU(NCVDU, 1,0)
@@ -1335,14 +1347,6 @@ C--UTLS RESTRAINTS PRINT
           CALL XPRVDU(NCVDU, 1,0)
         end if
 
-        ! check for `corrupted` leverages
-        if(size(restraints_list(ircpt)%subrestraints)/=
-     1    size(leverages)) then
-
-          if(allocated(leverages)) deallocate(leverages)
-          infolev=-3
-        end if
-              
         IF (ISSPRT .EQ. 0) THEN 
           if(allocated(restraints_list(ircpt)%description)) then
             do icpt=1, size(restraints_list(ircpt)%description)
@@ -2088,6 +2092,7 @@ C -- INPUT ERRORS
 C
 CODE FOR XAPP16
       SUBROUTINE XAPP16(savederivativesarg)
+      use lists1_mod, only: xrlind, klschk
       use list26_mod
 C--APPLY THE RESTRAINTS
 C
@@ -2257,11 +2262,12 @@ C--LOAD THE COMPILED LIST FOR PROCESSING
       IF ( ISTAT .LE. 0 ) GO TO 9900
       CALL XRLIND ( 16 , LSN , NEXT , LL , IOW , NOS , ID ) ! next is now the start address of the chain list
 
-      last=0 ! start of the chain      
-      if(allocated(restraints_list)) deallocate(restraints_list) ! reset previous list
+      last=0 ! start of the chain     
+      if(allocated(restraints_list)) deallocate(restraints_list)
       if(allocated(subrestraints_parent)) then
-        deallocate(subrestraints_parent) ! reset previous list
+        deallocate(subrestraints_parent)
       end if
+      current_restraintindex=0
       idjwtemp=0
       list16_index=-1 ! user restraints counter
       

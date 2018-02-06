@@ -5101,6 +5101,7 @@ C
 C--THE TERMS ARE STORED AT 'L31T', AND OCCUPY 12 LOCATIONS
 C
 C--
+      use lists2_mod, only: xldlst
 C
       INCLUDE 'ICOM31.INC'
       INCLUDE 'ISTORE.INC'
@@ -6274,6 +6275,8 @@ CODE FOR XBOND
       SUBROUTINE XBOND
 C--INPUT OR EXTEND A LIST 40 (BONDING INFO)
 
+      use lists2_mod, only: xldlst
+      
       INCLUDE 'TYPE11.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
@@ -6838,6 +6841,9 @@ C         = 1 -> internal call. Don't read commands, force update.
 C         = 2 -> internal call. Don't load lists. Don't write out 41.
 C
 C--
+      use lists1_mod, only: xrlind
+      use lists2_mod, only: xldlst
+      
       PARAMETER (NPROCS = 1)
       DIMENSION PROCS(NPROCS)
       DIMENSION IPROCS(NPROCS)
@@ -7826,6 +7832,7 @@ C -- pair AND range.
 CODE FOR K41DEP
       FUNCTION K41DEP()
 C -- Checks whether list 41 needs updating.
+      use lists1_mod, only: xrlind
 
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST40.INC'

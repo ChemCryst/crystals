@@ -1446,6 +1446,8 @@ C KF  0 - F's
 C     1 - F^2's
 C     2 - F^2'S ON SCALE OF FC
 CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
+      use lists2_mod, only: xldlst
+
       logical, intent(in) :: l28filter
       CHARACTER*80 CBUF
       DIMENSION KDEV(4)
@@ -3435,6 +3437,8 @@ C
 CODE FOR XPCH31
       SUBROUTINE XPCH31
 
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
 C PUNCH LIST 31 IN CRYSTALS FORMAT
 C
@@ -3480,6 +3484,8 @@ C--LOAD LIST 31 FROM DISC (XFAL routine is specialised for DistAngl)
 
 CODE FOR XPCH39
       SUBROUTINE XPCH39
+
+      use lists2_mod, only: xldlst
 
       INCLUDE 'ISTORE.INC'
 C PUNCH LIST 39 IN CRYSTALS FORMAT

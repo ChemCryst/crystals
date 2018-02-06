@@ -217,6 +217,9 @@ CODE FOR XSFLSE
       use solve_helper
       use sfls_punch_mod
       use list26_mod, only: invertm
+      use lists1_mod, only: klschk
+      use lists2_mod, only: xldlst
+
 C--GENERAL MATRIX INVERSION AND CALCULATION OF SHIFT ROUTINES.
 C
 C  THESE ROUTINES INVERT THE NORMAL MATRIX AND OUTPUT

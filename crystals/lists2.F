@@ -25,9 +25,18 @@ C Revision 1.4  2001/03/08 14:33:06  richard
 C Changed call to XGDBUP, all lists now passed over.
 C
 C
+
+C ######################################################################
+C Subroutine below in a module because of explicit interface necessary
+C ######################################################################
+
+C> Module containing some subroutine for lists2 because an explicit interdace is needed
+      module lists2_mod
+      
+      contains
 CODE FOR XLDLST
-      SUBROUTINE XLDLST(IULN,ICOMMN,IDIMN,IOWF)
-C--LOAD A LIST INTO CORE FROM THE DISC
+C> LOAD A LIST INTO CORE FROM THE DISC
+      SUBROUTINE XLDLST(IULN,ICOMMN,IDIMN,IOWF,nostop)
 C
 C  IULN    THE LIST TYPE. THIS MAY BE SET NEGATIVE,
 C          IN WHICH CASE THE LIST IS PREPARED FOR LOADING
@@ -42,6 +51,8 @@ C          -1  READ THE LIST, THEN REWRITE IT.
 C           0  READ THE LIST ONLY.
 C          +1  READ THE LIST, THEN CAREFULLY UPDATE IT.
 C
+      use lists1_mod, only: xrlind, klschk
+      
       CHARACTER*24 CDT
 C--
       INCLUDE 'ISTORE.INC'
@@ -60,16 +71,26 @@ C
       INCLUDE 'TLISTC.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      integer, intent(out), optional :: nostop !< report error only, do not stop execution. zero=no error, negative otherwise
 C
 C--CHECK THAT THE LIST TYPE IS VALID
       LN=IABS(IULN)
       IREC=0
-      ISTAT = KLSCHK ( LN , 0 , 0 , ILSAVI , ILSMSG , I , IERERR )
+      if(.not. present(nostop)) then
+        ISTAT = KLSCHK ( LN , 0 , 0 , ILSAVI , ILSMSG , I , IERERR )
+      else
+        ISTAT = KLSCHK(LN, 0, 0, ILSAVI, ILSMSG, I, IERERR, nostop )
+      end if
       IF ( ISTAT  .LE. 0 ) GO TO 9900
 C  -- ZERO THE COMMON BLOCK
       CALL XZEROF ( ICOMMN(1) , IDIMN )
 C--READ THE DETAILS OF THE LIST
-      CALL XRLIND(LN,LSN,IADDI,I,J,K,IBUFF(1))
+      if(.not. present(nostop)) then
+        CALL XRLIND(LN,LSN,IADDI,I,J,K,IBUFF(1:2))
+      else
+        CALL XRLIND(LN,LSN,IADDI,I,J,K,IBUFF(1:2), nostop)
+      end if
 C
 C -- MONITOR LIST OPERATION IF REQUIRED
       IF ( ( ISSLSM .EQ. 2 ) .OR. ( ISSLSM .EQ. 4 ) ) THEN
@@ -123,20 +144,27 @@ C--BRING DOWN THE NEXT GROUP
       L=L+M1
       N=N-1
 C--READ THE DATA FROM THE INDICATED LIST TYPE
-      CALL XRLIND(IBUFF(1),I,IBUFF(3),IBUFF(4),IBUFF(5),J,IBUFF(6))
+      if(present(nostop)) then
+        CALL XRLIND(IBUFF(1),I,IBUFF(3),IBUFF(4),IBUFF(5),J,IBUFF(6), 
+     1  nostop)
+      else
+        CALL XRLIND(IBUFF(1),I,IBUFF(3),IBUFF(4),IBUFF(5),J,IBUFF(6))
+       end if
 C--CHECK IF SUCH A LIST EXISTS
       IF(IBUFF(3))1500,1500,1600
 C--LIST DOES NOT EXIST  -  PRINT THE ERROR MESSAGE
 1500  CONTINUE
       K=K+1
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1550)LN,IBUFF(1)
-      ENDIF
-      WRITE(NCAWU,1550) LN,IBUFF(1)
-      WRITE ( CMON, 1550) LN,IBUFF(1)
-      CALL XPRVDU(NCEROR, 1,0)
-1550  FORMAT(' List type ',I5,'  depends upon list type ',I5,
-     2 ', which no longer exists')
+      if(.not. present(nostop)) then
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,1550)LN,IBUFF(1)
+        ENDIF
+        WRITE(NCAWU,1550) LN,IBUFF(1)
+        WRITE ( CMON, 1550) LN,IBUFF(1)
+        CALL XPRVDU(NCEROR, 1,0)
+1550    FORMAT(' List type ',I5,'  depends upon list type ',I5,
+     2   ', which no longer exists')
+      end if
       GOTO 1400
 C--CHECK THE VALUE
 1600  CONTINUE
@@ -145,16 +173,20 @@ C--CHECK THE VALUE
 C--NOT THE CORRECT SERIAL NUMBER
 1650  CONTINUE
       K=K+1
-      if(ILSMSG>0) then
-        CALL OUTCOL(3)
-        WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
-     1   CLISTS(IBUFF(1)), IBUFF(2), IABS(J)
-        CALL XPRVDU(NCEROR, 5,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)') trim(CMON(2)), 
-     1  trim(CMON(3)), trim(CMON(4))
-        WRITE(NCAWU,'(/A/A/A/)')trim(CMON(2)), 
-     1  trim(CMON(3)), trim(CMON(4))
-        CALL OUTCOL(1)
+      if(.not. present(nostop)) then
+        if(ILSMSG>0) then
+          CALL OUTCOL(3)
+          WRITE ( CMON, 1700) LN, CLISTS(LN),IBUFF(1),
+     1     CLISTS(IBUFF(1)), IBUFF(2), IABS(J)
+          CALL XPRVDU(NCEROR, 5,0)
+          IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)') trim(CMON(2)), 
+     1    trim(CMON(3)), trim(CMON(4))
+          WRITE(NCAWU,'(/A/A/A/)')trim(CMON(2)), 
+     1    trim(CMON(3)), trim(CMON(4))
+          CALL OUTCOL(1)
+        end if
+      else
+        nostop=-1
       end if
 1700  FORMAT(/
      1 '              List type ',I5,' (',A,')',/
@@ -186,41 +218,60 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
 9900  CONTINUE
       RETURN
 9910  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 ) LN
-      ENDIF
-      WRITE ( NCAWU , 9915 ) LN
-      WRITE ( CMON, 9915 ) LN
-      CALL XPRVDU(NCEROR, 1,0)
-9915  FORMAT ( 1X , 'A previous job failed when writing list ' , I5 ,
-     2 ' which cannot now be accessed' )
-      CALL XERHND ( IERERR )
+      if(.not. present(nostop)) then
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE ( NCWU , 9915 ) LN
+        ENDIF
+        WRITE ( NCAWU , 9915 ) LN
+        WRITE ( CMON, 9915 ) LN
+        CALL XPRVDU(NCEROR, 1,0)
+9915    FORMAT ( 1X , 'A previous job failed when writing list ' , I5 ,
+     2   ' which cannot now be accessed' )
+        CALL XERHND ( IERERR )
+      else 
+        nostop=-1
+      end if
       GO TO 9900
 9920  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 ) LN
-      ENDIF
-      WRITE ( NCAWU , 9925 ) LN
-      WRITE ( CMON, 9925 ) LN
-      CALL XPRVDU(NCEROR, 1,0)
-9925  FORMAT ( 1X , 'List type ' , I5 , ' is marked as an error list' ,
+      if(.not. present(nostop)) then
+        IF (ISSPRT .EQ. 0) THEN
+          WRITE ( NCWU , 9925 ) LN
+        ENDIF
+        WRITE ( NCAWU , 9925 ) LN
+        WRITE ( CMON, 9925 ) LN
+        CALL XPRVDU(NCEROR, 1,0)
+9925    FORMAT ( 1X , 'List type ' , I5 , ' is marked as an error list',
      2 / , 1X , 'A new version needs to be created or input ' )
-      CALL XERHND ( IERERR )
+        CALL XERHND ( IERERR )
+      else 
+        nostop=-1
+      end if
       GO TO 9900
 9930  CONTINUE
 C -- LIST CANNOT BE LOADED BECAUSE OF INTERDEPENDCIES
-      if(ILSMSG>0) then
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE ( NCWU , 9935 ) LN
-        ENDIF
-        WRITE ( NCAWU , 9935 ) LN
-        WRITE ( CMON, 9935 ) LN
-        CALL XPRVDU(NCEROR, 1,0)
-9935    FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
-        CALL XERHND ( IERERR )
+      if(.not. present(nostop)) then
+        if(ILSMSG>0) then
+          IF (ISSPRT .EQ. 0) THEN
+            WRITE ( NCWU , 9935 ) LN
+          ENDIF
+          WRITE ( NCAWU , 9935 ) LN
+          WRITE ( CMON, 9935 ) LN
+          CALL XPRVDU(NCEROR, 1,0)
+9935      FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
+          CALL XERHND ( IERERR )
+        end if
+      else 
+        nostop=-1
       end if      
       GO TO 9900
       END
+      
+      end module
+      
+C ######################################################################
+C Subroutine below not in module
+C ######################################################################
+      
 C
 CODE FOR XLDREC
       SUBROUTINE XLDREC(IULN,IULSN,IBUFF,ICOMMN,IDIMN,ITYPE)
@@ -348,6 +399,8 @@ C--IF THE COMMON BLOCK OFFSET IS GIVEN, 'XUDRH' IS CALLED TO TAKE THE
 C  LATEST VALUES FROM THE COMMON BLOCK AND INSERT THEM IN THE DATA RECOR
 C
 C--
+      use lists1_mod, only: xrlind, klschk
+      
       DIMENSION ID(2)
       INCLUDE 'HEADES.INC'
       INCLUDE 'ISTORE.INC'
@@ -705,6 +758,8 @@ C  -1  NO SUCH RECORD.
 C   0  OKAY.
 C
 C--
+      use lists1_mod, only: xrlind, klschk
+      
       INCLUDE 'HEADES.INC'
 C
       INCLUDE 'XLISTI.INC'
@@ -816,6 +871,8 @@ C
 C  >0  THE ADDRESS OF THE DATA AREA FOR THIS RECORD.
 C
 C--
+      use lists1_mod, only: klschk
+      
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'

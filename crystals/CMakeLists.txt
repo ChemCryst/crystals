@@ -19,6 +19,7 @@ add_library(CrystalsFortran STATIC
 mrgrnk.f90
 crystals_hdf5.F90
 numpy.F90
+lists1.F
 STORE.INC.F90
 XCHARS.INC.F90
 XDAVAL.INC.F90
@@ -89,7 +90,6 @@ list26.F
 list4.F
 list50.F
 list6.F
-lists1.F
 lists2.F
 lists3.F
 lists4.F
