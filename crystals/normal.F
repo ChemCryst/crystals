@@ -655,18 +655,20 @@ C     LEAST SQUARES
       DIV=PP*T-Q*Q                                                      
       SLOPE=(R*T-Q*S)/DIV                                               
       FLGK=(PP*S-Q*R)/DIV                                               
-      SC=EXP(-FLGK)                                                     
+      SC=EXP(-FLGK) 
+      SCC=SQRT(1/SC)                  !CRYSTALS Fo  SCALE FACTOR                                                    
       BT=-0.5*SLOPE                                                     
+      UT = BT/(8*PI*PI)
       WRITE(NCWU,340) SLOPE,FLGK,BT,SC                                    
   340 FORMAT(1H ,7HSLOPE =,F8.4,4X,11HINTERCEPT =,F8.4,4X,              
      1/25H TEMPERATURE FACTOR (B) =,F8.4,4X,7HSCALE =,F12.4,             
      2 4X,37HF(ABSOLUTE)**2 = SCALE*F(OBSERVED)**2)
 
       IF (ISTATP .EQ. 1) THEN
-
+CDJW-2018 OUTPUT U TO GRAPHICS
         WRITE(CMON,'(A,F8.4,A,F12.4)')
-     1  '^^CO SET _MW_BFACTR TEXT ',BT,
-     1  ' SET _MW_BSCALE TEXT ',SC
+     1  '^^CO SET _MW_BFACTR TEXT ',UT,
+     1  ' SET _MW_BSCALE TEXT ',SCC
         CALL XPRVDU(NCVDU, 1,0)
       END IF
 

@@ -1,3 +1,22 @@
+C  EXPRESSION OPERATORS USED IN KSCEXP
+C      DATA COPER /                '('   ,   ')'   ,                ! 0-2
+C     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6    !Bop 1 - 
+C     3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,      ! 7-10
+C     4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
+C     5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
+C     6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
+C     7                '//'    , 'STARTSWITH' , '**', 'IOR',        !23-26
+C     7                'IAND'  , 'IDECMASK', 'MOD' ,                !27-29   !Bop - 27
+C
+C     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32   !Uop 1 - 4
+C     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36   !Uop 5 - 8
+C     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40   !un 9-12
+C     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un 13-16
+C     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
+C     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
+C     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
+C     5                'LEN'/                                       !57      !un 29
+C
 C $Log: not supported by cvs2svn $
 C Revision 1.75  2013/09/19 21:35:39  rich
 C Change precision of listing output where not important to reduce differences across platforms.
