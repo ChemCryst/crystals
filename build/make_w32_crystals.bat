@@ -13,14 +13,13 @@
 @set ALLOWF2003=TRUE
 @if "%COMPCODE%" == "DVF" set ALLOWF2003=FALSE
 @if "%COMPCODE%" == "GID" set ALLOWF2003=FALSE
-@set F90FILES=..\crystals\numpy.F90 ..\crystals\mrgrnk.f90 ..\crystals\formatnumber.F90 ..\crystals\STORE.INC.F90 ..\crystals\math.F90 ..\crystals\XAPK.INC.F90 ..\crystals\XOPK.INC.F90 ..\crystals\XSCALE.INC.F90 ..\crystals\XRTLSC.INC.F90 ..\crystals\XCHARS.INC.F90 ..\crystals\XDAVAL.INC.F90 ..\crystals\XDISC.INC.F90 ..\crystals\XERVAL.INC.F90 ..\crystals\XIOBUF.INC.F90 ..\crystals\XSSVAL.INC.F90 ..\crystals\XUNITS.INC.F90 ..\crystals\XLST01.INC.F90 ..\crystals\XLST02.INC.F90 ..\crystals\XLST05.INC.F90 ..\crystals\XLST06.INC.F90 ..\crystals\XLST12.INC.F90 ..\crystals\XLST13.INC.F90 ..\crystals\XLST23.INC.F90 ..\crystals\XLST28.INC.F90 ..\crystals\XLST30.INC.F90 ..\crystals\XLST33.INC.F90 ..\crystals\XLST39.INC.F90 ..\crystals\XCONST.INC.F90 ..\crystals\XOPVAL.INC.F90 ..\crystals\crystals_hdf5.F90 ..\crystals\c_strings.F90 ..\crystals\globalvars.F90 ..\crystals\absolut.F90 ..\crystals\solve_helper.F90 ..\crystals\list12_helper.F90 ..\crystals\list26_helper.F90 ..\crystals\sfls_punch.F90  
+@set F90FILES=..\crystals\numpy.F90 ..\crystals\mrgrnk.f90 ..\crystals\formatnumber.F90 ..\crystals\STORE.INC.F90 ..\crystals\math.F90 ..\crystals\XAPK.INC.F90 ..\crystals\XOPK.INC.F90 ..\crystals\XSCALE.INC.F90 ..\crystals\XRTLSC.INC.F90 ..\crystals\XCHARS.INC.F90 ..\crystals\XDAVAL.INC.F90 ..\crystals\XDISC.INC.F90 ..\crystals\XERVAL.INC.F90 ..\crystals\XIOBUF.INC.F90 ..\crystals\XSSVAL.INC.F90 ..\crystals\XUNITS.INC.F90 ..\crystals\XLST01.INC.F90 ..\crystals\XLST02.INC.F90 ..\crystals\XLST05.INC.F90 ..\crystals\XLST06.INC.F90 ..\crystals\XLST12.INC.F90 ..\crystals\XLST13.INC.F90 ..\crystals\XLST23.INC.F90 ..\crystals\XLST28.INC.F90 ..\crystals\XLST30.INC.F90 ..\crystals\XLST33.INC.F90 ..\crystals\XLST39.INC.F90 ..\crystals\XCONST.INC.F90 ..\crystals\XOPVAL.INC.F90 ..\crystals\crystals_hdf5.F90 ..\crystals\c_strings.F90 ..\crystals\globalvars.F90 ..\crystals\absolut.F90 ..\crystals\solve_helper.F90 ..\crystals\list12_helper.F90 ..\crystals\list26_helper.F90 ..\crystals\sfls_punch.F90  ..\crystals\lists1.F
 @if "%ALLOWF2003%"=="TRUE" set F90FILES=%F90FILES% ..\crystals\unitcell.F90
 @set FOPTIONS=%FDEF% %FWIN% %FOPTS%
 @set COPTIONS=%CDEF% %COPTS%
 @if "%CRDEBUG%" == "TRUE" if not exist dobj mkdir dobj
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-@REM - explicit ordering of f90 files so that required modules are build first.
 
 @REM - build custom mkl dll
 @REM - find mkl installation
@@ -46,6 +45,7 @@ copy ".\builder\mkl_custom.lib" .
 :skipcopymkl
 
 
+@REM - explicit ordering of f90 files so that required modules are build first.
 @FOR %%I IN ( %F90FILES% ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 REM @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\gui\fwrapper_gui.F90 ..\gui\fwrapperimp_gui.F90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
@@ -87,7 +87,7 @@ del svml_dispmd.dll
 SET COMMAND=where libifcoremd.dll
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
     SET TEMPVAR=%%A
-    GOTO :copy1 
+    GOTO :copy1
 )
 :copy1
 ECHO %TEMPVAR%
@@ -139,7 +139,7 @@ rem @if "%CROPENMP%" == "TRUE" copy "c:\program files (x86)\common files\intel\s
 SET COMMAND=where msvcp140.dll
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
     SET TEMPVAR=%%A
-    GOTO :copy6 
+    GOTO :copy6
 )
 :copy6
 ECHO %TEMPVAR%
@@ -148,7 +148,7 @@ ECHO %TEMPVAR%
 SET COMMAND=where vcruntime140.dll
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
     SET TEMPVAR=%%A
-    GOTO :copy7 
+    GOTO :copy7
 )
 :copy7
 ECHO %TEMPVAR%
@@ -199,4 +199,3 @@ exit /b 1
 
 :next1
 @time /t
-
