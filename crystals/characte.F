@@ -431,7 +431,7 @@ C      NCHAR  - LAST NON-SPACE CHARACTER + 1
       CHARACTER *(*) CSOURC
       integer nchar
       
-      nchar=len_trim(csourc)+1
+      nchar= min( len_trim(csourc)+1, len(csourc) )
       
       END
 C

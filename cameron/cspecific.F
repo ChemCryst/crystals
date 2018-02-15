@@ -703,8 +703,8 @@ C DOS VERSION NO LONGER HAS STATUS LINE. (SPACE SAVER)
 C&DOS      Status$Text=text
 C&DOS      call window_update@(Status$Text)
 #ifdef CRY_GUI
-      CALL XCTRIM(NTEXT,ITL)
-      IF ( ITL .LE. 2 ) RETURN
+      ITL = NCTRIM(NTEXT)
+      IF ( ITL .LT. 2 ) RETURN
       ITL = MIN ( ITL, 70 )
       CALL ZMORE('^^WI SET PROGOUTPUT TEXT=',0)
       CALL ZMORE('^^WI '''//NTEXT(1:ITL)//'''',0)
