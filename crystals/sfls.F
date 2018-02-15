@@ -3806,7 +3806,7 @@ c
 c  calculate a = h'.x + h.t
         DO LJX=1,N2T
 c  slrfac starting-values for special shape factors and derivatives
-          SLRFAC=1.0 
+          SLRFAC=1.0d0 
           DSIZE=1.0d0
           DDECLINA=1.0d0
           DAZIMUTH=1.0d0
@@ -3834,19 +3834,11 @@ c iso-temperature factor
             T=Tiso(LJY)
           ENDIF
      
-cc Test if  centro with no refinement  -  only cos terms needed
-          IF(COS_ONLY) GOTO 8900
-cc
-c s = Sin(h'x+ht)
-c          S=S*A*(S0+B*(S1+B*(S2+B*S3)))
-c
-
 C--CALCULATE THE B CONTRIBUTION
           BP=Sina(ljy,ljx)*TFOCC
           BT=BT+BP
 c
 C--CALCULATE THE A CONTRIBUTION
-8900      CONTINUE
           AP=Cosa(ljy,ljx)*TFOCC
           AT=AT+AP
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
