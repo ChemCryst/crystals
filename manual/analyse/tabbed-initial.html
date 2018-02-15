@@ -47,7 +47,8 @@
         <p>An almost solid row of green crosses at the top - good sign - high
         completeness.<br />
         Missing Data: A few low angle reflections missing (probably behind the beam
-        stop)- Not usually important. If the green crosses fall off at high angle, you can
+        stop)- Not usually important unless you propose to use SQUEEZE. 
+        If the green crosses fall off at high angle, you can
         click on the graph at the theta max at which you believe the data to be
         more-or-less complete.<br />
         The inset shows data from a <a href="./cropped.jpg">poorly diffracting
@@ -117,7 +118,7 @@
         <a name="mgr" id="mgr"></a>
         <h4>Merging R factor</h4>
         <p>The red histogram shows the Merging R-factor as a function of population 
-        data quality (<i>I/sig(I)</i>). Note that this has a quite well defined
+        data quality (<i>I/sig(I)</i>). Note that this data set has a quite well defined
         upper limit (See Diederichs, K. (2010). Acta Cryst. D66, 733–740.).<br />
 
         The green curve is the number of reflections classed by the intensity and standard
@@ -173,33 +174,6 @@
     </tr>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <tr>
       <td width="40%">
         <a name="wil" id="wil"></a>
@@ -216,12 +190,36 @@
         rest of the analysis can be selected by right-clicking on the appropriate blue
         cross. This value can be reset at any time in the REFINEMENT/FILTERING menu. The
         LIST 28 check box enables you so see the effect of reflection filters.<br />
-        <img id="4a" src="./s-Bad-Wilson.jpg" align="left" alt="Not Available" name=
-        "4a" /> Same poor data as described above.</p>
+        <img id="4a" src="./s-Bad-Wilson.jpg" align="center" alt="Not Available" name=
+        "4a" /> <br />
+        Same poor data as described above.</p>
       </td>
 
-      <td>&nbsp; <img id="4" src="./Wilson.jpg" align="left" alt="Not Available" name=
-      "4" /></td>
+      <td>&nbsp; <img id="4" src="./Wilson.png" align="center" alt="Not Available" name=
+      "4" /><br />
+        <table>
+        <tr>
+        <td>The accompanying table shows the factor (e<sup>-B</sup>) by which the 
+            trigonometric part of the structure factor is multiplied for a zero'th 
+            order reflection.  A  very small U, (due perhaps to uncorrected absorption)
+            can have a massive effect on the overall scale factor.
+
+        <td>
+<pre>
+   U           B         EXP(-B)
+ 0.070       5.521      0.00400 
+ 0.050       3.944      0.01937
+ 0.030       2.366      0.09383
+ 0.010       0.789      0.45440
+ 0.005       0.394      0.67410
+ 0.000       0.000      1.00000
+-0.005      -0.394      1.48347
+-0.010      -0.789      2.20068
+</pre>
+        </td>
+        </tr>
+        </table>
+      </td>
     </tr>
 
     <tr>
