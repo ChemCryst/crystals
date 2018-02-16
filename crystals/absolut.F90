@@ -396,30 +396,35 @@ integer i
 double precision flxwt
 real sbar, xbar
 
-
-integer, external :: nctrim
-
 !c  Compute Flack for each reflection
-    sumflx=0.
-    sumsig=0.
-    sumwt=0.
+    sumflx=0.0d0
+    sumsig=0.0d0
+    sumwt=0.0d0
 
     refls_size=ubound(reflections_data,2)
 
     refls_valid_size=0
     do i=1,refls_size
         if(.not. filtered_reflections(i)) then
-            refls_valid_size=refls_valid_size+1
-            flxwt = 1./reflections_data(C_SX, i)**2
-            sumflx=sumflx+reflections_data(C_X, i)*flxwt
-            sumwt=sumwt+flxwt
-            sumsig = sumsig + reflections_data(C_SX, i)
+            if(reflections_data(C_FCKD, i)/=0.0) then
+                refls_valid_size=refls_valid_size+1
+                flxwt = 1./reflections_data(C_SX, i)**2
+                sumflx=sumflx+reflections_data(C_X, i)*flxwt
+                sumwt=sumwt+flxwt
+                sumsig = sumsig + reflections_data(C_SX, i)
+            end if
         end if
     end do
+    print *, refls_valid_size
     
 ! average Flack(x) and average sigma
-    xbar = sumflx/sumwt
-    sbar = sumsig/float(refls_valid_size)
+    if(refls_valid_size>0) then
+        xbar = sumflx/sumwt
+        sbar = sumsig/real(refls_valid_size)
+    else
+        xbar=0.0
+        sbar=10.0
+    end if
 
 end subroutine
 
@@ -442,8 +447,6 @@ double precision sumflx, sumsig, sumwt
 double precision wtmodifier, xbar
 integer i, iii, refls_size, nbad, ncycle, ngood, noldgood
 integer ntries
-
-integer, external :: nctrim
 
     noldgood = count(reflections_data(C_FRIED2, :)/=2.0)
     refls_size=ubound(reflections_data, 2)
@@ -922,9 +925,12 @@ real, intent(out) :: goof !< Goodness of fit Chi^2
 double precision, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
 double precision, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
 double precision, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
+
 logical, parameter :: debug=.false.
-double precision, dimension(size(xin),2) :: x, xwork, xworkb !< design matrix
-double precision, dimension(size(xin),size(xin)) :: hw !< Weighted Hat matrix (leverage)
+
+double precision, dimension(:,:), allocatable :: tdesignm !< transpose of weigthed design matrix
+double precision, dimension(:,:), allocatable :: txwork
+double precision, dimension(size(xin),2) :: x, xwork !< temporary matrix
 !double precision, dimension(size(xin),size(xin)) :: dw !< Matrix of weights
 double precision, dimension(size(xin)) :: ew !< vector of residuals
 double precision, dimension(size(xin)) :: y !< observations (double precision) 
@@ -933,7 +939,7 @@ double precision, dimension(2,2) :: normalinv !< inverse of the normal matrix
 double precision, dimension(2,2) :: bsu !< variance of b
 double precision, dimension(2) :: b !< vector of parameters
 double precision :: mse, msei, s2
-integer i, j, mitem
+integer i, mitem
 
 double precision, external :: ddot
 
@@ -943,6 +949,8 @@ double precision, external :: ddot
         call abort
     end if
     
+    allocate(tdesignm(2, size(xin)))
+    allocate(txwork(2, size(xin)))
     if(present(tw)) allocate(tw(mitem))
     if(present(leverages)) allocate(leverages(mitem))
     if(present(dv)) allocate(dv(mitem))
@@ -963,10 +971,12 @@ double precision, external :: ddot
     x(:,2)=xin
     xwork(:,1)=wt
     xwork(:,2)=x(:,2)*wt
+    tdesignm(1,:)=sqrt(wt)
+    tdesignm(2,:)=xin*sqrt(wt)
     
     ! solve normal equations by matrix inversion
     !normalinv=0.0d0
-    call DGEMM('T', 'N', 2, 2, mitem, 1.0d0, xwork, mitem,x, mitem, 0.0d0, normalinv, 2 )
+    call DGEMM('N', 'T', 2, 2, mitem, 1.0d0, tdesignm, 2,tdesignm, 2, 0.0d0, normalinv, 2 )
     if(debug) print *, 'normal m ', normalinv
     normalinv=invert22(normalinv)
     if(debug) print *, 'inverse normal m ', normalinv
@@ -994,38 +1004,24 @@ double precision, external :: ddot
     ! calculate goodness of fit
     goof=sum(ew**2*wt)/(mitem-2)
    
-    !leverages
-    !Hw=matmul(matmul(x, normalinv), transpose(x))
-    call DGEMM('N', 'N', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xwork, mitem )
-    call DGEMM('N', 'T', mitem, mitem, 2, 1.0d0, xwork, mitem,x, mitem, 0.0d0, hw, mitem )
     
     if(present(leverages)) then
+        !leverages
+        !Hw=matmul(matmul(designm, normalinv), transpose(designm))
+        !temp_block=matmul(variance, design_block)
+        call dsymm('L', 'U', 2, mitem, 1.0d0, normalinv, 2, tdesignm, 2, 0.0d0, txwork, 2)
         do i=1, mitem
-            leverages(i)=hw(i,i)
+            leverages(i)=dot_product(tdesignm(:,i), txwork(:,i))
         end do
     end if
     
     ! Calculate (V xi^t w xi V)/(1+lev) for the slope
     ! Dv is the improvement on the variance on the parameter if an observation i is remeasured
     if(present(dv)) then
-        ! xwork is (w x V)
-        ! xwork(:,1)=xwork(:,1)*wt Not used
-        xwork(:,2)=xwork(:,2)*wt
-        ! xworkb^t is (V x^t), xworkb is (x V^t)
-        call DGEMM('N', 'T', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xworkb, mitem )
-        do j=1, mitem
-            !tempa=matmul(normalinv, x(j,:))*wt(j) ! done
-            !tempb=matmul(x(j,:), normalinv) !done
-            !do i=1, 2
-            !    tempb22(:,i)=tempa*tempb(i)
-            !end do    
-
-            ! no need for the whole 2x2 matrix, just (2,2): xwork(j,2)*xworkb(j,2)
-            !do i=1, 2
-            !    tempb22(:,2)=xwork(j,:)*xworkb(j,i)
-            !end do
-            Dv(j)=b(2)**2*(xwork(j,2)*xworkb(j,2))/(1+hw(j,j))
-        end do
+        
+        call dgemv('T',2 , mitem, 1.0d0, tdesignm, 2, &
+        &   normalinv(:,2), 1, 0.0d0, Dv, 1)        
+        
     end if
     
     ! Calculate Studentized residual
@@ -1034,11 +1030,12 @@ double precision, external :: ddot
     ! Korean Journal of Computational & Applied Mathematics
     ! August 1997, Volume 4, Issue 2, pp 441-452
     ! doi: 10.1007/BF03014491
+    ! Careful: (w_i H_{w,ii}) in the paper it the leverage from hat matrix P_{ii}
     if(present(tw)) then
         mse=dot_product(ew, wt*ew)/(mitem-2)
         do i=1, mitem
-            msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-wt(i)*hw(i,i)) )/(mitem-2-1)
-            tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-wt(i)*hw(i,i)) )
+            msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-leverages(i)) )/(mitem-2-1)
+            tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-leverages(i)) )
         end do
     end if
     
@@ -1052,7 +1049,7 @@ double precision, external :: ddot
     
 end subroutine
 
-subroutine linearfitref(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, leverages, tw, dv)
+subroutine linearfitref(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, goof, leverages, tw, dv)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 implicit none
@@ -1062,12 +1059,13 @@ real, dimension(:), intent(in) :: wt !< weights
 real, intent(out) :: intercept,interceptsu !< Intercept and su
 real, intent(out) :: slope,slopsu !< slope and its su
 real, intent(out) :: r2 !< correlation coefficient
+real, intent(out) :: goof !< goodness of fit
 double precision, dimension(:), allocatable, intent(out), optional :: tw !< Weighted external studentized residuals
 double precision, dimension(:), allocatable, intent(out), optional :: leverages !< vector of leverages
 double precision, dimension(:), allocatable, intent(out), optional :: Dv !< Improvment of variance of b when an observation is remeasured
 logical, parameter :: debug=.false.
-double precision, dimension(size(xin),2) :: x, xwork, xworkb !< design matrix
-double precision, dimension(size(xin),size(xin)) :: hw !< Weighted Hat matrix (leverage)
+double precision, dimension(size(xin),2) :: x !< design matrix
+double precision, dimension(size(xin),size(xin)) :: hw !< Hat matrix
 double precision, dimension(size(xin),size(xin)) :: dw !< Matrix of weights
 double precision, dimension(size(xin)) :: ew !< vector of residuals
 double precision, dimension(size(xin)) :: y !< observations (double precision) 
@@ -1075,6 +1073,7 @@ double precision, dimension(size(xin)) :: v1 !< work vector
 double precision, dimension(2,2) :: normalinv !< inverse of the normal matrix
 double precision, dimension(2,2) :: bsu !< variance of b
 double precision, dimension(2) :: b !< vector of parameters
+double precision, dimension(2,2) :: temp22
 double precision :: mse, msei, s2
 integer i, j, mitem
 
@@ -1126,35 +1125,30 @@ double precision, external :: ddot
     r2=1 - s2*(mitem-2) / &
     &   ( DDOT(size(y), y, 1, v1, 1) - sum(v1)**2/sum(wt) )
    
+    x(:,1)=sqrt(wt)
+    x(:,2)=xin*sqrt(wt)
+
     !leverages
     Hw=matmul(matmul(x, normalinv), transpose(x))
     
+    ! calculate goodness of fit
+    goof=sum(ew**2*wt)/(mitem-2)
+        
     if(present(leverages)) then
         do i=1, mitem
             leverages(i)=hw(i,i)
-            end do
+        end do
     end if
     
     ! Calculate (V xi^t w xi V)/(1+lev) for the slope
     ! Dv is the improvement on the variance on the parameter if an observation i is remeasured
     if(present(dv)) then
-        ! xwork is (w x V)
-        ! xwork(:,1)=xwork(:,1)*wt Not used
-        xwork(:,2)=xwork(:,2)*wt
-        ! xworkb^t is (V x^t), xworkb is (x V^t)
-        call DGEMM('N', 'T', mitem, 2, 2, 1.0d0, x, mitem,normalinv, 2, 0.0d0, xworkb, mitem )
-        do j=1, mitem
-            !tempa=matmul(normalinv, x(j,:))*wt(j) ! done
-            !tempb=matmul(x(j,:), normalinv) !done
-            !do i=1, 2
-            !    tempb22(:,i)=tempa*tempb(i)
-            !end do    
-
-            ! no need for the whole 2x2 matrix, just (2,2): xwork(j,2)*xworkb(j,2)
-            !do i=1, 2
-            !    tempb22(:,2)=xwork(j,:)*xworkb(j,i)
-            !end do
-            Dv(j)=b(2)**2*(xwork(j,2)*xworkb(j,2))/(1+hw(j,j))
+        do i=1, mitem
+            do j=1, 2
+              temp22(:,j)=x(i,:)*x(i,j)
+            end do
+            temp22=matmul(matmul(normalinv, temp22), normalinv)
+            Dv(i)=temp22(2,2)/(1+hw(i,i))
         end do
     end if
     
@@ -1167,8 +1161,8 @@ double precision, external :: ddot
     if(present(tw)) then
         mse=dot_product(ew, wt*ew)/(mitem-2)
         do i=1, mitem
-            msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-wt(i)*hw(i,i)) )/(mitem-2-1)
-            tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-wt(i)*hw(i,i)) )
+            msei=( (mitem-2)*mse-wt(i)*ew(i)**2/(1.0d0-hw(i,i)) )/(mitem-2-1)
+            tw(i)=( sqrt(wt(i))*ew(i) )/( sqrt(msei)*sqrt(1.0d0-hw(i,i)) )
         end do
     end if
     
@@ -1330,12 +1324,11 @@ logical, dimension(:), allocatable, intent(out), optional :: outliersarg !< If p
 real, intent(out) :: hin1, hin1su
 real, dimension(:,:), allocatable :: buffertemp
 integer, dimension(:,:), allocatable :: selected_reflections
-integer i, j, k, outlierloop, iold
+integer i, j, k, outlierloop
 integer, parameter :: numcolumn=4
 integer, dimension(numcolumn) :: column
 character(len=20*numcolumn+10) :: columnformat
 real a,sa,b,sb,r2
-real, dimension(3) :: tensor
 double precision, dimension(:), allocatable :: leverages, residuals, dv
 integer, dimension(:), allocatable :: rank
 logical change  
@@ -1538,7 +1531,7 @@ real mean, s2, est, goof
     ! Print out Dv
     if(issprt.eq.0) then
         write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
-        &   ' Determined using: (V z^t z V)/(1-lev)'
+        &   ' Determined using: (V z^t z V)/(1+lev)'
                 
         !allocate(rank(size(dv)))
         ! Sort into ascending order.
@@ -1905,18 +1898,15 @@ integer, intent(in) :: itype
 real, intent(out) :: bijvoet, bijvoetsu
 real, dimension(:,:), allocatable :: buffertemp
 integer, dimension(:,:), allocatable :: selected_reflections
-integer i, j, k, outlierloop, iold
+integer i, j, k, outlierloop
 integer, parameter :: numcolumn=4
 integer, dimension(numcolumn) :: column
 character(len=20*numcolumn+10) :: columnformat
 real a,sa,b,sb,r2
-real, dimension(3) :: tensor
 double precision, dimension(:), allocatable :: leverages, residuals, dv
 integer, dimension(:), allocatable :: rank
 logical change , punch
 logical, dimension(:), allocatable :: outliers
-character(len=10) ctime
-
 integer, parameter :: numbins=21 !< number of bins (centered on zero)
 real, parameter :: step=0.5 !< step between bins
 real, dimension(numbins) :: bins !< list of bins (normalised)
@@ -1935,7 +1925,7 @@ real mean, s2, est, goof
 !    &    -1.10457456E-02 , -4.87566367E-03 , -4.54523979E-04 , -2.59778136E-03 ,&
 !    &     3.65315867E-03 ,  7.89600052E-03 ,  3.71816946E-04 , -2.72457162E-03 ,&
 !    &     2.22928845E-03 , -1.78307324E-04 /)
-  
+ 
 !    buffertemp(:,2)=(/ -1.19565091E-04 ,  4.86158347E-03 , -3.06141260E-03 , -1.02000590E-02 ,&
 !    &    -8.47499352E-03 ,  2.18827138E-03 ,  9.07030795E-03 , -1.67446816E-03 ,&
 !    &    -1.37340243E-03 , -2.86707282E-03 , -8.21015891E-03 ,  1.71646662E-02 ,&
@@ -1944,7 +1934,7 @@ real mean, s2, est, goof
 !    &    -4.29594368E-02 , -1.94208007E-02 , -1.21495752E-02 , -9.58717056E-03 ,&
 !    &    -2.74356571E-03 ,  1.21693173E-02 , -6.05943031E-04 , -1.10480711E-02 ,&
 !    &     3.37410904E-02 ,  3.57936090E-03 /)
-    
+   
 !    buffertemp(:,3)=(/  1345577.25 , 84467.2109 , 6067479.00 , 6549917.00 ,&
 !    &   385373.500 , 247433.562 , 380191.500 , 4463873.00 ,&
 !    &   5288955.00 , 105046.039 , 2008450.25 , 64137.2930 ,&
@@ -1959,14 +1949,28 @@ real mean, s2, est, goof
 !    !! Correlation Coefficient: r = 6.056639106·10-1
 !    !! Residual Sum of Squares: rss = 533.6861911
 !    !! Coefficient of Determination: R2 = 3.668287726·10-1
-            
-!    call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
-!    &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
-!    print *, '++++1 ', a, sa, b, sb, r2
     
+!    print *, '##################################'
+           
+!    call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
+!    &   a,sa,b,sb,r2,goof, leverages=leverages, tw=residuals, dv=dv)
+!    print *, '++++1 ', a, sa, b, sb, r2, goof
+!    print *, sum(leverages), leverages(1:5)
+!    print *, residuals(1:5)
+!    print *, dv(1:5)
+   
 !    call linearfitref(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
-!    &   a,sa,b,sb,r2, leverages=leverages, tw=residuals, dv=dv)
-!    print *, '++++2 ', a, sa, b, sb, r2
+!    &   a,sa,b,sb,r2,goof, leverages=leverages, tw=residuals, dv=dv)
+!    print *, '++++2 ', a, sa, b, sb, r2, goof
+!    print *, sum(leverages), leverages(1:5)
+!    print *, residuals(1:5)
+!    print *, dv(1:5)
+    
+!    print *, '##################################'
+
+!!    do i=1, 30
+!!    print *, buffertemp(i,3), buffertemp(i,1), buffertemp(i,2)
+!!    end do
 !    stop
 
     punch=.false.
@@ -2229,12 +2233,12 @@ real mean, s2, est, goof
         rank=rank(size(rank):1:-1)
 
         write(ncwu,'(a)') '', ' Top 10% of most influential reflections:', &
-        &   ' Determined using: Dv = (V z^t z V)/(1-lev)', &
+        &   ' Determined using: Dv = (V z^t z V)/(1+lev)', &
         &   ' V = variance of the parameter, ^t = transpose, ', &
         &   ' z = a row of the design matrix, lev = leverage'
         if(punch) then
             write(145,'(a)') '', ' Influential reflections:', &
-            &   ' Determined using: Dv = (V z^t z V)/(1-lev)', &
+            &   ' Determined using: Dv = (V z^t z V)/(1+lev)', &
             &   ' V = variance of the parameter, ^t = transpose, ', &
             &   ' z = a row of the design matrix, lev = leverage'
             do i=1, size(leverages)
