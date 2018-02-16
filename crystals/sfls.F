@@ -2465,7 +2465,8 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
          if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
              !hkl=nint(STORE(M6:M6+2))
              call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
-     1         (/ Fo, FCEXS, wdf, scale, st/), sfls_punch_flag)
+     1         (/ Fo, FCEXS, w, scale, st/), 
+     2         sfls_punch_flag)
          end if
           
           
@@ -2474,7 +2475,8 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
       if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
           !hkl=nint(STORE(M6:M6+2))
           call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
-     1      (/ Fo, FCEXS, wdf, scale, st/), sfls_punch_flag, .true.)
+     1      (/ Fo, FCEXS, w, scale, st/), 
+     2      sfls_punch_flag, .true.)
       end if
 
       
@@ -2660,38 +2662,6 @@ C--STORE THE SCALE AND PRINT IT
       IF ( SFLS_TYPE .NE. SFLS_REFINE ) LJX = LJX + 1
       IF ( SFLS_TYPE .NE. SFLS_SCALE ) LJX = LJX + 2
 
-      IF (ILEVPR .GT. 0) THEN
-6112      FORMAT(I6,' low leverage reflections.')
-          WRITE ( CMON, 6112) MIN(30,ILEVPR)
-          CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
-          RLEVNM = 0.0
-          RLEVDN = 0.0
-          DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, MDLEVE
-            RLEVNM = RLEVNM + ABS(STORE(MLEVER+5)-STORE(MLEVER+6))
-            RLEVDN = RLEVDN + STORE(MLEVER+5)
-          END DO
-
-          WRITE(CMON,'(''R(lowleverage) = <Fo-Fc>/<Fo> ='',F9.2,''%'')')
-     1     100.*RLEVNM/MAX(.001,RLEVDN)
-          CALL XPRVDU(NCVDU,1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
-
-          WRITE(CMON,6113)
-6113      FORMAT (2('   h   k   l sintl2 Leverage    FO-FC    '))
-          CALL XPRVDU(NCVDU, 1,0)
-          IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
-
-          DO  MLEVER = LLEVER, LLEVER+(NLEVER-1)*MDLEVE, 2*MDLEVE
-            WRITE (CMON,'(2(3I4,F6.3,X,F7.5,F10.3,5X))')
-     1       ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
-     2       (STORE(IXAP), IXAP= JXAP+3,JXAP+4),
-     2       STORE(JXAP+5)-STORE(JXAP+6),
-     3       JXAP= MLEVER, MLEVER+MDLEVE, MDLEVE)
-            CALL XPRVDU(NCVDU, 1,0)
-            IF(ISSPRT.EQ.0) WRITE(NCWU, '(A)') trim(CMON(1))
-          END DO
-      ENDIF
 C
 C Only print disagreeable reflections during calc.
       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
@@ -3579,7 +3549,7 @@ C--THIS IS THE END OF THE STACK  -  WE MUST DO A CALCULATION HERE
       STORE(NI+5)=STORE(M6+2)
 cdjwsep2010 Put the BATCH number into the stack
 c      store(ni+20)=store(m6+13)
-      call i_store_set(NI+8, NL)
+      call i_store_set(NI+8, NL) !ISTORE(NI+8)=NL
       STORE(NI+11)=PSHIFT
       STORE(NI+12)=FRIED
       NM=NM+1
