@@ -1,5 +1,7 @@
 #TITLE REAL STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK TO TEST ADPS RESTRAINTS
+# TEST 1
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 20
 #LIST 30
@@ -1754,7 +1756,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 2
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -1804,18 +1808,8 @@ ___________
  (0) UPERP 0.0001 C(24) TO C(29) TO C(25), C(25) TO C(24) TO C(26)
  -- Restrain an ADP perpendicular to the bissector of two bonds
 
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6:-4.077E+03      7: 1.535E+03      8: 2.522E+03      9:-3.935E+03     10: 1.404E+03     11:-1.095E+03   Uc[1,3]==0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 4.614E+01      7:-3.160E+03      8: 3.161E+03      9: 1.585E+03     10:-3.279E+03     11:-4.110E+03   Uc[2,3]==0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 4.128E+03     25:-1.891E+03     26:-2.247E+03     27:-4.123E+03     28: 7.425E+02     29: 6.810E+02   Uc[1,3]==0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 5.293E+01     25: 3.091E+03     26:-3.091E+03     27: 5.343E+02     28:-3.666E+03     29: 4.084E+03   Uc[2,3]==0
-      CL(   4) U[11]    CL(   4) U[22]    CL(   4) U[33]    CL(   4) U[23]    CL(   4) U[13]    CL(   4) U[12]
-      CL(   4) U[11]    CL(   4) U[22]    CL(   4) U[33]    CL(   4) U[23]    CL(   4) U[13]    CL(   4) U[12]
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           C(24)                                           C(25)
         9.77E-01   1.14E-02   2.00E-01             8.83E-01  -3.67E-01  -3.05E-01
@@ -1843,7 +1837,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -3474,7 +3468,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 3
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -3524,16 +3520,8 @@ ___________
  (0) UPLANE 0.0001 C(24) TO C(29) TO C(25), C(25) TO C(24) TO C(26)
  -- Restrain an ADP to be normal to a plane
 
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-1.684E+03    214: 6.512E+00    215: 1.574E+03    216: 2.025E+02    217: 7.256E+03    218: 4.668E+02   Uc[1,2]=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-1.579E+00    214: 5.000E+02    215:-5.001E+02    216: 7.740E+03    217: 1.179E+02    218:-1.720E+03   Uc[2,3]=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 3.348E+03    223:-1.987E+03    224:-1.400E+03    225:-3.336E+03    226: 2.739E+03    227: 3.263E+03   Uc[1,2]=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 4.166E+01    223: 3.428E+03    224:-3.429E+03    225:-1.208E+03    226:-2.872E+03    227: 2.509E+03   Uc[2,3]=0
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           C(24)                                           C(25)
        -5.35E-01  -3.15E-01   7.92E-01             1.36E-01   4.41E-01   8.85E-01
@@ -3550,18 +3538,18 @@ ___________
 
     Atom C(24), basis: C(24),C(29),C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    1.19E-02     0.00E+00     1.19E-02    0.999    Uc[1,2]=0
-         1  1  0  0  0   -9.30E-03     0.00E+00    -9.30E-03    0.999    Uc[2,3]=0
+         1  1  0  0  0    1.19E-02     0.00E+00     1.19E-02      NaN    Uc[1,2]=0
+         1  1  0  0  0   -9.30E-03     0.00E+00    -9.30E-03      NaN    Uc[2,3]=0
     Atom C(25), basis: C(25),C(24),C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -4.19E-03     0.00E+00    -4.19E-03    0.999    Uc[1,2]=0
-         1  1  0  0  0   -6.25E-03     0.00E+00    -6.25E-03    0.999    Uc[2,3]=0
+         1  1  0  0  0   -4.19E-03     0.00E+00    -4.19E-03      NaN    Uc[1,2]=0
+         1  1  0  0  0   -6.25E-03     0.00E+00    -6.25E-03      NaN    Uc[2,3]=0
 ___________
  (1) NO
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -5195,7 +5183,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 4
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -5245,16 +5235,8 @@ ___________
  (0) UALIGN 0.0001 C(24) C(25) C(26) C(27) C(28) C(29)
  -- Restrain all ADPs to be aligned
 
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-2.981E+03    214: 1.741E+03    215: 1.190E+03    216:-4.851E+03    217: 3.507E+03    218: 1.296E+03   Ul_12 = 0.0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 2.644E+03    214:-3.587E+03    215: 8.870E+02    216:-2.288E+03    217: 3.952E+03    218: 8.702E+02   Ul_23 = 0.0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 8.402E+02    223:-2.416E+03    224: 1.502E+03    225:-4.068E+03    226: 5.136E+03    227: 1.614E+03   Ul_13 = 0.0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 3.897E+03    223:-3.164E+03    224:-7.165E+02    225: 3.285E+03    226:-1.125E+03    227:-6.502E+02   Ul_12 = 0.0
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           C(24)                                           C(25)
         9.60E-01   3.09E-02   2.64E-01             9.60E-01   3.09E-02   2.64E-01
@@ -5306,7 +5288,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -6992,7 +6974,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 5
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -7042,32 +7026,8 @@ ___________
  (0) URIGU 0.0001 C(7) TO C(9), C(9) TO C(11)
  -- Enhanced rigid body restraints
 
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-9.292E+02    214: 8.012E+02    215: 1.255E+02    216: 2.199E+03    217: 1.800E+02    218: 7.503E+03   Uc1[1,3]-Uc2[1,3]=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 2.685E+02    214:-6.999E+02    215: 4.467E+02    216: 7.620E+03    217:-1.065E+03    218:-2.110E+03   Uc1[2,3]-Uc2[2,3]=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-2.113E+03    214:-7.100E+01    215: 2.088E+03    216: 5.863E+02    217: 6.774E+03    218:-8.963E+02   Uc1[3,3]-Uc2[3,3]=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222:-9.292E+02    223: 8.012E+02    224: 1.255E+02    225: 2.199E+03    226: 1.800E+02    227: 7.503E+03   Uc1[1,3]-Uc2[1,3]=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 2.685E+02    223:-6.999E+02    224: 4.467E+02    225: 7.620E+03    226:-1.065E+03    227:-2.110E+03   Uc1[2,3]-Uc2[2,3]=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222:-2.113E+03    223:-7.100E+01    224: 2.088E+03    225: 5.863E+02    226: 6.774E+03    227:-8.963E+02   Uc1[3,3]-Uc2[3,3]=0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  27) U[11]     C(  27) U[22]     C(  27) U[33]     C(  27) U[23]     C(  27) U[13]     C(  27) U[12]
-       C(  27) U[11]     C(  27) U[22]     C(  27) U[33]     C(  27) U[23]     C(  27) U[13]     C(  27) U[12]
-       C(  27) U[11]     C(  27) U[22]     C(  27) U[33]     C(  27) U[23]     C(  27) U[13]     C(  27) U[12]
-       C(  28) U[11]     C(  28) U[22]     C(  28) U[33]     C(  28) U[23]     C(  28) U[13]     C(  28) U[12]
-       C(  28) U[11]     C(  28) U[22]     C(  28) U[33]     C(  28) U[23]     C(  28) U[13]     C(  28) U[12]
-       C(  28) U[11]     C(  28) U[22]     C(  28) U[33]     C(  28) U[23]     C(  28) U[13]     C(  28) U[12]
-       C(  29) U[11]     C(  29) U[22]     C(  29) U[33]     C(  29) U[23]     C(  29) U[13]     C(  29) U[12]
-       C(  29) U[11]     C(  29) U[22]     C(  29) U[33]     C(  29) U[23]     C(  29) U[13]     C(  29) U[12]
-       C(  29) U[11]     C(  29) U[22]     C(  29) U[33]     C(  29) U[23]     C(  29) U[13]     C(  29) U[12]
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           C(7)                                           C(9)
         6.13E-01  -7.53E-01   2.29E-01             3.11E-01  -9.49E-01  -5.40E-02
@@ -7093,7 +7053,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -8726,7 +8686,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 6
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -8777,20 +8739,8 @@ ___________
 CONT C(26) TO C(27) TO C(28)
  -- Restrain Uij to be equals in their local basis
 
-    Derivatives:
-       C(   7) U[11]     C(   7) U[22]     C(   7) U[33]     C(   7) U[23]     C(   7) U[13]     C(   7) U[12]     C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]
-       60: 2.239E+03     61:-5.017E+02     62:-1.689E+03     63: 5.498E+03     64:-3.422E+03     65:-2.376E+03     78:-2.239E+03     79: 5.017E+02     80: 1.689E+03     81:-5.498E+03     82: 3.422E+03     83: 2.376E+03   U11_local - <U11_local> == 0
-       C(   7) U[11]     C(   7) U[22]     C(   7) U[33]     C(   7) U[23]     C(   7) U[13]     C(   7) U[12]     C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]
-       60:-2.377E+03     61:-4.327E+02     62: 2.765E+03     63: 4.346E+03     64: 3.126E+03     65:-2.827E+03     78: 2.377E+03     79: 4.327E+02     80:-2.765E+03     81:-4.346E+03     82:-3.126E+03     83: 2.827E+03   U22_local - <U22_local> == 0
-       C(   7) U[11]     C(   7) U[22]     C(   7) U[33]     C(   7) U[23]     C(   7) U[13]     C(   7) U[12]     C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]
-       60: 1.705E+03     61: 5.554E+01     62: 6.291E+03     63:-1.182E+03     64:-6.551E+03     65: 6.155E+02     78:-1.705E+03     79:-5.554E+01     80:-6.291E+03     81: 1.182E+03     82: 6.551E+03     83:-6.155E+02   U33_local - <U33_local> == 0
-       C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]     C(  11) U[11]     C(  11) U[22]     C(  11) U[33]     C(  11) U[23]     C(  11) U[13]     C(  11) U[12]
-       78: 2.416E+03     79:-2.374E+03     80:-3.976E+01     81:-8.804E+02     82:-1.158E+02     83:-6.282E+03     96:-2.416E+03     97: 2.374E+03     98: 3.976E+01     99: 8.804E+02    100: 1.158E+02    101: 6.282E+03   U12_local - <U12_local> == 0
-       C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]     C(  11) U[11]     C(  11) U[22]     C(  11) U[33]     C(  11) U[23]     C(  11) U[13]     C(  11) U[12]
-       78: 7.003E+02     79: 1.989E+02     80:-7.939E+02     81:-2.432E+03     82:-7.377E+03     83: 8.285E+02     96:-7.003E+02     97:-1.989E+02     98: 7.939E+02     99: 2.432E+03    100: 7.377E+03    101:-8.285E+02   U23_local - <U23_local> == 0
-       C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]     C(  11) U[11]     C(  11) U[22]     C(  11) U[33]     C(  11) U[23]     C(  11) U[13]     C(  11) U[12]
-       78: 7.065E+03     79: 7.921E+02     80: 8.019E+01     81: 5.041E+02     82: 1.505E+03     83: 4.731E+03     96:-7.065E+03     97:-7.921E+02     98:-8.019E+01     99:-5.041E+02    100:-1.505E+03    101:-4.731E+03   U13_local - <U13_local> == 0
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           C(24)                                           C(25)
         1.36E-01   4.41E-01   8.85E-01             7.23E-01   6.82E-01   1.02E-01
@@ -8847,7 +8797,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -10534,7 +10484,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 7
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -10590,32 +10542,8 @@ R a tansformation matrix of adp to cartesian space and U a adp matrix.
 Then R U R^t = Q L Q^t => L = Q^t R U R^t Q.
 Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
  
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 1.830E+02    214: 1.576E+03    215: 6.233E+03    216: 6.269E+03    217: 2.136E+03    218: 1.074E+03   L_11-<L_11,L_22>=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 3.864E+03    214: 3.755E+03    215: 3.697E+02    216:-2.356E+03    217: 2.391E+03    218:-7.618E+03   L_22-<L_11,L_22>=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 3.977E+03    214: 2.692E+03    215: 1.421E+03    216:-3.912E+03    217:-4.755E+03    218: 6.544E+03   L_12=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-8.408E+02    214: 2.433E+03    215:-1.518E+03    216: 4.074E+03    217:-5.168E+03    218:-1.639E+03   L_11-<L_11,L_22>=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 3.920E+03    214:-3.179E+03    215:-7.249E+02    216: 3.308E+03    217:-1.131E+03    218:-6.390E+02   L_22-<L_11,L_22>=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-8.530E+02    214:-2.060E+03    215: 2.977E+03    216:-2.600E+03    217:-4.469E+03    218:-3.206E+03   L_12=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           CL(1)                                           CL(3)
        -2.00E-01  -8.17E-01   5.41E-01             7.73E-01   5.46E-01  -3.23E-01
@@ -10637,7 +10565,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -12274,7 +12202,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 8
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -12330,20 +12260,8 @@ R a tansformation matrix of adp to cartesian space and U a adp matrix.
 Then R U R^t = Q L Q^t => L = Q^t R U R^t Q.
 Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
  
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 8.913E+02      7: 2.399E+03      8: 3.038E+03      9:-7.163E+03     10:-5.212E+03     11: 3.614E+03   L(1,1)-<eig>=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 3.857E+03      7: 2.873E+03      8:-4.445E+02      9: 8.114E+02     10:-2.169E+03     11:-8.425E+03   L(2,2)-<eig>=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 3.857E+03      7: 2.873E+03      8:-4.445E+02      9: 8.114E+02     10:-2.169E+03     11:-8.425E+03   L(3,3)-<eig>=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 3.249E+03     25: 2.285E+03     26: 3.305E+02     27:-4.205E+03     28: 3.333E+03     29:-7.564E+03   L(2,3)=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 2.506E+03     25: 4.072E+03     26:-6.658E+02     27: 9.770E+01     28:-4.600E+01     29: 7.122E+03   L(1,3)=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 2.506E+03     25: 4.072E+03     26:-6.658E+02     27: 9.770E+01     28:-4.600E+01     29: 7.122E+03   L(1,2)=0
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           CL(1)                                           CL(3)
         5.41E-01  -8.17E-01  -2.00E-01             7.73E-01   5.46E-01  -3.23E-01
@@ -12371,7 +12289,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -14027,7 +13945,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 9
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -14077,22 +13997,8 @@ ___________
  (0) UVOL 0.0001 CL(1) CL(3)
  -- Restraint geometric mean of all ADPs to be equal
 
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 1.049E+03      7: 1.669E+03      8: 3.963E+03      9: 5.910E+03     10: 4.971E+03     11: 3.338E+03   U_geom = <U>_geom
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 5.954E+03      7: 1.094E+03      8:-2.382E+02      9: 1.071E+03     10:-4.038E+03     11:-7.497E+03   U_geom = <U>_geom
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           CL(1)                                           CL(3)
         5.41E-01  -8.17E-01  -2.00E-01             7.73E-01   5.46E-01  -3.23E-01
@@ -14110,7 +14016,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -15727,7 +15633,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 10
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -15777,12 +15685,8 @@ ___________
  (0) UEQIV 0.0001 CL(1) CL(3)
  -- Restraint all Ueq to be equal
 
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 2.543E+03      7: 3.189E+03      8: 2.981E+03      9:-1.732E+03     10:-8.287E+02     11: 7.120E+01   U_eq = <U>_eq
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 3.821E+03     25: 3.861E+03     26: 1.707E+03     27:-1.122E+03     28: 1.537E+03     29:-1.168E+02   U_eq = <U>_eq
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           CL(1)                                           CL(3)
         5.41E-01  -8.17E-01  -2.00E-01             7.73E-01   5.46E-01  -3.23E-01
@@ -15791,16 +15695,16 @@ ___________
 
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    8.09E-02     1.04E-01    -2.34E-02    0.993    U_eq = <U>_eq
+         1  1  0  0  0    8.09E-02     1.04E-01    -2.34E-02      NaN    U_eq = <U>_eq
     Atom CL(3)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    1.28E-01     1.04E-01     2.34E-02    0.994    U_eq = <U>_eq
+         1  1  0  0  0    1.28E-01     1.04E-01     2.34E-02      NaN    U_eq = <U>_eq
 ___________
  (1) NO
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -17419,7 +17323,9 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           Leverage: 1.000
+# TEST 11
 #USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
 #LIST 1
 #LIST 2
 #LIST 3
@@ -17474,12 +17380,8 @@ L tensor:
 T tensor:
   7.74E-03   2.67E-03   1.26E-02  -1.67E-03   6.58E-03  -3.05E-03
  
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 2.824E+03      7: 2.824E+03      8: 2.824E+03      9:-2.469E-04     10:-8.058E+01     11:-4.228E-04   U11 - Utls11 == 0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 2.824E+03     25: 2.824E+03     26: 2.824E+03     27:-2.469E-04     28:-8.058E+01     29:-4.228E-04   U22 - Utls22 == 0
-
+    No derivatives stored, do a refinement cycle
+    
     Transformation matrices:
           C(24)                                           C(25)
         0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
@@ -17549,7 +17451,7 @@ ___________
 ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
-          Leverage: 1.000
+          - Derivatives not found, do a refinement cycle to get leverages -
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL

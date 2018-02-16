@@ -340,6 +340,7 @@ LS-scale=  1.023   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.67E+00 condition number:  1.39E+01 relative error:  1.65E-06
 
                                                 for           6 parameters
 [64]                                  The rms (shift/su)  =           0.

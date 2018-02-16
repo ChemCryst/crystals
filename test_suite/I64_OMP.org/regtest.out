@@ -106,11 +106,6 @@ Summary of Deviations
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    21 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -135,6 +130,11 @@ Bonds: Update required - List5 length change
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
    Q   6 0.63 0.422 0.484 0.808 1 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
  The following atom(s) will be deleted
     Q   6
@@ -275,11 +275,6 @@ Individual Delta          0.004         0.008   O4       - O104
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    26 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -309,6 +304,11 @@ Bonds: Update required - List5 length change
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
    Q   6 0.63 0.422 0.484 0.808 1 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
 Space group symbol is   P    1             
@@ -417,11 +417,6 @@ Summary of Deviations
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    21 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -446,6 +441,11 @@ Bonds: Update required - List5 length change
    C   3 0.63 0.542 0.355 0.833 1 0.053 0.000 0.000 0.00 0.00 0.00     1.000      0
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
  The following atom(s) will be deleted
     Q   6
@@ -586,11 +586,6 @@ Individual Delta          0.004         0.008   O4       - O104
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    26 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -620,6 +615,11 @@ Bonds: Update required - List5 length change
    C   3 0.63 0.542 0.355 0.833 1 0.053 0.000 0.000 0.00 0.00 0.00     1.000      0
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #TITLE AUGMENT
 #USE REGINIT.DAT
 #SET PRINT OFF
@@ -729,11 +729,6 @@ Summary of Deviations
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -753,6 +748,11 @@ Bonds: Update required - List5 length change
    N1051 1.70 1.066 0.029 0.013 1 0.160 0.000 0.000 0.00 0.00 0.00     1.230      0
    O1052 1.80 0.896-0.022 0.073 1 0.260 0.000 0.000 0.00 0.00 0.00     1.230      0
    Q   6 0.63 0.422 0.484 0.808 1 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
  The following atom(s) will be deleted
     Q   6
@@ -893,11 +893,6 @@ Individual Delta          0.004         0.008   O4       - O104
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -917,6 +912,11 @@ Bonds: Update required - List5 length change
    N1051 1.70 1.066 0.029 0.013 1 0.160 0.000 0.000 0.00 0.00 0.00     1.230      0
    O1052 1.80 0.896-0.022 0.073 1 0.260 0.000 0.000 0.00 0.00 0.00     1.230      0
    Q   6 0.63 0.422 0.484 0.808 1 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
 Space group symbol is   P    1             
@@ -1024,11 +1024,6 @@ Summary of Deviations
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -1048,6 +1043,11 @@ Bonds: Update required - List5 length change
    N1051 1.70 1.066 0.029 0.013 1 0.160 0.000 0.000 0.00 0.00 0.00     1.230      0
    O1052 1.80 0.896-0.022 0.073 1 0.260 0.000 0.000 0.00 0.00 0.00     1.230      0
    Q   6 0.63 0.422 0.484 0.808 1 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
  The following atom(s) will be deleted
     Q   6
@@ -1188,11 +1188,6 @@ Individual Delta          0.004         0.008   O4       - O104
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -1212,6 +1207,11 @@ Bonds: Update required - List5 length change
    C   3 0.63 0.542 0.355 0.833 1 0.053 0.000 0.000 0.00 0.00 0.00     1.000      0
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 # REPLACE
 #USE REGINIT.DAT
 #SET PRINT OFF
@@ -1320,11 +1320,6 @@ Summary of Deviations
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -1344,6 +1339,11 @@ Bonds: Update required - List5 length change
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
    Q   6 0.63 0.422 0.484 0.808 1 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
  The following atom(s) will be deleted
     Q   6
@@ -1484,11 +1484,6 @@ Individual Delta          0.004         0.008   O4       - O104
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -1508,6 +1503,11 @@ Bonds: Update required - List5 length change
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
    Q   6 0.63 0.422 0.484 0.808 1 0.050 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
 Space group symbol is   P    1             
@@ -1615,11 +1615,6 @@ Summary of Deviations
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -1639,6 +1634,11 @@ Bonds: Update required - List5 length change
    C   3 0.63 0.542 0.355 0.833 1 0.053 0.000 0.000 0.00 0.00 0.00     1.000      0
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
  The following atom(s) will be deleted
     Q   6
@@ -1779,11 +1779,6 @@ Individual Delta          0.004         0.008   O4       - O104
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    16 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -1803,6 +1798,11 @@ Bonds: Update required - List5 length change
    C   3 0.63 0.542 0.355 0.833 1 0.053 0.000 0.000 0.00 0.00 0.00     1.000      0
    O   4 0.64 0.565 0.403 0.917 0 0.054 0.042 0.043 0.00 0.01 0.00     1.000      0
    C   5 0.65 0.505 0.467 0.905 1 0.055 0.000 0.000 0.00 0.00 0.00     1.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       0.139  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
 Space group symbol is   P    1             

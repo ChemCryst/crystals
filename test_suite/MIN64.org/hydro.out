@@ -116,11 +116,6 @@ Space group symbol is   P    -1
 Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
- There are no layer, element, or batch scales
- There are no special overall parameters
- The list currently contains     6 overall parameters
- SCALE       8.987  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
- ENANTIO     0.000  EXTPARAM    0.000
  The list currently contains    39 atoms
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
@@ -163,6 +158,11 @@ Bonds: Update required - List5 length change
    H  15 1.00-0.337 0.830 0.523 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000      0
    H  12 1.00 0.936 0.024-0.107 1 0.082 0.000 0.000 0.00 0.00 0.00     0.000      0
    H  21 1.00 0.602 0.670 0.068 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000      0
+ There are no layer, element, or batch scales
+ There are no special overall parameters
+ The list currently contains     6 overall parameters
+ SCALE       8.987  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
+ ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
  The following atom(s) will be selected
     O   2      N   1      C   1      S   1      O   1      C   2      C   3
