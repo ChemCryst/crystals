@@ -725,17 +725,17 @@ character(len=256) :: lineformat
         end if
         
         if(reflections_unit==0) then
-!            print *, 'design matrix file not opened yet'
+!            print *, 'reflections file not opened yet'
             call abort()
         end if
         
         inquire(reflections_unit, opened=fileopened)
         if(.not. fileopened) then
- !           print *, 'design matrix file not opened but unit set'
+ !           print *, 'reflections file not opened but unit set'
             call abort()
         end if
         
-        write(lineformat, '("(3I5, 3X, ",I0,"E15.6)")') size(datas)
+        write(lineformat, '("(3I5, 3X, 1P, ",I0,"E15.6)")') size(datas)
         write(reflections_unit, lineformat) hkl, datas
 
     case(3) ! numpy
@@ -1353,9 +1353,14 @@ double precision, external :: ddot !< blas dot product
                 allocate(sigmas(ubound(reflections, 1), 7))
                 previous=1
                 k=0
-                do i=1, ubound(reflections, 1)
+                mainloop:do i=1, ubound(reflections, 1)
                     found=.false.
                     do j=previous, ubound(sigmas, 1) ! that should make the search faster if file is sorted
+                        if(j>ubound(sigmast, 1)) then ! unexpected error, cannot find the reflections. Is it the right file for the structure?
+                            ! cancelling use of the sigmas
+                            deallocate(sigmast)
+                            exit mainloop
+                        end if
                         if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
                             k=k+1
                             sigmas(k,:)=sigmast(j,:)
@@ -1365,7 +1370,12 @@ double precision, external :: ddot !< blas dot product
                         end if
                     end do
                     if(.not. found) then
-                        do j=1, ubound(sigmas, 1) ! that should make the search faster if file is sorted
+                        do j=1, ubound(sigmas, 1) ! doing the search again from the start, the file might not be sorted
+                            if(j>ubound(sigmast, 1)) then ! unexpected error, cannot find the reflections. Is it the right file for the structure?
+                                ! cancelling use of the sigmas
+                                deallocate(sigmast)
+                                exit mainloop
+                            end if
                             if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
                                 k=k+1
                                 sigmas(k,:)=sigmast(j,:)
@@ -1375,12 +1385,12 @@ double precision, external :: ddot !< blas dot product
                             end if
                         end do
                     end if
-                end do
+                end do mainloop
                 deallocate(sigmast)
             end if
             
             call plot_leverages_init(1, '_VLEVP', 'k x Fo')
-            call plot_leverages_init(2, '_VLEVR', 'sin(t)/l')
+            call plot_leverages_init(2, '_VLEVR', 'sin(\Theta)/\lambda')
             if(sigmas_exists) then
                 call plot_leverages_init(3, '_VLEVM', 'moo')
             end if
@@ -1504,8 +1514,8 @@ double precision, external :: ddot !< blas dot product
 
             !tvalues(size(tvalues)-mod(numobs-1,block_size)+i)=dot_product(design_block(:,i), variance(:,tselected)) ! replaced with blas call below
         end do
-        call dgemv('T', nsize, block_size, 1.0d0, design_block, nsize, &
-        &   variance(:,tselected), 1, 0.0d0, tvalues(size(tvalues)-block_size+1:), 1)
+        call dgemv('T', nsize, mod(numobs-1,block_size), 1.0d0, design_block, nsize, &
+        &   variance(:,tselected), 1, 0.0d0, tvalues(size(tvalues)-mod(numobs-1,block_size)+1:), 1)
         
     end if
     numobs=numobs-1
@@ -1641,6 +1651,8 @@ double precision, external :: ddot !< blas dot product
     call xprvdu(ncvdu, 1,0)      
     ! updating slider in the gui
     call slider(100,100)
+    
+    call Rfactorlev(reflections(1:numobs-irestraint,:), leverage_all(1:numobs-irestraint))
 
 #if defined(CRY_OSLINUX)
     call date_and_time(VALUES=measuredtime)
@@ -1651,6 +1663,147 @@ double precision, external :: ddot !< blas dot product
     ((measuredtime(5)*3600+measuredtime(6)*60)+ &
     measuredtime(7))*1000.0+measuredtime(8)-starttime, 'ms'
 #endif
+
+end subroutine
+
+subroutine Rfactorlev(reflections, leverages)
+use xiobuf_mod, only: cmon !< screen
+use xunits_mod, only: ncvdu !< lis file
+use m_mrgrnk
+implicit none
+double precision, dimension(:,:), intent(in) :: reflections
+double precision, dimension(:), intent(in) :: leverages
+integer, dimension(:), allocatable :: sort_keys
+double precision num, denum
+integer i,j, levbin, rselect
+character(len=3), dimension(2) :: rtype=(/' R1', 'wR2'/)
+integer, parameter :: nbins=5
+integer, dimension(nbins,10) :: bins
+character(len=24), dimension(nbins) :: fbins
+double precision, dimension(nbins) :: nums, denums
+double precision, dimension(nbins+1) :: bounds
+double precision interval
+double precision, dimension(nbins+1,10) :: Rwlev
+double precision chi2, mean
+
+    do i=0, 15
+        write(cmon,'(" {1,",I0," test",I0)')  i, i
+        call xprvdu(ncvdu, 1,0)
+    end do
+
+    write(cmon, '(a)') ''
+    call xprvdu(ncvdu, 1,0)
+    write(cmon, '(a)') 'R1 and wR2 as a function of leverages and resolution'
+    call xprvdu(ncvdu, 1,0)
+    write(cmon, '(a)') ''
+    call xprvdu(ncvdu, 1,0)
+    
+    allocate(sort_keys(size(leverages)))
+    
+    interval=(maxval(reflections(:, 8)**3)-minval(reflections(:, 8)**3))/real(nbins+1)
+    bounds(1)=minval(reflections(:, 8)**3)
+    do i=2,nbins
+        bounds(i)=interval*(i-1)+minval(reflections(:, 8)**3)
+    end do
+    bounds(nbins+1)=maxval(reflections(:, 8)**3)  
+
+    call mrgrnk(leverages, sort_keys)
+    
+    do rselect=1, 2
+    ! reselect=1 => R1
+    ! reselect=2 => wR2
+        nums=0.0d0
+        denums=0.0d0
+        num=0.0d0
+        denum=0.0d0
+        levbin=1
+        bins=0
+        do i=1, size(leverages)   
+            if(rselect==1) then
+                num=num+abs(abs(reflections(sort_keys(i), 4))-reflections(sort_keys(i), 5))
+                denum=denum+abs(reflections(sort_keys(i), 4))
+            else
+                num=num+reflections(sort_keys(i), 6)**2*(reflections(sort_keys(i), 4)**2-reflections(sort_keys(i), 5)**2)**2
+                denum=denum+reflections(sort_keys(i), 6)**2*reflections(sort_keys(i), 4)**4
+            end if
+            do j=1, nbins
+                if(reflections(sort_keys(i), 8)**3>=bounds(j) .and. &
+                &   reflections(sort_keys(i), 8)**3<=bounds(j+1)) then
+                    bins(j,levbin:)=bins(j,levbin:)+1
+                    if(rselect==1) then
+                        nums(j)=nums(j)+abs(abs(reflections(sort_keys(i), 4))-reflections(sort_keys(i), 5))
+                        denums(j)=denums(j)+abs(reflections(sort_keys(i), 4))
+                    else
+                        nums(j)=nums(j)+reflections(sort_keys(i), 6)**2* &
+                        &   (reflections(sort_keys(i), 4)**2-reflections(sort_keys(i), 5)**2)**2
+                        denums(j)=denums(j)+reflections(sort_keys(i), 6)**2*reflections(sort_keys(i), 4)**4
+                    end if
+                    exit
+                end if
+            end do
+
+            if(real(i, kind(1.0d0))/real(size(leverages), kind(1.0d0))>=0.1d0*levbin) then
+                if(rselect==1) then
+                    Rwlev(1:nbins,levbin)=100.0d0*nums/denums
+                    Rwlev(nbins+1, levbin)=100.0d0*num/denum
+                else
+                    Rwlev(1:nbins,levbin)=100.0d0*sqrt(nums/denums)
+                    Rwlev(nbins+1, levbin)=100.0d0*sqrt(num/denum)
+                end if
+                levbin=levbin+1
+            end if
+        end do
+        
+        do i=1, 10
+                    
+            do j=1, nbins
+                if(Rwlev(j,i)>1.5*Rwlev(j,10)) then
+                    write(fbins(j), '("{4,0",F8.2,"{1,0")') Rwlev(j,i)
+                else if(Rwlev(j,i)>1.2*Rwlev(j,10)) then
+                    write(fbins(j), '("{6,0",F8.2,"{1,0")') Rwlev(j,i)
+                else
+                    write(fbins(j), '("{1,0",F8.2,"{1,0")') Rwlev(j,i)
+                end if
+            end do
+
+            if(i==10) then
+                do j=1, nbins
+                    if(Rwlev(j,i)>1.2*Rwlev(nbins+1,i) .or. Rwlev(j,i)<0.8*Rwlev(nbins+1,i)) then
+                        write(fbins(j), '("{11,0",F8.2,"{1,0")') Rwlev(j,i)
+                    end if
+                end do
+            end if
+            
+            write(cmon,'(" {1,15n refl |", 5I8,  "|  lev<",I0,"%  {1,0")')  bins(:,i), i*10
+            call xprvdu(ncvdu, 1,0)
+            cmon(1)=' '//rtype(rselect)//'    |'
+            do j=1, nbins
+                cmon(1)=trim(cmon(1))//trim(fbins(j))
+            end do
+            if(Rwlev(nbins+1,i)>1.5*Rwlev(nbins+1,10)) then
+                write(fbins(1), '("|  ",a,"={4,0 ",F0.2,"{1,0")') rtype(rselect), Rwlev(nbins+1,i)
+            else if(Rwlev(nbins+1,i)>1.2*Rwlev(nbins+1,10)) then
+                write(fbins(1), '("|  ",a,"={6,0 ",F0.2,"{1,0")') rtype(rselect), Rwlev(nbins+1,i)
+            else
+                write(fbins(1), '("|  ",a,"={1,0 ",F0.2,"{1,0")') rtype(rselect), Rwlev(nbins+1,i)
+            end if
+            cmon(1)=trim(cmon(1))//trim(fbins(1))
+            call xprvdu(ncvdu, 1,0)
+        end do
+        write(cmon,'("        |",a, a, a, "|")') repeat('-',4), ' (Sin(theta)/Lambda)^3 (binned) ', repeat('-',4)
+        call xprvdu(ncvdu, 1,0)
+        
+        write(cmon,'(a)') ''
+        call xprvdu(ncvdu, 1,0)
+        
+        mean=sum(Rwlev(1:nbins,:), bins>=5)/real(count(bins>=5), kind(mean))
+        print *, count(bins>=5), mean
+        chi2=sum(abs(Rwlev(1:nbins,:)-mean), bins>=5)/sum(Rwlev(1:nbins,:), bins>=5)
+        write(cmon,'(a, F10.7)') 'Chi2=', chi2
+        call xprvdu(ncvdu, 1,0)
+    end do
+    
+    ! ################################################    
 
 end subroutine
 
@@ -2095,6 +2248,8 @@ funit=funitconstant+gunit
 
 write(funit,'(a,f18.14,a/a)')'^^PL YAXISRIGHT ZOOM -100.0 ',&
 &   100.0,' SHOW', &
+&   '^^CR'
+write(funit,'(a,/a)')'^^PL YAXIS ZOOM -1.0 1.0 SHOW',&
 &   '^^CR'
 
 rewind(funit)
