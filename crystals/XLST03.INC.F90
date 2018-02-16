@@ -1,0 +1,8 @@
+module xlst03_mod
+implicit none
+
+	integer L3,M3,MD3,N3,L3TR,M3TR,MD3TR,N3TR,L3TI,M3TI,MD3TI,N3TI
+    
+    COMMON/XLST03/L3,M3,MD3,N3,L3TR,M3TR,MD3TR,N3TR,L3TI,M3TI,MD3TI,N3TI 
+
+end module

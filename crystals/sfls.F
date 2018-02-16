@@ -3403,6 +3403,23 @@ c       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
 
 CODE FOR XSFLSX
       SUBROUTINE XSFLSX
+      use store_mod, only: store, istore=>i_store, i_store_set
+      use xsfwk_mod, only:a, acd, aci, acr, anom, bcd, bci, bcr, sst, st
+      use xsfwk_mod, only:tc
+      use xworkb_mod, only:jn, jo, jp, jq, jr, ni, nl, nm, nn, nr
+      use xsflsw_mod, only:anomal, centro, iso_only, sfls_refine
+      use xsflsw_mod, only:sfls_type
+      use xsflsw_mod, only:JREF_STACK_PTR, JREF_STACK_START
+      use xconst_mod, only:twopi, twopis, zero
+      use xlst01_mod, only:l1a, l1s
+      use xlst02_mod, only:g2, l2, l2i, l2t, m2, m2i, m2t, md2, md2i
+      use xlst02_mod, only:md2t, n2, n2t
+      use xlst03_mod, only:l3ti, l3tr, m3ti, m3tr, md3ti, md3tr, n3
+      use xlst05_mod, only:l5, m5a, md5a, n5
+      use xlst06_mod, only:m6
+      use xlst12_mod, only:l12, l12a, m12, m12a, md12a, n12
+      use xunits_mod, only:
+      implicit none
 C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 C
@@ -3416,21 +3433,11 @@ C  AT     TOTAL A PART FOR EACH ATOM
 C  BT     TOTAL B PART FOR EACH ATOM
 
 C--
-      INCLUDE 'ISTORE.INC'
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XSFWK.INC'
-      INCLUDE 'XWORKB.INC'
-      INCLUDE 'XSFLSW.INC'
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST01.INC'
-      INCLUDE 'XLST02.INC'
-      INCLUDE 'XLST03.INC'
-      INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST06.INC'
-      INCLUDE 'XLST12.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'QSTORE.INC'
 
+      real aimag, ap, at, bd, bf, bp, bt, focc, fried
+      real pshift, smax, smin, t, tfocc
+      integer icpt, j, ljt, ljx, lju, ljv, ljw, ljy, ljz, n
+      
       REAL FLAG
       LOGICAL ATOM_REFINE
 
@@ -3445,23 +3452,10 @@ C-C-C-...FOR DERIVATIVES
 
       REAL ALPD(11),BLPD(11)   ! Use local arrays for better optimisation?
 
-C Some constants for chebychev approx.
-      REAL S0,S1,S2,S3,C0,C1,C2,C3,DD
-      DATA S0/1.570795134/
-      DATA S1/-.645925832/
-      DATA S2/.079500304/
-      DATA S3/-.004370784/
-      DATA C0/.999993249/
-      DATA C1/-1.233483666/
-      DATA C2/.252578000/
-      DATA C3/-.019094240/
-
       INTEGER ISTACK
 
       ALPD=0.0
       BLPD=0.0
-
-      DD=1.0/TWOPI
 
       ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
       ACR=0.
@@ -3576,16 +3570,16 @@ C--THIS IS THE END OF THE STACK  -  WE MUST DO A CALCULATION HERE
       END DO STACKSEARCH
 
 
-      ISTORE(JREF_STACK_PTR)=ISTORE(NI)   ! SWITCH THE CURRENT BLOCK TO 
-      ISTORE(NI)=ISTORE(JREF_STACK_START)   ! THE TOP OF THE STACK
-      ISTORE(JREF_STACK_START)=NI
+      call i_store_set(JREF_STACK_PTR, ISTORE(NI)) ! SWITCH THE CURRENT BLOCK TO 
+      call i_store_set(NI, ISTORE(JREF_STACK_START))! THE TOP OF THE STACK
+      call i_store_set(JREF_STACK_START, NI)
 
       STORE(NI+3)=STORE(M6)   ! SET UP THE CURRENT SET OF INDICES
       STORE(NI+4)=STORE(M6+1)
       STORE(NI+5)=STORE(M6+2)
 cdjwsep2010 Put the BATCH number into the stack
 c      store(ni+20)=store(m6+13)
-      ISTORE(NI+8)=NL
+      call i_store_set(NI+8, NL)
       STORE(NI+11)=PSHIFT
       STORE(NI+12)=FRIED
       NM=NM+1
