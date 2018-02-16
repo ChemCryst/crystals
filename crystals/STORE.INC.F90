@@ -33,7 +33,8 @@ implicit none
 integer, intent(in) :: k !< address in store
 integer, intent(in) :: v !< value to transfer
 
-STORE(k) = transfer(v, kind(store(1)))
+STORE(k) = transfer(v, store(1))
+
 end subroutine
 
 end module
