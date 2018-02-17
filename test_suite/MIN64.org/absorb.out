@@ -11,7 +11,7 @@
 # CAD4 KAPPA GEOMETRY - THIS IS THE 'REAL' TEST
 #LIST 13
 
- Initial azimuth =  -0.00
+ Initial azimuth =   0.00
 
 
  Orientation matrix
@@ -140,7 +140,7 @@
 #LIST 13
 # CAD4 EULARIAN ANGLES - REFLECTION 1 1 1 WILL HAVE INCORRECT RESULTS
 
- Initial azimuth =  -0.00
+ Initial azimuth =   0.00
 
 
  Orientation matrix
@@ -203,7 +203,7 @@
 # TEST ROD   CORRECTION
 #LIST 13
 
- Initial azimuth =  -0.00
+ Initial azimuth =   0.00
 
 
  Orientation matrix
@@ -254,7 +254,7 @@
 #LIST 13
 # TEST PLATE CORRECTION
 
- Initial azimuth =  -0.00
+ Initial azimuth =   0.00
 
 
  Orientation matrix
@@ -274,7 +274,7 @@
 
 
  Specimen shape correction
- Components of specimen axis   -0.91   0.42  -0.00
+ Components of specimen axis   -0.91   0.42   0.00
  Limiting inclination  87.433,    MU*T   0.065
  Maximum permitted correction   4.000
 

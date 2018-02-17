@@ -2631,7 +2631,7 @@ ___________
                 with an E.S.D. of   0.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
-           C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550    -0.000
+           C       2     1  1  0  0  0      C      11     1  1  0  0  0      1.550     0.000
           Leverage C(2),C(11): 1.000  Single distance
 [41]       Mean value =   1.5500  Mean delta =   0.0000  r.m.s. delta =   0.00
 ___________

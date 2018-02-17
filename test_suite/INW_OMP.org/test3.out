@@ -4785,7 +4785,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
 
 
- Screw pitches (angstrom/degree) :              -0.02   0.01  -0.00
+ Screw pitches (angstrom/degree) :              -0.02   0.01   0.00
  Observed and calculated temperature factors   (Crystal axes)
 
 
@@ -4933,9 +4933,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
                  Axis 1                0.01      0.01
 
-                 Axis 2      0.00               -0.00
+                 Axis 2      0.00                0.00
 
-                 Axis 3      0.00     -0.00
+                 Axis 3      0.00      0.00
  Final reduced tensors
 
                L                           T                          S
@@ -4946,7 +4946,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
 
 
- Screw pitches (angstrom/degree) :               0.00   0.00  -0.00
+ Screw pitches (angstrom/degree) :               0.00   0.00   0.00
  Observed and calculated temperature factors   (Crystal axes)
 
 
@@ -5406,7 +5406,7 @@ AZIMUTH  =   -52.08     AZIMUTH /100 =  -0.5208
 
     Type     Serial       Weight       XP        YP        ZP            
 
-     P          1.         1.000      0.908     0.000    -0.000
+     P          1.         1.000      0.908     0.000     0.000
      C          1.         1.000     -0.908     0.000     0.000
 
  Spherical index =   0.00 cylindrical index =   1.00 Discoidal index =   1.00
@@ -7332,7 +7332,7 @@ Mean C-C su =   0.0282
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.01    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.014   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.00
+<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =     0.00
 #DORESTRAIN
 #INVERT  DEFA
 
