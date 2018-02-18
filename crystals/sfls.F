@@ -1960,7 +1960,7 @@ C       imaginary parts, m6+33/34, should be zero
         NN=0
         JO=NO  ! Point JO back to beginning of PD list.
         JP=NP
-
+      
 C       CHECK IF THIS IS TWINNED CALCULATION
         IF(.NOT.TWINNED)THEN   ! NOT TWINNED
           NL=0
@@ -3374,21 +3374,21 @@ c       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
 CODE FOR XSFLSX
       SUBROUTINE XSFLSX
       use store_mod, only: store, istore=>i_store, i_store_set
-      use xsfwk_mod, only:a, acd, aci, acr, anom, bcd, bci, bcr, sst, st
+      use xsfwk_mod, only:acd, aci, acr, anom, bcd, bci, bcr, sst, st
       use xsfwk_mod, only:tc
-      use xworkb_mod, only:jn, jo, jp, jq, jr, ni, nl, nm, nn, nr
-      use xsflsw_mod, only:anomal, centro, iso_only, sfls_refine
-      use xsflsw_mod, only:sfls_type
+      use xworkb_mod, only:jo, jn, jp, jq, jr, ni, nm, nn
+      use xworkb_mod, only:nr, nl ! read only
+      use xsflsw_mod, only:anomal, centro, iso_only, sfls_refine ! read only
+      use xsflsw_mod, only:sfls_type ! read only
       use xsflsw_mod, only:JREF_STACK_PTR, JREF_STACK_START
-      use xconst_mod, only:twopi, twopis, zero
-      use xlst01_mod, only:l1a, l1s
-      use xlst02_mod, only:g2, l2, l2i, l2t, m2, m2i, m2t, md2, md2i
-      use xlst02_mod, only:md2t, n2, n2t
-      use xlst03_mod, only:l3ti, l3tr, m3ti, m3tr, md3ti, md3tr, n3
-      use xlst05_mod, only:l5, m5a, md5a, n5
-      use xlst06_mod, only:m6
-      use xlst12_mod, only:l12, l12a, m12, m12a, md12a, n12
-      use xunits_mod, only:
+      use xconst_mod, only:twopi, twopis, zero ! read only
+      use xlst01_mod, only:l1a, l1s ! read only
+      use xlst02_mod, only:g2, l2, l2i, l2t, m2i, md2, md2i ! read only
+      use xlst02_mod, only:n2, n2t, md2t ! read only
+      use xlst03_mod, only:l3ti, l3tr, md3ti, md3tr, n3 ! read only
+      use xlst05_mod, only:l5, md5a, n5 ! read only
+      use xlst06_mod, only:m6 ! read only
+      use xlst12_mod, only:l12, n12 ! read only
       implicit none
 C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
@@ -3401,12 +3401,22 @@ C  AP     A PART FOR EACH SYMMETRY POSITION FOR EACH ATOM
 C  BP     B PART FOR EACH SYMMETRY POSITION FOR EACH ATOM
 C  AT     TOTAL A PART FOR EACH ATOM
 C  BT     TOTAL B PART FOR EACH ATOM
-
 C--
+C  Fried (written in stack)
+C  acd, aci, acr, bcd, bci, bcr (saved in common block)
+C  anom (read only from common block)
+C  nm (read and updated from common block)
+C  nn (read and updated from common block)
+C  jn, jo, jp, jq, jr (read only adresses in store)
+C  ni (stack address in common block? read/write)
+C  nr (read only)
+C
+C Any attempt to used OpenMP here is useless, there is too much overhead
 
-      real aimag, ap, at, bd, bf, bp, bt, focc, fried
+      real aimag, ap, at, bd, bf, bp, bt, focc, fried, a
       real pshift, smax, smin, t, tfocc
       integer icpt, j, ljt, ljx, lju, ljv, ljw, ljy, ljz, n
+      integer m3tr, m3ti, m5a, l12a, m2t, m2, m12a, md12a, m12
       
       REAL FLAG
       LOGICAL ATOM_REFINE
@@ -3434,6 +3444,8 @@ C-C-C-...FOR DERIVATIVES
       BCI=0.
       ACD=0.
       BCD=0.
+      smin=0.0
+      smax=0.0
 
 C--SEARCH FOR THIS REFLECTION IN THE REFLECTION HOLDING STACK
       JREF_STACK_PTR=JREF_STACK_START
@@ -3655,7 +3667,6 @@ c        WRITE(NCWU,'(A,F16.9,1x,Z0)')'M3TR2:',STORE(M3TR),STORE(M3TR)
         M3TI=M3TI+MD3TI
       END DO
       IF(SFLS_TYPE .EQ. SFLS_REFINE) THEN    ! CHECK IF WE ARE DOING REFINEMENT
-
         STORE(JO:JP)=0.               ! CLEAR THE FINAL PARTIAL DERIVATIVE AREA TO ZERO
         STORE(JR:JR+N12*JQ-1) = 0.0   ! CLEAR THE TEMPORARY PARTIAL DERIVATIVE AREAS TO ZERO
         STORE(JN:JN+JQ-1)=0.0         ! CLEAR THE DUMMY LOCATIONS
@@ -3676,9 +3687,7 @@ C
       allocate(sina(n5, n2t))
 
 c Pre-calculating some expensives values using optimised functions if available
-c and using threads
-!$OMP SECTIONS
-!$OMP SECTION
+
 c calculate the iso-temperature factor coefficients for this atom
 c TC = -8 Pi^2 [sin(theta)/lambda]^2
 c T = exp(Uiso *TC)
@@ -3689,7 +3698,6 @@ c
       Tiso=EXP(STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC)  
 #endif
 
-!$OMP SECTION
 c  calculate the aniso-temperature factor
 c  T=exp(h*Uij + ...)
 c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
@@ -3709,7 +3717,7 @@ c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
         Taniso(:,icpt)=exp(Ttemp(:,icpt))
 #endif
       end do
-!$OMP SECTION
+
 C--CALCULATE THE SIN/COS TERMS 
 c  dd = 1.0/twopi
 c  a = h'.x + h.t
@@ -3728,8 +3736,6 @@ c
       sina(:,icpt)=sin(atemp(:,icpt))
 #endif
       end do
-!$OMP END SECTIONS
-
       
       DO LJY=1,N5
         AT=0.  ! CLEAR THE ACCUMULATION VARIABLES
