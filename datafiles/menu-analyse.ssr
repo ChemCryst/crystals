@@ -17,10 +17,6 @@
 ^^WI               ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN'                        
 ^^WI   ITEM AGREE '&Multiplicity of Observation' '#SCRIPT XMOO2'                           
 ^^WI               ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN'                        
-^^WI   ITEM AGREE '&Sigma distribution' '#SCRIPT XSIGLEV'                       
-^^WI               ENABLEIF='L6' DISABLEIF='IN'                                 
-^^WI   ITEM AGREE '&Merging R distribution' '#SCRIPT XRMERGE'                   
-^^WI               ENABLEIF='L6' DISABLEIF='IN'                                 
 ^^WI   ITEM AGREE '&Tabbed initial analyses' '#SCRIPT XCHECK6'                  
 ^^WI               ENABLEIF='L6' DISABLEIF='IN'                                 
 ^^WI   SPLIT                                                                    
