@@ -620,7 +620,7 @@ double precision smin10, smin100, smin20, smin50, smin200
 double precision sminacc, fokd, fckd
 integer nmm, nmp, npm, npp
 double precision ymm, ymp, ypm, ypp, xmm, xmp, xpm, xpp
-double precision cdf, q
+real cdf, q
 
     !c now sort on signal to noise for Le Page algorithm
     refls_size=ubound(reflections_data,2)
@@ -1833,10 +1833,9 @@ subroutine applyfilters(reflections_data, reflections_filters, filter)
 implicit none
 real, dimension(:,:), intent(inout) :: reflections_data
 logical, dimension(:,:), intent(out)  :: reflections_filters
-real, dimension(5) :: filter
+real, dimension(:), intent(in) :: filter
 real dcmax, q
 integer i, ierror
-
 
 !------------------------------------- Start of filters
 !c accept reflections where:
@@ -1867,17 +1866,22 @@ integer i, ierror
 !c           watch out for unreasonably large Do
         if (abs(reflections_data(C_FOKD, i)).ge. filter(C_DOoDSmax)*dcmax) then
             reflections_data(C_FAIL, i)=1.0
-            reflections_filters(C_AOoAc, i)=.true.
+            reflections_filters(C_DOoDSmax, i)=.true.
         endif
  
 ! filter 4 C_OUTLIER
         ! done later
 
-! filter 5 special test for poor agreement C_ASoSAO
-        q = abs(max(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i)) / &
-        &   min(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i))) 
-        if(Q .gt. filter(C_AOoAc)) then
-            reflections_filters(C_ASoSAO, i)=.True.
+! filter 5 special test for poor agreement C_AOoAc
+        if(min(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i))/=0.0) then
+            q = abs(max(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i)) / &
+            &   min(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i))) 
+            if(Q >= filter(C_AOoAc)) then
+                reflections_filters(C_AOoAc, i)=.True.
+                reflections_data(C_FAIL, i)=1.0
+            end if
+        else
+            reflections_filters(C_AOoAc, i)=.True.
             reflections_data(C_FAIL, i)=1.0
         end if
     end do
@@ -2071,7 +2075,9 @@ real mean, s2, est, goof
             selected_reflections=0
             k=0
             do j=1, ubound(reflections_data, 2)
-                if( (filtered_reflections(j) .eqv. .false.) .and. (outliers(j) .eqv. .false.) ) then
+                if( (filtered_reflections(j) .eqv. .false.) .and. &
+                &   (outliers(j) .eqv. .false.) .and. &
+                &   (reflections_data(C_FOKA,j)/=0.0) ) then
                     ! x, y, wt
                     if(itype==1) then
                         k=k+1
@@ -2105,7 +2111,9 @@ real mean, s2, est, goof
         
             k=0
             do j=1, size(outliers)
-                if( (filtered_reflections(j) .eqv. .false.) .and. (outliers(j) .eqv. .false.) ) then
+                if( (filtered_reflections(j) .eqv. .false.) .and. &
+                &   (outliers(j) .eqv. .false.) .and. &
+                &   (reflections_data(C_FOKA,j)/=0.0) ) then
                     k=k+1
                     if(abs(residuals(k))>3.0d0) then
                         if(.not. outliers(j)) then

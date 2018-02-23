@@ -10053,7 +10053,7 @@ c
 CODE FOR TONSPKPASCAL
 C New code to replace the old TONSPK subroutine in due time
 C this subroutine is call via #TONSPK TYPE=PASCAL
-      SUBROUTINE TONSPKPASCAL(ITYP06,ITYPE,IPLOT,IPUNCH,FILTER,IWEIGHT)
+      subroutine tonspkpascal(ityp06,itype,iplot,ipunch,filter,iweight)
       use absolut_mod
       use formatnumber_mod, only:print_value
       use xlst28_mod, only: i28spc
@@ -10081,14 +10081,13 @@ C      FILTER(5) - see FILTERS below
 C      IWEIGHT - 1 =LSQ weights else SIGMA weights
 C
 
-      integer ITYP06, itype, iplot, ipunch, iweight
+      integer, intent(in) :: ITYP06, itype, iplot, ipunch, iweight
+      real, dimension(:), intent(in) :: filter
 
       real tempdjw(20)
       integer itempdjw(20)
       equivalence (tempdjw(1), itempdjw(1))
 
-      CHARACTER*16 CFILTER(C_NUMFILTERS)
-      real, DIMENSION(C_NUMFILTERS) :: FILTER
       real, dimension(:,:), allocatable :: reflections_data, buffertemp
       logical, dimension(:,:), allocatable :: reflections_filters
       logical, dimension(:,:), allocatable :: logicaltemp
@@ -10140,8 +10139,6 @@ C
       integer, dimension(nlists) :: LISTS
       DATA LISTS(1)/5/,LISTS(2)/6/,LISTS(3)/28/,LISTS(4)/30/,LISTS(5)/1/
       DATA LISTS(6)/2/,LISTS(7)/23/,LISTS(8)/13/,LISTS(9)/39/
-
-
 C
       CALL XRSL
       CALL XCSAE
@@ -10222,18 +10219,6 @@ C----- OUTPUT THE TITLE, FIRST 20 CHARACTERS ONLY
       call xprvdu(ncvdu,3,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(cmon(2)),trim(cmon(5))
       call outcol(1)
-c
-c--- copy the filter values to an output area
-c 1      /Ds/ > filter(1)*sigma(Do)
-c 2       As  > filter(2)*sigma(Ao)
-c 3      /Do/ < filter(3)*Ds(max)
-c 4
-c 5      Ratio Ao/Ac >< filter(5)
-C
-      do i=1,C_NUMFILTERS
-        WRITE(CFILTER(1),'(F12.2)')  filter(1)
-        call xcras(cfilter(i), len)
-      enddo      
       
       SCALE=STORE(L5O)
       SCALE=1./(SCALE*SCALE)
@@ -10320,10 +10305,6 @@ C
             allocate(reflections_data(C_NUMFIELD,1000))
             reflections_data=0.0
           end if
-          if(.not. allocated(reflections_filters)) then
-            allocate(reflections_filters(C_NUMFILTERS,1000))
-            reflections_filters=.false.
-          end if
           if(refls_size>ubound(reflections_data, 2)) then
             ! array full, extending...
             if(allocated(buffertemp)) deallocate(buffertemp)
@@ -10334,17 +10315,7 @@ C
             allocate(reflections_data(ubound(buffertemp, 1), 
      1        ubound(buffertemp, 2)+1000))
             reflections_data=0.0
-            reflections_data(:,1:ubound(buffertemp, 2))=buffertemp
-              
-            if(allocated(logicaltemp)) deallocate(logicaltemp)
-            allocate(logicaltemp(ubound(reflections_filters, 1), 
-     1        ubound(reflections_filters, 2)))
-            logicaltemp=reflections_filters
-            deallocate(reflections_filters)
-            allocate(reflections_filters(ubound(logicaltemp, 1), 
-     1        ubound(logicaltemp, 2)+1000))
-            reflections_filters=.false.
-           reflections_filters(:,1:ubound(logicaltemp, 2))=logicaltemp              
+            reflections_data(:,1:ubound(buffertemp, 2))=buffertemp              
           end if
 
 
@@ -10437,15 +10408,8 @@ C      CHECK FOR CENTRIC REFLECTIONS
       reflections_data=buffertemp
       deallocate(buffertemp)
       
-      if(allocated(logicaltemp)) deallocate(logicaltemp)
-      allocate(logicaltemp(ubound(reflections_filters, 1), 
-     1  refls_size))
-      logicaltemp=reflections_filters(:, 1:refls_size)
-      deallocate(reflections_filters)
-      allocate(reflections_filters(ubound(logicaltemp, 1), 
-     1  ubound(logicaltemp, 2)))
-      reflections_filters=logicaltemp
-      deallocate(logicaltemp)
+      allocate(reflections_filters(C_NUMFILTERS, refls_size))
+      reflections_filters=.false.
             
 C
 C
