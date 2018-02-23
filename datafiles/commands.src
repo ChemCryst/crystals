@@ -3778,9 +3778,9 @@ SUMMARY            1    0
     .OF                 3    0    1    2    0 LIST
      LIST           EVERYTHING
     .TYPE               1    0    1    0    0         6
-    .LEVEL              2    0    1    7    0 MEDIUM
+    .LEVEL              2    0    1    8    0 MEDIUM
      OFF            LOW            MEDIUM         HIGH           PLOT
-     NORMPP         SIGMA
+     NORMPP         SIGMA          OBSERVED
 DISPLAY            1    1
    3    4096 CRYSTALSPUBLISH
     5

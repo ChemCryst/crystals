@@ -1,8 +1,11 @@
 %SCRIPT XFLACKPASCAL
 % VARIABLE INTEGER IDJW ITYPE JTYPE
-% VARIABLE LOGICAL SOMEERROR SERR
+% VARIABLE LOGICAL SOMEERROR SERR LGREYED
 % VARIABLE CHARACTER CPUNCH CTYPE CWEIGHT
 % EVALUATE CPUNCH = 'NO'
+% EVALUATE CTYPE = "PASCAL"
+% EVALUATE LGREYED = TRUE
+% EVALUATE ITYPE = 1
 % VARIABLE INTEGER   IPUNCH
 % EVALUATE SOMEERROR = TRUE
 % EVALUATE SERR = FALSE
@@ -83,9 +86,9 @@
 ^^WI               @ 1,1 GRID EXP2 NROWS=3 NCOLS=2 OUTLINE=' '
 ^^WI               {                                                                       
 ^^WI                @ 1,1 STATIC XFW1                                                      
-^^WI "Distribution of D/sigma(Do). Computed for ALL Bijvoet pairs" 
+^^WI "Distribution of D/sigma(Do). " 
 ^^WI                @ 2,1 STATIC XFW2                                                      
-^^WI 'Both curves should be similar to each other'    
+^^WI 'The pairs of curves should be similar to each other'    
 ^^WI                @ 3,1 STATIC XFW3                                                      
 ^^WI 'The Ds/sigma(Do) (green) curve should peak in the end bins'  
 ^^WI               }                                                                       
@@ -167,20 +170,21 @@
 ^^WI    }
 ^^WI   }
 ^^WI  }
-^^WI  @ 4,2 GRID BTNS NROWS=1 NCOLS=13   OUTLINE='Output '
+^^WI  @ 4,2 GRID BOX NROWS=1 NCOLS=13   OUTLINE='  '
 ^^WI  {
-^^WI     @ 1,1 RADIOBUTTON IPUNCHA 'None'
-^^WI            STATE=ON
-^^WI     @ 1,2 RADIOBUTTON IPUNCHB 'Table'
-^^WI            STATE=OFF
-^^WI     @ 1,3 RADIOBUTTON IPUNCHC 'Restrain'
-^^WI            STATE=OFF
-^^WI     @ 1,4 RADIOBUTTON IPUNCHE 'Summary'
-^^WI            STATE=OFF
-^^WI     @ 1,5 GRID BTNS NROWS=1 NCOLS=5 OUTLINE='Type'
+^^WI     @ 1,1 GRID BTNS NROWS=1 NCOLS=6 OUTLINE='Output'
 ^^WI     {
-^^WI       @ 1,1 RADIOBUTTON ITYPEA 'Difference' STATE=ON
-^^WI       @ 1,3 RADIOBUTTON ITYPEB 'Quotient' STATE=OFF
+^^WI      @ 1,1 RADIOBUTTON IPUNCHA 'None'     STATE=ON  DISABLED=yes
+^^WI      @ 1,2 RADIOBUTTON IPUNCHB 'Table'    STATE=OFF DISABLED=yes
+^^WI      @ 1,3 RADIOBUTTON IPUNCHC 'Restrain' STATE=OFF DISABLED=yes
+^^WI      @ 1,4 RADIOBUTTON IPUNCHE 'Summary'  STATE=OFF DISABLED=yes
+^^WI     }
+%%
+^^WI     @ 1,5 GRID BTNS NROWS=1 NCOLS=7 OUTLINE='Type'
+^^WI     {
+^^WI       @ 1,1 RADIOBUTTON ITYPEA 'Difference' STATE=OFF INFORM
+^^WI       @ 1,3 RADIOBUTTON ITYPEB 'Quotient'   STATE=OFF INFORM
+^^WI       @ 1,5 RADIOBUTTON ITYPEP 'Pascal'     STATE=ON  INFORM
 ^^WI     }
 ^^WI     @ 1,8 GRID BTNS2 NROWS=1 NCOLS=4 OUTLINE='Weight'
 ^^WI     {
@@ -192,7 +196,7 @@
 ^^WI     @ 1,11 BUTTON RF_BXX '&Quit'
 ^^WI     @ 1,13 BUTTON CALC  '&Recalculate'
 ^^WI  }
-^^WI  @ 6,2 GRID RESLT NROWS=2 NCOLS=5
+^^WI  @ 6,2 GRID RESLT NROWS=2 NCOLS=7
 ^^WI  {
 ^^WI               @ 1,1 STATIC HPC 
 ^^WI               ' Percentage of data with Flack(x) >-0.5 and <1.5 is '
@@ -203,6 +207,9 @@
 ^^WI               @ 1,4 STATIC HPF 
 ^^WI               ' Try setting filter 1 to '
 ^^WI               @ 1,5 STATIC _FIL1 '      0.001'
+^^WI               @ 1,6 STRETCH VB HORIZONTAL
+^^WI               @ 1,7 BUTTON RHELP   'Resolution Table'
+^^WI               @ 2,7 BUTTON EHELP   'Explanation'
 ^^WI  }
 ^^WI  @ 8,2 GRID REFCON NROWS=2 NCOLS=5 OUTLINE='Reflections Accepted if:'
 ^^WI  {                                                                        
@@ -245,14 +252,25 @@
 ^^WI }
 ^^WI SHOW
 ^^CR
-% copy '#ton type=pascal plot=yes punch =no'
-% copy 'end'
+%%
+^^WI WINDOW RFNG 'Busy...' 
+^^WI GRID RFNGM1 NROWS=3 NCOLS=3
+^^WI { @ 2,2 STATIC T1 'Processing Reflections. Please wait.' }
+^^WI SHOW
+^^CR
+% TRANSFER '#TON  PLOT=YES PUNCH=NO ' //  -
+      ' TYPE  = ' //  CTYPE TO CRYSTALS
+% COPY 'END'
+^^WI DISPOSE RFNG
+^^CR
+%%
 % VARIABLE INTEGER JLOOP
 % LOOP
 % EVALUATE JLOOP = LOOPCOUNTER
 %%
 %   VERIFY CALC RF_BXX SAVEVDO SAVEVAO SAVEVNPP SAVEVHIST SAVEVDIST -
-             EXPOVHIST EXPOVAO  EXPOVDO EXPOVNPP EXPOVDIST HELP
+             EXPOVHIST EXPOVAO  EXPOVDO EXPOVNPP EXPOVDIST HELP RHELP -
+             EHELP ITYPEA ITYPEB ITYPEP
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %   EVALUATE IDJW = VALUE
 %   CASE VALUE
@@ -303,20 +321,6 @@
 %       EVALUATE IPUNCH = 4
 %       EVALUATE CPUNCH = 'SUMMARY'
 %     END IF
-^^??  ITYPEA STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%     IF VALUE .EQ. 1 THEN
-%       EVALUATE ITYPE = 0
-%       EVALUATE CTYPE = 'DODC'
-%     END IF
-^^??  ITYPEB STATE
-%     VERIFY ON OFF
-%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
-%     IF VALUE .EQ. 1 THEN
-%       EVALUATE ITYPE = 1
-%       EVALUATE CTYPE = 'QOQC'
-%     END IF
 %%
 ^^??  ITYPEC STATE
 %     VERIFY ON OFF
@@ -337,6 +341,11 @@
 %       COPY '#RELEASE PUNCH flack.l16'
 %      END IF
 %      EVALUATE _BADNPP = 0
+^^WI WINDOW RFNG 'Busy...' 
+^^WI GRID RFNGM1 NROWS=3 NCOLS=3
+^^WI { @ 2,2 STATIC T1 'Re-processing Reflections. Please wait.' }
+^^WI SHOW
+^^CR
 %      TRANSFER '#TON  PLOT=YES ' //  -
        ' PUNCH = ' // CPUNCH TO CRYSTALS
 %      TRANSFER 'CONT TYPE  = ' //  CTYPE TO CRYSTALS
@@ -348,6 +357,8 @@
        ' FILTER5= '  // CHARACTER ( FILTER5 )  - 
        TO CRYSTALS
 %      COPY 'END'
+^^WI DISPOSE RFNG
+^^CR
 %      IF IPUNCH .EQ. 2 THEN
 %       COPY '#RELEASE PUNCH bfile.pch'
 %      END IF
@@ -397,7 +408,6 @@ Saving histogram image
 Saving distribution image
 ^^CO SET _VDIST SAVE 800 600 distribution_
 %     END BLOCK
-
 %     BLOCK  %EXPOVHIST%
 Saving histogram data
 ^^CO SET _VHIST EXPORT histogram_
@@ -419,7 +429,44 @@ Saving distribution data
 ^^CO SET _VDIST EXPORT distribution_
 %     END BLOCK
 %     BLOCK  %HELP%
-%        COPY '#SCRIPT FLACK-HELP'
+%        if ctype .eq. "PASCAL" THEN
+%          COPY '#SCRIPT PASCAL-HELP'
+%        ELSE
+%          COPY '#SCRIPT FLACK-HELP'
+%        END IF
+%     END BLOCK
+%     BLOCK  %RHELP%
+%        COPY '#SCRIPT SINTHETA '
+%     END BLOCK
+%     BLOCK  %EHELP%
+%        COPY '#SPAWN CRYSDIR:manual/analyse/absolute.html' 
+%     END BLOCK
+%     BLOCK %ITYPEA%
+%       EVALUATE ITYPE = 0
+%       EVALUATE CTYPE = 'DODC'
+%       EVALUATE LGREYED = FALSE 
+^^CO    SET IPUNCHA DISABLED=NO
+^^CO    SET IPUNCHB DISABLED=NO
+^^CO    SET IPUNCHC DISABLED=NO
+^^CO    SET IPUNCHE DISABLED=NO
+%     END BLOCK
+%     BLOCK %ITYPEB%
+%       EVALUATE ITYPE = 1
+%       EVALUATE CTYPE = 'QOQC'
+%       EVALUATE LGREYED = FALSE 
+^^CO    SET IPUNCHA DISABLED=NO
+^^CO    SET IPUNCHB DISABLED=NO
+^^CO    SET IPUNCHC DISABLED=NO
+^^CO    SET IPUNCHE DISABLED=NO
+%     END BLOCK
+%     BLOCK %ITYPEP%
+%       EVALUATE ITYPE = 1
+%       EVALUATE CTYPE = 'PASCAL'
+%       EVALUATE LGREYED = TRUE
+^^CO    SET IPUNCHA DISABLED=no
+^^CO    SET IPUNCHB DISABLED=no
+^^CO    SET IPUNCHC DISABLED=no
+^^CO    SET IPUNCHE DISABLED=yes
 %     END BLOCK
 %   END CASE
 % END LOOP

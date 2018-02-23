@@ -286,7 +286,7 @@
 ^^WI           STATE=OFF INFORM=YES                                             
 ^^WI     @ 8,2 GRID GSTAT NROWS=1 NCOLS=11                                      
 ^^WI     {                                                                      
-^^WI       @ 1,1 STATIC WBFS 'B factor:'                                        
+^^WI       @ 1,1 STATIC WBFS 'U factor:'                                        
 ^^WI       @ 1,3 STATIC _MW_BFACTR '0000.0000'                                  
 ^^WI       @ 1,5 STATIC WBFS 'Scale:'                                           
 ^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'                                  
@@ -791,7 +791,6 @@
 {S Resolution Table
 %      END BLOCK
 %      BLOCK    %XC_CMP                             %completeness   
-%%                                 All these links are awaiting implementation of # anchor
 %         COPY '#SPAWN CRYSDIR:manual/analyse/tabbed-initial.html#cmp' 
 {S Completeness help
 %      END BLOCK

@@ -82,7 +82,8 @@
 % show sig sig2
 %         IF .NOT. SIG THEN
 {E
-{E Required sigma.dat file does not exist
+{S Old format sigma.dat file does not exist.
+{S Use the menu item "Variance of Reflections"
 {E
 %           FINISH
 %         ELSE

@@ -2,6 +2,7 @@
 %%    read internal and external sigmas from the SIGMAS.DAT files
 %%    called from XVARIANCE.SSC and XVARIANCE2
 %     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES 
+%     VARIABLE INTEGER JSTEP
 %     VARIABLE LOGICAL SIG SIG2
 %SHOW SIG SIG2
 %     VARIABLE INTEGER NSIGMAS NITEMS STEP
@@ -18,8 +19,14 @@
 %        CLEAR
 %        EXTRACT NEXT
 %     END IF
+
+%     IF NREFMES .GE. 10000. THEN
+%        EVALUATE JSTEP = 500
+%     ELSE
+%        EVALUATE JSTEP = 200
+%     END IF
 %     LOOP
-%      EVALUATE STEP = LOOPCOUNTER MOD  200 
+%      EVALUATE STEP = LOOPCOUNTER MOD  JSTEP 
 %      IF STEP .EQ. 0 THEN
 %       TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
 %      END IF

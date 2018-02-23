@@ -2111,7 +2111,7 @@ C
       ENDIF
       
 C--SETUP A GRAPH HERE
-      IF ( LEVEL.EQ.4 ) THEN                 ! Fo vs Fc scatter
+      IF ((LEVEL.EQ.4) .OR. (LEVEL.EQ.7)) THEN            ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
      2  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
@@ -2198,14 +2198,14 @@ c----- totals for slope and intercept
 1100  CONTINUE
         ISTAT = KLDRNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
-        IF (KALLOW(IALLOW)==0) THEN
+      IF (KALLOW(IALLOW)==0) THEN
 
         N6ACC = N6ACC + 1
 cjun2010  FO = STORE(M6+itwin)
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
 
-        IF ( LEVEL.EQ.4 ) THEN
+        IF ((LEVEL.EQ.4) .OR. (LEVEL.EQ.7)) THEN
           PLOTMAX = MAX( PLOTMAX, FC )
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
@@ -2534,7 +2534,7 @@ c
 c---------------------------------------------------------
       END IF
 c
-      IF ( LEVEL.EQ.4)  THEN
+      IF ((LEVEL.EQ.4) .OR. (LEVEL.EQ.7)) THEN
 c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
         WRITE(CMON,'(A/A,2F10.2)')
      1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
@@ -2573,7 +2573,7 @@ C
 c
 C -- FINISH THE GRAPH DEFINITION
       IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
-     1 .OR.( LEVEL.EQ.6 )) THEN
+     1 .OR.( LEVEL.EQ.6 ).OR.(LEVEL.EQ.7)) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF

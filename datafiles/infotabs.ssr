@@ -6,74 +6,67 @@
 ^^WI                 TAB _MAINTAB4 'Refinement' GRID _MAINTG4                   
 ^^WI                                              NROWS=3 NCOLS=1               
 ^^WI                 {                                                          
-^^WI                   @ 2,1 GRID GRIDAAA NROWS=1 NCOLS=1                       
+^^WI                   @ 1,1 GRID GRIDAAA NROWS=1 NCOLS=1                       
 ^^WI                   {                                                        
 ^^WI                     @ 1,1 STATIC _MTG15 'Results of last cycle:'           
 ^^WI                   }                                                        
-^^WI                   @ 3,1 GRID GRIDAAA NROWS=4 NCOLS=8                       
+^^WI                   @ 2,1 GRID GRIDAAA NROWS=4 NCOLS=8                       
 ^^WI                   {                                                        
 ^^WI                     @ 1,1  STATIC _MTG15 'R'                               
 ^^WI                     @ 1,3  STATIC _MT_REF_R '100.000'                      
+^^WI                     @ 1,4  STRETCH _MTS15 HORIZONTAL                        
+^^WI                     @ 1,5  STATIC _MTG15 'Parameters'                      
+^^WI                     @ 1,7  STATIC _MT_REF_NPAR '00000'                      
+^^WI                     @ 1,8  STRETCH _MTS15 HORIZONTAL                        
 ^^WI                     @ 2,1  STATIC _MTG15 'Rw'                              
 ^^WI                     @ 2,3  STATIC _MT_REF_RW '100.000'                     
-^^WI                     @ 1,5  STATIC _MTG15 'Parameters'                      
-^^WI                     @ 1,7 STATIC _MT_REF_NPAR '00000'                      
-^^WI                     @ 2,5 STATIC _MTG15 'Reflections'                      
-^^WI                     @ 2,7 STATIC _MT_REF_NREF '0000000'                    
+^^WI                     @ 2,5  STATIC _MTG15 'Reflections'                      
+^^WI                     @ 2,7  STATIC _MT_REF_NREF '0000000'                    
 ^^WI                     @ 3,1  STATIC _MTG15 'GooF'                            
 ^^WI                     @ 3,3  STATIC _MT_REF_GOOF '00.0000'                   
 ^^WI                     @ 3,5  STATIC _MTG15 'max shift'                       
 ^^WI                     @ 3,7  STATIC _MT_REF_MAXRMS '000.0000'                
 ^^WI                     @ 4,1  STATIC _MTG15 'Refining against'                
-^^WI                     @ 4,3 STATIC _MT_REF_COEF 'F squared'                  
+^^WI                     @ 4,3  STATIC _MT_REF_COEF 'F squared'                  
 ^^WI                     @ 4,5  STATIC _MTG15 'Sigma cutoff'                    
-^^WI                     @ 4,7 STATIC _MT_REF_SCUT '00.000'                     
-^^WI                     @ 1,4 STRETCH _MTS15 HORIZONTAL                        
-^^WI                     @ 1,8 STRETCH _MTS15 HORIZONTAL                        
+^^WI                     @ 4,7  STATIC _MT_REF_SCUT '00.000'                     
 ^^WI                   }                                                        
 ^^WI                 }                                                          
 ^^WI                 TAB _MAINTAB0 'Cell/Sym' GRID _MAINTG0                     
-^^WI                                         NROWS=2 NCOLS=1                    
+^^WI                                         NROWS=1 NCOLS=1                    
 ^^WI                 {                                                          
-^^WI                   @ 1,1 GRID _MAINTG01 NROWS=5 NCOLS=5                     
+^^WI                   @ 1,1 GRID _MAINTG01 NROWS=4 NCOLS=3                     
 ^^WI                   {                                                        
-^^WI                     @ 1,1 GRID _ABC NROWS=3 NCOLS=3                        
+^^WI                     @ 1,1 GRID _ABC NROWS=2 NCOLS=11                        
 ^^WI                     {                                                      
 ^^WI                       @ 1,1  STATIC _MTG011 a                              
-^^WI                       @ 2,1  STATIC _MTG011 b                              
-^^WI                       @ 3,1  STATIC _MTG011 c                              
-^^WI                       @ 1,3  STATIC _MT_CELL_A 0.000000                    
-^^WI                       @ 2,3  STATIC _MT_CELL_B 0.000000                    
-^^WI                       @ 3,3 STATIC _MT_CELL_C 0.000000                     
+^^WI                       @ 1,2  STATIC _MT_CELL_A 0.000000                    
+^^WI                       @ 1,3  STATIC _MTG011 b                              
+^^WI                       @ 1,4  STATIC _MT_CELL_B 0.000000                    
+^^WI                       @ 1,5  STATIC _MTG011 c                              
+^^WI                       @ 1,6 STATIC _MT_CELL_C 0.000000                     
+^^WI                       @ 2,1  STATIC _MTG011 alpha                          
+^^WI                       @ 2,2  STATIC _MT_CELL_AL 0.00000                    
+^^WI                       @ 2,3  STATIC _MTG011 beta                           
+^^WI                       @ 2,4  STATIC _MT_CELL_BE 0.00000                    
+^^WI                       @ 2,5  STATIC _MTG011 gamma                          
+^^WI                       @ 2,6 STATIC _MT_CELL_GA 0.00000                     
 ^^WI                     }                                                      
-^^WI                     @ 1,3 GRID _ABG NROWS=3 NCOLS=3                        
-^^WI                     {                                                      
-^^WI                       @ 1,1  STATIC _MTG011 alpha                          
-^^WI                       @ 2,1  STATIC _MTG011 beta                           
-^^WI                       @ 3,1  STATIC _MTG011 gamma                          
-^^WI                       @ 1,3  STATIC _MT_CELL_AL 0.00000                    
-^^WI                       @ 2,3  STATIC _MT_CELL_BE 0.00000                    
-^^WI                       @ 3,3 STATIC _MT_CELL_GA 0.00000                     
-^^WI                     }                                                      
-^^WI                     @ 1,4 STRETCH H HORIZONTAL                             
-^^WI                     @ 1,5 GRID _ABED NROWS=1 NCOLS=1                       
-^^WI                     {                                                      
-^^WI                       @ 1,1 BUTTON '#SCRIPT XCELLIN' 'Set cell' SLIM       
+^^WI                     @ 1,3 BUTTON '#SCRIPT XCELLIN' 'Set cell' SLIM       
 ^^WI                        DISABLEIF='IN' LENGTH='Set Space group'             
-^^WI                     }                                                      
 ^^WI                     @ 2,1 STATIC MTWAVELEN 'Space group'                   
-^^WI                     @ 2,3 STATIC _MT_SPACEGROUP                            
+^^WI                     @ 2,2 STATIC _MT_SPACEGROUP                            
 ^^WI                         'Space group is not known.'                        
-^^WI                     @ 2,5 BUTTON '#SCRIPT XSPACE' 'Set space group'        
+^^WI                     @ 2,3 BUTTON '#SCRIPT XSPACE' 'Set space group'        
 ^^WI                        SLIM   DISABLEIF='IN'                               
 ^^WI                     @ 3,1 STATIC MTWAVELEN 'Scatterers'                    
-^^WI                     @ 3,3 STATIC _MT_FORMULA                               
+^^WI                     @ 3,2 STATIC _MT_FORMULA                               
 ^^WI                         'The formula is not known'                         
-^^WI                     @ 4,1 STATIC MTWAVELEN 'Wavelength'                    
-^^WI                     @ 4,3 STATIC _MT_WAVE '000.00000 Angstroms (X-rays)'   
-^^WI                     @ 4,5 BUTTON '#SCRIPT XINLIST3' 'Set formula'          
+^^WI                     @ 3,3 BUTTON '#SCRIPT XINLIST3' 'Set formula/lambda'          
 ^^WI                        SLIM   DISABLEIF='IN' 
-^^WI                     @ 5,5 BUTTON '#SCRIPT EDLIST3' 'Set Anomalous'
+^^WI                     @ 4,1 STATIC MTWAVELEN 'Wavelength'                    
+^^WI                     @ 4,2 STATIC _MT_WAVE '000.00000 Angstroms (X-rays)'   
+^^WI                     @ 4,3 BUTTON '#SCRIPT EDLIST3' 'Set Anomalous/lambda'
 ^^WI                        SLIM   DISABLEIF='IN'                              
 ^^WI                   }                                                        
 ^^WI                 }                                                          

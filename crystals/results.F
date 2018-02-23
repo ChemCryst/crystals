@@ -8275,13 +8275,14 @@ C
       obstocal = sqrt(sumbo/sumbc)
       WRITE (CMON,'(10(A,F7.2))')' Observed:calculated signal  =',
      1 obstocal
-      CALL XPRVDU (NCVDU,1,0)
+c      CALL XPRVDU (NCVDU,1,0)           !screen prints done later so that
+c                                        !they remain visible at end of calc
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
       if(obstocal .gt. 3.) then
         call outcol(9)
         write(cmon,'(a,a)')' The observed Bijvoet differences are much',
      1  ' greater than the calculated differences'
-        call xprvdu (ncvdu,1,0)
+c        call xprvdu (ncvdu,1,0)
         if (issprt.eq.0) write (ncwu,'(a)') trim(CMON(1))
         call outcol(1)
       endif
@@ -9500,6 +9501,16 @@ c
           endif
 c
         if (nfried .gt .0) then
+         WRITE (CMON,'(A,F7.2)') '  Observed:calculated signal  =',
+     1   obstocal
+         call xprvdu (ncvdu,1,0)  ! Listing prints left where they were, above
+         if(obstocal .gt. 3.) then
+          call outcol(9)
+          write(cmon,'(a,a)')'  The observed Bijvoet differences',
+     1    ' are much greater than the calculated differences'
+          call xprvdu (ncvdu,1,0)
+          call outcol(1)
+         endif
          if(issprt.eq.0) write(ncwu,'(//)')
 c
          CALL outcol (3)
@@ -10039,7 +10050,7 @@ C -- ERRORS DETECTED
       RETURN
       END
 c
-CODE FOR TONSPK
+CODE FOR TONSPKPASCAL
 C New code to replace the old TONSPK subroutine in due time
 C this subroutine is call via #TONSPK TYPE=PASCAL
       SUBROUTINE TONSPKPASCAL(ITYP06,ITYPE,IPLOT,IPUNCH,FILTER,IWEIGHT)

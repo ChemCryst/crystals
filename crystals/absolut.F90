@@ -415,7 +415,7 @@ real sbar, xbar
             end if
         end if
     end do
-    print *, refls_valid_size
+!    print *, refls_valid_size
     
 ! average Flack(x) and average sigma
     if(refls_valid_size>0) then
@@ -1982,9 +1982,9 @@ real mean, s2, est, goof
 
     if(punch) then
         if(itype==1) then
-            open(145, file='bijvoet_fit')
+            open(145, file='bijvoet_fit.lis')
         else
-            open(145, file='Parsons_fit')
+            open(145, file='Parsons_fit.lis')
         end if
     end if
     
@@ -2411,8 +2411,8 @@ real distmax, stnfc, stnfo
     &  '^^PL NSERIES=4 LENGTH=100 ', &
     &  '^^PL YAXIS ZOOM ', 0.0, 100., ' TITLE ''Frequency of Do (% of Dmax)'' ', &
     &  '^^PL YAXISRIGHT ZOOM ', 0.0, 100., ' TITLE ''Frequency of Dsingle (% of Dmax)''  ', &
-    &  '^^PL SERIES 1 SERIESNAME ''Dobs'' TYPE LINE', &
-    &  '^^PL SERIES 2 SERIESNAME ''Dsingle''    TYPE LINE', &
+    &  '^^PL SERIES 1 SERIESNAME ''Dobs (all)'' TYPE LINE', &
+    &  '^^PL SERIES 2 SERIESNAME ''Dsingle (all)''    TYPE LINE', &
     &  '^^PL SERIES 3 SERIESNAME ''Dobs (filtered)'' TYPE LINE', &
     &  '^^PL SERIES 4 SERIESNAME ''Dsingle (filtered)''    TYPE LINE', &
     &  '^^PL USERIGHTAXIS'
@@ -2862,10 +2862,10 @@ real, dimension(:), allocatable :: leverage
     write(666, *) '# Punch on ',mydate()
     write(666, *) '#'
     write(666, *) '# Zh = (FCKD-FOKD)/SigmaD'
-    write(666, *) '# FCKA = 0.5(FcK1+FcK2)'
-    write(666, *) '# FOKA = 0.5(FoK1+FoK2)'
-    write(666, *) '# FCKD = FcK1-FcK2'
-    write(666, *) '# FOKD = FoK1-FoK2'
+    write(666, *) '# FcA = 0.5(FcK1+FcK2)'
+    write(666, *) '# FoA = 0.5(FoK1+FoK2)'
+    write(666, *) '# FcD = FcK1-FcK2'
+    write(666, *) '# FoD = FoK1-FoK2'
     write(666, *) '# SigmaD = sqrt(Sig1**2+Sig2**2)'
     write(666, *) '# SigmaQ = 2.0 (sqrt{(FoK1 Sig2)^2+(FoK2 Sig1)^2})/(2 FOKA)**2'
     write(666, *) '# Flack(x) = (FCKD-FOKD)/(2FCKD)'
@@ -2875,13 +2875,13 @@ real, dimension(:), allocatable :: leverage
     write(666, *) '# SigNoise = |FCKD|/SigmaD'
     write(666, *) '# Fried1 = -1 for centric reflections, 0 for lone reflections, 1 for first reflection of friedel pair'
     write(666, *) '# Fried2 = 0 for missing friedel pair, 2 for second reflection of friedel pair'
-    write(666, *) '# FoK1 = Observed structure factor for reflection 1'
+    write(666, *) '# Fo1 = Observed structure factor for reflection 1'
     write(666, *) '# Sig1 = Sigma of FoK1 for reflection 1'
-    write(666, *) '# FcK1 = Calculated structure factor for reflection 1'
-    write(666, *) '# FoK2 = Observed structure factor for reflection 2'
+    write(666, *) '# Fc1 = Calculated structure factor for reflection 1'
+    write(666, *) '# Fo2 = Observed structure factor for reflection 2'
     write(666, *) '# Sig2 = Sigma of FoK2 for reflection 2'
-    write(666, *) '# FcK2 = Calculated structure factor for reflection 2'
-    write(666, *) '# Leverage = Leverage defined as |FCKD|/SIGMAD'
+    write(666, *) '# Fc2 = Calculated structure factor for reflection 2'
+    write(666, *) '# Leverage = Leverage defined as |FcD|/SIGMAD'
     write(666, *) '# F1 = Filter 1'
     write(666, *) '# F2 = Filter 2'
     write(666, *) '# F3 = Filter 3'
@@ -2894,9 +2894,9 @@ real, dimension(:), allocatable :: leverage
     
     
     write(666, '(3(a3, 1x), 21(a12, 1X), 8(a3, 1X))')                             &
-    &   'h', 'k', 'l', 'Zh', 'FCKA', 'FOKA', 'FCKD', 'FOKD', 'SigmaD', 'SigmaQ',  &
+    &   'h', 'k', 'l', 'Zh', 'FcA ', 'FoA ', 'FcD ', 'FoD ', 'SigmaD', 'SigmaQ',  &
     &   'Flack(x)', 'SigmaX', 'DeltaX', 'Flxwt', 'SigNoise', 'Fried1', 'Fried2',  &
-    &   'FoK1', 'Sig1', 'FcK1', 'FoK2', 'Sig2', 'FcK2', 'Leverage',                    &
+    &   'Fo1 ', 'Sig1', 'Fc1 ', 'Fo2 ', 'Sig2', 'Fc2 ', 'Leverage',                    &
     &   'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8'
     
     do i=1, ubound(reflections_data, 2)

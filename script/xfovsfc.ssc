@@ -1,4 +1,6 @@
 %SCRIPT xfovsfc
+%    VARIABLE LOGICAL DO_SFLS
+%    EVALUATE DO_SFLS = TRUE
 ^^WI WINDOW xfovsfc 'Fo versus Fc' KEEP SIZE MODAL
 ^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'
 ^^WI GRID MAIN NROWS=2 NCOLS=1
@@ -30,12 +32,14 @@
 ^^WI     DEFINEPOPUPMENU POPUP 'Selection'
 ^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
 ^^WI     ENDDEFINEMENU
-^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=6
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=10
 ^^WI   {
 ^^WI    @ 1,1 STRETCH VB HORIZONTAL
-^^WI    @ 1,2 BUTTON EXT_SAV 'Save Image' 
-^^WI    @ 1,4 BUTTON EXT_EXP 'Export Data' 
-^^WI    @ 1,6 BUTTON EXT_BOK 'Close' DEFAULT
+^^WI    @ 1,2 RADIOBUTTON EXT_ALL 'All Data' STATE=ON INFORM
+^^WI    @ 1,4 RADIOBUTTON EXT_OBS 'Observed' STATE=OFF INFORM
+^^WI    @ 1,6 BUTTON EXT_SAV 'Save Image' 
+^^WI    @ 1,8 BUTTON EXT_EXP 'Export Data' 
+^^WI    @ 1,10 BUTTON EXT_BOK 'Close' DEFAULT
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
@@ -44,15 +48,34 @@
 ^^CR
 ^^CO SENDPROGRESSTO _FOFCPR
 %  LOOP
+%    IF DO_SFLS .EQ. TRUE THEN
+%      COPY '#SFLS' 
+%      COPY 'CALC' 
+%      COPY 'END'
+%      EVALUATE DO_SFLS = FALSE
+%    END IF
 %    ON ERROR CONTINUE
-%    COPY '#sfls' 
-%    COPY 'calc' 
+^^?? EXT_ALL STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%    CASE VALUE
+%     BLOCK
+%      COPY '#sum list 6 level=PLOT'
+%     END BLOCK
+%     BLOCK
+%      COPY '#sum list 6 level=OBSERVED'
+%     END BLOCK
+%    END CASE
 %    COPY 'END'
-%    COPY '#sum list 6 level=plot'
-%    COPY 'END'
-%    VERIFY EXT_BOK EXT_SAV EXT_EXP OMIT
+%    VERIFY EXT_ALL  EXT_OBS EXT_BOK EXT_SAV EXT_EXP OMIT
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'
 %    CASE VALUE
+%    BLOCK
+ALL
+%    END BLOCK
+%    BLOCK
+OBS
+%    END BLOCK
 %    BLOCK
 ^^CO    DISPOSE xfovsfc
 %       FINISH
@@ -68,6 +91,7 @@ Saving Image
 %    END BLOCK
 %%
 %    BLOCK
+%      EVALUATE DO_SFLS = TRUE   
 %      ON EDITERROR TERMINATE
 %      COPY '#GENERALEDIT 28'
 %      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'

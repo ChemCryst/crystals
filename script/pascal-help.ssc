@@ -1,5 +1,11 @@
-%SCRIPT FLACK-HELP
+%SCRIPT PASCAL-HELP
 % COPY '#SCRIPT XHELP1'
+
+ Automatic Post-refinement Absolute Structure Determination
+
+Code written by Pascal Parois to automatically filter out un-useful reflections
+
+The user can set additional filters as required.
 
 If no plots appear, try reducing the value of Filter(1), the minimum
 acceptable (calculated signal) : (observed noise)
