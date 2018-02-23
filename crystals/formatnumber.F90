@@ -247,10 +247,11 @@ double precision r
                 total=digit+arg_precision+3+nint(log10(abs(num)))
             end if
         else
-            total=digit+arg_precision+3+nint(log10(abs(num)))
+            total=digit+arg_precision+3+abs(nint(log10(abs(num))))
         end if
         write(formatstr, "(a,I0,a,I0,a)") '(F',total,'.',digit+arg_precision, ',"(",I0,")")'
         write(buffer, formatstr) num, nint(esd*10**(digit+arg_precision))
+        buffer=adjustl(buffer)
     end if
     if(arg_length/=-1) then
         if(len_trim(buffer)>arg_length) then
