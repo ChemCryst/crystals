@@ -8021,8 +8021,8 @@ c 4        filter 4 set below
 c
 c
 c 5        special test for poor agreement
-         q = abs(max(foka,fcka)/min(foka,fcka)) 
-         if(Q .gt. filter(5)) then
+         if((min(foka,fcka).le.0.).or. 
+     1    (abs(max(foka,fcka)/min(foka,fcka)) .gt. filter(5))) then
           ifail=5
           ifailn(5)=ifailn(5)+1
           flackx=10000.      !set large values so that sorted
