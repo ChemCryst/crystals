@@ -10113,7 +10113,7 @@ c      Format now :   [WDEL,INDICES, Do,Ds,sigmaD, x, sigmax, sigmaQ, ifail]
       real sigmas
       real parsons, parsonssu, bijvoet, bijvoetsu, xbar, sbar
       
-      real, dimension(6) :: v1, sv1, v2, sv2, v3, sv3
+      real, dimension(7) :: v1, sv1, v2, sv2, v3, sv3
       
       
       integer, external :: kexist, khuntr, ktyp06, kcprop, nctrim
@@ -10456,38 +10456,6 @@ C- Apply filters
 C ------------------------------------------------
       call applyfilters(reflections_data, reflections_filters, filter)
 
-      
-C ------------------------------------------------
-C- General information on processed reflections
-C ------------------------------------------------
-      
-      write(cmon,'(a, I0)') 'Number of reflections ', 
-     1    ubound(reflections_data, 2)+
-     1    count(reflections_data(C_FRIED2,:)==2.0)
-      call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, I0)') 'Number of friedel pairs ', 
-     1    count(reflections_data(C_FRIED2,:)==2.0)
-      call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, I0)') 'Number of lone reflections ', 
-     1    count(reflections_data(C_FRIED1,:)==-1.0)
-      call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, I0)') 'Number of centric reflections ', 
-     1    count(reflections_data(C_FRIED1,:)==0.0)
-      call xprvdu(ncvdu,1,0)
-
-      do i=1, ubound(reflections_filters, 1)
-          write(cmon,'(a, I0, ": ", I0)') 
-     1        'Number of friedel pairs failing filter ', i,
-     1        count(reflections_filters(i,:))
-          call xprvdu(ncvdu,1,0)
-      end do
-      write(cmon,'(a, I0)')
-     1    'Number of friedel pairs failing any of the filters ',
-     1    count(reflections_data(C_FAIL,:)>0.0)
-      call xprvdu(ncvdu,1,0)
-      write(cmon,'(a)') ''
-      call xprvdu(ncvdu,1,0)
-
       ! Check if there any Friedel pair
       if(count(reflections_data(C_FRIED2,:)==2.0)==0) then
             write(cmon,'(a)') 'No Friedel pairs found'
@@ -10596,8 +10564,9 @@ C ------------------------------------------------
 C ------------------------------------------------
 C Summary
 C ------------------------------------------------
-      v1=(/xflack, hin1, tony, xbar, bijvoet, parsons/)
-      sv1=(/qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
+      v1=(/real(count(reflections_data(C_FRIED2,:)==2.0)), xflack, 
+     1  hin1, tony, xbar, bijvoet, parsons/)
+      sv1=(/0.0, qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
 
       write(ncwu,'(a)') '+++++++++++++++++++++++++++++++++++++++++'
       write(ncwu,'(a)') '    Second pass using all filters exept 4'
@@ -10652,8 +10621,9 @@ C ------------------------------------------------
 C ------------------------------------------------
 C Summary
 C ------------------------------------------------
-      v2=(/xflack, hin1, tony, xbar, bijvoet, parsons/)
-      sv2=(/qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
+      v2=(/real(count(.not. currentfilter)), xflack, hin1, tony, 
+     1  xbar, bijvoet, parsons/)
+      sv2=(/0.0, qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
 
       write(ncwu,'(a)') '++++++++++++++++++++++++++++++++'
       write(ncwu,'(a)') '    Third pass using all filters'
@@ -10696,8 +10666,9 @@ C calculate Parsons quotients
 C ------------------------------------------------
       call bijvoet_differences(reflections_data, 
      1   reflections_data(C_FAIL,:)/=0.0, -1, parsons, parsonssu)
-      v3=(/xflack, hin1, tony, xbar, bijvoet, parsons/)
-      sv3=(/qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
+      v3=(/real(count(reflections_data(C_FAIL,:)==0.0)), xflack, hin1,
+     1  tony, xbar, bijvoet, parsons/)
+      sv3=(/0.0, qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
       
       else
         v2=0.0
@@ -10707,11 +10678,43 @@ C ------------------------------------------------
       end if
       
 C ------------------------------------------------
+C- General information on processed reflections
+C ------------------------------------------------
+      
+      write(cmon,'(a, I0)') 'Number of reflections ', 
+     1    ubound(reflections_data, 2)+
+     1    count(reflections_data(C_FRIED2,:)==2.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, I0)') 'Number of friedel pairs ', 
+     1    count(reflections_data(C_FRIED2,:)==2.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, I0)') 'Number of lone reflections ', 
+     1    count(reflections_data(C_FRIED1,:)==-1.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a, I0)') 'Number of centric reflections ', 
+     1    count(reflections_data(C_FRIED1,:)==0.0)
+      call xprvdu(ncvdu,1,0)
+
+      do i=1, ubound(reflections_filters, 1)
+          write(cmon,'(a, I0, 1X, a, ": ", I0)') 
+     1        'Number of friedel pairs failing filter ', i,
+     1        '('//trim(filters_desc(i))//')',
+     1        count(reflections_filters(i,:))
+          call xprvdu(ncvdu,1,0)
+      end do
+      write(cmon,'(a, I0)')
+     1    'Number of friedel pairs failing any of the filters ',
+     1    count(reflections_data(C_FAIL,:)>0.0)
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a)') ''
+      call xprvdu(ncvdu,1,0)
+
+C ------------------------------------------------
 C Print summary
 C ------------------------------------------------
       
       ! get maximum length of numbers
-      zh=maxval(v1)
+      zh=maxval(v1(2:))
       If(zh<=1.0) then
         n=1
       else
@@ -10719,7 +10722,7 @@ C ------------------------------------------------
       end if
       ! add sign, decimal point
       n=n+2
-      sig=minval(sv1)
+      sig=minval(sv1(2:))
       if(sig<1.0d0) then
         ! number of zeros before eny digit
         if(sig>tiny(1.0)) then
@@ -10745,45 +10748,45 @@ C ------------------------------------------------
      1  repeat('_', n+i)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Flack parameter from refinement ', 
-     1  print_value(v1(1), sv1(1), opt_fixedform=.true.,
+     1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Flack parameter from refinement ', 
-     1  print_value(v1(1), sv1(1), opt_fixedform=.true.,
+     1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hole-in-one                     ', 
-     1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
+     1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Hole-in-one                     ', 
-     1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
+     1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hooft method                    ', 
-     1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
+     1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Hooft method                    ', 
-     1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
+     1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Average of ratios (x)           ', 
-     1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
+     1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
-     1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
+     1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Bijvoet differences             ', 
-     1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
+     1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Bijvoet differences             ', 
-     1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
+     1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Parsons quotients               ',  
-     1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
+     1  print_value(v1(7), sv1(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Parsons quotients               ',  
-     1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
+     1  print_value(v1(7), sv1(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
@@ -10795,7 +10798,7 @@ C ------------------------------------------------
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)
 
-      zh=maxval(v2)
+      zh=maxval(v2(2:))
       If(zh<=1.0) then
         n=1
       else
@@ -10803,7 +10806,7 @@ C ------------------------------------------------
       end if
       ! add sign, decimal point
       n=n+2
-      sig=minval(sv2)
+      sig=minval(sv2(2:))
       if(sig<1.0d0) then
         ! number of zeros before eny digit
         i=0
@@ -10820,8 +10823,10 @@ C ------------------------------------------------
       write(cmon,'(a)') ''
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a)') 'Reflections in filter 1,2,3,5 summary:'
-      write(ncwu,'(a)') 'Reflections in filter 1,2,3,5 summary:'
+      write(cmon,'(I0, 1X, a)') nint(v2(1)), 
+     1  'Reflections in filter 1,2,3,5 summary:'
+      write(ncwu,'(I0, 1X, a)') nint(v2(1)), 
+     1  'Reflections in filter 1,2,3,5 summary:'
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
@@ -10829,45 +10834,45 @@ C ------------------------------------------------
      1  repeat('_', n+i)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Flack parameter from refinement ', 
-     1  print_value(v2(1), sv2(1), opt_fixedform=.true.,
+     1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Flack parameter from refinement ', 
-     1  print_value(v2(1), sv2(1), opt_fixedform=.true.,
+     1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hole-in-one                     ', 
-     1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
+     1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Hole-in-one                     ', 
-     1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
+     1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hooft method                    ', 
-     1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
+     1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Hooft method                    ', 
-     1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
+     1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Average of ratios (x)           ', 
-     1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
+     1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
-     1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
+     1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Bijvoet differences             ', 
-     1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
+     1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Bijvoet differences             ', 
-     1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
+     1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Parsons quotients               ',  
-     1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
+     1  print_value(v2(7), sv2(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Parsons quotients               ',  
-     1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
+     1  print_value(v2(7), sv2(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
@@ -10879,7 +10884,7 @@ C ------------------------------------------------
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)
 
-      zh=maxval(v3)
+      zh=maxval(v3(2:))
       If(zh<=1.0) then
         n=1
       else
@@ -10887,7 +10892,7 @@ C ------------------------------------------------
       end if
       ! add sign, decimal point
       n=n+2
-      sig=minval(sv3)
+      sig=minval(sv3(2:))
       if(sig<1.0d0) then
         ! number of zeros before eny digit
         i=0
@@ -10904,8 +10909,10 @@ C ------------------------------------------------
       write(cmon,'(a)') ''
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a)') 'Reflections in all filters summary:'
-      write(ncwu,'(a)') 'Reflections in all filters summary:'
+      write(cmon,'(I0, 1X, a)') nint(v3(1)), 
+     1  'Reflections in all filters summary:'
+      write(ncwu,'(I0, 1X, a)') nint(v3(1)), 
+     1  'Reflections in all filters summary:'
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
@@ -10913,45 +10920,45 @@ C ------------------------------------------------
      1  repeat('_', n+i)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Flack parameter from refinement ', 
-     1  print_value(v3(1), sv3(1), opt_fixedform=.true.,
+     1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Flack parameter from refinement ', 
-     1  print_value(v3(1), sv3(1), opt_fixedform=.true.,
+     1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hole-in-one                     ', 
-     1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
+     1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Hole-in-one                     ', 
-     1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
+     1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hooft method                    ', 
-     1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
+     1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Hooft method                    ', 
-     1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
+     1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Average of ratios (x)           ', 
-     1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
+     1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
-     1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
+     1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Bijvoet differences             ', 
-     1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
+     1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Bijvoet differences             ', 
-     1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
+     1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Parsons quotients               ',  
-     1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
+     1  print_value(v3(7), sv3(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       write(ncwu,'(a, a)') 'Parsons quotients               ',  
-     1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
+     1  print_value(v3(7), sv3(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',

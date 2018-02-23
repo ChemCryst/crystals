@@ -44,6 +44,12 @@ integer, parameter :: C_HIN1=6      !< Outliers from Hole in one method
 integer, parameter :: C_BIJVOET=7   !< Outliers from Bijvoet differences
 integer, parameter :: C_PARSONS=8   !< Outliers from Parsons quotients
 integer, parameter :: C_NUMFILTERS=8!< Number of fields in reflections_filters
+character(len=32), dimension(C_NUMFILTERS), parameter :: filters_desc = (/ &
+&   'sigma(Do)           ', 'sigma(Ao)           ', &
+&   'Ds(max)             ', 'kflack outliers     ', &
+&   'Ao/Ac               ', 'Hole in one outliers', &
+&   'Bijvoet outliers    ', 'Parsons outliers    ' &
+&   /)
 !> @}
 
 !> @name Platon constant
