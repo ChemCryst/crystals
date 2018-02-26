@@ -40,16 +40,16 @@ integer, parameter :: C_ASoSAO=2    !<  As  > filter(2)*sigma(Ao)
 integer, parameter :: C_DOoDSmax=3  !< /Do/ < filter(3)*Ds(max)
 integer, parameter :: C_OUTLIER=4   !< Outlier rejection (was in kflack)
 integer, parameter :: C_AOoAc=5     !< Ratio Ao/Ac >< filter(5) 
-integer, parameter :: C_HIN1=6      !< Outliers from Hole in one method
-integer, parameter :: C_BIJVOET=7   !< Outliers from Bijvoet differences
-integer, parameter :: C_PARSONS=8   !< Outliers from Parsons quotients
-integer, parameter :: C_NUMFILTERS=8!< Number of fields in reflections_filters
+!integer, parameter :: C_HIN1=6      !< Outliers from Hole in one method
+!integer, parameter :: C_BIJVOET=7   !< Outliers from Bijvoet differences
+!integer, parameter :: C_PARSONS=8   !< Outliers from Parsons quotients
+integer, parameter :: C_NUMFILTERS=5!< Number of fields in reflections_filters
 character(len=32), dimension(C_NUMFILTERS), parameter :: filters_desc = (/ &
 &   'sigma(Do)           ', 'sigma(Ao)           ', &
 &   'Ds(max)             ', 'kflack outliers     ', &
-&   'Ao/Ac               ', 'Hole in one outliers', &
-&   'Bijvoet outliers    ', 'Parsons outliers    ' &
-&   /)
+&   'Ao/Ac               ' /) !, 'Hole in one outliers' &
+!&   'Bijvoet outliers    ', 'Parsons outliers    ' &
+!&   /)
 !> @}
 
 !> @name Platon constant
@@ -381,57 +381,62 @@ end function
 
 !> @brief Average of the ratios method
 !! @par
-!! compute individual and mean Flack x and sigma, and overall LSQ Flack \n
-!! The mean Flack is an Average of Ratios \n
-!! The LSQ Flack is a Ratio of Averages \n
-!! These will differ if the distribution is far from Normal. \n
-!! The Blessing weigting scheme down-weights outliers, keeping \n
-!! those reflections with a more or less Normal distribution. 
-subroutine average_ratios(reflections_data, filtered_reflections, xbar, sbar)
+!! compute the truncated average of individual \frac{F_{ckd}-F_{okd}}{2 F_{ckd}} ratios.\n
+subroutine average_ratios(reflections_data, filtered_reflections, reject_threshold, xbar, sbar, error)
 use xiobuf_mod, only: cmon
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 use m_mrgrnk
+use formatnumber_mod
 
 implicit none
-real, dimension(:,:), intent(inout) :: reflections_data
-logical, dimension(:), intent(in) :: filtered_reflections
+real, dimension(:,:), intent(inout) :: reflections_data !< reflection data
+logical, dimension(:), intent(in) :: filtered_reflections !< rejected reflections by the user
+integer, intent(in) :: reject_threshold !< Percentage of data rejected at each side
+real, intent(out) :: sbar, xbar !< average and su
+integer, intent(out) :: error !< error code
 double precision sumflx, sumsig, sumwt
 integer refls_valid_size, refls_size
-integer i
+integer i, k
 double precision flxwt
-real sbar, xbar
+double precision, dimension(:,:), allocatable :: temp2d
+integer, dimension(:), allocatable :: sort_keys
 
 !c  Compute Flack for each reflection
     sumflx=0.0d0
     sumsig=0.0d0
     sumwt=0.0d0
+    error=0
+    
 
     refls_size=ubound(reflections_data,2)
 
-    refls_valid_size=0
+    i=count((.not. filtered_reflections) .and. reflections_data(C_FCKD, :)/=0.0)
+    allocate(temp2d(i,2))
+    allocate(sort_keys(i))
+
+    k=0
     do i=1,refls_size
         if(.not. filtered_reflections(i)) then
             if(reflections_data(C_FCKD, i)/=0.0) then
-                refls_valid_size=refls_valid_size+1
-                flxwt = 1./reflections_data(C_SX, i)**2
-                sumflx=sumflx+reflections_data(C_X, i)*flxwt
-                sumwt=sumwt+flxwt
-                sumsig = sumsig + reflections_data(C_SX, i)
+                k=k+1
+                temp2d(k,:)=(/ reflections_data(C_X, i), reflections_data(C_SX, i) /)
             end if
         end if
     end do
-!    print *, refls_valid_size
+    refls_valid_size=size(sort_keys)
     
-! average Flack(x) and average sigma
-    if(refls_valid_size>0) then
-        xbar = sumflx/sumwt
-        sbar = sumsig/real(refls_valid_size)
-    else
-        xbar=0.0
-        sbar=10.0
-    end if
-
+    call mrgrnk(temp2d(:,1), sort_keys)
+    k=refls_valid_size/reject_threshold
+    
+    sumflx=sum(temp2d(sort_keys(k:refls_valid_size-k),1) * &
+    &   1.0d0/temp2d(sort_keys(k:refls_valid_size-k),2)**2)
+    sumwt = sum(1.0d0/temp2d(sort_keys(k:refls_valid_size-k),2)**2)
+    sumsig=sum(temp2d(sort_keys(k:refls_valid_size-k),2))
+    
+    xbar = sumflx/sumwt
+    sbar = sqrt(1.0d0/sumwt)
+    
 end subroutine
 
 !> Filter reflections based on an outlier rejection algorithm
@@ -1450,8 +1455,6 @@ real mean, s2, est, goof
             end do
 
             if(issprt.eq.0) then
-                !print *, 'Slope:', &
-                !&   b,sb,' intercept:',a,sa
                 write(ncwu,'(a, a, a, a)') 'Slope:', &
                 &   print_value(b,sb),' intercept:',print_value(a,sa)
                 write(ncwu,*) ''
@@ -2067,7 +2070,9 @@ real mean, s2, est, goof
         end if
 
         ! select valid reflections (friedel pairs not filtered out)
-        i=count( (filtered_reflections .eqv. .false.) .and. (outliers .eqv. .false.) )
+        i=count( (filtered_reflections .eqv. .false.) .and. &
+        &   (outliers .eqv. .false.)  .and. &
+        &   reflections_data(C_FOKA,:)/=0.0 )
         if(i>1) then
             allocate(buffertemp(i,3))
             allocate(residuals(i))
@@ -2105,7 +2110,8 @@ real mean, s2, est, goof
                     end if
                 end if
             end do
-            
+            !print *, 'c ', i, k
+              
             call linearfit(buffertemp(:,1),buffertemp(:,2),buffertemp(:,3), &
             &   a,sa,b,sb,r2,goof, leverages=leverages, tw=residuals, dv=dv)
         

@@ -7486,7 +7486,7 @@ C
       CHARACTER*16 CFILTER(NFAILN)
       CHARACTER*32 CFAILN(NFAILN,2)
       CHARACTER*32 CWEIGHT, CYAXIS
-      DIMENSION FILTER(5), AFILTER(5)
+      DIMENSION FILTER(5)
       PARAMETER (NPLT=10)
       DIMENSION IFOPLT(2*NPLT+1), IFCPLT(2*NPLT+1)
       PARAMETER (DISTPLT = 3.0)
@@ -7500,7 +7500,6 @@ C
       PARAMETER (MAXBIN=80)
       DIMENSION IBIN(MAXBIN)  !bins for the histogram
       DIMENSION BBIN(MAXBIN)  ! .. ..
-      CHARACTER*1 CSIGN
       CHARACTER*80 LINE
       CHARACTER*40 FORM
       CHARACTER*36 HKLLAB
@@ -10090,7 +10089,6 @@ C
 
       real, dimension(:,:), allocatable :: reflections_data, buffertemp
       logical, dimension(:,:), allocatable :: reflections_filters
-      logical, dimension(:,:), allocatable :: logicaltemp
       logical, dimension(:), allocatable :: currentfilter, logicalvector
       integer, dimension(:), allocatable :: currentfilteri
 c      Format was :   [WDEL,INDICES, Do,Ds,sigmaD, So, Sm,    sigmaQ, ifail]
@@ -10101,15 +10099,15 @@ c      Format now :   [WDEL,INDICES, Do,Ds,sigmaD, x, sigmax, sigmaQ, ifail]
       real fok1, fok2, foka, fokd
       real fried1, fried2, friedif, fsign, fsq
       real hin1, hin1su
+      integer, dimension(3) :: hole_in_one_outliers
+      integer, dimension(3) :: bijvoet_outliers, parsons_outliers
       integer i, i1, iaddd, iaddl, iaddr, h1, h2
       integer ierror, iftype
       integer istat, j, itemp, iuln6, j1, k, k1
-      integer len
       integer n
       integer ncentric
       real yslope, zh, tony, tonsy, vard, xflack, qflack
       real scale, sig, sig1, sig2, sigest, sigfsq, sigmad, sigmaq
-      real sigmas
       real parsons, parsonssu, bijvoet, bijvoetsu, xbar, sbar
       
       real, dimension(7) :: v1, sv1, v2, sv2, v3, sv3
@@ -10476,7 +10474,8 @@ C ------------------------------------------------
       call hole_in_one(reflections_data, 
      1   reflections_data(C_FRIED2,:)/=2.0, hin1, hin1su, 
      2   outliersarg=logicalvector)
-      reflections_filters(C_HIN1,:)=logicalvector
+      !reflections_filters(C_HIN1,:)=logicalvector
+      hole_in_one_outliers(1)=count(logicalvector)
       
 C ------------------------------------------------
 C calculate Hooft goodies
@@ -10488,7 +10487,7 @@ C ------------------------------------------------
 C calculate average ratios
 C ------------------------------------------------
       call average_ratios(reflections_data,
-     1  reflections_data(C_FRIED2,:)/=2.0, xbar, sbar)
+     1  reflections_data(C_FRIED2,:)/=2.0, 10, xbar, sbar, ierror)
      
 C ------------------------------------------------
 C calculate Le Page stats
@@ -10503,13 +10502,15 @@ C ------------------------------------------------
         call bijvoet_differences(reflections_data, 
      1    reflections_data(C_FRIED2,:)/=2.0, 1, bijvoet, bijvoetsu, 
      2    outliersarg=logicalvector, punch_arg=.true.)
-        reflections_filters(C_BIJVOET,:)=logicalvector
+        !reflections_filters(C_BIJVOET,:)=logicalvector
+        bijvoet_outliers(1)=count(logicalvector)
       else
         call bijvoet_differences(reflections_data, 
      1    reflections_data(C_FRIED2,:)/=2.0, 1, bijvoet, bijvoetsu, 
      2    outliersarg=logicalvector)
-        reflections_filters(C_BIJVOET,:)=logicalvector
-      end if
+        !reflections_filters(C_BIJVOET,:)=logicalvector
+        bijvoet_outliers(1)=count(logicalvector)
+      end if     
 
 C ------------------------------------------------
 C calculate Parsons quotients
@@ -10518,13 +10519,16 @@ C ------------------------------------------------
         call bijvoet_differences(reflections_data, 
      1    reflections_data(C_FRIED2,:)/=2.0, -1, parsons, parsonssu,
      2    outliersarg=logicalvector, punch_arg=.true.)
-        reflections_filters(C_PARSONS,:)=logicalvector
+        !reflections_filters(C_PARSONS,:)=logicalvector
+        parsons_outliers(1)=count(logicalvector)
       else
         call bijvoet_differences(reflections_data, 
      1    reflections_data(C_FRIED2,:)/=2.0, -1, parsons, parsonssu,
      2    outliersarg=logicalvector)
-        reflections_filters(C_PARSONS,:)=logicalvector
+        !reflections_filters(C_PARSONS,:)=logicalvector
+        parsons_outliers(1)=count(logicalvector)
       end  if
+      
 C ------------------------------------------------
 C Summary
 C ------------------------------------------------
@@ -10552,6 +10556,7 @@ C ------------------------------------------------
       call hole_in_one(reflections_data, 
      1   currentfilter, hin1, hin1su, 
      2   outliersarg=logicalvector)
+      hole_in_one_outliers(2)=count(logicalvector)
                   
 C ------------------------------------------------
 C calculate Hooft goodies
@@ -10563,7 +10568,7 @@ C ------------------------------------------------
 C calculate average ratios
 C ------------------------------------------------
       call average_ratios(reflections_data,
-     1  reflections_data(C_FAIL,:)/=0.0, xbar, sbar)
+     1  currentfilter, 10, xbar, sbar, ierror)
 
 C ------------------------------------------------
 C calculate Le Page stats
@@ -10574,13 +10579,17 @@ C ------------------------------------------------
 C calculate Bijvoet differences
 C ------------------------------------------------
       call bijvoet_differences(reflections_data, 
-     1   currentfilter, 1, bijvoet, bijvoetsu)
+     1   currentfilter, 1, bijvoet, bijvoetsu,
+     2    outliersarg=logicalvector)
+        bijvoet_outliers(2)=count(logicalvector)
 
 C ------------------------------------------------
 C calculate Parsons quotients
 C ------------------------------------------------
       call bijvoet_differences(reflections_data, 
-     1   currentfilter, -1, parsons, parsonssu)
+     1   currentfilter, -1, parsons, parsonssu,
+     2    outliersarg=logicalvector)
+        parsons_outliers(2)=count(logicalvector)
             
 C ------------------------------------------------
 C Summary
@@ -10600,6 +10609,7 @@ C ------------------------------------------------
       call hole_in_one(reflections_data, 
      1   reflections_data(C_FAIL,:)/=0.0, hin1, hin1su, 
      2   outliersarg=logicalvector)
+      hole_in_one_outliers(3)=count(logicalvector)
                   
 C ------------------------------------------------
 C calculate Hooft goodies
@@ -10611,7 +10621,7 @@ C ------------------------------------------------
 C calculate average ratios
 C ------------------------------------------------
       call average_ratios(reflections_data,
-     1  reflections_data(C_FAIL,:)/=0.0, xbar, sbar)
+     1  reflections_data(C_FAIL,:)/=0.0, 10, xbar, sbar, ierror)
 
 C ------------------------------------------------
 C calculate Le Page stats
@@ -10623,13 +10633,22 @@ C ------------------------------------------------
 C calculate Bijvoet differences
 C ------------------------------------------------
       call bijvoet_differences(reflections_data, 
-     1   reflections_data(C_FAIL,:)/=0.0, 1, bijvoet, bijvoetsu)
+     1   reflections_data(C_FAIL,:)/=0.0, 1, bijvoet, bijvoetsu,
+     2    outliersarg=logicalvector)
+        bijvoet_outliers(3)=count(logicalvector)
 
 C ------------------------------------------------
 C calculate Parsons quotients
 C ------------------------------------------------
       call bijvoet_differences(reflections_data, 
-     1   reflections_data(C_FAIL,:)/=0.0, -1, parsons, parsonssu)
+     1   reflections_data(C_FAIL,:)/=0.0, -1, parsons, parsonssu,
+     2    outliersarg=logicalvector)
+        parsons_outliers(3)=count(logicalvector)
+     
+C ------------------------------------------------
+C Summary
+C ------------------------------------------------
+
       v3=(/real(count(reflections_data(C_FAIL,:)==0.0)), xflack, hin1,
      1  tony, xbar, bijvoet, parsons/)
       sv3=(/0.0, qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
@@ -10718,12 +10737,14 @@ C ------------------------------------------------
      1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Hole-in-one                     ', 
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Hole-in-one                     ', 
      1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Hole-in-one                     ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(1)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Hole-in-one                     ', 
      1  print_value(v1(3), sv1(3), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(1)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hooft method                    ', 
      1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
@@ -10732,26 +10753,32 @@ C ------------------------------------------------
      1  print_value(v1(4), sv1(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Average of ratios (x)           ', 
+      write(cmon,'(a, a, 1X, "(", I0, " refls truncated)")') 
+     1  'Truncated average of ratios (x) ', 
      1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v1(1))/10
+      write(ncwu,'(a, a, 1X, "(", I0, " refls truncated)")') 
+     1  'Truncated average of ratios (x) ', 
      1  print_value(v1(5), sv1(5), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v1(1))/10
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Bijvoet differences             ', 
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Bijvoet differences             ', 
      1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Bijvoet differences             ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(1)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Bijvoet differences             ', 
      1  print_value(v1(6), sv1(6), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(1)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Parsons quotients               ',  
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Parsons quotients               ',  
      1  print_value(v1(7), sv1(7), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Parsons quotients               ',  
+     1  opt_length=n+i+2, opt_decimal_pos=n), parsons_outliers(1)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Parsons quotients               ',  
      1  print_value(v1(7), sv1(7), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n),parsons_outliers(1)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
@@ -10804,12 +10831,14 @@ C ------------------------------------------------
      1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Hole-in-one                     ', 
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Hole-in-one                     ', 
      1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Hole-in-one                     ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(2)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Hole-in-one                     ', 
      1  print_value(v2(3), sv2(3), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(2)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hooft method                    ', 
      1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
@@ -10818,26 +10847,32 @@ C ------------------------------------------------
      1  print_value(v2(4), sv2(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Average of ratios (x)           ', 
+      write(cmon,'(a, a, 1X, "(", I0, " refls truncated)")') 
+     1  'Truncated average of ratios (x) ', 
      1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v2(1))/10
+      write(ncwu,'(a, a, 1X, "(", I0, " refls truncated)")') 
+     1  'Truncated average of ratios (x) ', 
      1  print_value(v2(5), sv2(5), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v2(1))/10
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Bijvoet differences             ', 
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Bijvoet differences             ', 
      1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Bijvoet differences             ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(2)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Bijvoet differences             ', 
      1  print_value(v2(6), sv2(6), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(2)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Parsons quotients               ',  
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Parsons quotients               ',  
      1  print_value(v2(7), sv2(7), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Parsons quotients               ',  
+     1  opt_length=n+i+2, opt_decimal_pos=n), parsons_outliers(2)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Parsons quotients               ',  
      1  print_value(v2(7), sv2(7), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n),parsons_outliers(2)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
@@ -10890,12 +10925,14 @@ C ------------------------------------------------
      1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Hole-in-one                     ', 
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Hole-in-one                     ', 
      1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Hole-in-one                     ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(3)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Hole-in-one                     ', 
      1  print_value(v3(3), sv3(3), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(3)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Hooft method                    ', 
      1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
@@ -10904,26 +10941,32 @@ C ------------------------------------------------
      1  print_value(v3(4), sv3(4), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Average of ratios (x)           ', 
+      write(cmon,'(a, a, 1X, "(", I0, " refls truncated)")') 
+     1  'Truncated average of ratios (x) ', 
      1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Average of ratios (x)           ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v3(1))/10
+      write(ncwu,'(a, a, 1X, "(", I0, " refls truncated)")') 
+     1  'Truncated average of ratios (x) ', 
      1  print_value(v3(5), sv3(5), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v3(1))/10
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Bijvoet differences             ', 
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Bijvoet differences             ', 
      1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Bijvoet differences             ', 
+     1  opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(3)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Bijvoet differences             ', 
      1  print_value(v3(6), sv3(6), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(3)
       call xprvdu(ncvdu,1,0)
-      write(cmon,'(a, a)') 'Parsons quotients               ',  
+      write(cmon,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Parsons quotients               ',  
      1  print_value(v3(7), sv3(7), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
-      write(ncwu,'(a, a)') 'Parsons quotients               ',  
+     1  opt_length=n+i+2, opt_decimal_pos=n), parsons_outliers(3)
+      write(ncwu,'(a, a, 1X, "(",I0, " outliers)")') 
+     1  'Parsons quotients               ',  
      1  print_value(v3(7), sv3(7), opt_fixedform=.true.,
-     1  opt_length=n+i+2, opt_decimal_pos=n)
+     1  opt_length=n+i+2, opt_decimal_pos=n),parsons_outliers(3)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
