@@ -1492,6 +1492,7 @@ Cdjwmar99]
       RETURN
       END
 CODE FOR XSQRF
+      !> return the signed structure amplitude and the corresponding sigma
       SUBROUTINE XSQRF (FSQ,FSIGN,FABS,SIGSQ,SIG)
 C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
 C      FROM A SIGNED STRUCTURE FACTOR
@@ -1500,8 +1501,15 @@ C      FSIGN INPUT SIGNED MAGNITUDE
 C      FABS  DUMMY
 C      SIGSQ OUTPUT SIGMA SQ
 C      INPUT SIGMA
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST6B.INC'
+      use xconst_mod, only: zero
+      use xlst6b_mod, only: xthresh
+      
+      real, intent(out) :: fsq !< Output amplitude
+      real, intent(in) :: fsign !< input signed amplitude
+      real, intent(in) :: fabs !< unused
+      real, intent(out) :: sigsq !< output sigma**2
+      real, intent(in) :: sig !< input sigma
+
       FSQ=FSIGN*ABS(FSIGN)
       IF (SIG.GT.ZERO) THEN
 C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT

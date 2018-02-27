@@ -1224,178 +1224,173 @@ double precision, external :: ddot !< blas dot product
         close(variance_unit)
     end if
 
-    if(present(plot)) then
-        if(plot) then            
-            !####################
-            !Looking for reflections data
-            refl_unit=788
-            write(file_name, '(a,i0,a)') 'reflections', filecount, '.npy'
-            inquire(file=file_name, exist=file_exists)
-            file_type=0
-            if(.not. file_exists) then
-                write(file_name, '(a,i0,a)') 'reflections', filecount, '.dat'
-                inquire(file=file_name, exist=file_exists)
-                file_type=1
-                if(.not. file_exists) then
-                    file_type=-1
+    !####################
+    !Looking for reflections data
+    refl_unit=788
+    write(file_name, '(a,i0,a)') 'reflections', filecount, '.npy'
+    inquire(file=file_name, exist=file_exists)
+    file_type=0
+    if(.not. file_exists) then
+        write(file_name, '(a,i0,a)') 'reflections', filecount, '.dat'
+        inquire(file=file_name, exist=file_exists)
+        file_type=1
+        if(.not. file_exists) then
+            file_type=-1
 #ifdef CRY_OSLINUX
-                    print *, 'inverse of the normal matrix file does not exist, programming error'
+            print *, 'inverse of the normal matrix file does not exist, programming error'
 #endif        
-                    call abort()
-                end if
-            end if
-            if(file_type==0) then
-                open(refl_unit, file=file_name, status='old', access='stream',  form='unformatted')
-                call numpy_read_header(refl_unit, vorder, vdatashape, vnpyformat)
-                if(size(vdatashape)/=2) then
-#ifdef CRY_OSLINUX
-                    print *, 'data are not 2D'
-#endif        
-                    call abort()
-                end if
-                if(vorder=='C') then
-                    if(vnpyformat==4) then
-                        allocate(ftemp1d(vdatashape(2)))
-                        allocate(reflections(vdatashape(1), vdatashape(2)))
-                        do i=1, vdatashape(1)
-                            read(refl_unit) ftemp1d
-                            reflections(i, :)=ftemp1d
-                        end do
-                        deallocate(ftemp1d)
-                    else if(vnpyformat==8) then            
-                        allocate(reflections(vdatashape(1), vdatashape(2)))
-                        read(refl_unit) reflections
-                    else 
-                    
-#ifdef CRY_OSLINUX
-                        print *, 'npy format not supported'
-#endif        
-                        call abort()
-                    end if
-                else
-                     if(vnpyformat==4) then
-                        allocate(ftemp2d(vdatashape(1), vdatashape(2)))
-                        read(refl_unit) ftemp2d
-                        allocate(reflections(vdatashape(1), vdatashape(2)))
-                        reflections=ftemp2d
-                        deallocate(ftemp2d)
-                    else if(vnpyformat==8) then            
-                        allocate(reflections(vdatashape(1), vdatashape(2)))
-                        read(refl_unit) reflections
-                    else 
-                    
-#ifdef CRY_OSLINUX
-                        print *, 'npy format not supported'
-#endif        
-                        call abort()
-                    end if
-                end if
-                close(refl_unit) 
-            else
-                open(refl_unit, file=file_name, status='old')
-                read(refl_unit, '(a)', iostat=info) formatstr
-                if(formatstr(1:1)/='#') then
-#ifdef CRY_OSLINUX
-                    print *, 'Error reflections file should start with a header line'
-#endif              
-                    call abort()
-                end if
-                numfields=1
-                do i=1, len_trim(formatstr)
-                    if(formatstr(i:i)==",") then
-                        numfields=numfields+1
-                    end if
-                end do
-                
-                i=0
-                allocate(reflections(1024, numfields))
-                do 
-                    i=i+1
-                    if(i>ubound(reflections, 1)) then
-                        ! extend reflections
-                        call move_alloc(reflections, temp2d)
-                        allocate(reflections(ubound(temp2d, 1)+1024, numfields))
-                        reflections(1:ubound(temp2d, 1), :)=temp2d
-                        deallocate(temp2d)
-                    end if
-                    read(refl_unit, *, iostat=iostatus)  reflections(i, :)
-                    if(iostatus/=0) exit
-                end do
-                close(refl_unit)
-            end if
-            
-            !####################
-            !Looking for sigmas and moo
-            sigmas_unit=788
-            inquire(file='sigmas.dat', exist=sigmas_exists)
-            if(sigmas_exists) then
-
-                open(sigmas_unit, file='sigmas.dat', status='old')
-                read(sigmas_unit, '(a)', iostat=info) formatstr ! skip first line (header)
-                
-                i=0
-                allocate(sigmast(1024, 7))
-                do 
-                    i=i+1
-                    if(i>ubound(sigmast, 1)) then
-                        ! extend reflections
-                        call move_alloc(sigmast, temp2d)
-                        allocate(sigmast(ubound(temp2d, 1)+1024, 7))
-                        sigmast(1:ubound(temp2d, 1), :)=temp2d
-                        deallocate(temp2d)
-                    end if
-                    read(sigmas_unit, *, iostat=iostatus)  sigmast(i, :)
-                    if(iostatus/=0) exit
-                end do
-                close(sigmas_unit)
-                
-                ! extracting the reflections that we need
-                allocate(sigmas(ubound(reflections, 1), 7))
-                previous=1
-                k=0
-                mainloop:do i=1, ubound(reflections, 1)
-                    found=.false.
-                    do j=previous, ubound(sigmas, 1) ! that should make the search faster if file is sorted
-                        if(j>ubound(sigmast, 1)) then ! unexpected error, cannot find the reflections. Is it the right file for the structure?
-                            ! cancelling use of the sigmas
-                            deallocate(sigmast)
-                            exit mainloop
-                        end if
-                        if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
-                            k=k+1
-                            sigmas(k,:)=sigmast(j,:)
-                            previous=j
-                            found=.true.
-                            exit
-                        end if
-                    end do
-                    if(.not. found) then
-                        do j=1, ubound(sigmas, 1) ! doing the search again from the start, the file might not be sorted
-                            if(j>ubound(sigmast, 1)) then ! unexpected error, cannot find the reflections. Is it the right file for the structure?
-                                ! cancelling use of the sigmas
-                                deallocate(sigmast)
-                                exit mainloop
-                            end if
-                            if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
-                                k=k+1
-                                sigmas(k,:)=sigmast(j,:)
-                                previous=j
-                                found=.true.
-                                exit
-                            end if
-                        end do
-                    end if
-                end do mainloop
-                deallocate(sigmast)
-            end if
-            
-            call plot_leverages_init(1, '_VLEVP', 'k x Fo')
-            call plot_leverages_init(2, '_VLEVR', 'sin(\Theta)/\lambda')
-            if(sigmas_exists) then
-                call plot_leverages_init(3, '_VLEVM', 'moo')
-            end if
-
+            call abort()
         end if
+    end if
+    if(file_type==0) then
+        open(refl_unit, file=file_name, status='old', access='stream',  form='unformatted')
+        call numpy_read_header(refl_unit, vorder, vdatashape, vnpyformat)
+        if(size(vdatashape)/=2) then
+#ifdef CRY_OSLINUX
+            print *, 'data are not 2D'
+#endif        
+            call abort()
+        end if
+        if(vorder=='C') then
+            if(vnpyformat==4) then
+                allocate(ftemp1d(vdatashape(2)))
+                allocate(reflections(vdatashape(1), vdatashape(2)))
+                do i=1, vdatashape(1)
+                    read(refl_unit) ftemp1d
+                    reflections(i, :)=ftemp1d
+                end do
+                deallocate(ftemp1d)
+            else if(vnpyformat==8) then            
+                allocate(reflections(vdatashape(1), vdatashape(2)))
+                read(refl_unit) reflections
+            else 
+            
+#ifdef CRY_OSLINUX
+                print *, 'npy format not supported'
+#endif        
+                call abort()
+            end if
+        else
+             if(vnpyformat==4) then
+                allocate(ftemp2d(vdatashape(1), vdatashape(2)))
+                read(refl_unit) ftemp2d
+                allocate(reflections(vdatashape(1), vdatashape(2)))
+                reflections=ftemp2d
+                deallocate(ftemp2d)
+            else if(vnpyformat==8) then            
+                allocate(reflections(vdatashape(1), vdatashape(2)))
+                read(refl_unit) reflections
+            else 
+            
+#ifdef CRY_OSLINUX
+                print *, 'npy format not supported'
+#endif        
+                call abort()
+            end if
+        end if
+        close(refl_unit) 
+    else
+        open(refl_unit, file=file_name, status='old')
+        read(refl_unit, '(a)', iostat=info) formatstr
+        if(formatstr(1:1)/='#') then
+#ifdef CRY_OSLINUX
+            print *, 'Error reflections file should start with a header line'
+#endif              
+            call abort()
+        end if
+        numfields=1
+        do i=1, len_trim(formatstr)
+            if(formatstr(i:i)==",") then
+                numfields=numfields+1
+            end if
+        end do
+        
+        i=0
+        allocate(reflections(1024, numfields))
+        do 
+            i=i+1
+            if(i>ubound(reflections, 1)) then
+                ! extend reflections
+                call move_alloc(reflections, temp2d)
+                allocate(reflections(ubound(temp2d, 1)+1024, numfields))
+                reflections(1:ubound(temp2d, 1), :)=temp2d
+                deallocate(temp2d)
+            end if
+            read(refl_unit, *, iostat=iostatus)  reflections(i, :)
+            if(iostatus/=0) exit
+        end do
+        close(refl_unit)
+    end if
+    
+    !####################
+    !Looking for sigmas and moo
+    sigmas_unit=788
+    inquire(file='sigmas.dat', exist=sigmas_exists)
+    if(sigmas_exists) then
+
+        open(sigmas_unit, file='sigmas.dat', status='old')
+        read(sigmas_unit, '(a)', iostat=info) formatstr ! skip first line (header)
+        
+        i=0
+        allocate(sigmast(1024, 7))
+        do 
+            i=i+1
+            if(i>ubound(sigmast, 1)) then
+                ! extend reflections
+                call move_alloc(sigmast, temp2d)
+                allocate(sigmast(ubound(temp2d, 1)+1024, 7))
+                sigmast(1:ubound(temp2d, 1), :)=temp2d
+                deallocate(temp2d)
+            end if
+            read(sigmas_unit, *, iostat=iostatus)  sigmast(i, :)
+            if(iostatus/=0) exit
+        end do
+        close(sigmas_unit)
+        
+        ! extracting the reflections that we need
+        allocate(sigmas(ubound(reflections, 1), 7))
+        previous=1
+        k=0
+        mainloop:do i=1, ubound(reflections, 1)
+            found=.false.
+            do j=previous, ubound(sigmas, 1) ! that should make the search faster if file is sorted
+                if(j>ubound(sigmast, 1)) then ! unexpected error, cannot find the reflections. Is it the right file for the structure?
+                    ! cancelling use of the sigmas
+                    deallocate(sigmast)
+                    exit mainloop
+                end if
+                if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
+                    k=k+1
+                    sigmas(k,:)=sigmast(j,:)
+                    previous=j
+                    found=.true.
+                    exit
+                end if
+            end do
+            if(.not. found) then
+                do j=1, ubound(sigmas, 1) ! doing the search again from the start, the file might not be sorted
+                    if(j>ubound(sigmast, 1)) then ! unexpected error, cannot find the reflections. Is it the right file for the structure?
+                        ! cancelling use of the sigmas
+                        deallocate(sigmast)
+                        exit mainloop
+                    end if
+                    if(all(nint(reflections(i,1:3))==nint(sigmast(j,1:3)))) then
+                        k=k+1
+                        sigmas(k,:)=sigmast(j,:)
+                        previous=j
+                        found=.true.
+                        exit
+                    end if
+                end do
+            end if
+        end do mainloop
+        deallocate(sigmast)
+    end if
+    
+    call plot_leverages_init(1, '_VLEVP', 'k x Fo')
+    call plot_leverages_init(2, '_VLEVR', 'sin(\Theta)/\lambda')
+    if(sigmas_exists) then
+        call plot_leverages_init(3, '_VLEVM', 'moo')
     end if
     
     !####################
@@ -1571,7 +1566,7 @@ double precision, external :: ddot !< blas dot product
                         call plot_leverages_push(1, hkl(:,i), reflections(i, 4), &
                         &   leverage_all(i), &
                         &   -t2values(i)/maxT2*100.0d0)
-                        call plot_leverages_push(2, hkl(:,i), reflections(i, 8), &
+                        call plot_leverages_push(2, hkl(:,i), reflections(i, 9), &
                         &   leverage_all(i), &
                         &   -t2values(i)/maxT2*100.0d0)
                         if(sigmas_exists) then
@@ -1595,7 +1590,7 @@ double precision, external :: ddot !< blas dot product
                         call plot_leverages_push(1, hkl(:,i), reflections(i, 4), &
                         &   leverage_all(i), &
                         &   -t2values(i)/maxT2*100.0d0)
-                        call plot_leverages_push(2, hkl(:,i), reflections(i, 8), &
+                        call plot_leverages_push(2, hkl(:,i), reflections(i, 9), &
                         &   leverage_all(i), &
                         &   -t2values(i)/maxT2*100.0d0)
                         if(sigmas_exists) then
@@ -1651,8 +1646,8 @@ double precision, external :: ddot !< blas dot product
     call xprvdu(ncvdu, 1,0)      
     ! updating slider in the gui
     call slider(100,100)
-    
-    call Rfactorlev(reflections(1:numobs-irestraint,:), leverage_all(1:numobs-irestraint))
+
+    call Rfactorlev(reflections(1:numobs-irestraint,:), leverage_all(1:numobs-irestraint), numobs-nsize)
 
 #if defined(CRY_OSLINUX)
     call date_and_time(VALUES=measuredtime)
@@ -1666,77 +1661,107 @@ double precision, external :: ddot !< blas dot product
 
 end subroutine
 
-subroutine Rfactorlev(reflections, leverages)
+subroutine Rfactorlev(reflections, leverages, ratio)
 use xiobuf_mod, only: cmon !< screen
-use xunits_mod, only: ncvdu !< lis file
+use xunits_mod, only: ncvdu, ncwu !< lis file
+use xssval_mod, only: issprt
 use m_mrgrnk
+use, intrinsic :: IEEE_ARITHMETIC
 implicit none
-double precision, dimension(:,:), intent(in) :: reflections
-double precision, dimension(:), intent(in) :: leverages
+double precision, dimension(:,:), intent(in) :: reflections !< reflection data
+double precision, dimension(:), intent(in) :: leverages !< leverages
+integer, intent(in) :: ratio !< unused
 integer, dimension(:), allocatable :: sort_keys
 double precision num, denum
-integer i,j, levbin, rselect
-character(len=3), dimension(2) :: rtype=(/' R1', 'wR2'/)
+integer i,j, levbin, rselect, start
+character(len=3), dimension(4) :: rtype=(/' R1', 'wR2', ' R1', 'wR2'/)
 integer, parameter :: nbins=5
 integer, dimension(nbins,10) :: bins
 character(len=24), dimension(nbins) :: fbins
 double precision, dimension(nbins) :: nums, denums
 double precision, dimension(nbins+1) :: bounds
-double precision interval
 double precision, dimension(nbins+1,10) :: Rwlev
-double precision chi2, mean
-
-    do i=0, 15
-        write(cmon,'(" {1,",I0," test",I0)')  i, i
-        call xprvdu(ncvdu, 1,0)
-    end do
+double precision, dimension(10) :: levbounds
+character(len=128) :: buffer
+double precision interval
+real dummy, fsq, sfsq
+real, dimension(:), allocatable :: Ios ! I/sigma
 
     write(cmon, '(a)') ''
     call xprvdu(ncvdu, 1,0)
-    write(cmon, '(a)') 'R1 and wR2 as a function of leverages and resolution'
+    write(cmon, '(a)') 'R1 and wR2 as a function of leverages and I/sigma'
     call xprvdu(ncvdu, 1,0)
     write(cmon, '(a)') ''
     call xprvdu(ncvdu, 1,0)
+    if (issprt .eq. 0) then
+        write(ncwu,'(a)') ''
+        write(ncwu,'(a)') 'R1 and wR2 as a function of leverages and I/sigma'
+        write(ncwu,'(a)') ''
+    end if
     
+    allocate(Ios(size(leverages)))
     allocate(sort_keys(size(leverages)))
     
-    interval=(maxval(reflections(:, 8)**3)-minval(reflections(:, 8)**3))/real(nbins+1)
-    bounds(1)=minval(reflections(:, 8)**3)
-    do i=2,nbins
-        bounds(i)=interval*(i-1)+minval(reflections(:, 8)**3)
+    Ios=0.0
+    do i=1, size(leverages)   
+        call XSQRF (fsq,real(reflections(i, 4)),dummy,sfsq,real(reflections(i, 5)))
+        Ios(i)=fsq/sfsq
     end do
-    bounds(nbins+1)=maxval(reflections(:, 8)**3)  
+
+    call mrgrnk(Ios, sort_keys)
+
+    bounds(1)=-100.0d0
+    bounds(2)=3.0d0
+    do i=1, size(Ios)
+        if(Ios(sort_keys(i))>=3.0) exit
+    end do
+    start=i
+    interval=(size(Ios)-start)/(nbins-1)
+    do i=3,nbins
+        bounds(i)=real(nint(Ios(sort_keys((i-2)*interval+start))), kind(bounds(1)))
+    end do
+    bounds(nbins+1)=huge(1.0)
 
     call mrgrnk(leverages, sort_keys)
-    
+
     do rselect=1, 2
     ! reselect=1 => R1
     ! reselect=2 => wR2
+        if(rselect==1) then
+            write(cmon,*) "R1 factor on binned reflections on I/sigma as function of leverages"
+            call xprvdu(ncvdu, 1,0) 
+        else if(rselect==2) then
+            write(cmon,*) "wR2 factor on binned reflections on I/sigma as function of leverages"
+            call xprvdu(ncvdu, 1,0) 
+        end if
+        
         nums=0.0d0
         denums=0.0d0
         num=0.0d0
         denum=0.0d0
         levbin=1
         bins=0
+        Rwlev=0.0d0
         do i=1, size(leverages)   
             if(rselect==1) then
-                num=num+abs(abs(reflections(sort_keys(i), 4))-reflections(sort_keys(i), 5))
+                num=num+abs(abs(reflections(sort_keys(i), 4))-reflections(sort_keys(i), 6))
                 denum=denum+abs(reflections(sort_keys(i), 4))
-            else
-                num=num+reflections(sort_keys(i), 6)**2*(reflections(sort_keys(i), 4)**2-reflections(sort_keys(i), 5)**2)**2
-                denum=denum+reflections(sort_keys(i), 6)**2*reflections(sort_keys(i), 4)**4
+            else if(rselect==2) then
+                num=num+reflections(sort_keys(i), 7)**2*(reflections(sort_keys(i), 4)**2-reflections(sort_keys(i), 6)**2)**2
+                denum=denum+reflections(sort_keys(i), 7)**2*reflections(sort_keys(i), 4)**4
             end if
             do j=1, nbins
-                if(reflections(sort_keys(i), 8)**3>=bounds(j) .and. &
-                &   reflections(sort_keys(i), 8)**3<=bounds(j+1)) then
-                    bins(j,levbin:)=bins(j,levbin:)+1
+                if(Ios(i)>=bounds(j) .and. &
+                &   Ios(i)<=bounds(j+1)) then
                     if(rselect==1) then
-                        nums(j)=nums(j)+abs(abs(reflections(sort_keys(i), 4))-reflections(sort_keys(i), 5))
+                        bins(j,levbin:)=bins(j,levbin:)+1
+                        nums(j)=nums(j)+abs(abs(reflections(sort_keys(i), 4))-reflections(sort_keys(i), 6))
                         denums(j)=denums(j)+abs(reflections(sort_keys(i), 4))
-                    else
-                        nums(j)=nums(j)+reflections(sort_keys(i), 6)**2* &
-                        &   (reflections(sort_keys(i), 4)**2-reflections(sort_keys(i), 5)**2)**2
-                        denums(j)=denums(j)+reflections(sort_keys(i), 6)**2*reflections(sort_keys(i), 4)**4
+                    else if(rselect==2) then
+                        bins(j,levbin:)=bins(j,levbin:)+1
+                        nums(j)=nums(j)+reflections(sort_keys(i), 7)**2* &
+                        &   (reflections(sort_keys(i), 4)**2-reflections(sort_keys(i), 6)**2)**2
+                        denums(j)=denums(j)+reflections(sort_keys(i), 7)**2*reflections(sort_keys(i), 4)**4
                     end if
                     exit
                 end if
@@ -1746,23 +1771,32 @@ double precision chi2, mean
                 if(rselect==1) then
                     Rwlev(1:nbins,levbin)=100.0d0*nums/denums
                     Rwlev(nbins+1, levbin)=100.0d0*num/denum
-                else
+                else if(rselect==2) then
                     Rwlev(1:nbins,levbin)=100.0d0*sqrt(nums/denums)
                     Rwlev(nbins+1, levbin)=100.0d0*sqrt(num/denum)
                 end if
+                levbounds(levbin)=leverages(sort_keys(i))
                 levbin=levbin+1
             end if
         end do
         
+#ifdef CRY_GUI
+        write(cmon,'(" I/s    |   <3   |",3(1X,I2,"-",I2,1X,"|"), 1X,">",I2, "   |")') &
+        &   (/ (nint(bounds(i)), nint(bounds(i+1)), i=2, nbins-1) /), nint(bounds(nbins))
+        call xprvdu(ncvdu, 1,0)
         do i=1, 10
                     
             do j=1, nbins
-                if(Rwlev(j,i)>1.5*Rwlev(j,10)) then
-                    write(fbins(j), '("{4,0",F8.2,"{1,0")') Rwlev(j,i)
-                else if(Rwlev(j,i)>1.2*Rwlev(j,10)) then
-                    write(fbins(j), '("{6,0",F8.2,"{1,0")') Rwlev(j,i)
+                if(ieee_is_nan(Rwlev(j,i))) then
+                    fbins(j)='no refls'
                 else
-                    write(fbins(j), '("{1,0",F8.2,"{1,0")') Rwlev(j,i)
+                    if(Rwlev(j,i)>1.5*Rwlev(j,10)) then
+                        write(fbins(j), '("{4,0",F8.2,"{1,0")') Rwlev(j,i)
+                    else if(Rwlev(j,i)>1.2*Rwlev(j,10)) then
+                        write(fbins(j), '("{6,0",F8.2,"{1,0")') Rwlev(j,i)
+                    else
+                        write(fbins(j), '("{1,0",F8.2,"{1,0")') Rwlev(j,i)
+                    end if
                 end if
             end do
 
@@ -1774,7 +1808,7 @@ double precision chi2, mean
                 end do
             end if
             
-            write(cmon,'(" {1,15n refl |", 5I8,  "|  lev<",I0,"%  {1,0")')  bins(:,i), i*10
+            write(cmon,'(" {1,15n refl |", 5I8,  "|  lev<",1P,E8.2,"  {1,0")')  bins(:,i), levbounds(i)
             call xprvdu(ncvdu, 1,0)
             cmon(1)=' '//rtype(rselect)//'    |'
             do j=1, nbins
@@ -1790,20 +1824,42 @@ double precision chi2, mean
             cmon(1)=trim(cmon(1))//trim(fbins(1))
             call xprvdu(ncvdu, 1,0)
         end do
-        write(cmon,'("        |",a, a, a, "|")') repeat('-',4), ' (Sin(theta)/Lambda)^3 (binned) ', repeat('-',4)
+        write(cmon,'(" I/s    |   <3   |",3(1X,I2,"-",I2,1X,"|"), 1X,">",I2, "   |")') &
+        &   (/ (nint(bounds(i)), nint(bounds(i+1)), i=2, nbins-1) /), nint(bounds(nbins))
         call xprvdu(ncvdu, 1,0)
+#else
+        write(cmon,'(" I/s    |   <3   |",3(1X,I2,"-",I2,1X,"|"), 1X,">",I2, "   |")') &
+        &   (/ (nint(bounds(i)), nint(bounds(i+1)), i=2, nbins-1) /), nint(bounds(nbins))
+        call xprvdu(ncvdu, 1,0)
+        do i=1, 10                
+            write(cmon,'(" n refl |", 5I8,  "|  lev<",1P,E8.2)')  bins(:,i), levbounds(i)
+            call xprvdu(ncvdu, 1,0)
+            write(buffer, '(a, I0, a)') '(1X, a, a, ',nbins,'F8.2,"|", F8.2)'
+            write(cmon,buffer) rtype(rselect), '    |', Rwlev(:,i)
+        call xprvdu(ncvdu, 1,0)
+        end do
+        write(cmon,'(" I/s    |   <3   |",3(1X,I2,"-",I2,1X,"|"), 1X,">",I2, "   |")') &
+        &   (/ (nint(bounds(i)), nint(bounds(i+1)), i=2, nbins-1) /), nint(bounds(nbins))
+        call xprvdu(ncvdu, 1,0)
+#endif
         
         write(cmon,'(a)') ''
         call xprvdu(ncvdu, 1,0)
         
-        mean=sum(Rwlev(1:nbins,:), bins>=5)/real(count(bins>=5), kind(mean))
-        print *, count(bins>=5), mean
-        chi2=sum(abs(Rwlev(1:nbins,:)-mean), bins>=5)/sum(Rwlev(1:nbins,:), bins>=5)
-        write(cmon,'(a, F10.7)') 'Chi2=', chi2
-        call xprvdu(ncvdu, 1,0)
+        if (issprt .eq. 0) then
+            write(ncwu,'(" I/s    |   <3   |",3(1X,I2,"-",I2,1X,"|"), 1X,">",I2, "   |")') &
+            &   (/ (nint(bounds(i)), nint(bounds(i+1)), i=2, nbins-1) /), nint(bounds(nbins))
+            do i=1, 10                
+                write(ncwu,'(" n refl |", 5I8,  "|  lev<",1P,E8.2)')  bins(:,i), levbounds(i)
+                write(buffer, '(a, I0, a)') '(1X, a, a, ',nbins,'F8.2,"|", F8.2)'
+                write(ncwu,buffer) rtype(rselect), '    |', Rwlev(:,i)
+            end do
+            write(ncwu,'(" I/s    |   <3   |",3(1X,I2,"-",I2,1X,"|"), 1X,">",I2, "   |")') &
+            &   (/ (nint(bounds(i)), nint(bounds(i+1)), i=2, nbins-1) /), nint(bounds(nbins))
+            
+            write(ncwu,'(a)') ''
+        end if
     end do
-    
-    ! ################################################    
 
 end subroutine
 

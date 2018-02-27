@@ -983,7 +983,7 @@ c---- Opening and initailising file for punching least square data
           call sfls_punch_reset_filename()
           call sfls_punch_init_design(sfls_punch_flag)
           call sfls_punch_init_reflections( sfls_punch_flag, 
-     1      (/ "Fobs    ", "Fcalc   ", "weight  ", 
+     1      (/ "Fobs    ", "s(Fobs) ", "Fcalc   ", "weight  ", 
      2         "Scale   ", "sin(t)/l" /) )
         END IF
         
@@ -2465,7 +2465,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
          if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
              !hkl=nint(STORE(M6:M6+2))
              call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
-     1         (/ Fo, FCEXS, w, scale, st/), 
+     1         (/ Fo, STORE(M6+12), FCEXS, w, scale, st/), 
      2         sfls_punch_flag)
          end if
           
@@ -2473,9 +2473,9 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
       END DO  ! END OF REFLECTION LOOP
 
       if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
-          !hkl=nint(STORE(M6:M6+2))
+          ! close reflections file
           call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
-     1      (/ Fo, FCEXS, w, scale, st/), 
+     1      (/ Fo, STORE(M6+12), FCEXS, w, scale, st/), 
      2      sfls_punch_flag, .true.)
       end if
 
