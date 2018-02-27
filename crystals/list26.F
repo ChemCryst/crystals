@@ -1510,22 +1510,20 @@ C--UTLS RESTRAINTS PRINT
           else
             icolorindex=1
             IF (ISSPRT .EQ. 0) THEN       
-              WRITE(NCWU,'(4X,I6,4I3,3(1PE12.2,1X),0PF8.3,4X, A)')
+              WRITE(NCWU,'(4X,I6,4I3,3(1PE12.2,1X),8X,4X, A)')
      2          (ISTORE(M),M=JD,JE),
      3          subrestraint%rvalue,
      3          subrestraint%rtarget,
      3          subrestraint%rvalue-subrestraint%rtarget,
-     4          IEEE_VALUE(1.0, IEEE_QUIET_NAN),
      5          trim(subrestraint%description)
             ENDIF      
             
             WRITE(CMON, 
-     1      '(4X,1P,3(E12.2,1X),"{",I0,",",I0,1X,0P, F7.3,"{1,0",4X,A)') 
+     1      '(4X,1P,3(E12.2,1X),"{",I0,",",I0,1X,7X,"{1,0",4X,A)') 
      2        subrestraint%rvalue,
      3        subrestraint%rtarget,
      4        subrestraint%rvalue-subrestraint%rtarget,
      5        icolorindex, 0, 
-     6        IEEE_VALUE(1.0, IEEE_QUIET_NAN),
      7        trim(subrestraint%description)
             CALL XPRVDU(NCVDU, 1,0)
           end if
