@@ -3,6 +3,7 @@ module math_mod
 
 private matrixtoquaternions_sp, matrixtoquaternions_dp
 private quaternionstomatrix_dp
+private invert22dp, invert22sp
 
 interface matrixtoquaternions !< generic procedure to calculate quaternion from rotation matrix
     module procedure matrixtoquaternions_sp, matrixtoquaternions_dp
@@ -12,6 +13,9 @@ interface quaternionstomatrix !< generic procedure to calculate rotation matrix 
     module procedure quaternionstomatrix_dp
 end interface quaternionstomatrix
 
+interface invert22
+    module procedure invert22dp, invert22sp
+end interface
 
 contains
 
@@ -305,5 +309,40 @@ END SUBROUTINE
       RETURN
 
       END FUNCTION M33DET
+      
+!> Invert a 2x2 matrix
+function invert22dp(a) result(b)
+implicit none
+double precision, dimension(2,2), intent(in) :: a
+double precision, dimension(2,2) :: b !< inverse of matrix
+double precision det
+
+    det=a(1,1)*a(2,2)-a(1,2)*a(2,1)
+
+    b(1,1)=a(2,2)
+    b(2,1)=-a(2,1)
+    b(1,2)=-a(1,2)
+    b(2,2)=a(1,1)
+
+    b=1/det*b
+end function
+
+!> Invert a 2x2 matrix
+function invert22sp(a) result(b)
+implicit none
+real, dimension(2,2), intent(in) :: a
+real, dimension(2,2) :: b !< inverse of matrix
+real det
+
+    det=a(1,1)*a(2,2)-a(1,2)*a(2,1)
+
+    b(1,1)=a(2,2)
+    b(2,1)=-a(2,1)
+    b(1,2)=-a(1,2)
+    b(2,2)=a(1,1)
+
+    b=1/det*b
+end function
+
 
 end module

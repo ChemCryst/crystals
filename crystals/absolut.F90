@@ -3,7 +3,7 @@
 module absolut_mod
 
 !> @name reflections_data
-!! List of variables stored in reflections_data array
+!! List of constant for the indices in reflections_data array
 !> @{
 integer, parameter :: C_H=1 !< \f$ h \f$ index
 integer, parameter :: C_K=2 !< \f$ k \f$ index
@@ -40,16 +40,12 @@ integer, parameter :: C_ASoSAO=2    !<  As  > filter(2)*sigma(Ao)
 integer, parameter :: C_DOoDSmax=3  !< /Do/ < filter(3)*Ds(max)
 integer, parameter :: C_OUTLIER=4   !< Outlier rejection (was in kflack)
 integer, parameter :: C_AOoAc=5     !< Ratio Ao/Ac >< filter(5) 
-!integer, parameter :: C_HIN1=6      !< Outliers from Hole in one method
-!integer, parameter :: C_BIJVOET=7   !< Outliers from Bijvoet differences
-!integer, parameter :: C_PARSONS=8   !< Outliers from Parsons quotients
 integer, parameter :: C_NUMFILTERS=5!< Number of fields in reflections_filters
+!> Description of the filters
 character(len=32), dimension(C_NUMFILTERS), parameter :: filters_desc = (/ &
 &   'sigma(Do)           ', 'sigma(Ao)           ', &
 &   'Ds(max)             ', 'kflack outliers     ', &
-&   'Ao/Ac               ' /) !, 'Hole in one outliers' &
-!&   'Bijvoet outliers    ', 'Parsons outliers    ' &
-!&   /)
+&   'Ao/Ac               ' /) 
 !> @}
 
 !> @name Platon constant
@@ -72,10 +68,10 @@ use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 use xssval_mod, only: issprt
 implicit none
-real, dimension(:,:), intent(in) :: reflections_data
-logical, dimension(:), intent(in) :: filtered_reflections
-real, intent(in) :: yslope
-real, intent(out) :: tony, tonsy
+real, dimension(:,:), intent(in) :: reflections_data !< reflection data
+logical, dimension(:), intent(in) :: filtered_reflections !< true if reflection is rejected
+real, intent(in) :: yslope !< npp slope for correction
+real, intent(out) :: tony, tonsy !< Hooft parameter and esd
 double precision datcl, datcm, xg, xg0, xg1, xg2, xgs, yk
 double precision fokd, fckd, sigmad, rcn, rco, rct
 integer i,j,refls_size
@@ -289,10 +285,10 @@ use xiobuf_mod, only: cmon
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
 implicit none
-real, dimension(:,:), intent(inout) :: reflections_data
-logical, dimension(:), intent(in) :: filtered_reflections
+real, dimension(:,:), intent(inout) :: reflections_data !< reflection data
+logical, dimension(:), intent(in) :: filtered_reflections !< true if reflection is rejected
 integer, dimension(:), allocatable :: reflections_rank, valid_reflections_indices
-real, intent(out) :: yslope
+real, intent(out) :: yslope !< slope of the normal probability plot
 integer iz10, iz90, refls_size, refls_valid_size
 real, dimension(3) :: hkl
 double precision ss, sx, sxx, sxy, sy, deter
@@ -447,11 +443,11 @@ use xconst_mod, only:
 use xunits_mod, only: ncvdu, ncwu
 implicit none
 
-real, dimension(:,:), intent(inout) :: reflections_data
-logical, dimension(:,:), intent(inout) :: reflections_filters
+real, dimension(:,:), intent(inout) :: reflections_data !< reflection data
+logical, dimension(:,:), intent(inout) :: reflections_filters !< true if reflection is rejected
 logical, dimension(:), allocatable :: currentfilter
 real, intent(in) :: filter4
-integer, intent(out) :: ierror
+integer, intent(out) :: ierror !< error flag
 double precision change, do, ds, dwt, flackx, flxwt
 real smean, fmean, sflackx, sigd, sigint, deltax
 double precision sumflx, sumsig, sumwt
@@ -575,11 +571,10 @@ use xiobuf_mod, only:
 implicit none
 
 real xwtmod
-!> - itype = 1 = unit modifier
-!! - itype = 2 = Blessing modifier
-!! - itype = 3 = Tukey modifier
-integer, intent(in) :: itype
-real, intent(in) :: smean, deltax, width
+integer, intent(in) :: itype !< type of weight modifier to return (1=unit, 2=Blessing, 3=Tukey)
+real, intent(in) :: smean !< mean
+real, intent(in) :: deltax !< unknown detail
+real, intent(in) :: width !< unknown detail
 real probx, tukey
 
     !c     probability - see Blessing J. Appl. Cryst. 
@@ -613,8 +608,8 @@ use m_mrgrnk
 !c      Format now :   [WDEL,INDICES, Do,Ds,sigmaD, x, sigmax, sig:noise, ifail]
 !c                       0      1      2  3    4    5    6        7     8
 implicit none
-real, dimension(:,:), intent(inout) :: reflections_data 
-logical, dimension(:), intent(in) :: filtered_reflections
+real, dimension(:,:), intent(inout) :: reflections_data !< reflection data
+logical, dimension(:), intent(in) :: filtered_reflections !< true if reflection is rejected
 integer, dimension(:), allocatable :: valid_reflections_indices, reflections_rank
 integer i, n, nn, np, npls, ln, lp, n100n, n100p, n10n, n10p
 integer n200n, n200p, n20n, n20p, n50n, n50p
@@ -925,6 +920,7 @@ end subroutine
 subroutine linearfit(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, goof, leverages, tw, dv)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
+use math_mod, only: invert22
 implicit none
 real, dimension(:), intent(in) :: xin !< x-values
 real, dimension(:), intent(in) :: yin !< y-values
@@ -1060,9 +1056,11 @@ double precision, external :: ddot
     
 end subroutine
 
+!> non optimised linear fit for reference
 subroutine linearfitref(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, goof, leverages, tw, dv)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
+use math_mod, only: invert22
 implicit none
 real, dimension(:), intent(in) :: xin !< x-values
 real, dimension(:), intent(in) :: yin !< y-values
@@ -1187,6 +1185,7 @@ double precision, external :: ddot
     
 end subroutine
 
+!> linear fit through the origin
 subroutine linearfitfixed(xin,yin,wt,intercept,interceptsu,slope,slopsu,r2, leverages, tw, dv)
 use xssval_mod, only: issprt
 use xunits_mod, only: ncvdu, ncwu
@@ -1329,10 +1328,10 @@ use m_mrgrnk
 use formatnumber_mod, only:print_value
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data !< reflectiond data 2D array (see top of this file)
-logical, dimension(:) :: filtered_reflections !< True if a reflections needs to be rejected
+logical, dimension(:), intent(in) :: filtered_reflections !< True if a reflections needs to be rejected
 real, dimension(:), optional, intent(in) :: weights !< optional weights. If absent, 1/sigma**2 is used.
 logical, dimension(:), allocatable, intent(out), optional :: outliersarg !< If present, use a robust fitting with outlier rejection
-real, intent(out) :: hin1, hin1su
+real, intent(out) :: hin1, hin1su !< hole in one values and esd
 real, dimension(:,:), allocatable :: buffertemp
 integer, dimension(:,:), allocatable :: selected_reflections
 integer i, j, k, outlierloop
@@ -1630,7 +1629,7 @@ real mean, s2, est, goof
 
 end subroutine
 
-!> Flack parameter extracted from refinement plus statistics
+!> Print out Flack parameter extracted from refinement plus statistics
 subroutine howard_goodies(reflections_data, xflack, qflack, friedif, distmax)
 use xiobuf_mod, only: cmon
 use xssval_mod, only: issprt
@@ -1639,9 +1638,9 @@ use xlst30_mod
 use xconst_mod, only: zero
 use xlst05_mod
 implicit none
-real, dimension(:,:), intent(in) :: reflections_data
-real, intent(in) :: friedif
-real, intent(out) :: xflack, qflack
+real, dimension(:,:), intent(in) :: reflections_data !< reflection data
+real, intent(in) :: friedif !< See Flack, H. D. & Shmueli, U. (2007). Acta Cryst. A63, 257-265. http://dx.doi.org/10.1107/S0108767307002802
+real, intent(out) :: xflack, qflack !< return flack parameter obtained during refinement
 real, intent(out) :: distmax
 real,  dimension(8) :: hflack
 integer refls_size, i, kdjw, nfc, nfo
@@ -1755,9 +1754,9 @@ end subroutine
 subroutine percentiles(sortedvalues, f1decile, f1octile, f1quintile, fquart, fmedian, &
 &   f3quart, f4quintile, f7octile, f9decile)
 implicit none
-real, dimension(:), intent(in) :: sortedvalues
-real, intent(out) :: f1decile, f1octile, f1quintile, fquart, fmedian
-real, intent(out) :: f3quart, f4quintile, f7octile, f9decile
+real, dimension(:), intent(in) :: sortedvalues !< sorted serie of data
+real, intent(out) :: f1decile, f1octile, f1quintile, fquart, fmedian !< percentiles
+real, intent(out) :: f3quart, f4quintile, f7octile, f9decile !< percentiles
 integer nsize
 
         nsize=size(sortedvalues)
@@ -1784,14 +1783,14 @@ integer nsize
         end if
 end subroutine
 
-!> Get friedif (calculated somewhere else)
+!> Get friedif (calculated somewhere else) and print out result 
 subroutine getfriedif(reflections_data, friedif)
 use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 use xssval_mod, only: issprt
 implicit none
-real, dimension(:,:), intent(inout) :: reflections_data
-real, intent(out) :: friedif
+real, dimension(:,:), intent(inout) :: reflections_data !< reflection data
+real, intent(out) :: friedif !< friedif, see Flack, H. D. & Shmueli, U. (2007). Acta Cryst. A63, 257-265. http://dx.doi.org/10.1107/S0108767307002802
 real, dimension(12) :: aprop
 real obstocal
 integer i
@@ -1834,8 +1833,8 @@ end subroutine
 !> Apply all the filters to the reflection list
 subroutine applyfilters(reflections_data, reflections_filters, filter)
 implicit none
-real, dimension(:,:), intent(inout) :: reflections_data
-logical, dimension(:,:), intent(out)  :: reflections_filters
+real, dimension(:,:), intent(inout) :: reflections_data !< reflection data
+logical, dimension(:,:), intent(out)  :: reflections_filters !< .true. if reflection is rejected
 real, dimension(:), intent(in) :: filter
 real dcmax, q
 integer i, ierror
@@ -1903,12 +1902,12 @@ use m_mrgrnk
 use formatnumber_mod, only:print_value
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data !< reflectiond data 2D array (see top of this file)
-logical, dimension(:) :: filtered_reflections !< True if a reflections needs to be rejected
+logical, dimension(:), intent(in) :: filtered_reflections !< True if a reflections is rejected
 real, dimension(:), optional, intent(in) :: weights !< optional weights. If absent, 1/sigma**2 is used.
 logical, dimension(:), allocatable, intent(out), optional :: outliersarg !< If present, use a robust fitting with outlier rejection
 logical, intent(in), optional :: punch_arg !< Write ouput to a file
-integer, intent(in) :: itype
-real, intent(out) :: bijvoet, bijvoetsu
+integer, intent(in) :: itype !< 1=Bijvoet differences, 2=Parsons quotient
+real, intent(out) :: bijvoet, bijvoetsu !< bijvoet or parsons parameter and its esd
 real, dimension(:,:), allocatable :: buffertemp
 integer, dimension(:,:), allocatable :: selected_reflections
 integer i, j, k, outlierloop
@@ -2861,6 +2860,7 @@ real f3quart, f4quintile, f7octile, f9decile
     CALL XPRVDU (NCVDU, 2, 0)          
 end subroutine
 
+!> Write result of data to external file
 subroutine punchdata(reflections_data, reflections_filters)
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
@@ -2907,9 +2907,6 @@ real, dimension(:), allocatable :: leverage
     write(666, *) '# F3 = Filter 3'
     write(666, *) '# F4 = Filter 4'
     write(666, *) '# F5 = Filter 5'
-    write(666, *) '# F6 = Outliers Hole in one'
-    write(666, *) '# F7 = Outliers Bijvoet pairs'
-    write(666, *) '# F8 = Outliers Parsons quotients'
     write(666, *) ''
     
     
@@ -2917,10 +2914,10 @@ real, dimension(:), allocatable :: leverage
     &   'h', 'k', 'l', 'Zh', 'FcA ', 'FoA ', 'FcD ', 'FoD ', 'SigmaD', 'SigmaQ',  &
     &   'Flack(x)', 'SigmaX', 'DeltaX', 'Flxwt', 'SigNoise', 'Fried1', 'Fried2',  &
     &   'Fo1 ', 'Sig1', 'Fc1 ', 'Fo2 ', 'Sig2', 'Fc2 ', 'Leverage',                    &
-    &   'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8'
+    &   'F1', 'F2', 'F3', 'F4', 'F5'
     
     do i=1, ubound(reflections_data, 2)
-        write(666, '(3(I3, 1x), 20(F12.4, 1X), (F12.6, 1X), 8(L3, 1X))')  &
+        write(666, '(3(I3, 1x), 20(F12.4, 1X), (F12.6, 1X), 5(L3, 1X))')  &
         &   nint(reflections_data(1:3,i)),                                &
         &   reflections_data(4:23,i),                                     &
         &   leverage(i), &
@@ -2932,12 +2929,13 @@ real, dimension(:), allocatable :: leverage
 
 end subroutine
 
+!> Return current date and time
 function mydate()
 implicit none
 integer, dimension(8) :: values
 character(len=3), dimension(12), parameter :: months=(/'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'/)
 character(len=1024) :: buffer
-character(len=:), allocatable :: mydate
+character(len=:), allocatable :: mydate !< date and time as text
 
     call date_and_time(values=values)
     write(buffer, '(I0,1X,a,1X,I4,1X,"(",I2.2,":",I2.2,":",I2.2,")")') &
@@ -2945,23 +2943,6 @@ character(len=:), allocatable :: mydate
     allocate(character(len=len_trim(buffer)) :: mydate)
     mydate=trim(buffer)
         
-end function
-
-!> Invert a 2x2 matrix
-function invert22(a) result(b)
-implicit none
-double precision, dimension(2,2), intent(in) :: a
-double precision, dimension(2,2) :: b !< inverse of matrix
-double precision det
-
-    det=a(1,1)*a(2,2)-a(1,2)*a(2,1)
-
-    b(1,1)=a(2,2)
-    b(2,1)=-a(2,1)
-    b(1,2)=-a(1,2)
-    b(2,2)=a(1,1)
-
-    b=1/det*b
 end function
 
 end module

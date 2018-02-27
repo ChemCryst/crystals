@@ -10063,6 +10063,9 @@ C this subroutine is call via #TONSPK TYPE=PASCAL
       use xlst05_mod, only: l5o
       use xlst06_mod, only: m6
       use xiobuf_mod, only: cmon
+      use store_mod, only: store, istore=>i_store
+      use xcompd_mod
+      use xlst02_mod, only:
       implicit none
 C
 C     TON SPEK'S ENANTIOPOLE
@@ -10120,18 +10123,11 @@ C      set packing constants for Ton's code
       integer, parameter :: npak=256
       integer, parameter :: nn2=npak/2
 C
-      INCLUDE  'ISTORE.INC'
-      INCLUDE  'ICOM39.INC'
+C      INCLUDE  'ICOM39.INC'
 C
-      INCLUDE  'STORE.INC'
-      INCLUDE  'XCOMPD.INC'
-!      INCLUDE  'XCONST.INC'
-      INCLUDE  'XLST02.INC'
-      INCLUDE  'XSIZES.INC'
+C      INCLUDE  'XLST02.INC'
+C      INCLUDE  'XSIZES.INC'
 C
-      INCLUDE  'QSTORE.INC'
-!      INCLUDE  'QSTR11.INC'
-      ! INCLUDE  'QLST39.INC' should not be usefull
 C
       integer, parameter ::  NLISTS=9
       integer, dimension(nlists) :: LISTS
