@@ -90,16 +90,16 @@ ___________
 
     Atom CL(1), basis: CL(1),C(2)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -1.67E-02     0.00E+00    -1.67E-02      NaN    Uc[1,3]==0
-         1  1  0  0  0    2.70E-03     0.00E+00     2.70E-03      NaN    Uc[2,3]==0
+         1  1  0  0  0   -1.67E-02     0.00E+00    -1.67E-02             Uc[1,3]==0
+         1  1  0  0  0    2.70E-03     0.00E+00     2.70E-03             Uc[2,3]==0
     Atom CL(3), basis: CL(3),C(2)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -3.98E-02     0.00E+00    -3.98E-02      NaN    Uc[1,3]==0
-         1  1  0  0  0   -2.08E-02     0.00E+00    -2.08E-02      NaN    Uc[2,3]==0
+         1  1  0  0  0   -3.98E-02     0.00E+00    -3.98E-02             Uc[1,3]==0
+         1  1  0  0  0   -2.08E-02     0.00E+00    -2.08E-02             Uc[2,3]==0
     Atom CL(4), basis: CL(4),C(2)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -2.74E-02     0.00E+00    -2.74E-02      NaN    Uc[1,3]==0
-         1  1  0  0  0    5.92E-03     0.00E+00     5.92E-03      NaN    Uc[2,3]==0
+         1  1  0  0  0   -2.74E-02     0.00E+00    -2.74E-02             Uc[1,3]==0
+         1  1  0  0  0    5.92E-03     0.00E+00     5.92E-03             Uc[2,3]==0
 ___________
  (1) NO
 ___________
@@ -1826,12 +1826,12 @@ ___________
 
     Atom C(24), basis: C(24),C(29),C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    5.75E-03     0.00E+00     5.75E-03      NaN    Uc[1,3]==0
-         1  1  0  0  0   -2.02E-03     0.00E+00    -2.02E-03      NaN    Uc[2,3]==0
+         1  1  0  0  0    5.75E-03     0.00E+00     5.75E-03             Uc[1,3]==0
+         1  1  0  0  0   -2.02E-03     0.00E+00    -2.02E-03             Uc[2,3]==0
     Atom C(25), basis: C(25),C(24),C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -6.40E-03     0.00E+00    -6.40E-03      NaN    Uc[1,3]==0
-         1  1  0  0  0    2.75E-03     0.00E+00     2.75E-03      NaN    Uc[2,3]==0
+         1  1  0  0  0   -6.40E-03     0.00E+00    -6.40E-03             Uc[1,3]==0
+         1  1  0  0  0    2.75E-03     0.00E+00     2.75E-03             Uc[2,3]==0
 ___________
  (1) NO
 ___________
@@ -3538,12 +3538,12 @@ ___________
 
     Atom C(24), basis: C(24),C(29),C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    1.19E-02     0.00E+00     1.19E-02      NaN    Uc[1,2]=0
-         1  1  0  0  0   -9.30E-03     0.00E+00    -9.30E-03      NaN    Uc[2,3]=0
+         1  1  0  0  0    1.19E-02     0.00E+00     1.19E-02             Uc[1,2]=0
+         1  1  0  0  0   -9.30E-03     0.00E+00    -9.30E-03             Uc[2,3]=0
     Atom C(25), basis: C(25),C(24),C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -4.19E-03     0.00E+00    -4.19E-03      NaN    Uc[1,2]=0
-         1  1  0  0  0   -6.25E-03     0.00E+00    -6.25E-03      NaN    Uc[2,3]=0
+         1  1  0  0  0   -4.19E-03     0.00E+00    -4.19E-03             Uc[1,2]=0
+         1  1  0  0  0   -6.25E-03     0.00E+00    -6.25E-03             Uc[2,3]=0
 ___________
  (1) NO
 ___________
@@ -5255,34 +5255,34 @@ ___________
 
     Atom C(24)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    7.26E-03     0.00E+00     7.26E-03      NaN    Ul_12 = 0.0
-         1  1  0  0  0   -8.45E-03     0.00E+00    -8.45E-03      NaN    Ul_23 = 0.0
-         1  1  0  0  0    3.71E-03     0.00E+00     3.71E-03      NaN    Ul_13 = 0.0
+         1  1  0  0  0    7.26E-03     0.00E+00     7.26E-03             Ul_12 = 0.0
+         1  1  0  0  0   -8.45E-03     0.00E+00    -8.45E-03             Ul_23 = 0.0
+         1  1  0  0  0    3.71E-03     0.00E+00     3.71E-03             Ul_13 = 0.0
     Atom C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -1.10E-03     0.00E+00    -1.10E-03      NaN    Ul_12 = 0.0
-         1  1  0  0  0   -4.39E-03     0.00E+00    -4.39E-03      NaN    Ul_23 = 0.0
-         1  1  0  0  0   -5.50E-03     0.00E+00    -5.50E-03      NaN    Ul_13 = 0.0
+         1  1  0  0  0   -1.10E-03     0.00E+00    -1.10E-03             Ul_12 = 0.0
+         1  1  0  0  0   -4.39E-03     0.00E+00    -4.39E-03             Ul_23 = 0.0
+         1  1  0  0  0   -5.50E-03     0.00E+00    -5.50E-03             Ul_13 = 0.0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -6.13E-04     0.00E+00    -6.13E-04      NaN    Ul_12 = 0.0
-         1  1  0  0  0    2.45E-02     0.00E+00     2.45E-02      NaN    Ul_23 = 0.0
-         1  1  0  0  0    1.07E-02     0.00E+00     1.07E-02      NaN    Ul_13 = 0.0
+         1  1  0  0  0   -6.13E-04     0.00E+00    -6.13E-04             Ul_12 = 0.0
+         1  1  0  0  0    2.45E-02     0.00E+00     2.45E-02             Ul_23 = 0.0
+         1  1  0  0  0    1.07E-02     0.00E+00     1.07E-02             Ul_13 = 0.0
     Atom C(27)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    6.19E-03     0.00E+00     6.19E-03      NaN    Ul_12 = 0.0
-         1  1  0  0  0   -3.13E-03     0.00E+00    -3.13E-03      NaN    Ul_23 = 0.0
-         1  1  0  0  0    6.72E-03     0.00E+00     6.72E-03      NaN    Ul_13 = 0.0
+         1  1  0  0  0    6.19E-03     0.00E+00     6.19E-03             Ul_12 = 0.0
+         1  1  0  0  0   -3.13E-03     0.00E+00    -3.13E-03             Ul_23 = 0.0
+         1  1  0  0  0    6.72E-03     0.00E+00     6.72E-03             Ul_13 = 0.0
     Atom C(28)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -1.22E-02     0.00E+00    -1.22E-02      NaN    Ul_12 = 0.0
-         1  1  0  0  0   -9.50E-03     0.00E+00    -9.50E-03      NaN    Ul_23 = 0.0
-         1  1  0  0  0   -6.17E-03     0.00E+00    -6.17E-03      NaN    Ul_13 = 0.0
+         1  1  0  0  0   -1.22E-02     0.00E+00    -1.22E-02             Ul_12 = 0.0
+         1  1  0  0  0   -9.50E-03     0.00E+00    -9.50E-03             Ul_23 = 0.0
+         1  1  0  0  0   -6.17E-03     0.00E+00    -6.17E-03             Ul_13 = 0.0
     Atom C(29)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0   -1.64E-02     0.00E+00    -1.64E-02      NaN    Ul_12 = 0.0
-         1  1  0  0  0    3.56E-03     0.00E+00     3.56E-03      NaN    Ul_23 = 0.0
-         1  1  0  0  0    6.81E-03     0.00E+00     6.81E-03      NaN    Ul_13 = 0.0
+         1  1  0  0  0   -1.64E-02     0.00E+00    -1.64E-02             Ul_12 = 0.0
+         1  1  0  0  0    3.56E-03     0.00E+00     3.56E-03             Ul_23 = 0.0
+         1  1  0  0  0    6.81E-03     0.00E+00     6.81E-03             Ul_13 = 0.0
 ___________
  (1) NO
 ___________
@@ -7040,14 +7040,14 @@ ___________
 
     Atom C(7), basis: C(7),C(9)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    1.29E-03     0.00E+00     1.29E-03      NaN    Uc1[1,3]-Uc2[1,3]=0
-         1  1  0  0  0    1.05E-02     0.00E+00     1.05E-02      NaN    Uc1[2,3]-Uc2[2,3]=0
-         1  1  0  0  0   -1.14E-02     0.00E+00    -1.14E-02      NaN    Uc1[3,3]-Uc2[3,3]=0
+         1  1  0  0  0    1.29E-03     0.00E+00     1.29E-03             Uc1[1,3]-Uc2[1,3]=0
+         1  1  0  0  0    1.05E-02     0.00E+00     1.05E-02             Uc1[2,3]-Uc2[2,3]=0
+         1  1  0  0  0   -1.14E-02     0.00E+00    -1.14E-02             Uc1[3,3]-Uc2[3,3]=0
     Atom C(9), basis: C(9),C(11)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    6.76E-03     0.00E+00     6.76E-03      NaN    Uc1[1,3]-Uc2[1,3]=0
-         1  1  0  0  0    6.18E-03     0.00E+00     6.18E-03      NaN    Uc1[2,3]-Uc2[2,3]=0
-         1  1  0  0  0    1.01E-02     0.00E+00     1.01E-02      NaN    Uc1[3,3]-Uc2[3,3]=0
+         1  1  0  0  0    6.76E-03     0.00E+00     6.76E-03             Uc1[1,3]-Uc2[1,3]=0
+         1  1  0  0  0    6.18E-03     0.00E+00     6.18E-03             Uc1[2,3]-Uc2[2,3]=0
+         1  1  0  0  0    1.01E-02     0.00E+00     1.01E-02             Uc1[3,3]-Uc2[3,3]=0
 ___________
  (1) NO
 ___________
@@ -8770,28 +8770,28 @@ CONT C(26) TO C(27) TO C(28)
 
     Atom C(24), basis: C(24),C(25),C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    3.39E-02     3.32E-02     6.55E-04      NaN    U11_local - <U11_local> == 0
-         1  1  0  0  0    4.40E-02     4.74E-02    -3.43E-03      NaN    U22_local - <U22_local> == 0
-         1  1  0  0  0    4.58E-02     5.71E-02    -1.13E-02      NaN    U33_local - <U33_local> == 0
-         1  1  0  0  0    2.84E-03     1.40E-03     1.45E-03      NaN    U12_local - <U12_local> == 0
-         1  1  0  0  0   -1.41E-02     7.68E-04    -1.49E-02      NaN    U23_local - <U23_local> == 0
-         1  1  0  0  0   -1.71E-02    -1.33E-02    -3.71E-03      NaN    U13_local - <U13_local> == 0
+         1  1  0  0  0    3.39E-02     3.32E-02     6.55E-04             U11_local - <U11_local> == 0
+         1  1  0  0  0    4.40E-02     4.74E-02    -3.43E-03             U22_local - <U22_local> == 0
+         1  1  0  0  0    4.58E-02     5.71E-02    -1.13E-02             U33_local - <U33_local> == 0
+         1  1  0  0  0    2.84E-03     1.40E-03     1.45E-03             U12_local - <U12_local> == 0
+         1  1  0  0  0   -1.41E-02     7.68E-04    -1.49E-02             U23_local - <U23_local> == 0
+         1  1  0  0  0   -1.71E-02    -1.33E-02    -3.71E-03             U13_local - <U13_local> == 0
     Atom C(25), basis: C(25),C(26),C(27)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    3.74E-02     3.32E-02     4.25E-03      NaN    U11_local - <U11_local> == 0
-         1  1  0  0  0    3.89E-02     4.74E-02    -8.58E-03      NaN    U22_local - <U22_local> == 0
-         1  1  0  0  0    5.27E-02     5.71E-02    -4.40E-03      NaN    U33_local - <U33_local> == 0
-         1  1  0  0  0    7.48E-03     1.40E-03     6.09E-03      NaN    U12_local - <U12_local> == 0
-         1  1  0  0  0   -9.11E-05     7.68E-04    -8.59E-04      NaN    U23_local - <U23_local> == 0
-         1  1  0  0  0   -9.01E-03    -1.33E-02     4.33E-03      NaN    U13_local - <U13_local> == 0
+         1  1  0  0  0    3.74E-02     3.32E-02     4.25E-03             U11_local - <U11_local> == 0
+         1  1  0  0  0    3.89E-02     4.74E-02    -8.58E-03             U22_local - <U22_local> == 0
+         1  1  0  0  0    5.27E-02     5.71E-02    -4.40E-03             U33_local - <U33_local> == 0
+         1  1  0  0  0    7.48E-03     1.40E-03     6.09E-03             U12_local - <U12_local> == 0
+         1  1  0  0  0   -9.11E-05     7.68E-04    -8.59E-04             U23_local - <U23_local> == 0
+         1  1  0  0  0   -9.01E-03    -1.33E-02     4.33E-03             U13_local - <U13_local> == 0
     Atom C(26), basis: C(26),C(27),C(28)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    2.83E-02     3.32E-02    -4.90E-03      NaN    U11_local - <U11_local> == 0
-         1  1  0  0  0    5.95E-02     4.74E-02     1.20E-02      NaN    U22_local - <U22_local> == 0
-         1  1  0  0  0    7.28E-02     5.71E-02     1.57E-02      NaN    U33_local - <U33_local> == 0
-         1  1  0  0  0   -6.14E-03     1.40E-03    -7.54E-03      NaN    U12_local - <U12_local> == 0
-         1  1  0  0  0    1.65E-02     7.68E-04     1.58E-02      NaN    U23_local - <U23_local> == 0
-         1  1  0  0  0   -1.40E-02    -1.33E-02    -6.19E-04      NaN    U13_local - <U13_local> == 0
+         1  1  0  0  0    2.83E-02     3.32E-02    -4.90E-03             U11_local - <U11_local> == 0
+         1  1  0  0  0    5.95E-02     4.74E-02     1.20E-02             U22_local - <U22_local> == 0
+         1  1  0  0  0    7.28E-02     5.71E-02     1.57E-02             U33_local - <U33_local> == 0
+         1  1  0  0  0   -6.14E-03     1.40E-03    -7.54E-03             U12_local - <U12_local> == 0
+         1  1  0  0  0    1.65E-02     7.68E-04     1.58E-02             U23_local - <U23_local> == 0
+         1  1  0  0  0   -1.40E-02    -1.33E-02    -6.19E-04             U13_local - <U13_local> == 0
 ___________
  (1) NO
 ___________
@@ -10552,14 +10552,14 @@ Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
 
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    4.67E-02     0.00E+00     4.67E-02      NaN    L_11-<L_11,L_22>=0
-         1  1  0  0  0    8.34E-02     0.00E+00     8.34E-02      NaN    L_22-<L_11,L_22>=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L_12=0
+         1  1  0  0  0    4.67E-02     0.00E+00     4.67E-02             L_11-<L_11,L_22>=0
+         1  1  0  0  0    8.34E-02     0.00E+00     8.34E-02             L_22-<L_11,L_22>=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L_12=0
     Atom CL(3)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    7.79E-02     0.00E+00     7.79E-02      NaN    L_11-<L_11,L_22>=0
-         1  1  0  0  0    8.95E-02     0.00E+00     8.95E-02      NaN    L_22-<L_11,L_22>=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L_12=0
+         1  1  0  0  0    7.79E-02     0.00E+00     7.79E-02             L_11-<L_11,L_22>=0
+         1  1  0  0  0    8.95E-02     0.00E+00     8.95E-02             L_22-<L_11,L_22>=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L_12=0
 ___________
  (1) NO
 ___________
@@ -12270,20 +12270,20 @@ Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
 
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    1.12E-01     8.09E-02     3.16E-02      NaN    L(1,1)-<eig>=0
-         1  1  0  0  0    8.34E-02     8.09E-02     2.59E-03      NaN    L(2,2)-<eig>=0
-         1  1  0  0  0    4.67E-02     8.09E-02    -3.42E-02      NaN    L(3,3)-<eig>=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L(2,3)=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L(1,3)=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L(1,2)=0
+         1  1  0  0  0    1.12E-01     8.09E-02     3.16E-02             L(1,1)-<eig>=0
+         1  1  0  0  0    8.34E-02     8.09E-02     2.59E-03             L(2,2)-<eig>=0
+         1  1  0  0  0    4.67E-02     8.09E-02    -3.42E-02             L(3,3)-<eig>=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L(2,3)=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L(1,3)=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L(1,2)=0
     Atom CL(3)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    7.79E-02     1.28E-01    -4.97E-02      NaN    L(1,1)-<eig>=0
-         1  1  0  0  0    8.95E-02     1.28E-01    -3.81E-02      NaN    L(2,2)-<eig>=0
-         1  1  0  0  0    2.15E-01     1.28E-01     8.77E-02      NaN    L(3,3)-<eig>=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L(2,3)=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L(1,3)=0
-         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00      NaN    L(1,2)=0
+         1  1  0  0  0    7.79E-02     1.28E-01    -4.97E-02             L(1,1)-<eig>=0
+         1  1  0  0  0    8.95E-02     1.28E-01    -3.81E-02             L(2,2)-<eig>=0
+         1  1  0  0  0    2.15E-01     1.28E-01     8.77E-02             L(3,3)-<eig>=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L(2,3)=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L(1,3)=0
+         1  1  0  0  0    0.00E+00     0.00E+00     0.00E+00             L(1,2)=0
 ___________
  (1) NO
 ___________
@@ -14007,10 +14007,10 @@ ___________
 
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    7.59E-02     9.52E-02    -1.93E-02      NaN    U_geom = <U>_geom
+         1  1  0  0  0    7.59E-02     9.52E-02    -1.93E-02             U_geom = <U>_geom
     Atom CL(3)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    1.14E-01     9.52E-02     1.93E-02      NaN    U_geom = <U>_geom
+         1  1  0  0  0    1.14E-01     9.52E-02     1.93E-02             U_geom = <U>_geom
 ___________
  (1) NO
 ___________
@@ -15695,10 +15695,10 @@ ___________
 
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    8.09E-02     1.04E-01    -2.34E-02      NaN    U_eq = <U>_eq
+         1  1  0  0  0    8.09E-02     1.04E-01    -2.34E-02             U_eq = <U>_eq
     Atom CL(3)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    1.28E-01     1.04E-01     2.34E-02      NaN    U_eq = <U>_eq
+         1  1  0  0  0    1.28E-01     1.04E-01     2.34E-02             U_eq = <U>_eq
 ___________
  (1) NO
 ___________
@@ -17400,52 +17400,52 @@ T tensor:
 
     Atom C(24)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    3.38E-02     3.23E-02     1.47E-03      NaN    U11 - Utls11 == 0
-         1  1  0  0  0    6.45E-02     5.91E-02     5.33E-03      NaN    U22 - Utls22 == 0
-         1  1  0  0  0    2.56E-02     2.92E-02    -3.55E-03      NaN    U33 - Utls33 == 0
-         1  1  0  0  0   -2.84E-03    -5.84E-03     2.99E-03      NaN    U12 - Utls12 == 0
-         1  1  0  0  0    8.16E-03     6.46E-03     1.69E-03      NaN    U23 - Utls23 == 0
-         1  1  0  0  0    7.10E-03     2.28E-03     4.81E-03      NaN    U13 - Utls13 == 0
+         1  1  0  0  0    3.38E-02     3.23E-02     1.47E-03             U11 - Utls11 == 0
+         1  1  0  0  0    6.45E-02     5.91E-02     5.33E-03             U22 - Utls22 == 0
+         1  1  0  0  0    2.56E-02     2.92E-02    -3.55E-03             U33 - Utls33 == 0
+         1  1  0  0  0   -2.84E-03    -5.84E-03     2.99E-03             U12 - Utls12 == 0
+         1  1  0  0  0    8.16E-03     6.46E-03     1.69E-03             U23 - Utls23 == 0
+         1  1  0  0  0    7.10E-03     2.28E-03     4.81E-03             U13 - Utls13 == 0
     Atom C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    3.45E-02     3.50E-02    -4.13E-04      NaN    U11 - Utls11 == 0
-         1  1  0  0  0    4.46E-02     4.51E-02    -4.62E-04      NaN    U22 - Utls22 == 0
-         1  1  0  0  0    4.95E-02     4.72E-02     2.26E-03      NaN    U33 - Utls33 == 0
-         1  1  0  0  0   -5.56E-03     1.49E-03    -7.05E-03      NaN    U12 - Utls12 == 0
-         1  1  0  0  0   -1.03E-02    -5.40E-03    -4.90E-03      NaN    U23 - Utls23 == 0
-         1  1  0  0  0    4.16E-04    -1.12E-03     1.54E-03      NaN    U13 - Utls13 == 0
+         1  1  0  0  0    3.45E-02     3.50E-02    -4.13E-04             U11 - Utls11 == 0
+         1  1  0  0  0    4.46E-02     4.51E-02    -4.62E-04             U22 - Utls22 == 0
+         1  1  0  0  0    4.95E-02     4.72E-02     2.26E-03             U33 - Utls33 == 0
+         1  1  0  0  0   -5.56E-03     1.49E-03    -7.05E-03             U12 - Utls12 == 0
+         1  1  0  0  0   -1.03E-02    -5.40E-03    -4.90E-03             U23 - Utls23 == 0
+         1  1  0  0  0    4.16E-04    -1.12E-03     1.54E-03             U13 - Utls13 == 0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    3.96E-02     3.71E-02     2.53E-03      NaN    U11 - Utls11 == 0
-         1  1  0  0  0    6.92E-02     7.08E-02    -1.68E-03      NaN    U22 - Utls22 == 0
-         1  1  0  0  0    5.19E-02     4.88E-02     3.15E-03      NaN    U33 - Utls33 == 0
-         1  1  0  0  0    2.55E-02     2.04E-02     5.08E-03      NaN    U12 - Utls12 == 0
-         1  1  0  0  0    8.36E-03     6.30E-03     2.06E-03      NaN    U23 - Utls23 == 0
-         1  1  0  0  0   -9.41E-03    -7.63E-03    -1.79E-03      NaN    U13 - Utls13 == 0
+         1  1  0  0  0    3.96E-02     3.71E-02     2.53E-03             U11 - Utls11 == 0
+         1  1  0  0  0    6.92E-02     7.08E-02    -1.68E-03             U22 - Utls22 == 0
+         1  1  0  0  0    5.19E-02     4.88E-02     3.15E-03             U33 - Utls33 == 0
+         1  1  0  0  0    2.55E-02     2.04E-02     5.08E-03             U12 - Utls12 == 0
+         1  1  0  0  0    8.36E-03     6.30E-03     2.06E-03             U23 - Utls23 == 0
+         1  1  0  0  0   -9.41E-03    -7.63E-03    -1.79E-03             U13 - Utls13 == 0
     Atom C(27)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    4.49E-02     5.01E-02    -5.18E-03      NaN    U11 - Utls11 == 0
-         1  1  0  0  0    7.48E-02     7.36E-02     1.17E-03      NaN    U22 - Utls22 == 0
-         1  1  0  0  0    2.83E-02     3.07E-02    -2.38E-03      NaN    U33 - Utls33 == 0
-         1  1  0  0  0    2.96E-03     4.06E-03    -1.09E-03      NaN    U12 - Utls12 == 0
-         1  1  0  0  0    1.40E-02     1.44E-02    -3.98E-04      NaN    U23 - Utls23 == 0
-         1  1  0  0  0    4.22E-03     6.07E-03    -1.86E-03      NaN    U13 - Utls13 == 0
+         1  1  0  0  0    4.49E-02     5.01E-02    -5.18E-03             U11 - Utls11 == 0
+         1  1  0  0  0    7.48E-02     7.36E-02     1.17E-03             U22 - Utls22 == 0
+         1  1  0  0  0    2.83E-02     3.07E-02    -2.38E-03             U33 - Utls33 == 0
+         1  1  0  0  0    2.96E-03     4.06E-03    -1.09E-03             U12 - Utls12 == 0
+         1  1  0  0  0    1.40E-02     1.44E-02    -3.98E-04             U23 - Utls23 == 0
+         1  1  0  0  0    4.22E-03     6.07E-03    -1.86E-03             U13 - Utls13 == 0
     Atom C(28)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    6.90E-02     6.43E-02     4.66E-03      NaN    U11 - Utls11 == 0
-         1  1  0  0  0    5.25E-02     5.45E-02    -2.08E-03      NaN    U22 - Utls22 == 0
-         1  1  0  0  0    3.62E-02     3.38E-02     2.37E-03      NaN    U33 - Utls33 == 0
-         1  1  0  0  0   -1.12E-02    -8.73E-03    -2.52E-03      NaN    U12 - Utls12 == 0
-         1  1  0  0  0    2.61E-03     5.53E-03    -2.92E-03      NaN    U23 - Utls23 == 0
-         1  1  0  0  0   -8.51E-03    -9.05E-03     5.32E-04      NaN    U13 - Utls13 == 0
+         1  1  0  0  0    6.90E-02     6.43E-02     4.66E-03             U11 - Utls11 == 0
+         1  1  0  0  0    5.25E-02     5.45E-02    -2.08E-03             U22 - Utls22 == 0
+         1  1  0  0  0    3.62E-02     3.38E-02     2.37E-03             U33 - Utls33 == 0
+         1  1  0  0  0   -1.12E-02    -8.73E-03    -2.52E-03             U12 - Utls12 == 0
+         1  1  0  0  0    2.61E-03     5.53E-03    -2.92E-03             U23 - Utls23 == 0
+         1  1  0  0  0   -8.51E-03    -9.05E-03     5.32E-04             U13 - Utls13 == 0
     Atom C(29)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-         1  1  0  0  0    4.78E-02     4.93E-02    -1.58E-03      NaN    U11 - Utls11 == 0
-         1  1  0  0  0    6.55E-02     6.47E-02     8.36E-04      NaN    U22 - Utls22 == 0
-         1  1  0  0  0    3.53E-02     3.46E-02     6.89E-04      NaN    U33 - Utls33 == 0
-         1  1  0  0  0    1.85E-03     2.65E-04     1.59E-03      NaN    U12 - Utls12 == 0
-         1  1  0  0  0    1.04E-02     8.46E-03     1.95E-03      NaN    U23 - Utls23 == 0
-         1  1  0  0  0   -1.86E-02    -1.99E-02     1.28E-03      NaN    U13 - Utls13 == 0
+         1  1  0  0  0    4.78E-02     4.93E-02    -1.58E-03             U11 - Utls11 == 0
+         1  1  0  0  0    6.55E-02     6.47E-02     8.36E-04             U22 - Utls22 == 0
+         1  1  0  0  0    3.53E-02     3.46E-02     6.89E-04             U33 - Utls33 == 0
+         1  1  0  0  0    1.85E-03     2.65E-04     1.59E-03             U12 - Utls12 == 0
+         1  1  0  0  0    1.04E-02     8.46E-03     1.95E-03             U23 - Utls23 == 0
+         1  1  0  0  0   -1.86E-02    -1.99E-02     1.28E-03             U13 - Utls13 == 0
 ___________
  (1) NO
 ___________
