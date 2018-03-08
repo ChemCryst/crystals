@@ -10539,7 +10539,7 @@ C ------------------------------------------------
       write(ncwu,'(a)') '+++++++++++++++++++++++++++++++++++++++++'
       write(ncwu,'(a)') '    Second pass using all filters exept 4'
       write(ncwu,'(a)') '+++++++++++++++++++++++++++++++++++++++++'
-      
+            
       allocate(currentfilter(ubound(reflections_filters, 2)))
       currentfilter=reflections_filters(1,:).or.
      1  reflections_filters(2,:).or.
@@ -10598,9 +10598,18 @@ C ------------------------------------------------
      1  xbar, bijvoet, parsons/)
       sv2=(/0.0, qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
 
+      else
+        write(ncwu,'(a)') 'All reflections excluded'
+
+        v2=0.0
+        sv2=0.0
+      end if
+
       write(ncwu,'(a)') '++++++++++++++++++++++++++++++++'
       write(ncwu,'(a)') '    Third pass using all filters'
       write(ncwu,'(a)') '++++++++++++++++++++++++++++++++'
+      
+      if(count(reflections_data(C_FAIL,:)==0.0)/=0) then
       
 C ------------------------------------------------
 C- Hole in one
@@ -10654,8 +10663,8 @@ C ------------------------------------------------
       sv3=(/0.0, qflack, hin1su, tonsy, sbar, bijvoetsu, parsonssu/)
       
       else
-        v2=0.0
-        sv2=0.0
+        write(ncwu,'(a)') 'All reflections excluded'
+
         v3=0.0
         sv3=0.0
       end if
@@ -10824,6 +10833,9 @@ C ------------------------------------------------
       write(ncwu,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
       call xprvdu(ncvdu,1,0)
+      
+      if(nint(v2(1))>0) then
+      
       write(cmon,'(a, a)') 'Flack parameter from refinement ', 
      1  print_value(v2(2), sv2(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
@@ -10874,11 +10886,21 @@ C ------------------------------------------------
      1  print_value(v2(7), sv2(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n),parsons_outliers(2)
       call xprvdu(ncvdu,1,0)
+      
+      else
+      
+      write(cmon,'(a)') 'No reflection available'
+      write(ncwu,'(a)') 'No reflection available'
+      call xprvdu(ncvdu,1,0)
+      
+      end if
+      
       write(cmon,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
       write(ncwu,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
       call xprvdu(ncvdu,1,0)
+
       write(cmon,'(a)') ''
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)
@@ -10920,6 +10942,9 @@ C ------------------------------------------------
       write(ncwu,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
       call xprvdu(ncvdu,1,0)
+      
+      if(nint(v3(1))>0) then
+      
       write(cmon,'(a, a)') 'Flack parameter from refinement ', 
      1  print_value(v3(2), sv3(2), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n)
@@ -10970,6 +10995,15 @@ C ------------------------------------------------
      1  print_value(v3(7), sv3(7), opt_fixedform=.true.,
      1  opt_length=n+i+2, opt_decimal_pos=n),parsons_outliers(3)
       call xprvdu(ncvdu,1,0)
+
+      else
+      
+      write(cmon,'(a)') 'No reflection available'
+      write(ncwu,'(a)') 'No reflection available'
+      call xprvdu(ncvdu,1,0)
+      
+      end if
+      
       write(cmon,'(a,a)') '_______________________________',
      1  repeat('_', n+i)
       write(ncwu,'(a,a)') '_______________________________',
