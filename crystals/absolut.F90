@@ -408,6 +408,13 @@ integer, dimension(:), allocatable :: sort_keys
     refls_size=ubound(reflections_data,2)
 
     i=count((.not. filtered_reflections) .and. reflections_data(C_FCKD, :)/=0.0)
+    
+    if(i==0) then
+        sbar=0.0
+        xbar=0.0
+        error=-1
+    end if
+    
     allocate(temp2d(i,2))
     allocate(sort_keys(i))
 
@@ -422,13 +429,21 @@ integer, dimension(:), allocatable :: sort_keys
     end do
     refls_valid_size=size(sort_keys)
     
-    call mrgrnk(temp2d(:,1), sort_keys)
     k=refls_valid_size/reject_threshold
     
-    sumflx=sum(temp2d(sort_keys(k:refls_valid_size-k),1) * &
-    &   1.0d0/temp2d(sort_keys(k:refls_valid_size-k),2)**2)
-    sumwt = sum(1.0d0/temp2d(sort_keys(k:refls_valid_size-k),2)**2)
-    sumsig=sum(temp2d(sort_keys(k:refls_valid_size-k),2))
+    if(k==0) then
+    ! not enough reflections for trimming
+        sumflx=sum(temp2d(:,1) * &
+        &   1.0d0/temp2d(:,2)**2)
+        sumwt = sum(1.0d0/temp2d(:,2)**2)
+        sumsig=sum(temp2d(:,2))    
+    else
+        call mrgrnk(temp2d(:,1), sort_keys)
+        sumflx=sum(temp2d(sort_keys(k:refls_valid_size-k),1) * &
+        &   1.0d0/temp2d(sort_keys(k:refls_valid_size-k),2)**2)
+        sumwt = sum(1.0d0/temp2d(sort_keys(k:refls_valid_size-k),2)**2)
+        sumsig=sum(temp2d(sort_keys(k:refls_valid_size-k),2))
+    end if
     
     xbar = sumflx/sumwt
     sbar = sqrt(1.0d0/sumwt)
