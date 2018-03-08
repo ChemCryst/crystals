@@ -9047,11 +9047,14 @@ c  Compute Flack for each reflection
         sumwt=0.
         n6save = n6acc
         m6acc = l6acc
+        icounter = 0
+c      write(123,*)n6acc
         do i=1,n6acc
          if(istr11(m6acc+8).ne.0) then
            str11(m6acc+5)=10000.  !set large values so that sorted
            str11(m6acc+6)=10000.  !to end of list later
          else
+           icounter = icounter+1
            flackx=(str11(m6acc+3)-str11(m6acc+2))/(2.*str11(m6acc+3))
            sflackx=str11(m6acc+4)/abs((2.*str11(m6acc+3)))
            flxwt = 1./(sflackx*sflackx)
@@ -9065,7 +9068,7 @@ c  Compute Flack for each reflection
         enddo
 c average Flack(x) and average sigma
         xbar = sumflx/sumwt
-        sbar = sumsig/float(n6acc)
+        sbar = sumsig/float(icounter)
         xbar_init=xbar
         xbar_sig=sbar
 
@@ -9084,6 +9087,7 @@ c
          m6acc = m6acc + md6acc
         enddo
 c
+c      write(123,*)n6acc, icounter !verify that the trimming has worked
 c
         write(cmon,'(2x,a,i6,a )') 
      1  ' Computing Histogram starting with ',n6acc,
@@ -10904,6 +10908,8 @@ C ------------------------------------------------
       write(cmon,'(a)') ''
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)
+
+      if (nint(v3(1)).gt.0) then
       write(cmon,'(I0, 1X, a)') nint(v3(1)), 
      1  'Reflections in all filters summary:'
       write(ncwu,'(I0, 1X, a)') nint(v3(1)), 
@@ -10972,6 +10978,19 @@ C ------------------------------------------------
       write(cmon,'(a)') ''
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)      
+      else
+
+      write(cmon,'(a, I0, 1X, a)') '{E ', nint(v3(1)), 
+     1  'Reflections left in "all filters" summary:'
+      write(ncwu,'(I0, 1X, a)') nint(v3(1)), 
+     1  'Reflections left in "all filters" summary:'
+      call xprvdu(ncvdu,1,0)
+      write(cmon,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      write(ncwu,'(a,a)') '_______________________________',
+     1  repeat('_', n+i)
+      call xprvdu(ncvdu,1,0)
+      end if
       
 C ------------------------------------------------
 C Plot all the graphs

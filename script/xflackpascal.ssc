@@ -88,9 +88,9 @@
 ^^WI                @ 1,1 STATIC XFW1                                                      
 ^^WI "Distribution of D/sigma(Do). " 
 ^^WI                @ 2,1 STATIC XFW2                                                      
-^^WI 'The pairs of curves should be similar to each other'    
+^^WI 'The pairs of curves (red/green and blue/blue) should be similar to each other'    
 ^^WI                @ 3,1 STATIC XFW3                                                      
-^^WI 'The Ds/sigma(Do) (green) curve should peak in the end bins'  
+^^WI 'The Ds/sigma(Do) (green or pale blue) curve should peak in the end bins'  
 ^^WI               }                                                                       
 ^^WI              @ 2,1 PLOTWINDOW _VDIST NROWS=20 NCOLS=64                              
 ^^WI              @ 3,1 GRID EXBT NROWS=1 NCOLS=4
@@ -172,20 +172,20 @@
 ^^WI  }
 ^^WI  @ 4,2 GRID BOX NROWS=1 NCOLS=13   OUTLINE='  '
 ^^WI  {
-^^WI     @ 1,1 GRID BTNS NROWS=1 NCOLS=6 OUTLINE='Output'
+^^WI     @ 1,1 GRID BTNS NROWS=1 NCOLS=7 OUTLINE='Type'
+^^WI     {
+^^WI       @ 1,1 RADIOBUTTON ITYPEP 'Pascal'     STATE=ON  INFORM
+^^WI       @ 1,3 RADIOBUTTON ITYPEA 'Difference' STATE=OFF INFORM
+^^WI       @ 1,5 RADIOBUTTON ITYPEB 'Quotient'   STATE=OFF INFORM
+^^WI     }
+^^WI     @ 1,5 GRID BTNS NROWS=1 NCOLS=6 OUTLINE='Output'
 ^^WI     {
 ^^WI      @ 1,1 RADIOBUTTON IPUNCHA 'None'     STATE=ON  DISABLED=NO
 ^^WI      @ 1,2 RADIOBUTTON IPUNCHB 'Table'    STATE=OFF DISABLED=NO
-^^WI      @ 1,3 RADIOBUTTON IPUNCHC 'Restrain' STATE=OFF DISABLED=NO
+^^WI      @ 1,3 RADIOBUTTON IPUNCHC 'Restrain' STATE=OFF DISABLED=YES
 ^^WI      @ 1,4 RADIOBUTTON IPUNCHE 'Summary'  STATE=OFF DISABLED=YES
 ^^WI     }
 %%
-^^WI     @ 1,5 GRID BTNS NROWS=1 NCOLS=7 OUTLINE='Type'
-^^WI     {
-^^WI       @ 1,1 RADIOBUTTON ITYPEA 'Difference' STATE=OFF INFORM
-^^WI       @ 1,3 RADIOBUTTON ITYPEB 'Quotient'   STATE=OFF INFORM
-^^WI       @ 1,5 RADIOBUTTON ITYPEP 'Pascal'     STATE=ON  INFORM
-^^WI     }
 ^^WI     @ 1,8 GRID BTNS2 NROWS=1 NCOLS=4 OUTLINE='Weight'
 ^^WI     {
 ^^WI       @ 1,1 RADIOBUTTON ITYPEC 'Sigma' STATE=ON

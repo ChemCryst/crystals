@@ -1,14 +1,43 @@
 %SCRIPT PASCAL-HELP
 % COPY '#SCRIPT XHELP1'
 
- Automatic Post-refinement Absolute Structure Determination
 
-Code written by Pascal Parois to automatically filter out un-useful reflections
+                                PASCAL
 
-The user can set additional filters as required.
+This is the recommended method for routine structures.  The automatic re-weighting 
+or filtering may cause all Friedel Pairs to be rejected, in which case the alternative
+methods may give some insight into the problem.
+
+Post-refinement Absolute Structure Determination written by 
+Pascal Parois to automatically filter out un-useful reflections.
+     Calculate Studentized residual &
+     Detection of outliers in weighted least squares regression
+     Bang Yong Sohn, Guk Boh Kim
+     Korean Journal of Computational & Applied Mathematics
+     August 1997, Volume 4, Issue 2, pp 441-452
+     doi: 10.1007/BF03014491
+
+Additional filters can be set manually if required.
+
+The various computations are carried out using all reflections, using 
+manually filtered reflections and using automatically filtered reflections.
 
 If no plots appear, try reducing the value of Filter(1), the minimum
-acceptable (calculated signal) : (observed noise)
+acceptable (calculated signal) : (observed noise) or swap to the Diffference method.
+
+
+Three output files are created:
+absolute_configuration.dat     A full listing of the reflections for external analysis
+bijvoet_fit.lis                The columns if data in y=mx where y is the observed Friedel 
+                               difference, x is the computed Friedel difference and 
+                               m=1-2*Flack_Parameter
+Parsons_fit.lis                The columns of data in y=mx where y is the observed Parsons 
+                               Quotient, x is the computed Parsons Quotient  and 
+                               m=1-2*Flack_Parameter
+
+                             HISTOGRAM Graph
+If the end bins of the Ds/sigma(Do) curves are almost empty it indicates
+that you have very few enantiomer-sensitive reflections.  
 
 
                                SIGNAL Graph

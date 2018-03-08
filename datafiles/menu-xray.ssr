@@ -42,6 +42,7 @@
 
 ^^WI   MENU _EXPORT 'File export'
 ^^WI    ITEM EXPORT 'Enable auto-export' '#SET EXPORT ON' DISABLEIF='IN'
+^^WI    ITEM ALL    'Export all LISTS'  '#SCRIPT EXPORT'
 ^^WI    ITEM ATOMS 'Export coordinates' '#SCRIPT XPCH5' 
 ^^WI              DISABLEIF='IN' ENABLEIF='L5'
 ^^WI    ITEM CONST 'Export constraints' '#SCRIPT XPCH12' DISABLEIF='IN'
