@@ -394,7 +394,6 @@ integer, intent(out) :: error !< error code
 double precision sumflx, sumsig, sumwt
 integer refls_valid_size, refls_size
 integer i, k
-double precision flxwt
 double precision, dimension(:,:), allocatable :: temp2d
 integer, dimension(:), allocatable :: sort_keys
 
@@ -483,10 +482,12 @@ integer ntries
     sumsig=0.0
     DO i=1,refls_size !1600
         if(reflections_data(C_FRIED2, i)/=2.0) cycle
-        flxwt = 1./reflections_data(C_SX, i)**2
-        sumflx=sumflx+reflections_data(C_X, i)*flxwt
-        sumwt=sumwt+flxwt
-        sumsig = sumsig + reflections_data(C_SX, i)    
+        if(reflections_data(C_SX, i)/=0.0) then
+          flxwt = 1./reflections_data(C_SX, i)**2
+          sumflx=sumflx+reflections_data(C_X, i)*flxwt
+          sumwt=sumwt+flxwt
+          sumsig = sumsig + reflections_data(C_SX, i)    
+        end if
     end do    
     fmean = sumflx/sumwt
     smean = sumsig/float(count(reflections_data(C_FRIED2, :)==2.0))
@@ -502,30 +503,34 @@ integer ntries
 
         DO i=1,refls_size !1600
             if(reflections_data(C_FRIED2, i)/=2.0) cycle
-            
-            do=reflections_data(C_FOKD, i)                           !Do
-            Ds=reflections_data(C_FCKD, i)                       !Ds
-            sigd=reflections_data(C_SIGMAD, i)                         !sig(Do)
-            dwt  =1./(sigd*sigd)                        !Do(wt) = w' = 1/sig(Do)^2
-            flackx=reflections_data(C_X, i)                       !x     from A3.13 or A3.1
-            sflackx=reflections_data(C_SX, i)                      !sig(x)
-            flxwt=1./(sflackx*sflackx)                  !x(wt)= 1/sig(x)^2
-            deltax= abs(flackx-fmean)                   !/x-<x>/
-            reflections_data(C_DELTAX, i)=deltax
-            !c          type 3 is Blessing weight modifier
-            wtmodifier=xwtmod(3,smean,deltax,6.)
-            flxwt = flxwt*wtmodifier
-            dwt = dwt*wtmodifier                         
-            reflections_data(C_FLXWT, i)=flxwt
-            if (wtmodifier.ge. filter4) then
-                !c   average of ratios totals
-                sumflx=sumflx+flackx*flxwt                 !Swx  for A3.14
-                sumwt=sumwt+flxwt                          !Sw   for A3.14
-                sigint = sigint +flxwt*deltax*deltax       !SwDelsq for A3.16
+            if(reflections_data(C_SX, i)/=0.0) then
+                do=reflections_data(C_FOKD, i)                           !Do
+                Ds=reflections_data(C_FCKD, i)                       !Ds
+                sigd=reflections_data(C_SIGMAD, i)                         !sig(Do)
+                dwt  =1./(sigd*sigd)                        !Do(wt) = w' = 1/sig(Do)^2
+                flackx=reflections_data(C_X, i)                       !x     from A3.13 or A3.1
+                sflackx=reflections_data(C_SX, i)                      !sig(x)
+                flxwt=1./(sflackx*sflackx)                  !x(wt)= 1/sig(x)^2
+                deltax= abs(flackx-fmean)                   !/x-<x>/
+                reflections_data(C_DELTAX, i)=deltax
+                !c          type 3 is Blessing weight modifier
+                wtmodifier=xwtmod(3,smean,deltax,6.)
+                flxwt = flxwt*wtmodifier
+                dwt = dwt*wtmodifier                         
+                reflections_data(C_FLXWT, i)=flxwt
+                if (wtmodifier.ge. filter4) then
+                    !c   average of ratios totals
+                    sumflx=sumflx+flackx*flxwt                 !Swx  for A3.14
+                    sumwt=sumwt+flxwt                          !Sw   for A3.14
+                    sigint = sigint +flxwt*deltax*deltax       !SwDelsq for A3.16
+                else
+                    currentfilter(i)=.true.
+                    nbad = nbad + 1
+                endif
             else
                 currentfilter(i)=.true.
-                nbad = nbad + 1
-            endif
+                nbad = nbad + 1            
+            end if
         end do !1600      CONTINUE
 
         ngood=count(.not. currentfilter)
@@ -576,7 +581,7 @@ integer ntries
         if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
     endif
     call outcol(1)
-    return
+
 end subroutine
 
 !> This function return a scalar that modifies the weights
@@ -1407,17 +1412,19 @@ real mean, s2, est, goof
     do while(change)
         change=.false.
         outlierloop=outlierloop+1
+        ! select valid reflections (friedel pairs not filtered out)
+        i=count( (filtered_reflections .eqv. .false.) .and. (outliers .eqv. .false.) )
+
         if(issprt.eq.0) then
+
             if(outlierloop==1) then
-                write(ncwu,'(a, I0)') '------- Linear fit using all suplied data'
+                write(ncwu,'(a, I0)') '------- Linear fit using all suplied data ', i
             else
                 write(ncwu,'(a, I0, a, I0, a)') '------- Linear fit iteration number ', &
                 &   outlierloop, ' with ', count(outliers), ' rejected outliers'
             end if
         end if
 
-        ! select valid reflections (friedel pairs not filtered out)
-        i=count( (filtered_reflections .eqv. .false.) .and. (outliers .eqv. .false.) )
         if(i>1) then
             allocate(buffertemp(2*i,3))
             allocate(residuals(2*i))
@@ -1864,47 +1871,51 @@ integer i, ierror
 !c         FckD is difference of Fc
 !c
 
+    reflections_filters=.false.
+
     dcmax=maxval(abs(reflections_data(C_FCKD,:)))
     do i=1, ubound(reflections_data, 2)
+        if(reflections_data(C_FRIED2,i)==2.0) then ! we have a Friedel pair
 ! filter 1 C_DSoSDO
-        if(abs(reflections_data(C_FCKD,i)) < filter(C_DSoSDO)*reflections_data(C_SIGMAD,i)) then
-          reflections_filters(C_DSoSDO, i)= .True.
-          reflections_data(C_FAIL, i)=1.0
-        endif
+            if(abs(reflections_data(C_FCKD,i)) < filter(C_DSoSDO)*reflections_data(C_SIGMAD,i)) then
+              reflections_filters(C_DSoSDO, i)= .True.
+              reflections_data(C_FAIL, i)=1.0
+            endif
 
 ! filter 2 C_ASoSAO
-        if(      reflections_data(C_FCKA,i) < filter(C_ASoSAO)*0.5*reflections_data(C_SIGMAD,i) &
-        &   .or. reflections_data(C_FOKA,i) < filter(C_ASoSAO)*0.5*reflections_data(C_SIGMAD,i) ) then
-            reflections_filters(C_ASoSAO, i)=.True.
-            reflections_data(C_FAIL, i)=1.0
-        end if
+            if(      reflections_data(C_FCKA,i) < filter(C_ASoSAO)*0.5*reflections_data(C_SIGMAD,i) &
+            &   .or. reflections_data(C_FOKA,i) < filter(C_ASoSAO)*0.5*reflections_data(C_SIGMAD,i) ) then
+                reflections_filters(C_ASoSAO, i)=.True.
+                reflections_data(C_FAIL, i)=1.0
+            end if
 
 ! filter 3 This one depends on FCKD C_DOoDSmax
 !c           watch out for unreasonably large Do
-        if (abs(reflections_data(C_FOKD, i)).ge. filter(C_DOoDSmax)*dcmax) then
-            reflections_data(C_FAIL, i)=1.0
-            reflections_filters(C_DOoDSmax, i)=.true.
-        endif
+            if (abs(reflections_data(C_FOKD, i)).ge. filter(C_DOoDSmax)*dcmax) then
+                reflections_data(C_FAIL, i)=1.0
+                reflections_filters(C_DOoDSmax, i)=.true.
+            endif
  
 ! filter 4 C_OUTLIER
         ! done later
 
 ! filter 5 special test for poor agreement C_AOoAc
-        if(min(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i))/=0.0) then
-            q = abs(max(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i)) / &
-            &   min(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i))) 
-            if(Q >= filter(C_AOoAc)) then
+            if(min(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i))/=0.0) then
+                q = abs(max(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i)) / &
+                &   min(reflections_data(C_FOKA,i),reflections_data(C_FCKA,i))) 
+                if(Q >= filter(C_AOoAc)) then
+                    reflections_filters(C_AOoAc, i)=.True.
+                    reflections_data(C_FAIL, i)=1.0
+                end if
+            else
                 reflections_filters(C_AOoAc, i)=.True.
                 reflections_data(C_FAIL, i)=1.0
             end if
-        else
-            reflections_filters(C_AOoAc, i)=.True.
-            reflections_data(C_FAIL, i)=1.0
         end if
     end do
 
 ! filter 4    
-      call filter_four(reflections_data, reflections_filters, filter(4), ierror)
+   call filter_four(reflections_data, reflections_filters, filter(4), ierror)
     
 end subroutine
 
@@ -2395,7 +2406,7 @@ use xiobuf_mod, only: cmon
 use xunits_mod, only: ncvdu, ncwu
 implicit none
 real, dimension(:,:), intent(in) :: reflections_data !< List of reflections
-integer, dimension(:), intent(in) :: filtered_reflections !< if True the reflection is not used
+integer, dimension(:), intent(in) :: filtered_reflections !< -1 = non friedel pairs, 0 = in filter 1,2,3,5, 1 = otherwise
 integer, parameter :: nplt=10
 integer, dimension(2*nplt+1) :: ifoplt, ifcplt, ifopltf, ifcpltf
 real, parameter :: distplt = 3.0
@@ -2467,6 +2478,14 @@ real distmax, stnfc, stnfo
     !C -- FINISH THE GRAPH DEFINITION
     WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
     CALL XPRVDU (NCVDU, 2, 0)
+!   send number of reflections to screen
+    WRITE(CMON,'(A,I7,A)') &
+    &   '^^CO SAFESET [ _DIS_NREF TEXT ',(count(filtered_reflections>=0)),' ]'
+    CALL XPRVDU(NCVDU, 1,0)
+!   SEND NUMBER FILTERED TO SCREEN
+    WRITE(CMON,'(A,I7,A)') &
+    &   '^^CO SAFESET [ _DIS_NFIL TEXT ',(count(filtered_reflections==0)),' ]'
+    CALL XPRVDU(NCVDU, 1,0)
 end subroutine
 
 !> Plot the normal probability plot (npp)
@@ -2860,6 +2879,11 @@ real f3quart, f4quintile, f7octile, f9decile
         &   range*real(i-1-nbin/2), abin(i)  
         CALL XPRVDU (NCVDU, 1, 0)
     enddo
+
+    ! send number of reflections to screen
+    WRITE(CMON,'(A,I7,A)') &
+    &   '^^CO SAFESET [ _HIS_NREF TEXT ',(refls_valid_size),' ]'
+    CALL XPRVDU(NCVDU, 1,0)
                     
     !C send the percentage at 3 sigma to screen
     WRITE(CMON,'(A,F7.1,A)') &

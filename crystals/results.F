@@ -4486,10 +4486,10 @@ cdjwoct05. More fiddles to keep Bill happy
         endif
       else
        if ( kkey .eq. 2 ) then !angle
- 	    CALL SNUM ( TERM, ESD, -2, 0, 10, IVEC )
+        CALL SNUM ( TERM, ESD, -2, 0, 10, IVEC )
        else !not angle
- 	    CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
-	   endif
+        CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
+       endif
       endif
       WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
       CALL XCRAS ( CBUF, N)
@@ -4576,7 +4576,7 @@ C Things needed by SGROUP call
       DIMENSION SPG(10) 
       CHARACTER *16 SGLINE
       CHARACTER *10 SGRP
-	  
+      
 C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
@@ -5157,7 +5157,7 @@ c     2        + (VOL-V(CIFA,CIFB,CIFC+ESD(3),CIFAL,CIFBE,CIFGA))**2
 c     3        + (VOL-V(CIFA,CIFB,CIFC,CIFAL+ESD(4)*DTR,CIFBE,CIFGA))**2
 c     4        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE+ESD(5)*DTR,CIFGA))**2
 c     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
-	 
+     
          IF ((LAUENO.EQ.4).OR.(LAUENO.EQ.5)) THEN       ! Tetragonal - special case a and b errors are 100% correlated
 
               CU=SQRT( 
@@ -5168,7 +5168,7 @@ c     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
 c         ELSE IF ((LAUENO.EQ.6).OR.(LAUENO.EQ.7)) THEN   ! rhombohedral - not used by default in CRYSTALS
 c TODO
          ELSE IF ((LAUENO.EQ. 8).OR.(LAUENO.EQ.10)
-     1	      .OR.(LAUENO.EQ.11).OR.(LAUENO.EQ.12)) THEN   ! trigonal or hexagonal (w/ hex axes)
+     1        .OR.(LAUENO.EQ.11).OR.(LAUENO.EQ.12)) THEN   ! trigonal or hexagonal (w/ hex axes)
 
             CU=SQRT( 
      1     (VOL**2) * 0.8660254 *
@@ -5182,8 +5182,8 @@ c TODO
      1    (3*(ESD(1)/CIFA)**2 + 3*(ESD(2)/CIFB)**2 + 3*(ESD(3)/CIFC)**2)
      7             )
 
-      	 ELSE                                           ! Triclinic, monoclinic, orthorhombox
-    	    CU=SQRT( 
+         ELSE                                           ! Triclinic, monoclinic, orthorhombox
+            CU=SQRT( 
      1     (VOL**2) * 
      1       ((ESD(1)/CIFA)**2 +(ESD(2)/CIFB)**2 +(ESD(3)/CIFC)**2)
      2  +  ( (CIFA*CIFB*CIFC)**4 / (VOL**2) ) * (
@@ -5193,7 +5193,7 @@ c TODO
      6                             ) 
      7         )
          END IF
-	   
+       
          CALL XFILL (IB,IVEC,16)
          CALL SNUM (VOL,CU,-2,0,12,IVEC)
          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
@@ -6019,9 +6019,9 @@ C
 C    LIST 13
       IF (JLOAD(6).GE.1) THEN
          CBUF = ' ? '
-		 IF ( IDIFNO .EQ. 12 ) THEN
+         IF ( IDIFNO .EQ. 12 ) THEN
             CBUF = 'synchrotron'
-		 ELSE IF ( IDIFNO .GE. 13 ) THEN
+         ELSE IF ( IDIFNO .GE. 13 ) THEN
             CBUF = 'neutrons'
          ELSE IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
 #ifdef __MAC__
@@ -6038,7 +6038,7 @@ C    LIST 13
          END IF
          IF ( IPUNCH .EQ. 0 ) THEN
            WRITE (NCFPU1,'(''_diffrn_radiation_type       '', 
-     1		                 T35, '''''''',A,'''''''')')
+     1                       T35, '''''''',A,'''''''')')
      1      CBUF(1:NCTRIM(CBUF))
            WRITE (NCFPU1,'(''_diffrn_radiation_wavelength '', T35,
      1      F12.5)') STORE(L13DC)
@@ -7555,7 +7555,7 @@ C
 
       DATA CFAILN(5,1) /'Ratio > '/
       DATA CFAILN(5,2) /' '/
-	  
+      
 #ifdef _HOL_
       DATA ICFLAC/4HFLAC/
       DATA ICHOOFT/4HHOOF/
@@ -10561,14 +10561,15 @@ C ------------------------------------------------
       write(ncwu,'(a)') '+++++++++++++++++++++++++++++++++++++++++'
             
       allocate(currentfilter(ubound(reflections_filters, 2)))
+
       currentfilter=reflections_filters(1,:).or.
      1  reflections_filters(2,:).or.
      2  reflections_filters(3,:).or.
      3  reflections_filters(5,:).or.
      4  reflections_data(C_FRIED2,:)/=2.0
+
       if(count(currentfilter)/=size(currentfilter)) then
-        
-     
+
 C ------------------------------------------------
 C- Hole in one
 C ------------------------------------------------
@@ -10755,9 +10756,9 @@ C ------------------------------------------------
       write(ncwu,'(a)') 'All reflections used summary:'
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       write(ncwu,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a, a)') 'Flack parameter from refinement ', 
      1  print_value(v1(2), sv1(2), opt_fixedform=.true.,
@@ -10810,9 +10811,9 @@ C ------------------------------------------------
      1  opt_length=n+i+2, opt_decimal_pos=n),parsons_outliers(1)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       write(ncwu,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a)') ''
       write(ncwu,'(a)') ''
@@ -10844,14 +10845,14 @@ C ------------------------------------------------
       write(ncwu,'(a)') ''
       call xprvdu(ncvdu,1,0)
       write(cmon,'(I0, 1X, a)') nint(v2(1)), 
-     1  'Reflections in filter 1,2,3,5 summary:'
+     1  'reflections after aplying filters 1,2,3 and 5 summary:'
       write(ncwu,'(I0, 1X, a)') nint(v2(1)), 
-     1  'Reflections in filter 1,2,3,5 summary:'
+     1  'reflections after aplying filters 1,2,3 and 5 summary:'
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       write(ncwu,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       call xprvdu(ncvdu,1,0)
       
       if(nint(v2(1))>0) then
@@ -10916,9 +10917,9 @@ C ------------------------------------------------
       end if
       
       write(cmon,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       write(ncwu,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       call xprvdu(ncvdu,1,0)
 
       write(cmon,'(a)') ''
@@ -10958,9 +10959,9 @@ C ------------------------------------------------
      1  'Reflections in all filters summary:'
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       write(ncwu,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       call xprvdu(ncvdu,1,0)
       
       if(nint(v3(1))>0) then
@@ -11025,9 +11026,9 @@ C ------------------------------------------------
       end if
       
       write(cmon,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       write(ncwu,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a)') ''
       write(ncwu,'(a)') ''
@@ -11040,9 +11041,9 @@ C ------------------------------------------------
      1  'Reflections left in "all filters" summary:'
       call xprvdu(ncvdu,1,0)
       write(cmon,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       write(ncwu,'(a,a)') '_______________________________',
-     1  repeat('_', n+i)
+     1  repeat('_', n+i+25)
       call xprvdu(ncvdu,1,0)
       end if
       
@@ -11067,20 +11068,25 @@ C ------------------------------------------------
           currentfilteri=0
         end where
 
+        ! plot using all friedel pairs + filter 1,2,3,5
         call plot_Dsigma(reflections_data, 
      1    currentfilteri)      
      
+        ! plot using all friedel pairs
         call plot_npp(reflections_data,
      1    reflections_data(C_FRIED2,:)/=2.0)
      
+        ! plot using all friedel pairs
         call plot_histogram(reflections_data, 
      1    reflections_data(C_FRIED2,:)/=2.0)
      
+        ! plot using all friedel pairs
         call plot_flackdo2ao(reflections_data, 
      1    reflections_data(C_FRIED2,:)/=2.0)
 
+        ! plot using filter 1,2,3,5
         call plot_flackx(reflections_data, 
-     1    reflections_data(C_FRIED2,:)/=2.0)
+     1    (currentfilter .or. reflections_data(C_FRIED2,:)/=2.0))
         deallocate(currentfilteri)
       end if
       
@@ -11404,7 +11410,7 @@ CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       CHARACTER*26 UPPER,LOWER
       CHARACTER*3 CSSUBS(11)
 
-	  
+      
 
 
 
@@ -11706,7 +11712,7 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       END
 c
 CODE FOR LINFIT
-	function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
 c     1  root, xcoord, ycoord, grad)
 c least squares best line, based on Bevington, Chapter 6 
 c  see also http://mathworld.wolfram.com/LeastSquaresFitting.html
@@ -11724,24 +11730,24 @@ c
 c
       LINFIT = 0
       if(mode.eq.1) then
-	ss = 0.
-	sx = 0.
-	sxx = 0.
-	sy = 0.
-	syy = 0.
-	sxy = 0.
+        ss = 0.
+        sx = 0.
+        sxx = 0.
+        sy = 0.
+        syy = 0.
+        sxy = 0.
         nitem=0
 c        xmax = 0.
 c        ymax = 0.
 
-      else if (mode.eq.2) then	
+      else if (mode.eq.2) then  
         nitem=nitem+1
-	ss = ss+wt
-	sx = sx + x*wt
-	sxx = sxx + x*x*wt
-	sy = sy + y*wt
-	syy = syy + y*y*wt
-	sxy = sxy + x*y*wt
+        ss = ss+wt
+        sx = sx + x*wt
+        sxx = sxx + x*x*wt
+        sy = sy + y*wt
+        syy = syy + y*y*wt
+        sxy = sxy + x*y*wt
 c        xmax = max(xmax, abs(x*wt))
 c        ymax = max(ymax, abs(y*wt))
 
@@ -11750,7 +11756,7 @@ c        ymax = max(ymax, abs(y*wt))
         mitem = nitem
         LINFIT = +1
 c
-	denom = ss*sxx - sx*sx
+        denom = ss*sxx - sx*sx
         if(abs(denom) .gt. zero) then
             a = (sy*sxx - sx*sxy)/denom
             b = (ss*sxy - sx*sy)/denom
@@ -12082,6 +12088,7 @@ C
       INCLUDE  'QSTR11.INC'
         noldgood = n6acc
         ncycle = 0
+        
 c
 c
         DO 1650 iii=1,ntries
