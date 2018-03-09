@@ -1,10 +1,17 @@
 %SCRIPT FLACK-HELP
 % COPY '#SCRIPT XHELP1'
 
+Direct refinement od the Flack parameter does not NEED Friedel pairs, though
+the calculation is strengthened if pairs are present.
+Similarly, Hole-in-One does not NEED pairs, but if they are present they 
+improve the calculation.
+
+Difference and quotient methods MUST have Friedel pairs.
+
                          DIFFERENCE & QUOTIENT
 
-The Difference and Quotient type of analysis are old procedures, and will 
-probably be replaced by the semi-automatic 'Pascal' method in due course.
+The Difference and Quotient analyses implemented here are old procedures, and 
+will probably be replaced by the semi-automatic 'Pascal' method in due course.
 
 If no plots appear, try reducing the value of Filter(1), the minimum
 acceptable (calculated signal) : (observed noise)

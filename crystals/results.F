@@ -8361,6 +8361,14 @@ c
 C -- FINISH THE GRAPH DEFINITION
           WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
           CALL XPRVDU (NCVDU, 2, 0)
+C     send number of reflections to screen
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NREF TEXT ',(mfried),' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+C SEND NUMBER FILTERED TO SCREEN (DUMMY HERE)
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NFIL TEXT ',(mfried),' ]'
+        CALL XPRVDU(NCVDU, 1,0)
       endif
 C
       write(cmon,'(/a,f6.2)')' Maximum accepted quotient=',qmax
@@ -9156,8 +9164,7 @@ C
         nle3s=0
         m6acc=l6acc
         DO 1700 i=1,n6acc
-c replace delta/sigma plot with simple plot of the computed Flack
-c The delta/sigma plots do not clearly resolve good from poor data
+c  plot the distribution of Flack parameters
           data = str11(m6acc+5)
           wt = sqrt(str11(m6acc+9))
 c         add data point
@@ -9204,6 +9211,10 @@ c
             CALL XPRVDU (NCVDU, 1, 0)
           enddo
 c
+C     send number of reflections to screen
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _HIS_NREF TEXT ',(n6acc),' ]'
+        CALL XPRVDU(NCVDU, 1,0)
 C send the percentage at 3 sigma to screen
 
         WRITE(CMON,'(A,F7.1,A)')
@@ -9899,12 +9910,21 @@ C clear the percentage at 3 sigma
         WRITE(CMON,'(A,F7.1,A)')
      1  '^^CO SAFESET [ _HIS_PC TEXT ',0.,' ]'
         CALL XPRVDU(NCVDU, 1,0)
-
 c clear no. good data 
         WRITE(CMON,'(A,F7.1,A)')
      1  '^^CO SAFESET [ _NREF TEXT ',0.,' ]'
         CALL XPRVDU(NCVDU, 1,0)
        END IF
+c clear distributions
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NREF TEXT ',0,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NFIL TEXT ',0,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _HIS_NREF TEXT ',0,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
       else                                          !ERROR not set - continue output
 C
         if (iweight.eq.1) then
