@@ -242,7 +242,6 @@ double precision r
         else if(i==1) then
             buffer='0'//trim(buffer)
         end if
-        print *, trim(buffer), num, esd
     else
         ! number of zeros before any digit
         digit=0
