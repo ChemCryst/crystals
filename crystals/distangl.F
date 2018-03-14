@@ -7590,7 +7590,6 @@ C--
       INCLUDE 'XUNITS.INC'
 
       COMMON /PERM02/ RLIST2(1000),ICFLAG,LSYM,NSYM,MDSYM,LNONP,NNONP
-      EQUIVALENCE (STORE(1),ISTORE(1))
 
       CALL CRDIST2     !Set up BPD.
       JT= 12           !Size of atom info on stack

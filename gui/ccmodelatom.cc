@@ -26,7 +26,7 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
                           const string & elem, int serial, int refflag,
-                          int assembly, int group, float ueq, float fspare,
+                          int assembly, int group, float ueq, float fspare, int isflg,
                           CcModelDoc* parentptr)
 {
   mp_parent = parentptr;
@@ -50,6 +50,7 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
   m_group = group;
   m_elem = elem;
   m_spare = fspare;
+  m_isflg = isflg;
   m_nbonds = 0;
   
   localmatrix[0]=x11;
@@ -69,6 +70,16 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
   localmatrix[14]=0.0;
   localmatrix[15]=1.0;
 
+  switch (m_isflg) {
+    case 0: m_sflags = ""; break;
+    case 1: m_sflags = "refine X's"; break;
+    case 2: m_sflags = "refine X's,Uiso"; break;
+    case 3: m_sflags = "refine X's,Uijs"; break;
+    case 4: m_sflags = "fix atom"; break;
+    case 10: m_sflags = "ride atom"; break;
+    default: m_sflags = "unknown flags"; break;
+  }
+  
 }
 
 
@@ -97,7 +108,8 @@ void CcModelAtom::Init()
   frac_z = 0.0;
   m_spare = 0.0;
   m_nbonds = 0;
-
+  m_isflg = 0;
+  m_sflags = "";
 }
 
 CcModelAtom::~CcModelAtom()

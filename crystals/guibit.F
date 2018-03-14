@@ -1106,6 +1106,18 @@ C                  STORE(I5+3) = 0.0
                    ISPARE = NINT(COV*GSCALE)
                END IF
 
+C Pass sticky refinement flag options if present.
+               ISFLAG = 0
+C This block catches old negative sticky flag and fixes it to look like new format
+               IF (ISTORE(I5+15) .LT. 0) THEN
+                  ISTORE(I5+15) = -ISTORE(I5+15)
+                  ISTORE(I5+15) = OR ( ISTORE(I5+15), 128 ) ! Set bit7
+               END IF
+C This block detects sticky flag and sets ISFLAG to pass info to GUI.               
+               IF( AND( ISTORE(I5+15), 128 ) .NE. 0 ) THEN
+                 ISFLAG = AND(ISTORE(I5+15), 127)  ! Pass lower 7 bits.
+               ENDIF
+               
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
                      CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
@@ -1122,7 +1134,7 @@ C                  STORE(I5+3) = 0.0
      3          AXES(1,2),AXES(2,2),AXES(3,2),
      3          AXES(1,3),AXES(2,3),AXES(3,3),
      4          STORE(I5+4),STORE(I5+5),STORE(I5+6),
-     5          ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13))
+     5          ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)
 
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN

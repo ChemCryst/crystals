@@ -76,8 +76,8 @@
 #define bS22    "BN"
 #define bS23    "BS"
 #define bS24    "BA"
+#define bS25    "HYD"
 /*
- #define bS25
  #define bS26
  #define bS27
  #define bS28
@@ -118,6 +118,7 @@ class   CcStatus
     void SetZoomedFlag(bool zoomed);
 
     void SetBondType(int bt);
+    void SetAtomFlags(string s);
 
 // Creates a bit flag for menu items/toolbars based on the
 // ENABLEIF and DISABLEIF strings they are passed.

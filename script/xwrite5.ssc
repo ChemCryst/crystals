@@ -30,8 +30,8 @@
 %%                                                                              
 %%   Local variables:                                                           
 %  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI                  
-%  VARIABLE INTEGER HMODE ISER CURMODE                                          
-%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY FLACK                      
+%  VARIABLE INTEGER HMODE ISER CURMODE RMFLAG OLDSER
+%  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY FLACK OLD5
 %  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST                           
 %  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK                                     
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5                         
@@ -40,6 +40,7 @@
 %  EVALUATE FLACK = FALSE                                                     
 %  EVALUATE DOREFINE = TRUE                                                     
 %  EVALUATE DOFOUR = FALSE                                                      
+%  EVALUATE OLD5 = FALSE
 %  VARIABLE CHARACTER CCHK CELE                                                 
 %  VARIABLE REAL RCHK                                                           
 %%                                                                              
@@ -608,10 +609,11 @@
 %% END IF                                                                       
 %% End edit                                                                     
 %%                                                                              
-%%                                                                              
-%%                                                                              
-%%                                                                              
-%%                                                                              
+%%                                                  
+%% Remember the L5 serial number - we will reset before refining
+%      COPY '#GENERALEDIT 5'                                                    
+%      COPY 'GETSERIAL OLDSER'                                                  
+%      COPY 'END'                                                               
 %%                                                                              
 %%                                                                              
 %%                                                                              
@@ -652,13 +654,34 @@
 %      COPY 'TRANSFER FROM OFFSET=14 TO PART'                                   
 %      COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                 
 %      COPY 'TRANSFER FROM OFFSET=16 TO RESI'                                   
-%      EVALUATE STICKY = FALSE                                                  
+%      EVALUATE STICKY = FALSE      
+%% REFLAG used to be set negative but it messes up bit getting/setting elsewhere - detect here:                                            
 %      IF ( REFLAG .LT. 0 ) THEN                                                
+%% TRANSFER '659: Reflag negative ' //  CHARACTER REFLAG TO DISPLAY
 %        EVALUATE STICKY = TRUE                                                 
-%        EVALUATE REFLAG = - REFLAG                                             
+%        EVALUATE DOWRITE = TRUE
+%        EVALUATE OLD5 = TRUE
+%        EVALUATE REFLAG = - REFLAG 
+%        IF ( ( REFLAG IAND 128 ) .EQ. 0 ) THEN                                                
+%% Set bit 7 to indicate sticky property (from now on).
+%           EVALUATE REFLAG = REFLAG + 128
+%% TRANSFER '665: Reflag set positive + 128 ' // CHARACTER REFLAG TO DISPLAY
+%        END IF
+%        COPY 'TRANSFER TO OFFSET=15 FROM REFLAG'  
 %      END IF                                                                   
 %% Only keep low 8 bits of REFLAG                                               
-%      EVALUATE REFLAG = ( REFLAG IAND 255 )                                    
+%      EVALUATE REFLAG = ( REFLAG IAND 255 ) 
+%% TRANSFER '670: Reflag low8 ' //  CHARACTER REFLAG TO DISPLAY
+%% RMFLAG will hold the low 7 bits (which match the sticky properties)
+%% REFLAG retains bit 7 (the 8th bit (128)) for storing or re-storing in L5
+%      EVALUATE RMFLAG = REFLAG 
+%% Nowadays bit 7 is used to indicate sticky property
+%      IF ( ( REFLAG IAND 128 ) .NE. 0 ) THEN          
+%        EVALUATE RMFLAG = ( REFLAG IAND 127 )  
+%        EVALUATE STICKY = TRUE                                                 
+ Non-default mode set for an atom.
+%      END IF
+%% TRANSFER '679: RMflag low7 ' //  CHARACTER RMFLAG TO DISPLAY
 %      IF ( PART .GT. 999999 ) THEN                                             
 %        EVALUATE PART = 0                                                      
 {I Detected old L5 entry with invalid PART numbers. Correcting.                 
@@ -667,12 +690,13 @@
 %      IF ( RESI .GT. 999999 ) THEN                                             
 %        EVALUATE RESI = 0                                                      
 {I Detected old L5 entry with invalid RESIDUE numbers. Correcting.              
-%        COPY 'TRANSFER TO OFFSET=16 FROM RESI'                                 
+%        COPY 'TRANSFER TO OFFSET=16 FROM RESI'                                
+%        EVALUATE OLD5 = TRUE 
 %      END IF                                                                   
 %      IF ( ( CTYPE .EQ. 'H' ) .or. ( CTYPE .EQ. 'D' ) ) THEN                   
-%        IF ( REFLAG .NE. HMODE ) THEN                                          
-%          IF ( .NOT. STICKY )  THEN                                            
-%% Non-sticky atom, just change the value.                                      
+%        IF ( RMFLAG .NE. HMODE ) THEN   
+%          IF ( .NOT. STICKY )  THEN  
+%% Non-sticky atom, just change the value.  
 %            EVALUATE DOWRITE = TRUE                                            
 %            COPY 'TRANSFER TO OFFSET=15 FROM HMODE'         
 %          ELSE IF ( OVERRIDE .EQ. TRUE ) THEN                                  
@@ -687,17 +711,17 @@
 %            STORE FORMAT /(F6.0)/ LENGTH 6 REAL SERIAL                         
 %            INSERT ')'                                                         
 %            OUTPUT                                                             
-%          ELSE IF ( REFLAG .NE.  HMODE ) THEN                                  
+%          ELSE                                   
 %% Remember that there are some sticky atoms of different                       
 %% refinement mode to the default.                                              
 %            EVALUATE STUCK = TRUE                                              
-%            IF ( REFLAG .EQ.  10 ) THEN                                        
+%            IF ( RMFLAG .EQ.  10 ) THEN                                        
 %               EVALUATE HRIDE = TRUE                                           
 %            END IF                                                             
 %          END IF                                                               
 %        END IF                                                                 
 %      ELSE                                                                     
-%        IF ( REFLAG .NE. SETADP ) THEN                                         
+%        IF ( RMFLAG .NE. SETADP ) THEN                                         
 %          IF ( .NOT. STICKY )  THEN                                            
 %% Non-sticky atom, just change the value.                                      
 %            EVALUATE DOWRITE = TRUE                                            
@@ -714,7 +738,7 @@
 %            STORE FORMAT /(F6.0)/ LENGTH 6 REAL SERIAL                         
 %            INSERT ')'                                                         
 %            OUTPUT                                                             
-%          ELSE IF ( REFLAG .NE.  SETADP ) THEN                                 
+%          ELSE                                  
 %% Remember that there are some sticky atoms of different                       
 %% refinement mode to the default.                                              
 %            EVALUATE STUCK = TRUE                                              
@@ -724,7 +748,10 @@
 %      COPY 'NEXT'                                                              
 %    END LOOP                                                                   
 %    IF ( DOWRITE .EQ. TRUE ) THEN                                              
-%      COPY 'WRITE OVERWRITE=OVERWRITE'                                         
+%      COPY 'WRITE OVERWRITE=NO' 
+ 747 Writing new L5.
+%    ELSE
+ 749 No changes to L5. 
 %    END IF                                                                     
 %    COPY 'END'                                                                 
 %  END IF                                                                       
@@ -767,13 +794,29 @@
 %       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
 %       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
 %       EVALUATE STICKY = FALSE                                                 
-%% REM DJW what are these operations on REFLAG doing?
-%       IF ( REFLAG .LT. 0 ) THEN                                               
-%         EVALUATE STICKY = TRUE                                                
-%         EVALUATE REFLAG = - REFLAG                                            
-%       END IF                                                                  
-%       EVALUATE REFLAG = ( REFLAG IAND 255 )         
-%% REM DJW what are these operations on REFLAG doing?
+%       IF ( REFLAG .LT. 0 ) THEN 
+%% TRANSFER '794: Reflag negative ' //  CHARACTER REFLAG TO DISPLAY
+%         EVALUATE STICKY = TRUE  
+%         EVALUATE REFLAG = - REFLAG 
+%         IF ( ( REFLAG IAND 128 ) .EQ. 0 ) THEN                                                
+%% Set bit 7 to indicate sticky property (from now on).
+%           EVALUATE REFLAG = REFLAG + 128
+%% TRANSFER '800: Reflag set positive + 128 ' // CHARACTER REFLAG TO DISPLAY
+%         END IF
+%       END IF                                                                   
+%% Only keep low 8 bits of REFLAG                                               
+%       EVALUATE REFLAG = ( REFLAG IAND 255 ) 
+%% TRANSFER '805: Reflag low8 ' //  CHARACTER REFLAG TO DISPLAY
+%% RMFLAG will hold the low 7 bits (which match the sticky properties)
+%% REFLAG retains bit 7 (the 8th bit (128)) for storing or re-storing in L5
+%       EVALUATE RMFLAG = REFLAG 
+%% Nowadays bit 7 is used to indicate sticky property
+%       IF ( ( REFLAG IAND 128 ) .NE. 0 ) THEN          
+%         EVALUATE RMFLAG = ( REFLAG IAND 127 )  
+%         EVALUATE STICKY = TRUE                                                 
+ Sticky mode set.
+%       END IF
+%% TRANSFER '815: RMflag low7 ' //  CHARACTER RMFLAG TO DISPLAY
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( STICKY ) THEN                             
 %         CLEAR                                                                 
 %         INSERT 'CONT H('                                                      
@@ -865,7 +908,14 @@
 %         END IF                                                                
 %       END LOOP                                                                
 %     END LOOP                                                                  
-%     COPY 'WRITE OVERWRITE=OVERWRITE'                                          
+%     IF DOWRITE .EQ. TRUE THEN
+%% Second time writing L5 - overwrite original
+%       COPY 'WRITE OVERWRITE=OVERWRITE'
+%     ELSE
+%% First time writing new L5 - don't overwrite original
+%       COPY 'WRITE OVERWRITE=NO'
+%       EVALUATE DOWRITE = TRUE
+%     END IF
 %     COPY 'END'                                                                
 %     COPY '#CLOSE SCPDATA'                                                     
 %  END IF                                                                       
@@ -888,10 +938,13 @@
 %       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
 %       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
 %       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
-%       IF REFLAG .LT. 0 THEN                                                   
-%         EVALUATE REFLAG = - REFLAG                                            
-%       END IF                                                                  
-%       EVALUATE REFLAG = ( REFLAG IAND 255 )                                   
+%       IF ( REFLAG .LT. 0 ) THEN 
+%% TRANSFER '938: Reflag negative ' //  CHARACTER REFLAG TO DISPLAY
+%         EVALUATE REFLAG = - REFLAG 
+%       END IF                                                                   
+%% Only keep low 7 bits of REFLAG                                               
+%       EVALUATE REFLAG = ( REFLAG IAND 127 ) 
+%% TRANSFER '943: Reflag low7 ' //  CHARACTER REFLAG TO DISPLAY
 %       IF ( CTYPE .EQ. 'H' ) .AND. ( REFLAG .EQ. 10 ) THEN                     
 %         EVALUATE HRIDE = TRUE                                                 
 %         CLEAR                                                                 
@@ -945,16 +998,35 @@
 %    COPY 'LOCATE RECORDTYPE=101'                                               
 %    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                    
 %    LOOP                                                                       
-%       ON EDITERROR TERMINATE                                                  
-%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
-%       COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
-%       COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
-%       IF ( REFLAG .LT. 0 ) THEN                                               
-%         EVALUATE REFLAG = - REFLAG                                            
-%       END IF                                                                  
-%       EVALUATE REFLAG = ( REFLAG IAND 255 )                                   
-%       IF CURMODE .NE. REFLAG THEN                                             
-%% Finish off current block.                                                    
+%      ON EDITERROR TERMINATE                                                  
+%      COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'                                  
+%      COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'                                 
+%      COPY 'TRANSFER FROM OFFSET=15 TO REFLAG'                                
+%      IF ( REFLAG .LT. 0 ) THEN                                                
+%% TRANSFER '999: Reflag negative ' //  CHARACTER REFLAG TO DISPLAY
+%        EVALUATE STICKY = TRUE                                                 
+%        EVALUATE REFLAG = - REFLAG 
+%        IF ( ( REFLAG IAND 128 ) .EQ. 0 ) THEN                                                
+%% Set bit 7 to indicate sticky property (from now on).
+%           EVALUATE REFLAG = REFLAG + 128
+%% TRANSFER '1005: Reflag set positive + 128 ' // CHARACTER REFLAG TO DISPLAY
+%        END IF
+%      END IF                                                                   
+%% Only keep low 8 bits of REFLAG                                               
+%      EVALUATE REFLAG = ( REFLAG IAND 255 ) 
+%% TRANSFER '1009: Reflag low8 ' //  CHARACTER REFLAG TO DISPLAY
+%% RMFLAG will hold the low 7 bits (which match the sticky properties)
+%% REFLAG retains bit 7 (the 8th bit (128)) for storing or re-storing in L5
+%      EVALUATE RMFLAG = REFLAG 
+%% Nowadays bit 7 is used to indicate sticky property
+%      IF ( ( REFLAG IAND 128 ) .NE. 0 ) THEN          
+%        EVALUATE RMFLAG = ( REFLAG IAND 127 )  
+%        EVALUATE STICKY = TRUE                                                 
+ Sticky mode set.
+%      END IF
+%% TRANSFER '1020: RMflag low7 ' //  CHARACTER RMFLAG TO DISPLAY
+%       IF CURMODE .NE. RMFLAG THEN  
+%% Finish off current block.   
 %         IF ( INBLOCK .GE. 1 ) .AND. ( CURMODE .NE. 0 ) THEN                   
 %           IF ( INBLOCK .GT. 1 ) THEN                                          
 %             INSERT ' UNTIL '                                                  
@@ -967,23 +1039,23 @@
 %           QUEUE SEND                                                          
 %         END IF                                                                
 %         EVALUATE INBLOCK = 0                                                  
-%         EVALUATE CURMODE = REFLAG                                             
-%         IF ( REFLAG .NE. 5 ) THEN                                             
-%         CLEAR                                                                 
-%         INSERT 'CONT '                                                        
-%         STORE CHARACTER CTYPE                                                 
-%         INSERT '('                                                            
-%         STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
-%         IF ( REFLAG .LE. 3 .AND. REFLAG .GE. 1 ) THEN                         
-%          CASE REFLAG                                                          
-%           INSERT ",X's)"                                                      
-%           INSERT ",X's,U[iso])"                                               
-%           INSERT ",X's,U's)"                                                  
-%          END CASE                                                             
-%         ELSE                                                                  
-%          CLEAR                                                                
-%          EVALUATE CURMODE = 0                                                 
-%         END IF                                                                
+%         EVALUATE CURMODE = RMFLAG                                             
+%         IF ( RMFLAG .NE. 5 ) THEN                                             
+%          CLEAR                                                                 
+%          INSERT 'CONT '                                                        
+%          STORE CHARACTER CTYPE                                                 
+%          INSERT '('                                                            
+%          STORE FORMAT /(I6)/ LENGTH 6 INTEGER INTEGER SERIAL                   
+%          IF ( RMFLAG .LE. 3 .AND. RMFLAG .GE. 1 ) THEN                         
+%           CASE RMFLAG                                                          
+%            INSERT ",X's)"                                                      
+%            INSERT ",X's,U[iso])"                                               
+%            INSERT ",X's,U's)"                                                  
+%           END CASE                                                             
+%          ELSE                                                                  
+%           CLEAR                                                                
+%           EVALUATE CURMODE = 0                                                 
+%          END IF                                                                
 %         ELSE                                                                  
 %% Fix atom                                                                     
 %           EVALUATE CURMODE = 0                                                
@@ -1074,6 +1146,12 @@
 %    COPY 'END'                                                                 
 %  END IF                                                                       
 %  COPY '#SCRIPT VALID12'                                                       
+%%
+%  IF ( ( DOWRITE .EQ. TRUE ) .AND. ( .NOT. OLD5 ) ) THEN
+%     COPY '#DISK'                                                         
+%     TRANSFER 'RESET 5 ' // CHARACTER OLDSER TO CRYSTALS                  
+%     COPY 'END'                                                           
+%  END IF
 %%                                                                              
 %  COPY '#GENERALEDIT 12'                                                       
 %  COPY 'GETSERIAL L12SER'                                                      

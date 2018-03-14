@@ -780,6 +780,8 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
               {
                 if ( ((CcModelAtom*)object)->occ != 1000 )
                    labelstrm << " occ:" << (float)((CcModelAtom*)object)->occ/1000.0;
+                if ( ((CcModelAtom*)object)->m_isflg )
+                   labelstrm << " " << ((CcModelAtom*)object)->m_sflags;
               }
               else if ( objectType == CC_SPHERE )
               {

@@ -172,7 +172,7 @@ end interface
 interface
   subroutine fastatom (de,js,dl,jx,jy,jz,jr,jg,jb,joc,sco, &
   &  jvd,jsp,jfl,su1,su2,su3,su4,su5,su6,su7,su8,su9, &
-  &  sfx,sfy,sfz,jff,jfa,jfg,sue,sus )
+  &  sfx,sfy,sfz,jff,jfa,jfg,sue,sus, isflg )
     !dec$ attributes c :: fastatom
     !dec$ attributes value :: js
     !dec$ attributes value :: jx
@@ -200,13 +200,14 @@ interface
     !dec$ attributes value :: sfz
     !dec$ attributes value :: sue
     !dec$ attributes value :: sus
+    !dec$ attributes value :: isflg
     !dec$ attributes value :: jfa
     !dec$ attributes value :: jfg
     !dec$ attributes value :: jff
     !dec$ attributes reference :: dl
     !dec$ attributes reference :: de
     integer jx,jy,jz,jr,jg,jb,joc,jvd
-    integer jsp,jfl, jff,jfa,jfg,js
+    integer jsp,jfl, jff,jfa,jfg,js, isflg
     real sco,su1,su2,su3,su4,su5,su6,su7,su8,su9,sfx,sfy,sfz
     real sue,sus
     character dl,de
@@ -454,11 +455,11 @@ interface
 !! Unkwown function call from guibits.F
   subroutine fastatom (de,js,dl,jx,jy,jz,jr,jg,jb,joc,sco, &
   &  jvd,jsp,jfl,su1,su2,su3,su4,su5,su6,su7,su8,su9, &
-  &  sfx,sfy,sfz,jff,jfa,jfg,sue,sus ) bind(c)
+  &  sfx,sfy,sfz,jff,jfa,jfg,sue,sus, isflg ) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
     integer, value :: jx,jy,jz,jr,jg,jb,joc,jvd
-    integer, value :: jsp,jfl, jff,jfa,jfg,js
+    integer, value :: jsp,jfl, jff,jfa,jfg,js, isflg
     real, value :: sco,su1,su2,su3,su4,su5,su6,su7,su8,su9,sfx,sfy,sfz
     real, value :: sue,sus
     character dl,de

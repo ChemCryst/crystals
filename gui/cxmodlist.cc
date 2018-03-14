@@ -73,8 +73,8 @@ CxModList::CxModList( CrModList * container )
 
 void CxModList::AddCols()
 {
-    m_numcols=13;
-    string colHeader[13];
+    m_numcols=14;
+    string colHeader[14];
     colHeader[0]  = "Id";
     colHeader[1]  = "Type";
     colHeader[2]  = "Serial";
@@ -88,6 +88,7 @@ void CxModList::AddCols()
     colHeader[10] = "Residue";
     colHeader[11] = "Assembly";
     colHeader[12] = "Group";
+    colHeader[13] = "Flags";
 
     for ( int i = 0; i < m_numcols ; i++ )
     {

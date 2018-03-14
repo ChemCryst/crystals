@@ -113,11 +113,11 @@ end subroutine
 
 subroutine fstatm(ce,is,ll,cl,ix,iy,iz,ir,ig,ib,ioc,rco, &
 &   ivd,isp,ifl,ru1,ru2,ru3,ru4,ru5,ru6,ru7,ru8,ru9, &
-&   rfx,rfy,rfz,iff,ifa,ifg,rue,rus)
+&   rfx,rfy,rfz,iff,ifa,ifg,rue,rus,isflg)
     use fwrappergui_mod, only: fastatom
 
     integer ll,ix,iy,iz,ir,ig,ib,ioc,ivd
-    integer isp,ifl, iff, ifa, ifg, is
+    integer isp,ifl, iff, ifa, ifg, is, isflg
     real ru1,ru2,ru3,ru4,ru5,ru6,ru7,ru8,ru9,rco,rfx,rfy,rfz
     real rue, rus
     character*(*) cl
@@ -129,7 +129,7 @@ subroutine fstatm(ce,is,ll,cl,ix,iy,iz,ir,ig,ib,ioc,rco, &
 
     call fastatom(be,is,bl,ix,iy,iz,ir,ig,ib,ioc,rco,ivd, &
     &   isp,ifl,ru1,ru2,ru3,ru4,ru5,ru6,ru7,ru8,ru9,rfx,rfy,rfz, &
-    &   iff, ifa, ifg, rue, rus)
+    &   iff, ifa, ifg, rue, rus, isflg)
 end subroutine
 
 subroutine fstsph(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &

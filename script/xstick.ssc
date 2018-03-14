@@ -1,7 +1,17 @@
 %SCRIPT XSTICK
+%%
+%% All values have 128 (bit7) set to indicate sticky property.
+%% 0 (128) = no stick - 0 or 128 are equivalent
+%% 1 (129) = x's 
+%% 2 (130) = x's,uiso
+%% 3 (131) = x's,u'scale
+%% 4 (132) = fix 
+%% 10 (138) = ride
+%%
+%%
 %  VARIABLE CHARACTER CELE CATM CCHK
 %  VARIABLE REAL RCHK RSER 
-%  VARIABLE INTEGER NINDEX ISER IREF
+%  VARIABLE INTEGER NINDEX ISER IREF REFMODE
 %  VARIABLE LOGICAL CALLED
 %%
 %% Get atom name
@@ -9,20 +19,22 @@
 %  IF CALLED .EQ. FALSE THEN
 %    GET SILENT NOSTORE FINAL KEYWORD 'Atom?' 'C(1)'
 %    EVALUATE CATM = CVALUE
-%    VERIFY FIX XS ISO ANISO RIDE
+%    VERIFY FIX XS ISO ANISO RIDE DEFAULT
 %    GET SILENT NOSTORE FINAL ABBREVIATED 'Refmode?' 'FIX'
-%    EVALUATE IREF = - VALUE + 1
-%    IF ( IREF .EQ. - 4 ) THEN
-%      EVALUATE IREF = - 10
-%    END IF
-%    IF ( IREF .EQ. 0 ) THEN
-%      EVALUATE IREF = - 5
-%    END IF
+%    EVALUATE REFMODE = VALUE
+%    CASE REFMODE
+%      EVALUATE IREF = 132
+%      EVALUATE IREF = 129
+%      EVALUATE IREF = 130
+%      EVALUATE IREF = 131
+%      EVALUATE IREF = 138
+%      EVALUATE IREF = 0
+%     END CASE
 %  END IF
 %  EVALUATE CELE = FIRSTSTR ( CATM )
 %  EVALUATE ISER = FIRSTINT ( CATM )
 %%
-%  IF ( ( CELE .NE. 'H' ) .AND. ( IREF .EQ. - 10 ) ) THEN
+%  IF ( ( CELE .NE. 'H' ) .AND. ( IREF .EQ. 10 ) ) THEN
 %    TRANSFER '{E Only H atoms may be ridden: ' // CATM TO DISPLAY
 %    FINISH
 %  END IF
