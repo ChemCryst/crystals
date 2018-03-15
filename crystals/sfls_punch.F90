@@ -2196,7 +2196,7 @@ integer, external :: khuntr
     do j=1, size(lsq_list)
       do i=1, physicalindex
         if(constraintstable(i, j)/=0.0) then
-          write(pyfile, '(a,I0,",",I0,a,F5.2)') 'mconstraints[', i-1, j-1, ']=', constraintstable(i, j)
+          write(pyfile, '(a,I0,",",I0,a,F0.5)') 'mconstraints[', i-1, j-1, ']=', constraintstable(i, j)
         end if
       end do
     end do
