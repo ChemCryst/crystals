@@ -431,6 +431,10 @@ C Ric Error if empty L5.
       IF ( N5 .EQ. 0 ) GOTO 9901
 
       DO I = 0, N5-1
+          IF ( ISTORE(L5+MD5*I+15) .LT. 0 ) THEN
+             ISTORE(L5+MD5*I+15) = - ISTORE(L5+MD5*I+15)  ! Get rid of negative sticky flag
+             ISTORE(L5+MD5*I+15) = OR (ISTORE(L5+MD5*I+15), 128) ! Set bit7 for sticky
+          END IF
           ISTORE(L5+MD5*I+15) = AND ( ISTORE(L5+MD5*I+15), IMASK )
       END DO
 C
