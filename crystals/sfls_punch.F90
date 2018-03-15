@@ -1718,7 +1718,7 @@ real, dimension(:), allocatable :: Ios ! I/sigma
     start=i
     interval=(size(Ios)-start)/(nbins-1)
     do i=3,nbins
-        bounds(i)=real(nint(Ios(sort_keys((i-2)*interval+start))), kind(bounds(1)))
+        bounds(i)=real(nint(Ios(sort_keys(nint((i-2)*interval+start)))), kind(bounds(1)))
     end do
     bounds(nbins+1)=huge(1.0)
 
@@ -1906,7 +1906,6 @@ use xlst12_mod !< matrix of constraints
 use xscale_mod, only: nsc, kscal
 use xopk_mod, only: kvp
 use xapk_mod, only: nkao, nwka, icoord
-use xconst_mod, only: nowt
 use xunits_mod, only: ierflg
 implicit none
 
@@ -1924,17 +1923,9 @@ type atom_t
 end type
 type(atom_t), dimension(:), allocatable :: l5model
 
-character(len=6) flag
 character(len=24) :: buffer
-character(len=6), parameter :: iblank='      '
-integer ILEBP, jrr, js, jt, ju, jv, jw, jx, na, nc
-!integer, dimension(40) :: icom12
-!equivalence(l12, icom12(1))
 integer, dimension(6) :: icom12
-real weight
-real, dimension(:,:), allocatable :: constraintstable
-character(len=24), dimension(:), allocatable :: physicallist
-integer :: physicalindex, icentr
+integer :: icentr
 
 integer, external :: khuntr
 
@@ -2035,14 +2026,19 @@ integer, external :: khuntr
       if(mod(i,10)==0) then
         write(pyfile, *) ''
       end if
-      if(lsq_list(i)%index>-1) then
+      if(lsq_list(i)%indices(1)>-1) then
         ! python indices are zero based, hence index-1 below
         if(lsq_list(i)%serial>0) then
-          write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(lsq_list(i)%label), &
-          &   lsq_list(i)%serial, trim(lsq_list(i)%name), lsq_list(i)%index-1, eol
+          if(trim(lsq_list(i)%name)/='') then
+            write(pyfile, '(4x, """", a,"(",I0,")", 1X, a,""":",I0, a)', advance="no") trim(lsq_list(i)%label), &
+            &   lsq_list(i)%serial, trim(lsq_list(i)%name), lsq_list(i)%indices(1)-1, eol
+          else
+            write(pyfile, '(4x, """", a,"(",I0,")",""":",I0, a)', advance="no") trim(lsq_list(i)%label), &
+            &   lsq_list(i)%serial, lsq_list(i)%indices(1)-1, eol
+          end if
         else
           write(pyfile, '(4x, """", a,""":",I0, a)') &
-          &   trim(lsq_list(i)%name), lsq_list(i)%index-1, eol
+          &   trim(lsq_list(i)%name), lsq_list(i)%indices(1)-1, eol
         end if
       end if
     end do
@@ -2077,143 +2073,32 @@ integer, external :: khuntr
     
     ! matrix of constraints
     call load_phys_params(phys_list)
-    allocate(constraintstable(size(phys_list), size(lsq_list)))
-    allocate(character(len=24) :: physicallist(size(phys_list)))
-    physicallist=''
-    physicalindex=0
-    !      jt            absolute l.s. parameter no.
-    !      js            physical parameter no from which to start search
-    !      jx            relative parameter no
-
-    jx = 12
-    m5 = l5 - md5
-    m12 = l12o
-    l12a = nowt
-    js = 0
-
-    flag = iblank
-
-    do while(m12 .ge. 0)   ! more stuff in l12
-      if(istore(m12+1).gt.0) then ! any refined params
-!c--compute the address of the first part for this group
-        l12a=istore(m12+1)
-!c--check if this part contains any refinable parameters
-        do while(l12a.gt.0) ! --check if there are any more parts for this atom or group
-          if(istore(l12a+3).lt.0) exit
-!c--set up the constants to pass through this part
-          md12a=istore(l12a+1)
-          ju=istore(l12a+2) 
-          jv=istore(l12a+3)
-          js=istore(l12a+4)+1
-!c--search this part of this atom
-          do jw=ju,jv,md12a
-            jt=istore(jw)
-
-            ilebp = 0
-            do na=1,nsc
-              if(icom12(na).eq.m12) then
-!c--layer or element batch or parameter print
-                 ilebp = 1
-                 exit
-              end if
-            end do
-
-            if ( md12a .gt. 1 ) then
-              weight = store(jw+1)
-            else
-              weight = 1.
-            endif
-
-            if ( ilebp .eq. 1 ) then
-              if(jt>0) then
-                physicalindex=physicalindex+1
-                if(physicalindex>ubound(physicallist, 1)) then
-                  !print *, 'index out of bound 1'
-                  call abort()
-                end if
-                write(buffer, '(2a4)') (kscal(nc,na+2),nc=1,2)
-                write(physicallist(physicalindex), '(a,1x,i0)') trim(buffer), js
-                constraintstable(physicalindex, JT)=weight
-              end if
-
-!c--check if this is an overall parameter
-            else if (m12.eq.l12o) then
-              if(jt>0) then
-                physicalindex=physicalindex+1
-                if(physicalindex>ubound(physicallist, 1)) then
-                  !print *, 'index out of bound 2'
-                  call abort()
-                end if
-                write(physicallist(physicalindex), '(3a4)') (kvp(jrr,js),jrr=1,2)
-                constraintstable(physicalindex, JT)=weight
-              end if
-            else  
-!c-c-c-distinction between aniso's and iso/special's for print
-
-              if((store(m5+3) .ge. 1.0) .and. (js .ge. 8)) then
-                if(jt>0) then
-                  physicalindex=physicalindex+1
-                  if(physicalindex>ubound(physicallist, 1)) then
-                    !print *, 'index out of bound 3'
-                    call abort()
-                  end if
-                  write(buffer, '(a4)') store(m5)
-                  write(physicallist(physicalindex), '(a,"(",I0,")",1X,3a4)') &
-                  &   trim(buffer),nint(store(m5+1)),(icoord(jrr,js+nkao),jrr=1,nwka)
-                  constraintstable(physicalindex, JT)=weight
-                end if
-              else
-                if(jt>0) then
-                  physicalindex=physicalindex+1
-                  if(physicalindex>ubound(physicallist, 1)) then
-                    !print *, 'index out of bound 4 ', physicalindex, ubound(physicallist, 1)
-                    call abort()
-                  end if
-                  write(buffer, '(a4)') store(m5)
-                  write(physicallist(physicalindex), '(a4,"(",I0,")",1X,3a4)') &
-                  &   trim(buffer),nint(store(m5+1)), (icoord(jrr,js),jrr=1,nwka)
-                  constraintstable(physicalindex, JT)=weight
-                end if
-              endif
-                            
-            endif              
-!c
-!c--increment to the next parameter of this part
-            js=js+1
-          end do
-!c--change parts for this atom or group
-          l12a=istore(l12a)
-        end do
-      end if
-!c--move to the next group or atom
-      m5=m5+md5
-      m12=istore(m12)
-    end do
-      
+    !allocate(constraintstable(size(phys_list), size(lsq_list)))
+    !constraintstable=0.0
+    
     write(pyfile,'(a)') ''
     write(pyfile,'(a)') '# Matrix of constraints'
-    write(pyfile,'(a,I0,",",I0,a)') 'mconstraints=numpy.zeros( (', physicalindex, size(lsq_list),') )'
-    do j=1, size(lsq_list)
-      do i=1, physicalindex
-        if(constraintstable(i, j)/=0.0) then
-          write(pyfile, '(a,I0,",",I0,a,F0.5)') 'mconstraints[', i-1, j-1, ']=', constraintstable(i, j)
-        end if
+    write(pyfile,'(a,I0,",",I0,a)') 'mconstraints=numpy.zeros( (', size(phys_list), size(lsq_list),') )'
+    do i=1, size(phys_list)
+      do j=1, size(phys_list(i)%indices)
+        !constraintstable(i,phys_list(i)%indices(j))=phys_list(i)%weights(j)
+        write(pyfile, '(a,I0,",",I0,a,F0.5)') 'mconstraints[', i-1, phys_list(i)%indices(j)-1, ']=', phys_list(i)%weights(j)
       end do
-    end do
-      
+    end do      
 
     ! physical parameters list
     write(pyfile, '(a)') ""
     write(pyfile, '(a)') "parameters={"
     eol=','
-    do i=1, physicalindex
-      if(i==physicalindex) then
+    do i=1, size(phys_list)
+      if(i==size(phys_list)) then
         eol=''
       end if
       if(mod(i,10)==0) then
         write(pyfile, *) ''
       end if
-      write(pyfile, '(4x, """", a,""":",I0, a)', advance="no") trim(adjustl(physicallist(i))), i, eol
+      write(pyfile, '(4x, """", a,a,I0,a,a,a,""":",I0, a)', advance="no") &
+      &  trim(phys_list(i)%label), '(', phys_list(i)%serial, ',', trim(phys_list(i)%name), ')', i, eol
     end do
     write(pyfile, '(a)') "}"
     
