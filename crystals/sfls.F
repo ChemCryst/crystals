@@ -3695,7 +3695,7 @@ c
 #ifdef CRY_MKL
       allocate(Tisoin(n5))
       Tisoin=STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC
-      call vsExp( n5, , Tiso )
+      call vsExp( n5, Tisoin, Tiso )
 #else
       Tiso=EXP(STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC)  
 #endif
