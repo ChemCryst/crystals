@@ -3426,7 +3426,7 @@ C-C-C-...FOR STRUCTURE FACTOR-CALCULATION
 C-C-C-...FOR DERIVATIVES
       DOUBLE PRECISION DSIZE, DDECLINA, DAZIMUTH
       
-      real, dimension(:), allocatable :: Tiso
+      real, dimension(:), allocatable :: Tiso, Tisoin
       real, dimension(:,:), allocatable :: Taniso, Ttemp, atemp
       real, dimension(:,:), allocatable :: cosa, sina
 
@@ -3693,7 +3693,9 @@ c TC = -8 Pi^2 [sin(theta)/lambda]^2
 c T = exp(Uiso *TC)
 c 
 #ifdef CRY_MKL
-      call vsExp( n5, STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC, Tiso )
+      allocate(Tisoin(n5))
+      Tisoin=STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC
+      call vsExp( n5, , Tiso )
 #else
       Tiso=EXP(STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC)  
 #endif
