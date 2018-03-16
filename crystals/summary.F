@@ -3217,7 +3217,7 @@ C
      2 'ABSORPTION', 'GENERAL', 'COLOUR', 'SHAPE', 'CIF'/
 C
       DATA (CKEY(I,1),I=1,MAXKEY)/
-     1 'Total measured', '*',
+     1  'Total measured', 'Rsigma',
      2  'No. Friedel separate', 'Rint Friedel separate',
      3  'No. Friedel merged',   'Rint Friedel merged',
      4  'Wilson B factor', 'Wilson scale factor',

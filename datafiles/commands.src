@@ -494,7 +494,7 @@ LIST       7      17    1
      HKLI           DATAFILE
     .CHECK            107    0    1    2   -1 NO
      NO             YES
-    .L30UP            108    0    1    2   -1 YES
+    .L30UP            108    0    1    2   -1 NO
      NO             YES
     .ARCHIVE          113    0    1    2   -1 NO
      NO             YES
@@ -1563,7 +1563,7 @@ Data reduction details
 (8G15.3/4G15.3,11X,A4)
          2    2    2    2    2    2    2    2    2    2    2    2    3
     .NREFMES            0    0    1    0    0 0.
-    .ZZZ                0    0    1    0    0 0.
+    .RSIGMA             0    0    1    0    0 0.
     .NREFMERG           0    0    1    0    0 0.
     .RMERGE             0    0    1    0    0 0.
     .NREFFRIED          0    0    1    0    0 0.
@@ -3512,7 +3512,7 @@ RECORD THAT HOLDS MIN., MAX., AVERAGE AND R.M.S. VALUES FOR THE CORE BUFFER
          2    2
     .INTERVAL         105    0    1    0    0 12.0
     .INTERPOLATE      106    0    1    0    0 0.7
-  28.MATRIX            11    1    0    0   11    1 1009  108  106
+  28.MATRIX            11    1    0    0   11    1 1009  109  106
          1    1    1    1    1    1    0    0    0    0
 THE CONSTANTS THAT DEFINE A MATRIX FOR TRANSFORMING INDICES
 (10X,60A1)

@@ -30,8 +30,10 @@ C and the sigma computed with the old algorithm.  This is then re-input
 C and F and Sig(F) computed with the new algorithm.  This new list may 
 C have less reflections in it than the original hkli file, so the index 
 C limits etc in LIST 30 must be left unaltered. TO achieve this, a new 
-C flag has been added to the LIST 6 input control block. If L30UP (list 30 
-C undate) is set to NO, list 30 is not updated.  The default is YES, so 
+C flag has been added to the LIST 6 input control block. 
+C
+C If L30UP (list 30  update)
+C is set to NO, list 30 is not updated.  The default is YES, so 
 C LIST 30 is filled in when reflections are first input. In all the PUNCH 6/7 
 C routines set it to NO to conserve the original values.  The LIST 6 
 C created by convpat (converts PLATON SQUEEZE output) also sets L30UP to 

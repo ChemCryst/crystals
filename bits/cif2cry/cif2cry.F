@@ -46,7 +46,7 @@ C<ric02/>
       real          minsize, medsize, maxsize
       real          norien, thorientmin, thorientmax
       real          temperature, stand, decay
-      real          hmin, hmax, kmin, kmax, lmin, lmax
+      real          hmin, hmax, kmin, kmax, lmin, lmax, rsigma
       real          r, rw, s, nparam
       real          dcalc, dobs, molwt
       character*20   colour, shape
@@ -743,6 +743,7 @@ c.......=========================
       f1 = numb_('_diffrn_reflns_limit_l_max', lmax, dum).or.(f1)
       f1 = numb_('_diffrn_reflns_theta_min', thetamin, dum).or.(f1)
       f1 = numb_('_diffrn_reflns_theta_max', thetamax, dum).or.(f1)
+      f1 = numb_('_diffrn_reflns_av_sigmaI/netI', rsigma, dum).or.(f1)
       f2 = char_('_exptl_crystal_colour', colour).or.(f1)
       f2 = char_('_exptl_crystal_description', shape).or.(f1)
       f1 = numb_('_refine_ls_R_factor_gt', r, dum).or.(f1)
@@ -759,6 +760,7 @@ c.......=========================
         write(NOUTF,'(a,2x, 2(a,I6,2x), a, f6.2)') 'DATRED',
      *        'NREFMES = ', nint(nrefmes), 'NREFMERG = ', 
      *         int(nrefmerg), 'RMERGE = ', rmerge 
+        write(NOUTF, '(A,2X,F6.2)') 'CONT RSIGMA=',RSIGMA
         write(NOUTF, '(a, 2x, 3(a, f6.2,2x))') 'CONDITIONS', 
      *          'MINSIZE = ', minsize, 'MEDSIZE = ', medsize,
      *          'MAXSIZE = ', maxsize

@@ -4773,8 +4773,9 @@ C----- OUTPUT A TITLE, FIRST 44 CHARACTERS ONLY
         K=MIN(44,NCHAR-1)
         WRITE (NCFPU1,'(/,''_oxford_structure_analysis_title  '''''',
      1   A,'''''''')') CLINE(1:K)
-        WRITE (NCFPU1,'(''_chemical_name_systematic '',T35,''?'')')
-        WRITE (NCFPU1,'(''_chemical_melting_point '',T35,''?'',/)')
+        WRITE (NCFPU1,'(''_chemical_name_systematic '',T35,''.'')')
+        WRITE (NCFPU1,
+     1  '(''_chemical_melting_point '',T35,''not measured'',/)')
       ELSE IF ( IPUNCH .EQ. 1 ) THEN
         WRITE (CLINE,'(15A4,3(A2,A))') (KTITL(I),I=1,15),CBUF(7:8),'-',
      1  CBUF(4:5),'-',CBUF(1:2)
@@ -5502,7 +5503,8 @@ Cdjw NOV97
          END IF
          SUM=STORE(I+1) / ZPRIME
          NSUM=NINT(SUM)
-         IF (AMOD(SUM,1.0).LE.ZERO) THEN
+         IF (AMOD(SUM,1.0).LE. 0.005) THEN  !change ZERO to 0.005
+c                                           !to avoid float due to rounding
             WRITE (CTEMP,1600) NSUM
 1600        FORMAT (I8)
          ELSE
@@ -5532,7 +5534,7 @@ C
      1  CLINE(2:MAX(2,J-1)),''''
         WRITE (NCFPU1,'(A,T35,A,A,A)') '_chemical_formula_moiety','''',
      1  CLINE(2:MAX(2,J-1)),''''
-        WRITE (NCFPU1,'(''_chemical_compound_source'',T42,''?'')')
+        WRITE (NCFPU1,'(''_chemical_compound_source'',T42,''.'')')
       ELSE IF ( IPUNCH .EQ. 1 ) THEN
         K=MIN(27,J)
         WRITE (CPAGE(2,1)(:),'(A,A)') 'Formula ',CLINE(1:K)
@@ -5684,7 +5686,7 @@ c
             WRITE (CLINE,'(A,''density_meas'',T35,F6.3)') CBUF(1:15),
      1       STORE(L30GE)
           ELSE
-            WRITE (CLINE,1850) CBUF(1:15),'density_meas','?'
+            WRITE (CLINE,1850) CBUF(1:15),'density_meas','not measured'
             CALL XPCIF (CLINE)
             WRITE (CLINE,1850) CBUF(1:15),'density_method',
      1      '''not measured'''
@@ -6269,7 +6271,7 @@ C
            WRITE (CLINE,'(A, ''decay_% '', F6.2)') CBUF(1:18),
      1      STORE(L30CD+8)
           ELSE
-           WRITE (CLINE,'(A, ''decay_%  ?'')') CBUF(1:18)
+           WRITE (CLINE,'(A, ''decay_%  .'')') CBUF(1:18)
           END IF
           CALL XPCIF (CLINE)
           CALL XPCIF (' ')
@@ -6288,6 +6290,12 @@ C
           WRITE (CLINE,'(A, ''number '', I10)') CBUF(1:15),
      1      NINT(STORE(L30DR))
           CALL XPCIF (CLINE)
+          if(store(l30dr+1).gt.0.0) then
+           CLINE=' '
+           WRITE (CLINE,'(A, ''av_unetI/netI '', f10.3)') 
+     1    CBUF(1:15), STORE(L30DR+1)
+           CALL XPCIF (CLINE)
+          endif
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IDATA+2,1)(:),'(''Reflections measured '', I8)')
      1      NINT(STORE(L30DR))
@@ -6298,8 +6306,6 @@ C
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
             WRITE (NCPU,4) 'Reflections measured', NINT(STORE(L30DR))
         END IF
- 
-
 c      write(ncwu,*)'List 6 total', n6d, store(l30dr), store(l30dr+2),
 c     1 store(l30dr+4)
         IF ((n6d .gt. nint(STORE(L30DR+4))) .and. 

@@ -502,6 +502,9 @@ C--FIND THE TYPE OF LIST 6
 C--CLEAR THE STORE
       CALL XRSL
       CALL XCSAE
+C----- CLEAR THE Rsigma ACCUMULATORS
+      RSIGNUM=0.
+      RSIGDEN=0.
 C--SET UP LIST 2 FOR SYSTEMATIC ABSENCE CHECKING
       CALL XFAL02
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -657,6 +660,10 @@ c  CHECK IF IT IS THE FIRST
        CALL XL6RRP(N,1000,IFO,CCAPT)
        GOTO 1450
 1600  CONTINUE
+       FO = STORE(L6+ifo)      !changed from 3, djw April 2017
+       CALL XSQRF(FOS, FO, FABS, SIGMAS, STORE(M6+12))
+       RSIGNUM=RSIGNUM+SIGMAS
+       RSIGDEN=RSIGDEN+FOS
 C--STORE THE REFLECTION
       CALL XSLR(1)
 C--ACCUMULATE THE DETAILS
@@ -751,10 +758,26 @@ cdjwjun09 - only for LIST type 6
 cdjw dec08
 c              STORE(L30DR) = max(FLOAT(N6W),STORE(L30DR))
 c              STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
-c Dont fiddle with the merged totals, just account for systematic 
-c absences
-CDJWJUN09
+c              Dont fiddle with the merged totals, just account for 
+c              systematic absences
               STORE(L30DR) = FLOAT(N6W)
+c              write(123,*)'rsignum, rsigden',rsignum, rsigden
+              RSIGMA=RSIGNUM/RSIGDEN
+C             write(123,*)'Rsigma=',rsigma, store(l30dr+1)
+          IF(STORE(L30DR+1).GT. ZERO) then
+           if(ABS(STORE(L30DR+1)-RSIGMA).GT.0.0005) THEN
+            WRITE(CMON,'(A,A,F6.3,A,F6.3)')' Rsigma has changed from',
+     2      ' its old value of',store(l30dr+1),' to ', rsigma
+               CALL OUTCOL(3)
+               call xprvdu (ncvdu,1,0)
+               CALL OUTCOL(1)
+               if (issprt.eq.0) write (ncwu,'(/a/)') TRIM(cmon(1))
+           ENDIF
+          ENDIF
+          STORE(L30DR+1)=RSIGMA    !This was also computed when reflections
+c                                  !were read in from LIST 6 or HKLI
+c                                  !It has been recomputed after systematic
+c                                  !absences have been removed
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF       
 1810  CONTINUE

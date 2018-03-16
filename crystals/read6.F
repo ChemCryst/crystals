@@ -458,6 +458,9 @@ C
 C
 C--SET THE TIMING FUNCTION
       CALL XTIME1 (2)
+C----- CLEAR THE R-SIGMA ACCUMULATORS
+      RSIGNUM=0.
+      RSIGDEN=0.
 c----- un-set data keys
       irfo = nowt
       irft = nowt
@@ -490,6 +493,8 @@ C--READ THE NEXT DIRECTIVE CARD FROM THE INPUT STREAM
       LAST=IDIR
       IDIR=KRDNDC(ISTORE(KX),KY)
 C--CHECK THE REPLY
+C      WRITE(123,'(/,A,I6,(/4I6,2X,4I6,2X,4I6,2X,4I6))')'IDIR=',IDIR,
+C     1(ISTORE(IIDJW),IIDJW=KX,KX+KY-1)
       IF (IDIR) 600,100,150
 C--CONTINUATION CARD  -  RESET THE POINTER
 100   CONTINUE
@@ -566,6 +571,8 @@ c     3 L6P,M6P,MD6P,N6P,L6DTL,M6DTL,MD6DTL,N6DTL
 C--STORE THE TEMPORARY PART OF THE COMMON BLOCK
       I=KX+IDIM06
       CALL XMOVE (ISTORE(I),ICOM6A(1),IDIM6A)
+C      write(123,'(a/(4i6,6x,4i6))') 'ICOM06a',
+C     1(icom6a(iidjw),iidjw=1,idim6a)
 Cdjwnov2000
 C----- save the matrix and tolerance
       CALL XMOVE (STORE(L6MR),TRANSH,9)
@@ -1265,22 +1272,24 @@ c----- output archive material for PUNCH unit
           call refout(ncfpu2, nint(store(m6)),nint(store(m6+1)),
      1      nint(store(m6+2)), store(jfo), store(m6+12))
          endif
-C--ARE WE INPUTTING /FO/ **2 ?
-         IF (ISQ) 4650,4700,4700
-4650     CONTINUE
 C--CHECK IF WE SHOULD TAKE THE SQUARE ROOT
-Cdjwmap99[
-         CALL XSQRT (STORE(JFO),FSIGN,FABS,STORE(M6+12),SIG)
-         STORE(JFO)=FSIGN
-         STORE(M6+12)=SIG
-Cdjwmap99]
-Cric2001[
+C--ARE WE INPUTTING /FO/ **2 ?
+         IF (ISQ.lt.0) THEN
+           RSIGF=STORE(JFO)
+           RSIGS=STORE(M6+12)
+           CALL XSQRT (STORE(JFO),FSIGN,FABS,STORE(M6+12),SIG)
+           STORE(JFO)=FSIGN
+           STORE(M6+12)=SIG
 C If F's are squared, Fc's probably are aswell.
-         STORE(M6+5) = SQRT (ABS(STORE(M6+5)))
-Cric2001]
-C
-C--APPLY THE SCALE STORED IN THE 'CORRECTIONS' SLOT
+           STORE(M6+5) = SQRT (ABS(STORE(M6+5)))
+         ELSE
+C          RECOVER F^2 FOR RSIGMA
+           CALL XSQRF (RSIGF,STORE(JFO),FABS,RSIGS,STORE(M6+12))
+         ENDIF
 4700     CONTINUE
+         RSIGNUM=RSIGNUM+RSIGS
+         RSIGDEN=RSIGDEN+RSIGF
+C--APPLY THE SCALE STORED IN THE 'CORRECTIONS' SLOT
          STORE(JFO)=STORE(JFO)*STORE(M6+27)
          STORE(M6+12)=STORE(M6+12)*STORE(M6+27)
 c^^moved from above -Feb 2001
@@ -1376,9 +1385,26 @@ cdjw Sept 2012.  Twinned data is probably merged by instrument software,
 c   but we dont know what was done with FRIEDEL pairs.
 c   Hence, we dont know whather to update DR+2 or DR+4
        IF ((ITYPE6.NE.1).AND.(ITYPE6.NE.5)) THEN
-       IF (L30UP .GE. 0) THEN
+       IF (L30UP .GE. -0) THEN             !L30UP is set in LIST6.F
          IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL30
          STORE(L30DR)=FLOAT(N6W)
+c        write(123,*)'rsignun,rsigden',rsignum,rsigden
+         RSIGMA=RSIGNUM/RSIGDEN
+C        write(123,*)'Rsigma=',rsigma, store(l30dr+1)
+         IF(STORE(L30DR+1).GT. ZERO) then
+           if(ABS(STORE(L30DR+1)-RSIGMA).GT.0.0005) THEN
+            WRITE(CMON,'(A,A,F6.3,A,F6.3)')' Rsigma has changed from',
+     2      ' its old value of',store(l30dr+1),' to ', rsigma
+            CALL OUTCOL(3)
+            call xprvdu (ncvdu,1,0)
+            CALL OUTCOL(1)
+            if (issprt.eq.0) write (ncwu,'(/a/)') TRIM(cmon(1))
+           ENDIF
+         ENDIF
+         STORE(L30DR+1)=RSIGMA          !BEWARE: there may be systematic
+c                                       !absences included when done here.
+c                                       this will be (re)set if XSYST
+c                                       !is done on a LIST 6
 C----- MIN AND MAX INDICES, FROM L6 DETAILS
          LIX=L6DTL
          STORE(L30IX)=STORE(LIX)

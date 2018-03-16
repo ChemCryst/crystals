@@ -75,7 +75,7 @@ c #include "ciftbx.sys"
 #include "ciftbx.cmn"
 #include "cifin.cmn"
       logical, intent(in) :: interactive
-      LOGICAL F2,F3,F4,F5
+      LOGICAL F2,F3,F4,F5,F1S
       LOGICAL FC,FV,FN,FF,FT,FW,FZ,FSG,FMON,FABS,FSIZ,FTEMP,FCOL
       LOGICAL F6L, FNX, PROBABLY_NEUTRONS 
       LOGICAL FINFO, FDMDT, FDMD, FDMM
@@ -83,7 +83,8 @@ c #include "ciftbx.sys"
 
       CHARACTER*16 CSPACE,CNONSP,CTEMP,CSHAPE,SHAPE
       CHARACTER*26 ALPHA
-      CHARACTER*32 C32, ENAME, CCOL, BUFFER
+      CHARACTER*32 C32
+      CHARACTER*(linlen) ENAME, CCOL, BUFFER
       CHARACTER*80 C80
       CHARACTER*80 CMONO,CDMDT,CDMD,CDMM
 
@@ -109,7 +110,7 @@ c #include "ciftbx.sys"
       REAL CELA,CELB,CELC,SIGA,SIGB,SIGC
       REAL CELALP,CELBET,CELGAM,SIGALP,SIGBET,SIGGAM
       REAL X,Y,Z,U,SX,SY,SZ,SU
-      REAL HMIN,HMAX,KMIN,KMAX,LMIN,LMAX
+      REAL HMIN,HMAX,KMIN,KMAX,LMIN,LMAX,RSIGMA
 
       DATA alpha    /'abcdefghijklmnopqrstuvwxyz'/
       DATA sigalp /0.0/,sigbet /0.0/, siggam /0.0/
@@ -617,6 +618,7 @@ c
             maxl = nint(lmax)
       endif      
 c
+      f1s = numb_('_diffrn_reflns_av_sigmaI/netI', rsigma, dum)
 C 
       atn = 0.
       atx = 0.
@@ -974,8 +976,15 @@ C
             goto 1050
       ENDIF
 C 
-      IF (FN) WRITE (NOUTF,'(//a,2X,A,2x,a)') '#TITLE ',
-     1                    ENAME(1:NCTRIM(ENAME)),CDATE
+      IF (FN) THEN
+        IDJW=NCTRIM(INFIL)
+        JDKW=1
+C       25 CHARACTER USED IN TITLE AND CDATE
+        IF(IDJW.GT.55) JDJW=MAX(1,IDJW-25)     
+      write(123,*)idjw,jdjw
+        WRITE (NOUTF,'(//a,2X,A,2x,a)') '#TITLE ',
+     1  INFIL(JDJW:IDJW),CDATE
+      ENDIF
 c
 c
 C Dont write lists if data comes from an .fcf file
@@ -1140,6 +1149,8 @@ C #LIST 30
 C----- WRITING LIST 30
          WRITE (NOUTF,'(a)')      '#LIST 30'
          WRITE (NOUTF,'(a,a)')    'DATRED REDUCTION= ', creduct
+         if (f1s)
+     1     WRITE (NOUTF,'(a,f8.3)') 'cont rsigma=',rsigma
          WRITE (NOUTF,'(a)')      'ABSORPTION ABSTYPE=multi-scan'
          WRITE (NOUTF,'(a,f8.3)') 'cont empmin=',atn
          WRITE (NOUTF,'(a,f8.3)') 'cont empmax=',atx
