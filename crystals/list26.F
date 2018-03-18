@@ -2201,7 +2201,13 @@ C
               type(restraints_t), intent(inout), optional :: results
           end subroutine
       end interface
-      
+       interface 
+          subroutine XCDEF(results)
+              use list26_mod
+              type(restraints_t), intent(inout), optional :: results
+          end subroutine
+      end interface
+     
       integer, dimension(8) :: IBUFF
       real, dimension(:), allocatable :: card
       character(len=:), allocatable :: cline
@@ -8117,13 +8123,10 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-         JFF=JB+7
 C--ACCUMULATE THE TOTALS FOR THIS ATOM
          DO 2400 Kcpt=1,6
-            DEL=ABS(STORE(JFF)-WCdp(Kcpt))
-            SUM=ABS(STORE(JFF))
-            JFF=JFF+1
+            DEL=ABS(adps(Kcpt)-WCdp(Kcpt))
+            SUM=ABS(adps(Kcpt))
             DELS=DELS+DEL*DEL
             SUMS=SUMS+SUM*SUM
             DELU=DELU+DEL

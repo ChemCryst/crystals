@@ -565,7 +565,7 @@ C     SET INITIAL VALUES
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
-       IF ( ( KALLOW(ALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
+       IF ( ( KALLOW(IALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         IF(E5)THEN
           FCA  = SCALE * STORE(M6+5)    ! FC

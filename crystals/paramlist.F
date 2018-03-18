@@ -70,7 +70,8 @@ C     Returns:
 C        The result of slist_search_for
 C
 C  ================   Arguments   ================
-      integer a, b, c, d, e
+      integer b, c, d, e
+      integer a(b)
 C  ================Function calls ================
       integer slist_search_for
       
@@ -747,7 +748,7 @@ C
       implicit none
       
       integer iterator(3)     ! This is of the form [current, step, end]
-      integer list_info(10)
+      integer list_info(5)
       integer off_step, off_start, off_end
       
       call list_iter_create1(iterator, list_info(off_step),  

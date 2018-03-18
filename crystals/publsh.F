@@ -217,7 +217,7 @@ CODE FOR PROPERTIES
       DIMENSION IPROCS(1)
       CALL XCSAE
       I = KRDDPV (IPROCS, 1)
-      IF (I .GE.0) CALL KCPROP(A)
+      IF (I .GE.0) idummy=KCPROP(A)
       RETURN
       END
 C

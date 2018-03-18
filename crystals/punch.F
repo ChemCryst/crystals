@@ -621,7 +621,7 @@ CDJWFEB2000
 C--
       CHARACTER*6 CLAB
       INCLUDE 'ISTORE.INC'
-      DIMENSION A(3)
+      DIMENSION A(3), KDEV(4)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XCOMPD.INC'
@@ -1477,6 +1477,15 @@ CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       CHARACTER*12 CTEMP
       CHARACTER*1 CALW(5)
       CHARACTER CCELL(3)*1,CANG(3)*5
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
 cdjwmay2011 Add high and low

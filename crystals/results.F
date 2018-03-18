@@ -1633,6 +1633,15 @@ C
       LOGICAL LHFIXD(3)
 C
       EQUIVALENCE (IALATM,ALLATM)
+      
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       SAVE IALATM
 #if !defined(_HOL_) 
       DATA IALATM / '    ' /
@@ -2102,6 +2111,15 @@ C
       INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (IALATM,ALLATM)
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       SAVE IALATM
 #if !defined(_HOL_) 
       DATA IALATM / '    ' /
@@ -2455,6 +2473,14 @@ C
       INCLUDE 'XSSCHR.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface      
 C
       DATA COVER / 'Scale  ', 'Du(iso) ', 'Ou(iso) ',
      2  'Polarity', 'Flack  ', 'Extinction'/
@@ -2608,6 +2634,13 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 C
       IFUNC = IFUNC
 
@@ -3265,7 +3298,7 @@ C
       CHARACTER*32 CFORM
       CHARACTER*80 CTEMP
 C
-      DIMENSION IVET(118)
+      DIMENSION IVET(:)
 C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCONST.INC'
@@ -3273,6 +3306,10 @@ C
       EQUIVALENCE (JB,CB)
       DATA CB/'    '/
 C
+      if(j>size(ivet)) then
+        j=size(ivet)
+      end if
+
 C----- WE DONT KNOW HOW BIG IVET IS, BUT WE CAN CLEAR OUT THE LAST
 C      /ND/ LOCATIONS
       MODND = ABS(ND)
@@ -3887,6 +3924,13 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 C
 #ifdef _HOL_
       DATA KHYD /4HH   /
@@ -4096,6 +4140,15 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'XSSCHR.INC'
+      
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       DATA CKEY /'DAT'/
 
       CALL XRSL  ! CLEAR THE STORE
@@ -4250,6 +4303,13 @@ C
 c
       INCLUDE 'QLST30.INC'
 
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 C
       DATA CGEOM /'_bond', '_angle', '_torsion', '_hbond' /
       DATA CTEXT /'_geom', '_distance'/
@@ -4638,6 +4698,14 @@ C
       INCLUDE 'QLST31.INC'
       INCLUDE 'QLST39.INC'
       INCLUDE 'QSTORE.INC'
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
      1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
@@ -11456,6 +11524,14 @@ C
       INCLUDE 'QLST30.INC'
       INCLUDE 'QLST31.INC'
       INCLUDE 'QSTORE.INC'
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
      1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
