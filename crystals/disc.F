@@ -426,25 +426,31 @@ C
       END
 C
 CODE FOR XDUMP
+!> this routine provides a link to the new routine 'kdump'
       SUBROUTINE XDUMP
+      use xerval_mod, only: iersev
+      implicit none
+      integer istat
+      
+      integer, external :: kdump
 C
 C -- THIS ROUTINE PROVIDES A LINK TO THE NEW ROUTINE 'KDUMP'
 C
-      INCLUDE 'XERVAL.INC'
-C
-      DATA IN / 0 /
-C
-      ISTAT = KDUMP ( IN )
+      ISTAT = KDUMP ( 0 )
       IF ( ISTAT .LT. 0 ) CALL XERHND ( IERSEV )
-C
-      RETURN
 C
       END
 C
 C
 C
 CODE FOR KDUMP
-      FUNCTION KDUMP ( IN )
+!> rewrite all buffers marked for writing to the disc
+      FUNCTION KDUMP ( IN ) 
+      use xlink_mod, only: link
+      use xdiscb_mod, only: i, j, iacc, iadd1
+      use xssval_mod, only: issrli
+      use xstats_mod, only: ipwrit
+      implicit none
 C
 C--REWRITE ALL BUFFERS MARKED FOR WRITING TO THE DISC
 C
@@ -454,58 +460,54 @@ C -- RETURN VALUES :-
 C
 C      -VE      ERROR REWRITING DISC BUFFERS
 C      +VE      SUCCESS
+
+      integer, intent(in) :: in !< not used
+      integer :: kdump !< -ve: error rewriting disc buffers, +ve: success
+      integer ibuffr, ierror, istat
+      
+      integer, external :: kstore
 C
-      INCLUDE 'XLINK.INC'
-      INCLUDE 'XDISCB.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XSTATS.INC'
-C
-      IDWZAP = IN
-      INCLUDE 'QDISCB.INC'
 C
 C -- SET ERROR FLAG CLEAR
       IERROR = 1
 C
 C--CHECK IF ANY BUFFERS ARE ALLOCATED
-      IF(IACC)1250,1000,1000
+      IF(IACC>=0) then !1250,1000,1000
 C--LINK INTO THE FIRST BUFFER
-1000  CONTINUE
-      I=LINK(IADD1+1)
-      J=-1
+        I=LINK(IADD1+1)
+        J=-1
 C--CHECK IF THE BUFFER REQUIRED WRITING
-1050  CONTINUE
-      IF(LINK(I+3))1100,1150,1150
+        do ! 1050    CONTINUE
+          IF(LINK(I+3)<0) then !1100,1150,1150
 C--WRITE THE BUFFER OUT
-1100  CONTINUE
-      J=LINK(I+2)
-      IBUFFR = LINK(I+4)
+            J=LINK(I+2)
+            IBUFFR = LINK(I+4)
 C
-      IPWRIT = IPWRIT + 1
-      ISTAT = KSTORE ( LINK(I) , J , LINK(IBUFFR)  , ISSRLI )
-      IF ( ISTAT .LT. 0 ) IERROR = ISTAT
-      LINK(I+3)=0
+            IPWRIT = IPWRIT + 1
+            ISTAT = KSTORE ( LINK(I) , J , LINK(IBUFFR)  , ISSRLI )
+            IF ( ISTAT .LT. 0 ) IERROR = ISTAT
+            LINK(I+3)=0
 C--CHECK IF THIS IS THE LAST BUFFER
-1150  CONTINUE
-      IF(LINK(I+1))1250,1250,1200
-1200  CONTINUE
-      I=LINK(I+1)
-      GOTO 1050
-1250  CONTINUE
+          end if !1150  CONTINUE
+          if(LINK(I+1)<=0) exit
+          I=LINK(I+1)
+        end do !GOTO 1050
+      end if !1250  CONTINUE
 C -- SET RETURN VALUE
       KDUMP = IERROR
       RETURN
       END
 C
 CODE FOR KNWR
+!> number of words per record
       FUNCTION KNWR(IN)
+      use xssval_mod, only: issrli
+      implicit none
 C--NUMBER OF WORDS PER RECORD
 C
-C
-C--
-      INCLUDE 'XSSVAL.INC'
-C
-      IDWZAP = IN
+      integer, intent(in) :: in !< unused
+      integer knwr !< number of words per record
+      
       KNWR = ISSRLI
 C
       RETURN
@@ -689,8 +691,13 @@ C
 C
 C
 CODE FOR KSTORE
+!> this routine writes data to a direct access file
       FUNCTION KSTORE ( NU , I , J , NWORD )
       use hdf5_dsc
+      use xunits_mod, only: nceror, ncwu
+      use xssval_mod, only: issokf, issprt
+      use xiobuf_mod, only: cmon
+      implicit none
 C
 C -- THIS ROUTINE WRITES DATA TO A DIRECT ACCESS FILE
 C
@@ -711,45 +718,42 @@ C  OF HARDWARE BLOCKS ON THE DISC
 C
 C--THE TRANSFER IS ROUNDED UP TO FILL ONE OR MORE DISC BLOCKS
 C
+      integer, intent(in) :: nu !< unit number for transfer
+      integer, intent(in) :: i !< record number for transfer ( 0 - end )
+      integer, intent(in) :: nword !< size of array j
+      integer, dimension(nword), intent(in) :: j !< integer array from which data is read
+      integer kstore
 C
-C
-      DIMENSION J(NWORD)
-C
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XIOBUF.INC'
-      
+      integer ios, n
       integer error
       type(t_dsc_hdf5), pointer :: crfile
+      
       KSTORE = 1
-C
       N = I + 1
 C
       call hdf5_dic_get(crfile, NU, error)
       !print *, 'hdf5 search dic', error
       if(error/=0) then
-        WRITE ( NU , REC = N , ERR = 100 , IOSTAT = IOS ) J
-        IF (IOS .NE. ISSOKF) GOTO 100
+        WRITE ( NU , REC = N , IOSTAT = IOS ) J
+        IF (IOS==ISSOKF) return ! all good!
       else
         !print *, 'kstore hdf5'
         call hdf5_dsc_kstore(crfile, n, j, error)        
-        if(error/=0) goto 100        
+        if(error==0) return ! all good!
       end if
-      RETURN
+
+      ! Error when writing data       
 100   CONTINUE
 cjan08       WRITE(NCAWU,200) NU,N
       IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,200) NU,N
+        WRITE(NCWU,200) NU,N
       ENDIF
       WRITE ( CMON, 200) NU,N
       CALL XPRVDU(NCEROR, 1,0)
 200   FORMAT(' Write to unit ',I5,' fails for record ',I8)
       CALL XERIOM ( NU , IOS )
 C
-C
       KSTORE = ISIGN ( IOS , -1 )
-      RETURN
-C
       END
 C
 CODE FOR KINCRS
@@ -868,6 +872,12 @@ C
 CODE FOR XDAXTN
       SUBROUTINE XDAXTN ( IUNIT,IBEGIN,ICOUNT )
       use hdf5_dsc
+      use xunits_mod, only: nceror, ncwu
+      use xssval_mod, only: issokf, issprt
+      use xerval_mod, only: iercat
+      use xdaval_mod, only: idamax
+      use xiobuf_mod, only: cmon
+      implicit none
 C
 C -- WRITE 'ICOUNT' RECORDS TO DISC FILE ON UNIT 'IUNIT'
 C    STARTING AT RECORD 'IBEGIN'
@@ -881,12 +891,9 @@ C    FILES MANUALLY, AS WELL AS A MEANS OF CREATING NEW DIRECT ACCESS
 C    FILES. THIS MIGHT BE DONE BY APPENDING A NEW SMALL FILE ONTO THE
 C    EXISTING ONE.
 C
-C
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XDAVAL.INC'
-      INCLUDE 'XIOBUF.INC'
+      integer, intent(in) :: iunit !< unit of the direct file to extend
+      integer, intent(in) :: ibegin
+      integer, intent(in) :: icount
 C
 C    IF IBEGIN IS LESS THAN OR EQUAL TO 0, THE END OF FILE WILL
 C    BE SEARCHED FOR.
@@ -894,6 +901,8 @@ C    BE SEARCHED FOR.
       ! Check if a hdf5 is  used
       integer error
       type(t_dsc_hdf5), pointer :: crfile
+      
+      integer i, iend, ios, istart
       
       call hdf5_dic_get(crfile, IUNIT, error)
       !print *, 'xdaxtn ', iunit, error
@@ -903,50 +912,50 @@ C    BE SEARCHED FOR.
 C
 C -- IBEGIN MAY BE A CONSTANT AND SO SHOULD NOT BE MODIFIED
 C
-      ISTART = IBEGIN
+        ISTART = IBEGIN
 C
-      IF ( ISTART .LT. 0 ) CALL XDAEND ( IUNIT,ISTART )
+        IF ( ISTART .LT. 0 ) CALL XDAEND ( IUNIT,ISTART )
 C
 C -- NO OPERATION
-      IF ( ICOUNT .LE. 0 ) GO TO 8000
+        IF ( ICOUNT .LE. 0 ) return
 C
-      IEND = ISTART + ICOUNT - 1
-      IF ( IDAMAX .LE. 0 ) GO TO 1900
-      IF ( IEND .GT. IDAMAX ) GO TO 9920
-1900  CONTINUE
+        IEND = ISTART + ICOUNT - 1
+        IF ( IDAMAX>0 ) then
+          IF ( IEND .GT. IDAMAX ) GO TO 9920
+        end if
 C
-      DO 2000 I=ISTART,IEND
-      WRITE ( IUNIT , REC = I , ERR = 9900 , IOSTAT = IOS ) I
-      IF (IOS .NE. ISSOKF) GOTO 9900
-2000  CONTINUE
+        DO I=ISTART,IEND
+          WRITE ( IUNIT , REC = I , IOSTAT = IOS ) I
+          IF (IOS .NE. ISSOKF) GOTO 9900
+        end do
 C
-8000  CONTINUE
-      RETURN
+        RETURN
 C
-9900  CONTINUE
+9900    CONTINUE
 C -- ERROR WHILE EXTENDING DISC FILE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9910 ) IUNIT
-      ENDIF
+        IF (ISSPRT .EQ. 0) THEN
+        WRITE ( NCWU , 9910 ) IUNIT
+        ENDIF
 cjan08      WRITE ( NCAWU , 9910 ) IUNIT
-      WRITE ( CMON, 9910 ) IUNIT
-      CALL XPRVDU(NCEROR, 1,0)
-9910  FORMAT ( 1X , 'An error has occured while extending file ' ,
-     1 'on unit ' , I3 )
-      CALL XERIOM ( IUNIT , IOS )
-      CALL XERHND ( IERCAT )
-9920  CONTINUE
+        WRITE ( CMON, 9910 ) IUNIT
+        CALL XPRVDU(NCEROR, 1,0)
+9910    FORMAT ( 1X , 'An error has occured while extending file ' ,
+     1    'on unit ' , I3 )
+        CALL XERIOM ( IUNIT , IOS )
+        CALL XERHND ( IERCAT )
+        
+9920    CONTINUE
 C -- SIZE TOO GREAT
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 ) IUNIT
-      ENDIF
+        IF (ISSPRT .EQ. 0) THEN
+        WRITE ( NCWU , 9925 ) IUNIT
+        ENDIF
 cjan08      WRITE ( NCAWU , 9925 ) IUNIT
-      WRITE ( CMON, 9925 ) IUNIT
-      CALL XPRVDU(NCEROR, 1,0)
-9925  FORMAT ( 1X , 'The maximum size of the file on unit ' , I3 ,
-     2 ' has been exceeded' )
-      CALL XERHND ( IERCAT )
-      GO TO 9900
+        WRITE ( CMON, 9925 ) IUNIT
+        CALL XPRVDU(NCEROR, 1,0)
+9925    FORMAT ( 1X , 'The maximum size of the file on unit ' , I3 ,
+     2    ' has been exceeded' )
+        CALL XERHND ( IERCAT )
+        GO TO 9900
       
       end if
       
