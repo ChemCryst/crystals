@@ -33,91 +33,11 @@ C Added changelog to top of file
 C
 C
 CODE FOR XUPF
-      SUBROUTINE XUPF(I,IA,J)
-C--TRANSFER FLOATING POINT NUMBERS FROM STORE TO THE DISC
-C
-C  I  ADDRESS OF THE FIRST WORD ON THE DISC (24 BIT WORD)
-C  IA  ARRAY HOLDING THE DATA
-C  J  NUMBER OF WORDS TO TRANSFER
-C
-C--
-C
-      DIMENSION IA(J)
-C
-C
-      DATA K/0/,L/0/
-C
-      K=I
-      L=KINCRF(J)
-      CALL XUP(K,IA,L)
-      RETURN
-      END
-C
-CODE FOR XDOWNF
-      SUBROUTINE XDOWNF(I,A,J)
-C--TRANSFER FLOATING POINT NUMBERS FROM THE DISC TO STORE
-C
-C  I  ADDRESS OF THE FIRST WORD ON THE DISC (24 BIT WORDS)
-C  A  ARRAY TO HOLD THE DATA
-C  J  NUMBER OF WORDS TO TRANSFER
-C
-C--
-C
-      DIMENSION A(J)
-C
-C
-      DATA K/0/,L/0/
-C
-      K=I
-      L=KINCRF(J)
-      CALL XDOWN(K,A,L)
-      RETURN
-      END
-C
-CODE FOR XDOWN
-      SUBROUTINE XDOWN(NFW,IADD,NW)
-C--TRANSFER FROM DISC TO STORE
-C
-C  NFW   ADDRESS OF FIRST WORD TO BE USED ON DISC
-C  IADD  ADDRESS OF FIRST WORD IN CORE
-C  NW    NUMBER OF WORDS TO TRANSFER
-C
-C--DISC ROUTINES VERSION 4, USING ONLY 'XDATA' OR SIMILAR ARRAYS AS STOR
-C  THE BUFFERS.
-C
-C--RECORD 0 CONTAINS WORDS  0   - (NWR-1)
-C  RECORD 1 CONTAINS WORDS  NWR - (2*NWR-1)
-C  AND SUBSEQUENT RECORDS ARE THE SAME
-C
-C--
-C
-      DIMENSION IADD(NW)
-C
-      INCLUDE 'XLINK.INC'
-      INCLUDE 'XDISCB.INC'
-C
-      INCLUDE 'QDISCB.INC'
-C
-C--TRANSFER THE ARGUMENTS TO THE COMMON BLOCK
-      NFWD=NFW
-      NWD=NW
-      NV=1
-C--CHECK IF THERE ARE ANY MORE WORDS TO TRANSFER
-1000  CONTINUE
-      IF(NWD)1050,1050,1100
-1050  CONTINUE
-      RETURN
-C--CALCULATE THE RECORD NUMBER ETC. FOR THIS TRANSFER
-1100  CONTINUE
-      CALL XFINDB
-C--READ SOME NUMBERS
-      CALL XMOVE(LINK(J),IADD(NV),K)
-      NV=NV+K
-      GOTO 1000
-      END
-C
-CODE FOR XUP
-      SUBROUTINE XUP(NFW,IADD,NW)
+!> Transfer data to the disc buffer
+      SUBROUTINE XUPF(NFW,ADD,NW)
+      use xlink_mod, only:link
+      use xdiscb_mod, only: i, j, k, nfwd, nwd, nv
+      implicit none
 C--TRANSFER FROM STORE TO DISC
 C
 C  NFW   ADDRESS OF FIRST WORD TO BE USED ON DISC
@@ -133,31 +53,141 @@ C  AND SUBSEQUENT RECORDS ARE THE SAME
 C
 C--
 C
-      DIMENSION IADD(NW)
+      integer, intent(in) :: nfw !< address of first word to be used on disc
+      integer, intent(in) :: nw !< size of array iadd
+      real, dimension(nw), intent(in) :: add !< Array containing the data to copy to disc
+      
 C
-      INCLUDE 'XLINK.INC'
-      INCLUDE 'XDISCB.INC'
-C
-      INCLUDE 'QDISCB.INC'
-C
-
 C--TRANSFER THE ARGUMENTS TO THE COMMON BLOCK
       NFWD=NFW
       NWD=NW
       NV=1
 C--CHECK IF THERE ARE ANY MORE WORDS TO TRANSFER
-1000  CONTINUE
-      IF(NWD)1050,1050,1100
-1050  CONTINUE
-      RETURN
+      do while(nwd>0) !1000  CONTINUE
 C--CALCULATE THE RECORD NUMBER ETC. FOR THIS TRANSFER
-1100  CONTINUE
-      CALL XFINDB
+        CALL XFINDB
 C--WRITE SOME NUMBERS
-      LINK(I+3)=-1
-      CALL XMOVE(IADD(NV),LINK(J),K)
-      NV=NV+K
-      GOTO 1000
+        LINK(I+3)=-1
+        LINK(J:J+K-1)=transfer(ADD(NV:NV+K-1), LINK(J:J+K-1))
+        NV=NV+K
+      end do !GOTO 1000
+      END
+C
+CODE FOR XDOWNF
+!> Transfer data from the disc buffer
+      SUBROUTINE XDOWNF(NFW,ADD,NW)
+      use xlink_mod, only:link
+      use xdiscb_mod, only: i, j, k, nfwd, nwd, nv
+      implicit none
+C--TRANSFER FROM DISC TO STORE
+C
+C  NFW   ADDRESS OF FIRST WORD TO BE USED ON DISC
+C  IADD  ADDRESS OF FIRST WORD IN CORE
+C  NW    NUMBER OF WORDS TO TRANSFER
+C
+C--DISC ROUTINES VERSION 4, USING ONLY 'XDATA' OR SIMILAR ARRAYS AS STOR
+C  THE BUFFERS.
+C
+C--RECORD 0 CONTAINS WORDS  0   - (NWR-1)
+C  RECORD 1 CONTAINS WORDS  NWR - (2*NWR-1)
+C  AND SUBSEQUENT RECORDS ARE THE SAME
+C
+C--
+      integer, intent(in) :: nfw !< address of first word to be used on disc
+      integer, intent(in) :: nw !< size of array iadd
+      real, dimension(nw), intent(out) :: add !< Array containing the data to copy from disc
+C
+C--TRANSFER THE ARGUMENTS TO THE COMMON BLOCK
+      NFWD=NFW
+      NWD=NW
+      NV=1
+C--CHECK IF THERE ARE ANY MORE WORDS TO TRANSFER
+      do while(nwd>0) !1000  CONTINUE
+C--CALCULATE THE RECORD NUMBER ETC. FOR THIS TRANSFER
+        CALL XFINDB
+C--READ SOME NUMBERS
+        ADD(NV:NV+K-1)=transfer(LINK(J:J+K-1), ADD(NV:NV+K-1))
+        NV=NV+K
+      end do !GOTO 1000
+      END
+C
+CODE FOR XDOWN
+!> Transfer data from the disc buffer
+      SUBROUTINE XDOWN(NFW,IADD,NW)
+      use xlink_mod, only:link
+      use xdiscb_mod, only: i, j, k, nfwd, nwd, nv
+      implicit none
+C--TRANSFER FROM DISC TO STORE
+C
+C  NFW   ADDRESS OF FIRST WORD TO BE USED ON DISC
+C  IADD  ADDRESS OF FIRST WORD IN CORE
+C  NW    NUMBER OF WORDS TO TRANSFER
+C
+C--DISC ROUTINES VERSION 4, USING ONLY 'XDATA' OR SIMILAR ARRAYS AS STOR
+C  THE BUFFERS.
+C
+C--RECORD 0 CONTAINS WORDS  0   - (NWR-1)
+C  RECORD 1 CONTAINS WORDS  NWR - (2*NWR-1)
+C  AND SUBSEQUENT RECORDS ARE THE SAME
+C
+C--
+      integer, intent(in) :: nfw !< address of first word to be used on disc
+      integer, intent(in) :: nw !< size of array iadd
+      integer, dimension(nw), intent(out) :: iadd !< Array containing the data to copy from disc
+C
+C--TRANSFER THE ARGUMENTS TO THE COMMON BLOCK
+      NFWD=NFW
+      NWD=NW
+      NV=1
+C--CHECK IF THERE ARE ANY MORE WORDS TO TRANSFER
+      do while(nwd>0) !1000  CONTINUE
+C--CALCULATE THE RECORD NUMBER ETC. FOR THIS TRANSFER
+        CALL XFINDB
+C--READ SOME NUMBERS
+        IADD(NV:NV+K-1)=LINK(J:J+K-1)
+        NV=NV+K
+      end do !GOTO 1000
+      END
+C
+CODE FOR XUP
+!> Transfer data to the disc buffer
+      SUBROUTINE XUP(NFW,IADD,NW)
+      use xlink_mod, only:link
+      use xdiscb_mod, only: i, j, k, nfwd, nwd, nv
+      implicit none
+C--TRANSFER FROM STORE TO DISC
+C
+C  NFW   ADDRESS OF FIRST WORD TO BE USED ON DISC
+C  IADD  ADDRESS OF FIRST WORD IN CORE
+C  NW    NUMBER OF WORDS TO TRANSFER
+C
+C--DISC ROUTINES VERSION 4, USING ONLY 'XDATA' OR SIMILAR ARRAYS AS STOR
+C  THE BUFFERS.
+C
+C--RECORD 0 CONTAINS WORDS  0   - (NWR-1)
+C  RECORD 1 CONTAINS WORDS  NWR - (2*NWR-1)
+C  AND SUBSEQUENT RECORDS ARE THE SAME
+C
+C--
+C
+      integer, intent(in) :: nfw !< address of first word to be used on disc
+      integer, intent(in) :: nw !< size of array iadd
+      integer, dimension(nw), intent(in) :: iadd !< Array containing the data to copy to disc
+      
+C
+C--TRANSFER THE ARGUMENTS TO THE COMMON BLOCK
+      NFWD=NFW
+      NWD=NW
+      NV=1
+C--CHECK IF THERE ARE ANY MORE WORDS TO TRANSFER
+      do while(nwd>0) !1000  CONTINUE
+C--CALCULATE THE RECORD NUMBER ETC. FOR THIS TRANSFER
+        CALL XFINDB
+C--WRITE SOME NUMBERS
+        LINK(I+3)=-1
+        LINK(J:J+K-1)=IADD(NV:NV+K-1)
+        NV=NV+K
+      end do !GOTO 1000
       END
 C
 CODE FOR XGIVE
@@ -261,6 +291,15 @@ C
 C
 CODE FOR XFINDB
       SUBROUTINE XFINDB
+      use xlink_mod, only:link
+      use xdisc_mod, only:nu
+      use xdiscb_mod, only:i, j, k, m, n, iacc, iadd1, nfwd, nwb, nwd
+      use xunits_mod, only:nceror, ncwu
+      use xssval_mod, only:issprt, issrli
+      use xerval_mod, only:ierprg, iersev
+      use xstats_mod, only:icache, ipread, ipwrit, ncache
+      use xiobuf_mod, only:cmon
+      implicit none
 C--FIND THE REQUIRED DISC BUFFER
 C
 C--ARGUMENTS ARE IN THE COMMON BLOCK 'XDISC' :
@@ -283,18 +322,11 @@ C
 C  L
 C  M
 C  N
+      integer ibuffr, istat, nbuffr, nr
+      
+      integer, external :: kstore, kfetch
+
 C--
-      INCLUDE 'XLINK.INC'
-      INCLUDE 'XDISC.INC'
-      INCLUDE 'XDISCB.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XSTATS.INC'
-      INCLUDE 'XIOBUF.INC'
-C
-      INCLUDE 'QDISCB.INC'
-C
 C--CHECK IF THE BUFFERS HAVE BEEN ALLOCATED
       IF ( IACC .LT. 0 ) GO TO 9910
 C--CALCULATE THE RECORD NUMBER ETC. OF TRANSFERS TO BE MADE
@@ -306,51 +338,59 @@ C  CONTAINING THIS RECORD
       J=IADD1
       NBUFFR = 0
 C--CHECK IF THIS BUFFER IS FOR THE CORRECT UNIT
-1150  CONTINUE
-      NBUFFR = NBUFFR + 1
-      IF(LINK(I)-NU)1250,1200,1250
+      do !1150  CONTINUE
+        NBUFFR = NBUFFR + 1
+        IF(LINK(I)==NU) then !1250,1200,1250
 C--CHECK IF THIS IS THE CORRECT BUFFER
-1200  CONTINUE
-      IF ( LINK(I+2) .NE. NR ) GO TO 1250
-      ICACHE = ICACHE + 1
-      NCACHE(NBUFFR) = NCACHE(NBUFFR) + 1
-      GO TO 1550
+          IF ( LINK(I+2)==NR ) then 
+            ICACHE = ICACHE + 1
+            NCACHE(NBUFFR) = NCACHE(NBUFFR) + 1
+            exit
+          end if
+        end if
 C
 C--CHECK FOR A FREE BUFFER WHICH ALSO INDICATES THE END OF THE STACK
-1250  CONTINUE
-      IF(LINK(I+2))1500,1300,1300
-C--CHECK IF THIS IS THE LAST BUFFER
-1300  CONTINUE
-      IF(LINK(I+1))1400,1400,1350
-C--PICK UP THE NEXT BUFFER
-1350  CONTINUE
-      J=I
-      I=LINK(I+1)
-      GOTO 1150
-C--REWRITE THE CONTENTS OF THE LAST BUFFER TO THE DISC IF NEC.
-1400  CONTINUE
-      IF(LINK(I+3))1450,1500,1500
-1450  CONTINUE
-      M=LINK(I+2)
-      IPWRIT = IPWRIT + 1
-      IBUFFR = LINK(I+4)
-C -- TRANSFER DATA AND CHECK FOR ERRORS
-      ISTAT = KSTORE ( LINK(I) , M , LINK(IBUFFR) , ISSRLI )
-      IF ( ISTAT .LT. 0 ) GO TO 9920
-      LINK(I+3)=0
+        IF(LINK(I+2)<0) then
 C--FETCH THE RECORD OF INTEREST
-1500  CONTINUE
-      LINK(I)=NU
-      LINK(I+2)=NR
-      IPREAD = IPREAD + 1
-      IBUFFR = LINK(I+4)
+          LINK(I)=NU
+          LINK(I+2)=NR
+          IPREAD = IPREAD + 1
+          IBUFFR = LINK(I+4)
 C -- TRANSFER DATA AND CHECK FOR ERRORS
-      ISTAT = KFETCH ( LINK(I) , NR , LINK(IBUFFR) , ISSRLI )
-      IF ( ISTAT .LT. 0 ) GO TO 9920
+          ISTAT = KFETCH ( LINK(I) , NR , LINK(IBUFFR) , ISSRLI )
+          IF ( ISTAT .LT. 0 ) GO TO 9920
+          exit !1500,1300,1300
+        end if
+C--CHECK IF THIS IS THE LAST BUFFER
+        IF(LINK(I+1)<=0) then
+C--REWRITE THE CONTENTS OF THE LAST BUFFER TO THE DISC IF NEC.
+          IF(LINK(I+3)<0) then !1450,1500,1500
+            M=LINK(I+2)
+            IPWRIT = IPWRIT + 1
+            IBUFFR = LINK(I+4)
+C -- TRANSFER DATA AND CHECK FOR ERRORS
+            ISTAT = KSTORE ( LINK(I) , M , LINK(IBUFFR) , ISSRLI )
+            IF ( ISTAT .LT. 0 ) GO TO 9920
+            LINK(I+3)=0
+          end if
+C--FETCH THE RECORD OF INTEREST
+          LINK(I)=NU
+          LINK(I+2)=NR
+          IPREAD = IPREAD + 1
+          IBUFFR = LINK(I+4)
+C -- TRANSFER DATA AND CHECK FOR ERRORS
+          ISTAT = KFETCH ( LINK(I) , NR , LINK(IBUFFR) , ISSRLI )
+          IF ( ISTAT .LT. 0 ) GO TO 9920
+          exit 
+        end if
+C--PICK UP THE NEXT BUFFER
+        !1350    CONTINUE
+        J=I
+        I=LINK(I+1)
+      end do !GOTO 1150
 C--SWITCH THIS BUFFER TO THE TOP OF THE BUFFER STACK
 C  ALL OTHER BUFFERS ARE FORCED ONE DOWN THE STACK , SO THAT THE
 C  LEAST USED ONE ENDS UP AT THE END
-1550  CONTINUE
       LINK(J+1)=LINK(I+1)
       LINK(I+1)=LINK(IADD1+1)
       LINK(IADD1+1)=I
@@ -502,8 +542,15 @@ C
 C
 C
 CODE FOR KFETCH
-      FUNCTION KFETCH ( NU , I , J , NWORD )
+!> this routine transfers data from a direct access file
+      integer FUNCTION KFETCH ( NU , I , J , NWORD )
       use hdf5_dsc
+      use xunits_mod, only:nceror, ncwu
+      use xssval_mod, only:issokf, issprt
+      use xerval_mod, only:
+      use xdaval_mod, only:idaaut, idaqua, idatot, idatry
+      use xiobuf_mod, only:cmon
+      implicit none
 C
 C -- THIS ROUTINE TRANSFERS DATA FROM A DIRECT ACCESS FILE
 C--FETCH DATA FROM THE DISC  -  THIS LINK CONTROLS THE DISC
@@ -551,72 +598,61 @@ C                  AN ERROR IS SIGNALLED.
 C
 C
 C
-      DIMENSION J(NWORD)
-C
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XDAVAL.INC'
-      INCLUDE 'XIOBUF.INC'
+      integer, intent(in) :: nu !< unit to be used for the transfer
+      integer, intent(in) :: i !< disc address of the information in user records
+      integer, intent(in) :: nword !< size of array j
+      integer, dimension(nword), intent(out) :: j !< integer array into which the data goes
 C
       integer error
       type(t_dsc_hdf5), pointer :: crfile
-C
-C
+      
+      integer idaerr, inext, ios, ireq, n
 C
       KFETCH = 1
-C
       N = I + 1
-C
       IDAERR = IDATRY
+      
       IF ( IDAAUT .LE. 0 ) IDAERR = 0
 C
+      do !1000  CONTINUE
 C
-1000  CONTINUE
-C
-      call hdf5_dic_get(crfile, NU, error)
-      !print *, 'kfetch hdf5 search dic: iunit, error', NU, error
-      if(error/=0) then
-        READ ( NU, REC = N, ERR = 2000, IOSTAT = IOS ) J
-        IF (IOS .NE. ISSOKF) GOTO 2000        
-      else
-        call hdf5_dsc_kfetch(crfile, N, J, error)
-        if(error==-1) goto 2000
-      end if  
-      return    
-      
+        call hdf5_dic_get(crfile, NU, error)
+        !print *, 'kfetch hdf5 search dic: iunit, error', NU, error
+        if(error/=0) then
+          ! fetch data from dsc
+          READ ( NU, REC = N, IOSTAT = IOS ) J
+          IF (IOS==ISSOKF) return ! all ok
+        else
+          ! fetch data from hdf5
+          call hdf5_dsc_kfetch(crfile, N, J, error)
+          if(error==0) return ! all is ok
+        end if  
 C
 C--TRANSFER ERROR
-2000  CONTINUE
 C
-      IF ( IDAERR .LE. 0 ) GO TO 9900
-      IDAERR = IDAERR - 1
+        IF ( IDAERR .LE. 0 ) exit ! too many errors!
+        IDAERR = IDAERR - 1
 C
-      CALL XDAEND ( NU , INEXT )
+        CALL XDAEND ( NU , INEXT )
+C 
+        IF ( IDAQUA<0 ) then 
+          IREQ = ( N - INEXT ) + 1
+          IDAERR = 0
+        else 
+          IREQ = MAX(IDAQUA,1+N-INEXT)
+        end if
 C
-      IF ( IDAQUA .GT. 0 ) GO TO 2020
-      IREQ = ( N - INEXT ) + 1
-      IDAERR = 0
-      GO TO 2030
+        CALL XDAXTN ( NU , INEXT , IREQ ) ! extend dsc file
+        IDATOT = INEXT + IREQ - 1
 C
-2020  CONTINUE
-      IREQ = MAX(IDAQUA,1+N-INEXT)
-C
-2030  CONTINUE
-C
-      CALL XDAXTN ( NU , INEXT , IREQ )
-      IDATOT = INEXT + IREQ - 1
-C
-      IF (ISSPRT .EQ. 0) THEN
+        IF (ISSPRT .EQ. 0) THEN
 cdjw2011      WRITE ( NCWU , 2110) NU , IREQ
-      ENDIF
-2110  FORMAT ( 1X , ' Disc file on unit ' , I3 , ' extended by ' ,
-     1 I5 , ' records ' )
+        ENDIF
+2110    FORMAT ( 1X , ' Disc file on unit ' , I3 , ' extended by ' ,
+     1    I5 , ' records ' )
 C
-      GO TO 1000
-C
-C
-9900  CONTINUE
+      ! now lets try again to fetch data
+      end do !GO TO 1000
 C
 C -- REPEATED READ ERROR ON THIS UNIT
 C
@@ -629,9 +665,7 @@ cjan08      WRITE ( NCAWU,9910 ) NU , N
 9910  FORMAT ( 1X , 'Fatal read error on unit ' , I3 ,
      1 ' -- record ', I8, /, ' You may need to extend your DISC file')
       CALL XERIOM ( NU , IOS )
-      GO TO 9990
-C
-9990  CONTINUE
+
 C -- ERROR EXIT FROM THIS ROUTINE
       KFETCH = ISIGN ( IOS , -1 )
       RETURN

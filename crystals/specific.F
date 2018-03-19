@@ -1277,11 +1277,31 @@ C
       END
 C
 CODE FOR XMOVE 
-      SUBROUTINE XMOVE ( ISRCE , IRESLT , N )
+      SUBROUTINE XMOVE ( SRCE , RESLT , N )
       implicit none
 C
-C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
-C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
+C -- MOVES REALS FROM 'SRCE'
+C    TO 'RESLT' 
+C
+C    SRCE and RESLT are actually part of the same memory space 
+C    through equivalence so the use of a temporary variable is compulsory
+      integer, intent(in) :: N
+      real, dimension(N), intent(in) :: SRCE 
+      real, dimension(N), intent(out) :: RESLT
+      real, dimension(N) :: temp
+      integer i
+C
+      temp=SRCE
+      RESLT=temp
+      END
+
+C
+CODE FOR XMOVEI (modern replacement)
+      SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
+      implicit none
+C
+C -- MOVES INTEGERS FROM 'ISRCE'
+C    TO 'IRESLT' 
 C
 C    ISRCE and IRESLT are actually part of the same memory space 
 C    through equivalence so the use of a temporary variable is compulsory
@@ -1293,26 +1313,6 @@ C    through equivalence so the use of a temporary variable is compulsory
 C
       temp=ISRCE
       IRESLT=temp
-      END
-
-C
-CODE FOR XMOVEI (modern replacement)
-      SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
-      implicit none
-C
-C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
-C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
-C    Code identical to XMOVE, different subroutine for historical reasons
-C
-C    ISRCE and IRESLT are actually part of the same memory space 
-C    through equivalence so the use of a temporary variable is compulsory
-      integer, intent(in) :: N
-      integer, dimension(N), intent(in) :: ISRCE 
-      integer, dimension(N), intent(out) :: IRESLT
-      integer, dimension(N) :: temp
-      integer i
-C
-      call XMOVE ( ISRCE , IRESLT , N )
       END
 C
 CODE FOR XPAUSE

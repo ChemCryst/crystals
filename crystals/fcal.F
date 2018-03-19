@@ -16129,8 +16129,8 @@ C INCLUDE FILE FOR U  ELEMENT #92
       DATA NRG(92,24, 8)/0.129199997    /
       DATA NRG(92,24, 9)/5.458644778E-02/
       DATA NRG(92,24,10)/3.555779159E-02/
-	  
-	  
+      
+      
 
 C INCLUDE FILE FOR CROSS-SECTIONS
       REAL*4 XSC(92,24,11)
@@ -29619,12 +29619,12 @@ C       Helium
       end if
       return
       end
-	  
-	  
+      
+      
 C ABSATOMIC_DATA.FOR
 C NEW 3-MAY-1993 SMB - June2017 - remove n_edge and abs_edge return values
-		subroutine absatomic_data( zed, r_amu, r_rho)
-		implicit none
+        subroutine absatomic_data( zed, r_amu, r_rho)
+        implicit none
 C INCLUDE FILE FOR ABSATOMIC_DATA
       REAL*4 AMU(92), RHO(92)
 C ATOMIC WEIGHT AND DENSITY FOR LI ELEMENT # 3
@@ -29807,20 +29807,20 @@ C ATOMIC WEIGHT AND DENSITY FOR PA ELEMENT #91
       DATA AMU(91)/  231.035904    /, RHO(91)/  15.3400002    /
 C ATOMIC WEIGHT AND DENSITY FOR U  ELEMENT #92
       DATA AMU(92)/  238.028900    /, RHO(92)/  18.9200001    /
-		integer*4 i, zed
-		real*4 r_amu, r_rho
+        integer*4 i, zed
+        real*4 r_amu, r_rho
 
 C executable code
 
-		if(zed .lt.1 .or. zed .gt. 92) then
-c			write(*,'('' Atomic number out of range'')')
-			zed= 0
-		else
-			r_amu = amu( zed)
-			r_rho = rho( zed)
-		end if
-		return
-		end
+        if(zed .lt.1 .or. zed .gt. 92) then
+c           write(*,'('' Atomic number out of range'')')
+            zed= 0
+        else
+            r_amu = amu( zed)
+            r_rho = rho( zed)
+        end if
+        return
+        end
 
       subroutine absraycomp( zed, energy, ray, comp)
       implicit none
@@ -30312,11 +30312,11 @@ c            write(*,'('' Atomic number out of range'')')
       end if
 
       p1 = alog(energy/1000.)
-	  
+      
       p2 = p1**2 
-	  
+      
       p3 = p1**3
-	  
+      
       ray= BARNS_TO_ELECTRONS* energy* exp( dray(zed,1)+ dray(zed,2)*p1+
      1           dray(zed,3)* p2+ dray(zed,4)* p3)
 
@@ -30326,4 +30326,4 @@ c            write(*,'('' Atomic number out of range'')')
         return
         end
 
-		
+        
