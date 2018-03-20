@@ -350,7 +350,7 @@ implicit none
 class(param_t), intent(in) :: self
 character(len=:), allocatable :: printparam
 
-write(0,*) '[', self%indices, '] ', trim(self%label), ' ', self%serial, ' ', trim(self%name)
+write(printparam, *) '[', self%indices, '] ', trim(self%label), ' ', self%serial, ' ', trim(self%name)
 
 end function
 

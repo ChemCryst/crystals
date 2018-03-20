@@ -1383,8 +1383,10 @@ C--UTLS RESTRAINTS PRINT
      
                   do lcpt=1, 3
                     write(ncwu, '(6X, 1P, 3(E10.2,1X),10X,3(E10.2,1X))') 
-     1                ra%atoms(kcpt)%M(lcpt,:), 
-     2                rb%atoms(kcpt)%M(lcpt,:)
+     1                (/ (ra%atoms(kcpt)%M(lcpt,mcpt), mcpt=1, 
+     1                      ubound(ra%atoms(kcpt)%M, 2)) /), 
+     2                (/ (rb%atoms(kcpt)%M(lcpt,mcpt), mcpt=1, 
+     2                      ubound(rb%atoms(kcpt)%M, 2)) /)
                   end do
                 else if(kcpt>size(ra%atoms)) then
                   write(ncwu, '(10X, A,"(",I0,")")') 
@@ -1417,7 +1419,8 @@ C--UTLS RESTRAINTS PRINT
      
                 do lcpt=1, 3
                   write(ncwu, '(6X, 1P, 3(E10.2,1X))') 
-     1              ra%atoms(kcpt)%M(lcpt,:)
+     1              (/ (ra%atoms(kcpt)%M(lcpt,mcpt), mcpt=1, 
+     1                  ubound(ra%atoms(kcpt)%M, 2)) /)
                 end do
               end do
               write(ncwu, '(a)') ''
@@ -1992,7 +1995,8 @@ C----- 'LIMIT' RESTRAINT
       ENDIF
 4380  FORMAT ( // , 1X , F4.0 , ' Limit the shifts of the given' ,
      2 ' parameters to 0.0, with an E.S.D. of ',E20.10)
-      WRITE(CMON,2460)NINT(A+1), '               Limit', 0.0, C
+4381  FORMAT(I5, 1X, A, '. ', 'Target ',F7.4, ' esd ', F8.4)
+      WRITE(CMON,4381) NINT(A+1), '               Limit', 0.0, C
       CALL XPRVDU(NCVDU, 1,0)
 
       ! leverages

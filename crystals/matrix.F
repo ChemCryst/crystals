@@ -877,7 +877,7 @@ C
       double precision A(3),B(3),C(3)
 C
       CALL DVMULT(A,B,C)
-      RETURN
+      call DNORM3(C)
       END
 C
 CODE FOR VMULT

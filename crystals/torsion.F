@@ -578,6 +578,8 @@ C -- INPUT ERROR
 C
 CODE FOR XTORS
       SUBROUTINE XTORS(RI, VCV, TAU, ESD)
+      use xconst_mod, only: rtd
+      implicit none
 C
 C      COMPUTE THE UNSIGNED DIHEDRAL ANGLE AND ITS
 C      ESD FROM THE FULL VCV MATRIX, INCLUDING SYMMETRY
@@ -588,62 +590,70 @@ C
 C      RI 3,4 MATRIX OF ORTHOGONAL POSTITIONS
 C      VCV 12X12 ORTHOGONAL VCV MATRIX
 C
-      INCLUDE 'XCONST.INC'
-      DIMENSION RI(3,4), VCV(12,12)
-      DIMENSION VECTOR(12), SCRATCH(12), ZZZ(1)
+      real, dimension(12,12), intent(in) :: vcv !< orthogonal variance covariance matrix
+      real, dimension(3,4), intent(in) :: ri !< matrix of orthogonal positions
+      real, intent(out) :: tau !< unsigned dihedral angle (degree)
+      real, intent(out) :: esd !< standard deviation
 C
-      DIMENSION RIJ(3), RKJ(3), RKL(3), RMJ(3), RNK(3)
-      DIMENSION DTRI(3), DTRJ(3), DTRK(3), DTRL(3)
+      integer i
+      double precision :: prod, dmj, dmjs, dnk, dnks, dkj, dkjs
+      double precision, dimension(3) :: rij, rkj, rkl, rmj, rnk
+      double precision, dimension(3) :: dtri, dtrl, dtrj, dtrk
+      double precision taudp, zzzdp
+      double precision, dimension(12,12) :: vcvdp
+      double precision, dimension(12) :: vectordp, scratchdp
 C
+      vcvdp=vcv
+      
       DO I = 1,3
             RIJ(I) = RI(I,1) - RI(I,2)
             RKJ(I) = RI(I,3) - RI(I,2)
             RKL(I) = RI(I,3) - RI(I,4)
       ENDDO
 C
-      I = NCROP3(RIJ,RKJ,RMJ)
-      I = NCROP3(RKJ,RKL,RNK)
+      call DNCROP3(RIJ,RKJ,RMJ)
+      call DNCROP3(RKJ,RKL,RNK)
 
-      CALL DVPROD(RMJ,RMJ,DMJS)
+      DMJS=dot_product(rmj, rmj)
       DMJ = SQRT(DMJS)
-      CALL DVPROD(RNK,RNK,DNKS)
+      dnks=dot_product(rnk, rnk)
       DNK = SQRT(DNKS)
-      CALL DVPROD(RKJ,RKJ,DKJS)
+      dkjs=dot_product(rkj, rkj)
       DKJ = SQRT(DKJS)
 C
-      CALL DVPROD(RMJ,RNK, PROD)
+      prod=dot_product(rmj, rnk)
 C
-      TAU = PROD/(DMJ*DNK)
-      TAU = ACOS(TAU) * 180./3.14159
+      TAUdp = PROD/(DMJ*DNK)
+      taudp = min(1.0d0, taudp)
+      taudp = max(-1.0d0, taudp)
+      TAU = ACOS(TAUdp) * 180.0d0/3.1415926535897932d0
 C
       DO I = 1,3
             DTRI(I) = RMJ(I)*DKJ/DMJS
-            DTRL(I) = -1.*RNK(I)*DKJ/DNKS
+            DTRL(I) = -1.0d0*RNK(I)*DKJ/DNKS
       ENDDO
 C
       DO I = 1,3
-            DTRJ(I) = (FDPROD(RIJ, RKJ)/DKJS - 1.)*DTRI(I)
-     1      - FDPROD(RKL,RKJ)*DTRL(I)/DKJS
+            DTRJ(I) = (dot_product(RIJ, RKJ)/DKJS - 1.0d0)*DTRI(I)
+     1      - dot_product(RKL,RKJ)*DTRL(I)/DKJS
 C
-            DTRK(I) = (FDPROD(RKL, RKJ)/DKJS - 1.)*DTRL(I)
-     1      - FDPROD(RIJ,RKJ)*DTRI(I)/DKJS
+            DTRK(I) = (dot_product(RKL, RKJ)/DKJS - 1.0d0)*DTRL(I)
+     1      - dot_product(RIJ,RKJ)*DTRI(I)/DKJS
 C
       ENDDO
 C
       DO I = 1,3
-            VECTOR(I) = DTRI(I)
-            VECTOR(3+I) = DTRJ(I)
-            VECTOR(6+I) = DTRK(I)
-            VECTOR(9+I) = DTRL(I)
+            VECTORdp(I) = DTRI(I)
+            VECTORdp(3+I) = DTRJ(I)
+            VECTORdp(6+I) = DTRK(I)
+            VECTORdp(9+I) = DTRL(I)
       ENDDO
 C
-      CALL XMLTMM(VCV, VECTOR, SCRATCH, 12, 12, 1)
-      CALL XMLTMM(VECTOR, SCRATCH, ZZZ, 1, 12, 1)
-C----- CHECK FOR -VE VARIANCE DUE TO ROUNDING ERRORS
-C      ALLOW TO FAIL (ZZZ SET TO NaN) IF VERY -VE.
-      IF (ABS(ZZZ(1)).LE. ZEROSQ)  ZZZ(1) = ZEROSQ
-C
-      ESD = SQRT(ZZZ(1)) * RTD
+      SCRATCHdp=matmul(vcvdp, vectordp)
+      zzzdp=dot_product(vectordp, scratchdp)
+      if(zzzdp<0.0d0) zzzdp=0.0d0
+      
+      ESD = SQRT(ZZZdp) * RTD
 C
       RETURN
       END

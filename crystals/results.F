@@ -7923,7 +7923,7 @@ C                         should be about unity anyway.  Will be computed later
       NCENTRIC=0                       ! CENTRIC PAIRS
       SUMBO=0.                         ! SUM OF SQ OF OBSERVED BIJVOET DIFFERENCES
       SUMBC=0.                         ! SUM OF SQ OF CALCULATED BIJVOET DIFFERENCES
-      QMAX = 0                         ! MAximum Quotient value
+      QMAX = 0.0                         ! MAximum Quotient value
       NREF = 0 ! Was used without being defined, but may not be required at all...
 C     Excluded reflection categories
       CALL XZEROF (IFAILN, NFAILN)
@@ -8101,6 +8101,7 @@ c 5        special test for poor agreement
           flackx=10000.      !set large values so that sorted
           sflackx=10000.     !to end of list later
          else
+          q=abs(max(foka,fcka)/min(foka,fcka))
           qmax = max(qmax,q)
          END IF
 c

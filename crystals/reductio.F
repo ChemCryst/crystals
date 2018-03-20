@@ -2078,12 +2078,9 @@ C--WORK26 = 22 = SIGMA AVERAGE
 C--WORK27 = 23 = SIGMA W AV SQ
       WORK(27)=WORK(27)+WORK(5)*WORK(5)*STORE(KREF-1)
 C----- COMPUTE TOTALS FOR PARTIAL RINT
-C - Scale up to six digit integers before compare for robustness of binning.
-      IF (NINT(100000.*STORE(JFO)) .GE.
-     1    NINT(1000000.*STORE(JREF+12)))THEN
+      IF (STORE(JFO) .GE. 10.*STORE(JREF+12)) THEN
             IRINT = 1
-      ELSE IF (NINT(100000.*STORE(JFO)) .GE.
-     1         NINT(200000.*STORE(JREF+12))) THEN
+      ELSE IF (STORE(JFO) .GE. 2.*STORE(JREF+12)) THEN
             IRINT = 2
       ELSE
             IRINT = 3
