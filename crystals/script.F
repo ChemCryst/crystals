@@ -3661,9 +3661,9 @@ C
       CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
 #ifdef __INW__ 
-	  IF ( .NOT. LRESLT ) THEN
+      IF ( .NOT. LRESLT ) THEN
         INQUIRE(DIRECTORY=CWORK1(1:LEN1), EXIST=LRESLT)
-      END IF	  
+      END IF      
 #endif
       IF ( LRESLT ) THEN
           ICODE(JVALUE,IARG(1)) = 1
@@ -3824,7 +3824,7 @@ C (4) There is always a space after a, b, c, d, n or m
           END IF
         END DO
         IED = IED + 1
-		IF ( IED .GT. LEN(CWORK2) ) EXIT
+        IF ( IED .GT. LEN(CWORK2) ) EXIT
       END DO
 C (5) There is always a space before 6
       IED=1
@@ -3836,7 +3836,7 @@ C (5) There is always a space before 6
           CWORK1(IED:IED) = '6'
         END IF
         IED = IED + 1
-		IF ( IED .GT. LEN(CWORK1) ) EXIT
+        IF ( IED .GT. LEN(CWORK1) ) EXIT
       END DO
 C (6a) Adjacent numbers always have #1>#2.
 C (6b) Always a space after a number, unless another number or /
@@ -3860,7 +3860,7 @@ C (6b) Always a space after a number, unless another number or /
           END IF
         END IF
         IED = IED + 1
-		IF ( IED .GT. LEN(CWORK2) ) EXIT
+        IF ( IED .GT. LEN(CWORK2) ) EXIT
       END DO
 C (7) There is always a space before -, and one digit after.
       IED=1
@@ -3890,7 +3890,7 @@ C (7) There is always a space before -, and one digit after.
           IMEM = 0
         END IF
         IED = IED + 1
-		IF ( IED .GT. LEN(CWORK1) ) EXIT
+        IF ( IED .GT. LEN(CWORK1) ) EXIT
       END DO
       CALL XCREMS(CWORK1,CWORK2,IED)
       ISTAT = KSCSCD ( CWORK2(1:IED) , ICODE(JVALUE,IARG(1)) )

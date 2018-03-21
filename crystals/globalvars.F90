@@ -28,7 +28,7 @@ contains
 
 !> Add or replace an element in the dictionary
 subroutine env_table_add(key, valeur) 
-	use c_strings_mod
+    use c_strings_mod
     implicit none
     character(len=*) :: key, valeur
     type(t_env_table), dimension(size(environment_table)) :: temp
@@ -62,13 +62,13 @@ subroutine env_table_add(key, valeur)
         end if
 #endif
 
-		if(debug) then
-			print *, 'Replacing key/val: ', trim(key), '/', trim(valeur)
-		end if
+        if(debug) then
+            print *, 'Replacing key/val: ', trim(key), '/', trim(valeur)
+        end if
     else
-		if(debug) then
-			print *, 'Inserting key/val: ', trim(key), '/', trim(valeur)
-		end if
+        if(debug) then
+            print *, 'Inserting key/val: ', trim(key), '/', trim(valeur)
+        end if
 
         ! insert new key
         if(allocated(environment_table)) then
@@ -108,14 +108,14 @@ end subroutine
 #if defined(CRY_FORTDIGITAL)
 subroutine env_table_add_c(c_key, c_value) 
 !dec$ attributes c :: env_table_add_c
-	use c_strings_mod
+    use c_strings_mod
     implicit none
     character (len=1), dimension (*), intent (in) :: c_key, c_value
     !dec$ attributes reference :: c_key
     !dec$ attributes reference :: c_value
 #else
 subroutine env_table_add_c(c_key, c_value) bind(c)
-	use c_strings_mod
+    use c_strings_mod
     implicit none
     character (kind=c_char, len=1), dimension (*), intent (in) :: c_key, c_value
 #endif
@@ -129,10 +129,10 @@ subroutine env_table_add_c(c_key, c_value) bind(c)
     character(len=2048) :: key, valeur
 #endif
 
-	call c_f_strings(c_key, key)
-	call c_f_strings(c_value, valeur)
+    call c_f_strings(c_key, key)
+    call c_f_strings(c_value, valeur)
 
-	call env_table_add(key, valeur)
+    call env_table_add(key, valeur)
 
 end subroutine
 
@@ -187,7 +187,7 @@ end subroutine
 #if defined(CRY_FORTDIGITAL)
 subroutine env_table_get_c(c_key, c_value, c_error) 
 !dec$ attributes c :: env_table_get_c
-	use c_strings_mod
+    use c_strings_mod
     implicit none
     character (len=1), dimension (*), intent (in) :: c_key
     !dec$ attributes reference :: c_key
@@ -197,8 +197,8 @@ subroutine env_table_get_c(c_key, c_value, c_error)
     !dec$ attributes reference :: c_error
 #else
 subroutine env_table_get_c(c_key, c_value, c_error) bind(c)
-	use ISO_C_BINDING
-	use c_strings_mod
+    use ISO_C_BINDING
+    use c_strings_mod
     implicit none
     character (kind=c_char, len=1), dimension (*), intent (in) :: c_key
     character (kind=c_char, len=1), dimension (*), intent (out) :: c_value
@@ -215,11 +215,11 @@ subroutine env_table_get_c(c_key, c_value, c_error) bind(c)
 #endif
     integer error
 
-	call c_f_strings(c_key, key)
-	call c_f_strings(c_value, valeur)
+    call c_f_strings(c_key, key)
+    call c_f_strings(c_value, valeur)
 
-	call env_table_get(key, valeur, error)
-	c_error=error
+    call env_table_get(key, valeur, error)
+    c_error=error
 
 end subroutine
 

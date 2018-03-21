@@ -1470,7 +1470,7 @@ c           CALL XPRVDU(NCVDU,1,0)
         II = 0
         DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
            JPTVAL = ISTORE(I+14)
-	   IF ( ( ((ISTORE(I).EQ.KHYD).OR. (ISTORE(I).EQ.KDET)).AND.
+       IF ( ( ((ISTORE(I).EQ.KHYD).OR. (ISTORE(I).EQ.KDET)).AND.
      1            ((J.EQ.3).OR.(J.EQ.6)) ) .OR.
      2          ( ((ISTORE(I).NE.KHYD).AND.(ISTORE(I).NE.KDET)).AND.
      1            ((J.EQ.3).OR.(J.EQ.7)) ) ) THEN

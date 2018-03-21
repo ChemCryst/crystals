@@ -3576,7 +3576,7 @@ C--LOAD THE LIST
       IF ( IERFLG .LT. 0 ) RETURN
 c
       if(md4f .le. 6) then  !an old format list 
-	  
+      
 C When extending a record, we not only need to create new space for it in store and
 C update the common block, but also update the record header pointers which are stored
 C just before each data block pointed to by the common block. The only is IADDR+3 (which

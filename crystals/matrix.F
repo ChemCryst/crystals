@@ -1060,7 +1060,7 @@ C
 
            
       
-      call dgetri( n, ab, n, ipiv, work, n*nb, info	)
+      call dgetri( n, ab, n, ipiv, work, n*nb, info )
 
       if(info/=0) then
           KINV2=info
@@ -1167,7 +1167,7 @@ C
 
            
       
-      call dgetri( n, ab, n, ipiv, work, n*nb, info	)
+      call dgetri( n, ab, n, ipiv, work, n*nb, info )
 
       if(info/=0) then
           KINV2DP=info

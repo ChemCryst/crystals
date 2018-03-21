@@ -399,12 +399,12 @@ C----- INDICATE NO CHANGES TO LIST 23 YET
       imod23 = 0
       imod5 = 0 
       CALL XFAL23
-	  
-c	   write (9,*) 'L23M+7, MD23M, L23M, N23M: ', 
+      
+c      write (9,*) 'L23M+7, MD23M, L23M, N23M: ', 
 c     1          ISTORE(L23M+7), MD23M, L23M, N23M
-	  
+      
 c       write(9,*) '+ ',(ISTORE(L23M+I),I=0,7)
-	  
+      
 C----- GET THE ACTION AND UPDADTE CONDITIONS
       IACTN = ISTORE(L23SP)
       ABTOL = STORE(L23SP+5)
@@ -1348,7 +1348,7 @@ c
             write ( cmon ,6151)
             call xprvdu(ncvdu, 1,0)
 6151        format(' New LIST 23 written to disk')
-c	   write (9,*) 'Writing... L23M+7, MD23M: ', ISTORE(L23M+7), MD23M
+c      write (9,*) 'Writing... L23M+7, MD23M: ', ISTORE(L23M+7), MD23M
 c       write(9,*) '+1 ',(ISTORE(L23M+I),I=0,7)
 c       write(9,*) '+1 ICOM23: ', (ICOM23(I),I=1,24)
             CALL XWLSTD ( 23, ICOM23, IDIM23, 0, -1)
@@ -1358,10 +1358,10 @@ c       write(9,*) '+2 ICOM23: ', (ICOM23(I),I=1,24)
 C
 
 c       CALL XFAL23
-	  
-c	   write (9,*) 'Reloaded L23M+7, MD23M, L23M, N23M: ', 
+      
+c      write (9,*) 'Reloaded L23M+7, MD23M, L23M, N23M: ', 
 c     1           ISTORE(L23M+7), MD23M, L23M, N23M 
-	  
+      
 c       write(9,*) '+3 ',(ISTORE(L23M+I),I=0,7)
 c       write(9,*) '+3 ICOM23: ', (ICOM23(I),I=1,24)
 
@@ -2010,7 +2010,7 @@ c            IF (EIGVAL(1).LT.0.001) LROWOK(3) = .FALSE.
             EIG3 = EIGVAL(1)
             
             IF ( ( EIG1 .LT. EIG2 ).AND.( EIG1 .LT. EIG3 )) THEN  ! Remove 1
-			     LROWOK(1) = .FALSE.
+                 LROWOK(1) = .FALSE.
               IF (NPTORM.EQ.2) THEN
                 IF (EIG2.LT.EIG3) THEN
                   LROWOK(2) = .FALSE.
@@ -2019,7 +2019,7 @@ c            IF (EIGVAL(1).LT.0.001) LROWOK(3) = .FALSE.
                 ENDIF
               ENDIF
              ELSE IF ( EIG2 .LT. EIG3 ) THEN ! Remove 2
-			     LROWOK(2) = .FALSE.
+                 LROWOK(2) = .FALSE.
               IF (NPTORM.EQ.2) THEN
                 IF (EIG1.LT.EIG3) THEN
                   LROWOK(1) = .FALSE.
@@ -2027,8 +2027,8 @@ c            IF (EIGVAL(1).LT.0.001) LROWOK(3) = .FALSE.
                   LROWOK(3) = .FALSE.
                 ENDIF
               ENDIF
-		      ELSE ! Remove 3
-			     LROWOK(3) = .FALSE.
+              ELSE ! Remove 3
+                 LROWOK(3) = .FALSE.
               IF (NPTORM.EQ.2) THEN
                 IF (EIG1.LT.EIG2) THEN
                   LROWOK(1) = .FALSE.
@@ -2037,7 +2037,7 @@ c            IF (EIGVAL(1).LT.0.001) LROWOK(3) = .FALSE.
                 ENDIF
               ENDIF
             END IF
-		              
+                      
           END IF
         END IF
       END IF

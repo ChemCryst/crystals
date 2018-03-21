@@ -2422,13 +2422,13 @@ C
       INCLUDE 'STORE.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'IDIM23.INC'
-	  
+      
 C--LOAD THE LIST
       CALL XLDLST(23,ICOM23,IDIM23,-1)  
 
 C-- Checking L23M record
       if (md23m .le. 7) then ! old l23. Extend record and set default invertor.
-	  
+      
 C When extending a record, we not only need to create new space for it in store and
 C update the common block, but also update the record header pointers which are stored
 C just before each data block pointed to by the common block. The only is IADDR+3 (which
@@ -2781,8 +2781,8 @@ C
 C For calculating f' and f'' and mu from tables (if particular wavelength not present in files)
       LOGICAL LFPCAL
       INTEGER IZ ! atomic number
-	  REAL*4  AMU, RHO, FP, FPP, RAY, COMP,RENERG
-	  REAL*8  F_TO_MU,ATOEV,MU,ATOMX,VC
+      REAL*4  AMU, RHO, FP, FPP, RAY, COMP,RENERG
+      REAL*8  F_TO_MU,ATOEV,MU,ATOMX,VC
       PARAMETER ( ATOEV = 12398.4244680242D0 )        ! EV = ATOEV / LAMBDA (in A)
       parameter (F_TO_MU= 4208.031548D0)            ! Mu in microns
   

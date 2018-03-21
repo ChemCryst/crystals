@@ -1186,7 +1186,7 @@ C--E.S.D.'S ARE NOT TO BE CALCULATED
 C----- SAVE SOME SPACE FOR THE TARGET RADIUS IN RESTRAINTS
         IF (IPUNCH .EQ. 0) NW = 14
 cnancy just make nw 16 for all cases
-        nw = 16	
+        nw = 16 
         NCOL=9
 C----- RESET COLUMNS FOR BRIEF O/P
         IF (LEVEL.LE. 0) NCOL = 11

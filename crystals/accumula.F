@@ -27,31 +27,31 @@ C Added changelog to top of file
 
 
 CODE FOR XADLHS
- 	  subroutine XADLHS (DERIVS,NDERIV, AMAT11, NMAT11, I12,N12B,
+      subroutine XADLHS (DERIVS,NDERIV, AMAT11, NMAT11, I12,N12B,
      1   MD12B)
- 	  implicit none
+      implicit none
 C--ADD THE DERIVATIVES INTO THE L.H.S. OF THE NORMAL MATRIX
- 	  integer N12B, MD12B, NDERIV, NMAT11
- 	  real DERIVS(NDERIV)  ! Vector of derivatives
- 	  real AMAT11(NMAT11)  ! Normal matrix, upper triangle, blocked
+      integer N12B, MD12B, NDERIV, NMAT11
+      real DERIVS(NDERIV)  ! Vector of derivatives
+      real AMAT11(NMAT11)  ! Normal matrix, upper triangle, blocked
        
- 	  integer I12(N12B) ! Info about block numbers & sizes in AMAT11
+      integer I12(N12B) ! Info about block numbers & sizes in AMAT11
       integer SIZE, I, MNR, IBL
- 	  integer BLOCKSTART
+      integer BLOCKSTART
       
- 	  BLOCKSTART = 1
- 	  IBL = 1
- 	  do I = 1, N12B, MD12B   ! Work through each block
+      BLOCKSTART = 1
+      IBL = 1
+      do I = 1, N12B, MD12B   ! Work through each block
              MNR = I12(I+1)                             ! Get the dimenstions of this block
              SIZE = (MNR*(MNR+1))/2                     ! Calculate the size of this block
              call ADLHSBLOCK(DERIVS(IBL), NDERIV-(IBL-1),
      1        AMAT11(BLOCKSTART), SIZE, MNR)            ! Add the derivatives to this block
              BLOCKSTART = BLOCKSTART + SIZE             ! Move on to the next block
             IBL = MNR + IBL                             ! Move on to the start of the needed derivatives
- 	  end do
- 	  return
- 	  end
-	
+      end do
+      return
+      end
+    
 CODE FOR ADLHSBLOCK
        subroutine ADLHSBLOCK(DERIVS, NDERIV, MATBLOCK, BLOCKSIZE, 
      1 BLOCKdimension)

@@ -508,7 +508,7 @@ C
       IF ( ILSTCM + IOFF .LE. 0 ) GO TO 8930
       IF ( ILSTCM + IOFF .GT. ISIZST ) GO TO 8930
 
-	  
+      
       ! Checking if the transfer is a variable name or a constant
       isanumber=.true.
       do j=1, len_trim(ctvari)

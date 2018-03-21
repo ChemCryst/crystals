@@ -1671,19 +1671,19 @@ C
 C
       IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
-		WT = 0.0
+        WT = 0.0
       ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test
         IF (iallow.LT.0) THEN
          IALW = 5                    !Rejected by low resolution
-  		 WT = 0.0
+         WT = 0.0
         else if (iallow.gt. 0) then
          ialw = 4                    ! rejected by high resolution
-		 WT = 0.0
+         WT = 0.0
         endif
       ELSE IF (idjw.LT.0) THEN
         IALW = 3                    !Rejected by something else.
-		WT = 0.0
+        WT = 0.0
       ELSE
         IALW = 1                    !Used.
       END IF
@@ -2907,10 +2907,10 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
       CHARACTER CBUF*30,CTEMP*30
-	  CHARACTER*7 CLAT
-	  CHARACTER*2 CNY
-	  DATA CLAT /'PIRFABC'/
-	  DATA CNY /'NY'/
+      CHARACTER*7 CLAT
+      CHARACTER*2 CNY
+      DATA CLAT /'PIRFABC'/
+      DATA CNY /'NY'/
 C      
       
       IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
@@ -2938,7 +2938,7 @@ c END
 
       WRITE(NCPU,100)N2,CLAT(NINT(STORE(L2C+1)):NINT(STORE(L2C+1))),
      1                  CNY(NINT(STORE(L2C))+1:NINT(STORE(L2C))+1)
-	  
+      
       DO I=L2,M2,MD2
          CALL XSUMOP (STORE(I),STORE(L2P),CTEMP,LENGTH,1)
          CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
@@ -2948,7 +2948,7 @@ c END
       WRITE(NCPU,102) (ISTORE(I),I=L2SG,L2SG+MD2SG-1)
 
       WRITE(NCPU,103) (ISTORE(I),I=L2CC,L2CC+MD2CC-1)
-	  
+      
 100   FORMAT('CELL NSYM=',I3,' LATT=',A1,' CENTRIC=',A1)
 101   FORMAT('SYMM ',A)
 102   FORMAT('SPACEGROUP ',4A4)
@@ -3041,7 +3041,7 @@ c END
       WRITE(NCPU,'(A)') '#LIST 3'
 
       WRITE(NCPU,100) N3
-	  
+      
       DO I=L3,M3,MD3
          WRITE (NCPU,101)(STORE(J),J=I,I+MD3-1)
       END DO
@@ -3055,7 +3055,7 @@ c END
 
       RETURN
       END
-	  
+      
 CODE FOR XPCH13
       SUBROUTINE XPCH13
 
@@ -3072,7 +3072,7 @@ C
 C      
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
       CHARACTER*1 CNY(2)
-	DATA CNY /'N','Y'/
+      DATA CNY /'N','Y'/
       
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF ( IERFLG .LT. 0 ) THEN
@@ -3096,7 +3096,7 @@ C The 13+3 ids the instruction number 13 from the command file.
          CALL XCTRIM(CVALUE,LVALUE)
          WRITE(NCPU,100) CNY(ISTORE(L13CD)+2),
      1                   CNY(ISTORE(L13CD+1)+2),CVALUE
-	END IF
+      END IF
 
 101   FORMAT('DIFFRACTION GEOMETRY=',A,' RADIATION=',A)
 
@@ -3131,36 +3131,36 @@ C Get radiation option
 
       IF ( N13DC .GT. 0 ) THEN
          WRITE(NCPU,102) (STORE(I),I=L13DC,L13DC+7-1)
-	END IF
+      END IF
       IF ( N132R .GT. 0 ) THEN
         DO J=L132R,L132R+(N132R*MD132R),MD132R
           WRITE(NCPU,104) (STORE(I),I=J,J+9-1)
         END DO
-	END IF
+      END IF
       IF ( N133R .GT. 0 ) THEN
         DO J=L133R,L133R+(N133R*MD133R),MD133R
           WRITE(NCPU,105) (STORE(I),I=J,J+9-1)
         END DO
-	END IF
+      END IF
       IF ( N13RL .GT. 0 ) THEN
          WRITE(NCPU,106) (STORE(I),I=L13RL,L13RL+12-1)
-	END IF
+      END IF
       IF ( N13RC .GT. 0 ) THEN
          WRITE(NCPU,107) (STORE(I),I=L13RC,L13RC+12-1)
-	END IF
+      END IF
       IF ( N13OM .GT. 0 ) THEN
          WRITE(NCPU,103) (STORE(I),I=L13OM,L13OM+9-1)
-	END IF
+      END IF
       IF ( N13AX .GT. 0 ) THEN
          WRITE(NCPU,108) (STORE(I),I=L13AX,L13AX+3-1)
-	END IF
+      END IF
 
       WRITE(NCPU,'(A)') 'END'
 
       RETURN
       END
-	  
-	  
+      
+      
 CODE FOR XPCH4
       SUBROUTINE XPCH4
 
@@ -3176,7 +3176,7 @@ C
       INCLUDE 'QSTORE.INC'
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
       CHARACTER*1 CNY(2)
-	DATA CNY /'N','Y'/
+      DATA CNY /'N','Y'/
 C      
       
       IF (KHUNTR (4,0, IADDL,IADDR,IADDD, -1) .LT. 4) CALL XFAL04
@@ -3227,7 +3227,7 @@ C
 C      
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
       CHARACTER*1 CNY(2)
-	DATA CNY /'N','Y'/
+      DATA CNY /'N','Y'/
       
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
       IF ( IERFLG .LT. 0 ) THEN
@@ -3285,7 +3285,7 @@ C Get special option
 
       RETURN
       END
-	  
+      
 CODE FOR XPCH25
       SUBROUTINE XPCH25
 
@@ -3311,11 +3311,11 @@ C
       WRITE(NCPU,'(A)') '#LIST 25'
 
       WRITE(NCPU,100)N25
-	  
+      
       DO I=L25,L25+(N25-1)*MD25,MD25  
         WRITE(NCPU,101) (STORE(J),J=I,I+8)
       END DO
-	  
+      
 100   FORMAT('READ NELEM=',I3)
 101   FORMAT('MATRIX ',3(F14.9,1X),2(/,'CONT   ',3(F14.9,1X)))
 
@@ -3434,7 +3434,7 @@ C
       DO I=L29,L29+(N29-1)*MD29,MD29  
         WRITE(NCPU,101) (STORE(J),J=I,I+MD29-1)
       END DO
-	  
+      
 100   FORMAT('READ NELEM=',I3)
 101   FORMAT('ELEMENT ',A4,1X,F7.4,1X,F13.4,1X,F8.4,1X,3F9.3,1X,A4)
 
@@ -3476,7 +3476,7 @@ C--LOAD LIST 31 FROM DISC (XFAL routine is specialised for DistAngl)
       WRITE(NCPU,'(A)') '#LIST 31'
       WRITE(NCPU,100) STORE(L31K)
       WRITE(NCPU,101) (STORE(J),J=L31,L31+MD31-1)
-	  
+      
 100   FORMAT('AMULT ',F17.8)
 101   FORMAT('MATRIX ',6(1X,F11.5),/,
      1  'CONT ',14X,5(1X,F11.5),/,  

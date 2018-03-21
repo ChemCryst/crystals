@@ -1353,7 +1353,7 @@ C--READ THE ATOMS ON THE CARD
 22616  CONTINUE
       IF(KGCAS(1,6,8,0))5850,5850,5700
 C-- END URIGU
-      GOTO 1900	  
+      GOTO 1900   
 
 C--'ULIJ' RESTRAINT
 2262  CONTINUE
@@ -1429,7 +1429,7 @@ C--'UXYQIV' RESTRAINT
       K=5    ! Allow one 'TO' connector
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
-      GOTO 1900	  
+      GOTO 1900   
 
 C--'UXZQIV' RESTRAINT
 2266  CONTINUE
@@ -1446,7 +1446,7 @@ C--'UYYQIV' RESTRAINT
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
-	  
+      
 C--'UYZQIV' RESTRAINT
 2268  CONTINUE
       ISTORE(LCG+1)=34
@@ -1454,7 +1454,7 @@ C--'UYZQIV' RESTRAINT
       L=6    ! Six parameters involved
       M=8    ! First parameter at slot '8' (U11).
       GOTO 1900
-	  
+      
 C--'UZZQIV' RESTRAINT
 2269  CONTINUE
       ISTORE(LCG+1)=35

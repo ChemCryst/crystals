@@ -729,9 +729,9 @@ C If in script mode, set flag.
           CALL MENUUP
 #endif
 
-	  CALL FLUSH(NCWU)
-	  CALL FLUSH(NCPU)
-	  CALL FLUSH(NCAWU)
+      CALL FLUSH(NCWU)
+      CALL FLUSH(NCPU)
+      CALL FLUSH(NCAWU)
           call FLUSH(123)       ! for debugging purposes
           CALL GETCOM(CLINE)
 
