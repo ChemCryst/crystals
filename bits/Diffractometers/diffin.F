@@ -28,7 +28,7 @@ C
 C Revision 1.4  2011/05/17 16:00:16  djw
 C Enable long lines, up to 512 characters
 C
-	program diffin
+    program diffin
       implicit none
 c---------------------------------------------------------------------
 c General program for reading all cif files
@@ -77,7 +77,7 @@ c
       character*4096  cspace, output_name
       character*4096  output_hkl
       character*32  response
-	  character*256 option
+      character*256 option
       CHARACTER*12  cdiff, ctemp
       character*132 carg2
       
@@ -506,7 +506,7 @@ c
         read (*, '(a)') response
       end if
       STOP      
-	end
+    end
 c
       SUBROUTINE NOILLEGAL(OPTION)
         character*32 option

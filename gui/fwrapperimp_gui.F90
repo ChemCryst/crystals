@@ -5,7 +5,7 @@ integer function fwexec(cc)
     use fwrappergui_mod, only: guexec
     implicit none
     character*(*) cc
- 	fwexec = guexec(cc)
+    fwexec = guexec(cc)
     return 
 end function
 

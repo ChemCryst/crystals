@@ -1,12 +1,12 @@
-	  
-	  
-C For Python interface - return after every instruction is executed	  
-	  
-	  
-	  
+      
+      
+C For Python interface - return after every instruction is executed   
+      
+      
+      
 #ifdef CRY_PY
 
-	  SUBROUTINE crinitwrap() bind(C)
+      SUBROUTINE crinitwrap() bind(C)
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'TSSCHR.INC'
@@ -42,10 +42,10 @@ C            STOP 'ERROR OPENING STARTUP FILE'
             CALL GUEXIT (2003)
         ENDIF
       ENDIF
-	  END
+      END
 
-	  SUBROUTINE commandwrap() bind (C)
-	  
+      SUBROUTINE commandwrap() bind (C)
+      
       INCLUDE 'ISTORE.INC'
       DIMENSION PROGLS(4,18)
       INCLUDE 'STORE.INC'
@@ -222,7 +222,7 @@ C
       CALL DIFABS
 
 1210  CONTINUE
-	  RETURN
+      RETURN
 
 9920  CONTINUE
       WRITE ( CMON, 9925)

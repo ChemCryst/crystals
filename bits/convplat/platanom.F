@@ -170,14 +170,14 @@ c      d = d*dmult
 
 c updated version 
        c = 1.0 + (frt/frn)
-       d = fit/frn	   
-	  
-	  
+       d = fit/frn     
+      
+      
 c pseudo imaginary parts:
       aimag=  -d*bpart
       bimag=  d*apart
-	  areal = c*apart
-	  breal = c*bpart
+      areal = c*apart
+      breal = c*bpart
       write(12,'(3i4,a)') ih,ik,il,ctemp(1:53)
       write(12,'(4f11.5)') areal, breal, aimag, bimag
       goto 300

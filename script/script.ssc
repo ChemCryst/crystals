@@ -1,1 +1,18 @@
-%SCRIPT SCRIPT%% A SCRIPT to permit execution of other SCRIPTS.%% It does not die cleanly if the named SCRIPT does not exist% CLEAR% ON ERROR RESTART% LOOP% VARIABLE CHARACTER SCPNAME% ON ERROR RESTART% ON END TERMINATE        Use END to terminate% GET NOSTORE FINAL KEYWORD 'Name of SCRIPT of be obeyed'%    EVALUATE SCPNAME = CVALUE%    TRANSFER '#SCRIPT ' //  SCPNAME // ' ' TO CRYSTALS% FINISH% END LOOP% FINISH%END SCRIPT
+%SCRIPT SCRIPT
+%% A SCRIPT to permit execution of other SCRIPTS.
+%% It does not die cleanly if the named SCRIPT does not exist
+% CLEAR
+% ON ERROR RESTART
+% LOOP
+% VARIABLE CHARACTER SCPNAME
+% ON ERROR RESTART
+% ON END TERMINATE
+        Use END to terminate
+% GET NOSTORE FINAL KEYWORD 'Name of SCRIPT of be obeyed'
+%    EVALUATE SCPNAME = CVALUE
+%    TRANSFER '#SCRIPT ' //  SCPNAME // ' ' TO CRYSTALS
+% FINISH
+% END LOOP
+% FINISH
+%END SCRIPT
+
