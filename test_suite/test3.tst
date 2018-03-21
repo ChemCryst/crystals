@@ -2694,4 +2694,7 @@ DOWN 13 0 .02 0
 ACROSS 26 .02 0 0                                                               
 THROUGH 3 0 0 -.1                                                               
 END                                                                            
+\sfls
+r
+e
 \END                                                                              

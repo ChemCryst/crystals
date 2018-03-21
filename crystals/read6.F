@@ -1423,8 +1423,22 @@ c SFLS will see this difference.
 c djw-2018. Store the current 'best estimate' on input. SFLS may update it
 c but we need some kind of value for the MOO calculations.
          LIX = L6DTL + 16*MD6DTL
-         STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
-         STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
+         if(abs(SQRT(STORE(LIX))* WAVE)>1.0 .or. 
+     1     abs(SQRT(STORE(LIX+1))* WAVE)>1.0 ) then
+           ! Inconsistent data cell is wrong, hkl indices are wrong or wavelength is wrong
+           ! the sine is outside [-1.0,1.0]
+           WRITE (CMON,'(a)') '{E Inconsistent data. '//
+     1       '  sin(Theta)/lambda outside permitted range.'
+           CALL XPRVDU (NCVDU,1,0)
+           WRITE (CMON,'(a)') '{E Cell parameters, wavelength and '//
+     1       'hkl indices are not compatible'
+           CALL XPRVDU (NCVDU,1,0)
+           STORE(L30IX+6)=99.0
+           STORE(L30IX+7)=-99.0
+         else
+           STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
+           STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
+         end if
          CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
        ENDIF
        ENDIF
