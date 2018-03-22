@@ -440,7 +440,6 @@ C----- V 810 INCLUDES THE SPECIAL SHAPES
      1           1HF, 1HR, 1HN, 1H2/
 #endif
      DATA IVERSN /811/
-      INTEGER PARAM_LIST_MAKE
       integer sfls_punch_flag
 
 C----- ACCEPT -VE FLACK PARAMETER
@@ -1006,18 +1005,6 @@ c---- Opening and initailising file for punching least square data
           IF(NEWLHS) THEN           ! SET UP A NEW MATRIX   MATRIX=NEW (default)
             CALL XSET11(-1,1,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
-            if (ISTORE(M33CD+13) .EQ. 0) then ! See if sparse is set to bond
-C               iresults = KSTALL(N11)
-C               print *, N11, NRESULTS
-C              NRESULTS = param_list_make(istore(IRESULTS), N11, JR,
-C     1              JQ)
-               NRESULTS = param_list_make(IRESULTS, JR, 
-     1              JQ)
-c            print *, N11, NRESULTS
-C Allocate the rest of the memory we have already used. this is horrible but there
-C isn't any other way to do it unless I create a chain(linked list)
-C               inewresult = KSTALL(NRESULT) 
-            END IF
           ELSE                       ! WE ONLY NEED THE R.H.S. MATRIX=OLD (Old LHS will be loaded later)
             CALL XSET11(0,0,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -2357,75 +2344,69 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
  
-              if (ISTORE(M33CD+13).EQ.0) THEN
-                 CALL PARM_PAIRS_XLHS(STORE(JO), JP-JO+1, STR11(L11), 
-     1            N11, iresults, nresults, 
-     2            STORE(L12B), N12B*MD12B, MD12B)
-              else
-                 ! Store a chunk of the design matrix
-                 ! When the chunk is full, accumulate the normal matrix
-                 designindex=designindex+1
-                 if(designindex>designchunk*tid) then
-                     ! Output design matrix to disk
-                     if(sfls_punch_flag>0) then
-                         if(sfls_sp_normalm<0) then
-                             call sfls_punch_addtodesign(designmatrix, 
-     1                           hkllist, sfls_punch_flag)
-                         else
-                             call sfls_punch_addtodesign(
-     1                           designmatrix_sp, 
-     2                           hkllist, sfls_punch_flag)
-                         end if
+             ! Store a chunk of the design matrix
+             ! When the chunk is full, accumulate the normal matrix
+             designindex=designindex+1
+             if(designindex>designchunk*tid) then
+                 ! Output design matrix to disk
+                 if(sfls_punch_flag>0) then
+                     if(sfls_sp_normalm<0) then
+                         call sfls_punch_addtodesign(designmatrix, 
+     1                       hkllist, sfls_punch_flag)
+                     else
+                         call sfls_punch_addtodesign(
+     1                       designmatrix_sp, 
+     2                       hkllist, sfls_punch_flag)
                      end if
-                  
-                     ! accumulate normal matrix
+                 end if
+              
+                 ! accumulate normal matrix
 !$OMP PARALLEL default(none) 
 !$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm)
 !$OMP& shared(designmatrix_sp, normalmatrix_sp)
 
 !$OMP DO schedule(static)
-                     do i=1, tid
-                         ! passing first element as array to avoid temporary copy
-                         if(sfls_sp_normalm<0) then
-                           call DSYRK('L','N',JP-JO+1,designchunk,
-     1                       1.0d0, 
-     2                       designmatrix(1,designchunk*(i-1)+1),
-     3                       JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
-                         else
-                           call SSYRK('L','N',JP-JO+1,designchunk,
-     1                       1.0, 
-     2                       designmatrix_sp(1,designchunk*(i-1)+1),
-     3                       JP-JO+1,1.0,
-     4                       normalmatrix_sp(1,1,i),JP-JO+1)
-                         end if
-                     end do
+                 do i=1, tid
+                     ! passing first element as array to avoid temporary copy
+                     if(sfls_sp_normalm<0) then
+                       call DSYRK('L','N',JP-JO+1,designchunk,
+     1                   1.0d0, 
+     2                   designmatrix(1,designchunk*(i-1)+1),
+     3                   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
+                     else
+                       call SSYRK('L','N',JP-JO+1,designchunk,
+     1                   1.0, 
+     2                   designmatrix_sp(1,designchunk*(i-1)+1),
+     3                   JP-JO+1,1.0,
+     4                   normalmatrix_sp(1,1,i),JP-JO+1)
+                     end if
+                 end do
 !$OMP END DO
 !$OMP END PARALLEL
 
 
-                     ! reset index for the chunk array
-                     designindex=1
-                     if(sfls_sp_normalm<0) then
-                       designmatrix=0.0d0
-                     else
-                       designmatrix_sp=0.0
-                     end if
-                     hkllist=0
-                 end if
-
+                 ! reset index for the chunk array
+                 designindex=1
                  if(sfls_sp_normalm<0) then
-                   designmatrix(:,designindex) = STORE(JO:JP)
+                   designmatrix=0.0d0
                  else
-                   designmatrix_sp(:,designindex) = STORE(JO:JP)
+                   designmatrix_sp=0.0
                  end if
-                 if(sfls_punch_flag>0) then
-                     hkllist(:, designindex)=nint(STORE(M6:M6+2))
-                 end if
-                 
+                 hkllist=0
+             end if
+
+             if(sfls_sp_normalm<0) then
+               designmatrix(:,designindex) = STORE(JO:JP)
+             else
+               designmatrix_sp(:,designindex) = STORE(JO:JP)
+             end if
+             if(sfls_punch_flag>0) then
+                 hkllist(:, designindex)=nint(STORE(M6:M6+2))
+             end if
+             
 c                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
 c     1                 STORE(L12B), N12B*MD12B, MD12B )
-              end if
-          END IF
+          end if
         END IF
 
         CALL XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
@@ -2491,82 +2472,81 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
 
       IF(SFLS_TYPE .EQ. SFLS_REFINE)THEN    ! REFINEMENT
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
-              if (ISTORE(M33CD+13).NE.0) THEN
-                 ! process the remaining chunk of design matrix
-                 if(designindex>0) then
-                   ! Output design matrix to disk
-                   if(sfls_punch_flag>0) then
-                      if(sfls_sp_normalm<0) then                  
-                           call sfls_punch_addtodesign(
-     1                         designmatrix(:,1:designindex), 
-     2                         hkllist(:,1:designindex), 
-     3                         sfls_punch_flag)
-                      else
-                           call sfls_punch_addtodesign(
-     1                         designmatrix_sp(:,1:designindex), 
-     2                         hkllist(:,1:designindex), 
-     3                         sfls_punch_flag)
-                      end if
-                   end if
+             ! process the remaining chunk of design matrix
+             if(designindex>0) then
+               ! Output design matrix to disk
+               if(sfls_punch_flag>0) then
+                  if(sfls_sp_normalm<0) then                  
+                       call sfls_punch_addtodesign(
+     1                     designmatrix(:,1:designindex), 
+     2                     hkllist(:,1:designindex), 
+     3                     sfls_punch_flag)
+                  else
+                       call sfls_punch_addtodesign(
+     1                     designmatrix_sp(:,1:designindex), 
+     2                     hkllist(:,1:designindex), 
+     3                     sfls_punch_flag)
+                  end if
+               end if
 
-                   ! Accumulate the normal matrix
+               ! Accumulate the normal matrix
 !$OMP PARALLEL default(none) 
 !$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm) 
 !$OMP& shared(designmatrix_sp, normalmatrix_sp)
 
 !$OMP DO schedule(static)
-                do i=1, tid
-                     if(sfls_sp_normalm<0) then
-                         call DSYRK('L','N',JP-JO+1,designchunk,
-     1                      1.0d0, 
-     2                       designmatrix(1,designchunk*(i-1)+1),
-     3                       JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
-                     else
-                         call SSYRK('L','N',JP-JO+1,designchunk,
-     1                      1.0, 
-     2                       designmatrix_sp(1,designchunk*(i-1)+1),
-     3                       JP-JO+1,1.0,normalmatrix_sp(1,1,i),JP-JO+1)
-                     end if
-                 end do
+            do i=1, tid
+                 if(sfls_sp_normalm<0) then
+                     call DSYRK('L','N',JP-JO+1,designchunk,
+     1                   1.0d0, 
+     2                   designmatrix(1,designchunk*(i-1)+1),
+     3                   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
+                 else
+                     call SSYRK('L','N',JP-JO+1,designchunk,
+     1                   1.0, 
+     2                   designmatrix_sp(1,designchunk*(i-1)+1),
+     3                   JP-JO+1,1.0,normalmatrix_sp(1,1,i),JP-JO+1)
+                 end if
+             end do
 !$OMP END DO
 !$OMP END PARALLEL
-                 end if
+             end if
 
 c Only vectorized with gfortran 4.8 not 4.4
-                 if(sfls_sp_normalm<0) then
-                     do i=1, ubound(normalmatrix,2)
-                         do j=2, ubound(normalmatrix,3)
-                            normalmatrix(:,i,1)=normalmatrix(:,i,1)
-     1                          +normalmatrix(:,i,j)
-                          end do
-                     end do
-                 else
-                     do i=1, ubound(normalmatrix_sp,2)
-                         do j=2, ubound(normalmatrix_sp,3)
-                            normalmatrix_sp(:,i,1)=
-     1                          normalmatrix_sp(:,i,1)
-     2                          +normalmatrix_sp(:,i,j)
-                          end do
-                     end do
-                 end if
-                 
-                 ! Pack normal matrix back into original crystals storage     
-                 IBL = 1                  ! Parameter # at start of current block
-                 IBS = L11                ! Packed storage address.
+             if(sfls_sp_normalm<0) then
+                 do i=1, ubound(normalmatrix,2)
+                     do j=2, ubound(normalmatrix,3)
+                        normalmatrix(:,i,1)=normalmatrix(:,i,1)
+     1                      +normalmatrix(:,i,j)
+                      end do
+                 end do
+             else
+                 do i=1, ubound(normalmatrix_sp,2)
+                     do j=2, ubound(normalmatrix_sp,3)
+                        normalmatrix_sp(:,i,1)=
+     1                      normalmatrix_sp(:,i,1)
+     2                      +normalmatrix_sp(:,i,j)
+                      end do
+                 end do
+             end if
+             
+             ! Pack normal matrix back into original crystals storage     
+             IBL = 1                  ! Parameter # at start of current block
+             IBS = L11                ! Packed storage address.
 
-                 DO MB = 1, N12B*MD12B, MD12B      
-                   MNR  = ISTORE(L12B+MB)  ! Dimension of this block
-                   MSTR = (MNR*(MNR+1))/2 ! Storage space for this block    
-                   do i=1,MNR
-                     j = ((i-1)*(2*(MNR)-i+2))/2
-                     k = j + MNR - i
-                     if(sfls_sp_normalm<0) then
-                       STR11(IBS+j:IBS+k)
-     1                   =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
-                     else
-                       STR11(IBS+j:IBS+k)
-     1                   =normalmatrix_sp(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
-                     end if
+             DO MB = 1, N12B*MD12B, MD12B      
+               MNR  = ISTORE(L12B+MB)  ! Dimension of this block
+               MSTR = (MNR*(MNR+1))/2 ! Storage space for this block    
+               do i=1,MNR
+                 j = ((i-1)*(2*(MNR)-i+2))/2
+                 k = j + MNR - i
+                 if(sfls_sp_normalm<0) then
+                   STR11(IBS+j:IBS+k)
+     1               =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
+                 else
+                   STR11(IBS+j:IBS+k)
+     1               =normalmatrix_sp(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
+                 end if
 
 c E.g. two blocks of 2 - normalmatrix is 4x4, output is 2 upper triangles of side 2.
 c Initially IBL is 1, IBS is L11.
@@ -2587,15 +2567,15 @@ c          str11(L11+3:L11+4) = norm(3:4, 3)
 c          j = 2; k = 2
 c          str11(L11+5:L11+5) = norm(4:4, 4)
 c Looks OK.
-                    
-                   end do
-        
-                   IBS = IBS + MSTR       ! Increment the storage pointer
-                   IBL = IBL + MNR        ! Increment the derivative pointer
-                 END DO
+                
+               end do
+    
+               IBS = IBS + MSTR       ! Increment the storage pointer
+               IBL = IBL + MNR        ! Increment the derivative pointer
+             END DO
 
-              END IF
           END IF
+
       END IF
       
 

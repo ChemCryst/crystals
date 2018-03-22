@@ -106,7 +106,6 @@ matrix.F
 modify5.F
 mtapes.F
 normal.F
-paramlist.F
 planes.F
 prcss.F
 prcss6.F
