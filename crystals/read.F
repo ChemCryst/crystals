@@ -729,9 +729,10 @@ C If in script mode, set flag.
           CALL MENUUP
 #endif
 
-      CALL FLUSH(NCWU)
-      CALL FLUSH(NCPU)
-      CALL FLUSH(NCAWU)
+
+          CALL FLUSH(NCWU)
+          CALL FLUSH(NCPU)
+          CALL FLUSH(NCAWU)
           call FLUSH(123)       ! for debugging purposes
           CALL GETCOM(CLINE)
 
@@ -1281,7 +1282,8 @@ C
 C
 2400  CONTINUE
 C
-C -- 'COMMANDS'
+
+C -- '#COMMANDS'
 C
       NC = KEQUAL ( NC , IB )
       NC = KNEQUL ( NC , IB )
