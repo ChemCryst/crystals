@@ -4842,8 +4842,8 @@ C----- OUTPUT A TITLE, FIRST 44 CHARACTERS ONLY
         WRITE (NCFPU1,'(/,''_oxford_structure_analysis_title  '''''',
      1   A,'''''''')') CLINE(1:K)
         WRITE (NCFPU1,'(''_chemical_name_systematic '',T35,''.'')')
-        WRITE (NCFPU1,
-     1  '(''_chemical_melting_point '',T35,''not measured'',/)')
+        WRITE (NCFPU1,1850)
+     1  '_chemical_melting_point ',' ',T35,'''not measured'''
       ELSE IF ( IPUNCH .EQ. 1 ) THEN
         WRITE (CLINE,'(15A4,3(A2,A))') (KTITL(I),I=1,15),CBUF(7:8),'-',
      1  CBUF(4:5),'-',CBUF(1:2)
@@ -5754,7 +5754,8 @@ c
             WRITE (CLINE,'(A,''density_meas'',T35,F6.3)') CBUF(1:15),
      1       STORE(L30GE)
           ELSE
-            WRITE (CLINE,1850) CBUF(1:15),'density_meas','not measured'
+            WRITE (CLINE,1850) CBUF(1:15),'density_meas',
+     1      '''not measured'''
             CALL XPCIF (CLINE)
             WRITE (CLINE,1850) CBUF(1:15),'density_method',
      1      '''not measured'''
