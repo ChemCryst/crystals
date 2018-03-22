@@ -4843,7 +4843,7 @@ C----- OUTPUT A TITLE, FIRST 44 CHARACTERS ONLY
      1   A,'''''''')') CLINE(1:K)
         WRITE (NCFPU1,'(''_chemical_name_systematic '',T35,''.'')')
         WRITE (NCFPU1,1850)
-     1  '_chemical_melting_point ',' ',T35,'''not measured'''
+     1  '_chemical_melting_point ',' ','''not measured'''
       ELSE IF ( IPUNCH .EQ. 1 ) THEN
         WRITE (CLINE,'(15A4,3(A2,A))') (KTITL(I),I=1,15),CBUF(7:8),'-',
      1  CBUF(4:5),'-',CBUF(1:2)
