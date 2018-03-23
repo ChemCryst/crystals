@@ -174,6 +174,9 @@ C
 C Revision 1.12  2001/02/26 10:26:49  richard
 C Added changelog to top of file
 C
+c-----------------------------------------------------------------------------
+c For some historical information (for example the binary bits) see lexical.man
+c-----------------------------------------------------------------------------
 C
 CODE FOR XILEXP
       SUBROUTINE XILEXP(IULN,IFIRST)
