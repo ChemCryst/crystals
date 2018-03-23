@@ -590,6 +590,7 @@ c     not for copy
 Cdjw dec97
 C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
       N6DEAD=0
+      N6THETA=0
       N6NEG=0
 C ITYPE COPY FIXED FREE COMPRESSED TWIN (HKLI) FIXED FREE COMP
 C        1     2    3       4        5           6    7    8
@@ -1173,8 +1174,9 @@ C----- CHECK INDICES
      2  (abs(store(m6+1)).gt.255.).or.
      3  (abs(store(m6+2)).gt.255.))
      4  then
-            write(cmon,'(A,4i10)') 'Bad index near reflection ',n6w,
-     1      nint(store(m6)),nint(store(m6+1)),nint(store(m6+2))
+            write(cmon,'(A,4i10)') 'Bad index near reflection ',
+     1      n6w+n6dead,
+     2      nint(store(m6)),nint(store(m6+1)),nint(store(m6+2))
             call xprvdu (ncvdu,1,0)
             if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             n6dead = n6dead + 1
@@ -1240,6 +1242,20 @@ C--CHECK IF WE SHOULD COMPUTE SIN(THETA)/LAMBDA SQUARED
 C--COMPUTE IT
 4300     CONTINUE
          STORE(M6+16)=SNTHL2(I)
+         if(l13dc .gt. 0) then
+            if(abs(store(m6+16)* wave).gt.1.0)then
+             call outcol(9)
+             write(cmon,'(a,3i5,f12.2)')'Sintheta > 1.0',
+     1       nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
+     2       abs(store(m6+16)* wave)
+             call xprvdu (ncvdu,1,0)
+             call outcol(1)
+             write (ncawu,'(a)') trim(cmon(1))
+c             if (issprt.eq.0) write (ncwu,'(a)') trim(cmon(1))
+             n6theta=n6theta+1
+c             go to 4850       ! carry on using the bad reflections
+            endif
+         endif
 C--ENSURE A MINIMUM BATCH NUMBER OF ONE
 4350     CONTINUE
          STORE(M6+13)=AMAX1(STORE(M6+13),1.)
@@ -1494,6 +1510,21 @@ C--INPUT FROM THE MAIN CHANNEL  -  ALTER THE COUNTERS
       MON=NI
 5400  CONTINUE
 C--AND NOW RETURN
+      if(n6theta.gt.0) then
+        call outcol(9)
+        write(cmon,'(i10,a)')n6thata, 
+     1 ' reflections have sintheta/lambda > 1.0'
+        call xprvdu (ncvdu,1,0)
+        write (ncawu,'(a)') trim(cmon(1))
+        if (issprt.eq.0) write (ncwu,'(a)') trim(cmon(1))
+        write(cmon,'(A/A/A)')
+     1  'This could be due to errors in the reflection file',
+     2  'in the unit cell parameters or in the wavelength',
+     3  'See the Monitor file for details'
+        call xprvdu (ncvdu,3,0)
+        call xpause (2000)
+        call outcol(1)
+      endif
       CALL XOPMSG (IOPLSI,IOPLSE,IULN)
       CALL XTIME2 (2)
       RETURN
