@@ -166,20 +166,12 @@ CODE FOR XTHX
 c
 CODE FOR xton
       SUBROUTINE xton
+      use absolut_mod, only:tonspkpascal
       DIMENSION FILTER(5)
       PARAMETER (NPROCS=10)
       DIMENSION IPROCS(NPROCS), PROCS(NPROCS)
       EQUIVALENCE (PROCS(1),IPROCS(1))
-      
-      interface
-        subroutine tonspkpascal(ityp06,itype,iplot,ipunch,
-     1    filter,iweight)
-          integer, intent(in) :: ITYP06, itype, iplot, ipunch, iweight
-          real, dimension(:), intent(in) :: filter
-        end subroutine
-      end interface
-
-      
+            
       CALL XCSAE
       I = KRDDPV ( IPROCS , NPROCS )
       KTYP06 = IPROCS(1)
