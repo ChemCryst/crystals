@@ -320,8 +320,11 @@ cdjwfeb06 compute geometric mean
             UGEOM=sign(1.,ugeom)*abs(UGEOM)**0.33333
             UARITH = (STORE(NE)+STORE(NE+1)+STORE(NE+2))/3.
 cdjwsep08
-            UPRIME =SIGN(1.,STORE(NE))* ABS(STORE(NE+2)*STORE(NE+1))/
-     1      ABS(STORE(NE))
+            if(abs(STORE(NE))<=epsilon(1.0)) then
+              uprime=0.0
+            else
+              UPRIME = ABS(STORE(NE+2)*STORE(NE+1))/STORE(NE)
+            end if
             UEQUIV = UGEOM
             avol = avol + uequiv
             dvol = dvol + uequiv*uequiv
