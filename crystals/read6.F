@@ -1512,7 +1512,7 @@ C--INPUT FROM THE MAIN CHANNEL  -  ALTER THE COUNTERS
 C--AND NOW RETURN
       if(n6theta.gt.0) then
         call outcol(9)
-        write(cmon,'(i10,a)')n6thata, 
+        write(cmon,'(i10,a)')n6theta, 
      1 ' reflections have sintheta/lambda > 1.0'
         call xprvdu (ncvdu,1,0)
         write (ncawu,'(a)') trim(cmon(1))
