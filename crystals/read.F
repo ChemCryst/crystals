@@ -3669,6 +3669,8 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      real, dimension(1) :: value
 C
 C
       LENGTH = ND - NC + 1
@@ -3685,7 +3687,7 @@ C
             IF ( I .LT. 0 ) THEN
                   GO TO 9910
             ELSE IF ( I .GT. 0 ) THEN
-                  LISTNO = NINT ( VALUE )
+                  LISTNO = NINT ( VALUE(1) )
                   ISTAT = KLSCHK (LISTNO,0,0,ILSCLN,ILSMSG,ITMP,IERWRN)
                   IF ( ISTAT .LE. 0 ) GO TO 9900
                   ICONTX = LSTOFF + LISTNO
@@ -3846,7 +3848,7 @@ C
             IF ( ISTAT .NE. 0 ) GO TO 9900
             IVALUE = NINT ( VALUE )
             IF ( NVAL .GT. 0 ) THEN
-                  ICONTX = KCOMP ( 1, IVALUE, ISTORE(LVAL),NVAL,MDVAL )
+                  ICONTX = KCOMP(1, (/IVALUE/), ISTORE(LVAL),NVAL,MDVAL)
                   IF ( ICONTX .LE. 0 ) GO TO 9910
             ENDIF
       ELSE IF ( ITYPE .EQ. 2 ) THEN
@@ -4480,7 +4482,7 @@ C
 C
 C
 C----- COMPUTE THE USEFUL LENGTH
-      N = KCOMP (1, IB, ITEXT(1), M, 1) -1
+      N = KCOMP (1, (/IB/), ITEXT(1), M, 1) -1
       IF (N .LE. 0) N = M
       N = MIN0( N, NWDIR)
 C--SEE IF THERE ARE ANY CHARACTERS TO SEARCH OVER
