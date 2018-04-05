@@ -1824,6 +1824,9 @@ C----- SET THE ACTUAL VALUE FOR TEXT ARGUMENTS
         ENDIF
       ENDIF
 C
+c      write(125,'(//)')
+c      write(125,*)'LIST 50',
+c     1 IPARAM, CPARAM, LPARAM, IVAL,JTYPE, IDEF, DEF, CDEF, CVALUE
       KPVAL = 1
 6000  CONTINUE
       RETURN
