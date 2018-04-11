@@ -196,22 +196,7 @@ subroutine shelx_flat(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus, cont
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
-character(len=128) :: namedresidue
-integer :: flatresidue, numatom
-character(len=lenlabel), dimension(:), allocatable :: splitbuffer
-character(len=:), allocatable :: stripline
-character(len=6) :: startlabel, endlabel
-character(len=2048) :: bufferline
-logical collect, reverse
-real esd
 
-    ! parsing more complicated on this one as we don't know the number of parameters
-    linepos=5 ! First 4 is FLAT
-    
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty FLAT'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -703,86 +688,21 @@ subroutine shelx_same(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer cont, i, j
-character(len=2048) :: bufferline
-character(len=:), allocatable :: stripline, errormsg
-character(len=6) :: startlabel, endlabel
-logical collect, reverse, found
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-character(len=lenlabel), dimension(:), allocatable :: templist
-   
-    call explicit_atoms(shelxline%line, stripline, errormsg)
-    if(allocated(errormsg)) then
-        write(log_unit,*) trim(errormsg)
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)  
+
+    if(len_trim(shelxline%line)<5) then
+        write(log_unit,*) 'Error: Empty SAME'
+        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
     end if
-    
         
     same_table_index=same_table_index+1
-
-    ! set the flag
-    ! It is necessary as further information needs to be collected after this keyword.
-    same_table(same_table_index)%processing=0
-
-    ! allocate and split line into all the individual labels
-    call explode(trim(stripline), lenlabel, same_table(same_table_index)%list1)
-    
-    ! check if there is an esd
+    same_table(same_table_index)%shelxline=trim(shelxline%line)
+    same_table(same_table_index)%line_number=shelxline%line_number
     same_table(same_table_index)%esd1=0.0
     same_table(same_table_index)%esd2=0.0
-    found=.false.
-    bufferline=same_table(same_table_index)%list1(2)
-    do i=1, len_trim(bufferline)
-        do j=1, size(numbers)
-            if(bufferline(i:i)==numbers(j)) then
-                found=.true.
-                exit
-            end if
-        end do
-        if(.not. found) then
-            exit
-        end if
-    end do
-    if(found) then
-        read(same_table(same_table_index)%list1(2), *) same_table(same_table_index)%esd1
-    end if
-    found=.false.
-    bufferline=same_table(same_table_index)%list1(3)
-    do i=1, len_trim(bufferline)
-        do j=1, size(numbers)
-            if(bufferline(i:i)==numbers(j)) then
-                found=.true.
-                exit
-            end if
-        end do
-        if(.not. found) then
-            exit
-        end if
-    end do
-    if(found) then
-        read(same_table(same_table_index)%list1(3), *) same_table(same_table_index)%esd2
-    end if  
-    
-    if(same_table(same_table_index)%esd1/=0.0 .and. same_table(same_table_index)%esd2/=0.0) then
-        call move_alloc(same_table(same_table_index)%list1, templist)
-        allocate(same_table(same_table_index)%list1(size(templist)-3))
-        same_table(same_table_index)%list1=templist(4:)
-        deallocate(templist)
-    elseif(same_table(same_table_index)%esd1/=0.0 .or. same_table(same_table_index)%esd2/=0.0) then
-        call move_alloc(same_table(same_table_index)%list1, templist)
-        allocate(same_table(same_table_index)%list1(size(templist)-2))
-        same_table(same_table_index)%list1=templist(3:)
-        deallocate(templist)
-    end if
-    
-    allocate(same_table(same_table_index)%list2(size(same_table(same_table_index)%list1)))
-    same_table(same_table_index)%list2=''
-    same_table(same_table_index)%shelxline=shelxline%line
-    
-    !write(log_unit, *) trim(shelxline%line)
-    !write(log_unit, *) stripline
-    !write(log_unit, *) same_table(same_table_index)%list1
-    
+    same_table(same_table_index)%residue=-99
+    same_table(same_table_index)%namedresidue=''
+
 end subroutine
 
 !> Parse the EADP keyword. Restrain Plane
@@ -1046,9 +966,7 @@ subroutine shelx_isor(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-logical found
-real esd1, esd2
-    
+
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty ISOR'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)

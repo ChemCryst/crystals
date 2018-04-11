@@ -149,11 +149,13 @@ integer :: sadi_table_index=0
 
 !> type SAME
 type same_t
-    character(len=1024) :: shelxline
+    character(len=1024) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
     character(len=lenlabel), dimension(:), allocatable :: list1 !< reference atoms
     character(len=lenlabel), dimension(:), allocatable :: list2 !< target atoms
     real esd1, esd2 !< esds
-    integer processing !< flag if we are currently processing a same instruction. -1: nothing to do. >=0: working on it
+    character(len=128) :: namedresidue !< Residue alias
+    integer :: residue !< Residue number -99=None, -1=all, else is the residue number
 end type
 type(same_t), dimension(1024) :: same_table
 integer :: same_table_index=0
@@ -289,13 +291,36 @@ character(len=:), allocatable, intent(out) :: errormsg
 character(len=:), allocatable :: stripline
 character(len=:), allocatable :: bufferline
 logical reverse, collect
-character(len=6) :: startlabel, endlabel
-integer cont, k, j
+character(len=6) :: startlabel, endlabel, buffer
+integer cont, k, j, startresidue, endresidue, tagresidue
 
+    startresidue=0
+    endresidue=0
+   
     ! extracting list of atoms, first removing duplicates spaces and keyword
-    call deduplicates(linein, stripline)
-    call to_upper(stripline)
-    allocate(character(len=len(stripline)) :: bufferline)
+    call deduplicates(linein, bufferline)
+    call to_upper(bufferline)
+    allocate(character(len=4096) :: stripline)
+    stripline=bufferline
+    deallocate(bufferline)
+    allocate(character(len=4096) :: bufferline)
+    
+    ! checking for a residue number on the command
+    buffer=''
+    if(index(linein, '_')==5) then
+        k=5
+        do
+            k=k+1
+            if(linein(k:k)/=' ') then
+                buffer=trim(buffer)//linein(k:k)
+            else
+                exit
+            end if
+        end do
+        read(buffer, *) tagresidue
+    else
+        tagresidue=0
+    end if
     
     ! looking for <,> shortcut
     cont=max(index(stripline, '<'), index(stripline, '>'))
@@ -321,6 +346,12 @@ integer cont, k, j
             j=j+1
             endlabel(j:j)=stripline(k:k)
         end do  
+        ! check for residue
+        k=index(endlabel, '_')
+        if(k>0) then
+            read(endlabel(k+1:), *) endresidue
+            endlabel=endlabel(1:k-1)
+        end if
         
         ! then looking for label on the left
         cont=max(index(stripline, '<'), index(stripline, '>'))
@@ -335,6 +366,12 @@ integer cont, k, j
             startlabel(j:j)=stripline(k:k)
         end do  
         startlabel=adjustl(startlabel)
+        ! check for residue
+        k=index(startlabel, '_')
+        if(k>0) then
+            read(startlabel(k+1:), *) startresidue
+            startlabel=startlabel(1:k-1)
+        end if
 
         ! scanning atom list to find the implicit atoms
         if(reverse) then
@@ -348,7 +385,17 @@ integer cont, k, j
                 !found the first atom
                 !write(log_unit, *) isor_table(i)%shelxline
                 !write(log_unit, *) 'Found start: ', trim(startlabel)
-                collect=.true.
+                if(startresidue/=0) then
+                    if(startresidue==atomslist(k)%resi) then
+                        collect=.true.
+                    end if
+                else if (tagresidue/=0) then
+                    if(tagresidue==atomslist(k)%resi) then
+                        collect=.true.
+                    end if
+                else
+                    collect=.true.
+                end if
             end if
             if(reverse) then
                 k=k-1
@@ -380,7 +427,17 @@ integer cont, k, j
                     !write(log_unit, *) 'Found end: ', trim(endlabel)
                     !write(log_unit, *) 'Done!!!!!'
                     ! job done
-                    exit
+                    if(startresidue/=0) then
+                        if(startresidue==atomslist(k)%resi) then
+                            exit
+                        end if
+                    else if (tagresidue/=0) then
+                        if(tagresidue==atomslist(k)%resi) then
+                            exit
+                        end if
+                    else
+                        exit
+                    end if
                 end if
                 
                 if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
@@ -412,7 +469,7 @@ character(len=*), intent(in) :: txtin
 integer, intent(out) :: resi_num
 character(len=lenlabel), intent(out) :: label
 character(len=128), intent(out) :: resi_name
-integer ipos, i, iostatus
+integer ipos, iostatus
 
     resi_num=0
     resi_name=''
@@ -426,7 +483,7 @@ integer ipos, i, iostatus
     ! We have a residue
     label=txtin(1:ipos-1)
     
-    read(txtin(ipos+1:), '(I6)', iostat=iostatus) resi_num
+    read(txtin(ipos+1:), *, iostat=iostatus) resi_num
     if(iostatus/=0) then 
         ! not a number
         resi_num=0
