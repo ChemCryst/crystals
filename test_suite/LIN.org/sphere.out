@@ -141,6 +141,9 @@ rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
+
+ Rsigma has changed from its old value of 0.028 to  0.027
+
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -1865,6 +1868,9 @@ rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
+
+ Rsigma has changed from its old value of 0.028 to  0.027
+
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -3586,6 +3592,9 @@ rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
+
+ Rsigma has changed from its old value of 0.028 to  0.027
+
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -5296,6 +5305,9 @@ rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
+
+ Rsigma has changed from its old value of 0.028 to  0.027
+
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53

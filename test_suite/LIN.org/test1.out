@@ -6136,7 +6136,7 @@ LS-scale=  1.531   Wilson Scale=  0.000
 
      C         9.         Q         4.      3   1    1   -1    0    0.427      Deleted    0.151   0.650   0.103      3.7
 
-     C        11.         Q         2.      1   1    1    0    0    0.389      Deleted    0.095  -0.009   0.152      4.1
+     C        11.         Q         2.      1   1    1   -1    0    0.389      Deleted    0.095   0.991   0.152      4.1
  List now contains    27 atoms
 #EDIT
  The following atom(s) will be changed

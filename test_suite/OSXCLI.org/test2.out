@@ -329,7 +329,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
-[41]                0.01            0.04           0.01
+[41]                0.01            0.07           0.85
 #LIST 6
 
 

@@ -3,9 +3,8 @@ _audit_creation_date        "20  -  -  "
 [63] _audit_creation_method CRYSTALS
 
 _oxford_structure_analysis_title  'Cyclo in P 21 21 21'
-_chemical_name_systematic         ?
-_chemical_melting_point           ?
-
+_chemical_name_systematic         .
+_chemical_melting_point           'not measured'
 #looking for refcif 
  
  
@@ -283,7 +282,7 @@ _cell_formula_units_Z                    4
 
 _chemical_formula_sum             'C7 H11 N1 O3'
 _chemical_formula_moiety          'C7 H11 N1 O3'
-_chemical_compound_source                ?
+_chemical_compound_source                .
 _chemical_formula_weight            157.00
  
  
@@ -299,7 +298,7 @@ _exptl_crystal_size_mid           ?
 _exptl_crystal_size_max           ? 
  
 _exptl_crystal_density_diffrn     1.252 
-_exptl_crystal_density_meas       ? 
+_exptl_crystal_density_meas       'not measured' 
 _exptl_crystal_density_method     'not measured' 
 # Non-dispersive F(000): 
 _exptl_crystal_F_000              336 
@@ -327,10 +326,11 @@ _computing_molecular_graphics     'CAMERON (Watkin et al., 1996)'
 _diffrn_standards_interval_time   . 
 _diffrn_standards_interval_count  . 
 _diffrn_standards_number          0 
-_diffrn_standards_decay_%         ? 
+_diffrn_standards_decay_%         . 
  
 _diffrn_ambient_temperature        293
 _diffrn_reflns_number             1849 
+_diffrn_reflns_av_unetI/netI      0.035 
 _reflns_number_total              1133 
 _diffrn_reflns_av_R_equivalents   0.018 
 # Number of reflections without Friedels Law is 0 
