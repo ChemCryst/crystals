@@ -1706,6 +1706,11 @@ integer start, iostatus
                 write(buffer1, '(a,"(",I0,")")') &
                 &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
                 buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                if(len_trim(buffertemp)>72) then
+                    write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                    write(log_unit, '(a)') trim(buffertemp)                
+                    buffertemp='CONT'
+                end if
             end do
             write(crystals_fileunit, '(a)') trim(buffertemp)                           
             write(log_unit, '(a)') trim(buffertemp)                           
@@ -1763,6 +1768,11 @@ integer start, iostatus
                     write(buffer1, '(a,"(",I0,")")') &
                     &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
                     buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    if(len_trim(buffertemp)>72) then
+                        write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                        write(log_unit, '(a)') trim(buffertemp)                
+                        buffertemp='CONT'
+                    end if
                 end do
                 write(crystals_fileunit, '(a)') trim(buffertemp)                           
                 write(log_unit, '(a)') trim(buffertemp)
@@ -1819,6 +1829,11 @@ integer start, iostatus
                     write(buffer1, '(a,"(",I0,")")') &
                     &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
                     buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    if(len_trim(buffertemp)>72) then
+                        write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                        write(log_unit, '(a)') trim(buffertemp)                
+                        buffertemp='CONT'
+                    end if
                 end do
                 write(crystals_fileunit, '(a)') trim(buffertemp)                           
                 write(log_unit, '(a)') trim(buffertemp)  
@@ -1880,6 +1895,11 @@ integer start, iostatus
                 write(buffer1, '(a,"(",I0,")")') &
                 &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
                 buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                if(len_trim(buffertemp)>72) then
+                    write(crystals_fileunit, '(a)') trim(buffertemp)                           
+                    write(log_unit, '(a)') trim(buffertemp)                
+                    buffertemp='CONT'
+                end if
             end do
             write(crystals_fileunit, '(a)') trim(buffertemp)                           
             write(log_unit, '(a)') trim(buffertemp)  
