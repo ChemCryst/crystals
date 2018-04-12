@@ -13,11 +13,38 @@ type param_t !< Type holding the description of a least square parameter
     character(len=24) :: name !< Name of the parameter
 contains
     procedure, pass(self) :: print => printparam !< print the content of the object (used for debugging)
+    procedure :: param_t_equal
+    generic :: operator(==) => param_t_equal !< allow direct comparison using == operator
 end type
 
 private printparam, extend_parameters
 
 contains
+
+!> Subroutine overloading == to compare 2 param_t types (only on serial, label and name)
+elemental function param_t_equal(a, b) result(c)
+implicit none
+class(param_t), intent(in) :: a, b
+logical c
+
+    c=.true.
+    
+    if(a%serial/=b%serial) then
+        c=.false.
+        return
+    end if
+
+    if(a%label/=b%label) then
+        c=.false.
+        return
+    end if
+
+    if(a%name/=b%name) then
+        c=.false.
+        return
+    end if
+
+end function
 
 !> Load the least squares parameters with their name and their index in the design matrix
 !!
@@ -109,8 +136,8 @@ integer :: list_index
 logical found
 real weight
 
-character(len=:), dimension(:), allocatable :: list_char
-character(len=24) :: tempc
+type(param_t), dimension(:), allocatable :: list_char
+type(param_t) :: tempc
 
 integer m5, m12, l12a, md12a ! not using variables from common block. it is unnecessary and could cause side effects
 integer, dimension(6) :: scales ! addresses of scales whose order matches kscal
@@ -256,20 +283,19 @@ integer, external :: khuntr
     END DO
     
 ! A physical parameter can be listed several times if involved with several least square parameters    
-    allocate(character(len=24) :: list_char(list_index))
+    allocate(list_char(list_index))
     k=0
     do i=1, list_index
         found=.false.
         do j=1, k
-            write(tempc,'(a,I0,a)') trim(temp_list(i)%label), temp_list(i)%serial, trim(temp_list(i)%name)
-            if(tempc==list_char(j)) then
+            if(temp_list(i)==list_char(j)) then
                 found=.true.
                 exit
             end if
         end do
         if(.not. found) then
             k=k+1
-            write(list_char(k),'(a,I0,a)') trim(temp_list(i)%label), temp_list(i)%serial, trim(temp_list(i)%name)
+            list_char(k)=temp_list(i)
         end if
     end do
     
@@ -279,8 +305,7 @@ integer, external :: khuntr
         ! count the number of least squares parameters link to this phys parameter
         na=0
         do j=1, list_index
-            write(tempc,'(a,I0,a)') trim(temp_list(j)%label), temp_list(j)%serial, trim(temp_list(j)%name)
-            if(tempc==list_char(i)) then
+            if(temp_list(j)==list_char(i)) then
                 na=na+1
             end if
         end do
@@ -290,8 +315,7 @@ integer, external :: khuntr
         allocate(parameters_list(i)%weights(na))
         k=0
         do j=1, list_index
-            write(tempc,'(a,I0,a)') trim(temp_list(j)%label), temp_list(j)%serial, trim(temp_list(j)%name)
-            if(tempc==list_char(i)) then
+            if(temp_list(j)==list_char(i)) then
                 k=k+1
                 if(k==1) then
                     parameters_list(i)%label=temp_list(j)%label
