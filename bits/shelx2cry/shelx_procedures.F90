@@ -39,6 +39,44 @@ type(line_t), intent(in) :: shelxline
     
 end subroutine
 
+!> Parse ABIN keyword. It is ignored but the user is warned that the structure has been squeezed
+subroutine shelx_abin(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+
+    write(log_unit, *) 'Warning: Structure has been SQUEEZED '
+    write(log_unit, *) shelxline%line_number, trim(shelxline%line)
+    info_table_index=info_table_index+1
+    info_table(info_table_index)%shelxline=trim(shelxline%line)
+    info_table(info_table_index)%line_number=shelxline%line_number
+    info_table(info_table_index)%text='Warning: Structure has been SQUEEZED '
+    
+end subroutine
+
+!> Parse HKLF keyword. It is ignored but the user is warned that the structure has been TWINNED if HKLF 5 is found
+subroutine shelx_hklf(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+character(len=64) :: buffer
+
+    buffer=shelxline%line(5:min(68, len(shelxline%line)))
+    buffer=adjustl(buffer)
+    
+    if(buffer(1:1)=='5') then ! twin refinement expecting hklf 5 file later, issuing a warning
+
+        write(log_unit, *) 'Warning: Structure is TWINNED and HKLF 5 has been used '
+        write(log_unit, *) shelxline%line_number, trim(shelxline%line)
+        info_table_index=info_table_index+1
+        info_table(info_table_index)%shelxline=trim(shelxline%line)
+        info_table(info_table_index)%line_number=shelxline%line_number
+        info_table(info_table_index)%text='Warning: Structure is TWINNED and HKLF 5 has been used'
+
+    end if
+    
+end subroutine
+
 !> Parse the TITL keyword. Extract the space group name
 subroutine shelx_titl(shelxline)
 use crystal_data_m

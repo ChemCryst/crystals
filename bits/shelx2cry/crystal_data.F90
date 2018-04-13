@@ -160,6 +160,15 @@ end type
 type(same_t), dimension(1024) :: same_table
 integer :: same_table_index=0
 
+!> type info. List of warning saved for printing at the end so they don't get lost
+type info_t
+    character(len=1024) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
+    character(len=1024) :: text
+end type
+type(info_t), dimension(1024) :: info_table
+integer :: info_table_index=0
+
 contains
 
 !> Transform a string to upper case

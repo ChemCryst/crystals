@@ -39,7 +39,7 @@ type(dict_t) :: this
     allocate(this%tuples(80))
     associate (tuples => this%tuples)
         tuples(1)%key='ABIN'
-        tuples(1)%func => shelx_unsupported
+        tuples(1)%func => shelx_abin
         tuples(2)%key='ACTA'
         tuples(2)%func => shelx_ignored
         tuples(3)%key='AFIX'
@@ -109,7 +109,7 @@ type(dict_t) :: this
         tuples(35)%key='HFIX'
         tuples(35)%func => shelx_unsupported    
         tuples(36)%key='HKLF'
-        tuples(36)%func => shelx_ignored    
+        tuples(36)%func => shelx_hklf    
         tuples(37)%key='HTAB'
         tuples(37)%func => shelx_ignored    
         tuples(38)%key='ISOR'

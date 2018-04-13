@@ -165,13 +165,13 @@ if(.not. file_exists) then
                     write(log_unit,*) 'Error: No res file included in cif file'
                     stop
                 end if
-                shelx_filepath=trim(shelx_filepath)//'1.res'
+                shelx_filepath=trim(shelx_filepath)//'.res'
             end if
         else
-            shelx_filepath=trim(shelx_filepath)//'1.res'
+            shelx_filepath=trim(shelx_filepath)//'.res'
         end if
     else
-        shelx_filepath=trim(shelx_filepath)//'1.ins'
+        shelx_filepath=trim(shelx_filepath)//'.ins'
     end if
 end if
 
@@ -181,7 +181,7 @@ if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
         write(log_unit,*)'Error: No res file included in cif file'
         stop
     end if
-    shelx_filepath(len_trim(shelx_filepath)-3:)='1.res'
+    shelx_filepath(len_trim(shelx_filepath)-3:)='_1.res'
 end if
 
 shelxf_id=816
@@ -197,5 +197,12 @@ close(shelxf_id)
 
 call write_crystalfile(crystals_filepath)
 
+! print out saved warnings
+if(info_table_index>0) then
+    write(log_unit, '(a)') ''
+    do i=1, info_table_index
+        write(log_unit, '(a, a)') '## ', trim(info_table(i)%text)
+    end do
+end if
 
 end program
