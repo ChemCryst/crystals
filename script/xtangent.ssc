@@ -7,7 +7,7 @@
 %      copy '#script xdelq'                                                     
 %      copy '#FOREIGN SIR92 SPECIAL'                                            
 %      COPY 'END'                                                               
-%      COPY '#SPAWN + "CRYSDIR:SIR92.EXE" sir92.ini sir92.lis'                  
+%      COPY '#SPAWN + "CRYSDIR:sir92.exe" sir92.ini sir92.lis'                  
 %       EVALUATE QTITLE = 'Tangent Recycling Completed'                                   
 %       EVALUATE QLINE1 = 'Structure processed by SIR92'              
 %       EVALUATE QLINE2 = 'Would you like to input the new structure?'          

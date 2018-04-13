@@ -37,7 +37,7 @@ Trying to delete old modified Squeeze files
 %     EVALUATE T = FILEDELETE ( 'LIST6.DEF' )
 Deleted old modified Squeeze files
 %    END IF
-%    COPY '#SPAWN + "CRYSDIR:PLATANOM.EXE"'
+%    COPY '#SPAWN + "CRYSDIR:platanom.exe"'
 %    IF .not. FILEEXISTS ( 'LIST6.DEF' ) THEN
 The PLATANOM.exe process failed to write an output file.
 %      FINISH

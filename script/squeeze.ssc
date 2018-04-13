@@ -168,7 +168,7 @@ Trying to delete old SQUEEZED reflections
 %    FINISH
 %  END IF                                                                       
 %% convert the results
-%  COPY '#SPAWN + "CRYSDIR:CONVPLAT.EXE"'
+%  COPY '#SPAWN + "CRYSDIR:convplat.exe"'
 %  IF .not. FILEEXISTS ( 'LIST6.ABC' ) THEN
 {1,9 The CONVPLAT.exe process failed to write an output file.
 {1,9 Check that the file PLATON6 exists and contains reflections

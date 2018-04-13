@@ -395,7 +395,7 @@
 %         COPY '#SCRIPT XQUESTIO'                                               
 %         IF ANSWER .EQ. TRUE THEN                                              
  * Starting Fourier map viewer.                                                 
-%               TRANSFER '#SPAWN "CRYSDIR:CONTOUR.EXE" ' // -                   
+%               TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // -                   
  FNAME TO CRYSTALS                                                              
 %         END IF                                                                
 %       END IF                                                                  
