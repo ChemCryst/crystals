@@ -503,7 +503,7 @@ character(len=4) :: data_number_text
             
             res_filepath=shelx_filepath
             write(data_number_text, '(I0)') data_number
-            res_filepath(len_trim(res_filepath)-3:)=trim(data_number_text)//'.res'
+            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.res'
             resid=816
             open(unit=resid,file=res_filepath)       
             do
@@ -527,7 +527,7 @@ character(len=4) :: data_number_text
             
             res_filepath=shelx_filepath
             write(data_number_text, '(I0)') data_number
-            res_filepath(len_trim(res_filepath)-3:)=trim(data_number_text)//'.hkl'
+            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.hkl'
             resid=816
             open(unit=resid,file=res_filepath)       
             do
@@ -540,6 +540,29 @@ character(len=4) :: data_number_text
             end do
         end if
         
+        if(index(buffer, '_shelx_fab_file')>0) then
+            ! found a fab file (squeeze)!
+            read(cifid, '(a)', iostat=iostatus) buffer
+            if(trim(buffer)/=';') then
+                write(log_unit, '(2a)') 'unexpected line: ', trim(buffer)
+                write(log_unit, '(a)') 'I was expecting `;`'
+                call abort()
+            end if
+            
+            res_filepath=shelx_filepath
+            write(data_number_text, '(I0)') data_number
+            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.fab'
+            resid=816
+            open(unit=resid,file=res_filepath)       
+            do
+                read(cifid, '(a)', iostat=iostatus) buffer
+                if(iostatus/=0 .or. trim(buffer)==';') then
+                    close(resid)
+                    exit
+                end if
+                write(resid, '(a)') trim(buffer)
+            end do
+        end if        
     end do
 end subroutine
 
