@@ -476,9 +476,19 @@ character(len=*), intent(in) :: shelx_filepath
 logical, intent(out) :: found
 character(len=len(shelx_filepath)+4) :: res_filepath
 integer resid, cifid, iostatus
-character(len=2048) :: buffer
+character(len=2048) :: buffer, tempc
 integer :: data_number
 character(len=4) :: data_number_text
+integer checksumhkl, checksumhklref, i
+integer checksumres, checksumresref
+integer checksumfab, checksumfabref
+
+    checksumhkl=0
+    checksumhklref=0
+    checksumres=0
+    checksumresref=0
+    checksumfab=0
+    checksumfabref=0
 
     found=.false.
     cifid=815
@@ -487,7 +497,7 @@ character(len=4) :: data_number_text
     do
         read(cifid, '(a)', iostat=iostatus) buffer
         if(iostatus/=0) then
-            return
+            exit
         end if
         if(index(buffer, '_shelx_res_file')>0 .or. &
         &   index(buffer,'_iucr_refine_instructions_details')>0) then
@@ -501,6 +511,7 @@ character(len=4) :: data_number_text
                 call abort()
             end if
             
+            checksumres=0
             res_filepath=shelx_filepath
             write(data_number_text, '(I0)') data_number
             res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.res'
@@ -513,7 +524,19 @@ character(len=4) :: data_number_text
                     exit
                 end if
                 write(resid, '(a)') trim(buffer)
+                do i=1, len_trim(buffer)
+                    if(buffer(i:i)>' ') then
+                        checksumres=checksumres+iachar(buffer(i:i))
+                    end if
+                end do                
             end do
+            checksumres=mod(checksumres, 714025)
+            checksumres=checksumres*1366+150889
+            checksumres=mod(checksumres, 714025)
+            checksumres=mod(checksumres, 100000)        
+        end if
+        if(index(buffer, '_shelx_res_checksum')>0) then
+            read(buffer, *) tempc, checksumresref
         end if
 
         if(index(buffer, '_shelx_hkl_file')>0) then
@@ -525,6 +548,7 @@ character(len=4) :: data_number_text
                 call abort()
             end if
             
+            checksumhkl=0
             res_filepath=shelx_filepath
             write(data_number_text, '(I0)') data_number
             res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.hkl'
@@ -537,8 +561,21 @@ character(len=4) :: data_number_text
                     exit
                 end if
                 write(resid, '(a)') trim(buffer)
+                do i=1, len_trim(buffer)
+                    if(buffer(i:i)>' ') then
+                        checksumhkl=checksumhkl+iachar(buffer(i:i))
+                    end if
+                end do                
             end do
+            checksumhkl=mod(checksumhkl, 714025)
+            checksumhkl=checksumhkl*1366+150889
+            checksumhkl=mod(checksumhkl, 714025)
+            checksumhkl=mod(checksumhkl, 100000)        
         end if
+        if(index(buffer, '_shelx_hkl_checksum')>0) then
+            read(buffer, *) tempc, checksumhklref
+        end if
+        
         
         if(index(buffer, '_shelx_fab_file')>0) then
             ! found a fab file (squeeze)!
@@ -549,6 +586,7 @@ character(len=4) :: data_number_text
                 call abort()
             end if
             
+            checksumfab=0
             res_filepath=shelx_filepath
             write(data_number_text, '(I0)') data_number
             res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.fab'
@@ -561,9 +599,33 @@ character(len=4) :: data_number_text
                     exit
                 end if
                 write(resid, '(a)') trim(buffer)
+                do i=1, len_trim(buffer)
+                    if(buffer(i:i)>' ') then
+                        checksumfab=checksumfab+iachar(buffer(i:i))
+                    end if
+                end do                
             end do
+            checksumfab=mod(checksumfab, 714025)
+            checksumfab=checksumfab*1366+150889
+            checksumfab=mod(checksumfab, 714025)
+            checksumfab=mod(checksumfab, 100000)        
         end if        
+        if(index(buffer, '_shelx_fab_checksum')>0) then
+            read(buffer, *) tempc, checksumfabref
+        end if
     end do
+    
+    ! checking checksums
+    if(checksumhkl/=checksumhklref) then
+        write(log_unit, '(a)') 'hkl file is corrupted, the checksum is invalid'
+    end if
+    if(checksumfab/=checksumfabref) then
+        write(log_unit, '(a)') 'fab file is corrupted, the checksum is invalid'
+    end if
+    if(checksumres/=checksumresref) then
+        write(log_unit, '(a)') 'res file is corrupted, the checksum is invalid'
+    end if
+        
 end subroutine
 
 !> Write list16 (restraints)
@@ -1913,6 +1975,12 @@ integer start, iostatus
                 serials(k)=serial1
             end do                    
                 
+            if(any(serials<1)) then
+                write(log_unit, '(a)') 'Warning: an atom cannot be found, restraint has been ignored'
+                write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                cycle flat_loop
+            end if
+            
             write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
              do k=1, size(serials)
                 write(buffer1, '(a,"(",I0,")")') &

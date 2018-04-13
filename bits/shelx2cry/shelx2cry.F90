@@ -165,7 +165,7 @@ if(.not. file_exists) then
                     write(log_unit,*) 'Error: No res file included in cif file'
                     stop
                 end if
-                shelx_filepath=trim(shelx_filepath)//'.res'
+                shelx_filepath=trim(shelx_filepath)//'_1.res'
             end if
         else
             shelx_filepath=trim(shelx_filepath)//'.res'
@@ -174,6 +174,7 @@ if(.not. file_exists) then
         shelx_filepath=trim(shelx_filepath)//'.ins'
     end if
 end if
+print *, trim(shelx_filepath)
 
 if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
     call extract_res_from_cif(trim(shelx_filepath), foundres)
