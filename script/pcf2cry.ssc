@@ -102,7 +102,7 @@
 %         EVALUATE LOOPEND = LOOPCOUNTER                                        
 %       END IF                                                                  
 %       ELSE                                                                    
-%       COPY '#SCRIPT XSHELXIN'  
+%       COPY '#SCRIPT XPASCAL'  
 ^^CO    DISPOSE PCF2CRY
 %       FINISH
 %       END IF                                                                  
@@ -135,5 +135,5 @@
 %   TRANSFER '#USE ' // COUT TO CRYSTALS                                        
 % END IF                                                                        
 %%
-% COPY '#SCRIPT XSHELXIN'                                                                              
+% COPY '#SCRIPT XPASCAL'                                                                              
 %END SCRIPT                                                                     

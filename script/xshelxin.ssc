@@ -1,5 +1,7 @@
 %SCRIPT XSHELXIN
 %%
+%% This has been replaced by PASCAL in all the scripts, but may
+%% still be called from the MENU_XRAY menu
 %%
 %% Read in a the cell, symm and atoms from a shelx file.
 %%

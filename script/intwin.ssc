@@ -35,7 +35,7 @@
 %    GET FINAL ABBREVIATED -
                    'Do you want to import SHELX structure files? ' 'NO'
 %    IF ( VALUE .EQ. 1 ) THEN
-%      COPY '#SCRIPT XSHELXIN'
+%      COPY '#SCRIPT XPASCAL'
 %      COPY '#SCRIPT XINLIST6'
 %    ELSE
 %      FINISH

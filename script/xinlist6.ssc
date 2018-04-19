@@ -114,7 +114,7 @@
 %        FINISH
 %      ELSE IF XCHOICE .EQ. 1 THEN
 %        EVALUATE INSTITLE = THEINS
-%        COPY '#SCRIPT XSHELXIN'
+%        COPY '#SCRIPT XPASCAL'
 %% Shelxin will call this script again. So stop here.
 %        FINISH
 %      END IF

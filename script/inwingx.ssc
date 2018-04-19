@@ -99,7 +99,7 @@
 
 {I * Importing structure only.
 
-%       COPY '#SCRIPT XSHELXIN'
+%       COPY '#SCRIPT XPASCAL'
 %       COPY '#SCRIPT DIRECT'
 %     ELSE
 %% Import reflections only

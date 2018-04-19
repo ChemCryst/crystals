@@ -353,7 +353,7 @@ DO SHELX STUFF
 %        IF C_FILE .NE. ' ' THEN
 %         EVALUATE INSTITLE = C_FILE
 %        END IF
-%        COPY '#SCRIPT XSHELXIN' 
+%        COPY '#SCRIPT XPASCAL' 
 %      ELSE IF CARG .EQ. 'S4' THEN
 %        IF C_FILE .NE. ' ' THEN
 %         EVALUATE HKLTITLE = C_FILE

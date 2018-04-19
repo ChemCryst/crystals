@@ -31,7 +31,7 @@
 %        END BLOCK                                                              
 %%
 %        BLOCK % 2
-%          COPY '#SCRIPT XSHELXIN'
+%          COPY '#SCRIPT XPASCAL'
 %        END BLOCK
 %%
 %        BLOCK % 3
