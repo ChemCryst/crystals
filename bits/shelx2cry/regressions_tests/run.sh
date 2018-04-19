@@ -4,10 +4,12 @@ for path in insfiles/*; do
     [ -e "$path" ] || continue
     # ... rest of the loop body
 
-    echo $path
     file=`basename "$path"`
-    ../shelx2cry -o "${file}.out" -l "${file}.log" $path
+    echo $file
+    ../shelx2cry -o "${file}.out" -l "${file}.log" $path > /dev/null
 
-    diff "${file}.out" "references/${file}.out"
+    diff -q "${file}.out" "references/${file}.out"
+    diff -q "${file}.log" "references/${file}.log"
+
 done
 
