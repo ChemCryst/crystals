@@ -1,4 +1,5 @@
 %SCRIPT INLIST25
+%% The SCRIPT IN25 does much the same via the GUI
 {I 
 {I This script replaces an existing LIST 25 with a new one
 {I and sets the ELEMENT SCALES in LIST 5 to 1/N25
