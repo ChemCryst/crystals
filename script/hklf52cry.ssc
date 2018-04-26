@@ -111,15 +111,27 @@
 %%  
 ^^WI WINDOW A1 'Process Twin output' SIZE LARGE KEEP MODAL
 ^^WI CANCEL='RF_BXX'
-^^WI GRID MAIN NROWS=1 NCOLS=1
+^^WI GRID MAIN NROWS=2 NCOLS=3
 ^^WI {
-^^WI   @ 1,1 GRID BTNS NROWS=4 NCOLS=2 OUTLINE=' '
+^^WI   @ 1,2 GRID TEXT NROWS=4  NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC TEXT1 
+^^WI    'If CRYSTALS has found the correct twin law, choose Input Matrix'
+^^WI    @ 2,1 STATIC TEXT1 
+^^WI    'If you have other ideas, you can edit the Matrix File'
+^^WI    @ 3,1 STATIC TEXT1 
+^^WI    'If you know the matrix from the instrument, Manually Input a matrix'
+^^WI    @ 4,1 STATIC TEXT1 
+^^WI    'If you need more facts. look at the log file'
+^^WI   }
+^^WI   @ 2,2 GRID BTNS NROWS=4 NCOLS=2 OUTLINE=' '
 ^^WI   {
 ^^WI       @ 1,1 RADIOBUTTON ITYP11 'Input Matrix file'    STATE=OFF INFORM
 ^^WI       @ 1,2 RADIOBUTTON IPUN12 'Look at LOG file'     STATE=OFF INFORM
 ^^WI       @ 2,1 RADIOBUTTON ITYP21 'Edit Matrix File'     STATE=OFF INFORM
 ^^WI       @ 2,2 RADIOBUTTON ITYP22 'Manual Matrix Input'   STATE=OFF INFORM
-^^WI       @ 4,1 BUTTON RF_BXX 'Finish'              
+^^WI       @ 4,1 BUTTON RF_BXX 'Finish' 
+^^WI       @ 4,2 BUTTON RF_HELP 'Help'        
 ^^WI   }     
 ^^WI }
 ^^WI SHOW
@@ -129,7 +141,7 @@
 % EVALUATE USE6 = FALSE
 % LOOP
 %  EVALUATE JLOOP = LOOPCOUNTER
-%  VERIFY  RF_BXX ITYP11 IPUN12 ITYP21 ITYP22 
+%  VERIFY  RF_BXX ITYP11 IPUN12 ITYP21 ITYP22 RF_HELP
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  EVALUATE IDJW = VALUE
 %  CASE VALUE
@@ -179,6 +191,9 @@
 %    copy '#script IN25'
 %    EVALUATE NEW25 = TRUE
 %%
+%   END BLOCK
+%   BLOCK                                           %HELP%
+%    COPY '#SPAWN CRYSDIR:manual/analyse/hklf52cry.html'
 %   END BLOCK
 %  END CASE
 % END LOOP
