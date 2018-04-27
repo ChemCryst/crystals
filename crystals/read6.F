@@ -1549,7 +1549,7 @@ c       close archive file if necessary
         CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
 c   RESTORE THE PUNCH FILE
         CALL XMOVEI (KEYFIL(1,5),KDEV,4)
-        CALL XRDOPN (6,KDEV,'BFILE.PCH',15)
+        CALL XRDOPN (6,KDEV,'BFILE.PCH',9)
        endif
       ENDIF
 C
