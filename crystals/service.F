@@ -2298,19 +2298,35 @@ C      endif
 C      write(ncwu, '(i4,3x,a)') ippack, croman
 C      return
 C      end
+C
 CODE FOR REFOUT
-      SUBROUTINE REFOUT(IDEV, I,J,K,F,S)
+      SUBROUTINE REFOUT(IDEV, I,J,K,F,S,IE)
 C TRY TO PRESERVE SIGNIFICANCE IN HKLI FORMAT FILES
+c Abandoned in 2018 in favour of internal call to PUNCH 6 I
+      CHARACTER *80 CFORMAT
+      CHARACTER *2 CSTAR
+      CFORMAT = ' '
+      CSTAR='  '
       BIGGEST=MAX(F,S)
+C
       IF (BIGGEST.LE.9999.) THEN
-       WRITE(IDEV, '(3I4, 2F8.2)') I, J, K, F, S
+       CFORMAT='(3I4, 2F8.2)'
       ELSE IF (BIGGEST.LE.99999.) THEN
-       WRITE(IDEV, '(3I4, 2F8.1)') I, J, K, F, S
+       CFORMAT='(3I4, 2F8.1)'
       ELSE IF (BIGGEST.LE.999999.) THEN
-       WRITE(IDEV, '(3I4, 2F8.0)') I, J, K, F, S
+       CFORMAT='(3I4, 2F8.0)'
       ELSE
-       WRITE(IDEV, '(3I4, 2F10.0, A)') I, J, K, F, S, ' *'
+       CFORMAT='(3I4, 2F10.0)'
+       CSTAR=' *'
       END IF
+      LEN=LEN_TRIM(CFORMAT)
+      IF (IE.LE.0) THEN
+       CFORMAT(LEN:)=' ,A)'
+       WRITE(IDEV, CFORMAT) I, J, K, F, S, CSTAR
+      ELSE
+       CFORMAT(LEN:)=', I9 ,A)'
+       WRITE(IDEV, CFORMAT) I, J, K, F, S, IE, CSTAR
+      ENDIF
       RETURN
       END
 C

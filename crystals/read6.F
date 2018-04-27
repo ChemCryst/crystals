@@ -571,8 +571,8 @@ c     3 L6P,M6P,MD6P,N6P,L6DTL,M6DTL,MD6DTL,N6DTL
 C--STORE THE TEMPORARY PART OF THE COMMON BLOCK
       I=KX+IDIM06
       CALL XMOVE (ISTORE(I),ICOM6A(1),IDIM6A)
-C      write(123,'(a/(4i6,6x,4i6))') 'ICOM06a',
-C     1(icom6a(iidjw),iidjw=1,idim6a)
+c      write(123,'(a/(4i6,6x,4i6))') 'ICOM06a',
+c     1(icom6a(iidjw),iidjw=1,idim6a)
 Cdjwnov2000
 C----- save the matrix and tolerance
       CALL XMOVE (STORE(L6MR),TRANSH,9)
@@ -580,13 +580,13 @@ C----- save the matrix and tolerance
 csquare it for later use (sint/lam)sq
       TWIND=STORE(L6MR+10) * STORE(L6MR+10)
 c2016 open an archive file on FRN2 if required
-c     not for copy
-      if((itype6.ne.1).and.(itype6.ne.5)) then
-       if(larch.eq.0)  then
-        CALL XMOVEI (KEYFIL(1,24),KDEV,4)
-        CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
-       endif
-      endif
+c2018 - replaced by internal call to PUNCH 6 I at end     
+c      if((itype6.ne.1).and.(itype6.ne.5)) then
+c       if(larch.eq.0)  then
+c        CALL XMOVEI (KEYFIL(1,24),KDEV,4)
+c        CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
+c       endif
+c      endif
 Cdjw dec97
 C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
       N6DEAD=0
@@ -941,19 +941,21 @@ C----- INITIALISE THE ABSORPTION CORRECTION
       I=MABS(-1)
       IF (IERFLG.LT.0) GO TO 5450
       LN=IULN
-      if((itype6.ne.1).and.(itype6.ne.5)) then
+c2018 - replaced by internal call to PUNCH 6 I at end     
+c      if((itype6.ne.1).and.(itype6.ne.5)) then
 c     only if not 'COPY' operation
-      if(larch.eq.0) then
-        write(ncfpu2,'(a/a/A)')
-     1  '_iucr_refine_reflections_details',';',
-     1  '# An asterisk in column 34 indicates a format overflow'
-        if(isq.eq.-1) then
-          write(ncfpu2,'(a)')'# Data was input as F-squared'
-        else
-          write(ncfpu2,'(a)')'# Data was input as F'
-        endif
-      endif
-      endif
+c      if(larch.eq.0) then
+c        write(ncfpu2,'(a/a/A)')
+c     1  '_iucr_refine_reflections_details',';',
+c     1  '# An asterisk in the last column indicates a format overflow'
+c        if(isq.eq.-1) then
+c          write(ncfpu2,'(a)')'# Data was input as F-squared'
+c        else
+c          write(ncfpu2,'(a)')'# Data was input as F'
+c        endif
+c        write(ncfpu2,'(a)')'# h,k,l I sigma, (ELEMENT)'
+c      endif
+c      endif
 C--BRANCH ON THE TYPE OF OUTPUT
       GO TO (5000,2550,3250,3450,5000,4050,4050,4050,2500),ITYPE6
 C3600  STOP 'LIST 6 ERROR'
@@ -1006,7 +1008,7 @@ CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
          GO TO 5200
       END IF
 c
-c
+c 
 c
 c
 C--READ THE NEXT REFLECTION
@@ -1016,9 +1018,6 @@ C
 cdjw2003
 c----- if a list 7 read no reflections
 C      if (iuln .ne. 7) then
-
-
-
       READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
@@ -1283,11 +1282,14 @@ C--AND NOW APPLY ANY ABSORPTION CORRECTION THAT IS REQUIRED
          IF (MABS(0)) 4850,4600,4600
 4600     CONTINUE
          JFO=M6+IFO
+c2018 - replaced by internal call to PUNCH 6 I at end     
 c----- output archive material for PUNCH unit
-         if(larch.eq.0) then
-          call refout(ncfpu2, nint(store(m6)),nint(store(m6+1)),
-     1      nint(store(m6+2)), store(jfo), store(m6+12))
-         endif
+C         if(larch.eq.0) then
+C          ie = 0
+C          if(ifo.eq.10) ie=nint(store(m6+11))
+C            call refout(ncfpu2, nint(store(m6)),nint(store(m6+1)),
+C     1      nint(store(m6+2)), store(jfo), store(m6+12),ie)
+C         endif
 C--CHECK IF WE SHOULD TAKE THE SQUARE ROOT
 C--ARE WE INPUTTING /FO/ **2 ?
          IF (ISQ.lt.0) THEN
@@ -1375,11 +1377,12 @@ C--BRANCH ON THE TYPE OF INPUT
 C
 C--END OF THE REFLECTION INPUT  -  STORE THEM ON THE DISC
 5000  CONTINUE
-      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
-        write(ncfpu2,'(a)')';'
-c     close archive file if necessary
-        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
-      endif
+c2018 - replaced by internal call to PUNCH 6 I at end     
+C      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
+C        write(ncfpu2,'(a)')';'
+c        close archive file if necessary
+C        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
+C      endif
       N6D=N6W
 C--NO ERRORS  -  CALCULATE THE REFLECTION DETAILS
       DO 5050 I=1,MD6
@@ -1525,6 +1528,31 @@ C--AND NOW RETURN
         call xpause (2000)
         call outcol(1)
       endif
+C
+      IF(LEF.EQ.0) THEN      
+c open an archive file on NCPU if required
+       if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
+         CALL XMOVEI (KEYFIL(1,5),KDEV,4)
+         CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
+        write(ncpu,'(a/a/)')
+     1  '_iucr_refine_reflections_details',';'
+        if(isq.eq.-1) then
+          write(ncpu,'(a)')'# Data was input as F-squared'
+        else
+          write(ncpu,'(a)')'# Data was input as F'
+        endif
+C
+        CALL XPCH6N(6,6,2,.false.)
+        write(ncpu,'(a)')';'
+C
+c       close archive file if necessary
+        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
+c   RESTORE THE PUNCH FILE
+        CALL XMOVEI (KEYFIL(1,5),KDEV,4)
+        CALL XRDOPN (6,KDEV,'BFILE.PCH',15)
+       endif
+      ENDIF
+C
       CALL XOPMSG (IOPLSI,IOPLSE,IULN)
       CALL XTIME2 (2)
       RETURN
