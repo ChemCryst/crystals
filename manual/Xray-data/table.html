@@ -87,7 +87,16 @@ span.c2
           <li><a href="../analyse/hklf52cry.html"><strong>Import hklf5 file</strong></a>
         </ul>
 
-      <td width="50%">&nbsp;
+      <td width="50%">
+      <strong>Converting SHELX hklf5 files to CRYSTALS format</strong>
+      <br />
+      CRYSTALS need to know the twin law matrix before inputting twinned data.
+      If the data comes from a SHELX hklf5 file, CRYSTALS tries to determine
+      the twin law from the indices of groups of overlapping reflections<br />
+      <strong>Unmerged data</strong> must be passed to CRYSTALS because
+      if the data has been merged outside of CRYSTALS, some of the contributors
+      may have had their index changed to that of an equivalent. 
+      The extraction of the twin law will then fail.
     </table>
 
   <table width="100%" border="1" cellspacing="0" cellpadding="10"
