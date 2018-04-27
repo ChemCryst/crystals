@@ -413,8 +413,8 @@ C     AND CLEAR THE ACCUMULATORS
        ENDDO
       ENDDO
 c
-      write(13,511)
       write(13,508)
+      write(13,511)
       write(13,'(7x,a,11x,a,17x,a,16x,a,6x,a)')
      1 'Transformed','Minor','Error','NINT error','Total error'
       

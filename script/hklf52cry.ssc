@@ -1,4 +1,4 @@
-%SCRIPT HKLF52CRY  
+%SCRIPT HKLF52CRY   
 %%  
 %% Run hklf52cry with common options.  
 %%  
@@ -124,14 +124,15 @@
 ^^WI    @ 4,1 STATIC TEXT1 
 ^^WI    'If you need more facts. look at the log file'
 ^^WI   }
-^^WI   @ 2,2 GRID BTNS NROWS=4 NCOLS=2 OUTLINE=' '
+^^WI   @ 2,2 GRID BTNS NROWS=4 NCOLS=3 OUTLINE=' '
 ^^WI   {
 ^^WI       @ 1,1 RADIOBUTTON ITYP11 'Input Matrix file'    STATE=OFF INFORM
 ^^WI       @ 1,2 RADIOBUTTON IPUN12 'Look at LOG file'     STATE=OFF INFORM
 ^^WI       @ 2,1 RADIOBUTTON ITYP21 'Edit Matrix File'     STATE=OFF INFORM
 ^^WI       @ 2,2 RADIOBUTTON ITYP22 'Manual Matrix Input'   STATE=OFF INFORM
-^^WI       @ 4,1 BUTTON RF_BXX 'Finish' 
-^^WI       @ 4,2 BUTTON RF_HELP 'Help'        
+^^WI       @ 4,1 BUTTON RF_BXX 'Quit' 
+^^WI       @ 4,2 BUTTON RF_CONT 'Continue' 
+^^WI       @ 4,3 BUTTON RF_HELP 'Help'        
 ^^WI   }     
 ^^WI }
 ^^WI SHOW
@@ -141,11 +142,11 @@
 % EVALUATE USE6 = FALSE
 % LOOP
 %  EVALUATE JLOOP = LOOPCOUNTER
-%  VERIFY  RF_BXX ITYP11 IPUN12 ITYP21 ITYP22 RF_HELP
+%  VERIFY  RF_BXX ITYP11 IPUN12 ITYP21 ITYP22 RF_HELP RF_CONT
 %  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %  EVALUATE IDJW = VALUE
 %  CASE VALUE
-%   BLOCK                                           %RF_BXX%
+%   BLOCK                                           %RF_BXX - QUIT%
 %       EVALUATE LOOPCOUNTER = LOOPEND
 %   END BLOCK
 %%
@@ -153,6 +154,8 @@
 %    IF FILEEXISTS ( 'l25.cry' ) THEN
 %     COPY '#USE l25.cry'
 %     EVALUATE NEW25 = TRUE
+%     EVALUATE USE6 = TRUE
+%     EVALUATE LOOPCOUNTER = LOOPEND
 %    ELSE
 {E  A matrix has not been computed
 %    END IF   
@@ -180,6 +183,9 @@
 %      COPY '#SCRIPT XEDITOR'
 %      IF ( .NOT. EDITOR_OK ) THEN
  Editing abandoned
+%      ELSE
+%        EVALUATE USE6 = TRUE
+%        EVALUATE LOOPCOUNTER = LOOPEND
 %      END IF                                                                             
 #endif
 %    ELSE
@@ -190,15 +196,24 @@
 %   BLOCK                                           %MANUAL MATRIX%
 %    copy '#script IN25'
 %    EVALUATE NEW25 = TRUE
+%    EVALUATE USE6 = TRUE
+%    EVALUATE LOOPCOUNTER = LOOPEND
 %%
 %   END BLOCK
 %   BLOCK                                           %HELP%
 %    COPY '#SPAWN CRYSDIR:manual/analyse/hklf52cry.html'
 %   END BLOCK
+%   BLOCK                                           %CONTINUE%
+{I   Choose an option
+%   END BLOCK
 %  END CASE
 % END LOOP
 ^^CO    DISPOSE A1
-
+%%
+%  IF USE6 .EQ. FALSE THEN
+{E The reflections will not be processed
+%   FINISH
+%  END IF
 
 {I The reflections will be processed after some
 {I intenal checks have been made
@@ -286,6 +301,12 @@ Resetting element scale factors
 %       FINISH
 %     ELSE
 %       TRANSFER '#USE ' // COUT TO CRYSTALS  
+%       COPY '#SYST'
+%       COPY 'END'
+%       COPY '#SORT'
+%       COPY 'END'
+%       COPY '#MERGE'
+%       COPY 'END'
 %     END IF
 %   ELSE
 {E  CRYSTALS must have twin laws (LIST 25) before twinned

@@ -482,5 +482,7 @@
 %     END BLOCK
 %  END CASE
 % END LOOP
+% COPY 'SUM L 25'
+% COPY 'END'
 %END SCRIPT
                                   
