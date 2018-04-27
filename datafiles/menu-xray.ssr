@@ -80,7 +80,7 @@
 ^^WI   ENDMENU
 ^^WI   SPLIT
 
-^^WI   ITEM XH      'X-ray data menu &help'
+^^WI   ITEM XH      'CRYSTALS manual X-ray &help'
 ^^WI        '$"crysdir:manual/tools-menus.html"'
 ^^WI   ITEM XA       'About Data Input'
 ^^WI         '#SPAWN CRYSDIR:manual/Xray-data/table.html' DISABLEIF='IN'
